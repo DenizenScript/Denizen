@@ -1,0 +1,71 @@
+aPunch: aufdemrand: Use CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(CharacterClass.class).withName("name"));
+[8:05pm] aPunch: add withTypes(EntityType.CHICKEN)
+
+Citizens.API.getCharacterManager().registerCharacter(new CharacterFactory(ParrotCharacter.class).withName("Parrot").withTypes(EntityType.CHICKEN))
+
+# DENIZENS are helpful, interactive Citizens!  Denizens run off of mini scripts with steps and events.  They can be used in hundreds
+# of different ways, from tutorials, to questing, to administrating and more!
+
+# Part of the 'Citizens for RPGs' pack by aufdemrand
+
+
+# Default Denizen options let you tweak the specifics of your Denizens.
+
+INTERACT_DELAY_IN_TICKS: 5        #  Delay in ticks for all responses from the Denizens.  0 for instant.  5 is default because it provides a good
+                                  #  realistic delay when interacting with an NPC. Long texts and events roll in to the player at a comfortable rate.
+NPC_CHAT_RANGE_IN_BLOCKS: 10      #  Range in blocks that the any player has to be to hear CHAT from an NPC.
+PLAYER_CHAT_RANGE_IN_BLOCKS: 2    #  Range in blocks that the player has to be to trigger chat with the NPC. Text is also not heard globally when
+                                  #  in this range.  Instead, the player will see 'You say to <NPC>, Event text goes here.'
+
+Denizens:                         #  This node is used to define Denizens' scripts.
+  '12':                           #  This number corresponds with the Citizens2 NPC ID
+    Name: Johanas                 #  Name is stored for reference only.
+    Scripts:                      #  List of scripts that the specified Denizen will use.
+      - 0 Welcome to Chakkor      #  Format like this: 'PRIORITY [Name of Script to use]'
+      - 5 A package delivery      #  0 is lowest priority, usually used for scripts with the Default requirement.
+                                  #  Upon interactivity, the script with the highest priority that has its 
+                                  #  requirements met will be the script that triggers.
+      
+Scripts:
+  "Welcome to Chakkor":           #  SCRIPT NAME
+        
+    Requirements:                 #  SCRIPT REQUIREMENTS
+      - Default                   #  No inherit requirements. Requires no special permissions to trigger with player.
+      
+    Behavior:                     #  SCRIPT BEHAVIOR
+      - Loop                      #  Loops the script progression once final step is completed.
+
+    Progression:                  #  OUTLINES THE SCRIPT PROGRESSION through a series of steps of interactivity with the NPC.
+      '0':                        #  Steps carry out in order, starting at 0.
+ 
+        Interact:                 #  Interact defines ways the player can interact with the NPC for this event.  
+          Click Trigger:          #  Events to carry out when NPC is clicked on.
+            - CHAT Welcome to our fair city, <player>!                         # Sends text to players within chat range from the NPC.
+            - CHAT Are you traveling from out of town?
+            - NARRARATE <NPC> seems like a friendly face.                      # Sends text to the player without branding the NPC.
+
+          Chat Trigger:           #  Events to carry out when certain words or phrases are chatted by the player.
+            '0':
+              - Yes               #  First line of a Chat Trigger is the text to trigger. 
+              - CHAT              #  Each additional line is the script to carry out.
+            '1':
+              ok
+            '2':
+
+        Execute:
+          On Finish:          
+
+      '1':        
+
+      '2':
+  Texts:
+
+
+Conversations:
+
+
+
+
+
+
+
