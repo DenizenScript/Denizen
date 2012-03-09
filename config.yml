@@ -1,7 +1,4 @@
-aPunch: aufdemrand: Use CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(CharacterClass.class).withName("name"));
-[8:05pm] aPunch: add withTypes(EntityType.CHICKEN)
-
-Citizens.API.getCharacterManager().registerCharacter(new CharacterFactory(ParrotCharacter.class).withName("Parrot").withTypes(EntityType.CHICKEN))
+Citizens.API.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("Denizen"));
 
 # DENIZENS are helpful, interactive Citizens!  Denizens run off of mini scripts with steps and events.  They can be used in hundreds
 # of different ways, from tutorials, to questing, to administrating and more!
