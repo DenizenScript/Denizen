@@ -80,8 +80,8 @@ Scripts:
               - CHAT If you are looking for some work, I would check with James at the Bakery. This is their busy season!
               - ZAP               # Finishes this step in the progression. 
 
-          On Finish:              #  Script to be carried out when the event finishes.  Useful if there are ZAPs in multiple locations.
-                                  #    and you aren't quite sure which event 
+          On Finish:              #  Script to be carried out when the step finishes.  Useful if there are ZAPs in multiple locations.
+                                  #    and you aren't quite sure which event will finish the step
             - NARRARATE What a friendly face.      #  but need script events carried out regardless.
             - NOTABLE Chat with a villager         #  Sends a completed Notable to the Notables plug-in.
 
