@@ -6,8 +6,15 @@ Citizens.API.getCharacterManager().registerCharacter(new CharacterFactory(Parrot
 # DENIZENS are helpful, interactive Citizens!  Denizens run off of mini scripts with steps and events.  They can be used in hundreds
 # of different ways, from tutorials, to questing, to administrating and more!
 
-# Part of the 'Citizens for RPGs' pack by aufdemrand
 
+# Timeline: Beta 1 -- All functionality used in this example file.
+#           Beta 2 -- Complete functionality of additional behaviors/requirements/triggers listed.
+#           1.0 -- Bug fixes from Beta.
+#           1.5 -- In-game Script editor.
+
+
+
+# Begin config.yml ----
 
 # Default Denizen options let you tweak the specifics of your Denizens.
 
@@ -16,52 +23,75 @@ INTERACT_DELAY_IN_TICKS: 5        #  Delay in ticks for all responses from the D
 NPC_CHAT_RANGE_IN_BLOCKS: 10      #  Range in blocks that the any player has to be to hear CHAT from an NPC.
 PLAYER_CHAT_RANGE_IN_BLOCKS: 2    #  Range in blocks that the player has to be to trigger chat with the NPC. Text is also not heard globally when
                                   #  in this range.  Instead, the player will see 'You say to <NPC>, Event text goes here.'
+AUTO_ENGAGE: TRUE                 #  Engages the NPC to the player for a specified amount of time when interacting
+ENGAGE_TIMEOUT_IN_SECONDS: 30     #  Default amount of time that the Denizen will automatically DISENGAGE 
+
+
+
+
+
+# START LIST OF DENIZENS
 
 Denizens:                         #  This node is used to define Denizens' scripts.
   '12':                           #  This number corresponds with the Citizens2 NPC ID
-    Name: Johanas                 #  Name is stored for reference only.
+    Name: Steve                   #  Name is stored for reference only.
     Scripts:                      #  List of scripts that the specified Denizen will use.
-      - 0 Welcome to Chakkor      #  Format like this: 'PRIORITY [Name of Script to use]'
-      - 5 A package delivery      #  0 is lowest priority, usually used for scripts with the Default requirement.
-                                  #  Upon interactivity, the script with the highest priority that has its 
+      - 0 Welcome to the Village  #  Format like this: 'PRIORITY [Name of Script to use]'
+      - 5 A package delivery      #  0 is lowest priority, usually used for scripts with the no requirements.
+                                  #  Upon interactivity with the NPC, the script with the highest priority that has its 
                                   #  requirements met will be the script that triggers.
+
+
+# START LIST OF SCRIPTS
       
 Scripts:
-  "Welcome to Chakkor":           #  SCRIPT NAME
+  'Welcome to the Village':       #  SCRIPT NAME
         
-    Requirements:                 #  SCRIPT REQUIREMENTS
-      - Default                   #  No inherit requirements. Requires no special permissions to trigger with player.
-      
-    Behavior:                     #  SCRIPT BEHAVIOR
+    Requirements:                 #  SCRIPT REQUIREMENTS (If missing, defaults to no requirements.)
+      Mode: All                   #  Requires all. Available modes (for requirements): 'All' 'Any [#]'
+      List:                       #  List of requirement types to START the Script.
+        - Time Day                #  No inherit requirements. Requires no special permissions to trigger with player.
+                                  #  Can use more than one.
+                                  #  Available requirements: 'None' 'Time Day' 'Time Night' 'Precipitation' 'No Precipitation'
+                                  #  'Permission [permission.nodes.here]' 'Group [group name]' 'Notable [name of notable]'
+                                  #  (Notables requirements will require use of my other plugin Notables. Available Soon.)      
+
+    Behavior:                     #  SCRIPT BEHAVIOR SETTINGS
       - Loop                      #  Loops the script progression once final step is completed.
+                                  #  Available behaviors: 'Loop' 'Repeat [#]' 'Once'
 
     Progression:                  #  OUTLINES THE SCRIPT PROGRESSION through a series of steps of interactivity with the NPC.
       '0':                        #  Steps carry out in order, starting at 0.
  
         Interact:                 #  Interact defines ways the player can interact with the NPC for this event.  
+
           Click Trigger:          #  Events to carry out when NPC is clicked on.
-            - CHAT Welcome to our fair city, <player>!                         # Sends text to players within chat range from the NPC.
+            - CHAT Welcome to our fair city, <player>!          # Sends text to players within chat range from the NPC.
             - CHAT Are you traveling from out of town?
-            - NARRARATE <NPC> seems like a friendly face.                      # Sends text to the player without branding the NPC.
+            - NARRARATE <NPC> seems like a friendly face.       # Sends text to the player without branding the NPC.
 
-          Chat Trigger:           #  Events to carry out when certain words or phrases are chatted by the player.
-            '0':
-              - Yes               #  First line of a Chat Trigger is the text to trigger. 
-              - CHAT              #  Each additional line is the script to carry out.
+          Chat Trigger:           #  Events to carry out when certain words or phrases are chatted by the player. The first chat
+            '0':                  #  keyword to trigger will cancel all other triggers.
+              - 'Yes'             #  First line of a Chat Trigger is the keyword(s) to trigger. 
+              - DELAY 30          #  Additional lines make up the script.
+              - CHAT Oh! I'm sorry I didn't recognize you! 
+              - CHAT Our small village is so small I almost feel embarrassed.
+              - CHAT How long have you lived about?
             '1':
-              ok
-            '2':
+              - 'no'              #  
+              - DELAY 30          #  Delays the script 30 ticks.  Helps control flow. 
+              - CHAT Oh! I'm sorry I didn't recognize you! 
+              - CHAT Our small village is so small I almost feel embarrassed.
+              - CHAT How long have you lived about?
+              - ZAP               # Finishes this step in the progression. 
 
-        Execute:
-          On Finish:          
-
+          On Finish:              #  Script to be carried out when the event finishes.  Useful if there are ZAPs in multiple locations
+            - NARRARATE What a friendly face.      #  but need script events carried out regardless.
+            - NOTABLE Chat with a villager         #  Sends a completed Notable to the Notables plug-in.
       '1':        
 
       '2':
-  Texts:
-
-
-Conversations:
+  
 
 
 
