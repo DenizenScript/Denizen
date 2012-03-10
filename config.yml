@@ -103,6 +103,7 @@ Scripts:
       Mode: All                   
       List:                       
         - QUEST A Pie for Tom     #  Requires the quest 'A Pie for Tom' to be completed
+                                  #  QUEST requires an additional character: Quester
 
     Behavior:                     
       - Controlled                                               
