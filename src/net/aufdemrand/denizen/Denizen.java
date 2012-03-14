@@ -28,7 +28,7 @@ public class Denizen extends JavaPlugin {
 		}
 
 		if (args.length < 1) {
-			sender.sendMessage(ChatColor.RED + "Use /parrot help for command reference.");
+			sender.sendMessage(ChatColor.RED + "Use /denizen help for command reference.");
 			return true;
 		}
 
@@ -36,8 +36,6 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("help")) {
 			player.sendMessage(ChatColor.GOLD + "----- Denizen -----");
-			player.sendMessage(ChatColor.GREEN + "/denizen clue" + ChatColor.GRAY
-					+ " -- Sets the clue for the parrot.");
 			return true;
 		} 
 
@@ -46,12 +44,12 @@ public class Denizen extends JavaPlugin {
 		NPC ThisNPC = CitizensAPI.getNPCManager().getNPC(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
 
 		if (NPCSelected.get(0) == null ) {
-			player.sendMessage(ChatColor.RED + "You must have a parrot selected.");
+			player.sendMessage(ChatColor.RED + "You must have a denizen selected.");
 			return true;
 		}
 
 		if (!ThisNPC.getTrait(Owner.class).getOwner().equals(player.getName())) {
-			player.sendMessage(ChatColor.RED + "You must be the owner of the parrot to execute commands.");
+			player.sendMessage(ChatColor.RED + "You must be the owner of the denizen to execute commands.");
 			return true;
 		}
 
@@ -67,14 +65,10 @@ public class Denizen extends JavaPlugin {
 			saveConfig();
 			return true;
 		}
-		else if (args[0].equalsIgnoreCase("clue")) {
+		
+		else if (args[0].equalsIgnoreCase("assign")) {
 
-			String NewClue = "";
-			for(int i = 1; i < args.length; i++) { NewClue = NewClue + args[i] + " "; }
-
-			getConfig().set(ThisNPC.getId() + ".clue", NewClue.toString());  // Set the key in the config.
-			saveConfig();                   // Save the config.
-			player.sendMessage(ChatColor.GREEN + "Clue saved.");   // Talk to the player.
+			player.sendMessage(ChatColor.GREEN + "Assigned.");   // Talk to the player.
 
 			return true;
 		}
