@@ -47,7 +47,8 @@ Scripts:
         - Time Day                #  No inherit requirements. Requires no special permissions to trigger with player.
                                   #  Can use more than one.
                                   #  Available requirements: 'None' 'Time Day' 'Time Night' 'Precipitation' 'No Precipitation'
-                                  #  'Permission [permission.nodes.here]' 'Group [group name]' 'Notable [name of notable]'
+                                  #  'Permission [permission.nodes.here]' 'Level [level]' 'Starving' 'Hungry' 'Full'
+				  #  'World [world name]' 'Notable [name of notable]'
                                   #  (Notables requirements will require use of my other plugin Notables. Available Soon.)      
 
     Behavior:                     #  SCRIPT BEHAVIOR SETTINGS
