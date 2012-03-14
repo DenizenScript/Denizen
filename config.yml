@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> e837ab17b83625c9f96c9de6c41031253938cd56
 # DENIZENS are helpful, interactive Citizens!  Denizens run off of mini scripts with steps and events.  They can be used in hundreds
 # of different ways, from tutorials, to questing, to administrating and more!
 
@@ -16,9 +19,14 @@
 INTERACT_DELAY_IN_TICKS: 5        #  Delay in ticks for all responses from the Denizens.  0 for instant.  5 is default because it provides a good
                                   #  realistic delay when interacting with an NPC. Long texts and events roll in to the player at a comfortable rate.
 NPC_CHAT_RANGE_IN_BLOCKS: 10      #  Range in blocks that the any player has to be to hear CHAT from an NPC.
+<<<<<<< HEAD
 PLAYER_CHAT_RANGE_IN_BLOCKS: 3    #  Range in blocks that the player has to be to trigger chat with the NPC. Text is also not heard globally when
                                   #  in this range.  Instead, the player will see 'You say to <NPC>, Event text goes here.'
                                   #  This should probably stay between 2 and 5 blocks.
+=======
+PLAYER_CHAT_RANGE_IN_BLOCKS: 2    #  Range in blocks that the player has to be to trigger chat with the NPC. Text is also not heard globally when
+                                  #  in this range.  Instead, the player will see 'You say to <NPC>, Event text goes here.'
+>>>>>>> e837ab17b83625c9f96c9de6c41031253938cd56
 AUTO_ENGAGE: TRUE                 #  Engages the NPC to the player for a specified amount of time when interacting
 ENGAGE_TIMEOUT_IN_SECONDS: 30     #  Default amount of time that the Denizen will automatically DISENGAGE 
 
@@ -119,3 +127,11 @@ Scripts:
 
 
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+>>>>>>> e837ab17b83625c9f96c9de6c41031253938cd56
