@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> e837ab17b83625c9f96c9de6c41031253938cd56
 # DENIZENS are helpful, interactive Citizens!  Denizens run off of mini scripts with steps and events.  They can be used in hundreds
 # of different ways, from tutorials, to questing, to administrating and more!
 
@@ -12,50 +8,30 @@
 #           1.5 -- In-game Script editor.
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 118ce60eef06238f4fdf8ea4bd455e6e45e37c5d
-# Begin config.yml ----
 
 # Default Denizen options let you tweak the specifics of your Denizens.
 
 INTERACT_DELAY_IN_TICKS: 5        #  Delay in ticks for all responses from the Denizens.  0 for instant.  5 is default because it provides a good
                                   #  realistic delay when interacting with an NPC. Long texts and events roll in to the player at a comfortable rate.
 NPC_CHAT_RANGE_IN_BLOCKS: 10      #  Range in blocks that the any player has to be to hear CHAT from an NPC.
-<<<<<<< HEAD
-PLAYER_CHAT_RANGE_IN_BLOCKS: 3    #  Range in blocks that the player has to be to trigger chat with the NPC. Text is also not heard globally when
-                                  #  in this range.  Instead, the player will see 'You say to <NPC>, Event text goes here.'
-                                  #  This should probably stay between 2 and 5 blocks.
-=======
 PLAYER_CHAT_RANGE_IN_BLOCKS: 2    #  Range in blocks that the player has to be to trigger chat with the NPC. Text is also not heard globally when
                                   #  in this range.  Instead, the player will see 'You say to <NPC>, Event text goes here.'
-<<<<<<< HEAD
-=======
->>>>>>> e837ab17b83625c9f96c9de6c41031253938cd56
->>>>>>> 118ce60eef06238f4fdf8ea4bd455e6e45e37c5d
 AUTO_ENGAGE: TRUE                 #  Engages the NPC to the player for a specified amount of time when interacting
-ENGAGE_TIMEOUT_IN_SECONDS: 30     #  Default amount of time that the Denizen will automatically DISENGAGE 
+ENGAGE_TIMEOUT_IN_SECONDS: 15     #  Default amount of time that the Denizen will automatically DISENGAGE 
+
+TALK_TO_NPC_STRING: "You say to <NPC>, '<TEXT>'"
 
 
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 118ce60eef06238f4fdf8ea4bd455e6e45e37c5d
-# START LIST OF DENIZENS
+# START LIST OF DENIZENS' SCRIPT ASSIGNMENTS
 
 Denizens:                         #  This node is used to define Denizens' scripts.
   '12':                           #  This number corresponds with the Citizens2 NPC ID
     Name: Steve                   #  Name is stored for reference only.
     Scripts:                      #  List of scripts that the specified Denizen will use.
       - 0 Welcome to the Village  #  Format like this: 'PRIORITY [Name of Script to use]'
-<<<<<<< HEAD
-      - 5 A package delivery      #  0 is lowest priority, usually used for scripts with the no requirements.
-=======
       - 5 A pie delivered         #  0 is lowest priority, usually used for scripts with the no requirements.
->>>>>>> 118ce60eef06238f4fdf8ea4bd455e6e45e37c5d
                                   #  Upon interactivity with the NPC, the script with the highest priority that has its 
                                   #  requirements met will be the script that triggers.
 
@@ -71,21 +47,13 @@ Scripts:
         - Time Day                #  No inherit requirements. Requires no special permissions to trigger with player.
                                   #  Can use more than one.
                                   #  Available requirements: 'None' 'Time Day' 'Time Night' 'Precipitation' 'No Precipitation'
-<<<<<<< HEAD
-                                  #  'Permission [permission.nodes.here]' 'Group [group name]' 'Notable [name of notable]'
+                                  #  'Permission [permission.nodes.here]' 'Level [level]' 'Starving' 'Hungry' 'Full'
+				  #  'World [world name]' 'Notable [name of notable]'
                                   #  (Notables requirements will require use of my other plugin Notables. Available Soon.)      
-
-    Behavior:                     #  SCRIPT BEHAVIOR SETTINGS
-      - Loop                      #  Loops the script progression once final step is completed.
-                                  #  Available behaviors: 'Loop' 'Repeat [#]' 'Once'
-=======
-                                  #    'Permission [permission.nodes.here]' 'Group [group name]' 'Notable [name of notable]'
-                                  #    (Notables requirements will require use of my other plugin Notables. Available Soon.)      
 
     Behavior:                     #  SCRIPT BEHAVIOR SETTINGS (If missing, defaults to 'Controlled')
       - Controlled                #  No special behavior.  Steps are controlled by ZAPs and Requirements. 
                                   #  Available behaviors: 'Loop' 'Repeat [#]' 'Controlled'
->>>>>>> 118ce60eef06238f4fdf8ea4bd455e6e45e37c5d
 
     Progression:                  #  OUTLINES THE SCRIPT PROGRESSION through a series of steps of interactivity with the NPC.
       '0':                        #  Steps carry out in order, starting at 0.
@@ -95,37 +63,19 @@ Scripts:
           Click Trigger:          #  Events to carry out when NPC is clicked on.
             - CHAT Welcome to our fair city, <player>!          # Sends text to players within chat range from the NPC.
             - CHAT Are you traveling from out of town?
-<<<<<<< HEAD
-=======
             - DELAY 2 
->>>>>>> 118ce60eef06238f4fdf8ea4bd455e6e45e37c5d
             - NARRARATE <NPC> seems like a friendly face.       # Sends text to the player without branding the NPC.
 
           Chat Trigger:           #  Events to carry out when certain words or phrases are chatted by the player. The first chat
             '0':                  #  keyword to trigger will cancel all other triggers.
-              - 'Yes'             #  First line of a Chat Trigger is the keyword(s) to trigger. 
-<<<<<<< HEAD
-              - DELAY 30          #  Additional lines make up the script.
-              - CHAT Oh! I'm sorry I didn't recognize you! 
-              - CHAT Our small village is so small I almost feel embarrassed.
-              - CHAT How long have you lived about?
-            '1':
-              - 'no'              #  
-              - DELAY 30          #  Delays the script 30 ticks.  Helps control flow. 
-              - CHAT Oh! I'm sorry I didn't recognize you! 
-              - CHAT Our small village is so small I almost feel embarrassed.
-              - CHAT How long have you lived about?
-              - ZAP               # Finishes this step in the progression. 
-
-          On Finish:              #  Script to be carried out when the event finishes.  Useful if there are ZAPs in multiple locations
-            - NARRARATE What a friendly face.      #  but need script events carried out regardless.
-            - NOTABLE Chat with a villager         #  Sends a completed Notable to the Notables plug-in.
-=======
-              - DELAY 2           #    additional lines make up the script.
-              - CHAT Oh! I'm sorry I didn't recognize you! 
-              - CHAT Our small village is so small I almost feel embarrassed. I should have known you lived close by!
-              - CHAT Have you heard about Tom the Tanner? Isn't that just the worst!?
-              - ZAP 2             #  Finishes this step in the progressions and sets the next step to trigger as step '2'
+              Trigger:
+		- 'Yes'             #  First line of a Chat Trigger is the keyword(s) to trigger. 
+              Script:
+		- DELAY 2           #    additional lines make up the script.
+                - CHAT Oh! I'm sorry I didn't recognize you! 
+                - CHAT Our small village is so small I almost feel embarrassed. I should have known you lived close by!
+                - CHAT Have you heard about Tom the Tanner? Isn't that just the worst!?
+                - ZAP 2             #  Finishes this step in the progressions and sets the next step to trigger as step '2'
             '1':
               - 'No'              #  Keyword is 'no'. No case sensitivity, but it must match a whole word. Example: Saying 'Nothing' will not trigger. 
                                   #    will not trigger, but saying 'No I don't.' will trigger. 
@@ -140,16 +90,12 @@ Scripts:
             - NARRARATE What a friendly face.      #  but need script events carried out regardless.
             - NOTABLE Chat with a villager         #  Sends a completed Notable to the Notables plug-in.
 
->>>>>>> 118ce60eef06238f4fdf8ea4bd455e6e45e37c5d
       '1':        
           Click Trigger:          #  Events to carry out when NPC is clicked on.
             - CHAT Welcome back, <player>!          # Sends text to players within chat range from the NPC.
             - CHAT Have you talked to James lately?
 
       '2':
-<<<<<<< HEAD
-  
-=======
            Click Trigger:          #  Events to carry out when NPC is clicked on.
             - CHAT How is your day going, <player>!          # Sends text to players within chat range from the NPC.
             - CHAT I wish there were something we could do for Tom!
@@ -162,7 +108,6 @@ Scripts:
       Mode: All                   
       List:                       
         - QUEST A Pie for Tom     #  Requires the quest 'A Pie for Tom' to be completed
-                                  #  QUEST requires an additional character: Quester
 
     Behavior:                     
       - Controlled                                               
@@ -174,14 +119,14 @@ Scripts:
             - CHAT Oh <player>! I heard what you did for Tom!
             - CHAT We're lucky to have people like you in our small village! 
 
->>>>>>> 118ce60eef06238f4fdf8ea4bd455e6e45e37c5d
-
-
-<<<<<<< HEAD
-=======
 
 
 
-
-
->>>>>>> e837ab17b83625c9f96c9de6c41031253938cd56
+Players:
+  aufdemrand:      # Player Name
+    '0':           # NPC ID
+      'Quest Name':
+        CurrentStep: 0
+        Completed: 4
+        
+      

@@ -35,16 +35,16 @@ public class DenizenListener implements Listener {
 	public void PlayerChatListener(PlayerChatEvent event) {
 
 		List<net.citizensnpcs.api.npc.NPC> DenizenList = parser.GetDenizensWithinRange(event.getPlayer().getLocation(), event.getPlayer().getWorld(), Denizen.PlayerChatRangeInBlocks);
-		if (DenizenList == null) { return; }
+		if (DenizenList.isEmpty()) { return; }
 
 		for (net.citizensnpcs.api.npc.NPC thisDenizen : DenizenList) {
 
 			String theScript = parser.GetInteractScript(thisDenizen, event.getPlayer());
-			if (theScript != null) { 
+			if (theScript.isEmpty()) { 
 
 				// Let's parse the script!
 				
-				parser.ParseScript(event.getPlayer(), theScript, "Chat");
+				parser.ParseScript(event.getMessage(), event.getPlayer(), theScript, "Chat");
 				
 			}
 		}

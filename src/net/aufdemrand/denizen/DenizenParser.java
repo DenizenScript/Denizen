@@ -20,16 +20,22 @@ public class DenizenParser {
 	
 	
 	// PARSE SCRIPT
-	public void ParseScript(Player thePlayer, String theScript, String InteractionType) {
+	public void ParseScript(String theMessage, Player thePlayer, String theScript, String InteractionType) {
 
 		if (InteractionType.equalsIgnoreCase("Chat"))
 		{
 			
-			GetCurrentStep(thePlayer, theScript);
+			int CurrentStep = GetCurrentStep(thePlayer, theScript);
+			
+			List<String> ChatTriggerList = GetChatTriggers(theScript, CurrentStep);
 			
 			// get triggers
 			
+			for (int l=0; l < ChatTriggerList.size(); l++ ) {
 			
+			
+				
+			}
 			
 			// match triggers
 			// send script
@@ -57,7 +63,7 @@ public class DenizenParser {
 	public int GetCurrentStep(Player thePlayer, String theScript) {
 		
 		int currentStep = 0;
-		if (plugin.getConfig().getString(thePlayer + "." + theScript + "." + "CurrentStep") != null ) 
+		if (!plugin.getConfig().getString(thePlayer + "." + theScript + "." + "CurrentStep").isEmpty()) 
 		{ 
 			currentStep =  plugin.getConfig().getInt(thePlayer + "." + theScript + "." + "CurrentStep"); 
 		}
@@ -72,16 +78,19 @@ public class DenizenParser {
 	
 	public List<String> GetChatTriggers(String theScript, Integer currentStep) {
 		
-		List<String> ChatTriggers = null;
+		List<String> ChatTriggers = new ArrayList<String>();
 		
 		String currentTrigger = "0";
 		
 		// Add triggers to list
 		for (int x=0; currentTrigger.isEmpty(); x++) {
-			currentTrigger = null;
-			plugin.getConfig().getStringList("Scripts." + theScript + ".Progression." + currentStep + ".Interact.Chat Trigger." + currentTrigger);
-			
+			currentTrigger = "";
+			List<String> theTrigger = plugin.getConfig().getStringList("Scripts." + theScript + ".Progression." + currentStep + ".Interact.Chat Trigger." + currentTrigger);
+            if (theTrigger.get(0).length() > 0) {ChatTriggers.add(theTrigger.get(0)); currentTrigger = String.valueOf(x + 1); 
+            }
 		}
+		
+		return ChatTriggers;
 		
 		
 		
@@ -92,10 +101,10 @@ public class DenizenParser {
 	// GET SCRIPT  (Gets the script to interact with when given Player/Denizen)
 	
 	public String GetInteractScript(net.citizensnpcs.api.npc.NPC thisDenizen, Player thisPlayer) {
-		String theScript = null;
+		String theScript = "";
 		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getId() + ".Scripts");
-		if (ScriptList.isEmpty()) { return null; }
-		List<String> ScriptsThatMeetRequirements = null;
+		if (ScriptList.isEmpty()) { return theScript; }
+		List<String> ScriptsThatMeetRequirements = new ArrayList<String>();
 
 		for (String thisScript : ScriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
@@ -118,7 +127,7 @@ public class DenizenParser {
 	}
 
 
-
+	
 	// CHECK REQUIREMENTS  (Checks if the requirements of a script are met when given Script/Player)
 
 	public boolean CheckRequirements(String thisScript, Player thisPlayer) {
@@ -160,9 +169,9 @@ public class DenizenParser {
 
 	public List<net.citizensnpcs.api.npc.NPC> GetDenizensWithinRange (Location PlayerLocation, World PlayerWorld, int Distance) {
 
-		List<net.citizensnpcs.api.npc.NPC> DenizensWithinRange = null;
+		List<net.citizensnpcs.api.npc.NPC> DenizensWithinRange = new ArrayList<net.citizensnpcs.api.npc.NPC>();
 		Collection<net.citizensnpcs.api.npc.NPC> DenizenNPCs = CitizensAPI.getNPCManager().getNPCs(DenizenCharacter.class); 
-		if (DenizenNPCs.isEmpty()) { return null; }
+		if (DenizenNPCs.isEmpty()) { return DenizensWithinRange; }
 		List<net.citizensnpcs.api.npc.NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
 		for (int x = 0; x < DenizenList.size(); x++) {
 			if (DenizenList.get(x).getBukkitEntity().getWorld().equals(PlayerWorld)) {
