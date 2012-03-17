@@ -11,7 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public class DenizenParser {
+public class DenizenParser extends Denizen {
 
 	Denizen plugin;
 	public DenizenParser(Denizen instance) { plugin = instance; }
@@ -24,17 +24,14 @@ public class DenizenParser {
 
 		if (InteractionType.equalsIgnoreCase("Chat"))
 		{
-			
 			int CurrentStep = GetCurrentStep(thePlayer, theScript);
-			
 			List<String> ChatTriggerList = GetChatTriggers(theScript, CurrentStep);
 			
 			// get triggers
-			
 			for (int l=0; l < ChatTriggerList.size(); l++ ) {
-			
-			
-				
+				if (theMessage.equals(ChatTriggerList.get(l))) {
+					TriggerChat(theScript, CurrentStep, l);
+				}
 			}
 			
 			// match triggers
@@ -57,7 +54,14 @@ public class DenizenParser {
 	}
 	
 	
+	public void TriggerChat(String theScript, int CurrentStep, int ChatTrigger) {
+		
+		
+		
+	}
 	
+	
+		
 	// GET CURRENT STEP  (Gets the player's current step on a script when given Player and Script)
 	
 	public int GetCurrentStep(Player thePlayer, String theScript) {
@@ -170,9 +174,12 @@ public class DenizenParser {
 	public List<net.citizensnpcs.api.npc.NPC> GetDenizensWithinRange (Location PlayerLocation, World PlayerWorld, int Distance) {
 
 		List<net.citizensnpcs.api.npc.NPC> DenizensWithinRange = new ArrayList<net.citizensnpcs.api.npc.NPC>();
+		
+		plugin.getServer().broadcastMessage(DenizensWithinRange.toString());
+		
 		Collection<net.citizensnpcs.api.npc.NPC> DenizenNPCs = CitizensAPI.getNPCManager().getNPCs(DenizenCharacter.class); 
 		if (DenizenNPCs.isEmpty()) { return DenizensWithinRange; }
-		List<net.citizensnpcs.api.npc.NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
+		List<net.citizensnpcs.api.npc.NPC> DenizenList = new ArrayList(DenizenNPCs);
 		for (int x = 0; x < DenizenList.size(); x++) {
 			if (DenizenList.get(x).getBukkitEntity().getWorld().equals(PlayerWorld)) {
 				if (DenizenList.get(x).getBukkitEntity().getLocation().distance(PlayerLocation) < Distance) {

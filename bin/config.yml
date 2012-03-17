@@ -48,7 +48,7 @@ Scripts:
                                   #  Can use more than one.
                                   #  Available requirements: 'None' 'Time Day' 'Time Night' 'Precipitation' 'No Precipitation'
                                   #  'Permission [permission.nodes.here]' 'Level [level]' 'Starving' 'Hungry' 'Full'
-				  #  'World [world name]' 'Notable [name of notable]'
+                                  #  'World [world name]' 'Notable [name of notable]'
                                   #  (Notables requirements will require use of my other plugin Notables. Available Soon.)      
 
     Behavior:                     #  SCRIPT BEHAVIOR SETTINGS (If missing, defaults to 'Controlled')
@@ -69,21 +69,22 @@ Scripts:
           Chat Trigger:           #  Events to carry out when certain words or phrases are chatted by the player. The first chat
             '0':                  #  keyword to trigger will cancel all other triggers.
               Trigger:
-		- 'Yes'             #  First line of a Chat Trigger is the keyword(s) to trigger. 
+                - 'Yes'             #  First line of a Chat Trigger is the keyword(s) to trigger. 
               Script:
-		- DELAY 2           #    additional lines make up the script.
+                - DELAY 2           #    additional lines make up the script.
                 - CHAT Oh! I'm sorry I didn't recognize you! 
                 - CHAT Our small village is so small I almost feel embarrassed. I should have known you lived close by!
                 - CHAT Have you heard about Tom the Tanner? Isn't that just the worst!?
                 - ZAP 2             #  Finishes this step in the progressions and sets the next step to trigger as step '2'
             '1':
-              - 'No'              #  Keyword is 'no'. No case sensitivity, but it must match a whole word. Example: Saying 'Nothing' will not trigger. 
-                                  #    will not trigger, but saying 'No I don't.' will trigger. 
-              - DELAY 2           #  Delays the script for 2 seconds.  Helps control flow. 
-              - CHAT I didn't think I've seen you around these parts!
-              - CHAT Well, welcome to the town of Chakkor! 
-              - CHAT If you are looking for some work, I would check with James at the Bakery. This is their busy season!
-              - ZAP               # Finishes this step in the progression. 
+              Trigger:
+                - 'No'              #  Keyword is 'no'. No case sensitivity, but it must match a whole word. Example: Saying 'Nothing' will not trigger. 
+              Script:                    #    will not trigger, but saying 'No I don't.' will trigger. 
+                - DELAY 2           #  Delays the script for 2 seconds.  Helps control flow. 
+                - CHAT I didn't think I've seen you around these parts!
+                - CHAT Well, welcome to the town of Chakkor! 
+                - CHAT If you are looking for some work, I would check with James at the Bakery. This is their busy season!
+                - ZAP               # Finishes this step in the progression. 
 
           On Finish:              #  Script to be carried out when the step finishes.  Useful if there are ZAPs in multiple locations.
                                   #    and you aren't quite sure which event will finish the step

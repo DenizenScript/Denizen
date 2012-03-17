@@ -2,17 +2,26 @@ package net.aufdemrand.denizen;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
+
+import net.aufdemrand.denizen.DenizenCharacter;
+import net.aufdemrand.denizen.DenizenParser;
+import net.aufdemrand.denizen.DenizenListener;
+
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.character.CharacterFactory;
 import net.citizensnpcs.api.trait.trait.Owner;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -67,9 +76,7 @@ public class Denizen extends JavaPlugin {
 		}
 		
 		else if (args[0].equalsIgnoreCase("assign")) {
-
 			player.sendMessage(ChatColor.GREEN + "Assigned.");   // Talk to the player.
-
 			return true;
 		}
 
@@ -81,24 +88,45 @@ public class Denizen extends JavaPlugin {
 		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
 	}
 	
-	
 	@Override
 	public void onEnable() {
 
 		setConfigurations();
 
+		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
+		getServer().getPluginManager().registerEvents(new DenizenListener(this), this);
+		
+		this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+			@Override
+			public void run() {
+
+				
+				
+			}
+		}, InteractDelayInTicks, InteractDelayInTicks);
+		
+		
 	}
 
 
 	// Configuration Nodes
 	public static int PlayerChatRangeInBlocks;
+	public static int InteractDelayInTicks;	
+	public static String TalkToNPCString;
+	
+	public static Map<Player, List<String>> PlayerQue = new HashMap<Player, List<String>>();
 		
 	public void setConfigurations() {
-
 		getConfig().options().copyDefaults(true);
 		PlayerChatRangeInBlocks = getConfig().getInt("player_chat_range_in_blocks", 3);
+		InteractDelayInTicks = getConfig().getInt("interact_delay_in_ticks", 5);
+		TalkToNPCString = getConfig().getString("talk_to_npc_string", "You say to <NPC>, '<TEXT>'");
+		
 		saveConfig();  
 	}
 	
+	
+
+
 	
 }
