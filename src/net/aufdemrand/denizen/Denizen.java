@@ -113,14 +113,17 @@ public class Denizen extends JavaPlugin {
 	public static int PlayerChatRangeInBlocks;
 	public static int InteractDelayInTicks;	
 	public static String TalkToNPCString;
+	public static Boolean DebugMode;
 	
 	public static Map<Player, List<String>> PlayerQue = new HashMap<Player, List<String>>();
 		
 	public void setConfigurations() {
-		getConfig().options().copyDefaults(true);
+		// getConfig().options().copyDefaults(true);
+		
 		PlayerChatRangeInBlocks = getConfig().getInt("player_chat_range_in_blocks", 3);
 		InteractDelayInTicks = getConfig().getInt("interact_delay_in_ticks", 5);
 		TalkToNPCString = getConfig().getString("talk_to_npc_string", "You say to <NPC>, '<TEXT>'");
+		DebugMode = getConfig().getBoolean("debug_mode", false);
 		
 		saveConfig();  
 	}

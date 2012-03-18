@@ -37,20 +37,16 @@ public class DenizenListener implements Listener {
 	public void PlayerChatListener(PlayerChatEvent event) {
 
 		List<net.citizensnpcs.api.npc.NPC> DenizenList = GetDenizensWithinRange(event.getPlayer().getLocation(), event.getPlayer().getWorld(), plugin.PlayerChatRangeInBlocks);
-		
-		event.getPlayer().sendMessage(DenizenList.toString());
-		
 		if (DenizenList.isEmpty()) { return; }
-
+		/* Debugging */	if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Denizens in area: " + DenizenList.toString()); }
+		event.setCancelled(true);
 		for (net.citizensnpcs.api.npc.NPC thisDenizen : DenizenList) {
-
+			/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Working with Denizen: " + thisDenizen.getName()); }
 			TalkToNPC(thisDenizen, event.getPlayer(), event.getMessage());
-			
 			String theScript = GetInteractScript(thisDenizen, event.getPlayer());
-			if (theScript.isEmpty()) { 
-
-				// Let's parse the script!
-				
+			/* Debugging */	if (plugin.DebugMode) { plugin.getServer().broadcastMessage("The script chosen: " + theScript); }
+			if (!theScript.equals("none")) { 
+				/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Parsing: " + theScript); }
 				ParseScript(event.getMessage(), event.getPlayer(), theScript, "Chat");
 				
 			}
@@ -60,24 +56,27 @@ public class DenizenListener implements Listener {
 	
 	public void TalkToNPC(net.citizensnpcs.api.npc.NPC theDenizen, Player thePlayer, String theMessage)
 	{
-		thePlayer.sendMessage(plugin.TalkToNPCString.replace("<NPC>", theDenizen.toString()).replace("<TEXT>", theMessage));
+		thePlayer.sendMessage(plugin.TalkToNPCString.replace("<NPC>", theDenizen.getName().toString()).replace("<TEXT>", theMessage));
 	}
 	
 	
 	
 	public List<net.citizensnpcs.api.npc.NPC> GetDenizensWithinRange (Location PlayerLocation, World PlayerWorld, int Distance) {
 
+//		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("GetDenizensWithinRange called: " + PlayerLocation.toString() + ", " + PlayerWorld.toString() + ", " + String.valueOf(Distance));}
 		List<net.citizensnpcs.api.npc.NPC> DenizensWithinRange = new ArrayList<net.citizensnpcs.api.npc.NPC>();
-		
-		plugin.getServer().broadcastMessage(DenizensWithinRange.toString());
-		
+//		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("DenizensWithinRange: " + DenizensWithinRange.toString()); }
 		Collection<net.citizensnpcs.api.npc.NPC> DenizenNPCs = CitizensAPI.getNPCManager().getNPCs(DenizenCharacter.class); 
+//		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("DenizenNPCs:" + DenizenNPCs.toString() ); }
 		if (DenizenNPCs.isEmpty()) { return DenizensWithinRange; }
 		List<net.citizensnpcs.api.npc.NPC> DenizenList = new ArrayList(DenizenNPCs);
 		for (int x = 0; x < DenizenList.size(); x++) {
+//			/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Denizen Current World:" + DenizenList.get(x).getBukkitEntity().getWorld().toString() ); }
 			if (DenizenList.get(x).getBukkitEntity().getWorld().equals(PlayerWorld)) {
+//				/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Denizen Distance:" + DenizenList.get(x).getBukkitEntity().getLocation().distance(PlayerLocation)); }
 				if (DenizenList.get(x).getBukkitEntity().getLocation().distance(PlayerLocation) < Distance) {
 					DenizensWithinRange.add(DenizenList.get(x));
+//					/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Denizen added:" + DenizenList.get(x).getName()); }
 				}
 			}
 		}
@@ -90,6 +89,7 @@ public class DenizenListener implements Listener {
 	// PARSE SCRIPT
 	public void ParseScript(String theMessage, Player thePlayer, String theScript, String InteractionType) {
 
+		
 		if (InteractionType.equalsIgnoreCase("Chat"))
 		{
 			int CurrentStep = GetCurrentStep(thePlayer, theScript);
@@ -135,7 +135,7 @@ public class DenizenListener implements Listener {
 	public int GetCurrentStep(Player thePlayer, String theScript) {
 		
 		int currentStep = 0;
-		if (!plugin.getConfig().getString(thePlayer + "." + theScript + "." + "CurrentStep").isEmpty()) 
+		if (plugin.getConfig().getString(thePlayer + "." + theScript + "." + "CurrentStep") != null) 
 		{ 
 			currentStep =  plugin.getConfig().getInt(thePlayer + "." + theScript + "." + "CurrentStep"); 
 		}
@@ -173,8 +173,10 @@ public class DenizenListener implements Listener {
 	// GET SCRIPT  (Gets the script to interact with when given Player/Denizen)
 	
 	public String GetInteractScript(net.citizensnpcs.api.npc.NPC thisDenizen, Player thisPlayer) {
-		String theScript = "";
+		/* Debugging */ /* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("GetInteractScript called: " + thisDenizen.getName() + ", " + thisPlayer.getName()); }
+		String theScript = "none";
 		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getId() + ".Scripts");
+		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Script List: " + ScriptList.toString()); }
 		if (ScriptList.isEmpty()) { return theScript; }
 		List<String> ScriptsThatMeetRequirements = new ArrayList<String>();
 
@@ -205,16 +207,23 @@ public class DenizenListener implements Listener {
 	public boolean CheckRequirements(String thisScript, Player thisPlayer) {
 
 		String RequirementsMode = plugin.getConfig().getString("Scripts." + thisScript + ".Requirements.Mode");
+		
+		if (plugin.DebugMode) { plugin.getServer().broadcastMessage(RequirementsMode.toString()); }
+		
 		List<String> RequirementsList = plugin.getConfig().getStringList("Scripts." + thisScript + ".Requirements.List");
-		if (RequirementsList.isEmpty()) { return true; }
+		if (RequirementsList.isEmpty()) { 				
+			if (plugin.DebugMode) { plugin.getServer().broadcastMessage("No requirements: " + thisScript ); }
+			return true; }
 
 		int NumberOfMetRequirements = 0;
-
+		
+		if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Number of requirements for " + thisScript + ": " + RequirementsList.toString() ); }
+		
 		for (String Requirement : RequirementsList) {
 			//	None, Time Day, Time Night, Precipitation, No Precipitation, permission, group, level, full, starving, hungry
 			String[] RequirementArgs = Requirement.split(" ");
 			if (Requirement.equalsIgnoreCase("none")) { return true; }
-			if (Requirement.equalsIgnoreCase("time day") && thisPlayer.getWorld().getTime() < 13500) { NumberOfMetRequirements++; }
+			if (Requirement.equalsIgnoreCase("time day") && thisPlayer.getWorld().getTime() < 13500) { plugin.getServer().broadcastMessage("Time Day Met"); NumberOfMetRequirements++; }
 			if (Requirement.equalsIgnoreCase("time night") && thisPlayer.getWorld().getTime() > 13500) { NumberOfMetRequirements++; }
 			if (RequirementArgs[0].equalsIgnoreCase("permission") && thisPlayer.hasPermission(RequirementArgs[1]) == true) { NumberOfMetRequirements++; }
 			if (Requirement.equalsIgnoreCase("precipitation") && thisPlayer.getWorld().hasStorm() == true) { NumberOfMetRequirements++; }
@@ -224,12 +233,21 @@ public class DenizenListener implements Listener {
 			if (Requirement.equalsIgnoreCase("hungry") && thisPlayer.getSaturation() < 8) { NumberOfMetRequirements++; }
 			if (Requirement.equalsIgnoreCase("full") && thisPlayer.getSaturation() > 10) { NumberOfMetRequirements++; }
 			if (RequirementArgs[0].equalsIgnoreCase("world") && thisPlayer.getWorld().getName()  == RequirementArgs[1]) { NumberOfMetRequirements++; }
+		
+			if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Checking requirement: " + Requirement.toString() ); }
+		
 		}
 
-		if (RequirementsMode.equalsIgnoreCase("all") && NumberOfMetRequirements == RequirementsList.size()) { return true; }
+		if (RequirementsMode.equalsIgnoreCase("all") && NumberOfMetRequirements == RequirementsList.size()) { 
+			
+			if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Requirements met: Mode All"); }
+			
+			return true; }
 
 		String[] ModeArgs = RequirementsMode.split(" ");
 
+		if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Requirements mode:" + RequirementsMode.toString() ); }
+		
 		if (ModeArgs[0].equalsIgnoreCase("any") && NumberOfMetRequirements >= Integer.parseInt(ModeArgs[1])) { return true;	}
 
 		return false;

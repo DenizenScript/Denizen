@@ -12,15 +12,16 @@
 
 # Default Denizen options let you tweak the specifics of your Denizens.
 
-INTERACT_DELAY_IN_TICKS: 5        #  Delay in ticks for all responses from the Denizens.  0 for instant.  5 is default because it provides a good
+debug_mode: true
+interact_delay_in_ticks: 5        #  Delay in ticks for all responses from the Denizens.  0 for instant.  5 is default because it provides a good
                                   #  realistic delay when interacting with an NPC. Long texts and events roll in to the player at a comfortable rate.
-NPC_CHAT_RANGE_IN_BLOCKS: 10      #  Range in blocks that the any player has to be to hear CHAT from an NPC.
-PLAYER_CHAT_RANGE_IN_BLOCKS: 2    #  Range in blocks that the player has to be to trigger chat with the NPC. Text is also not heard globally when
+npc_chat_range_in_blocks: 10      #  Range in blocks that the any player has to be to hear CHAT from an NPC.
+player_chat_range_in_blocks: 2    #  Range in blocks that the player has to be to trigger chat with the NPC. Text is also not heard globally when
                                   #  in this range.  Instead, the player will see 'You say to <NPC>, Event text goes here.'
-AUTO_ENGAGE: TRUE                 #  Engages the NPC to the player for a specified amount of time when interacting
-ENGAGE_TIMEOUT_IN_SECONDS: 15     #  Default amount of time that the Denizen will automatically DISENGAGE 
+auto_engage: true                 #  Engages the NPC to the player for a specified amount of time when interacting
+engage_timeout_in_seconds: 15     #  Default amount of time that the Denizen will automatically DISENGAGE 
 
-TALK_TO_NPC_STRING: "You say to <NPC>, '<TEXT>'"
+talk_to_npc_string: "You say to <NPC>, '<TEXT>'"
 
 
 
