@@ -48,15 +48,29 @@ public class Denizen extends JavaPlugin {
 			return true;
 		} 
 
-		List<MetadataValue> NPCSelected = player.getMetadata("selected");
+        if (args[0].equalsIgnoreCase("debug")) {
+			
+			if (this.DebugMode==false) {DebugMode = true; 
+			player.sendMessage(ChatColor.GREEN + "Debug mode ON.");   // Talk to the player.
+			return true;
+			}
 
-		NPC ThisNPC = CitizensAPI.getNPCManager().getNPC(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
-
-		if (NPCSelected.get(0) == null ) {
-			player.sendMessage(ChatColor.RED + "You must have a denizen selected.");
+			else if (this.DebugMode==true) {DebugMode = false; 
+			player.sendMessage(ChatColor.GREEN + "Debug mode OFF.");   // Talk to the player.
+			return true;
+			}
+			
 			return true;
 		}
+        
+		if (player.getMetadata("selected").isEmpty()) { 
+			player.sendMessage(ChatColor.RED + "You must have a Denizen selected.");
+			return true;
+		}
+		
+		NPC ThisNPC = CitizensAPI.getNPCManager().getNPC(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
 
+		
 		if (!ThisNPC.getTrait(Owner.class).getOwner().equals(player.getName())) {
 			player.sendMessage(ChatColor.RED + "You must be the owner of the denizen to execute commands.");
 			return true;
@@ -79,7 +93,7 @@ public class Denizen extends JavaPlugin {
 			player.sendMessage(ChatColor.GREEN + "Assigned.");   // Talk to the player.
 			return true;
 		}
-
+		
 		return true;
 	}
 
@@ -110,10 +124,10 @@ public class Denizen extends JavaPlugin {
 
 
 	// Configuration Nodes
-	public static int PlayerChatRangeInBlocks;
-	public static int InteractDelayInTicks;	
-	public static String TalkToNPCString;
-	public static Boolean DebugMode;
+	public int PlayerChatRangeInBlocks;
+	public int InteractDelayInTicks;	
+	public String TalkToNPCString;
+	public Boolean DebugMode;
 	
 	public static Map<Player, List<String>> PlayerQue = new HashMap<Player, List<String>>();
 		

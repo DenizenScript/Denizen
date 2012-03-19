@@ -20,9 +20,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 
 public class DenizenListener implements Listener {
 
@@ -38,16 +35,19 @@ public class DenizenListener implements Listener {
 
 		List<net.citizensnpcs.api.npc.NPC> DenizenList = GetDenizensWithinRange(event.getPlayer().getLocation(), event.getPlayer().getWorld(), plugin.PlayerChatRangeInBlocks);
 		if (DenizenList.isEmpty()) { return; }
-		/* Debugging */	if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Denizens in area: " + DenizenList.toString()); }
+		/* Debugging */	if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - # of Denizens in the area: " + DenizenList.size()); }
 		event.setCancelled(true);
 		for (net.citizensnpcs.api.npc.NPC thisDenizen : DenizenList) {
-			/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Working with Denizen: " + thisDenizen.getName()); }
+			/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Currently working with Denizen: " + thisDenizen.getName()); }
 			TalkToNPC(thisDenizen, event.getPlayer(), event.getMessage());
 			String theScript = GetInteractScript(thisDenizen, event.getPlayer());
-			/* Debugging */	if (plugin.DebugMode) { plugin.getServer().broadcastMessage("The script chosen: " + theScript); }
-			if (!theScript.equals("none")) { 
-				/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Parsing: " + theScript); }
-				ParseScript(event.getMessage(), event.getPlayer(), theScript, "Chat");
+			if (theScript.equals("none")) { 
+				thisDenizen.chat(event.getPlayer(), plugin.getConfig().getString("Denizens." + thisDenizen.getId() + ".Default Texts.No Script Interact", "I have nothing to say to you at this time."));
+				/* Debugging */	if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - No scripts meet requirements!"); } }
+			else if (!theScript.equals("none")) { 
+				/* Debugging */	if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Currently working with Script: " + GetScriptName(theScript)); }
+
+				ParseScript(event.getMessage(), event.getPlayer(), GetScriptName(theScript), "Chat");
 				
 			}
 		}
@@ -60,23 +60,17 @@ public class DenizenListener implements Listener {
 	}
 	
 	
-	
+	// GET DENIZENS WITHIN RANGE OF PLAYER
 	public List<net.citizensnpcs.api.npc.NPC> GetDenizensWithinRange (Location PlayerLocation, World PlayerWorld, int Distance) {
 
-//		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("GetDenizensWithinRange called: " + PlayerLocation.toString() + ", " + PlayerWorld.toString() + ", " + String.valueOf(Distance));}
 		List<net.citizensnpcs.api.npc.NPC> DenizensWithinRange = new ArrayList<net.citizensnpcs.api.npc.NPC>();
-//		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("DenizensWithinRange: " + DenizensWithinRange.toString()); }
 		Collection<net.citizensnpcs.api.npc.NPC> DenizenNPCs = CitizensAPI.getNPCManager().getNPCs(DenizenCharacter.class); 
-//		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("DenizenNPCs:" + DenizenNPCs.toString() ); }
 		if (DenizenNPCs.isEmpty()) { return DenizensWithinRange; }
-		List<net.citizensnpcs.api.npc.NPC> DenizenList = new ArrayList(DenizenNPCs);
+		List<net.citizensnpcs.api.npc.NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
 		for (int x = 0; x < DenizenList.size(); x++) {
-//			/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Denizen Current World:" + DenizenList.get(x).getBukkitEntity().getWorld().toString() ); }
 			if (DenizenList.get(x).getBukkitEntity().getWorld().equals(PlayerWorld)) {
-//				/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Denizen Distance:" + DenizenList.get(x).getBukkitEntity().getLocation().distance(PlayerLocation)); }
 				if (DenizenList.get(x).getBukkitEntity().getLocation().distance(PlayerLocation) < Distance) {
 					DenizensWithinRange.add(DenizenList.get(x));
-//					/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Denizen added:" + DenizenList.get(x).getName()); }
 				}
 			}
 		}
@@ -89,15 +83,15 @@ public class DenizenListener implements Listener {
 	// PARSE SCRIPT
 	public void ParseScript(String theMessage, Player thePlayer, String theScript, String InteractionType) {
 
+        if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - ParseScript called and passed: " + thePlayer.getName() + ", " + theScript + ", " + InteractionType); }
 		
 		if (InteractionType.equalsIgnoreCase("Chat"))
 		{
 			int CurrentStep = GetCurrentStep(thePlayer, theScript);
 			List<String> ChatTriggerList = GetChatTriggers(theScript, CurrentStep);
 			
-			// get triggers
 			for (int l=0; l < ChatTriggerList.size(); l++ ) {
-				if (theMessage.equals(ChatTriggerList.get(l))) {
+				if (theMessage.matches(ChatTriggerList.get(l))) {
 					TriggerChat(theScript, CurrentStep, l);
 				}
 			}
@@ -124,7 +118,9 @@ public class DenizenListener implements Listener {
 	
 	public void TriggerChat(String theScript, int CurrentStep, int ChatTrigger) {
 		
-		
+		 if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - TriggerChat called and passed: " + theScript + ", " + CurrentStep + ", " + ChatTrigger); }
+			
+		 
 		
 	}
 	
@@ -134,34 +130,43 @@ public class DenizenListener implements Listener {
 	
 	public int GetCurrentStep(Player thePlayer, String theScript) {
 		
+		 if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - GetCurrentStep called and passed:" + thePlayer.getName() + ", " + theScript); }
+		
 		int currentStep = 0;
 		if (plugin.getConfig().getString(thePlayer + "." + theScript + "." + "CurrentStep") != null) 
 		{ 
 			currentStep =  plugin.getConfig().getInt(thePlayer + "." + theScript + "." + "CurrentStep"); 
 		}
 
+		 if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - GetCurrentStep returning: " + currentStep); }
+		
 		return currentStep;
 		
 	}
 	
 	
 	
-	// GET CURRENT STEP CHAT TRIGGERS
-	
 	public List<String> GetChatTriggers(String theScript, Integer currentStep) {
+		
+		 if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - GetChatTriggers called and passed: " + theScript + ", " + currentStep); }
 		
 		List<String> ChatTriggers = new ArrayList<String>();
 		
-		String currentTrigger = "0";
+		int currentTrigger = 0;
+		
+		if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Current Chat Trigger: " + String.valueOf(currentTrigger));}
 		
 		// Add triggers to list
-		for (int x=0; currentTrigger.isEmpty(); x++) {
-			currentTrigger = "";
-			List<String> theTrigger = plugin.getConfig().getStringList("Scripts." + theScript + ".Progression." + currentStep + ".Interact.Chat Trigger." + currentTrigger);
-            if (theTrigger.get(0).length() > 0) {ChatTriggers.add(theTrigger.get(0)); currentTrigger = String.valueOf(x + 1); 
-            }
+		for (int x=0; currentTrigger >= 0; x++) {
+			String theChatTrigger = plugin.getConfig().getString("Scripts." + theScript + ".Progression." + currentStep + ".Interact.Chat Trigger." + String.valueOf(currentTrigger) + ".Trigger");
+			if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - GetChatTrigger: " + theChatTrigger); }
+			if (theChatTrigger != null) {ChatTriggers.add(theChatTrigger); currentTrigger = x + 1;} 
+			else {currentTrigger = -1;}
+			
 		}
 		
+		if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - GetChatTriggers found: " + ChatTriggers.toString()); }
+			
 		return ChatTriggers;
 		
 		
@@ -173,13 +178,12 @@ public class DenizenListener implements Listener {
 	// GET SCRIPT  (Gets the script to interact with when given Player/Denizen)
 	
 	public String GetInteractScript(net.citizensnpcs.api.npc.NPC thisDenizen, Player thisPlayer) {
-		/* Debugging */ /* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("GetInteractScript called: " + thisDenizen.getName() + ", " + thisPlayer.getName()); }
+		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - GetInteractScript called and passed: " + thisDenizen.getName() + ", " + thisPlayer.getName()); }
 		String theScript = "none";
 		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getId() + ".Scripts");
-		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Script List: " + ScriptList.toString()); }
+		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - List of scripts found: " + ScriptList.toString()); }
 		if (ScriptList.isEmpty()) { return theScript; }
 		List<String> ScriptsThatMeetRequirements = new ArrayList<String>();
-
 		for (String thisScript : ScriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
 			if (CheckRequirements(thisScriptArray[1], thisPlayer) == true) { ScriptsThatMeetRequirements.add(thisScript); }
@@ -195,11 +199,20 @@ public class DenizenListener implements Listener {
 				if (Integer.parseInt(thisScriptArray[0]) > ScriptPriority) {ScriptPriority = Integer.parseInt(thisScriptArray[0]); theScript = thisScriptArray[1]; }
 			}
 		}
-		else { theScript = ScriptsThatMeetRequirements.get(0); }
+		else if (ScriptsThatMeetRequirements.size() == 1) { theScript = ScriptsThatMeetRequirements.get(0); }
 		
 		return theScript;
 	}
 
+	
+	// GET SCRIPT NAME
+	
+	public String GetScriptName(String thisScript) {
+		if (thisScript.equals("none")) { return thisScript; }
+		else {
+		String [] thisScriptArray = thisScript.split(" ", 2);
+		return thisScriptArray[1]; }
+	}
 
 	
 	// CHECK REQUIREMENTS  (Checks if the requirements of a script are met when given Script/Player)
@@ -207,49 +220,46 @@ public class DenizenListener implements Listener {
 	public boolean CheckRequirements(String thisScript, Player thisPlayer) {
 
 		String RequirementsMode = plugin.getConfig().getString("Scripts." + thisScript + ".Requirements.Mode");
+		if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - CheckRequirements called and passed: " + thisScript.toString() + ", " + thisPlayer.toString()); }
 		
-		if (plugin.DebugMode) { plugin.getServer().broadcastMessage(RequirementsMode.toString()); }
-		
-		List<String> RequirementsList = plugin.getConfig().getStringList("Scripts." + thisScript + ".Requirements.List");
+			List<String> RequirementsList = plugin.getConfig().getStringList("Scripts." + thisScript + ".Requirements.List");
 		if (RequirementsList.isEmpty()) { 				
-			if (plugin.DebugMode) { plugin.getServer().broadcastMessage("No requirements: " + thisScript ); }
+			if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** Debug - No requirements for " + thisScript + ", passing True." ); }
 			return true; }
 
+		if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirements mode for script: " + RequirementsMode.toString()); }
+		
 		int NumberOfMetRequirements = 0;
 		
-		if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Number of requirements for " + thisScript + ": " + RequirementsList.toString() ); }
+		if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement list for " + thisScript + ": " + RequirementsList.toString() ); }
 		
 		for (String Requirement : RequirementsList) {
 			//	None, Time Day, Time Night, Precipitation, No Precipitation, permission, group, level, full, starving, hungry
 			String[] RequirementArgs = Requirement.split(" ");
+			
+			if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Checking requirement: " + Requirement.toString() ); }
+			
 			if (Requirement.equalsIgnoreCase("none")) { return true; }
-			if (Requirement.equalsIgnoreCase("time day") && thisPlayer.getWorld().getTime() < 13500) { plugin.getServer().broadcastMessage("Time Day Met"); NumberOfMetRequirements++; }
-			if (Requirement.equalsIgnoreCase("time night") && thisPlayer.getWorld().getTime() > 13500) { NumberOfMetRequirements++; }
-			if (RequirementArgs[0].equalsIgnoreCase("permission") && thisPlayer.hasPermission(RequirementArgs[1]) == true) { NumberOfMetRequirements++; }
-			if (Requirement.equalsIgnoreCase("precipitation") && thisPlayer.getWorld().hasStorm() == true) { NumberOfMetRequirements++; }
-			if (Requirement.equalsIgnoreCase("no precipitation") && thisPlayer.getWorld().hasStorm() == false) { NumberOfMetRequirements++; }
-			if (RequirementArgs[0].equalsIgnoreCase("level") && thisPlayer.getLevel() >= Integer.parseInt(RequirementArgs[1])) { NumberOfMetRequirements++; }
-			if (Requirement.equalsIgnoreCase("starving") && thisPlayer.getSaturation() == 0) { NumberOfMetRequirements++; }
-			if (Requirement.equalsIgnoreCase("hungry") && thisPlayer.getSaturation() < 8) { NumberOfMetRequirements++; }
-			if (Requirement.equalsIgnoreCase("full") && thisPlayer.getSaturation() > 10) { NumberOfMetRequirements++; }
-			if (RequirementArgs[0].equalsIgnoreCase("world") && thisPlayer.getWorld().getName()  == RequirementArgs[1]) { NumberOfMetRequirements++; }
-		
-			if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Checking requirement: " + Requirement.toString() ); }
+			if (Requirement.equalsIgnoreCase("time day") && thisPlayer.getWorld().getTime() < 13500) { if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement met."); } NumberOfMetRequirements++; }
+			if (Requirement.equalsIgnoreCase("time night") && thisPlayer.getWorld().getTime() > 13500) { if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement met."); } NumberOfMetRequirements++; }
+			if (RequirementArgs[0].equalsIgnoreCase("permission") && thisPlayer.hasPermission(RequirementArgs[1]) == true) { if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement met."); } NumberOfMetRequirements++; }
+			if (Requirement.equalsIgnoreCase("precipitation") && thisPlayer.getWorld().hasStorm() == true) { if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement met."); } NumberOfMetRequirements++; }
+			if (Requirement.equalsIgnoreCase("no precipitation") && thisPlayer.getWorld().hasStorm() == false) { if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement met."); } NumberOfMetRequirements++; }
+			if (RequirementArgs[0].equalsIgnoreCase("level") && thisPlayer.getLevel() >= Integer.parseInt(RequirementArgs[1])) { if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement met."); } NumberOfMetRequirements++; }
+			if (Requirement.equalsIgnoreCase("starving") && thisPlayer.getSaturation() == 0) { if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement met."); } NumberOfMetRequirements++; }
+			if (Requirement.equalsIgnoreCase("hungry") && thisPlayer.getSaturation() < 8) { if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement met."); } NumberOfMetRequirements++; }
+			if (Requirement.equalsIgnoreCase("full") && thisPlayer.getSaturation() > 10) { if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement met."); } NumberOfMetRequirements++; }
+			if (RequirementArgs[0].equalsIgnoreCase("world") && thisPlayer.getWorld().getName().equalsIgnoreCase(RequirementArgs[1])) { if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirement met."); } NumberOfMetRequirements++; }		
+			
 		
 		}
 
 		if (RequirementsMode.equalsIgnoreCase("all") && NumberOfMetRequirements == RequirementsList.size()) { 
-			
-			if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Requirements met: Mode All"); }
-			
-			return true; }
-
+			if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Requirements met: Mode All"); }
+			return true; 
+		}
 		String[] ModeArgs = RequirementsMode.split(" ");
-
-		if (plugin.DebugMode) { plugin.getServer().broadcastMessage("Requirements mode:" + RequirementsMode.toString() ); }
-		
-		if (ModeArgs[0].equalsIgnoreCase("any") && NumberOfMetRequirements >= Integer.parseInt(ModeArgs[1])) { return true;	}
-
+				if (ModeArgs[0].equalsIgnoreCase("any") && NumberOfMetRequirements >= Integer.parseInt(ModeArgs[1])) { return true;	}
 		return false;
 	}
 	
