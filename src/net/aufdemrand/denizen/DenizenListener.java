@@ -48,7 +48,6 @@ public class DenizenListener implements Listener {
 				/* Debugging */	if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - Currently working with Script: " + GetScriptName(theScript)); }
 
 				ParseScript(event.getMessage(), event.getPlayer(), GetScriptName(theScript), "Chat");
-				
 			}
 		}
 	}
@@ -92,7 +91,7 @@ public class DenizenListener implements Listener {
 			
 			for (int l=0; l < ChatTriggerList.size(); l++ ) {
 				if (theMessage.matches(ChatTriggerList.get(l))) {
-					TriggerChat(theScript, CurrentStep, l);
+					TriggerChat(theScript, CurrentStep, l, thePlayer);
 				}
 			}
 			
@@ -116,12 +115,29 @@ public class DenizenListener implements Listener {
 	}
 	
 	
-	public void TriggerChat(String theScript, int CurrentStep, int ChatTrigger) {
+	public void TriggerChat(String theScript, int CurrentStep, int ChatTrigger, Player thePlayer) {
 		
 		 if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - TriggerChat called and passed: " + theScript + ", " + CurrentStep + ", " + ChatTrigger); }
 			
+		 List<String> CurrentPlayerQue = new ArrayList();
+		 Denizen.PlayerQue.get(thePlayer);
 		 
+		 plugin.PlayerQue.remove(thePlayer);
+		 
+		 List<String> AddedToPlayerQue = plugin.getConfig().getStringList("Scripts." + theScript + ".Progression." + CurrentStep + ".Chat Trigger." + ChatTrigger + ".Script");
+		 
+		 if (AddedToPlayerQue != null) {
 		
+		 for (String AddThis : AddedToPlayerQue) {
+			
+			CurrentPlayerQue.add(AddThis);
+			
+		 } }
+		
+	 	 plugin.PlayerQue.put(thePlayer, CurrentPlayerQue);
+		
+	     return;
+		 
 	}
 	
 	
