@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.DenizenCharacter;
-import net.aufdemrand.denizen.DenizenParser;
 import net.aufdemrand.denizen.DenizenListener;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -48,8 +47,8 @@ public class Denizen extends JavaPlugin {
 			return true;
 		} 
 
-        if (args[0].equalsIgnoreCase("debug")) {
-			
+		if (args[0].equalsIgnoreCase("debug")) {
+
 			if (this.DebugMode==false) {DebugMode = true; 
 			player.sendMessage(ChatColor.GREEN + "Debug mode ON.");   // Talk to the player.
 			return true;
@@ -59,18 +58,18 @@ public class Denizen extends JavaPlugin {
 			player.sendMessage(ChatColor.GREEN + "Debug mode OFF.");   // Talk to the player.
 			return true;
 			}
-			
+
 			return true;
 		}
-        
+
 		if (player.getMetadata("selected").isEmpty()) { 
 			player.sendMessage(ChatColor.RED + "You must have a Denizen selected.");
 			return true;
 		}
-		
+
 		NPC ThisNPC = CitizensAPI.getNPCManager().getNPC(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
 
-		
+
 		if (!ThisNPC.getTrait(Owner.class).getOwner().equals(player.getName())) {
 			player.sendMessage(ChatColor.RED + "You must be the owner of the denizen to execute commands.");
 			return true;
@@ -83,17 +82,16 @@ public class Denizen extends JavaPlugin {
 
 		// Commands
 
-		if (args[0].equalsIgnoreCase("save")) {
-			player.sendMessage("Settings saved.");
-			saveConfig();
+		if (args[0].equalsIgnoreCase("show")) {
+			player.sendMessage(PlayerQue.toString());
 			return true;
 		}
-		
+
 		else if (args[0].equalsIgnoreCase("assign")) {
 			player.sendMessage(ChatColor.GREEN + "Assigned.");   // Talk to the player.
 			return true;
 		}
-		
+
 		return true;
 	}
 
@@ -101,25 +99,52 @@ public class Denizen extends JavaPlugin {
 	public void onDisable() {
 		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
 	}
-	
+
 	@Override
 	public void onEnable() {
 
 		setConfigurations();
 
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
+
 		getServer().getPluginManager().registerEvents(new DenizenListener(this), this);
-		
+
 		this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() {
 
-				
-				
+				if (!PlayerQue.isEmpty()) {
+					for (Map.Entry<Player, List<String>> theEntry : PlayerQue.entrySet()) {
+
+						Player thePlayer = theEntry.getKey();
+						List<String> theEntireScript = theEntry.getValue();
+
+						if (!theEntireScript.isEmpty()) {
+
+							String thisTime = theEntireScript.get(0);
+							theEntireScript.remove(0);
+
+							PlayerQue.put(thePlayer, theEntireScript);
+
+							ExecuteScript(thePlayer, thisTime);
+						}
+
+						
+					}
+				}
+
 			}
 		}, InteractDelayInTicks, InteractDelayInTicks);
-		
-		
+
+
+	}
+
+
+	public void ExecuteScript(Player thePlayer, String StepToExecute) {
+
+		thePlayer.sendMessage(StepToExecute);
+
+		return;
 	}
 
 
@@ -128,22 +153,22 @@ public class Denizen extends JavaPlugin {
 	public int InteractDelayInTicks;	
 	public String TalkToNPCString;
 	public Boolean DebugMode;
-	
+
 	public static Map<Player, List<String>> PlayerQue = new HashMap<Player, List<String>>();
-		
+
 	public void setConfigurations() {
 		// getConfig().options().copyDefaults(true);
-		
+
 		PlayerChatRangeInBlocks = getConfig().getInt("player_chat_range_in_blocks", 3);
 		InteractDelayInTicks = getConfig().getInt("interact_delay_in_ticks", 5);
 		TalkToNPCString = getConfig().getString("talk_to_npc_string", "You say to <NPC>, '<TEXT>'");
 		DebugMode = getConfig().getBoolean("debug_mode", false);
-		
+
 		saveConfig();  
 	}
-	
-	
 
 
-	
+
+
+
 }

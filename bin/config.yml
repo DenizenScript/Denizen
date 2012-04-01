@@ -28,8 +28,7 @@ talk_to_npc_string: "You say to <NPC>, '<TEXT>'"
 # START LIST OF DENIZENS' SCRIPT ASSIGNMENTS
 
 Denizens:                         #  This node is used to define Denizens' scripts.
-  '12':                           #  This number corresponds with the Citizens2 NPC ID
-    Name: Steve                   #  Name is stored for reference only.
+  'Steve':                        #  Name of the Citizens2 NPC.
     Scripts:                      #  List of scripts that the specified Denizen will use.
       - 0 Welcome to the Village  #  Format like this: 'PRIORITY [Name of Script to use]'
       - 5 A pie delivered         #  0 is lowest priority, usually used for scripts with the no requirements.

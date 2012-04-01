@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.Random;
-import net.aufdemrand.denizen.DenizenParser;
 import net.aufdemrand.denizen.Denizen;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -26,8 +25,8 @@ public class DenizenListener implements Listener {
 	Denizen plugin;
 	public DenizenListener(Denizen instance) { plugin = instance; }
 
-	DenizenParser parser;
-	public DenizenListener(DenizenParser instance) { parser = instance; }
+	//DenizenParser parser;
+	//public DenizenListener(DenizenParser instance) { parser = instance; }
 
 
 	@EventHandler
@@ -115,27 +114,32 @@ public class DenizenListener implements Listener {
 	}
 
 
-	// Send a chat trigger to the Player Talk Que
+	// Send a chat trigger to the Player Talk Queue
 
 	public void TriggerChatToQue(String theScript, int CurrentStep, int ChatTrigger, Player thePlayer) {
 
 		if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - TriggerChat called and passed: " + theScript + ", " + CurrentStep + ", " + ChatTrigger); }
 
-		List<String> CurrentPlayerQue = new ArrayList();
-		CurrentPlayerQue = plugin.PlayerQue.get(thePlayer);
+		List<String> CurrentPlayerQue = new ArrayList<String>();
+		if (plugin.PlayerQue.get(thePlayer) != null ) { CurrentPlayerQue = plugin.PlayerQue.get(thePlayer); }
 
 		plugin.PlayerQue.remove(thePlayer);  // Should keep the talk que from triggering mid-add
 
-		List<String> AddedToPlayerQue = plugin.getConfig().getStringList("Scripts." + theScript + ".Progression." + CurrentStep + ".Chat Trigger." + ChatTrigger + ".Script");
+		List<String> AddedToPlayerQue = plugin.getConfig().getStringList("Scripts." + theScript + ".Progression." + CurrentStep + ".Interact.Chat Trigger." + ChatTrigger + ".Script");
 
-		if (AddedToPlayerQue != null) {
+		plugin.getServer().broadcastMessage(AddedToPlayerQue.toString());
+		if (!AddedToPlayerQue.isEmpty()) {
 
-			for (String AddThis : AddedToPlayerQue) {
+		//	for (int entry = 0; entry < AddedToPlayerQue.size(); entry++) {
 
-				CurrentPlayerQue.add(AddThis);
+			CurrentPlayerQue.addAll(AddedToPlayerQue);
 
-			} }
+			//} 
+		}
 
+		
+		plugin.getServer().broadcastMessage(CurrentPlayerQue.toString());
+		
 		plugin.PlayerQue.put(thePlayer, CurrentPlayerQue);
 
 		return;
@@ -198,7 +202,7 @@ public class DenizenListener implements Listener {
 	public String GetInteractScript(net.citizensnpcs.api.npc.NPC thisDenizen, Player thisPlayer) {
 		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - GetInteractScript called and passed: " + thisDenizen.getName() + ", " + thisPlayer.getName()); }
 		String theScript = "none";
-		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getId() + ".Scripts");
+		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getName() + ".Scripts");
 		/* Debugging */ if (plugin.DebugMode) { plugin.getServer().broadcastMessage("** DEBUG - List of scripts found: " + ScriptList.toString()); }
 		if (ScriptList.isEmpty()) { return theScript; }
 		List<String> ScriptsThatMeetRequirements = new ArrayList<String>();
@@ -223,7 +227,7 @@ public class DenizenListener implements Listener {
 	}
 
 
-	// GET SCRIPT NAME
+	// GET SCRIPT NAME  -- Removes priority from script name
 
 	public String GetScriptName(String thisScript) {
 		if (thisScript.equals("none")) { return thisScript; }

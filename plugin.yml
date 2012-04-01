@@ -1,6 +1,6 @@
 name: Denizen
 author: aufdemrand
-version: 0.1
+version: 0.3
 main: net.aufdemrand.denizen.Denizen
 depend:
   - Citizens
@@ -8,4 +8,4 @@ commands:
   denizen:
     description: Lists denizen commands.
     usage: /denizen help
-    permission: mimic.basic
+    permission: denizen.basic
