@@ -125,7 +125,8 @@ Players:
   aufdemrand:      # Player Name
     '0':           # NPC ID
       'Quest Name':
-        CurrentStep: 0
+      
+,.'mm	  CurrentStep: 0
         Completed: 4
         
       
