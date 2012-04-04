@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry excluding="src/" kind="src" path=""/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/mobileauf/Denizen/lib/citizensapi-2.0-SNAPSHOT (2).jar"/>
-	<classpathentry kind="lib" path="C:/Users/mobileauf/Denizen/lib/bukkit-1.2.4-R1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ink mafia/Denizen/lib/citizensapi-2.0-SNAPSHOT (2).jar"/>
+	<classpathentry kind="lib" path="C:/Users/ink mafia/Denizen/lib/bukkit-1.2.4-R1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
