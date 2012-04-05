@@ -8,6 +8,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 
+import net.milkbowl.vault.Vault;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
+import net.milkbowl.vault.permission.Permission;
+
 import net.aufdemrand.denizen.DenizenCharacter;
 import net.aufdemrand.denizen.DenizenListener;
 
@@ -23,10 +28,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Denizen extends JavaPlugin {
 
+    public static Economy econ = null;
+    public static Permission perms = null;
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
@@ -95,50 +103,57 @@ public class Denizen extends JavaPlugin {
 		return true;
 	}
 
+	
+	
 	@Override
 	public void onDisable() {
 		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
 	}
 
+	
+	
 	@Override
 	public void onEnable() {
 
 		setConfigurations();
-
+		
+        if (!setupEconomy() ) {
+            getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        
+        setupPermissions();
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
-
 		getServer().getPluginManager().registerEvents(new DenizenListener(this), this);
 
 		this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() {
-
-				if (!PlayerQue.isEmpty()) {
-					for (Map.Entry<Player, List<String>> theEntry : PlayerQue.entrySet()) {
-
-						Player thePlayer = theEntry.getKey();
-						List<String> theEntireScript = theEntry.getValue();
-
-						if (!theEntireScript.isEmpty()) {
-
-							String thisTime = theEntireScript.get(0);
-							theEntireScript.remove(0);
-
-							PlayerQue.put(thePlayer, theEntireScript);
-
-							ExecuteScript(thePlayer, thisTime);
-						}
-
-						
+				if (!PlayerQue.isEmpty()) {	for (Map.Entry<Player, List<String>> theEntry : PlayerQue.entrySet()) {
+					if (!theEntry.getValue().isEmpty()) { theEntry.getValue().remove(0);
+						PlayerQue.put(theEntry.getKey(), theEntry.getValue());
+						ExecuteScript(theEntry.getKey(), theEntry.getValue().get(0));	}
 					}
 				}
-
 			}
 		}, InteractDelayInTicks, InteractDelayInTicks);
-
-
 	}
 
+	private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) return false;
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) return false;
+        econ = rsp.getProvider();
+        return econ != null;
+    }
+
+    private boolean setupPermissions() {
+        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        perms = rsp.getProvider();
+        return perms != null;
+    }
+	
 
 	public void ExecuteScript(Player thePlayer, String StepToExecute) {
 
@@ -160,7 +175,7 @@ public class Denizen extends JavaPlugin {
 		// getConfig().options().copyDefaults(true);
 
 		PlayerChatRangeInBlocks = getConfig().getInt("player_chat_range_in_blocks", 3);
-		InteractDelayInTicks = getConfig().getInt("interact_delay_in_ticks", 5);
+		InteractDelayInTicks = getConfig().getInt("interact_delay_in_ticks", 20);
 		TalkToNPCString = getConfig().getString("talk_to_npc_string", "You say to <NPC>, '<TEXT>'");
 		DebugMode = getConfig().getBoolean("debug_mode", false);
 

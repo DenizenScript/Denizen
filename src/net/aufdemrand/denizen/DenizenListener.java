@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class DenizenListener implements Listener {
 	}
 
 	public enum Command {
-		GIVE, TAKE, WALK, PAUSE, CHAT, SHOUT, NARRARATE, TELEPORT, PERMISS, EXECUTE, ZAP; 
+		GIVE, TAKE, WALK, PAUSE, CHAT, WHISPER, SHOUT, NARRARATE, TELEPORT, PERMISS, EXECUTE, ZAP; 
 	}
 
 
@@ -299,30 +300,38 @@ public class DenizenListener implements Listener {
 		int NumberOfMetRequirements = 0;
 
 		for (String RequirementArgs : RequirementsList) {
-			String[] RequirementWithSplitArgs = RequirementArgs.split(" ");
+			String[] RequirementWithSplitArgs = RequirementArgs.split(" ", 2);
 
-			switch (Requirement.valueOf(RequirementWithSplitArgs[0])) {
+			switch (Requirement.valueOf(RequirementWithSplitArgs[0].toUpperCase())) {
 
 			case NONE:
 				return true;
 
 			case TIME:
-			
+			    
+				
 			case PERMISSION:
 				
+				
 			case PRECIPITATION:
+				
 				
 			case HUNGER:
 				
 				
-			case LEVEL:
-				if (thisPlayer.getLevel() >= Integer.parseInt(RequirementWithSplitArgs[1])) NumberOfMetRequirements++;
-				
+			case LEVEL:  // LEVEL [#]
+				if (Array.getLength(RequirementWithSplitArgs[1].split(" ")) == 1) { 
+					if (thisPlayer.getLevel() >= Integer.parseInt(RequirementWithSplitArgs[1])) NumberOfMetRequirements++; 
+				} else {
+					
+				}
 			case QUEST:
+				
 				
 			case NOTABLE:
 				
-			case WORLD:
+				
+			case WORLD:  // WORLD [World Name]
 				if (thisPlayer.getWorld().getName().equalsIgnoreCase(RequirementWithSplitArgs[1])) NumberOfMetRequirements++;
 				
 			case STORMY:
@@ -332,13 +341,16 @@ public class DenizenListener implements Listener {
 				if (!thisPlayer.getWorld().hasStorm()) NumberOfMetRequirements++;
 				
 			case MONEY:
+				if (plugin.econ.has(thisPlayer.toString(), Integer.parseInt(RequirementWithSplitArgs[1]))) NumberOfMetRequirements++;
 				
 			case ITEM:
 				
+				
 			case SCRIPT:
 				
+				
 			case GROUP:
-
+				if (plugin.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.toString(), RequirementWithSplitArgs[1])) NumberOfMetRequirements++;		
 			}
 		}
 
