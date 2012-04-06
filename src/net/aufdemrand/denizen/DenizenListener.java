@@ -270,13 +270,13 @@ public class DenizenListener implements Listener {
 
 
 
-    /* GetScriptName
-     * 
-     * Requires the raw script entry from the config.
-     * Strips the priority number from the beginning of the script name.
-     * 
-     * Returns the Script Name
-     */
+	/* GetScriptName
+	 * 
+	 * Requires the raw script entry from the config.
+	 * Strips the priority number from the beginning of the script name.
+	 * 
+	 * Returns the Script Name
+	 */
 
 	public String GetScriptName(String thisScript) {
 		if (thisScript.equals("none")) { return thisScript; }
@@ -285,7 +285,7 @@ public class DenizenListener implements Listener {
 			return thisScriptArray[1]; }
 	}
 
-	
+
 
 	// CHECK REQUIREMENTS  (Checks if the requirements of a script are met when given Script/Player)
 
@@ -298,8 +298,13 @@ public class DenizenListener implements Listener {
 			return true; }
 
 		int NumberOfMetRequirements = 0;
+		boolean NegativeRequirement = false;
 
 		for (String RequirementArgs : RequirementsList) {
+
+			if (RequirementArgs.startsWith("!")) { NegativeRequirement = true; RequirementArgs = RequirementArgs.substring(1); }
+			else NegativeRequirement = false;
+
 			String[] RequirementWithSplitArgs = RequirementArgs.split(" ", 2);
 
 			switch (Requirement.valueOf(RequirementWithSplitArgs[0].toUpperCase())) {
@@ -307,59 +312,95 @@ public class DenizenListener implements Listener {
 			case NONE:
 				return true;
 
-			case TIME:
-			    
+			case TIME: // (!)TIME DAY   or  (!)TIME NIGHT  or (!)TIME [At least this Time 0-23999] [But no more than this Time 1-24000] 
+					   // DAY = 0           NIGHT = 16000
+				if (NegativeRequirement) {
+					if (Array.getLength(RequirementWithSplitArgs[1].split(" ")) == 1) { 
+						if (thisPlayer.getWorld().getTime() < Integer.parseInt(RequirementWithSplitArgs[1])) NumberOfMetRequirements++; 
+					} else {
+						String[] theseTimes = RequirementWithSplitArgs[1].split(" ");
+						if (thisPlayer.getWorld().getTime() < Integer.parseInt(theseTimes[0]) && thisPlayer.getWorld().getTime() > Integer.parseInt(theseTimes[1])) NumberOfMetRequirements++;
+					}
+				} else {
+					if (Array.getLength(RequirementWithSplitArgs[1].split(" ")) == 1) { 
+						if (thisPlayer.getWorld().getTime() >= Integer.parseInt(RequirementWithSplitArgs[1])) NumberOfMetRequirements++; 
+					} else {
+						String[] theseTimes = RequirementWithSplitArgs[1].split(" ");
+						if (thisPlayer.getWorld().getTime() >= Integer.parseInt(theseTimes[0]) && thisPlayer.getWorld().getTime() <= Integer.parseInt(theseTimes[1])) NumberOfMetRequirements++;
+					}
+				}
 				
 			case PERMISSION:
-				
-				
+
+
 			case PRECIPITATION:
-				
-				
+
+
 			case HUNGER:
-				
-				
-			case LEVEL:  // LEVEL [#]
-				if (Array.getLength(RequirementWithSplitArgs[1].split(" ")) == 1) { 
-					if (thisPlayer.getLevel() >= Integer.parseInt(RequirementWithSplitArgs[1])) NumberOfMetRequirements++; 
+
+
+			case LEVEL:  // (!)LEVEL [This Level # or higher]  or  (!)LEVEL [At least this Level #] [But no more than this Level #]
+				if (NegativeRequirement) {
+					if (Array.getLength(RequirementWithSplitArgs[1].split(" ")) == 1) { 
+						if (thisPlayer.getLevel() < Integer.parseInt(RequirementWithSplitArgs[1])) NumberOfMetRequirements++; 
+					} else {
+						String[] theseLevels = RequirementWithSplitArgs[1].split(" ");
+						if (thisPlayer.getLevel() < Integer.parseInt(theseLevels[0]) && thisPlayer.getLevel() > Integer.parseInt(theseLevels[1])) NumberOfMetRequirements++;
+					}
 				} else {
-					
+					if (Array.getLength(RequirementWithSplitArgs[1].split(" ")) == 1) { 
+						if (thisPlayer.getLevel() >= Integer.parseInt(RequirementWithSplitArgs[1])) NumberOfMetRequirements++; 
+					} else {
+						String[] theseLevels = RequirementWithSplitArgs[1].split(" ");
+						if (thisPlayer.getLevel() >= Integer.parseInt(theseLevels[0]) && thisPlayer.getLevel() <= Integer.parseInt(theseLevels[1])) NumberOfMetRequirements++;
+					}
 				}
-			case QUEST:
+
+			case NOTABLE: // (!)NOTABLE
+
 				
+
+			case WORLD:  // (!)WORLD [World Name] [or this World Name] [or this World...]
+				String[] theseWorlds = RequirementWithSplitArgs[1].split(" ");
+				if (NegativeRequirement) {
+					boolean tempMet = true;
+					for (String thisWorld : theseWorlds) { 	
+						if (thisPlayer.getWorld().getName().equalsIgnoreCase(thisWorld)) tempMet = false;
+					}
+					if (tempMet) NumberOfMetRequirements++;
+				} else {
+					for (String thisWorld : theseWorlds) { 	
+						if (thisPlayer.getWorld().getName().equalsIgnoreCase(thisWorld)) NumberOfMetRequirements++;
+					}
+				}
+
+			case STORMY:  // (!)STORMY     - Note that it can still be raining and this will trigger
+				if (NegativeRequirement) if (!thisPlayer.getWorld().isThundering()) NumberOfMetRequirements++;
+				else if (thisPlayer.getWorld().isThundering()) NumberOfMetRequirements++;
+
+			case SUNNY:  // (!)SUNNY    - Negative would trigger on Raining or Storming
+			    if (NegativeRequirement) if (thisPlayer.getWorld().hasStorm()) NumberOfMetRequirements++;
+				else if (!thisPlayer.getWorld().hasStorm()) NumberOfMetRequirements++;
+
+			case MONEY: // (!)MONEY [Amount of Money, or more]
+			    if (NegativeRequirement) if (!plugin.econ.has(thisPlayer.toString(), Integer.parseInt(RequirementWithSplitArgs[1]))) NumberOfMetRequirements++;
+				else if (plugin.econ.has(thisPlayer.toString(), Integer.parseInt(RequirementWithSplitArgs[1]))) NumberOfMetRequirements++;
+
+			case ITEM: // (!)ITEM [ITEM_NAME] [# of that item, or more]
 				
-			case NOTABLE:
-				
-				
-			case WORLD:  // WORLD [World Name]
-				if (thisPlayer.getWorld().getName().equalsIgnoreCase(RequirementWithSplitArgs[1])) NumberOfMetRequirements++;
-				
-			case STORMY:
-				if (thisPlayer.getWorld().isThundering()) NumberOfMetRequirements++;
-				
-			case SUNNY:
-				if (!thisPlayer.getWorld().hasStorm()) NumberOfMetRequirements++;
-				
-			case MONEY:
-				if (plugin.econ.has(thisPlayer.toString(), Integer.parseInt(RequirementWithSplitArgs[1]))) NumberOfMetRequirements++;
-				
-			case ITEM:
-				
-				
-			case SCRIPT:
-				
-				
+
+			case SCRIPT: // (!)SCRIPT [Script Name] [Number of times completed, or more]
+
+
 			case GROUP:
-				if (plugin.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.toString(), RequirementWithSplitArgs[1])) NumberOfMetRequirements++;		
+				if (NegativeRequirement) if (!plugin.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.toString(), RequirementWithSplitArgs[1])) NumberOfMetRequirements++;
+				else if (plugin.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.toString(), RequirementWithSplitArgs[1])) NumberOfMetRequirements++;		
 			}
 		}
-
-		if (RequirementsMode.equalsIgnoreCase("all") && NumberOfMetRequirements == RequirementsList.size()) { 
-			return true; 
-		}
-
+		if (RequirementsMode.equalsIgnoreCase("all") && NumberOfMetRequirements == RequirementsList.size()) return true;
 		String[] ModeArgs = RequirementsMode.split(" ");
-		if (ModeArgs[0].equalsIgnoreCase("any") && NumberOfMetRequirements >= Integer.parseInt(ModeArgs[1])) { return true;	}
+		if (ModeArgs[0].equalsIgnoreCase("any") && NumberOfMetRequirements >= Integer.parseInt(ModeArgs[1])) return true;
+		
 		return false;
 	}
 
