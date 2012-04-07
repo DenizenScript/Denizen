@@ -14,12 +14,14 @@ import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class DenizenListener implements Listener {
 
@@ -37,7 +39,7 @@ public class DenizenListener implements Listener {
 	}
 
 	public enum Requirement {
-		NONE, TIME, PRECIPITATION, STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, ITEM, QUEST;
+		NONE, HOLDING, TIME, PRECIPITATION, STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, ITEM, QUEST, POTION;
 	}
 
 	public enum Trigger {
@@ -60,7 +62,7 @@ public class DenizenListener implements Listener {
 
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
-
+event.getPlayer().
 		List<net.citizensnpcs.api.npc.NPC> DenizenList = GetDenizensWithinRange(event.getPlayer().getLocation(), event.getPlayer().getWorld(), plugin.PlayerChatRangeInBlocks);
 		if (DenizenList.isEmpty()) { return; }
 		event.setCancelled(true);
@@ -331,10 +333,12 @@ public class DenizenListener implements Listener {
 				}
 				
 			case PERMISSION:
-
+				if (NegativeRequirement) if (!plugin.perms.playerHas(thisPlayer.getWorld(), thisPlayer.toString(), RequirementWithSplitArgs[1])) NumberOfMetRequirements++;
+				else if (plugin.perms.playerHas(thisPlayer.getWorld(), thisPlayer.toString(), RequirementWithSplitArgs[1])) NumberOfMetRequirements++;		
 
 			case PRECIPITATION:
-
+			    if (NegativeRequirement) if (!thisPlayer.getWorld().hasStorm()) NumberOfMetRequirements++;
+				else if (thisPlayer.getWorld().hasStorm()) NumberOfMetRequirements++;
 
 			case HUNGER:
 
@@ -386,9 +390,20 @@ public class DenizenListener implements Listener {
 			    if (NegativeRequirement) if (!plugin.econ.has(thisPlayer.toString(), Integer.parseInt(RequirementWithSplitArgs[1]))) NumberOfMetRequirements++;
 				else if (plugin.econ.has(thisPlayer.toString(), Integer.parseInt(RequirementWithSplitArgs[1]))) NumberOfMetRequirements++;
 
-			case ITEM: // (!)ITEM [ITEM_NAME] [# of that item, or more]
+			case ITEM: // (!)ITEM [ITEM_NAME] [# of that item, or more] [Enchanted]
+				String[] theseItemArgs = RequirementWithSplitArgs[1].split(" ");
+				
+				 ItemStack thisStack = new ItemStack(Material.getMaterial(theseItemArgs[0]), Integer.parseInt(theseItemArgs[1]));
+				 
+				
+				if (thisPlayer.getInventory().contains(thisStack)) return;
+				
+			case HOLDING:
 				
 
+			case POTION:
+				
+				
 			case SCRIPT: // (!)SCRIPT [Script Name] [Number of times completed, or more]
 
 
