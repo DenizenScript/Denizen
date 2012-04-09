@@ -12,12 +12,10 @@ import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.*;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,9 +39,7 @@ public class DenizenListener implements Listener {
 		NONE, ALL, ANY; 
 	}
 
-	public enum Requirement {
-		NONE, HOLDING, TIME, PRECIPITATION, STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, ITEM, QUEST, POTIONEFFECT;
-	}
+	public enum Requirement { NONE, NAME, WEARING, INVINSIBLE, ITEM, HOLDING, TIME, PRECIPITATION, STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, POTIONEFFECT; }
 
 	public enum Trigger {
 		CHAT, CLICK, RIGHT_CLICK, LEFT_CLICK, FINISH, START, FAIL, BOUNCED;
@@ -76,7 +72,7 @@ public class DenizenListener implements Listener {
 			String theScript = GetInteractScript(thisDenizen, event.getPlayer());
 			if (theScript.equals("none")) thisDenizen.chat(event.getPlayer(), plugin.getConfig().getString("Denizens." + thisDenizen.getId() + ".Default Texts.No Script Interact", "I have nothing to say to you at this time."));
 			else if (!theScript.equals("none")) ParseScript(event.getPlayer(), GetScriptName(theScript), event.getMessage(), Trigger.CHAT);
-		}
+		} event.getPlayer().is
 	}
 
 
@@ -232,8 +228,18 @@ public class DenizenListener implements Listener {
 
 	public List<String> ScriptHandler(String theScript, int CurrentStep, Player thePlayer, List<String> ScriptToHandle, Trigger theTrigger) {
 
-		return ScriptToHandle;
-	}
+		for (String theCommand : ScriptToHandle) {
+			String[] splitArgs = theCommand.split(" ");
+			switch (Command.valueOf(splitArgs[0].toUpperCase())) {
+
+			case ZAP:  // ZAP [Optional Step # to advance to]
+				
+				
+				
+			}
+
+			return ScriptToHandle;
+		}
 
 
 
@@ -269,7 +275,7 @@ public class DenizenListener implements Listener {
 	}
 	
 	
-	/* GetScriptCompletes
+	/* GetNotableCompletion
 	 * 
 	 * Requires the Player and the Script.
 	 * Reads the config.yml to find if the player has completed 
@@ -279,7 +285,7 @@ public class DenizenListener implements Listener {
 	 */
 	
 	public boolean GetNotableCompletion(Player thePlayer, String theNotable) {
-		if (plugin.getConfig().getStringList("Notables.Players." + thePlayer + "." + theNotable).contains(arg0) != null) ScriptCompletes =  plugin.getConfig().getInt("Players." + thePlayer + "." + theScript + "." + "Completes"); 
+		if (plugin.getConfig().getStringList("Notables.Players." + thePlayer + "." + theNotable).contains(theNotable)) return true;
 		else return false;
 	}
 	
@@ -331,111 +337,118 @@ public class DenizenListener implements Listener {
 		String RequirementsMode = plugin.getConfig().getString("Scripts." + thisScript + ".Requirements.Mode");
 
 		List<String> RequirementsList = plugin.getConfig().getStringList("Scripts." + thisScript + ".Requirements.List");
-		if (RequirementsList.isEmpty()) { 				
-			return true; }
-
-		int NumberOfMetRequirements = 0;
-		boolean NegativeRequirement = false;
-
+		if (RequirementsList.isEmpty()) { return true; }
+		int MetReqs = 0;
+		boolean negReq = false;
 		for (String RequirementArgs : RequirementsList) {
-
-			if (RequirementArgs.startsWith("!")) { NegativeRequirement = true; RequirementArgs = RequirementArgs.substring(1); }
-			else NegativeRequirement = false;
-
-			String[] RequirementWithSplitArgs = RequirementArgs.split(" ", 2);
-
-			switch (Requirement.valueOf(RequirementWithSplitArgs[0].toUpperCase())) {
+			if (RequirementArgs.startsWith("!")) { negReq = true; RequirementArgs = RequirementArgs.substring(1); }
+			else negReq = false;
+			String[] splitArgs = RequirementArgs.split(" ", 2);
+			switch (Requirement.valueOf(splitArgs[0].toUpperCase())) {
 
 			case NONE:
 				return true;
 
 			case TIME: // (!)TIME DAY   or  (!)TIME NIGHT  or (!)TIME [At least this Time 0-23999] [But no more than this Time 1-24000] 
 					   // DAY = 0           NIGHT = 16000
-				if (NegativeRequirement) {
-					if (RequirementWithSplitArgs[1].equalsIgnoreCase("DAY")) if (thisPlayer.getWorld().getTime() > 16000) NumberOfMetRequirements++; 
-					if (RequirementWithSplitArgs[1].equalsIgnoreCase("NIGHT")) if (thisPlayer.getWorld().getTime() < 16000) NumberOfMetRequirements++;
+				if (negReq) {
+					if (splitArgs[1].equalsIgnoreCase("DAY")) if (thisPlayer.getWorld().getTime() > 16000) MetReqs++; 
+					if (splitArgs[1].equalsIgnoreCase("NIGHT")) if (thisPlayer.getWorld().getTime() < 16000) MetReqs++;
 					else {
-						String[] theseTimes = RequirementWithSplitArgs[1].split(" ");
-						if (thisPlayer.getWorld().getTime() < Integer.parseInt(theseTimes[0]) && thisPlayer.getWorld().getTime() > Integer.parseInt(theseTimes[1])) NumberOfMetRequirements++;
+						String[] theseTimes = splitArgs[1].split(" ");
+						if (thisPlayer.getWorld().getTime() < Integer.parseInt(theseTimes[0]) && thisPlayer.getWorld().getTime() > Integer.parseInt(theseTimes[1])) MetReqs++;
 					}
 				} else {
-					if (RequirementWithSplitArgs[1].equalsIgnoreCase("DAY")) if (thisPlayer.getWorld().getTime() < 16000) NumberOfMetRequirements++; 
-					if (RequirementWithSplitArgs[1].equalsIgnoreCase("NIGHT")) if (thisPlayer.getWorld().getTime() > 16000) NumberOfMetRequirements++;
+					if (splitArgs[1].equalsIgnoreCase("DAY")) if (thisPlayer.getWorld().getTime() < 16000) MetReqs++; 
+					if (splitArgs[1].equalsIgnoreCase("NIGHT")) if (thisPlayer.getWorld().getTime() > 16000) MetReqs++;
 					else {
-						String[] theseTimes = RequirementWithSplitArgs[1].split(" ");
-						if (thisPlayer.getWorld().getTime() >= Integer.parseInt(theseTimes[0]) && thisPlayer.getWorld().getTime() <= Integer.parseInt(theseTimes[1])) NumberOfMetRequirements++;
+						String[] theseTimes = splitArgs[1].split(" ");
+						if (thisPlayer.getWorld().getTime() >= Integer.parseInt(theseTimes[0]) && thisPlayer.getWorld().getTime() <= Integer.parseInt(theseTimes[1])) MetReqs++;
 					}
 				}
 				
 			case PERMISSION:  // (!)PERMISSION [this.permission.node]
-				if (NegativeRequirement) if (!Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.toString(), RequirementWithSplitArgs[1])) NumberOfMetRequirements++;
-				else if (Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.toString(), RequirementWithSplitArgs[1])) NumberOfMetRequirements++;		
+				if (negReq) if (!Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.toString(), splitArgs[1])) MetReqs++;
+				else if (Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.toString(), splitArgs[1])) MetReqs++;		
 
 			case PRECIPITATION:  // (!)PRECIPITATION
-			    if (NegativeRequirement) if (!thisPlayer.getWorld().hasStorm()) NumberOfMetRequirements++;
-				else if (thisPlayer.getWorld().hasStorm()) NumberOfMetRequirements++;
+			    if (negReq) if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
+				else if (thisPlayer.getWorld().hasStorm()) MetReqs++;
 
 			case HUNGER:  // (!)HUNGER FULL  or  (!)HUNGER HUNGRY  or  (!)HUNGER STARVING
-				if (NegativeRequirement) {
-					if (RequirementWithSplitArgs[1].equalsIgnoreCase("FULL")) if (thisPlayer.getFoodLevel() < 20) NumberOfMetRequirements++; 
-					if (RequirementWithSplitArgs[1].equalsIgnoreCase("HUNGRY")) if (thisPlayer.getFoodLevel() >= 20) NumberOfMetRequirements++;
-					if (RequirementWithSplitArgs[1].equalsIgnoreCase("STARVING")) if (thisPlayer.getFoodLevel() > 1) NumberOfMetRequirements++; 
+				if (negReq) {
+					if (splitArgs[1].equalsIgnoreCase("FULL")) if (thisPlayer.getFoodLevel() < 20) MetReqs++; 
+					if (splitArgs[1].equalsIgnoreCase("HUNGRY")) if (thisPlayer.getFoodLevel() >= 20) MetReqs++;
+					if (splitArgs[1].equalsIgnoreCase("STARVING")) if (thisPlayer.getFoodLevel() > 1) MetReqs++; 
 				} else {
-					if (RequirementWithSplitArgs[1].equalsIgnoreCase("FULL")) if (thisPlayer.getFoodLevel() >= 20) NumberOfMetRequirements++; 
-					if (RequirementWithSplitArgs[1].equalsIgnoreCase("HUNGRY")) if (thisPlayer.getFoodLevel() < 18) NumberOfMetRequirements++;
-					if (RequirementWithSplitArgs[1].equalsIgnoreCase("STARVING")) if (thisPlayer.getFoodLevel() < 1) NumberOfMetRequirements++; 
+					if (splitArgs[1].equalsIgnoreCase("FULL")) if (thisPlayer.getFoodLevel() >= 20) MetReqs++; 
+					if (splitArgs[1].equalsIgnoreCase("HUNGRY")) if (thisPlayer.getFoodLevel() < 18) MetReqs++;
+					if (splitArgs[1].equalsIgnoreCase("STARVING")) if (thisPlayer.getFoodLevel() < 1) MetReqs++; 
 				}
 
 			case LEVEL:  // (!)LEVEL [This Level # or higher]  or  (!)LEVEL [At least this Level #] [But no more than this Level #]
-				if (NegativeRequirement) {
-					if (Array.getLength(RequirementWithSplitArgs[1].split(" ")) == 1) { 
-						if (thisPlayer.getLevel() < Integer.parseInt(RequirementWithSplitArgs[1])) NumberOfMetRequirements++; 
+				if (negReq) {
+					if (Array.getLength(splitArgs[1].split(" ")) == 1) { 
+						if (thisPlayer.getLevel() < Integer.parseInt(splitArgs[1])) MetReqs++; 
 					} else {
-						String[] theseLevels = RequirementWithSplitArgs[1].split(" ");
-						if (thisPlayer.getLevel() < Integer.parseInt(theseLevels[0]) && thisPlayer.getLevel() > Integer.parseInt(theseLevels[1])) NumberOfMetRequirements++;
+						String[] theseLevels = splitArgs[1].split(" ");
+						if (thisPlayer.getLevel() < Integer.parseInt(theseLevels[0]) && thisPlayer.getLevel() > Integer.parseInt(theseLevels[1])) MetReqs++;
 					}
 				} else {
-					if (Array.getLength(RequirementWithSplitArgs[1].split(" ")) == 1) { 
-						if (thisPlayer.getLevel() >= Integer.parseInt(RequirementWithSplitArgs[1])) NumberOfMetRequirements++; 
+					if (Array.getLength(splitArgs[1].split(" ")) == 1) { 
+						if (thisPlayer.getLevel() >= Integer.parseInt(splitArgs[1])) MetReqs++; 
 					} else {
-						String[] theseLevels = RequirementWithSplitArgs[1].split(" ");
-						if (thisPlayer.getLevel() >= Integer.parseInt(theseLevels[0]) && thisPlayer.getLevel() <= Integer.parseInt(theseLevels[1])) NumberOfMetRequirements++;
+						String[] theseLevels = splitArgs[1].split(" ");
+						if (thisPlayer.getLevel() >= Integer.parseInt(theseLevels[0]) && thisPlayer.getLevel() <= Integer.parseInt(theseLevels[1])) MetReqs++;
 					}
 				}
 
 			case NOTABLE: // (!)NOTABLE [Name of Notable]
-
+				if (negReq) if (!GetNotableCompletion(thisPlayer, splitArgs[1])) MetReqs++;
+				else if (GetNotableCompletion(thisPlayer, splitArgs[1])) MetReqs++;
 				
-				
-
 			case WORLD:  // (!)WORLD [World Name] [or this World Name] [or this World...]
-				String[] theseWorlds = RequirementWithSplitArgs[1].split(" ");
-				if (NegativeRequirement) {
+				String[] theseWorlds = splitArgs[1].split(" ");
+				if (negReq) {
 					boolean tempMet = true;
 					for (String thisWorld : theseWorlds) { 	
 						if (thisPlayer.getWorld().getName().equalsIgnoreCase(thisWorld)) tempMet = false;
 					}
-					if (tempMet) NumberOfMetRequirements++;
+					if (tempMet) MetReqs++;
 				} else {
 					for (String thisWorld : theseWorlds) { 	
-						if (thisPlayer.getWorld().getName().equalsIgnoreCase(thisWorld)) NumberOfMetRequirements++;
+						if (thisPlayer.getWorld().getName().equalsIgnoreCase(thisWorld)) MetReqs++;
 					}
 				}
-
+				
+			case NAME:  // (!)Name [Name] [or this Name] [or this Name, etc...]
+				String[] theseNames = splitArgs[1].split(" ");
+				if (negReq) {
+					boolean tempMet = true;
+					for (String thisName : theseNames) { 	
+						if (thisPlayer.getName().equalsIgnoreCase(thisName)) tempMet = false;
+					}
+					if (tempMet) MetReqs++;
+				} else {
+					for (String thisName : theseNames) { 	
+						if (thisPlayer.getName().equalsIgnoreCase(thisName)) MetReqs++;
+					}
+				}
+				
 			case STORMY:  // (!)STORMY     - Note that it can still be raining and this will trigger
-				if (NegativeRequirement) if (!thisPlayer.getWorld().isThundering()) NumberOfMetRequirements++;
-				else if (thisPlayer.getWorld().isThundering()) NumberOfMetRequirements++;
+				if (negReq) if (!thisPlayer.getWorld().isThundering()) MetReqs++;
+				else if (thisPlayer.getWorld().isThundering()) MetReqs++;
 
 			case SUNNY:  // (!)SUNNY    - Negative would trigger on Raining or Storming
-			    if (NegativeRequirement) if (thisPlayer.getWorld().hasStorm()) NumberOfMetRequirements++;
-				else if (!thisPlayer.getWorld().hasStorm()) NumberOfMetRequirements++;
+			    if (negReq) if (thisPlayer.getWorld().hasStorm()) MetReqs++;
+				else if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
 
 			case MONEY: // (!)MONEY [Amount of Money, or more]
-			    if (NegativeRequirement) if (!Denizen.econ.has(thisPlayer.toString(), Integer.parseInt(RequirementWithSplitArgs[1]))) NumberOfMetRequirements++;
-				else if (Denizen.econ.has(thisPlayer.toString(), Integer.parseInt(RequirementWithSplitArgs[1]))) NumberOfMetRequirements++;
+			    if (negReq) if (!Denizen.econ.has(thisPlayer.toString(), Integer.parseInt(splitArgs[1]))) MetReqs++;
+				else if (Denizen.econ.has(thisPlayer.toString(), Integer.parseInt(splitArgs[1]))) MetReqs++;
 
-			case ITEM: // (!)ITEM [ITEM_NAME] [# of that item, or more] [Enchantment]
-				String[] theseItemArgs = RequirementWithSplitArgs[1].split(" ");
+			case ITEM: // (!)ITEM [ITEM_NAME] [# of that item, or more] [ENCHANTMENT_TYPE]
+				String[] theseItemArgs = splitArgs[1].split(" ");
 				ItemStack thisItem = new ItemStack(Material.getMaterial(theseItemArgs[0]), Integer.parseInt(theseItemArgs[1]));
 				Map<Material, Integer> PlayerInv = new HashMap<Material, Integer>();
 				Map<Material, Boolean> isEnchanted = new HashMap<Material, Boolean>();
@@ -446,34 +459,41 @@ public class DenizenListener implements Listener {
 					if (!theseItemArgs[2].isEmpty()) if (invItem.containsEnchantment(Enchantment.getByName(theseItemArgs[2]))) isEnchanted.put(invItem.getType(), true);
 				}
 				
-				if (NegativeRequirement) {
-					if (PlayerInv.containsKey(thisItem.getType()) && theseItemArgs[2].isEmpty()) if (PlayerInv.get(thisItem.getType()) < thisItem.getAmount()) NumberOfMetRequirements++;
-					else if (PlayerInv.containsKey(thisItem.getType()) && isEnchanted.get(thisItem.getType())) if (PlayerInv.get(thisItem.getType()) < thisItem.getAmount()) NumberOfMetRequirements++;
+				if (negReq) {
+					if (PlayerInv.containsKey(thisItem.getType()) && theseItemArgs[2].isEmpty()) if (PlayerInv.get(thisItem.getType()) < thisItem.getAmount()) MetReqs++;
+					else if (PlayerInv.containsKey(thisItem.getType()) && isEnchanted.get(thisItem.getType())) if (PlayerInv.get(thisItem.getType()) < thisItem.getAmount()) MetReqs++;
 				}
 				else { 
-					if (PlayerInv.containsKey(thisItem.getType()) && theseItemArgs[2].isEmpty()) if (PlayerInv.get(thisItem.getType()) >= thisItem.getAmount()) NumberOfMetRequirements++;
-					else if (PlayerInv.containsKey(thisItem.getType()) && isEnchanted.get(thisItem.getType())) if (PlayerInv.get(thisItem.getType()) >= thisItem.getAmount()) NumberOfMetRequirements++;
+					if (PlayerInv.containsKey(thisItem.getType()) && theseItemArgs[2].isEmpty()) if (PlayerInv.get(thisItem.getType()) >= thisItem.getAmount()) MetReqs++;
+					else if (PlayerInv.containsKey(thisItem.getType()) && isEnchanted.get(thisItem.getType())) if (PlayerInv.get(thisItem.getType()) >= thisItem.getAmount()) MetReqs++;
 				}
 				
-			case HOLDING:
-				
+			case HOLDING: // (!)HOLDING [ITEM_NAME] [ENCHANTMENT_TYPE]
+				String[] holdingItemArgs = splitArgs[1].split(" ");
+				if (negReq) if (!thisPlayer.getItemInHand().getType().equals(Material.getMaterial(holdingItemArgs[0]))) {
+					if (holdingItemArgs[1] == null) MetReqs++;
+					else if (!Enchantment.getByName(holdingItemArgs[1]).equals(thisPlayer.getItemInHand().getType())) MetReqs++;
+				} else {
+					if (holdingItemArgs[1] == null) MetReqs++;
+					else if (Enchantment.getByName(holdingItemArgs[1]).equals(thisPlayer.getItemInHand().getType())) MetReqs++;
+				}
 
 			case POTIONEFFECT: // (!)POTIONEFFECT [POTION_EFFECT_TYPE]
-				if (NegativeRequirement) if (!thisPlayer.hasPotionEffect(PotionEffectType.getByName(RequirementWithSplitArgs[1]))) NumberOfMetRequirements++;			
-				else if (thisPlayer.hasPotionEffect(PotionEffectType.getByName(RequirementWithSplitArgs[1]))) NumberOfMetRequirements++;
+				if (negReq) if (!thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;			
+				else if (thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;
 				
 			case SCRIPT: // (!)SCRIPT [Script Name] [Number of times completed, or more]
-				if (NegativeRequirement) if (GetScriptCompletes(thisPlayer, RequirementWithSplitArgs[1]) > Integer.parseInt(RequirementWithSplitArgs[2])) NumberOfMetRequirements++;
-				else if (GetScriptCompletes(thisPlayer, RequirementWithSplitArgs[1]) <= Integer.parseInt(RequirementWithSplitArgs[2])) NumberOfMetRequirements++;
+				if (negReq) if (GetScriptCompletes(thisPlayer, splitArgs[1]) > Integer.parseInt(splitArgs[2])) MetReqs++;
+				else if (GetScriptCompletes(thisPlayer, splitArgs[1]) <= Integer.parseInt(splitArgs[2])) MetReqs++;
 
 			case GROUP:
-				if (NegativeRequirement) if (!Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.toString(), RequirementWithSplitArgs[1])) NumberOfMetRequirements++;
-				else if (Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.toString(), RequirementWithSplitArgs[1])) NumberOfMetRequirements++;		
+				if (negReq) if (!Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.toString(), splitArgs[1])) MetReqs++;
+				else if (Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.toString(), splitArgs[1])) MetReqs++;		
 			}
 		}
-		if (RequirementsMode.equalsIgnoreCase("all") && NumberOfMetRequirements == RequirementsList.size()) return true;
+		if (RequirementsMode.equalsIgnoreCase("all") && MetReqs == RequirementsList.size()) return true;
 		String[] ModeArgs = RequirementsMode.split(" ");
-		if (ModeArgs[0].equalsIgnoreCase("any") && NumberOfMetRequirements >= Integer.parseInt(ModeArgs[1])) return true;
+		if (ModeArgs[0].equalsIgnoreCase("any") && MetReqs >= Integer.parseInt(ModeArgs[1])) return true;
 		
 		return false;
 	}

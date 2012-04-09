@@ -168,7 +168,8 @@ public class Denizen extends JavaPlugin {
 	public int InteractDelayInTicks;	
 	public String TalkToNPCString;
 	public Boolean DebugMode;
-
+	
+	Integer 
 	public static Map<Player, List<String>> PlayerQue = new HashMap<Player, List<String>>();
 
 	public void setConfigurations() {
