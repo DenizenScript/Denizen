@@ -118,15 +118,24 @@ Scripts:
             - CHAT Oh <player>! I heard what you did for Tom!
             - CHAT We're lucky to have people like you in our small village! 
 
-
-
-
+			
 Players:
   aufdemrand:      # Player Name
-    '0':           # NPC ID
-      'Quest Name':
-      
-,.'mm	  CurrentStep: 0
-        Completed: 4
-        
+    'Script Name':      
+      CurrentStep: 0
+      Completed: 4
+	  
+	  
+Notables:
+  Notables:
+    "This Notable":
+      Obtain Text: "You've obtained THIS NOTABLE!"
+      Journal Entry: "Today I obtained THIS NOTABLE. It was a glorious day!"
+      Flags:
+        - Repeatable
+  Players:
+    aufdemrand:
+      - This Notable
+	  
+
       

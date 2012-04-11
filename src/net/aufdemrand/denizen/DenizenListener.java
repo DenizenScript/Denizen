@@ -42,11 +42,11 @@ public class DenizenListener implements Listener {
 	public enum Requirement { NONE, NAME, WEARING, INVINSIBLE, ITEM, HOLDING, TIME, PRECIPITATION, STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, POTIONEFFECT; }
 
 	public enum Trigger {
-		CHAT, CLICK, RIGHT_CLICK, LEFT_CLICK, FINISH, START, FAIL, BOUNCED;
+		CHAT, CLICK, RIGHT_CLICK, LEFT_CLICK, FINISH, START, FAIL, BOUNCE;
 	}
 
 	public enum Command {
-		GIVE, TAKE, WALK, PAUSE, CHAT, WHISPER, SHOUT, NARRARATE, TELEPORT, PERMISS, EXECUTE, ZAP, BOUNCE; 
+		GIVE, TAKE, WALK, PAUSE, CHAT, WHISPER, SHOUT, NARRARATE, TELEPORT, PERMISS, EXECUTE, ZAP, BOUNCE, NOTABLE, FAIL; 
 	}
 
 
@@ -72,7 +72,7 @@ public class DenizenListener implements Listener {
 			String theScript = GetInteractScript(thisDenizen, event.getPlayer());
 			if (theScript.equals("none")) thisDenizen.chat(event.getPlayer(), plugin.getConfig().getString("Denizens." + thisDenizen.getId() + ".Default Texts.No Script Interact", "I have nothing to say to you at this time."));
 			else if (!theScript.equals("none")) ParseScript(event.getPlayer(), GetScriptName(theScript), event.getMessage(), Trigger.CHAT);
-		} event.getPlayer().is
+		} 
 	}
 
 
@@ -232,11 +232,49 @@ public class DenizenListener implements Listener {
 			String[] splitArgs = theCommand.split(" ");
 			switch (Command.valueOf(splitArgs[0].toUpperCase())) {
 
+			// 	GIVE, TAKE, WALK, PAUSE, CHAT, WHISPER, SHOUT, NARRARATE, TELEPORT, PERMISS, EXECUTE, ZAP, BOUNCE, NOTABLE; 
+
 			case ZAP:  // ZAP [Optional Step # to advance to]
+
+			case GIVE:  // GIVE [Item:Data] [Amount]
+				
+			case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]  or  TAKE ENCHANTMENT
+			
+			case WALK:  // WALK
+			
+			case TELEPORT:  // TELEPORT [Location Notable] (Effect)  or  //TELEPORT [X,Y,Z] (World Name) (Effect)
+			
+			case PERMISS:  // PERMISS [Optional Step # to advance to]
+			
+			case EXECUTE:  // EXECUTE [Optional Step # to advance to]
+			
+			case PAUSE:  // PAUSE [Optional Step # to advance to]
+			
+				
+			// SHOUT can be heard by players within 100 blocks.
+			// WHISPER can only be heard by the player interacting with.
+			// CHAT can be heard by the player, and players within 5 blocks.
+			// NARRARATE can only be heard by the player and is not branded by the NPC.
+			// ANNOUNCE can be heard by the entire server.
 				
 				
-				
+			case SHOUT:  // ZAP [Optional Step # to advance to]
+			
+			case WHISPER:  // ZAP [Optional Step # to advance to]
+			
+			case NARRARATE:  // ZAP [Optional Step # to advance to]
+
+			case CHAT:  // CHAT [Message]     
+
+			case BOUNCE:  // BOUNCE
+
+			case NOTABLE:  // NOTABLE [Name of Notable to Grant]
+
 			}
+
+
+			// 
+
 
 			return ScriptToHandle;
 		}
