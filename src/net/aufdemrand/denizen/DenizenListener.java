@@ -234,30 +234,54 @@ public class DenizenListener implements Listener {
 
 			// 	GIVE, TAKE, WALK, PAUSE, CHAT, WHISPER, SHOUT, NARRARATE, TELEPORT, PERMISS, EXECUTE, ZAP, BOUNCE, NOTABLE; 
 
+			// SCRIPT INTERACTION
+			
 			case ZAP:  // ZAP [Optional Step # to advance to]
-
-			case GIVE:  // GIVE [Item:Data] [Amount]
+			case ASSIGN:  // ASSIGN [ME|Denizen Name] [ALL|Player Name] [Priority] [Script Name]
+			case DEASSIGN:  // DEASSIGN [ME|Denizen Name] [ALL|Player Name] [Script Name]
+			
+			case C2SCRIPT:  // Runs a CitizenScript
+			
 				
-			case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]  or  TAKE ENCHANTMENT
-			
-			case WALK:  // WALK
-			
+			// WORLD INTERACTION
+				
+			case SPAWN:  // SPAWN [MOB NAME] [AMOUNT] (Location Bookmark)
+			case CHANGE:  // CHANGE [Block State Bookmark]
+			case WEATHER:  // WEATHER [Sunny|Stormy|Rainy] (Duration for Stormy/Rainy)
+			case EFFECT:  // EFFECT [EFFECT_TYPE] (Location Bookmark)
+				
+				
+			// PLAYER INTERACTION
+				
+			case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
+			case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]  or  TAKE ENCHANTMENT  or  TAKE INVENTORY
+			case HEAL:
+			case DAMAGE:
+			case POTION_EFFECT:
 			case TELEPORT:  // TELEPORT [Location Notable] (Effect)  or  //TELEPORT [X,Y,Z] (World Name) (Effect)
+			case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
+				
+			
+			// DENIZEN INTERACTION	
+				
+			case WALK:  // MOVE [ME|Denizen Name] [Location Notable]
+			case NOD:  // NOD [ME]
+			case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
+			case BOUNCE:  // BOUNCE PLAYER
+			case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
+				
+				
+				
 			
 			case PERMISS:  // PERMISS [Optional Step # to advance to]
 			
 			case EXECUTE:  // EXECUTE [Optional Step # to advance to]
 			
-			case PAUSE:  // PAUSE [Optional Step # to advance to]
-			
-				
 			// SHOUT can be heard by players within 100 blocks.
 			// WHISPER can only be heard by the player interacting with.
 			// CHAT can be heard by the player, and players within 5 blocks.
 			// NARRARATE can only be heard by the player and is not branded by the NPC.
 			// ANNOUNCE can be heard by the entire server.
-				
-				
 			case SHOUT:  // ZAP [Optional Step # to advance to]
 			
 			case WHISPER:  // ZAP [Optional Step # to advance to]
@@ -266,8 +290,11 @@ public class DenizenListener implements Listener {
 
 			case CHAT:  // CHAT [Message]     
 
-			case BOUNCE:  // BOUNCE
-
+			
+			// BOUNCE will move the player back, away from the Denizen.  The denizen can protect a 5 square wide path.
+			
+			
+			
 			case NOTABLE:  // NOTABLE [Name of Notable to Grant]
 
 			}
@@ -379,7 +406,7 @@ public class DenizenListener implements Listener {
 		int MetReqs = 0;
 		boolean negReq = false;
 		for (String RequirementArgs : RequirementsList) {
-			if (RequirementArgs.startsWith("!")) { negReq = true; RequirementArgs = RequirementArgs.substring(1); }
+			if (RequirementArgs.startsWith("-")) { negReq = true; RequirementArgs = RequirementArgs.substring(1); }
 			else negReq = false;
 			String[] splitArgs = RequirementArgs.split(" ", 2);
 			switch (Requirement.valueOf(splitArgs[0].toUpperCase())) {
@@ -387,7 +414,7 @@ public class DenizenListener implements Listener {
 			case NONE:
 				return true;
 
-			case TIME: // (!)TIME DAY   or  (!)TIME NIGHT  or (!)TIME [At least this Time 0-23999] [But no more than this Time 1-24000] 
+			case TIME: // (-)TIME DAY   or  (-)TIME NIGHT  or (-)TIME [At least this Time 0-23999] [But no more than this Time 1-24000] 
 					   // DAY = 0           NIGHT = 16000
 				if (negReq) {
 					if (splitArgs[1].equalsIgnoreCase("DAY")) if (thisPlayer.getWorld().getTime() > 16000) MetReqs++; 
@@ -405,15 +432,15 @@ public class DenizenListener implements Listener {
 					}
 				}
 				
-			case PERMISSION:  // (!)PERMISSION [this.permission.node]
+			case PERMISSION:  // (-)PERMISSION [this.permission.node]
 				if (negReq) if (!Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.toString(), splitArgs[1])) MetReqs++;
 				else if (Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.toString(), splitArgs[1])) MetReqs++;		
 
-			case PRECIPITATION:  // (!)PRECIPITATION
+			case PRECIPITATION:  // (-)PRECIPITATION
 			    if (negReq) if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
 				else if (thisPlayer.getWorld().hasStorm()) MetReqs++;
 
-			case HUNGER:  // (!)HUNGER FULL  or  (!)HUNGER HUNGRY  or  (!)HUNGER STARVING
+			case HUNGER:  // (-)HUNGER FULL  or  (-)HUNGER HUNGRY  or  (-)HUNGER STARVING
 				if (negReq) {
 					if (splitArgs[1].equalsIgnoreCase("FULL")) if (thisPlayer.getFoodLevel() < 20) MetReqs++; 
 					if (splitArgs[1].equalsIgnoreCase("HUNGRY")) if (thisPlayer.getFoodLevel() >= 20) MetReqs++;
@@ -424,7 +451,7 @@ public class DenizenListener implements Listener {
 					if (splitArgs[1].equalsIgnoreCase("STARVING")) if (thisPlayer.getFoodLevel() < 1) MetReqs++; 
 				}
 
-			case LEVEL:  // (!)LEVEL [This Level # or higher]  or  (!)LEVEL [At least this Level #] [But no more than this Level #]
+			case LEVEL:  // (-)LEVEL [This Level # or higher]  or  (-)LEVEL [At least this Level #] [But no more than this Level #]
 				if (negReq) {
 					if (Array.getLength(splitArgs[1].split(" ")) == 1) { 
 						if (thisPlayer.getLevel() < Integer.parseInt(splitArgs[1])) MetReqs++; 
@@ -441,11 +468,11 @@ public class DenizenListener implements Listener {
 					}
 				}
 
-			case NOTABLE: // (!)NOTABLE [Name of Notable]
+			case NOTABLE: // (-)NOTABLE [Name of Notable]
 				if (negReq) if (!GetNotableCompletion(thisPlayer, splitArgs[1])) MetReqs++;
 				else if (GetNotableCompletion(thisPlayer, splitArgs[1])) MetReqs++;
 				
-			case WORLD:  // (!)WORLD [World Name] [or this World Name] [or this World...]
+			case WORLD:  // (-)WORLD [World Name] [or this World Name] [or this World...]
 				String[] theseWorlds = splitArgs[1].split(" ");
 				if (negReq) {
 					boolean tempMet = true;
@@ -459,7 +486,7 @@ public class DenizenListener implements Listener {
 					}
 				}
 				
-			case NAME:  // (!)Name [Name] [or this Name] [or this Name, etc...]
+			case NAME:  // (-)Name [Name] [or this Name] [or this Name, etc...]
 				String[] theseNames = splitArgs[1].split(" ");
 				if (negReq) {
 					boolean tempMet = true;
@@ -473,19 +500,19 @@ public class DenizenListener implements Listener {
 					}
 				}
 				
-			case STORMY:  // (!)STORMY     - Note that it can still be raining and this will trigger
+			case STORMY:  // (-)STORMY     - Note that it can still be raining and this will trigger
 				if (negReq) if (!thisPlayer.getWorld().isThundering()) MetReqs++;
 				else if (thisPlayer.getWorld().isThundering()) MetReqs++;
 
-			case SUNNY:  // (!)SUNNY    - Negative would trigger on Raining or Storming
+			case SUNNY:  // (-)SUNNY    - Negative would trigger on Raining or Storming
 			    if (negReq) if (thisPlayer.getWorld().hasStorm()) MetReqs++;
 				else if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
 
-			case MONEY: // (!)MONEY [Amount of Money, or more]
+			case MONEY: // (-)MONEY [Amount of Money, or more]
 			    if (negReq) if (!Denizen.econ.has(thisPlayer.toString(), Integer.parseInt(splitArgs[1]))) MetReqs++;
 				else if (Denizen.econ.has(thisPlayer.toString(), Integer.parseInt(splitArgs[1]))) MetReqs++;
 
-			case ITEM: // (!)ITEM [ITEM_NAME] [# of that item, or more] [ENCHANTMENT_TYPE]
+			case ITEM: // (-)ITEM [ITEM_NAME] [# of that item, or more] [ENCHANTMENT_TYPE]
 				String[] theseItemArgs = splitArgs[1].split(" ");
 				ItemStack thisItem = new ItemStack(Material.getMaterial(theseItemArgs[0]), Integer.parseInt(theseItemArgs[1]));
 				Map<Material, Integer> PlayerInv = new HashMap<Material, Integer>();
@@ -506,7 +533,7 @@ public class DenizenListener implements Listener {
 					else if (PlayerInv.containsKey(thisItem.getType()) && isEnchanted.get(thisItem.getType())) if (PlayerInv.get(thisItem.getType()) >= thisItem.getAmount()) MetReqs++;
 				}
 				
-			case HOLDING: // (!)HOLDING [ITEM_NAME] [ENCHANTMENT_TYPE]
+			case HOLDING: // (-)HOLDING [ITEM_NAME] [ENCHANTMENT_TYPE]
 				String[] holdingItemArgs = splitArgs[1].split(" ");
 				if (negReq) if (!thisPlayer.getItemInHand().getType().equals(Material.getMaterial(holdingItemArgs[0]))) {
 					if (holdingItemArgs[1] == null) MetReqs++;
@@ -516,11 +543,11 @@ public class DenizenListener implements Listener {
 					else if (Enchantment.getByName(holdingItemArgs[1]).equals(thisPlayer.getItemInHand().getType())) MetReqs++;
 				}
 
-			case POTIONEFFECT: // (!)POTIONEFFECT [POTION_EFFECT_TYPE]
+			case POTIONEFFECT: // (-)POTIONEFFECT [POTION_EFFECT_TYPE]
 				if (negReq) if (!thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;			
 				else if (thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;
 				
-			case SCRIPT: // (!)SCRIPT [Script Name] [Number of times completed, or more]
+			case SCRIPT: // (-)SCRIPT [Script Name] [Number of times completed, or more]
 				if (negReq) if (GetScriptCompletes(thisPlayer, splitArgs[1]) > Integer.parseInt(splitArgs[2])) MetReqs++;
 				else if (GetScriptCompletes(thisPlayer, splitArgs[1]) <= Integer.parseInt(splitArgs[2])) MetReqs++;
 
