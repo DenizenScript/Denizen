@@ -133,7 +133,7 @@ public class Denizen extends JavaPlugin {
 				if (!PlayerQue.isEmpty()) {	for (Map.Entry<Player, List<String>> theEntry : PlayerQue.entrySet()) {
 					if (!theEntry.getValue().isEmpty()) { theEntry.getValue().remove(0);
 						PlayerQue.put(theEntry.getKey(), theEntry.getValue());
-						ExecuteScript(theEntry.getKey(), theEntry.getValue().get(0));	}
+						DenizenListener.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));	}
 					}
 				}
 			}
@@ -155,13 +155,7 @@ public class Denizen extends JavaPlugin {
     }
 	
 
-	public void ExecuteScript(Player thePlayer, String StepToExecute) {
-
-		thePlayer.sendMessage(StepToExecute);
-
-		return;
-	}
-
+	
 
 	// Configuration Nodes
 	public int PlayerChatRangeInBlocks;

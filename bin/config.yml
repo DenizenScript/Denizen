@@ -51,11 +51,7 @@ Scripts:
                                   #  'World [world name]' 'Notable [name of notable]'
                                   #  (Notables requirements will require use of my other plugin Notables. Available Soon.)      
 
-    Behavior:                     #  SCRIPT BEHAVIOR SETTINGS (If missing, defaults to 'Controlled')
-      - Controlled                #  No special behavior.  Steps are controlled by ZAPs and Requirements. 
-                                  #  Available behaviors: 'Loop' 'Repeat [#]' 'Controlled'
-
-    Progression:                  #  OUTLINES THE SCRIPT PROGRESSION through a series of steps of interactivity with the NPC.
+    Steps:                       #  OUTLINES THE SCRIPT PROGRESSION through a series of steps of interactivity with the NPC.
       '0':                        #  Steps carry out in order, starting at 0.
  
         Interact:                 #  Interact defines ways the player can interact with the NPC for this event.  
@@ -118,14 +114,12 @@ Scripts:
             - CHAT Oh <player>! I heard what you did for Tom!
             - CHAT We're lucky to have people like you in our small village! 
 
-			
 Players:
   aufdemrand:      # Player Name
     'Script Name':      
-      CurrentStep: 0
+      Current Step: 0
       Completed: 4
-	  
-	  
+
 Notables:
   Notables:
     "This Notable":
@@ -136,6 +130,6 @@ Notables:
   Players:
     aufdemrand:
       - This Notable, 4
-	  
+
 
       

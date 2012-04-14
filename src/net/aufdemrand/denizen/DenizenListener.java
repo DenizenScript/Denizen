@@ -26,27 +26,21 @@ import org.bukkit.potion.*;
 
 public class DenizenListener implements Listener {
 
-	Denizen plugin;
+	static Denizen plugin;
 	public DenizenListener(Denizen instance) { plugin = instance; }
-
-
-
-	public enum ScriptBehavior {
-		CONTROLLED, REPEAT, LOOP;
-	}
 
 	public enum RequirementMode {
 		NONE, ALL, ANY; 
 	}
 
-	public enum Requirement { NONE, NAME, WEARING, INVINSIBLE, ITEM, HOLDING, TIME, PRECIPITATION, STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, POTIONEFFECT; }
+	public enum Requirement { NONE, QUEST, NAME, WEARING, INVINSIBLE, ITEM, HOLDING, TIME, PRECIPITATION, STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, POTIONEFFECT; }
 
 	public enum Trigger {
 		CHAT, CLICK, RIGHT_CLICK, LEFT_CLICK, FINISH, START, FAIL, BOUNCE;
 	}
 
 	public enum Command {
-		GIVE, TAKE, WALK, PAUSE, CHAT, WHISPER, SHOUT, NARRARATE, TELEPORT, PERMISS, EXECUTE, ZAP, BOUNCE, NOTABLE, FAIL; 
+		DELAY, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE, POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT, WHISPER, NARRARATE, CHAT, ANNOUNCE, GRANT; 
 	}
 
 
@@ -61,9 +55,9 @@ public class DenizenListener implements Listener {
 
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
-		
+
 		event.getPlayer().getLocation().getWorld().getName();
-		
+
 		List<net.citizensnpcs.api.npc.NPC> DenizenList = GetDenizensWithinRange(event.getPlayer().getLocation(), event.getPlayer().getWorld(), plugin.PlayerChatRangeInBlocks);
 		if (DenizenList.isEmpty()) { return; }
 		event.setCancelled(true);
@@ -71,7 +65,7 @@ public class DenizenListener implements Listener {
 			TalkToNPC(thisDenizen, event.getPlayer(), event.getMessage());
 			String theScript = GetInteractScript(thisDenizen, event.getPlayer());
 			if (theScript.equals("none")) thisDenizen.chat(event.getPlayer(), plugin.getConfig().getString("Denizens." + thisDenizen.getId() + ".Default Texts.No Script Interact", "I have nothing to say to you at this time."));
-			else if (!theScript.equals("none")) ParseScript(event.getPlayer(), GetScriptName(theScript), event.getMessage(), Trigger.CHAT);
+			else if (!theScript.equals("none")) ParseScript(thisDenizen, event.getPlayer(), GetScriptName(theScript), event.getMessage(), Trigger.CHAT);
 		} 
 	}
 
@@ -171,7 +165,7 @@ public class DenizenListener implements Listener {
 	 */
 
 
-	public void ParseScript(Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
+	public void ParseScript(net.citizensnpcs.api.npc.NPC theDenizen, Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
 
 		switch (theTrigger) {
 
@@ -180,7 +174,7 @@ public class DenizenListener implements Listener {
 			List<String> ChatTriggerList = GetChatTriggers(theScript, CurrentStep);
 			for (int l=0; l < ChatTriggerList.size(); l++ ) {
 				if (theMessage.matches(ChatTriggerList.get(l))) {
-					TriggerChatToQue(theScript, CurrentStep, l, thePlayer);
+					TriggerChatToQue(theScript, CurrentStep, l, thePlayer, theDenizen);
 				}
 			}
 			return;
@@ -210,101 +204,105 @@ public class DenizenListener implements Listener {
 	 * output. 
 	 */
 
-	public void TriggerChatToQue(String theScript, int CurrentStep, int ChatTrigger, Player thePlayer) {
+	public void TriggerChatToQue(String theScript, int CurrentStep, int ChatTrigger, Player thePlayer, net.citizensnpcs.api.npc.NPC theDenizen) {
 
 		List<String> CurrentPlayerQue = new ArrayList<String>();
 		if (Denizen.PlayerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.PlayerQue.get(thePlayer);
 		Denizen.PlayerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
-		List<String> AddedToPlayerQue = plugin.getConfig().getStringList("Scripts." + theScript + ".Progression." + CurrentStep + ".Interact.Chat Trigger." + ChatTrigger + ".Script");
+		List<String> AddedToPlayerQue = plugin.getConfig().getStringList("Scripts." + theScript + ".Steps." + CurrentStep + ".Interact.Chat Trigger." + ChatTrigger + ".Script");
+
 		if (!AddedToPlayerQue.isEmpty()) {
-			for (int entry = 0; entry < AddedToPlayerQue.size(); entry++) CurrentPlayerQue.add(AddedToPlayerQue.get(0));
+			for (String theCommand : AddedToPlayerQue)
+				CurrentPlayerQue.add(theDenizen.getFullName() + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";CHAT;" + theCommand);
 		}
-		ScriptHandler(theScript, CurrentStep, thePlayer, CurrentPlayerQue, Trigger.CHAT);
+
 		Denizen.PlayerQue.put(thePlayer, CurrentPlayerQue);
 		return;
 	}
 
 
 
-	public List<String> ScriptHandler(String theScript, int CurrentStep, Player thePlayer, List<String> ScriptToHandle, Trigger theTrigger) {
+	public static void CommandExecuter(Player thePlayer, String theStep) {
 
-		for (String theCommand : ScriptToHandle) {
-			String[] splitArgs = theCommand.split(" ");
-			switch (Command.valueOf(splitArgs[0].toUpperCase())) {
+		// Syntax of theStep
+		// 0 Denizen Name; 1 Script Name; 2 Step Number; 3 Trigger Type; 4 Command 
 
-			// 	GIVE, TAKE, WALK, PAUSE, CHAT, WHISPER, SHOUT, NARRARATE, TELEPORT, PERMISS, EXECUTE, ZAP, BOUNCE, NOTABLE; 
+		String[] splitArgs = theStep.split(";"); 
+		String[] splitCommand = splitArgs[4].split(" ");
 
-			// SCRIPT INTERACTION
+		switch (Command.valueOf(splitCommand[0].toUpperCase())) {
+
+		// SCRIPT INTERACTION
+
+		case ZAP:  // ZAP [Optional Step # to advance to]
+			if (splitCommand.length == 1)  { plugin.getConfig().set("Players." + thePlayer.getDisplayName() + "." + splitArgs[1] + ".Current Step", Integer.parseInt(splitArgs[2]) + 1); plugin.saveConfig(); }
+			else { plugin.getConfig().set("Players." + thePlayer.getDisplayName() + "." + splitArgs[1] + ".Current Step", Integer.parseInt(splitCommand[1])); plugin.saveConfig(); }
+			break;
 			
-			case ZAP:  // ZAP [Optional Step # to advance to]
-			case ASSIGN:  // ASSIGN [ME|Denizen Name] [ALL|Player Name] [Priority] [Script Name]
-			case DEASSIGN:  // DEASSIGN [ME|Denizen Name] [ALL|Player Name] [Script Name]
-			
-			case C2SCRIPT:  // Runs a CitizenScript
-			
-				
+		case ASSIGN:  // ASSIGN [ME|Denizen Name] [ALL|Player Name] [Priority] [Script Name]
+		case UNASSIGN:  // DEASSIGN [ME|Denizen Name] [ALL|Player Name] [Script Name]
+		case C2SCRIPT:  // Runs a CitizenScript
+
+
 			// WORLD INTERACTION
-				
-			case SPAWN:  // SPAWN [MOB NAME] [AMOUNT] (Location Bookmark)
-			case CHANGE:  // CHANGE [Block State Bookmark]
-			case WEATHER:  // WEATHER [Sunny|Stormy|Rainy] (Duration for Stormy/Rainy)
-			case EFFECT:  // EFFECT [EFFECT_TYPE] (Location Bookmark)
-				
-				
+
+		case SPAWN:  // SPAWN [MOB NAME] [AMOUNT] (Location Bookmark)
+		case CHANGE:  // CHANGE [Block State Bookmark]
+		case WEATHER:  // WEATHER [Sunny|Stormy|Rainy] (Duration for Stormy/Rainy)
+			if (splitCommand[1].equalsIgnoreCase("sunny")) { thePlayer.getWorld().setStorm(false); }
+			else if (splitCommand[1].equalsIgnoreCase("stormy")) { thePlayer.getWorld().setThundering(true); }
+			else if (splitCommand[1].equalsIgnoreCase("rainy")) { thePlayer.getWorld().setStorm(true); }
+			break;
+			
+		case EFFECT:  // EFFECT [EFFECT_TYPE] (Location Bookmark)
+
+
 			// PLAYER INTERACTION
-				
-			case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
-			case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]  or  TAKE ENCHANTMENT  or  TAKE INVENTORY
-			case HEAL:
-			case DAMAGE:
-			case POTION_EFFECT:
-			case TELEPORT:  // TELEPORT [Location Notable] (Effect)  or  //TELEPORT [X,Y,Z] (World Name) (Effect)
-			case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
-				
-			
+
+		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
+		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]  or  TAKE ENCHANTMENT  or  TAKE INVENTORY
+		case HEAL:
+		case DAMAGE:
+		case POTION_EFFECT:
+		case TELEPORT:  // TELEPORT [Location Notable] (Effect)  or  //TELEPORT [X,Y,Z] (World Name) (Effect)
+		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
+			thePlayer.getWorld().strikeLightning(thePlayer.getLocation());
+			break;
 			// DENIZEN INTERACTION	
-				
-			case WALK:  // MOVE [ME|Denizen Name] [Location Notable]
-			case NOD:  // NOD [ME]
-			case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
-			case BOUNCE:  // BOUNCE PLAYER
-			case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
-				
-				
-				
-			
-			case PERMISS:  // PERMISS [Optional Step # to advance to]
-			
-			case EXECUTE:  // EXECUTE [Optional Step # to advance to]
+
+		case WALK:  // MOVE [ME|Denizen Name] [Location Notable]
+		case NOD:  // NOD [ME]
+		case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
+		case BOUNCE:  // BOUNCE PLAYER
+		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
+		case PERMISS:  // PERMISS [Optional Step # to advance to]
+		case EXECUTE:  // EXECUTE [Optional Step # to advance to]
+			thePlayer.getServer().dispatchCommand(null, splitArgs[4].split(" ", 2)[1]);
+			break;	
 			
 			// SHOUT can be heard by players within 100 blocks.
 			// WHISPER can only be heard by the player interacting with.
 			// CHAT can be heard by the player, and players within 5 blocks.
 			// NARRARATE can only be heard by the player and is not branded by the NPC.
 			// ANNOUNCE can be heard by the entire server.
-			case SHOUT:  // ZAP [Optional Step # to advance to]
-			
-			case WHISPER:  // ZAP [Optional Step # to advance to]
-			
-			case NARRARATE:  // ZAP [Optional Step # to advance to]
 
-			case CHAT:  // CHAT [Message]     
+		case SHOUT:  // ZAP [Optional Step # to advance to]
+		case WHISPER:  // ZAP [Optional Step # to advance to]
+		case NARRARATE:  // ZAP [Optional Step # to advance to]
+		case CHAT:  // CHAT [Message] 
+			thePlayer.sendMessage(splitArgs[4].split(" ", 2)[1]);
+			break;
+		case ANNOUNCE: // ANNOUNCE [Message]
 
-			
-			// BOUNCE will move the player back, away from the Denizen.  The denizen can protect a 5 square wide path.
-			
 			
 			
-			case NOTABLE:  // NOTABLE [Name of Notable to Grant]
+			// NOTABLES	
 
-			}
+		case GRANT:  // NOTABLE [Name of Notable to Grant]
 
-
-			// 
-
-
-			return ScriptToHandle;
 		}
+	}
+
 
 
 
@@ -319,11 +317,11 @@ public class DenizenListener implements Listener {
 
 	public int GetCurrentStep(Player thePlayer, String theScript) {
 		int currentStep = 0;
-		if (plugin.getConfig().getString("Players." + thePlayer + "." + theScript + "." + "CurrentStep") != null) currentStep =  plugin.getConfig().getInt("Players." + thePlayer + "." + theScript + "." + "CurrentStep"); 
+		if (plugin.getConfig().getString("Players." + thePlayer + "." + theScript + "." + "Current Step") != null) currentStep =  plugin.getConfig().getInt("Players." + thePlayer + "." + theScript + "." + "Current Step"); 
 		return currentStep;
 	}
 
-	
+
 	/* GetScriptCompletes
 	 * 
 	 * Requires the Player and the Script.
@@ -332,14 +330,14 @@ public class DenizenListener implements Listener {
 	 * 
 	 * Returns number of times script has been completed.
 	 */
-	
+
 	public int GetScriptCompletes(Player thePlayer, String theScript) {
 		int ScriptCompletes = 0;
 		if (plugin.getConfig().getString("Players." + thePlayer + "." + theScript + "." + "Completes") != null) ScriptCompletes =  plugin.getConfig().getInt("Players." + thePlayer + "." + theScript + "." + "Completes"); 
 		return ScriptCompletes;
 	}
-	
-	
+
+
 	/* GetNotableCompletion
 	 * 
 	 * Requires the Player and the Script.
@@ -348,12 +346,12 @@ public class DenizenListener implements Listener {
 	 * 
 	 * Returns number of times script has been completed.
 	 */
-	
+
 	public boolean GetNotableCompletion(Player thePlayer, String theNotable) {
 		if (plugin.getConfig().getStringList("Notables.Players." + thePlayer + "." + theNotable).contains(theNotable)) return true;
 		else return false;
 	}
-	
+
 
 	/* GetChatTriggers
 	 * 
@@ -369,7 +367,7 @@ public class DenizenListener implements Listener {
 		int currentTrigger = 0;
 		// Add triggers to list
 		for (int x=0; currentTrigger >= 0; x++) {
-			String theChatTrigger = plugin.getConfig().getString("Scripts." + theScript + ".Progression." + currentStep + ".Interact.Chat Trigger." + String.valueOf(currentTrigger) + ".Trigger");
+			String theChatTrigger = plugin.getConfig().getString("Scripts." + theScript + ".Steps." + currentStep + ".Interact.Chat Trigger." + String.valueOf(currentTrigger) + ".Trigger");
 			if (theChatTrigger != null) { ChatTriggers.add(theChatTrigger); currentTrigger = x + 1; } 
 			else currentTrigger = -1;
 		}
@@ -413,9 +411,9 @@ public class DenizenListener implements Listener {
 
 			case NONE:
 				return true;
-
+				
 			case TIME: // (-)TIME DAY   or  (-)TIME NIGHT  or (-)TIME [At least this Time 0-23999] [But no more than this Time 1-24000] 
-					   // DAY = 0           NIGHT = 16000
+				// DAY = 0           NIGHT = 16000
 				if (negReq) {
 					if (splitArgs[1].equalsIgnoreCase("DAY")) if (thisPlayer.getWorld().getTime() > 16000) MetReqs++; 
 					if (splitArgs[1].equalsIgnoreCase("NIGHT")) if (thisPlayer.getWorld().getTime() < 16000) MetReqs++;
@@ -431,15 +429,18 @@ public class DenizenListener implements Listener {
 						if (thisPlayer.getWorld().getTime() >= Integer.parseInt(theseTimes[0]) && thisPlayer.getWorld().getTime() <= Integer.parseInt(theseTimes[1])) MetReqs++;
 					}
 				}
-				
+				break;
+
 			case PERMISSION:  // (-)PERMISSION [this.permission.node]
 				if (negReq) if (!Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.toString(), splitArgs[1])) MetReqs++;
 				else if (Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.toString(), splitArgs[1])) MetReqs++;		
-
+				break;
+				
 			case PRECIPITATION:  // (-)PRECIPITATION
-			    if (negReq) if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
+				if (negReq) if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
 				else if (thisPlayer.getWorld().hasStorm()) MetReqs++;
-
+				break;
+				
 			case HUNGER:  // (-)HUNGER FULL  or  (-)HUNGER HUNGRY  or  (-)HUNGER STARVING
 				if (negReq) {
 					if (splitArgs[1].equalsIgnoreCase("FULL")) if (thisPlayer.getFoodLevel() < 20) MetReqs++; 
@@ -450,6 +451,7 @@ public class DenizenListener implements Listener {
 					if (splitArgs[1].equalsIgnoreCase("HUNGRY")) if (thisPlayer.getFoodLevel() < 18) MetReqs++;
 					if (splitArgs[1].equalsIgnoreCase("STARVING")) if (thisPlayer.getFoodLevel() < 1) MetReqs++; 
 				}
+				break;
 
 			case LEVEL:  // (-)LEVEL [This Level # or higher]  or  (-)LEVEL [At least this Level #] [But no more than this Level #]
 				if (negReq) {
@@ -467,11 +469,13 @@ public class DenizenListener implements Listener {
 						if (thisPlayer.getLevel() >= Integer.parseInt(theseLevels[0]) && thisPlayer.getLevel() <= Integer.parseInt(theseLevels[1])) MetReqs++;
 					}
 				}
+				break;
 
 			case NOTABLE: // (-)NOTABLE [Name of Notable]
 				if (negReq) if (!GetNotableCompletion(thisPlayer, splitArgs[1])) MetReqs++;
 				else if (GetNotableCompletion(thisPlayer, splitArgs[1])) MetReqs++;
-				
+				break;
+
 			case WORLD:  // (-)WORLD [World Name] [or this World Name] [or this World...]
 				String[] theseWorlds = splitArgs[1].split(" ");
 				if (negReq) {
@@ -485,7 +489,8 @@ public class DenizenListener implements Listener {
 						if (thisPlayer.getWorld().getName().equalsIgnoreCase(thisWorld)) MetReqs++;
 					}
 				}
-				
+				break;
+
 			case NAME:  // (-)Name [Name] [or this Name] [or this Name, etc...]
 				String[] theseNames = splitArgs[1].split(" ");
 				if (negReq) {
@@ -499,31 +504,35 @@ public class DenizenListener implements Listener {
 						if (thisPlayer.getName().equalsIgnoreCase(thisName)) MetReqs++;
 					}
 				}
-				
+				break;
+
 			case STORMY:  // (-)STORMY     - Note that it can still be raining and this will trigger
 				if (negReq) if (!thisPlayer.getWorld().isThundering()) MetReqs++;
 				else if (thisPlayer.getWorld().isThundering()) MetReqs++;
+				break;
 
 			case SUNNY:  // (-)SUNNY    - Negative would trigger on Raining or Storming
-			    if (negReq) if (thisPlayer.getWorld().hasStorm()) MetReqs++;
+				if (negReq) if (thisPlayer.getWorld().hasStorm()) MetReqs++;
 				else if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
+				break;
 
 			case MONEY: // (-)MONEY [Amount of Money, or more]
-			    if (negReq) if (!Denizen.econ.has(thisPlayer.toString(), Integer.parseInt(splitArgs[1]))) MetReqs++;
+				if (negReq) if (!Denizen.econ.has(thisPlayer.toString(), Integer.parseInt(splitArgs[1]))) MetReqs++;
 				else if (Denizen.econ.has(thisPlayer.toString(), Integer.parseInt(splitArgs[1]))) MetReqs++;
+				break;
 
 			case ITEM: // (-)ITEM [ITEM_NAME] [# of that item, or more] [ENCHANTMENT_TYPE]
 				String[] theseItemArgs = splitArgs[1].split(" ");
 				ItemStack thisItem = new ItemStack(Material.getMaterial(theseItemArgs[0]), Integer.parseInt(theseItemArgs[1]));
 				Map<Material, Integer> PlayerInv = new HashMap<Material, Integer>();
 				Map<Material, Boolean> isEnchanted = new HashMap<Material, Boolean>();
-				
+
 				for (ItemStack invItem : thisPlayer.getInventory()) {
 					if (PlayerInv.containsKey(invItem.getType())) { int t = PlayerInv.get(invItem); t = t + invItem.getAmount(); PlayerInv.put(invItem.getType(), t); }
 					else PlayerInv.put(invItem.getType(), invItem.getAmount());
 					if (!theseItemArgs[2].isEmpty()) if (invItem.containsEnchantment(Enchantment.getByName(theseItemArgs[2]))) isEnchanted.put(invItem.getType(), true);
 				}
-				
+
 				if (negReq) {
 					if (PlayerInv.containsKey(thisItem.getType()) && theseItemArgs[2].isEmpty()) if (PlayerInv.get(thisItem.getType()) < thisItem.getAmount()) MetReqs++;
 					else if (PlayerInv.containsKey(thisItem.getType()) && isEnchanted.get(thisItem.getType())) if (PlayerInv.get(thisItem.getType()) < thisItem.getAmount()) MetReqs++;
@@ -532,7 +541,8 @@ public class DenizenListener implements Listener {
 					if (PlayerInv.containsKey(thisItem.getType()) && theseItemArgs[2].isEmpty()) if (PlayerInv.get(thisItem.getType()) >= thisItem.getAmount()) MetReqs++;
 					else if (PlayerInv.containsKey(thisItem.getType()) && isEnchanted.get(thisItem.getType())) if (PlayerInv.get(thisItem.getType()) >= thisItem.getAmount()) MetReqs++;
 				}
-				
+				break;
+
 			case HOLDING: // (-)HOLDING [ITEM_NAME] [ENCHANTMENT_TYPE]
 				String[] holdingItemArgs = splitArgs[1].split(" ");
 				if (negReq) if (!thisPlayer.getItemInHand().getType().equals(Material.getMaterial(holdingItemArgs[0]))) {
@@ -542,24 +552,28 @@ public class DenizenListener implements Listener {
 					if (holdingItemArgs[1] == null) MetReqs++;
 					else if (Enchantment.getByName(holdingItemArgs[1]).equals(thisPlayer.getItemInHand().getType())) MetReqs++;
 				}
+				break;
 
 			case POTIONEFFECT: // (-)POTIONEFFECT [POTION_EFFECT_TYPE]
 				if (negReq) if (!thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;			
 				else if (thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;
+				break;
 				
 			case SCRIPT: // (-)SCRIPT [Script Name] [Number of times completed, or more]
 				if (negReq) if (GetScriptCompletes(thisPlayer, splitArgs[1]) > Integer.parseInt(splitArgs[2])) MetReqs++;
 				else if (GetScriptCompletes(thisPlayer, splitArgs[1]) <= Integer.parseInt(splitArgs[2])) MetReqs++;
+				break;
 
 			case GROUP:
 				if (negReq) if (!Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.toString(), splitArgs[1])) MetReqs++;
 				else if (Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.toString(), splitArgs[1])) MetReqs++;		
+				break;
 			}
 		}
 		if (RequirementsMode.equalsIgnoreCase("all") && MetReqs == RequirementsList.size()) return true;
 		String[] ModeArgs = RequirementsMode.split(" ");
 		if (ModeArgs[0].equalsIgnoreCase("any") && MetReqs >= Integer.parseInt(ModeArgs[1])) return true;
-		
+
 		return false;
 	}
 

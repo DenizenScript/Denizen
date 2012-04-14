@@ -4,6 +4,7 @@ version: 0.3
 main: net.aufdemrand.denizen.Denizen
 depend:
   - Citizens
+  - Vault
 commands:
   denizen:
     description: Lists denizen commands.
