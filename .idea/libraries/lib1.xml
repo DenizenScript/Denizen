@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="lib1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/Vault.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/citizensapi-2.0-SNAPSHOT (2).jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/bukkit-1.2.5-R1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
