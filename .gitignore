@@ -2,6 +2,7 @@
 .classpath
 .project
 Denizen.iml
+.gitignore
 
 # Compiled source #
 ###################

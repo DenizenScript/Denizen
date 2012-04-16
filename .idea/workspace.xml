@@ -2,29 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4b1c6448-cfa8-4915-b8a7-d8af12ca2304" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/bukkit_1_2_5_R1_0.xml" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\.classpath" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\.project" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\README" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\config.yml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\lib\Vault.jar" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\lib\bukkit-1.2.4-R1.0.jar" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\lib\bukkit-1.2.5-R1.0.jar" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\lib\citizensapi-2.0-SNAPSHOT (1).jar" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\lib\citizensapi-2.0-SNAPSHOT (2).jar" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\net\aufdemrand\denizen\Denizen$1.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\net\aufdemrand\denizen\Denizen.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\net\aufdemrand\denizen\DenizenCharacter.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\net\aufdemrand\denizen\DenizenListener$Command.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\net\aufdemrand\denizen\DenizenListener$Requirement.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\net\aufdemrand\denizen\DenizenListener$RequirementMode.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\net\aufdemrand\denizen\DenizenListener$ScriptBehavior.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\net\aufdemrand\denizen\DenizenListener$Trigger.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\net\aufdemrand\denizen\DenizenListener.class" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\bin\plugin.yml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\lib\bukkit-1.2.4-R1.0.jar" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Jeremy\Denizen\lib\citizensapi-2.0-SNAPSHOT (1).jar" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/net/aufdemrand/denizen/DenizenListener.java" afterPath="$PROJECT_DIR$/src/net/aufdemrand/denizen/DenizenListener.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Denizen.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -114,7 +93,7 @@
       <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="11" selection-start="51" selection-end="51" vertical-scroll-proportion="0.08108108">
+            <state line="9" column="18" selection-start="117" selection-end="117" vertical-scroll-proportion="0.24324325">
               <folding />
             </state>
           </provider>
@@ -373,7 +352,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1288" y="781" width="1296" height="816" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -388,7 +367,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.6707317" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.6707317" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -487,7 +466,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="11" selection-start="51" selection-end="51" vertical-scroll-proportion="0.08108108">
+        <state line="9" column="18" selection-start="117" selection-end="117" vertical-scroll-proportion="0.24324325">
           <folding />
         </state>
       </provider>
