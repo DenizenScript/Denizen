@@ -3,6 +3,7 @@
 .project
 Denizen.iml
 .gitignore
+.idea
 
 # Compiled source #
 ###################
