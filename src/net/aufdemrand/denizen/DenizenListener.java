@@ -58,13 +58,13 @@ public class DenizenListener implements Listener {
 
 		event.getPlayer().getLocation().getWorld().getName();
 
-		List<net.citizensnpcs.api.npc.NPC> DenizenList = GetDenizensWithinRange(event.getPlayer().getLocation(), event.getPlayer().getWorld(), plugin.PlayerChatRangeInBlocks);
+		List<net.citizensnpcs.api.npc.NPC> DenizenList = GetDenizensWithinRange(event.getPlayer().getLocation(), event.getPlayer().getWorld(), Denizen.PlayerChatRangeInBlocks);
 		if (DenizenList.isEmpty()) { return; }
 		event.setCancelled(true);
 		for (net.citizensnpcs.api.npc.NPC thisDenizen : DenizenList) {
 			TalkToNPC(thisDenizen, event.getPlayer(), event.getMessage());
 			String theScript = GetInteractScript(thisDenizen, event.getPlayer());
-			if (theScript.equals("none")) thisDenizen.chat(event.getPlayer(), plugin.getConfig().getString("Denizens." + thisDenizen.getId() + ".Default Texts.No Script Interact", "I have nothing to say to you at this time."));
+			if (theScript.equals("none")) thisDenizen.chat(event.getPlayer(), plugin.getConfig().getString("Denizens." + thisDenizen.getId() + ".Texts.No Script Interact", "I have nothing to say to you at this time."));
 			else if (!theScript.equals("none")) ParseScript(thisDenizen, event.getPlayer(), GetScriptName(theScript), event.getMessage(), Trigger.CHAT);
 		} 
 	}
@@ -109,9 +109,8 @@ public class DenizenListener implements Listener {
 
 	public void TalkToNPC(net.citizensnpcs.api.npc.NPC theDenizen, Player thePlayer, String theMessage)
 	{
-		thePlayer.sendMessage(plugin.TalkToNPCString.replace("<NPC>", theDenizen.getName().toString()).replace("<TEXT>", theMessage));
+		thePlayer.sendMessage(Denizen.ChatToNPCString.replace("<NPC>", theDenizen.getName().toString()).replace("<TEXT>", theMessage));
 	}
-
 
 
 	/* GetInteractScript
@@ -212,12 +211,34 @@ public class DenizenListener implements Listener {
 		List<String> AddedToPlayerQue = plugin.getConfig().getStringList("Scripts." + theScript + ".Steps." + CurrentStep + ".Interact.Chat Trigger." + ChatTrigger + ".Script");
 
 		if (!AddedToPlayerQue.isEmpty()) {
-			for (String theCommand : AddedToPlayerQue)
-				CurrentPlayerQue.add(theDenizen.getFullName() + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";CHAT;" + theCommand);
-		}
 
-		Denizen.PlayerQue.put(thePlayer, CurrentPlayerQue);
-		return;
+			
+			for (String theCommand : AddedToPlayerQue) {
+			
+				
+				// Longer than 40, probably a long chat that needs multiline formatting.
+				if (theCommand.length() > 40) { 
+
+					String[] theCommandText;
+					theCommandText = theCommand.split(" ");
+					
+					switch (Command.valueOf(theCommandText[0].toUpperCase())) {
+					case SHOUT:
+					case CHAT:
+					case WHISPER:
+					case ANNOUNCE:
+					case NARRARATE:
+						for (int x = 1; x < theCommandText.length; x++) {				
+						
+						}
+					}
+					
+				}
+				else CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";CHAT;" + theCommand);
+			}
+			Denizen.PlayerQue.put(thePlayer, CurrentPlayerQue);
+			return;
+		}
 	}
 
 
@@ -225,7 +246,7 @@ public class DenizenListener implements Listener {
 	public static void CommandExecuter(Player thePlayer, String theStep) {
 
 		// Syntax of theStep
-		// 0 Denizen Name; 1 Script Name; 2 Step Number; 3 Trigger Type; 4 Command 
+		// 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Trigger Type; 4 Command 
 
 		String[] splitArgs = theStep.split(";"); 
 		String[] splitCommand = splitArgs[4].split(" ");
@@ -276,6 +297,8 @@ public class DenizenListener implements Listener {
 		case BOUNCE:  // BOUNCE PLAYER
 		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
 		case PERMISS:  // PERMISS [Optional Step # to advance to]
+			thePlayer
+		
 		case EXECUTE:  // EXECUTE [Optional Step # to advance to]
 			thePlayer.getServer().dispatchCommand(null, splitArgs[4].split(" ", 2)[1]);
 			break;	
@@ -286,10 +309,19 @@ public class DenizenListener implements Listener {
 			// NARRARATE can only be heard by the player and is not branded by the NPC.
 			// ANNOUNCE can be heard by the entire server.
 
-		case SHOUT:  // ZAP [Optional Step # to advance to]
 		case WHISPER:  // ZAP [Optional Step # to advance to]
+		    
+			
 		case NARRARATE:  // ZAP [Optional Step # to advance to]
+			
+			
+		
+		case SHOUT:  // ZAP [Optional Step # to advance to]
 		case CHAT:  // CHAT [Message] 
+			net.citizensnpcs.api.npc.NPC theDenizen = CitizensAPI.getNPCManager().getNPC(Integer.parseInt(splitArgs[0]));
+			
+			
+			
 			thePlayer.sendMessage(splitArgs[4].split(" ", 2)[1]);
 			break;
 		case ANNOUNCE: // ANNOUNCE [Message]
@@ -305,7 +337,7 @@ public class DenizenListener implements Listener {
 
 
 
-
+	
 	/* GetCurrentStep
 	 * 
 	 * Requires the Player and the Script.

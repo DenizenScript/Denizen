@@ -158,10 +158,14 @@ public class Denizen extends JavaPlugin {
 	
 
 	// Configuration Nodes
-	public int PlayerChatRangeInBlocks;
-	public int InteractDelayInTicks;	
-	public String TalkToNPCString;
-	public Boolean DebugMode;
+	public static int PlayerChatRangeInBlocks;
+	public static int InteractDelayInTicks;	
+	public static String ChatToNPCString;
+	public static String ChatToPlayerString;
+	public static String WhisperToPlayerString;
+	public static String ShoutToPlayerString;
+
+	public static Boolean DebugMode;
 	
 	public static Map<Player, List<String>> PlayerQue = new HashMap<Player, List<String>>();
 
@@ -170,9 +174,16 @@ public class Denizen extends JavaPlugin {
 
 		PlayerChatRangeInBlocks = getConfig().getInt("player_chat_range_in_blocks", 3);
 		InteractDelayInTicks = getConfig().getInt("interact_delay_in_ticks", 20);
-		TalkToNPCString = getConfig().getString("talk_to_npc_string", "You say to <NPC>, '<TEXT>'");
+		ChatToNPCString = getConfig().getString("chat_to_npc_string", "You say to <NPC>, '<TEXT>'");
+		ChatToPlayerString = getConfig().getString("chat_to_player_string", "You say to <NPC>, '<TEXT>'");
+		WhisperToPlayerString = getConfig().getString("whisper_to_player_string", "You say to <NPC>, '<TEXT>'");
+		ShoutToPlayerString = getConfig().getString("shout_to_player_string", "You say to <NPC>, '<TEXT>'");
+		
+		
 		DebugMode = getConfig().getBoolean("debug_mode", false);
 
+		
+		
 		saveConfig();  
 	}
 

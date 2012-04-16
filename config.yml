@@ -13,16 +13,17 @@
 # Default Denizen options let you tweak the specifics of your Denizens.
 
 debug_mode: true
-interact_delay_in_ticks: 5        #  Delay in ticks for all responses from the Denizens.  0 for instant.  5 is default because it provides a good
-                                  #  realistic delay when interacting with an NPC. Long texts and events roll in to the player at a comfortable rate.
+interact_delay_in_ticks: 20       #  Delay in ticks for all responses from the Denizens.  20 is default because it provides a good
+                                  #  realistic delay when interacting with an NPC. Long texts and events roll in to the player at a
+                                  #  comfortable rate.  Not a good idea to set this any lower than 10!
 npc_chat_range_in_blocks: 10      #  Range in blocks that the any player has to be to hear CHAT from an NPC.
 player_chat_range_in_blocks: 2    #  Range in blocks that the player has to be to trigger chat with the NPC. Text is also not heard globally when
                                   #  in this range.  Instead, the player will see 'You say to <NPC>, Event text goes here.'
 auto_engage: true                 #  Engages the NPC to the player for a specified amount of time when interacting
 engage_timeout_in_seconds: 15     #  Default amount of time that the Denizen will automatically DISENGAGE 
 
-talk_to_npc_string: "You say to <NPC>, '<TEXT>'"
-
+chat_to_npc_string: "You say to <NPC>, '<TEXT>'"
+chat_to_player_string: "<DENIZEN> says to <PL
 
 
 # START LIST OF DENIZENS' SCRIPT ASSIGNMENTS
@@ -32,9 +33,8 @@ Denizens:                         #  This node is used to define Denizens' scrip
     Scripts:                      #  List of scripts that the specified Denizen will use.
       - 0 Welcome to the Village  #  Format like this: 'PRIORITY [Name of Script to use]'
       - 5 A pie delivered         #  0 is lowest priority, usually used for scripts with the no requirements.
-                                  #  Upon interactivity with the NPC, the script with the highest priority that has its 
-                                  #  requirements met will be the script that triggers.
-
+    Texts:                             #  Upon interactivity with the NPC, the script with the highest priority that has its 
+      No Script Interact: I have nothing to say to you at this time.                            #  requirements met will be the script that triggers. 
 
 # START LIST OF SCRIPTS
       
