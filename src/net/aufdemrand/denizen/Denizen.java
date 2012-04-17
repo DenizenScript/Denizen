@@ -57,12 +57,12 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("debug")) {
 
-			if (this.DebugMode==false) {DebugMode = true; 
+			if (Denizen.DebugMode==false) {DebugMode = true; 
 			player.sendMessage(ChatColor.GREEN + "Debug mode ON.");   // Talk to the player.
 			return true;
 			}
 
-			else if (this.DebugMode==true) {DebugMode = false; 
+			else if (Denizen.DebugMode==true) {DebugMode = false; 
 			player.sendMessage(ChatColor.GREEN + "Debug mode OFF.");   // Talk to the player.
 			return true;
 			}

@@ -1,13 +1,10 @@
 # DENIZENS are helpful, interactive Citizens!  Denizens run off of mini scripts with steps and events.  They can be used in hundreds
 # of different ways, from tutorials, to questing, to administrating and more!
 
-
 # Timeline: Beta 1 -- All functionality used in this example file.
 #           Beta 2 -- Complete functionality of additional behaviors/requirements/triggers listed.
 #           1.0 -- Bug fixes from Beta.
 #           1.5 -- In-game Script editor.
-
-
 
 
 # Default Denizen options let you tweak the specifics of your Denizens.
@@ -22,100 +19,107 @@ player_chat_range_in_blocks: 2    #  Range in blocks that the player has to be t
 auto_engage: true                 #  Engages the NPC to the player for a specified amount of time when interacting
 engage_timeout_in_seconds: 15     #  Default amount of time that the Denizen will automatically DISENGAGE 
 
-chat_to_npc_string: "You say to <NPC>, '<TEXT>'"
-chat_to_player_string: "<DENIZEN> says to <PL
+player_chat_to_npc: "You say to <NPC>, '<TEXT>'"
+player_chat_to_npc_bystander: "<PLAYER> says to <NPC>, '<TEXT>'"
+npc_chat_to_player: "<NPC> says to you, '<TEXT>'"
+npc_chat_to_player_bystander: "<NPC> says to <PLAYER>, '<TEXT>'"
+npc_whisper_to_player: "<NPC> whispers to you, '<TEXT>'"
+npc_whisper_to_player_bystander: "<NPC> whispers something to <PLAYER>."
+npc_shout_to_player: "<NPC> shouts at you, '<TEXT>'"
+npc_shout_to_player_bystander: "<NPC> shouts at <PLAYER>, '<TEXT>'"
 
+chat_color:
+whisper_color:
+shout_color:
+narrarate_color:
+announce_color:
 
 # START LIST OF DENIZENS' SCRIPT ASSIGNMENTS
 
-Denizens:                         #  This node is used to define Denizens' scripts.
-  'Steve':                        #  Name of the Citizens2 NPC.
-    Scripts:                      #  List of scripts that the specified Denizen will use.
-      - 0 Welcome to the Village  #  Format like this: 'PRIORITY [Name of Script to use]'
-      - 5 A pie delivered         #  0 is lowest priority, usually used for scripts with the no requirements.
-    Texts:                             #  Upon interactivity with the NPC, the script with the highest priority that has its 
-      No Script Interact: I have nothing to say to you at this time.                            #  requirements met will be the script that triggers. 
-
-# START LIST OF SCRIPTS
-      
+Denizens:                         
+  'Steve':                        
+    Scripts:                      
+      - 0 Welcome to the Village  
+      - 5 A pie delivered         
+    Texts:                        
+      No Scripts To Trigger: I have nothing to say to you at this time.                      
+	  
 Scripts:
-  'Welcome to the Village':       #  SCRIPT NAME
+  'Welcome to the Village':    
         
-    Requirements:                 #  SCRIPT REQUIREMENTS (If missing, defaults to no requirements.)
-      Mode: All                   #  Requires all. Available modes (for requirements): 'All' 'Any [#]'
-      List:                       #  List of requirement types to START the Script.
-        - Time Day                #  No inherit requirements. Requires no special permissions to trigger with player.
-                                  #  Can use more than one.
-                                  #  Available requirements: 'None' 'Time Day' 'Time Night' 'Precipitation' 'No Precipitation'
-                                  #  'Permission [permission.nodes.here]' 'Level [level]' 'Starving' 'Hungry' 'Full'
-                                  #  'World [world name]' 'Notable [name of notable]'
-                                  #  (Notables requirements will require use of my other plugin Notables. Available Soon.)      
+    Requirements:              
+      Mode: All                
+      List:                    
+        - Time Day             
+                               
+                               
+                               
+                               
+                               
 
-    Steps:                       #  OUTLINES THE SCRIPT PROGRESSION through a series of steps of interactivity with the NPC.
-      '0':                        #  Steps carry out in order, starting at 0.
+    Steps:                     
+      '0':                     
  
-        Interact:                 #  Interact defines ways the player can interact with the NPC for this event.  
+        Interact:              
 
-          Click Trigger:          #  Events to carry out when NPC is clicked on.
-            - CHAT Welcome to our fair city, <player>!          # Sends text to players within chat range from the NPC.
+          Click Trigger:       
+            - CHAT Welcome to our fair city, <player>!        
             - CHAT Are you traveling from out of town?
             - DELAY 2 
-            - NARRARATE <NPC> seems like a friendly face.       # Sends text to the player without branding the NPC.
+            - NARRARATE <NPC> seems like a friendly face.     
 
-          Chat Trigger:           #  Events to carry out when certain words or phrases are chatted by the player. The first chat
-            '0':                  #  keyword to trigger will cancel all other triggers.
-              Trigger: 'Yes'      #  First line of a Chat Trigger is the keyword(s) to trigger. 
+          Chat Trigger:        
+            '0':               
+              Trigger: 'Yes'   
               Script:
-                - DELAY 2         #    additional lines make up the script.
+                - DELAY 2      
                 - CHAT Oh! I'm sorry I didn't recognize you! 
                 - CHAT Our small village is so small I almost feel embarrassed. I should have known you lived close by!
                 - CHAT Have you heard about Tom the Tanner? Isn't that just the worst!?
-                - ZAP 2           #  Finishes this step in the progressions and sets the next step to trigger as step '2'
+                - ZAP 2        
             '1':
-              Trigger: 'No'       #  Keyword is 'no'. No case sensitivity, but it must match a whole word. Example: Saying 'Nothing' will not trigger. 
-              Script:             #    will not trigger, but saying 'No I don't.' will trigger. 
-                - DELAY 2         #  Delays the script for 2 seconds.  Helps control flow. 
+              Trigger: 'No'    
+              Script:          
+                - DELAY 2      
                 - CHAT I didn't think I've seen you around these parts!
                 - CHAT Well, welcome to the town of Chakkor! 
                 - CHAT If you are looking for some work, I would check with James at the Bakery. This is their busy season!
-                - ZAP             # Finishes this step in the progression. 
+                - ZAP          
 
-          On Finish:              #  Script to be carried out when the step finishes.  Useful if there are ZAPs in multiple locations.
-                                  #    and you aren't quite sure which event will finish the step
-            - NARRARATE What a friendly face.      #  but need script events carried out regardless.
-            - NOTABLE Chat with a villager         #  Sends a completed Notable to the Notables plug-in.
+          On Finish:           
+                               
+            - NARRARATE What a friendly face.   
+            - NOTABLE Chat with a villager      
 
       '1':        
           Click Trigger:          #  Events to carry out when NPC is clicked on.
-            - CHAT Welcome back, <player>!          # Sends text to players within chat range from the NPC.
+            - CHAT Welcome back, <player>!          
             - CHAT Have you talked to James lately?
 
       '2':
-           Click Trigger:         #  Events to carry out when NPC is clicked on.
-            - CHAT How is your day going, <player>!          # Sends text to players within chat range from the NPC.
+           Click Trigger:       
+            - CHAT How is your day going, <player>! 
             - CHAT I wish there were something we could do for Tom!
 
- 
-
-  'A pie delivered':              #  SCRIPT NAME
+  'A pie delivered':            
         
     Requirements:                 
       Mode: All                   
       List:                       
-        - QUEST A Pie for Tom     #  Requires the quest 'A Pie for Tom' to be completed
+        - QUEST A Pie for Tom  
 
-    Behavior:                     
+    Behavior:                  
       - Controlled                                               
 
     Progression:    
       '0':                        
         Interact:                   
-          Click Trigger:          #  Events to carry out when NPC is clicked on.
+          Click Trigger:  
             - CHAT Oh <player>! I heard what you did for Tom!
             - CHAT We're lucky to have people like you in our small village! 
 
 Players:
-  aufdemrand:      # Player Name
+  aufdemrand:      
     'Script Name':      
       Current Step: 0
       Completed: 4
@@ -123,7 +127,8 @@ Players:
 Notables:
   Notables:
     "This Notable":
-      Obtain Text: "You've obtained THIS NOTABLE!"
+      Type: Achievement
+	  Obtain Text: "You've obtained THIS NOTABLE!"
       Journal Entry: "Today I obtained THIS NOTABLE. It was a glorious day!"
       Flags:
         - Repeatable

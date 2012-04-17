@@ -24,7 +24,7 @@ public class DenizenListener implements Listener {
     public DenizenListener(Denizen instance) { plugin = instance; }
 
     public enum RequirementMode {
-        NONE, ALL, ANY;
+        NONE, ALL, ANY
     }
 
     public enum Requirement {
@@ -32,7 +32,7 @@ public class DenizenListener implements Listener {
         STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, POTIONEFFECT }
 
     public enum Trigger {
-        CHAT, CLICK, RIGHT_CLICK, LEFT_CLICK, FINISH, START, FAIL, BOUNCE
+        CHAT, CLICK, FINISH, START, DIE, TOUCH
     }
 
     public enum Command {
@@ -81,8 +81,7 @@ public class DenizenListener implements Listener {
       * Returns DenizensWithinRange List<NPC>
       */
 
-    public List<NPC> GetDenizensWithinRange (Location PlayerLocation,
-                                             World PlayerWorld, int Range) {
+    public List<NPC> GetDenizensWithinRange (Location PlayerLocation, World PlayerWorld, int Range) {
 
         List<NPC> DenizensWithinRange = new ArrayList<NPC>();
         Collection<NPC> DenizenNPCs = CitizensAPI.getNPCManager().
@@ -109,8 +108,7 @@ public class DenizenListener implements Listener {
       * <NPC> and <TEXT> are replaced with corresponding information.
       */
 
-    public void TalkToNPC(NPC theDenizen, Player thePlayer, String theMessage)
-    {
+    public void TalkToNPC(NPC theDenizen, Player thePlayer, String theMessage) {
         thePlayer.sendMessage(Denizen.ChatToNPCString.replace("<NPC>", theDenizen.getName()).
                 replace("<TEXT>", theMessage));
     }
@@ -630,7 +628,7 @@ public class DenizenListener implements Listener {
                     }
                     break;
 
-                case HOLDING: // (-)HOLDING [ITEM_NAME] [ENCHANTMENT_TYPE]
+                case HOLDING: // (-)HOLDING [ITEM_NAME] (ENCHANTMENT_TYPE)
                     String[] itemArgs = splitArgs[1].split(" ");
                     if (negReq) if (!thisPlayer.getItemInHand().getType().equals(Material.getMaterial(itemArgs[0]))) {
                         if (itemArgs[1] == null) MetReqs++;
