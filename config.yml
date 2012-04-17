@@ -1,5 +1,5 @@
-# DENIZENS are helpful, interactive Citizens!  Denizens run off of mini scripts with steps and events.  They can be used in hundreds
-# of different ways, from tutorials, to questing, to administrating and more!
+# DENIZENS are helpful, interactive Citizens!  Denizens run off of mini scripts with steps and events.
+# They can be used in hundreds of different ways, from tutorials, to questing, to administrating and more!
 
 # Timeline: Beta 1 -- All functionality used in this example file.
 #           Beta 2 -- Complete functionality of additional behaviors/requirements/triggers listed.
@@ -10,14 +10,13 @@
 # Default Denizen options let you tweak the specifics of your Denizens.
 
 debug_mode: true
-interact_delay_in_ticks: 20       #  Delay in ticks for all responses from the Denizens.  20 is default because it provides a good
-                                  #  realistic delay when interacting with an NPC. Long texts and events roll in to the player at a
-                                  #  comfortable rate.  Not a good idea to set this any lower than 10!
+interact_delay_in_ticks: 20       #  Delay in ticks for all responses from the Denizens.  20 is default because it
+                                  #  provides a good realistic delay when interacting with an NPC. Long texts and
+                                  #  script events roll in to the player at a comfortable rate.
+                                  #  It's not a good idea to set this any lower than 10!
 npc_chat_range_in_blocks: 10      #  Range in blocks that the any player has to be to hear CHAT from an NPC.
-player_chat_range_in_blocks: 2    #  Range in blocks that the player has to be to trigger chat with the NPC. Text is also not heard globally when
-                                  #  in this range.  Instead, the player will see 'You say to <NPC>, Event text goes here.'
-auto_engage: true                 #  Engages the NPC to the player for a specified amount of time when interacting
-engage_timeout_in_seconds: 15     #  Default amount of time that the Denizen will automatically DISENGAGE 
+player_chat_range_in_blocks: 2    #  Range in blocks that the player has to be to trigger chat with the NPC.
+engage_timeout_in_seconds: 15     #  Default amount of time that the Denizen will automatically DISENGAGE
 
 player_chat_to_npc: "You say to <NPC>, '<TEXT>'"
 player_chat_to_npc_bystander: "<PLAYER> says to <NPC>, '<TEXT>'"
@@ -28,13 +27,13 @@ npc_whisper_to_player_bystander: "<NPC> whispers something to <PLAYER>."
 npc_shout_to_player: "<NPC> shouts at you, '<TEXT>'"
 npc_shout_to_player_bystander: "<NPC> shouts at <PLAYER>, '<TEXT>'"
 
-chat_color:
-whisper_color:
-shout_color:
-narrarate_color:
-announce_color:
+chat_color: white
+whisper_color: gray
+shout_color: red
+narrate_color: green
+announce_color: yellow
 
-# START LIST OF DENIZENS' SCRIPT ASSIGNMENTS
+# START LIST OF DENIZENS
 
 Denizens:                         
   'Steve':                        
@@ -42,7 +41,7 @@ Denizens:
       - 0 Welcome to the Village  
       - 5 A pie delivered         
     Texts:                        
-      No Scripts To Trigger: I have nothing to say to you at this time.                      
+      No Scripts To Trigger: I have nothing to say to you at this time.
 	  
 Scripts:
   'Welcome to the Village':    
@@ -51,11 +50,6 @@ Scripts:
       Mode: All                
       List:                    
         - Time Day             
-                               
-                               
-                               
-                               
-                               
 
     Steps:                     
       '0':                     
@@ -66,7 +60,7 @@ Scripts:
             - CHAT Welcome to our fair city, <player>!        
             - CHAT Are you traveling from out of town?
             - DELAY 2 
-            - NARRARATE <NPC> seems like a friendly face.     
+            - NARRATE <NPC> seems like a friendly face.
 
           Chat Trigger:        
             '0':               
@@ -88,16 +82,16 @@ Scripts:
 
           On Finish:           
                                
-            - NARRARATE What a friendly face.   
+            - NARRATE What a friendly face.
             - NOTABLE Chat with a villager      
 
       '1':        
-          Click Trigger:          #  Events to carry out when NPC is clicked on.
+          Click Trigger:
             - CHAT Welcome back, <player>!          
             - CHAT Have you talked to James lately?
 
       '2':
-           Click Trigger:       
+          Click Trigger:
             - CHAT How is your day going, <player>! 
             - CHAT I wish there were something we could do for Tom!
 
