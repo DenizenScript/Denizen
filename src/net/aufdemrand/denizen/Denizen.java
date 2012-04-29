@@ -94,6 +94,10 @@ public class Denizen extends JavaPlugin {
 			player.sendMessage(PlayerQue.toString());
 			return true;
 		}
+		
+		else if (args[0].equalsIgnoreCase("reload")) {
+			this.reloadConfig();
+		}
 
 		else if (args[0].equalsIgnoreCase("assign")) {
 			player.sendMessage(ChatColor.GREEN + "Assigned.");   // Talk to the player.
@@ -131,9 +135,11 @@ public class Denizen extends JavaPlugin {
 			@Override
 			public void run() {
 				if (!PlayerQue.isEmpty()) {	for (Map.Entry<Player, List<String>> theEntry : PlayerQue.entrySet()) {
-					if (!theEntry.getValue().isEmpty()) { theEntry.getValue().remove(0);
+					if (!theEntry.getValue().isEmpty()) { 
+						DenizenListener.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
+						theEntry.getValue().remove(0);
 						PlayerQue.put(theEntry.getKey(), theEntry.getValue());
-						DenizenListener.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));	}
+							}
 					}
 				}
 			}
