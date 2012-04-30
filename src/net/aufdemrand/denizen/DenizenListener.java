@@ -5,7 +5,10 @@ import java.util.*;
 
 import com.sun.xml.internal.fastinfoset.util.StringArray;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.npc.NPC;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -38,9 +41,21 @@ public class DenizenListener implements Listener {
 	public enum Command {
 		DELAY, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
 		POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT,
-		WHISPER, NARRARATE, CHAT, ANNOUNCE, GRANT
+		WHISPER, NARRARATE, CHAT, ANNOUNCE, GRANT, HINT
 	}
 
+	
+	public static void DenizenClicked(NPC theDenizen, Player thePlayer) {
+		
+		String theScript = GetInteractScript(theDenizen, thePlayer);
+		if (theScript.equals("none")) theDenizen.chat(thePlayer, plugin.getConfig().
+				getString("Denizens." + theDenizen.getId() + ".Texts.No Script Interact",
+						"I have nothing to say to you at this time."));
+		else if (!theScript.equals("none")) ParseScript(theDenizen, thePlayer,
+				GetScriptName(theScript), "", Trigger.CLICK);
+		
+	}
+	
 
 
 	/* PlayerChatListener
@@ -60,11 +75,24 @@ public class DenizenListener implements Listener {
 
 		event.setCancelled(true);
 		for (NPC thisDenizen : DenizenList) {
-			TalkToNPC(thisDenizen, event.getPlayer(), event.getMessage());
 			String theScript = GetInteractScript(thisDenizen, event.getPlayer());
-			if (theScript.equals("none")) thisDenizen.chat(event.getPlayer(), plugin.getConfig().
-					getString("Denizens." + thisDenizen.getId() + ".Texts.No Script Interact",
-							"I have nothing to say to you at this time."));
+			
+			if (theScript.equals("none")) { 
+				
+				TalkToNPC(thisDenizen, event.getPlayer(), event.getMessage());
+				
+				List<String> CurrentPlayerQue = new ArrayList<String>();
+				if (Denizen.PlayerQue.get(event.getPlayer()) != null) CurrentPlayerQue = Denizen.PlayerQue.get(event.getPlayer());
+				Denizen.PlayerQue.remove(event.getPlayer());  // Should keep the talk queue from triggering mid-add
+			
+				CurrentPlayerQue.add(Integer.toString(thisDenizen.getId()) + ";" + theScript + ";"
+						+ 0 + ";CHAT;" + "CHAT " + plugin.getConfig().getString("Denizens." + thisDenizen.getId() 
+						+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
+				
+				Denizen.PlayerQue.put(event.getPlayer(), CurrentPlayerQue);
+			
+			}
+			
 			else if (!theScript.equals("none")) ParseScript(thisDenizen, event.getPlayer(),
 					GetScriptName(theScript), event.getMessage(), Trigger.CHAT);
 		}
@@ -108,7 +136,7 @@ public class DenizenListener implements Listener {
 	 * <NPC> and <TEXT> are replaced with corresponding information.
 	 */
 
-	public void TalkToNPC(NPC theDenizen, Player thePlayer, String theMessage) {
+	public static void TalkToNPC(NPC theDenizen, Player thePlayer, String theMessage) {
 		thePlayer.sendMessage(Denizen.ChatToNPCString.replace("<NPC>", theDenizen.getName()).
 				replace("<TEXT>", theMessage));
 	}
@@ -124,7 +152,7 @@ public class DenizenListener implements Listener {
 	 * Calls CheckRequirements
 	 */
 
-	public String GetInteractScript(NPC thisDenizen, Player thisPlayer) {
+	public static String GetInteractScript(NPC thisDenizen, Player thisPlayer) {
 		String theScript = "none";
 		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getName()
 				+ ".Scripts");
@@ -169,30 +197,48 @@ public class DenizenListener implements Listener {
 	 */
 
 
-	public void ParseScript(NPC theDenizen, Player thePlayer, String theScript,
+	public static void ParseScript(NPC theDenizen, Player thePlayer, String theScript,
 			String theMessage,  Trigger theTrigger) {
 
+		int CurrentStep = GetCurrentStep(thePlayer, theScript);
+		
 		switch (theTrigger) {
 
 		case CHAT:
-			int CurrentStep = GetCurrentStep(thePlayer, theScript);
 			List<String> ChatTriggerList = GetChatTriggers(theScript, CurrentStep);
 			for (int l=0; l < ChatTriggerList.size(); l++ ) {
-				if (theMessage.toLowerCase().contains(ChatTriggerList.get(l).toLowerCase())) {
-					TriggerChatToQue(theScript, CurrentStep, l + 1, thePlayer, theDenizen);
+				if (theMessage.toLowerCase().contains(ChatTriggerList.get(l).replace("<PLAYER>", thePlayer.getName()).toLowerCase())) {
+					
+					TalkToNPC(theDenizen, thePlayer, plugin.getConfig().getString("Scripts." + theScript + ".Steps."
+							+ CurrentStep + ".Chat Trigger." + String.valueOf(l + 1) + ".Trigger").replace("/", ""));
+					
+					TriggerToQue(theScript, plugin.getConfig().getStringList("Scripts." + theScript + ".Steps."
+							+ CurrentStep + ".Chat Trigger." + String.valueOf(l + 1) + ".Script"), CurrentStep, thePlayer, theDenizen);
 					return;
 				}
 
 			}
 
-			theDenizen.chat(thePlayer, plugin.getConfig().
-					getString("Denizens." + theDenizen.getId() + ".Texts.No Script Interact",
-							"I have nothing to say to you at this time."));
+			TalkToNPC(theDenizen, thePlayer, theMessage);
+			
+			List<String> CurrentPlayerQue = new ArrayList<String>();
+			if (Denizen.PlayerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.PlayerQue.get(thePlayer);
+			Denizen.PlayerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
+		
+			CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
+					+ 0 + ";CHAT;" + "CHAT " + plugin.getConfig().getString("Denizens." + theDenizen.getId() 
+					+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
+			
+			Denizen.PlayerQue.put(thePlayer, CurrentPlayerQue);
+			
+			
 			return;
 
 		case CLICK:
-			// get current progression
-			// send script
+		
+			TriggerToQue(theScript, plugin.getConfig().getStringList("Scripts." + theScript + ".Steps."
+					+ CurrentStep + ".Click Trigger"), CurrentStep, thePlayer, theDenizen);
+			
 			return;
 
 		case FINISH:
@@ -214,14 +260,12 @@ public class DenizenListener implements Listener {
 	 * output.
 	 */
 
-	public void TriggerChatToQue(String theScript, int CurrentStep, int ChatTrigger, Player thePlayer,
+	public static void TriggerToQue(String theScript, List<String> AddedToPlayerQue, int CurrentStep, Player thePlayer,
 			NPC theDenizen) {
 
 		List<String> CurrentPlayerQue = new ArrayList<String>();
 		if (Denizen.PlayerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.PlayerQue.get(thePlayer);
 		Denizen.PlayerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
-		List<String> AddedToPlayerQue = plugin.getConfig().getStringList("Scripts." + theScript + ".Steps."
-				+ CurrentStep + ".Chat Trigger." + ChatTrigger + ".Script");
 
 		if (!AddedToPlayerQue.isEmpty()) {
 
@@ -334,7 +378,8 @@ public class DenizenListener implements Listener {
 		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
 		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
 			// or  TAKE ENCHANTMENT  or  TAKE INVENTORY
-		case HEAL:
+		case HEAL:  // HEAL  or  HEAL [# of Hearts]
+			if (splitCommand[1].isEmpty()) {thePlayer.h
 		case DAMAGE:
 		case POTION_EFFECT:
 		case TELEPORT:  // TELEPORT [Location Notable] (Effect)
@@ -351,7 +396,7 @@ public class DenizenListener implements Listener {
 		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
 		case PERMISS:  // PERMISS [Optional Step # to advance to]
 
-		case EXECUTE:  // EXECUTE [Optional Step # to advance to]
+		case EXECUTE:  // EXECUTE [Command to Execute]
 			thePlayer.getServer().dispatchCommand(null, splitArgs[4].split(" ", 2)[1]);
 			break;
 
@@ -399,12 +444,11 @@ public class DenizenListener implements Listener {
 	 * Returns currentStep
 	 */
 
-	public int GetCurrentStep(Player thePlayer, String theScript) {
+	public static int GetCurrentStep(Player thePlayer, String theScript) {
 		int currentStep = 1;
 		if (plugin.getConfig().getString("Players." + thePlayer.getDisplayName() + "." + theScript + "." + "Current Step")
 				!= null) currentStep =  plugin.getConfig().getInt("Players." + thePlayer.getDisplayName() + "." + theScript
 						+ "." + "Current Step");
-		plugin.getServer().broadcastMessage(theScript + " " + String.valueOf(currentStep));
 		return currentStep;
 	}
 
@@ -418,7 +462,7 @@ public class DenizenListener implements Listener {
 	 * Returns number of times script has been completed.
 	 */
 
-	public int GetScriptCompletes(Player thePlayer, String theScript) {
+	public static int GetScriptCompletes(Player thePlayer, String theScript) {
 		int ScriptCompletes = 0;
 		if (plugin.getConfig().getString("Players." + thePlayer + "." + theScript + "." + "Completes")
 				!= null) ScriptCompletes =  plugin.getConfig().getInt("Players." + thePlayer + "."
@@ -436,7 +480,7 @@ public class DenizenListener implements Listener {
 	 * Returns number of times script has been completed.
 	 */
 
-	public boolean GetNotableCompletion(Player thePlayer, String theNotable) {
+	public static boolean GetNotableCompletion(Player thePlayer, String theNotable) {
 		return plugin.getConfig().getStringList("Notables.Players." + thePlayer + "." + theNotable).
 				contains(theNotable);
 	}
@@ -451,7 +495,7 @@ public class DenizenListener implements Listener {
 	 * Returns ChatTriggers
 	 */
 
-	public List<String> GetChatTriggers(String theScript, Integer currentStep) {
+	public static List<String> GetChatTriggers(String theScript, Integer currentStep) {
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
 		// Add triggers to list
@@ -462,7 +506,6 @@ public class DenizenListener implements Listener {
 			if (theChatTrigger != null) { 
 				ChatTriggers.add(theChatTrigger.split("/")[1]); 
 				currentTrigger = x + 1; 
-				plugin.getServer().broadcastMessage(ChatTriggers.toString());
 			}
 			else currentTrigger = -1;
 
@@ -484,7 +527,7 @@ public class DenizenListener implements Listener {
 	 * Returns the Script Name
 	 */
 
-	public String GetScriptName(String thisScript) {
+	public static String GetScriptName(String thisScript) {
 		if (thisScript.equals("none")) { return thisScript; }
 		else {
 			String [] thisScriptArray = thisScript.split(" ", 2);
@@ -495,7 +538,7 @@ public class DenizenListener implements Listener {
 
 	// CHECK REQUIREMENTS  (Checks if the requirements of a script are met when given Script/Player)
 
-	public boolean CheckRequirements(String thisScript, Player thisPlayer) {
+	public static boolean CheckRequirements(String thisScript, Player thisPlayer) {
 
 		String RequirementsMode = plugin.getConfig().getString("Scripts." + thisScript + ".Requirements.Mode");
 
