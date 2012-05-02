@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.economy.Economy;
@@ -25,6 +29,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
@@ -97,6 +103,8 @@ public class Denizen extends JavaPlugin {
 		
 		else if (args[0].equalsIgnoreCase("reload")) {
 			this.reloadConfig();
+			this.reloadScripts();
+			player.sendMessage("Denizens config.yml and scripts.yml reloaded.");
 		}
 
 		else if (args[0].equalsIgnoreCase("assign")) {
@@ -122,15 +130,17 @@ public class Denizen extends JavaPlugin {
 		setConfigurations();
 		
         if (!setupEconomy() ) {
-            getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no Vault-compatible Economy Plugin found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        
         setupPermissions();
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new DenizenListener(this), this);
 
+		CitizensAPI.getTraitManager().registerTrait(arg0)
+		
+		
 		this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() {
@@ -159,12 +169,63 @@ public class Denizen extends JavaPlugin {
         perms = rsp.getProvider();
         return perms != null;
     }
-	
 
+    
+    
+    // SCRIPTS CONFIGURATION METHODS
+    
+    
+    private FileConfiguration customConfig = null;
+    private File customConfigFile = null;
+
+    public void reloadScripts() {
+        if (customConfigFile == null) {
+        customConfigFile = new File(getDataFolder(), "scripts.yml");
+        }
+        customConfig = YamlConfiguration.loadConfiguration(customConfigFile);
+     
+        // Look for defaults in the jar
+        InputStream defConfigStream = getResource("scripts.yml");
+        if (defConfigStream != null) {
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            customConfig.setDefaults(defConfig);
+        }
+    }
+
+    public FileConfiguration getScripts() {
+        if (customConfig == null) {
+            reloadScripts();
+        }
+        return customConfig;
+    }
+
+    public void saveScripts() {
+        if (customConfig == null || customConfigFile == null) {
+        return;
+        }
+        try {
+            customConfig.save(customConfigFile);
+        } catch (IOException ex) {
+            Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + customConfigFile, ex);
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 	
 
 	// Configuration Nodes
-	public static int PlayerChatRangeInBlocks;
+	public static int PlayerToNPCChatRangeInBlocks;
 	public static int InteractDelayInTicks;	
 	public static String ChatToNPCString;
 	public static String ChatToPlayerString;
@@ -174,11 +235,12 @@ public class Denizen extends JavaPlugin {
 	public static Boolean DebugMode;
 	
 	public static Map<Player, List<String>> PlayerQue = new HashMap<Player, List<String>>();
+	public static Map<NPC, Location> previousDenizenLocation = new HashMap<NPC, Location>(); 
 
 	public void setConfigurations() {
 		// getConfig().options().copyDefaults(true);
-
-		PlayerChatRangeInBlocks = getConfig().getInt("player_chat_range_in_blocks", 3);
+		
+		PlayerToNPCChatRangeInBlocks = getConfig().getInt("player_chat_range_in_blocks", 3);
 		InteractDelayInTicks = getConfig().getInt("interact_delay_in_ticks", 20);
 		ChatToNPCString = getConfig().getString("chat_to_npc_string", "You say to <NPC>, '<TEXT>'");
 		ChatToPlayerString = getConfig().getString("chat_to_player_string", "You say to <NPC>, '<TEXT>'");

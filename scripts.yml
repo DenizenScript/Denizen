@@ -1,0 +1,47 @@
+
+Welcome to Harbortown:
+  Requirements:
+    Mode: NONE
+  Steps:
+    '1':
+      Proximity Trigger:
+      - CHAT Hello stranger! Welcome to Harbortown!
+      Click Trigger:
+      - CHAT What's your name, stranger?
+      - WALK 10 10 0
+      Chat Trigger:
+        '1':
+          Trigger: My name is /<player>/.
+          Script:
+          - CHAT Ah ha, your name sounds familiar!
+          - CHAT Are you from around this area?
+          - ZAP
+        '2':
+          Trigger: Let's go /back/.
+          Script:
+          - CHAT Yes, let's!
+          - WALK -10 -10 0
+    '2':
+      Click Trigger:
+      - HINT
+      Chat Trigger:
+        '1':
+          Trigger: /Yes/, I grew up in Harbortown!
+          Script:
+          - CHAT I thought so, welcome back! Have you heard about Tom the Taylor? Isn't that just horrible?
+          - STRIKE
+        '2':
+          Trigger: /No/, you must be mistaken.
+          Script:
+          - CHAT Oh, sorry about that.
+          - CHAT Hey, if you're looking for some work, Bill the Baker is understaffed! This is the bakery's busy season.
+          - STRIKE
+    '3':
+      Click Trigger:
+      - CHAT I wonder if Tom the Taylor is doing any better.
+      - NARRATE Perhaps you should check on Tom the Taylor.
+      - ZAP 1
+    '4':
+      Click Trigger:
+      - CHAT Oh, nice to see you again <player>!
+      - CHAT Have you stopped by the bakery?

@@ -7,6 +7,7 @@ import com.sun.xml.internal.fastinfoset.util.StringArray;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.trait.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -41,7 +42,7 @@ public class DenizenListener implements Listener {
 	public enum Command {
 		DELAY, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
 		POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT,
-		WHISPER, NARRARATE, CHAT, ANNOUNCE, GRANT, HINT
+		WHISPER, NARRARATE, CHAT, ANNOUNCE, GRANT, HINT, RETURN
 	}
 
 	
@@ -70,10 +71,11 @@ public class DenizenListener implements Listener {
 	public void PlayerChatListener(PlayerChatEvent event) {
 
 		List<NPC> DenizenList = GetDenizensWithinRange(event.getPlayer().
-				getLocation(), event.getPlayer().getWorld(), Denizen.PlayerChatRangeInBlocks);
+				getLocation(), event.getPlayer().getWorld(), Denizen.PlayerToNPCChatRangeInBlocks);
 		if (DenizenList.isEmpty()) return;
 
 		event.setCancelled(true);
+		
 		for (NPC thisDenizen : DenizenList) {
 			String theScript = GetInteractScript(thisDenizen, event.getPlayer());
 			
@@ -117,10 +119,13 @@ public class DenizenListener implements Listener {
 		if (DenizenNPCs.isEmpty()) return DenizensWithinRange;
 		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
 		for (NPC aDenizenList : DenizenList) {
+		  if (aDenizenList.isSpawned())	{
 			if (aDenizenList.getBukkitEntity().getWorld().equals(PlayerWorld)) {
 				if (aDenizenList.getBukkitEntity().getLocation().distance(PlayerLocation) < Range)
 					DenizensWithinRange.add(aDenizenList);
 			}
+		  }
+			
 		}
 		return DenizensWithinRange;
 	}
@@ -137,7 +142,7 @@ public class DenizenListener implements Listener {
 	 */
 
 	public static void TalkToNPC(NPC theDenizen, Player thePlayer, String theMessage) {
-		thePlayer.sendMessage(Denizen.ChatToNPCString.replace("<NPC>", theDenizen.getName()).
+		thePlayer.sendRawMessage(Denizen.ChatToNPCString.replace("<NPC>", theDenizen.getName()).
 				replace("<TEXT>", theMessage));
 	}
 
@@ -209,10 +214,10 @@ public class DenizenListener implements Listener {
 			for (int l=0; l < ChatTriggerList.size(); l++ ) {
 				if (theMessage.toLowerCase().contains(ChatTriggerList.get(l).replace("<PLAYER>", thePlayer.getName()).toLowerCase())) {
 					
-					TalkToNPC(theDenizen, thePlayer, plugin.getConfig().getString("Scripts." + theScript + ".Steps."
+					TalkToNPC(theDenizen, thePlayer, plugin.getScripts().getString("" + theScript + ".Steps."
 							+ CurrentStep + ".Chat Trigger." + String.valueOf(l + 1) + ".Trigger").replace("/", ""));
 					
-					TriggerToQue(theScript, plugin.getConfig().getStringList("Scripts." + theScript + ".Steps."
+					TriggerToQue(theScript, plugin.getScripts().getStringList("" + theScript + ".Steps."
 							+ CurrentStep + ".Chat Trigger." + String.valueOf(l + 1) + ".Script"), CurrentStep, thePlayer, theDenizen);
 					return;
 				}
@@ -236,7 +241,7 @@ public class DenizenListener implements Listener {
 
 		case CLICK:
 		
-			TriggerToQue(theScript, plugin.getConfig().getStringList("Scripts." + theScript + ".Steps."
+			TriggerToQue(theScript, plugin.getScripts().getStringList("" + theScript + ".Steps."
 					+ CurrentStep + ".Click Trigger"), CurrentStep, thePlayer, theDenizen);
 			
 			return;
@@ -363,6 +368,7 @@ public class DenizenListener implements Listener {
 			// WORLD INTERACTION
 
 		case SPAWN:  // SPAWN [MOB NAME] [AMOUNT] (Location Bookmark)
+			
 		case CHANGE:  // CHANGE [Block State Bookmark]
 		case WEATHER:  // WEATHER [Sunny|Stormy|Rainy] (Duration for Stormy/Rainy)
 			if (splitCommand[1].equalsIgnoreCase("sunny")) { thePlayer.getWorld().setStorm(false); }
@@ -376,10 +382,13 @@ public class DenizenListener implements Listener {
 			// PLAYER INTERACTION
 
 		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
+
+			
+		
 		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
 			// or  TAKE ENCHANTMENT  or  TAKE INVENTORY
 		case HEAL:  // HEAL  or  HEAL [# of Hearts]
-			if (splitCommand[1].isEmpty()) {thePlayer.h
+			
 		case DAMAGE:
 		case POTION_EFFECT:
 		case TELEPORT:  // TELEPORT [Location Notable] (Effect)
@@ -389,12 +398,32 @@ public class DenizenListener implements Listener {
 			break;
 			// DENIZEN INTERACTION
 
-		case WALK:  // MOVE [ME|Denizen Name] [Location Notable]
+		case WALK:  // WALK Z(-NORTH(2)/+SOUTH(0)) X(-WEST(1)/+EAST(3)) Y (+UP/-DOWN)
+			
+			NPC theDenizenToWalk = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
+			
+			Denizen.previousDenizenLocation.put(theDenizenToWalk, theDenizenToWalk.getBukkitEntity().getLocation());
+						
+			if (!splitCommand[1].isEmpty()) theDenizenToWalk.getAI().setDestination(theDenizenToWalk.getBukkitEntity().getLocation()
+				  .add(Double.parseDouble(splitCommand[2]), Double.parseDouble(splitCommand[3]), Double.parseDouble(splitCommand[1])));
+			
+			break;
+		
+		case RETURN:
+			
+			NPC theDenizenToReturn = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
+			if (Denizen.previousDenizenLocation.containsKey(theDenizenToReturn))
+			   theDenizenToReturn.getAI().setDestination(Denizen.previousDenizenLocation.
+			     get(theDenizenToReturn));
+			
+			break;
+			
 		case NOD:  // NOD [ME]
 		case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
 		case BOUNCE:  // BOUNCE PLAYER
 		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
-		case PERMISS:  // PERMISS [Optional Step # to advance to]
+		case PERMISS:  // PERMISS [Permission Node]
+			
 
 		case EXECUTE:  // EXECUTE [Command to Execute]
 			thePlayer.getServer().dispatchCommand(null, splitArgs[4].split(" ", 2)[1]);
@@ -423,11 +452,11 @@ public class DenizenListener implements Listener {
 			break;
 		case ANNOUNCE: // ANNOUNCE [Message]
 
-
+			
 
 			// NOTABLES
 
-		case GRANT:  // NOTABLE [Name of Notable to Grant]
+		case GRANT:  // ACHIEVE [Name of Achievement Notable to Grant]
 
 		}
 	}
@@ -446,8 +475,8 @@ public class DenizenListener implements Listener {
 
 	public static int GetCurrentStep(Player thePlayer, String theScript) {
 		int currentStep = 1;
-		if (plugin.getConfig().getString("Players." + thePlayer.getDisplayName() + "." + theScript + "." + "Current Step")
-				!= null) currentStep =  plugin.getConfig().getInt("Players." + thePlayer.getDisplayName() + "." + theScript
+		if (plugin.getScripts().getString("Players." + thePlayer.getDisplayName() + "." + theScript + "." + "Current Step")
+				!= null) currentStep =  plugin.getScripts().getInt("Players." + thePlayer.getDisplayName() + "." + theScript
 						+ "." + "Current Step");
 		return currentStep;
 	}
@@ -464,8 +493,8 @@ public class DenizenListener implements Listener {
 
 	public static int GetScriptCompletes(Player thePlayer, String theScript) {
 		int ScriptCompletes = 0;
-		if (plugin.getConfig().getString("Players." + thePlayer + "." + theScript + "." + "Completes")
-				!= null) ScriptCompletes =  plugin.getConfig().getInt("Players." + thePlayer + "."
+		if (plugin.getScripts().getString("Players." + thePlayer + "." + theScript + "." + "Completes")
+				!= null) ScriptCompletes =  plugin.getScripts().getInt("Players." + thePlayer + "."
 						+ theScript + "." + "Completes");
 		return ScriptCompletes;
 	}
@@ -490,7 +519,7 @@ public class DenizenListener implements Listener {
 	 *
 	 * Requires the Script and the Current Step.
 	 * Gets a list of Chat Triggers for the step of the script specified.
-	 * Chat Triggers are words required to trigger one of the chat scripts.
+	 * Chat Triggers are words required to trigger one of the chat 
 	 *
 	 * Returns ChatTriggers
 	 */
@@ -501,7 +530,7 @@ public class DenizenListener implements Listener {
 		// Add triggers to list
 
 		for (int x=1; currentTrigger >= 0; x++) {
-			String theChatTrigger = plugin.getConfig().getString("Scripts." + theScript + ".Steps."
+			String theChatTrigger = plugin.getScripts().getString("" + theScript + ".Steps."
 					+ currentStep + ".Chat Trigger." + String.valueOf(currentTrigger) + ".Trigger");
 			if (theChatTrigger != null) { 
 				ChatTriggers.add(theChatTrigger.split("/")[1]); 
@@ -540,11 +569,11 @@ public class DenizenListener implements Listener {
 
 	public static boolean CheckRequirements(String thisScript, Player thisPlayer) {
 
-		String RequirementsMode = plugin.getConfig().getString("Scripts." + thisScript + ".Requirements.Mode");
+		String RequirementsMode = plugin.getScripts().getString("" + thisScript + ".Requirements.Mode");
 
 		if (RequirementsMode.equalsIgnoreCase("none")) return true;
 
-		List<String> RequirementsList = plugin.getConfig().getStringList("Scripts." + thisScript
+		List<String> RequirementsList = plugin.getScripts().getStringList("" + thisScript
 				+ ".Requirements.List");
 		if (RequirementsList.isEmpty()) { return false; }
 		int MetReqs = 0;

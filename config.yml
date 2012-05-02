@@ -12,7 +12,8 @@
 debug_mode: true
 interact_delay_in_ticks: 10
 npc_chat_range_in_blocks: 10
-player_chat_range_in_blocks: 2
+player_to_npc_chat_range_in_blocks: 2
+player_to_npc_shout_range_in_blocks: 15
 engage_timeout_in_seconds: 15
 player_chat_to_npc: You say to <NPC>, '<TEXT>'
 player_chat_to_npc_bystander: <PLAYER> says to <NPC>, '<TEXT>'
@@ -27,58 +28,22 @@ whisper_color: gray
 shout_color: red
 narrate_color: green
 announce_color: yellow
+
 Denizens:
   Steve:
     Scripts:
     - 0 Welcome to Harbortown
     Texts:
       No Scripts To Trigger: I have nothing to say to you at this time.
-Scripts:
-  Welcome to Harbortown:
-    Requirements:
-      Mode: NONE
-    Steps:
-      '1':
-        Proximity Trigger:
-        - CHAT Hello stranger! Welcome to Harbortown!
-        Click Trigger:
-        - CHAT What's your name, stranger?
-        - HINT
-        Chat Trigger:
-          '1':
-            Trigger: My name is /<player>/.
-            Script:
-            - CHAT Ah ha, your name sounds familiar!
-            - CHAT Are you from around this area?
-            - ZAP
-      '2':
-        Click Trigger:
-        - HINT
-        Chat Trigger:
-          '1':
-            Trigger: /Yes/, I grew up in Harbortown!
-            Script:
-            - CHAT I thought so, welcome back! Have you heard about Tom the Taylor? Isn't that just horrible?
-            - STRIKE
-          '2':
-            Trigger: /No/, you must be mistaken.
-            Script:
-            - CHAT Oh, sorry about that.
-            - CHAT Hey, if you're looking for some work, Bill the Baker is understaffed! This is the bakery's busy season.
-            - STRIKE
-      '3':
-        Click Trigger:
-        - CHAT I wonder if Tom the Taylor is doing any better.
-        - NARRATE Perhaps you should check on Tom the Taylor.
-      '4':
-        Click Trigger:
-        - CHAT Oh, nice to see you again <player>!
-        - CHAT Have you stopped by the bakery?
+    Saved Locations:
+	
+      
 Players:
   aufdemrand:
     Welcome to Harbortown:
       Current Step: 2
       Completed: 4
+
 Notables:
   Notables:
     This Notable:
