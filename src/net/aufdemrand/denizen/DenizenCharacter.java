@@ -17,6 +17,8 @@ import org.bukkit.entity.*;
 
 public class DenizenCharacter extends Character {
 
+	static Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+	
 	@Override
 	public void load(DataKey arg0) throws NPCLoadException {
 		// TODO Auto-generated method stub

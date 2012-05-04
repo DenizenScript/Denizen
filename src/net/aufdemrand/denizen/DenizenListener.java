@@ -28,7 +28,7 @@ import org.bukkit.potion.PotionEffectType;
 public class DenizenListener implements Listener {
 
 	static Denizen plugin;
-	public DenizenListener(Denizen instance) { plugin = instance; }
+	public DenizenListener(Denizen instance) { plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen"); }
 
 
 	public static void DenizenClicked(NPC theDenizen, Player thePlayer) {

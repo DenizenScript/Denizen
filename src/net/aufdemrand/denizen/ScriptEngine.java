@@ -27,9 +27,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class ScriptEngine {
 
-	static Denizen plugin;
-	public ScriptEngine(Denizen instance) { plugin = instance; }
-
+	static Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+	
 	public enum RequirementMode {
 		NONE, ALL, ANY
 	}
@@ -278,6 +277,8 @@ public class ScriptEngine {
 	 */
 
 	public static String GetInteractScript(NPC thisDenizen, Player thisPlayer) {
+		
+		
 		String theScript = "none";
 		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getName()
 				+ ".Interact Scripts");
