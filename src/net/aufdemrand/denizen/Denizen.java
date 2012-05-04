@@ -41,9 +41,10 @@ public class Denizen extends JavaPlugin {
 
 	public static Economy econ = null;
 	public static Permission perms = null;
-	public static Map<Player, List<String>> PlayerQue = new HashMap<Player, List<String>>();
+	public static Map<Player, List<String>> playerQue = new HashMap<Player, List<String>>();
 	public static Map<NPC, Location> previousDenizenLocation = new HashMap<NPC, Location>(); 
-    public static Boolean DebugMode = false;
+	public static Map<Player, Long> interactCooldown = new HashMap<Player, Long>(); 
+	public static Boolean DebugMode = false;
 
 	@Override
 	public void onEnable() {
@@ -62,14 +63,14 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	
+
 	@Override
 	public void onDisable() {
 		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
 	}
-	
-	
-	
+
+
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
 
@@ -201,7 +202,7 @@ public class Denizen extends JavaPlugin {
 		}
 
 		else if (args[0].equalsIgnoreCase("save")) {
-			player.sendMessage(PlayerQue.toString());
+			player.sendMessage(playerQue.toString());
 			return true;
 		}
 
@@ -211,7 +212,7 @@ public class Denizen extends JavaPlugin {
 			player.sendMessage(ChatColor.GREEN + "Denizens config.yml and scripts.yml reloaded.");
 			return true;
 		}
-		
+
 		else if (args[0].equalsIgnoreCase("")) {
 			this.reloadConfig();
 			this.reloadScripts();
@@ -249,15 +250,26 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	
+
 	protected void CommandQue() {
 
-		if (!PlayerQue.isEmpty()) {	for (Map.Entry<Player, List<String>> theEntry : PlayerQue.entrySet()) {
+		boolean instantCommand = false;
+		
+		if (!playerQue.isEmpty()) {	for (Map.Entry<Player, List<String>> theEntry : playerQue.entrySet()) {
+
+			do {
+			
 			if (!theEntry.getValue().isEmpty()) { 
 				DenizenListener.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
+
+				if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
+				else instantCommand = false;
+
 				theEntry.getValue().remove(0);
-				PlayerQue.put(theEntry.getKey(), theEntry.getValue());
+				playerQue.put(theEntry.getKey(), theEntry.getValue());
 			}
+
+			} while (instantCommand == true);
 		}
 		}
 
@@ -273,8 +285,8 @@ public class Denizen extends JavaPlugin {
 		return econ != null;
 	}
 
-	
-	
+
+
 	private boolean setupPermissions() {
 		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
 		perms = rsp.getProvider();
@@ -288,6 +300,7 @@ public class Denizen extends JavaPlugin {
 
 	private FileConfiguration customConfig = null;
 	private File customConfigFile = null;
+
 
 	public void reloadScripts() {
 		if (customConfigFile == null) {
@@ -320,48 +333,5 @@ public class Denizen extends JavaPlugin {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save saves to " + customConfigFile, ex);
 		}
 	}
-
-
-
-
-	// SCRIPTS CONFIGURATION METHODS
-
-
-	private FileConfiguration customSaves = null;
-	private File customSavesFile = null;
-
-	public void reloadSaves() {
-		if (customSavesFile == null) {
-			customSavesFile = new File(getDataFolder(), "saves.yml");
-		}
-		customSaves = YamlConfiguration.loadConfiguration(customSavesFile);
-
-		// Look for defaults in the jar
-		InputStream defSavesStream = getResource("saves.yml");
-		if (defSavesStream != null) {
-			YamlConfiguration defSaves = YamlConfiguration.loadConfiguration(defSavesStream);
-			customSaves.setDefaults(defSaves);
-		}
-	}
-
-	public FileConfiguration getSaves() {
-		if (customSaves == null) {
-			reloadScripts();
-		}
-		return customSaves;
-	}
-
-	public void saveSaves() {
-		if (customSaves == null || customSavesFile == null) {
-			return;
-		}
-		try {
-			customSaves.save(customSavesFile);
-		} catch (IOException ex) {
-			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save saves to " + customConfigFile, ex);
-		}
-	}
-
-
 
 }

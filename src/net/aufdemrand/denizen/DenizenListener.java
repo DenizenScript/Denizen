@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
@@ -47,7 +48,7 @@ public class DenizenListener implements Listener {
 	public static void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
 		String theScript = GetInteractScript(theDenizen, thePlayer);
-		if (theScript.equals("none")) theDenizen.chat(thePlayer, plugin.getSaves().
+		if (theScript.equals("none")) theDenizen.chat(thePlayer, plugin.getConfig().
 				getString("Denizens." + theDenizen.getId() + ".Texts.No Script Interact",
 						"I have nothing to say to you at this time."));
 		else if (!theScript.equals("none")) ParseScript(theDenizen, thePlayer,
@@ -55,6 +56,12 @@ public class DenizenListener implements Listener {
 
 	}
 
+	
+	
+	@EventHandler
+	public void PlayerProximityListener(PlayerMoveEvent event) {
+
+	}
 
 
 	/* PlayerChatListener
@@ -82,14 +89,14 @@ public class DenizenListener implements Listener {
 				TalkToNPC(thisDenizen, event.getPlayer(), event.getMessage());
 
 				List<String> CurrentPlayerQue = new ArrayList<String>();
-				if (Denizen.PlayerQue.get(event.getPlayer()) != null) CurrentPlayerQue = Denizen.PlayerQue.get(event.getPlayer());
-				Denizen.PlayerQue.remove(event.getPlayer());  // Should keep the talk queue from triggering mid-add
+				if (Denizen.playerQue.get(event.getPlayer()) != null) CurrentPlayerQue = Denizen.playerQue.get(event.getPlayer());
+				Denizen.playerQue.remove(event.getPlayer());  // Should keep the talk queue from triggering mid-add
 
 				CurrentPlayerQue.add(Integer.toString(thisDenizen.getId()) + ";" + theScript + ";"
-						+ 0 + ";CHAT;" + "CHAT " + plugin.getSaves().getString("Denizens." + thisDenizen.getId() 
+						+ 0 + ";CHAT;" + "CHAT " + plugin.getConfig().getString("Denizens." + thisDenizen.getId() 
 								+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
 
-				Denizen.PlayerQue.put(event.getPlayer(), CurrentPlayerQue);
+				Denizen.playerQue.put(event.getPlayer(), CurrentPlayerQue);
 
 			}
 
@@ -130,6 +137,168 @@ public class DenizenListener implements Listener {
 
 
 
+	/* GetPlayersWithinRange
+	 *
+	 * Requires Player Location, Player World, Range in blocks.
+	 * Compiles a list of NPCs with a character type of Denizen
+	 * within range of the Player.
+	 *
+	 * Returns PlayersWithinRange List<Player>
+	 */
+
+	public static void CommandExecuter(Player thePlayer, String theStep) {
+
+		// Syntax of theStep
+		// 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Trigger Type; 4 Command
+
+		String[] splitArgs = theStep.split(";");
+		String[] splitCommand = splitArgs[4].split(" ");
+		
+		if (splitCommand[0].startsWith("^")) splitCommand[0] = splitCommand[0].substring(1);
+
+		switch (Command.valueOf(splitCommand[0].toUpperCase())) {
+
+		// SCRIPT INTERACTION
+
+		case ZAP:  // ZAP [Optional Step # to advance to]
+
+			if (splitCommand.length == 1) { plugin.getConfig().set("Players." + thePlayer.getDisplayName()
+					+ "." + splitArgs[1] + ".Current Step", Integer.parseInt(splitArgs[2]) + 1);
+			plugin.saveConfig();}
+			else { plugin.getConfig().set("Players." + thePlayer.getDisplayName() + "." + splitArgs[1]
+					+ ".Current Step", Integer.parseInt(splitCommand[1])); plugin.saveConfig(); }
+			break;
+
+		case ASSIGN:  // ASSIGN [ME|Denizen Name] [ALL|Player Name] [Priority] [Script Name]
+		case UNASSIGN:  // DEASSIGN [ME|Denizen Name] [ALL|Player Name] [Script Name]
+		case C2SCRIPT:  // Runs a CitizenScript
+
+			// WORLD INTERACTION
+
+		case SPAWN:  // SPAWN [MOB NAME] [AMOUNT] (Location Bookmark)
+		case CHANGE:  // CHANGE [Block State Bookmark]
+		case WEATHER:  // WEATHER [Sunny|Stormy|Rainy] (Duration for Stormy/Rainy)
+
+			if (splitCommand[1].equalsIgnoreCase("sunny")) { thePlayer.getWorld().setStorm(false); }
+			else if (splitCommand[1].equalsIgnoreCase("stormy")) { thePlayer.getWorld().setThundering(true); }
+			else if (splitCommand[1].equalsIgnoreCase("rainy")) { thePlayer.getWorld().setStorm(true); }
+			break;
+
+		case EFFECT:  // EFFECT [EFFECT_TYPE] (Location Bookmark)
+
+			// PLAYER INTERACTION
+
+		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
+			
+		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
+			// or  TAKE ENCHANTMENT  or  TAKE INVENTORY
+		case HEAL:  // HEAL  or  HEAL [# of Hearts]
+		case DAMAGE:
+		case POTION_EFFECT:
+		case TELEPORT:  // TELEPORT [Location Notable] (Effect)
+			// or TELEPORT [X,Y,Z] (World Name) (Effect)
+		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
+
+			thePlayer.getWorld().strikeLightning(thePlayer.getLocation());
+			break;
+
+			// DENIZEN INTERACTION
+
+		case WALK:  // WALK Z(-NORTH(2)/+SOUTH(0)) X(-WEST(1)/+EAST(3)) Y (+UP/-DOWN)
+
+			NPC theDenizenToWalk = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
+			Denizen.previousDenizenLocation.put(theDenizenToWalk, theDenizenToWalk.getBukkitEntity().getLocation());
+			if (!splitCommand[1].isEmpty()) theDenizenToWalk.getAI().setDestination(theDenizenToWalk.getBukkitEntity().getLocation()
+					.add(Double.parseDouble(splitCommand[2]), Double.parseDouble(splitCommand[3]), Double.parseDouble(splitCommand[1])));
+			break;
+
+		case RETURN:
+
+			NPC theDenizenToReturn = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
+			if (Denizen.previousDenizenLocation.containsKey(theDenizenToReturn))
+				theDenizenToReturn.getAI().setDestination(Denizen.previousDenizenLocation.
+						get(theDenizenToReturn));
+			break;
+
+		case NOD:  // NOD [ME]
+			
+			final NPC denizenNodding = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
+			final float denizenPitch = denizenNodding.getBukkitEntity().getLocation().getPitch();
+			denizenNodding.getBukkitEntity().getLocation().setPitch(denizenPitch + 40);
+
+
+			break;
+			
+		case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
+		case BOUNCE:  // BOUNCE PLAYER
+		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
+		case PERMISS:  // PERMISS [Permission Node]
+		case EXECUTE:  // EXECUTE [Command to Execute]
+
+			thePlayer.getServer().dispatchCommand(null, splitArgs[4].split(" ", 2)[1]);
+			break;
+
+			// SHOUT can be heard by players within 100 blocks.
+			// WHISPER can only be heard by the player interacting with.
+			// CHAT can be heard by the player, and players within 5 blocks.
+			// NARRARATE can only be heard by the player and is not branded by the NPC.
+			// ANNOUNCE can be heard by the entire server.
+
+		case WHISPER:  // ZAP [Optional Step # to advance to]
+		case NARRARATE:  // ZAP [Optional Step # to advance to]
+		case SHOUT:  // ZAP [Optional Step # to advance to]
+		case CHAT:  // CHAT [Message]
+
+			NPC theDenizenChatting = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
+
+			if (splitArgs[4].split(" ", 2)[1].startsWith("*"))
+				thePlayer.sendMessage("    " + splitArgs[4].split(" ", 2)[1].replace("*", ""));
+			else thePlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player").replace("<TEXT>", splitArgs[4].split(" ", 2)[1]).replace("<NPC>", CitizensAPI.getNPCManager().getNPC(Integer.parseInt(splitArgs[0])).getName()));
+
+			for (Player eachPlayer : GetPlayersWithinRange(theDenizenChatting.getBukkitEntity().getLocation(), 
+					theDenizenChatting.getBukkitEntity().getWorld(),
+					plugin.getConfig().getInt("npc_to_player_chat_range_in_blocks", 15))) {
+
+				if (eachPlayer != thePlayer) {
+
+					if (splitArgs[4].split(" ", 2)[1].startsWith("*"))
+						eachPlayer.sendMessage("    " + splitArgs[4].split(" ", 2)[1].replace("*", ""));
+					else eachPlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player_bystander").replace("<TEXT>", splitArgs[4].split(" ", 2)[1]).replace("<PLAYER>", thePlayer.getDisplayName()).replace("<NPC>", CitizensAPI.getNPCManager().getNPC(Integer.parseInt(splitArgs[0])).getName()));
+				}}
+
+
+			break;
+
+		case ANNOUNCE: // ANNOUNCE [Message]
+
+			// NOTABLES
+
+		case GRANT:  // ACHIEVE [Name of Achievement Notable to Grant]
+
+		}
+	}
+
+
+
+	public static List<Player> GetPlayersWithinRange (Location DenizenLocation, World DenizenWorld, int Range) {
+
+		List<Player> PlayersWithinRange = new ArrayList<Player>();
+		Player[] DenizenPlayers = plugin.getServer().getOnlinePlayers();
+		for (Player aPlayer : DenizenPlayers) {
+			if (aPlayer.isOnline())	{
+				if (aPlayer.getWorld().equals(DenizenWorld)) {
+					if (aPlayer.getLocation().distance(DenizenLocation) < Range)
+						PlayersWithinRange.add(aPlayer);
+				}
+			}
+
+		}
+		return PlayersWithinRange;
+
+	}
+
+
+
 	/* TalkToNPC
 	 *
 	 * Requires the NPC Denizen, Player, and the Message to relay.
@@ -145,6 +314,7 @@ public class DenizenListener implements Listener {
 	}
 
 
+
 	/* GetInteractScript
 	 *
 	 * Requires the Denizen and the Player
@@ -157,7 +327,7 @@ public class DenizenListener implements Listener {
 
 	public static String GetInteractScript(NPC thisDenizen, Player thisPlayer) {
 		String theScript = "none";
-		List<String> ScriptList = plugin.getSaves().getStringList("Denizens." + thisDenizen.getName()
+		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getName()
 				+ ".Scripts");
 		if (ScriptList.isEmpty()) { return theScript; }
 		List<String> ScriptsThatMeetRequirements = new ArrayList<String>();
@@ -225,14 +395,14 @@ public class DenizenListener implements Listener {
 			TalkToNPC(theDenizen, thePlayer, theMessage);
 
 			List<String> CurrentPlayerQue = new ArrayList<String>();
-			if (Denizen.PlayerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.PlayerQue.get(thePlayer);
-			Denizen.PlayerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
+			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
+			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
 
 			CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
-					+ 0 + ";CHAT;" + "CHAT " + plugin.getSaves().getString("Denizens." + theDenizen.getId() 
+					+ 0 + ";CHAT;" + "CHAT " + plugin.getConfig().getString("Denizens." + theDenizen.getId() 
 							+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
 
-			Denizen.PlayerQue.put(thePlayer, CurrentPlayerQue);
+			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
 
 
 			return;
@@ -267,8 +437,8 @@ public class DenizenListener implements Listener {
 			NPC theDenizen) {
 
 		List<String> CurrentPlayerQue = new ArrayList<String>();
-		if (Denizen.PlayerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.PlayerQue.get(thePlayer);
-		Denizen.PlayerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
+		if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
+		Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
 
 		if (!AddedToPlayerQue.isEmpty()) {
 
@@ -320,118 +490,14 @@ public class DenizenListener implements Listener {
 				else CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
 						+ Integer.toString(CurrentStep) + ";CHAT;" + theCommand);
 			}
-			Denizen.PlayerQue.put(thePlayer, CurrentPlayerQue);
+			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
 		}
 	}
 
 
 
 
-	public static void CommandExecuter(Player thePlayer, String theStep) {
 
-		// Syntax of theStep
-		// 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Trigger Type; 4 Command
-
-		String[] splitArgs = theStep.split(";");
-		String[] splitCommand = splitArgs[4].split(" ");
-
-		switch (Command.valueOf(splitCommand[0].toUpperCase())) {
-
-		// SCRIPT INTERACTION
-
-		case ZAP:  // ZAP [Optional Step # to advance to]
-			
-			if (splitCommand.length == 1) { plugin.getSaves().set("Players." + thePlayer.getDisplayName()
-					+ "." + splitArgs[1] + ".Current Step", Integer.parseInt(splitArgs[2]) + 1);
-			plugin.saveConfig();}
-			else { plugin.getSaves().set("Players." + thePlayer.getDisplayName() + "." + splitArgs[1]
-					+ ".Current Step", Integer.parseInt(splitCommand[1])); plugin.saveConfig(); }
-			break;
-
-		case ASSIGN:  // ASSIGN [ME|Denizen Name] [ALL|Player Name] [Priority] [Script Name]
-		case UNASSIGN:  // DEASSIGN [ME|Denizen Name] [ALL|Player Name] [Script Name]
-		case C2SCRIPT:  // Runs a CitizenScript
-
-			// WORLD INTERACTION
-
-		case SPAWN:  // SPAWN [MOB NAME] [AMOUNT] (Location Bookmark)
-		case CHANGE:  // CHANGE [Block State Bookmark]
-		case WEATHER:  // WEATHER [Sunny|Stormy|Rainy] (Duration for Stormy/Rainy)
-			
-			if (splitCommand[1].equalsIgnoreCase("sunny")) { thePlayer.getWorld().setStorm(false); }
-			else if (splitCommand[1].equalsIgnoreCase("stormy")) { thePlayer.getWorld().setThundering(true); }
-			else if (splitCommand[1].equalsIgnoreCase("rainy")) { thePlayer.getWorld().setStorm(true); }
-			break;
-
-		case EFFECT:  // EFFECT [EFFECT_TYPE] (Location Bookmark)
-
-			// PLAYER INTERACTION
-
-		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
-		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
-			// or  TAKE ENCHANTMENT  or  TAKE INVENTORY
-		case HEAL:  // HEAL  or  HEAL [# of Hearts]
-		case DAMAGE:
-		case POTION_EFFECT:
-		case TELEPORT:  // TELEPORT [Location Notable] (Effect)
-			// or TELEPORT [X,Y,Z] (World Name) (Effect)
-		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
-			
-			thePlayer.getWorld().strikeLightning(thePlayer.getLocation());
-			break;
-			
-			// DENIZEN INTERACTION
-
-		case WALK:  // WALK Z(-NORTH(2)/+SOUTH(0)) X(-WEST(1)/+EAST(3)) Y (+UP/-DOWN)
-
-			NPC theDenizenToWalk = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
-			Denizen.previousDenizenLocation.put(theDenizenToWalk, theDenizenToWalk.getBukkitEntity().getLocation());
-			if (!splitCommand[1].isEmpty()) theDenizenToWalk.getAI().setDestination(theDenizenToWalk.getBukkitEntity().getLocation()
-					.add(Double.parseDouble(splitCommand[2]), Double.parseDouble(splitCommand[3]), Double.parseDouble(splitCommand[1])));
-			break;
-
-		case RETURN:
-
-			NPC theDenizenToReturn = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
-			if (Denizen.previousDenizenLocation.containsKey(theDenizenToReturn))
-				theDenizenToReturn.getAI().setDestination(Denizen.previousDenizenLocation.
-						get(theDenizenToReturn));
-			break;
-
-		case NOD:  // NOD [ME]
-		case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
-		case BOUNCE:  // BOUNCE PLAYER
-		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
-		case PERMISS:  // PERMISS [Permission Node]
-		case EXECUTE:  // EXECUTE [Command to Execute]
-		
-			thePlayer.getServer().dispatchCommand(null, splitArgs[4].split(" ", 2)[1]);
-			break;
-
-			// SHOUT can be heard by players within 100 blocks.
-			// WHISPER can only be heard by the player interacting with.
-			// CHAT can be heard by the player, and players within 5 blocks.
-			// NARRARATE can only be heard by the player and is not branded by the NPC.
-			// ANNOUNCE can be heard by the entire server.
-
-		case WHISPER:  // ZAP [Optional Step # to advance to]
-		case NARRARATE:  // ZAP [Optional Step # to advance to]
-		case SHOUT:  // ZAP [Optional Step # to advance to]
-		case CHAT:  // CHAT [Message]
-
-			if (splitArgs[4].split(" ", 2)[1].startsWith("*"))
-				thePlayer.sendMessage("    " + splitArgs[4].split(" ", 2)[1].replace("*", ""));
-			else thePlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player").replace("<TEXT>", splitArgs[4].split(" ", 2)[1]).replace("<NPC>", CitizensAPI.getNPCManager().getNPC(Integer.parseInt(splitArgs[0])).getName()));
-			break;
-
-		case ANNOUNCE: // ANNOUNCE [Message]
-
-			// NOTABLES
-
-		case GRANT:  // ACHIEVE [Name of Achievement Notable to Grant]
-
-		}
-	}
 
 
 
@@ -447,8 +513,8 @@ public class DenizenListener implements Listener {
 
 	public static int GetCurrentStep(Player thePlayer, String theScript) {
 		int currentStep = 1;
-		if (plugin.getSaves().getString("Players." + thePlayer.getDisplayName() + "." + theScript + "." + "Current Step")
-				!= null) currentStep =  plugin.getSaves().getInt("Players." + thePlayer.getDisplayName() + "." + theScript
+		if (plugin.getConfig().getString("Players." + thePlayer.getDisplayName() + "." + theScript + "." + "Current Step")
+				!= null) currentStep =  plugin.getConfig().getInt("Players." + thePlayer.getDisplayName() + "." + theScript
 						+ "." + "Current Step");
 		return currentStep;
 	}
@@ -465,8 +531,8 @@ public class DenizenListener implements Listener {
 
 	public static int GetScriptCompletes(Player thePlayer, String theScript) {
 		int ScriptCompletes = 0;
-		if (plugin.getSaves().getString("Players." + thePlayer + "." + theScript + "." + "Completes")
-				!= null) ScriptCompletes =  plugin.getSaves().getInt("Players." + thePlayer + "."
+		if (plugin.getConfig().getString("Players." + thePlayer + "." + theScript + "." + "Completes")
+				!= null) ScriptCompletes =  plugin.getConfig().getInt("Players." + thePlayer + "."
 						+ theScript + "." + "Completes");
 		return ScriptCompletes;
 	}
