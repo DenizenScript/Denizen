@@ -10,5 +10,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/citizensapi-2.0-SNAPSHOT (2).jar"/>
+	<classpathentry kind="lib" path="C:/craftbukkit/plugins/citizens-2.0-SNAPSHOT (3).jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

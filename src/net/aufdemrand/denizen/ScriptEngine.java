@@ -6,6 +6,7 @@ import java.util.*;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.*;
+import net.citizensnpcs.trait.LookClose;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.DenizenListener;
@@ -28,7 +29,7 @@ import org.bukkit.potion.PotionEffectType;
 public class ScriptEngine {
 
 	static Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-	
+
 	public enum RequirementMode {
 		NONE, ALL, ANY
 	}
@@ -44,7 +45,7 @@ public class ScriptEngine {
 	public enum Command {
 		DELAY, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
 		POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT,
-		WHISPER, NARRARATE, CHAT, ANNOUNCE, GRANT, HINT, RETURN
+		WHISPER, NARRARATE, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOKAT
 	}
 
 
@@ -95,7 +96,7 @@ public class ScriptEngine {
 
 		String[] splitArgs = theStep.split(";");
 		String[] splitCommand = splitArgs[4].split(" ");
-		
+
 		if (splitCommand[0].startsWith("^")) splitCommand[0] = splitCommand[0].substring(1);
 
 		switch (Command.valueOf(splitCommand[0].toUpperCase())) {
@@ -130,8 +131,22 @@ public class ScriptEngine {
 
 			// PLAYER INTERACTION
 
-		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
+		case LOOKAT: // ENG
+
+			if (splitCommand[1].equalsIgnoreCase("on")) {
+				if (!CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0])).getTrait(LookClose.class).toggle())
+					CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0])).getTrait(LookClose.class).toggle();
+			}
+			if (splitCommand[1].equalsIgnoreCase("off")) {
+				if (CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0])).getTrait(LookClose.class).toggle())
+					CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0])).getTrait(LookClose.class).toggle();
+			}
+			break;
 			
+		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
+
+
+
 		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
 			// or  TAKE ENCHANTMENT  or  TAKE INVENTORY
 		case HEAL:  // HEAL  or  HEAL [# of Hearts]
@@ -163,27 +178,27 @@ public class ScriptEngine {
 			break;
 
 		case NOD:  // NOD [ME]
-			
+
 			final NPC denizenNodding = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
 			final float denizenPitch = denizenNodding.getBukkitEntity().getLocation().getPitch();
 			denizenNodding.getBukkitEntity().getLocation().setPitch(denizenPitch + 40);
 
 
 			break;
-			
+
 		case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
 		case BOUNCE:  // BOUNCE PLAYER
 		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
-		
-		NPC theDenizenSpawning = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
-		break;
-		
-		case PERMISS:  // PERMISS [Permission Node]
-			
-		Denizen.perms.playerAdd(thePlayer, splitCommand[1]);
-		break;
 
-			
+			NPC theDenizenSpawning = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
+			break;
+
+		case PERMISS:  // PERMISS [Permission Node]
+
+			Denizen.perms.playerAdd(thePlayer, splitCommand[1]);
+			break;
+
+
 		case EXECUTE:  // EXECUTE [Command to Execute]
 
 			thePlayer.getServer().dispatchCommand(null, splitArgs[4].split(" ", 2)[1]);
@@ -277,8 +292,8 @@ public class ScriptEngine {
 	 */
 
 	public static String GetInteractScript(NPC thisDenizen, Player thisPlayer) {
-		
-		
+
+
 		String theScript = "none";
 		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getName()
 				+ ".Interact Scripts");
