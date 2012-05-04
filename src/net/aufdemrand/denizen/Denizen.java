@@ -19,6 +19,7 @@ import net.milkbowl.vault.permission.Permission;
 
 import net.aufdemrand.denizen.DenizenCharacter;
 import net.aufdemrand.denizen.DenizenListener;
+import net.aufdemrand.denizen.ScriptEngine;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -260,7 +261,7 @@ public class Denizen extends JavaPlugin {
 			do {
 			
 			if (!theEntry.getValue().isEmpty()) { 
-				DenizenListener.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
+				ScriptEngine.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
 
 				if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
 				else instantCommand = false;
