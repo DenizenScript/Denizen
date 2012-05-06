@@ -36,15 +36,13 @@ Denizens:
     - 0 Jacob the Fisherman
     - 10 Jakob's Perdicment, Part 1
     - 20 Jakob's Perdicment, Part 2
-    - 30 Jakob's Perdicment, Part 5
-    Activity Scripts:
-    - 0 At home
-    - 10 Sleeping
-    - 20 Trying to fish
-    - 30 Frantic
-    - 30 Congratulate
-    - 30 A big thanks
-    Important Locations:
+    - 30 Jakob's Perdicment, Part 3
+    Scheduled Activies:
+    - 0 Jakob at home
+    - 400 Jakob is trying to fish
+    - 12500 Jakob at home
+    Active Activity Script:
+    Locations:
       "Home":
         Type: Cuboid
         Cuboid:
@@ -54,11 +52,4 @@ Denizens:
       "Sleeping":
         Type: Location
         Location: 
-    
-    
-    
-    
-    
-    
-    
-    
+    Memory:

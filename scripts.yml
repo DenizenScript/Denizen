@@ -6,15 +6,35 @@
     '1':
       Click Trigger:
         Script:
-        - I love to fish, but this ice makes it hard!
+        - CHAT I love to fish, but this ice makes it hard!
 
+"Jakob at Home"
+  Type: Activity
+  Script:
+  - EQUIP RAW_FISH
+  - WANDER Home
+  - TINKER
+  - LOOP
+
+"Jakob is Sleeping"
+  Type: Activity
+  Script:
+  - EQUIP AIR
+  - WALKTO Bed
+    
+"Jakob is trying to fish"
+  Type: Activity
+  Script:
+  - EQUIP FISHING_ROD
+  - WANDER Fishing Hole
+  - LOOP
+        
 "Jakob's Perdiciment, Part 1":
   Type: Trigger
   Requirements:
     Mode: All
     List:
-    - TIME Day
-    - ACTIVITY Trying to fish
+    - ACTIVITY Jakob is trying to fish
   Steps:
     '1':
       Proximity Trigger:
@@ -22,13 +42,20 @@
         - EMOTE sighs, looking quite discouraged.
       Click Trigger:
         Script:
+        - NPCWAIT 30 SECONDS
         - LOOKCLOSE
         - CHAT ...the wife is expecting dinner tonight. It's our anniversary! but...uhh...
-        - WAIT 5 SECONDS
+        - DELAY 5 SECONDS
         - CHAT Uh yeah. This early freeze is not lending a hand! What to do?!
-        - ACT Frantic
+        - ACT Jakob is frantic
         - FINISH
 
+"Jakob is frantic"
+  Type: Activity
+  Script:
+  - JUMP
+  - LOOP
+        
 "Jakob's Perdiciment, Part 2":
   Type: Trigger
   Requirements:
@@ -36,56 +63,54 @@
     List:
     - ACTIVITY Frantic
     - FINISHED Jakob's Perdiciment, Part 1
-    - -FINISHED Jakob's Perdiciment, Part 3
   Steps:
     '1':
       Click Trigger:
         Script:
+        - NPCWAIT 30 SECONDS
         - LOOKCLOSE
         - CHAT Geez! I must do something! But how can I fish with this ice?
         - WAIT 5 SECONDS
         - CHAT If only I could get through this ice. 
         - ACT Frantic
-        - LISTEN BLOCKBREAK ICE 5 Jakob's Perdiciment, Part 3
+        - LISTEN BLOCKBREAK ICE 5 NEARNPC JAKOB Broke the Ice
         - FINISH
 
-"Jakob's Perdiciment, Part 3":
+"Broke the Ice":
   Type: Listener
-  Requirements:
-    Mode: All
-    List:
-    - FINISHED Jakob's Perdiciment, Part 2
   Script:
-    - SHOUT Oh wow! How did you do that?
-    - LISTEN ACTIVITY Found the Hero
-    - ACT Congratulate
-    - FINISH
-
-"Jakob's Perdiciment, Part 4":
-  Type: Listener
-  Requirements:
-    Mode: All
-    List:
-    - FINISHED Jakob's Perdiciment, Part 3
-  Script: 
-    - LOOKCLOSE
-    - CHAT What a great idea! How did you break that ice!
-    - WAIT 5 SECONDS
-    - CHAT Well no matter, I better get to fishing!
-    - ACT Finally fishing
-    - FINISH
-
-"Jakob's Perdiciment, Part 5":
+  - ^SHOUT Oh wow! How did you do that?
+  - ^FIND PLAYER <PLAYER>
+  - WAIT 5 SECONDS
+  - LOOKCLOSE
+  - CHAT What a great idea! How did you break that ice?!
+  - LOOKDOWN
+  - WAIT 5 SECONDS
+  - LOOKCLOSE
+  - CHAT Well no matter, I better get to fishing!
+  - ACT Jakob is finally fishing
+    
+"Jakob is finally fishing"
+  Type: Activity
+  Script:
+  - NPC EQUIP FISHING_ROD
+  - WALK 2 2 0
+  - NPCWAIT 10
+  - WALK -2 -2 0
+  - NPCWAIT 10
+  - LOOP
+    
+"Jakob's Perdiciment, Part 3":
   Type: Trigger
   Requirements:
     Mode: All
     List:
-    - FINISHED Jakob's Perdiciment, Part 4
-    - -FINISHED Jakob's Perdiciment, Part 5
+    - FINISHED Jakob's Perdiciment, Part 2
   Steps:  
     '1':
       Click Trigger:
         Script:
+        - ^NPCWAIT 30 SECONDS
         - LOOKCLOSE
         - CHAT Oh, of course! Is there anything I can give to thank you for your help?
         - HINT
@@ -98,13 +123,12 @@
           - ^RESET Jakob's Perdiciment, Part 1
           - ^RESET Jakob's Perdiciment, Part 2
           - ^RESET Jakob's Perdiciment, Part 3
-          - ^RESET Jakob's Perdiciment, Part 4
-          - ^RESET Jakob's Perdiciment, Part 5
         '2':
           Trigger: /No/ thank you sir, it was my pleasure!
           Script:
           - CHAT How generous! I'm sure we will cross paths in the future!
           - ZAP
+          - REMEMBER <PLAYER> 
     '2':
       Click Trigger:
         Script:
