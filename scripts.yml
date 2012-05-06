@@ -1,47 +1,114 @@
-
-Welcome to Harbortown:
+"Jakob the Fisherman":
+  Type: Trigger
   Requirements:
-    Mode: NONE
+    Mode: None
+  Steps:
+    '1':
+      Click Trigger:
+        Script:
+        - I love to fish, but this ice makes it hard!
+
+"Jakob's Perdiciment, Part 1":
+  Type: Trigger
+  Requirements:
+    Mode: All
+    List:
+    - TIME Day
+    - ACTIVITY Trying to fish
   Steps:
     '1':
       Proximity Trigger:
-      - CHAT Hello stranger! Welcome to Harbortown!
+        Script:
+        - EMOTE sighs, looking quite discouraged.
       Click Trigger:
-      - CHAT What's your name, stranger?
-      - WALK 10 10 0
+        Script:
+        - LOOKCLOSE
+        - CHAT ...the wife is expecting dinner tonight. It's our anniversary! but...uhh...
+        - WAIT 5 SECONDS
+        - CHAT Uh yeah. This early freeze is not lending a hand! What to do?!
+        - ACT Frantic
+        - FINISH
+
+"Jakob's Perdiciment, Part 2":
+  Type: Trigger
+  Requirements:
+    Mode: All
+    List:
+    - ACTIVITY Frantic
+    - FINISHED Jakob's Perdiciment, Part 1
+    - -FINISHED Jakob's Perdiciment, Part 3
+  Steps:
+    '1':
+      Click Trigger:
+        Script:
+        - LOOKCLOSE
+        - CHAT Geez! I must do something! But how can I fish with this ice?
+        - WAIT 5 SECONDS
+        - CHAT If only I could get through this ice. 
+        - ACT Frantic
+        - LISTEN BLOCKBREAK ICE 5 Jakob's Perdiciment, Part 3
+        - FINISH
+
+"Jakob's Perdiciment, Part 3":
+  Type: Listener
+  Requirements:
+    Mode: All
+    List:
+    - FINISHED Jakob's Perdiciment, Part 2
+  Script:
+    - SHOUT Oh wow! How did you do that?
+    - LISTEN ACTIVITY Found the Hero
+    - ACT Congratulate
+    - FINISH
+
+"Jakob's Perdiciment, Part 4":
+  Type: Listener
+  Requirements:
+    Mode: All
+    List:
+    - FINISHED Jakob's Perdiciment, Part 3
+  Script: 
+    - LOOKCLOSE
+    - CHAT What a great idea! How did you break that ice!
+    - WAIT 5 SECONDS
+    - CHAT Well no matter, I better get to fishing!
+    - ACT Finally fishing
+    - FINISH
+
+"Jakob's Perdiciment, Part 5":
+  Type: Trigger
+  Requirements:
+    Mode: All
+    List:
+    - FINISHED Jakob's Perdiciment, Part 4
+    - -FINISHED Jakob's Perdiciment, Part 5
+  Steps:  
+    '1':
+      Click Trigger:
+        Script:
+        - LOOKCLOSE
+        - CHAT Oh, of course! Is there anything I can give to thank you for your help?
+        - HINT
       Chat Trigger:
         '1':
-          Trigger: My name is /<player>/.
+          Trigger: Some /money/ would certainly help.
           Script:
-          - CHAT Ah ha, your name sounds familiar!
-          - CHAT Are you from around this area?
-          - ZAP
+          - CHAT Of course, thank you for the help!
+          - GIVE MONEY 100
+          - ^RESET Jakob's Perdiciment, Part 1
+          - ^RESET Jakob's Perdiciment, Part 2
+          - ^RESET Jakob's Perdiciment, Part 3
+          - ^RESET Jakob's Perdiciment, Part 4
+          - ^RESET Jakob's Perdiciment, Part 5
         '2':
-          Trigger: Let's go /back/.
+          Trigger: /No/ thank you sir, it was my pleasure!
           Script:
-          - CHAT Yes, let's!
-          - WALK -10 -10 0
+          - CHAT How generous! I'm sure we will cross paths in the future!
+          - ZAP
     '2':
       Click Trigger:
-      - HINT
-      Chat Trigger:
-        '1':
-          Trigger: /Yes/, I grew up in Harbortown!
-          Script:
-          - CHAT I thought so, welcome back! Have you heard about Tom the Taylor? Isn't that just horrible?
-          - STRIKE
-        '2':
-          Trigger: /No/, you must be mistaken.
-          Script:
-          - CHAT Oh, sorry about that.
-          - CHAT Hey, if you're looking for some work, Bill the Baker is understaffed! This is the bakery's busy season.
-          - STRIKE
-    '3':
-      Click Trigger:
-      - CHAT I wonder if Tom the Taylor is doing any better.
-      - NARRATE Perhaps you should check on Tom the Taylor.
-      - ZAP 1
-    '4':
-      Click Trigger:
-      - CHAT Oh, nice to see you again <player>!
-      - CHAT Have you stopped by the bakery?
+        Script:
+        - IF TIME NIGHT CHAT Good evening, sir!
+        - IF TIME DAY CHAT Good day, sir!
+      
+
