@@ -15,12 +15,6 @@
   - WANDER Home
   - TINKER
   - LOOP
-
-"Jakob is Sleeping"
-  Type: Activity
-  Script:
-  - EQUIP AIR
-  - WALKTO Bed
     
 "Jakob is trying to fish"
   Type: Activity
@@ -29,7 +23,7 @@
   - WANDER Fishing Hole
   - LOOP
         
-"Jakob's Perdiciment, Part 1":
+"Jakob's Predicament, Part 1":
   Type: Trigger
   Requirements:
     Mode: All
@@ -56,13 +50,13 @@
   - JUMP
   - LOOP
         
-"Jakob's Perdiciment, Part 2":
+"Jakob's Predicament, Part 2":
   Type: Trigger
   Requirements:
     Mode: All
     List:
     - ACTIVITY Frantic
-    - FINISHED Jakob's Perdiciment, Part 1
+    - FINISHED Jakob's Predicament, Part 1
   Steps:
     '1':
       Click Trigger:
@@ -100,12 +94,12 @@
   - NPCWAIT 10
   - LOOP
     
-"Jakob's Perdiciment, Part 3":
+"Jakob's Predicament, Part 3":
   Type: Trigger
   Requirements:
     Mode: All
     List:
-    - FINISHED Jakob's Perdiciment, Part 2
+    - FINISHED Jakob's Predicament, Part 2
   Steps:  
     '1':
       Click Trigger:
@@ -120,9 +114,9 @@
           Script:
           - CHAT Of course, thank you for the help!
           - GIVE MONEY 100
-          - ^RESET Jakob's Perdiciment, Part 1
-          - ^RESET Jakob's Perdiciment, Part 2
-          - ^RESET Jakob's Perdiciment, Part 3
+          - ^RESET Jakob's Predicament, Part 1
+          - ^RESET Jakob's Predicament, Part 2
+          - ^RESET Jakob's Predicament, Part 3
         '2':
           Trigger: /No/ thank you sir, it was my pleasure!
           Script:
