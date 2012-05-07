@@ -3,6 +3,7 @@ package net.aufdemrand.denizen;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,13 +20,14 @@ import net.milkbowl.vault.permission.Permission;
 
 import net.aufdemrand.denizen.DenizenCharacter;
 import net.aufdemrand.denizen.DenizenListener;
-import net.aufdemrand.denizen.ScriptEngine;
+import net.aufdemrand.denizen.InteractScriptEngine;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.character.CharacterFactory;
 import net.citizensnpcs.api.trait.trait.Owner;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -57,17 +59,48 @@ public class Denizen extends JavaPlugin {
 		setupPermissions();
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new DenizenListener(this), this);
-		this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() { CommandQue(); }
 		}, getConfig().getInt("interact_delay_in_ticks", 10), getConfig().getInt("interact_delay_in_ticks", 10));
+
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			@Override
+			public void run() { ScheduleScripts(); }
+		}, 1, 1000);
+
+		InteractScriptEngine.initialize();
+		
 	}
 
+
+	protected void ScheduleScripts() {
+
+		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCManager().getNPCs(DenizenCharacter.class);
+		if (DenizenNPCs.isEmpty()) return;
+		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
+		for (NPC aDenizen : DenizenList) {
+			if (aDenizen.isSpawned())	{
+				int denizenTime = Math.round(aDenizen.getBukkitEntity().getWorld().getTime() / 1000);
+				List<String> denizenActivities = getConfig().getStringList("Denizens." + aDenizen.getName() + ".Scheduled Activities");
+				if (!denizenActivities.isEmpty()) {
+					for (String activity : denizenActivities) {
+						if (activity.startsWith(String.valueOf(denizenTime))) {
+							getServer().broadcastMessage("Updating Activity Script for " + aDenizen.getName());
+							getConfig().set("Denizens." + aDenizen.getName() + ".Active Activity Script", activity.split(" ", 2)[1]);
+							saveConfig();
+						}
+					}
+				}
+			}
+		}
+	}
 
 
 	@Override
 	public void onDisable() {
 		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
+		 Bukkit.getServer().getScheduler().cancelTasks(this);
 	}
 
 
@@ -119,8 +152,10 @@ public class Denizen extends JavaPlugin {
 				player.sendMessage(ChatColor.GOLD + "/denizen DEBUG TRUE|FALSE");
 				player.sendMessage(ChatColor.GOLD + "  Logs debugging information for reporting problems");
 				player.sendMessage(ChatColor.GOLD + "/denizen STATS");
-				player.sendMessage(ChatColor.GOLD + "  Shows statistical information from Denizens plugin");   }
-
+				player.sendMessage(ChatColor.GOLD + "  Shows statistical information from Denizens plugin");   
+			    player.sendMessage(ChatColor.GOLD + "/denizen SCHEDULE");
+			    player.sendMessage(ChatColor.GOLD + "  Forces the Denizens to check their schedules");   }
+			
 			else if (args[1].equalsIgnoreCase("config")) {
 
 				player.sendMessage(ChatColor.GOLD + "------- Denizen Config Commands -------");
@@ -203,7 +238,9 @@ public class Denizen extends JavaPlugin {
 		}
 
 		else if (args[0].equalsIgnoreCase("save")) {
-			player.sendMessage(playerQue.toString());
+			this.saveConfig();
+			this.saveScripts();
+			player.sendMessage(ChatColor.GREEN + "Saved config.yml and scripts.yml.");
 			return true;
 		}
 
@@ -214,10 +251,10 @@ public class Denizen extends JavaPlugin {
 			return true;
 		}
 
-		else if (args[0].equalsIgnoreCase("")) {
-			this.reloadConfig();
-			this.reloadScripts();
-			player.sendMessage("Denizens config.yml and scripts.yml reloaded.");
+		else if (args[0].equalsIgnoreCase("schedule")) {
+			this.ScheduleScripts();
+			player.sendMessage("Denizen scheduler invoked.");
+			return true;
 		}
 
 
@@ -255,20 +292,20 @@ public class Denizen extends JavaPlugin {
 	protected void CommandQue() {
 
 		boolean instantCommand = false;
-		
+
 		if (!playerQue.isEmpty()) {	for (Map.Entry<Player, List<String>> theEntry : playerQue.entrySet()) {
 
 			do {
-			
-			if (!theEntry.getValue().isEmpty()) { 
-				ScriptEngine.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
 
-				if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
-				else instantCommand = false;
+				if (!theEntry.getValue().isEmpty()) { 
+					InteractScriptEngine.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
 
-				theEntry.getValue().remove(0);
-				playerQue.put(theEntry.getKey(), theEntry.getValue());
-			}
+					if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
+					else instantCommand = false;
+
+					theEntry.getValue().remove(0);
+					playerQue.put(theEntry.getKey(), theEntry.getValue());
+				}
 
 			} while (instantCommand == true);
 		}

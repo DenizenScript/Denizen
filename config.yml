@@ -33,14 +33,14 @@ announce_color: yellow
 Denizens:
   Jakob:
     Interact Scripts:
-    - 0 Jacob the Fisherman
+    - 0 Jakob the Fisherman
     - 10 Jakob's Predicament, Part 1
     - 20 Jakob's Predicament, Part 2
     - 30 Jakob's Predicament, Part 3
-    Scheduled Activies:
+    Scheduled Activities:
     - 0 Jakob at home
-    - 400 Jakob is trying to fish
-    - 12500 Jakob at home
+    - 4 Jakob is trying to fish
+    - 12 Jakob at home
     Active Activity Script:
     Locations:
       "Home":

@@ -8,7 +8,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.*;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.ScriptEngine;
+import net.aufdemrand.denizen.InteractScriptEngine;
 import net.aufdemrand.denizen.DenizenCharacter;
 
 import org.bukkit.Bukkit;
@@ -33,12 +33,12 @@ public class DenizenListener implements Listener {
 
 	public static void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
-		String theScript = ScriptEngine.GetInteractScript(theDenizen, thePlayer);
+		String theScript = InteractScriptEngine.GetInteractScript(theDenizen, thePlayer);
 		if (theScript.equals("none")) theDenizen.chat(thePlayer, plugin.getConfig().
 				getString("Denizens." + theDenizen.getId() + ".Texts.No Script Interact",
 						"I have nothing to say to you at this time."));
-		else if (!theScript.equals("none")) ScriptEngine.ParseScript(theDenizen, thePlayer,
-				ScriptEngine.GetScriptName(theScript), "", ScriptEngine.Trigger.CLICK);
+		else if (!theScript.equals("none")) InteractScriptEngine.ParseScript(theDenizen, thePlayer,
+				InteractScriptEngine.GetScriptName(theScript), "", InteractScriptEngine.Trigger.CLICK);
 
 	}
 
@@ -61,18 +61,18 @@ public class DenizenListener implements Listener {
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
 
-		List<NPC> DenizenList = ScriptEngine.GetDenizensWithinRange(event.getPlayer().
+		List<NPC> DenizenList = InteractScriptEngine.GetDenizensWithinRange(event.getPlayer().
 				getLocation(), event.getPlayer().getWorld(), plugin.getConfig().getInt("player_chat_range_in_blocks", 3));
 		if (DenizenList.isEmpty()) return;
 
 		event.setCancelled(true);
 
 		for (NPC thisDenizen : DenizenList) {
-			String theScript = ScriptEngine.GetInteractScript(thisDenizen, event.getPlayer());
+			String theScript = InteractScriptEngine.GetInteractScript(thisDenizen, event.getPlayer());
 
 			if (theScript.equals("none")) { 
 
-				ScriptEngine.TalkToNPC(thisDenizen, event.getPlayer(), event.getMessage());
+				InteractScriptEngine.TalkToNPC(thisDenizen, event.getPlayer(), event.getMessage());
 
 				List<String> CurrentPlayerQue = new ArrayList<String>();
 				if (Denizen.playerQue.get(event.getPlayer()) != null) CurrentPlayerQue = Denizen.playerQue.get(event.getPlayer());
@@ -86,8 +86,8 @@ public class DenizenListener implements Listener {
 
 			}
 
-			else if (!theScript.equals("none")) ScriptEngine.ParseScript(thisDenizen, event.getPlayer(),
-					ScriptEngine.GetScriptName(theScript), event.getMessage(), ScriptEngine.Trigger.CHAT);
+			else if (!theScript.equals("none")) InteractScriptEngine.ParseScript(thisDenizen, event.getPlayer(),
+					InteractScriptEngine.GetScriptName(theScript), event.getMessage(), InteractScriptEngine.Trigger.CHAT);
 		}
 	}
 

@@ -8,7 +8,7 @@
         Script:
         - CHAT I love to fish, but this ice makes it hard!
 
-"Jakob at Home"
+"Jakob at Home":
   Type: Activity
   Script:
   - EQUIP RAW_FISH
@@ -16,7 +16,7 @@
   - TINKER
   - LOOP
     
-"Jakob is trying to fish"
+"Jakob is trying to fish":
   Type: Activity
   Script:
   - EQUIP FISHING_ROD
@@ -44,7 +44,7 @@
         - ACT Jakob is frantic
         - FINISH
 
-"Jakob is frantic"
+"Jakob is frantic":
   Type: Activity
   Script:
   - JUMP
@@ -84,7 +84,7 @@
   - CHAT Well no matter, I better get to fishing!
   - ACT Jakob is finally fishing
     
-"Jakob is finally fishing"
+"Jakob is finally fishing":
   Type: Activity
   Script:
   - NPC EQUIP FISHING_ROD

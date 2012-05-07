@@ -9,7 +9,7 @@ import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.npc.NPC;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.ScriptEngine;
+import net.aufdemrand.denizen.InteractScriptEngine;
 import net.aufdemrand.denizen.DenizenListener;
 
 import org.bukkit.Bukkit;
