@@ -9,8 +9,8 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.*;
 import net.citizensnpcs.trait.LookClose;
 
-import com.gmail.nossr50.datatypes.SkillType;
-import com.gmail.nossr50.api.ExperienceAPI;
+//import com.gmail.nossr50.datatypes.SkillType;
+//import com.gmail.nossr50.api.ExperienceAPI;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.DenizenListener;
@@ -68,6 +68,8 @@ public class InteractScriptEngine {
 
 	public static boolean CheckRequirements(String thisScript, Player thisPlayer) {
 		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		String RequirementsMode = plugin.getScripts().getString("" + thisScript + ".Requirements.Mode");
 		
 		if (RequirementsMode.equalsIgnoreCase("none")) return true;
@@ -89,22 +91,23 @@ public class InteractScriptEngine {
 				// or (-)TIME [At least this Time 0-23999] [But no more than this Time 1-24000]
 	
 				if (negReq) {
-					if (splitArgs[1].equalsIgnoreCase("DAY")) if (thisPlayer.getWorld().getTime() > 16000)
-						MetReqs++;
-					if (splitArgs[1].equalsIgnoreCase("NIGHT")) if (thisPlayer.getWorld().getTime() < 16000)
-						MetReqs++;
+					if (splitArgs[1].equalsIgnoreCase("DAY") && thisPlayer.getWorld().getTime() > 16000)
+						{ MetReqs++;
+						break; }
+					else if (splitArgs[1].equalsIgnoreCase("NIGHT")) if (thisPlayer.getWorld().getTime() < 16000)
+						{ MetReqs++; break; }
 					else {
 						String[] theseTimes = splitArgs[1].split(" ");
 						if (thisPlayer.getWorld().getTime() < Integer.parseInt(theseTimes[0]) && thisPlayer.
 								getWorld().getTime() > Integer.parseInt(theseTimes[1])) MetReqs++;
 					}
 				} else {
-					if (splitArgs[1].equalsIgnoreCase("DAY")) if (thisPlayer.getWorld().getTime() < 16000)
-						MetReqs++;
-					if (splitArgs[1].equalsIgnoreCase("NIGHT")) if (thisPlayer.getWorld().getTime() > 16000)
-						MetReqs++;
-					else {
-						String[] theseTimes = splitArgs[1].split(" ");
+					if (splitArgs[1].equalsIgnoreCase("DAY") && thisPlayer.getWorld().getTime() < 16000)
+						{ MetReqs++; break; }
+					if (splitArgs[1].equalsIgnoreCase("NIGHT") && thisPlayer.getWorld().getTime() > 16000)
+						{ MetReqs++; break; }
+					if (!splitArgs[1].equalsIgnoreCase("DAY") && !splitArgs[1].equalsIgnoreCase("NIGHT")) {
+					String[] theseTimes = splitArgs[1].split(" ");
 						if (thisPlayer.getWorld().getTime() >= Integer.parseInt(theseTimes[0]) && thisPlayer.
 								getWorld().getTime() <= Integer.parseInt(theseTimes[1])) MetReqs++;
 					}
@@ -120,9 +123,9 @@ public class InteractScriptEngine {
 	
 			case MCMMO:  // (-)MCMMO STAT LEVEL
 
-				ExperienceAPI mcMMOAPI = null;
-				thisPlayer.sendMessage("Your power level is " + mcMMOAPI.getPowerLevel(thisPlayer));
-				break;
+		//		ExperienceAPI mcMMOAPI = null;
+			//	thisPlayer.sendMessage("Your power level is " + mcMMOAPI.getPowerLevel(thisPlayer));
+				//break;
 				
 			case PRECIPITATION:  // (-)PRECIPITATION
 				if (negReq) if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
@@ -276,6 +279,9 @@ public class InteractScriptEngine {
 				break;
 			}
 		}
+		
+//		plugin.getServer().broadcastMessage("Met requirements for this script: " + MetReqs);
+		
 		if (RequirementsMode.equalsIgnoreCase("all") && MetReqs == RequirementsList.size()) return true;
 		String[] ModeArgs = RequirementsMode.split(" ");
 		if (ModeArgs[0].equalsIgnoreCase("any") && MetReqs >= Integer.parseInt(ModeArgs[1])) return true;
@@ -367,6 +373,7 @@ public class InteractScriptEngine {
 
 	public static String GetInteractScript(NPC thisDenizen, Player thisPlayer) {
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 		String theScript = "none";
 		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getName()
@@ -388,7 +395,7 @@ public class InteractScriptEngine {
 			for (String thisScript : ScriptsThatMeetRequirements) {
 				String [] thisScriptArray = thisScript.split(" ", 2);
 				if (Integer.parseInt(thisScriptArray[0]) > ScriptPriority) {ScriptPriority =
-						Integer.parseInt(thisScriptArray[0]); theScript = thisScriptArray[1]; }
+						Integer.parseInt(thisScriptArray[0]); theScript = thisScript; }
 			}
 		}
 		else if (ScriptsThatMeetRequirements.size() == 1) theScript = ScriptsThatMeetRequirements.get(0);
@@ -446,6 +453,9 @@ public class InteractScriptEngine {
 	 */
 
 	public static int GetCurrentStep(Player thePlayer, String theScript) {
+		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		int currentStep = 1;
 		if (plugin.getConfig().getString("Players." + thePlayer.getDisplayName() + "." + theScript + "." + "Current Step")
 				!= null) currentStep =  plugin.getConfig().getInt("Players." + thePlayer.getDisplayName() + "." + theScript
@@ -464,6 +474,9 @@ public class InteractScriptEngine {
 	 */
 
 	public static boolean GetScriptComplete(Player thePlayer, String theScript) {
+		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		boolean ScriptComplete = false;
 		if (plugin.getConfig().getString("Players." + thePlayer + "." + theScript + "." + "Completes")
 				!= null) ScriptComplete = true;
@@ -493,6 +506,9 @@ public class InteractScriptEngine {
 	 */
 
 	public static List<String> GetChatTriggers(String theScript, Integer currentStep) {
+		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
 		for (int x=1; currentTrigger >= 0; x++) {
@@ -518,6 +534,9 @@ public class InteractScriptEngine {
 	 */
 
 	public static String GetScriptName(String thisScript) {
+		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		if (thisScript.equals("none")) { return thisScript; }
 		else {
 			String [] thisScriptArray = thisScript.split(" ", 2);
@@ -538,6 +557,9 @@ public class InteractScriptEngine {
 	 */
 	
 	public static void TalkToNPC(NPC theDenizen, Player thePlayer, String theMessage) {
+		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		thePlayer.sendRawMessage(plugin.getConfig().getString("chat_to_npc_string", "You say to <NPC>, <TEXT>").replace("<NPC>", theDenizen.getName()).
 				replace("<TEXT>", theMessage));
 	}
@@ -559,8 +581,12 @@ public class InteractScriptEngine {
 	
 	
 	public static void ParseScript(NPC theDenizen, Player thePlayer, String theScript,
+		
+			
 			String theMessage,  Trigger theTrigger) {
 	
+		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		int CurrentStep = GetCurrentStep(thePlayer, theScript);
 	
 		switch (theTrigger) {
@@ -642,6 +668,8 @@ public class InteractScriptEngine {
 	public static void TriggerToQue(String theScript, List<String> AddedToPlayerQue, int CurrentStep, Player thePlayer,
 			NPC theDenizen) {
 	
+		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		List<String> CurrentPlayerQue = new ArrayList<String>();
 		if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
 		Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
@@ -704,6 +732,8 @@ public class InteractScriptEngine {
 
 	public static void CommandExecuter(Player thePlayer, String theStep) {
 	
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		// Syntax of theStep
 		// 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Trigger Type; 4 Command
 	
@@ -758,8 +788,15 @@ public class InteractScriptEngine {
 			
 		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
 	
+			ItemStack giveItem = new ItemStack(Material.getMaterial(splitCommand[1].toUpperCase()));
+			giveItem.setAmount(Integer.valueOf(splitCommand[2]));
+			
+			CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0])).getBukkitEntity().getWorld()
+				.dropItem(CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0])).getBukkitEntity().getLocation().add(
+						CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0])).getBukkitEntity().getLocation().getDirection().multiply(1.1)), giveItem);
+			
 	
-	
+			break;
 		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
 			// or  TAKE ENCHANTMENT  or  TAKE INVENTORY
 		case HEAL:  // HEAL  or  HEAL [# of Hearts]

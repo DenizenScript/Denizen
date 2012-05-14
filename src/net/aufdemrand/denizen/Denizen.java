@@ -30,6 +30,7 @@ import net.citizensnpcs.api.trait.trait.Owner;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -57,6 +58,8 @@ public class Denizen extends JavaPlugin {
 			getServer().getPluginManager().disablePlugin(this);
 			return;  }
 		setupPermissions();
+		reloadConfig();
+		reloadScripts();
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new DenizenListener(this), this);
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -69,7 +72,6 @@ public class Denizen extends JavaPlugin {
 			public void run() { ScheduleScripts(); }
 		}, 1, 1000);
 
-		InteractScriptEngine.initialize();
 		
 	}
 
@@ -124,7 +126,7 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("help")) {
 
-			if(args[1].isEmpty()) {
+			if(args.length == 1) {
 
 				player.sendMessage(ChatColor.GOLD + "------- Denizen Commands -------");
 				player.sendMessage(ChatColor.GOLD + "");
@@ -183,11 +185,11 @@ public class Denizen extends JavaPlugin {
 				player.sendMessage(ChatColor.GOLD + "/denizen BOOKMARK LOCATION|BLOCK");
 				player.sendMessage(ChatColor.GOLD + "  Set bookmarks the Denizens. Use /denizen HELP BOOKMARK");
 				player.sendMessage(ChatColor.GOLD + "/denizen OPTION (LIST)|[OPTION] [VALUE]");
-				player.sendMessage(ChatColor.GOLD + "  Set various flags for the Denizens. Use /denizen HELP OPTION");
+				player.sendMessage(ChatColor.GOLD + "  Set various flags for Denizens. Use /denizen HELP OPTION");
 				player.sendMessage(ChatColor.GOLD + "/denizen TPHERE");
 				player.sendMessage(ChatColor.GOLD + "  Teleports the selected Denizen to where you are standing");
 				player.sendMessage(ChatColor.GOLD + "/denizen SPAWN|DESPAWN");
-				player.sendMessage(ChatColor.GOLD + "  Shows statistical information from Denizens plugin");
+				player.sendMessage(ChatColor.GOLD + "  Spawn or despawns the Denizen");
 				player.sendMessage(ChatColor.GOLD + "/denizen MEMORY");
 				player.sendMessage(ChatColor.GOLD + "  Shows the stored memory of the Denizen NPC");
 				player.sendMessage(ChatColor.GOLD + "/denizen REMEMBER|FORGET [NAME] [VALUE]");
@@ -200,7 +202,7 @@ public class Denizen extends JavaPlugin {
 				player.sendMessage(ChatColor.GOLD + "/denizen BOOKMARK LOCATION [Location Name]");
 				player.sendMessage(ChatColor.GOLD + "  Saves the location you are in to the Denizen for reference");
 				player.sendMessage(ChatColor.GOLD + "  with Script commands such as MOVETO, SPAWN and REMEMBER");
-				player.sendMessage(ChatColor.GOLD + "/denizen BOOKMARK BLOCK [VALUE]");
+				player.sendMessage(ChatColor.GOLD + "/denizen BOOKMARK BLOCK [Block Name]");
 				player.sendMessage(ChatColor.GOLD + "  Sets a bookmark for the block that is in your crosshairs");
 				player.sendMessage(ChatColor.GOLD + "  to be referenced to with Script commands such as ACTIVATE,");
 				player.sendMessage(ChatColor.GOLD + "  DEACTIVATE, and CHANGE");   }
@@ -252,7 +254,7 @@ public class Denizen extends JavaPlugin {
 		}
 
 		else if (args[0].equalsIgnoreCase("schedule")) {
-			this.ScheduleScripts();
+			ScheduleScripts();
 			player.sendMessage("Denizen scheduler invoked.");
 			return true;
 		}
@@ -278,12 +280,55 @@ public class Denizen extends JavaPlugin {
 
 		// Commands
 
+		if (args[0].equalsIgnoreCase("bookmark")) {
 
-		else if (args[0].equalsIgnoreCase("assign")) {
-			player.sendMessage(ChatColor.GREEN + "Assigned.");   // Talk to the player.
-			return true;
+			if(args.length < 3) {
+
+				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help bookmark");
+				return true;
+			}
+			
+			else if (args[1].equalsIgnoreCase("location")) {
+				
+				List<String> locationList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
+				
+				locationList.add(args[2] + " " + player.getWorld().toString() + ";" + player.getLocation().getX() + ";" +
+				player.getLocation().getY() + ";" + player.getLocation().getZ());
+				
+				getConfig().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
+				
+				saveConfig();
+				
+				player.sendMessage(ChatColor.GOLD + "Location bookmark added. Your denizen can now reference this location.");
+				
+				return true;
+				
+			}
+
+			else if (args[1].equalsIgnoreCase("block")) {
+				
+				List<String> blockList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Block");
+				
+				Block targetBlock = player.getTargetBlock(null, 6);
+				
+				blockList.add(args[2] + " " + player.getWorld().toString() + ";" + targetBlock.getX() + ";" +
+				targetBlock.getY() + ";" + targetBlock.getZ());
+				
+				getConfig().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Block", blockList);				
+				
+				saveConfig();
+				
+				player.sendMessage(ChatColor.GOLD + "Block bookmark added. Your denizen can now reference this block.");
+				
+				
+				return true;
+				
+			}
+
 		}
 
+		
+		
 		return true;
 	}
 

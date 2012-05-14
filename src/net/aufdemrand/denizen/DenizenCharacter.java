@@ -34,7 +34,7 @@ public class DenizenCharacter extends Character {
   	
 		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && checkDenizenCooldown(player)) {
 		
-			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 3000);
+			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
 			
 			DenizenListener.DenizenClicked(npc, player);
 			
@@ -49,7 +49,7 @@ public class DenizenCharacter extends Character {
     	
 		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && checkDenizenCooldown(player)) {
 			
-			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 3000);
+			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
 			
 			DenizenListener.DenizenClicked(npc, player);
 			
@@ -61,9 +61,8 @@ public class DenizenCharacter extends Character {
     	
     	if (!Denizen.interactCooldown.containsKey(thePlayer)) return true;
     	if (System.currentTimeMillis() >= Denizen.interactCooldown.get(thePlayer)) return true;
-    	
-    	else return false;
-    	
+    	    	
+    	return false;
     }
     
 }

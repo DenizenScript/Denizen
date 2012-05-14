@@ -37,9 +37,11 @@ public class DenizenListener implements Listener {
 		if (theScript.equals("none")) theDenizen.chat(thePlayer, plugin.getConfig().
 				getString("Denizens." + theDenizen.getId() + ".Texts.No Script Interact",
 						"I have nothing to say to you at this time."));
-		else if (!theScript.equals("none")) InteractScriptEngine.ParseScript(theDenizen, thePlayer,
-				InteractScriptEngine.GetScriptName(theScript), "", InteractScriptEngine.Trigger.CLICK);
-
+		else if (!theScript.equals("none")) {
+			
+	//	plugin.getServer().broadcastMessage("the script: " + theScript);	
+			InteractScriptEngine.ParseScript(theDenizen, thePlayer,	InteractScriptEngine.GetScriptName(theScript), "", InteractScriptEngine.Trigger.CLICK);
+		}
 	}
 
 	
