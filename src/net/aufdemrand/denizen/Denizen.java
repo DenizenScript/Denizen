@@ -292,7 +292,7 @@ public class Denizen extends JavaPlugin {
 				
 				List<String> locationList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
 				
-				locationList.add(args[2] + " " + player.getWorld().toString() + ";" + player.getLocation().getX() + ";" +
+				locationList.add(args[2] + " " + player.getWorld().getName() + ";" + player.getLocation().getX() + ";" +
 				player.getLocation().getY() + ";" + player.getLocation().getZ());
 				
 				getConfig().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
@@ -311,7 +311,7 @@ public class Denizen extends JavaPlugin {
 				
 				Block targetBlock = player.getTargetBlock(null, 6);
 				
-				blockList.add(args[2] + " " + player.getWorld().toString() + ";" + targetBlock.getX() + ";" +
+				blockList.add(args[2] + " " + player.getWorld().getName() + ";" + targetBlock.getX() + ";" +
 				targetBlock.getY() + ";" + targetBlock.getZ());
 				
 				getConfig().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Block", blockList);				
