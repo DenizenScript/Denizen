@@ -17,16 +17,23 @@ import net.aufdemrand.denizen.DenizenListener;
 import net.aufdemrand.denizen.DenizenCharacter;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffectType;
 
@@ -43,7 +50,7 @@ public class InteractScriptEngine {
 
 	public enum Requirement {
 		NONE, QUEST, NAME, WEARING, INVINSIBLE, ITEM, HOLDING, TIME, PRECIPITATION, ACTIVITY, FINISHED,
-		STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, POTIONEFFECT, MCMMO }
+		STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, POTIONEFFECT, MCMMO, PRECIPITATING, STORMING }
 
 	public enum Trigger {
 		CHAT, CLICK, FINISH, START, TOUCH
@@ -52,7 +59,7 @@ public class InteractScriptEngine {
 	public enum Command {
 		DELAY, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
 		POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT,
-		WHISPER, NARRARATE, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO
+		WHISPER, NARRARATE, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH
 	}
 
 
@@ -113,14 +120,8 @@ public class InteractScriptEngine {
 					}
 				}
 				break;
-				
-				
-			case PERMISSION:  // (-)PERMISSION [this.permission.node]
-				if (negReq) if (!Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.getName(),
-						splitArgs[1])) MetReqs++;
-				else if (Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.getName(),
-						splitArgs[1])) MetReqs++;
-				break;
+
+
 
 			case MCMMO:  // (-)MCMMO STAT LEVEL
 
@@ -128,10 +129,25 @@ public class InteractScriptEngine {
 				//	thisPlayer.sendMessage("Your power level is " + mcMMOAPI.getPowerLevel(thisPlayer));
 				//break;
 
+			case STORMING:
+			case STORMY:
+			case PRECIPITATING:
 			case PRECIPITATION:  // (-)PRECIPITATION
-				if (negReq) if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
+
+				if (negReq) {
+					if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
+				}
 				else if (thisPlayer.getWorld().hasStorm()) MetReqs++;
 				break;
+
+
+			case SUNNY:  // (-)SUNNY    - Negative would trigger on Raining or Storming
+				if (negReq) if (thisPlayer.getWorld().hasStorm()) MetReqs++;
+				else if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
+				break;
+
+
+
 
 			case HUNGER:  // (-)HUNGER FULL  or  (-)HUNGER HUNGRY  or  (-)HUNGER STARVING
 				if (negReq) {
@@ -167,8 +183,9 @@ public class InteractScriptEngine {
 				break;
 
 			case NOTABLE: // (-)NOTABLE [Name of Notable]
-				if (negReq) if (!GetNotableCompletion(thisPlayer, splitArgs[1])) MetReqs++;
-				else if (GetNotableCompletion(thisPlayer, splitArgs[1])) MetReqs++;
+
+				//if (negReq) if (!GetNotableCompletion(thisPlayer, splitArgs[1])) MetReqs++;
+				//else if (GetNotableCompletion(thisPlayer, splitArgs[1])) MetReqs++;
 				break;
 
 			case WORLD:  // (-)WORLD [World Name] [or this World Name] [or this World...]
@@ -201,87 +218,112 @@ public class InteractScriptEngine {
 				}
 				break;
 
-			case STORMY:  // (-)STORMY     - Note that it can still be raining and this will trigger
-				if (negReq) if (!thisPlayer.getWorld().isThundering()) MetReqs++;
-				else if (thisPlayer.getWorld().isThundering()) MetReqs++;
-				break;
-
-			case SUNNY:  // (-)SUNNY    - Negative would trigger on Raining or Storming
-				if (negReq) if (thisPlayer.getWorld().hasStorm()) MetReqs++;
-				else if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
-				break;
 
 			case MONEY: // (-)MONEY [Amount of Money, or more]
-				if (negReq) if (!Denizen.econ.has(thisPlayer.getName(), Integer.parseInt(splitArgs[1]))) MetReqs++;
-				else if (Denizen.econ.has(thisPlayer.getName(), Integer.parseInt(splitArgs[1]))) MetReqs++;
+				if (negReq) { if (!Denizen.econ.has(thisPlayer.getName(), Integer.parseInt(splitArgs[1]))){ MetReqs++;} }
+				else if (Denizen.econ.has(thisPlayer.getName(), Integer.parseInt(splitArgs[1]))) {MetReqs++;}
 				break;
+
+
 
 			case ITEM: // (-)ITEM [ITEM_NAME] (# of that item, or more) (ENCHANTMENT_TYPE)
 				String[] theseItemArgs = splitArgs[1].split(" ");
-				
+
+
+
 				int itemAmt = 1;
-				
-				if (theseItemArgs[1] != null) itemAmt = Integer.parseInt(theseItemArgs[1]);
-				
-				ItemStack thisItem = new ItemStack(Material.getMaterial(theseItemArgs[0]), itemAmt);
+
+				if (theseItemArgs.length >= 2) itemAmt = Integer.parseInt(theseItemArgs[1]);
+
+				Material thisItem = Material.valueOf((theseItemArgs[0]));
+
+				//if (!negReq && thisPlayer.getInventory().contains()
+				//if (negReq && !thisPlayer.getInventory().contains(thisItem, itemAmt)) MetReqs++;
+
+
+
+
 				Map<Material, Integer> PlayerInv = new HashMap<Material, Integer>();
 				Map<Material, Boolean> isEnchanted = new HashMap<Material, Boolean>();
 
-				for (ItemStack invItem : thisPlayer.getInventory()) {
-					if (PlayerInv.containsKey(invItem.getType())) {
-						int t = PlayerInv.get(invItem.getType());
-						t = t + invItem.getAmount(); PlayerInv.put(invItem.getType(), t);
+
+
+				ItemStack[] getContentsArray = thisPlayer.getInventory().getContents();
+				List<ItemStack> getContents = Arrays.asList(getContentsArray);
+
+
+				for (int x=0; x < getContents.size(); x++) {
+					plugin.getServer().broadcastMessage(getContents.size() + "");
+				if (getContents.get(x) != null) {
+					if (PlayerInv.containsKey(getContents.get(x).getType())) {
+						int t = PlayerInv.get(getContents.get(x).getType());
+						t = t + getContents.get(x).getAmount(); PlayerInv.put(getContents.get(x).getType(), t);
 					}
-					else PlayerInv.put(invItem.getType(), invItem.getAmount());
-					if (theseItemArgs[2] != null)
-						if (invItem.containsEnchantment(Enchantment.getByName(theseItemArgs[2])))
-							isEnchanted.put(invItem.getType(), true);
+					else PlayerInv.put(getContents.get(x).getType(), getContents.get(x).getAmount());
+
+					if (theseItemArgs.length >= 3) {
+						if (getContents.get(x).containsEnchantment(Enchantment.getByName(theseItemArgs[2])))
+							isEnchanted.put(getContents.get(x).getType(), true); }
+				}
 				}
 
 				if (negReq) {
-					if (PlayerInv.containsKey(thisItem.getType()) && theseItemArgs[2] == null)
-						if (PlayerInv.get(thisItem.getType()) < thisItem.getAmount()) MetReqs++;
-						else if (PlayerInv.containsKey(thisItem.getType()) && isEnchanted.get(thisItem.getType()))
-							if (PlayerInv.get(thisItem.getType()) < thisItem.getAmount()) MetReqs++;
+					if (PlayerInv.containsKey(thisItem) && theseItemArgs.length < 3) {
+						if (PlayerInv.get(thisItem) < itemAmt) {MetReqs++; }
+						else if (PlayerInv.containsKey(thisItem) && isEnchanted.get(thisItem)) {
+							if (PlayerInv.get(thisItem) < itemAmt) MetReqs++; }
+					}
 				}
 				else {
-					if (PlayerInv.containsKey(thisItem.getType()) && theseItemArgs[2] == null)
-						if (PlayerInv.get(thisItem.getType()) >= thisItem.getAmount()) MetReqs++;
-						else if (PlayerInv.containsKey(thisItem.getType()) && isEnchanted.get(thisItem.getType()))
-							if (PlayerInv.get(thisItem.getType()) >= thisItem.getAmount()) MetReqs++;
+					if (PlayerInv.containsKey(thisItem) && theseItemArgs.length < 3) {
+						if (PlayerInv.get(thisItem) >= itemAmt) { MetReqs++; } }
+
+					else if (PlayerInv.containsKey(thisItem) && isEnchanted.get(thisItem)) {
+						if (PlayerInv.get(thisItem) >= itemAmt) MetReqs++;}
+
 				}
 				break;
 
 			case HOLDING: // (-)HOLDING [ITEM_NAME] (ENCHANTMENT_TYPE)
 				String[] itemArgs = splitArgs[1].split(" ");
-				if (negReq) if (thisPlayer.getItemInHand().getType() != Material.getMaterial(itemArgs[0])) {
-					if (itemArgs[1] == null) MetReqs++;
+				if (negReq) {if (thisPlayer.getItemInHand().getType() != Material.getMaterial(itemArgs[0])) {
+					if (itemArgs.length == 1) MetReqs++;
 					else if (!thisPlayer.getItemInHand().getEnchantments().containsKey(Enchantment.getByName(itemArgs[1])))
-						MetReqs++;
+						MetReqs++;}
 				} else if (thisPlayer.getItemInHand().getType() == Material.getMaterial(itemArgs[0])) {
-					if (itemArgs[1] == null) MetReqs++;
+					if (itemArgs.length == 1) MetReqs++;
 					else if (thisPlayer.getItemInHand().getEnchantments().containsKey(Enchantment.getByName(itemArgs[1])))
 						MetReqs++;
 				}
 				break;
 
 			case POTIONEFFECT: // (-)POTIONEFFECT [POTION_EFFECT_TYPE]
-				if (negReq) if (!thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;
+				if (negReq) {if (!thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;}
 				else if (thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;
 				break;
 
 			case FINISHED:
 			case SCRIPT: // (-)SCRIPT [Script Name]
-				if (negReq) if (!GetScriptComplete(thisPlayer, splitArgs[1])) MetReqs++;
+				if (negReq) { if (!GetScriptComplete(thisPlayer, splitArgs[1])) MetReqs++; }
 				else if (GetScriptComplete(thisPlayer, splitArgs[1])) MetReqs++;
 				break;
 
 			case GROUP:
-				if (negReq) if (!Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(),
-						splitArgs[1])) MetReqs++;
+				if (negReq) { if (!Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(),
+						splitArgs[1])) MetReqs++; }
 				else if (Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(),
 						splitArgs[1])) MetReqs++;
 				break;
+
+			case PERMISSION:  // (-)PERMISSION [this.permission.node]
+				if (negReq) { if (!Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.getName(),
+						splitArgs[1])) MetReqs++; }
+				else if (Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.getName(),
+						splitArgs[1])) MetReqs++;
+				break;
+
+
+
 			}
 		}
 
@@ -483,7 +525,7 @@ public class InteractScriptEngine {
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 		boolean ScriptComplete = false;
-		if (plugin.getConfig().getString("Players." + thePlayer + "." + theScript + "." + "Completed")
+		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed")
 				!= null) ScriptComplete = true;
 		return ScriptComplete;
 	}
@@ -768,11 +810,11 @@ public class InteractScriptEngine {
 
 		case SPAWN:  // SPAWN [MOB NAME] [AMOUNT] (Location Bookmark)
 		case CHANGE:  // CHANGE [Block State Bookmark]
-		case WEATHER:  // WEATHER [Sunny|Stormy|Rainy] (Duration for Stormy/Rainy)
+		case WEATHER:  // WEATHER [Sunny|Stormy|Precipitation] (Duration for Stormy/Rainy)
 
 			if (splitCommand[1].equalsIgnoreCase("sunny")) { thePlayer.getWorld().setStorm(false); }
 			else if (splitCommand[1].equalsIgnoreCase("stormy")) { thePlayer.getWorld().setThundering(true); }
-			else if (splitCommand[1].equalsIgnoreCase("rainy")) { thePlayer.getWorld().setStorm(true); }
+			else if (splitCommand[1].equalsIgnoreCase("precipitation")) { thePlayer.getWorld().setStorm(true); }
 			break;
 
 		case EFFECT:  // EFFECT [EFFECT_TYPE] (Location Bookmark)
@@ -840,20 +882,22 @@ public class InteractScriptEngine {
 					String theName = thisLocation.split(" ", 2)[0];
 					if (theName.equalsIgnoreCase(splitCommand[1])) theLocation = thisLocation.split(" ", 2)[1].split(";");
 				}
-				
+
 				if (theLocation != null) {			
 
-				//	plugin.getServer().broadcastMessage(theLocation[0] + theLocation[1]);
+					//	plugin.getServer().broadcastMessage(theLocation[0] + theLocation[1]);
 					Location locationBookmark = 
 							new Location(plugin.getServer().getWorld(theLocation[0]),
-									Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2]),
-									Double.parseDouble(theLocation[3]));
+									Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
+									Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
+									Float.parseFloat(theLocation[5]));
 
 					theDenizenToWalkTo.getAI().setDestination(locationBookmark);
+					
+					// theDenizenToWalkTo.getAI().setTarget(thePlayer.getWorld().spawnCreature(locationBookmark, EntityType.COW), false);
+					
 				}
-				
-				plugin.getServer().broadcastMessage("Has destination? " + theDenizenToWalkTo.getAI().hasDestination());
-				
+
 			}
 			break;
 
@@ -866,8 +910,12 @@ public class InteractScriptEngine {
 						get(theDenizenToReturn));
 			break;
 
-		case NOD:  // NOD
+		case FINISH:  // NOD
 
+			// 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Trigger Type; 4 Command
+			plugin.getConfig().set("Players." + thePlayer.getName() + "." + splitArgs[1] + "." + "Completed", true);
+			plugin.saveConfig();
+			
 			break;
 
 		case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
@@ -876,6 +924,36 @@ public class InteractScriptEngine {
 		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
 
 			NPC theDenizenSpawning = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
+			
+			
+			Denizen.previousDenizenLocation.put(theDenizenSpawning, theDenizenSpawning.getBukkitEntity().getLocation());
+			if (!splitCommand[1].isEmpty()) {
+
+				List<String> locationList = plugin.getConfig().getStringList("Denizens." + theDenizenSpawning.getName() + ".Bookmarks.Location");
+
+				String[] theLocation = null;
+
+				for (String thisLocation : locationList) {
+					String theName = thisLocation.split(" ", 2)[0];
+					if (theName.equalsIgnoreCase(splitCommand[1])) theLocation = thisLocation.split(" ", 2)[1].split(";");
+				}
+
+				if (theLocation != null) {			
+
+					//	plugin.getServer().broadcastMessage(theLocation[0] + theLocation[1]);
+					Location locationBookmark = 
+							new Location(plugin.getServer().getWorld(theLocation[0]),
+									Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
+									Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
+									Float.parseFloat(theLocation[5]));
+			
+			theDenizenSpawning.getBukkitEntity().getWorld().playEffect(theDenizenSpawning.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
+			theDenizenSpawning.despawn();
+			theDenizenSpawning.spawn(locationBookmark);
+			theDenizenSpawning.getBukkitEntity().getWorld().playEffect(theDenizenSpawning.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
+			
+				}
+			}
 			break;
 
 		case PERMISS:  // PERMISS [Permission Node]
@@ -884,9 +962,26 @@ public class InteractScriptEngine {
 			break;
 
 
-		case EXECUTE:  // EXECUTE [Command to Execute]
+		case EXECUTE:  // EXECUTE ASPLAYER [Command to Execute]
 
-			thePlayer.getServer().dispatchCommand(null, splitArgs[4].split(" ", 2)[1].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
+			String[] executeCommand = splitArgs[4].split(" ", 3);
+
+			NPC theDenizenExecuting = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
+				
+			
+			if (splitCommand[1].equalsIgnoreCase("ASPLAYER")) {
+				thePlayer.performCommand(executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
+			}
+			
+			if (splitCommand[1].equalsIgnoreCase("ASNPC")) {
+				((Player) theDenizenExecuting.getBukkitEntity()).performCommand(executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
+			}
+			
+			if (splitCommand[1].equalsIgnoreCase("ASSERVER")) {
+
+				
+			plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
+			}
 			break;
 
 			// SHOUT can be heard by players within 100 blocks.

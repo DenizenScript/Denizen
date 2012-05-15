@@ -293,7 +293,7 @@ public class Denizen extends JavaPlugin {
 				List<String> locationList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
 				
 				locationList.add(args[2] + " " + player.getWorld().getName() + ";" + player.getLocation().getX() + ";" +
-				player.getLocation().getY() + ";" + player.getLocation().getZ());
+				player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
 				
 				getConfig().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
 				
@@ -345,9 +345,10 @@ public class Denizen extends JavaPlugin {
 				if (!theEntry.getValue().isEmpty()) { 
 					InteractScriptEngine.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
 
+					instantCommand = false;
+					
 					if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
-					else instantCommand = false;
-
+					
 					theEntry.getValue().remove(0);
 					playerQue.put(theEntry.getKey(), theEntry.getValue());
 				}
