@@ -253,26 +253,31 @@ public class InteractScriptEngine {
 
 
 				for (int x=0; x < getContents.size(); x++) {
-					plugin.getServer().broadcastMessage(getContents.size() + "");
-				if (getContents.get(x) != null) {
-					if (PlayerInv.containsKey(getContents.get(x).getType())) {
-						int t = PlayerInv.get(getContents.get(x).getType());
-						t = t + getContents.get(x).getAmount(); PlayerInv.put(getContents.get(x).getType(), t);
-					}
-					else PlayerInv.put(getContents.get(x).getType(), getContents.get(x).getAmount());
+					//	plugin.getServer().broadcastMessage(getContents.size() + "");
+					if (getContents.get(x) != null) {
+						if (PlayerInv.containsKey(getContents.get(x).getType())) {
+							int t = PlayerInv.get(getContents.get(x).getType());
+							t = t + getContents.get(x).getAmount(); PlayerInv.put(getContents.get(x).getType(), t);
+						}
+						else PlayerInv.put(getContents.get(x).getType(), getContents.get(x).getAmount());
 
-					if (theseItemArgs.length >= 3) {
-						if (getContents.get(x).containsEnchantment(Enchantment.getByName(theseItemArgs[2])))
-							isEnchanted.put(getContents.get(x).getType(), true); }
-				}
+						if (theseItemArgs.length >= 3) {
+							if (getContents.get(x).containsEnchantment(Enchantment.getByName(theseItemArgs[2])))
+								isEnchanted.put(getContents.get(x).getType(), true); }
+					}
 				}
 
 				if (negReq) {
+					
+					if (!PlayerInv.containsKey(thisItem)) MetReqs++;
+					
 					if (PlayerInv.containsKey(thisItem) && theseItemArgs.length < 3) {
 						if (PlayerInv.get(thisItem) < itemAmt) {MetReqs++; }
-						else if (PlayerInv.containsKey(thisItem) && isEnchanted.get(thisItem)) {
-							if (PlayerInv.get(thisItem) < itemAmt) MetReqs++; }
 					}
+					
+					else if (PlayerInv.containsKey(thisItem) && isEnchanted.get(thisItem)) {
+						if (PlayerInv.get(thisItem) < itemAmt) MetReqs++; }
+
 				}
 				else {
 					if (PlayerInv.containsKey(thisItem) && theseItemArgs.length < 3) {
@@ -893,9 +898,9 @@ public class InteractScriptEngine {
 									Float.parseFloat(theLocation[5]));
 
 					theDenizenToWalkTo.getAI().setDestination(locationBookmark);
-					
+
 					// theDenizenToWalkTo.getAI().setTarget(thePlayer.getWorld().spawnCreature(locationBookmark, EntityType.COW), false);
-					
+
 				}
 
 			}
@@ -915,7 +920,7 @@ public class InteractScriptEngine {
 			// 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Trigger Type; 4 Command
 			plugin.getConfig().set("Players." + thePlayer.getName() + "." + splitArgs[1] + "." + "Completed", true);
 			plugin.saveConfig();
-			
+
 			break;
 
 		case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
@@ -924,8 +929,8 @@ public class InteractScriptEngine {
 		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
 
 			NPC theDenizenSpawning = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
-			
-			
+
+
 			Denizen.previousDenizenLocation.put(theDenizenSpawning, theDenizenSpawning.getBukkitEntity().getLocation());
 			if (!splitCommand[1].isEmpty()) {
 
@@ -946,12 +951,12 @@ public class InteractScriptEngine {
 									Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
 									Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
 									Float.parseFloat(theLocation[5]));
-			
-			theDenizenSpawning.getBukkitEntity().getWorld().playEffect(theDenizenSpawning.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
-			theDenizenSpawning.despawn();
-			theDenizenSpawning.spawn(locationBookmark);
-			theDenizenSpawning.getBukkitEntity().getWorld().playEffect(theDenizenSpawning.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
-			
+
+					theDenizenSpawning.getBukkitEntity().getWorld().playEffect(theDenizenSpawning.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
+					theDenizenSpawning.despawn();
+					theDenizenSpawning.spawn(locationBookmark);
+					theDenizenSpawning.getBukkitEntity().getWorld().playEffect(theDenizenSpawning.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
+
 				}
 			}
 			break;
@@ -967,20 +972,20 @@ public class InteractScriptEngine {
 			String[] executeCommand = splitArgs[4].split(" ", 3);
 
 			NPC theDenizenExecuting = CitizensAPI.getNPCManager().getNPC(Integer.valueOf(splitArgs[0]));
-				
-			
+
+
 			if (splitCommand[1].equalsIgnoreCase("ASPLAYER")) {
 				thePlayer.performCommand(executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
 			}
-			
+
 			if (splitCommand[1].equalsIgnoreCase("ASNPC")) {
 				((Player) theDenizenExecuting.getBukkitEntity()).performCommand(executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
 			}
-			
+
 			if (splitCommand[1].equalsIgnoreCase("ASSERVER")) {
 
-				
-			plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
+
+				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
 			}
 			break;
 
