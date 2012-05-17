@@ -9,7 +9,7 @@
 			<attribute name="javadoc_location" value="http://jd.bukkit.org/apidocs/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/citizensapi-2.0-SNAPSHOT (2).jar"/>
-	<classpathentry kind="lib" path="C:/craftbukkit/plugins/citizens-2.0-SNAPSHOT (9).jar"/>
+	<classpathentry kind="lib" path="C:/craftbukkit/plugins/citizens-2.0-SNAPSHOT (15).jar"/>
+	<classpathentry kind="lib" path="C:/Users/Jeremy/Denizen/lib/citizensapi-2.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

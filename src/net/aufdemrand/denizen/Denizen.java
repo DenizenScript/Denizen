@@ -78,7 +78,7 @@ public class Denizen extends JavaPlugin {
 
 	protected void ScheduleScripts() {
 
-		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCManager().getNPCs(DenizenCharacter.class);
+		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
 		if (DenizenNPCs.isEmpty()) return;
 		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
 		for (NPC aDenizen : DenizenList) {
@@ -265,7 +265,7 @@ public class Denizen extends JavaPlugin {
 			return true;
 		}
 
-		NPC ThisNPC = CitizensAPI.getNPCManager().getNPC(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
+		NPC ThisNPC = CitizensAPI.getNPCRegistry().getNPC(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
 
 
 		if (!ThisNPC.getTrait(Owner.class).getOwner().equals(player.getName())) {

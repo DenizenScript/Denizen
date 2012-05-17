@@ -1,6 +1,6 @@
 name: Denizen
 author: aufdemrand
-version: 0.3
+version: 0.6
 main: net.aufdemrand.denizen.Denizen
 depend:
   - Citizens
