@@ -35,6 +35,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 
@@ -59,7 +60,7 @@ public class InteractScriptEngine {
 	public enum Command {
 		DELAY, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
 		POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT,
-		WHISPER, NARRARATE, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH
+		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE
 	}
 
 
@@ -267,13 +268,13 @@ public class InteractScriptEngine {
 				}
 
 				if (negReq) {
-					
+
 					if (!PlayerInv.containsKey(thisItem)) MetReqs++;
-					
+
 					if (PlayerInv.containsKey(thisItem) && theseItemArgs.length < 3) {
 						if (PlayerInv.get(thisItem) < itemAmt) {MetReqs++; }
 					}
-					
+
 					else if (PlayerInv.containsKey(thisItem) && isEnchanted.get(thisItem)) {
 						if (PlayerInv.get(thisItem) < itemAmt) MetReqs++; }
 
@@ -299,6 +300,27 @@ public class InteractScriptEngine {
 					else if (thisPlayer.getItemInHand().getEnchantments().containsKey(Enchantment.getByName(itemArgs[1])))
 						MetReqs++;
 				}
+				break;
+
+
+			case WEARING:
+				String[] wearingArgs = splitArgs[1].split(" ");
+
+				ItemStack[] ArmorContents = thisPlayer.getInventory().getArmorContents();
+				Boolean match = false;
+
+				for (ItemStack ArmorPiece : ArmorContents) {
+
+					if (ArmorPiece != null) {
+						if (ArmorPiece.getType() == Material.getMaterial(wearingArgs[0].toUpperCase())) {
+							match = true;
+						}
+					}					
+				}
+
+				if (match && !negReq) MetReqs++;
+				if (!match && negReq) MetReqs++;
+
 				break;
 
 			case POTIONEFFECT: // (-)POTIONEFFECT [POTION_EFFECT_TYPE]
@@ -339,6 +361,8 @@ public class InteractScriptEngine {
 
 		return false;
 	}
+
+
 
 
 
@@ -741,7 +765,7 @@ public class InteractScriptEngine {
 					case CHAT:
 					case WHISPER:
 					case ANNOUNCE:
-					case NARRARATE:
+					case NARRATE:
 						int word = 1;
 						int line = 0;
 						ArrayList<String> multiLineCommand = new ArrayList<String>();
@@ -788,22 +812,22 @@ public class InteractScriptEngine {
 		// Syntax of theStep
 		// 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Trigger Type; 4 Command
 
-		String[] splitArgs = theStep.split(";");
-		String[] splitCommand = splitArgs[4].split(" ");
+		String[] rawqueArgs = theStep.split(";");
+		String[] commandArgs = rawqueArgs[4].split(" ");
 
-		if (splitCommand[0].startsWith("^")) splitCommand[0] = splitCommand[0].substring(1);
+		if (commandArgs[0].startsWith("^")) commandArgs[0] = commandArgs[0].substring(1);
 
-		switch (Command.valueOf(splitCommand[0].toUpperCase())) {
+		switch (Command.valueOf(commandArgs[0].toUpperCase())) {
 
 		// SCRIPT INTERACTION
 
 		case ZAP:  // ZAP [Optional Step # to advance to]
 
-			if (splitCommand.length == 1) { plugin.getConfig().set("Players." + thePlayer.getDisplayName()
-					+ "." + splitArgs[1] + ".Current Step", Integer.parseInt(splitArgs[2]) + 1);
+			if (commandArgs.length == 1) { plugin.getConfig().set("Players." + thePlayer.getDisplayName()
+					+ "." + rawqueArgs[1] + ".Current Step", Integer.parseInt(rawqueArgs[2]) + 1);
 			plugin.saveConfig();}
-			else { plugin.getConfig().set("Players." + thePlayer.getDisplayName() + "." + splitArgs[1]
-					+ ".Current Step", Integer.parseInt(splitCommand[1])); plugin.saveConfig(); }
+			else { plugin.getConfig().set("Players." + thePlayer.getDisplayName() + "." + rawqueArgs[1]
+					+ ".Current Step", Integer.parseInt(commandArgs[1])); plugin.saveConfig(); }
 			break;
 
 		case ASSIGN:  // ASSIGN [ME|Denizen Name] [ALL|Player Name] [Priority] [Script Name]
@@ -813,13 +837,22 @@ public class InteractScriptEngine {
 			// WORLD INTERACTION
 
 		case SPAWN:  // SPAWN [MOB NAME] [AMOUNT] (Location Bookmark)
+
 		case CHANGE:  // CHANGE [Block State Bookmark]
+
 		case WEATHER:  // WEATHER [Sunny|Stormy|Precipitation] (Duration for Stormy/Rainy)
 
-			if (splitCommand[1].equalsIgnoreCase("sunny")) { thePlayer.getWorld().setStorm(false); }
-			else if (splitCommand[1].equalsIgnoreCase("stormy")) { thePlayer.getWorld().setThundering(true); }
-			else if (splitCommand[1].equalsIgnoreCase("precipitation")) { thePlayer.getWorld().setStorm(true); }
+			if (commandArgs[1].equalsIgnoreCase("sunny")) { thePlayer.getWorld().setStorm(false); }
+			else if (commandArgs[1].equalsIgnoreCase("stormy")) { thePlayer.getWorld().setThundering(true); }
+			else if (commandArgs[1].equalsIgnoreCase("precipitation")) { thePlayer.getWorld().setStorm(true); }
 			break;
+
+		case CAST: // CAST [POTION_TYPE] [DURATION] [AMPLIFIER]
+
+			thePlayer.addPotionEffect(new PotionEffect(
+					PotionEffectType.getByName(commandArgs[1]), Integer.valueOf(commandArgs[2]) * 20, Integer.valueOf(commandArgs[3])));
+			break;
+
 
 		case EFFECT:  // EFFECT [EFFECT_TYPE] (Location Bookmark)
 
@@ -827,29 +860,55 @@ public class InteractScriptEngine {
 
 		case LOOK: // ENG
 
-			if (splitCommand[1].equalsIgnoreCase("CLOSE")) {
-				if (!CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0])).getTrait(LookClose.class).toggle())
-					CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0])).getTrait(LookClose.class).toggle();
+			if (commandArgs[1].equalsIgnoreCase("CLOSE")) {
+				if (!CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getTrait(LookClose.class).toggle())
+					CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getTrait(LookClose.class).toggle();
 			}
-			if (splitCommand[1].equalsIgnoreCase("AWAY")) {
-				if (CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0])).getTrait(LookClose.class).toggle())
-					CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0])).getTrait(LookClose.class).toggle();
+			if (commandArgs[1].equalsIgnoreCase("AWAY")) {
+				if (CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getTrait(LookClose.class).toggle())
+					CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getTrait(LookClose.class).toggle();
 			}
 			break;
 
 		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
 
-			ItemStack giveItem = new ItemStack(Material.getMaterial(splitCommand[1].toUpperCase()));
-			giveItem.setAmount(Integer.valueOf(splitCommand[2]));
+			ItemStack giveItem = new ItemStack(Material.getMaterial(commandArgs[1].toUpperCase()));
 
-			CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0])).getBukkitEntity().getWorld()
-			.dropItem(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0])).getBukkitEntity().getLocation().add(
-					CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0])).getBukkitEntity().getLocation().getDirection().multiply(1.1)), giveItem);
+			if (commandArgs.length > 1) giveItem.setAmount(Integer.valueOf(commandArgs[2]));
+			else giveItem.setAmount(1);
+
+			CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getBukkitEntity().getWorld()
+			.dropItem(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getBukkitEntity().getLocation().add(
+					CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getBukkitEntity().getLocation().getDirection().multiply(1.1)), giveItem);
 
 
 			break;
+
 		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
-			// or  TAKE ENCHANTMENT  or  TAKE INVENTORY
+
+			if (commandArgs[1].equalsIgnoreCase("MONEY")) {
+
+				double playerMoneyAmt = Denizen.econ.getBalance(thePlayer.getName());
+				double amtToTake = Double.valueOf(commandArgs[2]);
+				
+				if (amtToTake > playerMoneyAmt) amtToTake = playerMoneyAmt;
+				
+				Denizen.econ.withdrawPlayer(thePlayer.getName(), amtToTake);
+
+			}
+
+			else {
+
+				ItemStack itemToTake = new ItemStack(Material.valueOf(commandArgs[1]));
+
+				if (commandArgs.length > 2)	itemToTake.setAmount(Integer.valueOf(commandArgs[2]));
+				else itemToTake.setAmount(1);
+
+				thePlayer.getInventory().removeItem(itemToTake);
+
+			}
+			break;
+
 		case HEAL:  // HEAL  or  HEAL [# of Hearts]
 		case DAMAGE:
 		case POTION_EFFECT:
@@ -864,19 +923,19 @@ public class InteractScriptEngine {
 
 		case WALK:  // WALK Z(-NORTH(2)/+SOUTH(0)) X(-WEST(1)/+EAST(3)) Y (+UP/-DOWN)
 
-			NPC theDenizenToWalk = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0]));
+			NPC theDenizenToWalk = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
 
 			Denizen.previousDenizenLocation.put(theDenizenToWalk, theDenizenToWalk.getBukkitEntity().getLocation());
-			if (!splitCommand[1].isEmpty()) theDenizenToWalk.getAI().setDestination(theDenizenToWalk.getBukkitEntity().getLocation()
-					.add(Double.parseDouble(splitCommand[2]), Double.parseDouble(splitCommand[3]), Double.parseDouble(splitCommand[1])));
+			if (!commandArgs[1].isEmpty()) theDenizenToWalk.getAI().setDestination(theDenizenToWalk.getBukkitEntity().getLocation()
+					.add(Double.parseDouble(commandArgs[2]), Double.parseDouble(commandArgs[3]), Double.parseDouble(commandArgs[1])));
 			break;
 
 		case WALKTO:  // WALKTO [Location Bookmark]
 
-			NPC theDenizenToWalkTo = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0]));
+			NPC theDenizenToWalkTo = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
 
 			Denizen.previousDenizenLocation.put(theDenizenToWalkTo, theDenizenToWalkTo.getBukkitEntity().getLocation());
-			if (!splitCommand[1].isEmpty()) {
+			if (!commandArgs[1].isEmpty()) {
 
 				List<String> locationList = plugin.getConfig().getStringList("Denizens." + theDenizenToWalkTo.getName() + ".Bookmarks.Location");
 
@@ -884,7 +943,7 @@ public class InteractScriptEngine {
 
 				for (String thisLocation : locationList) {
 					String theName = thisLocation.split(" ", 2)[0];
-					if (theName.equalsIgnoreCase(splitCommand[1])) theLocation = thisLocation.split(" ", 2)[1].split(";");
+					if (theName.equalsIgnoreCase(commandArgs[1])) theLocation = thisLocation.split(" ", 2)[1].split(";");
 				}
 
 				if (theLocation != null) {			
@@ -908,7 +967,7 @@ public class InteractScriptEngine {
 
 		case RETURN:
 
-			NPC theDenizenToReturn = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0]));
+			NPC theDenizenToReturn = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
 			if (Denizen.previousDenizenLocation.containsKey(theDenizenToReturn))
 				theDenizenToReturn.getAI().setDestination(Denizen.previousDenizenLocation.
 						get(theDenizenToReturn));
@@ -917,7 +976,7 @@ public class InteractScriptEngine {
 		case FINISH:  // NOD
 
 			// 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Trigger Type; 4 Command
-			plugin.getConfig().set("Players." + thePlayer.getName() + "." + splitArgs[1] + "." + "Completed", true);
+			plugin.getConfig().set("Players." + thePlayer.getName() + "." + rawqueArgs[1] + "." + "Completed", true);
 			plugin.saveConfig();
 
 			break;
@@ -925,13 +984,28 @@ public class InteractScriptEngine {
 		case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
 
 
+
+		case FOLLOW: // FOLLOW PLAYER|NOBODY
+
+			NPC theDenizenFollowing = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
+
+			if (commandArgs[1].equalsIgnoreCase("PLAYER")) {
+				theDenizenFollowing.getAI().setTarget(thePlayer, false);
+			}
+
+			if (commandArgs[1].equalsIgnoreCase("NOBODY")) {
+				theDenizenFollowing.getAI().cancelDestination();
+			}
+
+			break;
+
 		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
 
-			NPC theDenizenSpawning = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0]));
+			NPC theDenizenSpawning = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
 
 
 			Denizen.previousDenizenLocation.put(theDenizenSpawning, theDenizenSpawning.getBukkitEntity().getLocation());
-			if (!splitCommand[1].isEmpty()) {
+			if (!commandArgs[1].isEmpty()) {
 
 				List<String> locationList = plugin.getConfig().getStringList("Denizens." + theDenizenSpawning.getName() + ".Bookmarks.Location");
 
@@ -939,7 +1013,7 @@ public class InteractScriptEngine {
 
 				for (String thisLocation : locationList) {
 					String theName = thisLocation.split(" ", 2)[0];
-					if (theName.equalsIgnoreCase(splitCommand[1])) theLocation = thisLocation.split(" ", 2)[1].split(";");
+					if (theName.equalsIgnoreCase(commandArgs[1])) theLocation = thisLocation.split(" ", 2)[1].split(";");
 				}
 
 				if (theLocation != null) {			
@@ -962,26 +1036,26 @@ public class InteractScriptEngine {
 
 		case PERMISS:  // PERMISS [Permission Node]
 
-			Denizen.perms.playerAdd(thePlayer, splitCommand[1]);
+			Denizen.perms.playerAdd(thePlayer, commandArgs[1]);
 			break;
 
 
 		case EXECUTE:  // EXECUTE ASPLAYER [Command to Execute]
 
-			String[] executeCommand = splitArgs[4].split(" ", 3);
+			String[] executeCommand = rawqueArgs[4].split(" ", 3);
 
-			NPC theDenizenExecuting = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0]));
+			NPC theDenizenExecuting = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
 
 
-			if (splitCommand[1].equalsIgnoreCase("ASPLAYER")) {
+			if (commandArgs[1].equalsIgnoreCase("ASPLAYER")) {
 				thePlayer.performCommand(executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
 			}
 
-			if (splitCommand[1].equalsIgnoreCase("ASNPC")) {
+			if (commandArgs[1].equalsIgnoreCase("ASNPC")) {
 				((Player) theDenizenExecuting.getBukkitEntity()).performCommand(executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
 			}
 
-			if (splitCommand[1].equalsIgnoreCase("ASSERVER")) {
+			if (commandArgs[1].equalsIgnoreCase("ASSERVER")) {
 
 
 				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
@@ -995,15 +1069,22 @@ public class InteractScriptEngine {
 			// ANNOUNCE can be heard by the entire server.
 
 		case WHISPER:  // ZAP [Optional Step # to advance to]
-		case NARRARATE:  // ZAP [Optional Step # to advance to]
+		case NARRATE:  // ZAP [Optional Step # to advance to]
+
+			if (rawqueArgs[4].split(" ", 2)[1].startsWith("*"))
+				thePlayer.sendMessage("  " + rawqueArgs[4].split(" ", 2)[1].replace("*", "").replace("<PLAYER>", thePlayer.getName()));
+			else thePlayer.sendMessage(rawqueArgs[4].split(" ", 2)[1].replace("<PLAYER>", thePlayer.getName()));
+
+			break;
+
 		case SHOUT:  // ZAP [Optional Step # to advance to]
 		case CHAT:  // CHAT [Message]
 
-			NPC theDenizenChatting = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(splitArgs[0]));
+			NPC theDenizenChatting = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
 
-			if (splitArgs[4].split(" ", 2)[1].startsWith("*"))
-				thePlayer.sendMessage("    " + splitArgs[4].split(" ", 2)[1].replace("*", ""));
-			else thePlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player").replace("<TEXT>", splitArgs[4].split(" ", 2)[1]).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(splitArgs[0])).getName()));
+			if (rawqueArgs[4].split(" ", 2)[1].startsWith("*"))
+				thePlayer.sendMessage("  " + rawqueArgs[4].split(" ", 2)[1].replace("*", ""));
+			else thePlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player").replace("<TEXT>", rawqueArgs[4].split(" ", 2)[1]).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(rawqueArgs[0])).getName()));
 
 			for (Player eachPlayer : GetPlayersWithinRange(theDenizenChatting.getBukkitEntity().getLocation(), 
 					theDenizenChatting.getBukkitEntity().getWorld(),
@@ -1011,10 +1092,11 @@ public class InteractScriptEngine {
 
 				if (eachPlayer != thePlayer) {
 
-					if (splitArgs[4].split(" ", 2)[1].startsWith("*"))
-						eachPlayer.sendMessage("    " + splitArgs[4].split(" ", 2)[1].replace("*", ""));
-					else eachPlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player_bystander").replace("<TEXT>", splitArgs[4].split(" ", 2)[1]).replace("<PLAYER>", thePlayer.getDisplayName()).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(splitArgs[0])).getName()));
-				}}
+					if (rawqueArgs[4].split(" ", 2)[1].startsWith("*"))
+						eachPlayer.sendMessage("    " + rawqueArgs[4].split(" ", 2)[1].replace("*", ""));
+					else eachPlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player_bystander").replace("<TEXT>", rawqueArgs[4].split(" ", 2)[1]).replace("<PLAYER>", thePlayer.getDisplayName()).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(rawqueArgs[0])).getName()));
+				}
+			}
 
 			break;
 
