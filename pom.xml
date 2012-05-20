@@ -22,16 +22,16 @@
 	<!-- Repositories -->
 	<repositories>
 		<repository>
+			<id>everything</id>
+			<url>http://repo.citizensnpcs.net</url>
+		</repository>
+		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
 		</repository>
 		<repository>
 			<id>vault-repo</id>
 			<url>http://ci.milkbowl.net/plugin/repository/everything</url>
-		</repository>
-		<repository>
-			<id>everything</id>
-			<url>http://repo.citizensnpcs.net</url>
 		</repository>
 	</repositories>
 
@@ -53,15 +53,15 @@
 		</dependency>
 		<dependency>
 			<groupId>net.citizensnpcs</groupId>
-			<artifactId>citizens2</artifactId>
-			<version>${citizens2.version}</version>
+			<artifactId>citizensapi</artifactId>
+			<version>${citizensapi.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.citizensnpcs</groupId>
-			<artifactId>citizensapi</artifactId>
-			<version>${citizensapi.version}</version>
+			<artifactId>citizens2</artifactId>
+			<version>${citizens2.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
