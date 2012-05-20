@@ -45,6 +45,13 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>net.milkbowl.vault</groupId>
+			<artifactId>Vault</artifactId>
+			<version>${vault.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>net.citizensnpcs</groupId>
 			<artifactId>citizens2</artifactId>
 			<version>${citizens2.version}</version>
@@ -57,13 +64,6 @@
 			<version>${citizensapi.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.milkbowl.vault</groupId>
-			<artifactId>Vault</artifactId>
-			<version>${vault.version}</version>
-			<type>jar</type>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
