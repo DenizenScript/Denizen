@@ -6,7 +6,7 @@
 
 	<groupId>net.aufdemrand</groupId>
 	<artifactId>denizen</artifactId>
-	<version>0.5.7</version>
+	<version>0.5.3</version>
 	<name>Denizen</name>
 	<description>Denizen Character for the CitizensAPI</description>
 
@@ -25,6 +25,10 @@
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>citizens-repo</id>
+			<url>http://repo.citizensnpcs.net/</url>
 		</repository>
 		<repository>
 			<id>citizens-repo</id>
