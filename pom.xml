@@ -13,7 +13,7 @@
 	<!-- Properties -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<bukkit.version>1.2.5-R1.0-SNAPSHOT</bukkit.version>
+		<bukkit.version>1.2.5-R1.0</bukkit.version>
 		<citizensapi.version>2.0-SNAPSHOT</citizensapi.version>
 		<citizens2.version>2.0-SNAPSHOT</citizens2.version>
 		<vault.version>1.2.13-SNAPSHOT</vault.version>
