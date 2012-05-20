@@ -1,4 +1,4 @@
-<!-- Denizen build file -->
+<!-- Citizens build file -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -10,7 +10,6 @@
 	<name>Denizen</name>
 	<description>Denizen Character for the CitizensAPI</description>
 
-	<!-- Properties -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<bukkit.version>1.2.5-R1.0</bukkit.version>
@@ -19,7 +18,7 @@
 		<vault.version>1.2.13-SNAPSHOT</vault.version>
 		<build.number>Unknown</build.number>
 	</properties>
-
+	
 	<!-- Repositories -->
 	<repositories>
 		<repository>
@@ -27,50 +26,89 @@
 			<url>http://repo.bukkit.org/content/groups/public/</url>
 		</repository>
 		<repository>
-			<id>citizens-repo</id>
-			<url>http://repo.citizensnpcs.net/</url>
-		</repository>
-		<repository>
-			<id>citizens-repo</id>
-			<url>http://repo.citizensnpcs.net/</url>
-		</repository>
-		<repository>
 			<id>vault-repo</id>
 			<url>http://ci.milkbowl.net/plugin/repository/everything</url>
 		</repository>
+		<repository>
+			<id>everything</id>
+			<url>http://repo.citizensnpcs.net</url>
+		</repository>
 	</repositories>
 
-	<!-- Dependencies -->
 	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
-			<artifactId>bukkit</artifactId>
-			<version>${bukkit.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.citizensnpcs</groupId>
-			<artifactId>citizens2</artifactId>
-			<version>${citizens2.version}</version>
+			<artifactId>craftbukkit</artifactId>
+			<version>${craftbukkit.version}</version>
+			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.citizensnpcs</groupId>
 			<artifactId>citizensapi</artifactId>
 			<version>${citizensapi.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+	<!-- Dependencies -->
+	<dependencies>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${bukkit.version}</version>
+			<type>jar</type>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.citizensnpcs</groupId>
+			<artifactId>citizens2</artifactId>
+			<version>${citizens2.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.citizensnpcs</groupId>
+			<artifactId>citizensapi</artifactId>
+			<version>${citizensapi.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
 			<version>${vault.version}</version>
+			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
-	<!-- Build information -->
+	<ciManagement>
+		<system>jenkins</system>
+		<url>http://ci.citizensnpcs.net</url>
+	</ciManagement>
+	<scm>
+		<connection>scm:git:git://github.com/aufdemrand/Denizen.git</connection>
+		<developerConnection>scm:git:git:@github.com:aufdemrand/Denizen.gitt</developerConnection>
+		<url>https://github.com//aufdemrand/Denizen/tree/master/</url>
+	</scm>
 	<build>
+		<defaultGoal>clean package install</defaultGoal>
+		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+
+		<resources>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>*.yml</include>
+				</includes>
+			</resource>
+		</resources>
+
 		<plugins>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -79,6 +117,26 @@
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
