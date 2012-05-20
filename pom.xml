@@ -14,7 +14,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<bukkit.version>1.2.5-R1.0</bukkit.version>
 		<citizensapi.version>2.0-SNAPSHOT</citizensapi.version>
-		<citizens2.version>2.0-SNAPSHOT</citizens2.version>
+		<citizens.version>2.0-SNAPSHOT</citizens2.version>
 		<vault.version>1.2.13-SNAPSHOT</vault.version>
 		<build.number>Unknown</build.number>
 	</properties>
@@ -22,16 +22,16 @@
 	<!-- Repositories -->
 	<repositories>
 		<repository>
-			<id>everything</id>
-			<url>http://repo.citizensnpcs.net</url>
-		</repository>
-		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
 		</repository>
 		<repository>
 			<id>vault-repo</id>
 			<url>http://ci.milkbowl.net/plugin/repository/everything</url>
+		</repository>
+		<repository>
+			<id>everything</id>
+			<url>http://repo.citizensnpcs.net</url>
 		</repository>
 	</repositories>
 
@@ -60,8 +60,8 @@
 		</dependency>
 		<dependency>
 			<groupId>net.citizensnpcs</groupId>
-			<artifactId>citizens2</artifactId>
-			<version>${citizens2.version}</version>
+			<artifactId>citizens</artifactId>
+			<version>${citizens.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
