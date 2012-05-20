@@ -78,7 +78,7 @@
 	</scm>
 	<build>
 		<defaultGoal>clean package install</defaultGoal>
-		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+		<sourceDirectory>${basedir}/src</sourceDirectory>
 
 		<resources>
 			<resource>
