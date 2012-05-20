@@ -63,7 +63,7 @@
 			<artifactId>citizens</artifactId>
 			<version>${citizens.version}</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
