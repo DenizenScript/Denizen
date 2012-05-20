@@ -1,0 +1,82 @@
+<!-- Denizen build file -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>net.aufdemrand</groupId>
+	<artifactId>denizen</artifactId>
+	<version>0.5.7</version>
+	<name>Denizen</name>
+	<description>Denizen Character for the CitizensAPI</description>
+
+	<!-- Properties -->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<bukkit.version>1.2.5-R1.0-SNAPSHOT</bukkit.version>
+		<citizensapi.version>2.0-SNAPSHOT</citizensapi.version>
+		<citizens2.version>2.0-SNAPSHOT</citizens2.version>
+		<vault.version>1.2.13-SNAPSHOT</vault.version>
+		<build.number>Unknown</build.number>
+	</properties>
+
+	<!-- Repositories -->
+	<repositories>
+		<repository>
+			<id>bukkit-repo</id>
+			<url>http://repo.bukkit.org/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>citizens-repo</id>
+			<url>http://repo.citizensnpcs.net/</url>
+		</repository>
+		<repository>
+			<id>vault-repo</id>
+			<url>http://ci.milkbowl.net/plugin/repository/everything</url>
+		</repository>
+	</repositories>
+
+	<!-- Dependencies -->
+	<dependencies>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${bukkit.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.citizensnpcs</groupId>
+			<artifactId>citizens2</artifactId>
+			<version>${citizens2.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.citizensnpcs</groupId>
+			<artifactId>citizensapi</artifactId>
+			<version>${citizensapi.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.milkbowl.vault</groupId>
+			<artifactId>Vault</artifactId>
+			<version>${vault.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<!-- Build information -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

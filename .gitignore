@@ -4,6 +4,8 @@
 Denizen.iml
 .gitignore
 .idea
+/bin/
+/lib/
 
 # Compiled source #
 ###################
