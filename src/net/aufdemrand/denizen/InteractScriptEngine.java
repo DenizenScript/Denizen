@@ -228,40 +228,22 @@ public class InteractScriptEngine {
 
 
 			case ITEM: // (-)ITEM [ITEM_NAME] (# of that item, or more) (ENCHANTMENT_TYPE)
+
 				String[] theseItemArgs = splitArgs[1].split(" ");
-
-
-
 				int itemAmt = 1;
-
 				if (theseItemArgs.length >= 2) itemAmt = Integer.parseInt(theseItemArgs[1]);
-
 				Material thisItem = Material.valueOf((theseItemArgs[0]));
-
-				//if (!negReq && thisPlayer.getInventory().contains()
-				//if (negReq && !thisPlayer.getInventory().contains(thisItem, itemAmt)) MetReqs++;
-
-
-
-
 				Map<Material, Integer> PlayerInv = new HashMap<Material, Integer>();
 				Map<Material, Boolean> isEnchanted = new HashMap<Material, Boolean>();
-
-
-
 				ItemStack[] getContentsArray = thisPlayer.getInventory().getContents();
 				List<ItemStack> getContents = Arrays.asList(getContentsArray);
-
-
 				for (int x=0; x < getContents.size(); x++) {
-					//	plugin.getServer().broadcastMessage(getContents.size() + "");
 					if (getContents.get(x) != null) {
 						if (PlayerInv.containsKey(getContents.get(x).getType())) {
 							int t = PlayerInv.get(getContents.get(x).getType());
 							t = t + getContents.get(x).getAmount(); PlayerInv.put(getContents.get(x).getType(), t);
 						}
 						else PlayerInv.put(getContents.get(x).getType(), getContents.get(x).getAmount());
-
 						if (theseItemArgs.length >= 3) {
 							if (getContents.get(x).containsEnchantment(Enchantment.getByName(theseItemArgs[2])))
 								isEnchanted.put(getContents.get(x).getType(), true); }
@@ -269,24 +251,18 @@ public class InteractScriptEngine {
 				}
 
 				if (negReq) {
-
 					if (!PlayerInv.containsKey(thisItem)) MetReqs++;
-
 					if (PlayerInv.containsKey(thisItem) && theseItemArgs.length < 3) {
 						if (PlayerInv.get(thisItem) < itemAmt) {MetReqs++; }
 					}
-
 					else if (PlayerInv.containsKey(thisItem) && isEnchanted.get(thisItem)) {
 						if (PlayerInv.get(thisItem) < itemAmt) MetReqs++; }
-
 				}
 				else {
 					if (PlayerInv.containsKey(thisItem) && theseItemArgs.length < 3) {
 						if (PlayerInv.get(thisItem) >= itemAmt) { MetReqs++; } }
-
 					else if (PlayerInv.containsKey(thisItem) && isEnchanted.get(thisItem)) {
 						if (PlayerInv.get(thisItem) >= itemAmt) MetReqs++;}
-
 				}
 				break;
 
@@ -825,7 +801,7 @@ public class InteractScriptEngine {
 		case ZAP:  // ZAP [Optional Step # to advance to]
 
 			if (commandArgs.length == 1) { plugin.getConfig().set("Players." + thePlayer.getDisplayName()
-					+ "." + rawqueArgs[1] + ".Current Step", Integer.parseInt(rawqueArgs[2]) + 1);
+					+ "." + rawqueArgs[1] + ".Curr``ent Step", Integer.parseInt(rawqueArgs[2]) + 1);
 			plugin.saveConfig();}
 			else { plugin.getConfig().set("Players." + thePlayer.getDisplayName() + "." + rawqueArgs[1]
 					+ ".Current Step", Integer.parseInt(commandArgs[1])); plugin.saveConfig(); }
@@ -839,48 +815,27 @@ public class InteractScriptEngine {
 
 		case SPAWN:  // SPAWN [MOB NAME] [AMOUNT] (Location Bookmark)
 
+			Location theSpawnLoc = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getBukkitEntity().getLocation();
+			if (commandArgs.length > 3) theSpawnLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[3], "Location");
+			if (theSpawnLoc != null) {
+				for (int cx = 1; cx < Integer.valueOf("commandArgs[2]"); cx++) {
+					thePlayer.getWorld().spawnCreature(theSpawnLoc, EntityType.valueOf(commandArgs[1]));	
+				}
+			}
+			break;
+
 		case SWITCH:  // SWITCH [Block Bookmark] ON|OFF
 
 			Boolean switchState = false;
-
 			if (commandArgs[2].equalsIgnoreCase("ON")) switchState = true;
-
-			NPC theDenizenChanging = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
-			List<String> locationSwitchList = plugin.getConfig().getStringList("Denizens." + theDenizenChanging.getName() + ".Bookmarks.Block");
-			String[] theSwitchLocation = null;
-			Location locationSwitchBookmark = null;
-			for (String thisLocation : locationSwitchList) {
-//				plugin.getServer().broadcastMessage(thisLocation);
-				String theName = thisLocation.split(" ", 2)[0];
-				if (theName.equalsIgnoreCase(commandArgs[1])) {
-					theSwitchLocation = thisLocation.split(" ", 2)[1].split(";");
-				//	plugin.getServer().broadcastMessage("Found it!");
+			Location switchLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[3], "Block");
+			if (switchLoc.getBlock().getType() == Material.LEVER) {
+				if (switchLoc.getBlock().getData() <= ((byte) 8) && switchState) {
+					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() + ((byte)8)));
 				}
-			}
-			if (theSwitchLocation != null) {			
-				locationSwitchBookmark = 
-						new Location(plugin.getServer().getWorld(theSwitchLocation[0]),
-								Double.parseDouble(theSwitchLocation[1]), Double.parseDouble(theSwitchLocation[2]),
-								Double.parseDouble(theSwitchLocation[3]));
-			//	plugin.getServer().broadcastMessage(locationSwitchBookmark.getBlock().getType().toString());
-				
-				if (locationSwitchBookmark.getBlock().getType() == Material.LEVER) {
-					
-				//	Lever thisLever = (Lever) locationSwitchBookmark.getBlock().getData();
-				//	thisLever.setPowered(switchState);
-					
-					if (locationSwitchBookmark.getBlock().getData() <= ((byte) 8) && switchState) {
-					
-					locationSwitchBookmark.getBlock().setData((byte) (locationSwitchBookmark.getBlock().getData() + ((byte)8)));
-					}
-					
-					if (locationSwitchBookmark.getBlock().getData() >= ((byte) 8) && !switchState) {
-						
-						locationSwitchBookmark.getBlock().setData((byte) (locationSwitchBookmark.getBlock().getData() - ((byte)8)));
-						}
-					
-					
-					}
+				if (switchLoc.getBlock().getData() >= ((byte) 8) && !switchState) {
+					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() - ((byte)8)));
+				}
 			}
 			break;
 
@@ -940,8 +895,6 @@ public class InteractScriptEngine {
 				else itemToTake.setAmount(1);
 				thePlayer.getInventory().removeItem(itemToTake);
 			}
-
-
 			break;
 
 		case HEAL:  // HEAL  or  HEAL [# of Hearts]
@@ -959,7 +912,6 @@ public class InteractScriptEngine {
 		case WALK:  // WALK Z(-NORTH(2)/+SOUTH(0)) X(-WEST(1)/+EAST(3)) Y (+UP/-DOWN)
 
 			NPC theDenizenToWalk = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
-
 			Denizen.previousDenizenLocation.put(theDenizenToWalk, theDenizenToWalk.getBukkitEntity().getLocation());
 			if (!commandArgs[1].isEmpty()) theDenizenToWalk.getAI().setDestination(theDenizenToWalk.getBukkitEntity().getLocation()
 					.add(Double.parseDouble(commandArgs[2]), Double.parseDouble(commandArgs[3]), Double.parseDouble(commandArgs[1])));
@@ -967,24 +919,10 @@ public class InteractScriptEngine {
 
 		case WALKTO:  // WALKTO [Location Bookmark]
 
-			NPC theDenizenToWalkTo = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
-			Denizen.previousDenizenLocation.put(theDenizenToWalkTo, theDenizenToWalkTo.getBukkitEntity().getLocation());
-			if (!commandArgs[1].isEmpty()) {
-				List<String> locationList = plugin.getConfig().getStringList("Denizens." + theDenizenToWalkTo.getName() + ".Bookmarks.Location");
-				String[] theLocation = null;
-				for (String thisLocation : locationList) {
-					String theName = thisLocation.split(" ", 2)[0];
-					if (theName.equalsIgnoreCase(commandArgs[1])) theLocation = thisLocation.split(" ", 2)[1].split(";");
-				}
-				if (theLocation != null) {			
-					Location locationBookmark = 
-							new Location(plugin.getServer().getWorld(theLocation[0]),
-									Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
-									Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
-									Float.parseFloat(theLocation[5]));
-					theDenizenToWalkTo.getAI().setDestination(locationBookmark);
-				}
-			}
+			NPC denizenWalking = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
+			Location walkLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Location");
+			Denizen.previousDenizenLocation.put(denizenWalking, denizenWalking.getBukkitEntity().getLocation());
+			denizenWalking.getAI().setDestination(walkLoc);
 			break;
 
 		case RETURN:
@@ -1017,30 +955,16 @@ public class InteractScriptEngine {
 			}
 			break;
 
-		case RESPAWN:  // RESPAWN [ME|Denizen Name] [Location Notable]
+		case RESPAWN:  // RESPAWN [Location Notable]
 
-			NPC theDenizenSpawning = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
-			Denizen.previousDenizenLocation.put(theDenizenSpawning, theDenizenSpawning.getBukkitEntity().getLocation());
-			if (!commandArgs[1].isEmpty()) {
-				List<String> locationList = plugin.getConfig().getStringList("Denizens." + theDenizenSpawning.getName() + ".Bookmarks.Location");
-				String[] theLocation = null;
-				for (String thisLocation : locationList) {
-					String theName = thisLocation.split(" ", 2)[0];
-					if (theName.equalsIgnoreCase(commandArgs[1])) theLocation = thisLocation.split(" ", 2)[1].split(";");
-				}
-				if (theLocation != null) {			
-					Location locationBookmark = 
-							new Location(plugin.getServer().getWorld(theLocation[0]),
-									Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
-									Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
-									Float.parseFloat(theLocation[5]));
-					theDenizenSpawning.getBukkitEntity().getWorld().playEffect(theDenizenSpawning.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
-					theDenizenSpawning.despawn();
-					theDenizenSpawning.spawn(locationBookmark);
-					theDenizenSpawning.getBukkitEntity().getWorld().playEffect(theDenizenSpawning.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
+			Location respawnLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Block");
+			NPC respawnDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
+			Denizen.previousDenizenLocation.put(respawnDenizen, respawnDenizen.getBukkitEntity().getLocation());
+			respawnDenizen.getBukkitEntity().getWorld().playEffect(respawnDenizen.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
+			respawnDenizen.despawn();
+			respawnDenizen.spawn(respawnLoc);
+			respawnDenizen.getBukkitEntity().getWorld().playEffect(respawnDenizen.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
 
-				}
-			}
 			break;
 
 		case PERMISS:  // PERMISS [Permission Node]
@@ -1104,7 +1028,34 @@ public class InteractScriptEngine {
 	}
 
 
+	public static Location getLocationBookmark(NPC theDenizen, String nameOfLocation, String BlockOrLocation) {
 
+		List<String> locationList = null;
+
+		if (BlockOrLocation.equalsIgnoreCase("block")) { 
+			locationList = plugin.getConfig().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block");	
+		}
+		if (BlockOrLocation.equalsIgnoreCase("location")) { 
+			locationList = plugin.getConfig().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
+		}
+		String[] theLocation = null;
+		Location locationBookmark = null;
+
+		for (String thisLocation : locationList) {
+			String theName = thisLocation.split(" ", 2)[0];
+			if (theName.equalsIgnoreCase(nameOfLocation)) theLocation = thisLocation.split(" ", 2)[1].split(";");
+		}
+		if (theLocation != null) {			
+			locationBookmark = 
+					new Location(plugin.getServer().getWorld(theLocation[0]),
+							Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
+							Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
+							Float.parseFloat(theLocation[5]));
+		}
+
+		return locationBookmark;		
+
+	}
 
 
 
