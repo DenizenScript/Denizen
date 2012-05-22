@@ -509,8 +509,8 @@ public class InteractScriptEngine {
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 		int currentStep = 1;
-		if (plugin.getConfig().getString("Players." + thePlayer.getDisplayName() + "." + theScript + "." + "Current Step")
-				!= null) currentStep =  plugin.getConfig().getInt("Players." + thePlayer.getDisplayName() + "." + theScript
+		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step")
+				!= null) currentStep =  plugin.getConfig().getInt("Players." + thePlayer.getName() + "." + theScript
 						+ "." + "Current Step");
 		return currentStep;
 	}
@@ -800,10 +800,10 @@ public class InteractScriptEngine {
 
 		case ZAP:  // ZAP [Optional Step # to advance to]
 
-			if (commandArgs.length == 1) { plugin.getConfig().set("Players." + thePlayer.getDisplayName()
-					+ "." + rawqueArgs[1] + ".Curr``ent Step", Integer.parseInt(rawqueArgs[2]) + 1);
+			if (commandArgs.length == 1) { plugin.getConfig().set("Players." + thePlayer.getName()
+					+ "." + rawqueArgs[1] + ".Current Step", Integer.parseInt(rawqueArgs[2]) + 1);
 			plugin.saveConfig();}
-			else { plugin.getConfig().set("Players." + thePlayer.getDisplayName() + "." + rawqueArgs[1]
+			else { plugin.getConfig().set("Players." + thePlayer.getName() + "." + rawqueArgs[1]
 					+ ".Current Step", Integer.parseInt(commandArgs[1])); plugin.saveConfig(); }
 			break;
 
