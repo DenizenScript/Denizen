@@ -110,8 +110,6 @@ public class Denizen extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
 
-
-
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("You must be in-game to execute commands.");
 			return true;
@@ -124,6 +122,21 @@ public class Denizen extends JavaPlugin {
 
 		Player player = (Player) sender;
 
+		if (args[0].equalsIgnoreCase("getdata")) {
+			player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
+		}
+		if (args[0].equalsIgnoreCase("adddata")) {
+			Block toAddData = player.getTargetBlock(null, 20);
+			toAddData.setData((byte) (toAddData.getData() + 1));
+			player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
+			}
+		if (args[0].equalsIgnoreCase("decdata")) {
+			Block toAddData = player.getTargetBlock(null, 20);
+			toAddData.setData((byte) (toAddData.getData() - 1));
+			player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
+			}
+		
+		
 		if (args[0].equalsIgnoreCase("help")) {
 
 			if(args.length == 1) {
@@ -281,36 +294,23 @@ public class Denizen extends JavaPlugin {
 		// Commands
 
 		if (args[0].equalsIgnoreCase("bookmark")) {
-
 			if(args.length < 3) {
-
 				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help bookmark");
 				return true;
 			}
-			
 			else if (args[1].equalsIgnoreCase("location")) {
-				
 				List<String> locationList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
-				
 				locationList.add(args[2] + " " + player.getWorld().getName() + ";" + player.getLocation().getX() + ";" +
 				player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
-				
 				getConfig().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
-				
 				saveConfig();
-				
 				player.sendMessage(ChatColor.GOLD + "Location bookmark added. Your denizen can now reference this location.");
-				
 				return true;
-				
 			}
 
 			else if (args[1].equalsIgnoreCase("block")) {
-				
 				List<String> blockList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Block");
-				
 				Block targetBlock = player.getTargetBlock(null, 6);
-				
 				blockList.add(args[2] + " " + player.getWorld().getName() + ";" + targetBlock.getX() + ";" +
 				targetBlock.getY() + ";" + targetBlock.getZ());
 				
@@ -319,16 +319,9 @@ public class Denizen extends JavaPlugin {
 				saveConfig();
 				
 				player.sendMessage(ChatColor.GOLD + "Block bookmark added. Your denizen can now reference this block.");
-				
-				
 				return true;
-				
 			}
-
 		}
-
-		
-		
 		return true;
 	}
 
