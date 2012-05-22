@@ -749,7 +749,7 @@ public class InteractScriptEngine {
 						multiLineCommand.add(theCommandText[0]);
 						while (word < theCommandText.length) {
 							if (line==0) {
-								if (multiLineCommand.get(line).length() + theCommandText[word].length() + theDenizen.getName().length() < 50) {
+								if (multiLineCommand.get(line).length() + theCommandText[word].length() + theDenizen.getName().length() < 48) {
 									multiLineCommand.set(line, multiLineCommand.get(line) + " " + theCommandText[word]);
 									word++;
 								}
@@ -758,7 +758,7 @@ public class InteractScriptEngine {
 								}
 							}
 							else {
-								if (multiLineCommand.get(line).length() + theCommandText[word].length() < 60) {
+								if (multiLineCommand.get(line).length() + theCommandText[word].length() < 58) {
 									multiLineCommand.set(line, multiLineCommand.get(line) + " " + theCommandText[word]);
 									word++;
 								}
@@ -996,8 +996,8 @@ public class InteractScriptEngine {
 		case WHISPER:  // ZAP [Optional Step # to advance to]
 		case NARRATE:  // ZAP [Optional Step # to advance to]
 			if (rawqueArgs[4].split(" ", 2)[1].startsWith("*"))
-				thePlayer.sendMessage("  " + rawqueArgs[4].split(" ", 2)[1].replace("*", "").replace("<PLAYER>", thePlayer.getName()));
-			else thePlayer.sendMessage(rawqueArgs[4].split(" ", 2)[1].replace("<PLAYER>", thePlayer.getName()));
+				thePlayer.sendMessage("  " + rawqueArgs[4].split(" ", 2)[1].replace("*", "").replace("<PLAYER>", thePlayer.getName()).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(rawqueArgs[0])).getName()));
+			else thePlayer.sendMessage(rawqueArgs[4].split(" ", 2)[1].replace("<PLAYER>", thePlayer.getName()).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(rawqueArgs[0])).getName()));
 			break;
 
 		case SHOUT:  // ZAP [Optional Step # to advance to]
