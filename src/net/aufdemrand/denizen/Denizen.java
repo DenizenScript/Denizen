@@ -268,10 +268,10 @@ public class Denizen extends JavaPlugin {
 		NPC ThisNPC = CitizensAPI.getNPCRegistry().getNPC(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
 
 
-		if (!ThisNPC.getTrait(Owner.class).getOwner().equals(player.getName())) {
-			player.sendMessage(ChatColor.RED + "You must be the owner of the denizen to execute commands.");
-			return true;
-		}
+//		if (!ThisNPC.getTrait(Owner.class).getOwner().equals(player.getName())) {
+//			player.sendMessage(ChatColor.RED + "You must be the owner of the denizen to execute commands.");
+//			return true;
+//		}
 
 		if (ThisNPC.getCharacter() == null || !ThisNPC.getCharacter().getName().equals("denizen")) {
 			player.sendMessage(ChatColor.RED + "That command must be performed on a denizen!");
