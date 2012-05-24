@@ -1,28 +1,16 @@
 package net.aufdemrand.denizen;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.trait.trait.*;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.InteractScriptEngine;
-import net.aufdemrand.denizen.DenizenCharacter;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
 
 
 public class DenizenListener implements Listener {

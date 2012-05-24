@@ -3,39 +3,25 @@ package net.aufdemrand.denizen;
 import java.lang.reflect.Array;
 import java.util.*;
 
-import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.trait.trait.*;
 import net.citizensnpcs.trait.LookClose;
 
 //import com.gmail.nossr50.datatypes.SkillType;
 //import com.gmail.nossr50.api.ExperienceAPI;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.DenizenListener;
 import net.aufdemrand.denizen.DenizenCharacter;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.material.Lever;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -55,7 +41,7 @@ public class InteractScriptEngine {
 		STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, POTIONEFFECT, MCMMO, PRECIPITATING, STORMING }
 
 	public enum Trigger {
-		CHAT, CLICK, FINISH, START, TOUCH
+		CHAT, CLICK, FINISH, PROXIMITY
 	}
 
 	public enum Command {
@@ -473,28 +459,6 @@ public class InteractScriptEngine {
 
 
 
-
-
-	/* TriggerToQue
-	 *
-	 * Requires the Script, the Current Step, the Chat Trigger to trigger, and the Player
-	 * Triggers the script for the chat trigger of the step and script specified.
-	 *
-	 * Calls ScriptHandler to handle the commands in the script. ScriptHandler returns any
-	 * raw text that needs to be sent to the player which is put in the PlayerQue for
-	 * output.
-	 */
-
-
-
-
-
-
-
-
-
-
-
 	/* GetCurrentStep
 	 *
 	 * Requires the Player and the Script.
@@ -515,6 +479,7 @@ public class InteractScriptEngine {
 		return currentStep;
 	}
 
+	
 
 	/* GetScriptCompletes
 	 *
@@ -534,16 +499,6 @@ public class InteractScriptEngine {
 				!= null) ScriptComplete = true;
 		return ScriptComplete;
 	}
-
-
-	/* GetNotableCompletion
-	 *
-	 * Requires the Player and the Script.
-	 * Reads the config.yml to find if the player has completed
-	 * the specified script.
-	 *
-	 * Returns number of times script has been completed.
-	 */
 
 
 
@@ -688,19 +643,6 @@ public class InteractScriptEngine {
 	}
 
 
-
-	/* ParseScript
-	 *
-	 * Requires the Player, the Script Name, the chat message (if Chat Trigger, otherwise send null),
-	 * and the Trigger ENUM type.
-	 * Sends out methods that take action based on the Trigger types.
-	 *
-	 * case CHAT calls GetCurrentStep, GetChatTriggers, TriggerChatToQue
-	 * case CLICK,RIGHT_CLICK,LEFT_CLICK calls
-	 * case FINISH calls
-	 * case START calls
-	 * case FAIL calls
-	 */
 
 
 

@@ -1,15 +1,12 @@
 package net.aufdemrand.denizen;
 
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.event.NPCClickEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.character.Character;
-import net.citizensnpcs.api.npc.character.CharacterFactory;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.npc.NPC;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.InteractScriptEngine;
 import net.aufdemrand.denizen.DenizenListener;
 
 import org.bukkit.Bukkit;
