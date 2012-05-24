@@ -479,7 +479,7 @@ public class InteractScriptEngine {
 		return currentStep;
 	}
 
-	
+
 
 	/* GetScriptCompletes
 	 *
@@ -587,11 +587,7 @@ public class InteractScriptEngine {
 	 */
 
 
-	public static void ParseScript(NPC theDenizen, Player thePlayer, String theScript,
-
-
-			String theMessage,  Trigger theTrigger) {
-
+	public static void ParseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
 
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		int CurrentStep = GetCurrentStep(thePlayer, theScript);
@@ -610,9 +606,7 @@ public class InteractScriptEngine {
 							+ CurrentStep + ".Chat Trigger." + String.valueOf(l + 1) + ".Script"), CurrentStep, thePlayer, theDenizen);
 					return;
 				}
-
 			}
-
 			TalkToNPC(theDenizen, thePlayer, theMessage);
 
 			List<String> CurrentPlayerQue = new ArrayList<String>();
@@ -620,19 +614,15 @@ public class InteractScriptEngine {
 			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
 
 			CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
-					+ 0 + ";CHAT;" + "CHAT " + plugin.getConfig().getString("Denizens." + theDenizen.getId() 
+					+ 0 + ";" + String.valueOf(System.currentTimeMillis()) + ";" + "CHAT " + plugin.getConfig().getString("Denizens." + theDenizen.getId() 
 							+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
 
 			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
-
-
 			return;
 
 		case CLICK:
-
 			TriggerToQue(theScript, plugin.getScripts().getStringList("" + theScript + ".Steps."
 					+ CurrentStep + ".Click Trigger.Script"), CurrentStep, thePlayer, theDenizen);
-
 			return;
 
 		case FINISH:
@@ -672,21 +662,15 @@ public class InteractScriptEngine {
 
 			for (String theCommand : AddedToPlayerQue) {
 
+				String[] theCommandText;
+				theCommandText = theCommand.split(" ");
 
 				// Longer than 40, probably a long chat that needs multiline formatting.
 				if (theCommand.length() > 40) {
 
-					String[] theCommandText;
-					theCommandText = theCommand.split(" ");
-
 					switch (Command.valueOf(theCommandText[0].toUpperCase())) {
-					case SHOUT:
-					case CHAT:
-					case WHISPER:
-					case ANNOUNCE:
-					case NARRATE:
-						int word = 1;
-						int line = 0;
+					case SHOUT:	case CHAT: case WHISPER: case ANNOUNCE:	case NARRATE:
+						int word = 1; int line = 0;
 						ArrayList<String> multiLineCommand = new ArrayList<String>();
 						multiLineCommand.add(theCommandText[0]);
 						while (word < theCommandText.length) {
@@ -695,28 +679,30 @@ public class InteractScriptEngine {
 									multiLineCommand.set(line, multiLineCommand.get(line) + " " + theCommandText[word]);
 									word++;
 								}
-								else {
-									line++; multiLineCommand.add(theCommandText[0] + " *");
-								}
+								else { line++; multiLineCommand.add(theCommandText[0] + " *"); }
 							}
 							else {
 								if (multiLineCommand.get(line).length() + theCommandText[word].length() < 58) {
 									multiLineCommand.set(line, multiLineCommand.get(line) + " " + theCommandText[word]);
 									word++;
 								}
-								else {
-									line++; multiLineCommand.add(theCommandText[0] + " *");
-								}
+								else { line++; multiLineCommand.add(theCommandText[0] + " *"); }
 							}
 						}
+
 						for (String eachCommand : multiLineCommand) {
-							CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
-									+ Integer.toString(CurrentStep) + ";CHAT;" + eachCommand);
+							CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + eachCommand);
 						}
 					}
 				}
-				else CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
-						+ Integer.toString(CurrentStep) + ";CHAT;" + theCommand);
+				else if (theCommandText[0].equalsIgnoreCase("HOLD")) {
+					Long timeDelay = Long.parseLong(theCommandText[1]) * 1000;
+					String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
+					CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + timeWithDelay + ";" + theCommand);						
+				}
+				else {
+					CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
+				}
 			}
 			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
 		}
@@ -770,7 +756,7 @@ public class InteractScriptEngine {
 
 			Boolean switchState = false;
 			if (commandArgs[2].equalsIgnoreCase("ON")) switchState = true;
-			Location switchLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[2], "Block");
+			Location switchLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Block");
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
 				if (switchLoc.getBlock().getData() <= ((byte) 8) && switchState) {
 					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() + ((byte)8)));
@@ -965,6 +951,20 @@ public class InteractScriptEngine {
 			// NOTABLES
 
 		case GRANT:  // ACHIEVE [Name of Achievement Notable to Grant]
+		case BOUNCE:
+			break;
+		case CHANGE:
+			break;
+		case DELAY:
+			break;
+		case ENGAGE:
+			break;
+		case HINT:
+			break;
+		case NOD:
+			break;
+		default:
+			break;
 
 		}
 	}

@@ -38,6 +38,7 @@ public class Denizen extends JavaPlugin {
 	public static Economy econ = null;
 	public static Permission perms = null;
 	public static Map<Player, List<String>> playerQue = new HashMap<Player, List<String>>();
+	public static Map<Player, Map<Long, List<String>>> heldQue = new HashMap<Player, Map<Long, List<String>>>(); 
 	public static Map<NPC, Location> previousDenizenLocation = new HashMap<NPC, Location>(); 
 	public static Map<Player, Long> interactCooldown = new HashMap<Player, Long>(); 
 	public static Boolean DebugMode = false;
@@ -275,7 +276,6 @@ public class Denizen extends JavaPlugin {
 
 		NPC ThisNPC = CitizensAPI.getNPCRegistry().getNPC(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
 
-
 		//		if (!ThisNPC.getTrait(Owner.class).getOwner().equals(player.getName())) {
 		//			player.sendMessage(ChatColor.RED + "You must be the owner of the denizen to execute commands.");
 		//			return true;
@@ -321,31 +321,26 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	
-	
 
 	protected void CommandQue() {
 
 		boolean instantCommand = false;
-
-		if (!playerQue.isEmpty()) {	for (Map.Entry<Player, List<String>> theEntry : playerQue.entrySet()) {
-
-			do {
-				if (!theEntry.getValue().isEmpty()) { 
-					InteractScriptEngine.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
-					instantCommand = false;
-					if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
-					theEntry.getValue().remove(0);
-					playerQue.put(theEntry.getKey(), theEntry.getValue());
+		if (!playerQue.isEmpty()) {	
+			for (Map.Entry<Player, List<String>> theEntry : playerQue.entrySet()) {
+				if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
+					do {
+						if (!theEntry.getValue().isEmpty()) { 
+							InteractScriptEngine.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
+							instantCommand = false;
+							if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
+							theEntry.getValue().remove(0);
+							playerQue.put(theEntry.getKey(), theEntry.getValue());
+						}
+					} while (instantCommand == true);
 				}
-			} while (instantCommand == true);
-
+			}
 		}
-		}
-
 	}
-
-
 
 	private boolean setupEconomy() {
 		if (getServer().getPluginManager().getPlugin("Vault") == null) return false;

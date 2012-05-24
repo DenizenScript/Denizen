@@ -22,18 +22,24 @@ public class DenizenListener implements Listener {
 	public static void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
 		String theScript = InteractScriptEngine.GetInteractScript(theDenizen, thePlayer);
-		if (theScript.equals("none")) theDenizen.chat(thePlayer, plugin.getConfig().
-				getString("Denizens." + theDenizen.getId() + ".Texts.No Script Interact",
-						"I have nothing to say to you at this time."));
+
+		if (theScript.equals("none")) {
+			List<String> CurrentPlayerQue = new ArrayList<String>();
+			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
+			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
+			CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
+					+ 0 + ";" + String.valueOf(System.currentTimeMillis()) + ";" + "CHAT " + plugin.getConfig().getString("Denizens." + theDenizen.getId() 
+							+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
+			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
+		}
+
 		else if (!theScript.equals("none")) {
-			
-	//	plugin.getServer().broadcastMessage("the script: " + theScript);	
 			InteractScriptEngine.ParseScript(theDenizen, thePlayer,	InteractScriptEngine.GetScriptName(theScript), "", InteractScriptEngine.Trigger.CLICK);
 		}
 	}
 
-	
-	
+
+
 	@EventHandler
 	public void PlayerProximityListener(PlayerMoveEvent event) {
 
@@ -69,7 +75,7 @@ public class DenizenListener implements Listener {
 				Denizen.playerQue.remove(event.getPlayer());  // Should keep the talk queue from triggering mid-add
 
 				CurrentPlayerQue.add(Integer.toString(thisDenizen.getId()) + ";" + theScript + ";"
-						+ 0 + ";CHAT;" + "CHAT " + plugin.getConfig().getString("Denizens." + thisDenizen.getId() 
+						+ 0 + ";" + String.valueOf(System.currentTimeMillis()) + ";" + "CHAT " + plugin.getConfig().getString("Denizens." + thisDenizen.getId() 
 								+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
 
 				Denizen.playerQue.put(event.getPlayer(), CurrentPlayerQue);
