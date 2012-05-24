@@ -760,9 +760,11 @@ public class InteractScriptEngine {
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
 				if (switchLoc.getBlock().getData() <= ((byte) 8) && switchState) {
 					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() + ((byte)8)), true);
+					switchLoc.getBlock().getState().update();
 				}
 				if (switchLoc.getBlock().getData() >= ((byte) 8) && !switchState) {
 					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() - ((byte)8)), true);
+					switchLoc.getBlock().getState().update();
 				}
 			}
 			break;
