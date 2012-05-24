@@ -327,18 +327,19 @@ public class Denizen extends JavaPlugin {
 		boolean instantCommand = false;
 		if (!playerQue.isEmpty()) {	
 			for (Map.Entry<Player, List<String>> theEntry : playerQue.entrySet()) {
-				if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
-					do {
-						if (!theEntry.getValue().isEmpty()) { 
+				if (!theEntry.getValue().isEmpty()) {
+					if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
+						do {
 							InteractScriptEngine.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
 							instantCommand = false;
 							if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
 							theEntry.getValue().remove(0);
 							playerQue.put(theEntry.getKey(), theEntry.getValue());
-						}
-					} while (instantCommand == true);
+						} while (instantCommand == true);
+					}
 				}
 			}
+
 		}
 	}
 
