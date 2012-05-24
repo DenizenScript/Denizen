@@ -987,12 +987,20 @@ public class InteractScriptEngine {
 			String theName = thisLocation.split(" ", 2)[0];
 			if (theName.equalsIgnoreCase(nameOfLocation)) theLocation = thisLocation.split(" ", 2)[1].split(";");
 		}
-		if (theLocation != null) {			
+	
+		if (theLocation != null && BlockOrLocation.equalsIgnoreCase("location")) {			
 			locationBookmark = 
 					new Location(plugin.getServer().getWorld(theLocation[0]),
 							Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
 							Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
 							Float.parseFloat(theLocation[5]));
+		}
+		
+		else if (theLocation != null && BlockOrLocation.equalsIgnoreCase("block")) {
+			locationBookmark = 
+					new Location(plugin.getServer().getWorld(theLocation[0]),
+							Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2]),
+							Double.parseDouble(theLocation[3]));
 		}
 
 		return locationBookmark;		
