@@ -777,8 +777,11 @@ public class InteractScriptEngine {
 
 			Location pressLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Block");
 			if (pressLoc.getBlock().getType() == Material.STONE_BUTTON) {
-					pressLoc.getBlock().setData((byte) (pressLoc.getBlock().getData() - ((byte)8)), true);
-					pressLoc.getBlock().getState().update();
+			
+				World theWorld = pressLoc.getWorld();
+				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), pressLoc.getBlockX(), pressLoc.getBlockY(), pressLoc.getBlockZ(), null);
+		
+				
 			}
 			
 			break;
