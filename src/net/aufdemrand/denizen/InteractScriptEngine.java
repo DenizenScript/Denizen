@@ -47,7 +47,7 @@ public class InteractScriptEngine {
 	public enum Command {
 		WAIT, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
 		POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT,
-		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE, SWITCH
+		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE, SWITCH, PRESS
 	} 
 
 
@@ -759,14 +759,32 @@ public class InteractScriptEngine {
 			Location switchLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Block");
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
 				if (switchLoc.getBlock().getData() <= ((byte) 8) && switchState) {
-					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() + ((byte)8)));
+					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() + ((byte)8)), true);
 				}
 				if (switchLoc.getBlock().getData() >= ((byte) 8) && !switchState) {
-					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() - ((byte)8)));
+					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() - ((byte)8)), true);
 				}
 			}
 			break;
 
+		case PRESS:  // SWITCH [Block Bookmark] ON|OFF
+
+			Boolean pressState = false;
+			if (commandArgs[2].equalsIgnoreCase("ON")) pressState = true;
+			Location pressLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Block");
+			if (pressLoc.getBlock().getType() == Material.STONE_BUTTON) {
+				if (pressLoc.getBlock().getData() <= ((byte) 8) && pressState) {
+					pressLoc.getBlock().setData((byte) (pressLoc.getBlock().getData() + ((byte)8)), true);
+					plugin.buttonHandlerList.add(pressLoc.getBlock());
+				}
+				if (pressLoc.getBlock().getData() >= ((byte) 8) && !pressState) {
+					pressLoc.getBlock().setData((byte) (pressLoc.getBlock().getData() - ((byte)8)), true);
+					plugin.buttonHandlerList.add(pressLoc.getBlock());
+				}
+			}
+			break;
+
+			
 		case WEATHER:  // WEATHER [Sunny|Stormy|Precipitation] (Duration for Stormy/Rainy)
 			if (commandArgs[1].equalsIgnoreCase("sunny")) { thePlayer.getWorld().setStorm(false); }
 			else if (commandArgs[1].equalsIgnoreCase("stormy")) { thePlayer.getWorld().setThundering(true); }

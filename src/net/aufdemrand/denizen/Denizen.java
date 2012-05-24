@@ -24,6 +24,7 @@ import net.citizensnpcs.api.npc.character.CharacterFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -42,6 +43,7 @@ public class Denizen extends JavaPlugin {
 	public static Map<NPC, Location> previousDenizenLocation = new HashMap<NPC, Location>(); 
 	public static Map<Player, Long> interactCooldown = new HashMap<Player, Long>(); 
 	public static Boolean DebugMode = false;
+	public static List<Block> buttonHandlerList;
 
 	@Override
 	public void onEnable() {
@@ -58,13 +60,36 @@ public class Denizen extends JavaPlugin {
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
-			public void run() { CommandQue();  }
+			public void run() { CommandQue(); buttonHandler(); }
 		}, getConfig().getInt("interact_delay_in_ticks", 10), getConfig().getInt("interact_delay_in_ticks", 10));
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() { ScheduleScripts(); }
 		}, 1, 1000);
+
+	}
+
+
+	protected void buttonHandler() {
+
+		if (!buttonHandlerList.isEmpty()) {
+
+			for (Block thisButton : buttonHandlerList) {
+
+				Location pressLoc = thisButton.getLocation();
+
+				if (pressLoc.getBlock().getData() <= ((byte) 8)) {
+					pressLoc.getBlock().setData((byte) (pressLoc.getBlock().getData() + ((byte)8)), true);
+					buttonHandlerList.remove(thisButton);
+				}
+				if (pressLoc.getBlock().getData() >= ((byte) 8)) {
+					pressLoc.getBlock().setData((byte) (pressLoc.getBlock().getData() - ((byte)8)), true);
+					buttonHandlerList.remove(thisButton);
+				}
+			}
+
+		}
 
 	}
 
