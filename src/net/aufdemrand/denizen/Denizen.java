@@ -46,7 +46,7 @@ public class Denizen extends JavaPlugin {
 	public void onEnable() {
 
 		if (!setupEconomy() ) {
-			getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no Vault-compatible Economy Plugin found!", getDescription().getName()));
+			getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no Vault-compatible Economy Plugin found! Install an economy system!", getDescription().getName()));
 			getServer().getPluginManager().disablePlugin(this);
 			return;  }
 		setupPermissions();
@@ -54,9 +54,10 @@ public class Denizen extends JavaPlugin {
 		reloadScripts();
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new DenizenListener(this), this);
+
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
-			public void run() { CommandQue(); }
+			public void run() { CommandQue();  }
 		}, getConfig().getInt("interact_delay_in_ticks", 10), getConfig().getInt("interact_delay_in_ticks", 10));
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -64,7 +65,6 @@ public class Denizen extends JavaPlugin {
 			public void run() { ScheduleScripts(); }
 		}, 1, 1000);
 
-		
 	}
 
 
@@ -94,7 +94,7 @@ public class Denizen extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
-		 Bukkit.getServer().getScheduler().cancelTasks(this);
+		Bukkit.getServer().getScheduler().cancelTasks(this);
 	}
 
 
@@ -116,19 +116,22 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("getdata")) {
 			player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
+			return true;
 		}
 		if (args[0].equalsIgnoreCase("adddata")) {
 			Block toAddData = player.getTargetBlock(null, 20);
 			toAddData.setData((byte) (toAddData.getData() + 1));
 			player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
-			}
+			return true;	
+		}
 		if (args[0].equalsIgnoreCase("decdata")) {
 			Block toAddData = player.getTargetBlock(null, 20);
 			toAddData.setData((byte) (toAddData.getData() - 1));
 			player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
-			}
-		
-		
+			return true;
+		}
+
+
 		if (args[0].equalsIgnoreCase("help")) {
 
 			if(args.length == 1) {
@@ -160,9 +163,9 @@ public class Denizen extends JavaPlugin {
 				player.sendMessage(ChatColor.GOLD + "  Logs debugging information for reporting problems");
 				player.sendMessage(ChatColor.GOLD + "/denizen STATS");
 				player.sendMessage(ChatColor.GOLD + "  Shows statistical information from Denizens plugin");   
-			    player.sendMessage(ChatColor.GOLD + "/denizen SCHEDULE");
-			    player.sendMessage(ChatColor.GOLD + "  Forces the Denizens to check their schedules");   }
-			
+				player.sendMessage(ChatColor.GOLD + "/denizen SCHEDULE");
+				player.sendMessage(ChatColor.GOLD + "  Forces the Denizens to check their schedules");   }
+
 			else if (args[1].equalsIgnoreCase("config")) {
 
 				player.sendMessage(ChatColor.GOLD + "------- Denizen Config Commands -------");
@@ -273,10 +276,10 @@ public class Denizen extends JavaPlugin {
 		NPC ThisNPC = CitizensAPI.getNPCRegistry().getNPC(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
 
 
-//		if (!ThisNPC.getTrait(Owner.class).getOwner().equals(player.getName())) {
-//			player.sendMessage(ChatColor.RED + "You must be the owner of the denizen to execute commands.");
-//			return true;
-//		}
+		//		if (!ThisNPC.getTrait(Owner.class).getOwner().equals(player.getName())) {
+		//			player.sendMessage(ChatColor.RED + "You must be the owner of the denizen to execute commands.");
+		//			return true;
+		//		}
 
 		if (ThisNPC.getCharacter() == null || !ThisNPC.getCharacter().getName().equals("denizen")) {
 			player.sendMessage(ChatColor.RED + "That command must be performed on a denizen!");
@@ -293,7 +296,7 @@ public class Denizen extends JavaPlugin {
 			else if (args[1].equalsIgnoreCase("location")) {
 				List<String> locationList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
 				locationList.add(args[2] + " " + player.getWorld().getName() + ";" + player.getLocation().getX() + ";" +
-				player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
+						player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
 				getConfig().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
 				saveConfig();
 				player.sendMessage(ChatColor.GOLD + "Location bookmark added. Your denizen can now reference this location.");
@@ -304,12 +307,12 @@ public class Denizen extends JavaPlugin {
 				List<String> blockList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Block");
 				Block targetBlock = player.getTargetBlock(null, 6);
 				blockList.add(args[2] + " " + player.getWorld().getName() + ";" + targetBlock.getX() + ";" +
-				targetBlock.getY() + ";" + targetBlock.getZ());
-				
+						targetBlock.getY() + ";" + targetBlock.getZ());
+
 				getConfig().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Block", blockList);				
-				
+
 				saveConfig();
-				
+
 				player.sendMessage(ChatColor.GOLD + "Block bookmark added. Your denizen can now reference this block.");
 				return true;
 			}
@@ -318,6 +321,8 @@ public class Denizen extends JavaPlugin {
 	}
 
 
+	
+	
 
 	protected void CommandQue() {
 
@@ -326,19 +331,15 @@ public class Denizen extends JavaPlugin {
 		if (!playerQue.isEmpty()) {	for (Map.Entry<Player, List<String>> theEntry : playerQue.entrySet()) {
 
 			do {
-
 				if (!theEntry.getValue().isEmpty()) { 
 					InteractScriptEngine.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
-
 					instantCommand = false;
-					
 					if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
-					
 					theEntry.getValue().remove(0);
 					playerQue.put(theEntry.getKey(), theEntry.getValue());
 				}
-
 			} while (instantCommand == true);
+
 		}
 		}
 

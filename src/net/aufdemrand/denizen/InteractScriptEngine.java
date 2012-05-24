@@ -770,7 +770,7 @@ public class InteractScriptEngine {
 
 			Boolean switchState = false;
 			if (commandArgs[2].equalsIgnoreCase("ON")) switchState = true;
-			Location switchLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[3], "Block");
+			Location switchLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[2], "Block");
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
 				if (switchLoc.getBlock().getData() <= ((byte) 8) && switchState) {
 					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() + ((byte)8)));
