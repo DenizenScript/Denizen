@@ -780,7 +780,7 @@ public class InteractScriptEngine {
 					pressLoc.getBlock().setData((byte) (pressLoc.getBlock().getData() - ((byte)8)), true);
 					pressLoc.getBlock().getState().update();
 			}
-			}
+			
 			break;
 
 			
