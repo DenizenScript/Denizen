@@ -18,6 +18,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -758,31 +759,27 @@ public class InteractScriptEngine {
 			if (commandArgs[2].equalsIgnoreCase("ON")) switchState = true;
 			Location switchLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Block");
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
-				if (switchLoc.getBlock().getData() <= ((byte) 8) && switchState) {
-					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() + ((byte)8)), true);
-					switchLoc.getBlock().getState().update();
-				}
-				if (switchLoc.getBlock().getData() >= ((byte) 8) && !switchState) {
-					switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() - ((byte)8)), true);
-					switchLoc.getBlock().getState().update();
-				}
+//				if (switchLoc.getBlock().getData() <= ((byte) 8) && switchState) {
+	//				switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() + ((byte)8)), true);
+		//			switchLoc.getBlock().getState().update();
+			//	}
+				//if (switchLoc.getBlock().getData() >= ((byte) 8) && !switchState) {
+				//	switchLoc.getBlock().setData((byte) (switchLoc.getBlock().getData() - ((byte)8)), true);
+				//	switchLoc.getBlock().getState().update();
+					
+					World theWorld = switchLoc.getWorld();
+					net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), switchLoc.getBlockX(), switchLoc.getBlockY(), switchLoc.getBlockZ(), null);
+			//	}
 			}
 			break;
 
 		case PRESS:  // SWITCH [Block Bookmark] ON|OFF
 
-			Boolean pressState = false;
-			if (commandArgs[2].equalsIgnoreCase("ON")) pressState = true;
 			Location pressLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Block");
 			if (pressLoc.getBlock().getType() == Material.STONE_BUTTON) {
-				if (pressLoc.getBlock().getData() <= ((byte) 8) && pressState) {
-					pressLoc.getBlock().setData((byte) (pressLoc.getBlock().getData() + ((byte)8)), true);
-					plugin.buttonHandlerList.add(pressLoc.getBlock());
-				}
-				if (pressLoc.getBlock().getData() >= ((byte) 8) && !pressState) {
 					pressLoc.getBlock().setData((byte) (pressLoc.getBlock().getData() - ((byte)8)), true);
-					plugin.buttonHandlerList.add(pressLoc.getBlock());
-				}
+					pressLoc.getBlock().getState().update();
+			}
 			}
 			break;
 
