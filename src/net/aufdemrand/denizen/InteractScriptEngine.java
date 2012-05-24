@@ -45,10 +45,10 @@ public class InteractScriptEngine {
 	}
 
 	public enum Command {
-		DELAY, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
+		WAIT, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
 		POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT,
 		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE, SWITCH
-	}
+	} 
 
 
 
@@ -695,7 +695,7 @@ public class InteractScriptEngine {
 						}
 					}
 				}
-				else if (theCommandText[0].equalsIgnoreCase("HOLD")) {
+				else if (theCommandText[0].equalsIgnoreCase("WAIT")) {
 					Long timeDelay = Long.parseLong(theCommandText[1]) * 1000;
 					String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
 					CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + timeWithDelay + ";" + theCommand);						
@@ -955,7 +955,7 @@ public class InteractScriptEngine {
 			break;
 		case CHANGE:
 			break;
-		case DELAY:
+		case WAIT:
 			break;
 		case ENGAGE:
 			break;
