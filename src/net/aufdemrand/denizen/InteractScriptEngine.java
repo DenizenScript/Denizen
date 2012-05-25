@@ -905,7 +905,7 @@ public class InteractScriptEngine {
 
 		case RESPAWN:  // RESPAWN [Location Notable]
 
-			Location respawnLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Block");
+			Location respawnLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Location");
 			NPC respawnDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
 			Denizen.previousDenizenLocation.put(respawnDenizen, respawnDenizen.getBukkitEntity().getLocation());
 			respawnDenizen.getBukkitEntity().getWorld().playEffect(respawnDenizen.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
