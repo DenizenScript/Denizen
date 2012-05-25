@@ -48,7 +48,7 @@ public class InteractScriptEngine {
 	public enum Command {
 		WAIT, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
 		POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT,
-		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE, SWITCH, PRESS
+		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE, SWITCH, PRESS, HURT, REFUSE
 	} 
 
 
@@ -868,10 +868,17 @@ public class InteractScriptEngine {
 			break;
 
 		case HEAL:  // HEAL  or  HEAL [# of Hearts]
-		case DAMAGE:
-		case POTION_EFFECT:
-		case TELEPORT:  // TELEPORT [Location Notable] (Effect)
-			// or TELEPORT [X,Y,Z] (World Name) (Effect)
+
+		
+		
+		case HURT:
+		
+			
+		
+		case TELEPORT:  // TELEPORT [Location Notable]
+		
+			thePlayer.teleport(getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "location"));
+		
 		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
 
 			thePlayer.getWorld().strikeLightning(thePlayer.getLocation());
@@ -942,6 +949,12 @@ public class InteractScriptEngine {
 			Denizen.perms.playerAdd(thePlayer, commandArgs[1]);
 			break;
 
+		case REFUSE:  // PERMISS [Permission Node]
+
+			Denizen.perms.playerRemove(thePlayer, commandArgs[1]);
+			break;
+			
+			
 		case EXECUTE:  // EXECUTE ASPLAYER [Command to Execute]
 
 			String[] executeCommand = rawqueArgs[4].split(" ", 3);
@@ -1002,6 +1015,9 @@ public class InteractScriptEngine {
 		case ENGAGE:
 			break;
 		case HINT:
+			
+			
+			
 			break;
 		case NOD:
 			break;
