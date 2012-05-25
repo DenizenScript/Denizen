@@ -831,14 +831,24 @@ public class InteractScriptEngine {
 				if (!CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getTrait(LookClose.class).toggle())
 					CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getTrait(LookClose.class).toggle();
 			}
-			if (commandArgs[1].equalsIgnoreCase("AWAY")) {
+			else if (commandArgs[1].equalsIgnoreCase("AWAY")) {
 				if (CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getTrait(LookClose.class).toggle())
 					CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])).getTrait(LookClose.class).toggle();
 			}
+			else if (!commandArgs[1].equalsIgnoreCase("AWAY") && !commandArgs[1].equalsIgnoreCase("CLOSE")) {
+				NPC denizenLooking = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0]));
+				Location lookLoc = getLocationBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(rawqueArgs[0])), commandArgs[1], "Location");
+				denizenLooking.getBukkitEntity().getLocation().setPitch(lookLoc.getPitch());
+				denizenLooking.getBukkitEntity().getLocation().setYaw(lookLoc.getYaw());
+			}
+			
+			
+			
 			break;
 
 		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
 
+			
 			ItemStack giveItem = new ItemStack(Material.getMaterial(commandArgs[1].toUpperCase()));
 			if (commandArgs.length > 1) giveItem.setAmount(Integer.valueOf(commandArgs[2]));
 			else giveItem.setAmount(1);
