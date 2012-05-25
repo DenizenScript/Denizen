@@ -57,13 +57,13 @@ public class DenizenListener implements Listener {
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
 
-		List<NPC> DenizenList = InteractScriptEngine.GetDenizensWithinRange(event.getPlayer().
+		NPC thisDenizen = InteractScriptEngine.GetClosestDenizenWithinRange(event.getPlayer().
 				getLocation(), event.getPlayer().getWorld(), plugin.getConfig().getInt("player_chat_range_in_blocks", 3));
-		if (DenizenList.isEmpty()) return;
+
+		if (thisDenizen == null) return;
 
 		event.setCancelled(true);
 
-		for (NPC thisDenizen : DenizenList) {
 			String theScript = InteractScriptEngine.GetInteractScript(thisDenizen, event.getPlayer());
 
 			if (theScript.equals("none")) { 
@@ -84,7 +84,7 @@ public class DenizenListener implements Listener {
 
 			else if (!theScript.equals("none")) InteractScriptEngine.ParseScript(thisDenizen, event.getPlayer(),
 					InteractScriptEngine.GetScriptName(theScript), event.getMessage(), InteractScriptEngine.Trigger.CHAT);
-		}
+		
 	}
 
 

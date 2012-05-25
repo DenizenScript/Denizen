@@ -349,6 +349,28 @@ public class InteractScriptEngine {
 		return DenizensWithinRange;
 	}
 
+	
+	public static NPC GetClosestDenizenWithinRange (Location PlayerLocation, World PlayerWorld, int Range) {
+
+		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().
+				getNPCs(DenizenCharacter.class);
+		if (DenizenNPCs.isEmpty()) return null;
+		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
+		
+		Double closestDistance = Double.valueOf(String.valueOf(Range));
+		NPC closestDenizen = null;
+				
+		for (NPC aDenizen : DenizenList) {
+			if (aDenizen.isSpawned())	{
+				if (aDenizen.getBukkitEntity().getWorld().equals(PlayerWorld)) {
+					if (aDenizen.getBukkitEntity().getLocation().distance(PlayerLocation) < closestDistance ) {
+					closestDenizen = aDenizen; closestDistance = aDenizen.getBukkitEntity().getLocation().distance(PlayerLocation);
+					}
+				}
+			}
+		}
+		return closestDenizen;
+	}
 
 
 	/* GetPlayersWithinRange
