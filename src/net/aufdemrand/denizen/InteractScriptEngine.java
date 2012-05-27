@@ -911,6 +911,7 @@ public class InteractScriptEngine {
 			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
 			Long timeDelay = Long.parseLong(commandArgs[1]) * 1000;
 			String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
+			CurrentPlayerQue.remove(0);
 			CurrentPlayerQue.add(0, "0;none;0;" + timeWithDelay + ";WAITING");						
 			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
 
