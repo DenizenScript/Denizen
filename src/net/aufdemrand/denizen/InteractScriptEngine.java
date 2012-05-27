@@ -48,7 +48,7 @@ public class InteractScriptEngine {
 	public enum Command {
 		WAIT, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
 		POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT,
-		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE, SWITCH, PRESS, HURT, REFUSE
+		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE, SWITCH, PRESS, HURT, REFUSE, WAITING
 	} 
 
 
@@ -718,11 +718,11 @@ public class InteractScriptEngine {
 						}
 					}
 				}
-				else if (theCommandText[0].equalsIgnoreCase("WAIT")) {
-					Long timeDelay = Long.parseLong(theCommandText[1]) * 1000;
-					String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
-					CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + timeWithDelay + ";" + theCommand);						
-				}
+//				else if (theCommandText[0].equalsIgnoreCase("WAIT")) {
+	//				Long timeDelay = Long.parseLong(theCommandText[1]) * 1000;
+		//			String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
+			//		CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + timeWithDelay + ";" + theCommand);						
+				//}
 				else {
 					CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
 				}
@@ -1021,19 +1021,30 @@ public class InteractScriptEngine {
 		case CHANGE:
 			break;
 		case WAIT:
+			
+			List<String> CurrentPlayerQue = new ArrayList<String>();
+			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
+			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
+			Long timeDelay = Long.parseLong(commandArgs[1]) * 1000;
+			String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
+			CurrentPlayerQue.add(0, "0;none;0;" + timeWithDelay + ";WAITING");						
+			
 			break;
 		case ENGAGE:
 			break;
 		case HINT:
-			
-			
-			
 			break;
 		case NOD:
+			break;
+		case WAITING:
+			
+			// ...and we're waiting.
+			
 			break;
 		default:
 			break;
 
+			
 		}
 	}
 
