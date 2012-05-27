@@ -355,7 +355,7 @@ public class Denizen extends JavaPlugin {
 				if (!theEntry.getValue().isEmpty()) {
 					if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
 						do {
-							InteractScriptEngine.CommandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
+							InteractScriptEngine.commandExecuter(theEntry.getKey(), theEntry.getValue().get(0));
 							instantCommand = false;
 							if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
 							theEntry.getValue().remove(0);

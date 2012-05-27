@@ -21,7 +21,7 @@ public class DenizenListener implements Listener {
 
 	public static void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
-		String theScript = InteractScriptEngine.GetInteractScript(theDenizen, thePlayer);
+		String theScript = InteractScriptEngine.getInteractScript(theDenizen, thePlayer);
 
 		if (theScript.equals("none")) {
 			List<String> CurrentPlayerQue = new ArrayList<String>();
@@ -34,7 +34,7 @@ public class DenizenListener implements Listener {
 		}
 
 		else if (!theScript.equals("none")) {
-			InteractScriptEngine.ParseScript(theDenizen, thePlayer,	InteractScriptEngine.GetScriptName(theScript), "", InteractScriptEngine.Trigger.CLICK);
+			InteractScriptEngine.parseScript(theDenizen, thePlayer,	InteractScriptEngine.getScriptName(theScript), "", InteractScriptEngine.Trigger.CLICK);
 		}
 	}
 
@@ -57,18 +57,18 @@ public class DenizenListener implements Listener {
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
 
-		NPC thisDenizen = InteractScriptEngine.GetClosestDenizenWithinRange(event.getPlayer().
+		NPC thisDenizen = InteractScriptEngine.getClosestDenizenInRange(event.getPlayer().
 				getLocation(), event.getPlayer().getWorld(), plugin.getConfig().getInt("player_chat_range_in_blocks", 3));
 
 		if (thisDenizen == null) return;
 
 		event.setCancelled(true);
 
-			String theScript = InteractScriptEngine.GetInteractScript(thisDenizen, event.getPlayer());
+			String theScript = InteractScriptEngine.getInteractScript(thisDenizen, event.getPlayer());
 
 			if (theScript.equals("none")) { 
 
-				InteractScriptEngine.TalkToNPC(thisDenizen, event.getPlayer(), event.getMessage());
+				InteractScriptEngine.talkToDenizen(thisDenizen, event.getPlayer(), event.getMessage());
 
 				List<String> CurrentPlayerQue = new ArrayList<String>();
 				if (Denizen.playerQue.get(event.getPlayer()) != null) CurrentPlayerQue = Denizen.playerQue.get(event.getPlayer());
@@ -82,8 +82,8 @@ public class DenizenListener implements Listener {
 
 			}
 
-			else if (!theScript.equals("none")) InteractScriptEngine.ParseScript(thisDenizen, event.getPlayer(),
-					InteractScriptEngine.GetScriptName(theScript), event.getMessage(), InteractScriptEngine.Trigger.CHAT);
+			else if (!theScript.equals("none")) InteractScriptEngine.parseScript(thisDenizen, event.getPlayer(),
+					InteractScriptEngine.getScriptName(theScript), event.getMessage(), InteractScriptEngine.Trigger.CHAT);
 		
 	}
 
