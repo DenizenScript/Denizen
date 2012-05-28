@@ -39,7 +39,7 @@ public class InteractScriptEngine {
 
 	public enum Requirement {
 		NONE, QUEST, NAME, WEARING, INVINSIBLE, ITEM, HOLDING, TIME, PRECIPITATION, ACTIVITY, FINISHED,
-		STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, POTIONEFFECT, MCMMO, PRECIPITATING, STORMING }
+		STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, SCRIPT, NOTABLE, GROUP, MONEY, POTIONEFFECT, MCMMO, PRECIPITATING, STORMING, FAILED }
 
 	public enum Trigger {
 		CHAT, CLICK, FINISH, PROXIMITY
@@ -48,7 +48,7 @@ public class InteractScriptEngine {
 	public enum Command {
 		WAIT, ZAP, ASSIGN, UNASSIGN, C2SCRIPT, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL, DAMAGE,
 		POTION_EFFECT, TELEPORT, STRIKE, WALK, NOD, REMEMBER, BOUNCE, RESPAWN, PERMISS, EXECUTE, SHOUT,
-		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE, SWITCH, PRESS, HURT, REFUSE, WAITING
+		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, ENGAGE, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE, SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL
 	} 
 
 
@@ -298,6 +298,12 @@ public class InteractScriptEngine {
 				else if (getScriptComplete(thisPlayer, splitArgs[1])) MetReqs++;
 				break;
 
+			case FAILED: // (-)SCRIPT [Script Name]
+				if (negReq) { if (!getScriptFail(thisPlayer, splitArgs[1])) MetReqs++; }
+				else if (getScriptFail(thisPlayer, splitArgs[1])) MetReqs++;
+				break;
+
+				
 			case GROUP:
 				if (negReq) { if (!Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(),	splitArgs[1])) MetReqs++; }
 				else if (Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(), splitArgs[1])) MetReqs++;
@@ -453,12 +459,25 @@ public class InteractScriptEngine {
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 		boolean ScriptComplete = false;
-		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed")
-				!= null) ScriptComplete = true;
+		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
+			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") == true) ScriptComplete = true;
+		}
 		return ScriptComplete;
 	}
 
+	public static boolean getScriptFail(Player thePlayer, String theScript) {
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+
+		boolean ScriptFailed = false;
+		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
+			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) ScriptFailed = true;
+		}
+		return ScriptFailed;
+	}
+
+	
+	
 	/* GetChatTriggers
 	 *
 	 * Requires the Script and the Current Step.
@@ -805,15 +824,17 @@ public class InteractScriptEngine {
 			break;
 
 		case FINISH:
-
 			plugin.getConfig().set("Players." + thePlayer.getName() + "." + executerArgs[1] + "." + "Completed", true);
 			plugin.saveConfig();
+			break;
 
+		case FAIL:
+			plugin.getConfig().set("Players." + thePlayer.getName() + "." + executerArgs[1] + "." + "Failed", true);
+			plugin.saveConfig();
 			break;
 
 		case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
-
-
+			break;
 
 		case FOLLOW: // FOLLOW PLAYER|NOBODY
 
@@ -898,6 +919,22 @@ public class InteractScriptEngine {
 		case ANNOUNCE: // ANNOUNCE [Message]
 
 			// NOTABLES
+
+		case RESET: // RESET FINISH(ED) [Name of Script]  or  RESET FAIL(ED) [NAME OF SCRIPT]
+
+			String nameOfScript = executerArgs[4].split(" ", 3)[2];
+
+			if (commandArgs[1].equalsIgnoreCase("FINISH") || commandArgs[1].equalsIgnoreCase("FINISHED")) {
+				plugin.getConfig().set("Players." + thePlayer.getName() + "." + nameOfScript + "." + "Completed", false);
+				plugin.saveConfig();
+			}
+			if (commandArgs[1].equalsIgnoreCase("FAIL") || commandArgs[1].equalsIgnoreCase("FAILED")) {
+				plugin.getConfig().set("Players." + thePlayer.getName() + "." + nameOfScript + "." + "Failed", false);
+				plugin.saveConfig();
+			}
+
+			break;
+
 
 		case GRANT:  // ACHIEVE [Name of Achievement Notable to Grant]
 		case BOUNCE:

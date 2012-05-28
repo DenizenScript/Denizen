@@ -170,6 +170,8 @@ public class Denizen extends JavaPlugin {
 				player.sendMessage(ChatColor.GOLD + "Denizen NPC Commands:");
 				player.sendMessage(ChatColor.GOLD + "use /denizen HELP NPC ");
 				player.sendMessage(ChatColor.GOLD + "");
+				player.sendMessage(ChatColor.RED + "NOTE! Help system is fleshed out only. Most of these");
+				player.sendMessage(ChatColor.RED + "commands DO NOT YET WORK! ");
 				player.sendMessage(ChatColor.GOLD + "For a cheat sheet of commands and arguments,");
 				player.sendMessage(ChatColor.GOLD + "visit the wiki: http://wiki.citizensnpcs.net/Denizen");   }
 
