@@ -107,6 +107,20 @@ public class Denizen extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
 
+		if (args[0].equalsIgnoreCase("save") && !(sender instanceof Player)) {
+			this.saveConfig();
+			this.saveScripts();
+			getServer().broadcastMessage("Denizens config.yml and scripts.yml saved.");
+			return true;
+		}
+
+		if (args[0].equalsIgnoreCase("reload") && !(sender instanceof Player)) {
+			this.reloadConfig();
+			this.reloadScripts();
+			getServer().broadcastMessage("Denizens config.yml and scripts.yml reloaded.");
+			return true;
+		}
+		
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("You must be in-game to execute commands.");
 			return true;
