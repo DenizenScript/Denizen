@@ -56,18 +56,19 @@ public class DenizenListener implements Listener {
 
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
+		boolean ignoreNoMatch = true;
 
 		NPC thisDenizen = InteractScriptEngine.getClosestDenizenInRange(event.getPlayer().
 				getLocation(), event.getPlayer().getWorld(), plugin.getConfig().getInt("player_chat_range_in_blocks", 3));
 
 		if (thisDenizen == null) return;
 
-		event.setCancelled(true);
-
 			String theScript = InteractScriptEngine.getInteractScript(thisDenizen, event.getPlayer());
 
-			if (theScript.equals("none")) { 
+			if (theScript.equals("none") && !ignoreNoMatch) { 
 
+				event.setCancelled(true);
+				
 				InteractScriptEngine.talkToDenizen(thisDenizen, event.getPlayer(), event.getMessage());
 
 				List<String> CurrentPlayerQue = new ArrayList<String>();
@@ -82,9 +83,11 @@ public class DenizenListener implements Listener {
 
 			}
 
-			else if (!theScript.equals("none")) InteractScriptEngine.parseScript(thisDenizen, event.getPlayer(),
-					InteractScriptEngine.getScriptName(theScript), event.getMessage(), InteractScriptEngine.Trigger.CHAT);
-		
+			else if (!theScript.equals("none")) {
+				if(InteractScriptEngine.parseScript(thisDenizen, event.getPlayer(), InteractScriptEngine.getScriptName(theScript), event.getMessage(), InteractScriptEngine.Trigger.CHAT)) {
+					event.setCancelled(true);
+				}
+			}
 	}
 
 
