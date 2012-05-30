@@ -208,8 +208,8 @@ public class InteractScriptEngine {
 
 
 			case MONEY: // (-)MONEY [Amount of Money, or more]
-				if (negReq) { if (!Denizen.econ.has(thisPlayer.getName(), Integer.parseInt(splitArgs[1]))){ MetReqs++;} }
-				else if (Denizen.econ.has(thisPlayer.getName(), Integer.parseInt(splitArgs[1]))) {MetReqs++;}
+				if (negReq) { if (!Denizen.denizenEcon.has(thisPlayer.getName(), Integer.parseInt(splitArgs[1]))){ MetReqs++;} }
+				else if (Denizen.denizenEcon.has(thisPlayer.getName(), Integer.parseInt(splitArgs[1]))) {MetReqs++;}
 				break;
 
 
@@ -305,13 +305,13 @@ public class InteractScriptEngine {
 
 				
 			case GROUP:
-				if (negReq) { if (!Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(),	splitArgs[1])) MetReqs++; }
-				else if (Denizen.perms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(), splitArgs[1])) MetReqs++;
+				if (negReq) { if (!Denizen.denizenPerms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(),	splitArgs[1])) MetReqs++; }
+				else if (Denizen.denizenPerms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(), splitArgs[1])) MetReqs++;
 				break;
 
 			case PERMISSION:  // (-)PERMISSION [this.permission.node]
-				if (negReq) { if (!Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.getName(),	splitArgs[1])) MetReqs++; }
-				else if (Denizen.perms.playerHas(thisPlayer.getWorld(), thisPlayer.getName(), splitArgs[1])) MetReqs++;
+				if (negReq) { if (!Denizen.denizenPerms.playerHas(thisPlayer.getWorld(), thisPlayer.getName(),	splitArgs[1])) MetReqs++; }
+				else if (Denizen.denizenPerms.playerHas(thisPlayer.getWorld(), thisPlayer.getName(), splitArgs[1])) MetReqs++;
 				break;
 			}
 		}
@@ -763,10 +763,10 @@ public class InteractScriptEngine {
 		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
 
 			if (commandArgs[1].equalsIgnoreCase("MONEY")) {
-				double playerMoneyAmt = Denizen.econ.getBalance(thePlayer.getName());
+				double playerMoneyAmt = Denizen.denizenEcon.getBalance(thePlayer.getName());
 				double amtToTake = Double.valueOf(commandArgs[2]);
 				if (amtToTake > playerMoneyAmt) amtToTake = playerMoneyAmt;
-				Denizen.econ.withdrawPlayer(thePlayer.getName(), amtToTake);
+				Denizen.denizenEcon.withdrawPlayer(thePlayer.getName(), amtToTake);
 
 			}
 			else if (commandArgs[1].equalsIgnoreCase("ITEMINHAND")) {
@@ -861,12 +861,12 @@ public class InteractScriptEngine {
 
 		case PERMISS:  // PERMISS [Permission Node]
 
-			Denizen.perms.playerAdd(thePlayer, commandArgs[1]);
+			Denizen.denizenPerms.playerAdd(thePlayer, commandArgs[1]);
 			break;
 
 		case REFUSE:  // PERMISS [Permission Node]
 
-			Denizen.perms.playerRemove(thePlayer, commandArgs[1]);
+			Denizen.denizenPerms.playerRemove(thePlayer, commandArgs[1]);
 			break;
 
 

@@ -2,11 +2,16 @@ name: Denizen
 author: aufdemrand
 version: 0.5.3
 main: net.aufdemrand.denizen.Denizen
-depend:
-  - Citizens
-  - Vault
+depend: [Citizens, Vault]
+
 commands:
   denizen:
     description: Lists denizen commands.
     usage: /denizen help
     permission: denizen.basic
+
+permissions:
+  denizen.*:
+    description: Gives access to Denizen commands
+    children:
+      denizen.basic: true
