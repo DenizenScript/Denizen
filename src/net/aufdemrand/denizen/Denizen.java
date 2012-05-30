@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,7 +39,7 @@ public class Denizen extends JavaPlugin {
 
 	public static Economy denizenEcon = null;
 	public static Permission denizenPerms = null;
-	public static Map<Player, List<String>> playerQue = new HashMap<Player, List<String>>();
+	public static Map<Player, List<String>> playerQue = new ConcurrentHashMap<Player, List<String>>();
 	public static Map<NPC, Location> previousDenizenLocation = new HashMap<NPC, Location>(); 
 	public static Map<Player, Long> interactCooldown = new HashMap<Player, Long>(); 
 	public static Boolean DebugMode = false;
