@@ -557,7 +557,7 @@ public class InteractScriptEngine {
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		int CurrentStep = getCurrentStep(thePlayer, theScript);
 		
-		boolean ignoreNoMatch = true;
+		boolean ignoreNoMatch = plugin.getConfig().getBoolean("ignoreNoMatch");
 
 		switch (theTrigger) {
 
