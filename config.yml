@@ -28,3 +28,4 @@ whisper_color: gray
 shout_color: red
 narrate_color: green
 announce_color: yellow
+chat_globably_if_no_chat_triggers: false
