@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 
 public class GetPlayer {
 
-	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
 	
 	
 	/*
@@ -23,6 +22,8 @@ public class GetPlayer {
 
 	public List<Player> getInRange (NPC theDenizen, int theRange) {
 
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		
 		List<Player> PlayersWithinRange = new ArrayList<Player>();
 		Player[] DenizenPlayers = plugin.getServer().getOnlinePlayers();
 
@@ -49,6 +50,9 @@ public class GetPlayer {
 	 */
 
 	public void talkToDenizen(NPC theDenizen, Player thePlayer, String theMessage) {
+
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+
 		thePlayer.sendMessage(plugin.getConfig().getString("player_chat_to_npc", "You say to <NPC>, <TEXT>")
 				.replace("<NPC>", theDenizen.getName())
 				.replace("<TEXT>", theMessage)

@@ -17,9 +17,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class GetListener implements Listener {
 
-	Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-
-	
+		
 	
 	/*
 	 * DenizenClicked
@@ -30,6 +28,7 @@ public class GetListener implements Listener {
 
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		String theScript = Denizen.getScript.getInteractScript(theDenizen, thePlayer);
 
 		if (theScript.equals("none")) {
@@ -73,6 +72,7 @@ public class GetListener implements Listener {
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
 		
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		boolean ignoreNoMatch = plugin.getConfig().getBoolean("chat_globably_if_no_chat_triggers", false);
 		
 		NPC theDenizen = Denizen.getDenizen.getClosest(event.getPlayer(), 

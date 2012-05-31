@@ -17,7 +17,6 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GetRequirements {
 	
-	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
 	
 	
 	public enum RequirementMode {
@@ -35,6 +34,8 @@ public class GetRequirements {
 	
 	public boolean check(String thisScript, Player thisPlayer) {
 
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		
 		String RequirementsMode = plugin.getScripts().getString("" + thisScript + ".Requirements.Mode");
 
 		if (RequirementsMode.equalsIgnoreCase("none")) return true;

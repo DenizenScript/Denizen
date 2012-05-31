@@ -8,11 +8,11 @@ import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public class GetScript {
 
-	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-
+	
 	
 	
 	/* 
@@ -25,6 +25,9 @@ public class GetScript {
 	 */
 
 	public String getInteractScript(NPC thisDenizen, Player thisPlayer) {
+		
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		
 		String theScript = "none";
 		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getName() + ".Interact Scripts");
 		if (ScriptList.isEmpty()) { return theScript; }
@@ -68,7 +71,9 @@ public class GetScript {
 	 */
 
 	public int getCurrentStep(Player thePlayer, String theScript) {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+
 		int currentStep = 1;
 		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
 			currentStep =  plugin.getConfig().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
@@ -88,6 +93,9 @@ public class GetScript {
 	 */
 
 	public boolean getScriptComplete(Player thePlayer, String theScript) {
+
+		Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");		
+		
 		boolean ScriptComplete = false;
 		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
 			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") == true) ScriptComplete = true;
@@ -97,6 +105,9 @@ public class GetScript {
 	}
 
 	public boolean getScriptFail(Player thePlayer, String theScript) {
+
+		Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");		
+		
 		boolean ScriptFailed = false;
 		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
 			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) ScriptFailed = true;
@@ -117,6 +128,9 @@ public class GetScript {
 	 */
 
 	public List<String> getChatTriggers(String theScript, Integer currentStep) {
+		
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
 		for (int x=1; currentTrigger >= 0; x++) {
@@ -143,7 +157,7 @@ public class GetScript {
 	 */
 
 	public String getNameFromEntry(String thisScript) {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+
 		if (thisScript.equals("none")) { return thisScript; }
 		else {
 			String [] thisScriptArray = thisScript.split(" ", 2);

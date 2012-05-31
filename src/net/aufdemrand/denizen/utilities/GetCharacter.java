@@ -8,12 +8,10 @@ import net.citizensnpcs.api.npc.NPC;
 
 import net.aufdemrand.denizen.Denizen;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 
 public class GetCharacter extends Character {
 
-	Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 	
 	
 	@Override

@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 
 public class GetDenizen {
 
-	Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 
 	/*
@@ -101,6 +100,8 @@ public class GetDenizen {
 	 */
 	
 	public Location getBookmark(NPC theDenizen, String nameOfLocation, String BlockOrLocation) {
+
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		List<String> locationList = null;
 		
 		if (BlockOrLocation.equalsIgnoreCase("block")) locationList = plugin.getConfig().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block");	

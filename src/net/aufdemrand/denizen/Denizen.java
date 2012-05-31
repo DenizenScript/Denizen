@@ -306,6 +306,7 @@ public class Denizen extends JavaPlugin {
 		setupPermissions();
 		reloadConfig();
 		reloadScripts();
+		saveConfig();
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(GetCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new GetListener(), this);
 

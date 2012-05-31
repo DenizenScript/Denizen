@@ -14,8 +14,6 @@ import org.bukkit.entity.Player;
 
 public class ScriptEngine {
 
-	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
-
 	
 	
 	public enum Trigger {
@@ -64,12 +62,15 @@ public class ScriptEngine {
 	
 	public void scheduleScripts() {
 
+		
+		
 		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(GetCharacter.class);
 		if (DenizenNPCs.isEmpty()) return;
 		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
 		for (NPC aDenizen : DenizenList) {
 			if (aDenizen.isSpawned())	{
 			int denizenTime = Math.round(aDenizen.getBukkitEntity().getWorld().getTime() / 1000);
+			Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 			List<String> denizenActivities = plugin.getConfig().getStringList("Denizens." + aDenizen.getName() + ".Scheduled Activities");
 			if (!denizenActivities.isEmpty()) {
 				for (String activity : denizenActivities) {
@@ -94,6 +95,7 @@ public class ScriptEngine {
 	 */
 
 	public void parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		int CurrentStep = Denizen.getScript.getCurrentStep(thePlayer, theScript);
 
 		switch (theTrigger) {

@@ -22,7 +22,6 @@ import org.bukkit.potion.PotionEffectType;
 
 public class CommandExecuter {
 
-	Plugin plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
 	
 	public static enum Command {
 		WAIT, ZAP, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL,
@@ -38,6 +37,8 @@ public class CommandExecuter {
 		// Syntax of theStep
 		// 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Time added to Queue; 4 Command
 
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		
 		String[] executerArgs = theStep.split(";");
 		String[] commandArgs = executerArgs[4].split(" ");
 		if (commandArgs[0].startsWith("^")) commandArgs[0] = commandArgs[0].substring(1);
