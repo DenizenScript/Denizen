@@ -66,7 +66,7 @@ public class DenizenListener implements Listener {
 
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
-		boolean ignoreNoMatch = plugin.getConfig().getBoolean("chat_globably_if_no_chat_triggers");
+		boolean ignoreNoMatch = plugin.getConfig().getBoolean("chat_globally_if_no_chat_triggers", false);
 
 		NPC thisDenizen = InteractScriptEngine.getClosestDenizenInRange(event.getPlayer().
 				getLocation(), event.getPlayer().getWorld(), plugin.getConfig().getInt("player_chat_range_in_blocks", 3));
