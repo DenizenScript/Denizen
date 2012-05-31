@@ -1,11 +1,11 @@
-/nbproject/private/
+nbproject/private/
 .classpath
 .project
 Denizen.iml
 .gitignore
 .idea
-/bin/
-/lib/
+bin/
+lib/
 
 # Compiled source #
 ###################

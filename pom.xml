@@ -6,9 +6,9 @@
 
 	<groupId>net.aufdemrand</groupId>
 	<artifactId>denizen</artifactId>
-	<version>0.5.3</version>
+	<version>0.6</version>
 	<name>Denizen</name>
-	<description>Denizen Character for the CitizensAPI</description>
+	<description>Denizen Character for Citizens2</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -104,4 +104,5 @@
 		</plugins>
 	</build>
 
+	<url>http://wiki.citizensnpcs.net/Denizen</url>
 </project>

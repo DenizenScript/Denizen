@@ -1,20 +1,16 @@
 # DENIZENS are helpful, interactive Citizens!  Denizens run off of mini scripts with steps and events.
 # They can be used in hundreds of different ways, from tutorials, to questing, to administrating and more!
 # 
-# Timeline: Beta 1 -- All functionality used in this example file.
-#           Beta 2 -- Complete functionality of additional behaviors/requirements/triggers listed.
-#           1.0 -- Bug fixes from Beta.
-#           1.5 -- In-game Script editor.
-# 
-# 
 # Default Denizen options let you tweak the specifics of your Denizens.
 
-debug_mode: true
+debug_mode: false
+
 interact_delay_in_ticks: 10
-npc_chat_range_in_blocks: 10
+npc_chat_range_in_blocks: 7
 player_to_npc_chat_range_in_blocks: 2
+npc_to_player_chat_range_in_blocks: 7
 player_to_npc_shout_range_in_blocks: 15
-engage_timeout_in_seconds: 15
+
 player_chat_to_npc: You say to <NPC>, <TEXT>
 player_chat_to_npc_bystander: <PLAYER> says to <NPC>, <TEXT>
 npc_chat_to_player: <NPC> says to you, <TEXT>
@@ -23,6 +19,7 @@ npc_whisper_to_player: <NPC> whispers to you, <TEXT>
 npc_whisper_to_player_bystander: <NPC> whispers something to <PLAYER>.
 npc_shout_to_player: <NPC> shouts at you, <TEXT>
 npc_shout_to_player_bystander: <NPC> shouts at <PLAYER>, <TEXT>
+
 chat_color: white
 whisper_color: gray
 shout_color: red
