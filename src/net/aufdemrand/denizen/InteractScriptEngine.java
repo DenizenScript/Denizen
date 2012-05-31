@@ -552,10 +552,12 @@ public class InteractScriptEngine {
 	 */
 
 
-	public static void parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
+	public static boolean parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
 
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		int CurrentStep = getCurrentStep(thePlayer, theScript);
+		
+		boolean ignoreNoMatch = plugin.getConfig().getBoolean("chat_globably_if_no_chat_triggers");
 
 		switch (theTrigger) {
 
@@ -569,9 +571,14 @@ public class InteractScriptEngine {
 
 					triggerToQue(theScript, plugin.getScripts().getStringList("" + theScript + ".Steps."
 							+ CurrentStep + ".Chat Trigger." + String.valueOf(l + 1) + ".Script"), CurrentStep, thePlayer, theDenizen);
-					return;
+					return true;
 				}
 			}
+			
+			if(ignoreNoMatch) {
+				return false;
+			}
+			
 			talkToDenizen(theDenizen, thePlayer, theMessage);
 
 			List<String> CurrentPlayerQue = new ArrayList<String>();
@@ -583,18 +590,20 @@ public class InteractScriptEngine {
 							+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
 
 			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
-			return;
+			return true;
 
 		case CLICK:
 			triggerToQue(theScript, plugin.getScripts().getStringList("" + theScript + ".Steps."
 					+ CurrentStep + ".Click Trigger.Script"), CurrentStep, thePlayer, theDenizen);
-			return;
+			return true;
 
 		case FINISH:
 			// get current progressions
 			// send script
 
 		}
+		
+		return true;
 	}
 
 
