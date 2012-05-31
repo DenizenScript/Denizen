@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,20 +7,11 @@ import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class GetScript extends JavaPlugin {
+public class GetScript {
 
-	Plugin plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
-	GetRequirements getRequirements = new GetRequirements();
-	
-
-	private FileConfiguration customConfig = null;
-	private File customConfigFile = null;
+	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 	
 	
@@ -47,7 +36,7 @@ public class GetScript extends JavaPlugin {
 		
 		for (String thisScript : ScriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
-			if (getRequirements.check(thisScriptArray[1], thisPlayer)) ScriptsThatMeetRequirements.add(thisScript);
+			if (Denizen.getRequirements.check(thisScriptArray[1], thisPlayer)) ScriptsThatMeetRequirements.add(thisScript);
 		}
 
 		/*
@@ -131,7 +120,7 @@ public class GetScript extends JavaPlugin {
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
 		for (int x=1; currentTrigger >= 0; x++) {
-			String theChatTrigger = getScripts().getString("" + theScript + ".Steps."
+			String theChatTrigger = plugin.getScripts().getString("" + theScript + ".Steps."
 					+ currentStep + ".Chat Trigger." + String.valueOf(currentTrigger) + ".Trigger");
 			if (theChatTrigger != null) { 
 				ChatTriggers.add(theChatTrigger.split("/")[1]); 
@@ -164,34 +153,7 @@ public class GetScript extends JavaPlugin {
 
 	
 	
-	/*
-	 * reloadScripts/getScripts
-	 * 
-	 * Reloads and retrieves information from the Denizen/scripts.yml.
-	 * 
-	 */
-	
-	
-	public void reloadScripts() {
-		if (customConfigFile == null) {
-			customConfigFile = new File(getDataFolder(), "scripts.yml");
-		}
-		customConfig = YamlConfiguration.loadConfiguration(customConfigFile);
 
-		// Look for defaults in the jar
-		InputStream defConfigStream = getResource("scripts.yml");
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			customConfig.setDefaults(defConfig);
-		}
-	}
-
-	public FileConfiguration getScripts() {
-		if (customConfig == null) {
-			reloadScripts();
-		}
-		return customConfig;
-	}
 
 	
 	

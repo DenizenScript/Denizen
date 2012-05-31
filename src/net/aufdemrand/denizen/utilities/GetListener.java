@@ -13,16 +13,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.plugin.Plugin;
 
 
 public class GetListener implements Listener {
 
-	Plugin plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
-	public static ScriptEngine scriptEngine = new ScriptEngine();
-	GetPlayer getPlayer = new GetPlayer();
-	GetScript getScript = new GetScript();
-	GetDenizen getDenizen = new GetDenizen();
+	Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+
 	
 	
 	/*
@@ -34,7 +30,7 @@ public class GetListener implements Listener {
 
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
-		String theScript = getScript.getInteractScript(theDenizen, thePlayer);
+		String theScript = Denizen.getScript.getInteractScript(theDenizen, thePlayer);
 
 		if (theScript.equals("none")) {
 			List<String> CurrentPlayerQue = new ArrayList<String>();
@@ -47,7 +43,7 @@ public class GetListener implements Listener {
 		}
 
 		else if (!theScript.equals("none")) {
-			scriptEngine.parseScript(theDenizen, thePlayer,	getScript.getNameFromEntry(theScript), "", ScriptEngine.Trigger.CLICK);
+			Denizen.scriptEngine.parseScript(theDenizen, thePlayer,	Denizen.getScript.getNameFromEntry(theScript), "", ScriptEngine.Trigger.CLICK);
 		}
 	}
 
@@ -79,17 +75,17 @@ public class GetListener implements Listener {
 		
 		boolean ignoreNoMatch = plugin.getConfig().getBoolean("chat_globably_if_no_chat_triggers", false);
 		
-		NPC theDenizen = getDenizen.getClosest(event.getPlayer(), 
+		NPC theDenizen = Denizen.getDenizen.getClosest(event.getPlayer(), 
 				plugin.getConfig().getInt("player_chat_range_in_blocks", 3));
 
 		if (theDenizen == null) return;
 
-			String theScript = getScript.getInteractScript(theDenizen, event.getPlayer());
+			String theScript = Denizen.getScript.getInteractScript(theDenizen, event.getPlayer());
 
 			if (theScript.equals("none") && !ignoreNoMatch) { 
 
 				event.setCancelled(true);
-				getPlayer.talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
+				Denizen.getPlayer.talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
 
 				List<String> CurrentPlayerQue = new ArrayList<String>();
 				if (Denizen.playerQue.get(event.getPlayer()) != null) CurrentPlayerQue = Denizen.playerQue.get(event.getPlayer());
@@ -103,8 +99,8 @@ public class GetListener implements Listener {
 
 			}
 
-			else if (!theScript.equals("none")) scriptEngine.parseScript(theDenizen, event.getPlayer(),
-					getScript.getNameFromEntry(theScript), event.getMessage(), ScriptEngine.Trigger.CHAT);
+			else if (!theScript.equals("none")) Denizen.scriptEngine.parseScript(theDenizen, event.getPlayer(),
+					Denizen.getScript.getNameFromEntry(theScript), event.getMessage(), ScriptEngine.Trigger.CHAT);
 		
 	}
 

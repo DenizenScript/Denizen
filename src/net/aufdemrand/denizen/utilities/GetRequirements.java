@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.aufdemrand.denizen.Denizen;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -16,8 +17,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GetRequirements {
 	
-	GetScript getScript = new GetScript();
-
+	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
+	
 	
 	public enum RequirementMode {
 		NONE, ALL, ANY
@@ -34,10 +35,10 @@ public class GetRequirements {
 	
 	public boolean check(String thisScript, Player thisPlayer) {
 
-		String RequirementsMode = getScript.getScripts().getString("" + thisScript + ".Requirements.Mode");
+		String RequirementsMode = plugin.getScripts().getString("" + thisScript + ".Requirements.Mode");
 
 		if (RequirementsMode.equalsIgnoreCase("none")) return true;
-		List<String> RequirementsList = getScript.getScripts().getStringList("" + thisScript
+		List<String> RequirementsList = plugin.getScripts().getStringList("" + thisScript
 				+ ".Requirements.List");
 		if (RequirementsList.isEmpty()) { return false; }
 		int MetReqs = 0;
@@ -251,13 +252,13 @@ public class GetRequirements {
 
 			case FINISHED:
 			case SCRIPT: // (-)SCRIPT [Script Name]
-				if (negReq) { if (!getScript.getScriptComplete(thisPlayer, splitArgs[1])) MetReqs++; }
-				else if (getScript.getScriptComplete(thisPlayer, splitArgs[1])) MetReqs++;
+				if (negReq) { if (!Denizen.getScript.getScriptComplete(thisPlayer, splitArgs[1])) MetReqs++; }
+				else if (Denizen.getScript.getScriptComplete(thisPlayer, splitArgs[1])) MetReqs++;
 				break;
 
 			case FAILED: // (-)SCRIPT [Script Name]
-				if (negReq) { if (!getScript.getScriptFail(thisPlayer, splitArgs[1])) MetReqs++; }
-				else if (getScript.getScriptFail(thisPlayer, splitArgs[1])) MetReqs++;
+				if (negReq) { if (!Denizen.getScript.getScriptFail(thisPlayer, splitArgs[1])) MetReqs++; }
+				else if (Denizen.getScript.getScriptFail(thisPlayer, splitArgs[1])) MetReqs++;
 				break;
 
 				

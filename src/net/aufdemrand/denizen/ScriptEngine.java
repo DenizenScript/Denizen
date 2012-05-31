@@ -7,21 +7,17 @@ import net.citizensnpcs.api.npc.NPC;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.utilities.GetCharacter;
-import net.aufdemrand.denizen.utilities.GetPlayer;
-import net.aufdemrand.denizen.utilities.GetScript;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 
 public class ScriptEngine {
 
-	Plugin plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
-	GetScript getScript = new GetScript();
-	GetPlayer getPlayer = new GetPlayer();
-	CommandExecuter commandExecuter = new CommandExecuter();
+	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
 
+	
+	
 	public enum Trigger {
 		CHAT, CLICK, PROXIMITY, FAIL, FINISH
 	}
@@ -44,7 +40,7 @@ public class ScriptEngine {
 			if (!theEntry.getValue().isEmpty()) {
 			if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
 			do {
-				commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
+				Denizen.commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
 				instantCommand = false;
 				if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
 				theEntry.getValue().remove(0);
@@ -98,23 +94,23 @@ public class ScriptEngine {
 	 */
 
 	public void parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
-		int CurrentStep = getScript.getCurrentStep(thePlayer, theScript);
+		int CurrentStep = Denizen.getScript.getCurrentStep(thePlayer, theScript);
 
 		switch (theTrigger) {
 		case CHAT:
-			List<String> ChatTriggerList = getScript.getChatTriggers(theScript, CurrentStep);
+			List<String> ChatTriggerList = Denizen.getScript.getChatTriggers(theScript, CurrentStep);
 			for (int l=0; l < ChatTriggerList.size(); l++ ) {
 				if (theMessage.toLowerCase().contains(ChatTriggerList.get(l).replace("<PLAYER>", thePlayer.getName()).toLowerCase())) {
 
-					getPlayer.talkToDenizen(theDenizen, thePlayer, getScript.getScripts().getString("" + theScript + ".Steps."
+					Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, plugin.getScripts().getString("" + theScript + ".Steps."
 							+ CurrentStep + ".Chat Trigger." + String.valueOf(l + 1) + ".Trigger").replace("/", ""));
 
-					triggerToQue(theScript, getScript.getScripts().getStringList("" + theScript + ".Steps."
+					triggerToQue(theScript, plugin.getScripts().getStringList("" + theScript + ".Steps."
 							+ CurrentStep + ".Chat Trigger." + String.valueOf(l + 1) + ".Script"), CurrentStep, thePlayer, theDenizen);
 					return;
 				}
 			}
-			getPlayer.talkToDenizen(theDenizen, thePlayer, theMessage);
+			Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, theMessage);
 
 			List<String> CurrentPlayerQue = new ArrayList<String>();
 			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
@@ -128,7 +124,7 @@ public class ScriptEngine {
 			return;
 
 		case CLICK:
-			triggerToQue(theScript, getScript.getScripts().getStringList("" + theScript + ".Steps."
+			triggerToQue(theScript, plugin.getScripts().getStringList("" + theScript + ".Steps."
 					+ CurrentStep + ".Click Trigger.Script"), CurrentStep, thePlayer, theDenizen);
 			return;
 

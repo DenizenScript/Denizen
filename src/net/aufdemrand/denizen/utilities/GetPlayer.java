@@ -8,12 +8,10 @@ import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public class GetPlayer {
 
-	Plugin plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
-
+	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
 	
 	
 	/*

@@ -7,7 +7,6 @@ import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.npc.NPC;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.utilities.GetListener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
@@ -15,8 +14,6 @@ import org.bukkit.entity.*;
 public class GetCharacter extends Character {
 
 	Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-	GetListener denizenListener = new GetListener();
-	GetDenizen getDenizen = new GetDenizen();
 	
 	
 	@Override
@@ -38,9 +35,9 @@ public class GetCharacter extends Character {
 	
     @Override
     public void onRightClick(NPC npc, Player player) {
-  		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && getDenizen.checkCooldown(player)) {
+  		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && Denizen.getDenizen.checkCooldown(player)) {
 			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
-			denizenListener.DenizenClicked(npc, player);
+			Denizen.getListener.DenizenClicked(npc, player);
 		}
 		
     }
@@ -48,9 +45,9 @@ public class GetCharacter extends Character {
 
     @Override
     public void onLeftClick(NPC npc, Player player) {
-  		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && getDenizen.checkCooldown(player)) {
+  		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && Denizen.getDenizen.checkCooldown(player)) {
 			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
-			denizenListener.DenizenClicked(npc, player);
+			Denizen.getListener.DenizenClicked(npc, player);
 		}
     
     }

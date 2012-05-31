@@ -11,13 +11,11 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public class GetDenizen {
 
-	Plugin plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
+	Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
-	
 
 	/*
 	 * checkCooldown

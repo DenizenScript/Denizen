@@ -3,9 +3,6 @@ package net.aufdemrand.denizen;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.aufdemrand.denizen.utilities.GetDenizen;
-import net.aufdemrand.denizen.utilities.GetPlayer;
-import net.aufdemrand.denizen.utilities.GetScript;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.LookClose;
@@ -26,9 +23,6 @@ import org.bukkit.potion.PotionEffectType;
 public class CommandExecuter {
 
 	Plugin plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");	
-	GetScript getScripts = new GetScript();
-	GetPlayer getPlayer = new GetPlayer();
-	GetDenizen getDenizen = new GetDenizen();
 	
 	public static enum Command {
 		WAIT, ZAP, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL,
@@ -63,7 +57,7 @@ public class CommandExecuter {
 		case SPAWN:  // SPAWN [MOB NAME] [AMOUNT] (Location Bookmark)
 
 			Location theSpawnLoc = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])).getBukkitEntity().getLocation();
-			if (commandArgs.length > 3) theSpawnLoc = getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[3], "Location");
+			if (commandArgs.length > 3) theSpawnLoc = Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[3], "Location");
 			if (theSpawnLoc != null) {
 				for (int cx = 1; cx < Integer.valueOf("commandArgs[2]"); cx++) {
 					thePlayer.getWorld().spawnCreature(theSpawnLoc, EntityType.valueOf(commandArgs[1]));	
@@ -72,7 +66,7 @@ public class CommandExecuter {
 			break;
 
 		case SWITCH:  // SWITCH [Block Bookmark] ON|OFF
-			Location switchLoc = getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "Block");
+			Location switchLoc = Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "Block");
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
 				World theWorld = switchLoc.getWorld();
 				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), switchLoc.getBlockX(), switchLoc.getBlockY(), switchLoc.getBlockZ(), null);
@@ -80,7 +74,7 @@ public class CommandExecuter {
 			break;
 
 		case PRESS:  // SWITCH [Block Bookmark] ON|OFF
-			Location pressLoc = getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "Block");
+			Location pressLoc = Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "Block");
 			if (pressLoc.getBlock().getType() == Material.STONE_BUTTON) {
 				World theWorld = pressLoc.getWorld();
 				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), pressLoc.getBlockX(), pressLoc.getBlockY(), pressLoc.getBlockZ(), null);
@@ -113,7 +107,7 @@ public class CommandExecuter {
 			}
 			else if (!commandArgs[1].equalsIgnoreCase("AWAY") && !commandArgs[1].equalsIgnoreCase("CLOSE")) {
 				NPC denizenLooking = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0]));
-				Location lookLoc = getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "Location");
+				Location lookLoc = Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "Location");
 				denizenLooking.getBukkitEntity().getLocation().setPitch(lookLoc.getPitch());
 				denizenLooking.getBukkitEntity().getLocation().setYaw(lookLoc.getYaw());
 			}
@@ -158,7 +152,7 @@ public class CommandExecuter {
 
 		case TELEPORT:  // TELEPORT [Location Notable]
 
-			thePlayer.teleport(getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "location"));
+			thePlayer.teleport(Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "location"));
 
 		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
 
@@ -178,7 +172,7 @@ public class CommandExecuter {
 		case WALKTO:  // WALKTO [Location Bookmark]
 
 			NPC denizenWalking = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0]));
-			Location walkLoc = getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "Location");
+			Location walkLoc = Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "Location");
 			Denizen.previousDenizenLocation.put(denizenWalking, denizenWalking.getBukkitEntity().getLocation());
 			denizenWalking.getAI().setDestination(walkLoc);
 			break;
@@ -217,7 +211,7 @@ public class CommandExecuter {
 
 		case RESPAWN:  // RESPAWN [Location Notable]
 
-			Location respawnLoc = getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "Location");
+			Location respawnLoc = Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0])), commandArgs[1], "Location");
 			NPC respawnDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0]));
 			Denizen.previousDenizenLocation.put(respawnDenizen, respawnDenizen.getBukkitEntity().getLocation());
 			respawnDenizen.getBukkitEntity().getWorld().playEffect(respawnDenizen.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
@@ -273,7 +267,7 @@ public class CommandExecuter {
 			if (executerArgs[4].split(" ", 2)[1].startsWith("*"))
 				thePlayer.sendMessage("  " + executerArgs[4].split(" ", 2)[1].replace("*", ""));
 			else thePlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player").replace("<TEXT>", executerArgs[4].split(" ", 2)[1]).replace("<PLAYER>", thePlayer.getDisplayName()).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(executerArgs[0])).getName()));
-			for (Player eachPlayer : getPlayer.getInRange(theDenizenChatting,
+			for (Player eachPlayer : Denizen.getPlayer.getInRange(theDenizenChatting,
 					plugin.getConfig().getInt("npc_to_player_chat_range_in_blocks", 15))) {
 				if (eachPlayer != thePlayer) {
 					if (executerArgs[4].split(" ", 2)[1].startsWith("*"))

@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,7 +12,10 @@ import net.milkbowl.vault.permission.Permission;
 
 import net.aufdemrand.denizen.ScriptEngine;
 import net.aufdemrand.denizen.utilities.GetCharacter;
+import net.aufdemrand.denizen.utilities.GetDenizen;
 import net.aufdemrand.denizen.utilities.GetListener;
+import net.aufdemrand.denizen.utilities.GetPlayer;
+import net.aufdemrand.denizen.utilities.GetRequirements;
 import net.aufdemrand.denizen.utilities.GetScript;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -22,6 +27,8 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,8 +41,14 @@ public class Denizen extends JavaPlugin {
 	public static Map<Player, String> proximityCheck = new ConcurrentHashMap<Player, String>();
 	public static Boolean DebugMode = false;
 	
-	GetScript getScripts = new GetScript();
-	ScriptEngine scriptEngine = new ScriptEngine();
+	public static ScriptEngine scriptEngine = new ScriptEngine();
+	public static CommandExecuter commandExecuter = new CommandExecuter();
+	public static GetScript getScript = new GetScript();
+	public static GetCharacter getCharacter = new GetCharacter();
+	public static GetDenizen getDenizen = new GetDenizen();
+	public static GetListener getListener = new GetListener();
+	public static GetRequirements getRequirements = new GetRequirements();
+	public static GetPlayer getPlayer = new GetPlayer();
 
 	public static Economy denizenEcon = null;
 	public static Permission denizenPerms = null;
@@ -65,7 +78,7 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("reload") && !(sender instanceof Player)) {
 			this.reloadConfig();
-			getScripts.reloadScripts();
+			reloadScripts();
 			getServer().broadcastMessage("Denizens config.yml and scripts.yml reloaded.");
 			return true;
 		}
@@ -215,7 +228,7 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("reload")) {
 			this.reloadConfig();
-			getScripts.reloadScripts();
+			reloadScripts();
 			player.sendMessage(ChatColor.GREEN + "Denizens config.yml and scripts.yml reloaded.");
 			return true;
 		}
@@ -292,7 +305,7 @@ public class Denizen extends JavaPlugin {
 			return;  }
 		setupPermissions();
 		reloadConfig();
-		getScripts.reloadScripts();
+		reloadScripts();
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(GetCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new GetListener(), this);
 
@@ -352,6 +365,41 @@ public class Denizen extends JavaPlugin {
 		return denizenPerms != null;
 	}
 
+	
+	
+	
+	/*
+	 * reloadScripts/getScripts
+	 * 
+	 * Reloads and retrieves information from the Denizen/scripts.yml.
+	 * 
+	 */
+	
+	
+	private FileConfiguration customConfig = null;
+	private File customConfigFile = null;
+	
+	public void reloadScripts() {
+		if (customConfigFile == null) {
+			customConfigFile = new File(getDataFolder(), "scripts.yml");
+		}
+		customConfig = YamlConfiguration.loadConfiguration(customConfigFile);
+
+		// Look for defaults in the jar
+		InputStream defConfigStream = getResource("scripts.yml");
+		if (defConfigStream != null) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			customConfig.setDefaults(defConfig);
+		}
+	}
+
+	
+	public FileConfiguration getScripts() {
+		if (customConfig == null) {
+			reloadScripts();
+		}
+		return customConfig;
+	}
 
 
 }
