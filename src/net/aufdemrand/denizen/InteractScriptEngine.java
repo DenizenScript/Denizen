@@ -557,7 +557,7 @@ public class InteractScriptEngine {
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		int CurrentStep = getCurrentStep(thePlayer, theScript);
 		
-		boolean ignoreNoMatch = plugin.getConfig().getBoolean("ignoreNoMatch");
+		boolean ignoreNoMatch = plugin.getConfig().getBoolean("chat_globablly_if_no_chat_triggers");
 
 		switch (theTrigger) {
 
