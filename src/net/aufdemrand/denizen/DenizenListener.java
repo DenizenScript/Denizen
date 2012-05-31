@@ -43,6 +43,16 @@ public class DenizenListener implements Listener {
 	@EventHandler
 	public void PlayerProximityListener(PlayerMoveEvent event) {
 
+		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
+			
+			
+				
+			
+			
+		}
+		
+		
+		
 	}
 
 

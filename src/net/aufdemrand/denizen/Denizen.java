@@ -40,8 +40,9 @@ public class Denizen extends JavaPlugin {
 	public static Economy denizenEcon = null;
 	public static Permission denizenPerms = null;
 	public static Map<Player, List<String>> playerQue = new ConcurrentHashMap<Player, List<String>>();
-	public static Map<NPC, Location> previousDenizenLocation = new HashMap<NPC, Location>(); 
-	public static Map<Player, Long> interactCooldown = new HashMap<Player, Long>(); 
+	public static Map<NPC, Location> previousDenizenLocation = new ConcurrentHashMap<NPC, Location>(); 
+	public static Map<Player, Long> interactCooldown = new ConcurrentHashMap<Player, Long>();
+	public static Map<Player, String> proximityCheck = new ConcurrentHashMap<Player, String>();
 	public static Boolean DebugMode = false;
 
 	@Override
