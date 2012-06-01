@@ -1,5 +1,11 @@
 package net.aufdemrand.denizen.utilities;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +19,43 @@ import org.bukkit.plugin.Plugin;
 public class GetScript {
 
 	
+	/*
+	 * ConcatenateScripts
+	 * 
+	 * Combines script files into one YML file for Denizen to read from.
+	 * Code borrowed from: http://www.roseindia.net/tutorial/java/core/files/fileconcatenation.html
+	 * 
+	 * Thank you!
+	 * 
+	 */
+
+
+	public void ConcatenateScripts() throws IOException {
+
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		
+		PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + "\\read-only-scripts.yml"));
+
+		plugin.getServer().broadcastMessage(plugin.getDataFolder() + "\\scripts");
+		
+		File file = new File(plugin.getDataFolder() + "\\scripts");
+		File[] files = file.listFiles();
+		for (int i = 0; i < files.length; i++) {
+
+			System.out.println("Processing " + files[i].getPath() + "... ");
+			BufferedReader br = new BufferedReader(new FileReader(files[i]
+					.getPath()));
+			String line = br.readLine();
+			while (line != null) {
+				pw.println(line);
+				line = br.readLine();
+			}
+			br.close();
+		}
+		pw.close();
+		System.out.println("OK! Scripts combined!");
+	}
+
 	
 	
 	/* 
@@ -25,9 +68,9 @@ public class GetScript {
 	 */
 
 	public String getInteractScript(NPC thisDenizen, Player thisPlayer) {
-		
+
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		
+
 		String theScript = "none";
 		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getName() + ".Interact Scripts");
 		if (ScriptList.isEmpty()) { return theScript; }
@@ -36,7 +79,7 @@ public class GetScript {
 		/*
 		 *  Get scripts that meet requirements
 		 */
-		
+
 		for (String thisScript : ScriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
 			if (Denizen.getRequirements.check(thisScriptArray[1], thisPlayer)) ScriptsThatMeetRequirements.add(thisScript);
@@ -59,7 +102,7 @@ public class GetScript {
 		return theScript;
 	}
 
-	
+
 
 	/* 
 	 * GetCurrentStep
@@ -77,12 +120,12 @@ public class GetScript {
 		int currentStep = 1;
 		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
 			currentStep =  plugin.getConfig().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
-		
+
 		return currentStep;
 	}
-	
-	
-	
+
+
+
 
 	/* 
 	 * GetScriptComplete/GetScriptFail
@@ -95,7 +138,7 @@ public class GetScript {
 	public boolean getScriptComplete(Player thePlayer, String theScript) {
 
 		Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");		
-		
+
 		boolean ScriptComplete = false;
 		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
 			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") == true) ScriptComplete = true;
@@ -107,7 +150,7 @@ public class GetScript {
 	public boolean getScriptFail(Player thePlayer, String theScript) {
 
 		Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");		
-		
+
 		boolean ScriptFailed = false;
 		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
 			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) ScriptFailed = true;
@@ -116,8 +159,8 @@ public class GetScript {
 		return ScriptFailed;
 	}
 
-	
-	
+
+
 	/* GetChatTriggers
 	 *
 	 * Requires the Script and the Current Step.
@@ -128,9 +171,9 @@ public class GetScript {
 	 */
 
 	public List<String> getChatTriggers(String theScript, Integer currentStep) {
-		
+
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		
+
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
 		for (int x=1; currentTrigger >= 0; x++) {
@@ -146,7 +189,7 @@ public class GetScript {
 		return ChatTriggers;
 	}
 
-	
+
 
 	/* 
 	 * GetScriptName
@@ -165,10 +208,10 @@ public class GetScript {
 	}
 
 
-	
-	
 
 
-	
-	
+
+
+
+
 }

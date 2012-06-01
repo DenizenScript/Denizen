@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,18 @@ public class Denizen extends JavaPlugin {
 		}
 
 		Player player = (Player) sender;
+
+		if (args[0].equalsIgnoreCase("combine")) {
+
+			try {
+				getScript.ConcatenateScripts();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return true;
+
+		}
 
 		if (args[0].equalsIgnoreCase("getdata")) {
 			player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
@@ -303,10 +316,16 @@ public class Denizen extends JavaPlugin {
 			getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no Vault-compatible Economy Plugin found! Install an economy system!", getDescription().getName()));
 			getServer().getPluginManager().disablePlugin(this);
 			return;  }
+		
 		setupPermissions();
 		reloadConfig();
+		
 		reloadScripts();
+		
+		
+		getConfig().options().copyDefaults(true);
 		saveConfig();
+		
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(GetCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new GetListener(), this);
 
@@ -381,13 +400,21 @@ public class Denizen extends JavaPlugin {
 	private File customConfigFile = null;
 	
 	public void reloadScripts() {
+		
+		try {
+			getScript.ConcatenateScripts();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if (customConfigFile == null) {
-			customConfigFile = new File(getDataFolder(), "scripts.yml");
+			customConfigFile = new File(getDataFolder(), "read-only-scripts.yml");
 		}
 		customConfig = YamlConfiguration.loadConfiguration(customConfigFile);
 
 		// Look for defaults in the jar
-		InputStream defConfigStream = getResource("scripts.yml");
+		InputStream defConfigStream = getResource("read-only-scripts.yml");
 		if (defConfigStream != null) {
 			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 			customConfig.setDefaults(defConfig);

@@ -20,9 +20,10 @@ npc_whisper_to_player_bystander: <NPC> whispers something to <PLAYER>.
 npc_shout_to_player: <NPC> shouts at you, <TEXT>
 npc_shout_to_player_bystander: <NPC> shouts at <PLAYER>, <TEXT>
 
+chat_globally_if_no_chat_triggers: false
+
 chat_color: white
 whisper_color: gray
 shout_color: red
 narrate_color: green
 announce_color: yellow
-chat_globally_if_no_chat_triggers: false
