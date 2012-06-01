@@ -73,7 +73,7 @@ public class GetListener implements Listener {
 	public void PlayerChatListener(PlayerChatEvent event) {
 		
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		boolean ignoreNoMatch = plugin.getConfig().getBoolean("chat_globably_if_no_chat_triggers", false);
+		boolean ignoreNoMatch = plugin.getConfig().getBoolean("chat_globally_if_no_chat_triggers", false);
 		
 		NPC theDenizen = Denizen.getDenizen.getClosest(event.getPlayer(), 
 				plugin.getConfig().getInt("player_chat_range_in_blocks", 3));
