@@ -34,11 +34,11 @@ public class GetScript {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		
-		PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + "\\read-only-scripts.yml"));
+		PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-scripts.yml"));
 
-		plugin.getServer().broadcastMessage(plugin.getDataFolder() + "\\scripts");
+		plugin.getServer().broadcastMessage(plugin.getDataFolder() + File.separator + "scripts");
 		
-		File file = new File(plugin.getDataFolder() + "\\scripts");
+		File file = new File(plugin.getDataFolder() + File.separator + "scripts");
 		File[] files = file.listFiles();
 		for (int i = 0; i < files.length; i++) {
 
