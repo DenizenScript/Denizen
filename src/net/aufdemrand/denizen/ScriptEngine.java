@@ -6,15 +6,12 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.utilities.GetCharacter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 
 public class ScriptEngine {
-
-	
 	
 	public enum Trigger {
 		CHAT, CLICK, PROXIMITY, FAIL, FINISH
@@ -64,7 +61,7 @@ public class ScriptEngine {
 
 		
 		
-		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(GetCharacter.class);
+		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
 		if (DenizenNPCs.isEmpty()) return;
 		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
 		for (NPC aDenizen : DenizenList) {
@@ -114,6 +111,8 @@ public class ScriptEngine {
 			}
 			Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, theMessage);
 
+			if(plugin.getConfig().getBoolean("chat_globably_if_no_chat_triggers", false)) return;
+			
 			List<String> CurrentPlayerQue = new ArrayList<String>();
 			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
 			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
@@ -189,14 +188,6 @@ public class ScriptEngine {
 						}
 					}
 				}
-
-				// NOW HANDLED IN COMMAND EXECUTER FOR MORE ACCURACY AS TO RUN-TIME 
-
-				//				else if (theCommandText[0].equalsIgnoreCase("WAIT")) {
-				//				Long timeDelay = Long.parseLong(theCommandText[1]) * 1000;
-				//				String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
-				//				CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + timeWithDelay + ";" + theCommand);						
-				//				}
 
 				else CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
 			}

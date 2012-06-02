@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.DenizenCharacter;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -22,16 +23,17 @@ public class GetDenizen {
 	 * Checks against the interactCooldown for a Player to see if it has allowed enough time to interact.
 	 * 
 	 */
-	
-    public boolean checkCooldown(Player thePlayer) {
-    	if (!Denizen.interactCooldown.containsKey(thePlayer)) return true;
-    	if (System.currentTimeMillis() >= Denizen.interactCooldown.get(thePlayer)) return true;
-    	    	
-    	return false;
-    }
-    
-    
-    
+
+	public boolean checkCooldown(Player thePlayer) {
+		
+		if (!Denizen.interactCooldown.containsKey(thePlayer)) return true;
+		if (System.currentTimeMillis() >= Denizen.interactCooldown.get(thePlayer)) return true;
+
+		return false;
+	}
+
+
+
 
 	/*
 	 * getClosest
@@ -41,22 +43,22 @@ public class GetDenizen {
 	 */
 
 	public NPC getClosest (Player thePlayer, int Range) {
-		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(GetCharacter.class);
 
-		if (DenizenNPCs.isEmpty()) return null;
-		
-		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
 		Double closestDistance = Double.valueOf(String.valueOf(Range));
 		NPC closestDenizen = null;
 
-		for (NPC aDenizen : DenizenList) {
-			if (aDenizen.isSpawned()
-					&& aDenizen.getBukkitEntity().getWorld().equals(thePlayer.getWorld())
-					&& aDenizen.getBukkitEntity().getLocation().distance(thePlayer.getLocation()) < closestDistance ) {
-				closestDenizen = aDenizen; 
-				closestDistance = aDenizen.getBukkitEntity().getLocation().distance(thePlayer.getLocation());
+			Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
+			if (DenizenNPCs.isEmpty()) return null;
+
+			List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
+			for (NPC aDenizen : DenizenList) {
+				if (aDenizen.isSpawned()
+						&& aDenizen.getBukkitEntity().getWorld().equals(thePlayer.getWorld())
+						&& aDenizen.getBukkitEntity().getLocation().distance(thePlayer.getLocation()) < closestDistance ) {
+					closestDenizen = aDenizen; 
+					closestDistance = aDenizen.getBukkitEntity().getLocation().distance(thePlayer.getLocation());
+				}
 			}
-		}
 
 		return closestDenizen;
 	}
@@ -73,19 +75,18 @@ public class GetDenizen {
 	public List<NPC> getInRange (Player thePlayer, int theRange) {
 
 		List<NPC> DenizensWithinRange = new ArrayList<NPC>();
-		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(GetCharacter.class);
 
-		if (DenizenNPCs.isEmpty()) return DenizensWithinRange;
+			Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
+			if (DenizenNPCs.isEmpty()) return DenizensWithinRange;
 
-		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
+			List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
+			for (NPC aDenizenList : DenizenList) {
+				if (aDenizenList.isSpawned()
+						&& aDenizenList.getBukkitEntity().getWorld().equals(thePlayer.getWorld()) 
+						&& aDenizenList.getBukkitEntity().getLocation().distance(thePlayer.getLocation()) < theRange)
 
-		for (NPC aDenizenList : DenizenList) {
-			if (aDenizenList.isSpawned()
-					&& aDenizenList.getBukkitEntity().getWorld().equals(thePlayer.getWorld()) 
-					&& aDenizenList.getBukkitEntity().getLocation().distance(thePlayer.getLocation()) < theRange)
-
-				DenizensWithinRange.add(aDenizenList);
-		}
+					DenizensWithinRange.add(aDenizenList);
+			}
 
 		return DenizensWithinRange;
 	}
@@ -98,36 +99,42 @@ public class GetDenizen {
 	 * Retrieves a Location from the Denizen's stored location or block bookmark.
 	 * 
 	 */
-	
+
 	public Location getBookmark(NPC theDenizen, String nameOfLocation, String BlockOrLocation) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		List<String> locationList = null;
-		
-		if (BlockOrLocation.equalsIgnoreCase("block")) locationList = plugin.getConfig().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block");	
-		else if (BlockOrLocation.equalsIgnoreCase("location")) locationList = plugin.getConfig().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
-		
 		String[] theLocation = null;
 		Location locationBookmark = null;
 
-		for (String thisLocation : locationList) {
-			String theName = thisLocation.split(" ", 2)[0];
-			if (theName.equalsIgnoreCase(nameOfLocation)) theLocation = thisLocation.split(" ", 2)[1].split(";");
-		}
+		try {
 
-		if (theLocation != null && BlockOrLocation.equalsIgnoreCase("location")) {			
-			locationBookmark = 
-					new Location(plugin.getServer().getWorld(theLocation[0]),
-							Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
-							Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
-							Float.parseFloat(theLocation[5]));
-		}
+			if (BlockOrLocation.equalsIgnoreCase("block")) locationList = plugin.getConfig().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block");	
+			else if (BlockOrLocation.equalsIgnoreCase("location")) locationList = plugin.getConfig().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
 
-		else if (theLocation != null && BlockOrLocation.equalsIgnoreCase("block")) {
-			locationBookmark = 
-					new Location(plugin.getServer().getWorld(theLocation[0]),
-							Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2]),
-							Double.parseDouble(theLocation[3]));
+			for (String thisLocation : locationList) {
+				String theName = thisLocation.split(" ", 2)[0];
+				if (theName.equalsIgnoreCase(nameOfLocation)) theLocation = thisLocation.split(" ", 2)[1].split(";");
+			}
+
+			if (theLocation != null && BlockOrLocation.equalsIgnoreCase("location")) {			
+				locationBookmark = 
+						new Location(plugin.getServer().getWorld(theLocation[0]),
+								Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
+								Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
+								Float.parseFloat(theLocation[5]));
+			}
+
+			else if (theLocation != null && BlockOrLocation.equalsIgnoreCase("block")) {
+				locationBookmark = 
+						new Location(plugin.getServer().getWorld(theLocation[0]),
+								Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2]),
+								Double.parseDouble(theLocation[3]));
+			}
+
+		} catch(Throwable error) {
+			Bukkit.getLogger().info("Denizen method getBookmark: An error has occured.");
+			Bukkit.getLogger().info("--- Error follows: " + error);
 		}
 
 		return locationBookmark;		

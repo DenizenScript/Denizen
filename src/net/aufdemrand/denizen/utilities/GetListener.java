@@ -17,8 +17,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class GetListener implements Listener {
 
-		
-	
+
+
 	/*
 	 * DenizenClicked
 	 * 
@@ -52,11 +52,11 @@ public class GetListener implements Listener {
 	public void PlayerProximityListener(PlayerMoveEvent event) {
 
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
-			
-			
-				
-			
-			
+
+
+
+
+
 		}
 	}
 
@@ -71,37 +71,40 @@ public class GetListener implements Listener {
 
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
-		
+
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		boolean ignoreNoMatch = plugin.getConfig().getBoolean("chat_globally_if_no_chat_triggers", false);
-		
+
 		NPC theDenizen = Denizen.getDenizen.getClosest(event.getPlayer(), 
 				plugin.getConfig().getInt("player_chat_range_in_blocks", 3));
 
 		if (theDenizen == null) return;
 
-			String theScript = Denizen.getScript.getInteractScript(theDenizen, event.getPlayer());
+		String theScript = Denizen.getScript.getInteractScript(theDenizen, event.getPlayer());
 
-			if (theScript.equals("none") && !ignoreNoMatch) { 
+		if (theScript.equalsIgnoreCase("NONE") && !ignoreNoMatch) { 
 
-				event.setCancelled(true);
-				Denizen.getPlayer.talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
+			event.setCancelled(true);
+			Denizen.getPlayer.talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
 
-				List<String> CurrentPlayerQue = new ArrayList<String>();
-				if (Denizen.playerQue.get(event.getPlayer()) != null) CurrentPlayerQue = Denizen.playerQue.get(event.getPlayer());
-				Denizen.playerQue.remove(event.getPlayer());  // Should keep the talk queue from triggering mid-add
+			List<String> CurrentPlayerQue = new ArrayList<String>();
+			if (Denizen.playerQue.get(event.getPlayer()) != null) CurrentPlayerQue = Denizen.playerQue.get(event.getPlayer());
+			Denizen.playerQue.remove(event.getPlayer());  // Should keep the talk queue from triggering mid-add
 
-				CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
-						+ 0 + ";" + String.valueOf(System.currentTimeMillis()) + ";" + "CHAT " + plugin.getConfig().getString("Denizens." + theDenizen.getId() 
-								+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
+			CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
+					+ 0 + ";" + String.valueOf(System.currentTimeMillis()) + ";" + "CHAT " + plugin.getConfig().getString("Denizens." + theDenizen.getId() 
+							+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
 
-				Denizen.playerQue.put(event.getPlayer(), CurrentPlayerQue);
+			Denizen.playerQue.put(event.getPlayer(), CurrentPlayerQue);
 
-			}
+		}
 
-			else if (!theScript.equals("none")) Denizen.scriptEngine.parseScript(theDenizen, event.getPlayer(),
-					Denizen.getScript.getNameFromEntry(theScript), event.getMessage(), ScriptEngine.Trigger.CHAT);
-		
+		else if (!theScript.equalsIgnoreCase("NONE"))  {
+			event.setCancelled(true);
+			Denizen.scriptEngine.parseScript(theDenizen, event.getPlayer(),	Denizen.getScript.getNameFromEntry(theScript), event.getMessage(), ScriptEngine.Trigger.CHAT);
+		}
+
+		return;
 	}
 
 

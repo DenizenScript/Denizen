@@ -11,14 +11,15 @@ import net.aufdemrand.denizen.Denizen;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 public class GetRequirements {
-	
-	
-	
+
+
+
 	public enum RequirementMode {
 		NONE, ALL, ANY
 	}
@@ -29,146 +30,102 @@ public class GetRequirements {
 		STORMING 
 	}
 
-	
-	
-	
-	public boolean check(String thisScript, Player thisPlayer) {
+
+
+
+	public boolean check(String theScript, LivingEntity theEntity, boolean isPlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		String requirementMode = plugin.getScripts().getString("" + theScript + ".Requirements.Mode");
+		List<String> requirementList = plugin.getScripts().getStringList("" + theScript + ".Requirements.List");
+		int numberMet = 0;
+		boolean negativeRequirement;
 		
-		String RequirementsMode = plugin.getScripts().getString("" + thisScript + ".Requirements.Mode");
+		/* DEPRECATED, will be deleted when reformat no longer requires it. Use (Player) theEntity instead. */
+		Player thePlayer = null;
+		if (isPlayer) thePlayer = (Player) theEntity;
+		/* ---------- */
+		
+		/* Requirement node "NONE"? No requirements in the LIST? No need to continue, return TRUE */
+		if (requirementMode.equalsIgnoreCase("NONE") 
+				|| requirementList.isEmpty()) return true;
 
-		if (RequirementsMode.equalsIgnoreCase("none")) return true;
-		List<String> RequirementsList = plugin.getScripts().getStringList("" + thisScript
-				+ ".Requirements.List");
-		if (RequirementsList.isEmpty()) { return false; }
-		int MetReqs = 0;
-		boolean negReq;
-		for (String RequirementArgs : RequirementsList) {
-			if (RequirementArgs.startsWith("-")) { negReq = true; RequirementArgs = RequirementArgs.substring(1); }
-			else negReq = false;
-			String[] splitArgs = RequirementArgs.split(" ", 2);
-			switch (Requirement.valueOf(splitArgs[0].toUpperCase())) {
+		for (String requirementEntry : requirementList) {
+
+			/* Check if this is a Negative Requirement */
+			if (requirementEntry.startsWith("-")) { 
+				negativeRequirement = true; 
+				requirementEntry = requirementEntry.substring(1); 
+			}
+			else negativeRequirement = false;
+
+			/* DEPRECATED, will be deleted when reformat no longer requires it. Use arguments instead. */
+			String[] splitArgs = requirementEntry.split(" ", 2); 
+			/* ---------- */
+			String[] arguments = new String[25];
+			arguments = requirementEntry.split(" ");
+
+
+			switch (Requirement.valueOf(arguments[0].toUpperCase())) {
 
 			case NONE:
 				return true;
 
-			case TIME: // (-)TIME DAY   or  (-)TIME NIGHT    Note: DAY = 0, NIGHT = 16000
-				// or (-)TIME [At least this Time 0-23999] [But no more than this Time 1-24000]
-
-				if (negReq) {
-					if (splitArgs[1].equalsIgnoreCase("DAY") && thisPlayer.getWorld().getTime() > 16000)
-					{ MetReqs++; break; }
-					if (splitArgs[1].equalsIgnoreCase("NIGHT") && thisPlayer.getWorld().getTime() < 16000)
-					{ MetReqs++; break; }
-					if (!splitArgs[1].equalsIgnoreCase("DAY") && !splitArgs[1].equalsIgnoreCase("NIGHT")) {
-						String[] theseTimes = splitArgs[1].split(" ");
-						if (thisPlayer.getWorld().getTime() < Integer.parseInt(theseTimes[0]) && thisPlayer.
-								getWorld().getTime() > Integer.parseInt(theseTimes[1])) MetReqs++;
-					}
-				} else {
-					if (splitArgs[1].equalsIgnoreCase("DAY") && thisPlayer.getWorld().getTime() < 16000)
-					{ MetReqs++; break; }
-					if (splitArgs[1].equalsIgnoreCase("NIGHT") && thisPlayer.getWorld().getTime() > 16000)
-					{ MetReqs++; break; }
-					if (!splitArgs[1].equalsIgnoreCase("DAY") && !splitArgs[1].equalsIgnoreCase("NIGHT")) {
-						String[] theseTimes = splitArgs[1].split(" ");
-						if (thisPlayer.getWorld().getTime() >= Integer.parseInt(theseTimes[0]) && thisPlayer.
-								getWorld().getTime() <= Integer.parseInt(theseTimes[1])) MetReqs++;
-					}
-				}
+			case TIME: // (-)TIME [DAWN|DAY|DUSK|NIGHT]  or  (-)TIME [#] [#]
+				if (Denizen.getWorld.checkTime(theEntity.getWorld(), arguments[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 
-
-
-			case STORMING:
-			case STORMY:
-			case PRECIPITATING:
-			case PRECIPITATION:  // (-)PRECIPITATION
-
-				if (negReq) {
-					if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
-				}
-				else if (thisPlayer.getWorld().hasStorm()) MetReqs++;
+			case STORMING:	case STORMY:  case PRECIPITATING:  case PRECIPITATION:  // (-)PRECIPITATING
+				if (Denizen.getWorld.checkWeather(theEntity.getWorld(), "PRECIPITATION", negativeRequirement)) numberMet++;
 				break;
-
 
 			case SUNNY:  // (-)SUNNY    - Negative would trigger on Raining or Storming
-				if (negReq) if (thisPlayer.getWorld().hasStorm()) MetReqs++;
-				else if (!thisPlayer.getWorld().hasStorm()) MetReqs++;
+				if (Denizen.getWorld.checkWeather(theEntity.getWorld(), "SUNNY", negativeRequirement)) numberMet++;
+				break;
+
+			case HUNGER:  // (-)HUNGER [FULL|HUNGRY|STARVING]
+				if (Denizen.getPlayer.checkSaturation(thePlayer, arguments[1], negativeRequirement)) numberMet++;
+				break;
+				
+			case LEVEL:  // (-)LEVEL [#] (#)
+				if (Denizen.getPlayer.checkLevel(thePlayer, arguments[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 
 
-
-
-			case HUNGER:  // (-)HUNGER FULL  or  (-)HUNGER HUNGRY  or  (-)HUNGER STARVING
-				if (negReq) {
-					if (splitArgs[1].equalsIgnoreCase("FULL")) if (thisPlayer.getFoodLevel() < 20) MetReqs++;
-					if (splitArgs[1].equalsIgnoreCase("HUNGRY")) if (thisPlayer.getFoodLevel() >= 20) MetReqs++;
-					if (splitArgs[1].equalsIgnoreCase("STARVING")) if (thisPlayer.getFoodLevel() > 1) MetReqs++;
-				} else {
-					if (splitArgs[1].equalsIgnoreCase("FULL")) if (thisPlayer.getFoodLevel() >= 20) MetReqs++;
-					if (splitArgs[1].equalsIgnoreCase("HUNGRY")) if (thisPlayer.getFoodLevel() < 18) MetReqs++;
-					if (splitArgs[1].equalsIgnoreCase("STARVING")) if (thisPlayer.getFoodLevel() < 1) MetReqs++;
-				}
-				break;
-
-			case LEVEL:  // (-)LEVEL [This Level # or higher]
-				// or  (-)LEVEL [At least this Level #] [But no more than this Level #]
-				if (negReq) {
-					if (Array.getLength(splitArgs[1].split(" ")) == 1) {
-						if (thisPlayer.getLevel() < Integer.parseInt(splitArgs[1])) MetReqs++;
-					} else {
-						String[] theseLevels = splitArgs[1].split(" ");
-						if (thisPlayer.getLevel() < Integer.parseInt(theseLevels[0]) && thisPlayer.getLevel()
-								> Integer.parseInt(theseLevels[1])) MetReqs++;
-					}
-				} else {
-					if (Array.getLength(splitArgs[1].split(" ")) == 1) {
-						if (thisPlayer.getLevel() >= Integer.parseInt(splitArgs[1])) MetReqs++;
-					} else {
-						String[] theseLevels = splitArgs[1].split(" ");
-						if (thisPlayer.getLevel() >= Integer.parseInt(theseLevels[0]) && thisPlayer.getLevel()
-								<= Integer.parseInt(theseLevels[1])) MetReqs++;
-					}
-				}
-				break;
-
-	
 			case WORLD:  // (-)WORLD [World Name] [or this World Name] [or this World...]
 				String[] theseWorlds = splitArgs[1].split(" ");
-				if (negReq) {
+				if (negativeRequirement) {
 					boolean tempMet = true;
 					for (String thisWorld : theseWorlds) {
-						if (thisPlayer.getWorld().getName().equalsIgnoreCase(thisWorld)) tempMet = false;
+						if (thePlayer.getWorld().getName().equalsIgnoreCase(thisWorld)) tempMet = false;
 					}
-					if (tempMet) MetReqs++;
+					if (tempMet) numberMet++;
 				} else {
 					for (String thisWorld : theseWorlds) {
-						if (thisPlayer.getWorld().getName().equalsIgnoreCase(thisWorld)) MetReqs++;
+						if (thePlayer.getWorld().getName().equalsIgnoreCase(thisWorld)) numberMet++;
 					}
 				}
 				break;
 
 			case NAME:  // (-)Name [Name] [or this Name] [or this Name, etc...]
 				String[] theseNames = splitArgs[1].split(" ");
-				if (negReq) {
+				if (negativeRequirement) {
 					boolean tempMet = true;
 					for (String thisName : theseNames) {
-						if (thisPlayer.getName().equalsIgnoreCase(thisName)) tempMet = false;
+						if (thePlayer.getName().equalsIgnoreCase(thisName)) tempMet = false;
 					}
-					if (tempMet) MetReqs++;
+					if (tempMet) numberMet++;
 				} else {
 					for (String thisName : theseNames) {
-						if (thisPlayer.getName().equalsIgnoreCase(thisName)) MetReqs++;
+						if (thePlayer.getName().equalsIgnoreCase(thisName)) numberMet++;
 					}
 				}
 				break;
 
 
 			case MONEY: // (-)MONEY [Amount of Money, or more]
-				if (negReq) { if (!Denizen.denizenEcon.has(thisPlayer.getName(), Integer.parseInt(splitArgs[1]))){ MetReqs++;} }
-				else if (Denizen.denizenEcon.has(thisPlayer.getName(), Integer.parseInt(splitArgs[1]))) {MetReqs++;}
+				if (negativeRequirement) { if (!Denizen.denizenEcon.has(thePlayer.getName(), Integer.parseInt(splitArgs[1]))){ numberMet++;} }
+				else if (Denizen.denizenEcon.has(thePlayer.getName(), Integer.parseInt(splitArgs[1]))) {numberMet++;}
 				break;
 
 
@@ -181,7 +138,7 @@ public class GetRequirements {
 				Material thisItem = Material.valueOf((theseItemArgs[0]));
 				Map<Material, Integer> PlayerInv = new HashMap<Material, Integer>();
 				Map<Material, Boolean> isEnchanted = new HashMap<Material, Boolean>();
-				ItemStack[] getContentsArray = thisPlayer.getInventory().getContents();
+				ItemStack[] getContentsArray = thePlayer.getInventory().getContents();
 				List<ItemStack> getContents = Arrays.asList(getContentsArray);
 				for (int x=0; x < getContents.size(); x++) {
 					if (getContents.get(x) != null) {
@@ -196,32 +153,32 @@ public class GetRequirements {
 					}
 				}
 
-				if (negReq) {
-					if (!PlayerInv.containsKey(thisItem)) MetReqs++;
+				if (negativeRequirement) {
+					if (!PlayerInv.containsKey(thisItem)) numberMet++;
 					if (PlayerInv.containsKey(thisItem) && theseItemArgs.length < 3) {
-						if (PlayerInv.get(thisItem) < itemAmt) {MetReqs++; }
+						if (PlayerInv.get(thisItem) < itemAmt) {numberMet++; }
 					}
 					else if (PlayerInv.containsKey(thisItem) && isEnchanted.get(thisItem)) {
-						if (PlayerInv.get(thisItem) < itemAmt) MetReqs++; }
+						if (PlayerInv.get(thisItem) < itemAmt) numberMet++; }
 				}
 				else {
 					if (PlayerInv.containsKey(thisItem) && theseItemArgs.length < 3) {
-						if (PlayerInv.get(thisItem) >= itemAmt) { MetReqs++; } }
+						if (PlayerInv.get(thisItem) >= itemAmt) { numberMet++; } }
 					else if (PlayerInv.containsKey(thisItem) && isEnchanted.get(thisItem)) {
-						if (PlayerInv.get(thisItem) >= itemAmt) MetReqs++;}
+						if (PlayerInv.get(thisItem) >= itemAmt) numberMet++;}
 				}
 				break;
 
 			case HOLDING: // (-)HOLDING [ITEM_NAME] (ENCHANTMENT_TYPE)
 				String[] itemArgs = splitArgs[1].split(" ");
-				if (negReq) {if (thisPlayer.getItemInHand().getType() != Material.getMaterial(itemArgs[0])) {
-					if (itemArgs.length == 1) MetReqs++;
-					else if (!thisPlayer.getItemInHand().getEnchantments().containsKey(Enchantment.getByName(itemArgs[1])))
-						MetReqs++;}
-				} else if (thisPlayer.getItemInHand().getType() == Material.getMaterial(itemArgs[0])) {
-					if (itemArgs.length == 1) MetReqs++;
-					else if (thisPlayer.getItemInHand().getEnchantments().containsKey(Enchantment.getByName(itemArgs[1])))
-						MetReqs++;
+				if (negativeRequirement) {if (thePlayer.getItemInHand().getType() != Material.getMaterial(itemArgs[0])) {
+					if (itemArgs.length == 1) numberMet++;
+					else if (!thePlayer.getItemInHand().getEnchantments().containsKey(Enchantment.getByName(itemArgs[1])))
+						numberMet++;}
+				} else if (thePlayer.getItemInHand().getType() == Material.getMaterial(itemArgs[0])) {
+					if (itemArgs.length == 1) numberMet++;
+					else if (thePlayer.getItemInHand().getEnchantments().containsKey(Enchantment.getByName(itemArgs[1])))
+						numberMet++;
 				}
 				break;
 
@@ -229,7 +186,7 @@ public class GetRequirements {
 			case WEARING:
 				String[] wearingArgs = splitArgs[1].split(" ");
 
-				ItemStack[] ArmorContents = thisPlayer.getInventory().getArmorContents();
+				ItemStack[] ArmorContents = thePlayer.getInventory().getArmorContents();
 				Boolean match = false;
 
 				for (ItemStack ArmorPiece : ArmorContents) {
@@ -241,44 +198,54 @@ public class GetRequirements {
 					}					
 				}
 
-				if (match && !negReq) MetReqs++;
-				if (!match && negReq) MetReqs++;
+				if (match && !negativeRequirement) numberMet++;
+				if (!match && negativeRequirement) numberMet++;
 
 				break;
 
 			case POTIONEFFECT: // (-)POTIONEFFECT [POTION_EFFECT_TYPE]
-				if (negReq) {if (!thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;}
-				else if (thisPlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) MetReqs++;
+				if (negativeRequirement) {if (!thePlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) numberMet++;}
+				else if (thePlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) numberMet++;
 				break;
 
 			case FINISHED:
 			case SCRIPT: // (-)SCRIPT [Script Name]
-				if (negReq) { if (!Denizen.getScript.getScriptComplete(thisPlayer, splitArgs[1])) MetReqs++; }
-				else if (Denizen.getScript.getScriptComplete(thisPlayer, splitArgs[1])) MetReqs++;
+				if (negativeRequirement) { if (!Denizen.getScript.getScriptComplete(thePlayer, splitArgs[1])) numberMet++; }
+				else if (Denizen.getScript.getScriptComplete(thePlayer, splitArgs[1])) numberMet++;
 				break;
 
 			case FAILED: // (-)SCRIPT [Script Name]
-				if (negReq) { if (!Denizen.getScript.getScriptFail(thisPlayer, splitArgs[1])) MetReqs++; }
-				else if (Denizen.getScript.getScriptFail(thisPlayer, splitArgs[1])) MetReqs++;
+				if (negativeRequirement) { if (!Denizen.getScript.getScriptFail(thePlayer, splitArgs[1])) numberMet++; }
+				else if (Denizen.getScript.getScriptFail(thePlayer, splitArgs[1])) numberMet++;
 				break;
 
-				
+
 			case GROUP:
-				if (negReq) { if (!Denizen.denizenPerms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(),	splitArgs[1])) MetReqs++; }
-				else if (Denizen.denizenPerms.playerInGroup(thisPlayer.getWorld(), thisPlayer.getName(), splitArgs[1])) MetReqs++;
+				if (negativeRequirement) { if (!Denizen.denizenPerms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(),	splitArgs[1])) numberMet++; }
+				else if (Denizen.denizenPerms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), splitArgs[1])) numberMet++;
 				break;
 
 			case PERMISSION:  // (-)PERMISSION [this.permission.node]
-				if (negReq) { if (!Denizen.denizenPerms.playerHas(thisPlayer.getWorld(), thisPlayer.getName(),	splitArgs[1])) MetReqs++; }
-				else if (Denizen.denizenPerms.playerHas(thisPlayer.getWorld(), thisPlayer.getName(), splitArgs[1])) MetReqs++;
+				if (negativeRequirement) { if (!Denizen.denizenPerms.playerHas(thePlayer.getWorld(), thePlayer.getName(),	splitArgs[1])) numberMet++; }
+				else if (Denizen.denizenPerms.playerHas(thePlayer.getWorld(), thePlayer.getName(), splitArgs[1])) numberMet++;
 				break;
 			}
 		}
-		if (RequirementsMode.equalsIgnoreCase("all") && MetReqs == RequirementsList.size()) return true;
-		String[] ModeArgs = RequirementsMode.split(" ");
-		if (ModeArgs[0].equalsIgnoreCase("any") && MetReqs >= Integer.parseInt(ModeArgs[1])) return true;
 
+		if (requirementMode.equalsIgnoreCase("ALL") 
+				&& numberMet == requirementList.size()) return true;
+
+		String[] ModeArgs = requirementMode.split(" ");
+		if (ModeArgs[0].equalsIgnoreCase("ANY") 
+				&& numberMet >= Integer.parseInt(ModeArgs[1])) return true;
+
+		/* Nothing met, return FALSE */	
 		return false;
+
 	}
-	
+
+
+
+
+
 }

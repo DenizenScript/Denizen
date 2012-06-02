@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -33,10 +34,7 @@ public class GetScript {
 	public void ConcatenateScripts() throws IOException {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		
 		PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-scripts.yml"));
-
-		plugin.getServer().broadcastMessage(plugin.getDataFolder() + File.separator + "scripts");
 		
 		File file = new File(plugin.getDataFolder() + File.separator + "scripts");
 		File[] files = file.listFiles();
@@ -67,37 +65,45 @@ public class GetScript {
 	 *
 	 */
 
-	public String getInteractScript(NPC thisDenizen, Player thisPlayer) {
+	public String getInteractScript(NPC theDenizen, Player thePlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		String theScript = "none";
-		List<String> ScriptList = plugin.getConfig().getStringList("Denizens." + thisDenizen.getName() + ".Interact Scripts");
-		if (ScriptList.isEmpty()) { return theScript; }
-		List<String> ScriptsThatMeetRequirements = new ArrayList<String>();
+		List<String> scriptList = plugin.getConfig().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
+		if (scriptList.isEmpty()) { return theScript; }
+		List<String> interactScripts = new ArrayList<String>();
 
 		/*
 		 *  Get scripts that meet requirements
 		 */
 
-		for (String thisScript : ScriptList) {
+		LivingEntity theEntity = null;
+		Boolean isPlayer = false;
+		if (thePlayer != null) {
+			theEntity = (LivingEntity) thePlayer;
+			isPlayer = true;
+		}
+		else theEntity = theDenizen.getBukkitEntity();
+		
+		for (String thisScript : scriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
-			if (Denizen.getRequirements.check(thisScriptArray[1], thisPlayer)) ScriptsThatMeetRequirements.add(thisScript);
+			if (Denizen.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) interactScripts.add(thisScript);
 		}
 
 		/*
 		 *  Get highest scoring script
 		 */
 
-		if (ScriptsThatMeetRequirements.size() > 1) {
+		if (interactScripts.size() > 1) {
 			int ScriptPriority = -1; // The number to beat
-			for (String thisScript : ScriptsThatMeetRequirements) {
+			for (String thisScript : interactScripts) {
 				String [] thisScriptArray = thisScript.split(" ", 2);
 				if (Integer.parseInt(thisScriptArray[0]) > ScriptPriority) {
 					ScriptPriority = Integer.parseInt(thisScriptArray[0]); theScript = thisScript; }
 			}
 		}
-		else if (ScriptsThatMeetRequirements.size() == 1) theScript = ScriptsThatMeetRequirements.get(0);
+		else if (interactScripts.size() == 1) theScript = interactScripts.get(0);
 
 		return theScript;
 	}

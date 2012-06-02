@@ -12,12 +12,12 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 import net.aufdemrand.denizen.ScriptEngine;
-import net.aufdemrand.denizen.utilities.GetCharacter;
 import net.aufdemrand.denizen.utilities.GetDenizen;
 import net.aufdemrand.denizen.utilities.GetListener;
 import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
 import net.aufdemrand.denizen.utilities.GetScript;
+import net.aufdemrand.denizen.utilities.GetWorld;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -41,55 +41,55 @@ public class Denizen extends JavaPlugin {
 	public static Map<Player, Long> interactCooldown = new ConcurrentHashMap<Player, Long>();
 	public static Map<Player, String> proximityCheck = new ConcurrentHashMap<Player, String>();
 	public static Boolean DebugMode = false;
-	
+
 	public static ScriptEngine scriptEngine = new ScriptEngine();
 	public static CommandExecuter commandExecuter = new CommandExecuter();
+	public static DenizenCharacter getCharacter = new DenizenCharacter();
 	public static GetScript getScript = new GetScript();
-	public static GetCharacter getCharacter = new GetCharacter();
 	public static GetDenizen getDenizen = new GetDenizen();
 	public static GetListener getListener = new GetListener();
 	public static GetRequirements getRequirements = new GetRequirements();
 	public static GetPlayer getPlayer = new GetPlayer();
+	public static GetWorld getWorld = new GetWorld();
 
 	public static Economy denizenEcon = null;
 	public static Permission denizenPerms = null;
-	
-	
-	
-	
+
+
+
 	/*
 	 * onCommand
 	 * 
 	 * Handles incoming bukkit console commands.
 	 * 
 	 */
-		
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
+
 
 		/*
 		 * Commands for use with the console
 		 */
-		
+
 		if (args[0].equalsIgnoreCase("save") && !(sender instanceof Player)) {
-			this.saveConfig();
-			getServer().broadcastMessage("Denizens config.yml and scripts.yml saved.");
+			saveConfig();
+			getServer().broadcastMessage("Denizens config.yml saved.");
 			return true;
 		}
 
 		if (args[0].equalsIgnoreCase("reload") && !(sender instanceof Player)) {
-			this.reloadConfig();
+			reloadConfig();
 			reloadScripts();
 			getServer().broadcastMessage("Denizens config.yml and scripts.yml reloaded.");
 			return true;
 		}
-		
-		
+
+
 		/*
 		 * Commands used by the Player
 		 */
-		
-		
+
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("You must be in-game to execute commands.");
 			return true;
@@ -107,7 +107,6 @@ public class Denizen extends JavaPlugin {
 			try {
 				getScript.ConcatenateScripts();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return true;
@@ -220,27 +219,27 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("debug")) {
 
-			if (Denizen.DebugMode==false) { DebugMode = true; 
-			player.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode ON.");   // Talk to the player.
-			return true;
+			if (!Denizen.DebugMode) { 
+				DebugMode = true; 
+				player.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode ON.");   // Talk to the player.
+				return true;
 			}
 
-			else if (Denizen.DebugMode==true) { DebugMode = false; 
-			player.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode OFF.");   // Talk to the player.
-			return true;
+			else if (Denizen.DebugMode) { 
+				DebugMode = false; 
+				player.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode OFF.");   // Talk to the player.
+				return true;
 			}
-
-			return true;
 		}
 
 		if (args[0].equalsIgnoreCase("save")) {
-			this.saveConfig();
+			saveConfig();
 			player.sendMessage(ChatColor.GREEN + "Saved config.yml and scripts.yml.");
 			return true;
 		}
 
 		if (args[0].equalsIgnoreCase("reload")) {
-			this.reloadConfig();
+			reloadConfig();
 			reloadScripts();
 			player.sendMessage(ChatColor.GREEN + "Denizens config.yml and scripts.yml reloaded.");
 			return true;
@@ -267,7 +266,7 @@ public class Denizen extends JavaPlugin {
 		/*
 		 * These craftbukkit commands require a Denizen to be selected.
 		 */
-		
+
 		if (args[0].equalsIgnoreCase("bookmark")) {
 			if(args.length < 3) {
 				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help bookmark");
@@ -301,7 +300,7 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	
+
 	/*
 	 * onEnable
 	 * 
@@ -316,23 +315,21 @@ public class Denizen extends JavaPlugin {
 			getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no Vault-compatible Economy Plugin found! Install an economy system!", getDescription().getName()));
 			getServer().getPluginManager().disablePlugin(this);
 			return;  }
-		
+
 		setupPermissions();
+
 		reloadConfig();
-		
 		reloadScripts();
-		
-		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
-		
-		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(GetCharacter.class).withName("denizen"));
+
+		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new GetListener(), this);
 
+		/* Check for users setting delay to 0, which will in turn lock up the server. */
 		int delayTicks = getConfig().getInt("interact_delay_in_ticks", 10);
-		
 		if (delayTicks == 0) delayTicks = 1;
-		
+
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() { scriptEngine.commandQue(); }
@@ -346,15 +343,15 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	
-	
+
+
 	/*
 	 * onDisable
 	 * 
 	 * Unloads Denizen on shutdown of the craftbukkit server.
 	 *	
 	 */
-	
+
 	@Override
 	public void onDisable() {
 		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
@@ -363,14 +360,14 @@ public class Denizen extends JavaPlugin {
 
 
 
-	
+
 	/*
 	 * setupEconomy/setupPermissions
 	 * 
 	 * Sets up Economy/Permissions object with Vault.
 	 *	
 	 */
-		
+
 	private boolean setupEconomy() {
 		if (getServer().getPluginManager().getPlugin("Vault") == null) return false;
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
@@ -385,29 +382,27 @@ public class Denizen extends JavaPlugin {
 		return denizenPerms != null;
 	}
 
-	
-	
-	
+
+
+
 	/*
 	 * reloadScripts/getScripts
 	 * 
 	 * Reloads and retrieves information from the Denizen/scripts.yml.
 	 * 
 	 */
-	
-	
+
 	private FileConfiguration customConfig = null;
 	private File customConfigFile = null;
-	
+
 	public void reloadScripts() {
-		
+
 		try {
 			getScript.ConcatenateScripts();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		if (customConfigFile == null) {
 			customConfigFile = new File(getDataFolder(), "read-only-scripts.yml");
 		}
@@ -421,7 +416,7 @@ public class Denizen extends JavaPlugin {
 		}
 	}
 
-	
+
 	public FileConfiguration getScripts() {
 		if (customConfig == null) {
 			reloadScripts();
