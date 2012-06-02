@@ -1,7 +1,10 @@
 package net.aufdemrand.denizen.utilities;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class GetWorld {
@@ -100,6 +103,32 @@ public class GetWorld {
 	}
 
 
+	
+	public boolean checkWorld(LivingEntity theEntity, List<String> theWorlds, boolean negativeRequirement) {
+		
+		boolean outcome = false;
 
+		/*
+		 * (-)WORLD [List of Worlds]
+		 */
+
+		try {
+
+			if (theWorlds.contains(theEntity.getWorld().getName())) outcome = true;
+
+		} catch(Throwable error) {
+			Bukkit.getLogger().info("Denizen: An error has occured.");
+			Bukkit.getLogger().info("--- Error follows: " + error);
+		}
+
+		if (negativeRequirement != outcome) return true;
+
+		return false;
+	}
+
+	
+	
+	
+	
 
 }

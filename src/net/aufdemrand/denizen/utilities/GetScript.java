@@ -34,8 +34,10 @@ public class GetScript {
 	public void ConcatenateScripts() throws IOException {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-scripts.yml"));
 		
+		try {
+		
+		PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-scripts.yml"));
 		File file = new File(plugin.getDataFolder() + File.separator + "scripts");
 		File[] files = file.listFiles();
 		for (int i = 0; i < files.length; i++) {
@@ -51,7 +53,12 @@ public class GetScript {
 			br.close();
 		}
 		pw.close();
-		System.out.println("OK! Scripts combined!");
+		System.out.println("OK! Scripts loaded!");
+		
+		} catch (Throwable error) {
+			System.out.println("Woah! No scripts to load!");		
+		}
+		
 	}
 
 	

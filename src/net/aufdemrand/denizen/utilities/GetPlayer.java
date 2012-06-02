@@ -1,15 +1,19 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class GetPlayer {
 
@@ -41,21 +45,43 @@ public class GetPlayer {
 
 	public List<Player> getInRange (LivingEntity theEntity, int theRange, Player excludePlayer) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		List<Player> PlayersWithinRange = new ArrayList<Player>();
-
-		Player[] DenizenPlayers = plugin.getServer().getOnlinePlayers();
-
-		for (Player aPlayer : DenizenPlayers) {
-			if (aPlayer.isOnline() 
-					&& aPlayer.getWorld().equals(theEntity.getWorld()) 
-					&& aPlayer.getLocation().distance(theEntity.getLocation()) < theRange)
-				PlayersWithinRange.add(aPlayer);
-		}
-
+		List<Player> PlayersWithinRange = getInRange(theEntity, theRange);
 		PlayersWithinRange.remove(excludePlayer);
 
 		return PlayersWithinRange;
+	}
+
+	
+		
+	/*
+	 * getInventoryMap
+	 * 
+	 * Returns a Map<Material, Integer> of the players inventory. Unlike bukkit's getInventory.getContents(),
+	 * this returns a total count of material and quantity, so quantities are not limited to
+	 * the size of maxStackSize. For example, if a player has 2 stacks of wood, 35 in each, this will return
+	 * the total number of wood as 70.
+	 * 
+	 */
+	
+	public Map<Material, Integer> getInventoryMap(Player thePlayer) {
+
+		Map<Material, Integer> playerInv = new HashMap<Material, Integer>();
+		ItemStack[] getContentsArray = thePlayer.getInventory().getContents();
+		List<ItemStack> getContents = Arrays.asList(getContentsArray);
+
+		for (int x=0; x < getContents.size(); x++) {
+			if (getContents.get(x) != null) {
+
+				if (playerInv.containsKey(getContents.get(x).getType())) {
+					int t = playerInv.get(getContents.get(x).getType());
+					t = t + getContents.get(x).getAmount(); playerInv.put(getContents.get(x).getType(), t);
+				}
+
+				else playerInv.put(getContents.get(x).getType(), getContents.get(x).getAmount());
+			}
+		}
+
+		return playerInv;
 	}
 
 
@@ -77,6 +103,7 @@ public class GetPlayer {
 				.replace("<TEXT>", theMessage)
 				.replace("<PLAYER>", thePlayer.getName()));
 
+		return;
 	}
 
 
@@ -84,10 +111,10 @@ public class GetPlayer {
 	/**
 	 * Checks the players level against information 
 	 *
-	 * @param  thePlayer  The bukkit Player object of the player being checked.
+	 * @param  thePlayer The bukkit Player object of the player being checked.
 	 * @param  theLevel  String value of the level being checked against.
-	 * @param  highLevel  String value of the high level being checked against, if specifying a low and high number. (OPTIONAL: May set to NULL if only checking one level.)
-	 * @param  negativeRequirement  Set to true if this is a negative (-) requirement.
+	 * @param  highLevel String value of the high level being checked against, if specifying a low and high number. (OPTIONAL: May set to NULL if only checking one level.)
+	 * @param  negativeRequirement Set to true if this is a negative (-) requirement.
 	 * @return Whether the conditions were met or failed.
 	 */
 
@@ -100,7 +127,7 @@ public class GetPlayer {
 			/*
 			 * (-)LEVEL [#]
 			 */
-			
+
 			if (highLevel == null) {
 				if (thePlayer.getLevel() >= Integer.valueOf(theLevel)) outcome = true;
 			}
@@ -144,7 +171,7 @@ public class GetPlayer {
 			/*
 			 * (-)HUNGER [FULL|STARVING|HUNGRY]
 			 */
-			
+
 			if (saturationType.equalsIgnoreCase("STARVING")
 					&& thePlayer.getFoodLevel() <= 2) outcome = true;
 
@@ -168,7 +195,86 @@ public class GetPlayer {
 
 
 
+	public boolean checkName(Player thePlayer, List<String> theNames, boolean negativeRequirement) {
+
+		boolean outcome = false;
+
+		/*
+		 * (-)NAME [List of Names]
+		 */
+
+		try {
+
+			if (theNames.contains(thePlayer.getName())) outcome = true;
+
+		} catch(Throwable error) {
+			Bukkit.getLogger().info("Denizen: An error has occured.");
+			Bukkit.getLogger().info("--- Error follows: " + error);
+		}
+
+		if (negativeRequirement != outcome) return true;
+
+		return false;
+	}
 
 
 
+	public boolean checkFunds(Player thePlayer, String theFunds, boolean negativeRequirement) {
+
+		boolean outcome = false;
+
+		/*
+		 * (-)MONEY [#]
+		 */
+
+		try {
+
+			if (Denizen.denizenEcon.has(thePlayer.getName(), Double.parseDouble(theFunds))) outcome = true;
+
+		} catch(Throwable error) {
+			Bukkit.getLogger().info("Denizen: An error has occured.");
+			Bukkit.getLogger().info("--- Error follows: " + error);
+		}
+
+		if (negativeRequirement != outcome) return true;
+
+		return false;
+	}
+
+	
+	
+	public boolean checkInventory(Player thePlayer, String theMaterial, String theAmount, boolean negativeRequirement) {
+
+		boolean outcome = false;
+
+		/*
+		 * (-)ITEM [ITEM_NAME|#:#] [#]
+		 */
+
+		try {
+
+			if (getInventoryMap(thePlayer).containsKey(Material.valueOf(theMaterial))) {
+				if (getInventoryMap(thePlayer).get(Material.valueOf(theMaterial)) >= Integer.valueOf(theAmount)) 
+					outcome = true;
+			}
+
+		} catch(Throwable error) {
+			Bukkit.getLogger().info("Denizen: An error has occured.");
+			Bukkit.getLogger().info("--- Error follows: " + error);
+		}
+
+		if (negativeRequirement != outcome) return true;
+
+		return false;
+	
+	
+	}
+
+
+
+	
+	
+	
+	
+	
 }
