@@ -51,8 +51,8 @@ public class GetPlayer {
 		return PlayersWithinRange;
 	}
 
-	
-		
+
+
 	/*
 	 * getInventoryMap
 	 * 
@@ -62,7 +62,7 @@ public class GetPlayer {
 	 * the total number of wood as 70.
 	 * 
 	 */
-	
+
 	public Map<Material, Integer> getInventoryMap(Player thePlayer) {
 
 		Map<Material, Integer> playerInv = new HashMap<Material, Integer>();
@@ -86,6 +86,42 @@ public class GetPlayer {
 
 
 
+	public Map<String, Integer> getInventoryIdMap(Player thePlayer) {
+
+		Map<String, Integer> playerInv = new HashMap<String, Integer>();
+		ItemStack[] getContentsArray = thePlayer.getInventory().getContents();
+		List<ItemStack> getContents = Arrays.asList(getContentsArray);
+		String workingItem = null;
+		
+		for (int x=0; x < getContents.size(); x++) {
+			if (getContents.get(x) != null) {
+
+				if (playerInv.containsKey(getContents.get(x).getType())) {
+					int t = playerInv.get(getContents.get(x).getType());
+					t = t + getContents.get(x).getAmount(); playerInv.put(getContents.get(x).getTypeId(), t);
+				}
+
+				else playerInv.put(getContents.get(x).getTypeId(), getContents.get(x).getAmount());
+			}
+		}
+
+		return playerInv;
+	}
+	
+	public int getData(String theArgs) {
+		int theData = Integer.valueOf(theArgs.split(":", 2)[1]);
+		
+		return theData;
+	}
+	
+	public int getItem(String theArgs) {
+		int theItem = Integer.valueOf(theArgs.split(":", 2)[0]);
+		
+		return theItem;
+	}
+	
+
+	
 	/* talkToDenizen
 	 *
 	 * Sends the message from Player to Denizen with the formatting
@@ -241,9 +277,9 @@ public class GetPlayer {
 		return false;
 	}
 
-	
-	
-	public boolean checkInventory(Player thePlayer, String theMaterial, String theAmount, boolean negativeRequirement) {
+
+
+	public boolean checkInventory(Player thePlayer, String theItem, String theAmount, boolean negativeRequirement) {
 
 		boolean outcome = false;
 
@@ -251,10 +287,57 @@ public class GetPlayer {
 		 * (-)ITEM [ITEM_NAME|#:#] [#]
 		 */
 
+
+
 		try {
 
-			if (getInventoryMap(thePlayer).containsKey(Material.valueOf(theMaterial))) {
-				if (getInventoryMap(thePlayer).get(Material.valueOf(theMaterial)) >= Integer.valueOf(theAmount)) 
+			if (Character.isDigit(theItem.charAt(0))) {
+				if (getInventoryIdMap(thePlayer).containsKey(Integer.valueOf(theItem))) {
+					if (getInventoryIdMap(thePlayer).get(Integer.valueOf(theItem)) >= Integer.valueOf(theAmount)) 
+						outcome = true;	
+				}
+			}
+			else {
+				if (getInventoryMap(thePlayer).containsKey(Material.valueOf(theItem))) {
+					if (getInventoryMap(thePlayer).get(Material.valueOf(theItem)) >= Integer.valueOf(theAmount)) 
+						outcome = true;
+				}
+			}
+
+
+		} catch(Throwable error) {
+			Bukkit.getLogger().info("Denizen: An error has occured.");
+			Bukkit.getLogger().info("--- Error follows: " + error);
+		}
+
+		if (negativeRequirement != outcome) return true;
+
+		return false;
+	}
+
+
+
+
+	public boolean checkHand(Player thePlayer, String theItem, String theAmount, boolean negativeRequirement) {
+
+		boolean outcome = false;
+
+		/*
+		 * (-)HOLDING [ITEM_NAME|#:#] [#]
+		 */
+
+		if (theAmount == null) theAmount = "1";
+
+		try {
+
+			if (Character.isDigit(theItem.charAt(0))) {
+				if (thePlayer.getItemInHand().getTypeId() == Integer.valueOf(theItem)
+						&& thePlayer.getItemInHand().getAmount() >= Integer.valueOf(theAmount)) 
+					outcome = true;
+			}
+			else {
+				if (thePlayer.getItemInHand().getTypeId() == Integer.valueOf(theItem)
+						&& thePlayer.getItemInHand().getAmount() >= Integer.valueOf(theAmount)) 
 					outcome = true;
 			}
 
@@ -266,15 +349,13 @@ public class GetPlayer {
 		if (negativeRequirement != outcome) return true;
 
 		return false;
-	
-	
 	}
 
 
 
-	
-	
-	
-	
-	
+
+
+
+
+
 }

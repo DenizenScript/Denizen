@@ -40,7 +40,7 @@ public class GetRequirements {
 		String requirementMode = plugin.getScripts().getString("" + theScript + ".Requirements.Mode");
 		List<String> requirementList = plugin.getScripts().getStringList("" + theScript + ".Requirements.List");
 		
-		/* No requirements met yet! */
+		/* No requirements met yet, we just started, duh! */
 		int numberMet = 0; 
 		boolean negativeRequirement;
 		
