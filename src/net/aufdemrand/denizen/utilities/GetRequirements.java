@@ -29,8 +29,8 @@ public class GetRequirements {
 	public boolean check(String theScript, LivingEntity theEntity, boolean isPlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		String requirementMode = plugin.getScripts().getString("" + theScript + ".Requirements.Mode");
-		List<String> requirementList = plugin.getScripts().getStringList("" + theScript + ".Requirements.List");
+		String requirementMode = plugin.getScripts().getString(theScript + ".Requirements.Mode");
+		List<String> requirementList = plugin.getScripts().getStringList(theScript + ".Requirements.List");
 		
 		/* No requirements met yet, we just started! */
 		int numberMet = 0; 

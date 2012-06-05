@@ -43,7 +43,7 @@ public class GetScript {
 		for (int i = 0; i < files.length; i++) {
 
 			String fileName = files[i].getName();
-			if (fileName.substring(fileName.length() - 4, fileName.length() - 1).equalsIgnoreCase("YML")) {
+			if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
 			
 			System.out.println("Processing " + files[i].getPath() + "... ");
 			BufferedReader br = new BufferedReader(new FileReader(files[i]
