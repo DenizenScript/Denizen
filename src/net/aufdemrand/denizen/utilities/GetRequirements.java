@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.utilities;
 
+import java.util.AbstractList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
@@ -125,7 +127,7 @@ public class GetRequirements {
 				break;
 
 			case GROUP:
-				List<String> theGroups = null; // = Arrays.asList(arguments);
+				List<String> theGroups = new LinkedList<String>(); // = Arrays.asList(arguments);
 				for(String arg : arguments) {
 					theGroups.add(arg);
 				}
