@@ -26,6 +26,7 @@ public class GetRequirements {
 
 
 
+	@SuppressWarnings("null")
 	public boolean check(String theScript, LivingEntity theEntity, boolean isPlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
@@ -124,7 +125,10 @@ public class GetRequirements {
 				break;
 
 			case GROUP:
-				List<String> theGroups = Arrays.asList(arguments);
+				List<String> theGroups = null; // = Arrays.asList(arguments);
+				for(String arg : arguments) {
+					theGroups.add(arg);
+				}
 				theGroups.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkGroups((Player) theEntity, theGroups, negativeRequirement)) numberMet++;
 				break;
