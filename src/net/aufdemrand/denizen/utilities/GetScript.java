@@ -42,6 +42,9 @@ public class GetScript {
 		File[] files = file.listFiles();
 		for (int i = 0; i < files.length; i++) {
 
+			String fileName = files[i].getName();
+			if (fileName.substring(fileName.length() - 4, fileName.length() - 1).equalsIgnoreCase("YML")) {
+			
 			System.out.println("Processing " + files[i].getPath() + "... ");
 			BufferedReader br = new BufferedReader(new FileReader(files[i]
 					.getPath()));
@@ -51,6 +54,8 @@ public class GetScript {
 				line = br.readLine();
 			}
 			br.close();
+			
+			}
 		}
 		pw.close();
 		System.out.println("OK! Scripts loaded!");
@@ -148,28 +153,49 @@ public class GetScript {
 	 *
 	 */
 
-	public boolean getScriptComplete(Player thePlayer, String theScript) {
+	public boolean getScriptCompletes(Player thePlayer, String theScript, String theAmount, boolean negativeRequirement) {
 
 		Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");		
+		boolean outcome = false;
 
-		boolean ScriptComplete = false;
-		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
-			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") == true) ScriptComplete = true;
+		/*
+		 * (-)FINISHED (#) [Name of Script]
+		 */
+
+		try {
+
+			if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[0];
+			else theAmount = "1";
+			
+			if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
+				if (plugin.getConfig().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") >= Integer.valueOf(theAmount)) outcome = true;
+			}
+			
+		} catch(Throwable error) {
+			Bukkit.getLogger().info("Denizen: An error has occured.");
+			Bukkit.getLogger().info("--- Error follows: " + error);
 		}
 
-		return ScriptComplete;
+		if (negativeRequirement != outcome) return true;
+
+		return false;
 	}
 
-	public boolean getScriptFail(Player thePlayer, String theScript) {
+	
+	public boolean getScriptFail(Player thePlayer, String theScript, boolean negativeRequirement) {
 
 		Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");		
 
-		boolean ScriptFailed = false;
+		boolean outcome = false;
+		
 		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
-			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) ScriptFailed = true;
+			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) outcome = true;
 		}
 
-		return ScriptFailed;
+		if (negativeRequirement != outcome) return true;
+		
+		return false;
+		
 	}
 
 

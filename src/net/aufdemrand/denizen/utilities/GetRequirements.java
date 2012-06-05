@@ -1,21 +1,13 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.aufdemrand.denizen.Denizen;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
 
 public class GetRequirements {
 
@@ -40,7 +32,7 @@ public class GetRequirements {
 		String requirementMode = plugin.getScripts().getString("" + theScript + ".Requirements.Mode");
 		List<String> requirementList = plugin.getScripts().getStringList("" + theScript + ".Requirements.List");
 		
-		/* No requirements met yet, we just started, duh! */
+		/* No requirements met yet, we just started! */
 		int numberMet = 0; 
 		boolean negativeRequirement;
 		
@@ -86,95 +78,66 @@ public class GetRequirements {
 
 			case WORLD:  // (-)WORLD [List of Worlds]
 				List<String> theWorlds = Arrays.asList(arguments);
-				theWorlds.remove(0);   /* Remove the command from arguments */
+				theWorlds.remove(0);   /* Remove the command from the list */
 				if (Denizen.getWorld.checkWorld(theEntity, theWorlds, negativeRequirement)) numberMet++;
 				break;
 
 			case NAME:  // (-)Name [List of Names]
 				List<String> theNames = Arrays.asList(arguments);
-				theNames.remove(0);   /* Remove the command from arguments */
+				theNames.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkName((Player) theEntity, theNames, negativeRequirement)) numberMet++;
 				break;
 	
-			case MONEY: // (-)MONEY [Amount of Money, or more]
+			case MONEY: // (-)MONEY [# or more]
 				if (Denizen.getPlayer.checkFunds((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
 				break;
 				
-			case ITEM: // (-)ITEM [ITEM_NAME] (# of that item, or more) (ENCHANTMENT_TYPE)
-				if (Denizen.getPlayer.checkInventory((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
+			case ITEM: // (-)ITEM [ITEM_NAME|#:#] (# or more)
+				String[] itemArgs = new String[1];
+				itemArgs = arguments[1].split(":", 2);
+				if (Denizen.getPlayer.checkInventory((Player) theEntity, itemArgs[0], itemArgs[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 				
-			case HOLDING: // (-)HOLDING [ITEM_NAME] (ENCHANTMENT_TYPE)
-				if (Denizen.getPlayer.checkHand((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
+			case HOLDING: // (-)HOLDING [ITEM_NAME|#:#] (# or more)
+				String[] holdingArgs = new String[1];
+				holdingArgs = arguments[1].split(":", 2);
+				if (Denizen.getPlayer.checkHand((Player) theEntity, holdingArgs[0], holdingArgs[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 				
-				
-				String[] itemArgs = splitArgs[1].split(" ");
-				if (negativeRequirement) {if (thePlayer.getItemInHand().getType() != Material.getMaterial(itemArgs[0])) {
-					if (itemArgs.length == 1) numberMet++;
-					else if (!thePlayer.getItemInHand().getEnchantments().containsKey(Enchantment.getByName(itemArgs[1])))
-						numberMet++;}
-				} else if (thePlayer.getItemInHand().getType() == Material.getMaterial(itemArgs[0])) {
-					if (itemArgs.length == 1) numberMet++;
-					else if (thePlayer.getItemInHand().getEnchantments().containsKey(Enchantment.getByName(itemArgs[1])))
-						numberMet++;
-				}
+			case WEARING: // (-) WEARING [ITEM_NAME|#]
+				if (Denizen.getPlayer.checkArmor((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
 				break;
 
-
-			case WEARING:
-				if (Denizen.getPlayer.checkEquipment((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
+			case POTIONEFFECT: // (-)POTIONEFFECT [List of POITION_TYPESs]
+				List<String> thePotions = Arrays.asList(arguments);
+				thePotions.remove(0);   /* Remove the command from the list */
+				if (Denizen.getPlayer.checkEffects((Player) theEntity, thePotions, negativeRequirement)) numberMet++;
 				break;
 				
-				
-				String[] wearingArgs = splitArgs[1].split(" ");
-
-				ItemStack[] ArmorContents = thePlayer.getInventory().getArmorContents();
-				Boolean match = false;
-
-				for (ItemStack ArmorPiece : ArmorContents) {
-
-					if (ArmorPiece != null) {
-						if (ArmorPiece.getType() == Material.getMaterial(wearingArgs[0].toUpperCase())) {
-							match = true;
-						}
-					}					
-				}
-
-				if (match && !negativeRequirement) numberMet++;
-				if (!match && negativeRequirement) numberMet++;
-
-				break;
-
-			case POTIONEFFECT: // (-)POTIONEFFECT [POTION_EFFECT_TYPE]
-				if (negativeRequirement) {if (!thePlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) numberMet++;}
-				else if (thePlayer.hasPotionEffect(PotionEffectType.getByName(splitArgs[1]))) numberMet++;
-				break;
-
 			case FINISHED:
-			case SCRIPT: // (-)SCRIPT [Script Name]
-				if (negativeRequirement) { if (!Denizen.getScript.getScriptComplete(thePlayer, splitArgs[1])) numberMet++; }
-				else if (Denizen.getScript.getScriptComplete(thePlayer, splitArgs[1])) numberMet++;
+			case SCRIPT: // (-)FINISHED (#) [Script Name]
+				if (Denizen.getScript.getScriptCompletes((Player) theEntity, requirementEntry.split(" ", 2)[1], requirementEntry.split(" ", 3)[1], negativeRequirement)) numberMet++;
 				break;
 
 			case FAILED: // (-)SCRIPT [Script Name]
-				if (negativeRequirement) { if (!Denizen.getScript.getScriptFail(thePlayer, splitArgs[1])) numberMet++; }
-				else if (Denizen.getScript.getScriptFail(thePlayer, splitArgs[1])) numberMet++;
+				if (Denizen.getScript.getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement))
 				break;
 
-
 			case GROUP:
-				if (negativeRequirement) { if (!Denizen.denizenPerms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(),	splitArgs[1])) numberMet++; }
-				else if (Denizen.denizenPerms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), splitArgs[1])) numberMet++;
+				List<String> theGroups = Arrays.asList(arguments);
+				theGroups.remove(0);   /* Remove the command from the list */
+				if (Denizen.getPlayer.checkGroups((Player) theEntity, theGroups, negativeRequirement)) numberMet++;
 				break;
 
 			case PERMISSION:  // (-)PERMISSION [this.permission.node]
-				if (negativeRequirement) { if (!Denizen.denizenPerms.playerHas(thePlayer.getWorld(), thePlayer.getName(),	splitArgs[1])) numberMet++; }
-				else if (Denizen.denizenPerms.playerHas(thePlayer.getWorld(), thePlayer.getName(), splitArgs[1])) numberMet++;
+				List<String> thePermissions = Arrays.asList(arguments);
+				thePermissions.remove(0);   /* Remove the command from the list */
+				if (Denizen.getPlayer.checkPermissions((Player) theEntity, thePermissions, negativeRequirement)) numberMet++;
 				break;
 			}
 		}
 
+		/* Check numberMet */	
 		if (requirementMode.equalsIgnoreCase("ALL") 
 				&& numberMet == requirementList.size()) return true;
 

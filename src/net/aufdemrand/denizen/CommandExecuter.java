@@ -25,7 +25,8 @@ public class CommandExecuter {
 	public static enum Command {
 		WAIT, ZAP, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL,
 		TELEPORT, STRIKE, WALK, REMEMBER, RESPAWN, PERMISS, EXECUTE, SHOUT,
-		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, LOOK, WALKTO, FINISH, FOLLOW, CAST, NARRATE,
+		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, LOOK, WALKTO, FINISH, 
+		FOLLOW, CAST, NARRATE,
 		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL
 	} 
 
@@ -316,6 +317,7 @@ public class CommandExecuter {
 			// ...and we're waiting.
 
 			break;
+			
 		default:
 			break;
 
