@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.utilities;
 
+import java.util.AbstractList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
@@ -26,6 +28,7 @@ public class GetRequirements {
 
 
 
+	@SuppressWarnings("null")
 	public boolean check(String theScript, LivingEntity theEntity, boolean isPlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
@@ -124,7 +127,10 @@ public class GetRequirements {
 				break;
 
 			case GROUP:
-				List<String> theGroups = Arrays.asList(arguments);
+				List<String> theGroups = new LinkedList<String>(); // = Arrays.asList(arguments);
+				for(String arg : arguments) {
+					theGroups.add(arg);
+				}
 				theGroups.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkGroups((Player) theEntity, theGroups, negativeRequirement)) numberMet++;
 				break;
