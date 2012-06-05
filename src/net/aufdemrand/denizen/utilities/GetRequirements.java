@@ -80,13 +80,19 @@ public class GetRequirements {
 				break;
 
 			case WORLD:  // (-)WORLD [List of Worlds]
-				List<String> theWorlds = Arrays.asList(arguments);
+				List<String> theWorlds = new LinkedList<String>(); // = Arrays.asList(arguments);
+				for(String arg : arguments) {
+					theWorlds.add(arg);
+				}
 				theWorlds.remove(0);   /* Remove the command from the list */
 				if (Denizen.getWorld.checkWorld(theEntity, theWorlds, negativeRequirement)) numberMet++;
 				break;
 
 			case NAME:  // (-)Name [List of Names]
-				List<String> theNames = Arrays.asList(arguments);
+				List<String> theNames = new LinkedList<String>(); // = Arrays.asList(arguments);
+				for(String arg : arguments) {
+					theNames.add(arg);
+				}
 				theNames.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkName((Player) theEntity, theNames, negativeRequirement)) numberMet++;
 				break;
@@ -112,7 +118,10 @@ public class GetRequirements {
 				break;
 
 			case POTIONEFFECT: // (-)POTIONEFFECT [List of POITION_TYPESs]
-				List<String> thePotions = Arrays.asList(arguments);
+				List<String> thePotions = new LinkedList<String>(); // = Arrays.asList(arguments);
+				for(String arg : arguments) {
+					thePotions.add(arg);
+				}
 				thePotions.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkEffects((Player) theEntity, thePotions, negativeRequirement)) numberMet++;
 				break;
@@ -136,7 +145,10 @@ public class GetRequirements {
 				break;
 
 			case PERMISSION:  // (-)PERMISSION [this.permission.node]
-				List<String> thePermissions = Arrays.asList(arguments);
+				List<String> thePermissions = new LinkedList<String>(); // = Arrays.asList(arguments);
+				for(String arg : arguments) {
+					thePermissions.add(arg);
+				}
 				thePermissions.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkPermissions((Player) theEntity, thePermissions, negativeRequirement)) numberMet++;
 				break;
