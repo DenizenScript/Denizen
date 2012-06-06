@@ -247,13 +247,13 @@ public class CommandExecuter {
 			}
 			if (commandArgs[1].equalsIgnoreCase("ASNPC")) {
 				
-				((Player) theDenizenExecuting).setOp(true);
+				((Player) theDenizenExecuting.getBukkitEntity()).setOp(true);
 				
 				((Player) theDenizenExecuting.getBukkitEntity()).performCommand(executeCommand[2]
 						.replace("<PLAYER>", thePlayer.getName()
 						.replace("<WORLD>", thePlayer.getWorld().getName())));
 				
-				((Player) theDenizenExecuting).setOp(false);
+				((Player) theDenizenExecuting.getBukkitEntity()).setOp(false);
 				
 			}
 			if (commandArgs[1].equalsIgnoreCase("ASSERVER")) {
