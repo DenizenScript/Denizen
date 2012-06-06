@@ -180,14 +180,14 @@ public class GetPlayer {
 			 * (-)LEVEL [#] [#]
 			 */
 
-			if (highLevel != null) {
+			else if (highLevel != null) {
 				if (thePlayer.getLevel() >= Integer.valueOf(theLevel)
 						&& thePlayer.getLevel() <= Integer.valueOf(highLevel)) outcome = true;
 			}
 
 		} catch(Throwable error) {
-			Bukkit.getLogger().info("Denizen: An error has occured.");
-			Bukkit.getLogger().info("--- Error follows: " + error);
+			Bukkit.getLogger().info("Denizen: An error has occured with the LEVEL requirement.");
+			Bukkit.getLogger().info("Error follows: " + error);
 		}
 
 		if (negativeRequirement != outcome) return true;
@@ -264,7 +264,7 @@ public class GetPlayer {
 
 		try {
 
-			if (theNames.contains(thePlayer.getName())) outcome = true;
+			if (theNames.contains(thePlayer.getName().toUpperCase())) outcome = true;
 
 		} catch(Throwable error) {
 			Bukkit.getLogger().info("Denizen: An error has occured.");
@@ -405,9 +405,10 @@ public class GetPlayer {
 				/* theData has item Data to check against */
 
 				else {
+					
 					if (thePlayer.getItemInHand().getTypeId() == Integer.valueOf(theItem)
 							&& thePlayer.getItemInHand().getAmount() >= Integer.valueOf(theAmount)
-							&& String.valueOf(thePlayer.getItemInHand().getData()).equals(theData)) 
+							&& thePlayer.getItemInHand().getData().getData() == Byte.valueOf(theData)) 
 						outcome = true;
 
 				}

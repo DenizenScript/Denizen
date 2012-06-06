@@ -187,7 +187,10 @@ public class CommandExecuter {
 			break;
 
 		case FINISH:
-			plugin.getConfig().set("Players." + thePlayer.getName() + "." + executerArgs[1] + "." + "Completed", true);
+			
+			int finishes = plugin.getConfig().getInt("Players." + thePlayer.getName() + "." + executerArgs[1] + "." + "Completed", 0);
+			finishes++;	
+			plugin.getConfig().set("Players." + thePlayer.getName() + "." + executerArgs[1] + "." + "Completed", finishes);
 			plugin.saveConfig();
 			break;
 
@@ -287,7 +290,7 @@ public class CommandExecuter {
 			String nameOfScript = executerArgs[4].split(" ", 3)[2];
 
 			if (commandArgs[1].equalsIgnoreCase("FINISH") || commandArgs[1].equalsIgnoreCase("FINISHED")) {
-				plugin.getConfig().set("Players." + thePlayer.getName() + "." + nameOfScript + "." + "Completed", false);
+				plugin.getConfig().set("Players." + thePlayer.getName() + "." + nameOfScript + "." + "Completed", 0);
 				plugin.saveConfig();
 			}
 			if (commandArgs[1].equalsIgnoreCase("FAIL") || commandArgs[1].equalsIgnoreCase("FAILED")) {

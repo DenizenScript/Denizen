@@ -47,13 +47,18 @@ public class GetRequirements {
 			/* Check if this is a Negative Requirement */
 			if (requirementEntry.startsWith("-")) { 
 				negativeRequirement = true; 
-				requirementEntry = requirementEntry.substring(1); 
+				requirementEntry = requirementEntry.substring(1);
 			}
 			else negativeRequirement = false;
 
 			String[] arguments = new String[25];
-			arguments = requirementEntry.split(" ");
-
+			String[] argumentPopulator = requirementEntry.split(" ");
+			
+			for (int count = 0; count < 25; count++) {
+				if (argumentPopulator.length > count) arguments[count] = argumentPopulator[count];
+				else arguments[count] = null;
+			}
+			
 			switch (Requirement.valueOf(arguments[0].toUpperCase())) {
 
 			case NONE:
@@ -81,18 +86,14 @@ public class GetRequirements {
 
 			case WORLD:  // (-)WORLD [List of Worlds]
 				List<String> theWorlds = new LinkedList<String>(); // = Arrays.asList(arguments);
-				for(String arg : arguments) {
-					theWorlds.add(arg);
-				}
+				for(String arg : arguments) if (arg != null) theWorlds.add(arg.toUpperCase());
 				theWorlds.remove(0);   /* Remove the command from the list */
 				if (Denizen.getWorld.checkWorld(theEntity, theWorlds, negativeRequirement)) numberMet++;
 				break;
 
 			case NAME:  // (-)Name [List of Names]
 				List<String> theNames = new LinkedList<String>(); // = Arrays.asList(arguments);
-				for(String arg : arguments) {
-					theNames.add(arg);
-				}
+				for(String arg : arguments) if (arg != null) theNames.add(arg.toUpperCase());
 				theNames.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkName((Player) theEntity, theNames, negativeRequirement)) numberMet++;
 				break;
@@ -102,14 +103,12 @@ public class GetRequirements {
 				break;
 				
 			case ITEM: // (-)ITEM [ITEM_NAME|#:#] (# or more)
-				String[] itemArgs = new String[1];
-				itemArgs = arguments[1].split(":", 2);
+				String[] itemArgs = splitItem(arguments[1]);
 				if (Denizen.getPlayer.checkInventory((Player) theEntity, itemArgs[0], itemArgs[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 				
 			case HOLDING: // (-)HOLDING [ITEM_NAME|#:#] (# or more)
-				String[] holdingArgs = new String[1];
-				holdingArgs = arguments[1].split(":", 2);
+				String[] holdingArgs = splitItem(arguments[1]);
 				if (Denizen.getPlayer.checkHand((Player) theEntity, holdingArgs[0], holdingArgs[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 				
@@ -119,9 +118,7 @@ public class GetRequirements {
 
 			case POTIONEFFECT: // (-)POTIONEFFECT [List of POITION_TYPESs]
 				List<String> thePotions = new LinkedList<String>(); // = Arrays.asList(arguments);
-				for(String arg : arguments) {
-					thePotions.add(arg);
-				}
+				for(String arg : arguments) if (arg != null) thePotions.add(arg.toUpperCase());
 				thePotions.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkEffects((Player) theEntity, thePotions, negativeRequirement)) numberMet++;
 				break;
@@ -137,18 +134,14 @@ public class GetRequirements {
 
 			case GROUP:
 				List<String> theGroups = new LinkedList<String>(); // = Arrays.asList(arguments);
-				for(String arg : arguments) {
-					theGroups.add(arg);
-				}
+				for(String arg : arguments) if (arg != null) theGroups.add(arg);
 				theGroups.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkGroups((Player) theEntity, theGroups, negativeRequirement)) numberMet++;
 				break;
 
 			case PERMISSION:  // (-)PERMISSION [this.permission.node]
 				List<String> thePermissions = new LinkedList<String>(); // = Arrays.asList(arguments);
-				for(String arg : arguments) {
-					thePermissions.add(arg);
-				}
+				for(String arg : arguments) if (arg != null) thePermissions.add(arg);
 				thePermissions.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkPermissions((Player) theEntity, thePermissions, negativeRequirement)) numberMet++;
 				break;
@@ -168,8 +161,27 @@ public class GetRequirements {
 
 	}
 
+	
 
+	
+	/* Converts a string with the format #:# (TypeId:Data) to a String[] */
 
+	public String[] splitItem(String theItemWithData) {
+		
+		String[] itemArgs = new String[2];
+		if (theItemWithData.split(":", 2).length == 1) {
+			itemArgs[0] = theItemWithData;
+			itemArgs[1] = null;
+			
+		}
+		else {
+			itemArgs[0] = theItemWithData.split(":", 2)[0];
+			itemArgs[1] = theItemWithData.split(":", 2)[1];
+		}
+		
+		return itemArgs;
+	}
+	
 
 
 }

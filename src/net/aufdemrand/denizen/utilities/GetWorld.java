@@ -30,31 +30,29 @@ public class GetWorld {
 		 */
 
 		try {
+			if (!Character.isDigit(theTime.charAt(0))) {
+				if (theTime.equalsIgnoreCase("DAWN")
+						&& theWorld.getTime() > 23000) outcome = true;
 
-			if (theTime.equalsIgnoreCase("DAWN")
-					&& theWorld.getTime() > 23000) outcome = true;
+				else if (theTime.equalsIgnoreCase("DAY")
+						&& theWorld.getTime() > 0
+						&& theWorld.getTime() < 13500) outcome = true;
 
-			else if (theTime.equalsIgnoreCase("DAY")
-					&& theWorld.getTime() > 0
-					&& theWorld.getTime() < 13500) outcome = true;
+				else if (theTime.equalsIgnoreCase("DUSK")
+						&& theWorld.getTime() > 12500
+						&& theWorld.getTime() < 13500) outcome = true;
 
-			else if (theTime.equalsIgnoreCase("DUSK")
-					&& theWorld.getTime() > 12500
-					&& theWorld.getTime() < 13500) outcome = true;
+				else if (theTime.equalsIgnoreCase("NIGHT")
+						&& theWorld.getTime() > 13500) outcome = true;
+			}
 
-			else if (theTime.equalsIgnoreCase("NIGHT")
-					&& theWorld.getTime() > 13500) outcome = true;
-
-			else if (theWorld.getTime() > Long.valueOf(theTime)
-					&& theWorld.getTime() < Long.valueOf(highTime)) outcome = true;
-
-			else throw new Error("TIME requirement error. Check Syntax.");
+			else if (Character.isDigit(theTime.charAt(0))) 
+				if (theWorld.getTime() > Long.valueOf(theTime)
+						&& theWorld.getTime() < Long.valueOf(highTime)) outcome = true;
 
 		} catch(Throwable error) {
-
-			Bukkit.getLogger().info("Denizen: An error has occured.");
-			Bukkit.getLogger().info("--- Error follows: " + error);
-
+			Bukkit.getLogger().info("Denizen: An error has occured with the TIME requirement.");
+			Bukkit.getLogger().info("Error follows: " + error);
 		}
 
 
@@ -64,7 +62,7 @@ public class GetWorld {
 	}
 
 
-	
+
 	/**
 	 * Checks the weather in the specified bukkit World. 
 	 *
@@ -93,8 +91,8 @@ public class GetWorld {
 			else throw new Error("checkWeather requirement error. Check Syntax.");
 
 		} catch(Throwable error) {
-			Bukkit.getLogger().info("Denizen: An error has occured.");
-			Bukkit.getLogger().info("--- Error follows: " + error);
+			Bukkit.getLogger().info("Denizen: An error has occured with a WEATHER requirement.");
+			Bukkit.getLogger().info("Error follows: " + error);
 		}
 
 		if (negativeRequirement != outcome) return true;
@@ -103,9 +101,9 @@ public class GetWorld {
 	}
 
 
-	
+
 	public boolean checkWorld(LivingEntity theEntity, List<String> theWorlds, boolean negativeRequirement) {
-		
+
 		boolean outcome = false;
 
 		/*
@@ -114,11 +112,11 @@ public class GetWorld {
 
 		try {
 
-			if (theWorlds.contains(theEntity.getWorld().getName())) outcome = true;
+			if (theWorlds.contains(theEntity.getWorld().getName().toUpperCase())) outcome = true;
 
 		} catch(Throwable error) {
-			Bukkit.getLogger().info("Denizen: An error has occured.");
-			Bukkit.getLogger().info("--- Error follows: " + error);
+			Bukkit.getLogger().info("Denizen: An error has occured with the WORLD requirement.");
+			Bukkit.getLogger().info("Error follows: " + error);
 		}
 
 		if (negativeRequirement != outcome) return true;
@@ -126,9 +124,9 @@ public class GetWorld {
 		return false;
 	}
 
-	
-	
-	
-	
+
+
+
+
 
 }

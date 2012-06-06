@@ -164,16 +164,16 @@ public class GetScript {
 
 		try {
 
-			if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[0];
+			if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[1];
 			else theAmount = "1";
 			
 			if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
-				if (plugin.getConfig().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") >= Integer.valueOf(theAmount)) outcome = true;
+				if (plugin.getConfig().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
 			}
 			
 		} catch(Throwable error) {
-			Bukkit.getLogger().info("Denizen: An error has occured.");
-			Bukkit.getLogger().info("--- Error follows: " + error);
+			Bukkit.getLogger().info("Denizen: An error has occured with the FINISHED requirement.");
+			Bukkit.getLogger().info("Error follows: " + error);
 		}
 
 		if (negativeRequirement != outcome) return true;
