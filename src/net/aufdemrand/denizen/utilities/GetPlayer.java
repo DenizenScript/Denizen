@@ -144,6 +144,9 @@ public class GetPlayer {
 				.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
 				.replace("<WORLD>", thePlayer.getWorld().getName())
 				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+		
+		
+		
 		return;
 	}
 

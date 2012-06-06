@@ -241,13 +241,25 @@ public class CommandExecuter {
 			String[] executeCommand = executerArgs[4].split(" ", 3);
 			NPC theDenizenExecuting = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0]));
 			if (commandArgs[1].equalsIgnoreCase("ASPLAYER")) {
-				thePlayer.performCommand(executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
+				thePlayer.performCommand(executeCommand[2]
+						.replace("<PLAYER>", thePlayer.getName()
+						.replace("<WORLD>", thePlayer.getWorld().getName())));
 			}
 			if (commandArgs[1].equalsIgnoreCase("ASNPC")) {
-				((Player) theDenizenExecuting.getBukkitEntity()).performCommand(executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
+				
+				((Player) theDenizenExecuting).setOp(true);
+				
+				((Player) theDenizenExecuting.getBukkitEntity()).performCommand(executeCommand[2]
+						.replace("<PLAYER>", thePlayer.getName()
+						.replace("<WORLD>", thePlayer.getWorld().getName())));
+				
+				((Player) theDenizenExecuting).setOp(false);
+				
 			}
 			if (commandArgs[1].equalsIgnoreCase("ASSERVER")) {
-				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), executeCommand[2].replace("<PLAYER>", thePlayer.getName().replace("<WORLD>", thePlayer.getWorld().getName())));
+				plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), executeCommand[2]
+						.replace("<PLAYER>", thePlayer.getName()
+						.replace("<WORLD>", thePlayer.getWorld().getName())));
 			}
 			break;
 
