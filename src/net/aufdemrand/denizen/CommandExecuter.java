@@ -270,13 +270,13 @@ public class CommandExecuter {
 			NPC theDenizenChatting = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executerArgs[0]));
 			if (executerArgs[4].split(" ", 2)[1].startsWith("*"))
 				thePlayer.sendMessage("  " + executerArgs[4].split(" ", 2)[1].replace("*", ""));
-			else thePlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player").replace("<TEXT>", executerArgs[4].split(" ", 2)[1]).replace("<PLAYER>", thePlayer.getDisplayName()).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(executerArgs[0])).getName()));
+			else thePlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player").replace("<TEXT>", executerArgs[4].split(" ", 2)[1]).replace("<PLAYER>", thePlayer.getName()).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(executerArgs[0])).getName()));
 			for (Player eachPlayer : Denizen.getPlayer.getInRange(theDenizenChatting.getBukkitEntity(),
 					plugin.getConfig().getInt("npc_to_player_chat_range_in_blocks", 15))) {
 				if (eachPlayer != thePlayer) {
 					if (executerArgs[4].split(" ", 2)[1].startsWith("*"))
 						eachPlayer.sendMessage("    " + executerArgs[4].split(" ", 2)[1].replace("*", ""));
-					else eachPlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player_bystander").replace("<TEXT>", executerArgs[4].split(" ", 2)[1]).replace("<PLAYER>", thePlayer.getDisplayName()).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(executerArgs[0])).getName()));
+					else eachPlayer.sendMessage(plugin.getConfig().getString("npc_chat_to_player_bystander").replace("<TEXT>", executerArgs[4].split(" ", 2)[1]).replace("<PLAYER>", thePlayer.getName()).replace("<NPC>", CitizensAPI.getNPCRegistry().getNPC(Integer.parseInt(executerArgs[0])).getName()));
 				}
 			}
 			break;
