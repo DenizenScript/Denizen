@@ -145,7 +145,12 @@ public class GetPlayer {
 				.replace("<WORLD>", thePlayer.getWorld().getName())
 				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
 		
+		boolean player_to_denizen_also_to_
 		
+		for (Player otherPlayer : getInRange(theDenizen.getBukkitEntity(), 7, thePlayer)) {
+			
+			
+		}
 		
 		return;
 	}

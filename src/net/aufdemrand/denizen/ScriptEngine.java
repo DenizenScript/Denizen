@@ -12,77 +12,77 @@ import org.bukkit.entity.Player;
 
 
 public class ScriptEngine {
-	
+
 	public enum Trigger {
 		CHAT, CLICK, PROXIMITY, FAIL, FINISH
 	}
 
-	
-	
+
+
 	/*
 	 * commandQue
 	 * 
 	 * Performs Denizen commands from each Player's Queue.
 	 * 
 	 */
-	
+
 	public void commandQue() {
 
 		boolean instantCommand = false;
 		if (!Denizen.playerQue.isEmpty()) {	
-		
-		for (Map.Entry<Player, List<String>> theEntry : Denizen.playerQue.entrySet()) {
-			if (!theEntry.getValue().isEmpty()) {
-			if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
-			do {
-				Denizen.commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
-				instantCommand = false;
-				if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
-				theEntry.getValue().remove(0);
-				Denizen.playerQue.put(theEntry.getKey(), theEntry.getValue());
-			} while (instantCommand == true);
-			}
-			}
+
+			for (Map.Entry<Player, List<String>> theEntry : Denizen.playerQue.entrySet()) {
+				if (!theEntry.getValue().isEmpty()) {
+					if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
+						do {
+							Denizen.commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
+							instantCommand = false;
+							if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
+							theEntry.getValue().remove(0);
+							Denizen.playerQue.put(theEntry.getKey(), theEntry.getValue());
+						} while (instantCommand == true);
+					}
+				}
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	/*
 	 * scheduleScripts
 	 * 
 	 * Schedules activity scripts to Denizens based on their schedule defined in the config.
-	 * Runs every Minecraft half-hour. 
+	 * Runs every Minecraft hour. 
 	 * 
 	 */
-	
+
 	public void scheduleScripts() {
 
-		
-		
+
+
 		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
 		if (DenizenNPCs.isEmpty()) return;
 		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
 		for (NPC aDenizen : DenizenList) {
 			if (aDenizen.isSpawned())	{
-			int denizenTime = Math.round(aDenizen.getBukkitEntity().getWorld().getTime() / 1000);
-			Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-			List<String> denizenActivities = plugin.getConfig().getStringList("Denizens." + aDenizen.getName() + ".Scheduled Activities");
-			if (!denizenActivities.isEmpty()) {
-				for (String activity : denizenActivities) {
-				if (activity.startsWith(String.valueOf(denizenTime))) {
-					// plugin.getServer().broadcastMessage("Updating Activity Script for " + aDenizen.getName());
-					plugin.getConfig().set("Denizens." + aDenizen.getName() + ".Active Activity Script", activity.split(" ", 2)[1]);
-					plugin.saveConfig();
+				int denizenTime = Math.round(aDenizen.getBukkitEntity().getWorld().getTime() / 1000);
+				Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+				List<String> denizenActivities = plugin.getConfig().getStringList("Denizens." + aDenizen.getName() + ".Scheduled Activities");
+				if (!denizenActivities.isEmpty()) {
+					for (String activity : denizenActivities) {
+						if (activity.startsWith(String.valueOf(denizenTime))) {
+							// plugin.getServer().broadcastMessage("Updating Activity Script for " + aDenizen.getName());
+							plugin.getConfig().set("Denizens." + aDenizen.getName() + ".Active Activity Script", activity.split(" ", 2)[1]);
+							plugin.saveConfig();
+						}
+					}
 				}
-				}
-			}
 			}
 		}
 	}
 
-	
+
 
 	/* ParseScript
 	 *
@@ -93,26 +93,36 @@ public class ScriptEngine {
 
 	public void parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		int CurrentStep = Denizen.getScript.getCurrentStep(thePlayer, theScript);
+		int theStep = Denizen.getScript.getCurrentStep(thePlayer, theScript);
 
 		switch (theTrigger) {
 		case CHAT:
-			List<String> ChatTriggerList = Denizen.getScript.getChatTriggers(theScript, CurrentStep);
-			for (int l=0; l < ChatTriggerList.size(); l++ ) {
-				if (theMessage.toLowerCase().contains(ChatTriggerList.get(l).replace("<PLAYER>", thePlayer.getName()).toLowerCase())) {
 
-					Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, plugin.getScripts().getString("" + theScript + ".Steps."
-							+ CurrentStep + ".Chat Trigger." + String.valueOf(l + 1) + ".Trigger").replace("/", ""));
+			/* get Chat Triggers and check each to see if there are any matches */
+			List<String> ChatTriggerList = Denizen.getScript.getChatTriggers(theScript, theStep);
+			for (int x=0; x < ChatTriggerList.size(); x++ ) {
 
-					triggerToQue(theScript, plugin.getScripts().getStringList("" + theScript + ".Steps."
-							+ CurrentStep + ".Chat Trigger." + String.valueOf(l + 1) + ".Script"), CurrentStep, thePlayer, theDenizen);
+				/* the text to trigger */
+				String chatTrigger = ChatTriggerList.get(x)
+						.replace("<PLAYER>", thePlayer.getName()).toLowerCase();
+				/* the in-game friendly Chat Trigger text */
+				String chatText = plugin.getScripts()
+						.getString(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Trigger")
+						.replace("/", "");
+
+				if (theMessage.toLowerCase().contains(chatTrigger)) {
+					/* trigger matches, let's talk to the Denizen and send the script to the PlayerQueue */
+					Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, chatText);
+					triggerToQue(theScript, theStep, thePlayer, theDenizen,
+							plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Script"));
 					return;
 				}
 			}
+
 			Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, theMessage);
 
 			if(plugin.getConfig().getBoolean("chat_globably_if_no_chat_triggers", false)) return;
-			
+
 			List<String> CurrentPlayerQue = new ArrayList<String>();
 			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
 			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
@@ -126,7 +136,7 @@ public class ScriptEngine {
 
 		case CLICK:
 			triggerToQue(theScript, plugin.getScripts().getStringList("" + theScript + ".Steps."
-					+ CurrentStep + ".Click Trigger.Script"), CurrentStep, thePlayer, theDenizen);
+					+ theStep + ".Click Trigger.Script"), theStep, thePlayer, theDenizen);
 			return;
 
 		case FINISH:
@@ -135,7 +145,7 @@ public class ScriptEngine {
 		}
 	}
 
-	
+
 
 	/* 
 	 * triggerToQue
@@ -143,10 +153,10 @@ public class ScriptEngine {
 	 * Calls ScriptHandler to handle the commands in the script. ScriptHandler returns any
 	 * raw text that needs to be sent to the player which is put in the PlayerQue for
 	 * output.
- 	 *
+	 *
 	 */
 
-	public void triggerToQue(String theScript, List<String> AddedToPlayerQue, int CurrentStep, Player thePlayer, NPC theDenizen) {
+	public void triggerToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> AddedToPlayerQue) {
 
 		List<String> CurrentPlayerQue = new ArrayList<String>();
 		if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);

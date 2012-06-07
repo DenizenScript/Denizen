@@ -13,7 +13,6 @@ import net.milkbowl.vault.permission.Permission;
 
 import net.aufdemrand.denizen.ScriptEngine;
 import net.aufdemrand.denizen.utilities.GetDenizen;
-import net.aufdemrand.denizen.utilities.GetListener;
 import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
 import net.aufdemrand.denizen.utilities.GetScript;
@@ -47,10 +46,10 @@ public class Denizen extends JavaPlugin {
 	public static DenizenCharacter getCharacter = new DenizenCharacter();
 	public static GetScript getScript = new GetScript();
 	public static GetDenizen getDenizen = new GetDenizen();
-	public static GetListener getListener = new GetListener();
 	public static GetRequirements getRequirements = new GetRequirements();
 	public static GetPlayer getPlayer = new GetPlayer();
 	public static GetWorld getWorld = new GetWorld();
+	public static Settings settings = new Settings();
 
 	public static Economy denizenEcon = null;
 	public static Permission denizenPerms = null;
@@ -324,7 +323,7 @@ public class Denizen extends JavaPlugin {
 		saveConfig();
 
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
-		getServer().getPluginManager().registerEvents(new GetListener(), this);
+		getServer().getPluginManager().registerEvents(new DenizenCharacter(), this);
 
 		/* Check for users setting delay to 0, which will in turn lock up the server. */
 		int delayTicks = getConfig().getInt("interact_delay_in_ticks", 10);
