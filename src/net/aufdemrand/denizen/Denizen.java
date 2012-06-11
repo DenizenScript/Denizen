@@ -67,6 +67,10 @@ public class Denizen extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
 
+		if (args.length < 1) {
+			sender.sendMessage(ChatColor.RED + "Use /denizen help for command reference.");
+			return true;
+		}
 
 		/*
 		 * Commands for use with the console
@@ -92,11 +96,6 @@ public class Denizen extends JavaPlugin {
 
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("You must be in-game to execute commands.");
-			return true;
-		}
-
-		if (args.length < 1) {
-			sender.sendMessage(ChatColor.RED + "Use /denizen help for command reference.");
 			return true;
 		}
 
