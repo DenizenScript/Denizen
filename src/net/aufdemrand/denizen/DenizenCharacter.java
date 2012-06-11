@@ -30,13 +30,18 @@ public class DenizenCharacter extends Character implements Listener {
 		String theScript = Denizen.getScript.getInteractScript(theDenizen, thePlayer);
 
 		if (theScript.equals("none")) {
-			List<String> CurrentPlayerQue = new ArrayList<String>();
-			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
-			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
-			CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
-					+ 0 + ";" + String.valueOf(System.currentTimeMillis()) + ";" + "CHAT " + plugin.getConfig().getString("Denizens." + theDenizen.getId() 
-							+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
-			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
+
+			String noscriptChat = null;
+
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() 
+					+ ".Texts.No Requirements Met")) 
+				noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName() 
+						+ ".Texts.No Requirements Met");
+			else
+				noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
+
+			Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, noscriptChat, "CHAT");
+			
 		}
 
 		else if (!theScript.equals("none")) {
@@ -78,11 +83,16 @@ public class DenizenCharacter extends Character implements Listener {
 
 		if (theScript.equalsIgnoreCase("NONE") && !Denizen.settings.ChatGloballyIfNoChatTriggers()) { 
 			event.setCancelled(true);
-			Denizen.getPlayer.talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
-			String noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getId() 
-					+ ".Texts.No Requirements Met", "I have nothing more to say to you at this time.");
+			String noscriptChat = null;
 
-			Denizen.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), noscriptChat, "Chat");
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getId() 
+					+ ".Texts.No Requirements Met")) 
+				noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getId() 
+						+ ".Texts.No Requirements Met");
+			else
+				noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
+
+			Denizen.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), noscriptChat, "CHAT");
 		}
 
 		if (!theScript.equalsIgnoreCase("NONE")) {

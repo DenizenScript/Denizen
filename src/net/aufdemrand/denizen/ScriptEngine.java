@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -135,9 +136,9 @@ public class ScriptEngine {
 
 				String noscriptChat = null;
 
-				if (plugin.getAssignments().contains("Denizens." + theDenizen.getId() 
+				if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() 
 						+ ".Texts.No Requirements Met")) 
-					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getId() 
+					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName() 
 							+ ".Texts.No Requirements Met");
 				else
 					noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
@@ -175,12 +176,12 @@ public class ScriptEngine {
 	 *
 	 */
 
-	public void triggerToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> AddedToPlayerQue) {
+	public void triggerToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> addedToPlayerQue) {
 
-		List<String> CurrentPlayerQue = new ArrayList<String>();
-		if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
+		List<String> currentPlayerQue = new ArrayList<String>();
+		if (Denizen.playerQue.get(thePlayer) != null) currentPlayerQue = Denizen.playerQue.get(thePlayer);
 		
-		if (!AddedToPlayerQue.isEmpty()) {
+		if (!addedToPlayerQue.isEmpty()) {
 
 			/* 
 			 * Temporarily take away the playerQue for the Player to make sure nothing gets
@@ -188,42 +189,51 @@ public class ScriptEngine {
 			 */
 			Denizen.playerQue.remove(thePlayer);
 			
-			for (String theCommand : AddedToPlayerQue) {
+			for (String theCommand : addedToPlayerQue) {
 				/* PlayerQue format: DENIZEN ID; THE SCRIPT NAME; THE STEP; SYSTEM TIME; THE COMMAND */
-				CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
+				currentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
 			}
 
-			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
+			Denizen.playerQue.put(thePlayer, currentPlayerQue);
 		}
 	}
 
 	
-	public void injectToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> AddedToPlayerQue) {
+	public void injectToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> addedToPlayerQue) {
 
-		List<String> CurrentPlayerQue = new ArrayList<String>();
-		if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
+		List<String> currentPlayerQue = new ArrayList<String>();
+		List<String> injectToPlayerQue = new ArrayList<String>();
+		if (Denizen.playerQue.get(thePlayer) != null) currentPlayerQue = Denizen.playerQue.get(thePlayer);
 		
-		if (!AddedToPlayerQue.isEmpty()) {
+		if (!addedToPlayerQue.isEmpty()) {
 
 			/* 
 			 * Temporarily take away the playerQue for the Player to make sure nothing gets
 			 * removed while working with it.
 			 */
 			Denizen.playerQue.remove(thePlayer);
-			CurrentPlayerQue.addAll(0, AddedToPlayerQue);
-			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
+
+			for (String theCommand : addedToPlayerQue) {
+				/* PlayerQue format: DENIZEN ID; THE SCRIPT NAME; THE STEP; SYSTEM TIME; THE COMMAND */
+				injectToPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
+			}
+			
+			currentPlayerQue.addAll(0, injectToPlayerQue);
+			Denizen.playerQue.put(thePlayer, currentPlayerQue);
 		}
 	}
 
 
 
-	public String[] getMultilineText (String theText) {
+	public List<String> getMultilineText (String theText) {
 
 		String[] text = theText.split(" ");
-		ArrayList<String> processedText = new ArrayList<String>();
+		List<String> processedText = new ArrayList<String>();
 
-		if (text.length > Denizen.settings.MultiLineTextMaximumLength()) {
+		if (theText.length() > Denizen.settings.MultiLineTextMaximumLength()) {
 
+			processedText.add(0, "");
+			
 			int word = 1; int line = 0;
 
 			while (word < text.length) {
@@ -231,13 +241,13 @@ public class ScriptEngine {
 					processedText.set(line, processedText.get(line) + " " + text[word]);
 					word++;
 				}
-				else line++;
+				else { line++; processedText.add(""); }
 			}
 		}
-
-		String[] array = processedText.toArray(new String[processedText.size()]);
 		
-		return array;
+		else processedText.add(0, theText);
+
+		return processedText;
 	}
 
 

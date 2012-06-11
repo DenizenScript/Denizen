@@ -80,10 +80,10 @@ public class GetScript {
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer) {
 
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		String theScript = "none";
-		List<String> scriptList = plugin.getConfig().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
+		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
 		if (scriptList.isEmpty()) { return theScript; }
 		List<String> interactScripts = new ArrayList<String>();
 
@@ -134,11 +134,11 @@ public class GetScript {
 
 	public int getCurrentStep(Player thePlayer, String theScript) {
 
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		int currentStep = 1;
-		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
-			currentStep =  plugin.getConfig().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
+		if (plugin.getAssignments().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
+			currentStep =  plugin.getAssignments().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
 
 		return currentStep;
 	}
@@ -156,7 +156,7 @@ public class GetScript {
 
 	public boolean getScriptCompletes(Player thePlayer, String theScript, String theAmount, boolean negativeRequirement) {
 
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		boolean outcome = false;
 
 		/*
@@ -168,8 +168,8 @@ public class GetScript {
 			if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[1];
 			else theAmount = "1";
 
-			if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
-				if (plugin.getConfig().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
+			if (plugin.getAssignments().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
+				if (plugin.getAssignments().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
 			}
 
 		} catch(Throwable error) {
@@ -189,8 +189,8 @@ public class GetScript {
 
 		boolean outcome = false;
 
-		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
-			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) outcome = true;
+		if (plugin.getAssignments().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
+			if (plugin.getAssignments().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) outcome = true;
 		}
 
 		if (negativeRequirement != outcome) return true;

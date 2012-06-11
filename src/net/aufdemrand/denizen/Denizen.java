@@ -85,6 +85,7 @@ public class Denizen extends JavaPlugin {
 		if (args[0].equalsIgnoreCase("reload") && !(sender instanceof Player)) {
 			reloadConfig();
 			reloadScripts();
+			reloadAssignments();
 			getServer().broadcastMessage("Denizens config.yml and scripts.yml reloaded.");
 			return true;
 		}
@@ -320,7 +321,8 @@ public class Denizen extends JavaPlugin {
 
 		reloadConfig();
 		reloadScripts();
-		getConfig().options().copyDefaults(true);
+		reloadAssignments();
+		// getConfig().options().copyDefaults(true);
 
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new DenizenCharacter(), this);
@@ -440,7 +442,7 @@ public class Denizen extends JavaPlugin {
 	    assignmentConfig = YamlConfiguration.loadConfiguration(assignmentConfigFile);
 	 
 	    // Look for defaults in the jar
-	    InputStream defConfigStream = getResource("assignmentConfig.yml");
+	    InputStream defConfigStream = getResource("assignments.yml");
 	    if (defConfigStream != null) {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        assignmentConfig.setDefaults(defConfig);

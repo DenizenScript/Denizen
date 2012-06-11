@@ -43,7 +43,6 @@ public class CommandExecuter {
 		NPC theDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0]));
 		String theScript = executeArgs[1];
 		String currentStep = executeArgs[2];
-		int stepNumber = Integer.valueOf(executeArgs[2]);
 
 		/* Populate 25 command arguments with values, rest with null */
 		String[] commandArgs = new String[25];
@@ -281,12 +280,12 @@ public class CommandExecuter {
 		case EMOTE:
 		case SHOUT:  
 		case CHAT:  // CHAT [Message]
-			String[] textToChat = Denizen.scriptEngine.getMultilineText(executeArgs[4].split(" ", 2)[1]);
+			List<String> textToChat = Denizen.scriptEngine.getMultilineText(executeArgs[4].split(" ", 2)[1]);
 			List<String> AddedToPlayerQue = new ArrayList<String>();
 
-			if (textToChat.length > 1) {
-				for (int z = 0; z < textToChat.length; z++) {
-					AddedToPlayerQue.add(commandArgs[0] + " " + textToChat[z]);
+			if (textToChat.size() > 1) {
+				for (int z = 0; z < textToChat.size(); z++) {
+					AddedToPlayerQue.add(commandArgs[0] + " " + textToChat.get(z));
 				}
 
 				if (Denizen.settings.MultipleLinesOfTextWaitForInteractDelay()) {
@@ -294,7 +293,7 @@ public class CommandExecuter {
 					break;
 				}
 			}
-			else AddedToPlayerQue.add(commandArgs[0] + " " + textToChat[0]);
+			else AddedToPlayerQue.add(commandArgs[0] + " " + textToChat.get(0));
 
 			for (String message : AddedToPlayerQue) 
 				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, message.split(" ", 2)[1], commandArgs[0]);
