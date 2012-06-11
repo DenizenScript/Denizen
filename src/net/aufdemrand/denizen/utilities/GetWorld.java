@@ -2,8 +2,14 @@ package net.aufdemrand.denizen.utilities;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.Denizen;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -121,6 +127,26 @@ public class GetWorld {
 
 		if (negativeRequirement != outcome) return true;
 
+		return false;
+	}
+
+
+
+	public boolean spawnMob(String mobType, String theAmount, String theLocationBookmark, NPC theDenizen) {
+	
+		Location theSpawnLoc = null;
+		if (theAmount == null) theAmount = "1";
+		
+		if (theLocationBookmark == null) theSpawnLoc = theDenizen.getBukkitEntity().getLocation();		
+		else theSpawnLoc = Denizen.getDenizen.getBookmark(theDenizen, theLocationBookmark, "Location");
+		
+		if (theSpawnLoc != null) {
+			for (int cx = 1; cx < Integer.valueOf(theAmount); cx++) {
+				theSpawnLoc.getWorld().spawnCreature(theSpawnLoc, EntityType.valueOf(mobType));	
+			}
+			return true;
+		}
+		
 		return false;
 	}
 

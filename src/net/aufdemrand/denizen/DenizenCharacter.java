@@ -9,7 +9,6 @@ import net.citizensnpcs.api.npc.character.Character;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.npc.NPC;
 
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -27,7 +26,6 @@ public class DenizenCharacter extends Character implements Listener {
 	 */
 
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
-
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		String theScript = Denizen.getScript.getInteractScript(theDenizen, thePlayer);
 
@@ -53,13 +51,11 @@ public class DenizenCharacter extends Character implements Listener {
 
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
-
-
-
-
 		}
 	}
 
+	
+	
 
 	/* 
 	 * PlayerChatListener
@@ -71,38 +67,27 @@ public class DenizenCharacter extends Character implements Listener {
 
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
-
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		boolean ignoreNoMatch = Denizen.settings.ChatGloballyIfNoChatTriggers();
 
 		NPC theDenizen = Denizen.getDenizen.getClosest(event.getPlayer(), 
 				Denizen.settings.PlayerToNpcChatRangeInBlocks());
 
 		if (theDenizen == null) return;
-
+		
 		String theScript = Denizen.getScript.getInteractScript(theDenizen, event.getPlayer());
 
-		if (theScript.equalsIgnoreCase("NONE") && !ignoreNoMatch) { 
-
+		if (theScript.equalsIgnoreCase("NONE") && !Denizen.settings.ChatGloballyIfNoChatTriggers()) { 
 			event.setCancelled(true);
-			
 			Denizen.getPlayer.talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
+			String noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getId() 
+					+ ".Texts.No Requirements Met", "I have nothing more to say to you at this time.");
 
-			List<String> CurrentPlayerQue = new ArrayList<String>();
-			if (Denizen.playerQue.get(event.getPlayer()) != null) CurrentPlayerQue = Denizen.playerQue.get(event.getPlayer());
-			Denizen.playerQue.remove(event.getPlayer());  // Should keep the talk queue from triggering mid-add
-
-			CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
-					+ 0 + ";" + String.valueOf(System.currentTimeMillis()) + ";" + "CHAT " + plugin.getConfig().getString("Denizens." + theDenizen.getId() 
-							+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
-
-			Denizen.playerQue.put(event.getPlayer(), CurrentPlayerQue);
-
+			Denizen.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), noscriptChat, "Chat");
 		}
 
-		else if (!theScript.equalsIgnoreCase("NONE"))  {
-			event.setCancelled(true);
-			Denizen.scriptEngine.parseScript(theDenizen, event.getPlayer(),	Denizen.getScript.getNameFromEntry(theScript), event.getMessage(), ScriptEngine.Trigger.CHAT);
+		if (!theScript.equalsIgnoreCase("NONE")) {
+			if (Denizen.scriptEngine.parseScript(theDenizen, event.getPlayer(),	Denizen.getScript.getNameFromEntry(theScript), event.getMessage(), ScriptEngine.Trigger.CHAT))
+				event.setCancelled(true);
 		}
 
 		return;
@@ -110,48 +95,50 @@ public class DenizenCharacter extends Character implements Listener {
 
 
 
-	
+
 	@Override
 	public void load(DataKey arg0) throws NPCLoadException {
-	
+
 		/* Nothing to do here, yet. */
-	
+
 	}
 
 	@Override
 	public void save(DataKey arg0) {
 
 		/* Nothing to do here, yet. */
-	
+
 	}
 
-	
 
-	
+
+
 	/*
 	 * onRightClick/onLeftClick
 	 * 
 	 * Handles the event when clicking on a Denizen
 	 * 
 	 */
-	
-    @Override
-    public void onRightClick(NPC npc, Player player) {
-  		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && Denizen.getDenizen.checkCooldown(player)) {
-			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
-			DenizenClicked(npc, player);
-		}
-    }
-	
-    
 
-    @Override
-    public void onLeftClick(NPC npc, Player player) {
-  		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && Denizen.getDenizen.checkCooldown(player)) {
+	@Override
+	public void onRightClick(NPC npc, Player player) {
+		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && Denizen.getDenizen.checkCooldown(player)) {
 			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
 			DenizenClicked(npc, player);
 		}
-    }
+	}
+
+
+
+	@Override
+	public void onLeftClick(NPC npc, Player player) {
+		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && Denizen.getDenizen.checkCooldown(player)) {
+			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
+			DenizenClicked(npc, player);
+		}
+	}
+
+
 
 
 

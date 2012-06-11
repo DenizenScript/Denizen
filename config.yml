@@ -1,29 +1,68 @@
-# DENIZENS are helpful, interactive Citizens!  Denizens run off of mini scripts with steps and events.
-# They can be used in hundreds of different ways, from tutorials, to questing, to administrating and more!
-# 
-# Default Denizen options let you tweak the specifics of your Denizens.
-
-debug_mode: false
-
+# Interact delay sets the pace of the 'Player Queue' and 'Denizen Queue' 
+# execution, which is where commands triggered by scripts are stored.
+# Recommend 10-20.
 interact_delay_in_ticks: 10
-npc_chat_range_in_blocks: 7
-player_to_npc_chat_range_in_blocks: 2
-npc_to_player_chat_range_in_blocks: 7
-player_to_npc_shout_range_in_blocks: 15
 
-player_chat_to_npc: You say to <NPC>, <TEXT>
-player_chat_to_npc_bystander: <PLAYER> says to <NPC>, <TEXT>
-npc_chat_to_player: <NPC> says to you, <TEXT>
-npc_chat_to_player_bystander: <NPC> says to <PLAYER>, <TEXT>
-npc_whisper_to_player: <NPC> whispers to you, <TEXT>
-npc_whisper_to_player_bystander: <NPC> whispers something to <PLAYER>.
-npc_shout_to_player: <NPC> shouts at you, <TEXT>
-npc_shout_to_player_bystander: <NPC> shouts at <PLAYER>, <TEXT>
+# Should chat/whisper/etc. text that is more than one line wait for
+# the interact delay for each line?
+multiple_lines_of_text_wait_for_interact_delay: true
 
+# How long should the maximum line length be for multi-line text?
+multi_line_text_maximum_length: 55
+
+# By default, players can talk to Denizens even if there are no
+# chat triggers in the script. I believe this is best for RPG-type
+# behavior. Change this to true if you would like chat near a 
+# Denizen to be global if there are no chat triggers for the
+# script being triggered.
 chat_globally_if_no_chat_triggers: false
 
-chat_color: white
-whisper_color: gray
-shout_color: red
-narrate_color: green
-announce_color: yellow
+# Furthermore, if there are chat triggers available, and the Player
+# doesn't match one, should the player still talk and recieve a
+# response from the Denizen, or should he just chat globally and
+# ignore the Denizen. Change this to true if you would like
+# chat near a Denizen to be global if there are available chat
+# triggers, but the player failed to match one.
+chat_globally_if_failed_chat_triggers: false
+
+# Should players around the player interacting with the Denizen
+# hear the conversation?
+bystanders_hear_player_to_npc_chat: true
+bystanders_hear_npc_to_player_chat: true
+
+# This set of nodes defines ranges for different types of
+# chat/interaction/etc.
+player_to_npc_chat_range_in_blocks: 2
+npc_to_player_chat_range_in_blocks: 7
+npc_emote_range_in_blocks: 7
+player_to_npc_shout_range_in_blocks: 15
+npc_to_player_shout_range_in_blocks: 15
+player_to_npc_whisper_range_in_blocks: 2
+npc_to_player_whisper_range_in_blocks: 3
+
+# These nodes define how chatting, shouting, etc. is displayed
+# to players in the game. <PLAYER>, <NPC>, and <TEXT> are all
+# replaceable variables. Remember to use " around your string
+# if your text contains a single apostrophe.
+player_chat_to_npc: "You say to <NPC>, '<TEXT>'"
+player_chat_to_npc_bystander: "<PLAYER> says to <NPC>, '<TEXT>'"
+npc_chat_to_bystanders: "<NPC> says, '<TEXT>'"
+npc_chat_to_player: "<NPC> says to you, '<TEXT>'"
+npc_chat_to_player_bystander: "<NPC> says to <PLAYER>, '<TEXT>'"
+
+player_whisper_to_npc: "You whisper to <NPC>, '<TEXT>'"
+player_whisper_to_npc_bystander: "<PLAYER> whispers something to <NPC>."
+npc_whisper_to_bystanders: "<NPC> whispers, '<TEXT>'"
+npc_whisper_to_player: "<NPC> whispers to you, '<TEXT>'"
+npc_whisper_to_player_bystander: "<NPC> whispers something to <PLAYER>."
+
+player_shout_to_bystanders: "You shout, '<TEXT>'"
+player_shout_to_bystanders_bystander: "<PLAYER> shouts, '<TEXT>'"
+npc_shout_to_bystanders: "<NPC> shouts, '<TEXT>'"
+npc_shout_to_player: "<NPC> shouts at you, '<TEXT>'"
+npc_shout_to_player_bystander: "<NPC> shouts at <PLAYER>, '<TEXT>'"
+
+# Default texts that Denizens use when interacting. These
+# can also be set per-denizen, which will override the
+# defaults set below.
+default_no_requirements_met_text: Sorry, I have nothing else for you right now.

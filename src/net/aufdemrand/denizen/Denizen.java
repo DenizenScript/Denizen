@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -36,23 +37,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Denizen extends JavaPlugin {
 
 	public static Map<Player, List<String>> playerQue = new ConcurrentHashMap<Player, List<String>>();
-	public static Map<NPC, Location> previousDenizenLocation = new ConcurrentHashMap<NPC, Location>(); 
-	public static Map<Player, Long> interactCooldown = new ConcurrentHashMap<Player, Long>();
-	public static Map<Player, String> proximityCheck = new ConcurrentHashMap<Player, String>();
-	public static Boolean DebugMode = false;
+	public static Map<NPC, Location>   previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
+	public static Map<Player, Long>  interactCooldown = new ConcurrentHashMap<Player, Long>();
+	public static Map<Player, String>  proximityCheck = new ConcurrentHashMap<Player, String>();
+	public static Boolean                   DebugMode = false;
 
-	public static ScriptEngine scriptEngine = new ScriptEngine();
+	public static ScriptEngine       scriptEngine = new ScriptEngine();
 	public static CommandExecuter commandExecuter = new CommandExecuter();
-	public static DenizenCharacter getCharacter = new DenizenCharacter();
-	public static GetScript getScript = new GetScript();
-	public static GetDenizen getDenizen = new GetDenizen();
+	public static DenizenCharacter   getCharacter = new DenizenCharacter();
+	public static GetScript             getScript = new GetScript();
+	public static GetDenizen           getDenizen = new GetDenizen();
 	public static GetRequirements getRequirements = new GetRequirements();
-	public static GetPlayer getPlayer = new GetPlayer();
-	public static GetWorld getWorld = new GetWorld();
-	public static Settings settings = new Settings();
+	public static GetPlayer             getPlayer = new GetPlayer();
+	public static GetWorld               getWorld = new GetWorld();
+	public static Settings               settings = new Settings();
 
-	public static Economy denizenEcon = null;
-	public static Permission denizenPerms = null;
+	public static Economy             denizenEcon = null;
+	public static Permission         denizenPerms = null;
 
 
 
@@ -72,8 +73,8 @@ public class Denizen extends JavaPlugin {
 		 */
 
 		if (args[0].equalsIgnoreCase("save") && !(sender instanceof Player)) {
-			saveConfig();
-			getServer().broadcastMessage("Denizens config.yml saved.");
+			saveAssignments();
+			getServer().broadcastMessage("denizens.yml saved.");
 			return true;
 		}
 
@@ -232,15 +233,16 @@ public class Denizen extends JavaPlugin {
 		}
 
 		if (args[0].equalsIgnoreCase("save")) {
-			saveConfig();
-			player.sendMessage(ChatColor.GREEN + "Saved config.yml and scripts.yml.");
+			saveAssignments();
+			player.sendMessage(ChatColor.GREEN + "denizens.yml saved.");
 			return true;
 		}
 
 		if (args[0].equalsIgnoreCase("reload")) {
+			reloadAssignments();
 			reloadConfig();
 			reloadScripts();
-			player.sendMessage(ChatColor.GREEN + "Denizens config.yml and scripts.yml reloaded.");
+			player.sendMessage(ChatColor.GREEN + "config.yml, denizens.yml and scripts.yml reloaded.");
 			return true;
 		}
 
@@ -275,8 +277,8 @@ public class Denizen extends JavaPlugin {
 				List<String> locationList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
 				locationList.add(args[2] + " " + player.getWorld().getName() + ";" + player.getLocation().getX() + ";" +
 						player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
-				getConfig().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
-				saveConfig();
+				getAssignments().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
+				saveAssignments();
 				player.sendMessage(ChatColor.GOLD + "Location bookmark added. Your denizen can now reference this location.");
 				return true;
 			}
@@ -287,10 +289,8 @@ public class Denizen extends JavaPlugin {
 				blockList.add(args[2] + " " + player.getWorld().getName() + ";" + targetBlock.getX() + ";" +
 						targetBlock.getY() + ";" + targetBlock.getZ());
 
-				getConfig().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Block", blockList);				
-
-				saveConfig();
-
+				getAssignments().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Block", blockList);				
+				saveAssignments();
 				player.sendMessage(ChatColor.GOLD + "Block bookmark added. Your denizen can now reference this block.");
 				return true;
 			}
@@ -310,29 +310,26 @@ public class Denizen extends JavaPlugin {
 	@Override
 	public void onEnable() {
 
-		if (!setupEconomy() ) {
+		if (!setupEconomy()) {
 			getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no Vault-compatible Economy Plugin found! Install an economy system!", getDescription().getName()));
 			getServer().getPluginManager().disablePlugin(this);
-			return;  }
+			return; 
+		}
 
+		/* Set up Vault for Permissions */
 		setupPermissions();
 
 		reloadConfig();
 		reloadScripts();
 		getConfig().options().copyDefaults(true);
-		saveConfig();
 
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new DenizenCharacter(), this);
 
-		/* Check for users setting delay to 0, which will in turn lock up the server. */
-		int delayTicks = getConfig().getInt("interact_delay_in_ticks", 10);
-		if (delayTicks == 0) delayTicks = 1;
-
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() { scriptEngine.commandQue(); }
-		}, delayTicks, delayTicks);
+		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
@@ -355,6 +352,7 @@ public class Denizen extends JavaPlugin {
 	public void onDisable() {
 		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
 		Bukkit.getServer().getScheduler().cancelTasks(this);
+		saveAssignments();
 	}
 
 
@@ -391,8 +389,8 @@ public class Denizen extends JavaPlugin {
 	 * 
 	 */
 
-	private FileConfiguration customConfig = null;
-	private File customConfigFile = null;
+	private FileConfiguration scriptConfig = null;
+	private File scriptConfigFile = null;
 
 	public void reloadScripts() {
 
@@ -402,26 +400,72 @@ public class Denizen extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		if (customConfigFile == null) {
-			customConfigFile = new File(getDataFolder(), "read-only-scripts.yml");
+		if (scriptConfigFile == null) {
+			scriptConfigFile = new File(getDataFolder(), "read-only-scripts.yml");
 		}
-		customConfig = YamlConfiguration.loadConfiguration(customConfigFile);
+		scriptConfig = YamlConfiguration.loadConfiguration(scriptConfigFile);
 
 		// Look for defaults in the jar
 		InputStream defConfigStream = getResource("read-only-scripts.yml");
 		if (defConfigStream != null) {
 			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			customConfig.setDefaults(defConfig);
+			scriptConfig.setDefaults(defConfig);
 		}
 	}
 
 
 	public FileConfiguration getScripts() {
-		if (customConfig == null) {
+		if (scriptConfig == null) {
 			reloadScripts();
 		}
-		return customConfig;
+		return scriptConfig;
 	}
 
+	
+	
+	
+	/*
+	 * reloadAssignments/getAssignments/saveAssignments
+	 * 
+	 * Reloads, retrieves and saves information from the Denizen/denizens.yml.
+	 * 
+	 */
+	
+	private FileConfiguration assignmentConfig = null;
+	private File assignmentConfigFile = null;
+
+	public void reloadAssignments() {
+	    if (assignmentConfigFile == null) {
+	    assignmentConfigFile = new File(getDataFolder(), "assignments.yml");
+	    }
+	    assignmentConfig = YamlConfiguration.loadConfiguration(assignmentConfigFile);
+	 
+	    // Look for defaults in the jar
+	    InputStream defConfigStream = getResource("assignmentConfig.yml");
+	    if (defConfigStream != null) {
+	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+	        assignmentConfig.setDefaults(defConfig);
+	    }
+	}
+
+	public FileConfiguration getAssignments() {
+	    if (assignmentConfig == null) {
+	        reloadAssignments();
+	    }
+	    return assignmentConfig;
+	}
+
+	public void saveAssignments() {
+	    if (assignmentConfig == null || assignmentConfigFile == null) {
+	    return;
+	    }
+	    try {
+	        assignmentConfig.save(assignmentConfigFile);
+	    } catch (IOException ex) {
+	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + assignmentConfigFile, ex);
+	    }
+	}
+	
+	
 
 }

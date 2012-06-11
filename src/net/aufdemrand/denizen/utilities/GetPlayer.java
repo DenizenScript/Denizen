@@ -62,10 +62,10 @@ public class GetPlayer {
 	}
 
 
+	
+	
 
-
-
-
+	
 	/**
 	 * Gets a Map of a player's inventory with a bukkit Material and Integer amount for each item. Unlike bukkit's build in getInventory, this will add up the total number of each Material. 
 	 *
@@ -135,23 +135,30 @@ public class GetPlayer {
 	 */
 
 	public void talkToDenizen(NPC theDenizen, Player thePlayer, String theMessage) {
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-
-		thePlayer.sendMessage(plugin.getConfig().getString("player_chat_to_npc", "You say to <NPC>, <TEXT>")
+		
+		thePlayer.sendMessage(Denizen.settings.PlayerChatToNpc()
 				.replace("<NPC>", theDenizen.getName())
 				.replace("<TEXT>", theMessage)
 				.replace("<PLAYER>", thePlayer.getName())
 				.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
 				.replace("<WORLD>", thePlayer.getWorld().getName())
 				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
-		
-		boolean player_to_denizen_also_to_
-		
-		for (Player otherPlayer : getInRange(theDenizen.getBukkitEntity(), 7, thePlayer)) {
-			
-			
+
+		if (Denizen.settings.BystandersHearNpcToPlayerChat()) {
+			int theRange = Denizen.settings.PlayerToNpcChatRangeInBlocks();
+			if (theRange > 0) {
+				for (Player otherPlayer : getInRange(theDenizen.getBukkitEntity(), theRange, thePlayer)) {
+					otherPlayer.sendMessage(Denizen.settings.PlayerChatToNpcBystander()
+							.replace("<NPC>", theDenizen.getName())
+							.replace("<TEXT>", theMessage)
+							.replace("<PLAYER>", thePlayer.getName())
+							.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
+							.replace("<WORLD>", thePlayer.getWorld().getName())
+							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+				}
+			}
 		}
-		
+
 		return;
 	}
 
@@ -194,7 +201,7 @@ public class GetPlayer {
 			}
 
 		} catch(Throwable error) {
-			Bukkit.getLogger().info("Denizen: An error has occured with the LEVEL requirement.");
+			Bukkit.getLogger().info("Denizen: An error has occured with a LEVEL requirement.");
 			Bukkit.getLogger().info("Error follows: " + error);
 		}
 
@@ -413,7 +420,7 @@ public class GetPlayer {
 				/* theData has item Data to check against */
 
 				else {
-					
+
 					if (thePlayer.getItemInHand().getTypeId() == Integer.valueOf(theItem)
 							&& thePlayer.getItemInHand().getAmount() >= Integer.valueOf(theAmount)
 							&& thePlayer.getItemInHand().getData().getData() == Byte.valueOf(theData)) 
@@ -424,13 +431,13 @@ public class GetPlayer {
 
 			/* Just check Material */
 			else {
-				if (thePlayer.getItemInHand().getTypeId() == Integer.valueOf(theItem)
+				if (thePlayer.getItemInHand().getType() == Material.valueOf(theItem)
 						&& thePlayer.getItemInHand().getAmount() >= Integer.valueOf(theAmount)) 
 					outcome = true;
 			}
 
 		} catch(Throwable error) {
-			Bukkit.getLogger().info("Denizen: An error has occured.");
+			Bukkit.getLogger().info("Denizen: An error has occured with a HOLDING requirement.");
 			Bukkit.getLogger().info("--- Error follows: " + error);
 		}
 
@@ -534,10 +541,10 @@ public class GetPlayer {
 		return false;
 	}
 
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Checks the permissions of the player against a given value with Vault. 
 	 *
@@ -562,7 +569,7 @@ public class GetPlayer {
 					if (thePlayer.hasPermission(thePermission)) outcome = true;
 				}
 			}	
-			
+
 		} catch(Throwable error) {
 			Bukkit.getLogger().info("Denizen: An error has occured. Check your command syntax.");
 			Bukkit.getLogger().info("--- Error follows: " + error);
@@ -572,12 +579,12 @@ public class GetPlayer {
 
 		return false;
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	/**
 	 * Checks the permissions of the player against a given value with Vault. 
 	 *
@@ -600,10 +607,10 @@ public class GetPlayer {
 			for (String theGroup : theGroups) {
 				if (theGroup != null) {
 					if (Denizen.denizenPerms.playerInGroup(thePlayer, theGroup)
-				|| Denizen.denizenPerms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), theGroup)) outcome = true;
+							|| Denizen.denizenPerms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), theGroup)) outcome = true;
 				}
 			}	
-			
+
 		} catch(Throwable error) {
 			Bukkit.getLogger().info("Denizen: An error has occured. Check your command syntax.");
 			Bukkit.getLogger().info("--- Error follows: " + error);
@@ -613,5 +620,5 @@ public class GetPlayer {
 
 		return false;
 	}
-	
+
 }

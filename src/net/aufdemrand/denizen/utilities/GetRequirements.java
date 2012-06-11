@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.util.AbstractList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +26,6 @@ public class GetRequirements {
 
 
 
-	@SuppressWarnings("null")
 	public boolean check(String theScript, LivingEntity theEntity, boolean isPlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		

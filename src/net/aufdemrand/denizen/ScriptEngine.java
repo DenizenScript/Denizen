@@ -33,15 +33,14 @@ public class ScriptEngine {
 
 			for (Map.Entry<Player, List<String>> theEntry : Denizen.playerQue.entrySet()) {
 				if (!theEntry.getValue().isEmpty()) {
-					if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
-						do {
-							Denizen.commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
-							instantCommand = false;
-							if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
-							theEntry.getValue().remove(0);
-							Denizen.playerQue.put(theEntry.getKey(), theEntry.getValue());
-						} while (instantCommand == true);
-					}
+				if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
+				do { Denizen.commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
+					instantCommand = false;
+					if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
+					theEntry.getValue().remove(0);
+					Denizen.playerQue.put(theEntry.getKey(), theEntry.getValue());
+				} while (instantCommand == true);
+				}
 				}
 			}
 		}
@@ -59,8 +58,6 @@ public class ScriptEngine {
 
 	public void scheduleScripts() {
 
-
-
 		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
 		if (DenizenNPCs.isEmpty()) return;
 		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
@@ -68,13 +65,13 @@ public class ScriptEngine {
 			if (aDenizen.isSpawned())	{
 				int denizenTime = Math.round(aDenizen.getBukkitEntity().getWorld().getTime() / 1000);
 				Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-				List<String> denizenActivities = plugin.getConfig().getStringList("Denizens." + aDenizen.getName() + ".Scheduled Activities");
+				List<String> denizenActivities = plugin.getAssignments().getStringList("Denizens." + aDenizen.getName() + ".Scheduled Activities");
 				if (!denizenActivities.isEmpty()) {
 					for (String activity : denizenActivities) {
 						if (activity.startsWith(String.valueOf(denizenTime))) {
 							// plugin.getServer().broadcastMessage("Updating Activity Script for " + aDenizen.getName());
-							plugin.getConfig().set("Denizens." + aDenizen.getName() + ".Active Activity Script", activity.split(" ", 2)[1]);
-							plugin.saveConfig();
+							plugin.getAssignments().set("Denizens." + aDenizen.getName() + ".Active Activity Script", activity.split(" ", 2)[1]);
+							plugin.saveAssignments();
 						}
 					}
 				}
@@ -91,58 +88,80 @@ public class ScriptEngine {
 	 *
 	 */
 
-	public void parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
+	public boolean parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		int theStep = Denizen.getScript.getCurrentStep(thePlayer, theScript);
 
 		switch (theTrigger) {
+
 		case CHAT:
 
-			/* get Chat Triggers and check each to see if there are any matches */
+			/* 
+			 * Get Chat Triggers and check each to see if there are any matches. 
+			 */
 			List<String> ChatTriggerList = Denizen.getScript.getChatTriggers(theScript, theStep);
 			for (int x=0; x < ChatTriggerList.size(); x++ ) {
 
-				/* the text to trigger */
+				/* 
+				 * The text required to trigger.
+				 */
 				String chatTrigger = ChatTriggerList.get(x)
 						.replace("<PLAYER>", thePlayer.getName()).toLowerCase();
-				/* the in-game friendly Chat Trigger text */
+				/* 
+				 * The in-game friendly Chat Trigger text to display if triggered. 
+				 */
 				String chatText = plugin.getScripts()
 						.getString(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Trigger")
 						.replace("/", "");
 
 				if (theMessage.toLowerCase().contains(chatTrigger)) {
-					/* trigger matches, let's talk to the Denizen and send the script to the PlayerQueue */
+					/* 
+					 * Trigger matches, let's talk to the Denizen and send the script to the PlayerQueue. 
+					 */
 					Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, chatText);
 					triggerToQue(theScript, theStep, thePlayer, theDenizen,
 							plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Script"));
-					return;
+					return true;
 				}
 			}
 
-			Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, theMessage);
+			/* 
+			 * No matching triggers. 
+			 */
 
-			if(plugin.getConfig().getBoolean("chat_globably_if_no_chat_triggers", false)) return;
+			if(Denizen.settings.ChatGloballyIfFailedChatTriggers()) return false;
+			else {
+				Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, theMessage);
 
-			List<String> CurrentPlayerQue = new ArrayList<String>();
-			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
-			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
+				String noscriptChat = null;
 
-			CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";"
-					+ 0 + ";" + String.valueOf(System.currentTimeMillis()) + ";" + "CHAT " + plugin.getConfig().getString("Denizens." + theDenizen.getId() 
-							+ ".Texts.No Script Interact", "I have nothing to say to you at this time."));
+				if (plugin.getAssignments().contains("Denizens." + theDenizen.getId() 
+						+ ".Texts.No Requirements Met")) 
+					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getId() 
+							+ ".Texts.No Requirements Met");
+				else
+					noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
 
-			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
-			return;
+				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, noscriptChat, "CHAT");
+				return true;
+			}
 
 		case CLICK:
-			triggerToQue(theScript, plugin.getScripts().getStringList("" + theScript + ".Steps."
-					+ theStep + ".Click Trigger.Script"), theStep, thePlayer, theDenizen);
-			return;
+			triggerToQue(theScript, theStep, thePlayer, theDenizen, 
+					plugin.getScripts().getStringList("" + theScript + ".Steps." + theStep + ".Click Trigger.Script"));
+			return true;
 
 		case FINISH:
+			break;
 
+		case FAIL:
+			break;
 
+		case PROXIMITY:
+			break;
 		}
+
+		return false;
 	}
 
 
@@ -160,50 +179,67 @@ public class ScriptEngine {
 
 		List<String> CurrentPlayerQue = new ArrayList<String>();
 		if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
-		Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
-
+		
 		if (!AddedToPlayerQue.isEmpty()) {
 
+			/* 
+			 * Temporarily take away the playerQue for the Player to make sure nothing gets
+			 * removed while working with it.
+			 */
+			Denizen.playerQue.remove(thePlayer);
+			
 			for (String theCommand : AddedToPlayerQue) {
-
-				String[] theCommandText;
-				theCommandText = theCommand.split(" ");
-
-				// Longer than 40, probably a long chat that needs multiline formatting.
-				if (theCommand.length() > 40) {
-
-					switch (CommandExecuter.Command.valueOf(theCommandText[0].toUpperCase())) {
-					case SHOUT:	case CHAT: case WHISPER: case ANNOUNCE:	case NARRATE:
-						int word = 1; int line = 0;
-						ArrayList<String> multiLineCommand = new ArrayList<String>();
-						multiLineCommand.add(theCommandText[0]);
-						while (word < theCommandText.length) {
-							if (line==0) {
-								if (multiLineCommand.get(line).length() + theCommandText[word].length() + theDenizen.getName().length() < 48) {
-									multiLineCommand.set(line, multiLineCommand.get(line) + " " + theCommandText[word]);
-									word++;
-								}
-								else { line++; multiLineCommand.add(theCommandText[0] + " *"); }
-							}
-							else {
-								if (multiLineCommand.get(line).length() + theCommandText[word].length() < 58) {
-									multiLineCommand.set(line, multiLineCommand.get(line) + " " + theCommandText[word]);
-									word++;
-								}
-								else { line++; multiLineCommand.add(theCommandText[0] + " *"); }
-							}
-						}
-						for (String eachCommand : multiLineCommand) {
-							CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + eachCommand);
-						}
-					}
-				}
-
-				else CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
+				/* PlayerQue format: DENIZEN ID; THE SCRIPT NAME; THE STEP; SYSTEM TIME; THE COMMAND */
+				CurrentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
 			}
+
 			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
 		}
 	}
+
+	
+	public void injectToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> AddedToPlayerQue) {
+
+		List<String> CurrentPlayerQue = new ArrayList<String>();
+		if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
+		
+		if (!AddedToPlayerQue.isEmpty()) {
+
+			/* 
+			 * Temporarily take away the playerQue for the Player to make sure nothing gets
+			 * removed while working with it.
+			 */
+			Denizen.playerQue.remove(thePlayer);
+			CurrentPlayerQue.addAll(0, AddedToPlayerQue);
+			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
+		}
+	}
+
+
+
+	public String[] getMultilineText (String theText) {
+
+		String[] text = theText.split(" ");
+		ArrayList<String> processedText = new ArrayList<String>();
+
+		if (text.length > Denizen.settings.MultiLineTextMaximumLength()) {
+
+			int word = 1; int line = 0;
+
+			while (word < text.length) {
+				if (processedText.get(line).length() + text[word].length() < Denizen.settings.MultiLineTextMaximumLength()) {
+					processedText.set(line, processedText.get(line) + " " + text[word]);
+					word++;
+				}
+				else line++;
+			}
+		}
+
+		String[] array = processedText.toArray(new String[processedText.size()]);
+		
+		return array;
+	}
+
 
 
 

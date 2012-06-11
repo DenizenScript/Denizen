@@ -15,11 +15,12 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public class GetScript {
 
-	
+	private Denizen plugin;
+
+
 	/*
 	 * ConcatenateScripts
 	 * 
@@ -33,41 +34,41 @@ public class GetScript {
 
 	public void ConcatenateScripts() throws IOException {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		
-		try {
-		
-		PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-scripts.yml"));
-		File file = new File(plugin.getDataFolder() + File.separator + "scripts");
-		File[] files = file.listFiles();
-		for (int i = 0; i < files.length; i++) {
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
-			String fileName = files[i].getName();
-			if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
-			
-			System.out.println("Processing " + files[i].getPath() + "... ");
-			BufferedReader br = new BufferedReader(new FileReader(files[i]
-					.getPath()));
-			String line = br.readLine();
-			while (line != null) {
-				pw.println(line);
-				line = br.readLine();
+		try {
+
+			PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-scripts.yml"));
+			File file = new File(plugin.getDataFolder() + File.separator + "scripts");
+			File[] files = file.listFiles();
+			for (int i = 0; i < files.length; i++) {
+
+				String fileName = files[i].getName();
+				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
+
+					System.out.println("Processing " + files[i].getPath() + "... ");
+					BufferedReader br = new BufferedReader(new FileReader(files[i]
+							.getPath()));
+					String line = br.readLine();
+					while (line != null) {
+						pw.println(line);
+						line = br.readLine();
+					}
+					br.close();
+
+				}
 			}
-			br.close();
-			
-			}
-		}
-		pw.close();
-		System.out.println("OK! Scripts loaded!");
-		
+			pw.close();
+			System.out.println("OK! Scripts loaded!");
+
 		} catch (Throwable error) {
 			System.out.println("Woah! No scripts to load!");		
 		}
-		
+
 	}
 
-	
-	
+
+
 	/* 
 	 * GetInteractScript
 	 *
@@ -79,7 +80,7 @@ public class GetScript {
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		String theScript = "none";
 		List<String> scriptList = plugin.getConfig().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
@@ -97,7 +98,7 @@ public class GetScript {
 			isPlayer = true;
 		}
 		else theEntity = theDenizen.getBukkitEntity();
-		
+
 		for (String thisScript : scriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
 			if (Denizen.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) interactScripts.add(thisScript);
@@ -133,7 +134,7 @@ public class GetScript {
 
 	public int getCurrentStep(Player thePlayer, String theScript) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		int currentStep = 1;
 		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
@@ -155,7 +156,7 @@ public class GetScript {
 
 	public boolean getScriptCompletes(Player thePlayer, String theScript, String theAmount, boolean negativeRequirement) {
 
-		Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		boolean outcome = false;
 
 		/*
@@ -166,11 +167,11 @@ public class GetScript {
 
 			if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[1];
 			else theAmount = "1";
-			
+
 			if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
 				if (plugin.getConfig().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
 			}
-			
+
 		} catch(Throwable error) {
 			Bukkit.getLogger().info("Denizen: An error has occured with the FINISHED requirement.");
 			Bukkit.getLogger().info("Error follows: " + error);
@@ -181,21 +182,21 @@ public class GetScript {
 		return false;
 	}
 
-	
+
 	public boolean getScriptFail(Player thePlayer, String theScript, boolean negativeRequirement) {
 
-		Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		boolean outcome = false;
-		
+
 		if (plugin.getConfig().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
 			if (plugin.getConfig().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) outcome = true;
 		}
 
 		if (negativeRequirement != outcome) return true;
-		
+
 		return false;
-		
+
 	}
 
 
@@ -211,7 +212,7 @@ public class GetScript {
 
 	public List<String> getChatTriggers(String theScript, Integer currentStep) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
@@ -249,8 +250,17 @@ public class GetScript {
 
 
 
+	public boolean zap(Player thePlayer, String theScript, String theStep, String newStep) {
 
+		if (newStep == null) {
+				plugin.getAssignments().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(theStep) + 1);
+				plugin.saveAssignments();
+		}
+		else { 
+			plugin.getAssignments().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(newStep)); 
+			plugin.saveAssignments();
+		}
 
-
-
+		return true;
+	}
 }
