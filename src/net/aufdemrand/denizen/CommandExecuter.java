@@ -147,7 +147,7 @@ public class CommandExecuter {
 			}
 
 			else {
-				ItemStack itemToTake = new ItemStack(Material.valueOf(commandArgs[1]));
+				ItemStack itemToTake = new ItemStack(Material.valueOf(commandArgs[1].toUpperCase()));
 				if (commandArgs.length > 2)	itemToTake.setAmount(Integer.valueOf(commandArgs[2]));
 				else itemToTake.setAmount(1);
 				thePlayer.getInventory().removeItem(itemToTake);
