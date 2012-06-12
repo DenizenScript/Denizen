@@ -245,7 +245,7 @@ public class ScriptEngine {
 			}
 		}
 		
-		else processedText.add(0, theText);
+		else processedText.add(1, theText);
 
 		return processedText;
 	}
