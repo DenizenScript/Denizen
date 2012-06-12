@@ -61,7 +61,7 @@ public class CommandExecuter {
 
 		/* commandArgs [0] [1]      [2] [...]   */
 		case ZAP:   /* ZAP (Step #)             */
-			Denizen.getScript.zap(thePlayer, theScript, theStep, commandArgs[1]);
+			Denizen.getScript.zap(thePlayer, theScript, currentStep, commandArgs[1]);
 			break;
 
 
