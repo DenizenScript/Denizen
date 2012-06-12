@@ -1,8 +1,5 @@
 package net.aufdemrand.denizen;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.character.Character;
@@ -18,6 +15,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class DenizenCharacter extends Character implements Listener {
 
+	private Denizen plugin;
+	
+	
 	/*
 	 * DenizenClicked
 	 * 
@@ -26,7 +26,7 @@ public class DenizenCharacter extends Character implements Listener {
 	 */
 
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		String theScript = Denizen.getScript.getInteractScript(theDenizen, thePlayer);
 
 		if (theScript.equals("none")) {
@@ -40,8 +40,8 @@ public class DenizenCharacter extends Character implements Listener {
 			else
 				noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
 
-			Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, noscriptChat, "CHAT");
-			
+			Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, Denizen.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+
 		}
 
 		else if (!theScript.equals("none")) {
@@ -49,7 +49,15 @@ public class DenizenCharacter extends Character implements Listener {
 		}
 	}
 
-
+	
+	
+	
+	
+	/*
+	 * Will be used for the Proximity trigger for Trigger scripts.
+	 * Currently unused (obviously)
+	 *  
+	 */
 
 	@EventHandler
 	public void PlayerProximityListener(PlayerMoveEvent event) {
@@ -59,8 +67,9 @@ public class DenizenCharacter extends Character implements Listener {
 		}
 	}
 
+
 	
-	
+
 
 	/* 
 	 * PlayerChatListener
@@ -72,13 +81,13 @@ public class DenizenCharacter extends Character implements Listener {
 
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		NPC theDenizen = Denizen.getDenizen.getClosest(event.getPlayer(), 
 				Denizen.settings.PlayerToNpcChatRangeInBlocks());
 
 		if (theDenizen == null) return;
-		
+
 		String theScript = Denizen.getScript.getInteractScript(theDenizen, event.getPlayer());
 
 		if (theScript.equalsIgnoreCase("NONE") && !Denizen.settings.ChatGloballyIfNoChatTriggers()) { 
@@ -92,7 +101,8 @@ public class DenizenCharacter extends Character implements Listener {
 			else
 				noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
 
-			Denizen.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), noscriptChat, "CHAT");
+			Denizen.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), Denizen.scriptEngine.formatChatText(noscriptChat, "CHAT", event.getPlayer(), theDenizen)[0], null, "CHAT");
+
 		}
 
 		if (!theScript.equalsIgnoreCase("NONE")) {
@@ -120,13 +130,20 @@ public class DenizenCharacter extends Character implements Listener {
 
 	}
 
+	
 
 
 
 	/*
 	 * onRightClick/onLeftClick
 	 * 
-	 * Handles the event when clicking on a Denizen
+	 * Initiates the Click Trigger event when clicking on a Denizen.
+	 * 
+	 * Note: Soon turning left click into a Damage trigger, if Denizen is set to 'damageable'.
+	 * If Denizen is not 'damageable', left click will mimic right click, that is, trigger the
+	 * Click Trigger for the script.
+	 * 
+	 * Right click will remain Click Trigger.
 	 * 
 	 */
 

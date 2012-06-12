@@ -15,7 +15,8 @@ import org.bukkit.entity.Player;
 
 public class GetDenizen {
 
-
+	private Denizen plugin;
+	
 
 	/*
 	 * checkCooldown
@@ -33,6 +34,7 @@ public class GetDenizen {
 	}
 
 
+	
 
 
 	/*
@@ -63,6 +65,8 @@ public class GetDenizen {
 		return closestDenizen;
 	}
 
+	
+	
 
 
 	/*
@@ -93,6 +97,8 @@ public class GetDenizen {
 
 
 
+	
+	
 	/*
 	 * getBookmark
 	 * 
@@ -102,7 +108,7 @@ public class GetDenizen {
 
 	public Location getBookmark(NPC theDenizen, String nameOfLocation, String BlockOrLocation) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		List<String> locationList = null;
 		String[] theLocation = null;
 		Location locationBookmark = null;
@@ -145,78 +151,49 @@ public class GetDenizen {
 
 
 	/**
-	 * Makes a Denizen talk to a Player. Also has replaceable data, end-user, when using <NPC> <TEXT> <PLAYER> <FULLPLAYERNAME> <WORLD> or <HEALTH>.
+	 * Makes a Denizen talk to a Player.
 	 *
 	 * @param  theDenizen  the Citizens2 NPC object that is doing the talking.
 	 * @param  thePlayer  the Bukkit Player object to talk to.
-	 * @param commandArgs 
+	 * @param  commandArgs 
 	 */
 
-	public void talkToPlayer(NPC theDenizen, Player thePlayer, String theMessage, String messageType) {
+	public void talkToPlayer(NPC theDenizen, Player thePlayer, String thePlayerMessage, String theBystanderMessage, String messageType) {
 
-		String playerMessageFormat = null;
-		String bystanderMessageFormat = null;
 		int theRange = 0;
-		boolean narration = false;
-		boolean toPlayer;
-		
-		if (thePlayer == null) toPlayer = false;
-		else toPlayer = true;
 		
 		if (messageType.equalsIgnoreCase("SHOUT")) {
-			playerMessageFormat = Denizen.settings.NpcShoutToPlayer();
-			bystanderMessageFormat = Denizen.settings.NpcShoutToPlayerBystander();
-			if (!toPlayer) bystanderMessageFormat = Denizen.settings.NpcShoutToBystanders();
 			theRange = Denizen.settings.NpcToPlayerShoutRangeInBlocks();
 		}
 		
 		else if (messageType.equalsIgnoreCase("WHISPER")) {
-			playerMessageFormat = Denizen.settings.NpcWhisperToPlayer();
-			bystanderMessageFormat = Denizen.settings.NpcWhisperToPlayerBystander();
-			if (!toPlayer) bystanderMessageFormat = Denizen.settings.NpcWhisperToBystanders();
 			theRange = Denizen.settings.NpcToPlayerWhisperRangeInBlocks();
 		}
 		
 		else if (messageType.equalsIgnoreCase("EMOTE")) {
-			toPlayer = false;
-			bystanderMessageFormat = "<NPC> <TEXT>";
 			theRange = Denizen.settings.NpcEmoteRangeInBlocks();
 		}
 
-		else if (messageType.equalsIgnoreCase("NARRATE")) {
-			narration = true;
-			playerMessageFormat = "<TEXT>";
-		}
-		
 		else {
-			playerMessageFormat = Denizen.settings.NpcChatToPlayer();
-			bystanderMessageFormat = Denizen.settings.NpcChatToPlayerBystander();
-			if (!toPlayer) bystanderMessageFormat = Denizen.settings.NpcChatToBystanders();
 			theRange = Denizen.settings.NpcToPlayerChatRangeInBlocks();
 		}
 
-		if (toPlayer) thePlayer.sendMessage(playerMessageFormat
-				.replace("<NPC>", theDenizen.getName())
-				.replace("<TEXT>", theMessage)
-				.replace("<PLAYER>", thePlayer.getName())
-				.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
-				.replace("<WORLD>", thePlayer.getWorld().getName())
-				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+		if (thePlayerMessage != null) thePlayer.sendMessage(thePlayerMessage);
 
-		if ((Denizen.settings.BystandersHearNpcToPlayerChat() || !toPlayer) && !narration) {
+		if ((Denizen.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
 			if (theRange > 0) {
 				for (Player otherPlayer : Denizen.getPlayer.getInRange(theDenizen.getBukkitEntity(), theRange, thePlayer)) {
-					otherPlayer.sendMessage(bystanderMessageFormat
-							.replace("<NPC>", theDenizen.getName())
-							.replace("<TEXT>", theMessage)
-							.replace("<PLAYER>", thePlayer.getName())
-							.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
-							.replace("<WORLD>", thePlayer.getWorld().getName())
-							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+					otherPlayer.sendMessage(theBystanderMessage);
 				}
 			}
 		}
 
 		return;
 	}
+	
+	
+	
+	
+	
+	
 }

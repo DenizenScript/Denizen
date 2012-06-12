@@ -26,19 +26,6 @@ public class Settings {
 
 	/*
 
-	# Should chat/whisper/etc. text that is more than one line wait for
-	# the interact delay for each line?
-	multiple_lines_of_text_wait_for_interact_delay: true
-
-	 */
-
-	public boolean MultipleLinesOfTextWaitForInteractDelay() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getBoolean("multiple_lines_of_text_wait_for_interact_delay", true);
-	}
-
-	/*
-
 	# How long should the maximum line length be for multi-line text?
 	multi_line_text_maximum_length: 55
 

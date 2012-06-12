@@ -31,7 +31,6 @@ public class GetScript {
 	 * 
 	 */
 
-
 	public void ConcatenateScripts() throws IOException {
 
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
@@ -68,6 +67,8 @@ public class GetScript {
 	}
 
 
+	
+	
 
 	/* 
 	 * GetInteractScript
@@ -80,7 +81,7 @@ public class GetScript {
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		String theScript = "none";
 		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
@@ -122,6 +123,8 @@ public class GetScript {
 	}
 
 
+	
+	
 
 	/* 
 	 * GetCurrentStep
@@ -134,7 +137,7 @@ public class GetScript {
 
 	public int getCurrentStep(Player thePlayer, String theScript) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		int currentStep = 1;
 		if (plugin.getAssignments().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
@@ -145,6 +148,7 @@ public class GetScript {
 
 
 
+	
 
 	/* 
 	 * GetScriptComplete/GetScriptFail
@@ -156,7 +160,7 @@ public class GetScript {
 
 	public boolean getScriptCompletes(Player thePlayer, String theScript, String theAmount, boolean negativeRequirement) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		boolean outcome = false;
 
 		/*
@@ -182,7 +186,7 @@ public class GetScript {
 		return false;
 	}
 
-
+	
 	public boolean getScriptFail(Player thePlayer, String theScript, boolean negativeRequirement) {
 
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
@@ -201,6 +205,8 @@ public class GetScript {
 
 
 
+	
+	
 	/* GetChatTriggers
 	 *
 	 * Requires the Script and the Current Step.
@@ -231,6 +237,8 @@ public class GetScript {
 
 
 
+	
+	
 	/* 
 	 * GetScriptName
 	 *
@@ -248,6 +256,7 @@ public class GetScript {
 	}
 
 
+	
 
 
 	public boolean zap(Player thePlayer, String theScript, String theStep, String newStep) {

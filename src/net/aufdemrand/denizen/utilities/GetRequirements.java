@@ -161,7 +161,12 @@ public class GetRequirements {
 	
 
 	
-	/* Converts a string with the format #:# (TypeId:Data) to a String[] */
+	/* 
+	 * Converts a string with the format #:# (TypeId:Data) to a String[] 
+	 * 
+	 * Element [0] -- TypeId
+	 * Element [1] -- Data
+	 */
 
 	public String[] splitItem(String theItemWithData) {
 		

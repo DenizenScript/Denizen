@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -18,8 +17,9 @@ public class ScriptEngine {
 		CHAT, CLICK, PROXIMITY, FAIL, FINISH
 	}
 
-
-
+	private Denizen plugin;
+	
+	
 	/*
 	 * commandQue
 	 * 
@@ -34,19 +34,21 @@ public class ScriptEngine {
 
 			for (Map.Entry<Player, List<String>> theEntry : Denizen.playerQue.entrySet()) {
 				if (!theEntry.getValue().isEmpty()) {
-				if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
-				do { Denizen.commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
-					instantCommand = false;
-					if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
-					theEntry.getValue().remove(0);
-					Denizen.playerQue.put(theEntry.getKey(), theEntry.getValue());
-				} while (instantCommand == true);
-				}
+					if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
+						do { Denizen.commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
+						instantCommand = false;
+						if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
+						theEntry.getValue().remove(0);
+						Denizen.playerQue.put(theEntry.getKey(), theEntry.getValue());
+						} while (instantCommand == true);
+					}
 				}
 			}
 		}
 	}
 
+	
+	
 
 
 	/*
@@ -55,6 +57,8 @@ public class ScriptEngine {
 	 * Schedules activity scripts to Denizens based on their schedule defined in the config.
 	 * Runs every Minecraft hour. 
 	 * 
+	 * This will be the backbone to automated activity scripts. Currently this is not used
+	 * any further than what's in this method, but will be build upon soon.
 	 */
 
 	public void scheduleScripts() {
@@ -65,7 +69,7 @@ public class ScriptEngine {
 		for (NPC aDenizen : DenizenList) {
 			if (aDenizen.isSpawned())	{
 				int denizenTime = Math.round(aDenizen.getBukkitEntity().getWorld().getTime() / 1000);
-				Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+				plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 				List<String> denizenActivities = plugin.getAssignments().getStringList("Denizens." + aDenizen.getName() + ".Scheduled Activities");
 				if (!denizenActivities.isEmpty()) {
 					for (String activity : denizenActivities) {
@@ -80,6 +84,8 @@ public class ScriptEngine {
 		}
 	}
 
+	
+	
 
 
 	/* ParseScript
@@ -89,8 +95,8 @@ public class ScriptEngine {
 	 *
 	 */
 
-	public boolean parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage,  Trigger theTrigger) {
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+	public boolean parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage, Trigger theTrigger) {
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		int theStep = Denizen.getScript.getCurrentStep(thePlayer, theScript);
 
 		switch (theTrigger) {
@@ -143,7 +149,8 @@ public class ScriptEngine {
 				else
 					noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
 
-				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, noscriptChat, "CHAT");
+				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, Denizen.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+				
 				return true;
 			}
 
@@ -167,12 +174,12 @@ public class ScriptEngine {
 
 
 
+	
+	
 	/* 
 	 * triggerToQue
 	 *
-	 * Calls ScriptHandler to handle the commands in the script. ScriptHandler returns any
-	 * raw text that needs to be sent to the player which is put in the PlayerQue for
-	 * output.
+	 * Places items (addedToPlayerQue) into the playerQue for command execution. 
 	 *
 	 */
 
@@ -180,7 +187,7 @@ public class ScriptEngine {
 
 		List<String> currentPlayerQue = new ArrayList<String>();
 		if (Denizen.playerQue.get(thePlayer) != null) currentPlayerQue = Denizen.playerQue.get(thePlayer);
-		
+
 		if (!addedToPlayerQue.isEmpty()) {
 
 			/* 
@@ -188,7 +195,7 @@ public class ScriptEngine {
 			 * removed while working with it.
 			 */
 			Denizen.playerQue.remove(thePlayer);
-			
+
 			for (String theCommand : addedToPlayerQue) {
 				/* PlayerQue format: DENIZEN ID; THE SCRIPT NAME; THE STEP; SYSTEM TIME; THE COMMAND */
 				currentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
@@ -199,12 +206,22 @@ public class ScriptEngine {
 	}
 
 	
+	
+	
+	
+	/*  
+	 * Injects commands into the playerQue. Originally made for working with multiline text,
+	 * but currently unused. I'm sure it will be useful again. This is different than 
+	 * triggerToQue in the sense that triggerToQue adds elements to the end of the playerQue
+	 * and this adds the items to the beginning of the queue.
+	 */
+	
 	public void injectToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> addedToPlayerQue) {
 
 		List<String> currentPlayerQue = new ArrayList<String>();
 		List<String> injectToPlayerQue = new ArrayList<String>();
 		if (Denizen.playerQue.get(thePlayer) != null) currentPlayerQue = Denizen.playerQue.get(thePlayer);
-		
+
 		if (!addedToPlayerQue.isEmpty()) {
 
 			/* 
@@ -217,13 +234,23 @@ public class ScriptEngine {
 				/* PlayerQue format: DENIZEN ID; THE SCRIPT NAME; THE STEP; SYSTEM TIME; THE COMMAND */
 				injectToPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
 			}
-			
+
 			currentPlayerQue.addAll(1, injectToPlayerQue);
 			Denizen.playerQue.put(thePlayer, currentPlayerQue);
 		}
 	}
 
-
+	
+	
+	
+	
+	/* 
+	 * Takes long text and splits it into multiple string elements in a list
+	 * based on the config setting for MaximumLength, default 55.
+	 * 
+	 * Text should probably be formatted first with formatChatText, since 
+	 * formatting usually adds some length to the beginning and end of the text.
+	 */
 
 	public List<String> getMultilineText (String theText) {
 
@@ -233,8 +260,8 @@ public class ScriptEngine {
 		if (theText.length() > Denizen.settings.MultiLineTextMaximumLength()) {
 
 			processedText.add(0, "");
-			
-			int word = 1; int line = 0;
+
+			int word = 0; int line = 0;
 
 			while (word < text.length) {
 				if (processedText.get(line).length() + text[word].length() < Denizen.settings.MultiLineTextMaximumLength()) {
@@ -244,14 +271,85 @@ public class ScriptEngine {
 				else { line++; processedText.add(""); }
 			}
 		}
-		
+
 		else processedText.add(0, theText);
 
 		return processedText;
 	}
 
 
+	
+	
+	
+	/* 
+	 * Takes chat/whisper/etc. text and formats it based on the config settings. 
+	 * Returns a String[]. 
+	 * 
+	 * Element [0] contains formatted text for the player interacting.
+	 * Element [1] contains formatted text for bystanders.
+	 * 
+	 * Either can be null if only one type of text is required.
+	 */
+	
+	public String[] formatChatText (String theMessage, String messageType, Player thePlayer, NPC theDenizen) {
 
+		String playerMessageFormat = null;
+		String bystanderMessageFormat = null;
+
+		boolean toPlayer;
+
+		if (thePlayer == null) toPlayer = false;
+		else toPlayer = true;
+
+		if (messageType.equalsIgnoreCase("SHOUT")) {
+			playerMessageFormat = Denizen.settings.NpcShoutToPlayer();
+			bystanderMessageFormat = Denizen.settings.NpcShoutToPlayerBystander();
+			if (!toPlayer) bystanderMessageFormat = Denizen.settings.NpcShoutToBystanders();
+		}
+
+		else if (messageType.equalsIgnoreCase("WHISPER")) {
+			playerMessageFormat = Denizen.settings.NpcWhisperToPlayer();
+			bystanderMessageFormat = Denizen.settings.NpcWhisperToPlayerBystander();
+			if (!toPlayer) bystanderMessageFormat = Denizen.settings.NpcWhisperToBystanders();
+		}
+
+		else if (messageType.equalsIgnoreCase("EMOTE")) {
+			toPlayer = false;
+			bystanderMessageFormat = "<NPC> <TEXT>";
+		}
+
+		else if (messageType.equalsIgnoreCase("NARRATE")) {
+			playerMessageFormat = "<TEXT>";
+		}
+
+		else { /* CHAT */
+			playerMessageFormat = Denizen.settings.NpcChatToPlayer();
+			bystanderMessageFormat = Denizen.settings.NpcChatToPlayerBystander();
+			if (!toPlayer) bystanderMessageFormat = Denizen.settings.NpcChatToBystanders();
+		}
+
+		if (playerMessageFormat != null)
+			playerMessageFormat = playerMessageFormat
+			.replace("<NPC>", theDenizen.getName())
+			.replace("<TEXT>", theMessage)
+			.replace("<PLAYER>", thePlayer.getName())
+			.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
+			.replace("<WORLD>", thePlayer.getWorld().getName())
+			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()));
+
+		if (bystanderMessageFormat != null)
+			bystanderMessageFormat = bystanderMessageFormat
+			.replace("<NPC>", theDenizen.getName())
+			.replace("<TEXT>", theMessage)
+			.replace("<PLAYER>", thePlayer.getName())
+			.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
+			.replace("<WORLD>", thePlayer.getWorld().getName())
+			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()));
+		
+		String[] returnedText = {playerMessageFormat, bystanderMessageFormat};
+		
+		return returnedText;
+	}
 
 
 

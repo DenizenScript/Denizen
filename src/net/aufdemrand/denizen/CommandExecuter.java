@@ -31,10 +31,24 @@ public class CommandExecuter {
 
 	private Denizen plugin;
 
+
+	/*
+	 * Executes a command defined in theStep (not to be confused with currentStep ;)
+	 * 
+	 * I am attempting to keep down the size of this method by branching out large
+	 * sections of code into their own methods.
+	 *
+	 * These commands normally come from the playerQue or denizenQue, but don't have
+	 * to necessarily, as long as the proper format is sent in theStep.
+	 * 
+	 * Syntax of theStep -- elements are divided by semi-colons.
+	 * 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Time added to Queue; 4 Command
+	 */
+
 	public void execute(Player thePlayer, String theStep) {
 
 		// Syntax of theStep
-		// 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Time added to Queue; 4 Command
+		// 
 
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
@@ -54,9 +68,9 @@ public class CommandExecuter {
 		}
 
 		if (commandArgs[0].startsWith("^")) commandArgs[0] = commandArgs[0].substring(1);
-		
+
 		/* Now to execute the command... */
-		
+
 		switch (Command.valueOf(commandArgs[0].toUpperCase())) {
 
 		/* commandArgs [0] [1]      [2] [...]   */
@@ -271,39 +285,44 @@ public class CommandExecuter {
 
 
 		case ANNOUNCE: 
+			break;
+
 		case NARRATE:  
-
-
-
-
 		case WHISPER: 
 		case EMOTE:
 		case SHOUT:  
-		case CHAT:  // CHAT [Message]
-			List<String> textToChat = Denizen.scriptEngine.getMultilineText(executeArgs[4].split(" ", 2)[1]);
-			List<String> AddedToPlayerQue = new ArrayList<String>();
+		case CHAT:  // CHAT|WHISPER|EMOTE|SHOUT|NARRATE [Message]
 
-			if (textToChat.size() > 1) {
-				for (int z = 0; z < textToChat.size(); z++) {
-					AddedToPlayerQue.add(commandArgs[0] + " " + textToChat.get(z));
-				}
+			/* 
+			 * I had to take out the feature for multiline text following the script delay. It was getting too messy!
+			 * Hopefully nobody will notice ;) ...but I'm sure they will, so I will put that off for another day.
+			 * 
+			 */
 
-				if (Denizen.settings.MultipleLinesOfTextWaitForInteractDelay()) {
-					Denizen.scriptEngine.injectToQue(theScript, Integer.valueOf(currentStep), thePlayer, theDenizen, AddedToPlayerQue);
-					break;
+			/* Format the text for player and bystander, and turn into multiline if necessary */
+
+			String[] formattedText = Denizen.scriptEngine.formatChatText(executeArgs[4].split(" ", 2)[1], commandArgs[0], thePlayer, theDenizen);
+
+			List<String> playerText = Denizen.scriptEngine.getMultilineText(formattedText[0]);
+			List<String> bystanderText = Denizen.scriptEngine.getMultilineText(formattedText[1]);
+
+			/* Spew the text to the world. */
+
+			if (!playerText.isEmpty()) {
+				for (String text : playerText) { /* First playerText */
+					Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, text, null, commandArgs[0]);
 				}
 			}
-			else AddedToPlayerQue.add(commandArgs[0] + " " + textToChat.get(0));
 
-			for (String message : AddedToPlayerQue) 
-				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, message.split(" ", 2)[1], commandArgs[0]);
-
+			for (String text : bystanderText) { /* now bystanderText */
+				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, null, text, commandArgs[0]);
+			}
 			break;
 
 
 		case RESET: // RESET FINISH(ED) [Name of Script]  or  RESET FAIL(ED) [NAME OF SCRIPT]
-		        String executeScript;
-		        if (commandArgs.length == 2) executeScript=theScript; else executeScript=executeArgs[4].split(" ", 3)[2];
+			String executeScript;
+			if (commandArgs.length == 2) executeScript=theScript; else executeScript=executeArgs[4].split(" ", 3)[2];
 			if (commandArgs[1].equalsIgnoreCase("FINISH") || commandArgs[1].equalsIgnoreCase("FINISHED")) {
 				plugin.getAssignments().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Completed", 0);
 				plugin.saveAssignments();
@@ -322,9 +341,11 @@ public class CommandExecuter {
 
 
 		case WAIT:
-			/* This may be a bit hack-y, at least it seems like it to me.
+			/* 
+			 * This may be a bit hack-y, at least it seems like it to me.
 			 * but, if it isn't broken.. you know what they say. 
 			 */
+			
 			List<String> CurrentPlayerQue = new ArrayList<String>();
 			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
 			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
@@ -343,6 +364,10 @@ public class CommandExecuter {
 		default:
 			break;
 		}
+		
+		return;
 	}
 
+	
+	
 }
