@@ -98,7 +98,7 @@ public class CommandExecuter {
 
 		case CAST: // CAST [POTION_TYPE] [DURATION] [AMPLIFIER]
 			thePlayer.addPotionEffect(new PotionEffect(
-					PotionEffectType.getByName(commandArgs[1]), Integer.valueOf(commandArgs[2]) * 20, Integer.valueOf(commandArgs[3])));
+					PotionEffectType.getByName(commandArgs[1].toUpperCase()), Integer.valueOf(commandArgs[2]) * 20, Integer.valueOf(commandArgs[3])));
 			break;
 
 
