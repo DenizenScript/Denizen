@@ -126,7 +126,7 @@ public class GetRequirements {
 				break;
 
 			case FAILED: // (-)SCRIPT [Script Name]
-				if (Denizen.getScript.getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement))
+				if (Denizen.getScript.getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
 				break;
 
 			case GROUP:
