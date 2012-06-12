@@ -185,7 +185,7 @@ public class GetDenizen {
 
 		else if (messageType.equalsIgnoreCase("NARRATE")) {
 			narration = true;
-			bystanderMessageFormat = "<TEXT>";
+			playerMessageFormat = "<TEXT>";
 		}
 		
 		else {
