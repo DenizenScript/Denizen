@@ -61,7 +61,7 @@ public class CommandExecuter {
 
 		/* commandArgs [0] [1]      [2] [...]   */
 		case ZAP:   /* ZAP (Step #)             */
-			Denizen.getScript.zap(thePlayer, theScript, theStep, commandArgs[1]);
+			Denizen.getScript.zap(thePlayer, theScript, currentStep, commandArgs[1]);
 			break;
 
 
@@ -98,7 +98,7 @@ public class CommandExecuter {
 
 		case CAST: // CAST [POTION_TYPE] [DURATION] [AMPLIFIER]
 			thePlayer.addPotionEffect(new PotionEffect(
-					PotionEffectType.getByName(commandArgs[1]), Integer.valueOf(commandArgs[2]) * 20, Integer.valueOf(commandArgs[3])));
+					PotionEffectType.getByName(commandArgs[1].toUpperCase()), Integer.valueOf(commandArgs[2]) * 20, Integer.valueOf(commandArgs[3])));
 			break;
 
 
@@ -147,7 +147,7 @@ public class CommandExecuter {
 			}
 
 			else {
-				ItemStack itemToTake = new ItemStack(Material.valueOf(commandArgs[1]));
+				ItemStack itemToTake = new ItemStack(Material.valueOf(commandArgs[1].toUpperCase()));
 				if (commandArgs.length > 2)	itemToTake.setAmount(Integer.valueOf(commandArgs[2]));
 				else itemToTake.setAmount(1);
 				thePlayer.getInventory().removeItem(itemToTake);
@@ -302,13 +302,15 @@ public class CommandExecuter {
 
 
 		case RESET: // RESET FINISH(ED) [Name of Script]  or  RESET FAIL(ED) [NAME OF SCRIPT]
+		        String executeScript;
+		        if (commandArgs.length == 2) executeScript=theScript; else executeScript=executeArgs[4].split(" ", 3)[2];
 			if (commandArgs[1].equalsIgnoreCase("FINISH") || commandArgs[1].equalsIgnoreCase("FINISHED")) {
-				plugin.getAssignments().set("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0);
+				plugin.getAssignments().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Completed", 0);
 				plugin.saveAssignments();
 			}
 
 			if (commandArgs[1].equalsIgnoreCase("FAIL") || commandArgs[1].equalsIgnoreCase("FAILED")) {
-				plugin.getAssignments().set("Players." + thePlayer.getName() + "." + theScript + "." + "Failed", false);
+				plugin.getAssignments().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Failed", false);
 				plugin.saveAssignments();
 			}
 

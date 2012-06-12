@@ -141,8 +141,8 @@ public class GetWorld {
 		else theSpawnLoc = Denizen.getDenizen.getBookmark(theDenizen, theLocationBookmark, "Location");
 		
 		if (theSpawnLoc != null) {
-			for (int cx = 1; cx < Integer.valueOf(theAmount); cx++) {
-				theSpawnLoc.getWorld().spawnCreature(theSpawnLoc, EntityType.valueOf(mobType));	
+			for (int cx = 1; cx <= Integer.valueOf(theAmount); cx++) {
+				theSpawnLoc.getWorld().spawnCreature(theSpawnLoc, EntityType.valueOf(mobType.toUpperCase()));	
 			}
 			return true;
 		}

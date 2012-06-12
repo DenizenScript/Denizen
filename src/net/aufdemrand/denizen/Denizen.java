@@ -274,7 +274,7 @@ public class Denizen extends JavaPlugin {
 				return true;
 			}
 			else if (args[1].equalsIgnoreCase("location")) {
-				List<String> locationList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
+				List<String> locationList = getAssignments().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
 				locationList.add(args[2] + " " + player.getWorld().getName() + ";" + player.getLocation().getX() + ";" +
 						player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
 				getAssignments().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
@@ -284,7 +284,7 @@ public class Denizen extends JavaPlugin {
 			}
 
 			else if (args[1].equalsIgnoreCase("block")) {
-				List<String> blockList = getConfig().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Block");
+				List<String> blockList = getAssignments().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Block");
 				Block targetBlock = player.getTargetBlock(null, 6);
 				blockList.add(args[2] + " " + player.getWorld().getName() + ";" + targetBlock.getX() + ";" +
 						targetBlock.getY() + ";" + targetBlock.getZ());

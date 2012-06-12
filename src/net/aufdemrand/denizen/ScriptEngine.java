@@ -218,7 +218,7 @@ public class ScriptEngine {
 				injectToPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
 			}
 			
-			currentPlayerQue.addAll(0, injectToPlayerQue);
+			currentPlayerQue.addAll(1, injectToPlayerQue);
 			Denizen.playerQue.put(thePlayer, currentPlayerQue);
 		}
 	}
