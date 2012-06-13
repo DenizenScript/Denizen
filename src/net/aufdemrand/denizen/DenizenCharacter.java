@@ -86,8 +86,8 @@ public class DenizenCharacter extends Character implements Listener {
 		NPC theDenizen = Denizen.getDenizen.getClosest(event.getPlayer(), 
 				Denizen.settings.PlayerToNpcChatRangeInBlocks());
 
-		if (theDenizen == null) return;
-
+		if (theDenizen == null || Denizen.engagedNPC.contains(theDenizen)) return;
+		
 		String theScript = Denizen.getScript.getInteractScript(theDenizen, event.getPlayer());
 
 		if (theScript.equalsIgnoreCase("NONE") && !Denizen.settings.ChatGloballyIfNoChatTriggers()) { 
@@ -149,7 +149,9 @@ public class DenizenCharacter extends Character implements Listener {
 
 	@Override
 	public void onRightClick(NPC npc, Player player) {
-		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && Denizen.getDenizen.checkCooldown(player)) {
+		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
+				&& Denizen.getDenizen.checkCooldown(player)
+				&& !Denizen.engagedNPC.contains(npc)) {
 			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
 			DenizenClicked(npc, player);
 		}
@@ -159,9 +161,12 @@ public class DenizenCharacter extends Character implements Listener {
 
 	@Override
 	public void onLeftClick(NPC npc, Player player) {
-		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") && Denizen.getDenizen.checkCooldown(player)) {
+		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
+				&& Denizen.getDenizen.checkCooldown(player)
+				&& !Denizen.engagedNPC.contains(npc)) {
 			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
 			DenizenClicked(npc, player);
+			
 		}
 	}
 

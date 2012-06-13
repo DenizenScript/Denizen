@@ -25,7 +25,7 @@ public class CommandExecuter {
 		WAIT, ZAP, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL,
 		TELEPORT, STRIKE, WALK, REMEMBER, RESPAWN, PERMISS, EXECUTE, SHOUT,
 		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, LOOK, WALKTO, FINISH, 
-		FOLLOW, CAST, NARRATE,
+		FOLLOW, CAST, NARRATE, ENGAGE, DISENGAGE,
 		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE
 	} 
 
@@ -78,7 +78,14 @@ public class CommandExecuter {
 			Denizen.getScript.zap(thePlayer, theScript, currentStep, commandArgs[1]);
 			break;
 
-
+		case ENGAGE:
+			Denizen.engagedNPC.add(theDenizen);
+			break;
+			
+		case DISENGAGE:
+			if (Denizen.engagedNPC.contains(theDenizen)) Denizen.engagedNPC.remove(theDenizen);
+			break;
+			
 		case SPAWNMOB:
 		case SPAWN:  /* SPAWN [ENTITY_TYPE] (AMOUNT) (Location Bookmark) */
 			Denizen.getWorld.spawnMob(commandArgs[1], commandArgs[2], commandArgs[3], theDenizen);

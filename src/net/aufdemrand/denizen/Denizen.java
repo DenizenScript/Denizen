@@ -3,6 +3,7 @@ package net.aufdemrand.denizen;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +41,7 @@ public class Denizen extends JavaPlugin {
 	public static Map<NPC, Location>   previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
 	public static Map<Player, Long>  interactCooldown = new ConcurrentHashMap<Player, Long>();
 	public static Map<Player, String>  proximityCheck = new ConcurrentHashMap<Player, String>();
+	public static List<NPC>                engagedNPC = new ArrayList<NPC>();
 	public static Boolean                   DebugMode = false;
 
 	public static ScriptEngine       scriptEngine = new ScriptEngine();
