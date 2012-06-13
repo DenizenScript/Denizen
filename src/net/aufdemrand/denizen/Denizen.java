@@ -57,6 +57,8 @@ public class Denizen extends JavaPlugin {
 	public static Economy             denizenEcon = null;
 	public static Permission         denizenPerms = null;
 
+	private String denizenVersion = "Denizen version 0.6 build 98+";
+
 
 
 	/*
@@ -75,12 +77,12 @@ public class Denizen extends JavaPlugin {
 		}
 
 		/*
-		 * Commands for use with the console
+		 * Commands for use with the console -- SAVE, RELOAD, VERSION
 		 */
 
 		if (args[0].equalsIgnoreCase("save") && !(sender instanceof Player)) {
-			saveAssignments();
-			getServer().broadcastMessage("denizens.yml saved.");
+			saveSaves();
+			sender.sendMessage("Denizen/saves.yml saved.");
 			return true;
 		}
 
@@ -88,7 +90,13 @@ public class Denizen extends JavaPlugin {
 			reloadConfig();
 			reloadScripts();
 			reloadAssignments();
-			getServer().broadcastMessage("Denizens config.yml and scripts.yml reloaded.");
+			reloadSaves();
+			sender.sendMessage("Denizens/config.yml, scripts, and assignments.yml reloaded.");
+			return true;
+		}
+
+		if (args[0].equalsIgnoreCase("version") && !(sender instanceof Player)) {
+			sender.sendMessage(ChatColor.GREEN + denizenVersion);
 			return true;
 		}
 
@@ -104,16 +112,9 @@ public class Denizen extends JavaPlugin {
 
 		Player player = (Player) sender;
 
-		if (args[0].equalsIgnoreCase("combine")) {
-
-			try {
-				getScript.ConcatenateScripts();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return true;
-
-		}
+		/*
+		 *  /denizen getdata|adddata|decdata shows/modifies the block data for block in targets.
+		 */
 
 		if (args[0].equalsIgnoreCase("getdata")) {
 			player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
@@ -235,17 +236,22 @@ public class Denizen extends JavaPlugin {
 		}
 
 		if (args[0].equalsIgnoreCase("save")) {
-			saveAssignments();
+			saveSaves();
 			player.sendMessage(ChatColor.GREEN + "denizens.yml saved.");
 			return true;
 		}
 
 		if (args[0].equalsIgnoreCase("reload")) {
-			reloadAssignments();
+			reloadSaves();
 			reloadConfig();
 			reloadScripts();
+			reloadAssignments();
 			player.sendMessage(ChatColor.GREEN + "config.yml, denizens.yml and scripts.yml reloaded.");
 			return true;
+		}
+
+		if (args[0].equalsIgnoreCase("version")) {
+			player.sendMessage(ChatColor.GREEN + denizenVersion);
 		}
 
 		if (args[0].equalsIgnoreCase("schedule")) {
@@ -279,8 +285,8 @@ public class Denizen extends JavaPlugin {
 				List<String> locationList = getAssignments().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
 				locationList.add(args[2] + " " + player.getWorld().getName() + ";" + player.getLocation().getX() + ";" +
 						player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
-				getAssignments().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
-				saveAssignments();
+				getSaves().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
+				saveSaves();
 				player.sendMessage(ChatColor.GOLD + "Location bookmark added. Your denizen can now reference this location.");
 				return true;
 			}
@@ -291,8 +297,8 @@ public class Denizen extends JavaPlugin {
 				blockList.add(args[2] + " " + player.getWorld().getName() + ";" + targetBlock.getX() + ";" +
 						targetBlock.getY() + ";" + targetBlock.getZ());
 
-				getAssignments().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Block", blockList);				
-				saveAssignments();
+				getSaves().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Block", blockList);				
+				saveSaves();
 				player.sendMessage(ChatColor.GOLD + "Block bookmark added. Your denizen can now reference this block.");
 				return true;
 			}
@@ -323,6 +329,7 @@ public class Denizen extends JavaPlugin {
 
 		reloadConfig();
 		reloadScripts();
+		reloadSaves();
 		reloadAssignments();
 		// getConfig().options().copyDefaults(true);
 
@@ -355,7 +362,7 @@ public class Denizen extends JavaPlugin {
 	public void onDisable() {
 		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
 		Bukkit.getServer().getScheduler().cancelTasks(this);
-		saveAssignments();
+		saveSaves();
 	}
 
 
@@ -424,40 +431,87 @@ public class Denizen extends JavaPlugin {
 		return scriptConfig;
 	}
 
-	
-	
-	
+
+
+
+	/*
+	 * reloadSaves/getSaves/saveSaves
+	 * 
+	 * Reloads, retrieves and saves progress information Denizen/saves.yml.
+	 * 
+	 */
+
+	private FileConfiguration savesConfig = null;
+	private File savesConfigFile = null;
+
+	public void reloadSaves() {
+		if (savesConfigFile == null) {
+			savesConfigFile = new File(getDataFolder(), "saves.yml");
+		}
+		savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
+
+		// Look for defaults in the jar
+		InputStream defConfigStream = getResource("saves.yml");
+		if (defConfigStream != null) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			savesConfig.setDefaults(defConfig);
+		}
+	}
+
+	public FileConfiguration getSaves() {
+		if (savesConfig == null) {
+			reloadSaves();
+		}
+		return savesConfig;
+	}
+
+	public void saveSaves() {
+		if (savesConfig == null || savesConfigFile == null) {
+			return;
+		}
+		try {
+			savesConfig.save(savesConfigFile);
+		} catch (IOException ex) {
+			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + savesConfigFile, ex);
+		}
+	}
+
+
+
+
+
 	/*
 	 * reloadAssignments/getAssignments/saveAssignments
 	 * 
-	 * Reloads, retrieves and saves information from the Denizen/denizens.yml.
+	 * Reloads, retrieves and saves information from the Denizen/assignments.yml.
 	 * 
 	 */
-	
+
 	private FileConfiguration assignmentConfig = null;
 	private File assignmentConfigFile = null;
 
 	public void reloadAssignments() {
-	    if (assignmentConfigFile == null) {
-	    assignmentConfigFile = new File(getDataFolder(), "assignments.yml");
-	    }
-	    assignmentConfig = YamlConfiguration.loadConfiguration(assignmentConfigFile);
-	 
-	    // Look for defaults in the jar
-	    InputStream defConfigStream = getResource("assignments.yml");
-	    if (defConfigStream != null) {
-	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-	        assignmentConfig.setDefaults(defConfig);
-	    }
+		if (assignmentConfigFile == null) {
+			assignmentConfigFile = new File(getDataFolder(), "assignments.yml");
+		}
+		assignmentConfig = YamlConfiguration.loadConfiguration(assignmentConfigFile);
+
+		// Look for defaults in the jar
+		InputStream defConfigStream = getResource("assignments.yml");
+		if (defConfigStream != null) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			assignmentConfig.setDefaults(defConfig);
+		}
 	}
 
 	public FileConfiguration getAssignments() {
-	    if (assignmentConfig == null) {
-	        reloadAssignments();
-	    }
-	    return assignmentConfig;
+		if (assignmentConfig == null) {
+			reloadAssignments();
+		}
+		return assignmentConfig;
 	}
 
+	/*
 	public void saveAssignments() {
 	    if (assignmentConfig == null || assignmentConfigFile == null) {
 	    return;
@@ -467,8 +521,8 @@ public class Denizen extends JavaPlugin {
 	    } catch (IOException ex) {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + assignmentConfigFile, ex);
 	    }
-	}
-	
-	
 
+	 */
 }
+
+

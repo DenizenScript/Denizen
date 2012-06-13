@@ -244,14 +244,14 @@ public class CommandExecuter {
 
 			int finishes = plugin.getAssignments().getInt("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Completed", 0);
 			finishes++;	
-			plugin.getAssignments().set("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Completed", finishes);
-			plugin.saveAssignments();
+			plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Completed", finishes);
+			plugin.saveSaves();
 			break;
 
 
 		case FAIL:
-			plugin.getAssignments().set("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Failed", true);
-			plugin.saveAssignments();
+			plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Failed", true);
+			plugin.saveSaves();
 			break;
 
 
@@ -366,13 +366,13 @@ public class CommandExecuter {
 			String executeScript;
 			if (commandArgs.length == 2) executeScript=theScript; else executeScript=executeArgs[4].split(" ", 3)[2];
 			if (commandArgs[1].equalsIgnoreCase("FINISH") || commandArgs[1].equalsIgnoreCase("FINISHED")) {
-				plugin.getAssignments().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Completed", 0);
-				plugin.saveAssignments();
+				plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Completed", 0);
+				plugin.saveSaves();
 			}
 
 			if (commandArgs[1].equalsIgnoreCase("FAIL") || commandArgs[1].equalsIgnoreCase("FAILED")) {
-				plugin.getAssignments().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Failed", false);
-				plugin.saveAssignments();
+				plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Failed", false);
+				plugin.saveSaves();
 			}
 
 			break;

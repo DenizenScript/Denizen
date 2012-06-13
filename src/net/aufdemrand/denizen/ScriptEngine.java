@@ -75,8 +75,8 @@ public class ScriptEngine {
 					for (String activity : denizenActivities) {
 						if (activity.startsWith(String.valueOf(denizenTime))) {
 							// plugin.getServer().broadcastMessage("Updating Activity Script for " + aDenizen.getName());
-							plugin.getAssignments().set("Denizens." + aDenizen.getName() + ".Active Activity Script", activity.split(" ", 2)[1]);
-							plugin.saveAssignments();
+							plugin.getSaves().set("Denizens." + aDenizen.getName() + ".Active Activity Script", activity.split(" ", 2)[1]);
+							plugin.saveSaves();
 						}
 					}
 				}

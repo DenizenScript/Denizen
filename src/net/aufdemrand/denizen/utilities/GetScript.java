@@ -140,8 +140,8 @@ public class GetScript {
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		int currentStep = 1;
-		if (plugin.getAssignments().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
-			currentStep =  plugin.getAssignments().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
+		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
+			currentStep =  plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
 
 		return currentStep;
 	}
@@ -172,8 +172,8 @@ public class GetScript {
 			if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[1];
 			else theAmount = "1";
 
-			if (plugin.getAssignments().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
-				if (plugin.getAssignments().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
+			if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
+				if (plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
 			}
 
 		} catch(Throwable error) {
@@ -193,8 +193,8 @@ public class GetScript {
 
 		boolean outcome = false;
 
-		if (plugin.getAssignments().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
-			if (plugin.getAssignments().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) outcome = true;
+		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
+			if (plugin.getSaves().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) outcome = true;
 		}
 
 		if (negativeRequirement != outcome) return true;
@@ -262,12 +262,12 @@ public class GetScript {
 	public boolean zap(Player thePlayer, String theScript, String theStep, String newStep) {
 
 		if (newStep == null) {
-				plugin.getAssignments().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(theStep) + 1);
-				plugin.saveAssignments();
+				plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(theStep) + 1);
+				plugin.saveSaves();
 		}
 		else { 
-			plugin.getAssignments().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(newStep)); 
-			plugin.saveAssignments();
+			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(newStep)); 
+			plugin.saveSaves();
 		}
 
 		return true;

@@ -115,8 +115,8 @@ public class GetDenizen {
 
 		try {
 
-			if (BlockOrLocation.equalsIgnoreCase("block")) locationList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block");	
-			else if (BlockOrLocation.equalsIgnoreCase("location")) locationList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
+			if (BlockOrLocation.equalsIgnoreCase("block")) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block");	
+			else if (BlockOrLocation.equalsIgnoreCase("location")) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
 
 			for (String thisLocation : locationList) {
 				String theName = thisLocation.split(" ", 2)[0];
@@ -190,6 +190,9 @@ public class GetDenizen {
 
 		return;
 	}
+	
+	
+	
 	
 	
 	
