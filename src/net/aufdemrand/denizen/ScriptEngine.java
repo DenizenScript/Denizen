@@ -254,9 +254,13 @@ public class ScriptEngine {
 
 	public List<String> getMultilineText (String theText) {
 
-		String[] text = theText.split(" ");
+		
 		List<String> processedText = new ArrayList<String>();
 
+		if (theText == null) return processedText;
+		
+		String[] text = theText.split(" ");
+		
 		if (theText.length() > Denizen.settings.MultiLineTextMaximumLength()) {
 
 			processedText.add(0, "");
@@ -335,7 +339,8 @@ public class ScriptEngine {
 			.replace("<PLAYER>", thePlayer.getName())
 			.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
 			.replace("<WORLD>", thePlayer.getWorld().getName())
-			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()));
+			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())
+			.replace("%%", "\u00a7"));
 
 		if (bystanderMessageFormat != null)
 			bystanderMessageFormat = bystanderMessageFormat

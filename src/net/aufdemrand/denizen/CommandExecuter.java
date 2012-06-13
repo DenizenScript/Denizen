@@ -160,7 +160,7 @@ public class CommandExecuter {
 
 			if (commandArgs[2] != null) giveItem.setAmount(Integer.valueOf(commandArgs[2]));
 			else giveItem.setAmount(1);
-			
+
 			theDenizen.getBukkitEntity().getWorld().dropItem(theDenizen.getBukkitEntity().getLocation(), giveItem);
 			break;
 
@@ -190,7 +190,7 @@ public class CommandExecuter {
 
 				if (commandArgs[2] != null) itemToTake.setAmount(Integer.valueOf(commandArgs[2]));
 				else itemToTake.setAmount(1);
-								
+
 				thePlayer.getInventory().removeItem(itemToTake);
 			}
 
@@ -267,7 +267,7 @@ public class CommandExecuter {
 				theDenizen.getAI().cancelDestination();
 			}
 			break;
-			
+
 		case ATTACK: // FOLLOW PLAYER|NOBODY
 			if (commandArgs[1].equalsIgnoreCase("PLAYER")) {
 				theDenizen.getAI().setTarget(thePlayer, true);
@@ -276,7 +276,7 @@ public class CommandExecuter {
 				theDenizen.getAI().cancelDestination();
 			}
 			break;
-			
+
 
 
 		case RESPAWN:  // RESPAWN [Location Notable]
@@ -356,8 +356,10 @@ public class CommandExecuter {
 				}
 			}
 
-			for (String text : bystanderText) { /* now bystanderText */
-				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, null, text, commandArgs[0]);
+			if (!bystanderText.isEmpty()) {
+				for (String text : bystanderText) { /* now bystanderText */
+					Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, null, text, commandArgs[0]);
+				}
 			}
 			break;
 
@@ -388,7 +390,7 @@ public class CommandExecuter {
 				blockLoc.getBlock().setData(Byte.valueOf(theChangeItem[1]));
 			}
 			else blockLoc.getBlock().setType(Material.getMaterial(commandArgs[2].toUpperCase()));
-			
+
 			break;
 
 
@@ -401,7 +403,7 @@ public class CommandExecuter {
 			List<String> CurrentPlayerQue = new ArrayList<String>();
 			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
 			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
-			
+
 			Long timeDelay = Long.parseLong(commandArgs[1]) * 1000;
 			String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
 			CurrentPlayerQue.add(1, "0;none;0;" + timeWithDelay + ";WAITING");						
