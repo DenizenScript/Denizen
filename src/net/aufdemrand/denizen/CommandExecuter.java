@@ -13,8 +13,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -26,7 +28,7 @@ public class CommandExecuter {
 		TELEPORT, STRIKE, WALK, REMEMBER, RESPAWN, PERMISS, EXECUTE, SHOUT,
 		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, LOOK, WALKTO, FINISH, 
 		FOLLOW, CAST, NARRATE, ENGAGE, DISENGAGE,
-		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE
+		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE, ATTACK
 	} 
 
 	private Denizen plugin;
@@ -81,11 +83,11 @@ public class CommandExecuter {
 		case ENGAGE:
 			Denizen.engagedNPC.add(theDenizen);
 			break;
-			
+
 		case DISENGAGE:
 			if (Denizen.engagedNPC.contains(theDenizen)) Denizen.engagedNPC.remove(theDenizen);
 			break;
-			
+
 		case SPAWNMOB:
 		case SPAWN:  /* SPAWN [ENTITY_TYPE] (AMOUNT) (Location Bookmark) */
 			Denizen.getWorld.spawnMob(commandArgs[1], commandArgs[2], commandArgs[3], theDenizen);
@@ -93,7 +95,7 @@ public class CommandExecuter {
 
 
 		case SWITCH:  // SWITCH [Block Bookmark] ON|OFF
-			Location switchLoc = Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0])), commandArgs[1], "Block");
+			Location switchLoc = Denizen.getDenizen.getBookmark(theDenizen, commandArgs[1], "Block");
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
 				World theWorld = switchLoc.getWorld();
 				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), switchLoc.getBlockX(), switchLoc.getBlockY(), switchLoc.getBlockZ(), null);
@@ -102,7 +104,7 @@ public class CommandExecuter {
 
 
 		case PRESS:  // SWITCH [Block Bookmark] ON|OFF
-			Location pressLoc = Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0])), commandArgs[1], "Block");
+			Location pressLoc = Denizen.getDenizen.getBookmark(theDenizen, commandArgs[1], "Block");
 			if (pressLoc.getBlock().getType() == Material.STONE_BUTTON) {
 				World theWorld = pressLoc.getWorld();
 				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), pressLoc.getBlockX(), pressLoc.getBlockY(), pressLoc.getBlockZ(), null);
@@ -146,12 +148,20 @@ public class CommandExecuter {
 
 
 		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
-			ItemStack giveItem = new ItemStack(Material.getMaterial(commandArgs[1].toUpperCase()));
-			if (commandArgs.length > 1) giveItem.setAmount(Integer.valueOf(commandArgs[2]));
+
+			String[] theItem = Denizen.getRequirements.splitItem(commandArgs[1]);
+			ItemStack giveItem = new ItemStack(Material.AIR);
+
+			if (Character.isDigit(theItem[0].charAt(0))) {
+				giveItem.setTypeId(Integer.valueOf(theItem[0]));
+				giveItem.getData().setData(Byte.valueOf(theItem[1]));
+			}
+			else giveItem.setType(Material.getMaterial(commandArgs[1].toUpperCase()));
+
+			if (commandArgs[2] != null) giveItem.setAmount(Integer.valueOf(commandArgs[2]));
 			else giveItem.setAmount(1);
-			CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0])).getBukkitEntity().getWorld()
-			.dropItem(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0])).getBukkitEntity().getLocation().add(
-					CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0])).getBukkitEntity().getLocation().getDirection().multiply(1.1)), giveItem);
+			
+			theDenizen.getBukkitEntity().getWorld().dropItem(theDenizen.getBukkitEntity().getLocation(), giveItem);
 			break;
 
 
@@ -168,25 +178,41 @@ public class CommandExecuter {
 			}
 
 			else {
-				ItemStack itemToTake = new ItemStack(Material.valueOf(commandArgs[1].toUpperCase()));
-				if (commandArgs.length > 2)	itemToTake.setAmount(Integer.valueOf(commandArgs[2]));
+
+				String[] theTakeItem = Denizen.getRequirements.splitItem(commandArgs[1]);
+				ItemStack itemToTake = new ItemStack(Material.AIR);
+
+				if (Character.isDigit(theTakeItem[0].charAt(0))) {
+					itemToTake.setTypeId(Integer.valueOf(theTakeItem[0]));
+					itemToTake.getData().setData(Byte.valueOf(theTakeItem[1]));
+				}
+				else itemToTake.setType(Material.getMaterial(commandArgs[1].toUpperCase()));
+
+				if (commandArgs[2] != null) itemToTake.setAmount(Integer.valueOf(commandArgs[2]));
 				else itemToTake.setAmount(1);
+								
 				thePlayer.getInventory().removeItem(itemToTake);
 			}
 
 			break;
 
 
-		case HEAL:  // HEAL  or  HEAL [# of Hearts]
+		case HEAL:  // HEAL (# of Health)
+			int health = 1;
+			if (commandArgs[1] != null) health = Integer.valueOf(commandArgs[1]);
+			((LivingEntity) thePlayer).setHealth(thePlayer.getHealth() + health);
 			break;
 
 
-		case HURT:
+		case HURT:  // HURT (# of Health)
+			int damage = 1;
+			if (commandArgs[1] != null) damage = Integer.valueOf(commandArgs[1]);
+			thePlayer.damage(damage, theDenizen.getBukkitEntity());
 			break;
 
 
 		case TELEPORT:  // TELEPORT [Location Notable]
-			thePlayer.teleport(Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0])), commandArgs[1], "location"));
+			thePlayer.teleport(Denizen.getDenizen.getBookmark(theDenizen, commandArgs[1], "location"));
 
 
 		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
@@ -234,14 +260,23 @@ public class CommandExecuter {
 
 
 		case FOLLOW: // FOLLOW PLAYER|NOBODY
-			NPC theDenizenFollowing = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0]));
 			if (commandArgs[1].equalsIgnoreCase("PLAYER")) {
-				theDenizenFollowing.getAI().setTarget(thePlayer, false);
+				theDenizen.getAI().setTarget(thePlayer, false);
 			}
 			if (commandArgs[1].equalsIgnoreCase("NOBODY")) {
-				theDenizenFollowing.getAI().cancelDestination();
+				theDenizen.getAI().cancelDestination();
 			}
 			break;
+			
+		case ATTACK: // FOLLOW PLAYER|NOBODY
+			if (commandArgs[1].equalsIgnoreCase("PLAYER")) {
+				theDenizen.getAI().setTarget(thePlayer, true);
+			}
+			if (commandArgs[1].equalsIgnoreCase("NOBODY")) {
+				theDenizen.getAI().cancelDestination();
+			}
+			break;
+			
 
 
 		case RESPAWN:  // RESPAWN [Location Notable]
@@ -343,7 +378,17 @@ public class CommandExecuter {
 			break;
 
 
-		case CHANGE:
+		case CHANGE: // CHANGE [Block Bookmark] [#:#|MATERIAL_TYPE]
+			Location blockLoc = Denizen.getDenizen.getBookmark(theDenizen, commandArgs[1], "Block");
+
+			String[] theChangeItem = Denizen.getRequirements.splitItem(commandArgs[2]);
+
+			if (Character.isDigit(theChangeItem[0].charAt(0))) {
+				blockLoc.getBlock().setTypeId(Integer.valueOf(theChangeItem[0]));
+				blockLoc.getBlock().setData(Byte.valueOf(theChangeItem[1]));
+			}
+			else blockLoc.getBlock().setType(Material.getMaterial(commandArgs[2].toUpperCase()));
+			
 			break;
 
 
@@ -352,10 +397,11 @@ public class CommandExecuter {
 			 * This may be a bit hack-y, at least it seems like it to me.
 			 * but, if it isn't broken.. you know what they say. 
 			 */
-			
+
 			List<String> CurrentPlayerQue = new ArrayList<String>();
 			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
 			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
+			
 			Long timeDelay = Long.parseLong(commandArgs[1]) * 1000;
 			String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
 			CurrentPlayerQue.add(1, "0;none;0;" + timeWithDelay + ";WAITING");						
@@ -371,10 +417,10 @@ public class CommandExecuter {
 		default:
 			break;
 		}
-		
+
 		return;
 	}
 
-	
-	
+
+
 }
