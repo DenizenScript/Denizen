@@ -106,7 +106,7 @@ public class GetDenizen {
 	 * 
 	 */
 
-	public Location getBookmark(NPC theDenizen, String nameOfLocation, String BlockOrLocation) {
+	public Location getBookmark(String theDenizen, String nameOfLocation, String BlockOrLocation) {
 
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		List<String> locationList = null;
@@ -115,8 +115,8 @@ public class GetDenizen {
 
 		try {
 
-			if (BlockOrLocation.equalsIgnoreCase("block")) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block");	
-			else if (BlockOrLocation.equalsIgnoreCase("location")) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
+			if (BlockOrLocation.equalsIgnoreCase("block")) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Block");	
+			else if (BlockOrLocation.equalsIgnoreCase("location")) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Location");
 
 			for (String thisLocation : locationList) {
 				String theName = thisLocation.split(" ", 2)[0];

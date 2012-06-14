@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -8,6 +9,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.aufdemrand.denizen.Denizen;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 
@@ -18,8 +20,8 @@ public class ScriptEngine {
 	}
 
 	private Denizen plugin;
-	
-	
+
+
 	/*
 	 * commandQue
 	 * 
@@ -47,8 +49,8 @@ public class ScriptEngine {
 		}
 	}
 
-	
-	
+
+
 
 
 	/*
@@ -84,8 +86,8 @@ public class ScriptEngine {
 		}
 	}
 
-	
-	
+
+
 
 
 	/* ParseScript
@@ -150,7 +152,7 @@ public class ScriptEngine {
 					noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
 
 				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, Denizen.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
-				
+
 				return true;
 			}
 
@@ -174,8 +176,8 @@ public class ScriptEngine {
 
 
 
-	
-	
+
+
 	/* 
 	 * triggerToQue
 	 *
@@ -205,17 +207,17 @@ public class ScriptEngine {
 		}
 	}
 
-	
-	
-	
-	
+
+
+
+
 	/*  
 	 * Injects commands into the playerQue. Originally made for working with multiline text,
 	 * but currently unused. I'm sure it will be useful again. This is different than 
 	 * triggerToQue in the sense that triggerToQue adds elements to the end of the playerQue
 	 * and this adds the items to the beginning of the queue.
 	 */
-	
+
 	public void injectToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> addedToPlayerQue) {
 
 		List<String> currentPlayerQue = new ArrayList<String>();
@@ -240,10 +242,10 @@ public class ScriptEngine {
 		}
 	}
 
-	
-	
-	
-	
+
+
+
+
 	/* 
 	 * Takes long text and splits it into multiple string elements in a list
 	 * based on the config setting for MaximumLength, default 55.
@@ -254,13 +256,13 @@ public class ScriptEngine {
 
 	public List<String> getMultilineText (String theText) {
 
-		
+
 		List<String> processedText = new ArrayList<String>();
 
 		if (theText == null) return processedText;
-		
+
 		String[] text = theText.split(" ");
-		
+
 		if (theText.length() > Denizen.settings.MultiLineTextMaximumLength()) {
 
 			processedText.add(0, "");
@@ -282,9 +284,9 @@ public class ScriptEngine {
 	}
 
 
-	
-	
-	
+
+
+
 	/* 
 	 * Takes chat/whisper/etc. text and formats it based on the config settings. 
 	 * Returns a String[]. 
@@ -294,7 +296,7 @@ public class ScriptEngine {
 	 * 
 	 * Either can be null if only one type of text is required.
 	 */
-	
+
 	public String[] formatChatText (String theMessage, String messageType, Player thePlayer, NPC theDenizen) {
 
 		String playerMessageFormat = null;
@@ -340,7 +342,7 @@ public class ScriptEngine {
 			.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
 			.replace("<WORLD>", thePlayer.getWorld().getName())
 			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())
-			.replace("%%", "\u00a7"));
+					.replace("%%", "\u00a7"));
 
 		if (bystanderMessageFormat != null)
 			bystanderMessageFormat = bystanderMessageFormat
@@ -350,10 +352,55 @@ public class ScriptEngine {
 			.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
 			.replace("<WORLD>", thePlayer.getWorld().getName())
 			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()));
-		
+
 		String[] returnedText = {playerMessageFormat, bystanderMessageFormat};
-		
+
 		return returnedText;
+	}
+
+
+
+	
+	
+
+	public void newLocationTask(Player thePlayer, NPC theDenizen,
+			String theLocation, int theDuration, int theLeeway, String theScript) {
+
+		/* 
+		 * saves.yml
+		 * 
+		 * Players:
+		 *   aufdemrand:
+		 *     Tasks:
+		 *       List All:
+		 *         Locations:
+		 *         - theLocation:theDenizen:theId
+		 *       List Entries:
+		 *         Id:
+		 *           Type: Location
+		 *           Leeway: in blocks
+		 *           Duration: in seconds
+		 *           Script to trigger: script name
+		 *		     Initiated: System.currentTimeMillis 
+		 * 		     Finished: true/false
+		 *         
+		 */
+
+		long taskId = System.currentTimeMillis();
+		
+		/* Add new task to list */
+		List<String> listAll = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Tasks.List All.Locations");
+		listAll.add(theLocation + ";" + theDenizen.getName() + ";" + taskId);
+		plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All", listAll);
+		
+		/* Populate task entry */
+		String taskString = "Players." + thePlayer.getName() + ".Tasks.List Entries." + taskId + ".";
+		
+		plugin.getSaves().set(taskString + "Type", "Location");
+		plugin.getSaves().set(taskString + "Leeway", theLeeway);
+		plugin.getSaves().set(taskString + "Duration", theDuration);
+		plugin.getSaves().set(taskString + "Script", theScript);
+		
 	}
 
 

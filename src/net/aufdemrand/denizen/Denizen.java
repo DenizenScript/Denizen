@@ -56,7 +56,7 @@ public class Denizen extends JavaPlugin {
 
 	public static Economy             denizenEcon = null;
 	public static Permission         denizenPerms = null;
-
+	
 	private String denizenVersion = "Denizen version 0.6 build 98+";
 
 

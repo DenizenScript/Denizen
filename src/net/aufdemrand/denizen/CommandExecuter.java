@@ -28,7 +28,7 @@ public class CommandExecuter {
 		TELEPORT, STRIKE, WALK, REMEMBER, RESPAWN, PERMISS, EXECUTE, SHOUT,
 		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, LOOK, WALKTO, FINISH, 
 		FOLLOW, CAST, NARRATE, ENGAGE, DISENGAGE,
-		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE, ATTACK
+		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE, ATTACK, PLAYERTASK
 	} 
 
 	private Denizen plugin;
@@ -95,7 +95,7 @@ public class CommandExecuter {
 
 
 		case SWITCH:  // SWITCH [Block Bookmark] ON|OFF
-			Location switchLoc = Denizen.getDenizen.getBookmark(theDenizen, commandArgs[1], "Block");
+			Location switchLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
 				World theWorld = switchLoc.getWorld();
 				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), switchLoc.getBlockX(), switchLoc.getBlockY(), switchLoc.getBlockZ(), null);
@@ -104,7 +104,7 @@ public class CommandExecuter {
 
 
 		case PRESS:  // SWITCH [Block Bookmark] ON|OFF
-			Location pressLoc = Denizen.getDenizen.getBookmark(theDenizen, commandArgs[1], "Block");
+			Location pressLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
 			if (pressLoc.getBlock().getType() == Material.STONE_BUTTON) {
 				World theWorld = pressLoc.getWorld();
 				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), pressLoc.getBlockX(), pressLoc.getBlockY(), pressLoc.getBlockZ(), null);
@@ -140,7 +140,7 @@ public class CommandExecuter {
 			}
 			else if (!commandArgs[1].equalsIgnoreCase("AWAY") && !commandArgs[1].equalsIgnoreCase("CLOSE")) {
 				NPC denizenLooking = theDenizen;
-				Location lookLoc = Denizen.getDenizen.getBookmark(theDenizen, commandArgs[1], "Location");
+				Location lookLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
 				denizenLooking.getBukkitEntity().getLocation().setPitch(lookLoc.getPitch());
 				denizenLooking.getBukkitEntity().getLocation().setYaw(lookLoc.getYaw());
 			}
@@ -212,7 +212,7 @@ public class CommandExecuter {
 
 
 		case TELEPORT:  // TELEPORT [Location Notable]
-			thePlayer.teleport(Denizen.getDenizen.getBookmark(theDenizen, commandArgs[1], "location"));
+			thePlayer.teleport(Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "location"));
 
 
 		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
@@ -228,7 +228,7 @@ public class CommandExecuter {
 
 
 		case WALKTO:  // WALKTO [Location Bookmark]
-			Location walkLoc = Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0])), commandArgs[1], "Location");
+			Location walkLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
 			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
 			theDenizen.getAI().setDestination(walkLoc);
 			break;
@@ -280,7 +280,7 @@ public class CommandExecuter {
 
 
 		case RESPAWN:  // RESPAWN [Location Notable]
-			Location respawnLoc = Denizen.getDenizen.getBookmark(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0])), commandArgs[1], "Location");
+			Location respawnLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
 			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
 
 			theDenizen.getBukkitEntity().getWorld().playEffect(theDenizen.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
@@ -325,6 +325,16 @@ public class CommandExecuter {
 			}
 			break;
 
+					 //     TYPE     BOOKMARK            DURATION   LEEWAY   RUNSCRIPT
+		case PLAYERTASK: // LOCATION [Location Bookmark] [Duration] [Leeway] [Script to Trigger]
+			
+			/* LOCATION Listener */
+			String theLocation = commandArgs[2];
+			int theDuration = Integer.valueOf(commandArgs[3]);
+			int theLeeway = Integer.valueOf(commandArgs[4]);
+			String triggerScript = executeArgs[4].split(" ", 6)[5];
+			Denizen.scriptEngine.newLocationTask(thePlayer, theDenizen, theLocation, theDuration, theLeeway, triggerScript);
+			break;
 
 		case ANNOUNCE: 
 			break;
@@ -381,7 +391,7 @@ public class CommandExecuter {
 
 
 		case CHANGE: // CHANGE [Block Bookmark] [#:#|MATERIAL_TYPE]
-			Location blockLoc = Denizen.getDenizen.getBookmark(theDenizen, commandArgs[1], "Block");
+			Location blockLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
 
 			String[] theChangeItem = Denizen.getRequirements.splitItem(commandArgs[2]);
 

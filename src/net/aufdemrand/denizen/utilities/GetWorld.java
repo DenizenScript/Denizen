@@ -144,7 +144,7 @@ public class GetWorld {
 		if (theAmount == null) theAmount = "1";
 		
 		if (theLocationBookmark == null) theSpawnLoc = theDenizen.getBukkitEntity().getLocation();		
-		else theSpawnLoc = Denizen.getDenizen.getBookmark(theDenizen, theLocationBookmark, "Location");
+		else theSpawnLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), theLocationBookmark, "Location");
 		
 		if (theSpawnLoc != null) {
 			for (int cx = 1; cx <= Integer.valueOf(theAmount); cx++) {

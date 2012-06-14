@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen;
 
+import java.util.List;
+
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.character.Character;
@@ -7,6 +9,7 @@ import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,8 +19,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class DenizenCharacter extends Character implements Listener {
 
 	private Denizen plugin;
-	
-	
+
+
 	/*
 	 * DenizenClicked
 	 * 
@@ -49,10 +52,10 @@ public class DenizenCharacter extends Character implements Listener {
 		}
 	}
 
-	
-	
-	
-	
+
+
+
+
 	/*
 	 * Will be used for the Proximity trigger for Trigger scripts.
 	 * Currently unused (obviously)
@@ -62,13 +65,67 @@ public class DenizenCharacter extends Character implements Listener {
 	@EventHandler
 	public void PlayerProximityListener(PlayerMoveEvent event) {
 
+		/* Do not run any code unless the player actually moves blocks */
+
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
+
+
+			/* 
+			 * 
+			 * TODO: Denizen Proximity Trigger 
+			 * 
+			 */
+
+
+			/* Location Task Listener */
+
+			/* 
+			 * saves.yml
+			 * 
+			 * Players:
+			 *   aufdemrand:
+			 *     Tasks:
+			 *       List All:
+			 *         Locations:
+			 *         - theLocation:theDenizen:theId
+			 *       List Entries:
+			 *         Id:
+			 *           Type: Location
+			 *           Leeway: in blocks
+			 *           Duration: in seconds
+			 *           Script to trigger: script name
+			 *		     Initiated: System.currentTimeMillis 
+			 * 		     Finished: true/false
+			 *         
+			 */
+			
+			if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List All.Location")) {
+				
+				List<String> listAll = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations");			
+				for (String theTask : listAll) {
+					
+					String[] taskArgs = theTask.split(";");
+					Location theLocation = Denizen.getDenizen.getBookmark(taskArgs[1], taskArgs[0], "LOCATION");
+					int theLeeway = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Leeway");
+					int theDuration = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Duration");
+										
+					if (theLocation.distance(event.getTo()) < theLeeway) {
+						
+						// STILL WORKING ON THIS, HOPING TO FINISH UP TONIGHT.
+						
+					}
+					
+				}
+				
+			}
+			
+			/* Location Listener END */
 
 		}
 	}
 
 
-	
+
 
 
 	/* 
@@ -87,7 +144,7 @@ public class DenizenCharacter extends Character implements Listener {
 				Denizen.settings.PlayerToNpcChatRangeInBlocks());
 
 		if (theDenizen == null || Denizen.engagedNPC.contains(theDenizen)) return;
-		
+
 		String theScript = Denizen.getScript.getInteractScript(theDenizen, event.getPlayer());
 
 		if (theScript.equalsIgnoreCase("NONE") && !Denizen.settings.ChatGloballyIfNoChatTriggers()) { 
@@ -130,7 +187,7 @@ public class DenizenCharacter extends Character implements Listener {
 
 	}
 
-	
+
 
 
 
@@ -166,7 +223,7 @@ public class DenizenCharacter extends Character implements Listener {
 				&& !Denizen.engagedNPC.contains(npc)) {
 			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
 			DenizenClicked(npc, player);
-			
+
 		}
 	}
 
