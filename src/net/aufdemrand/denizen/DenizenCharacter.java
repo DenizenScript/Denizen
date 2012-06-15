@@ -116,7 +116,7 @@ public class DenizenCharacter extends Character implements Listener {
 						int theLeeway = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Leeway");
 						long theDuration = plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Duration");
 
-						event.getPlayer().sendMessage(theLocation.distance(event.getTo()) + "");
+						// event.getPlayer().sendMessage(theLocation.distance(event.getTo()) + "");
 						
 						if (theLocation.distance(event.getTo()) < theLeeway) {
 
