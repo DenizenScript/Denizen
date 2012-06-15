@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 public class ScriptEngine {
 
 	public enum Trigger {
-		CHAT, CLICK, PROXIMITY, FAIL, FINISH
+		CHAT, CLICK, PROXIMITY, FAIL, FINISH, TASK
 	}
 
 	private Denizen plugin;
@@ -161,6 +161,12 @@ public class ScriptEngine {
 					plugin.getScripts().getStringList("" + theScript + ".Steps." + theStep + ".Click Trigger.Script"));
 			return true;
 
+		case TASK:
+			thePlayer.sendMessage("TASK TRIGGERED");
+			triggerToQue(theScript, 0, thePlayer, null, 
+					plugin.getScripts().getStringList(theScript + ".Script"));
+			return true;
+			
 		case FINISH:
 			break;
 
@@ -190,6 +196,9 @@ public class ScriptEngine {
 		List<String> currentPlayerQue = new ArrayList<String>();
 		if (Denizen.playerQue.get(thePlayer) != null) currentPlayerQue = Denizen.playerQue.get(thePlayer);
 
+		String denizenId = "none";
+		if (theDenizen != null) denizenId = String.valueOf(theDenizen.getId()); 
+		
 		if (!addedToPlayerQue.isEmpty()) {
 
 			/* 
@@ -200,7 +209,7 @@ public class ScriptEngine {
 
 			for (String theCommand : addedToPlayerQue) {
 				/* PlayerQue format: DENIZEN ID; THE SCRIPT NAME; THE STEP; SYSTEM TIME; THE COMMAND */
-				currentPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
+				currentPlayerQue.add(denizenId + ";" + theScript + ";" + CurrentStep + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
 			}
 
 			Denizen.playerQue.put(thePlayer, currentPlayerQue);
@@ -271,7 +280,7 @@ public class ScriptEngine {
 
 			while (word < text.length) {
 				if (processedText.get(line).length() + text[word].length() < Denizen.settings.MultiLineTextMaximumLength()) {
-					processedText.set(line, processedText.get(line) + " " + text[word]);
+					processedText.set(line, processedText.get(line) + text[word] + " ");
 					word++;
 				}
 				else { line++; processedText.add(""); }
@@ -334,9 +343,13 @@ public class ScriptEngine {
 			if (!toPlayer) bystanderMessageFormat = Denizen.settings.NpcChatToBystanders();
 		}
 
+		String denizenName = ""; 
+		
+		if (theDenizen != null) denizenName = theDenizen.getName();
+		
 		if (playerMessageFormat != null)
 			playerMessageFormat = playerMessageFormat
-			.replace("<NPC>", theDenizen.getName())
+			.replace("<NPC>", denizenName)
 			.replace("<TEXT>", theMessage)
 			.replace("<PLAYER>", thePlayer.getName())
 			.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
@@ -346,7 +359,7 @@ public class ScriptEngine {
 
 		if (bystanderMessageFormat != null)
 			bystanderMessageFormat = bystanderMessageFormat
-			.replace("<NPC>", theDenizen.getName())
+			.replace("<NPC>", denizenName)
 			.replace("<TEXT>", theMessage)
 			.replace("<PLAYER>", thePlayer.getName())
 			.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
@@ -366,6 +379,8 @@ public class ScriptEngine {
 	public void newLocationTask(Player thePlayer, NPC theDenizen,
 			String theLocation, int theDuration, int theLeeway, String theScript) {
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		/* 
 		 * saves.yml
 		 * 
@@ -391,7 +406,7 @@ public class ScriptEngine {
 		/* Add new task to list */
 		List<String> listAll = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Tasks.List All.Locations");
 		listAll.add(theLocation + ";" + theDenizen.getName() + ";" + taskId);
-		plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All", listAll);
+		plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All.Locations", listAll);
 		
 		/* Populate task entry */
 		String taskString = "Players." + thePlayer.getName() + ".Tasks.List Entries." + taskId + ".";
@@ -401,9 +416,33 @@ public class ScriptEngine {
 		plugin.getSaves().set(taskString + "Duration", theDuration);
 		plugin.getSaves().set(taskString + "Script", theScript);
 		
+		plugin.saveSaves();
+		
 	}
 
+	public void finishLocationTask(Player thePlayer, String taskId) {
+		
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
+		List<String> listAll = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Tasks.List All.Locations");			
+		List<String> newList = new ArrayList<String>();
+		
+		for (String theTask : listAll) {
+			if (!theTask.contains(taskId)) newList.add(theTask); 
+		}
+		
+		if (newList.isEmpty()) plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All.Locations", null);
+		else plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All.Locations", newList);
 
+		String theScript = plugin.getSaves().getString("Players." + thePlayer.getName() + ".Tasks.List Entries." + taskId + ".Script");
+		
+		plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List Entries." + taskId, null);
+
+		plugin.saveSaves();
+
+		parseScript(null, thePlayer, theScript, null, Trigger.TASK);
+		
+	}
 
 
 }

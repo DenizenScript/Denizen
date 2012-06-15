@@ -64,12 +64,13 @@ public class DenizenCharacter extends Character implements Listener {
 
 	@EventHandler
 	public void PlayerProximityListener(PlayerMoveEvent event) {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		
 
 		/* Do not run any code unless the player actually moves blocks */
 
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
+			plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 			/* 
 			 * 
@@ -99,27 +100,42 @@ public class DenizenCharacter extends Character implements Listener {
 			 * 		     Finished: true/false
 			 *         
 			 */
+
 			
-			if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List All.Location")) {
+			
+			if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations")) {
+
 				
 				List<String> listAll = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations");			
-				for (String theTask : listAll) {
-					
-					String[] taskArgs = theTask.split(";");
-					Location theLocation = Denizen.getDenizen.getBookmark(taskArgs[1], taskArgs[0], "LOCATION");
-					int theLeeway = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Leeway");
-					int theDuration = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Duration");
-										
-					if (theLocation.distance(event.getTo()) < theLeeway) {
+
+				if (!listAll.isEmpty()) {
+
+					for (String theTask : listAll) {
+						String[] taskArgs = theTask.split(";");
+						Location theLocation = Denizen.getDenizen.getBookmark(taskArgs[1], taskArgs[0], "LOCATION");
+						int theLeeway = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Leeway");
+						long theDuration = plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Duration");
+
+						event.getPlayer().sendMessage(theLocation.distance(event.getTo()) + "");
 						
-						// STILL WORKING ON THIS, HOPING TO FINISH UP TONIGHT.
-						
+						if (theLocation.distance(event.getTo()) < theLeeway) {
+
+							if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")) {
+
+								if (plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")
+										+ (theDuration * 1000) <= System.currentTimeMillis()) Denizen.scriptEngine.finishLocationTask(event.getPlayer(), taskArgs[2]);
+							}
+							
+							else {
+								plugin.getSaves().set("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated", System.currentTimeMillis());
+								plugin.saveSaves();
+							}
+						}
 					}
-					
 				}
-				
+
 			}
-			
+
 			/* Location Listener END */
 
 		}

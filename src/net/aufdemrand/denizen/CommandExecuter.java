@@ -56,7 +56,8 @@ public class CommandExecuter {
 
 		/* Break down information from theStep for use */
 		String[] executeArgs = theStep.split(";");
-		NPC theDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0]));
+		NPC theDenizen = null;
+		if (!executeArgs[0].equalsIgnoreCase("NONE")) theDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(executeArgs[0]));
 		String theScript = executeArgs[1];
 		String currentStep = executeArgs[2];
 
@@ -161,7 +162,7 @@ public class CommandExecuter {
 			if (commandArgs[2] != null) giveItem.setAmount(Integer.valueOf(commandArgs[2]));
 			else giveItem.setAmount(1);
 
-			theDenizen.getBukkitEntity().getWorld().dropItem(theDenizen.getBukkitEntity().getLocation(), giveItem);
+			thePlayer.getWorld().dropItem(thePlayer.getLocation(), giveItem);
 			break;
 
 
@@ -207,7 +208,8 @@ public class CommandExecuter {
 		case HURT:  // HURT (# of Health)
 			int damage = 1;
 			if (commandArgs[1] != null) damage = Integer.valueOf(commandArgs[1]);
-			thePlayer.damage(damage, theDenizen.getBukkitEntity());
+			if (theDenizen != null)	thePlayer.damage(damage, theDenizen.getBukkitEntity());
+			else thePlayer.damage(damage);
 			break;
 
 
