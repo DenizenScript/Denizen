@@ -243,8 +243,6 @@ public class GetPlayer {
 			if (saturationType.equalsIgnoreCase("FULL")
 					&& thePlayer.getFoodLevel() >= 18) outcome = true;
 
-			else throw new Error("HUNGER requirement error. Check Syntax.");
-
 		} catch(Throwable error) {
 			Bukkit.getLogger().info("Denizen: An error has occured.");
 			Bukkit.getLogger().info("--- Error follows: " + error);
