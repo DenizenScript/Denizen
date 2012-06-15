@@ -64,6 +64,7 @@ public class DenizenCharacter extends Character implements Listener {
 
 	@EventHandler
 	public void PlayerProximityListener(PlayerMoveEvent event) {
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		/* Do not run any code unless the player actually moves blocks */
 
