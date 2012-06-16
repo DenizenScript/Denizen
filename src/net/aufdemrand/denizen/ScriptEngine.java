@@ -9,6 +9,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.aufdemrand.denizen.Denizen;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -116,7 +117,7 @@ public class ScriptEngine {
 				 */
 				String chatTriggers = ChatTriggerList.get(x)
 						.replace("<PLAYER>", thePlayer.getName()
-						.replace("<DISPLAYNAME>", thePlayer.getDisplayName())).toLowerCase();
+						.replace("<DISPLAYNAME>", ChatColor.stripColor(thePlayer.getDisplayName()))).toLowerCase();
 				/* 
 				 * The in-game friendly Chat Trigger text to display if triggered. 
 				 */
