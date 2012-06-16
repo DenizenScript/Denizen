@@ -112,9 +112,9 @@ public class ScriptEngine {
 			for (int x=0; x < ChatTriggerList.size(); x++ ) {
 
 				/* 
-				 * The text required to trigger.
+				 * The texts required to trigger.
 				 */
-				String chatTrigger = ChatTriggerList.get(x)
+				String chatTriggers = ChatTriggerList.get(x)
 						.replace("<PLAYER>", thePlayer.getName()).toLowerCase();
 				/* 
 				 * The in-game friendly Chat Trigger text to display if triggered. 
@@ -123,7 +123,13 @@ public class ScriptEngine {
 						.getString(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Trigger")
 						.replace("/", "");
 
-				if (theMessage.toLowerCase().contains(chatTrigger)) {
+				boolean letsProceed = false;
+				
+				for (String chatTrigger : chatTriggers.substring(0, chatTriggers.length() - 1).split(":")) {
+					if (theMessage.toLowerCase().contains(chatTrigger)) letsProceed = true;
+				}
+				
+				if (letsProceed) {
 					/* 
 					 * Trigger matches, let's talk to the Denizen and send the script to the PlayerQueue. 
 					 */

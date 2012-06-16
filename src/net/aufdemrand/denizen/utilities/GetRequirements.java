@@ -42,8 +42,8 @@ public class GetRequirements {
 		for (String requirementEntry : requirementList) {
 
 			/* Check if this is a Negative Requirement */
-			if (requirementEntry.startsWith("-")) { 
-				negativeRequirement = true; 
+			if (requirementEntry.startsWith("-")) {
+				negativeRequirement = true;
 				requirementEntry = requirementEntry.substring(1);
 			}
 			else negativeRequirement = false;

@@ -67,8 +67,8 @@ public class GetScript {
 	}
 
 
-	
-	
+
+
 
 	/* 
 	 * GetInteractScript
@@ -123,8 +123,8 @@ public class GetScript {
 	}
 
 
-	
-	
+
+
 
 	/* 
 	 * GetCurrentStep
@@ -148,7 +148,7 @@ public class GetScript {
 
 
 
-	
+
 
 	/* 
 	 * GetScriptComplete/GetScriptFail
@@ -186,7 +186,7 @@ public class GetScript {
 		return false;
 	}
 
-	
+
 	public boolean getScriptFail(Player thePlayer, String theScript, boolean negativeRequirement) {
 
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
@@ -205,8 +205,8 @@ public class GetScript {
 
 
 
-	
-	
+
+
 	/* GetChatTriggers
 	 *
 	 * Requires the Script and the Current Step.
@@ -223,10 +223,18 @@ public class GetScript {
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
 		for (int x=1; currentTrigger >= 0; x++) {
-			String theChatTrigger = plugin.getScripts().getString("" + theScript + ".Steps."
+			String theChatTrigger = plugin.getScripts().getString(theScript + ".Steps."
 					+ currentStep + ".Chat Trigger." + String.valueOf(currentTrigger) + ".Trigger");
 			if (theChatTrigger != null) { 
-				ChatTriggers.add(theChatTrigger.split("/")[1]); 
+				boolean isTrigger = false;
+				String triggerBuilder = "";
+				for (String trigger : theChatTrigger.split("/")) {
+					if (isTrigger) {
+						triggerBuilder = triggerBuilder + trigger + ":";
+						isTrigger = false;
+					}
+					else isTrigger = true;
+				}
 				currentTrigger = x + 1; 
 			}
 			else currentTrigger = -1;
@@ -237,8 +245,8 @@ public class GetScript {
 
 
 
-	
-	
+
+
 	/* 
 	 * GetScriptName
 	 *
@@ -256,14 +264,14 @@ public class GetScript {
 	}
 
 
-	
+
 
 
 	public boolean zap(Player thePlayer, String theScript, String theStep, String newStep) {
 
 		if (newStep == null) {
-				plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(theStep) + 1);
-				plugin.saveSaves();
+			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(theStep) + 1);
+			plugin.saveSaves();
 		}
 		else { 
 			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(newStep)); 

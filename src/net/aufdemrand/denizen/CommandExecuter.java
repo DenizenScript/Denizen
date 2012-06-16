@@ -3,6 +3,7 @@ package net.aufdemrand.denizen;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.aufdemrand.denizen.ScriptEngine.Trigger;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.LookClose;
@@ -28,7 +29,7 @@ public class CommandExecuter {
 		TELEPORT, STRIKE, WALK, REMEMBER, RESPAWN, PERMISS, EXECUTE, SHOUT,
 		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, LOOK, WALKTO, FINISH, 
 		FOLLOW, CAST, NARRATE, ENGAGE, DISENGAGE,
-		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE, ATTACK, PLAYERTASK
+		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE, ATTACK, PLAYERTASK, RUNTASK
 	} 
 
 	private Denizen plugin;
@@ -338,6 +339,10 @@ public class CommandExecuter {
 			Denizen.scriptEngine.newLocationTask(thePlayer, theDenizen, theLocation, theDuration, theLeeway, triggerScript);
 			break;
 
+		case RUNTASK:
+			Denizen.scriptEngine.parseScript(null, thePlayer, executeArgs[4].split(" ", 2)[1], null, Trigger.TASK);
+			break;
+			
 		case ANNOUNCE: 
 			break;
 
