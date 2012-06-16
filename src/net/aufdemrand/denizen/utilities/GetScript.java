@@ -228,6 +228,7 @@ public class GetScript {
 			if (theChatTrigger != null) { 
 				boolean isTrigger = false;
 				String triggerBuilder = "";
+				
 				for (String trigger : theChatTrigger.split("/")) {
 					if (isTrigger) {
 						triggerBuilder = triggerBuilder + trigger + ":";
@@ -235,6 +236,9 @@ public class GetScript {
 					}
 					else isTrigger = true;
 				}
+				
+				ChatTriggers.add(triggerBuilder);
+				
 				currentTrigger = x + 1; 
 			}
 			else currentTrigger = -1;

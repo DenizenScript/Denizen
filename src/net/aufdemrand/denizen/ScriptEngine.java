@@ -115,7 +115,8 @@ public class ScriptEngine {
 				 * The texts required to trigger.
 				 */
 				String chatTriggers = ChatTriggerList.get(x)
-						.replace("<PLAYER>", thePlayer.getName()).toLowerCase();
+						.replace("<PLAYER>", thePlayer.getName()
+						.replace("<DISPLAYNAME>", thePlayer.getDisplayName())).toLowerCase();
 				/* 
 				 * The in-game friendly Chat Trigger text to display if triggered. 
 				 */
@@ -358,7 +359,7 @@ public class ScriptEngine {
 			.replace("<NPC>", denizenName)
 			.replace("<TEXT>", theMessage)
 			.replace("<PLAYER>", thePlayer.getName())
-			.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
+			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 			.replace("<WORLD>", thePlayer.getWorld().getName())
 			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())
 					.replace("%%", "\u00a7"));
@@ -368,7 +369,7 @@ public class ScriptEngine {
 			.replace("<NPC>", denizenName)
 			.replace("<TEXT>", theMessage)
 			.replace("<PLAYER>", thePlayer.getName())
-			.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
+			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 			.replace("<WORLD>", thePlayer.getWorld().getName())
 			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()));
 
