@@ -172,6 +172,7 @@ public class GetDenizen {
 		
 		else if (messageType.equalsIgnoreCase("EMOTE")) {
 			theRange = Denizen.settings.NpcEmoteRangeInBlocks();
+			thePlayer.sendMessage(theBystanderMessage);
 		}
 
 		else {
