@@ -140,7 +140,7 @@ public class GetPlayer {
 				.replace("<NPC>", theDenizen.getName())
 				.replace("<TEXT>", theMessage)
 				.replace("<PLAYER>", thePlayer.getName())
-				.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
+				.replace("DISPLAYNAME>", thePlayer.getDisplayName())
 				.replace("<WORLD>", thePlayer.getWorld().getName())
 				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
 
@@ -152,7 +152,7 @@ public class GetPlayer {
 							.replace("<NPC>", theDenizen.getName())
 							.replace("<TEXT>", theMessage)
 							.replace("<PLAYER>", thePlayer.getName())
-							.replace("<FULLPLAYERNAME>", thePlayer.getDisplayName())
+							.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 							.replace("<WORLD>", thePlayer.getWorld().getName())
 							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
 				}
