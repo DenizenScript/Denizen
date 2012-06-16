@@ -116,8 +116,8 @@ public class ScriptEngine {
 				 * The texts required to trigger.
 				 */
 				String chatTriggers = ChatTriggerList.get(x)
-						.replace("<PLAYER>", thePlayer.getName()
-						.replace("<DISPLAYNAME>", ChatColor.stripColor(thePlayer.getDisplayName()))).toLowerCase();
+						.replace("<PLAYER>", thePlayer.getName())
+						.replace("<DISPLAYNAME>", ChatColor.stripColor(thePlayer.getDisplayName())).toLowerCase();
 				/* 
 				 * The in-game friendly Chat Trigger text to display if triggered. 
 				 */
@@ -126,11 +126,11 @@ public class ScriptEngine {
 						.replace("/", "");
 
 				boolean letsProceed = false;
-				
+
 				for (String chatTrigger : chatTriggers.substring(0, chatTriggers.length() - 1).split(":")) {
 					if (theMessage.toLowerCase().contains(chatTrigger)) letsProceed = true;
 				}
-				
+
 				if (letsProceed) {
 					/* 
 					 * Trigger matches, let's talk to the Denizen and send the script to the PlayerQueue. 
@@ -174,7 +174,7 @@ public class ScriptEngine {
 			triggerToQue(theScript, 0, thePlayer, null, 
 					plugin.getScripts().getStringList(theScript + ".Script"));
 			return true;
-			
+
 		case FINISH:
 			break;
 
@@ -206,7 +206,7 @@ public class ScriptEngine {
 
 		String denizenId = "none";
 		if (theDenizen != null) denizenId = String.valueOf(theDenizen.getId()); 
-		
+
 		if (!addedToPlayerQue.isEmpty()) {
 
 			/* 
@@ -352,9 +352,9 @@ public class ScriptEngine {
 		}
 
 		String denizenName = ""; 
-		
+
 		if (theDenizen != null) denizenName = theDenizen.getName();
-		
+
 		if (playerMessageFormat != null)
 			playerMessageFormat = playerMessageFormat
 			.replace("<NPC>", denizenName)
@@ -362,8 +362,8 @@ public class ScriptEngine {
 			.replace("<PLAYER>", thePlayer.getName())
 			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 			.replace("<WORLD>", thePlayer.getWorld().getName())
-			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())
-					.replace("%%", "\u00a7"));
+			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))
+			.replace("%%", "\u00a7");
 
 		if (bystanderMessageFormat != null)
 			bystanderMessageFormat = bystanderMessageFormat
@@ -372,7 +372,8 @@ public class ScriptEngine {
 			.replace("<PLAYER>", thePlayer.getName())
 			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 			.replace("<WORLD>", thePlayer.getWorld().getName())
-			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()));
+			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))
+			.replace("%%", "\u00a7");
 
 		String[] returnedText = {playerMessageFormat, bystanderMessageFormat};
 
@@ -381,14 +382,14 @@ public class ScriptEngine {
 
 
 
-	
-	
+
+
 
 	public void newLocationTask(Player thePlayer, NPC theDenizen,
 			String theLocation, int theDuration, int theLeeway, String theScript) {
 
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		
+
 		/* 
 		 * saves.yml
 		 * 
@@ -410,46 +411,46 @@ public class ScriptEngine {
 		 */
 
 		long taskId = System.currentTimeMillis();
-		
+
 		/* Add new task to list */
 		List<String> listAll = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Tasks.List All.Locations");
 		listAll.add(theLocation + ";" + theDenizen.getName() + ";" + taskId);
 		plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All.Locations", listAll);
-		
+
 		/* Populate task entry */
 		String taskString = "Players." + thePlayer.getName() + ".Tasks.List Entries." + taskId + ".";
-		
+
 		plugin.getSaves().set(taskString + "Type", "Location");
 		plugin.getSaves().set(taskString + "Leeway", theLeeway);
 		plugin.getSaves().set(taskString + "Duration", theDuration);
 		plugin.getSaves().set(taskString + "Script", theScript);
-		
+
 		plugin.saveSaves();
-		
+
 	}
 
 	public void finishLocationTask(Player thePlayer, String taskId) {
-		
+
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		
+
 		List<String> listAll = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Tasks.List All.Locations");			
 		List<String> newList = new ArrayList<String>();
-		
+
 		for (String theTask : listAll) {
 			if (!theTask.contains(taskId)) newList.add(theTask); 
 		}
-		
+
 		if (newList.isEmpty()) plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All.Locations", null);
 		else plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All.Locations", newList);
 
 		String theScript = plugin.getSaves().getString("Players." + thePlayer.getName() + ".Tasks.List Entries." + taskId + ".Script");
-		
+
 		plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List Entries." + taskId, null);
 
 		plugin.saveSaves();
 
 		parseScript(null, thePlayer, theScript, null, Trigger.TASK);
-		
+
 	}
 
 
