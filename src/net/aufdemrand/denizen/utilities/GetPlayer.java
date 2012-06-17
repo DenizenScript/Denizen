@@ -446,7 +446,51 @@ public class GetPlayer {
 
 
 
+	/**
+	 * Checks the held item's durability using the given operator evaluated against an amount.
+	 * 
+	 * @param  thePlayer  the Player whose inventory shall be checked.
+	 * @param  operator the comparative operator to use to check the value against.  Could be a greater than (&gt;), less than (&lt;), or equal to (=) symbol.
+	 * @param  theAmount  the String representation of the value to check against.  Could be a simple number, or a number ending in a percentage symbol (%).
+	 * @param  negativeRequirement  Set to true if this is a negative (-) requirement.
+	 * @return Whether the conditions were met or failed.
+	 */
+	public boolean checkDurability(Player thePlayer, String operator, String theAmount, boolean negativeRequirement)
+	{
+		boolean outcome = false;
+		
+		short max = thePlayer.getItemInHand().getType().getMaxDurability();
+		//Bukkit reports durability as the amount of damage on the item.
+		short currentDurability = (short)(max - thePlayer.getItemInHand().getDurability());
+		short amount = -1;
 
+		//This is a percentage check, so figure out the actual amount (rounded) of the percentage of the max durability.
+		if(theAmount.endsWith("%"))	{
+			float percent = Float.parseFloat(theAmount.substring(0,theAmount.length()-1))/100;
+			amount = (short)Math.round( max * percent);
+		}
+		//Simple value check, so just use the number
+		else {
+			amount = Short.parseShort(theAmount);
+		}
+		
+		if(">".equals(operator)) {
+			outcome = currentDurability > amount;
+		}
+		else if("<".equals(operator)) {
+			outcome = currentDurability < amount;
+		}
+		else if("=".equals(operator)) {
+			outcome = currentDurability == amount;
+		}
+		
+		// Invert for negative checks.
+		if(negativeRequirement) outcome = !outcome;
+		
+		return outcome;
+	}
+
+	
 
 
 	/**
