@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.utilities;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.Denizen;
 
@@ -145,20 +144,11 @@ public class GetRequirements {
 				break;
 
 			case DURABILITY:  // (-)DURABILITY [>,<,=] [#|#%]
-				if(arguments[1] == null
-						|| arguments[2] == null) {
-					Bukkit.getLogger().info("Denizen: Invalid DURABILITY requirement in the script " + theScript + ".  Should have 2 arguments.");
-				}
-				else if (!">".equals(arguments[1]) 
-						&& !"<".equals(arguments[1])
-						&& !"=".equals(arguments[1])){
-					Bukkit.getLogger().info("Denizen: Invalid DURABILITY requirement in the script " + theScript + ".  First argument should be >, <, or =.");					
-				}
-				else if (!Pattern.matches("[0-9]{1,}|[0-9]{1,3}%", arguments[2])){
-					Bukkit.getLogger().info("Denizen: Invalid DURABILITY requirement in the script " + theScript + ".  Second argument should be a number, or a percentage.");					
-				}
-				else {
+				try {
 					if (Denizen.getPlayer.checkDurability((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
+				}
+				catch(IllegalArgumentException e) {
+					Bukkit.getLogger().severe(String.format("Denizen: Problem with DURABILITY node in script %s.  Error: %s", theScript, e));
 				}
 				break;
 			}

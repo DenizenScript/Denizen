@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.npc.NPC;
@@ -458,34 +459,47 @@ public class GetPlayer {
 	public boolean checkDurability(Player thePlayer, String operator, String theAmount, boolean negativeRequirement)
 	{
 		boolean outcome = false;
-		
-		short max = thePlayer.getItemInHand().getType().getMaxDurability();
-		//Bukkit reports durability as the amount of damage on the item.
-		short currentDurability = (short)(max - thePlayer.getItemInHand().getDurability());
-		short amount = -1;
-
-		//This is a percentage check, so figure out the actual amount (rounded) of the percentage of the max durability.
-		if(theAmount.endsWith("%"))	{
-			float percent = Float.parseFloat(theAmount.substring(0,theAmount.length()-1))/100;
-			amount = (short)Math.round( max * percent);
+		if(operator == null
+				|| theAmount == null) {
+			throw new IllegalArgumentException("DURABILITY requires 2 arguments, an operator (>,<, or =) followed by a number or percentage.");
 		}
-		//Simple value check, so just use the number
+		else if (!">".equals(operator) 
+				&& !"<".equals(operator)
+				&& !"=".equals(operator)) {
+			throw new IllegalArgumentException("DURABILITY requires that the first argument should be >, <, or =.");					
+		}
+		else if (!Pattern.matches("[0-9]{1,}|[0-9]{1,3}%", theAmount)) {
+			throw new IllegalArgumentException("DURABILITY requires that the second argument should be a number (123), or a percentage (55%).");					
+		}
 		else {
-			amount = Short.parseShort(theAmount);
+			short max = thePlayer.getItemInHand().getType().getMaxDurability();
+			//Bukkit reports durability as the amount of damage on the item.
+			short currentDurability = (short)(max - thePlayer.getItemInHand().getDurability());
+			short amount = -1;
+	
+			//This is a percentage check, so figure out the actual amount (rounded) of the percentage of the max durability.
+			if(theAmount.endsWith("%"))	{
+				float percent = Float.parseFloat(theAmount.substring(0,theAmount.length()-1))/100;
+				amount = (short)Math.round( max * percent);
+			}
+			//Simple value check, so just use the number
+			else {
+				amount = Short.parseShort(theAmount);
+			}
+			
+			if(">".equals(operator)) {
+				outcome = currentDurability > amount;
+			}
+			else if("<".equals(operator)) {
+				outcome = currentDurability < amount;
+			}
+			else if("=".equals(operator)) {
+				outcome = currentDurability == amount;
+			}
+			
+			// Invert for negative checks.
+			if(negativeRequirement) outcome = !outcome;
 		}
-		
-		if(">".equals(operator)) {
-			outcome = currentDurability > amount;
-		}
-		else if("<".equals(operator)) {
-			outcome = currentDurability < amount;
-		}
-		else if("=".equals(operator)) {
-			outcome = currentDurability == amount;
-		}
-		
-		// Invert for negative checks.
-		if(negativeRequirement) outcome = !outcome;
 		
 		return outcome;
 	}
