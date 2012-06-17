@@ -64,7 +64,7 @@ public class DenizenCharacter extends Character implements Listener {
 
 	@EventHandler
 	public void PlayerProximityListener(PlayerMoveEvent event) {
-		
+
 
 		/* Do not run any code unless the player actually moves blocks */
 
@@ -73,30 +73,39 @@ public class DenizenCharacter extends Character implements Listener {
 			plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 			/* 
-			 * 
 			 * TODO: Denizen Proximity Trigger 
-			 * 
-			 
+			 */ 
 
 			if (!Denizen.validLocations.isEmpty()) {
 				
+
 				for (Location theLocation : Denizen.validLocations.keySet()) {
-					
-					if (Denizen.scriptEngine.checkLocation(event.getPlayer(), theLocation, 3)) {
-						Denizen.scriptEngine.parseScript(theDenizen, thePlayer, theScript, theMessage, theTrigger)
+					if (Denizen.scriptEngine.checkLocation(event.getPlayer(), theLocation, 3)
+							&& Denizen.getDenizen.checkLocationCooldown(event.getPlayer())) {
+
+						String theScript = Denizen.getScript.getInteractScript(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), event.getPlayer());
+						if (!theScript.equals("none")) {
+							Denizen.scriptEngine.parseScript(
+									CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), 
+									event.getPlayer(), 
+									Denizen.getScript.getNameFromEntry(theScript), 
+									Denizen.validLocations.get(theLocation).split(":")[1],
+									ScriptEngine.Trigger.LOCATION);
+							
+							Denizen.locationCooldown.put(event.getPlayer(), System.currentTimeMillis() + 30000);
+
+							break;
+						}
 					}
-					
 				}
 			}
-				
-				*/
-			
+
+
 
 			/* Location Task Listener */
 
 			/* 
-			 * saves.yml
-			 * 
+			 * ------- saves.yml ----------------
 			 * Players:
 			 *   aufdemrand:
 			 *     Tasks:
@@ -110,35 +119,22 @@ public class DenizenCharacter extends Character implements Listener {
 			 *           Duration: in seconds
 			 *           Script to trigger: script name
 			 *		     Initiated: System.currentTimeMillis 
-			 * 		     Finished: true/false
-			 *         
 			 */
 
-			
-			
 			if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations")) {
-
-				
 				List<String> listAll = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations");			
 
 				if (!listAll.isEmpty()) {
-
 					for (String theTask : listAll) {
 						String[] taskArgs = theTask.split(";");
 						Location theLocation = Denizen.getDenizen.getBookmark(taskArgs[1], taskArgs[0], "LOCATION");
 						int theLeeway = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Leeway");
 						long theDuration = plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Duration");
-
-						// event.getPlayer().sendMessage(theLocation.distance(event.getTo()) + "");
-						
-						if (theLocation.distance(event.getTo()) < theLeeway) {
-
+						if (Denizen.scriptEngine.checkLocation(event.getPlayer(), theLocation, theLeeway)) {
 							if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")) {
-
 								if (plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")
 										+ (theDuration * 1000) <= System.currentTimeMillis()) Denizen.scriptEngine.finishLocationTask(event.getPlayer(), taskArgs[2]);
 							}
-							
 							else {
 								plugin.getSaves().set("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated", System.currentTimeMillis());
 								plugin.saveSaves();
@@ -146,7 +142,6 @@ public class DenizenCharacter extends Character implements Listener {
 						}
 					}
 				}
-
 			}
 
 			/* Location Listener END */
@@ -206,8 +201,7 @@ public class DenizenCharacter extends Character implements Listener {
 	@Override
 	public void load(DataKey arg0) throws NPCLoadException {
 
-		/* Nothing to do here, yet. */
-
+Denizen.scriptEngine.buildLocationTriggerList();
 	}
 
 	@Override

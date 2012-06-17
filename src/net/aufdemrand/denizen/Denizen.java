@@ -40,6 +40,7 @@ public class Denizen extends JavaPlugin {
 	public static Map<Player, List<String>>  playerQue = new ConcurrentHashMap<Player, List<String>>();
 	public static Map<NPC, Location>    previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
 	public static Map<Player, Long>   interactCooldown = new ConcurrentHashMap<Player, Long>();
+	public static Map<Player, Long>   locationCooldown = new ConcurrentHashMap<Player, Long>();
 	public static Map<Location, String> validLocations = new ConcurrentHashMap<Location, String>();
 	public static List<NPC>                 engagedNPC = new ArrayList<NPC>();
 	public static Boolean                    DebugMode = false;
@@ -333,7 +334,6 @@ public class Denizen extends JavaPlugin {
 		reloadScripts();
 		reloadSaves();
 		reloadAssignments();
-		Denizen.scriptEngine.buildLocationTriggerList();
 
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new DenizenCharacter(), this);
@@ -348,6 +348,12 @@ public class Denizen extends JavaPlugin {
 			public void run() { scriptEngine.scheduleScripts(); }
 		}, 1, 1000);
 
+		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+			@Override
+			public void run() { scriptEngine.buildLocationTriggerList(); }
+		}, 100);
+
+		
 	}
 
 

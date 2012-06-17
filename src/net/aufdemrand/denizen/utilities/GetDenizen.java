@@ -33,6 +33,12 @@ public class GetDenizen {
 		return false;
 	}
 
+	public boolean checkLocationCooldown(Player thePlayer) {
+		if (!Denizen.locationCooldown.containsKey(thePlayer)) return true;
+		if (System.currentTimeMillis() >= Denizen.locationCooldown.get(thePlayer)) return true;
+		return false;
+	}
+
 
 	
 
@@ -191,6 +197,11 @@ public class GetDenizen {
 
 		return;
 	}
+
+
+
+
+
 	
 	
 	

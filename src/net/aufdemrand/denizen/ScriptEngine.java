@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 public class ScriptEngine {
 
 	public enum Trigger {
-		CHAT, CLICK, PROXIMITY, FAIL, FINISH, TASK
+		CHAT, CLICK, PROXIMITY, FAIL, FINISH, TASK, LOCATION
 	}
 
 	private Denizen plugin;
@@ -170,13 +170,21 @@ public class ScriptEngine {
 			return true;
 
 		case TASK:
-			thePlayer.sendMessage("TASK TRIGGERED");
 			triggerToQue(theScript, 0, thePlayer, null, 
 					plugin.getScripts().getStringList(theScript + ".Script"));
 			return true;
 
-		case FINISH:
-			break;
+		case LOCATION:
+			if (plugin.getScripts().contains(theScript + ".Steps." + theStep + ".Location Trigger")) {
+
+				if (plugin.getScripts().getString(theScript + ".Steps." + theStep + ".Location Trigger.1.Trigger")
+						.equalsIgnoreCase(theMessage)) {
+					triggerToQue(theScript, theStep, thePlayer, theDenizen, 
+							plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Location Trigger.1.Script"));
+					return true;
+				}
+			}
+			else return false;
 
 		case FAIL:
 			break;
@@ -453,9 +461,9 @@ public class ScriptEngine {
 
 	}
 
-	
-	
-	
+
+
+
 
 	/*
 	 * Checks a Player's location against a Location (with leeway). Should be faster than
@@ -463,8 +471,8 @@ public class ScriptEngine {
 	 * 
 	 * Thanks chainsol :)
 	 */
-	
-	
+
+
 	public boolean checkLocation(Player thePlayer, Location theLocation, int theLeeway) {
 		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
 				> theLeeway) return false;
@@ -472,43 +480,45 @@ public class ScriptEngine {
 				> theLeeway) return false;
 		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
 				> theLeeway) return false;
-		
+
 		return true;
 	}
 
-	
-	
-	
-	
+
+
+
+
 	/*
-	 * Builds a map<Location, "Denizen.getName:location bookmark name"> of all the location bookmarks
+	 * Builds a map<Location, "Denizen Id:location bookmark name"> of all the location bookmarks
 	 * for matching location triggers.  
 	 */
-	
+
 	public void buildLocationTriggerList() {
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
 		Denizen.validLocations.clear();
-		
+
 		for (NPC theDenizen : DenizenNPCs) {
 			if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
 				List<String> locationsToAdd = plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
-				
+
 				for (String thisLocation : locationsToAdd) {
 					if (!thisLocation.isEmpty()) {
 						Location theLocation = Denizen.getDenizen.getBookmark(theDenizen.getName(), thisLocation.split(" ", 2)[0], "LOCATION");
-						String theInfo = theDenizen.getName() + ":" + thisLocation.split(" ", 2)[0];
+						String theInfo = theDenizen.getId() + ":" + thisLocation.split(" ", 2)[0];
 						Denizen.validLocations.put(theLocation, theInfo);
 					}
 				}
 			}
 		}	
 
+		plugin.getLogger().log(Level.INFO, "Trigger list built. Size: " + Denizen.validLocations.size());
+		
 		return;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 }
