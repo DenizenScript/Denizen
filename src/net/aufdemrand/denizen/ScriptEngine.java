@@ -453,5 +453,62 @@ public class ScriptEngine {
 
 	}
 
+	
+	
+	
 
+	/*
+	 * Checks a Player's location against a Location (with leeway). Should be faster than
+	 * bukkit's built in Location.distance(Location) since there's no sqrt math.
+	 * 
+	 * Thanks chainsol :)
+	 */
+	
+	
+	public boolean checkLocation(Player thePlayer, Location theLocation, int theLeeway) {
+		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
+				> theLeeway) return false;
+		if (Math.abs(thePlayer.getLocation().getBlockY() - theLocation.getBlockY()) 
+				> theLeeway) return false;
+		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
+				> theLeeway) return false;
+		
+		return true;
+	}
+
+	
+	
+	
+	
+	/*
+	 * Builds a map<Location, "Denizen.getName:location bookmark name"> of all the location bookmarks
+	 * for matching location triggers.  
+	 */
+	
+	public void buildLocationTriggerList() {
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
+		Denizen.validLocations.clear();
+		
+		for (NPC theDenizen : DenizenNPCs) {
+			if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
+				List<String> locationsToAdd = plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
+				
+				for (String thisLocation : locationsToAdd) {
+					if (!thisLocation.isEmpty()) {
+						Location theLocation = Denizen.getDenizen.getBookmark(theDenizen.getName(), thisLocation.split(" ", 2)[0], "LOCATION");
+						String theInfo = theDenizen.getName() + ":" + thisLocation.split(" ", 2)[0];
+						Denizen.validLocations.put(theLocation, theInfo);
+					}
+				}
+			}
+		}	
+
+		return;
+	}
+	
+	
+	
+	
+	
 }

@@ -76,8 +76,21 @@ public class DenizenCharacter extends Character implements Listener {
 			 * 
 			 * TODO: Denizen Proximity Trigger 
 			 * 
-			 */
+			 
 
+			if (!Denizen.validLocations.isEmpty()) {
+				
+				for (Location theLocation : Denizen.validLocations.keySet()) {
+					
+					if (Denizen.scriptEngine.checkLocation(event.getPlayer(), theLocation, 3)) {
+						Denizen.scriptEngine.parseScript(theDenizen, thePlayer, theScript, theMessage, theTrigger)
+					}
+					
+				}
+			}
+				
+				*/
+			
 
 			/* Location Task Listener */
 

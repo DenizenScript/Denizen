@@ -355,7 +355,6 @@ public class CommandExecuter {
 			/* 
 			 * I had to take out the feature for multiline text following the script delay. It was getting too messy!
 			 * Hopefully nobody will notice ;) ...but I'm sure they will, so I will put that off for another day.
-			 * 
 			 */
 
 			/* Format the text for player and bystander, and turn into multiline if necessary */
@@ -375,7 +374,8 @@ public class CommandExecuter {
 
 			if (!bystanderText.isEmpty()) {
 				for (String text : bystanderText) { /* now bystanderText */
-					Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, null, text, commandArgs[0]);
+					if (!playerText.isEmpty()) Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, "shhh...don't speak!", text, commandArgs[0]);
+					else Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, null, text, commandArgs[0]);
 				}
 			}
 			break;

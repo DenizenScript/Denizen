@@ -37,12 +37,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Denizen extends JavaPlugin {
 
-	public static Map<Player, List<String>> playerQue = new ConcurrentHashMap<Player, List<String>>();
-	public static Map<NPC, Location>   previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
-	public static Map<Player, Long>  interactCooldown = new ConcurrentHashMap<Player, Long>();
-	public static Map<Player, String>  proximityCheck = new ConcurrentHashMap<Player, String>();
-	public static List<NPC>                engagedNPC = new ArrayList<NPC>();
-	public static Boolean                   DebugMode = false;
+	public static Map<Player, List<String>>  playerQue = new ConcurrentHashMap<Player, List<String>>();
+	public static Map<NPC, Location>    previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
+	public static Map<Player, Long>   interactCooldown = new ConcurrentHashMap<Player, Long>();
+	public static Map<Location, String> validLocations = new ConcurrentHashMap<Location, String>();
+	public static List<NPC>                 engagedNPC = new ArrayList<NPC>();
+	public static Boolean                    DebugMode = false;
 
 	public static ScriptEngine       scriptEngine = new ScriptEngine();
 	public static CommandExecuter commandExecuter = new CommandExecuter();
@@ -91,6 +91,7 @@ public class Denizen extends JavaPlugin {
 			reloadScripts();
 			reloadAssignments();
 			reloadSaves();
+			Denizen.scriptEngine.buildLocationTriggerList();
 			sender.sendMessage("Denizens/config.yml, scripts, and assignments.yml reloaded.");
 			return true;
 		}
@@ -287,6 +288,7 @@ public class Denizen extends JavaPlugin {
 						player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
 				getSaves().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
 				saveSaves();
+				Denizen.scriptEngine.buildLocationTriggerList();
 				player.sendMessage(ChatColor.GOLD + "Location bookmark added. Your denizen can now reference this location.");
 				return true;
 			}
@@ -331,7 +333,7 @@ public class Denizen extends JavaPlugin {
 		reloadScripts();
 		reloadSaves();
 		reloadAssignments();
-		// getConfig().options().copyDefaults(true);
+		Denizen.scriptEngine.buildLocationTriggerList();
 
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new DenizenCharacter(), this);
@@ -511,18 +513,6 @@ public class Denizen extends JavaPlugin {
 		return assignmentConfig;
 	}
 
-	/*
-	public void saveAssignments() {
-	    if (assignmentConfig == null || assignmentConfigFile == null) {
-	    return;
-	    }
-	    try {
-	        assignmentConfig.save(assignmentConfigFile);
-	    } catch (IOException ex) {
-	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + assignmentConfigFile, ex);
-	    }
-
-	 */
 }
 
 

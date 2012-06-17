@@ -179,7 +179,7 @@ public class GetDenizen {
 			theRange = Denizen.settings.NpcToPlayerChatRangeInBlocks();
 		}
 
-		if (thePlayerMessage != null) thePlayer.sendMessage(thePlayerMessage);
+		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!")) thePlayer.sendMessage(thePlayerMessage);
 
 		if ((Denizen.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
 			if (theRange > 0) {
