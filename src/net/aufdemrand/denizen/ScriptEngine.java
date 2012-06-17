@@ -484,6 +484,16 @@ public class ScriptEngine {
 		return true;
 	}
 
+	public boolean checkLocation(NPC theDenizen, Location theLocation, int theLeeway) {
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - theLocation.getBlockX()) 
+				> theLeeway) return false;
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockY() - theLocation.getBlockY()) 
+				> theLeeway) return false;
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - theLocation.getBlockX()) 
+				> theLeeway) return false;
+
+		return true;
+	}
 
 
 
@@ -513,9 +523,36 @@ public class ScriptEngine {
 		}	
 
 		plugin.getLogger().log(Level.INFO, "Trigger list built. Size: " + Denizen.validLocations.size());
-		
+
 		return;
 	}
+
+
+
+
+
+	public void enforcePosition() {
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
+
+		for (NPC theDenizen : DenizenNPCs) {
+			if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Position.Standing")) {
+				if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Position.Standing").isEmpty()) {
+
+					Location enforcedLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), 
+							plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Position.Standing"), 
+							"LOCATION");
+
+					if (!checkLocation(theDenizen, enforcedLoc, 0) && !theDenizen.getAI().hasDestination())
+						theDenizen.getAI().setDestination(enforcedLoc);
+
+				}
+			}
+		}
+	}
+
+
+
 
 
 

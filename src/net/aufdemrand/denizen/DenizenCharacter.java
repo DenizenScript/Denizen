@@ -80,7 +80,7 @@ public class DenizenCharacter extends Character implements Listener {
 				
 
 				for (Location theLocation : Denizen.validLocations.keySet()) {
-					if (Denizen.scriptEngine.checkLocation(event.getPlayer(), theLocation, 3)
+					if (Denizen.scriptEngine.checkLocation(event.getPlayer(), theLocation, 1)
 							&& Denizen.getDenizen.checkLocationCooldown(event.getPlayer())) {
 
 						String theScript = Denizen.getScript.getInteractScript(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), event.getPlayer());

@@ -57,7 +57,7 @@ public class Denizen extends JavaPlugin {
 
 	public static Economy             denizenEcon = null;
 	public static Permission         denizenPerms = null;
-	
+
 	private String denizenVersion = "Denizen version 0.6 build 98+";
 
 
@@ -278,13 +278,34 @@ public class Denizen extends JavaPlugin {
 		 * These craftbukkit commands require a Denizen to be selected.
 		 */
 
+
+		if (args[0].equalsIgnoreCase("stand")) {
+			if(args.length < 2) {
+				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen stand [location bookmark]");
+				return true;
+				}
+			else if(args[1].equalsIgnoreCase("clear")) {
+				getSaves().set("Denizens." + ThisNPC.getName() + ".Position.Standing", null);
+				player.sendMessage(ChatColor.GREEN + "Standing clear. Enforced location has been cleared.");
+				return true;
+				}
+			else {
+				getSaves().set("Denizens." + ThisNPC.getName() + ".Position.Standing", args[1]);
+				player.sendMessage(ChatColor.GREEN + "Location enforced. This can be changed or disabled");
+				player.sendMessage(ChatColor.GREEN + "with script commands.");
+				return true;
+			}
+
+
+		}
+
 		if (args[0].equalsIgnoreCase("bookmark")) {
 			if(args.length < 3) {
 				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help bookmark");
 				return true;
 			}
 			else if (args[1].equalsIgnoreCase("location")) {
-				List<String> locationList = getAssignments().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
+				List<String> locationList = getSaves().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
 				locationList.add(args[2] + " " + player.getWorld().getName() + ";" + player.getLocation().getX() + ";" +
 						player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
 				getSaves().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
@@ -295,7 +316,7 @@ public class Denizen extends JavaPlugin {
 			}
 
 			else if (args[1].equalsIgnoreCase("block")) {
-				List<String> blockList = getAssignments().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Block");
+				List<String> blockList = getSaves().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Block");
 				Block targetBlock = player.getTargetBlock(null, 6);
 				blockList.add(args[2] + " " + player.getWorld().getName() + ";" + targetBlock.getX() + ";" +
 						targetBlock.getY() + ";" + targetBlock.getZ());
@@ -340,7 +361,7 @@ public class Denizen extends JavaPlugin {
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
-			public void run() { scriptEngine.commandQue(); }
+			public void run() { scriptEngine.commandQue(); scriptEngine.enforcePosition(); }
 		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -353,7 +374,7 @@ public class Denizen extends JavaPlugin {
 			public void run() { scriptEngine.buildLocationTriggerList(); }
 		}, 100);
 
-		
+
 	}
 
 
