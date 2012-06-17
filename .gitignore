@@ -6,6 +6,8 @@ Denizen.iml
 .idea
 bin/
 lib/
+target/
+.settings/
 
 # Compiled source #
 ###################
