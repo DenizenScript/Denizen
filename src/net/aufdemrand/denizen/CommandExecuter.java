@@ -180,7 +180,7 @@ public class CommandExecuter {
 			if (commandArgs[2] != null) giveItem.setAmount(Integer.valueOf(commandArgs[2]));
 			else giveItem.setAmount(1);
 
-			thePlayer.getWorld().dropItem(thePlayer.getLocation(), giveItem);
+			thePlayer.getInventory().addItem(giveItem);
 			break;
 
 
