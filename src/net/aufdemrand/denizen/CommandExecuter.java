@@ -155,7 +155,7 @@ public class CommandExecuter {
 
 			if (Character.isDigit(theItem[0].charAt(0))) {
 				giveItem.setTypeId(Integer.valueOf(theItem[0]));
-				giveItem.getData().setData(Byte.valueOf(theItem[1]));
+				if (theItem[1] != null) giveItem.getData().setData(Byte.valueOf(theItem[1]));
 			}
 			else giveItem.setType(Material.getMaterial(commandArgs[1].toUpperCase()));
 
@@ -185,7 +185,7 @@ public class CommandExecuter {
 
 				if (Character.isDigit(theTakeItem[0].charAt(0))) {
 					itemToTake.setTypeId(Integer.valueOf(theTakeItem[0]));
-					itemToTake.getData().setData(Byte.valueOf(theTakeItem[1]));
+					if (theTakeItem[1] != null) itemToTake.getData().setData(Byte.valueOf(theTakeItem[1]));
 				}
 				else itemToTake.setType(Material.getMaterial(commandArgs[1].toUpperCase()));
 

@@ -20,7 +20,7 @@ public class GetRequirements {
 	public enum Requirement {
 		NONE, NAME, WEARING, ITEM, HOLDING, TIME, PRECIPITATION, ACTIVITY, FINISHED, SCRIPT, FAILED,
 		STORMY, SUNNY, HUNGER, WORLD, PERMISSION, LEVEL, GROUP, MONEY, POTIONEFFECT, PRECIPITATING,
-		STORMING, DURABILITY
+		STORMING 
 	}
 
 
@@ -141,15 +141,6 @@ public class GetRequirements {
 				for(String arg : arguments) if (arg != null) thePermissions.add(arg);
 				thePermissions.remove(0);   /* Remove the command from the list */
 				if (Denizen.getPlayer.checkPermissions((Player) theEntity, thePermissions, negativeRequirement)) numberMet++;
-				break;
-
-			case DURABILITY:  // (-)DURABILITY [>,<,=] [#|#%]
-				try {
-					if (Denizen.getPlayer.checkDurability((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
-				}
-				catch(IllegalArgumentException e) {
-					Bukkit.getLogger().severe(String.format("Denizen: Problem with DURABILITY node in script '%s'.  Error: %s", theScript, e));
-				}
 				break;
 			}
 		}
