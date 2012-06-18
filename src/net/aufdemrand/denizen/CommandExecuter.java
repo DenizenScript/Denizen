@@ -382,7 +382,7 @@ public class CommandExecuter {
 
 		case RESET: // RESET FINISH(ED) [Name of Script]  or  RESET FAIL(ED) [NAME OF SCRIPT]
 			String executeScript;
-			if (commandArgs.length == 2) executeScript=theScript; else executeScript=executeArgs[4].split(" ", 3)[2];
+			if (commandArgs[2] == null) executeScript=theScript; else executeScript=executeArgs[4].split(" ", 3)[2];
 			if (commandArgs[1].equalsIgnoreCase("FINISH") || commandArgs[1].equalsIgnoreCase("FINISHED")) {
 				plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Completed", 0);
 				plugin.saveSaves();
