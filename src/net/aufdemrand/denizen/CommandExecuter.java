@@ -28,7 +28,7 @@ public class CommandExecuter {
 		TELEPORT, STRIKE, WALK, REMEMBER, RESPAWN, PERMISS, EXECUTE, SHOUT,
 		WHISPER, CHAT, ANNOUNCE, GRANT, HINT, RETURN, LOOK, WALKTO, FINISH, 
 		FOLLOW, CAST, NARRATE, ENGAGE, DISENGAGE,
-		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE, ATTACK, PLAYERTASK, RUNTASK
+		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE, ATTACK, PLAYERTASK, RUNTASK, DROP
 	} 
 
 	private Denizen plugin;
@@ -145,6 +145,24 @@ public class CommandExecuter {
 				denizenLooking.getBukkitEntity().getLocation().setPitch(lookLoc.getPitch());
 				denizenLooking.getBukkitEntity().getLocation().setYaw(lookLoc.getYaw());
 			}
+			break;
+
+			
+		case DROP:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
+
+			String[] thedropItem = Denizen.getRequirements.splitItem(commandArgs[1]);
+			ItemStack dropItem = new ItemStack(Material.AIR);
+
+			if (Character.isDigit(thedropItem[0].charAt(0))) {
+				dropItem.setTypeId(Integer.valueOf(thedropItem[0]));
+				if (thedropItem[1] != null) dropItem.getData().setData(Byte.valueOf(thedropItem[1]));
+			}
+			else dropItem.setType(Material.getMaterial(commandArgs[1].toUpperCase()));
+
+			if (commandArgs[2] != null) dropItem.setAmount(Integer.valueOf(commandArgs[2]));
+			else dropItem.setAmount(1);
+
+			theDenizen.getBukkitEntity().getWorld().dropItem(thePlayer.getLocation(), dropItem);
 			break;
 
 
