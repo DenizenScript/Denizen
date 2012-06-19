@@ -2,9 +2,8 @@ package net.aufdemrand.denizen;
 
 import org.bukkit.Bukkit;
 
-public class Settings {
+public class Settings extends Denizen {
 
-	private Denizen plugin;
 
 	/*
 
@@ -16,8 +15,7 @@ public class Settings {
 	 */
 
 	public int InteractDelayInTicks() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		int delay = plugin.getConfig().getInt("interact_delay_in_ticks", 10);
+		int delay = getConfig().getInt("interact_delay_in_ticks", 10);
 
 		/* Check for users setting delay to 0, which will in turn lock up the server. */
 		if (delay < 1) delay = 1;
@@ -32,8 +30,7 @@ public class Settings {
 	 */
 
 	public int MultiLineTextMaximumLength() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getInt("multi_line_text_maximum_length", 55);
+		return getConfig().getInt("multi_line_text_maximum_length", 55);
 	}
 
 	/*
@@ -46,7 +43,7 @@ public class Settings {
 	chat_globally_if_no_chat_triggers: false
 
 	# Furthermore, if there are chat triggers available, and the Player
-	# doesn't match one, should the player still talk and recieve a
+	# doesn't match one, should the player still talk and receive a
 	# response from the Denizen, or should he just chat globally and
 	# ignore the Denizen. Change this to true if you would like
 	# chat near a Denizen to be global if there are available chat
@@ -56,13 +53,11 @@ public class Settings {
 	 */
 
 	public boolean ChatGloballyIfNoChatTriggers() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getBoolean("chat_globally_if_no_chat_triggers", false);
+		return getConfig().getBoolean("chat_globally_if_no_chat_triggers", false);
 	}
 
 	public boolean ChatGloballyIfFailedChatTriggers() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getBoolean("chat_globally_if_failed_chat_triggers", false);
+		return getConfig().getBoolean("chat_globally_if_failed_chat_triggers", false);
 	}
 
 	/*
@@ -75,13 +70,11 @@ public class Settings {
 	 */
 
 	public boolean BystandersHearNpcToPlayerChat() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getBoolean("bystanders_hear_npc_to_player_chat", true);
+		return getConfig().getBoolean("bystanders_hear_npc_to_player_chat", true);
 	}
 
 	public boolean BystandersHearPlayerToNpcChat() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getBoolean("bystanders_hear_player_to_npc_chat", true);
+		return getConfig().getBoolean("bystanders_hear_player_to_npc_chat", true);
 	}
 
 	/*
@@ -99,38 +92,31 @@ public class Settings {
 	 */
 
 	public int PlayerToNpcChatRangeInBlocks() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getInt("player_to_npc_chat_range_in_blocks", 2);
+		return getConfig().getInt("player_to_npc_chat_range_in_blocks", 2);
 	}
 
 	public int NpcToPlayerChatRangeInBlocks() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		return plugin.getConfig().getInt("npc_to_player_chat_range_in_blocks", 7);
+		return getConfig().getInt("npc_to_player_chat_range_in_blocks", 7);
 	}
 
 	public int NpcEmoteRangeInBlocks() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		return plugin.getConfig().getInt("npc_emote_range_in_blocks", 7);
+		return getConfig().getInt("npc_emote_range_in_blocks", 7);
 	}
 
 	public int PlayerToNpcShoutRangeInBlocks() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getInt("player_to_npc_shout_range_in_blocks", 15);
+		return getConfig().getInt("player_to_npc_shout_range_in_blocks", 15);
 	}
 
 	public int NpcToPlayerShoutRangeInBlocks() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		return plugin.getConfig().getInt("npc_to_player_shout_range_in_blocks", 15);
+		return getConfig().getInt("npc_to_player_shout_range_in_blocks", 15);
 	}
 
 	public int PlayerToNpcWhisperRangeInBlocks() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getInt("player_to_npc_whisper_range_in_blocks", 2);
+		return getConfig().getInt("player_to_npc_whisper_range_in_blocks", 2);
 	}
 
 	public int NpcToPlayerWhisperRangeInBlocks() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		return plugin.getConfig().getInt("npc_to_player_whisper_range_in_blocks", 3);
+		return getConfig().getInt("npc_to_player_whisper_range_in_blocks", 3);
 	}
 
 	/*
@@ -148,28 +134,23 @@ public class Settings {
 	 */
 
 	public String PlayerChatToNpc() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("player_chat_to_npc", "You say to <NPC>, '<TEXT>'");
+		return getConfig().getString("player_chat_to_npc", "You say to <NPC>, '<TEXT>'");
 	}
 
 	public String PlayerChatToNpcBystander() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		return plugin.getConfig().getString("player_chat_to_npc_bystander", "<PLAYER> says to <NPC>, '<TEXT>'");
+		return getConfig().getString("player_chat_to_npc_bystander", "<PLAYER> says to <NPC>, '<TEXT>'");
 	}
 
 	public String NpcChatToBystanders() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("npc_chat_to_bystanders", "<NPC> says, '<TEXT>'");
+		return getConfig().getString("npc_chat_to_bystanders", "<NPC> says, '<TEXT>'");
 	}
 
 	public String NpcChatToPlayer() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("npc_chat_to_player", "<NPC> says to you, '<TEXT>'");
+		return getConfig().getString("npc_chat_to_player", "<NPC> says to you, '<TEXT>'");
 	}
 	
 	public String NpcChatToPlayerBystander() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("npc_chat_to_player_bystander", "<NPC> says to <PLAYER>, '<TEXT>'");
+		return getConfig().getString("npc_chat_to_player_bystander", "<NPC> says to <PLAYER>, '<TEXT>'");
 	}
 
 	/*
@@ -183,28 +164,23 @@ public class Settings {
 	*/
 	
 	public String PlayerWhisperToNpc() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("player_whisper_to_npc", "You whisper to <NPC>, '<TEXT>'");
+		return getConfig().getString("player_whisper_to_npc", "You whisper to <NPC>, '<TEXT>'");
 	}
 
 	public String PlayerWhisperToNpcBystander() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		return plugin.getConfig().getString("player_whisper_to_npc_bystander", "<PLAYER> whispers someting to <NPC>.");
+		return getConfig().getString("player_whisper_to_npc_bystander", "<PLAYER> whispers someting to <NPC>.");
 	}
 
 	public String NpcWhisperToBystanders() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("npc_whisper_to_bystanders", "<NPC> whispers, '<TEXT>'");
+		return getConfig().getString("npc_whisper_to_bystanders", "<NPC> whispers, '<TEXT>'");
 	}
 
 	public String NpcWhisperToPlayer() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("npc_whisper_to_player", "<NPC> whispers to you, '<TEXT>'");
+		return getConfig().getString("npc_whisper_to_player", "<NPC> whispers to you, '<TEXT>'");
 	}
 	
 	public String NpcWhisperToPlayerBystander() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("npc_whisper_to_player_bystander", "<NPC> whispers to <PLAYER>, '<TEXT>'");
+		return getConfig().getString("npc_whisper_to_player_bystander", "<NPC> whispers to <PLAYER>, '<TEXT>'");
 	}
 	
 	/*
@@ -218,28 +194,23 @@ public class Settings {
 	*/
 	
 	public String PlayerShoutToNpc() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("player_shout_to_bystanders", "You shout, '<TEXT>'");
+		return getConfig().getString("player_shout_to_bystanders", "You shout, '<TEXT>'");
 	}
 
 	public String PlayerShoutToNpcBystander() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		return plugin.getConfig().getString("player_shout_to_bystanders_bystander", "<PLAYER> shouts, '<TEXT>'");
+		return getConfig().getString("player_shout_to_bystanders_bystander", "<PLAYER> shouts, '<TEXT>'");
 	}
 
 	public String NpcShoutToBystanders() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("npc_shout_to_bystanders", "<NPC> shouts, '<TEXT>'");
+		return getConfig().getString("npc_shout_to_bystanders", "<NPC> shouts, '<TEXT>'");
 	}
 
 	public String NpcShoutToPlayer() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("npc_shout_to_player", "<NPC> shouts to you, '<TEXT>'");
+		return getConfig().getString("npc_shout_to_player", "<NPC> shouts to you, '<TEXT>'");
 	}
 	
 	public String NpcShoutToPlayerBystander() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		return plugin.getConfig().getString("npc_shout_to_player_bystander", "<NPC> shouts to <PLAYER>, '<TEXT>'");
+		return getConfig().getString("npc_shout_to_player_bystander", "<NPC> shouts to <PLAYER>, '<TEXT>'");
 	}
 	
 	/*
@@ -252,8 +223,7 @@ public class Settings {
 	 */
 
 	public String DefaultNoRequirementsMetText() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		return plugin.getConfig().getString("default_no_requirements_met_text", "Sorry, I have nothing else for you right now.");
+		return getConfig().getString("default_no_requirements_met_text", "Sorry, I have nothing else for you right now.");
 	}
 
 

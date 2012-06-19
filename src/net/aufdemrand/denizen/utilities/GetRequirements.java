@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-public class GetRequirements {
+public class GetRequirements extends Denizen {
 
 
 
@@ -28,9 +28,8 @@ public class GetRequirements {
 
 	public boolean check(String theScript, LivingEntity theEntity, boolean isPlayer) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		String requirementMode = plugin.getScripts().getString(theScript + ".Requirements.Mode");
-		List<String> requirementList = plugin.getScripts().getStringList(theScript + ".Requirements.List");
+		String requirementMode = getScripts().getString(theScript + ".Requirements.Mode");
+		List<String> requirementList = getScripts().getStringList(theScript + ".Requirements.List");
 
 		/* No requirements met yet, we just started! */
 		int numberMet = 0; 
@@ -62,91 +61,92 @@ public class GetRequirements {
 				return true;
 
 			case TIME: // (-)TIME [DAWN|DAY|DUSK|NIGHT]  or  (-)TIME [#] [#]
-				if (Denizen.getWorld.checkTime(theEntity.getWorld(), arguments[1], arguments[2], negativeRequirement)) numberMet++;
+				if (getWorld.checkTime(theEntity.getWorld(), arguments[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 
 			case STORMING:	case STORMY:  case PRECIPITATING:  case PRECIPITATION:  // (-)PRECIPITATION
-				if (Denizen.getWorld.checkWeather(theEntity.getWorld(), "PRECIPITATION", negativeRequirement)) numberMet++;
+				if (getWorld.checkWeather(theEntity.getWorld(), "PRECIPITATION", negativeRequirement)) numberMet++;
 				break;
 
 			case SUNNY:  // (-)SUNNY
-				if (Denizen.getWorld.checkWeather(theEntity.getWorld(), "SUNNY", negativeRequirement)) numberMet++;
+				if (getWorld.checkWeather(theEntity.getWorld(), "SUNNY", negativeRequirement)) numberMet++;
 				break;
 
 			case HUNGER:  // (-)HUNGER [FULL|HUNGRY|STARVING]
-				if (Denizen.getPlayer.checkSaturation((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
+				if (getPlayer.checkSaturation((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
 				break;
 
 			case LEVEL:  // (-)LEVEL [#] (#)
-				if (Denizen.getPlayer.checkLevel((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
+				if (getPlayer.checkLevel((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 
 			case WORLD:  // (-)WORLD [List of Worlds]
 				List<String> theWorlds = new LinkedList<String>(); // = Arrays.asList(arguments);
 				for(String arg : arguments) if (arg != null) theWorlds.add(arg.toUpperCase());
 				theWorlds.remove(0);   /* Remove the command from the list */
-				if (Denizen.getWorld.checkWorld(theEntity, theWorlds, negativeRequirement)) numberMet++;
+				if (getWorld.checkWorld(theEntity, theWorlds, negativeRequirement)) numberMet++;
 				break;
 
 			case NAME:  // (-)Name [List of Names]
 				List<String> theNames = new LinkedList<String>(); // = Arrays.asList(arguments);
 				for(String arg : arguments) if (arg != null) theNames.add(arg.toUpperCase());
 				theNames.remove(0);   /* Remove the command from the list */
-				if (Denizen.getPlayer.checkName((Player) theEntity, theNames, negativeRequirement)) numberMet++;
+				if (getPlayer.checkName((Player) theEntity, theNames, negativeRequirement)) numberMet++;
 				break;
 
 			case MONEY: // (-)MONEY [# or more]
-				if (Denizen.getPlayer.checkFunds((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
+				if (getPlayer.checkFunds((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
 				break;
 
 			case ITEM: // (-)ITEM [ITEM_NAME|#:#] (# or more)
 				String[] itemArgs = splitItem(arguments[1]);
-				if (Denizen.getPlayer.checkInventory((Player) theEntity, itemArgs[0], itemArgs[1], arguments[2], negativeRequirement)) numberMet++;
+				if (getPlayer.checkInventory((Player) theEntity, itemArgs[0], itemArgs[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 
 			case HOLDING: // (-)HOLDING [ITEM_NAME|#:#] (# or more)
 				String[] holdingArgs = splitItem(arguments[1]);
-				if (Denizen.getPlayer.checkHand((Player) theEntity, holdingArgs[0], holdingArgs[1], arguments[2], negativeRequirement)) numberMet++;
+				if (getPlayer.checkHand((Player) theEntity, holdingArgs[0], holdingArgs[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 
 			case WEARING: // (-) WEARING [ITEM_NAME|#]
-				if (Denizen.getPlayer.checkArmor((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
+				if (getPlayer.checkArmor((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
 				break;
 
 			case POTIONEFFECT: // (-)POTIONEFFECT [List of POITION_TYPESs]
 				List<String> thePotions = new LinkedList<String>(); // = Arrays.asList(arguments);
 				for(String arg : arguments) if (arg != null) thePotions.add(arg.toUpperCase());
 				thePotions.remove(0);   /* Remove the command from the list */
-				if (Denizen.getPlayer.checkEffects((Player) theEntity, thePotions, negativeRequirement)) numberMet++;
+				if (getPlayer.checkEffects((Player) theEntity, thePotions, negativeRequirement)) numberMet++;
 				break;
 
 			case FINISHED:
 			case SCRIPT: // (-)FINISHED (#) [Script Name]
-				if (Denizen.getScript.getScriptCompletes((Player) theEntity, requirementEntry.split(" ", 2)[1], requirementEntry.split(" ", 3)[1], negativeRequirement)) numberMet++;
+				if (getScript.getScriptCompletes((Player) theEntity, requirementEntry.split(" ", 2)[1], requirementEntry.split(" ", 3)[1], negativeRequirement)) numberMet++;
 				break;
 
 			case FAILED: // (-)SCRIPT [Script Name]
-				if (Denizen.getScript.getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
+				if (getScript.getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
 				break;
 
 			case GROUP:
 				List<String> theGroups = new LinkedList<String>(); // = Arrays.asList(arguments);
 				for(String arg : arguments) if (arg != null) theGroups.add(arg);
 				theGroups.remove(0);   /* Remove the command from the list */
-				if (Denizen.getPlayer.checkGroups((Player) theEntity, theGroups, negativeRequirement)) numberMet++;
+				if (getPlayer.checkGroups((Player) theEntity, theGroups, negativeRequirement)) numberMet++;
 				break;
 
 			case PERMISSION:  // (-)PERMISSION [this.permission.node]
 				List<String> thePermissions = new LinkedList<String>(); // = Arrays.asList(arguments);
 				for(String arg : arguments) if (arg != null) thePermissions.add(arg);
 				thePermissions.remove(0);   /* Remove the command from the list */
-				if (Denizen.getPlayer.checkPermissions((Player) theEntity, thePermissions, negativeRequirement)) numberMet++;
+				if (getPlayer.checkPermissions((Player) theEntity, thePermissions, negativeRequirement)) numberMet++;
 				break;
 
 			case DURABILITY:  // (-)DURABILITY [>,<,=] [#|#%]
 				try {
-					if (Denizen.getPlayer.checkDurability((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
+					if (getPlayer.checkDurability((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
 				}
+				
 				catch(IllegalArgumentException e) {
 					Bukkit.getLogger().severe(String.format("Denizen: Problem with DURABILITY node in script '%s'.  Error: %s", theScript, e));
 				}
