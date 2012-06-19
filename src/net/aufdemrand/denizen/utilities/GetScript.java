@@ -16,7 +16,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-public class GetScript extends Denizen {
+public class GetScript {
+
+	private Denizen plugin;
+
 
 	/*
 	 * ConcatenateScripts
@@ -30,10 +33,12 @@ public class GetScript extends Denizen {
 
 	public void ConcatenateScripts() throws IOException {
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+
 		try {
 
-			PrintWriter pw = new PrintWriter(new FileOutputStream(getDataFolder() + File.separator + "read-only-scripts.yml"));
-			File file = new File(getDataFolder() + File.separator + "scripts");
+			PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-scripts.yml"));
+			File file = new File(plugin.getDataFolder() + File.separator + "scripts");
 			File[] files = file.listFiles();
 			for (int i = 0; i < files.length; i++) {
 
@@ -76,8 +81,10 @@ public class GetScript extends Denizen {
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer) {
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+
 		String theScript = "none";
-		List<String> scriptList = getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
+		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
 		if (scriptList.isEmpty()) { return theScript; }
 		List<String> interactScripts = new ArrayList<String>();
 
@@ -95,7 +102,7 @@ public class GetScript extends Denizen {
 
 		for (String thisScript : scriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
-			if (getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) interactScripts.add(thisScript);
+			if (Denizen.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) interactScripts.add(thisScript);
 		}
 
 		/*
@@ -130,9 +137,11 @@ public class GetScript extends Denizen {
 
 	public int getCurrentStep(Player thePlayer, String theScript) {
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+
 		int currentStep = 1;
-		if (getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
-			currentStep =  getSaves().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
+		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
+			currentStep =  plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
 
 		return currentStep;
 	}
@@ -151,6 +160,7 @@ public class GetScript extends Denizen {
 
 	public boolean getScriptCompletes(Player thePlayer, String theScript, String theAmount, boolean negativeRequirement) {
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		boolean outcome = false;
 
 		/*
@@ -162,8 +172,8 @@ public class GetScript extends Denizen {
 			if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[1];
 			else theAmount = "1";
 
-			if (getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
-				if (getSaves().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
+			if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
+				if (plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
 			}
 
 		} catch(Throwable error) {
@@ -179,10 +189,12 @@ public class GetScript extends Denizen {
 
 	public boolean getScriptFail(Player thePlayer, String theScript, boolean negativeRequirement) {
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+
 		boolean outcome = false;
 
-		if (getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
-			if (getSaves().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) outcome = true;
+		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
+			if (plugin.getSaves().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) outcome = true;
 		}
 
 		if (negativeRequirement != outcome) return true;
@@ -206,10 +218,12 @@ public class GetScript extends Denizen {
 
 	public List<String> getChatTriggers(String theScript, Integer currentStep) {
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
 		for (int x=1; currentTrigger >= 0; x++) {
-			String theChatTrigger = getScripts().getString(theScript + ".Steps."
+			String theChatTrigger = plugin.getScripts().getString(theScript + ".Steps."
 					+ currentStep + ".Chat Trigger." + String.valueOf(currentTrigger) + ".Trigger");
 			if (theChatTrigger != null) { 
 				boolean isTrigger = false;
@@ -260,12 +274,12 @@ public class GetScript extends Denizen {
 	public boolean zap(Player thePlayer, String theScript, String theStep, String newStep) {
 
 		if (newStep == null) {
-			getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(theStep) + 1);
-			saveSaves();
+			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(theStep) + 1);
+			plugin.saveSaves();
 		}
 		else { 
-			getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(newStep)); 
-			saveSaves();
+			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(newStep)); 
+			plugin.saveSaves();
 		}
 
 		return true;

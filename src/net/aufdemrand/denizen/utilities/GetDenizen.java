@@ -13,7 +13,34 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class GetDenizen extends Denizen {
+public class GetDenizen {
+
+	private Denizen plugin;
+	
+
+	/*
+	 * checkCooldown
+	 * 
+	 * Checks against the interactCooldown for a Player to see if it has allowed enough time to interact.
+	 * 
+	 */
+
+	public boolean checkCooldown(Player thePlayer) {
+
+		if (!Denizen.interactCooldown.containsKey(thePlayer)) return true;
+		if (System.currentTimeMillis() >= Denizen.interactCooldown.get(thePlayer)) return true;
+
+		return false;
+	}
+
+	public boolean checkLocationCooldown(Player thePlayer) {
+		if (!Denizen.locationCooldown.containsKey(thePlayer)) return true;
+		if (System.currentTimeMillis() >= Denizen.locationCooldown.get(thePlayer)) return true;
+		return false;
+	}
+
+
+	
 
 
 	/*
@@ -44,8 +71,10 @@ public class GetDenizen extends Denizen {
 		return closestDenizen;
 	}
 
-
 	
+	
+
+
 	/*
 	 * getInRange
 	 * 
@@ -73,6 +102,8 @@ public class GetDenizen extends Denizen {
 	}
 
 
+
+	
 	
 	/*
 	 * getBookmark
@@ -83,14 +114,15 @@ public class GetDenizen extends Denizen {
 
 	public Location getBookmark(String theDenizen, String nameOfLocation, String BlockOrLocation) {
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		List<String> locationList = null;
 		String[] theLocation = null;
 		Location locationBookmark = null;
 
 		try {
 
-			if (BlockOrLocation.equalsIgnoreCase("block")) locationList = getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Block");	
-			else if (BlockOrLocation.equalsIgnoreCase("location")) locationList = getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Location");
+			if (BlockOrLocation.equalsIgnoreCase("block")) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Block");	
+			else if (BlockOrLocation.equalsIgnoreCase("location")) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Location");
 
 			for (String thisLocation : locationList) {
 				String theName = thisLocation.split(" ", 2)[0];
@@ -99,7 +131,7 @@ public class GetDenizen extends Denizen {
 
 			if (theLocation != null && BlockOrLocation.equalsIgnoreCase("location")) {			
 				locationBookmark = 
-						new Location(getServer().getWorld(theLocation[0]),
+						new Location(plugin.getServer().getWorld(theLocation[0]),
 								Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
 								Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
 								Float.parseFloat(theLocation[5]));
@@ -107,7 +139,7 @@ public class GetDenizen extends Denizen {
 
 			else if (theLocation != null && BlockOrLocation.equalsIgnoreCase("block")) {
 				locationBookmark = 
-						new Location(getServer().getWorld(theLocation[0]),
+						new Location(plugin.getServer().getWorld(theLocation[0]),
 								Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2]),
 								Double.parseDouble(theLocation[3]));
 			}
@@ -122,7 +154,8 @@ public class GetDenizen extends Denizen {
 	}
 
 
-	
+
+
 	/**
 	 * Makes a Denizen talk to a Player.
 	 *
@@ -136,27 +169,27 @@ public class GetDenizen extends Denizen {
 		int theRange = 0;
 		
 		if (messageType.equalsIgnoreCase("SHOUT")) {
-			theRange = settings.NpcToPlayerShoutRangeInBlocks();
+			theRange = Denizen.settings.NpcToPlayerShoutRangeInBlocks();
 		}
 		
 		else if (messageType.equalsIgnoreCase("WHISPER")) {
-			theRange = settings.NpcToPlayerWhisperRangeInBlocks();
+			theRange = Denizen.settings.NpcToPlayerWhisperRangeInBlocks();
 		}
 		
 		else if (messageType.equalsIgnoreCase("EMOTE")) {
-			theRange = settings.NpcEmoteRangeInBlocks();
+			theRange = Denizen.settings.NpcEmoteRangeInBlocks();
 			thePlayer.sendMessage(theBystanderMessage);
 		}
 
 		else {
-			theRange = settings.NpcToPlayerChatRangeInBlocks();
+			theRange = Denizen.settings.NpcToPlayerChatRangeInBlocks();
 		}
 
 		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!")) thePlayer.sendMessage(thePlayerMessage);
 
-		if ((settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
+		if ((Denizen.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
 			if (theRange > 0) {
-				for (Player otherPlayer : getPlayer.getInRange(theDenizen.getBukkitEntity(), theRange, thePlayer)) {
+				for (Player otherPlayer : Denizen.getPlayer.getInRange(theDenizen.getBukkitEntity(), theRange, thePlayer)) {
 					otherPlayer.sendMessage(theBystanderMessage);
 				}
 			}
@@ -165,5 +198,17 @@ public class GetDenizen extends Denizen {
 		return;
 	}
 
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
