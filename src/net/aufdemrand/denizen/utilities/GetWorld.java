@@ -11,7 +11,7 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
-public class GetWorld {
+public class GetWorld extends Denizen {
 
 
 	
@@ -144,7 +144,7 @@ public class GetWorld {
 		if (theAmount == null) theAmount = "1";
 		
 		if (theLocationBookmark == null) theSpawnLoc = theDenizen.getBukkitEntity().getLocation();		
-		else theSpawnLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), theLocationBookmark, "Location");
+		else theSpawnLoc = getDenizen.getBookmark(theDenizen.getName(), theLocationBookmark, "Location");
 		
 		if (theSpawnLoc != null) {
 			for (int cx = 1; cx <= Integer.valueOf(theAmount); cx++) {

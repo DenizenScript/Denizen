@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffectType;
 
-public class GetPlayer {
+public class GetPlayer extends Denizen {
 
 	/**
 	 * Gets players in range of a bukkit Entity. 
@@ -137,7 +137,7 @@ public class GetPlayer {
 
 	public void talkToDenizen(NPC theDenizen, Player thePlayer, String theMessage) {
 		
-		thePlayer.sendMessage(Denizen.settings.PlayerChatToNpc()
+		thePlayer.sendMessage(settings.PlayerChatToNpc()
 				.replace("<NPC>", theDenizen.getName())
 				.replace("<TEXT>", theMessage)
 				.replace("<PLAYER>", thePlayer.getName())
@@ -145,11 +145,11 @@ public class GetPlayer {
 				.replace("<WORLD>", thePlayer.getWorld().getName())
 				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
 
-		if (Denizen.settings.BystandersHearNpcToPlayerChat()) {
-			int theRange = Denizen.settings.PlayerToNpcChatRangeInBlocks();
+		if (settings.BystandersHearNpcToPlayerChat()) {
+			int theRange = settings.PlayerToNpcChatRangeInBlocks();
 			if (theRange > 0) {
 				for (Player otherPlayer : getInRange(theDenizen.getBukkitEntity(), theRange, thePlayer)) {
-					otherPlayer.sendMessage(Denizen.settings.PlayerChatToNpcBystander()
+					otherPlayer.sendMessage(settings.PlayerChatToNpcBystander()
 							.replace("<NPC>", theDenizen.getName())
 							.replace("<TEXT>", theMessage)
 							.replace("<PLAYER>", thePlayer.getName())
