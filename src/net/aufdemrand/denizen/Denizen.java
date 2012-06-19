@@ -37,7 +37,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Denizen extends JavaPlugin {
 
-	public Map<Player, List<String>>  playerQue = new ConcurrentHashMap<Player, List<String>>();
+	public static Map<Player, List<String>>  playerQue = new ConcurrentHashMap<Player, List<String>>();
 	public static Map<NPC, Location>    previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
 	public static Map<Player, Long>   interactCooldown = new ConcurrentHashMap<Player, Long>();
 	public static Map<Player, Long>   locationCooldown = new ConcurrentHashMap<Player, Long>();
@@ -45,17 +45,16 @@ public class Denizen extends JavaPlugin {
 	public static List<NPC>                 engagedNPC = new ArrayList<NPC>();
 	public static Boolean                    DebugMode = false;
 
-	public DenizenCharacter   getCharacter = new DenizenCharacter();
-	public ScriptEngine		  scriptEngine = new ScriptEngine();
-	public GetScript             getScript = new GetScript();
-	public GetDenizen           getDenizen = new GetDenizen();
-	public GetRequirements getRequirements = new GetRequirements();
-	public GetPlayer             getPlayer = new GetPlayer();
-	public GetWorld               getWorld = new GetWorld();
-	public Settings               settings = new Settings();
-	public CommandExecuter commandExecuter = new CommandExecuter();
-	public static DenizenInteracter denizenInteracter = new DenizenInteracter();
-	
+	public static ScriptEngine       scriptEngine = new ScriptEngine();
+	public static CommandExecuter commandExecuter = new CommandExecuter();
+	public static DenizenCharacter   getCharacter = new DenizenCharacter();
+	public static GetScript             getScript = new GetScript();
+	public static GetDenizen           getDenizen = new GetDenizen();
+	public static GetRequirements getRequirements = new GetRequirements();
+	public static GetPlayer             getPlayer = new GetPlayer();
+	public static GetWorld               getWorld = new GetWorld();
+	public static Settings               settings = new Settings();
+
 	public static Economy             denizenEcon = null;
 	public static Permission         denizenPerms = null;
 
@@ -93,7 +92,7 @@ public class Denizen extends JavaPlugin {
 			reloadScripts();
 			reloadAssignments();
 			reloadSaves();
-			scriptEngine.buildLocationTriggerList();
+			Denizen.scriptEngine.buildLocationTriggerList();
 			sender.sendMessage("Denizens/config.yml, scripts, and assignments.yml reloaded.");
 			return true;
 		}
@@ -311,7 +310,7 @@ public class Denizen extends JavaPlugin {
 						player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
 				getSaves().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
 				saveSaves();
-				scriptEngine.buildLocationTriggerList();
+				Denizen.scriptEngine.buildLocationTriggerList();
 				player.sendMessage(ChatColor.GOLD + "Location bookmark added. Your denizen can now reference this location.");
 				return true;
 			}
@@ -379,7 +378,8 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	
+
+
 	/*
 	 * onDisable
 	 * 
@@ -395,30 +395,8 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	
-	/*
-	 * checkCooldown
-	 * 
-	 * Checks against the interactCooldown for a Player to see if it has allowed enough time to interact.
-	 * 
-	 */
-
-	public static boolean checkCooldown(Player thePlayer) {
-
-		if (!interactCooldown.containsKey(thePlayer)) return true;
-		if (System.currentTimeMillis() >= interactCooldown.get(thePlayer)) return true;
-
-		return false;
-	}
-
-	public static boolean checkLocationCooldown(Player thePlayer) {
-		if (!locationCooldown.containsKey(thePlayer)) return true;
-		if (System.currentTimeMillis() >= locationCooldown.get(thePlayer)) return true;
-		return false;
-	}
 
 
-	
 	/*
 	 * setupEconomy/setupPermissions
 	 * 
@@ -528,7 +506,9 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	
+
+
+
 	/*
 	 * reloadAssignments/getAssignments/saveAssignments
 	 * 

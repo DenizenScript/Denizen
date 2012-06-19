@@ -8,6 +8,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.LookClose;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class CommandExecuter extends Denizen {
+public class CommandExecuter {
 
 
 	public static enum Command {
@@ -30,8 +31,9 @@ public class CommandExecuter extends Denizen {
 		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE, ATTACK, PLAYERTASK, RUNTASK, DROP
 	} 
 
+	private Denizen plugin;
 
-	
+
 	/*
 	 * Executes a command defined in theStep (not to be confused with currentStep ;)
 	 * 
@@ -50,6 +52,7 @@ public class CommandExecuter extends Denizen {
 		// Syntax of theStep
 		// 
 
+		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		/* Break down information from theStep for use */
 		String[] executeArgs = theStep.split(";");
@@ -75,25 +78,25 @@ public class CommandExecuter extends Denizen {
 
 		/* commandArgs [0] [1]      [2] [...]   */
 		case ZAP:   /* ZAP (Step #)             */
-			getScript.zap(thePlayer, theScript, currentStep, commandArgs[1]);
+			Denizen.getScript.zap(thePlayer, theScript, currentStep, commandArgs[1]);
 			break;
 
 		case ENGAGE:
-			engagedNPC.add(theDenizen);
+			Denizen.engagedNPC.add(theDenizen);
 			break;
 
 		case DISENGAGE:
-			if (engagedNPC.contains(theDenizen)) engagedNPC.remove(theDenizen);
+			if (Denizen.engagedNPC.contains(theDenizen)) Denizen.engagedNPC.remove(theDenizen);
 			break;
 
 		case SPAWNMOB:
 		case SPAWN:  /* SPAWN [ENTITY_TYPE] (AMOUNT) (Location Bookmark) */
-			getWorld.spawnMob(commandArgs[1], commandArgs[2], commandArgs[3], theDenizen);
+			Denizen.getWorld.spawnMob(commandArgs[1], commandArgs[2], commandArgs[3], theDenizen);
 			break;
 
 
 		case SWITCH:  // SWITCH [Block Bookmark] ON|OFF
-			Location switchLoc = getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
+			Location switchLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
 				World theWorld = switchLoc.getWorld();
 				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), switchLoc.getBlockX(), switchLoc.getBlockY(), switchLoc.getBlockZ(), null);
@@ -102,7 +105,7 @@ public class CommandExecuter extends Denizen {
 
 
 		case PRESS:  // SWITCH [Block Bookmark] ON|OFF
-			Location pressLoc = getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
+			Location pressLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
 			if (pressLoc.getBlock().getType() == Material.STONE_BUTTON) {
 				World theWorld = pressLoc.getWorld();
 				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), pressLoc.getBlockX(), pressLoc.getBlockY(), pressLoc.getBlockZ(), null);
@@ -138,7 +141,7 @@ public class CommandExecuter extends Denizen {
 			}
 			else if (!commandArgs[1].equalsIgnoreCase("AWAY") && !commandArgs[1].equalsIgnoreCase("CLOSE")) {
 				NPC denizenLooking = theDenizen;
-				Location lookLoc = getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
+				Location lookLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
 				denizenLooking.getBukkitEntity().getLocation().setPitch(lookLoc.getPitch());
 				denizenLooking.getBukkitEntity().getLocation().setYaw(lookLoc.getYaw());
 			}
@@ -147,7 +150,7 @@ public class CommandExecuter extends Denizen {
 			
 		case DROP:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
 
-			String[] thedropItem = getRequirements.splitItem(commandArgs[1]);
+			String[] thedropItem = Denizen.getRequirements.splitItem(commandArgs[1]);
 			ItemStack dropItem = new ItemStack(Material.AIR);
 
 			if (Character.isDigit(thedropItem[0].charAt(0))) {
@@ -165,7 +168,7 @@ public class CommandExecuter extends Denizen {
 
 		case GIVE:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
 
-			String[] theItem = getRequirements.splitItem(commandArgs[1]);
+			String[] theItem = Denizen.getRequirements.splitItem(commandArgs[1]);
 			ItemStack giveItem = new ItemStack(Material.AIR);
 
 			if (Character.isDigit(theItem[0].charAt(0))) {
@@ -183,10 +186,10 @@ public class CommandExecuter extends Denizen {
 
 		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
 			if (commandArgs[1].equalsIgnoreCase("MONEY")) {
-				double playerMoneyAmt = denizenEcon.getBalance(thePlayer.getName());
+				double playerMoneyAmt = Denizen.denizenEcon.getBalance(thePlayer.getName());
 				double amtToTake = Double.valueOf(commandArgs[2]);
 				if (amtToTake > playerMoneyAmt) amtToTake = playerMoneyAmt;
-				denizenEcon.withdrawPlayer(thePlayer.getName(), amtToTake);
+				Denizen.denizenEcon.withdrawPlayer(thePlayer.getName(), amtToTake);
 
 			}
 			else if (commandArgs[1].equalsIgnoreCase("ITEMINHAND")) {
@@ -195,7 +198,7 @@ public class CommandExecuter extends Denizen {
 
 			else {
 
-				String[] theTakeItem = getRequirements.splitItem(commandArgs[1]);
+				String[] theTakeItem = Denizen.getRequirements.splitItem(commandArgs[1]);
 				ItemStack itemToTake = new ItemStack(Material.AIR);
 
 				if (Character.isDigit(theTakeItem[0].charAt(0))) {
@@ -229,7 +232,7 @@ public class CommandExecuter extends Denizen {
 
 
 		case TELEPORT:  // TELEPORT [Location Notable]
-			thePlayer.teleport(getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "location"));
+			thePlayer.teleport(Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "location"));
 
 
 		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
@@ -238,37 +241,37 @@ public class CommandExecuter extends Denizen {
 
 
 		case WALK:  // WALK Z(-NORTH(2)/+SOUTH(0)) X(-WEST(1)/+EAST(3)) Y (+UP/-DOWN)
-			previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
+			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
 			if (!commandArgs[1].isEmpty()) theDenizen.getAI().setDestination(theDenizen.getBukkitEntity().getLocation()
 					.add(Double.parseDouble(commandArgs[2]), Double.parseDouble(commandArgs[3]), Double.parseDouble(commandArgs[1])));
 			break;
 
 
 		case WALKTO:  // WALKTO [Location Bookmark]
-			Location walkLoc = getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
-			previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
+			Location walkLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
+			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
 			theDenizen.getAI().setDestination(walkLoc);
 			break;
 
 
 		case RETURN:
-			if (previousNPCLoc.containsKey(theDenizen))
-				theDenizen.getAI().setDestination(previousNPCLoc.get(theDenizen));
+			if (Denizen.previousNPCLoc.containsKey(theDenizen))
+				theDenizen.getAI().setDestination(Denizen.previousNPCLoc.get(theDenizen));
 			break;
 
 
 		case FINISH:
 
-			int finishes = getAssignments().getInt("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Completed", 0);
+			int finishes = plugin.getAssignments().getInt("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Completed", 0);
 			finishes++;	
-			getSaves().set("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Completed", finishes);
-			saveSaves();
+			plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Completed", finishes);
+			plugin.saveSaves();
 			break;
 
 
 		case FAIL:
-			getSaves().set("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Failed", true);
-			saveSaves();
+			plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Failed", true);
+			plugin.saveSaves();
 			break;
 
 
@@ -297,8 +300,8 @@ public class CommandExecuter extends Denizen {
 
 
 		case RESPAWN:  // RESPAWN [Location Notable]
-			Location respawnLoc = getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
-			previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
+			Location respawnLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
+			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
 
 			theDenizen.getBukkitEntity().getWorld().playEffect(theDenizen.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
 			theDenizen.despawn();
@@ -308,12 +311,12 @@ public class CommandExecuter extends Denizen {
 
 
 		case PERMISS:  // PERMISS [Permission Node]
-			denizenPerms.playerAdd(thePlayer, commandArgs[1]);
+			Denizen.denizenPerms.playerAdd(thePlayer, commandArgs[1]);
 			break;
 
 
 		case REFUSE:  // PERMISS [Permission Node]
-			denizenPerms.playerRemove(thePlayer, commandArgs[1]);
+			Denizen.denizenPerms.playerRemove(thePlayer, commandArgs[1]);
 			break;
 
 
@@ -336,7 +339,7 @@ public class CommandExecuter extends Denizen {
 			}
 
 			if (commandArgs[1].equalsIgnoreCase("ASSERVER")) {
-				getServer().dispatchCommand(getServer().getConsoleSender(), executeCommand[2]
+				plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), executeCommand[2]
 						.replace("<PLAYER>", thePlayer.getName()
 								.replace("<WORLD>", thePlayer.getWorld().getName())));
 			}
@@ -350,11 +353,11 @@ public class CommandExecuter extends Denizen {
 			int theDuration = Integer.valueOf(commandArgs[3]);
 			int theLeeway = Integer.valueOf(commandArgs[4]);
 			String triggerScript = executeArgs[4].split(" ", 6)[5];
-			scriptEngine.newLocationTask(thePlayer, theDenizen, theLocation, theDuration, theLeeway, triggerScript);
+			Denizen.scriptEngine.newLocationTask(thePlayer, theDenizen, theLocation, theDuration, theLeeway, triggerScript);
 			break;
 
 		case RUNTASK:
-			scriptEngine.parseScript(null, thePlayer, executeArgs[4].split(" ", 2)[1], null, Trigger.TASK);
+			Denizen.scriptEngine.parseScript(null, thePlayer, executeArgs[4].split(" ", 2)[1], null, Trigger.TASK);
 			break;
 			
 		case ANNOUNCE: 
@@ -373,23 +376,23 @@ public class CommandExecuter extends Denizen {
 
 			/* Format the text for player and bystander, and turn into multiline if necessary */
 
-			String[] formattedText = scriptEngine.formatChatText(executeArgs[4].split(" ", 2)[1], commandArgs[0], thePlayer, theDenizen);
+			String[] formattedText = Denizen.scriptEngine.formatChatText(executeArgs[4].split(" ", 2)[1], commandArgs[0], thePlayer, theDenizen);
 
-			List<String> playerText = scriptEngine.getMultilineText(formattedText[0]);
-			List<String> bystanderText = scriptEngine.getMultilineText(formattedText[1]);
+			List<String> playerText = Denizen.scriptEngine.getMultilineText(formattedText[0]);
+			List<String> bystanderText = Denizen.scriptEngine.getMultilineText(formattedText[1]);
 
 			/* Spew the text to the world. */
 
 			if (!playerText.isEmpty()) {
 				for (String text : playerText) { /* First playerText */
-					getDenizen.talkToPlayer(theDenizen, thePlayer, text, null, commandArgs[0]);
+					Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, text, null, commandArgs[0]);
 				}
 			}
 
 			if (!bystanderText.isEmpty()) {
 				for (String text : bystanderText) { /* now bystanderText */
-					if (!playerText.isEmpty()) getDenizen.talkToPlayer(theDenizen, thePlayer, "shhh...don't speak!", text, commandArgs[0]);
-					else getDenizen.talkToPlayer(theDenizen, thePlayer, null, text, commandArgs[0]);
+					if (!playerText.isEmpty()) Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, "shhh...don't speak!", text, commandArgs[0]);
+					else Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, null, text, commandArgs[0]);
 				}
 			}
 			break;
@@ -399,22 +402,22 @@ public class CommandExecuter extends Denizen {
 			String executeScript;
 			if (commandArgs[2] == null) executeScript=theScript; else executeScript=executeArgs[4].split(" ", 3)[2];
 			if (commandArgs[1].equalsIgnoreCase("FINISH") || commandArgs[1].equalsIgnoreCase("FINISHED")) {
-				getSaves().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Completed", 0);
-				saveSaves();
+				plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Completed", 0);
+				plugin.saveSaves();
 			}
 
 			if (commandArgs[1].equalsIgnoreCase("FAIL") || commandArgs[1].equalsIgnoreCase("FAILED")) {
-				getSaves().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Failed", false);
-				saveSaves();
+				plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Failed", false);
+				plugin.saveSaves();
 			}
 
 			break;
 
 
 		case CHANGE: // CHANGE [Block Bookmark] [#:#|MATERIAL_TYPE]
-			Location blockLoc = getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
+			Location blockLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
 
-			String[] theChangeItem = getRequirements.splitItem(commandArgs[2]);
+			String[] theChangeItem = Denizen.getRequirements.splitItem(commandArgs[2]);
 
 			if (Character.isDigit(theChangeItem[0].charAt(0))) {
 				blockLoc.getBlock().setTypeId(Integer.valueOf(theChangeItem[0]));
@@ -432,13 +435,13 @@ public class CommandExecuter extends Denizen {
 			 */
 
 			List<String> CurrentPlayerQue = new ArrayList<String>();
-			if (playerQue.get(thePlayer) != null) CurrentPlayerQue = playerQue.get(thePlayer);
-			playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
+			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
+			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
 
 			Long timeDelay = Long.parseLong(commandArgs[1]) * 1000;
 			String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
 			CurrentPlayerQue.add(1, "0;none;0;" + timeWithDelay + ";WAITING");						
-			playerQue.put(thePlayer, CurrentPlayerQue);
+			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
 			break;
 
 
