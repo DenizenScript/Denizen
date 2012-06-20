@@ -6,7 +6,7 @@
 
 	<groupId>net.aufdemrand</groupId>
 	<artifactId>denizen</artifactId>
-	<version>0.6</version>
+	<version>0.7-SNAPSHOT</version>
 	<name>Denizen</name>
 	<description>Denizen Character for Citizens2</description>
 

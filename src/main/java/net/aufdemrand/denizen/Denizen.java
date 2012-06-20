@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -208,8 +209,8 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-
-
+	
+	
 	/*
 	 * reloadSaves/getSaves/saveSaves
 	 * 
@@ -334,7 +335,7 @@ public class Denizen extends JavaPlugin {
 		}
 
 		if (args[0].equalsIgnoreCase("version") && !(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.GREEN + denizenVersion);
+			sender.sendMessage(ChatColor.GREEN + getVersionString());
 			return true;
 		}
 
@@ -489,7 +490,8 @@ public class Denizen extends JavaPlugin {
 		}
 
 		if (args[0].equalsIgnoreCase("version")) {
-			player.sendMessage(ChatColor.GREEN + denizenVersion);
+			player.sendMessage(ChatColor.GREEN + getVersionString());
+			return true;
 		}
 
 		if (args[0].equalsIgnoreCase("strike")) {
@@ -567,9 +569,36 @@ public class Denizen extends JavaPlugin {
 		return true;
 	}
 
+	/**
+	 * Gets the plugin version from the maven info in the jar, if available.
+	 * @return
+	 */
+	public String getVersionNumber() {
+		Properties props = new Properties();
+		//Set a default just in case.
+		props.put("version", "Unknown development build");
+		try
+		{
+			props.load(this.getClass().getResourceAsStream("/META-INF/maven/net.aufdemrand/denizen/pom.properties"));
+		}
+		catch(Exception e)
+		{
+			//Maybe log?
+		}
+		return props.getProperty("version");
+	}
 
-	
-	
+	public String getVersionString() {
+		return "Denizen version: " + getVersionNumber();
+	}
+	/*
+	 * onEnable
+	 * 
+	 * Sets up Denizen on start of the craftbukkit server.
+	 *	
+	 */
+
+
 	
 
 	
