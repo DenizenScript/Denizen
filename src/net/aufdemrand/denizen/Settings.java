@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen;
 
 import org.bukkit.Bukkit;
+import net.aufdemrand.denizen.Denizen;
 
-public class Settings {
+public class Settings extends Denizen {
 
 	private Denizen plugin;
 
@@ -17,7 +18,7 @@ public class Settings {
 
 	public int InteractDelayInTicks() {
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-		int delay = plugin.getConfig().getInt("interact_delay_in_ticks", 10);
+		int delay = getConfig().getInt("interact_delay_in_ticks", 10);
 
 		/* Check for users setting delay to 0, which will in turn lock up the server. */
 		if (delay < 1) delay = 1;

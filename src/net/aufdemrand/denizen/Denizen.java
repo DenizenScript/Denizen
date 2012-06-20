@@ -10,19 +10,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
-
-import net.aufdemrand.denizen.ScriptEngine;
 import net.aufdemrand.denizen.utilities.GetDenizen;
 import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
 import net.aufdemrand.denizen.utilities.GetScript;
 import net.aufdemrand.denizen.utilities.GetWorld;
-
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.character.CharacterFactory;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -53,7 +51,9 @@ public class Denizen extends JavaPlugin {
 	public static GetRequirements getRequirements = new GetRequirements();
 	public static GetPlayer             getPlayer = new GetPlayer();
 	public static GetWorld               getWorld = new GetWorld();
-	public static Settings               settings = new Settings();
+	
+	
+    public static Settings               settings = new Settings();
 
 	public static Economy             denizenEcon = null;
 	public static Permission         denizenPerms = null;
@@ -256,7 +256,8 @@ public class Denizen extends JavaPlugin {
 			player.sendMessage(ChatColor.GREEN + denizenVersion);
 		}
 
-		if (args[0].equalsIgnoreCase("schedule")) {
+		if (args[0].equalsIgnoreCase("strike")) {
+
 			scriptEngine.scheduleScripts();
 			player.sendMessage("Denizen scheduler invoked.");
 			return true;
@@ -355,7 +356,7 @@ public class Denizen extends JavaPlugin {
 		reloadScripts();
 		reloadSaves();
 		reloadAssignments();
-
+		
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(new DenizenCharacter(), this);
 
@@ -378,6 +379,9 @@ public class Denizen extends JavaPlugin {
 	}
 
 
+	
+	
+	
 
 
 	/*

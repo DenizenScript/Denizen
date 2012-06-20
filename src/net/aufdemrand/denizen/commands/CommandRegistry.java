@@ -4,17 +4,19 @@ import java.util.Map;
 
 public class CommandRegistry {
 	
-	private Map<String, Class<? extends Command>> commands;
+	private Map<String, Command> commands;
 
-    public void registerCommand(String commandName, Class<? extends Command> commandClass) {
+    public void registerCommand(String commandName, Command commandClass) {
         this.commands.put(commandName, commandClass);
     }
     
-    
-    
-    
-    public Map<String, Class<? extends Command>> getCommands() {
+    public Map<String, Command> listCommands() {
     	return commands;
+    }
+    
+    public Command getCommand(String commandName) {
+    	Command thisCommand = commands.get(commandName);
+    	return thisCommand;
     }
     
     
