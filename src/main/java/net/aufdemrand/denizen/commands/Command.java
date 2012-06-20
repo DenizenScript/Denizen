@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.commands;
 
-import net.aufdemrand.denizen.commands.Executer.CommandType;
 import net.citizensnpcs.api.npc.NPC;
+
 import org.bukkit.entity.Player;
 
 public interface Command {

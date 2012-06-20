@@ -10,16 +10,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
-
-import net.aufdemrand.denizen.commands.*;
-import net.aufdemrand.denizen.commands.commands.*;
-import net.aufdemrand.denizen.utilities.*;
-
+import net.aufdemrand.denizen.utilities.GetDenizen;
+import net.aufdemrand.denizen.utilities.GetPlayer;
+import net.aufdemrand.denizen.utilities.GetRequirements;
+import net.aufdemrand.denizen.utilities.GetScript;
+import net.aufdemrand.denizen.utilities.GetWorld;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.character.CharacterFactory;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
