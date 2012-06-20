@@ -18,7 +18,7 @@
 		<vault.version>1.2.13-SNAPSHOT</vault.version>
 		<build.number>Unknown</build.number>
 	</properties>
-	
+
 	<!-- Repositories -->
 	<repositories>
 		<repository>
@@ -61,6 +61,24 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-junit4</artifactId>
+			<version>2.5.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<ciManagement>
@@ -69,24 +87,11 @@
 	</ciManagement>
 	<scm>
 		<connection>scm:git:git://github.com/aufdemrand/Denizen.git</connection>
-		<developerConnection>scm:git:git:@github.com:aufdemrand/Denizen.gitt</developerConnection>
-		<url>https://github.com//aufdemrand/Denizen/tree/master/</url>
+		<developerConnection>scm:git:git:@github.com:aufdemrand/Denizen.git</developerConnection>
+		<url>https://github.com/aufdemrand/Denizen/tree/master/</url>
 	</scm>
 	<build>
 		<defaultGoal>clean package install</defaultGoal>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
-
-		<resources>
-			<resource>
-				<targetPath>.</targetPath>
-				<filtering>true</filtering>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>*.yml</include>
-				</includes>
-			</resource>
-		</resources>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
