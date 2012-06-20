@@ -104,7 +104,7 @@ public class ScriptEngine {
 
 	public boolean parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage, Trigger theTrigger) {
 		
-		int theStep = Denizen.getScript.getCurrentStep(thePlayer, theScript);
+		int theStep = plugin.getScript.getCurrentStep(thePlayer, theScript);
 
 		switch (theTrigger) {
 
@@ -113,7 +113,7 @@ public class ScriptEngine {
 			/* 
 			 * Get Chat Triggers and check each to see if there are any matches. 
 			 */
-			List<String> ChatTriggerList = Denizen.getScript.getChatTriggers(theScript, theStep);
+			List<String> ChatTriggerList = plugin.getScript.getChatTriggers(theScript, theStep);
 			for (int x=0; x < ChatTriggerList.size(); x++ ) {
 
 				/* 
@@ -139,7 +139,7 @@ public class ScriptEngine {
 					/* 
 					 * Trigger matches, let's talk to the Denizen and send the script to the PlayerQueue. 
 					 */
-					Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, chatText);
+					plugin.getPlayer.talkToDenizen(theDenizen, thePlayer, chatText);
 					triggerToQue(theScript, theStep, thePlayer, theDenizen,
 							plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Script"));
 					return true;
@@ -152,7 +152,7 @@ public class ScriptEngine {
 
 			if(plugin.settings.ChatGloballyIfFailedChatTriggers()) return false;
 			else {
-				Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, theMessage);
+				plugin.getPlayer.talkToDenizen(theDenizen, thePlayer, theMessage);
 
 				String noscriptChat = null;
 
@@ -163,7 +163,7 @@ public class ScriptEngine {
 				else
 					noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
 
-				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+				plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
 
 				return true;
 			}
@@ -516,7 +516,7 @@ public class ScriptEngine {
 
 				for (String thisLocation : locationsToAdd) {
 					if (!thisLocation.isEmpty()) {
-						Location theLocation = Denizen.getDenizen.getBookmark(theDenizen.getName(), thisLocation.split(" ", 2)[0], "LOCATION");
+						Location theLocation = plugin.getDenizen.getBookmark(theDenizen.getName(), thisLocation.split(" ", 2)[0], "LOCATION");
 						String theInfo = theDenizen.getId() + ":" + thisLocation.split(" ", 2)[0];
 						Denizen.validLocations.put(theLocation, theInfo);
 					}
@@ -540,7 +540,7 @@ public class ScriptEngine {
 			if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Position.Standing")) {
 				if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Position.Standing").isEmpty()) {
 
-					Location enforcedLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), 
+					Location enforcedLoc = plugin.getDenizen.getBookmark(theDenizen.getName(), 
 							plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Position.Standing"), 
 							"LOCATION");
 

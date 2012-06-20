@@ -47,6 +47,11 @@ public class Denizen extends JavaPlugin {
 	public DenizenCharacter character = new DenizenCharacter(this);
 	public CommandExecuter commandExecuter = new CommandExecuter(this);
 	public ScriptEngine scriptEngine = new ScriptEngine(this);
+	public GetDenizen getDenizen = new GetDenizen(this);
+	public GetPlayer getPlayer = new GetPlayer(this);
+	public GetRequirements getRequirements = new GetRequirements(this);
+	public GetWorld getWorld = new GetWorld(this);
+	public GetScript getScript = new GetScript(this);
 	
 	/* -------- */
 	
@@ -62,13 +67,12 @@ public class Denizen extends JavaPlugin {
 	// public static ScriptEngine       scriptEngine = new ScriptEngine();
 	// public static CommandExecuter commandExecuter = new CommandExecuter();
 	// public static DenizenCharacter   getCharacter = new DenizenCharacter();
-	public static GetScript             getScript = new GetScript();
-	public static GetDenizen           getDenizen = new GetDenizen();
-	public static GetRequirements getRequirements = new GetRequirements();
-	public static GetPlayer             getPlayer = new GetPlayer();
-	public static GetWorld               getWorld = new GetWorld();
+	// public static GetScript             getScript = new GetScript();
+	// public static GetDenizen           getDenizen = new GetDenizen();
+	// public static GetRequirements getRequirements = new GetRequirements();
+	// public static GetPlayer             getPlayer = new GetPlayer();
+	// public static GetWorld               getWorld = new GetWorld();
 	
-	private String denizenVersion = "Denizen version 0.75 build 128+";
 
 
 	/*

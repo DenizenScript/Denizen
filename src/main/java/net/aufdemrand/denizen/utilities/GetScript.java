@@ -20,6 +20,11 @@ public class GetScript {
 
 	private Denizen plugin;
 
+	public GetScript(Denizen denizen) {
+		plugin = denizen;
+	}
+	
+
 
 	/*
 	 * ConcatenateScripts
@@ -32,8 +37,6 @@ public class GetScript {
 	 */
 
 	public void ConcatenateScripts() throws IOException {
-
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		try {
 
@@ -81,8 +84,6 @@ public class GetScript {
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer) {
 
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-
 		String theScript = "none";
 		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
 		if (scriptList.isEmpty()) { return theScript; }
@@ -102,7 +103,7 @@ public class GetScript {
 
 		for (String thisScript : scriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
-			if (Denizen.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) interactScripts.add(thisScript);
+			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) interactScripts.add(thisScript);
 		}
 
 		/*
@@ -137,8 +138,6 @@ public class GetScript {
 
 	public int getCurrentStep(Player thePlayer, String theScript) {
 
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-
 		int currentStep = 1;
 		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
 			currentStep =  plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
@@ -160,7 +159,6 @@ public class GetScript {
 
 	public boolean getScriptCompletes(Player thePlayer, String theScript, String theAmount, boolean negativeRequirement) {
 
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		boolean outcome = false;
 
 		/*
@@ -189,8 +187,6 @@ public class GetScript {
 
 	public boolean getScriptFail(Player thePlayer, String theScript, boolean negativeRequirement) {
 
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
-
 		boolean outcome = false;
 
 		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
@@ -217,8 +213,6 @@ public class GetScript {
 	 */
 
 	public List<String> getChatTriggers(String theScript, Integer currentStep) {
-
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;

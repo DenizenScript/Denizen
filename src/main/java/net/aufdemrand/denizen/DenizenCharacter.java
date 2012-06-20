@@ -35,7 +35,7 @@ public class DenizenCharacter extends Character implements Listener {
 
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
-		String theScript = Denizen.getScript.getInteractScript(theDenizen, thePlayer);
+		String theScript = plugin.getScript.getInteractScript(theDenizen, thePlayer);
 
 		if (theScript.equals("none")) {
 
@@ -48,12 +48,12 @@ public class DenizenCharacter extends Character implements Listener {
 			else
 				noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
 
-			Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+			plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
 
 		}
 
 		else if (!theScript.equals("none")) {
-			plugin.scriptEngine.parseScript(theDenizen, thePlayer,	Denizen.getScript.getNameFromEntry(theScript), "", ScriptEngine.Trigger.CLICK);
+			plugin.scriptEngine.parseScript(theDenizen, thePlayer, plugin.getScript.getNameFromEntry(theScript), "", ScriptEngine.Trigger.CLICK);
 		}
 	}
 
@@ -84,14 +84,14 @@ public class DenizenCharacter extends Character implements Listener {
 
 				for (Location theLocation : Denizen.validLocations.keySet()) {
 					if (plugin.scriptEngine.checkLocation(event.getPlayer(), theLocation, 1)
-							&& Denizen.getDenizen.checkLocationCooldown(event.getPlayer())) {
+							&& plugin.getDenizen.checkLocationCooldown(event.getPlayer())) {
 
-						String theScript = Denizen.getScript.getInteractScript(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), event.getPlayer());
+						String theScript = plugin.getScript.getInteractScript(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), event.getPlayer());
 						if (!theScript.equals("none")) {
 							plugin.scriptEngine.parseScript(
 									CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), 
 									event.getPlayer(), 
-									Denizen.getScript.getNameFromEntry(theScript), 
+									plugin.getScript.getNameFromEntry(theScript), 
 									Denizen.validLocations.get(theLocation).split(":")[1],
 									ScriptEngine.Trigger.LOCATION);
 							
@@ -130,7 +130,7 @@ public class DenizenCharacter extends Character implements Listener {
 				if (!listAll.isEmpty()) {
 					for (String theTask : listAll) {
 						String[] taskArgs = theTask.split(";");
-						Location theLocation = Denizen.getDenizen.getBookmark(taskArgs[1], taskArgs[0], "LOCATION");
+						Location theLocation = plugin.getDenizen.getBookmark(taskArgs[1], taskArgs[0], "LOCATION");
 						int theLeeway = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Leeway");
 						long theDuration = plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Duration");
 						if (plugin.scriptEngine.checkLocation(event.getPlayer(), theLocation, theLeeway)) {
@@ -167,12 +167,12 @@ public class DenizenCharacter extends Character implements Listener {
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
 
-		NPC theDenizen = Denizen.getDenizen.getClosest(event.getPlayer(), 
+		NPC theDenizen = plugin.getDenizen.getClosest(event.getPlayer(), 
 				plugin.settings.PlayerToNpcChatRangeInBlocks());
 
 		if (theDenizen == null || Denizen.engagedNPC.contains(theDenizen)) return;
 
-		String theScript = Denizen.getScript.getInteractScript(theDenizen, event.getPlayer());
+		String theScript = plugin.getScript.getInteractScript(theDenizen, event.getPlayer());
 
 		if (theScript.equalsIgnoreCase("NONE") && !plugin.settings.ChatGloballyIfNoChatTriggers()) { 
 			event.setCancelled(true);
@@ -185,12 +185,12 @@ public class DenizenCharacter extends Character implements Listener {
 			else
 				noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
 
-			Denizen.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", event.getPlayer(), theDenizen)[0], null, "CHAT");
+			plugin.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", event.getPlayer(), theDenizen)[0], null, "CHAT");
 
 		}
 
 		if (!theScript.equalsIgnoreCase("NONE")) {
-			if (plugin.scriptEngine.parseScript(theDenizen, event.getPlayer(),	Denizen.getScript.getNameFromEntry(theScript), event.getMessage(), ScriptEngine.Trigger.CHAT))
+			if (plugin.scriptEngine.parseScript(theDenizen, event.getPlayer(),	plugin.getScript.getNameFromEntry(theScript), event.getMessage(), ScriptEngine.Trigger.CHAT))
 				event.setCancelled(true);
 		}
 
@@ -234,7 +234,7 @@ public class DenizenCharacter extends Character implements Listener {
 	@Override
 	public void onRightClick(NPC npc, Player player) {
 		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
-				&& Denizen.getDenizen.checkCooldown(player)
+				&& plugin.getDenizen.checkCooldown(player)
 				&& !Denizen.engagedNPC.contains(npc)) {
 			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
 			DenizenClicked(npc, player);
@@ -246,7 +246,7 @@ public class DenizenCharacter extends Character implements Listener {
 	@Override
 	public void onLeftClick(NPC npc, Player player) {
 		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
-				&& Denizen.getDenizen.checkCooldown(player)
+				&& plugin.getDenizen.checkCooldown(player)
 				&& !Denizen.engagedNPC.contains(npc)) {
 			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
 			DenizenClicked(npc, player);

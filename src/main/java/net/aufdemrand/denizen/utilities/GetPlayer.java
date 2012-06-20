@@ -20,6 +20,12 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GetPlayer {
 
+	private Denizen plugin;
+	
+	public GetPlayer(Denizen denizen) {
+		plugin = denizen;
+	}
+
 	/**
 	 * Gets players in range of a bukkit Entity. 
 	 *
@@ -30,7 +36,6 @@ public class GetPlayer {
 
 	public List<Player> getInRange (LivingEntity theEntity, int theRange) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		List<Player> PlayersWithinRange = new ArrayList<Player>();
 
 		Player[] DenizenPlayers = plugin.getServer().getOnlinePlayers();
@@ -137,7 +142,7 @@ public class GetPlayer {
 
 	public void talkToDenizen(NPC theDenizen, Player thePlayer, String theMessage) {
 		
-		thePlayer.sendMessage(Denizen.settings.PlayerChatToNpc()
+		thePlayer.sendMessage(plugin.settings.PlayerChatToNpc()
 				.replace("<NPC>", theDenizen.getName())
 				.replace("<TEXT>", theMessage)
 				.replace("<PLAYER>", thePlayer.getName())
@@ -145,11 +150,11 @@ public class GetPlayer {
 				.replace("<WORLD>", thePlayer.getWorld().getName())
 				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
 
-		if (Denizen.settings.BystandersHearNpcToPlayerChat()) {
-			int theRange = Denizen.settings.PlayerToNpcChatRangeInBlocks();
+		if (plugin.settings.BystandersHearNpcToPlayerChat()) {
+			int theRange = plugin.settings.PlayerToNpcChatRangeInBlocks();
 			if (theRange > 0) {
 				for (Player otherPlayer : getInRange(theDenizen.getBukkitEntity(), theRange, thePlayer)) {
-					otherPlayer.sendMessage(Denizen.settings.PlayerChatToNpcBystander()
+					otherPlayer.sendMessage(plugin.settings.PlayerChatToNpcBystander()
 							.replace("<NPC>", theDenizen.getName())
 							.replace("<TEXT>", theMessage)
 							.replace("<PLAYER>", thePlayer.getName())
@@ -313,7 +318,7 @@ public class GetPlayer {
 
 		try {
 
-			if (Denizen.economy.has(thePlayer.getName(), Double.parseDouble(theFunds))) outcome = true;
+			if (plugin.economy.has(thePlayer.getName(), Double.parseDouble(theFunds))) outcome = true;
 
 		} catch(Throwable error) {
 			Bukkit.getLogger().info("Denizen: An error has occured.");
@@ -664,8 +669,8 @@ public class GetPlayer {
 
 			for (String theGroup : theGroups) {
 				if (theGroup != null) {
-					if (Denizen.perms.playerInGroup(thePlayer, theGroup)
-							|| Denizen.perms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), theGroup)) outcome = true;
+					if (plugin.perms.playerInGroup(thePlayer, theGroup)
+							|| plugin.perms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), theGroup)) outcome = true;
 				}
 			}	
 

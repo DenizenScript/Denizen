@@ -16,7 +16,10 @@ import org.bukkit.entity.Player;
 public class GetDenizen {
 
 	private Denizen plugin;
-	
+
+	public GetDenizen(Denizen denizen) {
+		plugin = denizen;
+	}
 
 	/*
 	 * checkCooldown
@@ -24,6 +27,8 @@ public class GetDenizen {
 	 * Checks against the interactCooldown for a Player to see if it has allowed enough time to interact.
 	 * 
 	 */
+
+
 
 	public boolean checkCooldown(Player thePlayer) {
 
@@ -114,7 +119,6 @@ public class GetDenizen {
 
 	public Location getBookmark(String theDenizen, String nameOfLocation, String BlockOrLocation) {
 
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 		List<String> locationList = null;
 		String[] theLocation = null;
 		Location locationBookmark = null;
@@ -169,27 +173,27 @@ public class GetDenizen {
 		int theRange = 0;
 		
 		if (messageType.equalsIgnoreCase("SHOUT")) {
-			theRange = Denizen.settings.NpcToPlayerShoutRangeInBlocks();
+			theRange = plugin.settings.NpcToPlayerShoutRangeInBlocks();
 		}
 		
 		else if (messageType.equalsIgnoreCase("WHISPER")) {
-			theRange = Denizen.settings.NpcToPlayerWhisperRangeInBlocks();
+			theRange = plugin.settings.NpcToPlayerWhisperRangeInBlocks();
 		}
 		
 		else if (messageType.equalsIgnoreCase("EMOTE")) {
-			theRange = Denizen.settings.NpcEmoteRangeInBlocks();
+			theRange = plugin.settings.NpcEmoteRangeInBlocks();
 			thePlayer.sendMessage(theBystanderMessage);
 		}
 
 		else {
-			theRange = Denizen.settings.NpcToPlayerChatRangeInBlocks();
+			theRange = plugin.settings.NpcToPlayerChatRangeInBlocks();
 		}
 
 		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!")) thePlayer.sendMessage(thePlayerMessage);
 
-		if ((Denizen.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
+		if ((plugin.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
 			if (theRange > 0) {
-				for (Player otherPlayer : Denizen.getPlayer.getInRange(theDenizen.getBukkitEntity(), theRange, thePlayer)) {
+				for (Player otherPlayer : plugin.getPlayer.getInRange(theDenizen.getBukkitEntity(), theRange, thePlayer)) {
 					otherPlayer.sendMessage(theBystanderMessage);
 				}
 			}

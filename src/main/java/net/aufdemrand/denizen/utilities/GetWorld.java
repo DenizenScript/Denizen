@@ -15,7 +15,15 @@ public class GetWorld {
 
 
 	
-	
+	private Denizen plugin;
+
+	public GetWorld(Denizen denizen) {
+		plugin = denizen;
+	}
+
+
+
+
 
 	/**
 	 * Checks the time in the specified bukkit World. 
@@ -144,7 +152,7 @@ public class GetWorld {
 		if (theAmount == null) theAmount = "1";
 		
 		if (theLocationBookmark == null) theSpawnLoc = theDenizen.getBukkitEntity().getLocation();		
-		else theSpawnLoc = Denizen.getDenizen.getBookmark(theDenizen.getName(), theLocationBookmark, "Location");
+		else theSpawnLoc = plugin.getDenizen.getBookmark(theDenizen.getName(), theLocationBookmark, "Location");
 		
 		if (theSpawnLoc != null) {
 			for (int cx = 1; cx <= Integer.valueOf(theAmount); cx++) {
