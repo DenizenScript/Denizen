@@ -4,8 +4,8 @@ import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.entity.Player;
 
-public class sampleCommand implements Command {
-	
+public class sampleCommand extends Command {
+
 	@Override
 	public boolean execute(Player thePlayer, NPC theDenizen,
 			String[] arguments, String theText) {
@@ -24,5 +24,7 @@ public class sampleCommand implements Command {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+
 
 }

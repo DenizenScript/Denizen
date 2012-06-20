@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.aufdemrand.denizen.commands.CommandRegistry;
 import net.aufdemrand.denizen.utilities.GetDenizen;
 import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
@@ -34,7 +35,21 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Denizen extends JavaPlugin {
-
+	
+	/* New code */
+	
+	public Economy   economy = null;
+	public Permission  perms = null;
+	
+	public CommandRegistry commandRegistry = new CommandRegistry(this);
+	public Settings settings = new Settings(this);
+	public DenizenCharacter character = new DenizenCharacter(this);
+	public CommandExecuter commandExecuter = new CommandExecuter(this);
+	public ScriptEngine scriptEngine = new ScriptEngine(this);
+	
+	/* -------- */
+	
+	
 	public static Map<Player, List<String>>  playerQue = new ConcurrentHashMap<Player, List<String>>();
 	public static Map<NPC, Location>    previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
 	public static Map<Player, Long>   interactCooldown = new ConcurrentHashMap<Player, Long>();
@@ -43,25 +58,246 @@ public class Denizen extends JavaPlugin {
 	public static List<NPC>                 engagedNPC = new ArrayList<NPC>();
 	public static Boolean                    DebugMode = false;
 
-	public static ScriptEngine       scriptEngine = new ScriptEngine();
-	public static CommandExecuter commandExecuter = new CommandExecuter();
-	public static DenizenCharacter   getCharacter = new DenizenCharacter();
+	// public static ScriptEngine       scriptEngine = new ScriptEngine();
+	// public static CommandExecuter commandExecuter = new CommandExecuter();
+	// public static DenizenCharacter   getCharacter = new DenizenCharacter();
 	public static GetScript             getScript = new GetScript();
 	public static GetDenizen           getDenizen = new GetDenizen();
 	public static GetRequirements getRequirements = new GetRequirements();
 	public static GetPlayer             getPlayer = new GetPlayer();
 	public static GetWorld               getWorld = new GetWorld();
 	
+	private String denizenVersion = "Denizen version 0.75 build 128+";
+
+
+	/*
+	 * onEnable
+	 * 
+	 * Sets up Denizen on start of the craftbukkit server.
+	 *	
+	 */
+
+	@Override
+	public void onEnable() {
+
+		// plugin = this;
+		
+		/* Set up Vault */
+		if (!setupEconomy() || !setupPermissions()) {
+			getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no economy or permissions system!", getDescription().getName()));
+			getServer().getPluginManager().disablePlugin(this);
+			return; 
+		}
+
+		/* Load configuration files into memory */
+		reloadConfig();
+		reloadScripts();
+		reloadSaves();
+		reloadAssignments();
 	
-    public static Settings               settings = new Settings();
+				
+		
+		/* Register Citizens2 character, listener, and bukkit tasks */
+		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
+		getServer().getPluginManager().registerEvents(character, this);
 
-	public static Economy             denizenEcon = null;
-	public static Permission         denizenPerms = null;
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			@Override
+			public void run() { scriptEngine.commandQue(); scriptEngine.enforcePosition(); }
+		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
 
-	private String denizenVersion = "Denizen version 0.6 build 98+";
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			@Override
+			public void run() { scriptEngine.scheduleScripts(); }
+		}, 1, 1000);
+
+		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+			@Override
+			public void run() { scriptEngine.buildLocationTriggerList(); }
+		}, 100);
+
+		
+		
+
+	}
+
+
+	
+	
+	
+
+
+	/*
+	 * onDisable
+	 * 
+	 * Unloads Denizen on shutdown of the craftbukkit server.
+	 *	
+	 */
+
+	@Override
+	public void onDisable() {
+		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
+		Bukkit.getServer().getScheduler().cancelTasks(this);
+		saveSaves();
+	}
 
 
 
+
+	/*
+	 * setupEconomy/setupPermissions
+	 * 
+	 * Sets up Economy/Permissions object with Vault.
+	 *	
+	 */
+
+	private boolean setupEconomy() {
+		if (getServer().getPluginManager().getPlugin("Vault") == null) return false;
+		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+		if (rsp == null) return false;
+		economy = rsp.getProvider();
+		return economy != null;
+	}
+
+	private boolean setupPermissions() {
+		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+		perms = rsp.getProvider();
+		return perms != null;
+	}
+
+
+
+
+	/*
+	 * reloadScripts/getScripts
+	 * 
+	 * Reloads and retrieves information from the Denizen/scripts.yml.
+	 * 
+	 */
+
+	private FileConfiguration scriptConfig = null;
+	private File scriptConfigFile = null;
+
+	public void reloadScripts() {
+
+		try {
+			getScript.ConcatenateScripts();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (scriptConfigFile == null) {
+			scriptConfigFile = new File(getDataFolder(), "read-only-scripts.yml");
+		}
+		scriptConfig = YamlConfiguration.loadConfiguration(scriptConfigFile);
+
+		// Look for defaults in the jar
+		InputStream defConfigStream = getResource("read-only-scripts.yml");
+		if (defConfigStream != null) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			scriptConfig.setDefaults(defConfig);
+		}
+	}
+
+
+	public FileConfiguration getScripts() {
+		if (scriptConfig == null) {
+			reloadScripts();
+		}
+		return scriptConfig;
+	}
+
+
+
+
+	/*
+	 * reloadSaves/getSaves/saveSaves
+	 * 
+	 * Reloads, retrieves and saves progress information Denizen/saves.yml.
+	 * 
+	 */
+
+	private FileConfiguration savesConfig = null;
+	private File savesConfigFile = null;
+
+	public void reloadSaves() {
+		if (savesConfigFile == null) {
+			savesConfigFile = new File(getDataFolder(), "saves.yml");
+		}
+		savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
+
+		// Look for defaults in the jar
+		InputStream defConfigStream = getResource("saves.yml");
+		if (defConfigStream != null) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			savesConfig.setDefaults(defConfig);
+		}
+	}
+
+	public FileConfiguration getSaves() {
+		if (savesConfig == null) {
+			reloadSaves();
+		}
+		return savesConfig;
+	}
+
+	public void saveSaves() {
+		if (savesConfig == null || savesConfigFile == null) {
+			return;
+		}
+		try {
+			savesConfig.save(savesConfigFile);
+		} catch (IOException ex) {
+			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + savesConfigFile, ex);
+		}
+	}
+
+
+
+
+
+	/*
+	 * reloadAssignments/getAssignments/saveAssignments
+	 * 
+	 * Reloads, retrieves and saves information from the Denizen/assignments.yml.
+	 * 
+	 */
+
+	private FileConfiguration assignmentConfig = null;
+	private File assignmentConfigFile = null;
+
+	public void reloadAssignments() {
+		if (assignmentConfigFile == null) {
+			assignmentConfigFile = new File(getDataFolder(), "assignments.yml");
+		}
+		assignmentConfig = YamlConfiguration.loadConfiguration(assignmentConfigFile);
+
+		// Look for defaults in the jar
+		InputStream defConfigStream = getResource("assignments.yml");
+		if (defConfigStream != null) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			assignmentConfig.setDefaults(defConfig);
+		}
+	}
+
+	public FileConfiguration getAssignments() {
+		if (assignmentConfig == null) {
+			reloadAssignments();
+		}
+		return assignmentConfig;
+	}
+
+	
+	public CommandRegistry getCommandRegistry() {
+		
+		return commandRegistry;
+	}
+
+	
+
+	
+	
+	
 	/*
 	 * onCommand
 	 * 
@@ -92,7 +328,7 @@ public class Denizen extends JavaPlugin {
 			reloadScripts();
 			reloadAssignments();
 			reloadSaves();
-			Denizen.scriptEngine.buildLocationTriggerList();
+			scriptEngine.buildLocationTriggerList();
 			sender.sendMessage("Denizens/config.yml, scripts, and assignments.yml reloaded.");
 			return true;
 		}
@@ -311,7 +547,7 @@ public class Denizen extends JavaPlugin {
 						player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
 				getSaves().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
 				saveSaves();
-				Denizen.scriptEngine.buildLocationTriggerList();
+				scriptEngine.buildLocationTriggerList();
 				player.sendMessage(ChatColor.GOLD + "Location bookmark added. Your denizen can now reference this location.");
 				return true;
 			}
@@ -332,218 +568,13 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-
-	/*
-	 * onEnable
-	 * 
-	 * Sets up Denizen on start of the craftbukkit server.
-	 *	
-	 */
-
-	@Override
-	public void onEnable() {
-
-		if (!setupEconomy()) {
-			getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no Vault-compatible Economy Plugin found! Install an economy system!", getDescription().getName()));
-			getServer().getPluginManager().disablePlugin(this);
-			return; 
-		}
-
-		/* Set up Vault for Permissions */
-		setupPermissions();
-
-		reloadConfig();
-		reloadScripts();
-		reloadSaves();
-		reloadAssignments();
-		
-		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
-		getServer().getPluginManager().registerEvents(new DenizenCharacter(), this);
-
-		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			@Override
-			public void run() { scriptEngine.commandQue(); scriptEngine.enforcePosition(); }
-		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
-
-		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			@Override
-			public void run() { scriptEngine.scheduleScripts(); }
-		}, 1, 1000);
-
-		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-			@Override
-			public void run() { scriptEngine.buildLocationTriggerList(); }
-		}, 100);
-
-
-	}
-
-
 	
 	
 	
 
-
-	/*
-	 * onDisable
-	 * 
-	 * Unloads Denizen on shutdown of the craftbukkit server.
-	 *	
-	 */
-
-	@Override
-	public void onDisable() {
-		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
-		Bukkit.getServer().getScheduler().cancelTasks(this);
-		saveSaves();
-	}
-
-
-
-
-	/*
-	 * setupEconomy/setupPermissions
-	 * 
-	 * Sets up Economy/Permissions object with Vault.
-	 *	
-	 */
-
-	private boolean setupEconomy() {
-		if (getServer().getPluginManager().getPlugin("Vault") == null) return false;
-		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-		if (rsp == null) return false;
-		denizenEcon = rsp.getProvider();
-		return denizenEcon != null;
-	}
-
-	private boolean setupPermissions() {
-		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-		denizenPerms = rsp.getProvider();
-		return denizenPerms != null;
-	}
-
-
-
-
-	/*
-	 * reloadScripts/getScripts
-	 * 
-	 * Reloads and retrieves information from the Denizen/scripts.yml.
-	 * 
-	 */
-
-	private FileConfiguration scriptConfig = null;
-	private File scriptConfigFile = null;
-
-	public void reloadScripts() {
-
-		try {
-			getScript.ConcatenateScripts();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		if (scriptConfigFile == null) {
-			scriptConfigFile = new File(getDataFolder(), "read-only-scripts.yml");
-		}
-		scriptConfig = YamlConfiguration.loadConfiguration(scriptConfigFile);
-
-		// Look for defaults in the jar
-		InputStream defConfigStream = getResource("read-only-scripts.yml");
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			scriptConfig.setDefaults(defConfig);
-		}
-	}
-
-
-	public FileConfiguration getScripts() {
-		if (scriptConfig == null) {
-			reloadScripts();
-		}
-		return scriptConfig;
-	}
-
-
-
-
-	/*
-	 * reloadSaves/getSaves/saveSaves
-	 * 
-	 * Reloads, retrieves and saves progress information Denizen/saves.yml.
-	 * 
-	 */
-
-	private FileConfiguration savesConfig = null;
-	private File savesConfigFile = null;
-
-	public void reloadSaves() {
-		if (savesConfigFile == null) {
-			savesConfigFile = new File(getDataFolder(), "saves.yml");
-		}
-		savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
-
-		// Look for defaults in the jar
-		InputStream defConfigStream = getResource("saves.yml");
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			savesConfig.setDefaults(defConfig);
-		}
-	}
-
-	public FileConfiguration getSaves() {
-		if (savesConfig == null) {
-			reloadSaves();
-		}
-		return savesConfig;
-	}
-
-	public void saveSaves() {
-		if (savesConfig == null || savesConfigFile == null) {
-			return;
-		}
-		try {
-			savesConfig.save(savesConfigFile);
-		} catch (IOException ex) {
-			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + savesConfigFile, ex);
-		}
-	}
-
-
-
-
-
-	/*
-	 * reloadAssignments/getAssignments/saveAssignments
-	 * 
-	 * Reloads, retrieves and saves information from the Denizen/assignments.yml.
-	 * 
-	 */
-
-	private FileConfiguration assignmentConfig = null;
-	private File assignmentConfigFile = null;
-
-	public void reloadAssignments() {
-		if (assignmentConfigFile == null) {
-			assignmentConfigFile = new File(getDataFolder(), "assignments.yml");
-		}
-		assignmentConfig = YamlConfiguration.loadConfiguration(assignmentConfigFile);
-
-		// Look for defaults in the jar
-		InputStream defConfigStream = getResource("assignments.yml");
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			assignmentConfig.setDefaults(defConfig);
-		}
-	}
-
-	public FileConfiguration getAssignments() {
-		if (assignmentConfig == null) {
-			reloadAssignments();
-		}
-		return assignmentConfig;
-	}
-
+	
+	
+	
 }
 
 

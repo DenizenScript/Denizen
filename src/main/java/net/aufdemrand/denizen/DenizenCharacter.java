@@ -19,7 +19,12 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class DenizenCharacter extends Character implements Listener {
 
 	private Denizen plugin;
-
+	
+	public DenizenCharacter(Denizen denizen) {
+		plugin = denizen;
+	}
+	
+	
 
 	/*
 	 * DenizenClicked
@@ -29,7 +34,7 @@ public class DenizenCharacter extends Character implements Listener {
 	 */
 
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+
 		String theScript = Denizen.getScript.getInteractScript(theDenizen, thePlayer);
 
 		if (theScript.equals("none")) {
@@ -41,7 +46,7 @@ public class DenizenCharacter extends Character implements Listener {
 				noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName() 
 						+ ".Texts.No Requirements Met");
 			else
-				noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
+				noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
 
 			Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, Denizen.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
 
@@ -69,8 +74,6 @@ public class DenizenCharacter extends Character implements Listener {
 		/* Do not run any code unless the player actually moves blocks */
 
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
-
-			plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 			/* 
 			 * TODO: Denizen Proximity Trigger 
@@ -163,16 +166,15 @@ public class DenizenCharacter extends Character implements Listener {
 
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		NPC theDenizen = Denizen.getDenizen.getClosest(event.getPlayer(), 
-				Denizen.settings.PlayerToNpcChatRangeInBlocks());
+				plugin.settings.PlayerToNpcChatRangeInBlocks());
 
 		if (theDenizen == null || Denizen.engagedNPC.contains(theDenizen)) return;
 
 		String theScript = Denizen.getScript.getInteractScript(theDenizen, event.getPlayer());
 
-		if (theScript.equalsIgnoreCase("NONE") && !Denizen.settings.ChatGloballyIfNoChatTriggers()) { 
+		if (theScript.equalsIgnoreCase("NONE") && !plugin.settings.ChatGloballyIfNoChatTriggers()) { 
 			event.setCancelled(true);
 			String noscriptChat = null;
 
@@ -181,7 +183,7 @@ public class DenizenCharacter extends Character implements Listener {
 				noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getId() 
 						+ ".Texts.No Requirements Met");
 			else
-				noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
+				noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
 
 			Denizen.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), Denizen.scriptEngine.formatChatText(noscriptChat, "CHAT", event.getPlayer(), theDenizen)[0], null, "CHAT");
 
@@ -201,7 +203,8 @@ public class DenizenCharacter extends Character implements Listener {
 	@Override
 	public void load(DataKey arg0) throws NPCLoadException {
 
-Denizen.scriptEngine.buildLocationTriggerList();
+		/* Nothing to do here, yet. */
+		
 	}
 
 	@Override

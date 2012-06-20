@@ -15,12 +15,17 @@ import org.bukkit.entity.Player;
 
 
 public class ScriptEngine {
+	
+	private Denizen plugin;
+
+	public ScriptEngine(Denizen denizen) {
+		plugin = denizen;
+	}	
+
 
 	public enum Trigger {
 		CHAT, CLICK, PROXIMITY, FAIL, FINISH, TASK, LOCATION
 	}
-
-	private Denizen plugin;
 
 
 	/*
@@ -38,7 +43,7 @@ public class ScriptEngine {
 			for (Map.Entry<Player, List<String>> theEntry : Denizen.playerQue.entrySet()) {
 				if (!theEntry.getValue().isEmpty()) {
 					if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
-						do { Denizen.commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
+						do { plugin.commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
 						instantCommand = false;
 						if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
 						theEntry.getValue().remove(0);
@@ -72,7 +77,6 @@ public class ScriptEngine {
 		for (NPC aDenizen : DenizenList) {
 			if (aDenizen.isSpawned())	{
 				int denizenTime = Math.round(aDenizen.getBukkitEntity().getWorld().getTime() / 1000);
-				plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 				List<String> denizenActivities = plugin.getAssignments().getStringList("Denizens." + aDenizen.getName() + ".Scheduled Activities");
 				if (!denizenActivities.isEmpty()) {
 					for (String activity : denizenActivities) {
@@ -99,7 +103,7 @@ public class ScriptEngine {
 	 */
 
 	public boolean parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage, Trigger theTrigger) {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
+		
 		int theStep = Denizen.getScript.getCurrentStep(thePlayer, theScript);
 
 		switch (theTrigger) {
@@ -146,7 +150,7 @@ public class ScriptEngine {
 			 * No matching triggers. 
 			 */
 
-			if(Denizen.settings.ChatGloballyIfFailedChatTriggers()) return false;
+			if(plugin.settings.ChatGloballyIfFailedChatTriggers()) return false;
 			else {
 				Denizen.getPlayer.talkToDenizen(theDenizen, thePlayer, theMessage);
 
@@ -157,9 +161,9 @@ public class ScriptEngine {
 					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName() 
 							+ ".Texts.No Requirements Met");
 				else
-					noscriptChat = Denizen.settings.DefaultNoRequirementsMetText();
+					noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
 
-				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, Denizen.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+				Denizen.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
 
 				return true;
 			}
@@ -288,14 +292,14 @@ public class ScriptEngine {
 
 		String[] text = theText.split(" ");
 
-		if (theText.length() > Denizen.settings.MultiLineTextMaximumLength()) {
+		if (theText.length() > plugin.settings.MultiLineTextMaximumLength()) {
 
 			processedText.add(0, "");
 
 			int word = 0; int line = 0;
 
 			while (word < text.length) {
-				if (processedText.get(line).length() + text[word].length() < Denizen.settings.MultiLineTextMaximumLength()) {
+				if (processedText.get(line).length() + text[word].length() < plugin.settings.MultiLineTextMaximumLength()) {
 					processedText.set(line, processedText.get(line) + text[word] + " ");
 					word++;
 				}
@@ -333,15 +337,15 @@ public class ScriptEngine {
 		else toPlayer = true;
 
 		if (messageType.equalsIgnoreCase("SHOUT")) {
-			playerMessageFormat = Denizen.settings.NpcShoutToPlayer();
-			bystanderMessageFormat = Denizen.settings.NpcShoutToPlayerBystander();
-			if (!toPlayer) bystanderMessageFormat = Denizen.settings.NpcShoutToBystanders();
+			playerMessageFormat = plugin.settings.NpcShoutToPlayer();
+			bystanderMessageFormat = plugin.settings.NpcShoutToPlayerBystander();
+			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcShoutToBystanders();
 		}
 
 		else if (messageType.equalsIgnoreCase("WHISPER")) {
-			playerMessageFormat = Denizen.settings.NpcWhisperToPlayer();
-			bystanderMessageFormat = Denizen.settings.NpcWhisperToPlayerBystander();
-			if (!toPlayer) bystanderMessageFormat = Denizen.settings.NpcWhisperToBystanders();
+			playerMessageFormat = plugin.settings.NpcWhisperToPlayer();
+			bystanderMessageFormat = plugin.settings.NpcWhisperToPlayerBystander();
+			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcWhisperToBystanders();
 		}
 
 		else if (messageType.equalsIgnoreCase("EMOTE")) {
@@ -354,9 +358,9 @@ public class ScriptEngine {
 		}
 
 		else { /* CHAT */
-			playerMessageFormat = Denizen.settings.NpcChatToPlayer();
-			bystanderMessageFormat = Denizen.settings.NpcChatToPlayerBystander();
-			if (!toPlayer) bystanderMessageFormat = Denizen.settings.NpcChatToBystanders();
+			playerMessageFormat = plugin.settings.NpcChatToPlayer();
+			bystanderMessageFormat = plugin.settings.NpcChatToPlayerBystander();
+			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcChatToBystanders();
 		}
 
 		String denizenName = ""; 
@@ -396,7 +400,6 @@ public class ScriptEngine {
 	public void newLocationTask(Player thePlayer, NPC theDenizen,
 			String theLocation, int theDuration, int theLeeway, String theScript) {
 
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 		/* 
 		 * saves.yml
@@ -504,7 +507,6 @@ public class ScriptEngine {
 	 */
 
 	public void buildLocationTriggerList() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
 		Denizen.validLocations.clear();
 
@@ -532,7 +534,6 @@ public class ScriptEngine {
 
 
 	public void enforcePosition() {
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
 
 		for (NPC theDenizen : DenizenNPCs) {

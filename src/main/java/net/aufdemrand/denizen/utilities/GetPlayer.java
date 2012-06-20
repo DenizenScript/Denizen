@@ -313,7 +313,7 @@ public class GetPlayer {
 
 		try {
 
-			if (Denizen.denizenEcon.has(thePlayer.getName(), Double.parseDouble(theFunds))) outcome = true;
+			if (Denizen.economy.has(thePlayer.getName(), Double.parseDouble(theFunds))) outcome = true;
 
 		} catch(Throwable error) {
 			Bukkit.getLogger().info("Denizen: An error has occured.");
@@ -664,8 +664,8 @@ public class GetPlayer {
 
 			for (String theGroup : theGroups) {
 				if (theGroup != null) {
-					if (Denizen.denizenPerms.playerInGroup(thePlayer, theGroup)
-							|| Denizen.denizenPerms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), theGroup)) outcome = true;
+					if (Denizen.perms.playerInGroup(thePlayer, theGroup)
+							|| Denizen.perms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), theGroup)) outcome = true;
 				}
 			}	
 

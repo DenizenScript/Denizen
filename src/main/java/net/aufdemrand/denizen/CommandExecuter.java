@@ -23,6 +23,13 @@ import org.bukkit.potion.PotionEffectType;
 public class CommandExecuter {
 
 
+	private Denizen plugin;
+
+	public CommandExecuter(Denizen denizen) {
+		plugin = denizen;
+	}	
+	
+
 	public static enum Command {
 		WAIT, ZAP, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL,
 		TELEPORT, STRIKE, WALK, REMEMBER, RESPAWN, PERMISS, EXECUTE, SHOUT,
@@ -30,8 +37,6 @@ public class CommandExecuter {
 		FOLLOW, CAST, NARRATE, ENGAGE, DISENGAGE,
 		SWITCH, PRESS, HURT, REFUSE, WAITING, RESET, FAIL, SPAWNMOB, EMOTE, ATTACK, PLAYERTASK, RUNTASK, DROP
 	} 
-
-	private Denizen plugin;
 
 
 	/*
@@ -48,11 +53,6 @@ public class CommandExecuter {
 	 */
 
 	public void execute(Player thePlayer, String theStep) {
-
-		// Syntax of theStep
-		// 
-
-		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");		
 
 		/* Break down information from theStep for use */
 		String[] executeArgs = theStep.split(";");
@@ -186,10 +186,10 @@ public class CommandExecuter {
 
 		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
 			if (commandArgs[1].equalsIgnoreCase("MONEY")) {
-				double playerMoneyAmt = Denizen.denizenEcon.getBalance(thePlayer.getName());
+				double playerMoneyAmt = plugin.economy.getBalance(thePlayer.getName());
 				double amtToTake = Double.valueOf(commandArgs[2]);
 				if (amtToTake > playerMoneyAmt) amtToTake = playerMoneyAmt;
-				Denizen.denizenEcon.withdrawPlayer(thePlayer.getName(), amtToTake);
+				plugin.economy.withdrawPlayer(thePlayer.getName(), amtToTake);
 
 			}
 			else if (commandArgs[1].equalsIgnoreCase("ITEMINHAND")) {
@@ -311,12 +311,12 @@ public class CommandExecuter {
 
 
 		case PERMISS:  // PERMISS [Permission Node]
-			Denizen.denizenPerms.playerAdd(thePlayer, commandArgs[1]);
+			plugin.perms.playerAdd(thePlayer, commandArgs[1]);
 			break;
 
 
 		case REFUSE:  // PERMISS [Permission Node]
-			Denizen.denizenPerms.playerRemove(thePlayer, commandArgs[1]);
+			plugin.perms.playerRemove(thePlayer, commandArgs[1]);
 			break;
 
 
