@@ -3,7 +3,7 @@ package net.aufdemrand.denizen;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.aufdemrand.denizen.ScriptEngine.Trigger;
+import net.aufdemrand.denizen.scriptEngine.ScriptEngine.Trigger;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.LookClose;

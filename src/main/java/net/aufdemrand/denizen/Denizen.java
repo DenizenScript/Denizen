@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.commands.CommandRegistry;
+import net.aufdemrand.denizen.scriptEngine.ScriptEngine;
 import net.aufdemrand.denizen.utilities.GetDenizen;
 import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
@@ -36,27 +37,26 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Denizen extends JavaPlugin {
-	
-	/* New code */
-	
+
 	public Economy   economy = null;
 	public Permission  perms = null;
-	
+
 	public CommandRegistry commandRegistry = new CommandRegistry(this);
-	public Settings settings = new Settings(this);
-	public DenizenCharacter character = new DenizenCharacter();
+	public Settings               settings = new Settings(this);
+	public DenizenCharacter      character = new DenizenCharacter();
 	public CommandExecuter commandExecuter = new CommandExecuter(this);
-	public ScriptEngine scriptEngine = new ScriptEngine(this);
-	public GetDenizen getDenizen = new GetDenizen(this);
-	public GetPlayer getPlayer = new GetPlayer(this);
+	public ScriptEngine       scriptEngine = new ScriptEngine(this);
+	public GetDenizen           getDenizen = new GetDenizen(this);
+	public GetPlayer             getPlayer = new GetPlayer(this);
 	public GetRequirements getRequirements = new GetRequirements(this);
-	public GetWorld getWorld = new GetWorld(this);
-	public GetScript getScript = new GetScript(this);
+	public GetWorld               getWorld = new GetWorld(this);
+	public GetScript             getScript = new GetScript(this);
+
 	
-	/* -------- */
-	
-	
-	public static Map<Player, List<String>>  playerQue = new ConcurrentHashMap<Player, List<String>>();
+	/* playerQue holds script commands for each Player */
+
+			
+	/* Need to place these in appropriate classes with getters/setters to avoid making them static */
 	public static Map<NPC, Location>    previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
 	public static Map<Player, Long>   interactCooldown = new ConcurrentHashMap<Player, Long>();
 	public static Map<Player, Long>   locationCooldown = new ConcurrentHashMap<Player, Long>();
@@ -64,16 +64,9 @@ public class Denizen extends JavaPlugin {
 	public static List<NPC>                 engagedNPC = new ArrayList<NPC>();
 	public static Boolean                    DebugMode = false;
 
-	// public static ScriptEngine       scriptEngine = new ScriptEngine();
-	// public static CommandExecuter commandExecuter = new CommandExecuter();
-	// public static DenizenCharacter   getCharacter = new DenizenCharacter();
-	// public static GetScript             getScript = new GetScript();
-	// public static GetDenizen           getDenizen = new GetDenizen();
-	// public static GetRequirements getRequirements = new GetRequirements();
-	// public static GetPlayer             getPlayer = new GetPlayer();
-	// public static GetWorld               getWorld = new GetWorld();
-	
+	/* --------- */
 
+	
 
 	/*
 	 * onEnable
@@ -85,8 +78,6 @@ public class Denizen extends JavaPlugin {
 	@Override
 	public void onEnable() {
 
-		// plugin = this;
-		
 		/* Set up Vault */
 		if (!setupEconomy() || !setupPermissions()) {
 			getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no economy or permissions system!", getDescription().getName()));
@@ -99,9 +90,7 @@ public class Denizen extends JavaPlugin {
 		reloadScripts();
 		reloadSaves();
 		reloadAssignments();
-	
-				
-		
+
 		/* Register Citizens2 character, listener, and bukkit tasks */
 		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(character, this);
@@ -121,15 +110,9 @@ public class Denizen extends JavaPlugin {
 			public void run() { scriptEngine.buildLocationTriggerList(); }
 		}, 100);
 
-		
-		
 
 	}
 
-
-	
-	
-	
 
 
 	/*
@@ -145,7 +128,6 @@ public class Denizen extends JavaPlugin {
 		Bukkit.getServer().getScheduler().cancelTasks(this);
 		saveSaves();
 	}
-
 
 
 
@@ -213,8 +195,8 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	
-	
+
+
 	/*
 	 * reloadSaves/getSaves/saveSaves
 	 * 
@@ -292,17 +274,17 @@ public class Denizen extends JavaPlugin {
 		return assignmentConfig;
 	}
 
-	
+
 	public CommandRegistry getCommandRegistry() {
-		
+
 		return commandRegistry;
 	}
 
-	
 
-	
-	
-	
+
+
+
+
 	/*
 	 * onCommand
 	 * 
@@ -526,12 +508,12 @@ public class Denizen extends JavaPlugin {
 			if(args.length < 2) {
 				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen stand [location bookmark]");
 				return true;
-				}
+			}
 			else if(args[1].equalsIgnoreCase("clear")) {
 				getSaves().set("Denizens." + ThisNPC.getName() + ".Position.Standing", null);
 				player.sendMessage(ChatColor.GREEN + "Standing clear. Enforced location has been cleared.");
 				return true;
-				}
+			}
 			else {
 				getSaves().set("Denizens." + ThisNPC.getName() + ".Position.Standing", args[1]);
 				player.sendMessage(ChatColor.GREEN + "Location enforced. This can be changed or disabled");
@@ -573,41 +555,37 @@ public class Denizen extends JavaPlugin {
 		return true;
 	}
 
+
+
 	/**
 	 * Gets the plugin version from the maven info in the jar, if available.
 	 * @return
 	 */
+
 	public String getVersionNumber() {
+
 		Properties props = new Properties();
+
 		//Set a default just in case.
 		props.put("version", "Unknown development build");
-		try
-		{
+
+		try	{
 			props.load(this.getClass().getResourceAsStream("/META-INF/maven/net.aufdemrand/denizen/pom.properties"));
-		}
-		catch(Exception e)
-		{
+		} 
+		catch(Exception e) {
 			//Maybe log?
 		}
+
 		return props.getProperty("version");
 	}
 
 	public String getVersionString() {
+
 		return "Denizen version: " + getVersionNumber();
 	}
-	/*
-	 * onEnable
-	 * 
-	 * Sets up Denizen on start of the craftbukkit server.
-	 *	
-	 */
 
 
-	
 
-	
-	
-	
 }
 
 

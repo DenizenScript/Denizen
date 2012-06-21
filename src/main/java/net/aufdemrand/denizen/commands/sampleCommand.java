@@ -4,7 +4,7 @@ import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.entity.Player;
 
-public class sampleCommand extends Command {
+public class SampleCommand extends Command {
 
 	@Override
 	public boolean execute(Player thePlayer, NPC theDenizen,

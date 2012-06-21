@@ -51,7 +51,7 @@ public class DenizenCharacter extends Character implements Listener {
 			}
 
 			else if (!theScript.equals("none")) {
-				plugin.scriptEngine.parseScript(theDenizen, thePlayer, plugin.getScript.getNameFromEntry(theScript), "", ScriptEngine.Trigger.CLICK);
+				plugin.scriptEngine.parseScript(theDenizen, thePlayer, plugin.getScript.getNameFromEntry(theScript), "", net.aufdemrand.denizen.scriptEngine.Trigger.CLICK);
 			}
 		} catch (Exception e) {
 			plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
@@ -96,7 +96,7 @@ public class DenizenCharacter extends Character implements Listener {
 										event.getPlayer(), 
 										plugin.getScript.getNameFromEntry(theScript), 
 										Denizen.validLocations.get(theLocation).split(":")[1],
-										ScriptEngine.Trigger.LOCATION);
+										net.aufdemrand.denizen.scriptEngine.Trigger.LOCATION);
 								
 								Denizen.locationCooldown.put(event.getPlayer(), System.currentTimeMillis() + 30000);
 
@@ -199,7 +199,7 @@ public class DenizenCharacter extends Character implements Listener {
 			}
 
 			if (!theScript.equalsIgnoreCase("NONE")) {
-				if (plugin.scriptEngine.parseScript(theDenizen, event.getPlayer(),	plugin.getScript.getNameFromEntry(theScript), event.getMessage(), ScriptEngine.Trigger.CHAT))
+				if (plugin.scriptEngine.parseScript(theDenizen, event.getPlayer(),	plugin.getScript.getNameFromEntry(theScript), event.getMessage(), net.aufdemrand.denizen.scriptEngine.Trigger.CHAT))
 					event.setCancelled(true);
 			}
 		} catch (Exception e) {
