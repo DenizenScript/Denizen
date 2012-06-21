@@ -18,13 +18,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class DenizenCharacter extends Character implements Listener {
 
-	private Denizen plugin;
-	
-	public DenizenCharacter(Denizen denizen) {
-		plugin = denizen;
-	}
-	
-	
 
 	/*
 	 * DenizenClicked
@@ -35,6 +28,8 @@ public class DenizenCharacter extends Character implements Listener {
 
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		String theScript = plugin.getScript.getInteractScript(theDenizen, thePlayer);
 
 		if (theScript.equals("none")) {
@@ -70,6 +65,7 @@ public class DenizenCharacter extends Character implements Listener {
 	@EventHandler
 	public void PlayerProximityListener(PlayerMoveEvent event) {
 
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 		/* Do not run any code unless the player actually moves blocks */
 
@@ -167,6 +163,8 @@ public class DenizenCharacter extends Character implements Listener {
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
 
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		NPC theDenizen = plugin.getDenizen.getClosest(event.getPlayer(), 
 				plugin.settings.PlayerToNpcChatRangeInBlocks());
 
@@ -233,6 +231,9 @@ public class DenizenCharacter extends Character implements Listener {
 
 	@Override
 	public void onRightClick(NPC npc, Player player) {
+
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
 				&& plugin.getDenizen.checkCooldown(player)
 				&& !Denizen.engagedNPC.contains(npc)) {
@@ -245,6 +246,9 @@ public class DenizenCharacter extends Character implements Listener {
 
 	@Override
 	public void onLeftClick(NPC npc, Player player) {
+
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		
 		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
 				&& plugin.getDenizen.checkCooldown(player)
 				&& !Denizen.engagedNPC.contains(npc)) {

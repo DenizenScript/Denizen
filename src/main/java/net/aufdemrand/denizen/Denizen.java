@@ -44,7 +44,7 @@ public class Denizen extends JavaPlugin {
 	
 	public CommandRegistry commandRegistry = new CommandRegistry(this);
 	public Settings settings = new Settings(this);
-	public DenizenCharacter character = new DenizenCharacter(this);
+	public DenizenCharacter character = new DenizenCharacter();
 	public CommandExecuter commandExecuter = new CommandExecuter(this);
 	public ScriptEngine scriptEngine = new ScriptEngine(this);
 	public GetDenizen getDenizen = new GetDenizen(this);
