@@ -48,7 +48,7 @@ public class ScriptEngine {
 
 	
 	
-	public enum QueueType {
+	public enum ScriptType {
 		TRIGGER, ACTIVITY, TASK
 	}
 	

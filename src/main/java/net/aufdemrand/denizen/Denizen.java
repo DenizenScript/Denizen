@@ -471,7 +471,7 @@ public class Denizen extends JavaPlugin {
 			reloadConfig();
 			reloadScripts();
 			reloadAssignments();
-			player.sendMessage(ChatColor.GREEN + "config.yml, denizens.yml and scripts.yml reloaded.");
+			player.sendMessage(ChatColor.GREEN + "config.yml, assignemnts.yml and scripts reloaded.");
 			return true;
 		}
 
