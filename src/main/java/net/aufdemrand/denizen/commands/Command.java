@@ -4,7 +4,6 @@ import java.lang.Exception;
 import java.rmi.activation.ActivationException;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.aufdemrand.denizen.Denizen;
 
 import org.bukkit.entity.Player;
 

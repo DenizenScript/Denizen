@@ -1,6 +1,9 @@
 package net.aufdemrand.denizen.scriptEngine;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -19,38 +22,32 @@ import org.bukkit.entity.Player;
 
 
 /**
+ * Contains methods used to parse and execute scripts, 
+ * initiated by some kind of event trigger or interaction.
  * 
  * @author Jeremy
- *
- * Contains methods used to parse and execute scripts, 
- * initiated by some kind of event or interaction.
- *  
+ * 
  */
 
 public class ScriptEngine {
 
 
 	/* Denizen Constructor */
-	private Denizen plugin;
 
+	private Denizen plugin;
 	public ScriptEngine(Denizen denizen) {
 		plugin = denizen;
 	}	
 
 
-
-	/*
-	 * 
-	 */
+	/* ENUMS to help with dealing with multiple types of Triggers/Queues */
 
 	public enum TriggerType {
 		ATTACK, CLICK, CHAT, PROXIMITY, TASK, LOCATION
 	}
 
-
-
-	public enum ScriptType {
-		TRIGGER, ACTIVITY, TASK
+	public enum QueueType {
+		TRIGGER, TASK, ACTIVITY, CUSTOM
 	}
 
 	private Map<Player, List<ScriptCommand>> triggerQue = new ConcurrentHashMap<Player, List<ScriptCommand>>();
@@ -58,49 +55,12 @@ public class ScriptEngine {
 	private Map<NPC, List<ScriptCommand>>   activityQue = new ConcurrentHashMap<NPC, List<ScriptCommand>>();
 
 
-	/* Build a ScriptCommand for a Task Script */
-	public void buildCommand(Player thePlayer, CommandType commandType, String[] arguments) {
 
-	}
-
-
-	/**
-	 * Processes commands from the Queues.
-	 */
+	/* Processes commands from the Queues. */
 
 	public void commandQueue() {
 
 		/* First the triggerQue, primary script queue for Players */
-
-		if (!triggerQue.isEmpty()) {	
-
-			/* Attempt to run a command for each player. The attempted command (and attached info) info is 
-			 * in theEntry */
-			for (Entry<Player, List<ScriptCommand>> theEntry : triggerQue.entrySet()) {
-				if (!theEntry.getValue().isEmpty()) {
-
-					/* Check the time of the command to see if it has been delayed with a WAIT command. Only 
-					 * proceed for the player if the time on the command is less than the current time. 
-					 * If it's more, then this entry will be skipped and saved for next time. */
-					if (theEntry.getValue().get(0).getDelayedTime() < System.currentTimeMillis()) {
-
-						/* Feeds the executer ScriptCommands as long as they are instant commands ("^"), otherwise
-						 * runs one command, removes it from the queue, and moves on to the next player. */
-						do { 
-							plugin.executer.execute(theEntry.getValue().get(0));
-							theEntry.getValue().remove(0);
-
-							/* Updates the triggerQue map */
-							triggerQue.put(theEntry.getKey(), theEntry.getValue());
-						} while (theEntry.getValue().get(0).instant());
-					}
-				}
-			}
-			/* Next Player */
-		}
-
-
-		/* Now the taskQue, alternate script queue for Players */
 
 		if (!taskQue.isEmpty()) {	
 
@@ -130,6 +90,24 @@ public class ScriptEngine {
 		}
 
 
+		/* Now the taskQue, the alternate script queue for Players */
+
+		if (!taskQue.isEmpty()) {	
+			for (Entry<Player, List<ScriptCommand>> theEntry : taskQue.entrySet()) {
+				if (!theEntry.getValue().isEmpty()) {
+					if (theEntry.getValue().get(0).getDelayedTime() < System.currentTimeMillis()) {
+						do { 
+							plugin.executer.execute(theEntry.getValue().get(0));
+							theEntry.getValue().remove(0);
+							taskQue.put(theEntry.getKey(), theEntry.getValue());
+						} while (theEntry.getValue().get(0).instant());
+					}
+				}
+			}
+			/* Next Player */
+		}
+
+
 		/* 
 		 * TODO: activityQue
 		 */
@@ -138,17 +116,11 @@ public class ScriptEngine {
 
 
 
-
-
-	/*
-	 * scheduleScripts
-	 * 
-	 * Schedules activity scripts to Denizens based on their schedule defined in the config.
+	/* Schedules activity scripts to Denizens based on their schedule defined in the config.
 	 * Runs every Minecraft hour. 
 	 * 
 	 * This will be the backbone to automated activity scripts. Currently this is not used
-	 * any further than what's in this method, but will be build upon soon.
-	 */
+	 * any further than what's in this method, but will be build upon soon.	 */
 
 	public void scheduleScripts() {
 
@@ -174,14 +146,9 @@ public class ScriptEngine {
 
 
 
-
-
-	/* parseChatScript
-	 *
-	 * Requires the Player, the Script Name, the chat message (if Chat Trigger, otherwise send null),
-	 * and the Trigger ENUM type. Sends out methods that take action based on the Trigger types.
-	 *
-	 */
+	/* Parses the scripts for Chat Triggers and sends new ScriptCommands to the queue if
+	 * found matched. Returning FALSE will cancel intervention and allow the PlayerChatEvent
+	 * to pass through.	 */
 
 	public boolean parseChatScript(NPC theDenizen, Player thePlayer, String theScript, String playerMessage) {
 
@@ -209,9 +176,8 @@ public class ScriptEngine {
 
 			if (letsProceed) {
 
-				/* 
-				 * Trigger matches, let's talk to the Denizen and send the script to the triggerQue. 
-				 */
+				/* Trigger matches, let's talk to the Denizen and send the script to the 
+				 * triggerQue. No need to continue the loop. */
 				plugin.getPlayer.talkToDenizen(theDenizen, thePlayer, chatText);
 
 				List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Script");
@@ -225,6 +191,16 @@ public class ScriptEngine {
 					}
 				}
 
+				/* New ScriptCommand list built, now let's add it into the queue */
+				List<ScriptCommand> scriptCommandList = taskQue.get(thePlayer);
+
+				/* Keeps the commandQue from removing items while
+				working on them here. They will be added back in. */ 
+				taskQue.remove(thePlayer); 
+
+				scriptCommandList.addAll(scriptCommands);
+				taskQue.put(thePlayer, scriptCommandList);
+
 				return true;
 			}
 		}
@@ -237,9 +213,9 @@ public class ScriptEngine {
 			String noscriptChat = null;
 
 			/* Checks the denizen for a custom message, else uses the default */
-			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Texts.No Requirements Met")) 
-				noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName()	+ ".Texts.No Requirements Met");
-			else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Texts.No Chat Triggers Met")) 
+				noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName()	+ ".Texts.No Chat Triggers Met");
+			else noscriptChat = plugin.settings.DefaultNoChatTriggersMetText();
 
 			plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
 			return true;
@@ -248,75 +224,102 @@ public class ScriptEngine {
 
 
 
+	/* Parses the script for a click trigger */
 
+	public boolean parseClickScript(NPC theDenizen, Player thePlayer, String theScript) {
 
-	/* 
-	 * triggerToQue
-	 *
-	 * Places items (addedToPlayerQue) into the playerQue for command execution. 
-	 *
-	 */
+		int theStep = plugin.getScript.getCurrentStep(thePlayer, theScript);
+		List<ScriptCommand> scriptCommands = new ArrayList<ScriptCommand>();
 
-	public void triggerToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> addedToPlayerQue) {
-
-		List<ScriptCommand> currentPlayerQue = new ArrayList<ScriptCommand>();
-		if (triggerQue.get(thePlayer) != null) currentPlayerQue = triggerQue.get(thePlayer);
-
-		String denizenId = "none";
-		if (theDenizen != null) denizenId = String.valueOf(theDenizen.getId()); 
-
-		if (!addedToPlayerQue.isEmpty()) {
-
-			/* 
-			 * Temporarily take away the playerQue for the Player to make sure nothing gets
-			 * removed while working with it.
-			 */
-			triggerQue.remove(thePlayer);
-
-			for (String theCommand : addedToPlayerQue) {
-
-
-
-				currentPlayerQue.add(denizenId + ";" + theScript + ";" + CurrentStep + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
+		/* Let's get the Script from the file and turn it into ScriptCommands */
+		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Click Trigger.Script");
+		for (String thisItem : chatScriptItems) {
+			String[] scriptEntry = thisItem.split(" ", 2);
+			try {
+				/* Build new script commands */
+				scriptCommands.add(new ScriptCommand(scriptEntry[0], scriptEntry[1].split(" "), thePlayer, theDenizen, theScript, theStep));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-
-			triggerQue.put(thePlayer, currentPlayerQue);
 		}
+
+		/* New ScriptCommand list built, now let's add it into the queue */
+		List<ScriptCommand> scriptCommandList = taskQue.get(thePlayer);
+
+		/* Keeps the commandQue from removing items while
+		working on them here. They will be added back in. */ 
+		taskQue.remove(thePlayer); 
+
+		scriptCommandList.addAll(scriptCommands);
+		taskQue.put(thePlayer, scriptCommandList);
+
+		return true;
 	}
 
 
+	
+	/* Parses the script for a task trigger */
 
+	public boolean parseTaskScript(Player thePlayer, String theScript) {
 
+		int theStep = plugin.getScript.getCurrentStep(thePlayer, theScript);
+		List<ScriptCommand> scriptCommands = new ArrayList<ScriptCommand>();
 
-	/*  
-	 * Injects commands into the playerQue. Originally made for working with multiline text,
-	 * but currently unused. I'm sure it will be useful again. This is different than 
-	 * triggerToQue in the sense that triggerToQue adds elements to the end of the playerQue
-	 * and this adds the items to the beginning of the queue.
-	 */
-
-	public void injectToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> addedToPlayerQue) {
-
-		List<String> currentPlayerQue = new ArrayList<String>();
-		List<String> injectToPlayerQue = new ArrayList<String>();
-		if (Denizen.playerQue.get(thePlayer) != null) currentPlayerQue = Denizen.playerQue.get(thePlayer);
-
-		if (!addedToPlayerQue.isEmpty()) {
-
-			/* 
-			 * Temporarily take away the playerQue for the Player to make sure nothing gets
-			 * removed while working with it.
-			 */
-			Denizen.playerQue.remove(thePlayer);
-
-			for (String theCommand : addedToPlayerQue) {
-				/* PlayerQue format: DENIZEN ID; THE SCRIPT NAME; THE STEP; SYSTEM TIME; THE COMMAND */
-				injectToPlayerQue.add(Integer.toString(theDenizen.getId()) + ";" + theScript + ";" + Integer.toString(CurrentStep) + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
+		/* Let's get the Script from the file and turn it into ScriptCommands */
+		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Script");
+		for (String thisItem : chatScriptItems) {
+			String[] scriptEntry = thisItem.split(" ", 2);
+			try {
+				/* Build new script commands */
+				scriptCommands.add(new ScriptCommand(scriptEntry[0], scriptEntry[1].split(" "), thePlayer, theScript, theStep));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-
-			currentPlayerQue.addAll(1, injectToPlayerQue);
-			Denizen.playerQue.put(thePlayer, currentPlayerQue);
 		}
+
+		/* New ScriptCommand list built, now let's add it into the queue */
+		List<ScriptCommand> scriptCommandList = taskQue.get(thePlayer);
+
+		/* Keeps the commandQue from removing items while
+		working on them here. They will be added back in. */ 
+		taskQue.remove(thePlayer); 
+
+		scriptCommandList.addAll(scriptCommands);
+		taskQue.put(thePlayer, scriptCommandList);
+
+		return true;
+	}
+	
+
+	
+	/* Injects commands into a QueueType  */
+
+	public void injectToQue(Player thePlayer, List<ScriptCommand> scriptCommands, QueueType queueType, int thePosition) {
+
+		List<ScriptCommand> scriptCommandList;
+		
+		switch (queueType) {
+
+		case TRIGGER:
+			scriptCommandList = taskQue.get(thePlayer);
+			taskQue.remove(thePlayer); 
+			if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
+			if (scriptCommandList.size() == 0) thePosition = 0;
+			scriptCommandList.addAll(thePosition, scriptCommands);
+			taskQue.put(thePlayer, scriptCommandList);
+			break;
+
+		case TASK:
+			scriptCommandList = taskQue.get(thePlayer);
+			taskQue.remove(thePlayer); 
+			if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
+			if (scriptCommandList.size() == 0) thePosition = 0;
+			scriptCommandList.addAll(thePosition, scriptCommands);
+			taskQue.put(thePlayer, scriptCommandList);
+			break;
+		}
+
+		return;
 	}
 
 
@@ -359,8 +362,6 @@ public class ScriptEngine {
 
 		return processedText;
 	}
-
-
 
 
 
@@ -508,11 +509,9 @@ public class ScriptEngine {
 
 		plugin.saveSaves();
 
-		parseScript(null, thePlayer, theScript, null, Trigger.TASK);
+		parseScript(null, thePlayer, theScript, null, TRIGGER.TASK);
 
 	}
-
-
 
 
 
@@ -545,7 +544,6 @@ public class ScriptEngine {
 
 		return true;
 	}
-
 
 
 

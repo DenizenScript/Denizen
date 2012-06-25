@@ -27,17 +27,6 @@ public class GetPlayer {
 	}
 
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * Gets players in range of a bukkit Entity. 
 	 *
@@ -397,8 +386,6 @@ public class GetPlayer {
 
 
 
-
-
 	/**
 	 * Checks the item in hand of the player against a given value. 
 	 *
@@ -462,8 +449,6 @@ public class GetPlayer {
 		return false;
 	}
 
-
-	
 	
 
 	/**

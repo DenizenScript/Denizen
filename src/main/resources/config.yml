@@ -62,3 +62,4 @@ npc_shout_to_player_bystander: "<NPC> shouts at <PLAYER>, '<TEXT>'"
 # can also be set per-denizen, which will override the
 # defaults set below.
 default_no_requirements_met_text: Sorry, I have nothing else for you right now.
+default_no_chat_triggers_met_text: Perhaps you can tell me more clearly what it is you need.

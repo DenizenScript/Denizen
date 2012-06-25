@@ -224,13 +224,19 @@ public class Settings {
 	# can also be set per-denizen, which will override the
 	# defaults set below.
 	default_no_requirements_met_text: Sorry, I have nothing else for you right now.
+	default_no_chat_triggers_met_text: Perhaps you can tell me more clearly what it is you need.
 
 	 */
 
 	public String DefaultNoRequirementsMetText() {
 		return plugin.getConfig().getString("default_no_requirements_met_text", "Sorry, I have nothing else for you right now.");
 	}
-
+	
+	public String DefaultNoChatTriggersMetText() {
+		return plugin.getConfig().getString("default_no_chat_triggers_met_text", "Perhaps you can tell me more clearly what it is you need.");
+	}
+	
+	
 
 
 }

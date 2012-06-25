@@ -17,56 +17,52 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+
+/**
+ * Contains all the listeners and triggers for the Denizen Characters(NPCs).
+ * Works with the ScriptEngine to carry out scripts.
+ * 
+ * @author Jeremy Schroeder
+ *
+ */
+
 public class DenizenCharacter extends Character implements Listener {
 
+	
+	/* Listens for an NPC click. Right click sends out a Click Trigger, 
+	 * left click sends out either a Damage Trigger or Click Trigger. */
 
-	/*
-	 * DenizenClicked
-	 * 
-	 * Called when a click trigger is sent to a Denizen. Handles fetching of the script.
-	 * 
-	 */
-
-	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
+	@Override
+	public void onRightClick(NPC npc, Player player) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
-		try {
-			
-			String theScript = plugin.getScript.getInteractScript(theDenizen, thePlayer);
+		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
+				&& plugin.getDenizen.checkCooldown(player)
+				&& !Denizen.engagedNPC.contains(npc)) {
+			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
+			DenizenClicked(npc, player);
+		}
+	}
 
-			if (theScript.equals("none")) {
+	@Override
+	public void onLeftClick(NPC npc, Player player) {
 
-				String noscriptChat = null;
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
-				if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() 
-						+ ".Texts.No Requirements Met")) 
-					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName() 
-							+ ".Texts.No Requirements Met");
-				else
-					noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
+		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
+				&& plugin.getDenizen.checkCooldown(player)
+				&& !Denizen.engagedNPC.contains(npc)) {
+			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
+			DenizenClicked(npc, player);
 
-				plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
-
-			}
-
-			else if (!theScript.equals("none")) {
-				plugin.scriptEngine.parseScript(theDenizen, thePlayer, plugin.getScript.getNameFromEntry(theScript), "", net.aufdemrand.denizen.scriptEngine.Trigger.CLICK);
-			}
-		} catch (Exception e) {
-			plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
 		}
 	}
 
 
 
-
-
-	/*
-	 * Will be used for the Proximity trigger for Trigger scripts.
-	 * Currently unused (obviously)
-	 *  
-	 */
+	/* Listens for the PlayerMoveEvent to see if a player is within range
+	 * of a Denizen to trigger a Proximity Trigger */
 
 	@EventHandler
 	public void PlayerProximityListener(PlayerMoveEvent event) {
@@ -74,20 +70,38 @@ public class DenizenCharacter extends Character implements Listener {
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
 		try {
-			/* Do not run any code unless the player actually moves blocks */
 
+			/* Do not run any code unless the player actually moves blocks */
 			if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
 				/* 
 				 * TODO: Denizen Proximity Trigger 
 				 */ 
+	
+			}
+		} catch (Exception e) {
+			plugin.getLogger().log(Level.SEVERE, "Error processing proximity event.", e);
+		}
+	}
 
+
+	
+	/* Listens for the PlayerMoveEvent to see if a player is within range
+	 * of a Denizen to trigger a Location Trigger */
+
+	@EventHandler
+	public void PlayerLocationListener(PlayerMoveEvent event) {
+
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+
+			/* Do not run any code unless the player actually moves blocks */
+			if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
+
+				try {
 				if (!Denizen.validLocations.isEmpty()) {
-					
 
 					for (Location theLocation : Denizen.validLocations.keySet()) {
-						if (plugin.scriptEngine.checkLocation(event.getPlayer(), theLocation, 1)
-								&& plugin.getDenizen.checkLocationCooldown(event.getPlayer())) {
+						if (plugin.scriptEngine.checkLocation(event.getPlayer(), theLocation, 1) && plugin.getDenizen.checkLocationCooldown(event.getPlayer())) {
 
 							String theScript = plugin.getScript.getInteractScript(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), event.getPlayer());
 							if (!theScript.equals("none")) {
@@ -97,7 +111,7 @@ public class DenizenCharacter extends Character implements Listener {
 										plugin.getScript.getNameFromEntry(theScript), 
 										Denizen.validLocations.get(theLocation).split(":")[1],
 										net.aufdemrand.denizen.scriptEngine.Trigger.LOCATION);
-								
+
 								Denizen.locationCooldown.put(event.getPlayer(), System.currentTimeMillis() + 30000);
 
 								break;
@@ -105,70 +119,17 @@ public class DenizenCharacter extends Character implements Listener {
 						}
 					}
 				}
-
-
-
-				/* Location Task Listener */
-
-				/* 
-				 * ------- saves.yml ----------------
-				 * Players:
-				 *   aufdemrand:
-				 *     Tasks:
-				 *       List All:
-				 *         Locations:
-				 *         - theLocation:theDenizen:theId
-				 *       List Entries:
-				 *         Id:
-				 *           Type: Location
-				 *           Leeway: in blocks
-				 *           Duration: in seconds
-				 *           Script to trigger: script name
-				 *		     Initiated: System.currentTimeMillis 
-				 */
-
-				if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations")) {
-					List<String> listAll = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations");			
-
-					if (!listAll.isEmpty()) {
-						for (String theTask : listAll) {
-							String[] taskArgs = theTask.split(";");
-							Location theLocation = plugin.getDenizen.getBookmark(taskArgs[1], taskArgs[0], "LOCATION");
-							int theLeeway = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Leeway");
-							long theDuration = plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Duration");
-							if (plugin.scriptEngine.checkLocation(event.getPlayer(), theLocation, theLeeway)) {
-								if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")) {
-									if (plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")
-											+ (theDuration * 1000) <= System.currentTimeMillis()) plugin.scriptEngine.finishLocationTask(event.getPlayer(), taskArgs[2]);
-								}
-								else {
-									plugin.getSaves().set("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated", System.currentTimeMillis());
-									plugin.saveSaves();
-								}
-							}
-						}
-					}
-				}
-
-				/* Location Listener END */
-
 			}
-		} catch (Exception e) {
+		} 
+		
+		catch (Exception e) {
 			plugin.getLogger().log(Level.SEVERE, "Error processing proximity event.", e);
 		}
 	}
 
-
-
-
-
-	/* 
-	 * PlayerChatListener
-	 *
-	 * Called when the player chats.  Determines if player is near a Denizen, and if so, checks if there
-	 * are scripts to interact with.  Also handles the chat output for the Player talking to the Denizen.
-	 *
-	 */
+	
+	/* Listens for player chat and determines if player is near a Denizen, and if so,
+	 * checks if there are scripts to interact with. */
 
 	@EventHandler
 	public void PlayerChatListener(PlayerChatEvent event) {
@@ -177,7 +138,7 @@ public class DenizenCharacter extends Character implements Listener {
 		try {
 			NPC theDenizen = plugin.getDenizen.getClosest(event.getPlayer(), 
 					plugin.settings.PlayerToNpcChatRangeInBlocks());
-			
+
 			/* If no Denizen in range, or the Denizen closest is engaged, return */
 			if (theDenizen == null || Denizen.engagedNPC.contains(theDenizen)) return;
 
@@ -193,26 +154,25 @@ public class DenizenCharacter extends Character implements Listener {
 				else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
 				plugin.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", event.getPlayer(), theDenizen)[0], null, "CHAT");
 			}
-			
+
 			/* Awesome! There's a matching script, let's parse the script to see if chat triggers match */
 			if (!theScript.equalsIgnoreCase("NONE")) {
 				if (plugin.scriptEngine.parseChatScript(theDenizen, event.getPlayer(), plugin.getScript.getNameFromEntry(theScript), event.getMessage()))
 					event.setCancelled(true);
 			}
-			
+
 		} catch (Exception e) {
 			plugin.getLogger().log(Level.SEVERE, "Error processing chat event.", e);
 		}
 	}
 
-
-
+	
 
 	@Override
 	public void load(DataKey arg0) throws NPCLoadException {
 
 		/* Nothing to do here, yet. */
-		
+
 	}
 
 	@Override
@@ -224,52 +184,71 @@ public class DenizenCharacter extends Character implements Listener {
 
 
 
+	/* Called when a click trigger is sent to a Denizen. Handles fetching of the script. */
 
-
-	/*
-	 * onRightClick/onLeftClick
-	 * 
-	 * Initiates the Click Trigger event when clicking on a Denizen.
-	 * 
-	 * Note: Soon turning left click into a Damage trigger, if Denizen is set to 'damageable'.
-	 * If Denizen is not 'damageable', left click will mimic right click, that is, trigger the
-	 * Click Trigger for the script.
-	 * 
-	 * Right click will remain Click Trigger.
-	 * 
-	 */
-
-	@Override
-	public void onRightClick(NPC npc, Player player) {
+	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		
-		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
-				&& plugin.getDenizen.checkCooldown(player)
-				&& !Denizen.engagedNPC.contains(npc)) {
-			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
-			DenizenClicked(npc, player);
+		try {
+
+			/* Get the script to use */
+			String theScript = plugin.getScript.getInteractScript(theDenizen, thePlayer);
+
+			/* No script meets requirements, let's let the player know. */
+			if (theScript.equals("none")) {
+				String noscriptChat = null;
+				if (plugin.getAssignments().contains("Denizens." + theDenizen.getName()	+ ".Texts.No Requirements Met")) 
+					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName()	+ ".Texts.No Requirements Met");
+				else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
+
+				/* Make the Denizen chat to the Player */
+				plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+			}
+
+			/* Script does match, let's send the script to the parser */
+			else if (!theScript.equals("none")) 
+				plugin.scriptEngine.parseClickScript(theDenizen, thePlayer, plugin.getScript.getNameFromEntry(theScript));
+
+		} catch (Exception e) {
+			plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
 		}
+		
+		return;
 	}
 
 
+	
+	/* Called when a click trigger is sent to a Denizen. Handles fetching of the script. */
 
-	@Override
-	public void onLeftClick(NPC npc, Player player) {
+	public void DenizenDamaged(NPC theDenizen, Player thePlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		
-		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
-				&& plugin.getDenizen.checkCooldown(player)
-				&& !Denizen.engagedNPC.contains(npc)) {
-			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
-			DenizenClicked(npc, player);
+		try {
 
+			/* Get the script to use */
+			String theScript = plugin.getScript.getInteractScript(theDenizen, thePlayer);
+
+			/* No script meets requirements, let's let the player know. */
+			if (theScript.equals("none")) {
+				String noscriptChat = null;
+				if (plugin.getAssignments().contains("Denizens." + theDenizen.getName()	+ ".Texts.No Requirements Met")) 
+					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName()	+ ".Texts.No Requirements Met");
+				else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
+
+				/* Make the Denizen chat to the Player */
+				plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+			}
+
+			/* Script does match, let's send the script to the parser */
+			else if (!theScript.equals("none")) 
+				plugin.scriptEngine.parseClickScript(theDenizen, thePlayer, plugin.getScript.getNameFromEntry(theScript));
+
+		} catch (Exception e) {
+			plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
 		}
+		
+		return;
 	}
-
-
-
 
 
 }
