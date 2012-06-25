@@ -58,7 +58,7 @@ public class ScriptEngine {
 
 	/* Processes commands from the Queues. */
 
-	public void commandQueue() {
+	public void runQueues() {
 
 		/* First the triggerQue, primary script queue for Players */
 

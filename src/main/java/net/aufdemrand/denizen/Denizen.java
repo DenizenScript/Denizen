@@ -101,7 +101,7 @@ public class Denizen extends JavaPlugin {
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
-			public void run() { scriptEngine.commandQue(); scriptEngine.enforcePosition(); }
+			public void run() { scriptEngine.runQueues(); scriptEngine.enforcePosition(); }
 		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {

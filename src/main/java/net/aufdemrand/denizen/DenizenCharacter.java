@@ -28,7 +28,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class DenizenCharacter extends Character implements Listener {
 
-	
+
 	/* Listens for an NPC click. Right click sends out a Click Trigger, 
 	 * left click sends out either a Damage Trigger or Click Trigger. */
 
@@ -69,23 +69,23 @@ public class DenizenCharacter extends Character implements Listener {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
-		try {
+		/* Do not run any code unless the player actually moves blocks */
+		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
-			/* Do not run any code unless the player actually moves blocks */
-			if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
+			try {
 
 				/* 
 				 * TODO: Denizen Proximity Trigger 
 				 */ 
-	
+
+			} catch (Exception e) {
+				plugin.getLogger().log(Level.SEVERE, "Error processing proximity event.", e);
 			}
-		} catch (Exception e) {
-			plugin.getLogger().log(Level.SEVERE, "Error processing proximity event.", e);
 		}
 	}
 
 
-	
+
 	/* Listens for the PlayerMoveEvent to see if a player is within range
 	 * of a Denizen to trigger a Location Trigger */
 
@@ -94,10 +94,10 @@ public class DenizenCharacter extends Character implements Listener {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
-			/* Do not run any code unless the player actually moves blocks */
-			if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
+		/* Do not run any code unless the player actually moves blocks */
+		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
-				try {
+			try {
 				if (!Denizen.validLocations.isEmpty()) {
 
 					for (Location theLocation : Denizen.validLocations.keySet()) {
@@ -105,12 +105,13 @@ public class DenizenCharacter extends Character implements Listener {
 
 							String theScript = plugin.getScript.getInteractScript(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), event.getPlayer());
 							if (!theScript.equals("none")) {
-								plugin.scriptEngine.parseScript(
-										CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), 
-										event.getPlayer(), 
-										plugin.getScript.getNameFromEntry(theScript), 
-										Denizen.validLocations.get(theLocation).split(":")[1],
-										net.aufdemrand.denizen.scriptEngine.Trigger.LOCATION);
+
+								//					plugin.scriptEngine.parseScript(
+								//						CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), 
+								//					event.getPlayer(), 
+								//				plugin.getScript.getNameFromEntry(theScript), 
+								//			Denizen.validLocations.get(theLocation).split(":")[1],
+								//		net.aufdemrand.denizen.scriptEngine.Trigger.LOCATION);
 
 								Denizen.locationCooldown.put(event.getPlayer(), System.currentTimeMillis() + 30000);
 
@@ -120,14 +121,82 @@ public class DenizenCharacter extends Character implements Listener {
 					}
 				}
 			}
-		} 
-		
-		catch (Exception e) {
-			plugin.getLogger().log(Level.SEVERE, "Error processing proximity event.", e);
+
+
+			catch (Exception e) {
+				plugin.getLogger().log(Level.SEVERE, "Error processing location trigger event.", e);
+			}
 		}
 	}
 
-	
+
+
+	/* Listens for the PlayerMoveEvent to see if a player is within range
+	 * of a Location Bookmark for a playertask */
+
+	@EventHandler
+	public void PlayerLocationTaskListener(PlayerMoveEvent event) {
+
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+
+		/* Do not run any code unless the player actually moves blocks */
+		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
+
+			try {
+
+				/* Location Task Listener */
+
+				/* 
+				 * ---- saves.yml format ----
+				 * Players:
+				 *   aufdemrand:
+				 *     Tasks:
+				 *       List All:
+				 *         Locations:
+				 *         - theLocation:theDenizen:theId
+				 *       List Entries:
+				 *         Id: theId
+				 *         Type: Location
+				 *         Leeway: in blocks
+				 *         Duration: in seconds
+				 *         Script to trigger: script name
+				 *         Initiated: System.currentTimeMillis 
+				 */
+
+				if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations")) {
+					List<String> listAll = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations");      
+
+					if (!listAll.isEmpty()) {
+						for (String theTask : listAll) {
+
+							String[] taskArgs = theTask.split(";");
+							Location theLocation = plugin.getDenizen.getBookmark(taskArgs[1], taskArgs[0], "LOCATION");
+							int theLeeway = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Leeway");
+							long theDuration = plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Duration");
+							if (plugin.scriptEngine.checkLocation(event.getPlayer(), theLocation, theLeeway)) {
+								if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")) {
+									if (plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")
+											+ (theDuration * 1000) <= System.currentTimeMillis()) plugin.scriptEngine.finishLocationTask(event.getPlayer(), taskArgs[2]);
+								}
+								else {
+									plugin.getSaves().set("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated", System.currentTimeMillis());
+									plugin.saveSaves();
+								}
+							}
+							
+						}
+					}
+				}
+			}
+
+			catch (Exception e) {
+				plugin.getLogger().log(Level.SEVERE, "Error processing location task event.", e);
+			}
+		}
+	}
+
+
+
 	/* Listens for player chat and determines if player is near a Denizen, and if so,
 	 * checks if there are scripts to interact with. */
 
@@ -166,7 +235,7 @@ public class DenizenCharacter extends Character implements Listener {
 		}
 	}
 
-	
+
 
 	@Override
 	public void load(DataKey arg0) throws NPCLoadException {
@@ -212,12 +281,12 @@ public class DenizenCharacter extends Character implements Listener {
 		} catch (Exception e) {
 			plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
 		}
-		
+
 		return;
 	}
 
 
-	
+
 	/* Called when a click trigger is sent to a Denizen. Handles fetching of the script. */
 
 	public void DenizenDamaged(NPC theDenizen, Player thePlayer) {
@@ -246,7 +315,7 @@ public class DenizenCharacter extends Character implements Listener {
 		} catch (Exception e) {
 			plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
 		}
-		
+
 		return;
 	}
 
