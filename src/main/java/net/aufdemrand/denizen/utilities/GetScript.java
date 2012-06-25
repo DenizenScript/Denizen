@@ -231,6 +231,9 @@ public class GetScript {
 					else isTrigger = true;
 				}
 				
+				/* Take off excess ":" before adding it to the list */
+				triggerBuilder = triggerBuilder.substring(0, triggerBuilder.length() - 1);
+				
 				ChatTriggers.add(triggerBuilder);
 				
 				currentTrigger = x + 1; 

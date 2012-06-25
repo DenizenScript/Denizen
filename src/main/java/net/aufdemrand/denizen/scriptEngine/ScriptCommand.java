@@ -13,19 +13,36 @@ import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+
+/**
+ * 
+ * @author Jeremy
+ *
+ * ScriptCommands contain information about a command read from a script.
+ * They reside in the player/denizenQueues.
+ * 
+ */
+
 public class ScriptCommand {
 
-	/* ScriptCommands contain information about a command that is read from a script.
-	 * 
-	 * commandType
-	 *   CommandType ENUM value of the type of command */
-	private CommandType commandType; 
+	/* theCommand
+	 *   String value of the type of command */
+	private String theCommand; 
 	
-	public CommandType getCommandType() {
-		return commandType;
+	public String getCommandType() {
+		return theCommand.toUpperCase();
 	}
-
 	
+	
+	/* instant
+	 *   Boolean representing whether the command is an instant command ("^") */
+	private boolean instant; 
+	
+	public boolean instant() {
+		return instant;
+	}
+	
+		
 	/* thePlayer/theEntity
 	 *   Player or LivingEntity object that represents the triggering entity */
 	private Player thePlayer;
@@ -113,41 +130,30 @@ public class ScriptCommand {
 	}
 
 	
-	/*  scriptType
-	 *    ScriptType ENUM value of the type of script this originated from */
-	private ScriptType scriptType;
-
-	public ScriptType getScriptType() {
-		return scriptType;
-	}
-
-	
 	
 	/**
-	 * Creates a ScriptCommand for a Trigger Script
-	 * @return
+	 * Creates a ScriptCommand
 	 */
 
-	public ScriptCommand(Player player, NPC denizen, String script, Integer step, TriggerType trigger) throws Exception {
+	public ScriptCommand(String commandType, String[] arguments, Player player, NPC denizen, String script, Integer step, String theMessage, String formattedText) throws Exception {
 
-		if (player == null || denizen == null || script == null || trigger == null) throw new Exception("Values cannot be null!");
+		if (player == null || denizen == null || script == null) throw new Exception("Values cannot be null!");
 
+		if (commandType.startsWith("^")) {
+			instant = true;
+			commandType = commandType.substring(1);
+		}
+		
+		theCommand = commandType;
+		theArguments = arguments;
 		thePlayer = player;
 		theDenizen = denizen;
 		theScript = script;
-		triggerType = trigger;
 
-		scriptType = ScriptType.TRIGGER;
 		commandTimes[0] = System.currentTimeMillis();
 		commandTimes[1] = commandTimes[0];
-	}
-	
-	public ScriptCommand(Player player) {
-				
-	}
 
-	public void setTexts(String theText, String formattedText) {
-		playerText[0] = theText;
+		playerText[0] = theMessage;
 		playerText[1] = formattedText;
 	}
 	
@@ -155,16 +161,15 @@ public class ScriptCommand {
 	
 	
 	/**
-	 * Creates a ScriptCommand for a Trigger Script
+	 * Creates a ScriptCommand for a Task Script
 	 * @return
 	 */
 
 	public void create(Player player, String script, Integer step, TriggerType trigger) throws Exception {
 
-		if (player == null || denizen == null || script == null || trigger == null) throw new Exception("Values cannot be null!");
+		if (player == null || script == null || trigger == null) throw new Exception("Values cannot be null!");
 
 		thePlayer = player;
-		theDenizen = denizen;
 		theScript = script;
 		triggerType = trigger;
 

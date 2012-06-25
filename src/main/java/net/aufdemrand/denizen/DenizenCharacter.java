@@ -174,34 +174,32 @@ public class DenizenCharacter extends Character implements Listener {
 	public void PlayerChatListener(PlayerChatEvent event) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		
 		try {
 			NPC theDenizen = plugin.getDenizen.getClosest(event.getPlayer(), 
 					plugin.settings.PlayerToNpcChatRangeInBlocks());
-
+			
+			/* If no Denizen in range, or the Denizen closest is engaged, return */
 			if (theDenizen == null || Denizen.engagedNPC.contains(theDenizen)) return;
 
+			/* Get the script to use */
 			String theScript = plugin.getScript.getInteractScript(theDenizen, event.getPlayer());
 
+			/* No script matches, should we still show the player talking to the Denizen? */
 			if (theScript.equalsIgnoreCase("NONE") && !plugin.settings.ChatGloballyIfNoChatTriggers()) { 
 				event.setCancelled(true);
 				String noscriptChat = null;
-
-				if (plugin.getAssignments().contains("Denizens." + theDenizen.getId() 
-						+ ".Texts.No Requirements Met")) 
-					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getId() 
-							+ ".Texts.No Requirements Met");
-				else
-					noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
-
+				if (plugin.getAssignments().contains("Denizens." + theDenizen.getId() + ".Texts.No Requirements Met")) 
+					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getId() + ".Texts.No Requirements Met");
+				else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
 				plugin.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", event.getPlayer(), theDenizen)[0], null, "CHAT");
-
 			}
-
+			
+			/* Awesome! There's a matching script, let's parse the script to see if chat triggers match */
 			if (!theScript.equalsIgnoreCase("NONE")) {
-				if (plugin.scriptEngine.parseScript(theDenizen, event.getPlayer(),	plugin.getScript.getNameFromEntry(theScript), event.getMessage(), net.aufdemrand.denizen.scriptEngine.Trigger.CHAT))
+				if (plugin.scriptEngine.parseChatScript(theDenizen, event.getPlayer(), plugin.getScript.getNameFromEntry(theScript), event.getMessage()))
 					event.setCancelled(true);
 			}
+			
 		} catch (Exception e) {
 			plugin.getLogger().log(Level.SEVERE, "Error processing chat event.", e);
 		}

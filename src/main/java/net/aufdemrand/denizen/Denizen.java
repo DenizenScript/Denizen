@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.commands.CommandRegistry;
+import net.aufdemrand.denizen.commands.Executer;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine;
 import net.aufdemrand.denizen.utilities.GetDenizen;
 import net.aufdemrand.denizen.utilities.GetPlayer;
@@ -41,10 +42,13 @@ public class Denizen extends JavaPlugin {
 	public Economy   economy = null;
 	public Permission  perms = null;
 
-	public CommandRegistry commandRegistry = new CommandRegistry(this);
 	public Settings               settings = new Settings(this);
 	public DenizenCharacter      character = new DenizenCharacter();
 	public CommandExecuter commandExecuter = new CommandExecuter(this);
+	
+	public Executer               executer = new Executer(this);
+	public CommandRegistry commandRegistry = new CommandRegistry(this);
+	
 	public ScriptEngine       scriptEngine = new ScriptEngine(this);
 	public GetDenizen           getDenizen = new GetDenizen(this);
 	public GetPlayer             getPlayer = new GetPlayer(this);

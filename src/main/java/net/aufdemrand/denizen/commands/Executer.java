@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.commands;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 public class Executer {
 	
@@ -24,21 +26,10 @@ public class Executer {
 	
 	
 	/*
-	 * Executes a command defined in theStep (not to be confused with currentStep ;)
-	 * 
-	 * I am attempting to keep down the size of this method by branching out large
-	 * sections of code into their own methods.
-	 *
-	 * These commands normally come from the playerQue or denizenQue, but don't have
-	 * to necessarily, as long as the proper format is sent in theStep.
-	 * 
-	 * Syntax of theStep -- elements are divided by semi-colons.
-	 * 0 Denizen ID; 1 Script Name; 2 Step Number; 3 Time added to Queue; 4 Command
+	 * Executes a command defined in theCommand 
 	 */
 
-	public boolean execute(LivingEntity theEntity, String theCommand, String[] theArgs ) {
-
-		
+	public boolean execute(ScriptCommand theCommand) {
 		
 		return false;
 	}

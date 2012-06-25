@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scriptEngine;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -22,13 +23,13 @@ import org.bukkit.entity.Player;
  * @author Jeremy
  *
  * Contains methods used to parse and execute scripts, 
- * usually initiated by some kind of event or interaction.
+ * initiated by some kind of event or interaction.
  *  
  */
 
 public class ScriptEngine {
 
-	
+
 	/* Denizen Constructor */
 	private Denizen plugin;
 
@@ -36,8 +37,8 @@ public class ScriptEngine {
 		plugin = denizen;
 	}	
 
-	
-	
+
+
 	/*
 	 * 
 	 */
@@ -46,61 +47,93 @@ public class ScriptEngine {
 		ATTACK, CLICK, CHAT, PROXIMITY, TASK, LOCATION
 	}
 
-	
-	
+
+
 	public enum ScriptType {
 		TRIGGER, ACTIVITY, TASK
 	}
-	
+
 	private Map<Player, List<ScriptCommand>> triggerQue = new ConcurrentHashMap<Player, List<ScriptCommand>>();
 	private Map<Player, List<ScriptCommand>>    taskQue = new ConcurrentHashMap<Player, List<ScriptCommand>>();
 	private Map<NPC, List<ScriptCommand>>   activityQue = new ConcurrentHashMap<NPC, List<ScriptCommand>>();
 
-		
+
 	/* Build a ScriptCommand for a Task Script */
 	public void buildCommand(Player thePlayer, CommandType commandType, String[] arguments) {
-		
+
 	}
-	
-	
-		/**
-	 * Processes commands from a QueueType.
-	 *
-	 * 
+
+
+	/**
+	 * Processes commands from the Queues.
 	 */
 
-	public void commandQue(Map <Player, List<String>> theMap) {
+	public void commandQueue() {
 
-		/* Initialize instantCommand ("^") boolean until we can check, assuming false. */
-		boolean instantCommand = false;
+		/* First the triggerQue, primary script queue for Players */
 
-		if (!theMap.isEmpty()) {	
+		if (!triggerQue.isEmpty()) {	
 
 			/* Attempt to run a command for each player. The attempted command (and attached info) info is 
 			 * in theEntry */
-			for (Map.Entry<Player, List<String>> theEntry : theMap.entrySet()) {
+			for (Entry<Player, List<ScriptCommand>> theEntry : triggerQue.entrySet()) {
 				if (!theEntry.getValue().isEmpty()) {
 
 					/* Check the time of the command to see if it has been delayed with a WAIT command. Only 
 					 * proceed for the player if the time on the command is less than the current time. 
 					 * If it's more, then this entry will be skipped and saved for next time. */
-					if (Long.valueOf(theEntry.getValue().get(0).split(";")[3]) < System.currentTimeMillis()) {
+					if (theEntry.getValue().get(0).getDelayedTime() < System.currentTimeMillis()) {
 
-						/* Feeds the commandExecuter commands as long as they are instant commands ("^"), otherwise
+						/* Feeds the executer ScriptCommands as long as they are instant commands ("^"), otherwise
 						 * runs one command, removes it from the queue, and moves on to the next player. */
 						do { 
-							plugin.commandExecuter.execute(theEntry.getKey(), theEntry.getValue().get(0));
-							instantCommand = false;
-							if (theEntry.getValue().get(0).split(";")[4].startsWith("^")) instantCommand = true;
+							plugin.executer.execute(theEntry.getValue().get(0));
 							theEntry.getValue().remove(0);
-							Denizen.playerQue.put(theEntry.getKey(), theEntry.getValue());
-						} while (instantCommand == true);
+
+							/* Updates the triggerQue map */
+							triggerQue.put(theEntry.getKey(), theEntry.getValue());
+						} while (theEntry.getValue().get(0).instant());
 					}
 				}
-				
-				/* Next Player */
 			}
+			/* Next Player */
 		}
+
+
+		/* Now the taskQue, alternate script queue for Players */
+
+		if (!taskQue.isEmpty()) {	
+
+			/* Attempt to run a command for each player. The attempted command (and attached info) info is 
+			 * in theEntry */
+			for (Entry<Player, List<ScriptCommand>> theEntry : taskQue.entrySet()) {
+				if (!theEntry.getValue().isEmpty()) {
+
+					/* Check the time of the command to see if it has been delayed with a WAIT command. Only 
+					 * proceed for the player if the time on the command is less than the current time. 
+					 * If it's more, then this entry will be skipped and saved for next time. */
+					if (theEntry.getValue().get(0).getDelayedTime() < System.currentTimeMillis()) {
+
+						/* Feeds the executer ScriptCommands as long as they are instant commands ("^"), otherwise
+						 * runs one command, removes it from the queue, and moves on to the next player. */
+						do { 
+							plugin.executer.execute(theEntry.getValue().get(0));
+							theEntry.getValue().remove(0);
+
+							/* Updates the triggerQue map */
+							taskQue.put(theEntry.getKey(), theEntry.getValue());
+						} while (theEntry.getValue().get(0).instant());
+					}
+				}
+			}
+			/* Next Player */
+		}
+
+
+		/* 
+		 * TODO: activityQue
+		 */
+
 	}
 
 
@@ -122,15 +155,15 @@ public class ScriptEngine {
 		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
 		if (DenizenNPCs.isEmpty()) return;
 		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
-		for (NPC aDenizen : DenizenList) {
-			if (aDenizen.isSpawned())	{
-				int denizenTime = Math.round(aDenizen.getBukkitEntity().getWorld().getTime() / 1000);
-				List<String> denizenActivities = plugin.getAssignments().getStringList("Denizens." + aDenizen.getName() + ".Scheduled Activities");
+		for (NPC thisDenizen : DenizenList) {
+			if (thisDenizen.isSpawned())	{
+				int denizenTime = Math.round(thisDenizen.getBukkitEntity().getWorld().getTime() / 1000);
+				List<String> denizenActivities = plugin.getAssignments().getStringList("Denizens." + thisDenizen.getName() + ".Scheduled Activities");
 				if (!denizenActivities.isEmpty()) {
 					for (String activity : denizenActivities) {
 						if (activity.startsWith(String.valueOf(denizenTime))) {
 							// plugin.getServer().broadcastMessage("Updating Activity Script for " + aDenizen.getName());
-							plugin.getSaves().set("Denizens." + aDenizen.getName() + ".Active Activity Script", activity.split(" ", 2)[1]);
+							plugin.getSaves().set("Denizens." + thisDenizen.getName() + ".Active Activity Script", activity.split(" ", 2)[1]);
 							plugin.saveSaves();
 						}
 					}
@@ -143,109 +176,74 @@ public class ScriptEngine {
 
 
 
-	/* ParseScript
+	/* parseChatScript
 	 *
 	 * Requires the Player, the Script Name, the chat message (if Chat Trigger, otherwise send null),
 	 * and the Trigger ENUM type. Sends out methods that take action based on the Trigger types.
 	 *
 	 */
 
-	public boolean parseScript(NPC theDenizen, Player thePlayer, String theScript, String theMessage, Trigger theTrigger) {
+	public boolean parseChatScript(NPC theDenizen, Player thePlayer, String theScript, String playerMessage) {
 
 		int theStep = plugin.getScript.getCurrentStep(thePlayer, theScript);
+		List<ScriptCommand> scriptCommands = new ArrayList<ScriptCommand>();
 
-		switch (theTrigger) {
+		/* Get Chat Triggers and check each to see if there are any matches. */
+		List<String> ChatTriggerList = plugin.getScript.getChatTriggers(theScript, theStep);
+		for (int x = 0; x < ChatTriggerList.size(); x++ ) {
 
-		case CHAT:
+			/* The texts required to trigger. */
+			String chatTriggers = ChatTriggerList.get(x)
+					.replace("<PLAYER>", thePlayer.getName())
+					.replace("<DISPLAYNAME>", ChatColor.stripColor(thePlayer.getDisplayName())).toLowerCase();
 
-			/* 
-			 * Get Chat Triggers and check each to see if there are any matches. 
-			 */
-			List<String> ChatTriggerList = plugin.getScript.getChatTriggers(theScript, theStep);
-			for (int x = 0; x < ChatTriggerList.size(); x++ ) {
+			/* The in-game friendly Chat Trigger text to display if triggered. */
+			String chatText = plugin.getScripts()
+					.getString(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Trigger")
+					.replace("/", "");
 
-				/* 
-				 * The texts required to trigger.
-				 */
-				String chatTriggers = ChatTriggerList.get(x)
-						.replace("<PLAYER>", thePlayer.getName())
-						.replace("<DISPLAYNAME>", ChatColor.stripColor(thePlayer.getDisplayName())).toLowerCase();
-				/* 
-				 * The in-game friendly Chat Trigger text to display if triggered. 
-				 */
-				String chatText = plugin.getScripts()
-						.getString(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Trigger")
-						.replace("/", "");
-
-				boolean letsProceed = false;
-
-				for (String chatTrigger : chatTriggers.substring(0, chatTriggers.length() - 1).split(":")) {
-					if (theMessage.toLowerCase().contains(chatTrigger)) letsProceed = true;
-				}
-
-				if (letsProceed) {
-					/* 
-					 * Trigger matches, let's talk to the Denizen and send the script to the PlayerQueue. 
-					 */
-					plugin.getPlayer.talkToDenizen(theDenizen, thePlayer, chatText);
-					triggerToQue(theScript, theStep, thePlayer, theDenizen,
-							plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Script"));
-					return true;
-				}
+			boolean letsProceed = false;
+			for (String chatTrigger : chatTriggers.split(":")) {
+				if (playerMessage.toLowerCase().contains(chatTrigger)) letsProceed = true;
 			}
 
-			/* 
-			 * No matching triggers. 
-			 */
+			if (letsProceed) {
 
-			if(plugin.settings.ChatGloballyIfFailedChatTriggers()) return false;
-			else {
-				plugin.getPlayer.talkToDenizen(theDenizen, thePlayer, theMessage);
+				/* 
+				 * Trigger matches, let's talk to the Denizen and send the script to the triggerQue. 
+				 */
+				plugin.getPlayer.talkToDenizen(theDenizen, thePlayer, chatText);
 
-				String noscriptChat = null;
-
-				if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() 
-						+ ".Texts.No Requirements Met")) 
-					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName() 
-							+ ".Texts.No Requirements Met");
-				else
-					noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
-
-				plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+				List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Script");
+				for (String thisItem : chatScriptItems) {
+					String[] scriptEntry = thisItem.split(" ", 2);
+					try {
+						/* Build new script commands */
+						scriptCommands.add(new ScriptCommand(scriptEntry[0], scriptEntry[1].split(" "), thePlayer, theDenizen, theScript, theStep, playerMessage, chatText));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 
 				return true;
 			}
-
-		case CLICK:
-			triggerToQue(theScript, theStep, thePlayer, theDenizen, 
-					plugin.getScripts().getStringList("" + theScript + ".Steps." + theStep + ".Click Trigger.Script"));
-			return true;
-
-		case TASK:
-			triggerToQue(theScript, 0, thePlayer, null, 
-					plugin.getScripts().getStringList(theScript + ".Script"));
-			return true;
-
-		case LOCATION:
-			if (plugin.getScripts().contains(theScript + ".Steps." + theStep + ".Location Trigger")) {
-
-				if (plugin.getScripts().getString(theScript + ".Steps." + theStep + ".Location Trigger.1.Trigger")
-						.equalsIgnoreCase(theMessage)) {
-					triggerToQue(theScript, theStep, thePlayer, theDenizen, 
-							plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Location Trigger.1.Script"));
-					return true;
-				}
-			}
-			else return false;
-
-		case FAIL:
-			break;
-
-		case PROXIMITY:
-			break;
 		}
 
-		return false;
+		/* If we have made it to this point, there were no matching triggers. */
+		if (plugin.settings.ChatGloballyIfFailedChatTriggers()) return false;
+
+		else {
+			plugin.getPlayer.talkToDenizen(theDenizen, thePlayer, playerMessage);
+			String noscriptChat = null;
+
+			/* Checks the denizen for a custom message, else uses the default */
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Texts.No Requirements Met")) 
+				noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName()	+ ".Texts.No Requirements Met");
+			else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
+
+			plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+			return true;
+		}
 	}
 
 
@@ -261,8 +259,8 @@ public class ScriptEngine {
 
 	public void triggerToQue(String theScript, int CurrentStep, Player thePlayer, NPC theDenizen, List<String> addedToPlayerQue) {
 
-		List<String> currentPlayerQue = new ArrayList<String>();
-		if (Denizen.playerQue.get(thePlayer) != null) currentPlayerQue = Denizen.playerQue.get(thePlayer);
+		List<ScriptCommand> currentPlayerQue = new ArrayList<ScriptCommand>();
+		if (triggerQue.get(thePlayer) != null) currentPlayerQue = triggerQue.get(thePlayer);
 
 		String denizenId = "none";
 		if (theDenizen != null) denizenId = String.valueOf(theDenizen.getId()); 
@@ -273,14 +271,16 @@ public class ScriptEngine {
 			 * Temporarily take away the playerQue for the Player to make sure nothing gets
 			 * removed while working with it.
 			 */
-			Denizen.playerQue.remove(thePlayer);
+			triggerQue.remove(thePlayer);
 
 			for (String theCommand : addedToPlayerQue) {
-				/* PlayerQue format: DENIZEN ID; THE SCRIPT NAME; THE STEP; SYSTEM TIME; THE COMMAND */
+
+
+
 				currentPlayerQue.add(denizenId + ";" + theScript + ";" + CurrentStep + ";" + String.valueOf(System.currentTimeMillis()) + ";" + theCommand);	
 			}
 
-			Denizen.playerQue.put(thePlayer, currentPlayerQue);
+			triggerQue.put(thePlayer, currentPlayerQue);
 		}
 	}
 
