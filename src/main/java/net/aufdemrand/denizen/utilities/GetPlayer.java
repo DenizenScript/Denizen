@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -26,6 +27,7 @@ public class GetPlayer {
 		plugin = denizen;
 	}
 
+	
 	
 	/**
 	 * Gets players in range of a bukkit Entity. 
@@ -51,6 +53,8 @@ public class GetPlayer {
 		return PlayersWithinRange;
 	}
 
+	
+	
 	/**
 	 * Gets players in range of a bukkit Entity, excluding a specified Player. 
 	 *
@@ -70,8 +74,45 @@ public class GetPlayer {
 
 
 	
-	
+	/**
+	 * Checks a Player's location against a Location (with leeway). Should be faster than
+	 * bukkit's built in Location.distance(Location) since there's no sqrt math.
+	 * 
+	 * Thanks chainsol :)
+	 */
 
+	public boolean checkLocation(Player thePlayer, Location theLocation, int theLeeway) {
+		if (Math.abs(thePlayer.getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+				> theLeeway) return false;
+		if (Math.abs(thePlayer.getLocation().getBlockY() - Math.abs(theLocation.getBlockY())) 
+				> theLeeway) return false;
+		if (Math.abs(thePlayer.getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+				> theLeeway) return false;
+
+		return true;
+	}
+
+
+	
+	/**
+	 * Checks a Denizen's location against a Location (with leeway). Should be faster than
+	 * bukkit's built in Location.distance(Location) since there's no sqrt math.
+	 * 
+	 * Thanks chainsol :)
+	 */
+
+	public boolean checkLocation(NPC theDenizen, Location theLocation, int theLeeway) {
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+				> theLeeway) return false;
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockY() - Math.abs(theLocation.getBlockY())) 
+				> theLeeway) return false;
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+				> theLeeway) return false;
+
+		return true;
+	}
+
+	
 	
 	/**
 	 * Gets a Map of a player's inventory with a bukkit Material and Integer amount for each item. Unlike bukkit's build in getInventory, this will add up the total number of each Material. 
@@ -131,9 +172,6 @@ public class GetPlayer {
 
 
 
-
-
-
 	/**
 	 * Talks to a NPC. Also has replaceable data, end-user, when using <NPC> <TEXT> <PLAYER> <FULLPLAYERNAME> <WORLD> or <HEALTH>.
 	 *
@@ -168,9 +206,6 @@ public class GetPlayer {
 
 		return;
 	}
-
-
-
 
 
 
@@ -219,9 +254,6 @@ public class GetPlayer {
 
 
 
-
-
-
 	/**
 	 * Checks the players saturation levels.
 	 *
@@ -262,9 +294,6 @@ public class GetPlayer {
 
 
 
-
-
-
 	/**
 	 * Checks the name of thePlayer against a supplied List<String> of player names. 
 	 *
@@ -298,8 +327,6 @@ public class GetPlayer {
 
 
 
-
-
 	/**
 	 * Checks the funds of the player against a given value with Vault. 
 	 *
@@ -330,8 +357,6 @@ public class GetPlayer {
 
 		return false;
 	}
-
-
 
 
 

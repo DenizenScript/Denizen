@@ -110,53 +110,6 @@ public class GetDenizen {
 
 	
 	
-	/*
-	 * getBookmark
-	 * 
-	 * Retrieves a Location from the Denizen's stored location or block bookmark.
-	 * 
-	 */
-
-	public Location getBookmark(String theDenizen, String nameOfLocation, String BlockOrLocation) {
-
-		List<String> locationList = null;
-		String[] theLocation = null;
-		Location locationBookmark = null;
-
-		try {
-
-			if (BlockOrLocation.equalsIgnoreCase("block")) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Block");	
-			else if (BlockOrLocation.equalsIgnoreCase("location")) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Location");
-
-			for (String thisLocation : locationList) {
-				String theName = thisLocation.split(" ", 2)[0];
-				if (theName.equalsIgnoreCase(nameOfLocation)) theLocation = thisLocation.split(" ", 2)[1].split(";");
-			}
-
-			if (theLocation != null && BlockOrLocation.equalsIgnoreCase("location")) {			
-				locationBookmark = 
-						new Location(plugin.getServer().getWorld(theLocation[0]),
-								Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2] + 1),
-								Double.parseDouble(theLocation[3]), Float.parseFloat(theLocation[4]),
-								Float.parseFloat(theLocation[5]));
-			}
-
-			else if (theLocation != null && BlockOrLocation.equalsIgnoreCase("block")) {
-				locationBookmark = 
-						new Location(plugin.getServer().getWorld(theLocation[0]),
-								Double.parseDouble(theLocation[1]), Double.parseDouble(theLocation[2]),
-								Double.parseDouble(theLocation[3]));
-			}
-
-		} catch(Throwable error) {
-			Bukkit.getLogger().info("Denizen method getBookmark: An error has occured.");
-			Bukkit.getLogger().info("--- Error follows: " + error);
-		}
-
-		return locationBookmark;		
-
-	}
-
 
 
 
@@ -203,6 +156,122 @@ public class GetDenizen {
 	}
 
 
+
+
+	/* 
+	 * Takes long text and splits it into multiple string elements in a list
+	 * based on the config setting for MaximumLength, default 55.
+	 * 
+	 * Text should probably be formatted first with formatChatText, since 
+	 * formatting usually adds some length to the beginning and end of the text.
+	 */
+
+	public List<String> getMultilineText (String theText) {
+
+
+		List<String> processedText = new ArrayList<String>();
+
+		if (theText == null) return processedText;
+
+		String[] text = theText.split(" ");
+
+		if (theText.length() > plugin.settings.MultiLineTextMaximumLength()) {
+
+			processedText.add(0, "");
+
+			int word = 0; int line = 0;
+
+			while (word < text.length) {
+				if (processedText.get(line).length() + text[word].length() < plugin.settings.MultiLineTextMaximumLength()) {
+					processedText.set(line, processedText.get(line) + text[word] + " ");
+					word++;
+				}
+				else { line++; processedText.add(""); }
+			}
+		}
+
+		else processedText.add(0, theText);
+
+		return processedText;
+	}
+
+
+
+	/* 
+	 * Takes chat/whisper/etc. text and formats it based on the config settings. 
+	 * Returns a String[]. 
+	 * 
+	 * Element [0] contains formatted text for the player interacting.
+	 * Element [1] contains formatted text for bystanders.
+	 * 
+	 * Either can be null if only one type of text is required.
+	 */
+
+	public String[] formatChatText (String theMessage, String messageType, Player thePlayer, NPC theDenizen) {
+
+		String playerMessageFormat = null;
+		String bystanderMessageFormat = null;
+
+		boolean toPlayer;
+
+		if (thePlayer == null) toPlayer = false;
+		else toPlayer = true;
+
+		if (messageType.equalsIgnoreCase("SHOUT")) {
+			playerMessageFormat = plugin.settings.NpcShoutToPlayer();
+			bystanderMessageFormat = plugin.settings.NpcShoutToPlayerBystander();
+			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcShoutToBystanders();
+		}
+
+		else if (messageType.equalsIgnoreCase("WHISPER")) {
+			playerMessageFormat = plugin.settings.NpcWhisperToPlayer();
+			bystanderMessageFormat = plugin.settings.NpcWhisperToPlayerBystander();
+			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcWhisperToBystanders();
+		}
+
+		else if (messageType.equalsIgnoreCase("EMOTE")) {
+			toPlayer = false;
+			bystanderMessageFormat = "<NPC> <TEXT>";
+		}
+
+		else if (messageType.equalsIgnoreCase("NARRATE")) {
+			playerMessageFormat = "<TEXT>";
+		}
+
+		else { /* CHAT */
+			playerMessageFormat = plugin.settings.NpcChatToPlayer();
+			bystanderMessageFormat = plugin.settings.NpcChatToPlayerBystander();
+			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcChatToBystanders();
+		}
+
+		String denizenName = ""; 
+
+		if (theDenizen != null) denizenName = theDenizen.getName();
+
+		if (playerMessageFormat != null)
+			playerMessageFormat = playerMessageFormat
+			.replace("<NPC>", denizenName)
+			.replace("<TEXT>", theMessage)
+			.replace("<PLAYER>", thePlayer.getName())
+			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
+			.replace("<WORLD>", thePlayer.getWorld().getName())
+			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))
+			.replace("%%", "\u00a7");
+
+		if (bystanderMessageFormat != null)
+			bystanderMessageFormat = bystanderMessageFormat
+			.replace("<NPC>", denizenName)
+			.replace("<TEXT>", theMessage)
+			.replace("<PLAYER>", thePlayer.getName())
+			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
+			.replace("<WORLD>", thePlayer.getWorld().getName())
+			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))
+			.replace("%%", "\u00a7");
+
+		String[] returnedText = {playerMessageFormat, bystanderMessageFormat};
+
+		return returnedText;
+	}
 
 
 

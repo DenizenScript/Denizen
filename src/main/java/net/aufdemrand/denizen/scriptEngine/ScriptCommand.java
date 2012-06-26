@@ -192,7 +192,7 @@ public class ScriptCommand {
 	 * Creates a ScriptCommand (for use with a TASK Trigger)
 	 */
 
-	public ScriptCommand(String commandType, String[] arguments, Player player, String script, Integer step) throws Exception {
+	public ScriptCommand(String commandType, String[] arguments, Player player, String script) throws Exception {
 
 		if (player == null || script == null) throw new Exception("Values cannot be null!");
 

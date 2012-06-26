@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.aufdemrand.denizen.bookmarks.Bookmarks;
 import net.aufdemrand.denizen.commands.CommandRegistry;
 import net.aufdemrand.denizen.commands.Executer;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine;
@@ -55,6 +56,7 @@ public class Denizen extends JavaPlugin {
 	public GetRequirements getRequirements = new GetRequirements(this);
 	public GetWorld               getWorld = new GetWorld(this);
 	public GetScript             getScript = new GetScript(this);
+	public Bookmarks             bookmarks = new Bookmarks(this);
 
 	
 	/* playerQue holds script commands for each Player */
@@ -64,7 +66,6 @@ public class Denizen extends JavaPlugin {
 	public static Map<NPC, Location>    previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
 	public static Map<Player, Long>   interactCooldown = new ConcurrentHashMap<Player, Long>();
 	public static Map<Player, Long>   locationCooldown = new ConcurrentHashMap<Player, Long>();
-	public static Map<Location, String> validLocations = new ConcurrentHashMap<Location, String>();
 	public static List<NPC>                 engagedNPC = new ArrayList<NPC>();
 	public static Boolean                    DebugMode = false;
 
@@ -111,7 +112,7 @@ public class Denizen extends JavaPlugin {
 
 		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			@Override
-			public void run() { scriptEngine.buildLocationTriggerList(); }
+			public void run() { bookmarks.buildLocationTriggerList(); }
 		}, 100);
 
 
@@ -319,7 +320,7 @@ public class Denizen extends JavaPlugin {
 			reloadScripts();
 			reloadAssignments();
 			reloadSaves();
-			scriptEngine.buildLocationTriggerList();
+			bookmarks.buildLocationTriggerList();
 			sender.sendMessage("Denizens/config.yml, scripts, and assignments.yml reloaded.");
 			return true;
 		}
@@ -539,7 +540,7 @@ public class Denizen extends JavaPlugin {
 						player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
 				getSaves().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
 				saveSaves();
-				scriptEngine.buildLocationTriggerList();
+				bookmarks.buildLocationTriggerList();
 				player.sendMessage(ChatColor.GOLD + "Location bookmark added. Your denizen can now reference this location.");
 				return true;
 			}

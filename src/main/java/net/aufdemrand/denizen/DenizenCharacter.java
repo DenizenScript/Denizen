@@ -3,6 +3,7 @@ package net.aufdemrand.denizen;
 import java.util.List;
 import java.util.logging.Level;
 
+import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.character.Character;
@@ -98,12 +99,12 @@ public class DenizenCharacter extends Character implements Listener {
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
 			try {
-				if (!Denizen.validLocations.isEmpty()) {
+				if (!plugin.bookmarks.getLocationTriggerList().isEmpty()) {
 
-					for (Location theLocation : Denizen.validLocations.keySet()) {
-						if (plugin.scriptEngine.checkLocation(event.getPlayer(), theLocation, 1) && plugin.getDenizen.checkLocationCooldown(event.getPlayer())) {
+					for (Location theLocation : plugin.bookmarks.getLocationTriggerList().keySet()) {
+						if (plugin.bookmarks.checkLocation(event.getPlayer(), theLocation, 1) && plugin.getDenizen.checkLocationCooldown(event.getPlayer())) {
 
-							String theScript = plugin.getScript.getInteractScript(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(Denizen.validLocations.get(theLocation).split(":")[0])), event.getPlayer());
+							String theScript = plugin.getScript.getInteractScript(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[0])), event.getPlayer());
 							if (!theScript.equals("none")) {
 
 								//					plugin.scriptEngine.parseScript(
@@ -132,7 +133,7 @@ public class DenizenCharacter extends Character implements Listener {
 
 
 	/* Listens for the PlayerMoveEvent to see if a player is within range
-	 * of a Location Bookmark for a playertask */
+	 * of a Location Bookmark for a PLAYERTASK */
 
 	@EventHandler
 	public void PlayerLocationTaskListener(PlayerMoveEvent event) {
@@ -143,11 +144,8 @@ public class DenizenCharacter extends Character implements Listener {
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
 			try {
-
-				/* Location Task Listener */
-
-				/* 
-				 * ---- saves.yml format ----
+				
+				/* ---- saves.yml format ----
 				 * Players:
 				 *   aufdemrand:
 				 *     Tasks:
@@ -160,8 +158,7 @@ public class DenizenCharacter extends Character implements Listener {
 				 *         Leeway: in blocks
 				 *         Duration: in seconds
 				 *         Script to trigger: script name
-				 *         Initiated: System.currentTimeMillis 
-				 */
+				 *         Initiated: System.currentTimeMillis */
 
 				if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations")) {
 					List<String> listAll = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations");      
@@ -170,10 +167,10 @@ public class DenizenCharacter extends Character implements Listener {
 						for (String theTask : listAll) {
 
 							String[] taskArgs = theTask.split(";");
-							Location theLocation = plugin.getDenizen.getBookmark(taskArgs[1], taskArgs[0], "LOCATION");
+							Location theLocation = plugin.bookmarks.get(taskArgs[1], taskArgs[0], BookmarkType.LOCATION);
 							int theLeeway = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Leeway");
 							long theDuration = plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Duration");
-							if (plugin.scriptEngine.checkLocation(event.getPlayer(), theLocation, theLeeway)) {
+							if (plugin.bookmarks.checkLocation(event.getPlayer(), theLocation, theLeeway)) {
 								if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")) {
 									if (plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")
 											+ (theDuration * 1000) <= System.currentTimeMillis()) plugin.scriptEngine.finishLocationTask(event.getPlayer(), taskArgs[2]);
@@ -221,7 +218,7 @@ public class DenizenCharacter extends Character implements Listener {
 				if (plugin.getAssignments().contains("Denizens." + theDenizen.getId() + ".Texts.No Requirements Met")) 
 					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getId() + ".Texts.No Requirements Met");
 				else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
-				plugin.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", event.getPlayer(), theDenizen)[0], null, "CHAT");
+				plugin.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), plugin.getDenizen.formatChatText(noscriptChat, "CHAT", event.getPlayer(), theDenizen)[0], null, "CHAT");
 			}
 
 			/* Awesome! There's a matching script, let's parse the script to see if chat triggers match */
