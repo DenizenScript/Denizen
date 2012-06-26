@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.commands;
 
 import java.rmi.activation.ActivationException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -9,7 +10,7 @@ import net.aufdemrand.denizen.commands.core.ZapCommand;
 
 public class CommandRegistry {
 	
-	private Map<String, Command> commands;
+	private Map<String, Command> commands = new HashMap<String, Command>();
 	
 	public Denizen plugin;
 	
