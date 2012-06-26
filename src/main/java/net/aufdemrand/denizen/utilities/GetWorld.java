@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.utilities;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
@@ -13,15 +14,11 @@ import org.bukkit.entity.LivingEntity;
 
 public class GetWorld {
 
-
-	
 	private Denizen plugin;
 
 	public GetWorld(Denizen denizen) {
 		plugin = denizen;
 	}
-
-
 
 
 
@@ -152,7 +149,7 @@ public class GetWorld {
 		if (theAmount == null) theAmount = "1";
 		
 		if (theLocationBookmark == null) theSpawnLoc = theDenizen.getBukkitEntity().getLocation();		
-		else theSpawnLoc = plugin.getDenizen.getBookmark(theDenizen.getName(), theLocationBookmark, "Location");
+		else theSpawnLoc = plugin.bookmarks.get(theDenizen.getName(), theLocationBookmark, BookmarkType.LOCATION);
 		
 		if (theSpawnLoc != null) {
 			for (int cx = 1; cx <= Integer.valueOf(theAmount); cx++) {

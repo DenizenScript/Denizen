@@ -3,6 +3,7 @@ package net.aufdemrand.denizen;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.rmi.activation.ActivationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +116,13 @@ public class Denizen extends JavaPlugin {
 			public void run() { bookmarks.buildLocationTriggerList(); }
 		}, 100);
 
+		
+		try {
+			commandRegistry.registerCoreCommands();
+		} catch (ActivationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 

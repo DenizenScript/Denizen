@@ -9,8 +9,6 @@ import net.aufdemrand.denizen.DenizenCharacter;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class GetDenizen {

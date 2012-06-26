@@ -132,8 +132,26 @@ public class ScriptCommand {
 	public TriggerType getTriggerType() {
 		return triggerType;
 	}
+	
+	
+	
+	/*  error
+	 *    String error message to show if Command fails */ 
+	private String errorMessage = null;
+	
+	public void error(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
 
 	
+	/*  theStep
+	 *    String error message to show if Command fails */ 
+	private Integer theStep = null;
+	
+	public Integer getStep() {
+		return theStep;
+	}
 	
 	/**
 	 * Creates a ScriptCommand (For use with a CHAT Trigger)
@@ -148,6 +166,7 @@ public class ScriptCommand {
 			commandType = commandType.substring(1);
 		}
 		
+		theStep = step;
 		theCommand = commandType;
 		theArguments = arguments;
 		thePlayer = player;
@@ -176,6 +195,7 @@ public class ScriptCommand {
 			commandType = commandType.substring(1);
 		}
 		
+		theStep = step;
 		theCommand = commandType;
 		theArguments = arguments;
 		thePlayer = player;

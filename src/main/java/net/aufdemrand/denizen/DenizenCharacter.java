@@ -268,7 +268,7 @@ public class DenizenCharacter extends Character implements Listener {
 				else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
 
 				/* Make the Denizen chat to the Player */
-				plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+				plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.getDenizen.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
 			}
 
 			/* Script does match, let's send the script to the parser */
@@ -302,7 +302,7 @@ public class DenizenCharacter extends Character implements Listener {
 				else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
 
 				/* Make the Denizen chat to the Player */
-				plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.scriptEngine.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+				plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.getDenizen.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
 			}
 
 			/* Script does match, let's send the script to the parser */

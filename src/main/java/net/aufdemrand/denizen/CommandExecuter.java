@@ -1,15 +1,12 @@
 package net.aufdemrand.denizen;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import net.aufdemrand.denizen.scriptEngine.ScriptEngine.Trigger;
+import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.LookClose;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -96,7 +93,7 @@ public class CommandExecuter {
 
 
 		case SWITCH:  // SWITCH [Block Bookmark] ON|OFF
-			Location switchLoc = plugin.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
+			Location switchLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.BLOCK);
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
 				World theWorld = switchLoc.getWorld();
 				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), switchLoc.getBlockX(), switchLoc.getBlockY(), switchLoc.getBlockZ(), null);
@@ -105,7 +102,7 @@ public class CommandExecuter {
 
 
 		case PRESS:  // SWITCH [Block Bookmark] ON|OFF
-			Location pressLoc = plugin.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
+			Location pressLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.BLOCK);
 			if (pressLoc.getBlock().getType() == Material.STONE_BUTTON) {
 				World theWorld = pressLoc.getWorld();
 				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), pressLoc.getBlockX(), pressLoc.getBlockY(), pressLoc.getBlockZ(), null);
@@ -141,7 +138,7 @@ public class CommandExecuter {
 			}
 			else if (!commandArgs[1].equalsIgnoreCase("AWAY") && !commandArgs[1].equalsIgnoreCase("CLOSE")) {
 				NPC denizenLooking = theDenizen;
-				Location lookLoc = plugin.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
+				Location lookLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION);
 				denizenLooking.getBukkitEntity().getLocation().setPitch(lookLoc.getPitch());
 				denizenLooking.getBukkitEntity().getLocation().setYaw(lookLoc.getYaw());
 			}
@@ -232,7 +229,7 @@ public class CommandExecuter {
 
 
 		case TELEPORT:  // TELEPORT [Location Notable]
-			thePlayer.teleport(plugin.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "location"));
+			thePlayer.teleport(plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION));
 
 
 		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
@@ -248,7 +245,7 @@ public class CommandExecuter {
 
 
 		case WALKTO:  // WALKTO [Location Bookmark]
-			Location walkLoc = plugin.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
+			Location walkLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION);
 			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
 			theDenizen.getAI().setDestination(walkLoc);
 			break;
@@ -300,13 +297,12 @@ public class CommandExecuter {
 
 
 		case RESPAWN:  // RESPAWN [Location Notable]
-			Location respawnLoc = plugin.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Location");
+			Location respawnLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION);
 			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
 
-			theDenizen.getBukkitEntity().getWorld().playEffect(theDenizen.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
 			theDenizen.despawn();
 			theDenizen.spawn(respawnLoc);
-			theDenizen.getBukkitEntity().getWorld().playEffect(theDenizen.getBukkitEntity().getLocation(), Effect.STEP_SOUND, 2);
+			
 			break;
 
 
@@ -357,7 +353,7 @@ public class CommandExecuter {
 			break;
 
 		case RUNTASK:
-			plugin.scriptEngine.parseScript(null, thePlayer, executeArgs[4].split(" ", 2)[1], null, Trigger.TASK);
+			plugin.scriptEngine.parseTaskScript(thePlayer, executeArgs[4].split(" ", 2)[1]);
 			break;
 			
 		case ANNOUNCE: 
@@ -376,10 +372,10 @@ public class CommandExecuter {
 
 			/* Format the text for player and bystander, and turn into multiline if necessary */
 
-			String[] formattedText = plugin.scriptEngine.formatChatText(executeArgs[4].split(" ", 2)[1], commandArgs[0], thePlayer, theDenizen);
+			String[] formattedText = plugin.getDenizen.formatChatText(executeArgs[4].split(" ", 2)[1], commandArgs[0], thePlayer, theDenizen);
 
-			List<String> playerText = plugin.scriptEngine.getMultilineText(formattedText[0]);
-			List<String> bystanderText = plugin.scriptEngine.getMultilineText(formattedText[1]);
+			List<String> playerText = plugin.getDenizen.getMultilineText(formattedText[0]);
+			List<String> bystanderText = plugin.getDenizen.getMultilineText(formattedText[1]);
 
 			/* Spew the text to the world. */
 
@@ -415,7 +411,7 @@ public class CommandExecuter {
 
 
 		case CHANGE: // CHANGE [Block Bookmark] [#:#|MATERIAL_TYPE]
-			Location blockLoc = plugin.getDenizen.getBookmark(theDenizen.getName(), commandArgs[1], "Block");
+			Location blockLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.BLOCK);
 
 			String[] theChangeItem = plugin.getRequirements.splitItem(commandArgs[2]);
 
@@ -432,7 +428,9 @@ public class CommandExecuter {
 			/* 
 			 * This may be a bit hack-y, at least it seems like it to me.
 			 * but, if it isn't broken.. you know what they say. 
-			 */
+			 
+			 
+			// TEMPORARILY DISABLED
 
 			List<String> CurrentPlayerQue = new ArrayList<String>();
 			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
@@ -443,6 +441,8 @@ public class CommandExecuter {
 			CurrentPlayerQue.add(1, "0;none;0;" + timeWithDelay + ";WAITING");						
 			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
 			break;
+			
+			*/
 
 
 		case WAITING:

@@ -1,8 +1,11 @@
 package net.aufdemrand.denizen.commands;
 
+import java.rmi.activation.ActivationException;
 import java.util.Map;
+import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.commands.core.ZapCommand;
 
 public class CommandRegistry {
 	
@@ -17,8 +20,8 @@ public class CommandRegistry {
 
 
 	public boolean registerCommand(String commandName, Command commandClass) {
-        
 		this.commands.put(commandName, commandClass);
+		plugin.getLogger().log(Level.INFO, "Loaded " + commandName + " successfully!");
         return true;
     }
     
@@ -33,6 +36,10 @@ public class CommandRegistry {
     	return thisCommand;
     }
     
+	public void registerCoreCommands() throws ActivationException {
+		ZapCommand zapCommand = new ZapCommand();
+		zapCommand.activateAs("ZAP");
+	}
     
     
 }

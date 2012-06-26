@@ -2,12 +2,10 @@ package net.aufdemrand.denizen.scriptEngine;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -15,9 +13,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.DenizenCharacter;
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
-import net.aufdemrand.denizen.commands.Executer.CommandType;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -64,11 +60,11 @@ public class ScriptEngine {
 
 		/* First the triggerQue, primary script queue for Players */
 
-		if (!taskQue.isEmpty()) {	
+		if (!triggerQue.isEmpty()) {	
 
 			/* Attempt to run a command for each player. The attempted command (and attached info) info is 
 			 * in theEntry */
-			for (Entry<Player, List<ScriptCommand>> theEntry : taskQue.entrySet()) {
+			for (Entry<Player, List<ScriptCommand>> theEntry : triggerQue.entrySet()) {
 				if (!theEntry.getValue().isEmpty()) {
 
 					/* Check the time of the command to see if it has been delayed with a WAIT command. Only 
@@ -83,7 +79,7 @@ public class ScriptEngine {
 							theEntry.getValue().remove(0);
 
 							/* Updates the triggerQue map */
-							taskQue.put(theEntry.getKey(), theEntry.getValue());
+							triggerQue.put(theEntry.getKey(), theEntry.getValue());
 						} while (theEntry.getValue().get(0).instant());
 					}
 				}
@@ -184,7 +180,8 @@ public class ScriptEngine {
 
 				List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Script");
 				for (String thisItem : chatScriptItems) {
-					String[] scriptEntry = thisItem.split(" ", 2);
+					String[] scriptEntry = new String[2];
+					scriptEntry = thisItem.split(" ", 2);
 					try {
 						/* Build new script commands */
 						scriptCommands.add(new ScriptCommand(scriptEntry[0], scriptEntry[1].split(" "), thePlayer, theDenizen, theScript, theStep, playerMessage, chatText));
@@ -236,7 +233,8 @@ public class ScriptEngine {
 		/* Let's get the Script from the file and turn it into ScriptCommands */
 		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Click Trigger.Script");
 		for (String thisItem : chatScriptItems) {
-			String[] scriptEntry = thisItem.split(" ", 2);
+			String[] scriptEntry = new String[2];
+			scriptEntry = thisItem.split(" ", 2);
 			try {
 				/* Build new script commands */
 				scriptCommands.add(new ScriptCommand(scriptEntry[0], scriptEntry[1].split(" "), thePlayer, theDenizen, theScript, theStep));
@@ -269,7 +267,8 @@ public class ScriptEngine {
 		/* Let's get the Script from the file and turn it into ScriptCommands */
 		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Script");
 		for (String thisItem : chatScriptItems) {
-			String[] scriptEntry = thisItem.split(" ", 2);
+			String[] scriptEntry = new String[2];
+			scriptEntry = thisItem.split(" ", 2);
 			try {
 				/* Build new script commands */
 				scriptCommands.add(new ScriptCommand(scriptEntry[0], scriptEntry[1].split(" "), thePlayer, theScript));

@@ -1,44 +1,34 @@
 package net.aufdemrand.denizen.commands;
 
-import java.lang.Exception;
 import java.rmi.activation.ActivationException;
 
-import net.citizensnpcs.api.npc.NPC;
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 
 public abstract class Command {
 
+	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 	
+	/* Activates the command class as a Denizen Command. Should be called on startup. */
 	
 	public void activateAs(String commandName) throws ActivationException {
+	
+		/* Use Bukkit to reference Denizen Plugin */
+		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		
-		//if (registerCommand(commandName, this)) return;
-		//else 
-			//throw new ActivationException("Error activating Command with CommandRegistry!");
+		/* Register command with Registry */
+		if (plugin.commandRegistry.registerCommand(commandName, this)) return;
+		else 
+			throw new ActivationException("Error activating Command with Command Registry.");
 	}
 
 
-	/*
-	 * Execute for Trigger Script
-	 */
+	
+	/* Execute is the method called when the Denizen Command is called from a script.
+	 * If the command runs successfully, the method should return true. */
 
-	public abstract boolean execute(Player thePlayer, NPC theDenizen, String[] arguments, String theText);
-
-
-	/*
-	 * Execute for Task Script
-	 */
-
-	public abstract boolean execute(Player thePlayer, String[] arguments);
-
-
-	/*
-	 * Execute for Activity Script
-	 */
-
-	public abstract boolean execute(NPC theDenizen, String[] arguments);
-
-
+	public abstract boolean execute(ScriptCommand theCommand);
 
 }
