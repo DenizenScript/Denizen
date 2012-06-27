@@ -47,6 +47,7 @@ public class WaitCommand extends Command {
 			return true;
 		}
 
+		theCommand.error("Unknown error. Check syntax.");
 		return false;
 	}
 

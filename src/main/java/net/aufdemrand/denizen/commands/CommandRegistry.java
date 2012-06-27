@@ -31,7 +31,6 @@ public class CommandRegistry {
     	return commands;
     }
     
-    
 	public Command getCommand(String commandName) {
     	Command thisCommand = commands.get(commandName);
     	return thisCommand;

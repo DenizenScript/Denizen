@@ -25,6 +25,7 @@ public class Bookmarks {
 	}	
 	
 	
+	
 	/*
 	 * Checks a Player's location against a Location (with leeway). Should be faster than
 	 * bukkit's built in Location.distance(Location) since there's no sqrt math.
@@ -39,7 +40,10 @@ public class Bookmarks {
 				> theLeeway) return false;
 		if (Math.abs(thePlayer.getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
 				> theLeeway) return false;
+		if (!thePlayer.getWorld().getName().equals(theLocation.getWorld().getName()))
+				return false;
 
+		
 		return true;
 	}
 
@@ -50,7 +54,9 @@ public class Bookmarks {
 				> theLeeway) return false;
 		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
 				> theLeeway) return false;
-
+		if (!theDenizen.getBukkitEntity().getWorld().getName().equals(theLocation.getWorld().getName()))
+				return false;
+		
 		return true;
 	}
 
