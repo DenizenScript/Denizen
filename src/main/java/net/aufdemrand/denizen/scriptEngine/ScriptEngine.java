@@ -47,6 +47,10 @@ public class ScriptEngine {
 	public enum QueueType {
 		TRIGGER, TASK, ACTIVITY, CUSTOM
 	}
+	
+	public enum CommandHas {
+		SOME, MORE, MOST;
+	}
 
 	private Map<Player, List<ScriptCommand>> triggerQue = new ConcurrentHashMap<Player, List<ScriptCommand>>();
 	private Map<Player, List<ScriptCommand>>    taskQue = new ConcurrentHashMap<Player, List<ScriptCommand>>();
@@ -75,12 +79,14 @@ public class ScriptEngine {
 						/* Feeds the executer ScriptCommands as long as they are instant commands ("^"), otherwise
 						 * runs one command, removes it from the queue, and moves on to the next player. */
 						do { 
-							plugin.executer.execute(theEntry.getValue().get(0));
+							ScriptCommand theCommand = theEntry.getValue().get(0);
+							theCommand.setSendingQueue(QueueType.TRIGGER);
+							plugin.executer.execute(theCommand);
 							theEntry.getValue().remove(0);
 
 							/* Updates the triggerQue map */
 							triggerQue.put(theEntry.getKey(), theEntry.getValue());
-						} while (theEntry.getValue().get(0).instant());
+						} while (theEntry.getValue().get(0).isInstant());
 					}
 				}
 			}
@@ -95,10 +101,12 @@ public class ScriptEngine {
 				if (!theEntry.getValue().isEmpty()) {
 					if (theEntry.getValue().get(0).getDelayedTime() < System.currentTimeMillis()) {
 						do { 
-							plugin.executer.execute(theEntry.getValue().get(0));
+							ScriptCommand theCommand = theEntry.getValue().get(0);
+							theCommand.setSendingQueue(QueueType.TASK);
+							plugin.executer.execute(theCommand);
 							theEntry.getValue().remove(0);
 							taskQue.put(theEntry.getKey(), theEntry.getValue());
-						} while (theEntry.getValue().get(0).instant());
+						} while (theEntry.getValue().get(0).isInstant());
 					}
 				}
 			}

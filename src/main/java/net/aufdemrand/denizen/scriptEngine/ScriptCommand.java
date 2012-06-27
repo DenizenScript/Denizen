@@ -1,5 +1,9 @@
 package net.aufdemrand.denizen.scriptEngine;
 
+import javax.script.ScriptException;
+
+import net.aufdemrand.denizen.scriptEngine.ScriptEngine.CommandHas;
+import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.TriggerType;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -18,28 +22,35 @@ import org.bukkit.entity.Player;
 
 public class ScriptCommand {
 
-	/* theCommand
-	 *   String value of the type of command */
+	/* String value of the type of command */
 	private String theCommand; 
 	
-	public String getCommandType() {
-		return theCommand.toUpperCase();
+	public String getCommand() {
+		return theCommand;
 	}
 	
+	/* Boolean representing whether the command is an instant command ("^") */
+	private boolean isInstant; 
 	
-	
-	/* instant
-	 *   Boolean representing whether the command is an instant command ("^") */
-	private boolean instant; 
-	
-	public boolean instant() {
-		return instant;
+	public boolean isInstant() {
+		return isInstant;
+	}
+
+	public void setInstant() {
+		isInstant = true;
 	}
 	
+	/* Gives the scope of the information in the ScriptCommand.
+	 * CommandHas.SOME = suitable for a Task Script command
+	 * CommandHas.MORE = suitable for a Click/Damage Script command 
+	 * CommandHas.MOST = suitable for a Chat Script command */
+	private CommandHas size; 
 	
+	public CommandHas size() {
+		return size;
+	}
 	
-	/* thePlayer/theEntity
-	 *   Player or LivingEntity object that represents the triggering entity */
+	/* Player or LivingEntity object that represents the triggering entity */
 	private Player thePlayer;
 	private LivingEntity theEntity;
 
@@ -52,106 +63,95 @@ public class ScriptCommand {
 		else return (LivingEntity) thePlayer;
 	}
 	
-	
-	
-	/* theDenizen
-	 *   the NPC Object of the Denizen associated with the command */
+	/* the NPC Object of the Denizen associated with the command */
 	private NPC theDenizen;
 	
 	public NPC getDenizen() {
 		return theDenizen;
 	}
 
-	
-	
-	/* theArguments
-	 *   String[] of the trailing arguments after the CommandType from the script entry */
-	private String[] theArguments;
+	/* String[] of the trailing arguments after the CommandType from the script entry */
+	private String[] theArguments = new String[0];
 	
 	public String[] arguments() {
 		return theArguments;
 	}
 
-	
-	
-	/* theScript
-	 *   The Script name that triggered the script. */
-	private String theScript;
+	/* The Script name that triggered the script. */
+	private String theScript = null;
 
-	public String getScriptName() {
-		return theScript;
-	}
-	
 	public String getScript() {
 		return theScript;
 	}
 	
-	
-	
-	/* theBookmark
-	 *   The Location of the Bookmark associated */
-	private Location theBookmark;  
-
-	public Location getBookmarkLocation() {
-		return theBookmark;
-	}
-	
-	public void setBookmarkLocation(Location bookmarkLocation) {
-		theBookmark = bookmarkLocation;
-	}
-	
-	
-	
-	/* playerText
-	 *   String[] of the trigger text. [0] is the raw text the player typed to initiate the trigger
-	 *   [1] is the 'friendly' matched text as provided by the trigger: */
+	/* String[] of the trigger text. 
+	 * [0] is the raw text the player typed to initiate the trigger
+	 * [1] is the 'friendly' matched text as provided by the trigger: */
 	private String[] playerText = new String[2];
 	
 	public String[] getTexts() {
 		return playerText;
 	}
 
-	
-	
-	/* commandTime
-	 *   Long[] currentSystemTimeMillis of the times associated with the script
-	 *   [0] contains time added to the queue
-	 *   [1] contains the time allowed to trigger */
+	/* Long[] currentSystemTimeMillis of the times associated with the script
+	 * [0] contains time added to the queue
+	 * [1] contains the time allowed to trigger */
 	private Long[] commandTimes = new Long[2];
 
 	public Long getDelayedTime() {
 		return commandTimes[1];
 	}
 	
+	public void setDelay(Long newTime) {
+		commandTimes[1] = newTime;
+	}
 	
+	public Long getInitiatedTime() {
+		return commandTimes[0];
+	}
 	
-	/*  triggerType
-	 *    TriggerType ENUM value of the type of trigger that was used to add the entry */ 
-	private TriggerType triggerType;
+	/* TriggerType ENUM value of the type of trigger that was used to add the entry */ 
+	private TriggerType triggerType = null;
 	
 	public TriggerType getTriggerType() {
 		return triggerType;
 	}
 	
-	
-	
-	/*  error
-	 *    String error message to show if Command fails */ 
+	/* String error message to show if Command fails */ 
 	private String errorMessage = null;
 	
-	public void error(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public void error(String message) {
+		errorMessage = message;
+	}
+	
+	public boolean hasError() {
+		if (errorMessage == null) return true;
+		return false;
+	}
+	
+	public String getError() {
+		return errorMessage;
 	}
 
-
-	
-	/*  theStep
-	 *    String error message to show if Command fails */ 
+	/* Integer of theStep */ 
 	private Integer theStep = null;
 	
 	public Integer getStep() {
 		return theStep;
 	}
+	
+	/* QueueType */ 
+	private QueueType queueType = null;
+	
+	public QueueType sendingQueue() {
+		return queueType;
+	}
+	
+	public void setSendingQueue(QueueType queue) {
+		queueType = queue;
+	}
+	
+	
 	
 	/**
 	 * Creates a ScriptCommand (For use with a CHAT Trigger)
@@ -162,12 +162,13 @@ public class ScriptCommand {
 		if (player == null || denizen == null || script == null) throw new Exception("Values cannot be null!");
 
 		if (commandType.startsWith("^")) {
-			instant = true;
+			isInstant = true;
 			commandType = commandType.substring(1);
 		}
 		
+		size = CommandHas.MOST;
 		theStep = step;
-		theCommand = commandType;
+		theCommand = commandType.toUpperCase();
 		theArguments = arguments;
 		thePlayer = player;
 		theDenizen = denizen;
@@ -188,13 +189,14 @@ public class ScriptCommand {
 
 	public ScriptCommand(String commandType, String[] arguments, Player player, NPC denizen, String script, Integer step) throws Exception {
 
-		if (player == null || denizen == null || script == null) throw new Exception("Values cannot be null!");
+		if (player == null || denizen == null || script == null || step == null) throw new Exception("Values cannot be null!");
 
 		if (commandType.startsWith("^")) {
-			instant = true;
+			isInstant = true;
 			commandType = commandType.substring(1);
 		}
 		
+		size = CommandHas.MORE;
 		theStep = step;
 		theCommand = commandType;
 		theArguments = arguments;
@@ -212,15 +214,16 @@ public class ScriptCommand {
 	 * Creates a ScriptCommand (for use with a TASK Trigger)
 	 */
 
-	public ScriptCommand(String commandType, String[] arguments, Player player, String script) throws Exception {
+	public ScriptCommand(String commandType, String[] arguments, Player player, String script) throws ScriptException {
 
-		if (player == null || script == null) throw new Exception("Values cannot be null!");
+		if (player == null || script == null) throw new ScriptException("Values cannot be null!");
 
 		if (commandType.startsWith("^")) {
-			instant = true;
+			isInstant = true;
 			commandType = commandType.substring(1);
 		}
 		
+		size = CommandHas.SOME;
 		theCommand = commandType;
 		theArguments = arguments;
 		thePlayer = player;
