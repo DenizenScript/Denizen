@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -192,7 +194,7 @@ public class ScriptEngine {
 					scriptEntry = thisItem.split(" ", 2);
 					try {
 						/* Build new script commands */
-						scriptCommands.add(new ScriptCommand(scriptEntry[0], scriptEntry[1].split(" "), thePlayer, theDenizen, theScript, theStep, playerMessage, chatText));
+						scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep, playerMessage, chatText));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -245,7 +247,7 @@ public class ScriptEngine {
 			scriptEntry = thisItem.split(" ", 2);
 			try {
 				/* Build new script commands */
-				scriptCommands.add(new ScriptCommand(scriptEntry[0], scriptEntry[1].split(" "), thePlayer, theDenizen, theScript, theStep));
+				scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -279,7 +281,7 @@ public class ScriptEngine {
 			scriptEntry = thisItem.split(" ", 2);
 			try {
 				/* Build new script commands */
-				scriptCommands.add(new ScriptCommand(scriptEntry[0], scriptEntry[1].split(" "), thePlayer, theScript));
+				scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theScript));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -421,11 +423,6 @@ public class ScriptEngine {
 
 
 
-
-
-
-
-
 	public void enforcePosition() {
 		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
 
@@ -445,8 +442,36 @@ public class ScriptEngine {
 		}
 	}
 
+	
 
-
+	/* Builds arguments array, recognizing items in quotes as a single item 
+	 * 
+	 * Thanks to Jan Goyvaerts from 
+	 * http://stackoverflow.com/questions/366202/regex-for-splitting-a-string-using-space-when-not-surrounded-by-single-or-double
+	 * as this is pretty much a copy/paste.
+	 * 
+	 * Perfect!  */
+	
+	private String[] buildArgs(String stringArgs) {
+		List<String> matchList = new ArrayList<String>();
+		Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
+		Matcher regexMatcher = regex.matcher(stringArgs);
+		while (regexMatcher.find()) {
+		    if (regexMatcher.group(1) != null) {
+		        // Add double-quoted string without the quotes
+		        matchList.add(regexMatcher.group(1));
+		    } else if (regexMatcher.group(2) != null) {
+		        // Add single-quoted string without the quotes
+		        matchList.add(regexMatcher.group(2));
+		    } else {
+		        // Add unquoted word
+		        matchList.add(regexMatcher.group());
+		    }
+		} 
+		String[] split = new String[matchList.size()];
+		matchList.toArray(split);
+		return split;
+	}
 
 
 

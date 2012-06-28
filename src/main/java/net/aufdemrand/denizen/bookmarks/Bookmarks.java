@@ -109,6 +109,14 @@ public class Bookmarks {
 		LOCATION, BLOCK
 	}
 
+	public boolean exists(String theDenizen, String nameOfLocation) {
+		
+		if (plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Location").contains(nameOfLocation)) return true;
+		if (plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Block").contains(nameOfLocation)) return true;
+		
+		return false;
+	}
+	
 	public Location get(String theDenizen, String nameOfLocation, BookmarkType bookmarkType) {
 
 		List<String> locationList = null;

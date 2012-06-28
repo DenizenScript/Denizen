@@ -17,7 +17,7 @@ public class SpawnCommand extends Command {
 			return false;
 		}
 
-		/* SPAWN [ENTITY_TYPE] (AMOUNT) (Location Bookmark|Denizen Name:Location Bookmark) */
+		/* SPAWN [ENTITY_TYPE] (QUANTITY) (Location Bookmark|Denizen Name:Location Bookmark) */
 
 		EntityType theEntity = null;
 		Integer theAmount = null;
@@ -30,41 +30,28 @@ public class SpawnCommand extends Command {
 			return false;
 		}
 
-		/* Attempt to identify the first argument */
-		if (theCommand.arguments().length > 1) {
-			if (theCommand.arguments()[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
-				theAmount = Integer.valueOf(theCommand.arguments()[1]);
+		for (String thisArgument : theCommand.arguments()) {
+
+			// If argument is a #, assume it's quantity.
+			if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
+				theAmount = Integer.valueOf(thisArgument);
+
+			// Else, see if it's a bookmark location.
 			else {
-				if (theCommand.arguments()[1].split(":").length == 1) {
+				if (thisArgument.split(":").length == 1) {
 					if (theCommand.getDenizen() == null) {
 						theCommand.error("No Denizen referenced for the bookmarked location.");
 						return false;						
 					}
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen().getName(), theCommand.arguments()[1], BookmarkType.LOCATION);
+					theLocation = plugin.bookmarks.get(theCommand.getDenizen().getName(), thisArgument, BookmarkType.LOCATION);
 				}	
-				else if (theCommand.arguments()[1].split(":").length == 2)
-					theLocation = plugin.bookmarks.get(theCommand.arguments()[1].split(":")[0], theCommand.arguments()[1].split(":")[1], BookmarkType.LOCATION);	
+				else if (thisArgument.split(":").length == 2)
+					theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);	
 			}
 		}
 
-		/* Attempt to identify the second argument */
-		if (theCommand.arguments().length > 2) {
-			if (theCommand.arguments()[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
-				theAmount = Integer.valueOf(theCommand.arguments()[2]);
-			else {
-				if (theCommand.arguments()[2].split(":").length == 1) {
-					if (theCommand.getDenizen() == null) {
-						theCommand.error("No Denizen referenced for the bookmarked location.");
-						return false;						
-					}
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen().getName(), theCommand.arguments()[2], BookmarkType.LOCATION);
-				}	
-				else if (theCommand.arguments()[2].split(":").length == 2)
-					theLocation = plugin.bookmarks.get(theCommand.arguments()[1].split(":")[0], theCommand.arguments()[2].split(":")[1], BookmarkType.LOCATION);	
-			}
-		}
+		/* If theAmount or theLocation is STILL empty, let's try to fill it automatically */		
 
-		/* If theAmount or theLocation is STILL empty, let's try to fill it */		
 		if (theAmount == null) theAmount = 1;
 		if (theLocation == null && theCommand.getDenizen() != null) 
 			theLocation = theCommand.getDenizen().getBukkitEntity().getLocation();
