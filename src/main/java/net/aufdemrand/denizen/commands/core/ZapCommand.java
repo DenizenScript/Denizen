@@ -15,17 +15,18 @@ public class ZapCommand extends Command {
 			theCommand.error("ZAP cannot be used with a Task Script.");
 			return false;
 		}
-		
-		if (theCommand.arguments().length > 1) {
-			theCommand.error("Too many arguments!");
-			return false;
-		}
+
+		/* ZAP (STEP #)      Available add'l tags: 'Script:Script Name'*/
 		
 		Player thePlayer = theCommand.getPlayer();
 		String theScript = theCommand.getScript();
-		Integer theStep = theCommand.getStep();
+		/* Assume ZAP is to next step */
+		Integer theStep = theCommand.getStep() + 1;
 		
 		/* ZAP */
+		
+		
+		
 		
 		if (theCommand.arguments().length == 0) {
 			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", theStep + 1);
@@ -35,7 +36,6 @@ public class ZapCommand extends Command {
 		
 		Integer newStep = null;
 		
-		/* ZAP [STEP #]*/
 		
 		if (theCommand.arguments().length == 1 && theCommand.arguments()[0].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) { 
 			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", newStep); 
