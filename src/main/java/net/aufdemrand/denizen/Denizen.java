@@ -21,6 +21,7 @@ import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
 import net.aufdemrand.denizen.utilities.GetScript;
 import net.aufdemrand.denizen.utilities.GetWorld;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.character.CharacterFactory;
@@ -58,6 +59,7 @@ public class Denizen extends JavaPlugin {
 	public GetWorld               getWorld = new GetWorld(this);
 	public GetScript             getScript = new GetScript(this);
 	public Bookmarks             bookmarks = new Bookmarks(this);
+	public Utilities			 utilities = new Utilities(this);
 
 	
 	/* playerQue holds script commands for each Player */

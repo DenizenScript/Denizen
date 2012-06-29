@@ -19,7 +19,7 @@ public class WaitCommand extends Command {
 			return false;
 		}
 
-		if (!Character.isDigit(theCommand.arguments()[0].charAt(0))) {
+		if (!theCommand.arguments()[0].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
 			theCommand.error("You must specify a number!");
 		}
 		

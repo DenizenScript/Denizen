@@ -110,11 +110,27 @@ public class Bookmarks {
 	}
 
 	public boolean exists(String theDenizen, String nameOfLocation) {
-		
+	
+		if (nameOfLocation.split(":").length == 2) theDenizen = nameOfLocation.split(":")[0];
 		if (plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Location").contains(nameOfLocation)) return true;
 		if (plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Block").contains(nameOfLocation)) return true;
 		
 		return false;
+	}
+	
+	public boolean exists(NPC theDenizen, String nameOfLocation) {
+
+		String theName = null;
+		if (theDenizen == null) theName = "null";
+		else theName = theDenizen.getName();
+		return exists(theName, nameOfLocation);
+	}
+	
+	public Location get(NPC theDenizen, String nameOfLocation, BookmarkType bookmarkType) {
+		String theName = null;
+		if (theDenizen == null) theName = "null";
+		else theName = theDenizen.getName();
+		return get(theName, nameOfLocation, bookmarkType);
 	}
 	
 	public Location get(String theDenizen, String nameOfLocation, BookmarkType bookmarkType) {
@@ -125,9 +141,13 @@ public class Bookmarks {
 
 		try {
 
+			if (nameOfLocation.split(":").length == 2) theDenizen = nameOfLocation.split(":")[0];
+			
 			if (bookmarkType == BookmarkType.BLOCK) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Block");	
 			else if (bookmarkType == BookmarkType.LOCATION) locationList = plugin.getSaves().getStringList("Denizens." + theDenizen + ".Bookmarks.Location");
 
+			
+			
 			for (String thisLocation : locationList) {
 				String theName = thisLocation.split(" ", 2)[0];
 				if (theName.equalsIgnoreCase(nameOfLocation)) theLocation = thisLocation.split(" ", 2)[1].split(";");

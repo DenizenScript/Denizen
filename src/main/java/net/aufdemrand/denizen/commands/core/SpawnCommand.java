@@ -23,33 +23,22 @@ public class SpawnCommand extends Command {
 		Integer theAmount = null;
 		Location theLocation = null;
 
-		try {
-			theEntity = EntityType.valueOf(theCommand.arguments()[0].toUpperCase());	
-		} catch (IllegalArgumentException e) {
-			theCommand.error("Invalid Entity_Type.");
-			return false;
-		}
-
 		for (String thisArgument : theCommand.arguments()) {
 
-			// If argument is a #, assume it's quantity.
-			if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
+			// If a valid name of an Entity, set theEntity.
+			if (plugin.utilities.isEntity(thisArgument)) {
+				theEntity = EntityType.valueOf(thisArgument.toUpperCase());	
+			}
+			
+			// If argument is a #, set theAmount.
+			else if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
 				theAmount = Integer.valueOf(thisArgument);
 
-			// Else, see if it's a bookmark location.
-			else {
-				if (thisArgument.split(":").length == 1) {
-					if (theCommand.getDenizen() == null) {
-						theCommand.error("No Denizen referenced for the bookmarked location.");
-						return false;						
-					}
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen().getName(), thisArgument, BookmarkType.LOCATION);
-				}	
-				else if (thisArgument.split(":").length == 2)
-					theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);	
-			}
+			// If argument is a valid bookmark, set theLocation.
+			else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
+				theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
 		}
-
+		
 		/* If theAmount or theLocation is STILL empty, let's try to fill it automatically */		
 
 		if (theAmount == null) theAmount = 1;

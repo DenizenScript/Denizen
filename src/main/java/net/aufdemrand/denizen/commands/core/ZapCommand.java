@@ -37,7 +37,7 @@ public class ZapCommand extends Command {
 		
 		/* ZAP [STEP #]*/
 		
-		if (theCommand.arguments().length == 1) { 
+		if (theCommand.arguments().length == 1 && theCommand.arguments()[0].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) { 
 			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", newStep); 
 			plugin.saveSaves();
 			return true;
