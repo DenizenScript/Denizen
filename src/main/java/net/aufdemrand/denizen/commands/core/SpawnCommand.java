@@ -1,62 +1,97 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
+import java.util.Random;
 
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.aufdemrand.denizen.commands.Command;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Villager.Profession;
+import org.bukkit.entity.Wolf;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+/**
+ * Spawns an entity in the world based on input data.
+ * 
+ * @author Jeremy Schroeder
+ *
+ */
 
 public class SpawnCommand extends Command {
 
-	/* SPAWN command 
-	 * 
-	 * Spawns a mobile.
-	 * 
-	 * Arguments: [] - Required, () - Optional 
+	/* SPAWN [ENTITY_TYPE] (QUANTITY) (Location Bookmark|Denizen Name:Location Bookmark) */
+
+	/* Arguments: [] - Required, () - Optional 
 	 * [ENTITY_TYPE] 
 	 * (QUANTITY) Will default to '1' if not specified
 	 * (LOCATION BOOKMARK) Will default to the player location if not specified
 	 * 
 	 * Modifiers:
-	 * ('SPREAD:#') Increases the 'spread' of the area that the monster can spawn. 
-	 * ('EFFECT:POTION_EFFECT MODIFIER') Applies a potion effect on the monster when spawning.
-	 * ('FLAG:CHARGED|SADDLE|BABY|PROFESSION [PROFESSION_TYPE]|SHEARED|ANGRY')
+	 * ('SPREAD:[#]') Increases the 'spread' of the area that the monster can spawn. 
+	 * ('EFFECT:[POTION_EFFECT] [LEVEL]') Applies a potion effect on the monster when spawning.
+	 * ('FLAG:POWERED|SADDLED|BABY|PROFESSION [PROFESSION_TYPE]|SHEARED|COLORED [DYE_COLOR]|ANGRY')
 	 *   Applies a flag to the Mob. Note: Only works for mobs that can accept the flag.
-	 *   ie. Only Creepers can be CHARGED, only Pigs can have a SADDLE, etc.
-	 * 
+	 *   CREEPER can have POWERED
+	 *   PIG can have SADDLED
+	 *   PIG, SHEEP, COW, VILLAGER, CHICKEN, OCELOT and WOLF can have BABY
+	 *   VILLAGER can have PROFESSION
+	 *      Valid PROFESSION_TYPEs: FARMER, LIBRARIAN, PRIEST, BLACKSMITH, BUTCHER
+	 *   SHEEP can have SHEARED and COLORED
+	 *   WOLF and PIG_ZOMBIE can have ANGRY
+	 *  
 	 * Example usages:
-	 * SPAWN ZOMBIE
-	 * SPAWN COW 3 Cage
-	 * SPAWN VILLAGER 'Joseph the Great:Gate'
-	 * SPAWN PIG_ZOMBIE 10 'SPREAD:5' 'FLAG:SADDLE'
-	 * SPAWN 
-	 * 
-	 * */
-	
+	 * SPAWN BOAT
+	 * SPAWN 3 COW Cage
+	 * SPAWN VILLAGER 'El Notcho:Gate'
+	 * SPAWN 10 PIG_ZOMBIE SPREAD:5
+	 * SPAWN 25 ZOMBIE SPREAD:20 'EFFECT:INCREASE_DAMAGE 2'
+	 * SPAWN 2 SHEEP COLORED:RED
+	 */
+
 	@Override
 	public boolean execute(ScriptCommand theCommand) {
+
+		/* Check if the amount of arguments matches the minimum required */
 
 		if (theCommand.arguments().length < 1) {
 			theCommand.error("Not enough arguments!");
 			return false;
 		}
 
-		/* SPAWN [ENTITY_TYPE] (QUANTITY) (Location Bookmark|Denizen Name:Location Bookmark) */
+		/* Initialize variables */
 
 		EntityType theEntity = null;
 		Integer theAmount = null;
 		Location theLocation = null;
+		Integer theSpread = null;
+		PotionEffect theEffect = null;
+		String theFlag = null;
+		Boolean hasFlag = false;
+		Boolean isBaby = false;
+		Boolean isPowered = false;
+		Boolean isAngry = false;
+		Boolean isSaddled = false;
+		Boolean isSheared = false;
+		String hasColor = null;
+		String hasProfession = null;
 
 		for (String thisArgument : theCommand.arguments()) {
 
 			// If a valid name of an Entity, set theEntity.
-			if (plugin.utilities.isEntity(thisArgument)) {
+			if (plugin.utilities.isEntity(thisArgument))
 				theEntity = EntityType.valueOf(thisArgument.toUpperCase());	
-			}
-			
+
 			// If argument is a #, set theAmount.
 			else if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
 				theAmount = Integer.valueOf(thisArgument);
@@ -64,26 +99,106 @@ public class SpawnCommand extends Command {
 			// If argument is a valid bookmark, set theLocation.
 			else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
 				theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
-		
-			// Warn the console that argument has been ignored.
-			else {
-				plugin.getLogger().log(Level.WARNING, "Unknown argument for " + theCommand.getCommand() + " command in script '" + theCommand.getScript() + "': " + thisArgument);
-				plugin.getLogger().log(Level.WARNING, "This argument has been ignored.");
+
+			// If argument is a 
+			else if (thisArgument.toUpperCase().contains("SPREAD:"))
+				theSpread = Integer.valueOf(thisArgument.split(":", 2)[1]);
+
+			else if (thisArgument.toUpperCase().contains("EFFECT:"))
+				try { 
+					int theAmplifier = 1;
+					if (thisArgument.split(":", 2)[1].split(" ").length == 2) 
+						theAmplifier = Integer.valueOf(thisArgument.split(":", 2)[1].split(" ")[1]);
+					theEffect = new PotionEffect(
+						PotionEffectType.getByName(thisArgument.split(":", 2)[1].split(" ")[0]),
+						Integer.MAX_VALUE,
+						theAmplifier);
+				} catch (Throwable e) {
+					theCommand.error("Invalid syntax in EFFECT modifier.");
+					return false;
+				}
+
+			else if (thisArgument.toUpperCase().contains("FLAG:")) {
+
+				String thisFlag = thisArgument.split(":", 2)[1];
+				hasFlag = true;
+
+				if (thisFlag.toUpperCase().equals("BABY"))
+					isBaby = true;
+
+				if (thisFlag.toUpperCase().equals("ANGRY"))
+					isAngry = true;
+
+				if (thisFlag.toUpperCase().equals("POWERED"))
+					isPowered = true;
+
+				if (thisFlag.toUpperCase().equals("SHEARED"))
+					isSheared = true;
+
+				if (thisFlag.toUpperCase().equals("SADDLED"))
+					isSaddled = true;
+
+				if (thisFlag.toUpperCase().contains("COLORED "))
+					hasColor = thisFlag.split(" ")[1];
+
+				if (thisFlag.toUpperCase().contains("PROFESSION "))
+					hasProfession = thisFlag.split(" ")[1];
 			}
-			
 		}
-		
-		/* If theAmount or theLocation is STILL empty, let's try to fill it automatically */		
+
+		/* Location and Quantity are optional, so if they weren't set, let's use the information we have
+		 * to set the defaults. Default amount is 1, default Location is the location of the Denizen. If no
+		 * denizen attached (ie. this is a Task Script), default location is the location of the Player. */		
 
 		if (theAmount == null) theAmount = 1;
 		if (theLocation == null && theCommand.getDenizen() != null) 
 			theLocation = theCommand.getDenizen().getBukkitEntity().getLocation();
 		if (theLocation == null) theLocation = theCommand.getPlayer().getLocation();
 
+
 		/* Now the creature spawning! */
 		if (theLocation != null && theAmount != null && theEntity != null) {
-			for (int x = 0; x < theAmount; x++)
-				theLocation.getWorld().spawnCreature(theLocation, theEntity);
+			for (int x = 0; x < theAmount; x++) {
+
+				Location oldLocation = null;
+
+				/* Account for SPREAD: */
+				if (theSpread != null) {
+					Random randomGenerator = new Random();
+					int randomX = randomGenerator.nextInt(theSpread * 2);
+					int randomZ = randomGenerator.nextInt(theSpread * 2);
+					randomX =- theSpread;
+					randomZ =- theSpread;
+					oldLocation = theLocation;
+					theLocation.add(randomX, 0, randomZ);
+				}
+
+				LivingEntity spawnedEntity = theLocation.getWorld().spawnCreature(theLocation, theEntity);
+
+				if (theEffect != null)
+					spawnedEntity.addPotionEffect(theEffect);
+
+				if (hasFlag) 
+					try {
+						if (isBaby) if (spawnedEntity instanceof Ageable) ((Ageable) spawnedEntity).setBaby();
+						if (isAngry) if (spawnedEntity instanceof Wolf) ((Wolf) spawnedEntity).setAngry(true);
+						if (isAngry) if (spawnedEntity instanceof PigZombie) ((PigZombie) spawnedEntity).setAngry(true);
+						if (isPowered) if (spawnedEntity instanceof Creeper) ((Creeper) spawnedEntity).setPowered(true);
+						if (isSaddled) if (spawnedEntity instanceof Pig) ((Pig) spawnedEntity).setSaddle(true);
+						if (isSheared) if (spawnedEntity instanceof Sheep) ((Sheep) spawnedEntity).setSheared(true);
+						if (hasColor != null) if (spawnedEntity instanceof Sheep) ((Sheep) spawnedEntity).setColor(DyeColor.valueOf(hasColor.toUpperCase()));
+						if (hasProfession != null) if (spawnedEntity instanceof Villager) ((Villager) spawnedEntity).setProfession(Profession.valueOf(hasProfession.toUpperCase()));
+					
+					} catch (Throwable e) {
+						theCommand.error("Problem setting FLAG.");
+						return false;
+					}
+
+				/* Reset theLocation for the next Entity, if more than 1 */
+				if (theSpread != null) 
+					theLocation = oldLocation;
+			}
+
 			return true;
 		}
 

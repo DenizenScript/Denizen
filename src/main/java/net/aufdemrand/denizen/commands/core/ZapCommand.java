@@ -2,47 +2,48 @@ package net.aufdemrand.denizen.commands.core;
 
 import net.aufdemrand.denizen.commands.Command;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
-import net.aufdemrand.denizen.scriptEngine.ScriptEngine.CommandHas;
 
-import org.bukkit.entity.Player;
+/**
+ * Sets the current step for Players in a specific script then stores
+ * the information in the Denizen 'saves.yml'.
+ * 
+ * @author Jeremy Schroeder
+ *
+ */
 
 public class ZapCommand extends Command {
+	
+	/* ZAP (Step #)
+	
+	/* Arguments: [] - Required, () - Optional 
+	 * (Step #) The step to make the current step. If not specified, assumes current step + 1. 
+	 * 
+	 * Modifiers: 
+	 * (SCRIPT:[Script Name]) Changes the script to ZAP from the current script to the one specified.
+	 */
 
 	@Override
 	public boolean execute(ScriptCommand theCommand) {
 
-		if (theCommand.size() == CommandHas.SOME) {
-			theCommand.error("ZAP cannot be used with a Task Script.");
-			return false;
+		String theScript = theCommand.getScript();
+		Integer theStep = theCommand.getStep() + 1;
+
+		/* Get arguments */
+		for (String thisArgument : theCommand.arguments()) {
+			if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
+				theStep = Integer.valueOf(thisArgument);
+
+			else if (thisArgument.contains("SCRIPT:")) 
+				theScript = thisArgument.split(":", 2)[1];
 		}
 
-		/* ZAP (STEP #)      Available add'l tags: 'Script:Script Name'*/
-		
-		Player thePlayer = theCommand.getPlayer();
-		String theScript = theCommand.getScript();
-		/* Assume ZAP is to next step */
-		Integer theStep = theCommand.getStep() + 1;
-		
-		/* ZAP */
-		
-		
-		
-		
-		if (theCommand.arguments().length == 0) {
-			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", theStep + 1);
+		/* Set saves.yml */
+		if (theCommand.getPlayer() != null && theScript != null && theStep != null) {
+			plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + ".Current Step", theStep); 
 			plugin.saveSaves();
 			return true;
 		}
-		
-		Integer newStep = null;
-		
-		
-		if (theCommand.arguments().length == 1 && theCommand.arguments()[0].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) { 
-			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", newStep); 
-			plugin.saveSaves();
-			return true;
-		}
-	
+
 		theCommand.error("Unknown error. Check syntax.");
 		return false;
 	}

@@ -9,40 +9,75 @@ import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 
 import org.bukkit.entity.Player;
 
+/**
+ * Holds processing of a QueueType which results in a 'pause'.
+ * Used to pause processing of commands.
+ * 
+ * @author Jeremy Schroeder
+ *
+ */
+
 public class WaitCommand extends Command {
+
+	/* WAIT [# OF SECONDS] */   
+
+	/* Arguments: [] - Required, () - Optional 
+	 * [# OF SECONDS] Number of seconds to hold the queue. 
+	 * 
+	 * Modifiers: 
+	 * (QUEUETYPE:TASK|TRIGGER) Specifies which queue to hold. Be default, it holds the same
+	 *   queue that triggered the command.
+	 * 
+	 * Example usage:
+	 * WAIT 3
+	 * WAIT 20 QUEUETYPE:TRIGGER
+	 */
 
 	@Override
 	public boolean execute(ScriptCommand theCommand) {
 
-		if (theCommand.arguments().length > 1 || theCommand.arguments().length < 1) {
-			theCommand.error("Wrong number of arguments!");
-			return false;
-		}
+		/* The WAIT command ultimately sends itself back to the que with an appropriate delay. 
+		 * if the delay is more than the time initiated, we can assume it's the second time 
+		 * around, and therefore finish the command right now. */
 
-		if (!theCommand.arguments()[0].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
-			theCommand.error("You must specify a number!");
-		}
-		
 		if (theCommand.getDelayedTime() > theCommand.getInitiatedTime()) {
-			/* Second time around, so we've already waited! */
 			return true;
 		}
 
+		/* Initialize variables */
+		
+		QueueType queueToHold = theCommand.sendingQueue();
 		Player thePlayer = theCommand.getPlayer();
-
-		/* WAIT [# OF SECONDS]*/
-
-		theCommand.setDelay(System.currentTimeMillis() + (Long.valueOf(theCommand.arguments()[0]) * 1000));
 		theCommand.setInstant();
+		
+		/* Process arguments */
+
+		for (String thisArgument : theCommand.arguments()) {
+
+			if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) 
+				theCommand.setDelay(System.currentTimeMillis() + (Long.valueOf(theCommand.arguments()[0]) * 1000));
+
+			if (thisArgument.toUpperCase().contains("QUEUETYPE:"))
+				try {
+				queueToHold = QueueType.valueOf(thisArgument.split(":")[1]);
+				} catch (Throwable e) {
+					theCommand.error("Invalid QUEUETYPE.");
+					return false;
+				}
+			
+		}
+
+		/* Put itself back into the queue */
+
 		List<ScriptCommand> theList = new ArrayList<ScriptCommand>();
 		theList.add(theCommand);
 
-		if (theCommand.sendingQueue() == QueueType.TASK) {
+		if (queueToHold == QueueType.TASK) {
 			plugin.scriptEngine.injectToQue(thePlayer, theList, QueueType.TASK, 1);
 			return true;
 		}
 
-		if (theCommand.sendingQueue() == QueueType.TRIGGER) {
+		if (queueToHold == QueueType.TRIGGER) {
 			plugin.scriptEngine.injectToQue(thePlayer, theList, QueueType.TRIGGER, 1);
 			return true;
 		}

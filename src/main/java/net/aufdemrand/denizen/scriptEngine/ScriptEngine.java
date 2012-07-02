@@ -473,8 +473,20 @@ public class ScriptEngine {
 		return split;
 	}
 
+	
+	
+	/* Engaged NPCs cannot interact with Players */
+	
+	private List<NPC> engagedNPC = new ArrayList<NPC>();
 
-
-
+	public boolean getEngaged(NPC theDenizen) {
+		if (engagedNPC.contains(theDenizen)) return true;
+		return false;
+	}
+	
+	public void setEngaged(NPC theDenizen, boolean engaged) {
+		if (engaged) engagedNPC.add(theDenizen);
+		if (!engaged) engagedNPC.remove(theDenizen);
+	}
 
 }
