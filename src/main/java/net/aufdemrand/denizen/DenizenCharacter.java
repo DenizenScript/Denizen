@@ -40,7 +40,7 @@ public class DenizenCharacter extends Character implements Listener {
 
 		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
 				&& plugin.getDenizen.checkCooldown(player)
-				&& !Denizen.engagedNPC.contains(npc)) {
+				&& !plugin.scriptEngine.getEngaged(npc)) {
 			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
 			DenizenClicked(npc, player);
 		}
@@ -53,7 +53,7 @@ public class DenizenCharacter extends Character implements Listener {
 
 		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
 				&& plugin.getDenizen.checkCooldown(player)
-				&& !Denizen.engagedNPC.contains(npc)) {
+				&& !plugin.scriptEngine.getEngaged(npc)) {
 			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
 			DenizenClicked(npc, player);
 
@@ -206,7 +206,7 @@ public class DenizenCharacter extends Character implements Listener {
 					plugin.settings.PlayerToNpcChatRangeInBlocks());
 
 			/* If no Denizen in range, or the Denizen closest is engaged, return */
-			if (theDenizen == null || Denizen.engagedNPC.contains(theDenizen)) return;
+			if (theDenizen == null || !plugin.scriptEngine.getEngaged(theDenizen)) return;
 
 			/* Get the script to use */
 			String theScript = plugin.getScript.getInteractScript(theDenizen, event.getPlayer());

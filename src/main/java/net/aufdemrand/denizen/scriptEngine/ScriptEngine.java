@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scriptEngine;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -477,16 +478,24 @@ public class ScriptEngine {
 	
 	/* Engaged NPCs cannot interact with Players */
 	
-	private List<NPC> engagedNPC = new ArrayList<NPC>();
+	private Map<NPC, Long> engagedNPC = new HashMap<NPC, Long>();
 
 	public boolean getEngaged(NPC theDenizen) {
-		if (engagedNPC.contains(theDenizen)) return true;
+		if (engagedNPC.containsKey(theDenizen)) 
+			if (engagedNPC.get(theDenizen) > System.currentTimeMillis())
+				return true;
 		return false;
 	}
 	
 	public void setEngaged(NPC theDenizen, boolean engaged) {
-		if (engaged) engagedNPC.add(theDenizen);
+		if (engaged) engagedNPC.put(theDenizen, System.currentTimeMillis() + plugin.settings.EngageTimeoutInSeconds() * 1000 );
 		if (!engaged) engagedNPC.remove(theDenizen);
 	}
+	
+	public void setEngaged(NPC theDenizen, Integer duration) {
+		engagedNPC.put(theDenizen, System.currentTimeMillis() + duration * 1000 );
+
+	}
+	
 
 }

@@ -7,7 +7,7 @@ import net.citizensnpcs.api.npc.NPC;
 
 /**
  * Sets/unsets the Denizen's built in Engage List. 
- * When Engaged, a Denizen will not interact with a Player until DISENGAGED.
+ * When Engaged, a Denizen will not interact with a Player until DISENGAGED (or a timeout).
  * 
  * @author Jeremy Schroeder
  *
@@ -27,6 +27,10 @@ public class EngageCommand extends Command {
 
 	/* DISENGAGE */
 
+	/* Modifiers:
+	 * (NPCID:#) Changes the Denizen to ENGAGE or DISENGAGE to the Citizens2 NPCID
+	 */
+	
 	@Override
 	public boolean execute(ScriptCommand theCommand) {
 
@@ -56,15 +60,13 @@ public class EngageCommand extends Command {
 			return true;
 		}
 
-		/* Assume ENGAGE command, since we've already checked for DISENGAGE */
-
-
 		/* ENGAGE the Denizen and set timer for DISENGAGE (if arguement is specified) */
-		plugin.scriptEngine.setEngaged(theCommand.getDenizen(), true);
-
-
-		theCommand.error("Unknown error. Check syntax.");
-		return false;
+		if (timedEngage != null) 
+			plugin.scriptEngine.setEngaged(theDenizen, timedEngage);
+		else 			
+			plugin.scriptEngine.setEngaged(theCommand.getDenizen(), true);
+		
+		return true;
 	}
 
 }

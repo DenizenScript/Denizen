@@ -1,16 +1,20 @@
 # Interact delay sets the pace of the 'Player Queue' and 'Denizen Queue' 
 # execution, which is where commands triggered by scripts are stored.
-# Recommend 10-20.
+# Recommend 10-20. (Default, 10)
 interact_delay_in_ticks: 10
 
-# How long should the maximum line length be for multi-line text?
+# Default engage timeout. When NPCs are set to ENGAGE, this is the default timeout
+# that they DISENGAGE if not specified. (Default, 5 minutes)
+engage_timeout_in_seconds: 150
+
+# How long should the maximum line length be for multi-line text? (Default, 55)
 multi_line_text_maximum_length: 55
 
 # By default, players can talk to Denizens even if there are no
 # chat triggers in the script. I believe this is best for RPG-type
 # behavior. Change this to true if you would like chat near a 
 # Denizen to be global if there are no chat triggers for the
-# script being triggered.
+# script being triggered. (Default, false)
 chat_globally_if_no_chat_triggers: false
 
 # Furthermore, if there are chat triggers available, and the Player
@@ -18,23 +22,23 @@ chat_globally_if_no_chat_triggers: false
 # response from the Denizen, or should he just chat globally and
 # ignore the Denizen. Change this to true if you would like
 # chat near a Denizen to be global if there are available chat
-# triggers, but the player failed to match one.
+# triggers, but the player failed to match one. (Default, false)
 chat_globally_if_failed_chat_triggers: false
 
 # Should players around the player interacting with the Denizen
-# hear the conversation?
+# hear the conversation? (Default, true)
 bystanders_hear_player_to_npc_chat: true
 bystanders_hear_npc_to_player_chat: true
 
 # This set of nodes defines ranges for different types of
 # chat/interaction/etc.
-player_to_npc_chat_range_in_blocks: 2
-npc_to_player_chat_range_in_blocks: 7
-npc_emote_range_in_blocks: 7
-player_to_npc_shout_range_in_blocks: 15
-npc_to_player_shout_range_in_blocks: 15
-player_to_npc_whisper_range_in_blocks: 2
-npc_to_player_whisper_range_in_blocks: 3
+player_to_npc_chat_range_in_blocks: 3       # (Default 3)
+npc_to_player_chat_range_in_blocks: 7       # (Default 7)
+npc_emote_range_in_blocks: 7                # (Default 7)
+player_to_npc_shout_range_in_blocks: 15     # (Default 15)
+npc_to_player_shout_range_in_blocks: 15     # (Default 15)
+player_to_npc_whisper_range_in_blocks: 3    # (Default 3)
+npc_to_player_whisper_range_in_blocks: 3    # (Default 3)
 
 # These nodes define how chatting, shouting, etc. is displayed
 # to players in the game. <PLAYER>, <NPC>, and <TEXT> are all

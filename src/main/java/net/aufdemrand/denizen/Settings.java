@@ -28,6 +28,19 @@ public class Settings {
 	}
 
 	/*
+	  
+	# Default engage timeout. When NPCs are set to ENGAGE, this is the default timeout
+    # that they DISENGAGE if not specified. (Default, 5 minutes)
+	engage_timeout_in_seconds: 150
+	  
+	 */
+	
+	public int EngageTimeoutInSeconds() {
+		int timeout = plugin.getConfig().getInt("engage_timeout_in_seconds", 150);
+		return timeout;
+	}
+
+	/*
 
 	# How long should the maximum line length be for multi-line text?
 	multi_line_text_maximum_length: 55
@@ -86,18 +99,18 @@ public class Settings {
 
 	# This set of nodes defines ranges for different types of
 	# chat/interaction/etc.
-	player_to_npc_chat_range_in_blocks: 2
+	player_to_npc_chat_range_in_blocks: 3
 	npc_to_player_chat_range_in_blocks: 7
 	npc_emote_range_in_blocks: 7
 	player_to_npc_shout_range_in_blocks: 15
 	npc_to_player_shout_range_in_blocks: 15
-	player_to_npc_whisper_range_in_blocks: 2
+	player_to_npc_whisper_range_in_blocks: 3
 	npc_to_player_whisper_range_in_blocks: 3
 
 	 */
 
 	public int PlayerToNpcChatRangeInBlocks() {
-		return plugin.getConfig().getInt("player_to_npc_chat_range_in_blocks", 2);
+		return plugin.getConfig().getInt("player_to_npc_chat_range_in_blocks", 3);
 	}
 
 	public int NpcToPlayerChatRangeInBlocks() {
@@ -117,7 +130,7 @@ public class Settings {
 	}
 
 	public int PlayerToNpcWhisperRangeInBlocks() {
-		return plugin.getConfig().getInt("player_to_npc_whisper_range_in_blocks", 2);
+		return plugin.getConfig().getInt("player_to_npc_whisper_range_in_blocks", 3);
 	}
 
 	public int NpcToPlayerWhisperRangeInBlocks() {
