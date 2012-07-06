@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.npc.NPC;
@@ -86,7 +87,11 @@ public class GetScript {
 
 		String theScript = "none";
 		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
-		if (scriptList.isEmpty()) { return theScript; }
+		if (scriptList.isEmpty()) { 
+			if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "getInteractScript: scriptList = empty");
+			return theScript; 
+			}
+		
 		List<String> interactScripts = new ArrayList<String>();
 
 		/*
@@ -103,7 +108,10 @@ public class GetScript {
 
 		for (String thisScript : scriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
-			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) interactScripts.add(thisScript);
+			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) {
+				if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "getInteractScript: Script " + thisScript + " meets requirements, adding to list.");
+				interactScripts.add(thisScript);
+			}
 		}
 
 		/*
