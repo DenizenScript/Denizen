@@ -110,7 +110,7 @@ public class GetScript {
 			String [] thisScriptArray = thisScript.split(" ", 2);
 			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) {
 				if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "getInteractScript: Script " + thisScript + " meets requirements, adding to list.");
-				interactScripts.add(thisScript.split(" ", 2)[1]);
+				interactScripts.add(thisScript);
 			}
 		}
 
@@ -128,7 +128,7 @@ public class GetScript {
 		}
 		else if (interactScripts.size() == 1) theScript = interactScripts.get(0);
 
-		return theScript;
+		return theScript.split(" ", 2)[1];
 	}
 
 
