@@ -69,7 +69,7 @@ public class Denizen extends JavaPlugin {
 	public static Map<NPC, Location>    previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
 	public static Map<Player, Long>   interactCooldown = new ConcurrentHashMap<Player, Long>();
 	public static Map<Player, Long>   locationCooldown = new ConcurrentHashMap<Player, Long>();
-	public static Boolean                    DebugMode = false;
+	public Boolean                    DebugMode = false;
 
 	/* --------- */
 
@@ -461,13 +461,13 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("debug")) {
 
-			if (!Denizen.DebugMode) { 
+			if (!DebugMode) { 
 				DebugMode = true; 
 				player.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode ON.");   // Talk to the player.
 				return true;
 			}
 
-			else if (Denizen.DebugMode) { 
+			else if (DebugMode) { 
 				DebugMode = false; 
 				player.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode OFF.");   // Talk to the player.
 				return true;

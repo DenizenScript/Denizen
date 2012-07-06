@@ -255,10 +255,11 @@ public class DenizenCharacter extends Character implements Listener {
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		try {
+//		try {
 
 			/* Get the script to use */
 			String theScript = plugin.getScript.getInteractScript(theDenizen, thePlayer);
+			if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "DenizenClicked: theScript = " + theScript);
 
 			/* No script meets requirements, let's let the player know. */
 			if (theScript.equals("none")) {
@@ -275,9 +276,9 @@ public class DenizenCharacter extends Character implements Listener {
 			else if (!theScript.equals("none")) 
 				plugin.scriptEngine.parseClickScript(theDenizen, thePlayer, plugin.getScript.getNameFromEntry(theScript));
 
-		} catch (Exception e) {
-			plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
-		}
+	//	} catch (Exception e) {
+	//		plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
+	//	}
 
 		return;
 	}
