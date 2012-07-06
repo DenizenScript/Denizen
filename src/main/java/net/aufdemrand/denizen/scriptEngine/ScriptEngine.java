@@ -261,7 +261,7 @@ public class ScriptEngine {
 
 		/* New ScriptCommand list built, now let's add it into the queue */
 		List<ScriptCommand> scriptCommandList = new ArrayList<ScriptCommand>();
-		if (!taskQue.get(thePlayer).isEmpty())
+		if (taskQue.containsKey(thePlayer))
 			scriptCommandList.addAll(taskQue.get(thePlayer));
 
 		/* Keeps the commandQue from removing items while
