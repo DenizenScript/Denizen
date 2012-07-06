@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,7 +51,7 @@ public class ScriptEngine {
 	public enum QueueType {
 		TRIGGER, TASK, ACTIVITY, CUSTOM
 	}
-	
+
 	public enum CommandHas {
 		SOME, MORE, MOST;
 	}
@@ -243,12 +244,16 @@ public class ScriptEngine {
 
 		/* Let's get the Script from the file and turn it into ScriptCommands */
 		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Click Trigger.Script");
+
+		if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "parseClickScript: Number of items to parse: " + chatScriptItems.size());
+
 		for (String thisItem : chatScriptItems) {
 			String[] scriptEntry = new String[2];
 			scriptEntry = thisItem.split(" ", 2);
 			try {
 				/* Build new script commands */
 				scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep));
+				if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "parseClickScript: Building ScriptCommand with " + thisItem);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -261,7 +266,11 @@ public class ScriptEngine {
 		working on them here. They will be added back in. */ 
 		taskQue.remove(thePlayer); 
 
-		scriptCommandList.addAll(scriptCommands);
+		if (!scriptCommands.isEmpty())
+			scriptCommandList.addAll(scriptCommands);
+		else
+			if (plugin.DebugMode) plugin.getLogger().log(Level.SEVERE, "No items in the step to add!");
+
 		taskQue.put(thePlayer, scriptCommandList);
 
 		return true;
@@ -341,8 +350,8 @@ public class ScriptEngine {
 
 	}
 
-	
-	
+
+
 	/** Adds commands to a QueueType  */
 
 	public void addToQue(Player thePlayer, List<ScriptCommand> scriptCommands, QueueType queueType) {
@@ -400,7 +409,7 @@ public class ScriptEngine {
 
 	}
 
-	
+
 
 	public void finishLocationTask(Player thePlayer, String taskId) {
 
@@ -443,7 +452,7 @@ public class ScriptEngine {
 		}
 	}
 
-	
+
 
 	/* Builds arguments array, recognizing items in quotes as a single item 
 	 * 
@@ -452,32 +461,32 @@ public class ScriptEngine {
 	 * as this is pretty much a copy/paste.
 	 * 
 	 * Perfect!  */
-	
+
 	private String[] buildArgs(String stringArgs) {
 		List<String> matchList = new ArrayList<String>();
 		Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
 		Matcher regexMatcher = regex.matcher(stringArgs);
 		while (regexMatcher.find()) {
-		    if (regexMatcher.group(1) != null) {
-		        // Add double-quoted string without the quotes
-		        matchList.add(regexMatcher.group(1));
-		    } else if (regexMatcher.group(2) != null) {
-		        // Add single-quoted string without the quotes
-		        matchList.add(regexMatcher.group(2));
-		    } else {
-		        // Add unquoted word
-		        matchList.add(regexMatcher.group());
-		    }
+			if (regexMatcher.group(1) != null) {
+				// Add double-quoted string without the quotes
+				matchList.add(regexMatcher.group(1));
+			} else if (regexMatcher.group(2) != null) {
+				// Add single-quoted string without the quotes
+				matchList.add(regexMatcher.group(2));
+			} else {
+				// Add unquoted word
+				matchList.add(regexMatcher.group());
+			}
 		} 
 		String[] split = new String[matchList.size()];
 		matchList.toArray(split);
 		return split;
 	}
 
-	
-	
+
+
 	/* Engaged NPCs cannot interact with Players */
-	
+
 	private Map<NPC, Long> engagedNPC = new HashMap<NPC, Long>();
 
 	public boolean getEngaged(NPC theDenizen) {
@@ -486,16 +495,16 @@ public class ScriptEngine {
 				return true;
 		return false;
 	}
-	
+
 	public void setEngaged(NPC theDenizen, boolean engaged) {
 		if (engaged) engagedNPC.put(theDenizen, System.currentTimeMillis() + plugin.settings.EngageTimeoutInSeconds() * 1000 );
 		if (!engaged) engagedNPC.remove(theDenizen);
 	}
-	
+
 	public void setEngaged(NPC theDenizen, Integer duration) {
 		engagedNPC.put(theDenizen, System.currentTimeMillis() + duration * 1000 );
 
 	}
-	
+
 
 }
