@@ -244,7 +244,7 @@ public class ScriptEngine {
 
 		/* Let's get the Script from the file and turn it into ScriptCommands */
 		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Click Trigger.Script");
-
+		if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "parseClickScript: Parsing: " + theScript + ".Steps." + theStep + ".Click Trigger.Script");
 		if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "parseClickScript: Number of items to parse: " + chatScriptItems.size());
 
 		for (String thisItem : chatScriptItems) {
