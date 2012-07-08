@@ -274,7 +274,7 @@ public class DenizenCharacter extends Character implements Listener {
 
 			/* Script does match, let's send the script to the parser */
 			else if (!theScript.equals("none")) 
-				plugin.scriptEngine.parseClickScript(theDenizen, thePlayer, plugin.getScript.getNameFromEntry(theScript));
+				plugin.scriptEngine.parseClickScript(theDenizen, thePlayer, theScript);
 
 	//	} catch (Exception e) {
 	//		plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
