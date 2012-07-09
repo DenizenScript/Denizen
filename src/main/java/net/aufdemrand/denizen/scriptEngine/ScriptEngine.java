@@ -82,15 +82,25 @@ public class ScriptEngine {
 
 						/* Feeds the executer ScriptCommands as long as they are instant commands ("^"), otherwise
 						 * runs one command, removes it from the queue, and moves on to the next player. */
+						boolean instantly;
+						
 						do { 
+							instantly = false;
 							ScriptCommand theCommand = theEntry.getValue().get(0);
 							theCommand.setSendingQueue(QueueType.TRIGGER);
 							plugin.executer.execute(theCommand);
+
+							// Instant command check
+							if (theEntry.getValue().size() > 1
+									&& theEntry.getValue().get(0).isInstant())
+								instantly = true; 
+							// ----
+							
 							theEntry.getValue().remove(0);
 
 							/* Updates the triggerQue map */
 							triggerQue.put(theEntry.getKey(), theEntry.getValue());
-						} while (theEntry.getValue().get(0).isInstant());
+						} while (instantly);
 					}
 				}
 			}
@@ -104,13 +114,24 @@ public class ScriptEngine {
 			for (Entry<Player, List<ScriptCommand>> theEntry : taskQue.entrySet()) {
 				if (!theEntry.getValue().isEmpty()) {
 					if (theEntry.getValue().get(0).getDelayedTime() < System.currentTimeMillis()) {
+						boolean instantly;
 						do { 
+							instantly = false;
 							ScriptCommand theCommand = theEntry.getValue().get(0);
 							theCommand.setSendingQueue(QueueType.TASK);
 							plugin.executer.execute(theCommand);
+
+							// Instant command check
+							if (theEntry.getValue().size() > 1
+									&& theEntry.getValue().get(0).isInstant())
+								instantly = true; 
+							// ----
+							
 							theEntry.getValue().remove(0);
 							taskQue.put(theEntry.getKey(), theEntry.getValue());
-						} while (theEntry.getValue().get(0).isInstant());
+
+						} while (instantly);
+
 					}
 				}
 			}
@@ -203,14 +224,14 @@ public class ScriptEngine {
 				}
 
 				/* New ScriptCommand list built, now let's add it into the queue */
-				List<ScriptCommand> scriptCommandList = taskQue.get(thePlayer);
+				List<ScriptCommand> scriptCommandList = triggerQue.get(thePlayer);
 
 				/* Keeps the commandQue from removing items while
 				working on them here. They will be added back in. */ 
-				taskQue.remove(thePlayer); 
+				triggerQue.remove(thePlayer); 
 
 				scriptCommandList.addAll(scriptCommands);
-				taskQue.put(thePlayer, scriptCommandList);
+				triggerQue.put(thePlayer, scriptCommandList);
 
 				return true;
 			}
@@ -255,7 +276,7 @@ public class ScriptEngine {
 			} else {
 				scriptEntry = thisItem.split(" ", 2);
 			}
-			
+
 			try {
 				/* Build new script commands */
 				scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep));
@@ -267,19 +288,19 @@ public class ScriptEngine {
 
 		/* New ScriptCommand list built, now let's add it into the queue */
 		List<ScriptCommand> scriptCommandList = new ArrayList<ScriptCommand>();
-		if (taskQue.containsKey(thePlayer))
-			scriptCommandList.addAll(taskQue.get(thePlayer));
+		if (triggerQue.containsKey(thePlayer))
+			scriptCommandList.addAll(triggerQue.get(thePlayer));
 
 		/* Keeps the commandQue from removing items while
 		working on them here. They will be added back in. */ 
-		taskQue.remove(thePlayer); 
+		triggerQue.remove(thePlayer); 
 
 		if (!scriptCommands.isEmpty())
 			scriptCommandList.addAll(scriptCommands);
 		else
 			if (plugin.DebugMode) plugin.getLogger().log(Level.SEVERE, "No items in the script to add!");
 
-		taskQue.put(thePlayer, scriptCommandList);
+		triggerQue.put(thePlayer, scriptCommandList);
 
 		return true;
 	}
@@ -471,9 +492,9 @@ public class ScriptEngine {
 	 * Perfect!  */
 
 	private String[] buildArgs(String stringArgs) {
-		
+
 		if (stringArgs == null) return null;
-		
+
 		List<String> matchList = new ArrayList<String>();
 		Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
 		Matcher regexMatcher = regex.matcher(stringArgs);
