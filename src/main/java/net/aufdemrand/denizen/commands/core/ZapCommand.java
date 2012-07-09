@@ -12,9 +12,9 @@ import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
  */
 
 public class ZapCommand extends Command {
-	
+
 	/* ZAP (Step #)
-	
+
 	/* Arguments: [] - Required, () - Optional 
 	 * (Step #) The step to make the current step. If not specified, assumes current step + 1. 
 	 * 
@@ -29,12 +29,14 @@ public class ZapCommand extends Command {
 		Integer theStep = theCommand.getStep() + 1;
 
 		/* Get arguments */
-		for (String thisArgument : theCommand.arguments()) {
-			if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
-				theStep = Integer.valueOf(thisArgument);
+		if (theCommand.arguments() != null) {
+			for (String thisArgument : theCommand.arguments()) {
+				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
+					theStep = Integer.valueOf(thisArgument);
 
-			else if (thisArgument.contains("SCRIPT:")) 
-				theScript = thisArgument.split(":", 2)[1];
+				else if (thisArgument.contains("SCRIPT:")) 
+					theScript = thisArgument.split(":", 2)[1];
+			}
 		}
 
 		/* Set saves.yml */

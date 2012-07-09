@@ -255,6 +255,7 @@ public class ScriptEngine {
 			} else {
 				scriptEntry = thisItem.split(" ", 2);
 			}
+			
 			try {
 				/* Build new script commands */
 				scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep));
