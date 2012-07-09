@@ -249,7 +249,12 @@ public class ScriptEngine {
 
 		for (String thisItem : chatScriptItems) {
 			String[] scriptEntry = new String[2];
-			scriptEntry = thisItem.split(" ", 2);
+			if (thisItem.split(" ", 2).length == 1) {
+				scriptEntry[0] = thisItem;
+				scriptEntry[1] = null;
+			} else {
+				scriptEntry = thisItem.split(" ", 2);
+			}
 			try {
 				/* Build new script commands */
 				scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep));
@@ -271,7 +276,7 @@ public class ScriptEngine {
 		if (!scriptCommands.isEmpty())
 			scriptCommandList.addAll(scriptCommands);
 		else
-			if (plugin.DebugMode) plugin.getLogger().log(Level.SEVERE, "No items in the step to add!");
+			if (plugin.DebugMode) plugin.getLogger().log(Level.SEVERE, "No items in the script to add!");
 
 		taskQue.put(thePlayer, scriptCommandList);
 
@@ -465,6 +470,9 @@ public class ScriptEngine {
 	 * Perfect!  */
 
 	private String[] buildArgs(String stringArgs) {
+		
+		if (stringArgs == null) return null;
+		
 		List<String> matchList = new ArrayList<String>();
 		Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
 		Matcher regexMatcher = regex.matcher(stringArgs);
