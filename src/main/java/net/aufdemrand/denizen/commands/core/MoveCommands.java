@@ -73,11 +73,11 @@ public class MoveCommands extends Command {
 	}
 
 
-	private void look(NPC theDenizen, String lookWhere, int Duration) {
+	private void look(NPC theDenizen, String lookWhere, Integer duration) {
 
 		final Location restoreLocation = theDenizen.getBukkitEntity().getLocation();
 		final NPC restoreDenizen = theDenizen;
-		
+
 		if (lookWhere.equalsIgnoreCase("CLOSE")) {
 			if (!theDenizen.getTrait(LookClose.class).toggle())
 				theDenizen.getTrait(LookClose.class).toggle();
@@ -97,25 +97,22 @@ public class MoveCommands extends Command {
 			theDenizen.getBukkitEntity().getLocation()
 			.setYaw(theDenizen.getBukkitEntity().getLocation().getYaw() + 90);
 		}
-		
+
 		else if (plugin.bookmarks.exists(theDenizen, lookWhere)) {
 			Location lookLoc = plugin.bookmarks.get(theDenizen.getName(), lookWhere, BookmarkType.LOCATION);
 			theDenizen.getBukkitEntity().getLocation().setPitch(lookLoc.getPitch());
 			theDenizen.getBukkitEntity().getLocation().setYaw(lookLoc.getYaw());
 		}
 
-		
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			@Override
-			public void run() { 
+		if (duration != null) {
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				@Override
+				public void run() { 
+					restoreDenizen.getBukkitEntity().getLocation().setYaw(restoreLocation.getYaw());
+				}
+			}, duration * 20);
+		}
 
-				restoreDenizen.getBukkitEntity().getLocation().setYaw(restoreLocation.getYaw());
-			
-			}
-		}, Duration * 20);
 
-		
-		
-		
 	}
 }

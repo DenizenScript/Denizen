@@ -30,7 +30,7 @@ public class EngageCommand extends Command {
 	/* Modifiers:
 	 * (NPCID:#) Changes the Denizen to ENGAGE or DISENGAGE to the Citizens2 NPCID
 	 */
-	
+
 	@Override
 	public boolean execute(ScriptCommand theCommand) {
 
@@ -40,19 +40,21 @@ public class EngageCommand extends Command {
 		NPC theDenizen = theCommand.getDenizen();
 
 		/* Get arguments */
-		for (String thisArgument : theCommand.arguments()) {
-			if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
-				timedEngage = Integer.valueOf(thisArgument);
+		if (theCommand.arguments() != null) {
+			for (String thisArgument : theCommand.arguments()) {
+				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
+					timedEngage = Integer.valueOf(thisArgument);
 
-			if (thisArgument.toUpperCase().contains("NPCID:"))
-				try {
-					if (CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1])) != null)
-						theDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1]));	
-				} catch (Throwable e) {
-					theCommand.error("NPCID specified could not be matched to a Denizen.");
-					return false;
-				}
-		}	
+				if (thisArgument.toUpperCase().contains("NPCID:"))
+					try {
+						if (CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1])) != null)
+							theDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1]));	
+					} catch (Throwable e) {
+						theCommand.error("NPCID specified could not be matched to a Denizen.");
+						return false;
+					}
+			}	
+		}
 
 		/* If a DISENGAGE, take the Denizen out of the List. */
 		if (theCommand.getCommand().equalsIgnoreCase("DISENGAGE")) {
@@ -65,7 +67,7 @@ public class EngageCommand extends Command {
 			plugin.scriptEngine.setEngaged(theDenizen, timedEngage);
 		else 			
 			plugin.scriptEngine.setEngaged(theCommand.getDenizen(), true);
-		
+
 		return true;
 	}
 

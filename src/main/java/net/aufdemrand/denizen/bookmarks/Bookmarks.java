@@ -6,12 +6,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.DenizenCharacter;
+import net.aufdemrand.denizen.commands.core.noLeaves;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -134,7 +136,7 @@ public class Bookmarks {
 	}
 	
 	public Location get(String theDenizen, String nameOfLocation, BookmarkType bookmarkType) {
-
+		
 		List<String> locationList = null;
 		String[] theLocation = null;
 		Location locationBookmark = null;

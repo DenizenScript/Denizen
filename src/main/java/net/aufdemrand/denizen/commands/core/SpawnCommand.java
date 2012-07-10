@@ -59,19 +59,6 @@ public class SpawnCommand extends Command {
 	 * SPAWN 2 SHEEP COLORED:RED
 	 */
 
-	/* REMOVE [ENTITY_TYPE|MONSTERS|ANIMALS|CREATURES] [RADIUS] (Location Bookmark|Denizen Name:Location Bookmark) */
-
-	/* Arguments: [] - Required, () - Optional 
-	 * [ENTITY_TYPE] (or MONSTERS will remove all Hostile Mobs, Animals all Passive Mobs, and CREATURES will remove both hostile and passive mobs) 
-	 * [QUANTITY] Radius from location
-	 * (LOCATION BOOKMARK) Will default to the player location if not specified
-	 * 
-	 * Example Usages:
-	 * REMOVE CREATURES 10
-	 * REMOVE CREEPER 20
-	 * REMOVE BOAT 30 'Jakob the Fisherman:Fishing Hole'
-	 */
-	
 	@Override
 	public boolean execute(ScriptCommand theCommand) {
 
@@ -112,8 +99,11 @@ public class SpawnCommand extends Command {
 			// If argument is a valid bookmark, set theLocation.
 			else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
 				theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
-
-			// If argument is a 
+			else if (thisArgument.split(":").length == 2)
+				if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
+					theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
+			
+			// If argument is a modifier, modify
 			else if (thisArgument.toUpperCase().contains("SPREAD:"))
 				theSpread = Integer.valueOf(thisArgument.split(":", 2)[1]);
 
@@ -126,7 +116,7 @@ public class SpawnCommand extends Command {
 						PotionEffectType.getByName(thisArgument.split(":", 2)[1].split(" ")[0]),
 						Integer.MAX_VALUE,
 						theAmplifier);
-				} catch (Throwable e) {
+				} catch (Exception e) {
 					theCommand.error("Invalid syntax in EFFECT modifier.");
 					return false;
 				}
@@ -202,7 +192,7 @@ public class SpawnCommand extends Command {
 						if (hasColor != null) if (spawnedEntity instanceof Sheep) ((Sheep) spawnedEntity).setColor(DyeColor.valueOf(hasColor.toUpperCase()));
 						if (hasProfession != null) if (spawnedEntity instanceof Villager) ((Villager) spawnedEntity).setProfession(Profession.valueOf(hasProfession.toUpperCase()));
 					
-					} catch (Throwable e) {
+					} catch (Exception e) {
 						theCommand.error("Problem setting FLAG.");
 						return false;
 					}
@@ -215,6 +205,9 @@ public class SpawnCommand extends Command {
 			return true;
 		}
 
+		
+		
+		
 		theCommand.error("Unknown error. Check syntax.");
 		return false;
 	}
