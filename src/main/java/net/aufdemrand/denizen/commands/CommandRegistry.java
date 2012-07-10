@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.commands.core.EngageCommand;
+import net.aufdemrand.denizen.commands.core.SpawnCommand;
+import net.aufdemrand.denizen.commands.core.WaitCommand;
 import net.aufdemrand.denizen.commands.core.ZapCommand;
 
 public class CommandRegistry {
@@ -41,6 +44,19 @@ public class CommandRegistry {
 	public void registerCoreCommands() throws ActivationException {
 		ZapCommand zapCommand = new ZapCommand();
 		zapCommand.activateAs("ZAP");
+		
+		EngageCommand engageCommand = new EngageCommand();
+		engageCommand.activateAs("ENGAGE");
+		engageCommand.activateAs("DISENGAGE");
+		
+		WaitCommand waitCommand = new WaitCommand();
+		waitCommand.activateAs("WAIT");
+		waitCommand.activateAs("RESUME");
+		
+		SpawnCommand spawnCommand = new SpawnCommand();
+		spawnCommand.activateAs("SPAWN");
+	
+		
 	}
 
 

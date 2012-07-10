@@ -168,7 +168,6 @@ public class Denizen extends JavaPlugin {
 
 
 
-
 	/*
 	 * reloadScripts/getScripts
 	 * 

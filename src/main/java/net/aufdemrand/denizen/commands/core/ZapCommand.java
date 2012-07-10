@@ -34,6 +34,7 @@ public class ZapCommand extends Command {
 				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
 					theStep = Integer.valueOf(thisArgument);
 
+				
 				else if (thisArgument.contains("SCRIPT:")) 
 					theScript = thisArgument.split(":", 2)[1];
 			}

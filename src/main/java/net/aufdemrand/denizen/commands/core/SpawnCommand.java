@@ -59,6 +59,19 @@ public class SpawnCommand extends Command {
 	 * SPAWN 2 SHEEP COLORED:RED
 	 */
 
+	/* REMOVE [ENTITY_TYPE|MONSTERS|ANIMALS|CREATURES] [RADIUS] (Location Bookmark|Denizen Name:Location Bookmark) */
+
+	/* Arguments: [] - Required, () - Optional 
+	 * [ENTITY_TYPE] (or MONSTERS will remove all Hostile Mobs, Animals all Passive Mobs, and CREATURES will remove both hostile and passive mobs) 
+	 * [QUANTITY] Radius from location
+	 * (LOCATION BOOKMARK) Will default to the player location if not specified
+	 * 
+	 * Example Usages:
+	 * REMOVE CREATURES 10
+	 * REMOVE CREEPER 20
+	 * REMOVE BOAT 30 'Jakob the Fisherman:Fishing Hole'
+	 */
+	
 	@Override
 	public boolean execute(ScriptCommand theCommand) {
 
