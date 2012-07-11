@@ -203,7 +203,11 @@ public class CommandExecuter {
 
 				if (Character.isDigit(theTakeItem[0].charAt(0))) {
 					itemToTake.setTypeId(Integer.valueOf(theTakeItem[0]));
-					if (theTakeItem[1] != null) itemToTake.getData().setData(Byte.valueOf(theTakeItem[1]));
+					if (theTakeItem[1] != null) {
+						//itemToTake.getData().setData(Byte.valueOf(theTakeItem[1]));
+						// I had to recreate the itemStack with short instead of byte to get datavalues to work
+						itemToTake = new ItemStack(itemToTake.getType(), 0, (short) Integer.parseInt(theData));
+					}
 				}
 				else itemToTake.setType(Material.getMaterial(commandArgs[1].toUpperCase()));
 
