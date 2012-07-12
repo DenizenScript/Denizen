@@ -451,7 +451,7 @@ public class GetPlayer {
 
 					if (thePlayer.getItemInHand().getTypeId() == Integer.valueOf(theItem)
 							&& thePlayer.getItemInHand().getAmount() >= Integer.valueOf(theAmount)
-							&& thePlayer.getItemInHand().getData().getData() == Byte.valueOf(theData)) 
+							&& thePlayer.getItemInHand().getData().getData() == (byte)Integer.parseInt(theData)) 
 						outcome = true;
 
 				}
