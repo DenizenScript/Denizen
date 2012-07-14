@@ -26,19 +26,20 @@ public class ZapCommand extends Command {
 	public boolean execute(ScriptCommand theCommand) {
 
 		String theScript = theCommand.getScript();
-		Integer theStep = theCommand.getStep() + 1;
+		Integer theStep = null;
 
 		/* Get arguments */
 		if (theCommand.arguments() != null) {
 			for (String thisArgument : theCommand.arguments()) {
 				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
 					theStep = Integer.valueOf(thisArgument);
-
 				
 				else if (thisArgument.contains("SCRIPT:")) 
 					theScript = thisArgument.split(":", 2)[1];
 			}
 		}
+		
+		if (theStep == null) theStep = plugin.scriptEngine.getCurrentStep(theCommand.getPlayer(), theScript);
 
 		/* Set saves.yml */
 		if (theCommand.getPlayer() != null && theScript != null && theStep != null) {

@@ -135,23 +135,7 @@ public class GetScript {
 
 
 
-	/* 
-	 * GetCurrentStep
-	 *
-	 * Requires the Player and the Script.
-	 * Reads the config.yml to find the current step that the player is on
-	 * for the specified script.
-	 *
-	 */
 
-	public int getCurrentStep(Player thePlayer, String theScript) {
-
-		int currentStep = 1;
-		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
-			currentStep =  plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
-
-		return currentStep;
-	}
 
 
 

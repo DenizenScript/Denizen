@@ -144,7 +144,7 @@ public class DenizenCharacter extends Character implements Listener {
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
 			try {
-				
+
 				/* ---- saves.yml format ----
 				 * Players:
 				 *   aufdemrand:
@@ -180,7 +180,7 @@ public class DenizenCharacter extends Character implements Listener {
 									plugin.saveSaves();
 								}
 							}
-							
+
 						}
 					}
 				}
@@ -255,7 +255,7 @@ public class DenizenCharacter extends Character implements Listener {
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-//		try {
+		try {
 
 			/* Get the script to use */
 			String theScript = plugin.getScript.getInteractScript(theDenizen, thePlayer);
@@ -276,9 +276,9 @@ public class DenizenCharacter extends Character implements Listener {
 			else if (!theScript.equals("none")) 
 				plugin.scriptEngine.parseClickScript(theDenizen, thePlayer, theScript);
 
-	//	} catch (Exception e) {
-	//		plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
-	//	}
+		} catch (Exception e) {
+			plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
+		}
 
 		return;
 	}

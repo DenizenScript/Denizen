@@ -183,7 +183,7 @@ public class ScriptEngine {
 
 	public boolean parseChatScript(NPC theDenizen, Player thePlayer, String theScript, String playerMessage) {
 
-		int theStep = plugin.getScript.getCurrentStep(thePlayer, theScript);
+		int theStep = getCurrentStep(thePlayer, theScript);
 		List<ScriptCommand> scriptCommands = new ArrayList<ScriptCommand>();
 
 		/* Get Chat Triggers and check each to see if there are any matches. */
@@ -260,7 +260,7 @@ public class ScriptEngine {
 
 	public boolean parseClickScript(NPC theDenizen, Player thePlayer, String theScript) {
 
-		int theStep = plugin.getScript.getCurrentStep(thePlayer, theScript);
+		int theStep = getCurrentStep(thePlayer, theScript);
 		List<ScriptCommand> scriptCommands = new ArrayList<ScriptCommand>();
 
 		/* Let's get the Script from the file and turn it into ScriptCommands */
@@ -538,5 +538,23 @@ public class ScriptEngine {
 
 	}
 
+	
+	/* 
+	 * GetCurrentStep
+	 *
+	 * Requires the Player and the Script.
+	 * Reads the config.yml to find the current step that the player is on
+	 * for the specified script.
+	 *
+	 */
+
+	public int getCurrentStep(Player thePlayer, String theScript) {
+
+		int currentStep = 1;
+		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
+			currentStep =  plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
+
+		return currentStep;
+	}
 
 }
