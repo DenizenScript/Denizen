@@ -11,6 +11,7 @@ import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -255,11 +256,51 @@ public class DenizenCharacter extends Character implements Listener {
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		try {
+
+		if (thePlayer.isOp() && thePlayer.isSneaking() && !thePlayer.hasPermission("denizen.deny.info")) {
+
+			thePlayer.sendMessage(ChatColor.GOLD + "------ Denizen info:");
+			thePlayer.sendMessage("");
+			
+			/* Show Citizens NPC info. */
+			
+			thePlayer.sendMessage(ChatColor.GRAY + "C2 NPCID: " + ChatColor.GREEN + theDenizen.getId() + ChatColor.GRAY + "   Name: " + ChatColor.GREEN + theDenizen.getName());
+			thePlayer.sendMessage(ChatColor.GRAY + "Use " + ChatColor.WHITE + "/denizen setname" + ChatColor.GRAY + " to change the Denizen's name.  IDs are locked.");
+			thePlayer.sendMessage("");
+
+			
+			thePlayer.sendMessage(ChatColor.GRAY + "Assignments:");
+			thePlayer.sendMessage(ChatColor.GREEN + "Assigned to Name.  " + ChatColor.YELLOW + "  Assigned to Id.");
+			thePlayer.sendMessage("");
+			
+			/* Show Assigned Scripts. */
+		
+			thePlayer.sendMessage(ChatColor.GRAY + "Interact Scripts:");
+			for (String scriptEntry : plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts"))
+				thePlayer.sendMessage(ChatColor.GREEN + "  " + scriptEntry);
+			for (String scriptEntry : plugin.getAssignments().getStringList("Denizens." + theDenizen.getId() + ".Interact Scripts"))
+				thePlayer.sendMessage(ChatColor.YELLOW + "  " + scriptEntry);
+			
+			if (plugin.getAssignments().getStringList("Denizens." + theDenizen.getId() + ".Interact Scripts").isEmpty()
+					&& plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts").isEmpty())
+				thePlayer.sendMessage(ChatColor.RED + "  No scripts assigned!");
+			
+			thePlayer.sendMessage(ChatColor.GRAY + "Use " + ChatColor.WHITE + "/denizen assign" + ChatColor.GRAY + " to assign scripts. Use " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
+			thePlayer.sendMessage("");
+			
+			/* Show Bookmarks */
+			
+			thePlayer.sendMessage(ChatColor.GRAY + "Location Bookmarks:");
+			thePlayer.sendMessage("Name: " + theDenizen.getName());
+			
+			
+		}
+		
+		else try {
 
 			/* Get the script to use */
 			String theScript = plugin.getScript.getInteractScript(theDenizen, thePlayer);
-			if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "DenizenClicked: theScript = " + theScript);
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "DenizenClicked: theScript = " + theScript);
 
 			/* No script meets requirements, let's let the player know. */
 			if (theScript.equals("none")) {

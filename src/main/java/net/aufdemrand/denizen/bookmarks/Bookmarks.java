@@ -6,14 +6,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
-import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.DenizenCharacter;
-import net.aufdemrand.denizen.commands.core.noLeaves;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -36,11 +34,11 @@ public class Bookmarks {
 	 */
 
 	public boolean checkLocation(Player thePlayer, Location theLocation, int theLeeway) {
-		if (Math.abs(thePlayer.getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
 				> theLeeway) return false;
-		if (Math.abs(thePlayer.getLocation().getBlockY() - Math.abs(theLocation.getBlockY())) 
+		if (Math.abs(thePlayer.getLocation().getBlockY() - theLocation.getBlockY()) 
 				> theLeeway) return false;
-		if (Math.abs(thePlayer.getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
 				> theLeeway) return false;
 		if (!thePlayer.getWorld().getName().equals(theLocation.getWorld().getName()))
 				return false;
@@ -50,11 +48,11 @@ public class Bookmarks {
 	}
 
 	public boolean checkLocation(NPC theDenizen, Location theLocation, int theLeeway) {
-		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - theLocation.getBlockX()) 
 				> theLeeway) return false;
-		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockY() - Math.abs(theLocation.getBlockY())) 
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockY() - theLocation.getBlockY()) 
 				> theLeeway) return false;
-		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - theLocation.getBlockX()) 
 				> theLeeway) return false;
 		if (!theDenizen.getBukkitEntity().getWorld().getName().equals(theLocation.getWorld().getName()))
 				return false;

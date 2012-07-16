@@ -265,8 +265,8 @@ public class ScriptEngine {
 
 		/* Let's get the Script from the file and turn it into ScriptCommands */
 		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Click Trigger.Script");
-		if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "parseClickScript: Parsing: " + theScript + ".Steps." + theStep + ".Click Trigger.Script");
-		if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "parseClickScript: Number of items to parse: " + chatScriptItems.size());
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "parseClickScript: Parsing: " + theScript + ".Steps." + theStep + ".Click Trigger.Script");
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "parseClickScript: Number of items to parse: " + chatScriptItems.size());
 
 		for (String thisItem : chatScriptItems) {
 			String[] scriptEntry = new String[2];
@@ -280,7 +280,7 @@ public class ScriptEngine {
 			try {
 				/* Build new script commands */
 				scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep));
-				if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "parseClickScript: Building ScriptCommand with " + thisItem);
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "parseClickScript: Building ScriptCommand with " + thisItem);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -298,7 +298,7 @@ public class ScriptEngine {
 		if (!scriptCommands.isEmpty())
 			scriptCommandList.addAll(scriptCommands);
 		else
-			if (plugin.DebugMode) plugin.getLogger().log(Level.SEVERE, "No items in the script to add!");
+			if (plugin.debugMode) plugin.getLogger().log(Level.SEVERE, "No items in the script to add!");
 
 		triggerQue.put(thePlayer, scriptCommandList);
 

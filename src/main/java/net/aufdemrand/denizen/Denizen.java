@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.activation.ActivationException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -44,14 +43,11 @@ public class Denizen extends JavaPlugin {
 
 	public Economy   economy = null;
 	public Permission  perms = null;
-
+	
 	public Settings               settings = new Settings(this);
 	public DenizenCharacter      character = new DenizenCharacter();
-//	public CommandExecuter commandExecuter = new CommandExecuter(this);
-	
 	public Executer               executer = new Executer(this);
 	public CommandRegistry commandRegistry = new CommandRegistry(this);
-	
 	public ScriptEngine       scriptEngine = new ScriptEngine(this);
 	public GetDenizen           getDenizen = new GetDenizen(this);
 	public GetPlayer             getPlayer = new GetPlayer(this);
@@ -61,17 +57,14 @@ public class Denizen extends JavaPlugin {
 	public Bookmarks             bookmarks = new Bookmarks(this);
 	public Utilities			 utilities = new Utilities(this);
 
-	
-	/* playerQue holds script commands for each Player */
+	public Boolean   debugMode = false;
+	public Boolean preciseMode = false;				  
 
-			
-	/* Need to place these in appropriate classes with getters/setters to avoid making them static */
+
+	/* TODO: Need to place these in appropriate classes with getters/setters to avoid making them static */
 	public static Map<NPC, Location>    previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
 	public static Map<Player, Long>   interactCooldown = new ConcurrentHashMap<Player, Long>();
 	public static Map<Player, Long>   locationCooldown = new ConcurrentHashMap<Player, Long>();
-	public Boolean                    DebugMode = false;
-
-	/* --------- */
 
 	
 
@@ -208,8 +201,7 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-
-
+	
 	/*
 	 * reloadSaves/getSaves/saveSaves
 	 * 
@@ -251,8 +243,6 @@ public class Denizen extends JavaPlugin {
 			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + savesConfigFile, ex);
 		}
 	}
-
-
 
 
 
@@ -460,14 +450,14 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("debug")) {
 
-			if (!DebugMode) { 
-				DebugMode = true; 
+			if (!debugMode) { 
+				debugMode = true; 
 				player.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode ON.");   // Talk to the player.
 				return true;
 			}
 
-			else if (DebugMode) { 
-				DebugMode = false; 
+			else if (debugMode) { 
+				debugMode = false; 
 				player.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode OFF.");   // Talk to the player.
 				return true;
 			}
@@ -530,7 +520,8 @@ public class Denizen extends JavaPlugin {
 			else {
 				getSaves().set("Denizens." + ThisNPC.getName() + ".Position.Standing", args[1]);
 				player.sendMessage(ChatColor.GREEN + "Location enforced. This can be changed or disabled");
-				player.sendMessage(ChatColor.GREEN + "with script commands.");
+				player.sendMessage(ChatColor.GREEN + "with script commands. Use /denizen stand clear");
+				player.sendMessage(ChatColor.GREEN + "to cancel.");
 				return true;
 			}
 

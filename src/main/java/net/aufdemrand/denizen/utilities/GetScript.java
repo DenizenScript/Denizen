@@ -88,7 +88,7 @@ public class GetScript {
 		String theScript = "none";
 		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
 		if (scriptList.isEmpty()) { 
-			if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "getInteractScript: scriptList = empty");
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "getInteractScript: scriptList = empty");
 			return theScript; 
 			}
 		
@@ -109,7 +109,7 @@ public class GetScript {
 		for (String thisScript : scriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
 			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) {
-				if (plugin.DebugMode) plugin.getLogger().log(Level.INFO, "getInteractScript: Script " + thisScript + " meets requirements, adding to list.");
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "getInteractScript: Script " + thisScript + " meets requirements, adding to list.");
 				interactScripts.add(thisScript);
 			}
 		}
