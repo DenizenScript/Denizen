@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -261,41 +262,110 @@ public class DenizenCharacter extends Character implements Listener {
 
 			thePlayer.sendMessage(ChatColor.GOLD + "------ Denizen info:");
 			thePlayer.sendMessage("");
-			
+
 			/* Show Citizens NPC info. */
-			
+
 			thePlayer.sendMessage(ChatColor.GRAY + "C2 NPCID: " + ChatColor.GREEN + theDenizen.getId() + ChatColor.GRAY + "   Name: " + ChatColor.GREEN + theDenizen.getName());
 			thePlayer.sendMessage(ChatColor.GRAY + "Use " + ChatColor.WHITE + "/denizen setname" + ChatColor.GRAY + " to change the Denizen's name.  IDs are locked.");
+			if (plugin.getSaves().contains("Denizens." + theDenizen.getId() + ".Position.Standing"))
+				if (plugin.getSaves().getString("Denizens." + theDenizen.getId() + ".Position.Standing") != null)
+					thePlayer.sendMessage(ChatColor.GRAY + "Current standing position: " + ChatColor.GREEN + plugin.getSaves().getString("Denizens." + theDenizen.getId() + ".Position.Standing"));
 			thePlayer.sendMessage("");
 
-			
+
 			thePlayer.sendMessage(ChatColor.GRAY + "Assignments:");
-			thePlayer.sendMessage(ChatColor.GREEN + "Assigned to Name.  " + ChatColor.YELLOW + "  Assigned to Id.");
+			thePlayer.sendMessage(ChatColor.GREEN + "Assigned to Name.  " + ChatColor.YELLOW + "  Assigned to ID.");
 			thePlayer.sendMessage("");
-			
+
 			/* Show Assigned Scripts. */
-		
+
+			boolean scriptsPresent = false;
 			thePlayer.sendMessage(ChatColor.GRAY + "Interact Scripts:");
-			for (String scriptEntry : plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts"))
-				thePlayer.sendMessage(ChatColor.GREEN + "  " + scriptEntry);
-			for (String scriptEntry : plugin.getAssignments().getStringList("Denizens." + theDenizen.getId() + ".Interact Scripts"))
-				thePlayer.sendMessage(ChatColor.YELLOW + "  " + scriptEntry);
-			
-			if (plugin.getAssignments().getStringList("Denizens." + theDenizen.getId() + ".Interact Scripts").isEmpty()
-					&& plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts").isEmpty())
-				thePlayer.sendMessage(ChatColor.RED + "  No scripts assigned!");
-			
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Interact Scripts")) {
+				if (!plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts").isEmpty()) scriptsPresent = true;
+				for (String scriptEntry : plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts"))
+					thePlayer.sendMessage(ChatColor.GREEN + "  " + scriptEntry);
+			}
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getId() + ".Interact Scripts")) {
+				if (!plugin.getAssignments().getStringList("Denizens." + theDenizen.getId() + ".Interact Scripts").isEmpty()) scriptsPresent = true;
+				for (String scriptEntry : plugin.getAssignments().getStringList("Denizens." + theDenizen.getId() + ".Interact Scripts"))
+					thePlayer.sendMessage(ChatColor.YELLOW + "  " + scriptEntry);
+			}
+			if (!scriptsPresent) thePlayer.sendMessage(ChatColor.RED + "  No scripts assigned!");
+
 			thePlayer.sendMessage(ChatColor.GRAY + "Use " + ChatColor.WHITE + "/denizen assign" + ChatColor.GRAY + " to assign scripts. Use " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
 			thePlayer.sendMessage("");
-			
+
 			/* Show Bookmarks */
+
+			DecimalFormat lf = new DecimalFormat("###.##");
+			boolean bookmarksPresent = false;
+			thePlayer.sendMessage(ChatColor.GRAY + "Bookmarks:");
 			
-			thePlayer.sendMessage(ChatColor.GRAY + "Location Bookmarks:");
-			thePlayer.sendMessage("Name: " + theDenizen.getName());
+			/* Location Bookmarks */
+			if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
+				if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location").isEmpty()) bookmarksPresent = true;
+				for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
+					if (bookmarkEntry.split(";").length >= 6) thePlayer.sendMessage(ChatColor.GREEN + "  " 
+							+ "Name: " + bookmarkEntry.split(" ")[0]
+									+ "  World: " + bookmarkEntry.split(" ")[1].split(";")[0]
+											+ "  X: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
+											+ "  Y: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
+											+ "  Z: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
+											+ "  Pitch: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[4]))
+											+ "  Yaw: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[5])));
+				}
+			}
+
+			if (plugin.getSaves().contains("Denizens." + theDenizen.getId() + ".Bookmarks.Location")) {
+				if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Location").isEmpty()) bookmarksPresent = true;
+				for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Location")) {
+					if (bookmarkEntry.split(";").length >= 6) thePlayer.sendMessage(ChatColor.YELLOW + "  " 
+							+ "Name: " + bookmarkEntry.split(" ")[0]
+									+ "  World: " + bookmarkEntry.split(" ")[1].split(";")[0]
+											+ "  X: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
+											+ "  Y: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
+											+ "  Z: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
+											+ "  Pitch: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[4]))
+											+ "  Yaw: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[5])));
+				}
+			}
+	
 			
+			/* Block Bookmarks */
+			if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Block")) {
+				if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block").isEmpty()) bookmarksPresent = true;
+				for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block")) {
+					if (bookmarkEntry.split(";").length >= 4) thePlayer.sendMessage(ChatColor.GREEN + "  " 
+							+ "Name: " + bookmarkEntry.split(" ")[0]
+									+ "  World: " + bookmarkEntry.split(" ")[1].split(";")[0]
+											+ "  X: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
+											+ "  Y: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
+											+ "  Z: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
+											+ "  Block: " + plugin.bookmarks.get(theDenizen, bookmarkEntry.split(" ")[0], BookmarkType.BLOCK).getBlock().getType().toString());
+				}
+			}
+
+			if (plugin.getSaves().contains("Denizens." + theDenizen.getId() + ".Bookmarks.Block")) {
+				if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Block").isEmpty()) bookmarksPresent = true;
+				for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Block")) {
+					if (bookmarkEntry.split(";").length >= 4) thePlayer.sendMessage(ChatColor.YELLOW + "  " 
+							+ "Name: " + bookmarkEntry.split(" ")[0]
+									+ "  World: " + bookmarkEntry.split(" ")[1].split(";")[0]
+											+ "  X: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
+											+ "  Y: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
+											+ "  Z: " + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
+											+ "  Block: " + plugin.bookmarks.get(theDenizen, bookmarkEntry.split(" ")[0], BookmarkType.BLOCK).getBlock().getType().toString());				}
+			}
+				
 			
+			if (!bookmarksPresent) thePlayer.sendMessage(ChatColor.RED + "  No bookmarks defined!");
+
+			thePlayer.sendMessage(ChatColor.GRAY + "Use " + ChatColor.WHITE + "/denizen bookmark" + ChatColor.GRAY + " to create bookmarks. Use " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
+			thePlayer.sendMessage("");		
+
 		}
-		
+
 		else try {
 
 			/* Get the script to use */
