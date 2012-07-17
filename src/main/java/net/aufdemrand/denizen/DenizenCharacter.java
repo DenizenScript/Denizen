@@ -258,7 +258,7 @@ public class DenizenCharacter extends Character implements Listener {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
-		if (thePlayer.isOp() && thePlayer.isSneaking() && !thePlayer.hasPermission("denizen.deny.info")) {
+		if (thePlayer.isOp() && thePlayer.isSneaking()) {
 
 			thePlayer.sendMessage(ChatColor.GOLD + "------ Denizen info:");
 			thePlayer.sendMessage("");
