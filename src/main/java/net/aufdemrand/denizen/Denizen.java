@@ -58,7 +58,8 @@ public class Denizen extends JavaPlugin {
 	public Utilities			 utilities = new Utilities(this);
 
 	public Boolean   debugMode = false;
-	public Boolean preciseMode = false;				  
+	public Boolean preciseMode = false;
+	public static Boolean newbMode = true;
 
 
 	/* TODO: Need to place these in appropriate classes with getters/setters to avoid making them static */
