@@ -285,6 +285,7 @@ public class CommandExecuter {
 			}
 			break;
 
+			
 		case ATTACK: // FOLLOW PLAYER|NOBODY
 			if (commandArgs[1].equalsIgnoreCase("PLAYER")) {
 				theDenizen.getAI().setTarget(thePlayer, true);
@@ -294,8 +295,7 @@ public class CommandExecuter {
 			}
 			break;
 
-
-
+			
 		case RESPAWN:  // RESPAWN [Location Notable]
 			Location respawnLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION);
 			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());

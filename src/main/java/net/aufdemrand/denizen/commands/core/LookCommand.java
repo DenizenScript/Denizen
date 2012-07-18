@@ -47,7 +47,7 @@ public class LookCommand extends Command {
 			for (String thisArgument : theCommand.arguments()) {
 
 				// If argument is a NPCID modifier...
-				if (thisArgument.toUpperCase().contains("NPCID:"))
+				if (thisArgument.toUpperCase().contains("NPCID:")) {
 					try {
 						if (CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1])) != null)
 							theDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1]));	
@@ -55,23 +55,29 @@ public class LookCommand extends Command {
 						theCommand.error("NPCID specified could not be matched to a Denizen.");
 						return false;
 					}
+				}
 
 				// If argument is a DURATION modifier...
-				if (thisArgument.toUpperCase().contains("DURATION:"))
+				else if (thisArgument.toUpperCase().contains("DURATION:")) {
 					if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
 						duration = Integer.valueOf(thisArgument.split(":")[1]);
-
-				// If argument is a direction, set Direction.
-				for (Direction thisDirection : Direction.values())
-					if (thisArgument.toUpperCase().equals(thisDirection.name()))
-						direction = Direction.valueOf(thisArgument);
+				}
 
 				// If argument is a valid bookmark, set theLocation.
-				if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
+				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
 					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
-				if (thisArgument.split(":").length == 2)
+				else if (thisArgument.split(":").length == 2) {
 					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
 						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
+				}
+				
+				// If argument is a direction, set Direction.
+				for (Direction thisDirection : Direction.values()) {
+					if (thisArgument.toUpperCase().equals(thisDirection.name()))
+						direction = Direction.valueOf(thisArgument);
+				}
+			
+			
 			}	
 		}
 
