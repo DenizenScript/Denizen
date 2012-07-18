@@ -56,13 +56,13 @@ public class EngageCommand extends Command {
 			}	
 		}
 
-		/* If a DISENGAGE, take the Denizen out of the List. */
+		/* If a DISENGAGE, take the Denizen out of the engagedList. */
 		if (theCommand.getCommand().equalsIgnoreCase("DISENGAGE")) {
 			plugin.scriptEngine.setEngaged(theCommand.getDenizen(), false);
 			return true;
 		}
 
-		/* ENGAGE the Denizen and set timer for DISENGAGE (if arguement is specified) */
+		/* ENGAGE the Denizen. */
 		if (timedEngage != null) 
 			plugin.scriptEngine.setEngaged(theDenizen, timedEngage);
 		else 			

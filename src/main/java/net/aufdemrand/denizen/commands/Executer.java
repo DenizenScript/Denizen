@@ -31,6 +31,8 @@ public class Executer {
 			return true;
 
 		}
+		
+		else plugin.getLogger().log(Level.SEVERE, "Invalid scriptCommand!");
 		return false;
 
 	}

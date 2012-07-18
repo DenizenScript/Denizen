@@ -38,43 +38,46 @@ public class LookCommand extends Command {
 
 		Integer duration = null;
 		Direction direction = null;
+		Location theLocation = null;
 
 		NPC theDenizen = theCommand.getDenizen();
 
 		/* Get arguments */
-		for (String thisArgument : theCommand.arguments()) {
+		if (theCommand.arguments() != null) {
+			for (String thisArgument : theCommand.arguments()) {
 
-			if (thisArgument.toUpperCase().contains("NPCID:"))
-				try {
-					if (CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1])) != null)
-						theDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1]));	
-				} catch (Throwable e) {
-					theCommand.error("NPCID specified could not be matched to a Denizen.");
-					return false;
-				}
+				// If argument is a NPCID modifier...
+				if (thisArgument.toUpperCase().contains("NPCID:"))
+					try {
+						if (CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1])) != null)
+							theDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1]));	
+					} catch (Throwable e) {
+						theCommand.error("NPCID specified could not be matched to a Denizen.");
+						return false;
+					}
 
-			for (Direction thisDirection : Direction.values())
-				if (thisArgument.toUpperCase().equals(thisDirection.name()))
-					direction = Direction.valueOf(thisArgument);
+				// If argument is a DURATION modifier...
+				if (thisArgument.toUpperCase().contains("DURATION:"))
+					if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
+						duration = Integer.valueOf(thisArgument.split(":")[1]);
 
-			
-		
-		}	
+				// If argument is a direction, set Direction.
+				for (Direction thisDirection : Direction.values())
+					if (thisArgument.toUpperCase().equals(thisDirection.name()))
+						direction = Direction.valueOf(thisArgument);
 
-		/* If a DISENGAGE, take the Denizen out of the List. */
-		if (theCommand.getCommand().equalsIgnoreCase("DISENGAGE")) {
-			plugin.scriptEngine.setEngaged(theCommand.getDenizen(), false);
-			return true;
+				// If argument is a valid bookmark, set theLocation.
+				if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
+					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
+				if (thisArgument.split(":").length == 2)
+					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
+						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
+			}	
 		}
-
-		/* ENGAGE the Denizen and set timer for DISENGAGE (if arguement is specified) */
-		if (timedEngage != null) 
-			plugin.scriptEngine.setEngaged(theDenizen, timedEngage);
-		else 			
-			plugin.scriptEngine.setEngaged(theCommand.getDenizen(), true);
 
 		return true;
 	}
+
 
 
 	private void look(NPC theDenizen, String lookWhere, Integer duration) {

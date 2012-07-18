@@ -45,26 +45,27 @@ public class WaitCommand extends Command {
 		}
 
 		/* Initialize variables */
-		
+
 		QueueType queueToHold = theCommand.sendingQueue();
 		Player thePlayer = theCommand.getPlayer();
 		theCommand.setInstant();
-		
+
 		/* Process arguments */
 
-		for (String thisArgument : theCommand.arguments()) {
+		if (theCommand.arguments() != null) {
+			for (String thisArgument : theCommand.arguments()) {
 
-			if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) 
-				theCommand.setDelay(System.currentTimeMillis() + (Long.valueOf(theCommand.arguments()[0]) * 1000));
+				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) 
+					theCommand.setDelay(System.currentTimeMillis() + (Long.valueOf(theCommand.arguments()[0]) * 1000));
 
-			if (thisArgument.toUpperCase().contains("QUEUETYPE:"))
-				try {
-				queueToHold = QueueType.valueOf(thisArgument.split(":")[1]);
-				} catch (Throwable e) {
-					theCommand.error("Invalid QUEUETYPE.");
-					return false;
-				}
-			
+				if (thisArgument.toUpperCase().contains("QUEUETYPE:"))
+					try {
+						queueToHold = QueueType.valueOf(thisArgument.split(":")[1]);
+					} catch (Throwable e) {
+						theCommand.error("Invalid QUEUETYPE.");
+						return false;
+					}
+			}
 		}
 
 		/* Put itself back into the queue */
