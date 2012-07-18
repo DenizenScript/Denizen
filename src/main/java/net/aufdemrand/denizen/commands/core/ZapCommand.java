@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.commands.core;
 
+import java.util.Random;
+
 import net.aufdemrand.denizen.commands.Command;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 
@@ -33,12 +35,40 @@ public class ZapCommand extends Command {
 			for (String thisArgument : theCommand.arguments()) {
 				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
 					theStep = Integer.valueOf(thisArgument);
-				
+
 				else if (thisArgument.contains("SCRIPT:")) 
 					theScript = thisArgument.split(":", 2)[1];
+
+				else if (thisArgument.contains("RANDOM:")) {
+
+					int high = 0, low = 0;
+
+					if (thisArgument.split(":")[1].split(" ").length == 1) {
+						if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
+							low = 1;
+							high = Integer.valueOf(thisArgument.split(":")[1]); 
+						} 
+					}
+					else if (thisArgument.split(":")[1].split(" ").length == 2) {
+						if (thisArgument.split(":")[1].split(" ")[0].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")
+								&& thisArgument.split(":")[1].split(" ")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+") ) {
+							low = Integer.valueOf(thisArgument.split(":")[1].split(" ")[0]);
+							high = Integer.valueOf(thisArgument.split(":")[1].split(" ")[1]);
+						}
+					}
+					
+					Random randomInt = new Random();
+					
+					if (high - low > 0) {
+						theStep = randomInt.nextInt(high - low + 1) + low;
+					}
+					
+					else theStep = high;
+					
+				}
 			}
 		}
-		
+
 		if (theStep == null) theStep = plugin.scriptEngine.getCurrentStep(theCommand.getPlayer(), theScript);
 
 		/* Set saves.yml */

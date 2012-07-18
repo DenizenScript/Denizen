@@ -18,6 +18,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
@@ -80,8 +81,8 @@ public class SpawnCommand extends Command {
 		Location theLocation = null;
 		Integer theSpread = null;
 		PotionEffect theEffect = null;
-		String theFlag = null;
 		Boolean hasFlag = false;
+		Boolean isTame = false;
 		Boolean isBaby = false;
 		Boolean isPowered = false;
 		Boolean isAngry = false;
@@ -138,7 +139,10 @@ public class SpawnCommand extends Command {
 
 					if (thisFlag.toUpperCase().equals("SHEARED"))
 						isSheared = true;
-
+					
+					if (thisFlag.toUpperCase().equals("TAME"))
+						isTame = true;
+					
 					if (thisFlag.toUpperCase().equals("SADDLED"))
 						isSaddled = true;
 
@@ -201,6 +205,7 @@ public class SpawnCommand extends Command {
 				if (hasFlag) 
 					try {
 						if (isBaby) if (spawnedEntity instanceof Ageable) ((Ageable) spawnedEntity).setBaby();
+						if (isTame) if (spawnedEntity instanceof Tameable) ((Tameable) spawnedEntity).setTamed(true);
 						if (isAngry) if (spawnedEntity instanceof Wolf) ((Wolf) spawnedEntity).setAngry(true);
 						if (isAngry) if (spawnedEntity instanceof PigZombie) ((PigZombie) spawnedEntity).setAngry(true);
 						if (isPowered) if (spawnedEntity instanceof Creeper) ((Creeper) spawnedEntity).setPowered(true);
