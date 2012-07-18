@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.commands.core;
 
 import java.util.Random;
+import java.util.logging.Level;
 
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.aufdemrand.denizen.commands.Command;
@@ -9,12 +10,15 @@ import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Ageable;
+import org.bukkit.entity.Boat;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Wolf;
@@ -90,6 +94,8 @@ public class SpawnCommand extends Command {
 
 			for (String thisArgument : theCommand.arguments()) {
 
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
+
 				// If a valid name of an Entity, set theEntity.
 				if (plugin.utilities.isEntity(thisArgument))
 					theEntity = EntityType.valueOf(thisArgument.toUpperCase());	
@@ -101,54 +107,55 @@ public class SpawnCommand extends Command {
 				// If argument is a valid bookmark, set theLocation.
 				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
 					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
-				else if (thisArgument.split(":").length == 2)
+				else if (thisArgument.split(":").length == 2) {
 					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
 						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
+				}
 
 				// If argument is a modifier, modify
-					else if (thisArgument.toUpperCase().contains("SPREAD:"))
-						theSpread = Integer.valueOf(thisArgument.split(":", 2)[1]);
+				else if (thisArgument.toUpperCase().contains("SPREAD:"))
+					theSpread = Integer.valueOf(thisArgument.split(":", 2)[1]);
 
-					else if (thisArgument.toUpperCase().contains("EFFECT:"))
-						try { 
-							int theAmplifier = 1;
-							if (thisArgument.split(":", 2)[1].split(" ").length == 2) 
-								theAmplifier = Integer.valueOf(thisArgument.split(":", 2)[1].split(" ")[1]);
-							theEffect = new PotionEffect(
-									PotionEffectType.getByName(thisArgument.split(":", 2)[1].split(" ")[0]),
-									Integer.MAX_VALUE,
-									theAmplifier);
-						} catch (Exception e) {
-							theCommand.error("Invalid syntax in EFFECT modifier.");
-							return false;
-						}
-
-					else if (thisArgument.toUpperCase().contains("FLAG:")) {
-
-						String thisFlag = thisArgument.split(":", 2)[1];
-						hasFlag = true;
-
-						if (thisFlag.toUpperCase().equals("BABY"))
-							isBaby = true;
-
-						if (thisFlag.toUpperCase().equals("ANGRY"))
-							isAngry = true;
-
-						if (thisFlag.toUpperCase().equals("POWERED"))
-							isPowered = true;
-
-						if (thisFlag.toUpperCase().equals("SHEARED"))
-							isSheared = true;
-
-						if (thisFlag.toUpperCase().equals("SADDLED"))
-							isSaddled = true;
-
-						if (thisFlag.toUpperCase().contains("COLORED "))
-							hasColor = thisFlag.split(" ")[1];
-
-						if (thisFlag.toUpperCase().contains("PROFESSION "))
-							hasProfession = thisFlag.split(" ")[1];
+				else if (thisArgument.toUpperCase().contains("EFFECT:"))
+					try { 
+						int theAmplifier = 1;
+						if (thisArgument.split(":", 2)[1].split(" ").length == 2) 
+							theAmplifier = Integer.valueOf(thisArgument.split(":", 2)[1].split(" ")[1]);
+						theEffect = new PotionEffect(
+								PotionEffectType.getByName(thisArgument.split(":", 2)[1].split(" ")[0]),
+								Integer.MAX_VALUE,
+								theAmplifier);
+					} catch (Exception e) {
+						theCommand.error("Invalid syntax in EFFECT modifier.");
+						return false;
 					}
+
+				else if (thisArgument.toUpperCase().contains("FLAG:")) {
+
+					String thisFlag = thisArgument.split(":", 2)[1];
+					hasFlag = true;
+
+					if (thisFlag.toUpperCase().equals("BABY"))
+						isBaby = true;
+
+					if (thisFlag.toUpperCase().equals("ANGRY"))
+						isAngry = true;
+
+					if (thisFlag.toUpperCase().equals("POWERED"))
+						isPowered = true;
+
+					if (thisFlag.toUpperCase().equals("SHEARED"))
+						isSheared = true;
+
+					if (thisFlag.toUpperCase().equals("SADDLED"))
+						isSaddled = true;
+
+					if (thisFlag.toUpperCase().contains("COLORED "))
+						hasColor = thisFlag.split(" ")[1];
+
+					if (thisFlag.toUpperCase().contains("PROFESSION "))
+						hasProfession = thisFlag.split(" ")[1];
+				}
 			}
 		}
 
@@ -179,10 +186,12 @@ public class SpawnCommand extends Command {
 					theLocation.add(randomX, 0, randomZ);
 				}
 
-				LivingEntity spawnedEntity = theLocation.getWorld().spawnCreature(theLocation, theEntity);
+				LivingEntity spawnedEntity = null;
+				if (theEntity.equals(EntityType.BOAT)) theLocation.getWorld().spawn(theLocation, Boat.class);
+				else spawnedEntity = theLocation.getWorld().spawnCreature(theLocation, theEntity);
 
 				if (theEffect != null)
-					spawnedEntity.addPotionEffect(theEffect);
+					((LivingEntity) spawnedEntity).addPotionEffect(theEffect);
 
 				if (hasFlag) 
 					try {
