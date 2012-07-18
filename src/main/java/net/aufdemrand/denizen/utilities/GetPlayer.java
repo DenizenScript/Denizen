@@ -82,11 +82,15 @@ public class GetPlayer {
 	 */
 
 	public boolean checkLocation(Player thePlayer, Location theLocation, int theLeeway) {
-		if (Math.abs(thePlayer.getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+
+		if (thePlayer.getWorld().getName() != theLocation.getWorld().getName())
+			return false;
+		
+		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
 				> theLeeway) return false;
-		if (Math.abs(thePlayer.getLocation().getBlockY() - Math.abs(theLocation.getBlockY())) 
+		if (Math.abs(thePlayer.getLocation().getBlockY() - theLocation.getBlockY()) 
 				> theLeeway) return false;
-		if (Math.abs(thePlayer.getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+		if (Math.abs(thePlayer.getLocation().getBlockZ() - theLocation.getBlockZ()) 
 				> theLeeway) return false;
 
 		return true;
@@ -102,11 +106,15 @@ public class GetPlayer {
 	 */
 
 	public boolean checkLocation(NPC theDenizen, Location theLocation, int theLeeway) {
-		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+
+		if (theDenizen.getBukkitEntity().getWorld().getName() != theLocation.getWorld().getName())
+			return false;
+		
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - theLocation.getBlockX()) 
 				> theLeeway) return false;
-		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockY() - Math.abs(theLocation.getBlockY())) 
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockY() - theLocation.getBlockY()) 
 				> theLeeway) return false;
-		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - Math.abs(theLocation.getBlockX())) 
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockZ() - theLocation.getBlockZ()) 
 				> theLeeway) return false;
 
 		return true;
