@@ -156,6 +156,11 @@ public class SpawnCommand extends Command {
 					if (thisFlag.toUpperCase().contains("PROFESSION "))
 						hasProfession = thisFlag.split(" ")[1];
 				}
+
+				else {
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Unable to match argument!");
+				}
+
 			}
 		}
 
