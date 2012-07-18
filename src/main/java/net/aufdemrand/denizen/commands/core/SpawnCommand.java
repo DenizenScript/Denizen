@@ -104,14 +104,6 @@ public class SpawnCommand extends Command {
 				else if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
 					theAmount = Integer.valueOf(thisArgument);
 
-				// If argument is a valid bookmark, set theLocation.
-				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
-				else if (thisArgument.split(":").length == 2) {
-					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
-						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
-				}
-
 				// If argument is a modifier, modify
 				else if (thisArgument.toUpperCase().contains("SPREAD:"))
 					theSpread = Integer.valueOf(thisArgument.split(":", 2)[1]);
@@ -157,6 +149,14 @@ public class SpawnCommand extends Command {
 						hasProfession = thisFlag.split(" ")[1];
 				}
 
+				// If argument is a valid bookmark, set theLocation.
+				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
+					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
+				else if (thisArgument.split(":").length == 2) {
+					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
+						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
+				}
+				
 				else {
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Unable to match argument!");
 				}
