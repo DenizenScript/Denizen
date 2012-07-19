@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.commands.Command;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.command.exception.CommandException;
 import net.citizensnpcs.trait.LookClose;
 
 /**
@@ -32,7 +33,7 @@ public class LookCommand extends Command {
 	 */
 
 	@Override
-	public boolean execute(ScriptCommand theCommand) {
+	public boolean execute(ScriptCommand theCommand) throws CommandException {
 
 		/* Initialize variables */ 
 
@@ -52,8 +53,7 @@ public class LookCommand extends Command {
 						if (CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1])) != null)
 							theDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1]));	
 					} catch (Throwable e) {
-						theCommand.error("NPCID specified could not be matched to a Denizen.");
-						return false;
+						throw new CommandException("NPCID specified could not be matched to a Denizen.");
 					}
 				}
 

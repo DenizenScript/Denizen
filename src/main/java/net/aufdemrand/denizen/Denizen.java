@@ -485,12 +485,6 @@ public class Denizen extends JavaPlugin {
 			return true;
 		}
 
-		if (args[0].equalsIgnoreCase("error")) {
-			StacktraceReporter error = new StacktraceReporter(this);
-			error.sendError("Shit's broke!");
-			return true;
-		}
-
 		if (player.getMetadata("selected").isEmpty()) { 
 			player.sendMessage(ChatColor.RED + "You must have a Denizen selected.");
 			return true;
@@ -506,7 +500,6 @@ public class Denizen extends JavaPlugin {
 		/*
 		 * These craftbukkit commands require a Denizen to be selected.
 		 */
-
 
 		if (args[0].equalsIgnoreCase("stand")) {
 			if(args.length < 2) {

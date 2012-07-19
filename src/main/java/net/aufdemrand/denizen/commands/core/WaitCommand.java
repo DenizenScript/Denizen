@@ -6,6 +6,7 @@ import java.util.List;
 import net.aufdemrand.denizen.commands.Command;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
+import net.citizensnpcs.command.exception.CommandException;
 
 import org.bukkit.entity.Player;
 
@@ -34,7 +35,7 @@ public class WaitCommand extends Command {
 	 */
 
 	@Override
-	public boolean execute(ScriptCommand theCommand) {
+	public boolean execute(ScriptCommand theCommand) throws CommandException {
 
 		/* The WAIT command ultimately sends itself back to the que with an appropriate delay. 
 		 * if the delay is more than the time initiated, we can assume it's the second time 
@@ -62,8 +63,7 @@ public class WaitCommand extends Command {
 					try {
 						queueToHold = QueueType.valueOf(thisArgument.split(":")[1]);
 					} catch (Throwable e) {
-						theCommand.error("Invalid QUEUETYPE.");
-						return false;
+						throw new CommandException("Invalid QUEUETYPE.");
 					}
 			}
 		}
@@ -83,8 +83,7 @@ public class WaitCommand extends Command {
 			return true;
 		}
 
-		theCommand.error("Unknown error. Check syntax.");
-		return false;
+		throw new CommandException("Unknown error, check syntax!");
 	}
 
 }

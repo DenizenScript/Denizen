@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.aufdemrand.denizen.commands.Command;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
+import net.citizensnpcs.command.exception.CommandException;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -65,14 +66,12 @@ public class SpawnCommand extends Command {
 	 */
 
 	@Override
-	public boolean execute(ScriptCommand theCommand) {
+	public boolean execute(ScriptCommand theCommand) throws CommandException {
 
 		/* Check if the amount of arguments matches the minimum required */
 
-		if (theCommand.arguments() == null) {
-			theCommand.error("Not enough arguments!");
-			return false;
-		}
+		if (theCommand.arguments() == null) throw new CommandException("Not enough arguments!");
+
 
 		/* Initialize variables */
 
@@ -119,8 +118,7 @@ public class SpawnCommand extends Command {
 								Integer.MAX_VALUE,
 								theAmplifier);
 					} catch (Exception e) {
-						theCommand.error("Invalid syntax in EFFECT modifier.");
-						return false;
+						throw new CommandException("Invalid PotionEffect!");
 					}
 
 				else if (thisArgument.toUpperCase().contains("FLAG:")) {
@@ -215,8 +213,7 @@ public class SpawnCommand extends Command {
 						if (hasProfession != null) if (spawnedEntity instanceof Villager) ((Villager) spawnedEntity).setProfession(Profession.valueOf(hasProfession.toUpperCase()));
 
 					} catch (Exception e) {
-						theCommand.error("Problem setting FLAG.");
-						return false;
+						throw new CommandException("Problem setting flag!");
 					}
 
 				/* Reset theLocation for the next Entity, if more than 1 */
@@ -227,11 +224,7 @@ public class SpawnCommand extends Command {
 			return true;
 		}
 
-
-
-
-		theCommand.error("Unknown error. Check syntax.");
-		return false;
+		throw new CommandException("Unknown error, check syntax!");
 	}
 
 

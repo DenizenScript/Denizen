@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.aufdemrand.denizen.commands.Command;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
+import net.citizensnpcs.command.exception.CommandException;
 
 /**
  * Sets the current step for Players in a specific script then stores
@@ -25,7 +26,7 @@ public class ZapCommand extends Command {
 	 */
 
 	@Override
-	public boolean execute(ScriptCommand theCommand) {
+	public boolean execute(ScriptCommand theCommand) throws CommandException {
 
 		String theScript = theCommand.getScript();
 		Integer theStep = null;
@@ -102,8 +103,9 @@ public class ZapCommand extends Command {
 			plugin.saveSaves();
 			return true;
 		}
-		
-		theCommand.error("Unknown error. Check syntax.");
+
+		throw new CommandException("Unknown error, check syntax!");
+
 		return false;
 	}
 

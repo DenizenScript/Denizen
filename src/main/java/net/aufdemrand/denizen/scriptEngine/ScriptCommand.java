@@ -117,22 +117,6 @@ public class ScriptCommand {
 		return triggerType;
 	}
 	
-	/* String error message to show if Command fails */ 
-	private String errorMessage = null;
-	
-	public void error(String message) {
-		errorMessage = message;
-	}
-	
-	public boolean hasError() {
-		if (errorMessage == null) return true;
-		return false;
-	}
-	
-	public String getError() {
-		return errorMessage;
-	}
-
 	/* Integer of theStep */ 
 	private Integer theStep = null;
 	
