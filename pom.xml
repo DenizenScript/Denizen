@@ -55,6 +55,9 @@
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
 			<version>1.4.4</version>
+			<type>jar</type>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/main/resources/javax.mail-1.4.4.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>net.citizensnpcs</groupId>
