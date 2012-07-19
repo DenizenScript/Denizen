@@ -34,16 +34,18 @@ public class ZapCommand extends Command {
 		/* Get arguments */
 		if (theCommand.arguments() != null) {
 			for (String thisArgument : theCommand.arguments()) {
+
+				/* Set the step to ZAP to */
 				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
 					theStep = Integer.valueOf(thisArgument);
 
+				/* Change the script to a specified one */
 				else if (thisArgument.contains("SCRIPT:")) 
 					theScript = thisArgument.split(":", 2)[1];
 
+				/* Pick a random step */
 				else if (thisArgument.contains("RANDOM:")) {
-
 					int high = 1, low = 1;
-
 					if (thisArgument.split(":")[1].split(" ").length == 1) {
 						if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
 							low = 1;
@@ -57,17 +59,12 @@ public class ZapCommand extends Command {
 							high = Integer.valueOf(thisArgument.split(":")[1].split(" ")[1]);
 						}
 					}
-					
 					Random randomInt = new Random();
-					
-					if (high - low > 0) {
-						theStep = randomInt.nextInt(high - low + 1) + low;
-					}
-					
+					if (high - low > 0) theStep = randomInt.nextInt(high - low + 1) + low;
 					else theStep = high;
-					
 				}
 				
+				/* Set a duration */
 				else if (thisArgument.toUpperCase().contains("DURATION:"))
 					if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
 						duration = Integer.valueOf(thisArgument.split(":")[1]);

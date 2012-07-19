@@ -49,7 +49,7 @@ public class GetScript {
 				String fileName = files[i].getName();
 				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
 
-					System.out.println("Processing " + files[i].getPath() + "... ");
+					plugin.getLogger().log(Level.INFO, "Processing script " + files[i].getPath() + "... ");
 					BufferedReader br = new BufferedReader(new FileReader(files[i]
 							.getPath()));
 					String line = br.readLine();
@@ -62,10 +62,10 @@ public class GetScript {
 				}
 			}
 			pw.close();
-			System.out.println("OK! Scripts loaded!");
+			plugin.getLogger().log(Level.INFO, "OK! All scripts loaded!");
 
 		} catch (Throwable error) {
-			System.out.println("Woah! No scripts to load!");		
+			plugin.getLogger().log(Level.WARNING, "Woah! No scripts in /plugins/Denizen/scripts/ to load!");		
 		}
 
 	}
@@ -88,7 +88,7 @@ public class GetScript {
 		String theScript = "none";
 		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
 		if (scriptList.isEmpty()) { 
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "getInteractScript: scriptList = empty");
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Script is empty!");
 			return theScript; 
 			}
 		
@@ -109,7 +109,7 @@ public class GetScript {
 		for (String thisScript : scriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
 			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "getInteractScript: Script " + thisScript + " meets requirements, adding to list.");
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Script " + thisScript + " meets requirements, adding to list.");
 				interactScripts.add(thisScript);
 			}
 		}
@@ -128,6 +128,8 @@ public class GetScript {
 		}
 		else if (interactScripts.size() == 1) theScript = interactScripts.get(0);
 
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Highest scoring script is " + theScript.split(" ", 2)[1]);
+		
 		return theScript.split(" ", 2)[1];
 	}
 
@@ -225,6 +227,8 @@ public class GetScript {
 				
 				/* Take off excess ":" before adding it to the list */
 				triggerBuilder = triggerBuilder.substring(0, triggerBuilder.length() - 1);
+				
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Found chat trigger: " + triggerBuilder);
 				
 				ChatTriggers.add(triggerBuilder);
 				
