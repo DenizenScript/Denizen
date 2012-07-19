@@ -20,6 +20,7 @@ import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
 import net.aufdemrand.denizen.utilities.GetScript;
 import net.aufdemrand.denizen.utilities.GetWorld;
+import net.aufdemrand.denizen.utilities.StacktraceReporter;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -484,10 +485,9 @@ public class Denizen extends JavaPlugin {
 			return true;
 		}
 
-		if (args[0].equalsIgnoreCase("strike")) {
-
-			scriptEngine.scheduleScripts();
-			player.sendMessage("Denizen scheduler invoked.");
+		if (args[0].equalsIgnoreCase("error")) {
+			StacktraceReporter error = new StacktraceReporter(this);
+			error.sendError("Shit's broke!");
 			return true;
 		}
 

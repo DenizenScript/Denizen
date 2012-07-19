@@ -69,7 +69,7 @@ public class SpawnCommand extends Command {
 
 		/* Check if the amount of arguments matches the minimum required */
 
-		if (theCommand.arguments().length < 1) {
+		if (theCommand.arguments() == null) {
 			theCommand.error("Not enough arguments!");
 			return false;
 		}

@@ -1,3 +1,7 @@
+# Send stacktraces of errors anonymously to aufdemrand? This helps fix
+# problems faster since all errors are sent automatically.
+send_errors_automatically: true
+
 # Interact delay sets the pace of the 'Player Queue' and 'Denizen Queue' 
 # execution, which is where commands triggered by scripts are stored.
 # Recommend 10-20. (Default, 10)

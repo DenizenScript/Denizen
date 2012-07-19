@@ -10,6 +10,19 @@ public class Settings {
 		plugin = denizen;
 	}
 	
+	
+	/*
+	
+	# Send stacktraces of errors anonymously to aufdemrand? This helps fix
+    # problems faster since all errors are sent automatically.
+    send_errors_automatically: true
+	 
+	 */
+	
+	public boolean SendErrorsAutomatically() {
+		return plugin.getConfig().getBoolean("send_errors_automatically", true);
+	}
+	
 	/*
 
 	# Interact delay sets the pace of the 'Player Queue' and 'Denizen Queue' 
@@ -36,8 +49,7 @@ public class Settings {
 	 */
 	
 	public int EngageTimeoutInSeconds() {
-		int timeout = plugin.getConfig().getInt("engage_timeout_in_seconds", 150);
-		return timeout;
+		return plugin.getConfig().getInt("engage_timeout_in_seconds", 150);
 	}
 
 	/*

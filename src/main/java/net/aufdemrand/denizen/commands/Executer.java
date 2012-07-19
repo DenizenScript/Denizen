@@ -4,6 +4,7 @@ import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
+import net.citizensnpcs.command.exception.CommandException;
 
 public class Executer {
 	
@@ -25,11 +26,16 @@ public class Executer {
 
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Executing command " + theCommand.getCommand());
 
-			if (!command.execute(theCommand)) {
-				plugin.getLogger().log(Level.SEVERE, "A script Command has failed to execute.");
-				plugin.getLogger().log(Level.SEVERE, "Command " + theCommand.getCommand() + " has failed in script " + theCommand.getScript() + ".");
-				plugin.getLogger().log(Level.SEVERE, "--- Information on the failure below:");
-				plugin.getLogger().log(Level.INFO, theCommand.getError());
+			try {
+				if (!command.execute(theCommand)) {
+					plugin.getLogger().log(Level.SEVERE, "A script Command has failed to execute.");
+					plugin.getLogger().log(Level.SEVERE, "Command " + theCommand.getCommand() + " has failed in script " + theCommand.getScript() + ".");
+					plugin.getLogger().log(Level.SEVERE, "--- Information on the failure below:");
+					plugin.getLogger().log(Level.INFO, theCommand.getError());
+				}
+			} catch (CommandException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			return true;
 
