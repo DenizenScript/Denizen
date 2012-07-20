@@ -13,14 +13,13 @@ public class Settings {
 	
 	/*
 	
-	# Send stacktraces of errors anonymously to aufdemrand? This helps fix
-    # problems faster since all errors are sent automatically.
-    send_errors_automatically: true
+	# Default time in seconds of cooldown set to Denizens when a click trigger is triggered.
+    default_click_cooldown: true
 	 
 	 */
 	
-	public boolean SendErrorsAutomatically() {
-		return plugin.getConfig().getBoolean("send_errors_automatically", true);
+	public int DefaultClickCooldown() {
+		return plugin.getConfig().getInt("default_click_cooldown", 2) * 1000;
 	}
 	
 	/*
