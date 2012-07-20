@@ -9,7 +9,6 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
-import net.citizensnpcs.api.npc.character.Character;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.npc.NPC;
 
