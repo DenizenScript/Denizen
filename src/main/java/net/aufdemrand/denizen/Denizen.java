@@ -23,8 +23,6 @@ import net.aufdemrand.denizen.utilities.GetWorld;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.trait.Trait;
-import net.citizensnpcs.api.trait.TraitFactory;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -61,7 +59,7 @@ public class Denizen extends JavaPlugin {
 
 	public Boolean   debugMode = false;
 	public Boolean preciseMode = false;
-	public static Boolean newbMode = true;
+	public Boolean    newbMode = true;
 
 
 	/* TODO: Need to place these in appropriate classes with getters/setters to avoid making them static */
