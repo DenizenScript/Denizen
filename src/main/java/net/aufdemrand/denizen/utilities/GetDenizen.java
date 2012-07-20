@@ -58,11 +58,9 @@ public class GetDenizen {
 		Double closestDistance = Double.valueOf(String.valueOf(Range));
 		NPC closestDenizen = null;
 
-		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
-		if (DenizenNPCs.isEmpty()) return null;
+		if (plugin.utilities.getDenizens().isEmpty()) return null;
 
-		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
-		for (NPC aDenizen : DenizenList) {
+		for (NPC aDenizen : plugin.utilities.getDenizens()) {
 			if (aDenizen.isSpawned()
 					&& aDenizen.getBukkitEntity().getWorld().equals(thePlayer.getWorld())
 					&& aDenizen.getBukkitEntity().getLocation().distance(thePlayer.getLocation()) < closestDistance ) {
@@ -89,11 +87,9 @@ public class GetDenizen {
 
 		List<NPC> DenizensWithinRange = new ArrayList<NPC>();
 
-		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
-		if (DenizenNPCs.isEmpty()) return DenizensWithinRange;
+		if (plugin.utilities.getDenizens().isEmpty()) return DenizensWithinRange;
 
-		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
-		for (NPC aDenizenList : DenizenList) {
+		for (NPC aDenizenList : plugin.utilities.getDenizens()) {
 			if (aDenizenList.isSpawned()
 					&& aDenizenList.getBukkitEntity().getWorld().equals(thePlayer.getWorld()) 
 					&& aDenizenList.getBukkitEntity().getLocation().distance(thePlayer.getLocation()) < theRange)

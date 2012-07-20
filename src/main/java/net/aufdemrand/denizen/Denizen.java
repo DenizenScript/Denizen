@@ -20,11 +20,13 @@ import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
 import net.aufdemrand.denizen.utilities.GetScript;
 import net.aufdemrand.denizen.utilities.GetWorld;
-import net.aufdemrand.denizen.utilities.StacktraceReporter;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.character.CharacterFactory;
+import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.TraitFactory;
+import net.citizensnpcs.api.trait.TraitInfo;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -94,7 +96,8 @@ public class Denizen extends JavaPlugin {
 		reloadAssignments();
 
 		/* Register Citizens2 character, listener, and bukkit tasks */
-		CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(DenizenCharacter.class).withName("denizen"));
+		
+		CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(DenizenTrait.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(character, this);
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -490,9 +493,9 @@ public class Denizen extends JavaPlugin {
 			return true;
 		}
 
-		NPC ThisNPC = CitizensAPI.getNPCRegistry().getNPC(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
+		NPC ThisNPC = CitizensAPI.getNPCRegistry().getById(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
 
-		if (ThisNPC.getCharacter() == null || !ThisNPC.getCharacter().getName().equals("denizen")) {
+		if (!ThisNPC.getTrait(DenizenTrait.class).isDenizen) {
 			player.sendMessage(ChatColor.RED + "That command must be performed on a denizen!");
 			return true;
 		}

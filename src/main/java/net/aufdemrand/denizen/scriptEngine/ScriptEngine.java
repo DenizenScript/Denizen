@@ -83,7 +83,7 @@ public class ScriptEngine {
 						/* Feeds the executer ScriptCommands as long as they are instant commands ("^"), otherwise
 						 * runs one command, removes it from the queue, and moves on to the next player. */
 						boolean instantly;
-						
+
 						do { 
 							instantly = false;
 							ScriptCommand theCommand = theEntry.getValue().get(0);
@@ -95,7 +95,7 @@ public class ScriptEngine {
 									&& theEntry.getValue().get(0).isInstant())
 								instantly = true; 
 							// ----
-							
+
 							theEntry.getValue().remove(0);
 
 							/* Updates the triggerQue map */
@@ -126,7 +126,7 @@ public class ScriptEngine {
 									&& theEntry.getValue().get(0).isInstant())
 								instantly = true; 
 							// ----
-							
+
 							theEntry.getValue().remove(0);
 							taskQue.put(theEntry.getKey(), theEntry.getValue());
 
@@ -155,10 +155,8 @@ public class ScriptEngine {
 
 	public void scheduleScripts() {
 
-		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
-		if (DenizenNPCs.isEmpty()) return;
-		List<NPC> DenizenList = new ArrayList<NPC>(DenizenNPCs);
-		for (NPC thisDenizen : DenizenList) {
+		if (plugin.utilities.getDenizens().isEmpty()) return;
+		for (NPC thisDenizen : plugin.utilities.getDenizens()) {
 			if (thisDenizen.isSpawned())	{
 				int denizenTime = Math.round(thisDenizen.getBukkitEntity().getWorld().getTime() / 1000);
 				List<String> denizenActivities = plugin.getAssignments().getStringList("Denizens." + thisDenizen.getName() + ".Scheduled Activities");
@@ -463,19 +461,19 @@ public class ScriptEngine {
 
 
 	public void enforcePosition() {
-		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
+		if (plugin.utilities.getDenizens() != null) {
+			for (NPC theDenizen : plugin.utilities.getDenizens()) {
+				if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Position.Standing")) {
+					if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Position.Standing").isEmpty()) {
 
-		for (NPC theDenizen : DenizenNPCs) {
-			if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Position.Standing")) {
-				if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Position.Standing").isEmpty()) {
+						Location enforcedLoc = plugin.bookmarks.get(theDenizen.getName(), 
+								plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Position.Standing"), 
+								BookmarkType.LOCATION);
 
-					Location enforcedLoc = plugin.bookmarks.get(theDenizen.getName(), 
-							plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Position.Standing"), 
-							BookmarkType.LOCATION);
+						if (!plugin.bookmarks.checkLocation(theDenizen, enforcedLoc, 0) && !theDenizen.getNavigator().isNavigating())
+							theDenizen.getNavigator().setTarget(enforcedLoc);
 
-					if (!plugin.bookmarks.checkLocation(theDenizen, enforcedLoc, 0) && !theDenizen.getAI().hasDestination())
-						theDenizen.getAI().setDestination(enforcedLoc);
-
+					}
 				}
 			}
 		}
@@ -538,7 +536,7 @@ public class ScriptEngine {
 
 	}
 
-	
+
 	/* 
 	 * GetCurrentStep
 	 *

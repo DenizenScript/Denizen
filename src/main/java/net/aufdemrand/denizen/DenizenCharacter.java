@@ -6,6 +6,8 @@ import java.util.logging.Level;
 
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.event.NPCLeftClickEvent;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.character.Character;
 import net.citizensnpcs.api.util.DataKey;
@@ -29,36 +31,34 @@ import org.bukkit.event.player.PlayerMoveEvent;
  *
  */
 
-public class DenizenCharacter extends Character implements Listener {
+public class DenizenCharacter implements Listener {
 
 
 	/* Listens for an NPC click. Right click sends out a Click Trigger, 
 	 * left click sends out either a Damage Trigger or Click Trigger. */
 
-	@Override
-	public void onRightClick(NPC npc, Player player) {
+	public void onRightClick(NPCRightClickEvent event) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
-		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
-				&& plugin.getDenizen.checkCooldown(player)
-				&& !plugin.scriptEngine.getEngaged(npc)) {
-			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
-			DenizenClicked(npc, player);
+		if (event.getNPC().getTrait(DenizenTrait.class).isDenizen
+				&& plugin.getDenizen.checkCooldown(event.getClicker())
+				&& !plugin.scriptEngine.getEngaged(event.getNPC())) {
+			Denizen.interactCooldown.put(event.getClicker(), System.currentTimeMillis() + 2000);
+			DenizenClicked(event.getNPC(), event.getClicker());
 		}
 	}
 
-	@Override
-	public void onLeftClick(NPC npc, Player player) {
+	
+	public void onLeftClick(NPCLeftClickEvent event) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
-		if(npc.getCharacter() == CitizensAPI.getCharacterManager().getCharacter("denizen") 
-				&& plugin.getDenizen.checkCooldown(player)
-				&& !plugin.scriptEngine.getEngaged(npc)) {
-			Denizen.interactCooldown.put(player, System.currentTimeMillis() + 2000);
-			DenizenClicked(npc, player);
-
+		if (event.getNPC().getTrait(DenizenTrait.class).isDenizen
+				&& plugin.getDenizen.checkCooldown(event.getClicker())
+				&& !plugin.scriptEngine.getEngaged(event.getNPC())) {
+			Denizen.interactCooldown.put(event.getClicker(), System.currentTimeMillis() + 2000);
+			DenizenClicked(event.getNPC(), event.getClicker());
 		}
 	}
 
@@ -106,7 +106,7 @@ public class DenizenCharacter extends Character implements Listener {
 					for (Location theLocation : plugin.bookmarks.getLocationTriggerList().keySet()) {
 						if (plugin.bookmarks.checkLocation(event.getPlayer(), theLocation, 1) && plugin.getDenizen.checkLocationCooldown(event.getPlayer())) {
 
-							String theScript = plugin.getScript.getInteractScript(CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[0])), event.getPlayer());
+							String theScript = plugin.getScript.getInteractScript(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[0])), event.getPlayer());
 							if (!theScript.equals("none")) {
 
 								//					plugin.scriptEngine.parseScript(
@@ -236,22 +236,6 @@ public class DenizenCharacter extends Character implements Listener {
 
 
 
-	@Override
-	public void load(DataKey arg0) throws NPCLoadException {
-
-		/* Nothing to do here, yet. */
-
-	}
-
-	@Override
-	public void save(DataKey arg0) {
-
-		/* Nothing to do here, yet. */
-
-	}
-
-
-
 	/* Called when a click trigger is sent to a Denizen. Handles fetching of the script. */
 
 	public void DenizenClicked(NPC theDenizen, Player thePlayer) {
@@ -293,9 +277,9 @@ public class DenizenCharacter extends Character implements Listener {
 
 
 	private void showInfo(Player thePlayer, NPC theDenizen) {
-		
+
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		
+
 		thePlayer.sendMessage(ChatColor.GOLD + "------ Denizen Info ------");
 
 		/* Show Citizens NPC info. */
@@ -408,7 +392,7 @@ public class DenizenCharacter extends Character implements Listener {
 		thePlayer.sendMessage("");		
 	}
 
-	
+
 	/* Called when a click trigger is sent to a Denizen. Handles fetching of the script. */
 
 	public void DenizenDamaged(NPC theDenizen, Player thePlayer) {

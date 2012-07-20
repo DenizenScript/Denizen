@@ -50,8 +50,8 @@ public class LookCommand extends Command {
 				// If argument is a NPCID modifier...
 				if (thisArgument.toUpperCase().contains("NPCID:")) {
 					try {
-						if (CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1])) != null)
-							theDenizen = CitizensAPI.getNPCRegistry().getNPC(Integer.valueOf(thisArgument.split(":")[1]));	
+						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])) != null)
+							theDenizen = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1]));	
 					} catch (Throwable e) {
 						throw new CommandException("NPCID specified could not be matched to a Denizen.");
 					}

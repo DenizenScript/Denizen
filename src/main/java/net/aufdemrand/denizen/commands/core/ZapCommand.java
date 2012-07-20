@@ -105,8 +105,6 @@ public class ZapCommand extends Command {
 		}
 
 		throw new CommandException("Unknown error, check syntax!");
-
-		return false;
 	}
 
 }

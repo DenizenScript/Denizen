@@ -70,10 +70,9 @@ public class Bookmarks {
 	private Map<Location, String> locationTriggerList = new ConcurrentHashMap<Location, String>();
 
 	public void buildLocationTriggerList() {
-		Collection<NPC> DenizenNPCs = CitizensAPI.getNPCRegistry().getNPCs(DenizenCharacter.class);
 		locationTriggerList.clear();
 
-		for (NPC theDenizen : DenizenNPCs) {
+		for (NPC theDenizen : plugin.utilities.getDenizens()) {
 			if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
 				List<String> locationsToAdd = plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
 

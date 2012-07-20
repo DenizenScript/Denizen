@@ -1,6 +1,12 @@
 package net.aufdemrand.denizen.utilities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.DenizenTrait;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 
 public class Utilities {
 
@@ -15,7 +21,7 @@ public class Utilities {
 		MUSHROOM_COW, MINECART, OCELOT, PIG, PIG_ZOMBIE, PRIMED_TNT, SHEEP, SILVERFISH, SKELETON, SLIME, SNOWMAN,
 		SQUID, VILLAGER, WOLF, ZOMBIE
 	}
-	
+
 	public boolean isEntity(String theString) {
 
 		for (ValidEntities entity : ValidEntities.values()) {
@@ -26,7 +32,18 @@ public class Utilities {
 		return false;
 	}
 
-	
-	
-	
+	public List<NPC> getDenizens() {
+
+		List<NPC> denizenList = new ArrayList<NPC>();
+		
+		for(NPC npc : CitizensAPI.getNPCRegistry()) {
+			if(npc.hasTrait(DenizenTrait.class)) {
+				denizenList.add(npc);
+			}
+		}
+		return denizenList;
+
+	}
+
+
 }
