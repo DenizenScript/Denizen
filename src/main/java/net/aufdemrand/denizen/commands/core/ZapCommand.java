@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.commands.core;
 
 import java.util.Random;
 
-import net.aufdemrand.denizen.commands.Command;
+import net.aufdemrand.denizen.commands.DenizenCommand;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 import net.citizensnpcs.command.exception.CommandException;
 
@@ -14,7 +14,7 @@ import net.citizensnpcs.command.exception.CommandException;
  *
  */
 
-public class ZapCommand extends Command {
+public class ZapCommand extends DenizenCommand {
 
 	/* ZAP (Step #)
 

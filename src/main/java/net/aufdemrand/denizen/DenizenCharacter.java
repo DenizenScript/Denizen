@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.metadata.MetadataValue;
 
 
 /**
@@ -29,9 +30,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
  */
 
 public class DenizenCharacter implements Listener {
-	
+
 	Denizen plugin;
-	
+
 	public DenizenCharacter(Denizen plugin) {
 		this.plugin = plugin;
 	}
@@ -40,21 +41,28 @@ public class DenizenCharacter implements Listener {
 	/* Listens for an NPC click. Right click sends out a Click Trigger, 
 	 * left click sends out either a Damage Trigger or Click Trigger. */
 
+	@EventHandler
 	public void clickTrigger(NPCRightClickEvent event) {
+
+		/* Show NPC info if sneaking and right clicking */
+		if (event.getClicker().isSneaking() 
+				&& event.getClicker().isOp()
+				&& event.getClicker().hasPermission("denizen.infoclick")) 
+			showInfo(event.getClicker(), event.getNPC());
 
 		/* Check if ... 1) isDenizen is true, 2) clickTrigger enabled, 3) is cooled down, 4) is not engaged */
 		if (event.getNPC().getTrait(DenizenTrait.class).isDenizen
 				&& event.getNPC().getTrait(DenizenTrait.class).enableClickTriggers
 				&& plugin.getDenizen.checkCooldown(event.getClicker())
 				&& !plugin.scriptEngine.getEngaged(event.getNPC())) {
-			
+
 			/* Apply default cooldown to avoid click-spam, then send to parser. */
 			Denizen.interactCooldown.put(event.getClicker(), System.currentTimeMillis() + plugin.settings.DefaultClickCooldown());
 			parseClickTrigger(event.getNPC(), event.getClicker());
 		}
 	}
 
-	
+	@EventHandler
 	public void damageTrigger(NPCLeftClickEvent event) {
 
 		/* Check if ... 1) isDenizen is true, 2) damageTrigger enabled, 3) is cooled down, 4) is not engaged 
@@ -64,14 +72,14 @@ public class DenizenCharacter implements Listener {
 				&& event.getNPC().getTrait(DenizenTrait.class).enableDamageTriggers
 				&& plugin.getDenizen.checkCooldown(event.getClicker())
 				&& !plugin.scriptEngine.getEngaged(event.getNPC())) {
-			
+
 			/* Apply default cooldown to avoid click-spam, then send to parser. */
 			Denizen.interactCooldown.put(event.getClicker(), System.currentTimeMillis() + plugin.settings.DefaultDamageCooldown());
 			parseDamageTrigger(event.getNPC(), event.getClicker());
 		}
-		
+
 		else if (plugin.settings.DisabledDamageTriggerInsteadTriggersClick)
-				clickTrigger(new NPCRightClickEvent(event.getNPC(), event.getClicker())); 
+			clickTrigger(new NPCRightClickEvent(event.getNPC(), event.getClicker())); 
 	}
 
 
@@ -82,23 +90,50 @@ public class DenizenCharacter implements Listener {
 	@EventHandler
 	public void proximityTrigger(PlayerMoveEvent event) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-
 		/* Do not run any code unless the player actually moves blocks */
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
-			try {
+			/* Do not run any further code if no Denizen is in range */
+			if (plugin.getDenizen.getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks) != null) {
+				NPC theDenizen = plugin.getDenizen.getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks;
+				if (event.getPlayer().hasMetadata("npcinproximity")) {
 
-				/* 
-				 * TODO: Denizen Proximity Trigger 
-				 */ 
+					/* If closest is same as stored metadata, avoid retrigger. */
+					if (theDenizen == event.getPlayer().getMetadata("npcinproximity"))
+						return;
 
-			} catch (Exception e) {
-				plugin.getLogger().log(Level.SEVERE, "Error processing proximity event.", e);
+					/* If closest is different than stored metadata and proximity trigger is enabled for said NPC, trigger */
+					else if (theDenizen != event.getPlayer().getMetadata("npcinproximity")
+							&& theDenizen.getTrait(DenizenTrait.class).enableProximityTriggers) {
+						if (plugin.getDenizen.checkCooldown(event.getPlayer())
+								&& !plugin.scriptEngine.getEngaged(theDenizen)) {
+
+							/* Set Metadata value to avoid retrigger. */
+							event.getPlayer().setMetadata("npcinproximity", new MetadataValue(plugin, plugin.getDenizen.getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks)))
+
+							/* TRIGGER! */
+							parseProximityTrigger(theDenizen, event.getPlayer());
+						}
+					}
+
+				} else { /* Player does not have metadata */
+
+					/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
+					if (theDenizen.getTrait(DenizenTrait.class).enableProximityTriggers) {
+						if (plugin.getDenizen.checkCooldown(event.getPlayer())
+								&& !plugin.scriptEngine.getEngaged(theDenizen)) {
+
+							/* Set Metadata value to avoid retrigger. */
+							event.getPlayer().setMetadata("npcinproximity", new MetadataValue(plugin, plugin.getDenizen.getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks)))
+
+							/* TRIGGER! */
+							parseProximityTrigger(theDenizen, event.getPlayer());
+						}
+					}
+				}
 			}
 		}
 	}
-
 
 
 	/* Listens for the PlayerMoveEvent to see if a player is within range
@@ -246,30 +281,24 @@ public class DenizenCharacter implements Listener {
 		}
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/* 
 	 * 
 	 * END EVENT LISTENERS 
 	 * 
 	 * 
 	 * */
-	
+
 
 	/* Called when a click trigger is sent to a Denizen. Handles fetching of the script. */
 
 	public void parseClickTrigger(NPC theDenizen, Player thePlayer) {
 
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-
-		if (thePlayer.isOp() && thePlayer.isSneaking()) {
-			showInfo(thePlayer, theDenizen);
-		}
-
-		else try {
+		try {
 
 			/* Get the script to use */
 			String theScript = plugin.getScript.getInteractScript(theDenizen, thePlayer);
@@ -415,7 +444,7 @@ public class DenizenCharacter implements Listener {
 		thePlayer.sendMessage("");		
 	}
 
-	
+
 
 
 

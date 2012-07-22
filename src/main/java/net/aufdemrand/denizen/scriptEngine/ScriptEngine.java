@@ -45,7 +45,7 @@ public class ScriptEngine {
 	/* ENUMS to help with dealing with multiple types of Triggers/Queues */
 
 	public enum TriggerType {
-		ATTACK, CLICK, CHAT, PROXIMITY, TASK, LOCATION
+		ATTACK, CLICK, CHAT, PROXIMITY, LOCATION, DEATH, TASK
 	}
 
 	public enum QueueType {
@@ -457,28 +457,6 @@ public class ScriptEngine {
 		parseTaskScript(thePlayer, theScript);
 
 	}
-
-
-
-	public void enforcePosition() {
-		if (plugin.utilities.getDenizens() != null) {
-			for (NPC theDenizen : plugin.utilities.getDenizens()) {
-				if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Position.Standing")) {
-					if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Position.Standing").isEmpty()) {
-
-						Location enforcedLoc = plugin.bookmarks.get(theDenizen.getName(), 
-								plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Position.Standing"), 
-								BookmarkType.LOCATION);
-
-						if (!plugin.bookmarks.checkLocation(theDenizen, enforcedLoc, 0) && !theDenizen.getNavigator().isNavigating())
-							theDenizen.getNavigator().setTarget(enforcedLoc);
-
-					}
-				}
-			}
-		}
-	}
-
 
 
 	/* Builds arguments array, recognizing items in quotes as a single item 

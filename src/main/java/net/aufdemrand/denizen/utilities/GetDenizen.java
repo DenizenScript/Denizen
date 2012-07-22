@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.DenizenCharacter;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class GetDenizen {
@@ -19,14 +20,13 @@ public class GetDenizen {
 		plugin = denizen;
 	}
 
+	
 	/*
 	 * checkCooldown
 	 * 
 	 * Checks against the interactCooldown for a Player to see if it has allowed enough time to interact.
 	 * 
 	 */
-
-
 
 	public boolean checkCooldown(Player thePlayer) {
 
@@ -36,12 +36,21 @@ public class GetDenizen {
 		return false;
 	}
 
-	public boolean checkLocationCooldown(Player thePlayer) {
+	public boolean checkCooldown(Location theLocation, Player thePlayer) {
+
 		if (!Denizen.locationCooldown.containsKey(thePlayer)) return true;
 		if (System.currentTimeMillis() >= Denizen.locationCooldown.get(thePlayer)) return true;
+		
 		return false;
 	}
 
+	public boolean checkCooldown(String theScript, Player thePlayer) {
+		
+		if (!plugin.getSaves().contains("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time")) return true;
+		if (System.currentTimeMillis() >= plugin.getSaves().getLong("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time"))	return true;
+	
+		return false;
+	}
 
 	
 

@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.commands.core;
 
-import net.aufdemrand.denizen.commands.Command;
+import net.aufdemrand.denizen.commands.DenizenCommand;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -14,7 +14,7 @@ import net.citizensnpcs.command.exception.CommandException;
  *
  */
 
-public class EngageCommand extends Command {
+public class EngageCommand extends DenizenCommand {
 
 	/* ENGAGE (# of Seconds) */
 

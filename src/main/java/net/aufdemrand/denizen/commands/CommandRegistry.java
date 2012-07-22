@@ -13,7 +13,7 @@ import net.aufdemrand.denizen.commands.core.ZapCommand;
 
 public class CommandRegistry {
 
-	private Map<String, Command> commands = new HashMap<String, Command>();
+	private Map<String, DenizenCommand> commands = new HashMap<String, DenizenCommand>();
 
 	public Denizen plugin;
 
@@ -23,38 +23,43 @@ public class CommandRegistry {
 	}
 
 
-	public boolean registerCommand(String commandName, Command commandClass) {
+	public boolean registerCommand(String commandName, DenizenCommand commandClass) {
 		this.commands.put(commandName.toUpperCase(), commandClass);
 		plugin.getLogger().log(Level.INFO, "Loaded " + commandName + " successfully!");
 		return true;
 	}
 
 
-	public Map<String, Command> listCommands() {
+	public Map<String, DenizenCommand> listCommands() {
 		return commands;
 	}
 
-	public Command getCommand(String commandName) {
+	public DenizenCommand getCommand(String commandName) {
 		if (commands.containsKey(commandName.toUpperCase()))
 			return commands.get(commandName);
 		else
 			return null;
 	}
 
-	public void registerCoreCommands() throws ActivationException {
+	public void registerCoreCommands() {
 
 		ZapCommand zapCommand = new ZapCommand();
-		zapCommand.activateAs("ZAP");
-		
 		EngageCommand engageCommand = new EngageCommand();
-		engageCommand.activateAs("ENGAGE");
-		engageCommand.activateAs("DISENGAGE");
-		
 		SpawnCommand spawnCommand = new SpawnCommand();
-		spawnCommand.activateAs("SPAWN");
-		
 		WaitCommand waitCommand = new WaitCommand();
-		waitCommand.activateAs("WAIT");
+		
+		try {
+			zapCommand.activateAs("ZAP");
+			engageCommand.activateAs("ENGAGE");
+			engageCommand.activateAs("DISENGAGE");
+			spawnCommand.activateAs("SPAWN");
+			waitCommand.activateAs("WAIT");
+		} catch (ActivationException e) {
+			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core commands!");
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 

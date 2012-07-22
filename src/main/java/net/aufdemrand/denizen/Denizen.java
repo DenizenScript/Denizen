@@ -45,7 +45,7 @@ public class Denizen extends JavaPlugin {
 	public Permission  perms = null;
 	
 	public Settings               settings = new Settings(this);
-	public DenizenCharacter      character = new DenizenCharacter();
+	public DenizenCharacter      character = new DenizenCharacter(this);
 	public Executer               executer = new Executer(this);
 	public CommandRegistry commandRegistry = new CommandRegistry(this);
 	public ScriptEngine       scriptEngine = new ScriptEngine(this);
@@ -70,10 +70,7 @@ public class Denizen extends JavaPlugin {
 	
 
 	/*
-	 * onEnable
-	 * 
-	 * Sets up Denizen on start of the craftbukkit server.
-	 *	
+	 * Sets up Denizen on start of the craftbukkit server.	
 	 */
 
 	@Override
@@ -86,20 +83,20 @@ public class Denizen extends JavaPlugin {
 			return; 
 		}
 
-		/* Load configuration files into memory */
+		/* Load YAML files into memory */
 		reloadConfig();
 		reloadScripts();
 		reloadSaves();
 		reloadAssignments();
 
-		/* Register Citizens2 character, listener, and bukkit tasks */
-		
+		/* Register Citizens2 trait, Bukkit listeners, and Bukkit tasks */
 		CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(DenizenTrait.class).withName("denizen"));
 		getServer().getPluginManager().registerEvents(character, this);
+		commandRegistry.registerCoreCommands();
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
-			public void run() { scriptEngine.runQueues(); scriptEngine.enforcePosition(); }
+			public void run() { scriptEngine.runQueues(); }
 		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
 
 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -113,13 +110,6 @@ public class Denizen extends JavaPlugin {
 		}, 100);
 
 		
-		try {
-			commandRegistry.registerCoreCommands();
-		} catch (ActivationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 

@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
-import net.aufdemrand.denizen.commands.Command;
+import net.aufdemrand.denizen.commands.DenizenCommand;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 import net.citizensnpcs.command.exception.CommandException;
 
@@ -34,7 +34,7 @@ import org.bukkit.potion.PotionEffectType;
  *
  */
 
-public class SpawnCommand extends Command {
+public class SpawnCommand extends DenizenCommand {
 
 	/* SPAWN [ENTITY_TYPE] (QUANTITY) (Location Bookmark|Denizen Name:Location Bookmark) */
 

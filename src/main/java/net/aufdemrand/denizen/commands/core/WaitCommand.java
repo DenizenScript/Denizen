@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.commands.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.aufdemrand.denizen.commands.Command;
+import net.aufdemrand.denizen.commands.DenizenCommand;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 import net.citizensnpcs.command.exception.CommandException;
@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
  *
  */
 
-public class WaitCommand extends Command {
+public class WaitCommand extends DenizenCommand {
 
 	/* WAIT [# OF SECONDS] */   
 

@@ -22,7 +22,7 @@ public class Executer {
 	public boolean execute(ScriptCommand theCommand) {
 		if (plugin.commandRegistry.getCommand(theCommand.getCommand()) != null) {
 
-			Command command = plugin.commandRegistry.getCommand(theCommand.getCommand());
+			DenizenCommand command = plugin.commandRegistry.getCommand(theCommand.getCommand());
 
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Executing command " + theCommand.getCommand());
 
