@@ -1,9 +1,16 @@
 package net.aufdemrand.denizen.scriptEngine.triggers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
 import net.aufdemrand.denizen.DenizenTrait;
+import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.aufdemrand.denizen.scriptEngine.Trigger;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
+import net.citizensnpcs.api.npc.NPC;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -31,5 +38,55 @@ public class ClickTrigger extends Trigger implements Listener {
 		}
 	}
 	
+	
+	
+	/* Parses the script for a click trigger */
+
+	public boolean parseClickScript(NPC theDenizen, Player thePlayer, String theScript) {
+
+		int theStep = getCurrentStep(thePlayer, theScript);
+		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
+
+		/* Let's get the Script from the file and turn it into ScriptCommands */
+		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Click Trigger.Script");
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing: " + theScript + ".Steps." + theStep + ".Click Trigger.Script");
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Number of items to parse: " + chatScriptItems.size());
+
+		for (String thisItem : chatScriptItems) {
+			String[] scriptEntry = new String[2];
+			if (thisItem.split(" ", 2).length == 1) {
+				scriptEntry[0] = thisItem;
+				scriptEntry[1] = null;
+			} else {
+				scriptEntry = thisItem.split(" ", 2);
+			}
+
+			try {
+				/* Build new script commands */
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep));
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building ScriptCommand with " + thisItem);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		/* New ScriptCommand list built, now let's add it into the queue */
+		List<ScriptEntry> scriptCommandList = new ArrayList<ScriptEntry>();
+		if (triggerQue.containsKey(thePlayer))
+			scriptCommandList.addAll(triggerQue.get(thePlayer));
+
+		/* Keeps the commandQue from removing items while
+		working on them here. They will be added back in. */ 
+		triggerQue.remove(thePlayer); 
+
+		if (!scriptCommands.isEmpty())
+			scriptCommandList.addAll(scriptCommands);
+		else
+			if (plugin.debugMode) plugin.getLogger().log(Level.SEVERE, "No items in the script to add!");
+
+		triggerQue.put(thePlayer, scriptCommandList);
+
+		return true;
+	}
 	
 }

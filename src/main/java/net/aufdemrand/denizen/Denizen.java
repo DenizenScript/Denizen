@@ -46,7 +46,7 @@ public class Denizen extends JavaPlugin {
 	public Settings               settings = new Settings(this);
 	public CommandRegistry commandRegistry = new CommandRegistry(this);
 	public TriggerRegistry triggerRegistry = new TriggerRegistry(this);
-	public 
+
 	public ScriptEngine       scriptEngine = new ScriptEngine(this);
 	public Executer               executer = new Executer(this);
 	

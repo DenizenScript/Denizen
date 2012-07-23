@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scriptEngine;
 
 import javax.script.ScriptException;
 
+import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.entity.LivingEntity;
@@ -102,6 +103,17 @@ public class ScriptEntry {
 		return theStep;
 	}
 	
+	/* QueueType */ 
+	private QueueType queueType = null;
+	
+	public QueueType sendingQueue() {
+		return queueType;
+	}
+	
+	public void setSendingQueue(QueueType queue) {
+		queueType = queue;
+	}
+	
 	
 	/**
 	 * Creates a ScriptCommand (For use with a CHAT Trigger)
@@ -138,7 +150,7 @@ public class ScriptEntry {
 
 	public ScriptEntry(String commandType, String[] arguments, Player player, NPC denizen, String script, Integer step) throws Exception {
 
-		if (player == null || denizen == null || script == null || step == null) throw new Exception("Encountered a null value. Cannot be null!");
+		if (player == null || denizen == null || script == null || step == null) throw new Exception("Values cannot be null!");
 
 		if (commandType.startsWith("^")) {
 			isInstant = true;
