@@ -14,10 +14,10 @@ import net.aufdemrand.denizen.bookmarks.Bookmarks;
 import net.aufdemrand.denizen.commands.CommandRegistry;
 import net.aufdemrand.denizen.commands.Executer;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine;
+import net.aufdemrand.denizen.scriptEngine.TriggerRegistry;
 import net.aufdemrand.denizen.utilities.GetDenizen;
 import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
-import net.aufdemrand.denizen.utilities.GetScript;
 import net.aufdemrand.denizen.utilities.GetWorld;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
@@ -44,18 +44,21 @@ public class Denizen extends JavaPlugin {
 	public Permission  perms = null;
 	
 	public Settings               settings = new Settings(this);
-	public DenizenCharacter      character = new DenizenCharacter(this);
-	public Executer               executer = new Executer(this);
 	public CommandRegistry commandRegistry = new CommandRegistry(this);
+	public TriggerRegistry triggerRegistry = new TriggerRegistry(this);
+	public 
 	public ScriptEngine       scriptEngine = new ScriptEngine(this);
+	public Executer               executer = new Executer(this);
+	
+	public Bookmarks             bookmarks = new Bookmarks(this);
+	public Utilities			 utilities = new Utilities(this);
+
+	
 	public GetDenizen           getDenizen = new GetDenizen(this);
 	public GetPlayer             getPlayer = new GetPlayer(this);
 	public GetRequirements getRequirements = new GetRequirements(this);
 	public GetWorld               getWorld = new GetWorld(this);
-	public GetScript             getScript = new GetScript(this);
-	public Bookmarks             bookmarks = new Bookmarks(this);
-	public Utilities			 utilities = new Utilities(this);
-
+	
 	public Boolean   debugMode = false;
 	public Boolean preciseMode = false;
 	public Boolean    newbMode = true;
@@ -81,22 +84,22 @@ public class Denizen extends JavaPlugin {
 		reloadSaves();
 		reloadAssignments();
 
-		/* Register Citizens2 trait, Bukkit listeners, and Bukkit tasks */
+		/* Register Citizens2 trait, Denizen Modules, and Bukkit tasks */
 		CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(DenizenTrait.class).withName("denizen"));
-		getServer().getPluginManager().registerEvents(character, this);
 		commandRegistry.registerCoreCommands();
-
-		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+		triggerRegistry.registerCoreTriggers();
+		
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() { scriptEngine.runQueues(); }
 		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
 
-		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override
 			public void run() { scriptEngine.scheduleScripts(); }
 		}, 1, 1000);
 
-		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			@Override
 			public void run() { bookmarks.buildLocationTriggerList(); }
 		}, 100);
@@ -158,7 +161,7 @@ public class Denizen extends JavaPlugin {
 	public void reloadScripts() {
 
 		try {
-			getScript.ConcatenateScripts();
+			ConcatenateScripts();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

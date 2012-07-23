@@ -13,7 +13,7 @@ import net.aufdemrand.denizen.commands.core.ZapCommand;
 
 public class CommandRegistry {
 
-	private Map<String, DenizenCommand> commands = new HashMap<String, DenizenCommand>();
+	private Map<String, Command> commands = new HashMap<String, Command>();
 
 	public Denizen plugin;
 
@@ -23,18 +23,18 @@ public class CommandRegistry {
 	}
 
 
-	public boolean registerCommand(String commandName, DenizenCommand commandClass) {
+	public boolean registerCommand(String commandName, Command commandClass) {
 		this.commands.put(commandName.toUpperCase(), commandClass);
 		plugin.getLogger().log(Level.INFO, "Loaded " + commandName + " successfully!");
 		return true;
 	}
 
 
-	public Map<String, DenizenCommand> listCommands() {
+	public Map<String, Command> listCommands() {
 		return commands;
 	}
 
-	public DenizenCommand getCommand(String commandName) {
+	public Command getCommand(String commandName) {
 		if (commands.containsKey(commandName.toUpperCase()))
 			return commands.get(commandName);
 		else

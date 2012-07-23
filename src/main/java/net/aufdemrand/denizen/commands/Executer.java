@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.commands;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
+import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
 public class Executer {
@@ -19,10 +19,10 @@ public class Executer {
 	 * Executes a command defined in theCommand 
 	 */
 
-	public boolean execute(ScriptCommand theCommand) {
+	public boolean execute(ScriptEntry theCommand) {
 		if (plugin.commandRegistry.getCommand(theCommand.getCommand()) != null) {
 
-			DenizenCommand command = plugin.commandRegistry.getCommand(theCommand.getCommand());
+			Command command = plugin.commandRegistry.getCommand(theCommand.getCommand());
 
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Executing command " + theCommand.getCommand());
 

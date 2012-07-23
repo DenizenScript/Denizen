@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.commands.core;
 
-import net.aufdemrand.denizen.commands.DenizenCommand;
-import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
+import net.aufdemrand.denizen.commands.Command;
+import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
@@ -14,7 +14,7 @@ import net.citizensnpcs.command.exception.CommandException;
  *
  */
 
-public class EngageCommand extends DenizenCommand {
+public class EngageCommand extends Command {
 
 	/* ENGAGE (# of Seconds) */
 
@@ -33,7 +33,7 @@ public class EngageCommand extends DenizenCommand {
 	 */
 
 	@Override
-	public boolean execute(ScriptCommand theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theCommand) throws CommandException {
 
 		/* Initialize variables */ 
 

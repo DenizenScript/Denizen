@@ -3,8 +3,8 @@ package net.aufdemrand.denizen.commands.core;
 import org.bukkit.Location;
 
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
-import net.aufdemrand.denizen.commands.DenizenCommand;
-import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
+import net.aufdemrand.denizen.commands.Command;
+import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
@@ -19,7 +19,7 @@ import net.citizensnpcs.trait.LookClose;
 
 enum Direction { UP, DOWN, LEFT, RIGHT, NORTH, SOUTH, EAST, WEST, BACK, AT, CLOSE, AWAY }
 
-public class LookCommand extends DenizenCommand {
+public class LookCommand extends Command {
 
 	/* LOOK [DIRECTION|LOCATION BOOKMARK|CLOSE/AWAY]*/
 
@@ -33,7 +33,7 @@ public class LookCommand extends DenizenCommand {
 	 */
 
 	@Override
-	public boolean execute(ScriptCommand theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theCommand) throws CommandException {
 
 		/* Initialize variables */ 
 

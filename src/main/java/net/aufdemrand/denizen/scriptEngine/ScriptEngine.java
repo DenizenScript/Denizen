@@ -47,18 +47,13 @@ public class ScriptEngine {
 
 	/* ENUMS to help with dealing with multiple types of Triggers/Queues */
 
-	public enum TriggerType {
-		CLICK, CHAT, PROXIMITY, LOCATION, DAMAGE, DEATH, TASK
-	}
-
 	public enum QueueType {
 		TRIGGER, TASK, ACTIVITY, CUSTOM
 	}
 
-	private Map<Player, List<ScriptCommand>> triggerQue = new ConcurrentHashMap<Player, List<ScriptCommand>>();
-	private Map<Player, List<ScriptCommand>>    taskQue = new ConcurrentHashMap<Player, List<ScriptCommand>>();
-	private Map<NPC, List<ScriptCommand>>   activityQue = new ConcurrentHashMap<NPC, List<ScriptCommand>>();
-
+	private Map<Player, List<ScriptEntry>> triggerQue = new ConcurrentHashMap<Player, List<ScriptEntry>>();
+	private Map<Player, List<ScriptEntry>>    taskQue = new ConcurrentHashMap<Player, List<ScriptEntry>>();
+	private Map<NPC, List<ScriptEntry>>   activityQue = new ConcurrentHashMap<NPC, List<ScriptEntry>>();
 
 
 	/* Processes commands from the Queues. */
@@ -71,7 +66,7 @@ public class ScriptEngine {
 
 			/* Attempt to run a command for each player. The attempted command (and attached info) info is 
 			 * in theEntry */
-			for (Entry<Player, List<ScriptCommand>> theEntry : triggerQue.entrySet()) {
+			for (Entry<Player, List<ScriptEntry>> theEntry : triggerQue.entrySet()) {
 				if (!theEntry.getValue().isEmpty()) {
 
 					/* Check the time of the command to see if it has been delayed with a WAIT command. Only 
@@ -85,7 +80,7 @@ public class ScriptEngine {
 
 						do { 
 							instantly = false;
-							ScriptCommand theCommand = theEntry.getValue().get(0);
+							ScriptEntry theCommand = theEntry.getValue().get(0);
 							theCommand.setSendingQueue(QueueType.TRIGGER);
 							plugin.executer.execute(theCommand);
 
@@ -110,13 +105,13 @@ public class ScriptEngine {
 		/* Now the taskQue, the alternate script queue for Players */
 
 		if (!taskQue.isEmpty()) {	
-			for (Entry<Player, List<ScriptCommand>> theEntry : taskQue.entrySet()) {
+			for (Entry<Player, List<ScriptEntry>> theEntry : taskQue.entrySet()) {
 				if (!theEntry.getValue().isEmpty()) {
 					if (theEntry.getValue().get(0).getDelayedTime() < System.currentTimeMillis()) {
 						boolean instantly;
 						do { 
 							instantly = false;
-							ScriptCommand theCommand = theEntry.getValue().get(0);
+							ScriptEntry theCommand = theEntry.getValue().get(0);
 							theCommand.setSendingQueue(QueueType.TASK);
 							plugin.executer.execute(theCommand);
 
@@ -177,9 +172,9 @@ public class ScriptEngine {
 	 * Checks cooldowns/set cooldowns.
 	 */
 	
-	Map<Player, Map<TriggerType, Long>> triggerCooldowns = new ConcurrentHashMap<Player, Map<TriggerType,Long>>();
+	Map<Player, Map<Class<?>, Long>> triggerCooldowns = new ConcurrentHashMap<Player, Map<Class<?>,Long>>();
 	
-	public boolean checkCooldown(Player thePlayer, TriggerType theTrigger) {
+	public boolean checkCooldown(Player thePlayer, Class<?> theTrigger) {
 
 		if (!triggerCooldowns.containsKey(thePlayer)) return true;
 		if (!triggerCooldowns.get(thePlayer).containsKey(theTrigger)) return true;
@@ -196,8 +191,8 @@ public class ScriptEngine {
 		return false;
 	}
 	
-	public void setCooldown(Player thePlayer, TriggerType triggerType, Long millis) {
-		Map<TriggerType, Long> triggerMap = new HashMap<TriggerType, Long>();
+	public void setCooldown(Player thePlayer, Class<?> triggerType, Long millis) {
+		Map<Class<?>, Long> triggerMap = new HashMap<Class<?>, Long>();
 		triggerMap.put(triggerType, System.currentTimeMillis() + millis);
 		triggerCooldowns.put(thePlayer, triggerMap);
 	}
@@ -237,8 +232,6 @@ public class ScriptEngine {
 
 		return;
 	}
-
-	
 	
 
 	/* Parses the scripts for Chat Triggers and sends new ScriptCommands to the queue if
@@ -249,7 +242,7 @@ public class ScriptEngine {
 	public boolean parseChatScript(NPC theDenizen, Player thePlayer, String theScript, String playerMessage) {
 
 		int theStep = getCurrentStep(thePlayer, theScript);
-		List<ScriptCommand> scriptCommands = new ArrayList<ScriptCommand>();
+		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
 		/* Get Chat Triggers and check each to see if there are any matches. */
 		List<String> ChatTriggerList = plugin.getScript.getChatTriggers(theScript, theStep);
@@ -282,14 +275,14 @@ public class ScriptEngine {
 					scriptEntry = thisItem.split(" ", 2);
 					try {
 						/* Build new script commands */
-						scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep, playerMessage, chatText));
+						scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep, playerMessage, chatText));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 
 				/* New ScriptCommand list built, now let's add it into the queue */
-				List<ScriptCommand> scriptCommandList = triggerQue.get(thePlayer);
+				List<ScriptEntry> scriptCommandList = triggerQue.get(thePlayer);
 
 				/* Keeps the commandQue from removing items while
 				working on them here. They will be added back in. */ 
@@ -326,7 +319,7 @@ public class ScriptEngine {
 	public boolean parseClickScript(NPC theDenizen, Player thePlayer, String theScript) {
 
 		int theStep = getCurrentStep(thePlayer, theScript);
-		List<ScriptCommand> scriptCommands = new ArrayList<ScriptCommand>();
+		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
 		/* Let's get the Script from the file and turn it into ScriptCommands */
 		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Click Trigger.Script");
@@ -344,7 +337,7 @@ public class ScriptEngine {
 
 			try {
 				/* Build new script commands */
-				scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep));
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep));
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building ScriptCommand with " + thisItem);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -352,7 +345,7 @@ public class ScriptEngine {
 		}
 
 		/* New ScriptCommand list built, now let's add it into the queue */
-		List<ScriptCommand> scriptCommandList = new ArrayList<ScriptCommand>();
+		List<ScriptEntry> scriptCommandList = new ArrayList<ScriptEntry>();
 		if (triggerQue.containsKey(thePlayer))
 			scriptCommandList.addAll(triggerQue.get(thePlayer));
 
@@ -376,7 +369,7 @@ public class ScriptEngine {
 
 	public boolean parseTaskScript(Player thePlayer, String theScript) {
 
-		List<ScriptCommand> scriptCommands = new ArrayList<ScriptCommand>();
+		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
 		/* Let's get the Script from the file and turn it into ScriptCommands */
 		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Script");
@@ -385,14 +378,14 @@ public class ScriptEngine {
 			scriptEntry = thisItem.split(" ", 2);
 			try {
 				/* Build new script commands */
-				scriptCommands.add(new ScriptCommand(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theScript));
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theScript));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
 		/* New ScriptCommand list built, now let's add it into the queue */
-		List<ScriptCommand> scriptCommandList = taskQue.get(thePlayer);
+		List<ScriptEntry> scriptCommandList = taskQue.get(thePlayer);
 
 		/* Keeps the commandQue from removing items while
 		working on them here. They will be added back in. */ 
@@ -408,9 +401,9 @@ public class ScriptEngine {
 
 	/** Injects commands into a QueueType  */
 
-	public void injectToQue(Player thePlayer, List<ScriptCommand> scriptCommands, QueueType queueType, int thePosition) {
+	public void injectToQue(Player thePlayer, List<ScriptEntry> scriptCommands, QueueType queueType, int thePosition) {
 
-		List<ScriptCommand> scriptCommandList;
+		List<ScriptEntry> scriptCommandList;
 
 		switch (queueType) {
 
@@ -436,7 +429,7 @@ public class ScriptEngine {
 		return;
 	}
 
-	public void injectToQue(Denizen theDenizen, List<ScriptCommand> scriptCommands, QueueType queueType, int thePosition) {
+	public void injectToQue(Denizen theDenizen, List<ScriptEntry> scriptCommands, QueueType queueType, int thePosition) {
 
 		/* 
 		 * TODO: ActivityQue injection sequence
@@ -448,9 +441,9 @@ public class ScriptEngine {
 
 	/** Adds commands to a QueueType  */
 
-	public void addToQue(Player thePlayer, List<ScriptCommand> scriptCommands, QueueType queueType) {
+	public void addToQue(Player thePlayer, List<ScriptEntry> scriptCommands, QueueType queueType) {
 
-		List<ScriptCommand> scriptCommandList;
+		List<ScriptEntry> scriptCommandList;
 
 		switch (queueType) {
 
@@ -472,7 +465,7 @@ public class ScriptEngine {
 		return;
 	}
 
-	public void addToQue(Denizen theDenizen, List<ScriptCommand> scriptCommands, QueueType queueType) {
+	public void addToQue(Denizen theDenizen, List<ScriptEntry> scriptCommands, QueueType queueType) {
 
 		/* 
 		 * TODO: ActivityQue injection sequence

@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.commands;
 import java.rmi.activation.ActivationException;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
+import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
 import org.bukkit.Bukkit;
@@ -30,6 +30,6 @@ public abstract class Command {
 	/* Execute is the method called when the Denizen Command is called from a script.
 	 * If the command runs successfully, the method should return true. */
 
-	public abstract boolean execute(ScriptCommand theCommand) throws CommandException;
+	public abstract boolean execute(ScriptEntry theCommand) throws CommandException;
 
 }
