@@ -37,8 +37,11 @@ public class ScriptEngine {
 	/* Denizen Constructor */
 
 	private Denizen plugin;
+	public ScriptHelper helper;
+	
 	public ScriptEngine(Denizen denizen) {
 		plugin = denizen;
+		helper = new ScriptHelper(plugin);
 	}	
 
 

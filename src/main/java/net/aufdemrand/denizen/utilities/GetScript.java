@@ -27,48 +27,6 @@ public class GetScript {
 	
 
 
-	/*
-	 * ConcatenateScripts
-	 * 
-	 * Combines script files into one YML file for Denizen to read from.
-	 * Code borrowed from: http://www.roseindia.net/tutorial/java/core/files/fileconcatenation.html
-	 * 
-	 * Thank you!
-	 * 
-	 */
-
-	public void ConcatenateScripts() throws IOException {
-
-		try {
-
-			PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-scripts.yml"));
-			File file = new File(plugin.getDataFolder() + File.separator + "scripts");
-			File[] files = file.listFiles();
-			for (int i = 0; i < files.length; i++) {
-
-				String fileName = files[i].getName();
-				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
-
-					plugin.getLogger().log(Level.INFO, "Processing script " + files[i].getPath() + "... ");
-					BufferedReader br = new BufferedReader(new FileReader(files[i]
-							.getPath()));
-					String line = br.readLine();
-					while (line != null) {
-						pw.println(line);
-						line = br.readLine();
-					}
-					br.close();
-
-				}
-			}
-			pw.close();
-			plugin.getLogger().log(Level.INFO, "OK! All scripts loaded!");
-
-		} catch (Throwable error) {
-			plugin.getLogger().log(Level.WARNING, "Woah! No scripts in /plugins/Denizen/scripts/ to load!");		
-		}
-
-	}
 
 
 
@@ -244,22 +202,7 @@ public class GetScript {
 
 
 
-	/* 
-	 * GetScriptName
-	 *
-	 * Requires the raw script entry from the config.
-	 * Strips the priority number from the beginning of the script name.
-	 *
-	 */
-
-	public String getNameFromEntry(String thisScript) {
-
-		if (thisScript.equals("none")) { return thisScript; }
-		else {
-			String [] thisScriptArray = thisScript.split(" ", 2);
-			return thisScriptArray[1]; }
-	}
-
+x
 
 
 

@@ -21,7 +21,6 @@ public class GetWorld {
 	}
 
 
-
 	/**
 	 * Checks the time in the specified bukkit World. 
 	 *
@@ -72,9 +71,6 @@ public class GetWorld {
 		return false;
 	}
 
-	
-	
-
 
 	/**
 	 * Checks the weather in the specified bukkit World. 
@@ -114,9 +110,6 @@ public class GetWorld {
 	}
 
 
-	
-	
-
 	public boolean checkWorld(LivingEntity theEntity, List<String> theWorlds, boolean negativeRequirement) {
 
 		boolean outcome = false;
@@ -138,32 +131,6 @@ public class GetWorld {
 
 		return false;
 	}
-
-
-	
-	
-
-	public boolean spawnMob(String mobType, String theAmount, String theLocationBookmark, NPC theDenizen) {
-	
-		Location theSpawnLoc = null;
-		if (theAmount == null) theAmount = "1";
-		
-		if (theLocationBookmark == null) theSpawnLoc = theDenizen.getBukkitEntity().getLocation();		
-		else theSpawnLoc = plugin.bookmarks.get(theDenizen.getName(), theLocationBookmark, BookmarkType.LOCATION);
-		
-		if (theSpawnLoc != null) {
-			for (int cx = 1; cx <= Integer.valueOf(theAmount); cx++) {
-				theSpawnLoc.getWorld().spawnCreature(theSpawnLoc, EntityType.valueOf(mobType.toUpperCase()));	
-			}
-			return true;
-		}
-		
-		return false;
-	}
-
-
-
-
 
 
 }
