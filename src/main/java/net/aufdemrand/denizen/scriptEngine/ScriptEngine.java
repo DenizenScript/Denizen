@@ -203,6 +203,40 @@ public class ScriptEngine {
 		plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time", System.currentTimeMillis() + millis);
 	}
 
+	
+	/* Called when a click trigger is sent to a Denizen. Handles fetching of the script. */
+
+	public void parseClickTrigger(NPC theDenizen, Player thePlayer) {
+
+		try {
+
+			/* Get the script to use */
+			String theScript = plugin.getScript.getInteractScript(theDenizen, thePlayer);
+
+			/* No script meets requirements, let's let the player know. */
+			if (theScript.equals("none")) {
+				String noscriptChat = null;
+				if (plugin.getAssignments().contains("Denizens." + theDenizen.getName()	+ ".Texts.No Requirements Met")) 
+					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getName()	+ ".Texts.No Requirements Met");
+				else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
+
+				/* Make the Denizen chat to the Player */
+				plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, plugin.getDenizen.formatChatText(noscriptChat, "CHAT", thePlayer, theDenizen)[0], null, "CHAT");
+			}
+
+			/* Script does match, let's send the script to the parser */
+			else if (!theScript.equals("none")) 
+				plugin.scriptEngine.parseClickScript(theDenizen, thePlayer, theScript);
+
+		} catch (Exception e) {
+			plugin.getLogger().log(Level.SEVERE, "Error processing click event.", e);
+		}
+
+		return;
+	}
+
+	
+	
 
 	/* Parses the scripts for Chat Triggers and sends new ScriptCommands to the queue if
 	 * found matched. Returning FALSE will cancel intervention and allow the PlayerChatEvent

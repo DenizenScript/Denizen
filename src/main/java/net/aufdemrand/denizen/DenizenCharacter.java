@@ -65,6 +65,7 @@ public class DenizenCharacter implements Listener {
 		}
 	}
 
+	
 	@EventHandler
 	public void damageTrigger(NPCLeftClickEvent event) {
 
