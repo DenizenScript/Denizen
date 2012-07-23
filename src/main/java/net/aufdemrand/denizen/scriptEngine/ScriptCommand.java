@@ -40,16 +40,6 @@ public class ScriptCommand {
 		isInstant = true;
 	}
 	
-	/* Gives the scope of the information in the ScriptCommand.
-	 * CommandHas.SOME = suitable for a Task Script command
-	 * CommandHas.MORE = suitable for a Click/Damage Script command 
-	 * CommandHas.MOST = suitable for a Chat Script command */
-	private CommandHas size; 
-	
-	public CommandHas size() {
-		return size;
-	}
-	
 	/* Player or LivingEntity object that represents the triggering entity */
 	private Player thePlayer;
 	private LivingEntity theEntity;
@@ -150,7 +140,6 @@ public class ScriptCommand {
 			commandType = commandType.substring(1);
 		}
 		
-		size = CommandHas.MOST;
 		theStep = step;
 		theCommand = commandType.toUpperCase();
 		theArguments = arguments;
@@ -180,7 +169,6 @@ public class ScriptCommand {
 			commandType = commandType.substring(1);
 		}
 		
-		size = CommandHas.MORE;
 		theStep = step;
 		theCommand = commandType;
 		theArguments = arguments;
@@ -207,7 +195,6 @@ public class ScriptCommand {
 			commandType = commandType.substring(1);
 		}
 		
-		size = CommandHas.SOME;
 		theCommand = commandType;
 		theArguments = arguments;
 		thePlayer = player;

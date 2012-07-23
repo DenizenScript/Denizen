@@ -9,19 +9,69 @@ public class Settings {
 	public Settings(Denizen denizen) {
 		plugin = denizen;
 	}
+
 	
+	/* 
+	 
+	# Ops can sneak and right click a NPC to see information about the NPC. If disabled,
+	# the command '/denizen info' can still be used to obtain the information.
+	right_click_and_sneak_info_mode_enabled: true
+	
+	 */
+	
+	public boolean RightClickAndSneakInfoModeEnabled() {
+		return plugin.getConfig().getBoolean("right_click_and_sneak_info_mode_enabled", true);
+	}
 	
 	/*
 	
-	# Default time in seconds of cooldown set to Denizens when a click trigger is triggered.
-    default_click_cooldown: true
+	# Default time in seconds of cooldown set to Denizens when a trigger is triggered.
+    default_click_cooldown_in_seconds: 2.0
+    default_location_cooldown_in_seconds: 30.0
+    default_proximity_cooldown_in_seconds: 15.0
+    default_death_cooldown_in_seconds: 0.0
+    default_damage_cooldown_in_seconds: 0.5
+	default_chat_cooldown_in_seconds: 2.0
 	 
 	 */
 	
-	public int DefaultClickCooldown() {
-		return plugin.getConfig().getInt("default_click_cooldown", 2) * 1000;
+	public long DefaultClickCooldown() {
+		return (long) (plugin.getConfig().getDouble("default_click_cooldown_in_seconds", 2) * 1000);
+	}
+
+	public long DefaultLocationCooldown() {
+		return (long) (plugin.getConfig().getDouble("default_location_cooldown_in_seconds", 30.00) * 1000);
+	}
+
+	public long DefaultProximityCooldown() {
+		return (long) (plugin.getConfig().getDouble("default_proximity_cooldown_in_seconds", 15.0) * 1000);
+	}
+
+	public long DefaultDeathCooldown() {
+		return (long) (plugin.getConfig().getDouble("default_death_cooldown_in_seconds", 0.0) * 1000);
+	}
+
+	public long DefaultDamageCooldown() {
+		return (long) (plugin.getConfig().getDouble("default_damage_cooldown_in_seconds", 0.5) * 1000);
 	}
 	
+	public long DefaultChatCooldown() {
+		return (long) (plugin.getConfig().getDouble("default_chat_cooldown_in_seconds", 2.0) * 1000);
+	}
+	
+	/* 
+	 
+	# Denizen by default uses both right and left clicks to activate the click trigger
+	# if the damage trigger (left click) is disabled. Select false if you would prefer
+	# to have click triggers activate with the right mouse button only.
+	disabled_damage_trigger_instead_triggers_click: true
+	
+	 */
+	
+	public boolean DisabledDamageTriggerInsteadTriggersClick() {
+		return plugin.getConfig().getBoolean("disabled_damage_trigger_instead_triggers_click", true);
+	}
+	 
 	/*
 
 	# Interact delay sets the pace of the 'Player Queue' and 'Denizen Queue' 
@@ -117,8 +167,18 @@ public class Settings {
 	npc_to_player_shout_range_in_blocks: 15
 	player_to_npc_whisper_range_in_blocks: 3
 	npc_to_player_whisper_range_in_blocks: 3
-
+	
+	proximity_trigger_range_in_blocks: 3
+	location_trigger_range_in_blocks: 1
 	 */
+
+	public int ProximityTriggerRangeInBlocks() {
+		return plugin.getConfig().getInt("proximity_trigger_range_in_blocks", 3);
+	}
+
+	public int LocationTriggerRangeInBlocks() {
+		return plugin.getConfig().getInt("location_trigger_range_in_blocks", 3);
+	}
 
 	public int PlayerToNpcChatRangeInBlocks() {
 		return plugin.getConfig().getInt("player_to_npc_chat_range_in_blocks", 3);
@@ -197,6 +257,7 @@ public class Settings {
 	}
 
 	public String PlayerWhisperToNpcBystander() {
+		
 		return plugin.getConfig().getString("player_whisper_to_npc_bystander", "<PLAYER> whispers someting to <NPC>.");
 	}
 
@@ -260,7 +321,5 @@ public class Settings {
 		return plugin.getConfig().getString("default_no_chat_triggers_met_text", "Perhaps you can tell me more clearly what it is you need.");
 	}
 	
-	
-
 
 }

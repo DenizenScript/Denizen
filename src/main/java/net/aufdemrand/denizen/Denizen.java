@@ -3,7 +3,6 @@ package net.aufdemrand.denizen;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.rmi.activation.ActivationException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -60,13 +59,6 @@ public class Denizen extends JavaPlugin {
 	public Boolean   debugMode = false;
 	public Boolean preciseMode = false;
 	public Boolean    newbMode = true;
-
-
-	/* TODO: Need to place these in appropriate classes with getters/setters to avoid making them static */
-	public static Map<NPC, Location>    previousNPCLoc = new ConcurrentHashMap<NPC, Location>(); 
-	public static Map<Player, Long>   interactCooldown = new ConcurrentHashMap<Player, Long>();
-	public static Map<Player, Long>   locationCooldown = new ConcurrentHashMap<Player, Long>();
-
 	
 
 	/*

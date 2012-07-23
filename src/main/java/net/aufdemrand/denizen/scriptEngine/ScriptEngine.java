@@ -45,15 +45,11 @@ public class ScriptEngine {
 	/* ENUMS to help with dealing with multiple types of Triggers/Queues */
 
 	public enum TriggerType {
-		ATTACK, CLICK, CHAT, PROXIMITY, LOCATION, DEATH, TASK
+		CLICK, CHAT, PROXIMITY, LOCATION, DAMAGE, DEATH, TASK
 	}
 
 	public enum QueueType {
 		TRIGGER, TASK, ACTIVITY, CUSTOM
-	}
-
-	public enum CommandHas {
-		SOME, MORE, MOST;
 	}
 
 	private Map<Player, List<ScriptCommand>> triggerQue = new ConcurrentHashMap<Player, List<ScriptCommand>>();
@@ -174,10 +170,44 @@ public class ScriptEngine {
 	}
 
 
+	/*
+	 * Checks cooldowns/set cooldowns.
+	 */
+	
+	Map<Player, Map<TriggerType, Long>> triggerCooldowns = new ConcurrentHashMap<Player, Map<TriggerType,Long>>();
+	
+	public boolean checkCooldown(Player thePlayer, TriggerType theTrigger) {
+
+		if (!triggerCooldowns.containsKey(thePlayer)) return true;
+		if (!triggerCooldowns.get(thePlayer).containsKey(theTrigger)) return true;
+		if (System.currentTimeMillis() >= triggerCooldowns.get(thePlayer).get(theTrigger)) return true;
+		
+		return false;
+	}
+
+	public boolean checkCooldown(Player thePlayer, String theScript) {
+		
+		if (!plugin.getSaves().contains("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time")) return true;
+		if (System.currentTimeMillis() >= plugin.getSaves().getLong("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time"))	return true;
+	
+		return false;
+	}
+	
+	public void setCooldown(Player thePlayer, TriggerType triggerType, Long millis) {
+		Map<TriggerType, Long> triggerMap = new HashMap<TriggerType, Long>();
+		triggerMap.put(triggerType, System.currentTimeMillis() + millis);
+		triggerCooldowns.put(thePlayer, triggerMap);
+	}
+	
+	public void setCooldown(Player thePlayer, String theScript, Long millis) {
+		plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time", System.currentTimeMillis() + millis);
+	}
+
 
 	/* Parses the scripts for Chat Triggers and sends new ScriptCommands to the queue if
 	 * found matched. Returning FALSE will cancel intervention and allow the PlayerChatEvent
-	 * to pass through.	 */
+	 * to pass through.	 
+	 */
 
 	public boolean parseChatScript(NPC theDenizen, Player thePlayer, String theScript, String playerMessage) {
 

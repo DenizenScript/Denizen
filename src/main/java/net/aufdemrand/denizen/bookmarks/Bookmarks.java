@@ -63,8 +63,8 @@ public class Bookmarks {
 
 
 	/*
-	 * Builds a map<Location, "Denizen Id:location bookmark name"> of all the location bookmarks
-	 * for matching location triggers.  
+	 * Builds a HashMap of all the Location Bookmarks. This is used for quickly checking with the Location Trigger.
+	 * 
 	 */
 
 	private Map<Location, String> locationTriggerList = new ConcurrentHashMap<Location, String>();
@@ -72,6 +72,8 @@ public class Bookmarks {
 	public void buildLocationTriggerList() {
 		locationTriggerList.clear();
 
+		
+		/* Find Location Bookmarks assigned to Names */
 		for (NPC theDenizen : plugin.utilities.getDenizens()) {
 			if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
 				List<String> locationsToAdd = plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
@@ -79,15 +81,37 @@ public class Bookmarks {
 				for (String thisLocation : locationsToAdd) {
 					if (!thisLocation.isEmpty()) {
 						Location theLocation = get(theDenizen.getName(), thisLocation.split(" ", 2)[0], BookmarkType.LOCATION);
-						String theInfo = theDenizen.getId() + ":" + thisLocation.split(" ", 2)[0];
+						String theInfo = "NAME:" + theDenizen.getName() + ":" + thisLocation.split(" ", 2)[0];
+						locationTriggerList.put(theLocation, theInfo);
+					}
+				}
+			}
+		}	
+		
+		/* Find Location Bookmarks assigned to NPCIDs */
+		for (NPC theDenizen : plugin.utilities.getDenizens()) {
+			if (plugin.getSaves().contains("Denizens." + theDenizen.getId() + ".Bookmarks.Location")) {
+				List<String> locationsToAdd = plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Location");
+
+				for (String thisLocation : locationsToAdd) {
+					if (!thisLocation.isEmpty()) {
+						Location theLocation = get(theDenizen.getName(), thisLocation.split(" ", 2)[0], BookmarkType.LOCATION);
+						String theInfo = "ID:" + theDenizen.getId() + ":" + thisLocation.split(" ", 2)[0];
 						locationTriggerList.put(theLocation, theInfo);
 					}
 				}
 			}
 		}	
 
-		plugin.getLogger().log(Level.INFO, "Location bookmark trigger list built. Size: " + locationTriggerList.size());
+		plugin.getLogger().log(Level.INFO, "Building Location Bookmark Trigger List. Size: " + locationTriggerList.size());
 
+		if (plugin.debugMode && locationTriggerList.size() > 0) {
+			plugin.getLogger().log(Level.INFO, "Item Key: [Assignment Type]:[Assigned To]:[Name of Bookmark]" + locationTriggerList.size());
+			for (String theEntry : locationTriggerList.values()) {
+				plugin.getLogger().log(Level.INFO, "Item added to list: " + theEntry);
+			}
+		}
+		
 		return;
 	}
 
@@ -95,14 +119,7 @@ public class Bookmarks {
 		return locationTriggerList;
 	}
 
-
-
-	/*
-	 * get
-	 * 
-	 * Retrieves a Location from the Denizen's stored location or block bookmark.
-	 * 
-	 */
+	
 
 	public enum BookmarkType {
 		LOCATION, BLOCK

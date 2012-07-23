@@ -263,18 +263,4 @@ public class GetScript {
 
 
 
-
-	public boolean zap(Player thePlayer, String theScript, String theStep, String newStep) {
-
-		if (newStep == null) {
-			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(theStep) + 1);
-			plugin.saveSaves();
-		}
-		else { 
-			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Current Step", Integer.parseInt(newStep)); 
-			plugin.saveSaves();
-		}
-
-		return true;
-	}
 }
