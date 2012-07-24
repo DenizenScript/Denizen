@@ -51,7 +51,6 @@ public class TriggerRegistry {
 		ClickTrigger clickTrigger = new ClickTrigger();
 		DamageTrigger damageTrigger = new DamageTrigger();
 		ProximityTrigger proximityTrigger = new ProximityTrigger();
-		DeathTrigger deathTrigger = new DeathTrigger();
 		
 		/* Activate Denizen Triggers */
 		try {
@@ -61,7 +60,6 @@ public class TriggerRegistry {
 			clickTrigger.activateAs("Click");
 			damageTrigger.activateAs("Damage");
 			proximityTrigger.activateAs("Proximity");
-			deathTrigger.activateAs("Death");
 		
 		} catch (ActivationException e) {
 			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core triggers!");
@@ -73,7 +71,6 @@ public class TriggerRegistry {
 		plugin.getServer().getPluginManager().registerEvents(chatTrigger, plugin);
 		plugin.getServer().getPluginManager().registerEvents(clickTrigger, plugin);
 		plugin.getServer().getPluginManager().registerEvents(damageTrigger, plugin);
-		plugin.getServer().getPluginManager().registerEvents(deathTrigger, plugin);
 		plugin.getServer().getPluginManager().registerEvents(proximityTrigger, plugin);
 		
 	}

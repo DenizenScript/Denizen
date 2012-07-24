@@ -23,4 +23,5 @@ public class Trigger {
 			throw new ActivationException("Error activating Trigger with Trigger Registry.");
 	}
 	
+	
 }
