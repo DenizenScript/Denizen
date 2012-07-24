@@ -20,9 +20,9 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.DenizenTrait;
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.aufdemrand.denizen.commands.core.EngageCommand;
+import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 import net.citizensnpcs.api.npc.NPC;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -411,6 +411,29 @@ public class ScriptHelper {
 		
 		return scriptCommands;
 
+		
+	}
+
+
+
+	public void queueScriptEntries(Player thePlayer, List<ScriptEntry> scriptEntries, QueueType queueType) {
+		
+		Map<Player, List<ScriptEntry>> thisQueue = plugin.scriptEngine.getQueue(queueType);
+		List<ScriptEntry> existingScriptEntries = new ArrayList<ScriptEntry>();
+
+		if (thisQueue.containsKey(thePlayer))
+			existingScriptEntries.addAll(thisQueue.get(thePlayer));
+
+		/* Keeps the commandQue from removing items while
+		working on them here. They will be added back in. */ 
+		thisQueue.remove(thePlayer); 
+
+		if (!scriptEntries.isEmpty())
+			existingScriptEntries.addAll(scriptEntries);
+		else
+			if (plugin.debugMode) plugin.getLogger().log(Level.SEVERE, "No items in the script to add!");
+
+		thisQueue.put(thePlayer, existingScriptEntries);
 		
 	}
 

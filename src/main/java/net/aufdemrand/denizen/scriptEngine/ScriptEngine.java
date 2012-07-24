@@ -164,20 +164,6 @@ public class ScriptEngine {
 	}
 
 
-
-
-	
-
-	
-
-
-
-
-
-
-
-
-
 	/* Parses the script for a task trigger */
 
 	public boolean parseTaskScript(Player thePlayer, String theScript) {
@@ -250,6 +236,22 @@ public class ScriptEngine {
 
 	}
 
+	
+	/** Retrieves a QueueType  */
+	
+	public Map<Player, List<ScriptEntry>> getQueue(QueueType queueType) {
+
+		switch (queueType) {
+
+		case TRIGGER:
+			return triggerQue;
+		
+		case TASK:
+			return taskQue;
+		}
+		
+		return null;
+	}
 
 
 	/** Adds commands to a QueueType  */
@@ -262,9 +264,9 @@ public class ScriptEngine {
 
 		case TRIGGER:
 			scriptCommandList = taskQue.get(thePlayer);
-			taskQue.remove(thePlayer); 
+			triggerQue.remove(thePlayer); 
 			scriptCommandList.addAll(scriptCommands);
-			taskQue.put(thePlayer, scriptCommandList);
+			triggerQue.put(thePlayer, scriptCommandList);
 			break;
 
 		case TASK:

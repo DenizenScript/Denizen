@@ -40,8 +40,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				String noscriptChat = null;
 				if (plugin.getAssignments().contains("Denizens." + theDenizen.getId() + ".Texts.No Requirements Met")) 
 					noscriptChat = plugin.getAssignments().getString("Denizens." + theDenizen.getId() + ".Texts.No Requirements Met");
-				else noscriptChat = plugin.settings.DefaultNoRequirementsMetText();
-				plugin.getDenizen.talkToPlayer(theDenizen, event.getPlayer(), plugin.getDenizen.formatChatText(noscriptChat, "CHAT", event.getPlayer(), theDenizen)[0], null, "CHAT");
+				else 
 			}
 
 			/* Awesome! There's a matching script, let's parse the script to see if chat triggers match */

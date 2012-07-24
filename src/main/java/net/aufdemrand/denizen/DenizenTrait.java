@@ -25,7 +25,7 @@ public class DenizenTrait extends Trait implements Toggleable {
 	public DenizenTrait() {
 		super("denizen");
 	}
-
+	
 	
 	@Override
 	public void load(DataKey key) throws NPCLoadException {
@@ -60,6 +60,7 @@ public class DenizenTrait extends Trait implements Toggleable {
 		return isDenizen;
 	}
 
+	
 	/* Get Trigger enable status */
 	public boolean triggerIsEnabled(String theName) {
 		if (triggerMap.containsKey(theName))
@@ -67,5 +68,5 @@ public class DenizenTrait extends Trait implements Toggleable {
 		else return false;
 	}
 
-
+	
 }
