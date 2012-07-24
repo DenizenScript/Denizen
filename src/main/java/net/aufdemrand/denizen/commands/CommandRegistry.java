@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.commands.core.EngageCommand;
 import net.aufdemrand.denizen.commands.core.SpawnCommand;
 import net.aufdemrand.denizen.commands.core.WaitCommand;
 import net.aufdemrand.denizen.commands.core.ZapCommand;
+import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 
 public class CommandRegistry {
 

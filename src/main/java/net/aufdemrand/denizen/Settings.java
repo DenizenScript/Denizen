@@ -13,7 +13,7 @@ public class Settings {
 	
 	/* 
 	 
-	# Ops can sneak and right click a NPC to see information about the NPC. If disabled,
+	# OPs can sneak and right click a NPC to see information about the NPC. If disabled,
 	# the command '/denizen info' can still be used to obtain the information.
 	right_click_and_sneak_info_mode_enabled: true
 	

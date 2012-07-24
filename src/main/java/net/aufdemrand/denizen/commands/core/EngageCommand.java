@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.commands.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.aufdemrand.denizen.commands.Command;
 import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.api.CitizensAPI;
@@ -58,17 +61,41 @@ public class EngageCommand extends Command {
 
 		/* If a DISENGAGE, take the Denizen out of the engagedList. */
 		if (theCommand.getCommand().equalsIgnoreCase("DISENGAGE")) {
-			plugin.scriptEngine.setEngaged(theCommand.getDenizen(), false);
+			setEngaged(theCommand.getDenizen(), false);
 			return true;
 		}
 
 		/* ENGAGE the Denizen. */
 		if (timedEngage != null) 
-			plugin.scriptEngine.setEngaged(theDenizen, timedEngage);
+			setEngaged(theDenizen, timedEngage);
 		else 			
-			plugin.scriptEngine.setEngaged(theCommand.getDenizen(), true);
+			setEngaged(theCommand.getDenizen(), true);
 
 		return true;
 	}
+
+
+	/* Engaged NPCs cannot interact with Players */
+
+	private Map<NPC, Long> engagedNPC = new HashMap<NPC, Long>();
+
+	public boolean getEngaged(NPC theDenizen) {
+		if (engagedNPC.containsKey(theDenizen)) 
+			if (engagedNPC.get(theDenizen) > System.currentTimeMillis())
+				return true;
+		return false;
+	}
+
+	public void setEngaged(NPC theDenizen, boolean engaged) {
+		if (engaged) engagedNPC.put(theDenizen, System.currentTimeMillis() 
+				+ plugin.settings.EngageTimeoutInSeconds() * 1000 );
+		if (!engaged) engagedNPC.remove(theDenizen);
+	}
+
+	public void setEngaged(NPC theDenizen, Integer duration) {
+		engagedNPC.put(theDenizen, System.currentTimeMillis() + duration * 1000 );
+
+	}
+
 
 }

@@ -11,11 +11,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import net.aufdemrand.denizen.DenizenTrait;
-import net.aufdemrand.denizen.scriptEngine.Trigger;
+import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
-public class LocationTrigger extends Trigger implements Listener {
+public class LocationTrigger extends AbstractTrigger implements Listener {
 
 	/* Listens for the PlayerMoveEvent to see if a player is within range
 	 * of a Denizen to trigger a Location Trigger */

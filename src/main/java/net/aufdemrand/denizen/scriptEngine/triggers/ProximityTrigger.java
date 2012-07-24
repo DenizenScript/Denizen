@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scriptEngine.triggers;
 
 import net.aufdemrand.denizen.DenizenTrait;
-import net.aufdemrand.denizen.scriptEngine.Trigger;
+import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.event.EventHandler;
@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
-public class ProximityTrigger extends Trigger implements Listener {
+public class ProximityTrigger extends AbstractTrigger implements Listener {
 
 	/* Listens for the PlayerMoveEvent to see if a player is within range
 	 * of a Denizen to trigger a Proximity Trigger */

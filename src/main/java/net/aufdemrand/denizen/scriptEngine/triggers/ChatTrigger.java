@@ -6,7 +6,7 @@ import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
-import net.aufdemrand.denizen.scriptEngine.Trigger;
+import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
@@ -16,7 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 
-public class ChatTrigger extends Trigger implements Listener {
+public class ChatTrigger extends AbstractTrigger implements Listener {
 
 	/* Listens for player chat and determines if player is near a Denizen, and if so,
 	 * checks if there are scripts to interact with. */
@@ -135,4 +135,50 @@ public class ChatTrigger extends Trigger implements Listener {
 			return true;
 		}
 	}
+	
+	
+	/* GetChatTriggers
+	 *
+	 * Requires the Script and the Current Step.
+	 * Gets a list of Chat Triggers for the step of the script specified.
+	 * Chat Triggers are words required to trigger one of the chat 
+	 *
+	 * Returns ChatTriggers
+	 */
+
+	public List<String> getChatTriggers(String theScript, Integer currentStep) {
+
+		List<String> ChatTriggers = new ArrayList<String>();
+		int currentTrigger = 1;
+		for (int x=1; currentTrigger >= 0; x++) {
+			String theChatTrigger = plugin.getScripts().getString(theScript + ".Steps."
+					+ currentStep + ".Chat Trigger." + String.valueOf(currentTrigger) + ".Trigger");
+			if (theChatTrigger != null) { 
+				boolean isTrigger = false;
+				String triggerBuilder = "";
+
+				for (String trigger : theChatTrigger.split("/")) {
+					if (isTrigger) {
+						triggerBuilder = triggerBuilder + trigger + ":";
+						isTrigger = false;
+					}
+					else isTrigger = true;
+				}
+
+				/* Take off excess ":" before adding it to the list */
+				triggerBuilder = triggerBuilder.substring(0, triggerBuilder.length() - 1);
+
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Found chat trigger: " + triggerBuilder);
+
+				ChatTriggers.add(triggerBuilder);
+
+				currentTrigger = x + 1; 
+			}
+			else currentTrigger = -1;
+		}
+
+		return ChatTriggers;
+	}
+
+	
 }

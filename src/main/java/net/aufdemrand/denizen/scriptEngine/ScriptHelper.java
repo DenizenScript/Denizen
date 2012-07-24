@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.DenizenTrait;
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
+import net.aufdemrand.denizen.commands.core.EngageCommand;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
@@ -29,12 +30,13 @@ import org.bukkit.entity.Player;
 public class ScriptHelper {
 
 	Denizen plugin;
-	
+
 	ScriptHelper (Denizen plugin) {
 		this.plugin = plugin;
 	}
-	
-	
+
+
+
 	/*
 	 * ConcatenateScripts
 	 * 
@@ -77,46 +79,51 @@ public class ScriptHelper {
 	}
 
 	
+
 	/*
 	 * Checks cooldowns/set cooldowns.
 	 */
-	
+
 	Map<Player, Map<Class<?>, Long>> triggerCooldowns = new ConcurrentHashMap<Player, Map<Class<?>,Long>>();
-	
+
 	public boolean checkCooldown(Player thePlayer, Class<?> theTrigger) {
 
 		if (!triggerCooldowns.containsKey(thePlayer)) return true;
 		if (!triggerCooldowns.get(thePlayer).containsKey(theTrigger)) return true;
 		if (System.currentTimeMillis() >= triggerCooldowns.get(thePlayer).get(theTrigger)) return true;
-		
+
 		return false;
 	}
 
 	public boolean checkCooldown(Player thePlayer, String theScript) {
-		
+
 		if (!plugin.getSaves().contains("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time")) return true;
 		if (System.currentTimeMillis() >= plugin.getSaves().getLong("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time"))	return true;
-	
+
 		return false;
 	}
-	
+
 	public void setCooldown(Player thePlayer, Class<?> triggerType, Long millis) {
 		Map<Class<?>, Long> triggerMap = new HashMap<Class<?>, Long>();
 		triggerMap.put(triggerType, System.currentTimeMillis() + millis);
 		triggerCooldowns.put(thePlayer, triggerMap);
 	}
-	
+
 	public void setCooldown(Player thePlayer, String theScript, Long millis) {
 		plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time", System.currentTimeMillis() + millis);
 	}
+
 	
 	
-	
+	/* 
+	 * Denizen Info
+	 */
+
 	public void showInfo(Player thePlayer, NPC theDenizen) {
 
 		if (theDenizen.hasTrait(DenizenTrait.class))
 			if (theDenizen.getTrait(DenizenTrait.class).isDenizen) {
-				
+
 				thePlayer.sendMessage(ChatColor.GOLD + "------ Denizen Info ------");
 
 				/* Show Citizens NPC info. */
@@ -229,19 +236,15 @@ public class ScriptHelper {
 				thePlayer.sendMessage("");		
 			}
 	}
-	
-	
-	
-	
 
 
-	
+
 	/* 
-	 * GetInteractScript
+	 *  GetInteractScript
 	 *
-	 * Requires the Denizen and the Player
-	 * Checks the Denizens scripts and returns the script that meets requirements and has
-	 * the highest weight.  If no script matches, returns "none".
+	 *  Requires the Denizen and the Player
+	 *  Checks the Denizens scripts and returns the script that meets requirements and has
+	 *  the highest weight.  If no script matches, returns "none".
 	 *
 	 */
 
@@ -252,8 +255,8 @@ public class ScriptHelper {
 		if (scriptList.isEmpty()) { 
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Script is empty!");
 			return theScript; 
-			}
-		
+		}
+
 		List<String> interactScripts = new ArrayList<String>();
 
 		/*
@@ -291,12 +294,12 @@ public class ScriptHelper {
 		else if (interactScripts.size() == 1) theScript = interactScripts.get(0);
 
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Highest scoring script is " + theScript.split(" ", 2)[1]);
-		
+
 		return theScript.split(" ", 2)[1];
 	}
 
 
-	
+
 	public int getCurrentStep(Player thePlayer, String theScript) {
 
 		int currentStep = 1;
@@ -305,18 +308,17 @@ public class ScriptHelper {
 
 		return currentStep;
 	}
-	
 
-	
+
+
 	/* Builds arguments array, recognizing items in quotes as a single item 
 	 * 
 	 * Thanks to Jan Goyvaerts from 
 	 * http://stackoverflow.com/questions/366202/regex-for-splitting-a-string-using-space-when-not-surrounded-by-single-or-double
 	 * as this is pretty much a copy/paste.
-	 * 
-	 * Perfect!  */
+	 */
 
-	private String[] buildArgs(String stringArgs) {
+	public String[] buildArgs(String stringArgs) {
 
 		if (stringArgs == null) return null;
 
@@ -342,107 +344,75 @@ public class ScriptHelper {
 
 
 
-
-
-
-
-
-	/* 
-	 * GetScriptComplete/GetScriptFail
-	 *
-	 * Requires the Player and the Script.
-	 * Reads the config.yml to find if the player has completed or failed the specified script.
-	 *
+	/*
+	 * Methods to help get String script entries from a YAML script.
 	 */
+	public String scriptString = ".Script";
 
-	public boolean getScriptCompletes(Player thePlayer, String theScript, String theAmount, boolean negativeRequirement) {
-
-		boolean outcome = false;
-
-		/*
-		 * (-)FINISHED (#) [Name of Script]
-		 */
-
-		try {
-
-			if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[1];
-			else theAmount = "1";
-
-			if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
-				if (plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
-			}
-
-		} catch(Throwable error) {
-			Bukkit.getLogger().info("Denizen: An error has occured with the FINISHED requirement.");
-			Bukkit.getLogger().info("Error follows: " + error);
-		}
-
-		if (negativeRequirement != outcome) return true;
-
-		return false;
+	public String getTriggerPath(String theScript, int theStep,	String triggerName) {
+		return theScript + ".Steps." + theStep + "." +  triggerName + " Trigger.";
 	}
 
-
-	public boolean getScriptFail(Player thePlayer, String theScript, boolean negativeRequirement) {
-
-		boolean outcome = false;
-
-		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
-			if (plugin.getSaves().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) outcome = true;
-		}
-
-		if (negativeRequirement != outcome) return true;
-
-		return false;
-
+	public List<String> getScript(String triggerPath) {
+		return plugin.getScripts().getStringList(triggerPath.replace("..", "."));
 	}
 
-
-
-
-
-	/* GetChatTriggers
-	 *
-	 * Requires the Script and the Current Step.
-	 * Gets a list of Chat Triggers for the step of the script specified.
-	 * Chat Triggers are words required to trigger one of the chat 
-	 *
-	 * Returns ChatTriggers
-	 */
-
-	public List<String> getChatTriggers(String theScript, Integer currentStep) {
-
-		List<String> ChatTriggers = new ArrayList<String>();
-		int currentTrigger = 1;
-		for (int x=1; currentTrigger >= 0; x++) {
-			String theChatTrigger = plugin.getScripts().getString(theScript + ".Steps."
-					+ currentStep + ".Chat Trigger." + String.valueOf(currentTrigger) + ".Trigger");
-			if (theChatTrigger != null) { 
-				boolean isTrigger = false;
-				String triggerBuilder = "";
-				
-				for (String trigger : theChatTrigger.split("/")) {
-					if (isTrigger) {
-						triggerBuilder = triggerBuilder + trigger + ":";
-						isTrigger = false;
-					}
-					else isTrigger = true;
-				}
-				
-				/* Take off excess ":" before adding it to the list */
-				triggerBuilder = triggerBuilder.substring(0, triggerBuilder.length() - 1);
-				
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Found chat trigger: " + triggerBuilder);
-				
-				ChatTriggers.add(triggerBuilder);
-				
-				currentTrigger = x + 1; 
-			}
-			else currentTrigger = -1;
-		}
-
-		return ChatTriggers;
-	}
 
 	
+	/*
+	 * Checks whether a Denizen NPC should be interact-able.
+	 */
+
+	public boolean denizenIsInteractable(String triggerName, NPC theDenizen, Player thePlayer) {
+			
+		// NPC must be a Denizen
+		if (theDenizen.getTrait(DenizenTrait.class).isDenizen
+			// The Denizen NPC must have the trigger enabled
+			&& theDenizen.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName)
+			// The Player must be cooled down for this type of Trigger
+			&& plugin.scriptEngine.helper.checkCooldown(thePlayer, plugin.triggerRegistry.getTrigger(triggerName).getClass())
+			// and finally the NPC must not be engaged
+			&& !((EngageCommand) plugin.getCommandRegistry().getCommand("Engage")).getEngaged(theDenizen)) 
+			return true;
+
+		return false;
+	}
+
+
+	
+	/* 
+	 * Builds a list of ScriptEntry(ies) from a List<String> of items read from a script. 
+	 */
+
+	public List<ScriptEntry> buildScriptEntries(Player thePlayer, NPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
+	
+		if (theScript.isEmpty()) return null;
+		
+		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
+		
+		for (String thisItem : theScript) {
+			String[] scriptEntry = new String[2];
+			if (thisItem.split(" ", 2).length == 1) {
+				scriptEntry[0] = thisItem;
+				scriptEntry[1] = null;
+			} else {
+				scriptEntry = thisItem.split(" ", 2);
+			}
+
+			try {
+				/* Build new script commands */
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep));
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building ScriptCommand with " + thisItem);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		
+		return scriptCommands;
+
+		
+	}
+
+
 }

@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,15 +17,16 @@ import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
 import net.aufdemrand.denizen.utilities.GetWorld;
 import net.aufdemrand.denizen.utilities.Utilities;
+
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.TraitInfo;
+
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -52,7 +50,6 @@ public class Denizen extends JavaPlugin {
 	
 	public Bookmarks             bookmarks = new Bookmarks(this);
 	public Utilities			 utilities = new Utilities(this);
-
 	
 	public GetDenizen           getDenizen = new GetDenizen(this);
 	public GetPlayer             getPlayer = new GetPlayer(this);
@@ -72,11 +69,8 @@ public class Denizen extends JavaPlugin {
 	public void onEnable() {
 
 		/* Set up Vault */
-		if (!setupEconomy() || !setupPermissions()) {
-			getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no economy or permissions system!", getDescription().getName()));
-			getServer().getPluginManager().disablePlugin(this);
-			return; 
-		}
+		if (!setupEconomy() || !setupPermissions())
+			getLogger().log(Level.SEVERE, "No permissions an/or economy system found! Some commands may produce errors!");
 
 		/* Load YAML files into memory */
 		reloadConfig();
@@ -90,21 +84,17 @@ public class Denizen extends JavaPlugin {
 		triggerRegistry.registerCoreTriggers();
 		
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			@Override
-			public void run() { scriptEngine.runQueues(); }
+			@Override public void run() { scriptEngine.runQueues(); }
 		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			@Override
-			public void run() { scriptEngine.scheduleScripts(); }
+			@Override public void run() { scriptEngine.scheduleScripts(); }
 		}, 1, 1000);
 
 		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-			@Override
-			public void run() { bookmarks.buildLocationTriggerList(); }
-		}, 100);
+			@Override public void run() { bookmarks.buildLocationTriggerList(); }
+		}, 50);
 
-		
 	}
 
 
@@ -161,7 +151,7 @@ public class Denizen extends JavaPlugin {
 	public void reloadScripts() {
 
 		try {
-			ConcatenateScripts();
+			scriptEngine.helper.ConcatenateScripts();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -272,9 +262,6 @@ public class Denizen extends JavaPlugin {
 
 
 
-
-
-
 	/*
 	 * onCommand
 	 * 
@@ -311,7 +298,7 @@ public class Denizen extends JavaPlugin {
 		}
 
 		if (args[0].equalsIgnoreCase("version") && !(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.GREEN + getVersionString());
+			sender.sendMessage(ChatColor.GREEN + utilities.getVersionString());
 			return true;
 		}
 
@@ -466,7 +453,7 @@ public class Denizen extends JavaPlugin {
 		}
 
 		if (args[0].equalsIgnoreCase("version")) {
-			player.sendMessage(ChatColor.GREEN + getVersionString());
+			player.sendMessage(ChatColor.GREEN + utilities.getVersionString());
 			return true;
 		}
 
@@ -480,31 +467,6 @@ public class Denizen extends JavaPlugin {
 		if (!ThisNPC.getTrait(DenizenTrait.class).isDenizen) {
 			player.sendMessage(ChatColor.RED + "That command must be performed on a denizen!");
 			return true;
-		}
-
-		/*
-		 * These craftbukkit commands require a Denizen to be selected.
-		 */
-
-		if (args[0].equalsIgnoreCase("stand")) {
-			if(args.length < 2) {
-				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen stand [location bookmark]");
-				return true;
-			}
-			else if(args[1].equalsIgnoreCase("clear")) {
-				getSaves().set("Denizens." + ThisNPC.getName() + ".Position.Standing", null);
-				player.sendMessage(ChatColor.GREEN + "Standing clear. Enforced location has been cleared.");
-				return true;
-			}
-			else {
-				getSaves().set("Denizens." + ThisNPC.getName() + ".Position.Standing", args[1]);
-				player.sendMessage(ChatColor.GREEN + "Location enforced. This can be changed or disabled");
-				player.sendMessage(ChatColor.GREEN + "with script commands. Use /denizen stand clear");
-				player.sendMessage(ChatColor.GREEN + "to cancel.");
-				return true;
-			}
-
-
 		}
 
 		if (args[0].equalsIgnoreCase("bookmark")) {
@@ -540,32 +502,7 @@ public class Denizen extends JavaPlugin {
 
 
 
-	/**
-	 * Gets the plugin version from the maven info in the jar, if available.
-	 * @return
-	 */
 
-	public String getVersionNumber() {
-
-		Properties props = new Properties();
-
-		//Set a default just in case.
-		props.put("version", "Unknown development build");
-
-		try	{
-			props.load(this.getClass().getResourceAsStream("/META-INF/maven/net.aufdemrand/denizen/pom.properties"));
-		} 
-		catch(Exception e) {
-			//Maybe log?
-		}
-
-		return props.getProperty("version");
-	}
-
-	public String getVersionString() {
-
-		return "Denizen version: " + getVersionNumber();
-	}
 
 
 

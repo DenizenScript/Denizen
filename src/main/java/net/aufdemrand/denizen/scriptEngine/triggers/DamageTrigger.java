@@ -1,14 +1,14 @@
 package net.aufdemrand.denizen.scriptEngine.triggers;
 
 import net.aufdemrand.denizen.DenizenTrait;
-import net.aufdemrand.denizen.scriptEngine.Trigger;
+import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class DamageTrigger extends Trigger implements Listener {
+public class DamageTrigger extends AbstractTrigger implements Listener {
 
 	@EventHandler
 	public void damageTrigger(NPCLeftClickEvent event) {

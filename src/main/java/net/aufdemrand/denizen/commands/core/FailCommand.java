@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.commands.core;
 
+import org.bukkit.entity.Player;
+
 import net.aufdemrand.denizen.commands.DenizenCommand;
 import net.aufdemrand.denizen.scriptEngine.ScriptCommand;
 import net.citizensnpcs.command.exception.CommandException;
@@ -47,4 +49,19 @@ public class FailCommand extends DenizenCommand {
 		throw new CommandException("Unknown error, check syntax!");
 	}
 
+	
+	public boolean getScriptFail(Player thePlayer, String theScript, boolean negativeRequirement) {
+
+		boolean outcome = false;
+
+		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") != null) { 
+			if (plugin.getSaves().getBoolean("Players." + thePlayer.getName() + "." + theScript + "." + "Failed") == true) outcome = true;
+		}
+
+		if (negativeRequirement != outcome) return true;
+
+		return false;
+
+	}
+	
 }

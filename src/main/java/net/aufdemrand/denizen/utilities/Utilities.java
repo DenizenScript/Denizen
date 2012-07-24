@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -114,6 +115,39 @@ public class Utilities {
 		}
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Gets the plugin version from the maven info in the jar, if available.
+	 * @return
+	 */
+
+	public String getVersionNumber() {
+
+		Properties props = new Properties();
+
+		//Set a default just in case.
+		props.put("version", "Unknown development build");
+
+		try	{
+			props.load(this.getClass().getResourceAsStream("/META-INF/maven/net.aufdemrand/denizen/pom.properties"));
+		} 
+		catch(Exception e) {
+			//Maybe log?
+		}
+
+		return props.getProperty("version");
+	}
+
+	public String getVersionString() {
+
+		return "Denizen version: " + getVersionNumber();
+	}
 	
 	
 }

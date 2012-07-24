@@ -6,7 +6,9 @@ import java.util.logging.Level;
 
 import net.aufdemrand.denizen.DenizenTrait;
 import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
-import net.aufdemrand.denizen.scriptEngine.Trigger;
+import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
+import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
+import net.aufdemrand.denizen.commands.core.EngageCommand;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -14,27 +16,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class ClickTrigger extends Trigger implements Listener {
+public class ClickTrigger extends AbstractTrigger implements Listener {
 
 	
 	@EventHandler
 	public void clickTrigger(NPCRightClickEvent event) {
 
+		/* Shortcut to the ScriptHelper */
+		ScriptHelper sE = plugin.scriptEngine.helper;
+		
 		/* Show NPC info if sneaking and right clicking */
 		if (event.getClicker().isSneaking() 
 				&& event.getClicker().isOp()
 				&& plugin.settings.RightClickAndSneakInfoModeEnabled()) 
-			plugin.scriptEngine.helper.showInfo(event.getClicker(), event.getNPC());
+			sE.showInfo(event.getClicker(), event.getNPC());
 
 		/* Check if ... 1) isDenizen is true, 2) clickTrigger enabled, 3) is cooled down, 4) is not engaged */
-		if (event.getNPC().getTrait(DenizenTrait.class).isDenizen
-				&& event.getNPC().getTrait(DenizenTrait.class).enableClickTriggers
-				&& plugin.scriptEngine.checkCooldown(event.getClicker(), ClickTrigger.class)
-				&& !plugin.scriptEngine.getEngaged(event.getNPC())) {
-
+		if (sE.denizenIsInteractable(triggerName, event.getNPC(), event.getClicker())) {
+		
 			/* Apply default cooldown to avoid click-spam, then send to parser. */
-			plugin.scriptEngine.setCooldown(event.getClicker(), ClickTrigger.class, plugin.settings.DefaultClickCooldown());
-			plugin.scriptEngine.parseClickTrigger(event.getNPC(), event.getClicker());
+			sE.setCooldown(event.getClicker(), ClickTrigger.class, plugin.settings.DefaultClickCooldown());
+			parseClickTrigger(event.getNPC(), event.getClicker());
 		}
 	}
 	
@@ -42,34 +44,24 @@ public class ClickTrigger extends Trigger implements Listener {
 	
 	/* Parses the script for a click trigger */
 
-	public boolean parseClickScript(NPC theDenizen, Player thePlayer, String theScript) {
+	public boolean parseClickTrigger(NPC theDenizen, Player thePlayer) {
 
-		int theStep = getCurrentStep(thePlayer, theScript);
-		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
-
-		/* Let's get the Script from the file and turn it into ScriptCommands */
-		List<String> chatScriptItems = plugin.getScripts().getStringList(theScript + ".Steps." + theStep + ".Click Trigger.Script");
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing: " + theScript + ".Steps." + theStep + ".Click Trigger.Script");
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Number of items to parse: " + chatScriptItems.size());
-
-		for (String thisItem : chatScriptItems) {
-			String[] scriptEntry = new String[2];
-			if (thisItem.split(" ", 2).length == 1) {
-				scriptEntry[0] = thisItem;
-				scriptEntry[1] = null;
-			} else {
-				scriptEntry = thisItem.split(" ", 2);
-			}
-
-			try {
-				/* Build new script commands */
-				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScript, theStep));
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building ScriptCommand with " + thisItem);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
+		ScriptHelper sE = plugin.scriptEngine.helper;
+		
+		/* Get Interact Script, if any. */
+		String theScriptName = sE.getInteractScript(theDenizen, thePlayer);
+		
+		if (theScriptName == null) failClickTrigger();
+		
+		/* Get Player's current step */
+		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
+		
+		/* Get the contents of the Script. */
+		List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + sE.scriptString);
+		
+		/* Build scriptEntries from theScript */
+		sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep);
+	
 		/* New ScriptCommand list built, now let's add it into the queue */
 		List<ScriptEntry> scriptCommandList = new ArrayList<ScriptEntry>();
 		if (triggerQue.containsKey(thePlayer))

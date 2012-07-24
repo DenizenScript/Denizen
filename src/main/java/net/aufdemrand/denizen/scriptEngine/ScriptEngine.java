@@ -336,26 +336,7 @@ public class ScriptEngine {
 
 
 
-	/* Engaged NPCs cannot interact with Players */
 
-	private Map<NPC, Long> engagedNPC = new HashMap<NPC, Long>();
-
-	public boolean getEngaged(NPC theDenizen) {
-		if (engagedNPC.containsKey(theDenizen)) 
-			if (engagedNPC.get(theDenizen) > System.currentTimeMillis())
-				return true;
-		return false;
-	}
-
-	public void setEngaged(NPC theDenizen, boolean engaged) {
-		if (engaged) engagedNPC.put(theDenizen, System.currentTimeMillis() + plugin.settings.EngageTimeoutInSeconds() * 1000 );
-		if (!engaged) engagedNPC.remove(theDenizen);
-	}
-
-	public void setEngaged(NPC theDenizen, Integer duration) {
-		engagedNPC.put(theDenizen, System.currentTimeMillis() + duration * 1000 );
-
-	}
 
 
 	/* 

@@ -9,13 +9,12 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scriptEngine.triggers.ChatTrigger;
 import net.aufdemrand.denizen.scriptEngine.triggers.ClickTrigger;
 import net.aufdemrand.denizen.scriptEngine.triggers.DamageTrigger;
-import net.aufdemrand.denizen.scriptEngine.triggers.DeathTrigger;
 import net.aufdemrand.denizen.scriptEngine.triggers.LocationTrigger;
 import net.aufdemrand.denizen.scriptEngine.triggers.ProximityTrigger;
 
 public class TriggerRegistry {
 
-	private Map<String, Trigger> triggers = new HashMap<String, Trigger>();
+	private Map<String, AbstractTrigger> triggers = new HashMap<String, AbstractTrigger>();
 
 	public Denizen plugin;
 
@@ -24,19 +23,21 @@ public class TriggerRegistry {
 	}
 
 
-	public boolean registerTrigger(String triggerName, Trigger triggerClass) {
+	public boolean registerTrigger(String triggerName, AbstractTrigger triggerClass) {
+		if (triggerName.length() > 1) return false;
 		this.triggers.put(triggerName.toUpperCase(), triggerClass);
-		plugin.getLogger().log(Level.INFO, "Loaded " + triggerName + " Trigger successfully!");
+		triggerClass.triggerName = triggerName.substring(0, 1).toUpperCase() + triggerName.substring(1).toLowerCase();
+		plugin.getLogger().log(Level.INFO, "Loaded " + triggerClass.triggerName + " Trigger successfully!");
 		return true;
 	}
 
 
-	public Map<String, Trigger> listTriggers() {
+	public Map<String, AbstractTrigger> listTriggers() {
 		return triggers;
 	}
 
 	
-	public Trigger getTrigger(String triggerName) {
+	public AbstractTrigger getTrigger(String triggerName) {
 		if (triggers.containsKey(triggerName.toUpperCase()))
 			return triggers.get(triggerName);
 		else
