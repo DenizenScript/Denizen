@@ -8,8 +8,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.bookmarks.Bookmarks;
-import net.aufdemrand.denizen.commands.CommandRegistry;
-import net.aufdemrand.denizen.commands.Executer;
+import net.aufdemrand.denizen.command.CommandRegistry;
+import net.aufdemrand.denizen.command.Executer;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine;
 import net.aufdemrand.denizen.scriptEngine.TriggerRegistry;
 import net.aufdemrand.denizen.utilities.GetDenizen;
@@ -41,15 +41,17 @@ public class Denizen extends JavaPlugin {
 	public Economy   economy = null;
 	public Permission  perms = null;
 	
-	public Settings               settings = new Settings(this);
 	public CommandRegistry commandRegistry = new CommandRegistry(this);
 	public TriggerRegistry triggerRegistry = new TriggerRegistry(this);
+ // public RequirementRegistry requirementRegistry = new RequirementRegistry(this);
 
-	public ScriptEngine       scriptEngine = new ScriptEngine(this);
-	public Executer               executer = new Executer(this);
+	public ScriptEngine scriptEngine = new ScriptEngine(this);
+	public SpeechEngine speechEngine = new SpeechEngine(this);
+	public Executer         executer = new Executer(this);
 	
 	public Bookmarks             bookmarks = new Bookmarks(this);
 	public Utilities			 utilities = new Utilities(this);
+	public Settings               settings = new Settings(this);
 	
 	public GetDenizen           getDenizen = new GetDenizen(this);
 	public GetPlayer             getPlayer = new GetPlayer(this);

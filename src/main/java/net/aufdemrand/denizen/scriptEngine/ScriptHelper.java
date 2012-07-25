@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.DenizenTrait;
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
-import net.aufdemrand.denizen.commands.core.EngageCommand;
+import net.aufdemrand.denizen.command.core.EngageCommand;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 import net.citizensnpcs.api.npc.NPC;
 

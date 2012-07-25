@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen;
 
-import net.aufdemrand.denizen.Denizen;
-
 public class Settings {
 
 	private Denizen plugin;

@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.scriptEngine.triggers;
 import java.util.List;
 
 import net.aufdemrand.denizen.DenizenTrait;
+import net.aufdemrand.denizen.SpeechEngine.Reason;
+import net.aufdemrand.denizen.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
 import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
@@ -35,7 +37,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 			/* Apply default cooldown to avoid click-spam, then send to parser. */
 			sE.setCooldown(event.getClicker(), ClickTrigger.class, plugin.settings.DefaultClickCooldown());
 			if (!parseClickTrigger(event.getNPC(), event.getClicker())) {
-				event.getNPC().getTrait(DenizenTrait.class).talk(TalkFormat.Chat, Reason.NoRequirementsMet);
+				event.getNPC().getTrait(DenizenTrait.class).talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
 			}
 		}
 	}

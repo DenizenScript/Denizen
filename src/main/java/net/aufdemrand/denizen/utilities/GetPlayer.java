@@ -83,7 +83,7 @@ public class GetPlayer {
 
 	public boolean checkLocation(Player thePlayer, Location theLocation, int theLeeway) {
 
-		if (thePlayer.getWorld().getName() != theLocation.getWorld().getName())
+		if (!thePlayer.getWorld().getName().equals(theLocation.getWorld().getName()))
 			return false;
 		
 		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
@@ -107,7 +107,7 @@ public class GetPlayer {
 
 	public boolean checkLocation(NPC theDenizen, Location theLocation, int theLeeway) {
 
-		if (theDenizen.getBukkitEntity().getWorld().getName() != theLocation.getWorld().getName())
+		if (!theDenizen.getBukkitEntity().getWorld().getName().equals(theLocation.getWorld().getName()))
 			return false;
 		
 		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - theLocation.getBlockX()) 

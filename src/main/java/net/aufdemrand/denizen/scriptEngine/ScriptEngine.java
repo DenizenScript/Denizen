@@ -177,7 +177,7 @@ public class ScriptEngine {
 			scriptEntry = thisItem.split(" ", 2);
 			try {
 				/* Build new script commands */
-				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theScript));
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], helper.buildArgs(scriptEntry[1]), thePlayer, theScript));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

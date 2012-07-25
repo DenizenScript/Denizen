@@ -5,7 +5,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
+import net.aufdemrand.denizen.SpeechEngine.Reason;
+import net.aufdemrand.denizen.SpeechEngine.TalkType;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -49,7 +52,6 @@ public class DenizenTrait extends Trait implements Toggleable {
 		for (Entry<String, Boolean> theEntry : triggerMap.entrySet()) {
 			key.setBoolean("enable." + theEntry.getKey() + "-trigger", theEntry.getValue());
 		}
-	
 	}
 
 	
@@ -66,6 +68,17 @@ public class DenizenTrait extends Trait implements Toggleable {
 		if (triggerMap.containsKey(theName))
 			return triggerMap.get(theName);
 		else return false;
+	}
+
+
+	public void talk(TalkType talkType, Player thePlayer, String theText) {
+		((Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen"))
+		.speechEngine.talk(npc, thePlayer, theText, talkType);
+	}
+
+
+	public void talk(TalkType talkType, Player thePlayer, Reason theReason) {
+		// TODO: Finish before 0.7 release.
 	}
 
 	

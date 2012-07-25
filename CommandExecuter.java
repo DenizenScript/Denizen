@@ -372,25 +372,6 @@ public class CommandExecuter {
 
 			/* Format the text for player and bystander, and turn into multiline if necessary */
 
-			String[] formattedText = plugin.getDenizen.formatChatText(executeArgs[4].split(" ", 2)[1], commandArgs[0], thePlayer, theDenizen);
-
-			List<String> playerText = plugin.getDenizen.getMultilineText(formattedText[0]);
-			List<String> bystanderText = plugin.getDenizen.getMultilineText(formattedText[1]);
-
-			/* Spew the text to the world. */
-
-			if (!playerText.isEmpty()) {
-				for (String text : playerText) { /* First playerText */
-					plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, text, null, commandArgs[0]);
-				}
-			}
-
-			if (!bystanderText.isEmpty()) {
-				for (String text : bystanderText) { /* now bystanderText */
-					if (!playerText.isEmpty()) plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, "shhh...don't speak!", text, commandArgs[0]);
-					else plugin.getDenizen.talkToPlayer(theDenizen, thePlayer, null, text, commandArgs[0]);
-				}
-			}
 			break;
 
 
