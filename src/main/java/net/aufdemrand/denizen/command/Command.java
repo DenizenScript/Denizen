@@ -20,7 +20,7 @@ public abstract class Command {
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		
 		/* Register command with Registry */
-		if (plugin.commandRegistry.registerCommand(commandName, this)) return;
+		if (plugin.getCommandRegistry().registerCommand(commandName, this)) return;
 		else 
 			throw new ActivationException("Error activating Command with Command Registry.");
 	}

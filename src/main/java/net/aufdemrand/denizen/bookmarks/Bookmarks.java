@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.bookmarks;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,13 +10,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.DenizenCharacter;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
 public class Bookmarks {
-
-	/* Denizen Constructor */
 
 	private Denizen plugin;
 	public Bookmarks(Denizen denizen) {
@@ -115,16 +110,20 @@ public class Bookmarks {
 		return;
 	}
 
+	
+	
 	public Map<Location, String> getLocationTriggerList() {
 		return locationTriggerList;
 	}
 
 	
-
+	
 	public enum BookmarkType {
 		LOCATION, BLOCK
 	}
 
+	
+	
 	public boolean exists(String theDenizen, String nameOfLocation) {
 
 		if (nameOfLocation.split(":").length == 2) theDenizen = nameOfLocation.split(":")[0];
@@ -146,6 +145,8 @@ public class Bookmarks {
 		return exists(theName, nameOfLocation);
 	}
 
+	
+	
 	public Location get(NPC theDenizen, String nameOfLocation, BookmarkType bookmarkType) {
 		String theName = null;
 		if (theDenizen == null) theName = "null";
@@ -153,6 +154,8 @@ public class Bookmarks {
 		return get(theName, nameOfLocation, bookmarkType);
 	}
 
+	
+	
 	public Location get(String theDenizen, String nameOfLocation, BookmarkType bookmarkType) {
 
 		List<String> locationList = null;
@@ -194,10 +197,8 @@ public class Bookmarks {
 		}
 
 		return locationBookmark;		
-
 	}
 
-
-
-
+	
+	
 }

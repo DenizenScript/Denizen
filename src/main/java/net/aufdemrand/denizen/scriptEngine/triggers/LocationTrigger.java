@@ -12,6 +12,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import net.aufdemrand.denizen.DenizenTrait;
 import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
+import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -28,12 +29,13 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 			/* Do not run any code if there aren't any location triggers */
 			if (!plugin.bookmarks.getLocationTriggerList().isEmpty()) {
+				ScriptHelper sE = plugin.getScriptEngine().helper;
 
 				/* Check player location against each Location Trigger */
 				for (Location theLocation : plugin.bookmarks.getLocationTriggerList().keySet()) {
 
 					if (plugin.bookmarks.checkLocation(event.getPlayer(), theLocation, plugin.settings.LocationTriggerRangeInBlocks()) 
-							&& plugin.scriptEngine.checkCooldown(event.getPlayer(), LocationTrigger.class)) {
+							&& sE.checkCooldown(event.getPlayer(), LocationTrigger.class)) {
 
 						NPC theDenizen = null;
 						String locationTriggered = plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[2];
@@ -77,34 +79,27 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 							/* Before triggering, check if LocationTriggers are enabled, cooldown is met, and NPC
 							 * is not already engaged... */
-							else if (!locationTriggered.equals(event.getPlayer().getMetadata("locationtrigger"))
-									&& theDenizen.getTrait(DenizenTrait.class).enableLocationTriggers) {
-								if (plugin.scriptEngine.checkCooldown(event.getPlayer(), LocationTrigger.class)
-										&& !plugin.scriptEngine.getEngaged(theDenizen)) {
+							else if (sE.denizenIsInteractable(triggerName, theDenizen, event.getPlayer())) {
 
-									/* Set Metadata value to avoid retrigger. */
-									event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
+								/* Set Metadata value to avoid retrigger. */
+								event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
 
-									/* TRIGGER! */
-									plugin.scriptEngine.setCooldown(event.getPlayer(), LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
-									parseLocationTrigger(theDenizen, event.getPlayer(), locationTriggered);
-								}
+								/* TRIGGER! */
+								sE.setCooldown(event.getPlayer(), LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
+								parseLocationTrigger(theDenizen, event.getPlayer(), locationTriggered);
 							}
 
 						} else {
 
 							/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
-							if (theDenizen.getTrait(DenizenTrait.class).enableLocationTriggers) {
-								if (plugin.scriptEngine.checkCooldown(event.getPlayer(), LocationTrigger.class)
-										&& !plugin.scriptEngine.getEngaged(theDenizen)) {
+							if (sE.denizenIsInteractable(triggerName, theDenizen, event.getPlayer())) {
 
-									/* Set Metadata value to avoid retrigger. */
-									event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
+								/* Set Metadata value to avoid retrigger. */
+								event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
 
-									/* TRIGGER! */
-									plugin.scriptEngine.setCooldown(event.getPlayer(), LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
-									parseLocationTrigger(theDenizen, event.getPlayer(), locationTriggered);
-								}
+								/* TRIGGER! */
+								sE.setCooldown(event.getPlayer(), LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
+								parseLocationTrigger(theDenizen, event.getPlayer(), locationTriggered);
 							}
 						}
 					}
@@ -113,14 +108,15 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		}
 	}
 
-	
+
+
 	private void parseLocationTrigger(NPC theDenizen, Player thePlayer, String theLocationName) {
-		
+
 		/* Find script and run it */		
-		
+
 	}
-	
-	
-	
-	
+
+
+
+
 }

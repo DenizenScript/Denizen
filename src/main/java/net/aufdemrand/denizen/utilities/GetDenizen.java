@@ -1,15 +1,11 @@
 package net.aufdemrand.denizen.utilities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.DenizenCharacter;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class GetDenizen {
@@ -48,7 +44,6 @@ public class GetDenizen {
 	}
 
 	
-	
 
 
 	/*
@@ -76,15 +71,5 @@ public class GetDenizen {
 	}
 
 
-
-
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }

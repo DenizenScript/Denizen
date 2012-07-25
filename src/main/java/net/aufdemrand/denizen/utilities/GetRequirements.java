@@ -132,7 +132,7 @@ public class GetRequirements {
 				break;
 
 			case FAILED: // (-)SCRIPT [Script Name]
-				if (plugin.getScript.getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
+				if (plugin.scriptEngine.helper.getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
 				break;
 
 			case GROUP:

@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.scriptEngine.triggers.ProximityTrigger;
 public class TriggerRegistry {
 
 	private Map<String, AbstractTrigger> triggers = new HashMap<String, AbstractTrigger>();
+	private Map<Class<? extends AbstractTrigger>, String> triggersClass = new HashMap<Class<? extends AbstractTrigger>, String>();
 
 	public Denizen plugin;
 
@@ -26,6 +27,7 @@ public class TriggerRegistry {
 	public boolean registerTrigger(String triggerName, AbstractTrigger triggerClass) {
 		if (triggerName.length() > 1) return false;
 		this.triggers.put(triggerName.toUpperCase(), triggerClass);
+		this.triggersClass.put(triggerClass.getClass(), triggerName);
 		triggerClass.triggerName = triggerName.substring(0, 1).toUpperCase() + triggerName.substring(1).toLowerCase();
 		plugin.getLogger().log(Level.INFO, "Loaded " + triggerClass.triggerName + " Trigger successfully!");
 		return true;
@@ -44,6 +46,13 @@ public class TriggerRegistry {
 			return null;
 	}
 
+	public <T extends AbstractTrigger> T getTrigger(Class<T> theClass) {
+		if (triggersClass.containsKey(theClass))
+			return (T) theClass.cast(triggers.get(triggersClass.get(theClass)));
+		else
+			return null;
+	}
+	
 	
 	public void registerCoreTriggers() {
 
@@ -68,11 +77,11 @@ public class TriggerRegistry {
 		}
 
 		/* Register Listener events. */
-		plugin.getServer().getPluginManager().registerEvents(locationTrigger, plugin);
-		plugin.getServer().getPluginManager().registerEvents(chatTrigger, plugin);
+		// plugin.getServer().getPluginManager().registerEvents(locationTrigger, plugin);
+		// plugin.getServer().getPluginManager().registerEvents(chatTrigger, plugin);
 		plugin.getServer().getPluginManager().registerEvents(clickTrigger, plugin);
-		plugin.getServer().getPluginManager().registerEvents(damageTrigger, plugin);
-		plugin.getServer().getPluginManager().registerEvents(proximityTrigger, plugin);
+		// plugin.getServer().getPluginManager().registerEvents(damageTrigger, plugin);
+		// plugin.getServer().getPluginManager().registerEvents(proximityTrigger, plugin);
 		
 	}
 

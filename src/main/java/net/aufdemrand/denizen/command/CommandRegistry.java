@@ -10,12 +10,12 @@ import net.aufdemrand.denizen.command.core.EngageCommand;
 import net.aufdemrand.denizen.command.core.SpawnCommand;
 import net.aufdemrand.denizen.command.core.WaitCommand;
 import net.aufdemrand.denizen.command.core.ZapCommand;
-import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
+
 
 public class CommandRegistry {
 
 	private Map<String, Command> commands = new HashMap<String, Command>();
-
+	private Map<Class<? extends Command>, String> commandsClass = new HashMap<Class<? extends Command>, String>();
 	public Denizen plugin;
 
 
@@ -26,6 +26,7 @@ public class CommandRegistry {
 
 	public boolean registerCommand(String commandName, Command commandClass) {
 		this.commands.put(commandName.toUpperCase(), commandClass);
+		this.commandsClass.put(commandClass.getClass(), commandName.toUpperCase());
 		plugin.getLogger().log(Level.INFO, "Loaded " + commandName + " successfully!");
 		return true;
 	}
@@ -35,6 +36,14 @@ public class CommandRegistry {
 		return commands;
 	}
 
+	
+	public <T extends Command> T getCommand(Class<T> theClass) {
+		if (commandsClass.containsKey(theClass))
+			return (T) theClass.cast(commands.get(commandsClass.get(theClass)));
+		else
+			return null;
+	}
+	
 	public Command getCommand(String commandName) {
 		if (commands.containsKey(commandName.toUpperCase()))
 			return commands.get(commandName);

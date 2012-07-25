@@ -41,12 +41,12 @@ public class Denizen extends JavaPlugin {
 	public Economy   economy = null;
 	public Permission  perms = null;
 	
-	public CommandRegistry commandRegistry = new CommandRegistry(this);
-	public TriggerRegistry triggerRegistry = new TriggerRegistry(this);
- // public RequirementRegistry requirementRegistry = new RequirementRegistry(this);
+	private CommandRegistry commandRegistry = new CommandRegistry(this);
+	private TriggerRegistry triggerRegistry = new TriggerRegistry(this);
+ // private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
 
-	public ScriptEngine scriptEngine = new ScriptEngine(this);
-	public SpeechEngine speechEngine = new SpeechEngine(this);
+	private ScriptEngine scriptEngine = new ScriptEngine(this);
+	private SpeechEngine speechEngine = new SpeechEngine(this);
 	public Executer         executer = new Executer(this);
 	
 	public Bookmarks             bookmarks = new Bookmarks(this);
@@ -62,7 +62,25 @@ public class Denizen extends JavaPlugin {
 	public Boolean preciseMode = false;
 	public Boolean    newbMode = true;
 	
+	
+	public CommandRegistry getCommandRegistry() {
+		return commandRegistry;
+	}
 
+	public TriggerRegistry getTriggerRegistry() {
+		return triggerRegistry;
+	}
+	
+	public SpeechEngine getSpeechEngine() {
+		return speechEngine;
+	}
+	
+	public ScriptEngine getScriptEngine() {
+		return scriptEngine;
+	}
+	
+	
+	
 	/*
 	 * Sets up Denizen on start of the craftbukkit server.	
 	 */
@@ -257,10 +275,6 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	public CommandRegistry getCommandRegistry() {
-
-		return commandRegistry;
-	}
 
 
 

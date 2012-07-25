@@ -8,19 +8,22 @@ import org.bukkit.Bukkit;
 
 public abstract class AbstractTrigger {
 
-	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+	protected Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 	public String triggerName;
-	public boolean enabledByDefault = false;
+	private boolean enabledByDefault = false;
 	
 	/* Activates the command class as a Denizen Command. Should be called on startup. */
 	
 	public void activateAs(String triggerName) throws ActivationException {
 	
+		/* If more than one word, error. */
+		if (triggerName.split(" ").length > 1) throw new ActivationException("Trigger names can only be one word.");
+		
 		/* Use Bukkit to reference Denizen Plugin */
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		
 		/* Register command with Registry */
-		if (plugin.triggerRegistry.registerTrigger(triggerName, this)) return;
+		if (plugin.getTriggerRegistry().registerTrigger(triggerName, this)) return;
 		else 
 			throw new ActivationException("Error activating Trigger with Trigger Registry.");
 	}
@@ -28,6 +31,11 @@ public abstract class AbstractTrigger {
 	public void setEnabledByDefault(boolean enabledByDefault) {
 		this.enabledByDefault = enabledByDefault;
 	}
+	
+	public boolean getEnabledByDefault() {
+		return this.enabledByDefault;
+	}
+	
 	
 	
 }

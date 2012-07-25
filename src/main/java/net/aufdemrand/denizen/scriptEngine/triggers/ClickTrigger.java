@@ -23,7 +23,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 	public void clickTrigger(NPCRightClickEvent event) {
 
 		/* Shortcut to the ScriptHelper */
-		ScriptHelper sE = plugin.scriptEngine.helper;
+		ScriptHelper sE = plugin.getScriptEngine().helper;
 
 		/* Show NPC info if sneaking and right clicking */
 		if (event.getClicker().isSneaking() 
@@ -31,10 +31,10 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 				&& plugin.settings.RightClickAndSneakInfoModeEnabled()) 
 			sE.showInfo(event.getClicker(), event.getNPC());
 
-		/* Check if ... 1) isDenizen is true, 2) clickTrigger enabled, 3) is cooled down, 4) is not engaged */
+		/* Check if this NPC is a Denizen and is interact-able */
 		if (sE.denizenIsInteractable(triggerName, event.getNPC(), event.getClicker())) {
 
-			/* Apply default cooldown to avoid click-spam, then send to parser. */
+			/* Apply default cool-down to avoid click-spam, then send to parser. */
 			sE.setCooldown(event.getClicker(), ClickTrigger.class, plugin.settings.DefaultClickCooldown());
 			if (!parseClickTrigger(event.getNPC(), event.getClicker())) {
 				event.getNPC().getTrait(DenizenTrait.class).talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
@@ -48,7 +48,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
 	public boolean parseClickTrigger(NPC theDenizen, Player thePlayer) {
 
-		ScriptHelper sE = plugin.scriptEngine.helper;
+		ScriptHelper sE = plugin.getScriptEngine().helper;
 
 		/* Get Interact Script, if any. */
 		String theScriptName = sE.getInteractScript(theDenizen, thePlayer);

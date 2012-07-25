@@ -96,7 +96,7 @@ public class Utilities {
 									if (plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")
 											+ (theDuration * 1000) <= System.currentTimeMillis()) 
 
-										plugin.scriptEngine.finishLocationTask(event.getPlayer(), taskArgs[2]);
+										plugin.getScriptEngine().finishLocationTask(event.getPlayer(), taskArgs[2]);
 								}
 								else {
 									plugin.getSaves().set("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated", System.currentTimeMillis());

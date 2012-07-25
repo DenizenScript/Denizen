@@ -20,9 +20,9 @@ public class Executer {
 	 */
 
 	public boolean execute(ScriptEntry theCommand) {
-		if (plugin.commandRegistry.getCommand(theCommand.getCommand()) != null) {
+		if (plugin.getCommandRegistry().getCommand(theCommand.getCommand()) != null) {
 
-			Command command = plugin.commandRegistry.getCommand(theCommand.getCommand());
+			Command command = plugin.getCommandRegistry().getCommand(theCommand.getCommand());
 
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Executing command " + theCommand.getCommand());
 

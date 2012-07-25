@@ -78,7 +78,7 @@ public class ScriptHelper {
 
 	}
 
-	
+
 
 	/*
 	 * Checks cooldowns/set cooldowns.
@@ -113,8 +113,8 @@ public class ScriptHelper {
 		plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time", System.currentTimeMillis() + millis);
 	}
 
-	
-	
+
+
 	/* 
 	 * Denizen Info
 	 */
@@ -122,7 +122,7 @@ public class ScriptHelper {
 	public void showInfo(Player thePlayer, NPC theDenizen) {
 
 		if (theDenizen.hasTrait(DenizenTrait.class))
-			if (theDenizen.getTrait(DenizenTrait.class).isDenizen) {
+			if (theDenizen.getTrait(DenizenTrait.class).isDenizen()) {
 
 				thePlayer.sendMessage(ChatColor.GOLD + "------ Denizen Info ------");
 
@@ -358,38 +358,40 @@ public class ScriptHelper {
 	}
 
 
-	
+
 	/*
 	 * Checks whether a Denizen NPC should be interact-able.
 	 */
 
 	public boolean denizenIsInteractable(String triggerName, NPC theDenizen, Player thePlayer) {
-			
+
 		// NPC must be a Denizen
-		if (theDenizen.getTrait(DenizenTrait.class).isDenizen
-			// The Denizen NPC must have the trigger enabled
-			&& theDenizen.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName)
-			// The Player must be cooled down for this type of Trigger
-			&& plugin.scriptEngine.helper.checkCooldown(thePlayer, plugin.triggerRegistry.getTrigger(triggerName).getClass())
-			// and finally the NPC must not be engaged
-			&& !((EngageCommand) plugin.getCommandRegistry().getCommand("Engage")).getEngaged(theDenizen)) 
-			return true;
+
+		if (theDenizen.hasTrait(DenizenTrait.class))
+			if (theDenizen.getTrait(DenizenTrait.class).isDenizen()
+					// The Denizen NPC must have the trigger enabled
+					&& theDenizen.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName)
+					// The Player must be cooled down for this type of Trigger
+					&& plugin.getScriptEngine().helper.checkCooldown(thePlayer, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())
+					// and finally the NPC must not be engaged
+					&& !plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen))
+				return true;
 
 		return false;
 	}
 
 
-	
+
 	/* 
 	 * Builds a list of ScriptEntry(ies) from a List<String> of items read from a script. 
 	 */
 
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, NPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
-	
+
 		if (theScript.isEmpty()) return null;
-		
+
 		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
-		
+
 		for (String thisItem : theScript) {
 			String[] scriptEntry = new String[2];
 			if (thisItem.split(" ", 2).length == 1) {
@@ -408,17 +410,17 @@ public class ScriptHelper {
 			}
 		}
 
-		
+
 		return scriptCommands;
 
-		
+
 	}
 
 
 
 	public void queueScriptEntries(Player thePlayer, List<ScriptEntry> scriptEntries, QueueType queueType) {
-		
-		Map<Player, List<ScriptEntry>> thisQueue = plugin.scriptEngine.getQueue(queueType);
+
+		Map<Player, List<ScriptEntry>> thisQueue = plugin.getScriptEngine().getQueue(queueType);
 		List<ScriptEntry> existingScriptEntries = new ArrayList<ScriptEntry>();
 
 		if (thisQueue.containsKey(thePlayer))
@@ -434,7 +436,7 @@ public class ScriptHelper {
 			if (plugin.debugMode) plugin.getLogger().log(Level.SEVERE, "No items in the script to add!");
 
 		thisQueue.put(thePlayer, existingScriptEntries);
-		
+
 	}
 
 
