@@ -195,12 +195,12 @@ public class ScriptEngine {
 
 	public void injectToQue(Player thePlayer, List<ScriptEntry> scriptCommands, QueueType queueType, int thePosition) {
 
-		List<ScriptEntry> scriptCommandList;
+		List<ScriptEntry> scriptCommandList = new ArrayList<ScriptEntry>();
 
 		switch (queueType) {
 
 		case TRIGGER:
-			scriptCommandList = taskQue.get(thePlayer);
+			scriptCommandList = triggerQue.get(thePlayer);
 			taskQue.remove(thePlayer); 
 			if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
 			if (scriptCommandList.size() == 0) thePosition = 0;

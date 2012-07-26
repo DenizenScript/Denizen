@@ -323,6 +323,21 @@ public class Denizen extends JavaPlugin {
 			sender.sendMessage(ChatColor.GREEN + utilities.getVersionString());
 			return true;
 		}
+		
+		if (args[0].equalsIgnoreCase("debug") && !(sender instanceof Player)) {
+
+			if (!debugMode) { 
+				debugMode = true; 
+				sender.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode ON."); 
+				return true;
+			}
+
+			else if (debugMode) { 
+				debugMode = false; 
+				sender.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode OFF."); 
+				return true;
+			}
+		}
 
 
 		/*
