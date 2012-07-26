@@ -251,10 +251,12 @@ public class ScriptHelper {
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer) {
 
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Getting interact script.");
+		
 		String theScript = null;
 		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
 		if (scriptList.isEmpty()) { 
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Script is empty!");
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no interact scripts found!");
 			return theScript; 
 		}
 
@@ -275,7 +277,7 @@ public class ScriptHelper {
 		for (String thisScript : scriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
 			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Script " + thisScript + " meets requirements, adding to list.");
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " meets requirements.");
 				interactScripts.add(thisScript);
 			}
 		}
@@ -294,7 +296,7 @@ public class ScriptHelper {
 		}
 		else if (interactScripts.size() == 1) theScript = interactScripts.get(0);
 
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Highest scoring script is " + theScript.split(" ", 2)[1]);
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...highest scoring script is " + theScript.split(" ", 2)[1] + ".");
 
 		return theScript.split(" ", 2)[1];
 	}
@@ -303,10 +305,16 @@ public class ScriptHelper {
 
 	public int getCurrentStep(Player thePlayer, String theScript) {
 
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Finding current step for " + theScript + ".");
+		
 		int currentStep = 1;
-		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null)
+		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null) {
 			currentStep =  plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
-
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found info in saves.yml. Current step is: " + currentStep + ".");
+			return currentStep;
+		}
+			
+		else if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no step found in saves.yml! Assuming '1'.");
 		return currentStep;
 	}
 
@@ -340,6 +348,9 @@ public class ScriptHelper {
 		} 
 		String[] split = new String[matchList.size()];
 		matchList.toArray(split);
+
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...built arguments: " + split.toString());
+		
 		return split;
 	}
 
@@ -400,7 +411,12 @@ public class ScriptHelper {
 
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
 
-		if (theScript.isEmpty()) return null;
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building Script Entries...");
+		
+		if (theScript.isEmpty()) {
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
+			return null;
+		}
 
 		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
@@ -416,7 +432,6 @@ public class ScriptHelper {
 			try {
 				/* Build new script commands */
 				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep));
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building ScriptCommand with " + thisItem);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -462,6 +477,8 @@ public class ScriptHelper {
 		Map<Player, List<ScriptEntry>> thisQueue = plugin.getScriptEngine().getQueue(queueType);
 		List<ScriptEntry> existingScriptEntries = new ArrayList<ScriptEntry>();
 
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Queueing ScriptEntries...");
+		
 		if (thisQueue.containsKey(thePlayer))
 			existingScriptEntries.addAll(thisQueue.get(thePlayer));
 
@@ -472,9 +489,10 @@ public class ScriptHelper {
 		if (!scriptEntries.isEmpty())
 			existingScriptEntries.addAll(scriptEntries);
 		else
-			if (plugin.debugMode) plugin.getLogger().log(Level.SEVERE, "No items in the script to add!");
+			if (plugin.debugMode) plugin.getLogger().log(Level.SEVERE, "...no items to add!");
 
 		thisQueue.put(thePlayer, existingScriptEntries);
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...success!");
 
 	}
 

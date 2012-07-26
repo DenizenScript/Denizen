@@ -28,6 +28,7 @@ public class Executer {
 
 			try {
 				command.execute(theCommand);
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...success!");
 			} catch (CommandException e) {
 				plugin.getLogger().log(Level.SEVERE, e.getMessage()); 
 				e.printStackTrace();
@@ -36,7 +37,7 @@ public class Executer {
 
 		}
 
-		else plugin.getLogger().log(Level.SEVERE, "Invalid scriptCommand!");
+		else plugin.getLogger().log(Level.SEVERE, "...invalid Command!");
 		return false;
 
 	}

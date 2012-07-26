@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scriptEngine.triggers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -111,7 +112,8 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 	private void parseLocationTrigger(DenizenNPC theDenizen, Player thePlayer, String theLocationName) {
 
-		/* Find script and run it */		
+		/* Find script and run it */	
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Location Trigger.");
 
 	}
 

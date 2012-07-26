@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scriptEngine.triggers;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
@@ -46,6 +47,8 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 	public boolean parseDamageTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Damage Trigger.");
+		
 		String theScriptName = theDenizen.getInteractScript(thePlayer);
 		if (theScriptName == null) return false;
 
