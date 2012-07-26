@@ -86,13 +86,13 @@ public class ScriptHelper {
 	 * Checks cooldowns/set cooldowns.
 	 */
 
-	Map<Player, Map<DenizenNPC, Long>> triggerCooldowns = new ConcurrentHashMap<Player, Map<DenizenNPC, Long>>();
+	Map<Player, Map<Class<?>, Long>> triggerCooldowns = new ConcurrentHashMap<Player, Map<Class<?>,Long>>();
 
-	public boolean checkCooldown(Player thePlayer, DenizenNPC theDenizen) {
+	public boolean checkCooldown(Player thePlayer, Class<?> theTrigger) {
 
 		if (!triggerCooldowns.containsKey(thePlayer)) return true;
-		if (!triggerCooldowns.get(thePlayer).containsKey(theDenizen)) return true;
-		if (System.currentTimeMillis() >= triggerCooldowns.get(thePlayer).get(theDenizen)) return true;
+		if (!triggerCooldowns.get(thePlayer).containsKey(theTrigger)) return true;
+		if (System.currentTimeMillis() >= triggerCooldowns.get(thePlayer).get(theTrigger)) return true;
 
 		return false;
 	}
@@ -105,9 +105,9 @@ public class ScriptHelper {
 		return false;
 	}
 
-	public void setCooldown(Player thePlayer, DenizenNPC theDenizen, Long millis) {
-		Map<DenizenNPC, Long> triggerMap = new HashMap<DenizenNPC, Long>();
-		triggerMap.put(theDenizen, System.currentTimeMillis() + millis);
+	public void setCooldown(Player thePlayer, Class<?> triggerType, Long millis) {
+		Map<Class<?>, Long> triggerMap = new HashMap<Class<?>, Long>();
+		triggerMap.put(triggerType, System.currentTimeMillis() + millis);
 		triggerCooldowns.put(thePlayer, triggerMap);
 	}
 
@@ -389,7 +389,7 @@ public class ScriptHelper {
 					// The Denizen NPC must have the trigger enabled
 					&& theDenizen.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName.toUpperCase())
 					// The Player must be cooled down for this type of Trigger
-					&& plugin.getScriptEngine().helper.checkCooldown(thePlayer, plugin.getDenizenNPCRegistry().getDenizen(theDenizen))
+					&& plugin.getScriptEngine().helper.checkCooldown(thePlayer, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())
 					// and finally the NPC must not be engaged
 					&& !plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen))
 				return true;
@@ -401,7 +401,7 @@ public class ScriptHelper {
 			
 			if (!theDenizen.hasTrait(DenizenTrait.class)) plugin.getLogger().log(Level.INFO, "...no Denizen Trait.");
 			if (!theDenizen.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName.toUpperCase())) plugin.getLogger().log(Level.INFO, "..." + triggerName.toLowerCase() + " trigger is not enabled on this NPC.");
-			if (!plugin.getScriptEngine().helper.checkCooldown(thePlayer, plugin.getDenizenNPCRegistry().getDenizen(theDenizen))) plugin.getLogger().log(Level.INFO, "...the Player has met cool-down for this NPC.");
+			if (!plugin.getScriptEngine().helper.checkCooldown(thePlayer, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())) plugin.getLogger().log(Level.INFO, "...the Player has not yet met cool-down.");
 			if (plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen)) plugin.getLogger().log(Level.INFO, "...the Denizen is ENGAGED.");
 		}
 		
