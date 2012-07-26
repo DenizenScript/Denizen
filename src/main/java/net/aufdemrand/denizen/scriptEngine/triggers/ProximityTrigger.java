@@ -36,8 +36,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 				if (event.getPlayer().hasMetadata("npcinproximity")) {
 
 					/* If closest is same as stored metadata, avoid retrigger. */
-					if (event.getPlayer().getMetadata("npcinproximity").contains(theDenizen)) 
+					if (event.getPlayer().getMetadata("npcinproximity").contains(theDenizen)) {
+						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Metadata now contains " + event.getPlayer().getMetadata("npcinproximity").toString());
 						return;
+					}
 
 					/* If closest is different than stored metadata and proximity trigger is enabled for said NPC, trigger */
 					else if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
