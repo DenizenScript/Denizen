@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scriptEngine.triggers;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
@@ -41,6 +42,8 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
 				}
 			}
+			
+			else if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Denizen is not interactable.");
 		}
 	}
 
@@ -51,7 +54,8 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 	public boolean parseClickTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
-
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Click Trigger...");
+		
 		/* Get Interact Script, if any. */
 		String theScriptName = theDenizen.getInteractScript(thePlayer);
 
