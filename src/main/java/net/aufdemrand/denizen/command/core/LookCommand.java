@@ -4,6 +4,7 @@ import org.bukkit.Location;
 
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.aufdemrand.denizen.command.Command;
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -41,7 +42,7 @@ public class LookCommand extends Command {
 		Direction direction = null;
 		Location theLocation = null;
 
-		NPC theDenizen = theCommand.getDenizen();
+		DenizenNPC theDenizen = theCommand.getDenizen();
 
 		/* Get arguments */
 		if (theCommand.arguments() != null) {
@@ -51,7 +52,7 @@ public class LookCommand extends Command {
 				if (thisArgument.toUpperCase().contains("NPCID:")) {
 					try {
 						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])) != null)
-							theDenizen = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1]));	
+							theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])));	
 					} catch (Throwable e) {
 						throw new CommandException("NPCID specified could not be matched to a Denizen.");
 					}
@@ -64,8 +65,8 @@ public class LookCommand extends Command {
 				}
 
 				// If argument is a valid bookmark, set theLocation.
-				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
+				else if (plugin.bookmarks.exists(theCommand.getDenizen().getCitizensEntity(), thisArgument))
+					theLocation = plugin.bookmarks.get(theCommand.getDenizen().getCitizensEntity(), thisArgument, BookmarkType.LOCATION);	
 				else if (thisArgument.split(":").length == 2) {
 					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
 						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);

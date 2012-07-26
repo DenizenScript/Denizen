@@ -77,11 +77,11 @@ public class TriggerRegistry {
 		}
 
 		/* Register Listener events. */
-		// plugin.getServer().getPluginManager().registerEvents(locationTrigger, plugin);
-		// plugin.getServer().getPluginManager().registerEvents(chatTrigger, plugin);
+		plugin.getServer().getPluginManager().registerEvents(locationTrigger, plugin);
+		plugin.getServer().getPluginManager().registerEvents(chatTrigger, plugin);
 		plugin.getServer().getPluginManager().registerEvents(clickTrigger, plugin);
-		// plugin.getServer().getPluginManager().registerEvents(damageTrigger, plugin);
-		// plugin.getServer().getPluginManager().registerEvents(proximityTrigger, plugin);
+		plugin.getServer().getPluginManager().registerEvents(damageTrigger, plugin);
+		plugin.getServer().getPluginManager().registerEvents(proximityTrigger, plugin);
 		
 	}
 
