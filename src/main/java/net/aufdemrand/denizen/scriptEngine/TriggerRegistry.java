@@ -66,10 +66,14 @@ public class TriggerRegistry {
 		try {
 			
 			locationTrigger.activateAs("Location");
+			locationTrigger.setEnabledByDefault(true);
 			chatTrigger.activateAs("Chat");
+			chatTrigger.setEnabledByDefault(true);
 			clickTrigger.activateAs("Click");
+			clickTrigger.setEnabledByDefault(true);
 			damageTrigger.activateAs("Damage");
 			proximityTrigger.activateAs("Proximity");
+			proximityTrigger.setEnabledByDefault(true);
 		
 		} catch (ActivationException e) {
 			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core triggers!");

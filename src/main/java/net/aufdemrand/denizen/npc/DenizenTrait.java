@@ -39,6 +39,7 @@ public class DenizenTrait extends Trait implements Toggleable {
 			} else {
 				triggerMap.put(theTriggerName, plugin.getTriggerRegistry().getTrigger(theTriggerName).getEnabledByDefault());
 			}
+		
 	}
 
 	
@@ -48,7 +49,7 @@ public class DenizenTrait extends Trait implements Toggleable {
 		key.setBoolean("toggled", isToggled);
 		
 		for (Entry<String, Boolean> theEntry : triggerMap.entrySet()) {
-			key.setBoolean("enable." + theEntry.getKey() + "-trigger", theEntry.getValue());
+			key.setBoolean("enable." + theEntry.getKey().toLowerCase() + "-trigger", theEntry.getValue());
 		}
 	}
 
