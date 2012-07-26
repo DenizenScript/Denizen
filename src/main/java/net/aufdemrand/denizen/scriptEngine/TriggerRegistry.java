@@ -34,6 +34,7 @@ public class TriggerRegistry {
 
 
 	public Map<String, AbstractTrigger> listTriggers() {
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Contents of TriggerList: " + triggers.keySet().toString());
 		return triggers;
 	}
 
