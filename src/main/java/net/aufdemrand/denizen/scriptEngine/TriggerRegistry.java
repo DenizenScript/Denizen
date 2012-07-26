@@ -25,7 +25,6 @@ public class TriggerRegistry {
 
 
 	public boolean registerTrigger(String triggerName, AbstractTrigger triggerClass) {
-		if (triggerName.length() > 1) return false;
 		this.triggers.put(triggerName.toUpperCase(), triggerClass);
 		this.triggersClass.put(triggerClass.getClass(), triggerName);
 		triggerClass.triggerName = triggerName.substring(0, 1).toUpperCase() + triggerName.substring(1).toLowerCase();

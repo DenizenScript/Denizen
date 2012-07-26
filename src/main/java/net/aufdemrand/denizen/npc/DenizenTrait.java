@@ -44,6 +44,9 @@ public class DenizenTrait extends Trait implements Toggleable {
 	
 	@Override
 	public void save(DataKey key) {
+		
+		key.setBoolean("toggled", isToggled);
+		
 		for (Entry<String, Boolean> theEntry : triggerMap.entrySet()) {
 			key.setBoolean("enable." + theEntry.getKey() + "-trigger", theEntry.getValue());
 		}
