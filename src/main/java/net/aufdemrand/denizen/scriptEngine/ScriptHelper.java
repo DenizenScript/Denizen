@@ -367,7 +367,11 @@ public class ScriptHelper {
 	}
 
 	public List<String> getScript(String triggerPath) {
-		return plugin.getScripts().getStringList(triggerPath.replace("..", "."));
+		if (plugin.getScripts().contains(triggerPath.replace("..", "."))) {
+				return plugin.getScripts().getStringList(triggerPath.replace("..", "."));
+		}
+	
+		else return new ArrayList<String>();
 	}
 
 

@@ -27,7 +27,8 @@ public class Executer {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Executing command " + theCommand.getCommand());
 
 			try {
-				command.execute(theCommand);
+				if (command.execute(theCommand))
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...success!");
 			} catch (CommandException e) {
 				plugin.getLogger().log(Level.SEVERE, e.getMessage()); 
 				e.printStackTrace();
