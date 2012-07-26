@@ -19,7 +19,7 @@ public class DenizenTrait extends Trait implements Toggleable {
 	private Map<String, Boolean> triggerMap = new HashMap<String, Boolean>();
 	private Denizen plugin;
 
-	private boolean isToggled = false;
+	private boolean isToggled = true;
 
 	public DenizenTrait() {
 		super("denizen");
@@ -32,7 +32,7 @@ public class DenizenTrait extends Trait implements Toggleable {
 
 		plugin.getDenizenNPCRegistry().registerNPC(npc);
 		
-		isToggled = key.getBoolean("toggle", false);
+		isToggled = key.getBoolean("toggled", false);
 		for (String theTriggerName : plugin.getTriggerRegistry().listTriggers().keySet())
 			if (key.keyExists("enable." + theTriggerName.toLowerCase() + "-trigger")) {
 				triggerMap.put(theTriggerName, key.getBoolean("enable." + theTriggerName.toLowerCase() + "-trigger"));
