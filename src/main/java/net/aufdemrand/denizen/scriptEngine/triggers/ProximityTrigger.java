@@ -28,11 +28,11 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
 			ScriptHelper sE = plugin.getScriptEngine().helper;
-			
+
 			/* Do not run any further code if no Denizen is in range */
 			if (plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks()) != null) {
 				DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks());
-				
+
 				if (event.getPlayer().hasMetadata("npcinproximity")) {
 
 					/* If closest is same as stored metadata, avoid retrigger. */
@@ -44,8 +44,8 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
 						/* Set Metadata value to avoid retrigger. */
 						event.getPlayer().setMetadata("npcinproximity", new FixedMetadataValue(plugin, plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks())));
-						
-						
+
+
 						/* TRIGGER! */
 						sE.setCooldown(event.getPlayer(), ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
 						parseProximityTrigger(theDenizen, event.getPlayer());
@@ -58,18 +58,20 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
 						/* Set Metadata value to avoid retrigger. */
 						event.getPlayer().setMetadata("npcinproximity", new FixedMetadataValue(plugin, plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks())));
-						
+
 						/* TRIGGER! */
 						sE.setCooldown(event.getPlayer(), ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
 						parseProximityTrigger(theDenizen, event.getPlayer());
 					}
 				}
 			}
+
+			else if (event.getPlayer().hasMetadata("npcinproximity")) event.getPlayer().removeMetadata("npcinproximity", plugin);
 		}
 	}
-	
-	
-	
+
+
+
 	public boolean parseProximityTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
