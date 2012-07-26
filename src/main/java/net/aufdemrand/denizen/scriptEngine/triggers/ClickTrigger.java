@@ -42,8 +42,6 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
 				}
 			}
-			
-			else if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Denizen is not interactable.");
 		}
 	}
 

@@ -367,17 +367,28 @@ public class ScriptHelper {
 	public boolean denizenIsInteractable(String triggerName, NPC theDenizen, Player thePlayer) {
 
 		// NPC must be a Denizen
-
+		
 		if (theDenizen.hasTrait(DenizenTrait.class))
 			if (theDenizen.getTrait(DenizenTrait.class).isToggled()
 					// The Denizen NPC must have the trigger enabled
-					&& theDenizen.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName)
+					&& theDenizen.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName.toUpperCase())
 					// The Player must be cooled down for this type of Trigger
 					&& plugin.getScriptEngine().helper.checkCooldown(thePlayer, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())
 					// and finally the NPC must not be engaged
 					&& !plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen))
 				return true;
 
+		/* For debugging */
+		
+		if (plugin.debugMode) {
+			plugin.getLogger().log(Level.INFO, theDenizen.getName() + " is not interactable.");
+			
+			if (!theDenizen.hasTrait(DenizenTrait.class)) plugin.getLogger().log(Level.INFO, "...no Denizen Trait.");
+			if (!theDenizen.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName.toUpperCase())) plugin.getLogger().log(Level.INFO, "..." + triggerName.toLowerCase() + " trigger is not enabled on this NPC.");
+			if (!plugin.getScriptEngine().helper.checkCooldown(thePlayer, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())) plugin.getLogger().log(Level.INFO, "...the Player has not yet met cool-down.");
+			if (plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen)) plugin.getLogger().log(Level.INFO, "...the Denizen is ENGAGED.");
+		}
+		
 		return false;
 	}
 
