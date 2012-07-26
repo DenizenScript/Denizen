@@ -2,9 +2,10 @@ package net.aufdemrand.denizen.scriptEngine.triggers;
 
 import java.util.List;
 
-import net.aufdemrand.denizen.DenizenTrait;
-import net.aufdemrand.denizen.SpeechEngine.Reason;
-import net.aufdemrand.denizen.SpeechEngine.TalkType;
+import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.DenizenTrait;
+import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
+import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
 import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
@@ -24,20 +25,23 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
 		/* Shortcut to the ScriptHelper */
 		ScriptHelper sE = plugin.getScriptEngine().helper;
+		if (plugin.getDenizenNPCRegistry().isDenizenNPC(event.getNPC())) {
+			DenizenNPC denizenNPC = plugin.getDenizenNPCRegistry().getDenizen(event.getNPC());
 
-		/* Show NPC info if sneaking and right clicking */
-		if (event.getClicker().isSneaking() 
-				&& event.getClicker().isOp()
-				&& plugin.settings.RightClickAndSneakInfoModeEnabled()) 
-			sE.showInfo(event.getClicker(), event.getNPC());
+			/* Show NPC info if sneaking and right clicking */
+			if (event.getClicker().isSneaking() 
+					&& event.getClicker().isOp()
+					&& plugin.settings.RightClickAndSneakInfoModeEnabled()) 
+				denizenNPC.showInfo(event.getClicker());
 
-		/* Check if this NPC is a Denizen and is interact-able */
-		if (sE.denizenIsInteractable(triggerName, event.getNPC(), event.getClicker())) {
+			/* Check if this NPC is a Denizen and is interact-able */
+			if (denizenNPC.IsInteractable(triggerName, event.getClicker())) {
 
-			/* Apply default cool-down to avoid click-spam, then send to parser. */
-			sE.setCooldown(event.getClicker(), ClickTrigger.class, plugin.settings.DefaultClickCooldown());
-			if (!parseClickTrigger(event.getNPC(), event.getClicker())) {
-				event.getNPC().getTrait(DenizenTrait.class).talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
+				/* Apply default cool-down to avoid click-spam, then send to parser. */
+				sE.setCooldown(event.getClicker(), ClickTrigger.class, plugin.settings.DefaultClickCooldown());
+				if (!parseClickTrigger(denizenNPC, event.getClicker())) {
+					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
+				}
 			}
 		}
 	}
@@ -46,12 +50,12 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
 	/* Parses the script for a click trigger */
 
-	public boolean parseClickTrigger(NPC theDenizen, Player thePlayer) {
+	public boolean parseClickTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 
 		/* Get Interact Script, if any. */
-		String theScriptName = sE.getInteractScript(theDenizen, thePlayer);
+		String theScriptName = theDenizen.getInteractScript(thePlayer);
 
 		if (theScriptName == null) return false;
 

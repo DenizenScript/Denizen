@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen;
+package net.aufdemrand.denizen.npc;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,8 +7,7 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import net.aufdemrand.denizen.SpeechEngine.Reason;
-import net.aufdemrand.denizen.SpeechEngine.TalkType;
+import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -20,7 +19,7 @@ public class DenizenTrait extends Trait implements Toggleable {
 	private Map<String, Boolean> triggerMap = new HashMap<String, Boolean>();
 	private Denizen plugin;
 
-	private boolean isDenizen = false;
+	private boolean isToggled = false;
 
 	public DenizenTrait() {
 		super("denizen");
@@ -31,7 +30,9 @@ public class DenizenTrait extends Trait implements Toggleable {
 	public void load(DataKey key) throws NPCLoadException {
 		plugin = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 
-		isDenizen = key.getBoolean("toggle", false);
+		plugin.getDenizenNPCRegistry().registerNPC(npc);
+		
+		isToggled = key.getBoolean("toggle", false);
 		for (String theTriggerName : plugin.getTriggerRegistry().listTriggers().keySet())
 			if (key.keyExists("enable." + theTriggerName.toLowerCase() + "-trigger")) {
 				triggerMap.put(theTriggerName, key.getBoolean("enable." + theTriggerName.toLowerCase() + "-trigger"));
@@ -51,13 +52,13 @@ public class DenizenTrait extends Trait implements Toggleable {
 	
 	@Override
 	public boolean toggle() {
-		isDenizen = !isDenizen;
-		return isDenizen;
+		isToggled = !isToggled;
+		return isToggled;
 	}
 	
 	
-	public boolean isDenizen() {
-		return isDenizen;
+	public boolean isToggled() {
+		return isToggled;
 	}
 
 	
@@ -66,17 +67,6 @@ public class DenizenTrait extends Trait implements Toggleable {
 			return triggerMap.get(theName);
 		else return false;
 	}
-
-
-	public void talk(TalkType talkType, Player thePlayer, String theText) {
-		((Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen"))
-		.getSpeechEngine().talk(npc, thePlayer, theText, talkType);
-	}
-
-
-	public void talk(TalkType talkType, Player thePlayer, Reason theReason) {
-		// TODO: Finish before 0.7 release.
-	}
-
+	
 	
 }

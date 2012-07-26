@@ -2,10 +2,10 @@ package net.aufdemrand.denizen.scriptEngine.triggers;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
-import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,8 +15,10 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 public class ProximityTrigger extends AbstractTrigger implements Listener {
 
-	/* Listens for the PlayerMoveEvent to see if a player is within range
-	 * of a Denizen to trigger a Proximity Trigger */
+	/* 
+	 * Listens for the PlayerMoveEvent to see if a player is within range
+	 * of a Denizen to trigger a Proximity Trigger 
+	 */
 
 	@EventHandler
 	public void proximityTrigger(PlayerMoveEvent event) {
@@ -24,10 +26,12 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 		/* Do not run any code unless the player actually moves blocks */
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
+			ScriptHelper sE = plugin.getScriptEngine().helper;
+			
 			/* Do not run any further code if no Denizen is in range */
-			if (plugin.getDenizen.getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks()) != null) {
-				NPC theDenizen = plugin.getDenizen.getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks());
-				ScriptHelper sE = plugin.getScriptEngine().helper;
+			if (plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks()) != null) {
+				DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getDenizen(plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks()));
+				
 
 				if (event.getPlayer().hasMetadata("npcinproximity")) {
 
@@ -36,10 +40,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 						return;
 
 					/* If closest is different than stored metadata and proximity trigger is enabled for said NPC, trigger */
-					else if (sE.denizenIsInteractable(triggerName, theDenizen, event.getPlayer())) {
+					else if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
 
 						/* Set Metadata value to avoid retrigger. */
-						event.getPlayer().setMetadata("npcinproximity", new FixedMetadataValue(plugin, plugin.getDenizen.getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks())));
+						event.getPlayer().setMetadata("npcinproximity", new FixedMetadataValue(plugin, plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks())));
 
 						/* TRIGGER! */
 						sE.setCooldown(event.getPlayer(), ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
@@ -49,10 +53,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 				} else { /* Player does not have metadata */
 
 					/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
-					if (sE.denizenIsInteractable(triggerName, theDenizen, event.getPlayer())) {
+					if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
 
 						/* Set Metadata value to avoid retrigger. */
-						event.getPlayer().setMetadata("npcinproximity", new FixedMetadataValue(plugin, plugin.getDenizen.getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks())));
+						event.getPlayer().setMetadata("npcinproximity", new FixedMetadataValue(plugin, plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks())));
 
 						/* TRIGGER! */
 						sE.setCooldown(event.getPlayer(), ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
@@ -65,12 +69,12 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 	
 	
 	
-	public boolean parseProximityTrigger(NPC theDenizen, Player thePlayer) {
+	public boolean parseProximityTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 
 		/* Get Interact Script, if any. */
-		String theScriptName = sE.getInteractScript(theDenizen, thePlayer);
+		String theScriptName = theDenizen.getInteractScript(thePlayer);
 
 		if (theScriptName == null) return false;
 

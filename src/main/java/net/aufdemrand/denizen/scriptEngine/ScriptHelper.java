@@ -17,9 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.DenizenTrait;
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.aufdemrand.denizen.command.core.EngageCommand;
+import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -122,7 +123,7 @@ public class ScriptHelper {
 	public void showInfo(Player thePlayer, NPC theDenizen) {
 
 		if (theDenizen.hasTrait(DenizenTrait.class))
-			if (theDenizen.getTrait(DenizenTrait.class).isDenizen()) {
+			if (theDenizen.getTrait(DenizenTrait.class).isToggled()) {
 
 				thePlayer.sendMessage(ChatColor.GOLD + "------ Denizen Info ------");
 
@@ -368,7 +369,7 @@ public class ScriptHelper {
 		// NPC must be a Denizen
 
 		if (theDenizen.hasTrait(DenizenTrait.class))
-			if (theDenizen.getTrait(DenizenTrait.class).isDenizen()
+			if (theDenizen.getTrait(DenizenTrait.class).isToggled()
 					// The Denizen NPC must have the trigger enabled
 					&& theDenizen.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName)
 					// The Player must be cooled down for this type of Trigger
@@ -386,7 +387,7 @@ public class ScriptHelper {
 	 * Builds a list of ScriptEntry(ies) from a List<String> of items read from a script. 
 	 */
 
-	public List<ScriptEntry> buildScriptEntries(Player thePlayer, NPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
+	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
 
 		if (theScript.isEmpty()) return null;
 

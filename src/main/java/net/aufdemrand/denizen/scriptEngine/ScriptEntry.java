@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scriptEngine;
 
 import javax.script.ScriptException;
 
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -50,9 +51,9 @@ public class ScriptEntry {
 	}
 	
 	/* the NPC Object of the Denizen associated with the command */
-	private NPC theDenizen;
+	private DenizenNPC theDenizen;
 	
-	public NPC getDenizen() {
+	public DenizenNPC getDenizen() {
 		return theDenizen;
 	}
 
@@ -119,7 +120,7 @@ public class ScriptEntry {
 	 * Creates a ScriptCommand (For use with a CHAT Trigger)
 	 */
 
-	public ScriptEntry(String commandType, String[] arguments, Player player, NPC denizen, String script, Integer step, String theMessage, String formattedText) throws Exception {
+	public ScriptEntry(String commandType, String[] arguments, Player player, DenizenNPC denizen, String script, Integer step, String theMessage, String formattedText) throws Exception {
 
 		if (player == null || denizen == null || script == null) throw new Exception("Values cannot be null!");
 
@@ -148,7 +149,7 @@ public class ScriptEntry {
 	 * Creates a ScriptCommand (for use with a CLICK/DAMAGE Trigger)
 	 */
 
-	public ScriptEntry(String commandType, String[] arguments, Player player, NPC denizen, String script, Integer step) throws Exception {
+	public ScriptEntry(String commandType, String[] arguments, Player player, DenizenNPC denizen, String script, Integer step) throws Exception {
 
 		if (player == null || denizen == null || script == null || step == null) throw new Exception("Values cannot be null!");
 

@@ -10,7 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import net.aufdemrand.denizen.DenizenTrait;
+import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
 import net.citizensnpcs.api.CitizensAPI;
@@ -27,9 +28,10 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		/* Do not run any code unless the player actually moves blocks */
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
+			ScriptHelper sE = plugin.getScriptEngine().helper;
+
 			/* Do not run any code if there aren't any location triggers */
 			if (!plugin.bookmarks.getLocationTriggerList().isEmpty()) {
-				ScriptHelper sE = plugin.getScriptEngine().helper;
 
 				/* Check player location against each Location Trigger */
 				for (Location theLocation : plugin.bookmarks.getLocationTriggerList().keySet()) {
@@ -37,31 +39,30 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 					if (plugin.bookmarks.checkLocation(event.getPlayer(), theLocation, plugin.settings.LocationTriggerRangeInBlocks()) 
 							&& sE.checkCooldown(event.getPlayer(), LocationTrigger.class)) {
 
-						NPC theDenizen = null;
+						DenizenNPC theDenizen = null;
 						String locationTriggered = plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[2];
 
 
 						/* Player matches Location, find NPC it belongs to */
 
 						if (plugin.bookmarks.getLocationTriggerList().get(theLocation).contains("ID:"))
-							theDenizen = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[1]));
+							theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[1])));
 
 						else if (plugin.bookmarks.getLocationTriggerList().get(theLocation).contains("NAME:")) {
-							List<NPC> denizenList = new ArrayList<NPC>();
+							List<DenizenNPC> denizenList = new ArrayList<DenizenNPC>();
 
 							/* Find all the NPCs with the name */
-							for (NPC npc : CitizensAPI.getNPCRegistry()) {
-								if(npc.getName().equals(plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[1])
-										&& npc.hasTrait(DenizenTrait.class)) {
+							for (DenizenNPC npc : plugin.getDenizenNPCRegistry().getDenizens().values()) {
+								if(npc.getName().equals(plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[1])) {
 									denizenList.add(npc);
 									theDenizen = npc;
 								}
 							}
 
 							/* Check which NPC is closest */
-							for (NPC npc : denizenList) {
-								if (npc.getBukkitEntity().getLocation().distance(event.getPlayer().getLocation())
-										< theDenizen.getBukkitEntity().getLocation().distance(event.getPlayer().getLocation()))
+							for (DenizenNPC npc : denizenList) {
+								if (npc.getEntity().getLocation().distance(event.getPlayer().getLocation())
+										< theDenizen.getEntity().getLocation().distance(event.getPlayer().getLocation()))
 									theDenizen = npc;
 							}
 						} 
@@ -79,7 +80,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 							/* Before triggering, check if LocationTriggers are enabled, cooldown is met, and NPC
 							 * is not already engaged... */
-							else if (sE.denizenIsInteractable(triggerName, theDenizen, event.getPlayer())) {
+							else if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
 
 								/* Set Metadata value to avoid retrigger. */
 								event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
@@ -92,7 +93,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 						} else {
 
 							/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
-							if (sE.denizenIsInteractable(triggerName, theDenizen, event.getPlayer())) {
+							if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
 
 								/* Set Metadata value to avoid retrigger. */
 								event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
@@ -110,7 +111,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 
 
-	private void parseLocationTrigger(NPC theDenizen, Player thePlayer, String theLocationName) {
+	private void parseLocationTrigger(DenizenNPC theDenizen, Player thePlayer, String theLocationName) {
 
 		/* Find script and run it */		
 

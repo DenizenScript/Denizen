@@ -1,8 +1,9 @@
-package net.aufdemrand.denizen;
+package net.aufdemrand.denizen.npc;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.ChatColor;
@@ -12,7 +13,7 @@ public class SpeechEngine {
 
 	Denizen plugin;
 
-	SpeechEngine(Denizen plugin) {
+	public SpeechEngine(Denizen plugin) {
 		this.plugin = plugin;
 	}
 
@@ -173,7 +174,7 @@ public class SpeechEngine {
 	 * @param  commandArgs 
 	 */
 
-	public void talkToPlayer(NPC theDenizen, Player thePlayer, String thePlayerMessage, String theBystanderMessage, TalkType talkType) {
+	public void talkToPlayer(DenizenNPC theDenizen, Player thePlayer, String thePlayerMessage, String theBystanderMessage, TalkType talkType) {
 
 		int theRange = 0;
 
@@ -202,7 +203,7 @@ public class SpeechEngine {
 
 		if ((plugin.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
 			if (theRange > 0) {
-				for (Player otherPlayer : plugin.getPlayer.getInRange(theDenizen.getBukkitEntity(), theRange, thePlayer)) {
+				for (Player otherPlayer : plugin.getDenizenNPCRegistry().getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
 					otherPlayer.sendMessage(theBystanderMessage);
 				}
 			}
@@ -213,4 +214,40 @@ public class SpeechEngine {
 
 
 
+	/**
+	 * Talks to a NPC. Also has replaceable data, end-user, when using <NPC> <TEXT> <PLAYER> <FULLPLAYERNAME> <WORLD> or <HEALTH>.
+	 *
+	 * @param  theDenizen  the Citizens2 NPC object to talk to.
+	 * @param  thePlayer  the Bukkit Player object that is doing the talking.
+	 */
+
+	public void talkToDenizen(DenizenNPC theDenizen, Player thePlayer, String theMessage) {
+		
+		thePlayer.sendMessage(plugin.settings.PlayerChatToNpc()
+				.replace("<NPC>", theDenizen.getName())
+				.replace("<TEXT>", theMessage)
+				.replace("<PLAYER>", thePlayer.getName())
+				.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
+				.replace("<WORLD>", thePlayer.getWorld().getName())
+				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+
+		if (plugin.settings.BystandersHearNpcToPlayerChat()) {
+			int theRange = plugin.settings.PlayerToNpcChatRangeInBlocks();
+			if (theRange > 0) {
+				for (Player otherPlayer : plugin.utilities.getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
+					otherPlayer.sendMessage(plugin.settings.PlayerChatToNpcBystander()
+							.replace("<NPC>", theDenizen.getName())
+							.replace("<TEXT>", theMessage)
+							.replace("<PLAYER>", thePlayer.getName())
+							.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
+							.replace("<WORLD>", thePlayer.getWorld().getName())
+							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+				}
+			}
+		}
+
+		return;
+	}
+
+	
 }
