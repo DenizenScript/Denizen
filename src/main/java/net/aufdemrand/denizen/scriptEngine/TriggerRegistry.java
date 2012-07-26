@@ -41,7 +41,7 @@ public class TriggerRegistry {
 	
 	public AbstractTrigger getTrigger(String triggerName) {
 		if (triggers.containsKey(triggerName.toUpperCase()))
-			return triggers.get(triggerName);
+			return triggers.get(triggerName.toUpperCase());
 		else
 			return null;
 	}
