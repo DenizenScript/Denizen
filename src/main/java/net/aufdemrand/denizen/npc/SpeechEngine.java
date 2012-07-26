@@ -27,8 +27,10 @@ public class SpeechEngine {
 
 	/* TODO: MAJOR FRIKKIN CLEANUP!  */
 	
-	public void talk(NPC theDenizen, Player thePlayer, String theText, TalkType talkType) {
+	public void talk(DenizenNPC theDenizen, Player thePlayer, String theText, TalkType talkType) {
 
+		if (!thePlayer.isDead()) {}
+		
 		String[] formattedText = formatChatText(theText, talkType, thePlayer, theDenizen);
 
 		List<String> playerText = getMultilineText(formattedText[0]);
@@ -63,7 +65,7 @@ public class SpeechEngine {
 	 * Either can be null if only one type of text is required.
 	 */
 
-	public String[] formatChatText (String theMessage, TalkType talkType, Player thePlayer, NPC theDenizen) {
+	public String[] formatChatText (String theMessage, TalkType talkType, Player thePlayer, DenizenNPC theDenizen) {
 
 		String playerMessageFormat = null;
 		String bystanderMessageFormat = null;
@@ -234,7 +236,7 @@ public class SpeechEngine {
 		if (plugin.settings.BystandersHearNpcToPlayerChat()) {
 			int theRange = plugin.settings.PlayerToNpcChatRangeInBlocks();
 			if (theRange > 0) {
-				for (Player otherPlayer : plugin.utilities.getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
+				for (Player otherPlayer : plugin.getDenizenNPCRegistry().getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
 					otherPlayer.sendMessage(plugin.settings.PlayerChatToNpcBystander()
 							.replace("<NPC>", theDenizen.getName())
 							.replace("<TEXT>", theMessage)

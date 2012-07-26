@@ -15,7 +15,6 @@ import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.npc.SpeechEngine;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine;
 import net.aufdemrand.denizen.scriptEngine.TriggerRegistry;
-import net.aufdemrand.denizen.utilities.GetDenizen;
 import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetRequirements;
 import net.aufdemrand.denizen.utilities.GetWorld;
@@ -57,7 +56,6 @@ public class Denizen extends JavaPlugin {
 	public Utilities			 utilities = new Utilities(this);
 	public Settings               settings = new Settings(this);
 	
-	public GetDenizen           getDenizen = new GetDenizen(this);
 	public GetPlayer             getPlayer = new GetPlayer(this);
 	public GetRequirements getRequirements = new GetRequirements(this);
 	public GetWorld               getWorld = new GetWorld(this);
@@ -488,7 +486,7 @@ public class Denizen extends JavaPlugin {
 
 		NPC ThisNPC = CitizensAPI.getNPCRegistry().getById(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
 
-		if (!ThisNPC.getTrait(DenizenTrait.class).isDenizen) {
+		if (!ThisNPC.getTrait(DenizenTrait.class).isToggled()) {
 			player.sendMessage(ChatColor.RED + "That command must be performed on a denizen!");
 			return true;
 		}

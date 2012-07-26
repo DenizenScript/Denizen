@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.npc.NPC;
 
 public class Bookmarks {
@@ -69,7 +70,7 @@ public class Bookmarks {
 
 		
 		/* Find Location Bookmarks assigned to Names */
-		for (NPC theDenizen : plugin.utilities.getDenizens()) {
+		for (DenizenNPC theDenizen : plugin.getDenizenNPCRegistry().getDenizens().values()) {
 			if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
 				List<String> locationsToAdd = plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location");
 
@@ -84,7 +85,7 @@ public class Bookmarks {
 		}	
 		
 		/* Find Location Bookmarks assigned to NPCIDs */
-		for (NPC theDenizen : plugin.utilities.getDenizens()) {
+		for (DenizenNPC theDenizen : plugin.getDenizenNPCRegistry().getDenizens().values()) {
 			if (plugin.getSaves().contains("Denizens." + theDenizen.getId() + ".Bookmarks.Location")) {
 				List<String> locationsToAdd = plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Location");
 

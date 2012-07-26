@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.aufdemrand.denizen.command.Command;
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -41,7 +42,7 @@ public class EngageCommand extends Command {
 		/* Initialize variables */ 
 
 		Integer timedEngage = null;
-		NPC theDenizen = theCommand.getDenizen();
+		DenizenNPC theDenizen = theCommand.getDenizen();
 
 		/* Get arguments */
 		if (theCommand.arguments() != null) {
@@ -52,7 +53,7 @@ public class EngageCommand extends Command {
 				if (thisArgument.toUpperCase().contains("NPCID:"))
 					try {
 						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])) != null)
-							theDenizen = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1]));	
+							theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])));	
 					} catch (Throwable e) {
 						throw new CommandException("NPCID specified could not be matched to a Denizen.");
 					}
@@ -77,7 +78,7 @@ public class EngageCommand extends Command {
 
 	/* Engaged NPCs cannot interact with Players */
 
-	private Map<NPC, Long> engagedNPC = new HashMap<NPC, Long>();
+	private Map<DenizenNPC, Long> engagedNPC = new HashMap<DenizenNPC, Long>();
 
 	public boolean getEngaged(NPC theDenizen) {
 		if (engagedNPC.containsKey(theDenizen)) 
@@ -86,13 +87,13 @@ public class EngageCommand extends Command {
 		return false;
 	}
 
-	public void setEngaged(NPC theDenizen, boolean engaged) {
+	public void setEngaged(DenizenNPC theDenizen, boolean engaged) {
 		if (engaged) engagedNPC.put(theDenizen, System.currentTimeMillis() 
 				+ plugin.settings.EngageTimeoutInSeconds() * 1000 );
 		if (!engaged) engagedNPC.remove(theDenizen);
 	}
 
-	public void setEngaged(NPC theDenizen, Integer duration) {
+	public void setEngaged(DenizenNPC theDenizen, Integer duration) {
 		engagedNPC.put(theDenizen, System.currentTimeMillis() + duration * 1000 );
 
 	}

@@ -74,12 +74,12 @@ public class WaitCommand extends Command {
 		theList.add(theCommand);
 
 		if (queueToHold == QueueType.TASK) {
-			plugin.scriptEngine.injectToQue(thePlayer, theList, QueueType.TASK, 1);
+			plugin.getScriptEngine().injectToQue(thePlayer, theList, QueueType.TASK, 1);
 			return true;
 		}
 
 		if (queueToHold == QueueType.TRIGGER) {
-			plugin.scriptEngine.injectToQue(thePlayer, theList, QueueType.TRIGGER, 1);
+			plugin.getScriptEngine().injectToQue(thePlayer, theList, QueueType.TRIGGER, 1);
 			return true;
 		}
 

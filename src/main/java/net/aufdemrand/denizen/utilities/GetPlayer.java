@@ -1,22 +1,14 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.Denizen;
-import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffectType;
 
 public class GetPlayer {
@@ -208,14 +200,14 @@ public class GetPlayer {
 
 				if (theData == null) theData = "0";
 				String friendlyItem = theItem + ":" + theData;
-				if (getInventoryIdMap(thePlayer).containsKey(friendlyItem)) {
-					if (getInventoryIdMap(thePlayer).get(friendlyItem) >= Integer.valueOf(theAmount)) 
+				if (plugin.utilities.getInventoryIdMap(thePlayer).containsKey(friendlyItem)) {
+					if (plugin.utilities.getInventoryIdMap(thePlayer).get(friendlyItem) >= Integer.valueOf(theAmount)) 
 						outcome = true;	
 				}
 			}
 			else {
-				if (getInventoryMap(thePlayer).containsKey(Material.valueOf(theItem))) {
-					if (getInventoryMap(thePlayer).get(Material.valueOf(theItem)) >= Integer.valueOf(theAmount)) 
+				if (plugin.utilities.getInventoryMap(thePlayer).containsKey(Material.valueOf(theItem))) {
+					if (plugin.utilities.getInventoryMap(thePlayer).get(Material.valueOf(theItem)) >= Integer.valueOf(theAmount)) 
 						outcome = true;
 				}
 			}

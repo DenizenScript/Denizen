@@ -1,25 +1,18 @@
 package net.aufdemrand.denizen.npc;
 
-import java.rmi.activation.ActivationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
+import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.scriptEngine.triggers.ChatTrigger;
-import net.aufdemrand.denizen.scriptEngine.triggers.ClickTrigger;
-import net.aufdemrand.denizen.scriptEngine.triggers.DamageTrigger;
-import net.aufdemrand.denizen.scriptEngine.triggers.LocationTrigger;
-import net.aufdemrand.denizen.scriptEngine.triggers.ProximityTrigger;
-import net.citizensnpcs.api.event.NPCEvent;
+
 import net.citizensnpcs.api.event.NPCRemoveEvent;
-import net.citizensnpcs.api.event.NPCRightClickEvent;
-import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.npc.NPC;
 
 public class DenizenNPCRegistry implements Listener {
@@ -121,4 +114,95 @@ public class DenizenNPCRegistry implements Listener {
 	}
 
 
+	
+	/**
+	 * Gets players in range of a bukkit Entity. 
+	 *
+	 * @param  theEntity  the bukkit Entity to check for players around.
+	 * @param  theRange  the Range, in blocks, to check around theEntity.
+	 * @return  returns a list of Players around theEntity.
+	 */
+
+	public List<Player> getInRange (LivingEntity theEntity, int theRange) {
+
+		List<Player> PlayersWithinRange = new ArrayList<Player>();
+
+		Player[] DenizenPlayers = plugin.getServer().getOnlinePlayers();
+
+		for (Player aPlayer : DenizenPlayers) {
+			if (aPlayer.isOnline() 
+					&& aPlayer.getWorld().equals(theEntity.getWorld()) 
+					&& aPlayer.getLocation().distance(theEntity.getLocation()) < theRange)
+				PlayersWithinRange.add(aPlayer);
+		}
+
+		return PlayersWithinRange;
+	}
+
+	
+	
+	/**
+	 * Gets players in range of a bukkit Entity, excluding a specified Player. 
+	 *
+	 * @param  theEntity  the bukkit Entity to check for players around.
+	 * @param  theRange  the Range, in blocks, to check around theEntity.
+	 * @param  excludePlayer  the bukkit Player to exclude from the returned list.
+	 * @return  returns a list of Players around theEntity, excluding the excludePlayer.
+	 */
+
+	public List<Player> getInRange (LivingEntity theEntity, int theRange, Player excludePlayer) {
+
+		List<Player> PlayersWithinRange = getInRange(theEntity, theRange);
+		PlayersWithinRange.remove(excludePlayer);
+
+		return PlayersWithinRange;
+	}
+
+
+	
+	/**
+	 * Checks a Player's location against a Location (with leeway). Should be faster than
+	 * bukkit's built in Location.distance(Location) since there's no sqrt math.
+	 * 
+	 * Thanks chainsol :)
+	 */
+
+	public boolean checkLocation(Player thePlayer, Location theLocation, int theLeeway) {
+
+		if (!thePlayer.getWorld().getName().equals(theLocation.getWorld().getName()))
+			return false;
+		
+		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
+				> theLeeway) return false;
+		if (Math.abs(thePlayer.getLocation().getBlockY() - theLocation.getBlockY()) 
+				> theLeeway) return false;
+		if (Math.abs(thePlayer.getLocation().getBlockZ() - theLocation.getBlockZ()) 
+				> theLeeway) return false;
+
+		return true;
+	}
+
+
+	
+	/**
+	 * Checks a Denizen's location against a Location (with leeway). Should be faster than
+	 * bukkit's built in Location.distance(Location) since there's no sqrt math.
+	 * 
+	 * Thanks chainsol :)
+	 */
+
+	public boolean checkLocation(DenizenNPC theDenizen, Location theLocation, int theLeeway) {
+
+		if (!theDenizen.getWorld().getName().equals(theLocation.getWorld().getName()))
+			return false;
+		
+		if (Math.abs(theDenizen.getLocation().getBlockX() - theLocation.getBlockX()) 
+				> theLeeway) return false;
+		if (Math.abs(theDenizen.getLocation().getBlockY() - theLocation.getBlockY()) 
+				> theLeeway) return false;
+		if (Math.abs(theDenizen.getLocation().getBlockZ() - theLocation.getBlockZ()) 
+				> theLeeway) return false;
+
+		return true;
+	}
 }

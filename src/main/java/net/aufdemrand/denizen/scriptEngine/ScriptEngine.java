@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.citizensnpcs.api.npc.NPC;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.npc.DenizenNPC;
 
 import org.bukkit.entity.Player;
 
@@ -136,10 +137,10 @@ public class ScriptEngine {
 
 	public void scheduleScripts() {
 
-		if (plugin.utilities.getDenizens().isEmpty()) return;
-		for (NPC thisDenizen : plugin.utilities.getDenizens()) {
+		if (plugin.getDenizenNPCRegistry().getDenizens().isEmpty()) return;
+		for (DenizenNPC thisDenizen : plugin.getDenizenNPCRegistry().getDenizens().values()) {
 			if (thisDenizen.isSpawned())	{
-				int denizenTime = Math.round(thisDenizen.getBukkitEntity().getWorld().getTime() / 1000);
+				int denizenTime = Math.round(thisDenizen.getWorld().getTime() / 1000);
 				List<String> denizenActivities = plugin.getAssignments().getStringList("Denizens." + thisDenizen.getName() + ".Scheduled Activities");
 				if (!denizenActivities.isEmpty()) {
 					for (String activity : denizenActivities) {

@@ -11,11 +11,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 
 public class LocationTrigger extends AbstractTrigger implements Listener {
 

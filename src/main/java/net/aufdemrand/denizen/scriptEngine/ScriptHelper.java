@@ -251,7 +251,7 @@ public class ScriptHelper {
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer) {
 
-		String theScript = "none";
+		String theScript = null;
 		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
 		if (scriptList.isEmpty()) { 
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Script is empty!");
@@ -411,9 +411,36 @@ public class ScriptHelper {
 			}
 		}
 
-
 		return scriptCommands;
 
+	}
+
+	
+	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep, String playerMessage, String theText) {
+
+		if (theScript.isEmpty()) return null;
+
+		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
+
+		for (String thisItem : theScript) {
+			String[] scriptEntry = new String[2];
+			if (thisItem.split(" ", 2).length == 1) {
+				scriptEntry[0] = thisItem;
+				scriptEntry[1] = null;
+			} else {
+				scriptEntry = thisItem.split(" ", 2);
+			}
+
+			try {
+				/* Build new script commands */
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep, playerMessage, theText));
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building ScriptCommand with " + thisItem);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return scriptCommands;
 
 	}
 

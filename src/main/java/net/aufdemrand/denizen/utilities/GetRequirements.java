@@ -128,11 +128,11 @@ public class GetRequirements {
 
 			case FINISHED:
 			case SCRIPT: // (-)FINISHED (#) [Script Name]
-				if (plugin.getScript.getScriptCompletes((Player) theEntity, requirementEntry.split(" ", 2)[1], requirementEntry.split(" ", 3)[1], negativeRequirement)) numberMet++;
+			//	if (plugin.getScript.getScriptCompletes((Player) theEntity, requirementEntry.split(" ", 2)[1], requirementEntry.split(" ", 3)[1], negativeRequirement)) numberMet++;
 				break;
 
 			case FAILED: // (-)SCRIPT [Script Name]
-				if (plugin.scriptEngine.helper.getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
+			//	if (plugin.scriptEngine.helper.getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
 				break;
 
 			case GROUP:

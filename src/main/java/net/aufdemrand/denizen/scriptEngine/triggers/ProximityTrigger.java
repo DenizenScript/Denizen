@@ -30,7 +30,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 			
 			/* Do not run any further code if no Denizen is in range */
 			if (plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks()) != null) {
-				DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getDenizen(plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks()));
+				DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks());
 				
 
 				if (event.getPlayer().hasMetadata("npcinproximity")) {

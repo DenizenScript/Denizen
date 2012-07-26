@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -20,9 +18,6 @@ import org.bukkit.material.MaterialData;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
-import net.aufdemrand.denizen.npc.DenizenTrait;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 
 public class Utilities {
 
@@ -147,96 +142,7 @@ public class Utilities {
 
 	
 	
-	/**
-	 * Gets players in range of a bukkit Entity. 
-	 *
-	 * @param  theEntity  the bukkit Entity to check for players around.
-	 * @param  theRange  the Range, in blocks, to check around theEntity.
-	 * @return  returns a list of Players around theEntity.
-	 */
 
-	public List<Player> getInRange (LivingEntity theEntity, int theRange) {
-
-		List<Player> PlayersWithinRange = new ArrayList<Player>();
-
-		Player[] DenizenPlayers = plugin.getServer().getOnlinePlayers();
-
-		for (Player aPlayer : DenizenPlayers) {
-			if (aPlayer.isOnline() 
-					&& aPlayer.getWorld().equals(theEntity.getWorld()) 
-					&& aPlayer.getLocation().distance(theEntity.getLocation()) < theRange)
-				PlayersWithinRange.add(aPlayer);
-		}
-
-		return PlayersWithinRange;
-	}
-
-	
-	
-	/**
-	 * Gets players in range of a bukkit Entity, excluding a specified Player. 
-	 *
-	 * @param  theEntity  the bukkit Entity to check for players around.
-	 * @param  theRange  the Range, in blocks, to check around theEntity.
-	 * @param  excludePlayer  the bukkit Player to exclude from the returned list.
-	 * @return  returns a list of Players around theEntity, excluding the excludePlayer.
-	 */
-
-	public List<Player> getInRange (LivingEntity theEntity, int theRange, Player excludePlayer) {
-
-		List<Player> PlayersWithinRange = getInRange(theEntity, theRange);
-		PlayersWithinRange.remove(excludePlayer);
-
-		return PlayersWithinRange;
-	}
-
-
-	
-	/**
-	 * Checks a Player's location against a Location (with leeway). Should be faster than
-	 * bukkit's built in Location.distance(Location) since there's no sqrt math.
-	 * 
-	 * Thanks chainsol :)
-	 */
-
-	public boolean checkLocation(Player thePlayer, Location theLocation, int theLeeway) {
-
-		if (!thePlayer.getWorld().getName().equals(theLocation.getWorld().getName()))
-			return false;
-		
-		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
-				> theLeeway) return false;
-		if (Math.abs(thePlayer.getLocation().getBlockY() - theLocation.getBlockY()) 
-				> theLeeway) return false;
-		if (Math.abs(thePlayer.getLocation().getBlockZ() - theLocation.getBlockZ()) 
-				> theLeeway) return false;
-
-		return true;
-	}
-
-
-	
-	/**
-	 * Checks a Denizen's location against a Location (with leeway). Should be faster than
-	 * bukkit's built in Location.distance(Location) since there's no sqrt math.
-	 * 
-	 * Thanks chainsol :)
-	 */
-
-	public boolean checkLocation(NPC theDenizen, Location theLocation, int theLeeway) {
-
-		if (!theDenizen.getBukkitEntity().getWorld().getName().equals(theLocation.getWorld().getName()))
-			return false;
-		
-		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - theLocation.getBlockX()) 
-				> theLeeway) return false;
-		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockY() - theLocation.getBlockY()) 
-				> theLeeway) return false;
-		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockZ() - theLocation.getBlockZ()) 
-				> theLeeway) return false;
-
-		return true;
-	}
 
 	
 	

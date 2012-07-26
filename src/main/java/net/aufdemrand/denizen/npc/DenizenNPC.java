@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.npc;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import net.minecraft.server.CraftEntity;
 
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
@@ -24,6 +23,7 @@ public class DenizenNPC {
 	private ScriptHelper sE;
 	
 	
+	
 	DenizenNPC(NPC citizensNPC) {
 		this.citizensNPC = citizensNPC;
 		this.plugin = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
@@ -42,7 +42,7 @@ public class DenizenNPC {
 
 
 	public void talk(TalkType talkType, Player thePlayer, String theText) {
-		plugin.getSpeechEngine().talk(citizensNPC, thePlayer, theText, talkType);
+		plugin.getSpeechEngine().talk(this, thePlayer, theText, talkType);
 	}
 
 

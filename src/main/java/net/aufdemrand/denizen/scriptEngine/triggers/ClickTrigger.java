@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.scriptEngine.triggers;
 import java.util.List;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
@@ -11,7 +10,6 @@ import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

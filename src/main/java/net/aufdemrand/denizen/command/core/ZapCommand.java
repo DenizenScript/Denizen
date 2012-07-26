@@ -73,7 +73,7 @@ public class ZapCommand extends Command {
 			}
 		}
 
-		if (theStep == null) theStep = plugin.scriptEngine.helper.getCurrentStep(theCommand.getPlayer(), theScript);
+		if (theStep == null) theStep = plugin.getScriptEngine().helper.getCurrentStep(theCommand.getPlayer(), theScript);
 
 		
 		/* Make delayed task to reset step if duration is set */
@@ -82,7 +82,7 @@ public class ZapCommand extends Command {
 			final String player = theCommand.getPlayer().getName();
 			final String script = theScript;
 			final Integer step = theStep;
-			final Integer oldStep = plugin.scriptEngine.helper.getCurrentStep(theCommand.getPlayer(), theScript);
+			final Integer oldStep = plugin.getScriptEngine().helper.getCurrentStep(theCommand.getPlayer(), theScript);
 			
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override

@@ -3,13 +3,9 @@ package net.aufdemrand.denizen.utilities;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
-import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
 public class GetWorld {
