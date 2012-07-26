@@ -26,7 +26,7 @@ public class TriggerRegistry {
 
 	public boolean registerTrigger(String triggerName, AbstractTrigger triggerClass) {
 		this.triggers.put(triggerName.toUpperCase(), triggerClass);
-		this.triggersClass.put(triggerClass.getClass(), triggerName);
+		this.triggersClass.put(triggerClass.getClass(), triggerName.toUpperCase());
 		triggerClass.triggerName = triggerName.substring(0, 1).toUpperCase() + triggerName.substring(1).toLowerCase();
 		plugin.getLogger().log(Level.INFO, "Loaded " + triggerClass.triggerName + " Trigger successfully!");
 		return true;
