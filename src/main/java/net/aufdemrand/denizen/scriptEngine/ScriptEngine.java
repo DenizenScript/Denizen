@@ -70,6 +70,7 @@ public class ScriptEngine {
 						do { 
 							instantly = false;
 							ScriptEntry theCommand = theEntry.getValue().get(0);
+							theCommand.setSendingQueue(QueueType.TRIGGER);
 							plugin.executer.execute(theCommand);
 
 							// Instant command check

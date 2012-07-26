@@ -27,12 +27,14 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 		DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), 
 				plugin.settings.PlayerToNpcChatRangeInBlocks());
+		
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Found nearby NPC, interrupting chat...");
 
 		/* If no Denizen in range, or the Denizen closest is engaged, return */
 		if (theDenizen != null) {
 
 			if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
-
+				
 				/* Get the script to use */
 				String theScript = theDenizen.getInteractScript(event.getPlayer());
 
@@ -46,9 +48,15 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				if (theScript != null) {
 					if (parseChatScript(theDenizen, event.getPlayer(), theScript, event.getMessage()))
 						event.setCancelled(true);
+					else 
+						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...resuming chat, no chat triggers found!");
+				
 				}
 			}
 		}
+		
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...resuming chat, no interactable script found!");
+		
 	}
 
 

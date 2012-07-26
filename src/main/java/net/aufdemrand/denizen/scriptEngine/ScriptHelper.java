@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -349,7 +350,7 @@ public class ScriptHelper {
 		String[] split = new String[matchList.size()];
 		matchList.toArray(split);
 
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...built arguments: " + split.toString());
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...built arguments: " + Arrays.toString(split));
 		
 		return split;
 	}

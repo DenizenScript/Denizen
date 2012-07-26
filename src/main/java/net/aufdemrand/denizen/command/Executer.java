@@ -37,7 +37,10 @@ public class Executer {
 
 		}
 
-		else plugin.getLogger().log(Level.SEVERE, "...invalid Command!");
+		else {
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Executing command " + theCommand.getCommand());
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...invalid Command!");
+		}
 		return false;
 
 	}
