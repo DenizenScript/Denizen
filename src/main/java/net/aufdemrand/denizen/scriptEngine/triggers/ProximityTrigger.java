@@ -36,7 +36,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 				if (event.getPlayer().hasMetadata("proximity")) {
 
 					/* If closest is same as stored metadata, avoid retrigger. */
-					if (event.getPlayer().getMetadata("proximity").contains(theDenizen.toString())) {
+					if (event.getPlayer().getMetadata("proximity").get(0).asString().equals(theDenizen.toString())) {
 						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity trigger cancelled, same Denizen in range.");
 						return;
 					}
