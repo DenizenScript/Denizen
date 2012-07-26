@@ -350,7 +350,7 @@ public class ScriptHelper {
 		String[] split = new String[matchList.size()];
 		matchList.toArray(split);
 
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...built arguments: " + Arrays.toString(split));
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "   ...built arguments: " + Arrays.toString(split));
 		
 		return split;
 	}
@@ -436,6 +436,7 @@ public class ScriptHelper {
 
 			try {
 				/* Build new script commands */
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...building " + scriptEntry[0]);
 				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep));
 			} catch (Exception e) {
 				e.printStackTrace();
