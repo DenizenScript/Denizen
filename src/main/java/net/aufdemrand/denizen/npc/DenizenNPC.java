@@ -110,4 +110,9 @@ public class DenizenNPC {
 		((CraftLivingEntity) getEntity()).getHandle().setHealth(newHealth);
 	}
 	
+	@Override
+	public String toString() {
+		return "DenizenNPC " + citizensNPC.getName() + "/" + citizensNPC.getId();
+	}
+	
 }

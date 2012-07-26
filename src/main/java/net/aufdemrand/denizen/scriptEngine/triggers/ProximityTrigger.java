@@ -44,7 +44,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
 						/* Set Metadata value to avoid retrigger. */
 						event.getPlayer().setMetadata("proximity", new FixedMetadataValue(plugin, plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks())));
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity metadata now contains " + event.getPlayer().getMetadata("npcinproximity").toString());
+						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity metadata now contains " + event.getPlayer().getMetadata("npcinproximity").get(0).toString());
 
 						/* TRIGGER! */
 						sE.setCooldown(event.getPlayer(), ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
