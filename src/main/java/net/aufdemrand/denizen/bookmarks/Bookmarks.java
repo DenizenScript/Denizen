@@ -34,7 +34,7 @@ public class Bookmarks {
 				> theLeeway) return false;
 		if (Math.abs(thePlayer.getLocation().getBlockY() - theLocation.getBlockY()) 
 				> theLeeway) return false;
-		if (Math.abs(thePlayer.getLocation().getBlockX() - theLocation.getBlockX()) 
+		if (Math.abs(thePlayer.getLocation().getBlockZ() - theLocation.getBlockZ()) 
 				> theLeeway) return false;
 		if (!thePlayer.getWorld().getName().equals(theLocation.getWorld().getName()))
 			return false;
@@ -48,7 +48,7 @@ public class Bookmarks {
 				> theLeeway) return false;
 		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockY() - theLocation.getBlockY()) 
 				> theLeeway) return false;
-		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockX() - theLocation.getBlockX()) 
+		if (Math.abs(theDenizen.getBukkitEntity().getLocation().getBlockZ() - theLocation.getBlockZ()) 
 				> theLeeway) return false;
 		if (!theDenizen.getBukkitEntity().getWorld().getName().equals(theLocation.getWorld().getName()))
 			return false;
