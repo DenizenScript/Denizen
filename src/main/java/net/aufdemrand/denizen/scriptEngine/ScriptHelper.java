@@ -130,11 +130,8 @@ public class ScriptHelper {
 
 				/* Show Citizens NPC info. */
 
-				thePlayer.sendMessage(ChatColor.GRAY + "C2 NPCID: " + ChatColor.GREEN + theDenizen.getId() + ChatColor.GRAY + "   Name: " + ChatColor.GREEN + theDenizen.getName());
+				thePlayer.sendMessage(ChatColor.GRAY + "C2 NPCID: " + ChatColor.GREEN + theDenizen.getId() + ChatColor.GRAY + "   Name: " + ChatColor.GREEN + theDenizen.getName() + ChatColor.GRAY + "   HPs: " + ChatColor.GREEN + theDenizen.getBukkitEntity().getHealth());
 				if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen setname" + ChatColor.GRAY + " to change the Denizen's name.");
-				if (plugin.getSaves().contains("Denizens." + theDenizen.getId() + ".Position.Standing"))
-					if (plugin.getSaves().getString("Denizens." + theDenizen.getId() + ".Position.Standing") != null)
-						thePlayer.sendMessage(ChatColor.GRAY + "Current standing position: " + ChatColor.GREEN + plugin.getSaves().getString("Denizens." + theDenizen.getId() + ".Position.Standing"));
 				thePlayer.sendMessage("");
 
 
