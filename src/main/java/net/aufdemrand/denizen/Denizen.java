@@ -499,13 +499,28 @@ public class Denizen extends JavaPlugin {
 			return true;
 		}
 
-		NPC ThisNPC = CitizensAPI.getNPCRegistry().getById(player.getMetadata("selected").get(0).asInt());      // Gets NPC Selected
+		/* Gets the C2NPC that is selected */
+		NPC ThisNPC = CitizensAPI.getNPCRegistry().getById(player.getMetadata("selected").get(0).asInt());
 
-		if (!ThisNPC.getTrait(DenizenTrait.class).isToggled()) {
+		if (!ThisNPC.hasTrait(DenizenTrait.class)) {
 			player.sendMessage(ChatColor.RED + "That command must be performed on a denizen!");
 			return true;
 		}
 
+		if (args[0].equalsIgnoreCase("sethealth")) {
+			if(args.length < 2 || args.length > 2) {
+				player.sendMessage(ChatColor.GOLD + "Invalid use. Use /denizen sethealth [#]");
+				return true;
+			} else {
+				try { 
+					getDenizenNPCRegistry().getDenizen(ThisNPC).setHealth(Integer.valueOf(args[1]));  
+				} catch (NumberFormatException e) {
+					player.sendMessage(ChatColor.GOLD + "Argument must be a number. Use /denizen sethealth [#]");
+				}
+			}
+		}
+		
+		
 		if (args[0].equalsIgnoreCase("bookmark")) {
 			if(args.length < 3) {
 				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help bookmark");
