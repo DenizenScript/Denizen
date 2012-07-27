@@ -368,7 +368,7 @@ public class ScriptHelper {
 				return plugin.getScripts().getStringList(triggerPath.replace("..", "."));
 		}
 	
-		else return new ArrayList<String>();
+		else return null;
 	}
 
 
@@ -415,6 +415,11 @@ public class ScriptHelper {
 
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building Script Entries...");
 		
+		if (theScript == null) {
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
+			return null;
+		}
+		
 		if (theScript.isEmpty()) {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
 			return null;
@@ -449,7 +454,15 @@ public class ScriptHelper {
 
 		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
-		if (theScript.isEmpty()) return scriptCommands;
+		if (theScript == null) {
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
+			return null;
+		}
+		
+		if (theScript.isEmpty()) {
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
+			return null;
+		}
 		
 		for (String thisItem : theScript) {
 			String[] scriptEntry = new String[2];
@@ -477,6 +490,16 @@ public class ScriptHelper {
 
 	public void queueScriptEntries(Player thePlayer, List<ScriptEntry> scriptEntries, QueueType queueType) {
 
+		if (scriptEntries == null) {
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to queue!");
+			return;
+		}
+		
+		if (scriptEntries.isEmpty()) {
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to queue!");
+			return;
+		}
+		
 		Map<Player, List<ScriptEntry>> thisQueue = plugin.getScriptEngine().getQueue(queueType);
 		List<ScriptEntry> existingScriptEntries = new ArrayList<ScriptEntry>();
 
