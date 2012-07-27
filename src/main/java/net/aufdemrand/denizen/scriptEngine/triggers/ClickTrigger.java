@@ -37,7 +37,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 			if (denizenNPC.IsInteractable(triggerName, event.getClicker())) {
 
 				/* Apply default cool-down to avoid click-spam, then send to parser. */
-				sE.setCooldown(event.getClicker(), ClickTrigger.class, plugin.settings.DefaultClickCooldown());
+				sE.setCooldown(denizenNPC, ClickTrigger.class, plugin.settings.DefaultClickCooldown());
 				if (!parseClickTrigger(denizenNPC, event.getClicker())) {
 					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
 				}

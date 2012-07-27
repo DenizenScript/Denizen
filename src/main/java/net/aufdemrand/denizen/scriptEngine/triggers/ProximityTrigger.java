@@ -39,7 +39,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 					/* If closest is same as stored metadata, avoid retrigger. */
 					if (event.getPlayer().getMetadata("proximity").get(0).asString().equals(theDenizen.toString())) {
 						if (plugin.debugMode) if (!event.getPlayer().hasMetadata("proximitydebug")) {
-							plugin.getLogger().log(Level.INFO, "...proximity trigger cancelled, same Denizen in range.");
 							event.getPlayer().setMetadata("proximitydebug", new FixedMetadataValue(plugin, true));
 							return;
 						}
@@ -54,7 +53,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity metadata now: '" + event.getPlayer().getMetadata("proximity").get(0).asString() + "'");
 
 						/* TRIGGER! */
-						sE.setCooldown(event.getPlayer(), ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
+						sE.setCooldown(theDenizen, ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
 						parseProximityTrigger(theDenizen, event.getPlayer());
 					}
 
@@ -68,7 +67,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity metadata was empty, now: " + event.getPlayer().getMetadata("proximity").get(0).asString() + "'");
 
 						/* TRIGGER! */
-						sE.setCooldown(event.getPlayer(), ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
+						sE.setCooldown(theDenizen, ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
 						parseProximityTrigger(theDenizen, event.getPlayer());
 					}
 				}
@@ -80,7 +79,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 			}
 		}
 	}
-
 
 
 	public boolean parseProximityTrigger(DenizenNPC theDenizen, Player thePlayer) {

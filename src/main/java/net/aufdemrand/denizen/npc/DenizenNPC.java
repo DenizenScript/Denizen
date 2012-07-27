@@ -82,7 +82,7 @@ public class DenizenNPC {
 
 
 	public boolean IsInteractable(String triggerName, Player thePlayer) {
-		return sE.denizenIsInteractable(triggerName, citizensNPC, thePlayer);
+		return sE.denizenIsInteractable(triggerName, this);
 	}
 
 

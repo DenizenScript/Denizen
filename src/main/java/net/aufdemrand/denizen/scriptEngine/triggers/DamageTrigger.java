@@ -29,7 +29,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 			DenizenNPC denizenNPC = plugin.getDenizenNPCRegistry().getDenizen(event.getNPC());
 
 			if (denizenNPC.IsInteractable(triggerName, event.getClicker())) {
-				sE.setCooldown(event.getClicker(), DamageTrigger.class, plugin.settings.DefaultDamageCooldown());
+				sE.setCooldown(denizenNPC, DamageTrigger.class, plugin.settings.DefaultDamageCooldown());
 				if (!parseDamageTrigger(denizenNPC, event.getClicker())) {
 					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
 				}

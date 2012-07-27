@@ -14,6 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
 import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
+import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 import net.citizensnpcs.api.CitizensAPI;
 
 public class LocationTrigger extends AbstractTrigger implements Listener {
@@ -35,12 +36,10 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 				/* Check player location against each Location Trigger */
 				for (Location theLocation : plugin.bookmarks.getLocationTriggerList().keySet()) {
 
-					if (plugin.bookmarks.checkLocation(event.getPlayer(), theLocation, plugin.settings.LocationTriggerRangeInBlocks()) 
-							&& sE.checkCooldown(event.getPlayer(), LocationTrigger.class)) {
+					if (plugin.bookmarks.checkLocation(event.getPlayer(), theLocation, plugin.settings.LocationTriggerRangeInBlocks())) {
 
 						DenizenNPC theDenizen = null;
 						String locationTriggered = plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[2];
-
 
 						/* Player matches Location, find NPC it belongs to */
 
@@ -74,8 +73,10 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 							/* Unless current MetaData already contains the location trigger. This means the player
 							 * is still in the location... */
-							if (locationTriggered.equals(event.getPlayer().getMetadata("locationtrigger")))
+							if (locationTriggered.equals(event.getPlayer().getMetadata("locationtrigger").get(0).asString()))
 								return;
+
+							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Player has activated a location trigger...");
 
 							/* Before triggering, check if LocationTriggers are enabled, cooldown is met, and NPC
 							 * is not already engaged... */
@@ -83,22 +84,25 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 								/* Set Metadata value to avoid retrigger. */
 								event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
-
+								if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...location metadata now: '" + event.getPlayer().getMetadata("locationtrigger").get(0).asString() + "'");
 								/* TRIGGER! */
-								sE.setCooldown(event.getPlayer(), LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
+								sE.setCooldown(theDenizen, LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
 								parseLocationTrigger(theDenizen, event.getPlayer(), locationTriggered);
 							}
 
 						} else {
+
+							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Player has activated a location trigger...");
 
 							/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
 							if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
 
 								/* Set Metadata value to avoid retrigger. */
 								event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
+								if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...location metadata was empty, now: " + event.getPlayer().getMetadata("locationtrigger").get(0).asString() + "'");
 
 								/* TRIGGER! */
-								sE.setCooldown(event.getPlayer(), LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
+								sE.setCooldown(theDenizen, LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
 								parseLocationTrigger(theDenizen, event.getPlayer(), locationTriggered);
 							}
 						}
@@ -115,9 +119,39 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		/* Find script and run it */	
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Location Trigger.");
 
+		ScriptHelper sE = plugin.getScriptEngine().helper;
+
+		String theScriptName = theDenizen.getInteractScript(thePlayer);
+		if (theScriptName == null) return;
+
+		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
+
+		boolean foundScript = false;
+		boolean noMatch = false;
+		int x = 1;
+
+		do {
+			foundScript = true;
+			if (plugin.getScripts().contains(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger")) {
+				if (plugin.getScripts().getString(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger").equals(theLocationName)) {
+					foundScript = true;
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found matching Location!");
+			} else {
+					foundScript = false;
+					x++;
+				}
+			}
+			else noMatch = true;
+		} while (foundScript == false);
+
+		if (!noMatch) {
+			List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + sE.scriptString);
+			sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep), QueueType.TRIGGER);
+		} 
+		else if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no matching Triggers found for this Location.");
+
+		return;
 	}
-
-
 
 
 }
