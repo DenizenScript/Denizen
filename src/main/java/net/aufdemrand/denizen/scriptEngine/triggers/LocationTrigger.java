@@ -33,8 +33,12 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 			/* Do not run any code if there aren't any location triggers */
 			if (!plugin.bookmarks.getLocationTriggerList().isEmpty()) {
 
+				boolean hasLocation = false;
+
 				/* Check player location against each Location Trigger */
 				for (Location theLocation : plugin.bookmarks.getLocationTriggerList().keySet()) {
+
+					hasLocation = true;
 
 					if (plugin.bookmarks.checkLocation(event.getPlayer(), theLocation, plugin.settings.LocationTriggerRangeInBlocks())) {
 
@@ -68,48 +72,46 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 						/* Cancel out if for some reason no denizen can be found */
 						if (theDenizen == null) return;
 
-/*						 Set MetaData and Trigger 
+						/* Set MetaData and Trigger */
 						if (event.getPlayer().hasMetadata("locationtrigger")) {
 
-							 Unless current MetaData already contains the location trigger. This means the player
-							 * is still in the location... 
+							/* Unless current MetaData already contains the location trigger. This means the player
+							 * is still in the location... */
 							if (locationTriggered.equals(event.getPlayer().getMetadata("locationtrigger").get(0).asString()))
 								return;
 
-							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Player has activated a location trigger...");
+							/* Set Metadata value to avoid retrigger. */
+							event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
+							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...location metadata now: '" + event.getPlayer().getMetadata("locationtrigger").get(0).asString() + "'");
 
-							 Before triggering, check if LocationTriggers are enabled, cooldown is met, and NPC
-							 * is not already engaged... 
-							else if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
-
-								 Set Metadata value to avoid retrigger. 
-								event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
-								if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...location metadata now: '" + event.getPlayer().getMetadata("locationtrigger").get(0).asString() + "'");
-								 TRIGGER! 
-								sE.setCooldown(theDenizen, LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
-								parseLocationTrigger(theDenizen, event.getPlayer(), locationTriggered);
-							}
-
-						} else {
-*/
-							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Player has activated a location trigger...");
-
-							/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
+							/* Before triggering, check if LocationTriggers are enabled, cooldown is met, and NPC
+							 * is not already engaged... */
 							if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
-
-								/* Set Metadata value to avoid retrigger. */
-//								event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
-//								if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...location metadata was empty, now: " + event.getPlayer().getMetadata("locationtrigger").get(0).asString() + "'");
 
 								/* TRIGGER! */
 								sE.setCooldown(theDenizen, LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
 								parseLocationTrigger(theDenizen, event.getPlayer(), locationTriggered);
 							}
-//						}
+
+						} else {
+
+							/* Set Metadata value to avoid retrigger. */
+							event.getPlayer().setMetadata("locationtrigger", new FixedMetadataValue(plugin, locationTriggered));
+							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...location metadata was empty, now: " + event.getPlayer().getMetadata("locationtrigger").get(0).asString() + "'");
+							
+							/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
+							if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
+
+								/* TRIGGER! */
+								sE.setCooldown(theDenizen, LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
+								parseLocationTrigger(theDenizen, event.getPlayer(), locationTriggered);
+							}
+						}
 					}
-					
-					
-					
+				}
+
+				if (!hasLocation) {
+					if (event.getPlayer().hasMetadata("locationtrigger")) event.getPlayer().removeMetadata("locationtrigger", plugin);
 				}
 			}
 		}
@@ -139,7 +141,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 				if (plugin.getScripts().getString(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger").equals(theLocationName)) {
 					foundScript = true;
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found matching Location!");
-			} else {
+				} else {
 					foundScript = false;
 					x++;
 				}
