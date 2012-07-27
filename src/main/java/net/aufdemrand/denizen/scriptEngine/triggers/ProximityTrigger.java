@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
 public class ProximityTrigger extends AbstractTrigger implements Listener {
 
@@ -37,10 +38,14 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
 					/* If closest is same as stored metadata, avoid retrigger. */
 					if (event.getPlayer().getMetadata("proximity").get(0).asString().equals(theDenizen.toString())) {
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity trigger cancelled, same Denizen in range.");
-						return;
+						if (plugin.debugMode) if (!event.getPlayer().hasMetadata("proximitydebug")) {
+							plugin.getLogger().log(Level.INFO, "...proximity trigger cancelled, same Denizen in range.");
+							event.getPlayer().setMetadata("proximitydebug", new FixedMetadataValue(plugin, true));
+							return;
+						}
+						else return;
 					}
-						
+
 					/* If closest is different than stored metadata and proximity trigger is enabled for said NPC, trigger */
 					else if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
 
@@ -69,7 +74,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 				}
 			}
 
-			else if (event.getPlayer().hasMetadata("proximity")) event.getPlayer().removeMetadata("proximity", plugin);
+			else {
+				if (event.getPlayer().hasMetadata("proximity")) event.getPlayer().removeMetadata("proximity", plugin);
+				if (plugin.debugMode) if (event.getPlayer().hasMetadata("proximitydebug")) event.getPlayer().removeMetadata("proximitydebug", plugin);
+			}
 		}
 	}
 

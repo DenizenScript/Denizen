@@ -154,7 +154,7 @@ public class ScriptHelper {
 				if (!scriptsPresent) thePlayer.sendMessage(ChatColor.RED + "  No scripts assigned!");
 
 				if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen assign" + ChatColor.GRAY + " to assign scripts.");
-				if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to to assign to Id.");
+				if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
 				thePlayer.sendMessage("");
 
 				/* Show Bookmarks */
@@ -447,10 +447,10 @@ public class ScriptHelper {
 	
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep, String playerMessage, String theText) {
 
-		if (theScript.isEmpty()) return null;
-
 		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
+		if (theScript.isEmpty()) return scriptCommands;
+		
 		for (String thisItem : theScript) {
 			String[] scriptEntry = new String[2];
 			if (thisItem.split(" ", 2).length == 1) {
