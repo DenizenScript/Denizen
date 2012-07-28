@@ -65,8 +65,8 @@ public class LookCommand extends Command {
 				}
 
 				// If argument is a valid bookmark, set theLocation.
-				else if (plugin.bookmarks.exists(theCommand.getDenizen().getCitizensEntity(), thisArgument))
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen().getCitizensEntity(), thisArgument, BookmarkType.LOCATION);	
+				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
+					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
 				else if (thisArgument.split(":").length == 2) {
 					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
 						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
@@ -81,48 +81,53 @@ public class LookCommand extends Command {
 			
 			}	
 		}
+		
+		if (direction != null || theLocation != null) look(theDenizen, direction, duration, theLocation);
 
 		return true;
 	}
 
 
 
-	private void look(NPC theDenizen, String lookWhere, Integer duration) {
+	private void look(DenizenNPC theDenizen, Direction lookDir, Integer duration, Location lookLoc) {
 
-		final Location restoreLocation = theDenizen.getBukkitEntity().getLocation();
-		final NPC restoreDenizen = theDenizen;
+		Location restoreLocation = theDenizen.getEntity().getLocation();
+		DenizenNPC restoreDenizen = theDenizen;
+		String lookWhere = "NOWHERE";
+		
+		if (lookDir != null) lookWhere = lookDir.name();
+		
 
 		if (lookWhere.equalsIgnoreCase("CLOSE")) {
-			if (!theDenizen.getTrait(LookClose.class).toggle())
-				theDenizen.getTrait(LookClose.class).toggle();
+			if (!theDenizen.getCitizensEntity().getTrait(LookClose.class).toggle())
+				theDenizen.getCitizensEntity().getTrait(LookClose.class).toggle();
 		}
 
 		else if (lookWhere.equalsIgnoreCase("AWAY")) {
-			if (theDenizen.getTrait(LookClose.class).toggle())
-				theDenizen.getTrait(LookClose.class).toggle();
+			if (theDenizen.getCitizensEntity().getTrait(LookClose.class).toggle())
+				theDenizen.getCitizensEntity().getTrait(LookClose.class).toggle();
 		}
 
 		else if (lookWhere.equalsIgnoreCase("LEFT")) {
-			theDenizen.getBukkitEntity().getLocation()
-			.setYaw(theDenizen.getBukkitEntity().getLocation().getYaw() - 90);
+			theDenizen.getEntity().getLocation()
+			.setYaw(theDenizen.getEntity().getLocation().getYaw() - 90);
 		}
 
 		else if (lookWhere.equalsIgnoreCase("RIGHT")) {
-			theDenizen.getBukkitEntity().getLocation()
-			.setYaw(theDenizen.getBukkitEntity().getLocation().getYaw() + 90);
+			theDenizen.getEntity().getLocation()
+			.setYaw(theDenizen.getEntity().getLocation().getYaw() + 90);
 		}
 
-		else if (plugin.bookmarks.exists(theDenizen, lookWhere)) {
-			Location lookLoc = plugin.bookmarks.get(theDenizen.getName(), lookWhere, BookmarkType.LOCATION);
-			theDenizen.getBukkitEntity().getLocation().setPitch(lookLoc.getPitch());
-			theDenizen.getBukkitEntity().getLocation().setYaw(lookLoc.getYaw());
+		else if (lookLoc != null) {
+			theDenizen.getEntity().getLocation().setPitch(lookLoc.getPitch());
+			theDenizen.getEntity().getLocation().setYaw(lookLoc.getYaw());
 		}
 
 		if (duration != null) {
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new LookCommandRunnable<DenizenNPC, Location>(restoreDenizen, restoreLocation) {
 				@Override
-				public void run() { 
-					restoreDenizen.getBukkitEntity().getLocation().setYaw(restoreLocation.getYaw());
+				public void run(DenizenNPC denizen, Location location) { 
+					denizen.getEntity().getLocation().setYaw(location.getYaw());
 				}
 			}, duration * 20);
 		}
@@ -130,3 +135,4 @@ public class LookCommand extends Command {
 
 	}
 }
+

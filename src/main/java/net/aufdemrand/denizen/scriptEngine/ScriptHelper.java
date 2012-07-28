@@ -121,120 +121,117 @@ public class ScriptHelper {
 	 * Denizen Info
 	 */
 
-	public void showInfo(Player thePlayer, NPC theDenizen) {
+	public void showInfo(Player thePlayer, DenizenNPC theDenizen) {
 
-		if (theDenizen.hasTrait(DenizenTrait.class))
-			if (theDenizen.getTrait(DenizenTrait.class).isToggled()) {
+		thePlayer.sendMessage(ChatColor.GOLD + "------ Denizen Info ------");
 
-				thePlayer.sendMessage(ChatColor.GOLD + "------ Denizen Info ------");
+		/* Show Citizens NPC info. */
 
-				/* Show Citizens NPC info. */
-
-				thePlayer.sendMessage(ChatColor.GRAY + "C2 NPCID: " + ChatColor.GREEN + theDenizen.getId() + ChatColor.GRAY + "   Name: " + ChatColor.GREEN + theDenizen.getName() + ChatColor.GRAY + "   HPs: " + ChatColor.GREEN + theDenizen.getBukkitEntity().getHealth());
-				if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen setname" + ChatColor.GRAY + " to change the Denizen's name.");
-				thePlayer.sendMessage("");
+		thePlayer.sendMessage(ChatColor.GRAY + "C2 NPCID: " + ChatColor.GREEN + theDenizen.getId() + ChatColor.GRAY + "   Name: " + ChatColor.GREEN + theDenizen.getName() + ChatColor.GRAY + "   HPs: " + ChatColor.GREEN + theDenizen.getEntity().getHealth());
+		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen setname" + ChatColor.GRAY + " to change the Denizen's name.");
+		thePlayer.sendMessage("");
 
 
-				if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Key: " + ChatColor.GREEN + "Assigned to Name. " + ChatColor.YELLOW + "Assigned to ID.");
+		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Key: " + ChatColor.GREEN + "Assigned to Name. " + ChatColor.YELLOW + "Assigned to ID.");
 
-				/* Show Assigned Scripts. */
+		/* Show Assigned Scripts. */
 
-				boolean scriptsPresent = false;
-				thePlayer.sendMessage(ChatColor.GRAY + "Interact Scripts:");
-				if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Interact Scripts")) {
-					if (!plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts").isEmpty()) scriptsPresent = true;
-					for (String scriptEntry : plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts"))
-						thePlayer.sendMessage(ChatColor.GRAY + "- " + ChatColor.GREEN + scriptEntry);
+		boolean scriptsPresent = false;
+		thePlayer.sendMessage(ChatColor.GRAY + "Interact Scripts:");
+		if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Interact Scripts")) {
+			if (!plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts").isEmpty()) scriptsPresent = true;
+			for (String scriptEntry : plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts"))
+				thePlayer.sendMessage(ChatColor.GRAY + "- " + ChatColor.GREEN + scriptEntry);
+		}
+		if (plugin.getAssignments().contains("Denizens." + theDenizen.getId() + ".Interact Scripts")) {
+			if (!plugin.getAssignments().getStringList("Denizens." + theDenizen.getId() + ".Interact Scripts").isEmpty()) scriptsPresent = true;
+			for (String scriptEntry : plugin.getAssignments().getStringList("Denizens." + theDenizen.getId() + ".Interact Scripts"))
+				thePlayer.sendMessage(ChatColor.GRAY + "- " + ChatColor.YELLOW + scriptEntry);
+		}
+		if (!scriptsPresent) thePlayer.sendMessage(ChatColor.RED + "  No scripts assigned!");
+
+		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen assign" + ChatColor.GRAY + " to assign scripts.");
+		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
+		thePlayer.sendMessage("");
+
+		/* Show Bookmarks */
+
+		DecimalFormat lf = new DecimalFormat("###.##");
+		boolean bookmarksPresent = false;
+		thePlayer.sendMessage(ChatColor.GRAY + "Bookmarks:");
+
+		/* Location Bookmarks */
+		if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
+			if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location").isEmpty()) bookmarksPresent = true;
+			for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
+				if (bookmarkEntry.split(";").length >= 6) {
+					thePlayer.sendMessage(ChatColor.GRAY + "- Type: " + ChatColor.GREEN + "LOCATION " + ChatColor.GRAY + "Name: " + ChatColor.GREEN + bookmarkEntry.split(" ")[0]
+							+ ChatColor.GRAY + " in World: " + ChatColor.GREEN + bookmarkEntry.split(" ")[1].split(";")[0]);
+					thePlayer.sendMessage(" "
+							+ ChatColor.GRAY + "  at X: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
+							+ ChatColor.GRAY + " Y: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
+							+ ChatColor.GRAY + " Z: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
+							+ ChatColor.GRAY + " Pitch: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[4]))
+							+ ChatColor.GRAY + " Yaw: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[5])));
 				}
-				if (plugin.getAssignments().contains("Denizens." + theDenizen.getId() + ".Interact Scripts")) {
-					if (!plugin.getAssignments().getStringList("Denizens." + theDenizen.getId() + ".Interact Scripts").isEmpty()) scriptsPresent = true;
-					for (String scriptEntry : plugin.getAssignments().getStringList("Denizens." + theDenizen.getId() + ".Interact Scripts"))
-						thePlayer.sendMessage(ChatColor.GRAY + "- " + ChatColor.YELLOW + scriptEntry);
-				}
-				if (!scriptsPresent) thePlayer.sendMessage(ChatColor.RED + "  No scripts assigned!");
-
-				if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen assign" + ChatColor.GRAY + " to assign scripts.");
-				if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
-				thePlayer.sendMessage("");
-
-				/* Show Bookmarks */
-
-				DecimalFormat lf = new DecimalFormat("###.##");
-				boolean bookmarksPresent = false;
-				thePlayer.sendMessage(ChatColor.GRAY + "Bookmarks:");
-
-				/* Location Bookmarks */
-				if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
-					if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location").isEmpty()) bookmarksPresent = true;
-					for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Location")) {
-						if (bookmarkEntry.split(";").length >= 6) {
-							thePlayer.sendMessage(ChatColor.GRAY + "- Type: " + ChatColor.GREEN + "LOCATION " + ChatColor.GRAY + "Name: " + ChatColor.GREEN + bookmarkEntry.split(" ")[0]
-									+ ChatColor.GRAY + " in World: " + ChatColor.GREEN + bookmarkEntry.split(" ")[1].split(";")[0]);
-							thePlayer.sendMessage(" "
-									+ ChatColor.GRAY + "  at X: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
-									+ ChatColor.GRAY + " Y: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
-									+ ChatColor.GRAY + " Z: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
-									+ ChatColor.GRAY + " Pitch: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[4]))
-									+ ChatColor.GRAY + " Yaw: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[5])));
-						}
-					}
-				}
-
-				if (plugin.getSaves().contains("Denizens." + theDenizen.getId() + ".Bookmarks.Location")) {
-					if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Location").isEmpty()) bookmarksPresent = true;
-					for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Location")) {
-						if (bookmarkEntry.split(";").length >= 6) {
-							thePlayer.sendMessage(ChatColor.GRAY + "- Type: " + ChatColor.YELLOW + "LOCATION " + ChatColor.GRAY + "Name: " + ChatColor.YELLOW + bookmarkEntry.split(" ")[0]
-									+ ChatColor.GRAY + " in World: " + ChatColor.YELLOW + bookmarkEntry.split(" ")[1].split(";")[0]);
-							thePlayer.sendMessage(" "
-									+ ChatColor.GRAY + "  at X: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
-									+ ChatColor.GRAY + " Y: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
-									+ ChatColor.GRAY + " Z: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
-									+ ChatColor.GRAY + " Pitch: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[4]))
-									+ ChatColor.GRAY + " Yaw: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[5])));
-						}
-					}
-				}
-
-				/* Block Bookmarks */
-				if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Block")) {
-					if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block").isEmpty()) bookmarksPresent = true;
-					for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block")) {
-						if (bookmarkEntry.split(";").length >= 4) {
-							thePlayer.sendMessage(ChatColor.GRAY + "- Type: " + ChatColor.GREEN + "BLOCK " + ChatColor.GRAY + "Name: " + ChatColor.GREEN + bookmarkEntry.split(" ")[0]
-									+ ChatColor.GRAY + " in World: " + ChatColor.GREEN + bookmarkEntry.split(" ")[1].split(";")[0]);
-							thePlayer.sendMessage(" "
-									+ ChatColor.GRAY + "  at X: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
-									+ ChatColor.GRAY + " Y: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
-									+ ChatColor.GRAY + " Z: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
-									+ ChatColor.GRAY + " Material: " + ChatColor.GREEN + plugin.bookmarks.get(theDenizen, bookmarkEntry.split(" ")[0], BookmarkType.BLOCK).getBlock().getType().toString());
-						}
-					}
-				}
-
-				if (plugin.getSaves().contains("Denizens." + theDenizen.getId() + ".Bookmarks.Block")) {
-					if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Block").isEmpty()) bookmarksPresent = true;
-					for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Block")) {
-						if (bookmarkEntry.split(";").length >= 4) {
-							thePlayer.sendMessage(ChatColor.GRAY + "- Type: " + ChatColor.YELLOW + "BLOCK " + ChatColor.GRAY + "Name: " + ChatColor.YELLOW + bookmarkEntry.split(" ")[0]
-									+ ChatColor.GRAY + " in World: " + ChatColor.GREEN + bookmarkEntry.split(" ")[1].split(";")[0]);
-							thePlayer.sendMessage(" "
-									+ ChatColor.GRAY + "  at X: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
-									+ ChatColor.GRAY + " Y: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
-									+ ChatColor.GRAY + " Z: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
-									+ ChatColor.GRAY + " Material: " + ChatColor.YELLOW + plugin.bookmarks.get(theDenizen, bookmarkEntry.split(" ")[0], BookmarkType.BLOCK).getBlock().getType().toString());
-						}
-					}
-				}
-
-
-				if (!bookmarksPresent) thePlayer.sendMessage(ChatColor.RED + "  No bookmarks defined!");
-
-				if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen bookmark" + ChatColor.GRAY + " to create bookmarks.");
-				if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
-				thePlayer.sendMessage("");		
 			}
+		}
+
+		if (plugin.getSaves().contains("Denizens." + theDenizen.getId() + ".Bookmarks.Location")) {
+			if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Location").isEmpty()) bookmarksPresent = true;
+			for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Location")) {
+				if (bookmarkEntry.split(";").length >= 6) {
+					thePlayer.sendMessage(ChatColor.GRAY + "- Type: " + ChatColor.YELLOW + "LOCATION " + ChatColor.GRAY + "Name: " + ChatColor.YELLOW + bookmarkEntry.split(" ")[0]
+							+ ChatColor.GRAY + " in World: " + ChatColor.YELLOW + bookmarkEntry.split(" ")[1].split(";")[0]);
+					thePlayer.sendMessage(" "
+							+ ChatColor.GRAY + "  at X: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
+							+ ChatColor.GRAY + " Y: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
+							+ ChatColor.GRAY + " Z: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
+							+ ChatColor.GRAY + " Pitch: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[4]))
+							+ ChatColor.GRAY + " Yaw: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[5])));
+				}
+			}
+		}
+
+		/* Block Bookmarks */
+		if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Bookmarks.Block")) {
+			if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block").isEmpty()) bookmarksPresent = true;
+			for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getName() + ".Bookmarks.Block")) {
+				if (bookmarkEntry.split(";").length >= 4) {
+					thePlayer.sendMessage(ChatColor.GRAY + "- Type: " + ChatColor.GREEN + "BLOCK " + ChatColor.GRAY + "Name: " + ChatColor.GREEN + bookmarkEntry.split(" ")[0]
+							+ ChatColor.GRAY + " in World: " + ChatColor.GREEN + bookmarkEntry.split(" ")[1].split(";")[0]);
+					thePlayer.sendMessage(" "
+							+ ChatColor.GRAY + "  at X: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
+							+ ChatColor.GRAY + " Y: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
+							+ ChatColor.GRAY + " Z: " + ChatColor.GREEN + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
+							+ ChatColor.GRAY + " Material: " + ChatColor.GREEN + plugin.bookmarks.get(theDenizen, bookmarkEntry.split(" ")[0], BookmarkType.BLOCK).getBlock().getType().toString());
+				}
+			}
+		}
+
+		if (plugin.getSaves().contains("Denizens." + theDenizen.getId() + ".Bookmarks.Block")) {
+			if (!plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Block").isEmpty()) bookmarksPresent = true;
+			for (String bookmarkEntry : plugin.getSaves().getStringList("Denizens." + theDenizen.getId() + ".Bookmarks.Block")) {
+				if (bookmarkEntry.split(";").length >= 4) {
+					thePlayer.sendMessage(ChatColor.GRAY + "- Type: " + ChatColor.YELLOW + "BLOCK " + ChatColor.GRAY + "Name: " + ChatColor.YELLOW + bookmarkEntry.split(" ")[0]
+							+ ChatColor.GRAY + " in World: " + ChatColor.GREEN + bookmarkEntry.split(" ")[1].split(";")[0]);
+					thePlayer.sendMessage(" "
+							+ ChatColor.GRAY + "  at X: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[1]))
+							+ ChatColor.GRAY + " Y: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[2]))
+							+ ChatColor.GRAY + " Z: " + ChatColor.YELLOW + lf.format(Double.valueOf(bookmarkEntry.split(";")[3]))
+							+ ChatColor.GRAY + " Material: " + ChatColor.YELLOW + plugin.bookmarks.get(theDenizen, bookmarkEntry.split(" ")[0], BookmarkType.BLOCK).getBlock().getType().toString());
+				}
+			}
+		}
+
+
+		if (!bookmarksPresent) thePlayer.sendMessage(ChatColor.RED + "  No bookmarks defined!");
+
+		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen bookmark" + ChatColor.GRAY + " to create bookmarks.");
+		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
+		thePlayer.sendMessage("");		
 	}
+
 
 
 
@@ -250,7 +247,7 @@ public class ScriptHelper {
 	public String getInteractScript(NPC theDenizen, Player thePlayer) {
 
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Getting interact script.");
-		
+
 		String theScript = null;
 		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
 		if (scriptList.isEmpty()) { 
@@ -304,14 +301,14 @@ public class ScriptHelper {
 	public int getCurrentStep(Player thePlayer, String theScript) {
 
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Finding current step for " + theScript + ".");
-		
+
 		int currentStep = 1;
 		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null) {
 			currentStep =  plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found info in saves.yml. Current step is: " + currentStep + ".");
 			return currentStep;
 		}
-			
+
 		else if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no step found in saves.yml! Assuming '1'.");
 		return currentStep;
 	}
@@ -348,7 +345,7 @@ public class ScriptHelper {
 		matchList.toArray(split);
 
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "   ...built arguments: " + Arrays.toString(split));
-		
+
 		return split;
 	}
 
@@ -365,9 +362,9 @@ public class ScriptHelper {
 
 	public List<String> getScript(String triggerPath) {
 		if (plugin.getScripts().contains(triggerPath.replace("..", "."))) {
-				return plugin.getScripts().getStringList(triggerPath.replace("..", "."));
+			return plugin.getScripts().getStringList(triggerPath.replace("..", "."));
 		}
-	
+
 		else return null;
 	}
 
@@ -380,7 +377,7 @@ public class ScriptHelper {
 	public boolean denizenIsInteractable(String triggerName, DenizenNPC theDenizen) {
 
 		// NPC must be a Denizen
-		
+
 		if (theDenizen.getCitizensEntity().hasTrait(DenizenTrait.class))
 			if (theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).isToggled()
 					// The Denizen NPC must have the trigger enabled
@@ -392,16 +389,16 @@ public class ScriptHelper {
 				return true;
 
 		/* For debugging */
-		
+
 		if (plugin.debugMode) {
 			plugin.getLogger().log(Level.INFO, theDenizen.getName() + " is not interactable.");
-			
+
 			if (!theDenizen.getCitizensEntity().hasTrait(DenizenTrait.class)) plugin.getLogger().log(Level.INFO, "...no Denizen Trait.");
 			if (!theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled(triggerName.toUpperCase())) plugin.getLogger().log(Level.INFO, "..." + triggerName.toLowerCase() + " trigger is not enabled on this NPC.");
 			if (!plugin.getScriptEngine().helper.checkCooldown(theDenizen, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())) plugin.getLogger().log(Level.INFO, "...the Player has not yet met cool-down.");
 			if (plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen.getCitizensEntity())) plugin.getLogger().log(Level.INFO, "...the Denizen is ENGAGED.");
 		}
-		
+
 		return false;
 	}
 
@@ -414,12 +411,12 @@ public class ScriptHelper {
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
 
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building Script Entries...");
-		
+
 		if (theScript == null) {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
 			return null;
 		}
-		
+
 		if (theScript.isEmpty()) {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
 			return null;
@@ -449,7 +446,7 @@ public class ScriptHelper {
 
 	}
 
-	
+
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep, String playerMessage, String theText) {
 
 		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
@@ -458,12 +455,12 @@ public class ScriptHelper {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
 			return null;
 		}
-		
+
 		if (theScript.isEmpty()) {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
 			return null;
 		}
-		
+
 		for (String thisItem : theScript) {
 			String[] scriptEntry = new String[2];
 			if (thisItem.split(" ", 2).length == 1) {
@@ -494,17 +491,17 @@ public class ScriptHelper {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to queue!");
 			return;
 		}
-		
+
 		if (scriptEntries.isEmpty()) {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to queue!");
 			return;
 		}
-		
+
 		Map<Player, List<ScriptEntry>> thisQueue = plugin.getScriptEngine().getQueue(queueType);
 		List<ScriptEntry> existingScriptEntries = new ArrayList<ScriptEntry>();
 
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Queueing ScriptEntries...");
-		
+
 		if (thisQueue.containsKey(thePlayer))
 			existingScriptEntries.addAll(thisQueue.get(thePlayer));
 

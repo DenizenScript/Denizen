@@ -77,7 +77,7 @@ public class DenizenNPC {
 
 
 	public void showInfo(Player theClicker) {
-		sE.showInfo(theClicker, citizensNPC);
+		sE.showInfo(theClicker, this);
 	}
 
 

@@ -7,6 +7,7 @@ import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.command.core.EngageCommand;
+import net.aufdemrand.denizen.command.core.LookCommand;
 import net.aufdemrand.denizen.command.core.SpawnCommand;
 import net.aufdemrand.denizen.command.core.WaitCommand;
 import net.aufdemrand.denizen.command.core.ZapCommand;
@@ -57,6 +58,7 @@ public class CommandRegistry {
 		EngageCommand engageCommand = new EngageCommand();
 		SpawnCommand spawnCommand = new SpawnCommand();
 		WaitCommand waitCommand = new WaitCommand();
+		LookCommand lookCommand = new LookCommand();
 		
 		try {
 			zapCommand.activateAs("ZAP");
@@ -64,6 +66,7 @@ public class CommandRegistry {
 			engageCommand.activateAs("DISENGAGE");
 			spawnCommand.activateAs("SPAWN");
 			waitCommand.activateAs("WAIT");
+			lookCommand.activateAs("LOOK");
 		} catch (ActivationException e) {
 			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core commands!");
 			e.printStackTrace();

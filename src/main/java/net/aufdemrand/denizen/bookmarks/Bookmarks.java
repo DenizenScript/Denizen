@@ -138,7 +138,7 @@ public class Bookmarks {
 		return false;
 	}
 
-	public boolean exists(NPC theDenizen, String nameOfLocation) {
+	public boolean exists(DenizenNPC theDenizen, String nameOfLocation) {
 
 		String theName = null;
 		if (theDenizen == null) theName = "null";
@@ -148,7 +148,7 @@ public class Bookmarks {
 
 	
 	
-	public Location get(NPC theDenizen, String nameOfLocation, BookmarkType bookmarkType) {
+	public Location get(DenizenNPC theDenizen, String nameOfLocation, BookmarkType bookmarkType) {
 		String theName = null;
 		if (theDenizen == null) theName = "null";
 		else theName = theDenizen.getName();
