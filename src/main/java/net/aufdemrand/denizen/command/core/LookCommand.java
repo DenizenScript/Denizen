@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.command.core;
 
+import java.util.logging.Level;
+
 import org.bukkit.Location;
 
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
@@ -48,11 +50,15 @@ public class LookCommand extends Command {
 		if (theCommand.arguments() != null) {
 			for (String thisArgument : theCommand.arguments()) {
 
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
+
 				// If argument is a NPCID modifier...
 				if (thisArgument.toUpperCase().contains("NPCID:")) {
 					try {
-						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])) != null)
-							theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])));	
+						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])) != null) {
+							theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])));
+							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...NPCID specified.");
+						}
 					} catch (Throwable e) {
 						throw new CommandException("NPCID specified could not be matched to a Denizen.");
 					}
@@ -60,28 +66,34 @@ public class LookCommand extends Command {
 
 				// If argument is a DURATION modifier...
 				else if (thisArgument.toUpperCase().contains("DURATION:")) {
-					if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
+					if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
 						duration = Integer.valueOf(thisArgument.split(":")[1]);
+						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...duration set to " + duration + " second(s).");
+					}
 				}
 
 				// If argument is a valid bookmark, set theLocation.
-				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
-				else if (thisArgument.split(":").length == 2) {
-					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
-						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
+				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument)) {
+					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found bookmark.");	
 				}
-				
+				else if (thisArgument.split(":").length == 2) {
+					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1])) {
+						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
+						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found bookmark.");
+					}
+				}
+
 				// If argument is a direction, set Direction.
 				for (Direction thisDirection : Direction.values()) {
 					if (thisArgument.toUpperCase().equals(thisDirection.name()))
 						direction = Direction.valueOf(thisArgument);
-				}
-			
-			
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...looking " + direction.name() + ".");
+				}			
+
 			}	
 		}
-		
+
 		if (direction != null || theLocation != null) look(theDenizen, direction, duration, theLocation);
 
 		return true;
@@ -94,9 +106,9 @@ public class LookCommand extends Command {
 		Location restoreLocation = theDenizen.getEntity().getLocation();
 		DenizenNPC restoreDenizen = theDenizen;
 		String lookWhere = "NOWHERE";
-		
+
 		if (lookDir != null) lookWhere = lookDir.name();
-		
+
 
 		if (lookWhere.equalsIgnoreCase("CLOSE")) {
 			if (!theDenizen.getCitizensEntity().getTrait(LookClose.class).toggle())
