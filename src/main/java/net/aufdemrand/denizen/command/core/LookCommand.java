@@ -86,9 +86,10 @@ public class LookCommand extends Command {
 
 				// If argument is a direction, set Direction.
 				for (Direction thisDirection : Direction.values()) {
-					if (thisArgument.toUpperCase().equals(thisDirection.name()))
+					if (thisArgument.toUpperCase().equals(thisDirection.name())) {
 						direction = Direction.valueOf(thisArgument);
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...looking " + direction.name() + ".");
+						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...looking " + direction.name() + ".");
+					}
 				}			
 
 			}	
@@ -108,7 +109,6 @@ public class LookCommand extends Command {
 		String lookWhere = "NOWHERE";
 
 		if (lookDir != null) lookWhere = lookDir.name();
-
 
 		if (lookWhere.equalsIgnoreCase("CLOSE")) {
 			if (!theDenizen.getCitizensEntity().getTrait(LookClose.class).toggle())
