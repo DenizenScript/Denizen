@@ -152,8 +152,8 @@ public class SpawnCommand extends Command {
 				}
 
 				// If argument is a valid bookmark, set theLocation.
-				else if (plugin.bookmarks.exists(theCommand.getDenizen().getCitizensEntity(), thisArgument))
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen().getCitizensEntity(), thisArgument, BookmarkType.LOCATION);	
+				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
+					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
 				else if (thisArgument.split(":").length == 2) {
 					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
 						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
