@@ -74,24 +74,6 @@ public class CommandExecuter {
 		switch (Command.valueOf(commandArgs[0].toUpperCase())) {
 
 		/* commandArgs [0] [1]      [2] [...]   */
-		case ZAP:   /* ZAP (Step #)             */
-			plugin.getScript.zap(thePlayer, theScript, currentStep, commandArgs[1]);
-			break;
-
-		case ENGAGE:
-			Denizen.engagedNPC.add(theDenizen);
-			break;
-
-		case DISENGAGE:
-			if (Denizen.engagedNPC.contains(theDenizen)) Denizen.engagedNPC.remove(theDenizen);
-			break;
-
-		case SPAWNMOB:
-		case SPAWN:  /* SPAWN [ENTITY_TYPE] (AMOUNT) (Location Bookmark) */
-			plugin.getWorld.spawnMob(commandArgs[1], commandArgs[2], commandArgs[3], theDenizen);
-			break;
-
-
 		case SWITCH:  // SWITCH [Block Bookmark] ON|OFF
 			Location switchLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.BLOCK);
 			if (switchLoc.getBlock().getType() == Material.LEVER) {
@@ -99,7 +81,6 @@ public class CommandExecuter {
 				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), switchLoc.getBlockX(), switchLoc.getBlockY(), switchLoc.getBlockZ(), null);
 			}
 			break;
-
 
 		case PRESS:  // SWITCH [Block Bookmark] ON|OFF
 			Location pressLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.BLOCK);
@@ -109,42 +90,20 @@ public class CommandExecuter {
 			}
 			break;
 
-
 		case WEATHER:  // WEATHER [Sunny|Stormy|Precipitation] (Duration for Stormy/Rainy)
 			if (commandArgs[1].equalsIgnoreCase("sunny")) { thePlayer.getWorld().setStorm(false); }
 			else if (commandArgs[1].equalsIgnoreCase("stormy")) { thePlayer.getWorld().setThundering(true); }
 			else if (commandArgs[1].equalsIgnoreCase("precipitation")) { thePlayer.getWorld().setStorm(true); }
 			break;
 
-
 		case CAST: // CAST [POTION_TYPE] [DURATION] [AMPLIFIER]
 			thePlayer.addPotionEffect(new PotionEffect(
 					PotionEffectType.getByName(commandArgs[1].toUpperCase()), Integer.valueOf(commandArgs[2]) * 20, Integer.valueOf(commandArgs[3])));
 			break;
 
-
 		case EFFECT:  // EFFECT [EFFECT_TYPE] (Location Bookmark)
 			break;
 
-
-		case LOOK: // ENG
-			if (commandArgs[1].equalsIgnoreCase("CLOSE")) {
-				if (!theDenizen.getTrait(LookClose.class).toggle())
-					theDenizen.getTrait(LookClose.class).toggle();
-			}
-			else if (commandArgs[1].equalsIgnoreCase("AWAY")) {
-				if (theDenizen.getTrait(LookClose.class).toggle())
-					theDenizen.getTrait(LookClose.class).toggle();
-			}
-			else if (!commandArgs[1].equalsIgnoreCase("AWAY") && !commandArgs[1].equalsIgnoreCase("CLOSE")) {
-				NPC denizenLooking = theDenizen;
-				Location lookLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION);
-				denizenLooking.getBukkitEntity().getLocation().setPitch(lookLoc.getPitch());
-				denizenLooking.getBukkitEntity().getLocation().setYaw(lookLoc.getYaw());
-			}
-			break;
-
-			
 		case DROP:  // GIVE [Item:Data] [Amount] [ENCHANTMENT_TYPE]
 
 			String[] thedropItem = plugin.getRequirements.splitItem(commandArgs[1]);
@@ -212,13 +171,11 @@ public class CommandExecuter {
 
 			break;
 
-
 		case HEAL:  // HEAL (# of Health)
 			int health = 1;
 			if (commandArgs[1] != null) health = Integer.valueOf(commandArgs[1]);
 			((LivingEntity) thePlayer).setHealth(thePlayer.getHealth() + health);
 			break;
-
 
 		case HURT:  // HURT (# of Health)
 			int damage = 1;
@@ -227,15 +184,12 @@ public class CommandExecuter {
 			else thePlayer.damage(damage);
 			break;
 
-
 		case TELEPORT:  // TELEPORT [Location Notable]
 			thePlayer.teleport(plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION));
-
 
 		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
 			thePlayer.getWorld().strikeLightning(thePlayer.getLocation());
 			break;
-
 
 		case WALK:  // WALK Z(-NORTH(2)/+SOUTH(0)) X(-WEST(1)/+EAST(3)) Y (+UP/-DOWN)
 			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
@@ -243,38 +197,19 @@ public class CommandExecuter {
 					.add(Double.parseDouble(commandArgs[2]), Double.parseDouble(commandArgs[3]), Double.parseDouble(commandArgs[1])));
 			break;
 
-
 		case WALKTO:  // WALKTO [Location Bookmark]
 			Location walkLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION);
 			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
 			theDenizen.getAI().setDestination(walkLoc);
 			break;
 
-
 		case RETURN:
 			if (Denizen.previousNPCLoc.containsKey(theDenizen))
 				theDenizen.getAI().setDestination(Denizen.previousNPCLoc.get(theDenizen));
 			break;
 
-
-		case FINISH:
-
-			int finishes = plugin.getAssignments().getInt("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Completed", 0);
-			finishes++;	
-			plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Completed", finishes);
-			plugin.saveSaves();
-			break;
-
-
-		case FAIL:
-			plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeArgs[1] + "." + "Failed", true);
-			plugin.saveSaves();
-			break;
-
-
 		case REMEMBER:  // REMEMBER [CHAT|LOCATION|INVENTORY]
 			break;
-
 
 		case FOLLOW: // FOLLOW PLAYER|NOBODY
 			if (commandArgs[1].equalsIgnoreCase("PLAYER")) {
@@ -284,7 +219,6 @@ public class CommandExecuter {
 				theDenizen.getAI().cancelDestination();
 			}
 			break;
-
 			
 		case ATTACK: // FOLLOW PLAYER|NOBODY
 			if (commandArgs[1].equalsIgnoreCase("PLAYER")) {
@@ -295,7 +229,6 @@ public class CommandExecuter {
 			}
 			break;
 
-			
 		case RESPAWN:  // RESPAWN [Location Notable]
 			Location respawnLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION);
 			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
@@ -305,16 +238,13 @@ public class CommandExecuter {
 			
 			break;
 
-
 		case PERMISS:  // PERMISS [Permission Node]
 			plugin.perms.playerAdd(thePlayer, commandArgs[1]);
 			break;
 
-
 		case REFUSE:  // PERMISS [Permission Node]
 			plugin.perms.playerRemove(thePlayer, commandArgs[1]);
 			break;
-
 
 		case EXECUTE:  // EXECUTE ASPLAYER [Command to Execute]
 			String[] executeCommand = executeArgs[4].split(" ", 3);

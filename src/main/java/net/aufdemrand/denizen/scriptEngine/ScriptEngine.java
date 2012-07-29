@@ -326,23 +326,4 @@ public class ScriptEngine {
 
 	}
 
-
-
-
-
-
-
-
-
-	/* 
-	 * GetCurrentStep
-	 *
-	 * Requires the Player and the Script.
-	 * Reads the config.yml to find the current step that the player is on
-	 * for the specified script.
-	 *
-	 */
-
-
-
 }

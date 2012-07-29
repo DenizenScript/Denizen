@@ -43,8 +43,9 @@ public class ScriptHelper {
 	 * ConcatenateScripts
 	 * 
 	 * Combines script files into one YML file for Denizen to read from.
-	 * Code borrowed from: http://www.roseindia.net/tutorial/java/core/files/fileconcatenation.html
+	 * Code mostly borrowed from: http://www.roseindia.net/tutorial/java/core/files/fileconcatenation.html
 	 * 
+	 * Thanks!
 	 */
 
 	public void ConcatenateScripts() throws IOException {
@@ -231,7 +232,6 @@ public class ScriptHelper {
 		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
 		thePlayer.sendMessage("");		
 	}
-
 
 
 
