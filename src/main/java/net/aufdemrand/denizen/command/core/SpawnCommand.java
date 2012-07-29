@@ -16,6 +16,7 @@ import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Sheep;
@@ -195,6 +196,7 @@ public class SpawnCommand extends Command {
 
 				LivingEntity spawnedEntity = null;
 				if (theEntity.equals(EntityType.BOAT)) theLocation.getWorld().spawn(theLocation, Boat.class);
+				if (theEntity.equals(EntityType.MINECART)) theLocation.getWorld().spawn(theLocation, Minecart.class);
 				else spawnedEntity = theLocation.getWorld().spawnCreature(theLocation, theEntity);
 
 				if (theEffect != null)

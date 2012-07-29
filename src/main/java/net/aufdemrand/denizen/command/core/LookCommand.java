@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.command.core;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.aufdemrand.denizen.command.Command;
@@ -28,7 +30,11 @@ public class LookCommand extends Command {
 
 	/* Arguments: [] - Required, () - Optional 
 	 * 
-	 * Valid Directions: UP DOWN LEFT RIGHT NORTH SOUTH EAST WEST BACK AT
+	 * [Requires one of the below]
+	 * DIRECTION - Valid Directions: UP DOWN LEFT RIGHT NORTH SOUTH EAST WEST BACK
+	 * LOCATION BOOKMARK - gets Yaw/Pitch from a location bookmark.
+	 * CLOSE/AWAY - toggles the NPC's LookClose trait
+	 * 'AT [PLAYER/
 	 * 
 	 * Modifiers:
 	 * (NPCID:#) Changes the Denizen to the Citizens2 NPCID
@@ -43,7 +49,8 @@ public class LookCommand extends Command {
 		Integer duration = null;
 		Direction direction = null;
 		Location theLocation = null;
-
+		LivingEntity theEntity = null;
+		
 		DenizenNPC theDenizen = theCommand.getDenizen();
 
 		/* Get arguments */
@@ -95,56 +102,155 @@ public class LookCommand extends Command {
 			}	
 		}
 
-		if (direction != null || theLocation != null) look(theDenizen, direction, duration, theLocation);
+		if (theEntity == null && direction.equals(Direction.AT)) theEntity = (LivingEntity) theCommand.getPlayer();
+		
+		if (direction != null || theLocation != null) look(theEntity, theDenizen, direction, duration, theLocation);
 
 		return true;
 	}
 
 
 
-	private void look(DenizenNPC theDenizen, Direction lookDir, Integer duration, Location lookLoc) {
+	private void look(LivingEntity theEntity, DenizenNPC theDenizen, Direction lookDir, Integer duration, Location lookLoc) {
 
 		Location restoreLocation = theDenizen.getEntity().getLocation();
 		DenizenNPC restoreDenizen = theDenizen;
+		Boolean restoreLookClose = theDenizen.isLookingClose();
 		String lookWhere = "NOWHERE";
 
 		if (lookDir != null) lookWhere = lookDir.name();
 
-		if (lookWhere.equalsIgnoreCase("CLOSE")) {
-			if (!theDenizen.getCitizensEntity().getTrait(LookClose.class).toggle())
-				theDenizen.getCitizensEntity().getTrait(LookClose.class).toggle();
+		if (lookWhere.equals("CLOSE")) {
+			theDenizen.lookClose(false);
 		}
 
-		else if (lookWhere.equalsIgnoreCase("AWAY")) {
-			if (theDenizen.getCitizensEntity().getTrait(LookClose.class).toggle())
-				theDenizen.getCitizensEntity().getTrait(LookClose.class).toggle();
+		else if (lookWhere.equals("AWAY")) {
+			theDenizen.lookClose(true);
 		}
 
-		else if (lookWhere.equalsIgnoreCase("LEFT")) {
-			theDenizen.getEntity().getLocation()
-			.setYaw(theDenizen.getEntity().getLocation().getYaw() - 90);
+		else if (lookWhere.equals("LEFT")) {
+			theDenizen.lookClose(false);						
+			theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() - (float) 80;
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;
 		}
 
-		else if (lookWhere.equalsIgnoreCase("RIGHT")) {
-			theDenizen.getEntity().getLocation()
-			.setYaw(theDenizen.getEntity().getLocation().getYaw() + 90);
+		else if (lookWhere.equals("RIGHT")) {
+			theDenizen.lookClose(false);
+			theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() + (float) 80;
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;
 		}
 
+		else if (lookWhere.equals("UP")) {
+			theDenizen.lookClose(false);
+			theDenizen.getHandle().pitch = theDenizen.getHandle().pitch - (float) 60;
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;
+		}
+
+		else if (lookWhere.equals("DOWN")) {
+			theDenizen.lookClose(false);
+			theDenizen.getHandle().pitch = theDenizen.getHandle().pitch + (float) 40;
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;
+		}
+		
+		else if (lookWhere.equals("BACK")) {
+			theDenizen.lookClose(false);
+			theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() - 180;
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;			
+		}
+		
+		else if (lookWhere.equals("SOUTH")) {
+			theDenizen.lookClose(false);
+			theDenizen.getHandle().yaw = 0;
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;			
+		}
+		
+		else if (lookWhere.equals("WEST")) {
+			theDenizen.lookClose(false);
+			theDenizen.getHandle().yaw = 90;
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;			
+		}
+		
+		else if (lookWhere.equals("NORTH")) {
+			theDenizen.lookClose(false);
+			theDenizen.getHandle().yaw = 180;
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;			
+		}
+		
+		else if (lookWhere.equals("EAST")) {
+			theDenizen.lookClose(false);
+			theDenizen.getHandle().yaw = 270;
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;			
+		}
+	
+		else if (lookWhere.equals("AT")) {
+			theDenizen.lookClose(false);
+			theDenizen.getHandle().yaw = lookAt(theEntity.getLocation(), theDenizen.getLocation()).getYaw();
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;
+		}
+		
 		else if (lookLoc != null) {
-			theDenizen.getEntity().getLocation().setPitch(lookLoc.getPitch());
-			theDenizen.getEntity().getLocation().setYaw(lookLoc.getYaw());
+			theDenizen.lookClose(false);
+			theDenizen.getHandle().pitch = lookLoc.getPitch();
+			theDenizen.getHandle().yaw = lookLoc.getYaw();
+			theDenizen.getHandle().X = theDenizen.getHandle().yaw;
 		}
 
 		if (duration != null) {
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new LookCommandRunnable<DenizenNPC, Location>(restoreDenizen, restoreLocation) {
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new LookCommandRunnable<DenizenNPC, Location, Boolean>(restoreDenizen, restoreLocation, restoreLookClose) {
 				@Override
-				public void run(DenizenNPC denizen, Location location) { 
-					denizen.getEntity().getLocation().setYaw(location.getYaw());
+				public void run(DenizenNPC denizen, Location location, Boolean lookClose) { 
+					denizen.getHandle().yaw = location.getYaw();
+					denizen.getHandle().pitch = location.getPitch();
+					denizen.getHandle().X = denizen.getHandle().yaw;				
+					denizen.lookClose(lookClose);
 				}
 			}, duration * 20);
 		}
 
 
 	}
+	
+	
+	/* 
+	 * Code below borrowed from bergerkiller
+	 * http://forums.bukkit.org/threads/lookat-and-move-functions.26768/
+	 * 
+	 * Thanks!
+	 */
+	
+	public static Location lookAt(Location loc, Location lookat) {
+        //Clone the loc to prevent applied changes to the input loc
+        loc = loc.clone();
+
+        // Values of change in distance (make it relative)
+        double dx = lookat.getX() - loc.getX();
+        double dy = lookat.getY() - loc.getY();
+        double dz = lookat.getZ() - loc.getZ();
+
+        // Set yaw
+        if (dx != 0) {
+            // Set yaw start value based on dx
+            if (dx < 0) {
+                loc.setYaw((float) (1.5 * Math.PI));
+            } else {
+                loc.setYaw((float) (0.5 * Math.PI));
+            }
+            loc.setYaw((float) loc.getYaw() - (float) Math.atan(dz / dx));
+        } else if (dz < 0) {
+            loc.setYaw((float) Math.PI);
+        }
+
+        // Get the distance from dx/dz
+        double dxz = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
+
+        // Set pitch
+        loc.setPitch((float) -Math.atan(dy / dxz));
+
+        // Set values, convert to degrees (invert the yaw since Bukkit uses a different yaw dimension format)
+        loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI);
+        loc.setPitch(loc.getPitch() * 180f / (float) Math.PI);
+
+        return loc;
+    }
 }
 

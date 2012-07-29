@@ -15,21 +15,25 @@ import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.LookClose;
+import net.minecraft.server.EntityLiving;
 
 public class DenizenNPC {
 
 	private NPC citizensNPC;
 	private Denizen plugin;
 	private ScriptHelper sE;
-	
-	
-	
+
+
 	DenizenNPC(NPC citizensNPC) {
 		this.citizensNPC = citizensNPC;
 		this.plugin = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 		this.sE = plugin.getScriptEngine().helper;
 	}
 
+	public EntityLiving getHandle() {
+		return ((CraftLivingEntity) getEntity()).getHandle();
+	}
 
 	public NPC getCitizensEntity() {
 		return citizensNPC;
@@ -60,7 +64,7 @@ public class DenizenNPC {
 		return citizensNPC.getBukkitEntity().getType();
 	}
 
-	
+
 	public Navigator getNavigator() {
 		return citizensNPC.getNavigator();
 	}
@@ -94,25 +98,45 @@ public class DenizenNPC {
 	public boolean isSpawned() {
 		return citizensNPC.isSpawned();
 	}
-	
-	
+
+
 	public Location getLocation() {
 		return citizensNPC.getBukkitEntity().getLocation();
 	}
 
 
 	public World getWorld() {
-	return citizensNPC.getBukkitEntity().getWorld();
+		return citizensNPC.getBukkitEntity().getWorld();
 	}
-	
-	
+
+
 	public void setHealth(int newHealth) {
 		((CraftLivingEntity) getEntity()).getHandle().setHealth(newHealth);
 	}
-	
+
 	@Override
 	public String toString() {
 		return "DenizenNPC " + citizensNPC.getName() + "/" + citizensNPC.getId();
 	}
-	
+
+	public boolean isLookingClose() {
+		citizensNPC.getTrait(LookClose.class).toggle();
+		return citizensNPC.getTrait(LookClose.class).toggle();
+	}
+
+	public void lookClose(boolean lookclose) {
+
+		if (!lookclose) {
+			if (!citizensNPC.getTrait(LookClose.class).toggle())
+				citizensNPC.getTrait(LookClose.class).toggle();
+		}
+
+		else if (lookclose) {
+			if (citizensNPC.getTrait(LookClose.class).toggle()) 
+				citizensNPC.getTrait(LookClose.class).toggle();
+		}
+
+	}
+
+
 }
