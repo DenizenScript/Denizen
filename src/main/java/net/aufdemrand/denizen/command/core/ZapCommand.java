@@ -7,11 +7,10 @@ import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**
- * Sets the current step for Players in a specific script then stores
+ * Sets the current step for Players in a specific script by storing
  * the information in the Denizen 'saves.yml'.
  * 
  * @author Jeremy Schroeder
- *
  */
 
 public class ZapCommand extends Command {
@@ -22,7 +21,7 @@ public class ZapCommand extends Command {
 	 * (Step #) The step to make the current step. If not specified, assumes current step + 1. 
 	 * 
 	 * Modifiers: 
-	 * (SCRIPT:[Script Name]) Changes the script to ZAP from the current script to the one specified.
+	 * ('SCRIPT:[Script Name]') Changes the script from the triggering script to the one specified.
 	 */
 
 	@Override

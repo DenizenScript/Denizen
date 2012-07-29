@@ -13,7 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Minecart;
@@ -21,7 +20,6 @@ import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Tameable;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
 import org.bukkit.entity.Wolf;
@@ -32,7 +30,6 @@ import org.bukkit.potion.PotionEffectType;
  * Spawns an entity in the world based on input data.
  * 
  * @author Jeremy Schroeder
- *
  */
 
 public class SpawnCommand extends Command {

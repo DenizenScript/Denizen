@@ -12,10 +12,9 @@ import net.citizensnpcs.command.exception.CommandException;
 
 /**
  * Sets/unsets the Denizen's built in Engage List. 
- * When Engaged, a Denizen will not interact with a Player until DISENGAGED (or a timeout).
+ * When ENGAGEd, a Denizen will not interact with a Player until DISENGAGEd (or timed out).
  * 
  * @author Jeremy Schroeder
- *
  */
 
 public class EngageCommand extends Command {
@@ -24,16 +23,19 @@ public class EngageCommand extends Command {
 
 	/* Arguments: [] - Required, () - Optional 
 	 * (# of Seconds) Will automatically DISENGAGE after specified amount of seconds.
-	 *   If not set, the Denizen will remain ENGAGED until a DISENGAGE command is used.
+	 *   If not set, the Denizen will remain ENGAGEd until a DISENGAGE command is used.
 	 *   
 	 * Modifiers:
-	 * (NPCID:#) Changes the Denizen to ENGAGE or DISENGAGE to the Citizens2 NPCID
+	 * (NPCID:#) Changes the Denizen affected to the Citizens2 NPCID specified
 	 */
 
 	/* DISENGAGE */
 
-	/* Modifiers:
-	 * (NPCID:#) Changes the Denizen to ENGAGE or DISENGAGE to the Citizens2 NPCID
+	/* Arguments: [] - Required, () - Optional
+	 * None.
+	 * 
+	 * Modifiers:
+	 * (NPCID:#) Changes the Denizen affected to the Citizens2 NPCID specified
 	 */
 
 	@Override

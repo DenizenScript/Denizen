@@ -10,11 +10,10 @@ import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**
- * 
- * 
- * 
+ * Sets a Script as 'FINISHED'. Scripts can be finished multiple times.
+ * This can also be checked against with the FINISHED requirement.
+ *  
  * @author Jeremy Schroeder
- *
  */
 
 public class FinishCommand extends Command {
@@ -22,10 +21,12 @@ public class FinishCommand extends Command {
 	/* 
 
 	/* Arguments: [] - Required, () - Optional 
-	 *  
+	 * None.
 	 * 
 	 * Modifiers: 
+	 * ('SCRIPT:[Script Name]') Changes the script from the triggering script to the one specified.
 	 * 
+	 * Example usages:
 	 */
 
 	@Override

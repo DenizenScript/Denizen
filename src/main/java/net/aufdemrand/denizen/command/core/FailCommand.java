@@ -9,22 +9,25 @@ import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**
- * 
- * 
+ * Sets a Script as 'FAILED'. Scripts can be failed multiple times.
+ * This can also be checked against with the FAILED requirement.
  * 
  * @author Jeremy Schroeder
- *
  */
 
 public class FailCommand extends Command {
 
-	/* 
+	/* FAIL
 
 	/* Arguments: [] - Required, () - Optional 
-	 *  
+	 * None.
 	 * 
 	 * Modifiers: 
+	 * ('SCRIPT:[Script Name]') Changes the script from the triggering script to the one specified.
 	 * 
+	 * Example Usage:
+	 * FAIL
+	 * FAIL 'SCRIPT:A different script'
 	 */
 
 	@Override
