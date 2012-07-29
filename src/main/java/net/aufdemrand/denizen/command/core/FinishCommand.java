@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.command.core;
 
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -29,21 +31,32 @@ public class FinishCommand extends Command {
 	@Override
 	public boolean execute(ScriptEntry theCommand) throws CommandException {
 
+		String theScript = theCommand.getScript();
+		
 		/* Get arguments */
 		if (theCommand.arguments() != null) {
 			for (String thisArgument : theCommand.arguments()) {
 
-				/* If number argument... */
-				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
 
-					return true;
+				/* Change the script to a specified one */
+				if (thisArgument.contains("SCRIPT:")) 
+					theScript = thisArgument.split(":", 2)[1];
 
+				else {
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Unable to match argument!");
+				}
+			
 			}
 		}
-
-
 		
+		int finishes = plugin.getAssignments().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", 0);
+
+		finishes++;	
 		
+		plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", finishes);
+		plugin.saveSaves();
+
 		throw new CommandException("Unknown error, check syntax!");
 	}
 
