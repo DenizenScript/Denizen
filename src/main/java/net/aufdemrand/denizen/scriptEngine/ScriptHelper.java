@@ -271,10 +271,12 @@ public class ScriptHelper {
 
 		for (String thisScript : scriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
+
 			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " meets requirements.");
 				interactScripts.add(thisScript);
 			}
+
 		}
 
 		/*

@@ -25,7 +25,7 @@ public class CommandExecuter {
 	public CommandExecuter(Denizen denizen) {
 		plugin = denizen;
 	}	
-	
+
 
 	public static enum Command {
 		WAIT, ZAP, SPAWN, CHANGE, WEATHER, EFFECT, GIVE, TAKE, HEAL,
@@ -219,7 +219,7 @@ public class CommandExecuter {
 				theDenizen.getAI().cancelDestination();
 			}
 			break;
-			
+
 		case ATTACK: // FOLLOW PLAYER|NOBODY
 			if (commandArgs[1].equalsIgnoreCase("PLAYER")) {
 				theDenizen.getAI().setTarget(thePlayer, true);
@@ -235,7 +235,7 @@ public class CommandExecuter {
 
 			theDenizen.despawn();
 			theDenizen.spawn(respawnLoc);
-			
+
 			break;
 
 		case PERMISS:  // PERMISS [Permission Node]
@@ -271,9 +271,9 @@ public class CommandExecuter {
 			}
 			break;
 
-					 //     TYPE     BOOKMARK            DURATION   LEEWAY   RUNSCRIPT
+			//     TYPE     BOOKMARK            DURATION   LEEWAY   RUNSCRIPT
 		case PLAYERTASK: // LOCATION [Location Bookmark] [Duration] [Leeway] [Script to Trigger]
-			
+
 			/* LOCATION Listener */
 			String theLocation = commandArgs[2];
 			int theDuration = Integer.valueOf(commandArgs[3]);
@@ -285,7 +285,7 @@ public class CommandExecuter {
 		case RUNTASK:
 			plugin.scriptEngine.parseTaskScript(thePlayer, executeArgs[4].split(" ", 2)[1]);
 			break;
-			
+
 		case ANNOUNCE: 
 			break;
 
@@ -305,22 +305,6 @@ public class CommandExecuter {
 			break;
 
 
-		case RESET: // RESET FINISH(ED) [Name of Script]  or  RESET FAIL(ED) [NAME OF SCRIPT]
-			String executeScript;
-			if (commandArgs[2] == null) executeScript=theScript; else executeScript=executeArgs[4].split(" ", 3)[2];
-			if (commandArgs[1].equalsIgnoreCase("FINISH") || commandArgs[1].equalsIgnoreCase("FINISHED")) {
-				plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Completed", 0);
-				plugin.saveSaves();
-			}
-
-			if (commandArgs[1].equalsIgnoreCase("FAIL") || commandArgs[1].equalsIgnoreCase("FAILED")) {
-				plugin.getSaves().set("Players." + thePlayer.getName() + "." + executeScript + "." + "Failed", false);
-				plugin.saveSaves();
-			}
-
-			break;
-
-
 		case CHANGE: // CHANGE [Block Bookmark] [#:#|MATERIAL_TYPE]
 			Location blockLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.BLOCK);
 
@@ -335,39 +319,9 @@ public class CommandExecuter {
 			break;
 
 
-		case WAIT:
-			/* 
-			 * This may be a bit hack-y, at least it seems like it to me.
-			 * but, if it isn't broken.. you know what they say. 
-			 
-			 
-			// TEMPORARILY DISABLED
-
-			List<String> CurrentPlayerQue = new ArrayList<String>();
-			if (Denizen.playerQue.get(thePlayer) != null) CurrentPlayerQue = Denizen.playerQue.get(thePlayer);
-			Denizen.playerQue.remove(thePlayer);  // Should keep the talk queue from triggering mid-add
-
-			Long timeDelay = Long.parseLong(commandArgs[1]) * 1000;
-			String timeWithDelay = String.valueOf(System.currentTimeMillis() + timeDelay);
-			CurrentPlayerQue.add(1, "0;none;0;" + timeWithDelay + ";WAITING");						
-			Denizen.playerQue.put(thePlayer, CurrentPlayerQue);
-			break;
-			
-			*/
-
-
-		case WAITING:
-			// ...and we're waiting... mmmm... hack-y.
-			break;
-
-
-		default:
-			break;
+			return;
 		}
 
-		return;
+
+
 	}
-
-
-
-}

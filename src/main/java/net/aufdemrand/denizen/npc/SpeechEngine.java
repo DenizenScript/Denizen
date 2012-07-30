@@ -61,25 +61,25 @@ public class SpeechEngine {
 		switch (theReason) {
 
 		case DenizenIsUnavailable:
-			textToSend = plugin.getAssignments().getString("Denizen." + theDenizen.getName() + ".Texts.Denizen Unavailable");
+			textToSend = plugin.getAssignments().getString("Denizens." + theDenizen.getName() + ".Texts.Denizen Unavailable");
 			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
 			else talk(theDenizen, thePlayer, plugin.settings.DefaultDenizenUnavailableText(), TalkType.Chat);
 			break;
 
 		case NoMatchingChatTriggers:
-			textToSend = plugin.getAssignments().getString("Denizen." + theDenizen.getName() + ".Texts.No Chat Trigger");
+			textToSend = plugin.getAssignments().getString("Denizens." + theDenizen.getName() + ".Texts.No Chat Trigger");
 			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
 			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoChatTriggerText(), TalkType.Chat);
 			break;
 
 		case NoMatchingClickTrigger:
-			textToSend = plugin.getAssignments().getString("Denizen." + theDenizen.getName() + ".Texts.No Click Trigger");
+			textToSend = plugin.getAssignments().getString("Denizens." + theDenizen.getName() + ".Texts.No Click Trigger");
 			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
 			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoClickTriggerText(), TalkType.Chat);
 			break;
 
 		case NoMatchingDamageTrigger:
-			textToSend = plugin.getAssignments().getString("Denizen." + theDenizen.getName() + ".Texts.No Damage Trigger");
+			textToSend = plugin.getAssignments().getString("Denizens." + theDenizen.getName() + ".Texts.No Damage Trigger");
 			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
 			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoDamageTriggerText(), TalkType.Chat);
 			break;

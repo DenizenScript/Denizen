@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scriptEngine.AbstractTrigger;
@@ -29,20 +30,19 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 		if (plugin.getDenizenNPCRegistry().isDenizenNPC(event.getNPC())) {
 			DenizenNPC denizenNPC = plugin.getDenizenNPCRegistry().getDenizen(event.getNPC());
 
-			if (denizenNPC.IsInteractable(triggerName, event.getClicker())) {
-				sE.setCooldown(denizenNPC, DamageTrigger.class, plugin.settings.DefaultDamageCooldown());
-				if (!parseDamageTrigger(denizenNPC, event.getClicker())) {
-//					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
+			/* Check if trigger is enabled, because if not, send click trigger (if enabled in settings) */
+			if (denizenNPC.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled(triggerName.toUpperCase())) {
+
+				if (denizenNPC.IsInteractable(triggerName, event.getClicker())) {
+					sE.setCooldown(denizenNPC, DamageTrigger.class, plugin.settings.DefaultDamageCooldown());
+					if (!parseDamageTrigger(denizenNPC, event.getClicker())) {
+						//					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
+					}
 				}
 			}
 
 			else if (plugin.settings.DisabledDamageTriggerInsteadTriggersClick()) {
 				plugin.getTriggerRegistry().getTrigger(ClickTrigger.class).clickTrigger(new NPCRightClickEvent(event.getNPC(), event.getClicker()));
-			}
-			
-			else {
-				if (!plugin.settings.ChatGloballyIfNotInteractable())
-				denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.DenizenIsUnavailable);
 			}
 		}
 	}
@@ -54,10 +54,10 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Damage Trigger.");
-		
+
 		// Play the HURT effect.
 		theDenizen.getEntity().playEffect(EntityEffect.HURT);
-		
+
 		String theScriptName = theDenizen.getInteractScript(thePlayer);
 		if (theScriptName == null) {
 			theDenizen.talk(TalkType.Chat, thePlayer, Reason.NoMatchingDamageTrigger);
