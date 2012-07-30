@@ -44,7 +44,7 @@ public class SpawnCommand extends Command {
 	 * Modifiers:
 	 * ('SPREAD:[#]') Increases the 'spread' of the area that the monster can spawn. 
 	 * ('EFFECT:[POTION_EFFECT] [LEVEL]') Applies a potion effect on the monster when spawning.
-	 * ('FLAG:POWERED|SADDLED|BABY|PROFESSION [PROFESSION_TYPE]|SHEARED|COLORED [DYE_COLOR]|ANGRY')
+	 * ('OPTION:POWERED|SADDLED|BABY|PROFESSION [PROFESSION_TYPE]|SHEARED|COLORED [DYE_COLOR]|ANGRY')
 	 *   Applies a flag to the Mob. Note: Only works for mobs that can accept the flag.
 	 *   CREEPER can have POWERED
 	 *   PIG can have SADDLED
@@ -119,7 +119,7 @@ public class SpawnCommand extends Command {
 						throw new CommandException("Invalid PotionEffect!");
 					}
 
-				else if (thisArgument.toUpperCase().contains("FLAG:")) {
+				else if (thisArgument.toUpperCase().contains("OPTION:")) {
 
 					String thisFlag = thisArgument.split(":", 2)[1];
 					hasFlag = true;

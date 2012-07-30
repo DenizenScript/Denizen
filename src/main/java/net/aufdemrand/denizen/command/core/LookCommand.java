@@ -4,16 +4,14 @@ import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
 import net.aufdemrand.denizen.command.Command;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
-import net.citizensnpcs.trait.LookClose;
+
 
 /**
  * Controls Denizen's heads.
@@ -31,10 +29,10 @@ public class LookCommand extends Command {
 	/* Arguments: [] - Required, () - Optional 
 	 * 
 	 * [Requires one of the below]
-	 * DIRECTION - Valid Directions: UP DOWN LEFT RIGHT NORTH SOUTH EAST WEST BACK
+	 * DIRECTION - Valid Directions: UP DOWN LEFT RIGHT NORTH SOUTH EAST WEST BACK AT
 	 * LOCATION BOOKMARK - gets Yaw/Pitch from a location bookmark.
 	 * CLOSE/AWAY - toggles the NPC's LookClose trait
-	 * 'AT [PLAYER/
+	 * 
 	 * 
 	 * Modifiers:
 	 * (NPCID:#) Changes the Denizen to the Citizens2 NPCID
@@ -103,7 +101,6 @@ public class LookCommand extends Command {
 		}
 
 		if (theEntity == null && direction.equals(Direction.AT)) theEntity = (LivingEntity) theCommand.getPlayer();
-		
 		if (direction != null || theLocation != null) look(theEntity, theDenizen, direction, duration, theLocation);
 
 		return true;

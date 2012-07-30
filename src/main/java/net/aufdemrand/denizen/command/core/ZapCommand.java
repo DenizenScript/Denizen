@@ -84,6 +84,7 @@ public class ZapCommand extends Command {
 			final Integer oldStep = plugin.getScriptEngine().helper.getCurrentStep(theCommand.getPlayer(), theScript);
 			
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
 				@Override
 				public void run() { 
 
