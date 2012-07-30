@@ -160,6 +160,8 @@ public class GetRequirements {
 			}
 			
 			} catch (Throwable e) {
+				if (plugin.showStackTraces) plugin.getLogger().info(e.getMessage());
+				if (plugin.showStackTraces) e.printStackTrace();
 				throw new RequirementMissingException(e.getMessage());
 			}
 			
