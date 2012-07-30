@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
+import net.citizensnpcs.command.exception.RequirementMissingException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -33,7 +34,7 @@ public class GetRequirements {
 
 
 
-	public boolean check(String theScript, LivingEntity theEntity, boolean isPlayer) {
+	public boolean check(String theScript, LivingEntity theEntity, boolean isPlayer) throws RequirementMissingException {
 
 		String requirementMode = plugin.getScripts().getString(theScript + ".Requirements.Mode");
 		List<String> requirementList = plugin.getScripts().getStringList(theScript + ".Requirements.List");
@@ -62,6 +63,8 @@ public class GetRequirements {
 				else arguments[count] = null;
 			}
 
+			try {
+			
 			switch (Requirement.valueOf(arguments[0].toUpperCase())) {
 
 			case NONE:
@@ -157,6 +160,10 @@ public class GetRequirements {
 					Bukkit.getLogger().severe(String.format("Denizen: Problem with DURABILITY node in script '%s'.  Error: %s", theScript, e));
 				}
 				break;
+			}
+			
+			} catch (Exception e) {
+				throw new RequirementMissingException("...bad requirement!");
 			}
 		}
 

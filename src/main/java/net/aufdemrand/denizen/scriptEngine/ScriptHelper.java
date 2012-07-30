@@ -24,6 +24,7 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.command.exception.RequirementMissingException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
@@ -272,9 +273,13 @@ public class ScriptHelper {
 		for (String thisScript : scriptList) {
 			String [] thisScriptArray = thisScript.split(" ", 2);
 
+			try {
 			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " meets requirements.");
 				interactScripts.add(thisScript);
+			}
+			} catch (RequirementMissingException e) {
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " had a bad requirement, skipping.");
 			}
 
 		}
