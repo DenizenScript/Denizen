@@ -18,8 +18,7 @@ public class SpeechEngine {
 	}
 
 	public enum Reason {
-		DenizenUnavailable, NoChatTriggers, NoRequirementsMet	
-	}
+		DenizenIsUnavailable, NoMatchingChatTriggers, NoMatchingClickTrigger, NoMatchingDamageTrigger	}
 
 	public enum TalkType {
 		Chat, Emote, Shout, Whisper, Narrate

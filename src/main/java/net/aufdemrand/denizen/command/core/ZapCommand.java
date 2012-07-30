@@ -78,15 +78,13 @@ public class ZapCommand extends Command {
 		/* Make delayed task to reset step if duration is set */
 		if (duration != null) {
 
-			final String player = theCommand.getPlayer().getName();
-			final String script = theScript;
-			final Integer step = theStep;
-			final Integer oldStep = plugin.getScriptEngine().helper.getCurrentStep(theCommand.getPlayer(), theScript);
+			Integer oldStep = plugin.getScriptEngine().helper.getCurrentStep(theCommand.getPlayer(), theScript);
 			
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
+					new ZapCommandRunnable<String, String, Integer, Integer>(theCommand.getPlayer().getName(), theScript, theStep, oldStep) {
 
 				@Override
-				public void run() { 
+				public void run(String player, String script, Integer step, Integer oldStep) { 
 
 					// Reset step after duration if step remains the same.
 					if (plugin.getSaves().getInt("Players." + player + "." + script + ".Current Step") == step) {
@@ -97,6 +95,7 @@ public class ZapCommand extends Command {
 			}, duration * 20);
 		}
 
+		
 		/* Set saves.yml */
 		if (theCommand.getPlayer() != null && theScript != null && theStep != null) {
 			plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + ".Current Step", theStep); 

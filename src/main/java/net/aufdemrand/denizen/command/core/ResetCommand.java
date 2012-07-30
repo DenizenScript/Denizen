@@ -60,7 +60,7 @@ public class ResetCommand extends Command {
 
 				else if (thisArgument.toUpperCase().contains("FLAG:")) {
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found reset type of FLAG.");	
-					theFlag = thisArgument.split(":")[1];
+					theFlag = thisArgument.split(":")[1].toUpperCase();
 					resetType = ResetType.FLAG;
 				}
 
