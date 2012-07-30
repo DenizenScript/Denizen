@@ -282,7 +282,7 @@ public class ScriptHelper {
 			}
 			} catch (RequirementMissingException e) {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " had a bad requirement, skipping.");
-				if (plugin.showStackTraces) plugin.getLogger().info(e);
+				if (plugin.showStackTraces) e.printStackTrace();
 			}
 			
 
