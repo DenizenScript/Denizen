@@ -63,8 +63,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 		String theScriptName = theDenizen.getInteractScript(thePlayer);
 
 		if (theScriptName == null) return false;
-		}
-
+		
 		/* Get Player's current step */
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 
