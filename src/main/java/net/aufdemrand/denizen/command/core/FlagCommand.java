@@ -10,8 +10,8 @@ import net.aufdemrand.denizen.scriptEngine.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**
- * Sets a Script as 'FINISHED'. Scripts can be finished multiple times.
- * This can also be checked against with the FINISHED requirement.
+ * Sets a Player 'Flag'. Flags can hold information to check against
+ * with the HASFLAG or FLAG requirements.
  *  
  * @author Jeremy Schroeder
  */
@@ -21,7 +21,7 @@ public class FlagCommand extends Command {
 	/* 
 
 	/* Arguments: [] - Required, () - Optional 
-	 * 
+	 * [NAME:VALUE]  or  [NAME:++]  or  [NAME:--]
 	 * 
 	 * Modifiers: 
 	 * (DURATION:#) Reverts to the previous head position after # amount of seconds.
@@ -29,6 +29,8 @@ public class FlagCommand extends Command {
 	 * Example usages:
 	 */
 
+	enum FlagType { VALUE, INC, DEC }
+	
 	@Override
 	public boolean execute(ScriptEntry theCommand) throws CommandException {
 
@@ -49,7 +51,9 @@ public class FlagCommand extends Command {
 					}
 				}
 				
-				
+				else if (thisArgument.split(":").length == 2)
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...setting flag!");
+					
 
 				else {
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Unable to match argument!");
