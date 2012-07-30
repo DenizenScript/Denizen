@@ -162,7 +162,7 @@ public class GetRequirements {
 				break;
 			}
 			
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				throw new RequirementMissingException("...bad requirement!");
 			}
 		}
