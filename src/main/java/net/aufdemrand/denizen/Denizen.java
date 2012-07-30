@@ -258,6 +258,7 @@ public class Denizen extends JavaPlugin {
 
 	private FileConfiguration assignmentConfig = null;
 	private File assignmentConfigFile = null;
+	public boolean showStackTraces = false;
 
 	public void reloadAssignments() {
 		if (assignmentConfigFile == null) {
@@ -335,6 +336,21 @@ public class Denizen extends JavaPlugin {
 			else if (debugMode) { 
 				debugMode = false; 
 				sender.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode OFF."); 
+				return true;
+			}
+		}
+		
+		if (args[0].equalsIgnoreCase("stacktrace") && !(sender instanceof Player)) {
+
+			if (!showStackTraces) { 
+				showStackTraces = true; 
+				sender.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode will show stacktraces."); 
+				return true;
+			}
+
+			else if (showStackTraces) { 
+				showStackTraces = false; 
+				sender.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode will NOT show stacktraces."); 
 				return true;
 			}
 		}

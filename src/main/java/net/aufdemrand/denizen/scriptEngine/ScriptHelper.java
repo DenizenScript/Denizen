@@ -282,6 +282,7 @@ public class ScriptHelper {
 			}
 			} catch (RequirementMissingException e) {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " had a bad requirement, skipping.");
+				if (plugin.showStackTraces) plugin.getLogger().info(e);
 			}
 			
 
@@ -301,7 +302,7 @@ public class ScriptHelper {
 		}
 		else if (interactScripts.size() == 1) theScript = interactScripts.get(0);
 
-		if (interactScripts.size() > 1) {
+		if (interactScripts.size() >= 1) {
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...highest scoring script is " + theScript.split(" ", 2)[1] + ".");
 		return theScript.split(" ", 2)[1];
 		}

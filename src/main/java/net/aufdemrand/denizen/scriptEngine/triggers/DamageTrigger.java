@@ -36,7 +36,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 				if (denizenNPC.IsInteractable(triggerName, event.getClicker())) {
 					sE.setCooldown(denizenNPC, DamageTrigger.class, plugin.settings.DefaultDamageCooldown());
 					if (!parseDamageTrigger(denizenNPC, event.getClicker())) {
-						//					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
+						denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoMatchingDamageTrigger);
 					}
 				}
 			}
@@ -59,10 +59,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 		theDenizen.getEntity().playEffect(EntityEffect.HURT);
 
 		String theScriptName = theDenizen.getInteractScript(thePlayer);
-		if (theScriptName == null) {
-			theDenizen.talk(TalkType.Chat, thePlayer, Reason.NoMatchingDamageTrigger);
-			return false;
-		}
+		if (theScriptName == null) return false;
 
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 		List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + sE.scriptString);

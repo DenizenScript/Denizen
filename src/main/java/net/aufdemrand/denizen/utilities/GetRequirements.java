@@ -160,7 +160,7 @@ public class GetRequirements {
 			}
 			
 			} catch (Throwable e) {
-				throw new RequirementMissingException("...bad requirement!");
+				throw new RequirementMissingException(e.getMessage());
 			}
 			
 			

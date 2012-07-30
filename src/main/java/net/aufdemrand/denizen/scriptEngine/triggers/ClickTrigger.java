@@ -62,9 +62,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 		/* Get Interact Script, if any. */
 		String theScriptName = theDenizen.getInteractScript(thePlayer);
 
-		if (theScriptName == null) {
-			theDenizen.talk(TalkType.Chat, thePlayer, Reason.NoMatchingClickTrigger);
-			return false;
+		if (theScriptName == null) return false;
 		}
 
 		/* Get Player's current step */
