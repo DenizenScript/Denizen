@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.command.core.FailCommand;
+import net.aufdemrand.denizen.command.core.FinishCommand;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
 import org.bukkit.Bukkit;
@@ -131,11 +133,11 @@ public class GetRequirements {
 
 			case FINISHED:
 			case SCRIPT: // (-)FINISHED (#) [Script Name]
-			//	if (plugin.getScript.getScriptCompletes((Player) theEntity, requirementEntry.split(" ", 2)[1], requirementEntry.split(" ", 3)[1], negativeRequirement)) numberMet++;
+				if (plugin.getCommandRegistry().getCommand(FinishCommand.class).getScriptCompletes((Player) theEntity, requirementEntry.split(" ", 2)[1], requirementEntry.split(" ", 3)[1], negativeRequirement)) numberMet++;
 				break;
 
 			case FAILED: // (-)SCRIPT [Script Name]
-			//	if (plugin.scriptEngine.helper.getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
+				if (plugin.getCommandRegistry().getCommand(FailCommand.class).getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
 				break;
 
 			case GROUP:
