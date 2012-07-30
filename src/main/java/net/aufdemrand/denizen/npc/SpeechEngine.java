@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
+import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.ChatColor;
@@ -25,11 +27,9 @@ public class SpeechEngine {
 	}
 
 	/* TODO: MAJOR FRIKKIN CLEANUP!  */
-	
+
 	public void talk(DenizenNPC theDenizen, Player thePlayer, String theText, TalkType talkType) {
 
-		if (!thePlayer.isDead()) {}
-		
 		String[] formattedText = formatChatText(theText, talkType, thePlayer, theDenizen);
 
 		List<String> playerText = getMultilineText(formattedText[0]);
@@ -53,7 +53,43 @@ public class SpeechEngine {
 	}
 
 
+	public void talk(DenizenNPC theDenizen, Player thePlayer, Reason theReason,
+			TalkType talkType) {
+
+		String textToSend = null;
+		
+		switch (theReason) {
+
+		case DenizenIsUnavailable:
+			textToSend = plugin.getAssignments().getString("Denizen." + theDenizen.getName() + ".Texts.Denizen Unavailable");
+			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
+			else talk(theDenizen, thePlayer, plugin.settings.DefaultDenizenUnavailableText(), TalkType.Chat);
+			break;
+
+		case NoMatchingChatTriggers:
+			textToSend = plugin.getAssignments().getString("Denizen." + theDenizen.getName() + ".Texts.No Chat Trigger");
+			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
+			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoChatTriggerText(), TalkType.Chat);
+			break;
+
+		case NoMatchingClickTrigger:
+			textToSend = plugin.getAssignments().getString("Denizen." + theDenizen.getName() + ".Texts.No Click Trigger");
+			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
+			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoClickTriggerText(), TalkType.Chat);
+			break;
+
+		case NoMatchingDamageTrigger:
+			textToSend = plugin.getAssignments().getString("Denizen." + theDenizen.getName() + ".Texts.No Damage Trigger");
+			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
+			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoDamageTriggerText(), TalkType.Chat);
+			break;
+
+		}
 	
+
+	}
+
+
 	/* 
 	 * Takes chat/whisper/etc. text and formats it based on the config settings. 
 	 * Returns a String[]. 
@@ -180,11 +216,11 @@ public class SpeechEngine {
 		int theRange = 0;
 
 		switch(talkType) {
-		
+
 		case Shout:
 			theRange = plugin.settings.NpcToPlayerShoutRangeInBlocks();
 			break;
-			
+
 		case Whisper:
 			theRange = plugin.settings.NpcToPlayerWhisperRangeInBlocks();
 			break;
@@ -197,7 +233,7 @@ public class SpeechEngine {
 		default:
 			theRange = plugin.settings.NpcToPlayerChatRangeInBlocks();
 			break;
-			
+
 		}
 
 		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!")) thePlayer.sendMessage(thePlayerMessage);
@@ -223,7 +259,7 @@ public class SpeechEngine {
 	 */
 
 	public void talkToDenizen(DenizenNPC theDenizen, Player thePlayer, String theMessage) {
-		
+
 		thePlayer.sendMessage(plugin.settings.PlayerChatToNpc()
 				.replace("<NPC>", theDenizen.getName())
 				.replace("<TEXT>", theMessage)
@@ -250,5 +286,9 @@ public class SpeechEngine {
 		return;
 	}
 
-	
+
+
+
+
+
 }

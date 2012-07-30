@@ -41,7 +41,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				/* No script matches, should we still show the player talking to the Denizen? */
 				if (theScript == null && !plugin.settings.ChatGloballyIfNoChatTriggers()) { 
 					event.setCancelled(true);
-					theDenizen.talk(TalkType.Chat, event.getPlayer(), Reason.NoRequirementsMet);
+					theDenizen.talk(TalkType.Chat, event.getPlayer(), Reason.NoMatchingChatTriggers);
 				}
 
 				/* Awesome! There's a matching script, let's parse the script to see if chat triggers match */
@@ -52,6 +52,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...resuming chat, no chat triggers found!");
 				
 				}
+			}
+			
+			else {
+				if (!plugin.settings.ChatGloballyIfNotInteractable())
+				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
+				theDenizen.talk(TalkType.Chat, event.getPlayer(), Reason.DenizenIsUnavailable);
 			}
 		}
 		
@@ -114,7 +120,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 		else {
 			plugin.getSpeechEngine().talkToDenizen(theDenizen, thePlayer, playerMessage);
-			theDenizen.talk(TalkType.Chat, thePlayer, Reason.NoChatTriggers);
+			theDenizen.talk(TalkType.Chat, thePlayer, Reason.NoMatchingChatTriggers);
 			return true;
 		}
 	}

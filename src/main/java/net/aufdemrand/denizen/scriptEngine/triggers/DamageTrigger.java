@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scriptEngine.ScriptEngine.QueueType;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
+import org.bukkit.EntityEffect;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,12 +32,17 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 			if (denizenNPC.IsInteractable(triggerName, event.getClicker())) {
 				sE.setCooldown(denizenNPC, DamageTrigger.class, plugin.settings.DefaultDamageCooldown());
 				if (!parseDamageTrigger(denizenNPC, event.getClicker())) {
-					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
+//					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
 				}
 			}
 
 			else if (plugin.settings.DisabledDamageTriggerInsteadTriggersClick()) {
 				plugin.getTriggerRegistry().getTrigger(ClickTrigger.class).clickTrigger(new NPCRightClickEvent(event.getNPC(), event.getClicker()));
+			}
+			
+			else {
+				if (!plugin.settings.ChatGloballyIfNotInteractable())
+				denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.DenizenIsUnavailable);
 			}
 		}
 	}
@@ -49,8 +55,14 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Damage Trigger.");
 		
+		// Play the HURT effect.
+		theDenizen.getEntity().playEffect(EntityEffect.HURT);
+		
 		String theScriptName = theDenizen.getInteractScript(thePlayer);
-		if (theScriptName == null) return false;
+		if (theScriptName == null) {
+			theDenizen.talk(TalkType.Chat, thePlayer, Reason.NoMatchingDamageTrigger);
+			return false;
+		}
 
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 		List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + sE.scriptString);

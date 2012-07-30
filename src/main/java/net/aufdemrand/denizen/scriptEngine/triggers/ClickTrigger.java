@@ -39,8 +39,13 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 				/* Apply default cool-down to avoid click-spam, then send to parser. */
 				sE.setCooldown(denizenNPC, ClickTrigger.class, plugin.settings.DefaultClickCooldown());
 				if (!parseClickTrigger(denizenNPC, event.getClicker())) {
-					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoRequirementsMet);
+					denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.NoMatchingClickTrigger);
 				}
+			}
+			
+			else {
+				if (!plugin.settings.ChatGloballyIfNotInteractable())
+				denizenNPC.talk(TalkType.Chat, event.getClicker(), Reason.DenizenIsUnavailable);
 			}
 		}
 	}
@@ -57,7 +62,10 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 		/* Get Interact Script, if any. */
 		String theScriptName = theDenizen.getInteractScript(thePlayer);
 
-		if (theScriptName == null) return false;
+		if (theScriptName == null) {
+			theDenizen.talk(TalkType.Chat, thePlayer, Reason.NoMatchingClickTrigger);
+			return false;
+		}
 
 		/* Get Player's current step */
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);

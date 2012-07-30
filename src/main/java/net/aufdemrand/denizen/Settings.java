@@ -126,6 +126,12 @@ public class Settings {
 	# chat near a Denizen to be global if there are available chat
 	# triggers, but the player failed to match one.
 	chat_globally_if_failed_chat_triggers: false
+	
+	# Also.. if the Denizen happens to be un-interactable 
+	# (Engaged, or not cooled-down, for instance), by default
+	# chat is still targeted to the NPC. You can turn this
+	# behavior off by changing this config node to true.
+	
 
 	 */
 
@@ -137,6 +143,10 @@ public class Settings {
 		return plugin.getConfig().getBoolean("chat_globally_if_failed_chat_triggers", false);
 	}
 
+	public boolean ChatGloballyIfNotInteractable() {
+		return plugin.getConfig().getBoolean("chat_globally_if_not_interactable", false);
+	}
+	
 	/*
 
 	# Should players around the player interacting with the Denizen
@@ -311,13 +321,21 @@ public class Settings {
 
 	 */
 
-	public String DefaultNoRequirementsMetText() {
-		return plugin.getConfig().getString("default_no_requirements_met_text", "Sorry, I have nothing else for you right now.");
+	public String DefaultDenizenUnavailableText() {
+		return plugin.getConfig().getString("default_denizen_unavailable_text", "I'm busy at the moment, can't you see?");
 	}
 	
-	public String DefaultNoChatTriggersMetText() {
-		return plugin.getConfig().getString("default_no_chat_triggers_met_text", "Perhaps you can tell me more clearly what it is you need.");
+	public String DefaultNoChatTriggerText() {
+		return plugin.getConfig().getString("default_no_chat_trigger_text", "Sorry, I don't understand.");
+	}
+
+	public String DefaultNoClickTriggerText() {
+		return plugin.getConfig().getString("default_no_click_trigger_text", "I have nothing else for you right now.");
 	}
 	
+	public String DefaultNoDamageTriggerText() {
+		return plugin.getConfig().getString("default_no_damage_trigger_text", "Ouch! That hurts!");
+	}
+
 
 }

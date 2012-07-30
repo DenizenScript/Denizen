@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -39,7 +40,6 @@ public class DenizenTrait extends Trait implements Toggleable {
 			} else {
 				triggerMap.put(theTriggerName, plugin.getTriggerRegistry().getTrigger(theTriggerName).getEnabledByDefault());
 			}
-		
 	}
 
 	

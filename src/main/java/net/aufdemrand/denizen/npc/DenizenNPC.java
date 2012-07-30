@@ -51,7 +51,7 @@ public class DenizenNPC {
 
 
 	public void talk(TalkType talkType, Player thePlayer, Reason theReason) {
-		// TODO: Finish before 0.7 release.
+		plugin.getSpeechEngine().talk(this, thePlayer, theReason, talkType);
 	}
 
 
