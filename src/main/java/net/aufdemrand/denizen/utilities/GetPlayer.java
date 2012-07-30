@@ -500,19 +500,13 @@ public class GetPlayer {
 		 * (-)GROUP [List of Group names]
 		 */
 
-		try {
-
-			for (String theGroup : theGroups) {
+		for (String theGroup : theGroups) {
 				if (theGroup != null) {
 					if (plugin.perms.playerInGroup(thePlayer, theGroup)
 							|| plugin.perms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), theGroup)) outcome = true;
 				}
-			}	
+		}	
 
-		} catch(Throwable error) {
-			Bukkit.getLogger().info("Denizen: An error has occured. Check your command syntax.");
-			Bukkit.getLogger().info("--- Error follows: " + error);
-		}
 
 		if (negativeRequirement != outcome) return true;
 
