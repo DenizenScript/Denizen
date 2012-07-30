@@ -153,18 +153,15 @@ public class GetRequirements {
 				break;
 
 			case DURABILITY:  // (-)DURABILITY [>,<,=] [#|#%]
-				try {
-					if (plugin.getPlayer.checkDurability((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
-				}
-				catch(IllegalArgumentException e) {
-					Bukkit.getLogger().severe(String.format("Denizen: Problem with DURABILITY node in script '%s'.  Error: %s", theScript, e));
-				}
+				if (plugin.getPlayer.checkDurability((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
 				break;
 			}
 			
 			} catch (Throwable e) {
 				throw new RequirementMissingException("...bad requirement!");
 			}
+			
+			
 		}
 
 		/* Check numberMet */	

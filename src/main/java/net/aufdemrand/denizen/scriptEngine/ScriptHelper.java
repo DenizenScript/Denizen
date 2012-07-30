@@ -298,9 +298,15 @@ public class ScriptHelper {
 		}
 		else if (interactScripts.size() == 1) theScript = interactScripts.get(0);
 
+		if (interactScripts.size() > 1) {
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...highest scoring script is " + theScript.split(" ", 2)[1] + ".");
-
 		return theScript.split(" ", 2)[1];
+		}
+		
+		else {
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no interact scripts found!");
+			return null;
+		}
 	}
 
 
