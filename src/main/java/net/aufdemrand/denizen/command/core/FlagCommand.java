@@ -30,7 +30,7 @@ public class FlagCommand extends Command {
 	 * FLAG 'CUSTOMFLAG:SET'
 	 */
 
-	enum FlagType { VALUE, INC, DEC }
+	enum FlagType { VALUE, INC, DEC, BOOLEAN }
 
 	@Override
 	public boolean execute(ScriptEntry theCommand) throws CommandException {
@@ -67,10 +67,13 @@ public class FlagCommand extends Command {
 						theValue = thisArgument.split(":")[1].toUpperCase();
 					}
 				}
-
+				
 				else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Unable to match argument!");
+					
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...setting flag '" + thisArgument.split(":")[0].toUpperCase() + "'.");
+					flagType = FlagType.BOOLEAN;
 				}
+
 			}
 		}
 
@@ -81,15 +84,23 @@ public class FlagCommand extends Command {
 			case INC:
 				int incValue = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + ".Flags." + theFlag, 0) + 1;
 				plugin.getSaves().set("Players." + theCommand.getPlayer().getName()+ ".Flags." + theFlag, incValue);
+				plugin.saveSaves();
 				break;
 
 			case DEC:
 				int decValue = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + ".Flags." + theFlag, 0) - 1;
 				plugin.getSaves().set("Players." + theCommand.getPlayer().getName()+ ".Flags." + theFlag, decValue);
+				plugin.saveSaves();
 				break;
 
 			case VALUE:
 				plugin.getSaves().set("Players." + theCommand.getPlayer().getName()+ ".Flags." + theFlag, theValue);
+				plugin.saveSaves();
+				break;
+				
+			case BOOLEAN:
+				plugin.getSaves().set("Players." + theCommand.getPlayer().getName()+ ".Flags." + theFlag, true);
+				plugin.saveSaves();
 				break;
 
 			}

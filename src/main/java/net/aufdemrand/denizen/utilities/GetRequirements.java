@@ -33,6 +33,10 @@ public class GetRequirements {
 		plugin = denizen;
 	}
 
+	
+	
+	
+	
 
 
 
@@ -46,7 +50,7 @@ public class GetRequirements {
 		boolean negativeRequirement;
 
 		/* Requirement node "NONE"? No requirements in the LIST? No need to continue, return TRUE */
-		if (requirementMode.equalsIgnoreCase("NONE") || requirementList.isEmpty()) return true;
+		if (requirementMode.equals("NONE") || requirementList.isEmpty()) return true;
 
 		for (String requirementEntry : requirementList) {
 

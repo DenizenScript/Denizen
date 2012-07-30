@@ -271,10 +271,10 @@ public class ScriptHelper {
 		else theEntity = theDenizen.getBukkitEntity();
 
 		for (String thisScript : scriptList) {
-			String [] thisScriptArray = thisScript.split(" ", 2);
+			String script = thisScript.split(" ", 2)[1];
 
 			try {
-			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) {
+			if (plugin.getRequirements.check(script, theEntity, isPlayer)) {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " meets requirements.");
 				interactScripts.add(thisScript);
 			} else {
@@ -299,6 +299,8 @@ public class ScriptHelper {
 					ScriptPriority = Integer.parseInt(thisScriptArray[0]); theScript = thisScript; }
 			}
 		}
+		
+		/* Only one script?  */
 		else if (interactScripts.size() == 1) theScript = interactScripts.get(0);
 
 		if (interactScripts.size() >= 1) {
