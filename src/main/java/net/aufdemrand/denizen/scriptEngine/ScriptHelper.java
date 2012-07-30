@@ -277,10 +277,13 @@ public class ScriptHelper {
 			if (plugin.getRequirements.check(thisScriptArray[1], theEntity, isPlayer)) {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " meets requirements.");
 				interactScripts.add(thisScript);
+			} else {
+				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " does not meet requirements.");
 			}
 			} catch (RequirementMissingException e) {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " had a bad requirement, skipping.");
 			}
+			
 
 		}
 
