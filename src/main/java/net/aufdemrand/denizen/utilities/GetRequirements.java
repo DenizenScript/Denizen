@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.command.core.FailCommand;
@@ -49,6 +50,12 @@ public class GetRequirements {
 		int numberMet = 0; 
 		boolean negativeRequirement;
 
+		/* Requirements list null? This script is probably named wrong, or doesn't exist! */
+		if (requirementList == null) {
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no requirements found! This script may be named incorrectly, or simply doesn't exist!");
+			return false;
+		}
+		
 		/* Requirement node "NONE"? No requirements in the LIST? No need to continue, return TRUE */
 		if (requirementMode.equals("NONE") || requirementList.isEmpty()) return true;
 
