@@ -51,7 +51,7 @@ public class GetRequirements {
 		boolean negativeRequirement;
 
 		/* Requirements list null? This script is probably named wrong, or doesn't exist! */
-		if (requirementList == null) {
+		if (requirementList == null || requirementMode == null) {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no requirements found! This script may be named incorrectly, or simply doesn't exist!");
 			return false;
 		}
