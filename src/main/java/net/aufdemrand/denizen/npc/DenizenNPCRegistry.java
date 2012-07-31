@@ -2,8 +2,12 @@ package net.aufdemrand.denizen.npc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -17,7 +21,7 @@ import net.citizensnpcs.api.npc.NPC;
 
 public class DenizenNPCRegistry implements Listener {
 
-	private Map<NPC, DenizenNPC> denizenNPCs = new HashMap<NPC, DenizenNPC>();
+	private Map<NPC, DenizenNPC> denizenNPCs = new ConcurrentHashMap<NPC, DenizenNPC>();
 
 	public Denizen plugin;
 
@@ -56,6 +60,19 @@ public class DenizenNPCRegistry implements Listener {
 
 	
 	public Map<NPC, DenizenNPC> getDenizens() {
+	    Iterator<Entry<NPC, DenizenNPC>> it = denizenNPCs.entrySet().iterator();
+
+	    while (it.hasNext()) {
+	        Map.Entry<NPC, DenizenNPC> npc = (Map.Entry<NPC, DenizenNPC>)it.next();
+	        
+	    	try {
+				npc.getKey().getBukkitEntity();
+				} catch (NullPointerException e) {
+					denizenNPCs.remove(npc.getKey());
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Removed NPC from DenizenRegistry. The bukkit entity has been removed.");
+				}
+	    }
+		
 		return denizenNPCs;
 	}
 

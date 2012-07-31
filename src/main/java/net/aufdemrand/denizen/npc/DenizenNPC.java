@@ -41,7 +41,12 @@ public class DenizenNPC {
 
 
 	public LivingEntity getEntity() {
+		try {
 		return citizensNPC.getBukkitEntity();
+		} catch (NullPointerException e) {
+			
+			return null;
+		}
 	}
 
 
