@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.bookmarks.Bookmarks.BookmarkType;
+import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 
 public class Utilities {
 
@@ -27,6 +27,11 @@ public class Utilities {
 		this.plugin = plugin;
 	}
 
+	/* 
+	 * Used to check against, same as EntityType, but minus a few that are useless and/or could cause problems spawning
+	 * arbitrarily, such as FISHING_HOOK, UNKNOWN, COMPLEX_PART, etc.
+	 */
+	
 	private enum ValidEntities {
 		BLAZE, BOAT, CAVE_SPIDER, CHICKEN, COW, CREEPER, ENDER_DRAGON, ENDERMAN, GHAST, GIANT, IRON_GOLEM, MAGMA_CUBE,
 		MUSHROOM_COW, MINECART, OCELOT, PIG, PIG_ZOMBIE, PRIMED_TNT, SHEEP, SILVERFISH, SKELETON, SLIME, SNOWMAN,
@@ -42,9 +47,8 @@ public class Utilities {
 
 		return false;
 	}
+	
 
-	
-	
 	
 	@EventHandler
 	public void playerTaskLocationListener(PlayerMoveEvent event) {

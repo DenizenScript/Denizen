@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.aufdemrand.denizen.bookmarks.Bookmarks;
-import net.aufdemrand.denizen.command.CommandRegistry;
-import net.aufdemrand.denizen.command.Executer;
+import net.aufdemrand.denizen.bookmarks.BookmarkHelper;
+import net.aufdemrand.denizen.commands.CommandRegistry;
+import net.aufdemrand.denizen.commands.Executer;
 import net.aufdemrand.denizen.npc.DenizenNPCRegistry;
 import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.npc.SpeechEngine;
-import net.aufdemrand.denizen.scriptEngine.ScriptEngine;
-import net.aufdemrand.denizen.scriptEngine.TriggerRegistry;
+import net.aufdemrand.denizen.requirements.GetRequirements;
+import net.aufdemrand.denizen.scripts.ScriptEngine;
+import net.aufdemrand.denizen.scripts.TriggerRegistry;
 import net.aufdemrand.denizen.utilities.GetPlayer;
-import net.aufdemrand.denizen.utilities.GetRequirements;
 import net.aufdemrand.denizen.utilities.GetWorld;
 import net.aufdemrand.denizen.utilities.Utilities;
 
@@ -52,7 +52,7 @@ public class Denizen extends JavaPlugin {
 	private SpeechEngine speechEngine = new SpeechEngine(this);
 	public Executer         executer = new Executer(this);
 	
-	public Bookmarks             bookmarks = new Bookmarks(this);
+	public BookmarkHelper             bookmarks = new BookmarkHelper(this);
 	public Utilities			 utilities = new Utilities(this);
 	public Settings               settings = new Settings(this);
 	

@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
-import net.aufdemrand.denizen.scriptEngine.ScriptHelper;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.LookClose;
