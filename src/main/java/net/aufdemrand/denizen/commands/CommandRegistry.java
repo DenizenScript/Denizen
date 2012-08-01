@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.commands.core.FlagCommand;
 import net.aufdemrand.denizen.commands.core.LookCommand;
 import net.aufdemrand.denizen.commands.core.ResetCommand;
 import net.aufdemrand.denizen.commands.core.SpawnCommand;
+import net.aufdemrand.denizen.commands.core.StrikeCommand;
 import net.aufdemrand.denizen.commands.core.WaitCommand;
 import net.aufdemrand.denizen.commands.core.ZapCommand;
 
@@ -67,8 +68,7 @@ public class CommandRegistry {
 		FinishCommand finishCommand = new FinishCommand();
 		ResetCommand resetCommand = new ResetCommand();
 		FlagCommand flagCommand = new FlagCommand();
-		
-		
+		StrikeCommand strikeCommand = new StrikeCommand();
 		
 		try {
 			zapCommand.activateAs("ZAP");
@@ -80,8 +80,8 @@ public class CommandRegistry {
 			failCommand.activateAs("FAIL");
 			finishCommand.activateAs("FINISH");
 			resetCommand.activateAs("RESET");
-			flagCommand.activateAs("FLAG");
-			
+			flagCommand.activateAs("FLAG");	
+			strikeCommand.activateAs("STRIKE");
 		} catch (ActivationException e) {
 			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core commands!");
 			e.printStackTrace();
