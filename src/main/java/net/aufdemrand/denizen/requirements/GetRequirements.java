@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.command.core.FailCommand;
-import net.aufdemrand.denizen.command.core.FinishCommand;
+import net.aufdemrand.denizen.commands.core.FailCommand;
+import net.aufdemrand.denizen.commands.core.FinishCommand;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
 import org.bukkit.Bukkit;
