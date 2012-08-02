@@ -74,21 +74,7 @@ public class CommandExecuter {
 		switch (Command.valueOf(commandArgs[0].toUpperCase())) {
 
 		/* commandArgs [0] [1]      [2] [...]   */
-		case SWITCH:  // SWITCH [Block Bookmark] ON|OFF
-			Location switchLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.BLOCK);
-			if (switchLoc.getBlock().getType() == Material.LEVER) {
-				World theWorld = switchLoc.getWorld();
-				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), switchLoc.getBlockX(), switchLoc.getBlockY(), switchLoc.getBlockZ(), null);
-			}
-			break;
 
-		case PRESS:  // SWITCH [Block Bookmark] ON|OFF
-			Location pressLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.BLOCK);
-			if (pressLoc.getBlock().getType() == Material.STONE_BUTTON) {
-				World theWorld = pressLoc.getWorld();
-				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), pressLoc.getBlockX(), pressLoc.getBlockY(), pressLoc.getBlockZ(), null);
-			}
-			break;
 
 		case WEATHER:  // WEATHER [Sunny|Stormy|Precipitation] (Duration for Stormy/Rainy)
 			if (commandArgs[1].equalsIgnoreCase("sunny")) { thePlayer.getWorld().setStorm(false); }

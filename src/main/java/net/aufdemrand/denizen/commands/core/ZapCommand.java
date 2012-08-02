@@ -22,6 +22,7 @@ public class ZapCommand extends AbstractCommand {
 	 * 
 	 * Modifiers: 
 	 * ('SCRIPT:[Script Name]') Changes the script from the triggering script to the one specified.
+	 * (DURATION:#) Reverts the ZAP after # amount of seconds.
 	 */
 
 	@Override
