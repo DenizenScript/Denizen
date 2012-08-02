@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.commands.core.FailCommand;
 import net.aufdemrand.denizen.commands.core.FinishCommand;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 

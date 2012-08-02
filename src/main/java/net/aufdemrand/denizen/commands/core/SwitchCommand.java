@@ -10,7 +10,6 @@ import org.bukkit.craftbukkit.CraftWorld;
 import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**
@@ -81,25 +80,25 @@ public class SwitchCommand extends AbstractCommand {
 		if (interactLocation != null) {
 			if (interactLocation.getBlock().getType() == Material.LEVER) {
 				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null);
+				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
 				return true;
 			}
 
 			else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
 				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null);
+				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
 				return true;
 			}
 
 			else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
 				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null);
+				net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
 				return true;
 			}
 
 			else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
 				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null);
+				net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
 				return true;
 			}
 
@@ -121,25 +120,25 @@ public class SwitchCommand extends AbstractCommand {
 					if (interactLocation != null) {
 						if (interactLocation.getBlock().getType() == Material.LEVER) {
 							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null);
+							net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
 							return;
 						}
 
 						else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
 							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null);
+							net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
 							return;
 						}
 
 						else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
 							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null);
+							net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
 							return;
 						}
 
 						else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
 							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null);
+							net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
 							return;
 						}
 

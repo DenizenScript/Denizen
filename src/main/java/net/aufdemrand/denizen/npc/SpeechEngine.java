@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
-import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
-import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

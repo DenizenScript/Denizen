@@ -4,7 +4,6 @@ import javax.script.ScriptException;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
-import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

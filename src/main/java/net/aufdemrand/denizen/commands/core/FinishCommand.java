@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.commands.core;
 
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;

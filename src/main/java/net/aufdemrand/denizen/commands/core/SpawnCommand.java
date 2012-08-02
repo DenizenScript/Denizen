@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Minecart;
@@ -186,10 +187,10 @@ public class SpawnCommand extends AbstractCommand {
 					theLocation.add(randomX, 0, randomZ);
 				}
 
-				LivingEntity spawnedEntity = null;
+				Entity spawnedEntity = null;
 				if (theEntity.equals(EntityType.BOAT)) theLocation.getWorld().spawn(theLocation, Boat.class);
 				if (theEntity.equals(EntityType.MINECART)) theLocation.getWorld().spawn(theLocation, Minecart.class);
-				else spawnedEntity = theLocation.getWorld().spawnCreature(theLocation, theEntity);
+				else spawnedEntity = theLocation.getWorld().spawnEntity(theLocation, theEntity);
 
 				if (theEffect != null)
 					((LivingEntity) spawnedEntity).addPotionEffect(theEffect);

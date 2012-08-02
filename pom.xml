@@ -12,7 +12,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<craftbukkit.version>1.2.5-R1.0</craftbukkit.version>
+		<craftbukkit.version>1.3.1-R0.1-SNAPSHOT</craftbukkit.version>
 		<citizensapi.version>2.0-SNAPSHOT</citizensapi.version>
 		<citizens.version>2.0-SNAPSHOT</citizens.version>
 		<vault.version>1.2.13-SNAPSHOT</vault.version>

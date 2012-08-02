@@ -98,6 +98,8 @@ public class Denizen extends JavaPlugin {
 		if (!setupEconomy() || !setupPermissions())
 			getLogger().log(Level.SEVERE, "No permissions an/or economy system found! Some commands may produce errors!");
 
+		if (!this.getConfig().getBoolean("enable")) this.getPluginLoader().disablePlugin(this);
+		
 		/* Load YAML files into memory */
 		reloadConfig();
 		reloadScripts();
