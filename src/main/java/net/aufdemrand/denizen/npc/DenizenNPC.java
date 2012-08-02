@@ -10,6 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.commands.core.EngageCommand;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
@@ -42,9 +43,9 @@ public class DenizenNPC {
 
 	public LivingEntity getEntity() {
 		try {
-		return citizensNPC.getBukkitEntity();
+			return citizensNPC.getBukkitEntity();
 		} catch (NullPointerException e) {
-			
+
 			return null;
 		}
 	}
@@ -141,6 +142,13 @@ public class DenizenNPC {
 				citizensNPC.getTrait(LookClose.class).toggle();
 		}
 
+	}
+
+	public boolean isInteracting() {
+		if (!plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(citizensNPC))
+			return true;
+		else		
+			return false;
 	}
 
 

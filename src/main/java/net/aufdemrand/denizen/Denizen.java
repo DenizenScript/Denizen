@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.aufdemrand.denizen.activities.ActivityRegistry;
 import net.aufdemrand.denizen.bookmarks.BookmarkHelper;
 import net.aufdemrand.denizen.commands.CommandRegistry;
 import net.aufdemrand.denizen.commands.Executer;
@@ -47,6 +48,7 @@ public class Denizen extends JavaPlugin {
 	private TriggerRegistry triggerRegistry = new TriggerRegistry(this);
  // private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
 	private DenizenNPCRegistry denizenNPCRegistry = new DenizenNPCRegistry(this);
+	private ActivityRegistry activityRegistry = new ActivityRegistry(this);
 
 	private ScriptEngine scriptEngine = new ScriptEngine(this);
 	private SpeechEngine speechEngine = new SpeechEngine(this);
@@ -69,6 +71,10 @@ public class Denizen extends JavaPlugin {
 		return denizenNPCRegistry;
 	}
 	
+	public ActivityRegistry getActivityRegistry() {
+		return activityRegistry;
+	}
+	
 	public CommandRegistry getCommandRegistry() {
 		return commandRegistry;
 	}
@@ -85,8 +91,7 @@ public class Denizen extends JavaPlugin {
 		return scriptEngine;
 	}
 	
-	
-	
+
 	/*
 	 * Sets up Denizen on start of the craftbukkit server.	
 	 */
@@ -108,6 +113,7 @@ public class Denizen extends JavaPlugin {
 		CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(DenizenTrait.class).withName("denizen"));
 		commandRegistry.registerCoreCommands();
 		triggerRegistry.registerCoreTriggers();
+		activityRegistry.registerCoreActivities();
 		
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override public void run() { scriptEngine.runQueues(); }
@@ -516,9 +522,9 @@ public class Denizen extends JavaPlugin {
 		}
 
 		/* Gets the C2NPC that is selected */
-		NPC ThisNPC = CitizensAPI.getNPCRegistry().getById(player.getMetadata("selected").get(0).asInt());
+		NPC theNPC = CitizensAPI.getNPCRegistry().getById(player.getMetadata("selected").get(0).asInt());
 
-		if (!ThisNPC.hasTrait(DenizenTrait.class)) {
+		if (!theNPC.hasTrait(DenizenTrait.class)) {
 			player.sendMessage(ChatColor.RED + "That command must be performed on a denizen!");
 			return true;
 		}
@@ -529,24 +535,44 @@ public class Denizen extends JavaPlugin {
 				return true;
 			} else {
 				try { 
-					getDenizenNPCRegistry().getDenizen(ThisNPC).setHealth(Integer.valueOf(args[1]));  
+					getDenizenNPCRegistry().getDenizen(theNPC).setHealth(Integer.valueOf(args[1]));  
 				} catch (NumberFormatException e) {
 					player.sendMessage(ChatColor.GOLD + "Argument must be a number. Use /denizen sethealth [#]");
 				}
 			}
 		}
 		
-		
+		if (args[0].equalsIgnoreCase("activity")) {
+			if(args.length < 3) {
+				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help activity");
+				return true;
+			}
+			else if (args[1].equalsIgnoreCase("add")) {
+				if (args.length < 4) {
+					player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help activity");
+					return true;
+				}
+				
+				else getActivityRegistry().addActivity(args[2], theNPC, Integer.valueOf(args[3]));
+				
+			}
+				
+			else if (args[1].equalsIgnoreCase("remove")) {
+				getActivityRegistry().removeActivity(args[2], theNPC);
+			}
+			return true;
+		}
+
 		if (args[0].equalsIgnoreCase("bookmark")) {
 			if(args.length < 3) {
 				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help bookmark");
 				return true;
 			}
 			else if (args[1].equalsIgnoreCase("location")) {
-				List<String> locationList = getSaves().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Location");
+				List<String> locationList = getSaves().getStringList("Denizens." + theNPC.getName() + ".Bookmarks.Location");
 				locationList.add(args[2] + " " + player.getWorld().getName() + ";" + player.getLocation().getX() + ";" +
 						player.getLocation().getY() + ";" + player.getLocation().getZ() + ";" + player.getLocation().getYaw() + ";" + player.getLocation().getPitch());
-				getSaves().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Location", locationList);				
+				getSaves().set("Denizens." + theNPC.getName() + ".Bookmarks.Location", locationList);				
 				saveSaves();
 				bookmarks.buildLocationTriggerList();
 				player.sendMessage(ChatColor.GOLD + "Location bookmark added. Your denizen can now reference this location.");
@@ -554,12 +580,12 @@ public class Denizen extends JavaPlugin {
 			}
 
 			else if (args[1].equalsIgnoreCase("block")) {
-				List<String> blockList = getSaves().getStringList("Denizens." + ThisNPC.getName() + ".Bookmarks.Block");
+				List<String> blockList = getSaves().getStringList("Denizens." + theNPC.getName() + ".Bookmarks.Block");
 				Block targetBlock = player.getTargetBlock(null, 6);
 				blockList.add(args[2] + " " + player.getWorld().getName() + ";" + targetBlock.getX() + ";" +
 						targetBlock.getY() + ";" + targetBlock.getZ());
 
-				getSaves().set("Denizens." + ThisNPC.getName() + ".Bookmarks.Block", blockList);				
+				getSaves().set("Denizens." + theNPC.getName() + ".Bookmarks.Block", blockList);				
 				saveSaves();
 				player.sendMessage(ChatColor.GOLD + "Block bookmark added. Your denizen can now reference this block.");
 				return true;
