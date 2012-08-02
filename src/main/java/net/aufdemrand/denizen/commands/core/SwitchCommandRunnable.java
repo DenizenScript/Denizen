@@ -1,20 +1,18 @@
 package net.aufdemrand.denizen.commands.core;
 
-public abstract class SwitchCommandRunnable<A, B> implements Runnable {
+public abstract class SwitchCommandRunnable<A> implements Runnable {
 	 
     private A a;
-    private B b;
    
-    public SwitchCommandRunnable(A a, B b) {
+    public SwitchCommandRunnable(A a) {
         this.a = a;
-        this.b = b;
     }
    
     @Override
     public final void run() {
-        run(a, b);
+        run(a);
     }
    
-    public abstract void run(A a, B b);
+    public abstract void run(A a);
    
 }
