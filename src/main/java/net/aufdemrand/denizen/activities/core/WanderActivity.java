@@ -17,10 +17,10 @@ public class WanderActivity extends AbstractActivity {
 		Location newLocation = new Location(world, X, Y, Z);
 
 		Random intRandom = new Random();
-		int randomX = intRandom.nextInt(8) - 4;
-		int randomZ = intRandom.nextInt(8) - 4;
+		int randomX = intRandom.nextInt(12) - 6;
+		int randomZ = intRandom.nextInt(12) - 6;
 		int randomY = intRandom.nextInt(4) - 4;
-		plugin.getLogger().info("Adding: " + randomX + " " + randomY + " " + randomZ);
+		//plugin.getLogger().info("Adding: " + randomX + " " + randomY + " " + randomZ);
 
 		newLocation.setX(newLocation.getX() + randomX);
 		newLocation.setZ(newLocation.getZ() + randomZ);
@@ -57,7 +57,7 @@ public class WanderActivity extends AbstractActivity {
 	private Map<DenizenNPC, Long> cooldownMap = new HashMap<DenizenNPC, Long>();
 
 	public void cooldown(DenizenNPC denizenNPC) {
-		cooldownMap.put(denizenNPC, System.currentTimeMillis() + 15000);
+		cooldownMap.put(denizenNPC, System.currentTimeMillis() + 10000);
 	}
 
 	public boolean isCool(DenizenNPC denizenNPC) {

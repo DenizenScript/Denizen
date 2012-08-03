@@ -32,7 +32,6 @@ public class DenizenNPCRegistry implements Listener {
 	public void registerNPC(NPC citizensNPC) {
 		if (!denizenNPCs.containsKey(citizensNPC)) {
 			denizenNPCs.put(citizensNPC, new DenizenNPC(citizensNPC));
-
 		}
 	}
 

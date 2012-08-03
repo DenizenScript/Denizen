@@ -26,6 +26,7 @@ public class WanderGoal implements Goal {
 	final World world;
 	Boolean distracted = false;
 	WanderActivity wA;
+	private GoalSelector goalSelecter;
 
 	WanderGoal(DenizenNPC npc, WanderActivity wA) {
 		this.denizenNPC = npc;
@@ -50,7 +51,7 @@ public class WanderGoal implements Goal {
 				wanderLocation = wA.getNewLocation(X, Y, Z, world);
 				wA.cooldown(denizenNPC);
 				denizenNPC.getNavigator().setTarget(wanderLocation);
-				Bukkit.getLogger().info("New Navigation! " + wanderLocation.getBlock().getType().name() + "  X " + wanderLocation.getBlockX() + "  Y " + wanderLocation.getBlockY() + "  Z " + wanderLocation.getBlockZ() );
+				goalSelecter.finish();
 				}
 		} else 
 			Bukkit.getLogger().info("wanderLocation went null!");
@@ -58,8 +59,8 @@ public class WanderGoal implements Goal {
 
 	@Override
 	public boolean shouldExecute(GoalSelector arg0) {
-		if (wA.isCool(denizenNPC)) return true;
-		else return false;
+		this.goalSelecter = arg0;
+		return (wA.isCool(denizenNPC));
 	}
 
 }

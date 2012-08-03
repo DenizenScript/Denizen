@@ -23,15 +23,24 @@ public class DenizenTrait extends Trait implements Toggleable {
 	public DenizenTrait() {
 		super("denizen");
 	}
-	
-	
+
+	@Override
+	public void onSpawn() {
+		plugin = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
+		plugin.getDenizenNPCRegistry().registerNPC(npc);
+
+		for (String theTriggerName : plugin.getTriggerRegistry().listTriggers().keySet())
+			if (!triggerMap.containsKey(theTriggerName))
+				triggerMap.put(theTriggerName, plugin.getTriggerRegistry().getTrigger(theTriggerName).getEnabledByDefault());
+	}
+
 	@Override
 	public void load(DataKey key) throws NPCLoadException {
 		plugin = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 
 		plugin.getDenizenNPCRegistry().registerNPC(npc);
-		
-		isToggled = key.getBoolean("toggled", false);
+
+		isToggled = key.getBoolean("toggled", true);
 		for (String theTriggerName : plugin.getTriggerRegistry().listTriggers().keySet())
 			if (key.keyExists("enable." + theTriggerName.toLowerCase() + "-trigger")) {
 				triggerMap.put(theTriggerName, key.getBoolean("enable." + theTriggerName.toLowerCase() + "-trigger"));
@@ -40,35 +49,35 @@ public class DenizenTrait extends Trait implements Toggleable {
 			}
 	}
 
-	
+
 	@Override
 	public void save(DataKey key) {
-		
+
 		key.setBoolean("toggled", isToggled);
-		
+
 		for (Entry<String, Boolean> theEntry : triggerMap.entrySet()) {
 			key.setBoolean("enable." + theEntry.getKey().toLowerCase() + "-trigger", theEntry.getValue());
 		}
 	}
 
-	
+
 	@Override
 	public boolean toggle() {
 		isToggled = !isToggled;
 		return isToggled;
 	}
-	
-	
+
+
 	public boolean isToggled() {
 		return isToggled;
 	}
 
-	
+
 	public boolean triggerIsEnabled(String theName) {
 		if (triggerMap.containsKey(theName))
 			return triggerMap.get(theName);
 		else return false;
 	}
-	
-	
+
+
 }
