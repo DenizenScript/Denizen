@@ -57,7 +57,7 @@ public class FinishCommand extends AbstractCommand {
 		plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", finishes);
 		plugin.saveSaves();
 
-		throw new CommandException("Unknown error, check syntax!");
+		return true;
 	}
 
 	

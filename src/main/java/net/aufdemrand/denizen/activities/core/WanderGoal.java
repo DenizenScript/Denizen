@@ -7,10 +7,17 @@ import org.bukkit.World;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.ai.Goal;
 import net.citizensnpcs.api.ai.GoalSelector;
+import net.citizensnpcs.api.event.NPCPushEvent;
 
 
 public class WanderGoal implements Goal {
 
+	public void pushable(NPCPushEvent event) {
+		// if sentry ...
+		event.setCancelled(false);
+	}
+	
+	
 	DenizenNPC denizenNPC;
 	Location wanderLocation = null;
 	final double X;
