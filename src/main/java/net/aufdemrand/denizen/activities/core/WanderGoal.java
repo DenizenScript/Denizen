@@ -2,25 +2,32 @@ package net.aufdemrand.denizen.activities.core;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-
+import org.bukkit.World;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.ai.Goal;
 import net.citizensnpcs.api.ai.GoalSelector;
 
+
 public class WanderGoal implements Goal {
 
 	DenizenNPC denizenNPC;
 	Location wanderLocation = null;
-	final Location startingLocation;
+	final double X;
+	final double Y;
+	final double Z;
+	final World world;
 	Boolean distracted = false;
 	WanderActivity wA;
 
 	WanderGoal(DenizenNPC npc, WanderActivity wA) {
 		this.denizenNPC = npc;
 		this.wA = wA;
-		this.startingLocation = new Location(denizenNPC.getWorld(), denizenNPC.getLocation().getX(), denizenNPC.getLocation().getY(), denizenNPC.getLocation().getZ());
-		this.wanderLocation = wA.getNewLocation(startingLocation);
+		this.X = npc.getLocation().getX();
+		this.Y = npc.getLocation().getY();
+		this.Z = npc.getLocation().getZ();
+		this.world = npc.getWorld();
+		this.wanderLocation = wA.getNewLocation(X, Y, Z, world);
 	}
 
 	@Override
@@ -33,8 +40,8 @@ public class WanderGoal implements Goal {
 			if (denizenNPC.getNavigator().isNavigating()) {
 				return; }
 			else {
-				wanderLocation = startingLocation;
-				wanderLocation = wA.getNewLocation(startingLocation);
+				wanderLocation = wA.getNewLocation(X, Y, Z, world);
+				wA.cooldown(denizenNPC);
 				denizenNPC.getNavigator().setTarget(wanderLocation);
 				Bukkit.getLogger().info("New Navigation! " + wanderLocation.getBlock().getType().name() + "  X " + wanderLocation.getBlockX() + "  Y " + wanderLocation.getBlockY() + "  Z " + wanderLocation.getBlockZ() );
 				}
@@ -44,7 +51,8 @@ public class WanderGoal implements Goal {
 
 	@Override
 	public boolean shouldExecute(GoalSelector arg0) {
-		return true;
+		if (wA.isCool(denizenNPC)) return true;
+		else return false;
 	}
 
 }
