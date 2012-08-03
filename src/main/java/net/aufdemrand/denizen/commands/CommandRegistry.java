@@ -14,6 +14,8 @@ import net.aufdemrand.denizen.commands.core.LookCommand;
 import net.aufdemrand.denizen.commands.core.ResetCommand;
 import net.aufdemrand.denizen.commands.core.SpawnCommand;
 import net.aufdemrand.denizen.commands.core.StrikeCommand;
+import net.aufdemrand.denizen.commands.core.SwitchCommand;
+import net.aufdemrand.denizen.commands.core.TalkCommand;
 import net.aufdemrand.denizen.commands.core.WaitCommand;
 import net.aufdemrand.denizen.commands.core.ZapCommand;
 
@@ -69,8 +71,16 @@ public class CommandRegistry {
 		ResetCommand resetCommand = new ResetCommand();
 		FlagCommand flagCommand = new FlagCommand();
 		StrikeCommand strikeCommand = new StrikeCommand();
+		SwitchCommand switchCommand = new SwitchCommand();
+		TalkCommand talkCommand = new TalkCommand();
 		
 		try {
+			talkCommand.activateAs("CHAT");
+			talkCommand.activateAs("WHISPER");
+			talkCommand.activateAs("SHOUT");
+			talkCommand.activateAs("NARRATE");
+			talkCommand.activateAs("EMOTE");
+			switchCommand.activateAs("SWITCH");
 			zapCommand.activateAs("ZAP");
 			engageCommand.activateAs("ENGAGE");
 			engageCommand.activateAs("DISENGAGE");

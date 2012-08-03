@@ -20,7 +20,7 @@ public class SpeechEngine {
 		DenizenIsUnavailable, NoMatchingChatTriggers, NoMatchingClickTrigger, NoMatchingDamageTrigger	}
 
 	public enum TalkType {
-		Chat, Emote, Shout, Whisper, Narrate
+		CHAT, EMOTE, SHOUT, WHISPER, NARRATE
 	}
 
 	/* TODO: MAJOR FRIKKIN CLEANUP!  */
@@ -59,26 +59,26 @@ public class SpeechEngine {
 
 		case DenizenIsUnavailable:
 			textToSend = plugin.getAssignments().getString("Denizens." + theDenizen.getName() + ".Texts.Denizen Unavailable");
-			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
-			else talk(theDenizen, thePlayer, plugin.settings.DefaultDenizenUnavailableText(), TalkType.Chat);
+			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.CHAT);
+			else talk(theDenizen, thePlayer, plugin.settings.DefaultDenizenUnavailableText(), TalkType.CHAT);
 			break;
 
 		case NoMatchingChatTriggers:
 			textToSend = plugin.getAssignments().getString("Denizens." + theDenizen.getName() + ".Texts.No Chat Trigger");
-			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
-			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoChatTriggerText(), TalkType.Chat);
+			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.CHAT);
+			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoChatTriggerText(), TalkType.CHAT);
 			break;
 
 		case NoMatchingClickTrigger:
 			textToSend = plugin.getAssignments().getString("Denizens." + theDenizen.getName() + ".Texts.No Click Trigger");
-			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
-			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoClickTriggerText(), TalkType.Chat);
+			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.CHAT);
+			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoClickTriggerText(), TalkType.CHAT);
 			break;
 
 		case NoMatchingDamageTrigger:
 			textToSend = plugin.getAssignments().getString("Denizens." + theDenizen.getName() + ".Texts.No Damage Trigger");
-			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.Chat);
-			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoDamageTriggerText(), TalkType.Chat);
+			if (textToSend != null)	talk(theDenizen, thePlayer, textToSend, TalkType.CHAT);
+			else talk(theDenizen, thePlayer, plugin.settings.DefaultNoDamageTriggerText(), TalkType.CHAT);
 			break;
 
 		}
@@ -109,28 +109,28 @@ public class SpeechEngine {
 
 		switch (talkType) {
 
-		case Shout:	
+		case SHOUT:	
 			playerMessageFormat = plugin.settings.NpcShoutToPlayer();
 			bystanderMessageFormat = plugin.settings.NpcShoutToPlayerBystander();
 			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcShoutToBystanders();
 			break;
 
-		case Whisper:
+		case WHISPER:
 			playerMessageFormat = plugin.settings.NpcWhisperToPlayer();
 			bystanderMessageFormat = plugin.settings.NpcWhisperToPlayerBystander();
 			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcWhisperToBystanders();
 			break;
 
-		case Emote:
+		case EMOTE:
 			toPlayer = false;
 			bystanderMessageFormat = "<NPC> <TEXT>";
 			break;
 
-		case Narrate:
+		case NARRATE:
 			playerMessageFormat = "<TEXT>";
 			break;
 
-		case Chat:
+		case CHAT:
 			playerMessageFormat = plugin.settings.NpcChatToPlayer();
 			bystanderMessageFormat = plugin.settings.NpcChatToPlayerBystander();
 			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcChatToBystanders();
@@ -214,15 +214,15 @@ public class SpeechEngine {
 
 		switch(talkType) {
 
-		case Shout:
+		case SHOUT:
 			theRange = plugin.settings.NpcToPlayerShoutRangeInBlocks();
 			break;
 
-		case Whisper:
+		case WHISPER:
 			theRange = plugin.settings.NpcToPlayerWhisperRangeInBlocks();
 			break;
 
-		case Emote:
+		case EMOTE:
 			theRange = plugin.settings.NpcEmoteRangeInBlocks();
 			thePlayer.sendMessage(theBystanderMessage);
 			break;
