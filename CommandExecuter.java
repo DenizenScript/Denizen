@@ -173,10 +173,6 @@ public class CommandExecuter {
 		case TELEPORT:  // TELEPORT [Location Notable]
 			thePlayer.teleport(plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION));
 
-		case STRIKE:  // STRIKE    Strikes lightning on the player, with damage.
-			thePlayer.getWorld().strikeLightning(thePlayer.getLocation());
-			break;
-
 		case WALK:  // WALK Z(-NORTH(2)/+SOUTH(0)) X(-WEST(1)/+EAST(3)) Y (+UP/-DOWN)
 			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
 			if (!commandArgs[1].isEmpty()) theDenizen.getAI().setDestination(theDenizen.getBukkitEntity().getLocation()
@@ -274,22 +270,6 @@ public class CommandExecuter {
 
 		case ANNOUNCE: 
 			break;
-
-		case NARRATE:  
-		case WHISPER: 
-		case EMOTE:
-		case SHOUT:  
-		case CHAT:  // CHAT|WHISPER|EMOTE|SHOUT|NARRATE [Message]
-
-			/* 
-			 * I had to take out the feature for multiline text following the script delay. It was getting too messy!
-			 * Hopefully nobody will notice ;) ...but I'm sure they will, so I will put that off for another day.
-			 */
-
-			/* Format the text for player and bystander, and turn into multiline if necessary */
-
-			break;
-
 
 		case CHANGE: // CHANGE [Block Bookmark] [#:#|MATERIAL_TYPE]
 			Location blockLoc = plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.BLOCK);

@@ -73,8 +73,7 @@ public class ZapCommand extends AbstractCommand {
 			}
 		}
 
-		if (theStep == null) theStep = plugin.getScriptEngine().helper.getCurrentStep(theCommand.getPlayer(), theScript);
-
+		if (theStep == null) theStep = plugin.getScriptEngine().helper.getCurrentStep(theCommand.getPlayer(), theScript) + 1;
 		
 		/* Make delayed task to reset step if duration is set */
 		if (duration != null) {
@@ -95,7 +94,6 @@ public class ZapCommand extends AbstractCommand {
 				}
 			}, duration * 20);
 		}
-
 		
 		/* Set saves.yml */
 		if (theCommand.getPlayer() != null && theScript != null && theStep != null) {
