@@ -7,6 +7,7 @@ import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.commands.core.EngageCommand;
+import net.aufdemrand.denizen.commands.core.ExecuteCommand;
 import net.aufdemrand.denizen.commands.core.FailCommand;
 import net.aufdemrand.denizen.commands.core.FinishCommand;
 import net.aufdemrand.denizen.commands.core.FlagCommand;
@@ -16,6 +17,7 @@ import net.aufdemrand.denizen.commands.core.SpawnCommand;
 import net.aufdemrand.denizen.commands.core.StrikeCommand;
 import net.aufdemrand.denizen.commands.core.SwitchCommand;
 import net.aufdemrand.denizen.commands.core.TalkCommand;
+import net.aufdemrand.denizen.commands.core.TeleportCommand;
 import net.aufdemrand.denizen.commands.core.WaitCommand;
 import net.aufdemrand.denizen.commands.core.ZapCommand;
 
@@ -73,8 +75,12 @@ public class CommandRegistry {
 		StrikeCommand strikeCommand = new StrikeCommand();
 		SwitchCommand switchCommand = new SwitchCommand();
 		TalkCommand talkCommand = new TalkCommand();
+		TeleportCommand teleportCommand = new TeleportCommand();
+		ExecuteCommand executeCommand = new ExecuteCommand();
 		
 		try {
+			executeCommand.activateAs("EXECUTE");
+			teleportCommand.activateAs("TELEPORT");
 			talkCommand.activateAs("CHAT");
 			talkCommand.activateAs("WHISPER");
 			talkCommand.activateAs("SHOUT");

@@ -170,9 +170,6 @@ public class CommandExecuter {
 			else thePlayer.damage(damage);
 			break;
 
-		case TELEPORT:  // TELEPORT [Location Notable]
-			thePlayer.teleport(plugin.bookmarks.get(theDenizen.getName(), commandArgs[1], BookmarkType.LOCATION));
-
 		case WALK:  // WALK Z(-NORTH(2)/+SOUTH(0)) X(-WEST(1)/+EAST(3)) Y (+UP/-DOWN)
 			Denizen.previousNPCLoc.put(theDenizen, theDenizen.getBukkitEntity().getLocation());
 			if (!commandArgs[1].isEmpty()) theDenizen.getAI().setDestination(theDenizen.getBukkitEntity().getLocation()
@@ -231,26 +228,6 @@ public class CommandExecuter {
 		case EXECUTE:  // EXECUTE ASPLAYER [Command to Execute]
 			String[] executeCommand = executeArgs[4].split(" ", 3);
 
-			if (commandArgs[1].equalsIgnoreCase("ASPLAYER")) {
-				thePlayer.performCommand(executeCommand[2]
-						.replace("<PLAYER>", thePlayer.getName()
-								.replace("<WORLD>", thePlayer.getWorld().getName())));
-			}
-
-			if (commandArgs[1].equalsIgnoreCase("ASNPC")) {
-
-				((Player) theDenizen.getBukkitEntity()).setOp(true);
-				((Player) theDenizen.getBukkitEntity()).performCommand(executeCommand[2]
-						.replace("<PLAYER>", thePlayer.getName()
-								.replace("<WORLD>", thePlayer.getWorld().getName())));
-				((Player) theDenizen.getBukkitEntity()).setOp(false);
-			}
-
-			if (commandArgs[1].equalsIgnoreCase("ASSERVER")) {
-				plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), executeCommand[2]
-						.replace("<PLAYER>", thePlayer.getName()
-								.replace("<WORLD>", thePlayer.getWorld().getName())));
-			}
 			break;
 
 			//     TYPE     BOOKMARK            DURATION   LEEWAY   RUNSCRIPT
