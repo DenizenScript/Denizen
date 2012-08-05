@@ -127,34 +127,6 @@ public class CommandExecuter {
 
 
 		case TAKE:  // TAKE [Item] [Amount]   or  TAKE ITEM_IN_HAND  or  TAKE MONEY [Amount]
-			if (commandArgs[1].equalsIgnoreCase("MONEY")) {
-				double playerMoneyAmt = plugin.economy.getBalance(thePlayer.getName());
-				double amtToTake = Double.valueOf(commandArgs[2]);
-				if (amtToTake > playerMoneyAmt) amtToTake = playerMoneyAmt;
-				plugin.economy.withdrawPlayer(thePlayer.getName(), amtToTake);
-
-			}
-			else if (commandArgs[1].equalsIgnoreCase("ITEMINHAND")) {
-				thePlayer.setItemInHand(new ItemStack(Material.AIR));
-			}
-
-			else {
-
-				String[] theTakeItem = plugin.getRequirements.splitItem(commandArgs[1]);
-				ItemStack itemToTake = new ItemStack(Material.AIR);
-
-				if (Character.isDigit(theTakeItem[0].charAt(0))) {
-					itemToTake.setTypeId(Integer.valueOf(theTakeItem[0]));
-					if (theTakeItem[1] != null) itemToTake.getData().setData(Byte.valueOf(theTakeItem[1]));
-				}
-				else itemToTake.setType(Material.getMaterial(commandArgs[1].toUpperCase()));
-
-				if (commandArgs[2] != null) itemToTake.setAmount(Integer.valueOf(commandArgs[2]));
-				else itemToTake.setAmount(1);
-
-				thePlayer.getInventory().removeItem(itemToTake);
-			}
-
 			break;
 
 		case HEAL:  // HEAL (# of Health)

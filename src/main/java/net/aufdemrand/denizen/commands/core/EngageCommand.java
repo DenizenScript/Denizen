@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.commands.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
@@ -49,16 +50,22 @@ public class EngageCommand extends AbstractCommand {
 		/* Get arguments */
 		if (theCommand.arguments() != null) {
 			for (String thisArgument : theCommand.arguments()) {
-				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
+				if (thisArgument.matches("\\d+")) {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...engaging for " + thisArgument.split(":")[1] + "." );
 					timedEngage = Integer.valueOf(thisArgument);
+				}
 
-				if (thisArgument.toUpperCase().contains("NPCID:"))
+				else if (thisArgument.toUpperCase().matches("(?:NPCID|npcid)(:)(\\d+)")) {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument to specify NPCID...");
 					try {
 						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])) != null)
 							theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])));	
-					} catch (Throwable e) {
+					} catch (Exception e) {
 						throw new CommandException("NPCID specified could not be matched to a Denizen.");
 					}
+				}
 			}	
 		}
 
