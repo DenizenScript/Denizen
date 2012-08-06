@@ -170,7 +170,7 @@ public class TakeCommand extends AbstractCommand {
 
 			case ITEM:
 				item.setAmount(amount);
-				if (!theEntry.getPlayer().getInventory().removeItem().isEmpty())
+				if (!theEntry.getPlayer().getInventory().removeItem(item).isEmpty())
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...player did not have enough of the item specified, so Denizen just took as many as it could. To avoid this situation, use a ITEM requirement.");
 				break;
 			}
