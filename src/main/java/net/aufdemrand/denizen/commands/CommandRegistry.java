@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.commands.core.ResetCommand;
 import net.aufdemrand.denizen.commands.core.SpawnCommand;
 import net.aufdemrand.denizen.commands.core.StrikeCommand;
 import net.aufdemrand.denizen.commands.core.SwitchCommand;
+import net.aufdemrand.denizen.commands.core.TakeCommand;
 import net.aufdemrand.denizen.commands.core.TalkCommand;
 import net.aufdemrand.denizen.commands.core.TeleportCommand;
 import net.aufdemrand.denizen.commands.core.WaitCommand;
@@ -77,8 +78,10 @@ public class CommandRegistry {
 		TalkCommand talkCommand = new TalkCommand();
 		TeleportCommand teleportCommand = new TeleportCommand();
 		ExecuteCommand executeCommand = new ExecuteCommand();
+		TakeCommand takeCommand = new TakeCommand();
 		
 		try {
+			takeCommand.activateAs("TAKE");
 			executeCommand.activateAs("EXECUTE");
 			teleportCommand.activateAs("TELEPORT");
 			talkCommand.activateAs("CHAT");

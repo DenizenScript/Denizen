@@ -27,7 +27,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 		/* Do not run any code unless the player actually moves blocks */
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
-
+			
 			ScriptHelper sE = plugin.getScriptEngine().helper;
 
 			/* Do not run any code if there aren't any location triggers */
