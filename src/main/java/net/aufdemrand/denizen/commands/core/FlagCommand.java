@@ -15,7 +15,7 @@ import net.citizensnpcs.command.exception.CommandException;
 
 public class FlagCommand extends AbstractCommand {
 
-	/* 
+	/* FLAG [[NAME]:[VALUE]|[NAME]:++|[NAME]:--]
 
 	/* Arguments: [] - Required, () - Optional 
 	 * [NAME:VALUE]  or  [NAME:++]  or  [NAME:--]
@@ -44,18 +44,21 @@ public class FlagCommand extends AbstractCommand {
 		if (theCommand.arguments() != null) {
 			for (String thisArgument : theCommand.arguments()) {
 
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
+				if (plugin.debugMode) 
+					plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
 
-				// If argument is a DURATION modifier...
-				if (thisArgument.toUpperCase().contains("DURATION:")) {
-					if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...duration set to " + duration + " second(s).");
-						duration = Integer.valueOf(thisArgument.split(":")[1]);
-					}
+				/* If argument is a DURATION: modifier */
+				if (thisArgument.matches("(?:DURATION|duration)(:)(\\d+)")) {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify duration'.");
+					duration = Integer.valueOf(thisArgument.split(":")[1]);
+
 				}
 
+				/* If argument is a flag with value */
 				else if (thisArgument.split(":").length == 2) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...setting flag '" + thisArgument.split(":")[0].toUpperCase() + "'.");
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument as 'flag with data'.");
 
 					theFlag = thisArgument.split(":")[0].toUpperCase();
 					if (thisArgument.split(":")[1].equals("++")) 
@@ -67,16 +70,28 @@ public class FlagCommand extends AbstractCommand {
 						theValue = thisArgument.split(":")[1].toUpperCase();
 					}
 				}
-				
+
+				/* Otherwise, argument is a Boolean */
 				else {
-					
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...setting flag '" + thisArgument.split(":")[0].toUpperCase() + "'.");
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument as 'boolean flag'.");
 					flagType = FlagType.BOOLEAN;
 				}
 
 			}
 		}
 
+		if (duration != null && flagType != null && theFlag != null) {
+
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FlagCommandRunnable<String, String, String>(theCommand.getPlayer().getName(), theFlag, theValue) {
+				@Override
+				public void run(String player, String flag, String checkValue) { 
+					if (plugin.getSaves().getString("Players." + player + ".Flags." + flag).equals(checkValue))
+						plugin.getSaves().set("Players." + player + ".Flags." + flag, null);
+				}
+			}, duration * 20);
+		}
+		
 		if (flagType != null && theFlag != null) {
 
 			switch (flagType) {
@@ -97,7 +112,7 @@ public class FlagCommand extends AbstractCommand {
 				plugin.getSaves().set("Players." + theCommand.getPlayer().getName()+ ".Flags." + theFlag, theValue);
 				plugin.saveSaves();
 				break;
-				
+
 			case BOOLEAN:
 				plugin.getSaves().set("Players." + theCommand.getPlayer().getName()+ ".Flags." + theFlag, true);
 				plugin.saveSaves();
@@ -108,18 +123,11 @@ public class FlagCommand extends AbstractCommand {
 			return true;
 		}
 
-		if (duration != null) {
-
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FlagCommandRunnable<String, String, String>(theCommand.getPlayer().getName(), theFlag, theValue) {
-				@Override
-				public void run(String player, String flag, String checkValue) { 
-					if (plugin.getSaves().getString("Players." + player + ".Flags." + flag).equals(checkValue))
-						plugin.getSaves().set("Players." + player + ".Flags." + flag, null);
-				}
-			}, duration * 20);
-		}
-
-		throw new CommandException("Unknown error, check syntax!");
+		/* Error processing */
+		if (plugin.debugMode)
+			throw new CommandException("...Usage: FLAG [[NAME]:[VALUE]|[NAME]:++|[NAME]:--]");
+		
+		return false;
 	}
 
 

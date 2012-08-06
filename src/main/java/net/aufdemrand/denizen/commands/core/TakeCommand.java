@@ -52,32 +52,35 @@ public class TakeCommand extends AbstractCommand {
 		if (theEntry.arguments() != null) {
 			for (String thisArgument : theEntry.arguments()) {
 
-				if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
+				if (plugin.debugMode) 
+					plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
 
-				// If argument is QTY: modifier...
+				// If argument is QTY: modifier */
 				if (thisArgument.matches("(?:QTY|qty)(:)(\\d+)")) {
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...using a Quantity of " + thisArgument.split(":")[1] + "." );
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Quantity'." );
 					amount = Integer.valueOf(thisArgument.split(":")[1]); 
 				}
 
+				/* If the argument is ITEMINHAND */
 				else if (thisArgument.toUpperCase().contains("ITEMINHAND")) {
 					takeType = TakeType.ITEMINHAND;
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched ITEM IN HAND.");
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Item in hand'.");
 				}
 
+				/* If the argument is MONEY */
 				else if (thisArgument.toUpperCase().contains("MONEY")) {
 					takeType = TakeType.MONEY;
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched MONEY.");
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Money'.");
 				}
 
-				// If argument is and ItemID...
+				/* If argument is and ItemID */
 				else if (thisArgument.matches("\\d+")) {
 					takeType = TakeType.ITEM;
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched Item ID.");
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Item ID'.");
 					try {
 						item = new ItemStack(Integer.valueOf(thisArgument));
 					} catch (Exception e) {
@@ -85,11 +88,11 @@ public class TakeCommand extends AbstractCommand {
 					}
 				}
 
-				// If argument is ItemID:Data format...
+				/* If argument is ItemID:Data format */
 				else if (thisArgument.matches("(\\d+)(:)(\\d+)")) {
 					takeType = TakeType.ITEM;
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched Item ID and Data.");
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify item ID and data'.");
 					try {
 						item = new ItemStack(Integer.valueOf(thisArgument.split(":")[0]));
 						item.setData(new MaterialData(Integer.valueOf(thisArgument.split(":")[1])));
@@ -98,11 +101,11 @@ public class TakeCommand extends AbstractCommand {
 					}
 				}
 
-				// If the argument is a Material...
+				/* If the argument is a Material */
 				else if (thisArgument.matches("([a-zA-Z\\x5F]+)")) {
 					takeType = TakeType.ITEM;
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched Material Type.");
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify Material type'.");
 					try {
 						item = new ItemStack(Material.valueOf(thisArgument.toUpperCase()));
 					} catch (Exception e) {
@@ -110,11 +113,11 @@ public class TakeCommand extends AbstractCommand {
 					}
 				}
 
-				// If the argument is Material:Data format...
+				/* If the argument is Material:Data format */
 				else if (thisArgument.matches("([a-zA-Z]+?)(:)(\\d+)")) {
 					takeType = TakeType.ITEM;
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched Item ID and Data.");
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify Item ID and data'.");
 					try {
 						item = new ItemStack(Material.valueOf(thisArgument.split(":")[0].toUpperCase()));
 						item.setData(new MaterialData(Integer.valueOf(thisArgument.split(":")[1])));
@@ -123,10 +126,10 @@ public class TakeCommand extends AbstractCommand {
 					}
 				}
 
-				// Can't match to anything...
-				else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unable to match argument!");
-				}
+				/* Can't match to anything */
+				else if (plugin.debugMode) 
+					plugin.getLogger().log(Level.INFO, "...unable to match argument!");
+				
 			}	
 		}
 
@@ -176,8 +179,8 @@ public class TakeCommand extends AbstractCommand {
 		}
 
 		/* Error processing */
-		if (plugin.debugMode) if (theEntry.arguments() == null)
-			throw new CommandException("...not enough arguments! Usage: TAKE [MONEY|ITEMINHAND|#(:#)|MATERIAL_TYPE(:#)] (QTY:#)");
+		if (plugin.debugMode)
+			throw new CommandException("...Usage: TAKE [MONEY|ITEMINHAND|#(:#)|MATERIAL_TYPE(:#)] (QTY:#)");
 
 		return false;
 	}

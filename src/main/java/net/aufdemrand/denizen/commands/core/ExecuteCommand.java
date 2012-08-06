@@ -39,8 +39,6 @@ public class ExecuteCommand extends AbstractCommand {
 
 		/* Initialize variables */ 
 
-		// Typically initialized as null and filled as needed. Remember: theEntry
-		// contains some information passed through the execution process.
 		String commandtoExecute = null;
 		ExecuteType executeType = null;
 
@@ -48,32 +46,38 @@ public class ExecuteCommand extends AbstractCommand {
 		if (theEntry.arguments() != null) {
 			for (String thisArgument : theEntry.arguments()) {
 
-				// Do this routine for each argument supplied.
+				if (plugin.debugMode) 
+					plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
 
-				if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
-
+				/* If argument is ASPLAYER */
 				if (thisArgument.equalsIgnoreCase("ASPLAYER")) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...executing command as Player.");
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Execute as Player'.");
 					executeType = ExecuteType.ASPLAYER;
 				}
 
+				/* If argument is ASNPC */
 				else if (thisArgument.equalsIgnoreCase("ASNPC")) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...executing command as NPC.");
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Execute as NPC'.");
 					executeType = ExecuteType.ASDENIZEN;
 				}
 
+				/* If argument is ASSERVER */
 				else if (thisArgument.equalsIgnoreCase("ASSERVER")) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...executing command as Console.");
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Execute as Console'.");
 					executeType = ExecuteType.ASSERVER;
 				}
 
 				else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...set command to execute!");
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument as 'Command to execute'.");
 					commandtoExecute = thisArgument
 							.replace("<PLAYER>", theEntry.getPlayer().getName())
 							.replace("<WORLD>", theEntry.getPlayer().getWorld().getName());
 				}
-
+				
 			}	
 		}
 
@@ -101,12 +105,7 @@ public class ExecuteCommand extends AbstractCommand {
 			return true;
 		}
 
-		// else...
-
 		/* Error processing */
-
-		// Processing has gotten to here, there's probably not been enough arguments. 
-		// Let's alert the console.
 		if (plugin.debugMode) if (theEntry.arguments() == null)
 			throw new CommandException("...not enough arguments! Usage: EXECUTE [ASSERVER|ASNPC|ASPLAYER] '[Command to execute]'");
 

@@ -24,7 +24,7 @@ enum Direction { UP, DOWN, LEFT, RIGHT, NORTH, SOUTH, EAST, WEST, BACK, AT, CLOS
 
 public class LookCommand extends AbstractCommand {
 
-	/* LOOK [DIRECTION|LOCATION BOOKMARK|CLOSE/AWAY]*/
+	/* LOOK [[DIRECTION]|[BOOKMARK]:'LOCATION BOOKMARK'|[CLOSE|AWAY]]*/
 
 	/* Arguments: [] - Required, () - Optional 
 	 * 
@@ -32,7 +32,6 @@ public class LookCommand extends AbstractCommand {
 	 * DIRECTION - Valid Directions: UP DOWN LEFT RIGHT NORTH SOUTH EAST WEST BACK AT
 	 * LOCATION BOOKMARK - gets Yaw/Pitch from a location bookmark.
 	 * CLOSE/AWAY - toggles the NPC's LookClose trait
-	 * 
 	 * 
 	 * Modifiers:
 	 * (NPCID:#) Changes the Denizen to the Citizens2 NPCID
@@ -48,17 +47,20 @@ public class LookCommand extends AbstractCommand {
 		Direction direction = null;
 		Location theLocation = null;
 		LivingEntity theEntity = null;
-		
+
 		DenizenNPC theDenizen = theCommand.getDenizen();
 
 		/* Get arguments */
 		if (theCommand.arguments() != null) {
 			for (String thisArgument : theCommand.arguments()) {
 
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
+				if (plugin.debugMode) 
+					plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
 
-				// If argument is a NPCID modifier...
-				if (thisArgument.toUpperCase().contains("NPCID:")) {
+				/* If argument is a NPCID: modifier */
+				if (thisArgument.matches("(?:NPCID|npcid)(:)(\\d+)")) {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'specify NPC ID'.");
 					try {
 						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])) != null) {
 							theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])));
@@ -69,33 +71,35 @@ public class LookCommand extends AbstractCommand {
 					}
 				}
 
-				// If argument is a DURATION modifier...
-				else if (thisArgument.toUpperCase().contains("DURATION:")) {
-					if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
-						duration = Integer.valueOf(thisArgument.split(":")[1]);
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...duration set to " + duration + " second(s).");
-					}
+				/* If argument is a DURATION: modifier */
+				else if (thisArgument.matches("(?:DURATION|duration)(:)(\\d+)")) {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'specify duration'.");
+					duration = Integer.valueOf(thisArgument.split(":")[1]);
 				}
 
-				// If argument is a valid bookmark, set theLocation.
-				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument)) {
+				/* If argument is a BOOKMARK modifier */
+				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
+						&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
+					theLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+				} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
+						plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument.split(":")[1])) {
 					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found bookmark.");	
-				}
-				else if (thisArgument.split(":").length == 2) {
-					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1])) {
-						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found bookmark.");
-					}
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
 				}
 
-				// If argument is a direction, set Direction.
-				for (Direction thisDirection : Direction.values()) {
-					if (thisArgument.toUpperCase().equals(thisDirection.name())) {
-						direction = Direction.valueOf(thisArgument);
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...looking " + direction.name() + ".");
-					}
-				}			
+				else {
+					/* If argument is a Direction */
+					for (Direction thisDirection : Direction.values()) {
+						if (thisArgument.toUpperCase().equals(thisDirection.name())) {
+							direction = Direction.valueOf(thisArgument);
+							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...argument matched to 'specify direction'.");
+						}
+					}			
+				}
 
 			}	
 		}
@@ -105,7 +109,6 @@ public class LookCommand extends AbstractCommand {
 
 		return true;
 	}
-
 
 
 	private void look(LivingEntity theEntity, DenizenNPC theDenizen, Direction lookDir, Integer duration, Location lookLoc) {
@@ -148,43 +151,43 @@ public class LookCommand extends AbstractCommand {
 			theDenizen.getHandle().pitch = theDenizen.getHandle().pitch + (float) 40;
 			theDenizen.getHandle().as = theDenizen.getHandle().yaw;
 		}
-		
+
 		else if (lookWhere.equals("BACK")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() - 180;
 			theDenizen.getHandle().as = theDenizen.getHandle().yaw;			
 		}
-		
+
 		else if (lookWhere.equals("SOUTH")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = 0;
 			theDenizen.getHandle().as = theDenizen.getHandle().yaw;			
 		}
-		
+
 		else if (lookWhere.equals("WEST")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = 90;
 			theDenizen.getHandle().as = theDenizen.getHandle().yaw;			
 		}
-		
+
 		else if (lookWhere.equals("NORTH")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = 180;
 			theDenizen.getHandle().as = theDenizen.getHandle().yaw;			
 		}
-		
+
 		else if (lookWhere.equals("EAST")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = 270;
 			theDenizen.getHandle().as = theDenizen.getHandle().yaw;			
 		}
-	
+
 		else if (lookWhere.equals("AT")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = lookAt(theEntity.getLocation(), theDenizen.getLocation()).getYaw();
 			theDenizen.getHandle().as = theDenizen.getHandle().yaw;
 		}
-		
+
 		else if (lookLoc != null) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().pitch = lookLoc.getPitch();
@@ -206,48 +209,48 @@ public class LookCommand extends AbstractCommand {
 
 
 	}
-	
-	
+
+
 	/* 
 	 * Code below borrowed from bergerkiller
 	 * http://forums.bukkit.org/threads/lookat-and-move-functions.26768/
 	 * 
 	 * Thanks!
 	 */
-	
+
 	public static Location lookAt(Location loc, Location lookat) {
-        //Clone the loc to prevent applied changes to the input loc
-        loc = loc.clone();
+		//Clone the loc to prevent applied changes to the input loc
+		loc = loc.clone();
 
-        // Values of change in distance (make it relative)
-        double dx = lookat.getX() - loc.getX();
-        double dy = lookat.getY() - loc.getY();
-        double dz = lookat.getZ() - loc.getZ();
+		// Values of change in distance (make it relative)
+		double dx = lookat.getX() - loc.getX();
+		double dy = lookat.getY() - loc.getY();
+		double dz = lookat.getZ() - loc.getZ();
 
-        // Set yaw
-        if (dx != 0) {
-            // Set yaw start value based on dx
-            if (dx < 0) {
-                loc.setYaw((float) (1.5 * Math.PI));
-            } else {
-                loc.setYaw((float) (0.5 * Math.PI));
-            }
-            loc.setYaw((float) loc.getYaw() - (float) Math.atan(dz / dx));
-        } else if (dz < 0) {
-            loc.setYaw((float) Math.PI);
-        }
+		// Set yaw
+		if (dx != 0) {
+			// Set yaw start value based on dx
+			if (dx < 0) {
+				loc.setYaw((float) (1.5 * Math.PI));
+			} else {
+				loc.setYaw((float) (0.5 * Math.PI));
+			}
+			loc.setYaw((float) loc.getYaw() - (float) Math.atan(dz / dx));
+		} else if (dz < 0) {
+			loc.setYaw((float) Math.PI);
+		}
 
-        // Get the distance from dx/dz
-        double dxz = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
+		// Get the distance from dx/dz
+		double dxz = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
 
-        // Set pitch
-        loc.setPitch((float) -Math.atan(dy / dxz));
+		// Set pitch
+		loc.setPitch((float) -Math.atan(dy / dxz));
 
-        // Set values, convert to degrees (invert the yaw since Bukkit uses a different yaw dimension format)
-        loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI);
-        loc.setPitch(loc.getPitch() * 180f / (float) Math.PI);
+		// Set values, convert to degrees (invert the yaw since Bukkit uses a different yaw dimension format)
+		loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI);
+		loc.setPitch(loc.getPitch() * 180f / (float) Math.PI);
 
-        return loc;
-    }
+		return loc;
+	}
 }
 

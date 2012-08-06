@@ -38,17 +38,21 @@ public class FailCommand extends AbstractCommand {
 		/* Get arguments */
 		if (theCommand.arguments() != null) {
 			for (String thisArgument : theCommand.arguments()) {
+				
+				if (plugin.debugMode) 
+					plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
 
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
-
-				/* Change the script to a specified one */
-				if (thisArgument.contains("SCRIPT:")) 
+				/* If the argument is a SCRIPT: modifier */
+				if (thisArgument.contains("SCRIPT:")) {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify script'." );
 					theScript = thisArgument.split(":", 2)[1];
-
-				else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Unable to match argument!");
 				}
-			
+				
+				/* Can't match to anything */
+				else if (plugin.debugMode) 
+					plugin.getLogger().log(Level.INFO, "...unable to match argument!");
+				
 			}
 		}
 		
@@ -59,7 +63,7 @@ public class FailCommand extends AbstractCommand {
 		plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", fails);
 		plugin.saveSaves();
 
-		throw new CommandException("Unknown error, check syntax!");
+		return true;
 	}
 
 	

@@ -39,7 +39,7 @@ public class SpawnCommand extends AbstractCommand {
 
 	/* Arguments: [] - Required, () - Optional 
 	 * [ENTITY_TYPE] 
-	 * (QUANTITY) Will default to '1' if not specified
+	 * (QTY:#) will default to '1' if not specified
 	 * (LOCATION BOOKMARK) Will default to the player location if not specified
 	 * 
 	 * Modifiers:
@@ -57,11 +57,11 @@ public class SpawnCommand extends AbstractCommand {
 	 *  
 	 * Example usages:
 	 * SPAWN BOAT
-	 * SPAWN 3 COW Cage
+	 * SPAWN QTY:3 COW Cage
 	 * SPAWN VILLAGER 'El Notcho:Gate'
-	 * SPAWN 10 PIG_ZOMBIE SPREAD:5
-	 * SPAWN 25 ZOMBIE SPREAD:20 'EFFECT:INCREASE_DAMAGE 2'
-	 * SPAWN 2 SHEEP COLORED:RED
+	 * SPAWN 'QTY:10' PIG_ZOMBIE SPREAD:5
+	 * SPAWN QTY:25 ZOMBIE SPREAD:20 'EFFECT:INCREASE_DAMAGE 2'
+	 * SPAWN QTY:2 SHEEP COLORED:RED
 	 */
 
 	@Override
@@ -90,16 +90,29 @@ public class SpawnCommand extends AbstractCommand {
 
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
 
-				// If a valid name of an Entity, set theEntity.
-				if (plugin.utilities.isEntity(thisArgument))
+				/* If a valid name of an Entity, set theEntity. */
+				if (plugin.utilities.isEntity(thisArgument)) {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument to valid Entity." );
 					theEntity = EntityType.valueOf(thisArgument.toUpperCase());	
-
-				// If argument is a #, set theAmount.
-				else if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
+				}
+					
+				/* If argument is a #, set theAmount. */
+				else if (thisArgument.matches("\\d+")) {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Quantity'." );
 					theAmount = Integer.valueOf(thisArgument);
+				}
+				
+				/* If argument is QTY: modifier */
+				else if (thisArgument.matches("(?:QTY|qty)(:)(\\d+)")) {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Quantity'." );
+					theAmount = Integer.valueOf(thisArgument.split(":")[1]); 
+				}
 
-				// If argument is a modifier, modify
-				else if (thisArgument.toUpperCase().contains("SPREAD:"))
+				/* If argument is a modifier, modify */
+				else if (thisArgument.matches("(?:SPREAD|spread)(:)(\\d+)"))
 					theSpread = Integer.valueOf(thisArgument.split(":", 2)[1]);
 
 				else if (thisArgument.toUpperCase().contains("EFFECT:"))
@@ -116,45 +129,35 @@ public class SpawnCommand extends AbstractCommand {
 					}
 
 				else if (thisArgument.toUpperCase().contains("OPTION:")) {
-
 					String thisFlag = thisArgument.split(":", 2)[1];
 					hasFlag = true;
-
-					if (thisFlag.toUpperCase().equals("BABY"))
-						isBaby = true;
-
-					if (thisFlag.toUpperCase().equals("ANGRY"))
-						isAngry = true;
-
-					if (thisFlag.toUpperCase().equals("POWERED"))
-						isPowered = true;
-
-					if (thisFlag.toUpperCase().equals("SHEARED"))
-						isSheared = true;
-					
-					if (thisFlag.toUpperCase().equals("TAME"))
-						isTame = true;
-					
-					if (thisFlag.toUpperCase().equals("SADDLED"))
-						isSaddled = true;
-
-					if (thisFlag.toUpperCase().contains("COLORED "))
-						hasColor = thisFlag.split(" ")[1];
-
+					if (thisFlag.toUpperCase().equals("BABY")) isBaby = true;
+					if (thisFlag.toUpperCase().equals("ANGRY"))	isAngry = true;
+					if (thisFlag.toUpperCase().equals("POWERED")) isPowered = true;
+					if (thisFlag.toUpperCase().equals("SHEARED")) isSheared = true;
+					if (thisFlag.toUpperCase().equals("TAME")) isTame = true;
+					if (thisFlag.toUpperCase().equals("SADDLED")) isSaddled = true;
+					if (thisFlag.toUpperCase().contains("COLORED ")) hasColor = thisFlag.split(" ")[1];
 					if (thisFlag.toUpperCase().contains("PROFESSION "))
 						hasProfession = thisFlag.split(" ")[1];
 				}
 
-				// If argument is a valid bookmark, set theLocation.
-				else if (plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument))
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);	
-				else if (thisArgument.split(":").length == 2) {
-					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
-						theLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
+				/* If argument is a BOOKMARK modifier */
+				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
+						&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
+					theLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+				} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
+						plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument.split(":")[1])) {
+					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
 				}
 				
 				else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Unable to match argument!");
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "Unable to match argument!");
 				}
 
 			}
@@ -219,7 +222,10 @@ public class SpawnCommand extends AbstractCommand {
 			return true;
 		}
 
-		throw new CommandException("Unknown error, check syntax!");
+		if (plugin.debugMode)
+			throw new CommandException("...Usage: SPAWN (QTY:#) [ENTITY_TYPE]");
+		
+		return false;
 	}
 
 

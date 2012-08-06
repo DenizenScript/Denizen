@@ -40,25 +40,31 @@ public class EngageCommand extends AbstractCommand {
 	 */
 
 	@Override
-	public boolean execute(ScriptEntry theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
 		/* Initialize variables */ 
 
 		Integer timedEngage = null;
-		DenizenNPC theDenizen = theCommand.getDenizen();
+		DenizenNPC theDenizen = theEntry.getDenizen();
 
 		/* Get arguments */
-		if (theCommand.arguments() != null) {
-			for (String thisArgument : theCommand.arguments()) {
+		if (theEntry.arguments() != null) {
+			for (String thisArgument : theEntry.arguments()) {
+
+				if (plugin.debugMode) 
+					plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
+
+				/* If argument is a duration */
 				if (thisArgument.matches("\\d+")) {
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...engaging for " + thisArgument.split(":")[1] + "." );
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Set Duration'." );
 					timedEngage = Integer.valueOf(thisArgument);
 				}
 
+				/* If argument is a NPCID: modifier */
 				else if (thisArgument.toUpperCase().matches("(?:NPCID|npcid)(:)(\\d+)")) {
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to specify NPCID...");
+						plugin.getLogger().log(Level.INFO, "...matched argument to 'Specify NPCID'.");
 					try {
 						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])) != null)
 							theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])));	
@@ -66,12 +72,17 @@ public class EngageCommand extends AbstractCommand {
 						throw new CommandException("NPCID specified could not be matched to a Denizen.");
 					}
 				}
+				
+				/* Can't match to anything */
+				else if (plugin.debugMode) 
+					plugin.getLogger().log(Level.INFO, "...unable to match argument!");
+				
 			}	
 		}
 
 		/* If a DISENGAGE, take the Denizen out of the engagedList. */
-		if (theCommand.getCommand().equalsIgnoreCase("DISENGAGE")) {
-			setEngaged(theCommand.getDenizen(), false);
+		if (theEntry.getCommand().equalsIgnoreCase("DISENGAGE")) {
+			setEngaged(theEntry.getDenizen(), false);
 			return true;
 		}
 
@@ -79,7 +90,7 @@ public class EngageCommand extends AbstractCommand {
 		if (timedEngage != null) 
 			setEngaged(theDenizen, timedEngage);
 		else 			
-			setEngaged(theCommand.getDenizen(), true);
+			setEngaged(theEntry.getDenizen(), true);
 
 		return true;
 	}
