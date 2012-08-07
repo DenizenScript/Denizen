@@ -28,10 +28,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), 
 				plugin.settings.PlayerToNpcChatRangeInBlocks());
 		
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Found nearby NPC, interrupting chat...");
-
-		/* If no Denizen in range, or the Denizen closest is engaged, return */
 		if (theDenizen != null) {
+
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Found nearby NPC, interrupting chat...");
 
 			if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
 				

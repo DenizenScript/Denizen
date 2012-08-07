@@ -63,6 +63,8 @@ public class ScriptEngine {
 					 * If it's more, then this entry will be skipped and saved for next time. */
 					if (theEntry.getValue().get(0).getDelayedTime() < System.currentTimeMillis()) {
 
+						plugin.getLogger().info("DEBUG for " + theEntry.getValue().get(0).getCommand() + ". Delayed Time:" + theEntry.getValue().get(0).getDelayedTime() + " Current Time:" + System.currentTimeMillis());
+						
 						/* Feeds the executer ScriptCommands as long as they are instant commands ("^"), otherwise
 						 * runs one command, removes it from the queue, and moves on to the next player. */
 						boolean instantly;
@@ -71,7 +73,6 @@ public class ScriptEngine {
 							instantly = false;
 							ScriptEntry theCommand = theEntry.getValue().get(0);
 							theCommand.setSendingQueue(QueueType.TRIGGER);
-							plugin.executer.execute(theCommand);
 
 							// Instant command check
 							if (theEntry.getValue().size() > 1
@@ -83,6 +84,9 @@ public class ScriptEngine {
 
 							/* Updates the triggerQue map */
 							triggerQue.put(theEntry.getKey(), theEntry.getValue());
+
+							plugin.executer.execute(theCommand);
+						
 						} while (instantly);
 					}
 				}
@@ -102,7 +106,6 @@ public class ScriptEngine {
 							instantly = false;
 							ScriptEntry theCommand = theEntry.getValue().get(0);
 							theCommand.setSendingQueue(QueueType.TASK);
-							plugin.executer.execute(theCommand);
 
 							// Instant command check
 							if (theEntry.getValue().size() > 1
@@ -112,7 +115,9 @@ public class ScriptEngine {
 
 							theEntry.getValue().remove(0);
 							taskQue.put(theEntry.getKey(), theEntry.getValue());
-
+							
+							plugin.executer.execute(theCommand);
+							
 						} while (instantly);
 
 					}
@@ -202,7 +207,7 @@ public class ScriptEngine {
 		case TRIGGER:
 			scriptCommandList = triggerQue.get(thePlayer);
 			triggerQue.remove(thePlayer); 
-			if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
+	     	if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
 			if (scriptCommandList.size() == 0) thePosition = 0;
 			scriptCommandList.addAll(thePosition, scriptCommands);
 			triggerQue.put(thePlayer, scriptCommandList);

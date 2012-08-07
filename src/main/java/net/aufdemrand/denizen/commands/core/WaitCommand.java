@@ -53,6 +53,7 @@ public class WaitCommand extends AbstractCommand {
 		QueueType queueToHold = theEntry.sendingQueue();
 		Player thePlayer = theEntry.getPlayer();
 		theEntry.setInstant();
+		Long theDelay = null;
 
 		/* Process arguments */
 
@@ -64,8 +65,9 @@ public class WaitCommand extends AbstractCommand {
 				
 				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...setting Delay.");
-					theEntry.setDelay(System.currentTimeMillis() + (Long.valueOf(thisArgument) * 1000));
+						plugin.getLogger().log(Level.INFO, "...setting delay.");
+					theDelay = (Long.valueOf(thisArgument) * 1000);
+					
 				}
 				
 				if (thisArgument.toUpperCase().contains("QUEUETYPE:")) {
@@ -83,19 +85,26 @@ public class WaitCommand extends AbstractCommand {
 		/* Put itself back into the queue */
 
 		List<ScriptEntry> theList = new ArrayList<ScriptEntry>();
-		theList.add(theEntry);
+		ScriptEntry newEntry = null;
+		try {
+			newEntry = new ScriptEntry(theEntry.getCommand(), theEntry.arguments(), theEntry.getPlayer(), theEntry.getDenizen(), theEntry.getScript(), theEntry.getStep());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		newEntry.setDelay(System.currentTimeMillis() + theDelay);
+		theList.add(newEntry);
 
 		if (queueToHold == QueueType.TASK) {
 			if (plugin.debugMode) 
-				plugin.getLogger().log(Level.INFO, "...now Waiting.");
-			plugin.getScriptEngine().injectToQueue(thePlayer, theList, QueueType.TASK, 1);
+				plugin.getLogger().log(Level.INFO, "...now holding Task Queue.");
+			plugin.getScriptEngine().injectToQueue(thePlayer, theList, QueueType.TASK, 0);
 			return true;
 		}
 
 		if (queueToHold == QueueType.TRIGGER) {
 			if (plugin.debugMode) 
-				plugin.getLogger().log(Level.INFO, "...now Waiting.");
-			plugin.getScriptEngine().injectToQueue(thePlayer, theList, QueueType.TRIGGER, 1);
+				plugin.getLogger().log(Level.INFO, "...now holding Trigger Queue.");
+			plugin.getScriptEngine().injectToQueue(thePlayer, theList, QueueType.TRIGGER, 0);
 			return true;
 		}
 
