@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.commands.core.ExecuteCommand;
 import net.aufdemrand.denizen.commands.core.FailCommand;
 import net.aufdemrand.denizen.commands.core.FinishCommand;
 import net.aufdemrand.denizen.commands.core.FlagCommand;
+import net.aufdemrand.denizen.commands.core.GiveCommand;
 import net.aufdemrand.denizen.commands.core.LookCommand;
 import net.aufdemrand.denizen.commands.core.ResetCommand;
 import net.aufdemrand.denizen.commands.core.SpawnCommand;
@@ -79,8 +80,10 @@ public class CommandRegistry {
 		TeleportCommand teleportCommand = new TeleportCommand();
 		ExecuteCommand executeCommand = new ExecuteCommand();
 		TakeCommand takeCommand = new TakeCommand();
+		GiveCommand giveCommand = new GiveCommand();
 		
 		try {
+			giveCommand.activateAs("GIVE");
 			takeCommand.activateAs("TAKE");
 			executeCommand.activateAs("EXECUTE");
 			teleportCommand.activateAs("TELEPORT");

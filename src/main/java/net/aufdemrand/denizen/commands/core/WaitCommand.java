@@ -68,7 +68,7 @@ public class WaitCommand extends AbstractCommand {
 					theEntry.setDelay(System.currentTimeMillis() + (Long.valueOf(thisArgument) * 1000));
 				}
 				
-				if (thisArgument.toUpperCase().contains("QUEUETYPE:"))
+				if (thisArgument.toUpperCase().contains("QUEUETYPE:")) {
 					if (plugin.debugMode) 
 						plugin.getLogger().log(Level.INFO, "...setting QueueType.");
 					try {
@@ -76,6 +76,7 @@ public class WaitCommand extends AbstractCommand {
 					} catch (Throwable e) {
 						throw new CommandException("Invalid QUEUETYPE.");
 					}
+				}
 			}
 		}
 
