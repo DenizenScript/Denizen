@@ -2,12 +2,10 @@ package net.aufdemrand.denizen.commands.core;
 
 import java.util.logging.Level;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -171,7 +169,7 @@ public class TakeCommand extends AbstractCommand {
 			case ITEM:
 				item.setAmount(amount);
 				if (!theEntry.getPlayer().getInventory().removeItem(item).isEmpty())
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...player did not have enough of the item specified, so Denizen just took as many as it could. To avoid this situation, use a ITEM requirement.");
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...player did not have enough of the item specified, so Denizen just took as many as it could. To avoid this situation, use an ITEM requirement.");
 				break;
 			}
 

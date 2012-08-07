@@ -201,11 +201,11 @@ public class ScriptEngine {
 
 		case TRIGGER:
 			scriptCommandList = triggerQue.get(thePlayer);
-			taskQue.remove(thePlayer); 
+			triggerQue.remove(thePlayer); 
 			if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
 			if (scriptCommandList.size() == 0) thePosition = 0;
 			scriptCommandList.addAll(thePosition, scriptCommands);
-			taskQue.put(thePlayer, scriptCommandList);
+			triggerQue.put(thePlayer, scriptCommandList);
 			break;
 
 		case TASK:

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.commands.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -35,31 +36,41 @@ public class WaitCommand extends AbstractCommand {
 	 */
 
 	@Override
-	public boolean execute(ScriptEntry theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
 		/* The WAIT command ultimately sends itself back to the que with an appropriate delay. 
 		 * if the delay is more than the time initiated, we can assume it's the second time 
 		 * around, and therefore finish the command right now. */
 
-		if (theCommand.getDelayedTime() > theCommand.getInitiatedTime()) {
+		if (theEntry.getDelayedTime() > theEntry.getInitiatedTime()) {
+			if (plugin.debugMode) 
+				plugin.getLogger().log(Level.INFO, "...and we've waited. Resuming.");
 			return true;
 		}
 
 		/* Initialize variables */
 
-		QueueType queueToHold = theCommand.sendingQueue();
-		Player thePlayer = theCommand.getPlayer();
-		theCommand.setInstant();
+		QueueType queueToHold = theEntry.sendingQueue();
+		Player thePlayer = theEntry.getPlayer();
+		theEntry.setInstant();
 
 		/* Process arguments */
 
-		if (theCommand.arguments() != null) {
-			for (String thisArgument : theCommand.arguments()) {
+		if (theEntry.arguments() != null) {
+			for (String thisArgument : theEntry.arguments()) {
 
-				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) 
-					theCommand.setDelay(System.currentTimeMillis() + (Long.valueOf(theCommand.arguments()[0]) * 1000));
-
+				if (plugin.debugMode) 
+					plugin.getLogger().log(Level.INFO, "Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
+				
+				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...setting Delay.");
+					theEntry.setDelay(System.currentTimeMillis() + (Long.valueOf(thisArgument) * 1000));
+				}
+				
 				if (thisArgument.toUpperCase().contains("QUEUETYPE:"))
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...setting QueueType.");
 					try {
 						queueToHold = QueueType.valueOf(thisArgument.split(":")[1]);
 					} catch (Throwable e) {
@@ -71,19 +82,23 @@ public class WaitCommand extends AbstractCommand {
 		/* Put itself back into the queue */
 
 		List<ScriptEntry> theList = new ArrayList<ScriptEntry>();
-		theList.add(theCommand);
+		theList.add(theEntry);
 
 		if (queueToHold == QueueType.TASK) {
+			if (plugin.debugMode) 
+				plugin.getLogger().log(Level.INFO, "...now Waiting.");
 			plugin.getScriptEngine().injectToQue(thePlayer, theList, QueueType.TASK, 1);
 			return true;
 		}
 
 		if (queueToHold == QueueType.TRIGGER) {
+			if (plugin.debugMode) 
+				plugin.getLogger().log(Level.INFO, "...now Waiting.");
 			plugin.getScriptEngine().injectToQue(thePlayer, theList, QueueType.TRIGGER, 1);
 			return true;
 		}
 
-		throw new CommandException("Unknown error, check syntax!");
+		throw new CommandException("...Usage: WAIT [# OF SECONDS]");
 	}
 
 }
