@@ -193,7 +193,7 @@ public class ScriptEngine {
 
 	/** Injects commands into a QueueType  */
 
-	public void injectToQue(Player thePlayer, List<ScriptEntry> scriptCommands, QueueType queueType, int thePosition) {
+	public void injectToQueue(Player thePlayer, List<ScriptEntry> scriptCommands, QueueType queueType, int thePosition) {
 
 		List<ScriptEntry> scriptCommandList = new ArrayList<ScriptEntry>();
 

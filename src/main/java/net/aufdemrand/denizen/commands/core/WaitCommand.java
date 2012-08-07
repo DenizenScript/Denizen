@@ -87,14 +87,14 @@ public class WaitCommand extends AbstractCommand {
 		if (queueToHold == QueueType.TASK) {
 			if (plugin.debugMode) 
 				plugin.getLogger().log(Level.INFO, "...now Waiting.");
-			plugin.getScriptEngine().injectToQue(thePlayer, theList, QueueType.TASK, 1);
+			plugin.getScriptEngine().injectToQueue(thePlayer, theList, QueueType.TASK, 1);
 			return true;
 		}
 
 		if (queueToHold == QueueType.TRIGGER) {
 			if (plugin.debugMode) 
 				plugin.getLogger().log(Level.INFO, "...now Waiting.");
-			plugin.getScriptEngine().injectToQue(thePlayer, theList, QueueType.TRIGGER, 1);
+			plugin.getScriptEngine().injectToQueue(thePlayer, theList, QueueType.TRIGGER, 1);
 			return true;
 		}
 
