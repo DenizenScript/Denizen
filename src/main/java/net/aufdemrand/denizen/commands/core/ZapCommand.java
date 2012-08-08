@@ -95,6 +95,12 @@ public class ZapCommand extends AbstractCommand {
 			}, duration * 20);
 		}
 		
+		/* Warn console if step doesn't actually exist. */
+		if (!plugin.getScripts().contains(theScript + ".Steps." + theStep))
+			if (plugin.debugMode)
+				plugin.getLogger().info("...this command is ZAPPING to a step that does not exist! Is this indended?");
+		
+		
 		/* Set saves.yml */
 		if (theCommand.getPlayer() != null && theScript != null && theStep != null) {
 			plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + ".Current Step", theStep); 

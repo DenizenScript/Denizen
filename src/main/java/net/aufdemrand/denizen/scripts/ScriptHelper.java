@@ -131,11 +131,11 @@ public class ScriptHelper {
 		/* Show Citizens NPC info. */
 
 		thePlayer.sendMessage(ChatColor.GRAY + "C2 NPCID: " + ChatColor.GREEN + theDenizen.getId() + ChatColor.GRAY + "   Name: " + ChatColor.GREEN + theDenizen.getName() + ChatColor.GRAY + "   HPs: " + ChatColor.GREEN + theDenizen.getEntity().getHealth());
-		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen setname" + ChatColor.GRAY + " to change the Denizen's name.");
+		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen setname" + ChatColor.GRAY + " to change the Denizen's name.");
 		thePlayer.sendMessage("");
 
 
-		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Key: " + ChatColor.GREEN + "Assigned to Name. " + ChatColor.YELLOW + "Assigned to ID.");
+		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Key: " + ChatColor.GREEN + "Assigned to Name. " + ChatColor.YELLOW + "Assigned to ID.");
 
 		/* Show Assigned Scripts. */
 
@@ -153,8 +153,8 @@ public class ScriptHelper {
 		}
 		if (!scriptsPresent) thePlayer.sendMessage(ChatColor.RED + "  No scripts assigned!");
 
-		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen assign" + ChatColor.GRAY + " to assign scripts.");
-		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
+		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen assign" + ChatColor.GRAY + " to assign scripts.");
+		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
 		thePlayer.sendMessage("");
 
 		/* Show Bookmarks */
@@ -230,8 +230,8 @@ public class ScriptHelper {
 
 		if (!bookmarksPresent) thePlayer.sendMessage(ChatColor.RED + "  No bookmarks defined!");
 
-		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen bookmark" + ChatColor.GRAY + " to create bookmarks.");
-		if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
+		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen bookmark" + ChatColor.GRAY + " to create bookmarks.");
+		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
 		thePlayer.sendMessage("");		
 	}
 
@@ -342,17 +342,14 @@ public class ScriptHelper {
 
 
 	public int getCurrentStep(Player thePlayer, String theScript) {
-
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Finding current step for " + theScript + ".");
-
 		int currentStep = 1;
 		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null) {
 			currentStep =  plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found info in saves.yml. Current step is: " + currentStep + ".");
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...finding current step... found info in saves.yml. Current step is: " + currentStep + ".");
 			return currentStep;
 		}
 
-		else if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no step found in saves.yml! Assuming '1'.");
+		else if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...finding current step... no step found in saves.yml! Assuming '1'.");
 		return currentStep;
 	}
 

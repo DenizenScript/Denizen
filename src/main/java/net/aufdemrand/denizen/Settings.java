@@ -131,6 +131,7 @@ public class Settings {
 	# (Engaged, or not cooled-down, for instance), by default
 	# chat is still targeted to the NPC. You can turn this
 	# behavior off by changing this config node to true.
+	chat_globally_if_not_interactable: false
 	
 
 	 */
@@ -316,8 +317,10 @@ public class Settings {
 	# Default texts that Denizens use when interacting. These
 	# can also be set per-denizen, which will override the
 	# defaults set below.
-	default_no_requirements_met_text: Sorry, I have nothing else for you right now.
-	default_no_chat_triggers_met_text: Perhaps you can tell me more clearly what it is you need.
+	default_denizen_unavailable_text: "I'm busy at the moment, can't you see?"
+	default_no_click_trigger_text: "I have nothing else for you right now."
+	default_no_damage_trigger_text: "Ouch! That hurts!"
+	default_no_chat_trigger_text: "Sorry, I don't understand."
 
 	 */
 

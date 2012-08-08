@@ -60,8 +60,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			}
 		}
 		
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...resuming chat, no interactable script found!");
-		
 	}
 
 

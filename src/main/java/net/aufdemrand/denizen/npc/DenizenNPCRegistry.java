@@ -15,7 +15,6 @@ import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
 
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.npc.NPC;
 

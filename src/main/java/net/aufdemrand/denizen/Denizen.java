@@ -43,38 +43,38 @@ public class Denizen extends JavaPlugin {
 
 	public Economy   economy = null;
 	public Permission  perms = null;
-	
+
 	private CommandRegistry commandRegistry = new CommandRegistry(this);
 	private TriggerRegistry triggerRegistry = new TriggerRegistry(this);
- // private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
+	// private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
 	private DenizenNPCRegistry denizenNPCRegistry = new DenizenNPCRegistry(this);
 	private ActivityRegistry activityRegistry = new ActivityRegistry(this);
 
 	private ScriptEngine scriptEngine = new ScriptEngine(this);
 	private SpeechEngine speechEngine = new SpeechEngine(this);
 	public Executer         executer = new Executer(this);
-	
+
 	public BookmarkHelper             bookmarks = new BookmarkHelper(this);
 	public Utilities			 utilities = new Utilities(this);
 	public Settings               settings = new Settings(this);
-	
+
 	public GetPlayer             getPlayer = new GetPlayer(this);
 	public GetRequirements getRequirements = new GetRequirements(this);
 	public GetWorld               getWorld = new GetWorld(this);
-	
+
 	public Boolean   debugMode = false;
 	public Boolean preciseMode = false;
 	public Boolean    newbMode = true;
-	
-	
+
+
 	public DenizenNPCRegistry getDenizenNPCRegistry() {
 		return denizenNPCRegistry;
 	}
-	
+
 	public ActivityRegistry getActivityRegistry() {
 		return activityRegistry;
 	}
-	
+
 	public CommandRegistry getCommandRegistry() {
 		return commandRegistry;
 	}
@@ -82,15 +82,15 @@ public class Denizen extends JavaPlugin {
 	public TriggerRegistry getTriggerRegistry() {
 		return triggerRegistry;
 	}
-	
+
 	public SpeechEngine getSpeechEngine() {
 		return speechEngine;
 	}
-	
+
 	public ScriptEngine getScriptEngine() {
 		return scriptEngine;
 	}
-	
+
 
 	/*
 	 * Sets up Denizen on start of the craftbukkit server.	
@@ -114,7 +114,7 @@ public class Denizen extends JavaPlugin {
 		commandRegistry.registerCoreCommands();
 		triggerRegistry.registerCoreTriggers();
 		activityRegistry.registerCoreActivities();
-		
+
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override public void run() { scriptEngine.runQueues(); }
 		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
@@ -210,7 +210,7 @@ public class Denizen extends JavaPlugin {
 	}
 
 
-	
+
 	/*
 	 * reloadSaves/getSaves/saveSaves
 	 * 
@@ -330,7 +330,7 @@ public class Denizen extends JavaPlugin {
 			sender.sendMessage(ChatColor.GREEN + utilities.getVersionString());
 			return true;
 		}
-		
+
 		if (args[0].equalsIgnoreCase("debug") && !(sender instanceof Player)) {
 
 			if (!debugMode) { 
@@ -345,7 +345,7 @@ public class Denizen extends JavaPlugin {
 				return true;
 			}
 		}
-		
+
 		if (args[0].equalsIgnoreCase("stacktrace") && !(sender instanceof Player)) {
 
 			if (!showStackTraces) { 
@@ -529,6 +529,11 @@ public class Denizen extends JavaPlugin {
 			return true;
 		}
 
+		if (args[0].equalsIgnoreCase("info")) {
+			getScriptEngine().helper.showInfo(player, getDenizenNPCRegistry().getDenizen(theNPC));
+			return true;
+		}
+
 		if (args[0].equalsIgnoreCase("sethealth")) {
 			if(args.length < 2 || args.length > 2) {
 				player.sendMessage(ChatColor.GOLD + "Invalid use. Use /denizen sethealth [#]");
@@ -541,7 +546,7 @@ public class Denizen extends JavaPlugin {
 				}
 			}
 		}
-		
+
 		if (args[0].equalsIgnoreCase("activity")) {
 			if(args.length < 3) {
 				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help activity");
@@ -552,11 +557,11 @@ public class Denizen extends JavaPlugin {
 					player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help activity");
 					return true;
 				}
-				
+
 				else getActivityRegistry().addActivity(args[2], theNPC, Integer.valueOf(args[3]));
-				
+
 			}
-				
+
 			else if (args[1].equalsIgnoreCase("remove")) {
 				getActivityRegistry().removeActivity(args[2], theNPC);
 			}

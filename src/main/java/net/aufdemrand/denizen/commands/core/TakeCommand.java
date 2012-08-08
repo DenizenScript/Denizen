@@ -130,7 +130,7 @@ public class TakeCommand extends AbstractCommand {
 				
 			}	
 		}
-
+		
 		
 		/* Execute the command, if all required variables are filled. */
 		if (takeType != null) {
