@@ -138,24 +138,22 @@ public class SpeechEngine {
 		}
 
 		if (playerMessageFormat != null)
-			playerMessageFormat = playerMessageFormat
+			playerMessageFormat = colorizeText(playerMessageFormat
 			.replace("<NPC>", denizenName)
 			.replace("<TEXT>", theMessage)
 			.replace("<PLAYER>", thePlayer.getName())
 			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 			.replace("<WORLD>", thePlayer.getWorld().getName())
-			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))
-			.replace("%%", "\u00a7");
+			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
 
 		if (bystanderMessageFormat != null)
-			bystanderMessageFormat = bystanderMessageFormat
+			bystanderMessageFormat = colorizeText(bystanderMessageFormat
 			.replace("<NPC>", denizenName)
 			.replace("<TEXT>", theMessage)
 			.replace("<PLAYER>", thePlayer.getName())
 			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 			.replace("<WORLD>", thePlayer.getWorld().getName())
-			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))
-			.replace("%%", "\u00a7");
+			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
 
 		String[] returnedText = {playerMessageFormat, bystanderMessageFormat};
 
@@ -234,22 +232,20 @@ public class SpeechEngine {
 		}
 
 		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!")) 
-			thePlayer.sendMessage(thePlayerMessage.replace("<NPC>", theDenizen.getName())
+			thePlayer.sendMessage(colorizeText(thePlayerMessage.replace("<NPC>", theDenizen.getName())
 					.replace("<PLAYER>", thePlayer.getName())
 					.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 					.replace("<WORLD>", thePlayer.getWorld().getName())
-					.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))
-					.replace("%%", "\u00a7"));
+					.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))));
 
 		if ((plugin.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
 			if (theRange > 0) {
 				for (Player otherPlayer : plugin.getDenizenNPCRegistry().getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
-					otherPlayer.sendMessage(theBystanderMessage.replace("<NPC>", theDenizen.getName())
+					otherPlayer.sendMessage(colorizeText(theBystanderMessage.replace("<NPC>", theDenizen.getName())
 							.replace("<PLAYER>", thePlayer.getName())
 							.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 							.replace("<WORLD>", thePlayer.getWorld().getName())
-							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))
-							.replace("%%", "\u00a7"));
+							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))));
 				}
 			}
 		}
@@ -257,6 +253,26 @@ public class SpeechEngine {
 		return;
 	}
 
+	
+	// Thanks geckon :)
+	
+    public String colorizeText(String text) 
+    {
+	    Integer i = 0;
+        String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
+        
+        for (ChatColor color : ChatColor.values()) 
+        {
+	        if (i > 15) break;
+            
+            text = text.replaceAll("(?i)<" + color.name() + ">", "" + color);
+            text = text.replaceAll("(?i)<&" + code[i] + ">", "" + color);
+            text = text.replaceAll("(?i)%%" + code[i], "" + color);
+            i++;
+	    }
+
+	    return text;
+	}
 
 
 	/**
