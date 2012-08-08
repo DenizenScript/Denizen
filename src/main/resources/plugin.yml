@@ -2,7 +2,8 @@ name: Denizen
 author: aufdemrand
 version: 0.7
 main: net.aufdemrand.denizen.Denizen
-depend: [Citizens, Vault]
+depend: [Citizens]
+softdepend: [Vault]
 
 commands:
   denizen:
