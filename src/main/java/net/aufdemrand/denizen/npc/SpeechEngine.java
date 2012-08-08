@@ -232,20 +232,12 @@ public class SpeechEngine {
 		}
 
 		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!")) 
-			thePlayer.sendMessage(colorizeText(thePlayerMessage.replace("<NPC>", theDenizen.getName())
-					.replace("<PLAYER>", thePlayer.getName())
-					.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
-					.replace("<WORLD>", thePlayer.getWorld().getName())
-					.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))));
+			thePlayer.sendMessage(thePlayerMessage);
 
 		if ((plugin.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
 			if (theRange > 0) {
 				for (Player otherPlayer : plugin.getDenizenNPCRegistry().getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
-					otherPlayer.sendMessage(colorizeText(theBystanderMessage.replace("<NPC>", theDenizen.getName())
-							.replace("<PLAYER>", thePlayer.getName())
-							.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
-							.replace("<WORLD>", thePlayer.getWorld().getName())
-							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))));
+					otherPlayer.sendMessage(theBystanderMessage);
 				}
 			}
 		}
@@ -254,27 +246,26 @@ public class SpeechEngine {
 	}
 
 	
+	
 	// Thanks geckon :)
 	
-    public String colorizeText(String text) 
-    {
+    public String colorizeText(String text) {
 	    Integer i = 0;
         String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
-        
+
         for (ChatColor color : ChatColor.values()) 
         {
 	        if (i > 15) break;
-            
             text = text.replaceAll("(?i)<" + color.name() + ">", "" + color);
             text = text.replaceAll("(?i)<&" + code[i] + ">", "" + color);
             text = text.replaceAll("(?i)%%" + code[i], "" + color);
             i++;
 	    }
-
 	    return text;
 	}
 
 
+    
 	/**
 	 * Talks to a NPC. Also has replaceable data, end-user, when using <NPC> <TEXT> <PLAYER> <FULLPLAYERNAME> <WORLD> or <HEALTH>.
 	 *
@@ -284,25 +275,25 @@ public class SpeechEngine {
 
 	public void talkToDenizen(DenizenNPC theDenizen, Player thePlayer, String theMessage) {
 
-		thePlayer.sendMessage(plugin.settings.PlayerChatToNpc()
+		thePlayer.sendMessage(colorizeText(plugin.settings.PlayerChatToNpc()
 				.replace("<NPC>", theDenizen.getName())
 				.replace("<TEXT>", theMessage)
 				.replace("<PLAYER>", thePlayer.getName())
 				.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 				.replace("<WORLD>", thePlayer.getWorld().getName())
-				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))));
 
 		if (plugin.settings.BystandersHearNpcToPlayerChat()) {
 			int theRange = plugin.settings.PlayerToNpcChatRangeInBlocks();
 			if (theRange > 0) {
 				for (Player otherPlayer : plugin.getDenizenNPCRegistry().getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
-					otherPlayer.sendMessage(plugin.settings.PlayerChatToNpcBystander()
+					otherPlayer.sendMessage(colorizeText(plugin.settings.PlayerChatToNpcBystander()
 							.replace("<NPC>", theDenizen.getName())
 							.replace("<TEXT>", theMessage)
 							.replace("<PLAYER>", thePlayer.getName())
 							.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 							.replace("<WORLD>", thePlayer.getWorld().getName())
-							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))));
 				}
 			}
 		}
