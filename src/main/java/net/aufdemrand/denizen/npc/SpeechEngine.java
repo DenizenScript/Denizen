@@ -233,12 +233,23 @@ public class SpeechEngine {
 
 		}
 
-		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!")) thePlayer.sendMessage(thePlayerMessage);
+		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!")) 
+			thePlayer.sendMessage(thePlayerMessage.replace("<NPC>", theDenizen.getName())
+					.replace("<PLAYER>", thePlayer.getName())
+					.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
+					.replace("<WORLD>", thePlayer.getWorld().getName())
+					.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))
+					.replace("%%", "\u00a7"));
 
 		if ((plugin.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
 			if (theRange > 0) {
 				for (Player otherPlayer : plugin.getDenizenNPCRegistry().getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
-					otherPlayer.sendMessage(theBystanderMessage);
+					otherPlayer.sendMessage(theBystanderMessage.replace("<NPC>", theDenizen.getName())
+							.replace("<PLAYER>", thePlayer.getName())
+							.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
+							.replace("<WORLD>", thePlayer.getWorld().getName())
+							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))
+							.replace("%%", "\u00a7"));
 				}
 			}
 		}
