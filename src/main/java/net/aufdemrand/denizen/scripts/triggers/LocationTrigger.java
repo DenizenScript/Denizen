@@ -126,7 +126,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 
-		String theScriptName = theDenizen.getInteractScript(thePlayer);
+		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 		if (theScriptName == null) return;
 
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);

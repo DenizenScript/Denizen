@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -245,22 +246,21 @@ public class ScriptHelper {
 	 *
 	 */
 
-	public String getInteractScript(NPC theDenizen, Player thePlayer) {
-
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Getting interact script.");
+	public String getInteractScript(NPC theDenizen, Player thePlayer, Class<? extends AbstractTrigger> theTrigger) {
 
 		String theScript = null;
-		List<String> scriptList = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
-		if (scriptList.isEmpty()) { 
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no interact scripts found!");
+		List<String> assignedScripts = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
+		
+		if (assignedScripts.isEmpty()) { 
+			if (plugin.debugMode) plugin.getLogger().info("Getting interact script... no interact scripts found!");
 			return theScript; 
 		}
 
-		List<String> interactScripts = new ArrayList<String>();
+		if (plugin.debugMode) plugin.getLogger().info("Getting interact script... ");
 
-		/*
-		 *  Get scripts that meet requirements
-		 */
+		/* Get scripts that meet requirements and add them to interactableScripts. */
+
+		List<PriorityPair> interactableScripts = new ArrayList<PriorityPair>();
 
 		LivingEntity theEntity = null;
 		Boolean isPlayer = false;
@@ -270,48 +270,73 @@ public class ScriptHelper {
 		}
 		else theEntity = theDenizen.getBukkitEntity();
 
-		for (String thisScript : scriptList) {
-			String script = thisScript.split(" ", 2)[1];
+		for (String thisScript : assignedScripts) {
+			Integer priority = Integer.valueOf(thisScript.split(" ", 2)[0]);
+			String script = thisScript.split(" ", 2)[1].replace("^", "");
 
 			try {
-			if (plugin.getRequirements.check(script, theEntity, isPlayer)) {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " meets requirements.");
-				interactScripts.add(thisScript);
-			} else {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " does not meet requirements.");
-			}
+				if (plugin.getRequirements.check(script, theEntity, isPlayer)) {
+					interactableScripts.add(new PriorityPair(priority, thisScript.split(" ", 2)[1]));
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "..." + ChatColor.GREEN + thisScript + ChatColor.WHITE + " meets requirements.");
+				} else {
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "..." + ChatColor.YELLOW + thisScript + ChatColor.WHITE + " does not meet requirements.");
+				}
 			} catch (RequirementMissingException e) {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "..." + thisScript + " had a bad requirement, skipping.");
+				if (plugin.debugMode) 
+					plugin.getLogger().log(Level.INFO, "..." + ChatColor.RED + thisScript + ChatColor.WHITE + " had a bad requirement, skipping.");
 			}
+
+		}
+
+		// If list has only one entry, this is it!
+		if (interactableScripts.size() == 1) {
+			theScript = interactableScripts.get(0).name;
+			if (plugin.debugMode) 
+				plugin.getLogger().info("...highest scoring script is " + theScript + ".");
 			
-
+			return theScript;
 		}
 
-		/*
-		 *  Get highest scoring script
-		 */
-
-		if (interactScripts.size() > 1) {
-			int ScriptPriority = -1; // The number to beat
-			for (String thisScript : interactScripts) {
-				String [] thisScriptArray = thisScript.split(" ", 2);
-				if (Integer.parseInt(thisScriptArray[0]) > ScriptPriority) {
-					ScriptPriority = Integer.parseInt(thisScriptArray[0]); theScript = thisScript; }
-			}
-		}
-		
-		/* Only one script?  */
-		else if (interactScripts.size() == 1) theScript = interactScripts.get(0);
-
-		if (interactScripts.size() >= 1) {
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...highest scoring script is " + theScript.split(" ", 2)[1] + ".");
-		return theScript.split(" ", 2)[1];
-		}
-		
-		else {
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no interact scripts found!");
+		else if (interactableScripts.isEmpty()) {
+			if (plugin.debugMode) 
+				plugin.getLogger().info("...no interact scripts found!");
 			return null;
 		}
+		
+		// If we have more than 2 script, let's sort the list from lowest to highest scoring script.
+		else Collections.sort(interactableScripts);
+
+		// Let's find which script to return since there are multiple.
+		for (int a = interactableScripts.size() - 1; a > 0; a--) {
+
+			if (interactableScripts.get(a).name.contains("^")) {
+
+				// This is an Overlay Assignment, check for the appropriate Trigger Script...
+				String theScriptName = interactableScripts.get(a).name.replace("^", "");
+				String triggerString = String.valueOf(plugin.getTriggerRegistry().getTrigger(theTrigger).triggerName.charAt(0)).toUpperCase() + plugin.getTriggerRegistry().getTrigger(theTrigger).triggerName.substring(1).toLowerCase() + " Trigger"; 
+
+				// If Trigger exists, cool, this is our script.
+				if (plugin.getScripts().contains(theScriptName + ".Steps." + getCurrentStep(thePlayer, theScriptName) + "." + triggerString + ".Script")) {
+					if (plugin.debugMode) plugin.getLogger().info("...highest scoring script is " + theScriptName + ".");
+					return theScriptName;
+				}
+				else {
+					if (plugin.debugMode) plugin.getLogger().info("...no trigger, next script!");
+					// Trigger does not exist. Next script!
+				}
+			} else { // Not an overlay, highest script.
+				if (plugin.debugMode) 
+					plugin.getLogger().info("...highest scoring script is " + interactableScripts.get(a).name + ".");
+				return interactableScripts.get(a).name;
+			}
+		}
+		
+		if (plugin.debugMode) 
+			plugin.getLogger().info("...no interact scripts found!");
+		return null;
+		
 	}
 
 

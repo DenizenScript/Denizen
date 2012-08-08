@@ -63,8 +63,6 @@ public class ScriptEngine {
 					 * If it's more, then this entry will be skipped and saved for next time. */
 					if (theEntry.getValue().get(0).getDelayedTime() < System.currentTimeMillis()) {
 
-						plugin.getLogger().info("DEBUG for " + theEntry.getValue().get(0).getCommand() + ". Delayed Time:" + theEntry.getValue().get(0).getDelayedTime() + " Current Time:" + System.currentTimeMillis());
-						
 						/* Feeds the executer ScriptCommands as long as they are instant commands ("^"), otherwise
 						 * runs one command, removes it from the queue, and moves on to the next player. */
 						boolean instantly;

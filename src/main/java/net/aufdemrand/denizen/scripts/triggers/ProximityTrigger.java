@@ -86,7 +86,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Proximity Trigger.");
 
 		/* Get Interact Script, if any. */
-		String theScriptName = theDenizen.getInteractScript(thePlayer);
+		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 
 		if (theScriptName == null) return false;
 

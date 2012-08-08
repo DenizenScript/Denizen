@@ -60,7 +60,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Click Trigger.");
 		
 		/* Get Interact Script, if any. */
-		String theScriptName = theDenizen.getInteractScript(thePlayer);
+		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 
 		if (theScriptName == null) return false;
 		
@@ -69,6 +69,8 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
 		/* Get the contents of the Script. */
 		List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + sE.scriptString);
+		
+		if (theScript.isEmpty()) return false;
 
 		/* Build scriptEntries from theScript and add it into the queue */
 		sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep), QueueType.TRIGGER);

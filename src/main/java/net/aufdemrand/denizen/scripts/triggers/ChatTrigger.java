@@ -35,7 +35,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
 				
 				/* Get the script to use */
-				String theScript = theDenizen.getInteractScript(event.getPlayer());
+				String theScript = theDenizen.getInteractScript(event.getPlayer(), this.getClass());
 
 				/* No script matches, should we still show the player talking to the Denizen? */
 				if (theScript == null && !plugin.settings.ChatGloballyIfNoChatTriggers()) { 

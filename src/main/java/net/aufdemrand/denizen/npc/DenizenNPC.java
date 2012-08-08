@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.commands.core.EngageCommand;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
+import net.aufdemrand.denizen.scripts.AbstractTrigger;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
@@ -96,8 +97,8 @@ public class DenizenNPC {
 	}
 
 
-	public String getInteractScript(Player thePlayer) {
-		return sE.getInteractScript(citizensNPC, thePlayer);
+	public String getInteractScript(Player thePlayer, Class<? extends AbstractTrigger> triggerType) {
+		return sE.getInteractScript(citizensNPC, thePlayer, triggerType);
 	}
 
 

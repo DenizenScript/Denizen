@@ -58,11 +58,14 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 		// Play the HURT effect.
 		theDenizen.getEntity().playEffect(EntityEffect.HURT);
 
-		String theScriptName = theDenizen.getInteractScript(thePlayer);
+		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 		if (theScriptName == null) return false;
 
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 		List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + sE.scriptString);
+		
+		if (theScript.isEmpty()) return false;
+		
 		sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep), QueueType.TRIGGER);
 
 		return true;
