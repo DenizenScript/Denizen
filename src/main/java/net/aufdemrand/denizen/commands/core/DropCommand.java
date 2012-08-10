@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
+import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -42,7 +44,8 @@ public class DropCommand extends AbstractCommand {
 
 		int amount = 1;
 		ItemStack item = null;
-
+		Location theLocation = null;
+		
 		/* Match arguments to expected variables */
 		if (theEntry.arguments() != null) {
 			for (String thisArgument : theEntry.arguments()) {
@@ -57,6 +60,19 @@ public class DropCommand extends AbstractCommand {
 					amount = Integer.valueOf(thisArgument.split(":")[1]); 
 				}
 
+				/* If argument is a BOOKMARK modifier */
+				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
+						&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
+					theLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+				} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
+						plugin.bookmarks.exists(theEntry.getDenizen(), thisArgument.split(":")[1])) {
+					theLocation = plugin.bookmarks.get(theEntry.getDenizen(), thisArgument, BookmarkType.LOCATION);
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+				}
+				
 				/* If argument is and ItemID */
 				else if (thisArgument.matches("\\d+")) {
 					if (plugin.debugMode) 
@@ -114,13 +130,14 @@ public class DropCommand extends AbstractCommand {
 		/* Execute the command, if all required variables are filled. */
 		if (item != null) {
 			item.setAmount(amount);
-			theEntry.getDenizen().getWorld().dropItemNaturally(theEntry.getDenizen().getLocation(), item);
+			if (theLocation == null) theLocation = theEntry.getDenizen().getLocation();
+			theEntry.getDenizen().getWorld().dropItemNaturally(theLocation, item);
 			return true;
 		}
 
 		/* Error processing */
 		if (plugin.debugMode)
-			throw new CommandException("...Usage: DROP [#(:#)|MATERIAL_TYPE(:#)] (QTY:#)");
+			throw new CommandException("...Usage: DROP [#(:#)|MATERIAL_TYPE(:#)] (QTY:#) (BOOKMARK:LocationBookmark)");
 
 		return false;
 	}
