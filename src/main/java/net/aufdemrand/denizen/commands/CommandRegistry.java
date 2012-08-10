@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.commands.core.DropCommand;
 import net.aufdemrand.denizen.commands.core.EngageCommand;
 import net.aufdemrand.denizen.commands.core.ExecuteCommand;
 import net.aufdemrand.denizen.commands.core.FailCommand;
@@ -85,8 +86,10 @@ public class CommandRegistry {
 		GiveCommand giveCommand = new GiveCommand();
 		PermissCommand permissCommand = new PermissCommand();
 		RefuseCommand refuseCommand = new RefuseCommand();
+		DropCommand dropCommand = new DropCommand();
 		
 		try {
+			dropCommand.activateAs("DROP");
 			permissCommand.activateAs("PERMISS");
 			refuseCommand.activateAs("REFUSE");
 			giveCommand.activateAs("GIVE");
