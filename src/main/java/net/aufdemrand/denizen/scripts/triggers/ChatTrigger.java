@@ -108,6 +108,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				plugin.getSpeechEngine().talkToDenizen(theDenizen, thePlayer, chatText);
 
 				List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + String.valueOf(x + 1) + sE.scriptString);
+				
+				if (theScript.isEmpty()) return false;
 
 				sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep, playerMessage, chatText), QueueType.TRIGGER);
 

@@ -134,9 +134,11 @@ public class ScriptHelper {
 		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen setname" + ChatColor.GRAY + " to change the Denizen's name.");
 		thePlayer.sendMessage("");
 
-
-		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Key: " + ChatColor.GREEN + "Assigned to Name. " + ChatColor.YELLOW + "Assigned to ID.");
-
+		thePlayer.sendMessage(ChatColor.GRAY + "Trigger Status:");
+		for (String line : plugin.getSpeechEngine().getMultilineText(theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).listTriggers()))
+		thePlayer.sendMessage(line);
+		thePlayer.sendMessage("");
+		
 		/* Show Assigned Scripts. */
 
 		boolean scriptsPresent = false;
@@ -401,11 +403,14 @@ public class ScriptHelper {
 	}
 
 	public List<String> getScript(String triggerPath) {
+		
+		List<String> scriptList = new ArrayList<String>();
+		
 		if (plugin.getScripts().contains(triggerPath.replace("..", "."))) {
-			return plugin.getScripts().getStringList(triggerPath.replace("..", "."));
+			scriptList = plugin.getScripts().getStringList(triggerPath.replace("..", "."));
 		}
 
-		else return null;
+		return scriptList;
 	}
 
 
