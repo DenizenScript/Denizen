@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
+import net.minecraft.server.World;
 
 /**
  * Gives permissions to a Player via Vault.
@@ -82,7 +83,8 @@ public class PermissCommand extends AbstractCommand {
 			if (plugin.perms != null) {
 
 				if (worldName == null) {
-					plugin.perms.playerAdd(theEntry.getPlayer(), permissionsNode);
+					String nullString = null;
+					plugin.perms.playerAdd(nullString, theEntry.getPlayer().getName(), permissionsNode);
 				} else {
 					plugin.perms.playerAdd(plugin.getServer().getWorld(worldName), theEntry.getPlayer().getName(), permissionsNode);
 				}
@@ -101,7 +103,8 @@ public class PermissCommand extends AbstractCommand {
 
 			if (plugin.perms != null) {
 				if (worldName == null) {
-					plugin.perms.playerAddGroup(theEntry.getPlayer(), groupName);
+					String nullString = null;
+					plugin.perms.playerAddGroup(nullString, theEntry.getPlayer().getName(), groupName);
 				} else {
 					plugin.perms.playerAddGroup(plugin.getServer().getWorld(worldName), theEntry.getPlayer().getName(), groupName);
 				}

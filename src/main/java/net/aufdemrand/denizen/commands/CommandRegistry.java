@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.commands.core.FlagCommand;
 import net.aufdemrand.denizen.commands.core.GiveCommand;
 import net.aufdemrand.denizen.commands.core.LookCommand;
 import net.aufdemrand.denizen.commands.core.PermissCommand;
+import net.aufdemrand.denizen.commands.core.RefuseCommand;
 import net.aufdemrand.denizen.commands.core.ResetCommand;
 import net.aufdemrand.denizen.commands.core.SpawnCommand;
 import net.aufdemrand.denizen.commands.core.StrikeCommand;

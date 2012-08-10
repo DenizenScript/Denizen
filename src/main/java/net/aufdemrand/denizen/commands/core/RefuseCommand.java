@@ -82,7 +82,8 @@ public class RefuseCommand extends AbstractCommand {
 			if (plugin.perms != null) {
 
 				if (worldName == null) {
-					plugin.perms.playerRemove(theEntry.getPlayer(), permissionsNode);
+					String nullString = null;
+					plugin.perms.playerRemove(nullString, theEntry.getPlayer().getName(), groupName);
 				} else {
 					plugin.perms.playerRemove(plugin.getServer().getWorld(worldName), theEntry.getPlayer().getName(), permissionsNode);
 				}
@@ -101,7 +102,8 @@ public class RefuseCommand extends AbstractCommand {
 
 			if (plugin.perms != null) {
 				if (worldName == null) {
-					plugin.perms.playerRemoveGroup(theEntry.getPlayer(), groupName);
+					String nullString = null;
+					plugin.perms.playerAddGroup(nullString, theEntry.getPlayer().getName(), groupName);
 				} else {
 					plugin.perms.playerRemoveGroup(plugin.getServer().getWorld(worldName), theEntry.getPlayer().getName(), groupName);
 				}
