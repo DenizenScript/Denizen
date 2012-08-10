@@ -83,9 +83,11 @@ public class CommandRegistry {
 		TakeCommand takeCommand = new TakeCommand();
 		GiveCommand giveCommand = new GiveCommand();
 		PermissCommand permissCommand = new PermissCommand();
+		RefuseCommand refuseCommand = new RefuseCommand();
 		
 		try {
 			permissCommand.activateAs("PERMISS");
+			refuseCommand.activateAs("REFUSE");
 			giveCommand.activateAs("GIVE");
 			takeCommand.activateAs("TAKE");
 			executeCommand.activateAs("EXECUTE");
