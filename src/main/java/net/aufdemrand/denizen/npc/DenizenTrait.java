@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.exception.NPCLoadException;
@@ -74,10 +75,36 @@ public class DenizenTrait extends Trait implements Toggleable {
 
 
 	public boolean triggerIsEnabled(String theName) {
-		if (triggerMap.containsKey(theName))
-			return triggerMap.get(theName);
+		if (triggerMap.containsKey(theName.toUpperCase()))
+			return triggerMap.get(theName.toUpperCase());
 		else return false;
 	}
 
+	public String listTriggers() {
+		String theList = ChatColor.GOLD + "Current trigger status: ";
+		for (Entry<String, Boolean> theEntry : triggerMap.entrySet()) {
+			theList = theList + theEntry.getKey().toLowerCase() + "-trigger: ";
+			if (theEntry.getValue())
+				theList = theList + "enabled, ";
+			else
+				theList = theList + "disabled, ";
+		}
+		theList = theList.substring(0, theList.length() - 2);
+		return theList;
+	}
+
+	public String toggleTrigger(String theTrigger) {
+		if (triggerMap.containsKey(theTrigger.toUpperCase())) {
+			if (triggerMap.get(theTrigger.toUpperCase())) {
+				triggerMap.put(theTrigger.toUpperCase(), false);
+				return theTrigger + "-trigger now disabled.";
+			} else {
+				triggerMap.put(theTrigger.toUpperCase(), true);
+				return theTrigger + "-trigger now enabled.";
+			}
+		} else {
+			return "Trigger not found!";
+		}
+	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scripts.AbstractTrigger;
@@ -27,13 +28,13 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 		DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), 
 				plugin.settings.PlayerToNpcChatRangeInBlocks());
-		
+
 		if (theDenizen != null) {
 
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Found nearby NPC, interrupting chat...");
 
 			if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
-				
+
 				/* Get the script to use */
 				String theScript = theDenizen.getInteractScript(event.getPlayer(), this.getClass());
 
@@ -49,17 +50,19 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 						event.setCancelled(true);
 					else 
 						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...resuming chat, no chat triggers found!");
-				
+
 				}
 			}
-			
+
 			else {
-				if (!plugin.settings.ChatGloballyIfNotInteractable())
-				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
-				theDenizen.talk(TalkType.CHAT, event.getPlayer(), Reason.DenizenIsUnavailable);
+				if (theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled("chat")) {
+					if (!plugin.settings.ChatGloballyIfNotInteractable())
+						plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
+					theDenizen.talk(TalkType.CHAT, event.getPlayer(), Reason.DenizenIsUnavailable);
+				}
 			}
 		}
-		
+
 	}
 
 

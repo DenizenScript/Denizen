@@ -547,6 +547,22 @@ public class Denizen extends JavaPlugin {
 			}
 		}
 
+		if (args[0].equalsIgnoreCase("trigger")) {
+			if (args[1].equalsIgnoreCase("list")) {
+				player.sendMessage(theNPC.getTrait(DenizenTrait.class).listTriggers());
+				return true;
+			}
+			if (args[1].equalsIgnoreCase("toggle")) {
+				if (args.length > 2) {
+					player.sendMessage(theNPC.getTrait(DenizenTrait.class).toggleTrigger(args[2]));
+					return true;
+				}
+				else {
+					player.sendMessage(ChatColor.GOLD + "Must specify a Trigger to toggle. Use /denizen trigger list to see what triggers are available.");
+				}
+			}
+		}
+		
 		if (args[0].equalsIgnoreCase("activity")) {
 			if(args.length < 3) {
 				player.sendMessage(ChatColor.GOLD + "Invalid use.  Use /denizen help activity");

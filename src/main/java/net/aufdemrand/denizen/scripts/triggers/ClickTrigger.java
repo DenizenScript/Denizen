@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scripts.AbstractTrigger;
@@ -42,10 +43,13 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 					denizenNPC.talk(TalkType.CHAT, event.getClicker(), Reason.NoMatchingClickTrigger);
 				}
 			}
-			
+
 			else {
-				if (!plugin.settings.ChatGloballyIfNotInteractable())
-				denizenNPC.talk(TalkType.CHAT, event.getClicker(), Reason.DenizenIsUnavailable);
+				if (denizenNPC.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled("click")) {
+					if (!plugin.settings.ChatGloballyIfNotInteractable())
+						denizenNPC.talk(TalkType.CHAT, event.getClicker(), Reason.DenizenIsUnavailable);
+
+				}
 			}
 		}
 	}
@@ -58,18 +62,18 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Click Trigger.");
-		
+
 		/* Get Interact Script, if any. */
 		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 
 		if (theScriptName == null) return false;
-		
+
 		/* Get Player's current step */
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 
 		/* Get the contents of the Script. */
 		List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + sE.scriptString);
-		
+
 		if (theScript.isEmpty()) return false;
 
 		/* Build scriptEntries from theScript and add it into the queue */

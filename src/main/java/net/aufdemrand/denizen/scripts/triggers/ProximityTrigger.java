@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.scripts.AbstractTrigger;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
@@ -33,41 +34,44 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 			if (plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks()) != null) {
 				DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), plugin.settings.ProximityTriggerRangeInBlocks());
 
-				if (event.getPlayer().hasMetadata("proximity")) {
+				if (theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled("proximity")) {
 
-					/* If closest is same as stored metadata, avoid retrigger. */
-					if (event.getPlayer().getMetadata("proximity").get(0).asString().equals(theDenizen.toString())) {
-						if (plugin.debugMode) if (!event.getPlayer().hasMetadata("proximitydebug")) {
-							event.getPlayer().setMetadata("proximitydebug", new FixedMetadataValue(plugin, true));
-							return;
+					if (event.getPlayer().hasMetadata("proximity")) {
+
+						/* If closest is same as stored metadata, avoid retrigger. */
+						if (event.getPlayer().getMetadata("proximity").get(0).asString().equals(theDenizen.toString())) {
+							if (plugin.debugMode) if (!event.getPlayer().hasMetadata("proximitydebug")) {
+								event.getPlayer().setMetadata("proximitydebug", new FixedMetadataValue(plugin, true));
+								return;
+							}
+							else return;
 						}
-						else return;
-					}
-
-					/* Set Metadata value to avoid retrigger. */
-					event.getPlayer().setMetadata("proximity", new FixedMetadataValue(plugin, theDenizen.toString()));
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity metadata now: '" + event.getPlayer().getMetadata("proximity").get(0).asString() + "'");
-					
-					/* If closest is different than stored metadata and proximity trigger is enabled for said NPC, trigger */
-					if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
-
-						/* TRIGGER! */
-						sE.setCooldown(theDenizen, ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
-						parseProximityTrigger(theDenizen, event.getPlayer());
-					}
-
-				} else { /* Player does not have metadata */
-
-					/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
-					if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
 
 						/* Set Metadata value to avoid retrigger. */
 						event.getPlayer().setMetadata("proximity", new FixedMetadataValue(plugin, theDenizen.toString()));
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity metadata was empty, now: " + event.getPlayer().getMetadata("proximity").get(0).asString() + "'");
+						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity metadata now: '" + event.getPlayer().getMetadata("proximity").get(0).asString() + "'");
 
-						/* TRIGGER! */
-						sE.setCooldown(theDenizen, ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
-						parseProximityTrigger(theDenizen, event.getPlayer());
+						/* If closest is different than stored metadata and proximity trigger is enabled for said NPC, trigger */
+						if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
+
+							/* TRIGGER! */
+							sE.setCooldown(theDenizen, ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
+							parseProximityTrigger(theDenizen, event.getPlayer());
+						}
+
+					} else { /* Player does not have metadata */
+
+						/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
+						if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
+
+							/* Set Metadata value to avoid retrigger. */
+							event.getPlayer().setMetadata("proximity", new FixedMetadataValue(plugin, theDenizen.toString()));
+							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity metadata was empty, now: " + event.getPlayer().getMetadata("proximity").get(0).asString() + "'");
+
+							/* TRIGGER! */
+							sE.setCooldown(theDenizen, ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
+							parseProximityTrigger(theDenizen, event.getPlayer());
+						}
 					}
 				}
 			}
