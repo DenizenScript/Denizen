@@ -2,7 +2,10 @@ package net.aufdemrand.denizen.commands.core;
 
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
@@ -11,6 +14,8 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.command.exception.CommandException;
+import net.citizensnpcs.*;
+import net.minecraft.server.EntityLiving;
 
 
 /**
@@ -38,8 +43,10 @@ public class LookCommand extends AbstractCommand {
 	 * (DURATION:#) Reverts to the previous head position after # amount of seconds.
 	 */
 
+
 	@Override
 	public boolean execute(ScriptEntry theCommand) throws CommandException {
+
 
 		/* Initialize variables */ 
 
@@ -184,10 +191,7 @@ public class LookCommand extends AbstractCommand {
 
 		else if (lookWhere.equals("AT")) {
 			theDenizen.lookClose(false);
-			Location at = lookAt(theEntity.getLocation(), theDenizen.getLocation());
-			theDenizen.getHandle().pitch = at.getPitch() - 90;
-			theDenizen.getHandle().yaw = at.getYaw();
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;
+			faceEntity(theDenizen.getEntity(), theEntity);
 		}
 
 		else if (lookLoc != null) {
@@ -203,12 +207,12 @@ public class LookCommand extends AbstractCommand {
 				public void run(DenizenNPC denizen, Location location, Boolean lookClose, Float checkYaw) { 
 
 					if (denizen.getLocation().getYaw() == checkYaw) {
-					denizen.getHandle().yaw = location.getYaw();
-					denizen.getHandle().pitch = location.getPitch();
-					denizen.getHandle().as = denizen.getHandle().yaw;				
-					denizen.lookClose(lookClose);
+						denizen.getHandle().yaw = location.getYaw();
+						denizen.getHandle().pitch = location.getPitch();
+						denizen.getHandle().as = denizen.getHandle().yaw;				
+						denizen.lookClose(lookClose);
 					}
-					
+
 				}
 			}, duration * 20);
 		}
@@ -217,46 +221,29 @@ public class LookCommand extends AbstractCommand {
 	}
 
 
-	/* 
-	 * Code below borrowed from bergerkiller
-	 * http://forums.bukkit.org/threads/lookat-and-move-functions.26768/
-	 * 
-	 * Thanks!
-	 */
+	private void faceEntity(Entity from, Entity at) {
+		if (from.getWorld() != at.getWorld())
+			return;
+		Location loc = from.getLocation();
 
-	public static Location lookAt(Location loc, Location lookat) {
-		//Clone the loc to prevent applied changes to the input loc
-		loc = loc.clone();
+		double xDiff = at.getLocation().getX() - loc.getX();
+		double yDiff = at.getLocation().getY() - loc.getY();
+		double zDiff = at.getLocation().getZ() - loc.getZ();
 
-		// Values of change in distance (make it relative)
-		double dx = lookat.getX() - loc.getX();
-		double dy = lookat.getY() - loc.getY();
-		double dz = lookat.getZ() - loc.getZ();
+		double distanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+		double distanceY = Math.sqrt(distanceXZ * distanceXZ + yDiff * yDiff);
 
-		// Set yaw
-		if (dx != 0) {
-			// Set yaw start value based on dx
-			if (dx < 0) {
-				loc.setYaw((float) (1.5 * Math.PI));
-			} else {
-				loc.setYaw((float) (0.5 * Math.PI));
-			}
-			loc.setYaw((float) loc.getYaw() - (float) Math.atan(dz / dx));
-		} else if (dz < 0) {
-			loc.setYaw((float) Math.PI);
+		double yaw = (Math.acos(xDiff / distanceXZ) * 180 / Math.PI);
+		double pitch = (Math.acos(yDiff / distanceY) * 180 / Math.PI) - 90;
+		if (zDiff < 0.0) {
+			yaw = yaw + (Math.abs(180 - yaw) * 2);
 		}
 
-		// Get the distance from dx/dz
-		double dxz = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
-
-		// Set pitch
-		loc.setPitch((float) -Math.atan(dy / dxz));
-
-		// Set values, convert to degrees (invert the yaw since Bukkit uses a different yaw dimension format)
-		loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI);
-		loc.setPitch(loc.getPitch() * 180f / (float) Math.PI);
-
-		return loc;
+		EntityLiving handle = ((CraftLivingEntity) from).getHandle();
+		handle.yaw = (float) yaw - 90;
+		handle.pitch = (float) pitch;
+		handle.as = handle.yaw;
 	}
+
 }
 
