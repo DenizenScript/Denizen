@@ -46,7 +46,7 @@ public class RequirementRegistry {
 			return null;
 	}
 
-	public void registerCorerequirements() {
+	public void registerCoreRequirements() {
 
 		FlaggedRequirement flaggedRequirement = new FlaggedRequirement();
 		

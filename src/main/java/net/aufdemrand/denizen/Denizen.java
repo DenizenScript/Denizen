@@ -119,6 +119,7 @@ public class Denizen extends JavaPlugin {
 		commandRegistry.registerCoreCommands();
 		triggerRegistry.registerCoreTriggers();
 		activityRegistry.registerCoreActivities();
+		requirementRegistry.registerCoreRequirements();
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 			@Override public void run() { scriptEngine.runQueues(); }
