@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.commands;
 
 import java.rmi.activation.ActivationException;
+import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -11,6 +12,29 @@ import org.bukkit.Bukkit;
 public abstract class AbstractCommand {
 
 	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+	public ArgumentRegex aRegex = plugin.getCommandRegistry().getArgumentRegex();
+	
+	public void echoDebug(String message, String argument) {
+		if (plugin.debugMode)
+			plugin.getLogger().info(String.format(message, argument));
+	}
+
+	public void echoError(String message) {
+			plugin.getLogger().log(Level.WARNING, message);
+	}
+	
+	public String getModifier(String argument) {
+		if (argument.split(":").length >= 2)
+			return argument.split(":")[1];
+		else return argument;
+	}
+	
+	public Integer getIntegerModifier(String argument) {
+		if (argument.split(":").length >= 2)
+			return Integer.valueOf(argument.split(":")[1]);
+		else return Integer.valueOf(argument);
+	}
+	
 	
 	/* Activates the command class as a Denizen Command. Should be called on startup. */
 	

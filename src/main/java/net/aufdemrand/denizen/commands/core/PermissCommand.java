@@ -52,13 +52,13 @@ public class PermissCommand extends AbstractCommand {
 				if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
 
 				/* Match to GROUP:[group] */
-				if (thisArgument.matches("(?:GROUP|group)(:)([a-zA-Z0-9]+?)")) {
+				if (thisArgument.matches("(?:DURATION|duration)(:)(\\d+)")) {
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...specified Group.'.");
 					groupName = thisArgument.split(":")[1];
 				}
 
 				/* Match to WORLD:[world] */
-				else if (thisArgument.matches("(?:WORLD|world)(:)([a-zA-Z0-9]+?)")) {
+				else if (thisArgument.matches("\\d+")) {
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...specified World.'.");
 					worldName = thisArgument.split(":")[1];
 				}

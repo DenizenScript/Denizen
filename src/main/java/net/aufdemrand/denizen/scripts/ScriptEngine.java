@@ -284,49 +284,7 @@ public class ScriptEngine {
 
 	}
 
-
-
-	public void newLocationTask(Player thePlayer, NPC theDenizen, String theLocation, int theDuration, int theLeeway, String theScript) {
-
-		long taskId = System.currentTimeMillis();
-
-		/* Add new task to list */
-		List<String> listAll = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Tasks.List All.Locations");
-		listAll.add(theLocation + ";" + theDenizen.getName() + ";" + taskId);
-		plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All.Locations", listAll);
-
-		/* Populate task entry */
-		String taskString = "Players." + thePlayer.getName() + ".Tasks.List Entries." + taskId + ".";
-
-		plugin.getSaves().set(taskString + "Type", "Location");
-		plugin.getSaves().set(taskString + "Leeway", theLeeway);
-		plugin.getSaves().set(taskString + "Duration", theDuration);
-		plugin.getSaves().set(taskString + "Script", theScript);
-
-		plugin.saveSaves();
-
-	}
-
-
-
-	public void finishLocationTask(Player thePlayer, String taskId) {
-
-		List<String> listAll = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Tasks.List All.Locations");			
-		List<String> newList = new ArrayList<String>();
-
-		for (String theTask : listAll) {
-			if (!theTask.contains(taskId)) newList.add(theTask); 
-		}
-
-		if (newList.isEmpty()) plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All.Locations", null);
-		else plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List All.Locations", newList);
-
-		String theScript = plugin.getSaves().getString("Players." + thePlayer.getName() + ".Tasks.List Entries." + taskId + ".Script");
-		plugin.getSaves().set("Players." + thePlayer.getName() + ".Tasks.List Entries." + taskId, null);
-		plugin.saveSaves();
-
-		parseTaskScript(thePlayer, theScript);
-
-	}
-
+	
+	
+	
 }

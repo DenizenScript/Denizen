@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -46,27 +44,29 @@ public class ResetCommand extends AbstractCommand {
 		if (theCommand.arguments() != null) {
 			for (String thisArgument : theCommand.arguments()) {
 
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
-
 				if (thisArgument.equals("FINISHES") || thisArgument.equals("FINISHED") || thisArgument.equals("FINISH")) {
 					resetType = ResetType.FINISH;
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found reset type of FINISHES.");
+					if (plugin.debugMode) 
+						plugin.getLogger().info("Matched " + thisArgument + "...will reset FINISHED.");
 				}
 
 				else if (thisArgument.equals("FAILS") || thisArgument.equals("FAIL") || thisArgument.equals("FAILED")) {
 					resetType = ResetType.FAIL;
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found reset type of FAILES.");
+					if (plugin.debugMode) 
+						plugin.getLogger().info("Matched " + thisArgument + "...will reset FAILED.");
 				}
 
 				else if (thisArgument.toUpperCase().contains("FLAG:")) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found reset type of FLAG.");	
+					if (plugin.debugMode) 
+						plugin.getLogger().info("Matched " + thisArgument + "...will reset FLAG.");
 					theFlag = thisArgument.split(":")[1].toUpperCase();
 					resetType = ResetType.FLAG;
 				}
 
 				else { 
 					theScript = thisArgument;
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found script '" + thisArgument + "'.");	
+					if (plugin.debugMode) 
+						plugin.getLogger().info("Matched " + thisArgument + "...changed script to be RESET.");
 				}
 			}
 		}
@@ -90,7 +90,7 @@ public class ResetCommand extends AbstractCommand {
 			return true;
 		}
 
-		throw new CommandException("Unknown error, check syntax!");
+		throw new CommandException("...not enough arguments! Use RESET ('Name of Script') [FINISHES|FAILS]  or  RESET [FLAG:[NAME]]");
 	}
 
 

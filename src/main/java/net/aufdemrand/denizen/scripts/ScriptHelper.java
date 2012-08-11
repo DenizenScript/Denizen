@@ -43,68 +43,18 @@ public class ScriptHelper {
 
 
 	/*
-	 * ConcatenateScripts
-	 * 
-	 * Combines script files into one YML file for Denizen to read from.
-	 * Code mostly borrowed from: http://www.roseindia.net/tutorial/java/core/files/fileconcatenation.html
-	 * 
-	 * Thanks!
-	 */
-
-	public void ConcatenateScripts() throws IOException {
-
-		try {
-
-			PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-scripts.yml"));
-			File file = new File(plugin.getDataFolder() + File.separator + "scripts");
-			File[] files = file.listFiles();
-			for (int i = 0; i < files.length; i++) {
-
-				String fileName = files[i].getName();
-				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
-
-					plugin.getLogger().log(Level.INFO, "Processing script " + files[i].getName() + "... ");
-					BufferedReader br = new BufferedReader(new FileReader(files[i]
-							.getPath()));
-					String line = br.readLine();
-					while (line != null) {
-						pw.println(line);
-						line = br.readLine();
-					}
-					br.close();
-
-				}
-			}
-			pw.close();
-			plugin.getLogger().log(Level.INFO, "OK! All scripts loaded!");
-
-		} catch (Throwable error) {
-			plugin.getLogger().log(Level.WARNING, "Woah! No scripts in /plugins/Denizen/scripts/ to load!");		
-		}
-
-	}
-
-
-
-	/*
 	 * Checks cooldowns/set cooldowns.
 	 */
 
+
 	Map<DenizenNPC, Map<Class<?>, Long>> triggerCooldowns = new ConcurrentHashMap<DenizenNPC, Map<Class<?>,Long>>();
 
+	// Trigger cooldown
 	public boolean checkCooldown(DenizenNPC theDenizen, Class<?> theTrigger) {
 
 		if (!triggerCooldowns.containsKey(theDenizen)) return true;
 		if (!triggerCooldowns.get(theDenizen).containsKey(theTrigger)) return true;
 		if (System.currentTimeMillis() >= triggerCooldowns.get(theDenizen).get(theTrigger)) return true;
-
-		return false;
-	}
-
-	public boolean checkCooldown(Player thePlayer, String theScript) {
-
-		if (!plugin.getSaves().contains("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time")) return true;
-		if (System.currentTimeMillis() >= plugin.getSaves().getLong("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time"))	return true;
 
 		return false;
 	}
@@ -115,14 +65,36 @@ public class ScriptHelper {
 		triggerCooldowns.put(theDenizen, triggerMap);
 	}
 
-	public void setCooldown(Player thePlayer, String theScript, Long millis) {
+	// Script cooldown
+	public boolean checkCooldown(Player thePlayer, String theScript) {
+
+		if (plugin.getSaves().contains("Global.Scripts." + theScript + ".Cooldown")) {
+			if (System.currentTimeMillis() < plugin.getSaves().getLong("Global.Scripts." + theScript + ".Cooldown Time"))
+				return false;
+			else plugin.getSaves().set("Global.Scripts." + theScript + ".Cooldown Time", null);
+		}
+
+		// If no entry for the script, return true;
+		if (!plugin.getSaves().contains("Players." + thePlayer.getName() + ".Scripts." + theScript + ".Cooldown Time")) 
+			return true;
+		// If there is an entry, check against the time. 
+		if (System.currentTimeMillis() >= plugin.getSaves().getLong("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time"))	{
+			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time", null);
+			return true;
+		}
+
+
+		return false;
+	}
+
+	public void setooldown(Player thePlayer, String theScript, Long millis) {
 		plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time", System.currentTimeMillis() + millis);
 	}
 
 
 
 	/* 
-	 * Denizen Info
+	 * Denizen Info-Click
 	 */
 
 	public void showInfo(Player thePlayer, DenizenNPC theDenizen) {
@@ -137,9 +109,9 @@ public class ScriptHelper {
 
 		thePlayer.sendMessage(ChatColor.GRAY + "Trigger Status:");
 		for (String line : plugin.getSpeechEngine().getMultilineText(theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).listTriggers()))
-		thePlayer.sendMessage(line);
+			thePlayer.sendMessage(line);
 		thePlayer.sendMessage("");
-		
+
 		/* Show Assigned Scripts. */
 
 		boolean scriptsPresent = false;
@@ -230,9 +202,7 @@ public class ScriptHelper {
 			}
 		}
 
-
 		if (!bookmarksPresent) thePlayer.sendMessage(ChatColor.RED + "  No bookmarks defined!");
-
 		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen bookmark" + ChatColor.GRAY + " to create bookmarks.");
 		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Turn on precision mode with " + ChatColor.WHITE + "/denizen precision" + ChatColor.GRAY + " to assign to Id.");
 		thePlayer.sendMessage("");		
@@ -241,19 +211,17 @@ public class ScriptHelper {
 
 
 	/* 
-	 *  GetInteractScript
-	 *
-	 *  Requires the Denizen and the Player
-	 *  Checks the Denizens scripts and returns the script that meets requirements and has
-	 *  the highest weight.  If no script matches, returns "none".
+	 *  ScriptEngine helper methods help choose which script Players should be interacting with.
 	 *
 	 */
+
+	// Gets the InteractScript from a NPC Denizen for a Player and returns the appropriate Script.
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer, Class<? extends AbstractTrigger> theTrigger) {
 
 		String theScript = null;
 		List<String> assignedScripts = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
-		
+
 		if (assignedScripts.isEmpty()) { 
 			if (plugin.debugMode) plugin.getLogger().info("Getting interact script... no interact scripts found!");
 			return theScript; 
@@ -279,14 +247,37 @@ public class ScriptHelper {
 
 			try {
 				if (plugin.getRequirements.check(script, theEntity, isPlayer)) {
-					interactableScripts.add(new PriorityPair(priority, thisScript.split(" ", 2)[1]));
+
+					// Meets requirements, but we need to check cooldown, too.
 					if (plugin.debugMode) 
 						plugin.getLogger().log(Level.INFO, "..." + ChatColor.GREEN + thisScript + ChatColor.WHITE + " meets requirements.");
+
+					if (thePlayer != null) {
+						if (checkCooldown(thePlayer, script)) {
+							// Cooldown is good, add script!
+							interactableScripts.add(new PriorityPair(priority, thisScript.split(" ", 2)[1]));
+						} else {
+							// Cooldown failed, alert console!
+							if (plugin.debugMode) 
+								plugin.getLogger().log(Level.INFO, "   ...but, isn't cooled down, yet! Skipping.");
+						}
+
+					} else {
+						// Entity is not a Player, not sure how to handle this, yet, or if it's even neccesary.
+						// Build this in thinking that maybe DenizenNPCs may need to be checked for requirements
+						// sometime in the future.
+					}
 				} else {
+
+					// Does not meet requirements, alert the console!
 					if (plugin.debugMode) 
 						plugin.getLogger().log(Level.INFO, "..." + ChatColor.YELLOW + thisScript + ChatColor.WHITE + " does not meet requirements.");
 				}
+
 			} catch (RequirementMissingException e) {
+
+				// Had a problem checking requirements, most likely a Legacy Requirement with bad
+				// syntax. Alert the console!
 				if (plugin.debugMode) 
 					plugin.getLogger().log(Level.INFO, "..." + ChatColor.RED + thisScript + ChatColor.WHITE + " had a bad requirement, skipping.");
 			}
@@ -298,22 +289,24 @@ public class ScriptHelper {
 			theScript = interactableScripts.get(0).name;
 			if (plugin.debugMode) 
 				plugin.getLogger().info("...highest scoring script is " + theScript + ".");
-			
+
 			return theScript;
 		}
 
+		// Or, if list is empty.. uh oh!
 		else if (interactableScripts.isEmpty()) {
 			if (plugin.debugMode) 
 				plugin.getLogger().info("...no interact scripts found!");
 			return null;
 		}
-		
+
 		// If we have more than 2 script, let's sort the list from lowest to highest scoring script.
 		else Collections.sort(interactableScripts);
 
 		// Let's find which script to return since there are multiple.
 		for (int a = interactableScripts.size() - 1; a > 0; a--) {
 
+			// Check for Overlay Assignment...
 			if (interactableScripts.get(a).name.contains("^")) {
 
 				// This is an Overlay Assignment, check for the appropriate Trigger Script...
@@ -329,20 +322,23 @@ public class ScriptHelper {
 					if (plugin.debugMode) plugin.getLogger().info("...no trigger, next script!");
 					// Trigger does not exist. Next script!
 				}
-			} else { // Not an overlay, highest script.
+			}
+
+			// Not an Overlay Assignment, so return this script, which is the higest scoring.
+			else { 
 				if (plugin.debugMode) 
 					plugin.getLogger().info("...highest scoring script is " + interactableScripts.get(a).name + ".");
 				return interactableScripts.get(a).name;
 			}
 		}
-		
+
+		// If we got here, something is wrong.
 		if (plugin.debugMode) 
-			plugin.getLogger().info("...no interact scripts found!");
+			plugin.getLogger().info("...no interact scripts found! (There may have been a problem!)");
 		return null;
-		
 	}
 
-
+	// Gets the current step from saves.yml
 
 	public int getCurrentStep(Player thePlayer, String theScript) {
 		int currentStep = 1;
@@ -358,7 +354,8 @@ public class ScriptHelper {
 
 
 
-	/* Builds arguments array, recognizing items in quotes as a single item 
+	/* 
+	 * Builds arguments array, recognizing items in quotes as a single item 
 	 * 
 	 * Thanks to Jan Goyvaerts from 
 	 * http://stackoverflow.com/questions/366202/regex-for-splitting-a-string-using-space-when-not-surrounded-by-single-or-double
@@ -397,6 +394,7 @@ public class ScriptHelper {
 	/*
 	 * Methods to help get String script entries from a YAML script.
 	 */
+
 	public String scriptString = ".Script";
 
 	public String getTriggerPath(String theScript, int theStep,	String triggerName) {
@@ -404,16 +402,16 @@ public class ScriptHelper {
 	}
 
 	public List<String> getScript(String triggerPath) {
-		
+
 		List<String> scriptList = new ArrayList<String>();
-		
+
 		if (plugin.getScripts().contains(triggerPath.replace("..", "."))) {
 			scriptList = plugin.getScripts().getStringList(triggerPath.replace("..", "."));
 		}
 
 		if (scriptList.isEmpty())
 			if (plugin.debugMode) plugin.getLogger().info("...could not find script @ " + triggerPath.replace("..", ".") + "... is something spelled wrong in your script?");
-		
+
 		return scriptList;
 	}
 
@@ -454,7 +452,7 @@ public class ScriptHelper {
 
 
 	/* 
-	 * Builds a list of ScriptEntry(ies) from a List<String> of items read from a script. 
+	 * Builds/Queues ScriptEntry(ies) of items read from a script. 
 	 */
 
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
@@ -490,11 +488,9 @@ public class ScriptHelper {
 				e.printStackTrace();
 			}
 		}
-
 		return scriptCommands;
 
 	}
-
 
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep, String playerMessage, String theText) {
 
@@ -532,8 +528,6 @@ public class ScriptHelper {
 
 	}
 
-
-
 	public void queueScriptEntries(Player thePlayer, List<ScriptEntry> scriptEntries, QueueType queueType) {
 
 		if (scriptEntries == null) {
@@ -565,8 +559,49 @@ public class ScriptHelper {
 
 		thisQueue.put(thePlayer, existingScriptEntries);
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...success!");
-
 	}
+
+
+
+	/*
+	 * ConcatenateScripts
+	 * 
+	 * Combines script files into one YML file for Denizen to read from.
+	 * Code mostly borrowed from: 
+	 * http://www.roseindia.net/tutorial/java/core/files/fileconcatenation.html
+	 * 
+	 */
+
+	public void ConcatenateScripts() throws IOException {
+
+		try {
+
+			PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-scripts.yml"));
+			File file = new File(plugin.getDataFolder() + File.separator + "scripts");
+			File[] files = file.listFiles();
+			for (int i = 0; i < files.length; i++) {
+
+				String fileName = files[i].getName();
+				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
+					plugin.getLogger().log(Level.INFO, "Processing script " + files[i].getName() + "... ");
+					BufferedReader br = new BufferedReader(new FileReader(files[i]
+							.getPath()));
+					String line = br.readLine();
+					while (line != null) {
+						pw.println(line);
+						line = br.readLine();
+					}   br.close();
+				}
+			}
+			pw.close();
+
+			plugin.getLogger().log(Level.INFO, "OK! All scripts loaded!");
+
+		} catch (Throwable error) {
+			plugin.getLogger().log(Level.WARNING, "Woah! No scripts in /plugins/Denizen/scripts/ to load!");		
+		}
+	}
+
 
 
 }
