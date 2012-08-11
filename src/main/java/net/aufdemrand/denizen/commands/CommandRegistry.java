@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.commands.core.DropCommand;
 import net.aufdemrand.denizen.commands.core.EngageCommand;
 import net.aufdemrand.denizen.commands.core.ExecuteCommand;
@@ -91,8 +92,10 @@ public class CommandRegistry {
 		PermissCommand permissCommand = new PermissCommand();
 		RefuseCommand refuseCommand = new RefuseCommand();
 		DropCommand dropCommand = new DropCommand();
+		CooldownCommand cooldownCommand = new CooldownCommand();
 		
 		try {
+			cooldownCommand.activateAs("COOLDOWN");
 			dropCommand.activateAs("DROP");
 			permissCommand.activateAs("PERMISS");
 			refuseCommand.activateAs("REFUSE");
