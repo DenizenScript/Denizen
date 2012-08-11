@@ -68,7 +68,7 @@ public class ScriptHelper {
 	// Script cooldown
 	public boolean checkCooldown(Player thePlayer, String theScript) {
 
-		if (plugin.getSaves().contains("Global.Scripts." + theScript + ".Cooldown")) {
+		if (plugin.getSaves().contains("Global.Scripts." + theScript + ".Cooldown Time")) {
 			if (System.currentTimeMillis() < plugin.getSaves().getLong("Global.Scripts." + theScript + ".Cooldown Time"))
 				return false;
 			else plugin.getSaves().set("Global.Scripts." + theScript + ".Cooldown Time", null);
@@ -78,8 +78,8 @@ public class ScriptHelper {
 		if (!plugin.getSaves().contains("Players." + thePlayer.getName() + ".Scripts." + theScript + ".Cooldown Time")) 
 			return true;
 		// If there is an entry, check against the time. 
-		if (System.currentTimeMillis() >= plugin.getSaves().getLong("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time"))	{
-			plugin.getSaves().set("Players." + thePlayer.getName() + "." + theScript + ".Cooldown Time", null);
+		if (System.currentTimeMillis() >= plugin.getSaves().getLong("Players." + thePlayer.getName() + ".Scripts." + theScript + ".Cooldown Time"))	{
+			plugin.getSaves().set("Players." + thePlayer.getName() + ".Scripts." + theScript + ".Cooldown Time", null);
 			return true;
 		}
 
