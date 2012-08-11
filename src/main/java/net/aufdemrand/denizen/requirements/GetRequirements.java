@@ -33,10 +33,10 @@ public class GetRequirements {
 		plugin = denizen;
 	}
 
-	
-	
-	
-	
+
+
+
+
 
 
 
@@ -54,7 +54,7 @@ public class GetRequirements {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no requirements found! This script may be named incorrectly, or simply doesn't exist!");
 			return false;
 		}
-		
+
 		/* Requirement node "NONE"? No requirements in the LIST? No need to continue, return TRUE */
 		if (requirementMode.equals("NONE") || requirementList.isEmpty()) return true;
 
@@ -65,117 +65,129 @@ public class GetRequirements {
 				negativeRequirement = true; 
 				requirementEntry = requirementEntry.substring(1);
 			}
+			
 			else negativeRequirement = false;
 
-			String[] arguments = new String[25];
-			String[] argumentPopulator = requirementEntry.split(" ");
-
-			for (int count = 0; count < 25; count++) {
-				if (argumentPopulator.length > count) arguments[count] = argumentPopulator[count];
-				else arguments[count] = null;
+			// Check requirement with RequirementRegistry
+			
+			if (plugin.getRequirementRegistry().listRequirements().containsKey(requirementEntry.split(" ")[0].toUpperCase())) {
+				if (plugin.getRequirementRegistry().getRequirement(requirementEntry.split(" ")[0].toUpperCase())
+						.check(theEntity, theScript, plugin.getScriptEngine().helper.buildArgs(requirementEntry.split(" ")[1]), negativeRequirement))
+					numberMet++;
 			}
 
-			try {
-			
-			switch (Requirement.valueOf(arguments[0].toUpperCase())) {
+			else { // Legacy Requirements
 
-			case NONE:
-				return true;
+				String[] arguments = new String[25];
+				String[] argumentPopulator = requirementEntry.split(" ");
 
-			case TIME: // (-)TIME [DAWN|DAY|DUSK|NIGHT]  or  (-)TIME [#] [#]
-				if (plugin.getWorld.checkTime(theEntity.getWorld(), arguments[1], arguments[2], negativeRequirement)) numberMet++;
-				break;
+				for (int count = 0; count < 25; count++) {
+					if (argumentPopulator.length > count) arguments[count] = argumentPopulator[count];
+					else arguments[count] = null;
+				}
 
-			case STORMING:	case STORMY:  case PRECIPITATING:  case PRECIPITATION:  // (-)PRECIPITATION
-				if (plugin.getWorld.checkWeather(theEntity.getWorld(), "PRECIPITATION", negativeRequirement)) numberMet++;
-				break;
+				try {
 
-			case SUNNY:  // (-)SUNNY
-				if (plugin.getWorld.checkWeather(theEntity.getWorld(), "SUNNY", negativeRequirement)) numberMet++;
-				break;
+					switch (Requirement.valueOf(arguments[0].toUpperCase())) {
 
-			case HUNGER:  // (-)HUNGER [FULL|HUNGRY|STARVING]
-				if (plugin.getPlayer.checkSaturation((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
-				break;
+					case NONE:
+						return true;
 
-			case LEVEL:  // (-)LEVEL [#] (#)
-				if (plugin.getPlayer.checkLevel((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
-				break;
+					case TIME: // (-)TIME [DAWN|DAY|DUSK|NIGHT]  or  (-)TIME [#] [#]
+						if (plugin.getWorld.checkTime(theEntity.getWorld(), arguments[1], arguments[2], negativeRequirement)) numberMet++;
+						break;
 
-			case WORLD:  // (-)WORLD [List of Worlds]
-				List<String> theWorlds = new LinkedList<String>(); // = Arrays.asList(arguments);
-				for(String arg : arguments) if (arg != null) theWorlds.add(arg.toUpperCase());
-				theWorlds.remove(0);   /* Remove the command from the list */
-				if (plugin.getWorld.checkWorld(theEntity, theWorlds, negativeRequirement)) numberMet++;
-				break;
+					case STORMING:	case STORMY:  case PRECIPITATING:  case PRECIPITATION:  // (-)PRECIPITATION
+						if (plugin.getWorld.checkWeather(theEntity.getWorld(), "PRECIPITATION", negativeRequirement)) numberMet++;
+						break;
 
-			case NAME:  // (-)Name [List of Names]
-				List<String> theNames = new LinkedList<String>(); // = Arrays.asList(arguments);
-				for(String arg : arguments) if (arg != null) theNames.add(arg.toUpperCase());
-				theNames.remove(0);   /* Remove the command from the list */
-				if (plugin.getPlayer.checkName((Player) theEntity, theNames, negativeRequirement)) numberMet++;
-				break;
+					case SUNNY:  // (-)SUNNY
+						if (plugin.getWorld.checkWeather(theEntity.getWorld(), "SUNNY", negativeRequirement)) numberMet++;
+						break;
 
-			case MONEY: // (-)MONEY [# or more]
-				if (plugin.getPlayer.checkFunds((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
-				break;
+					case HUNGER:  // (-)HUNGER [FULL|HUNGRY|STARVING]
+						if (plugin.getPlayer.checkSaturation((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
+						break;
 
-			case ITEM: // (-)ITEM [ITEM_NAME|#:#] (# or more)
-				String[] itemArgs = splitItem(arguments[1]);
-				if (plugin.getPlayer.checkInventory((Player) theEntity, itemArgs[0], itemArgs[1], arguments[2], negativeRequirement)) numberMet++;
-				break;
+					case LEVEL:  // (-)LEVEL [#] (#)
+						if (plugin.getPlayer.checkLevel((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
+						break;
 
-			case HOLDING: // (-)HOLDING [ITEM_NAME|#:#] (# or more)
-				String[] holdingArgs = splitItem(arguments[1]);
-				if (plugin.getPlayer.checkHand((Player) theEntity, holdingArgs[0], holdingArgs[1], arguments[2], negativeRequirement)) numberMet++;
-				break;
+					case WORLD:  // (-)WORLD [List of Worlds]
+						List<String> theWorlds = new LinkedList<String>(); // = Arrays.asList(arguments);
+						for(String arg : arguments) if (arg != null) theWorlds.add(arg.toUpperCase());
+						theWorlds.remove(0);   /* Remove the command from the list */
+						if (plugin.getWorld.checkWorld(theEntity, theWorlds, negativeRequirement)) numberMet++;
+						break;
 
-			case WEARING: // (-) WEARING [ITEM_NAME|#]
-				if (plugin.getPlayer.checkArmor((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
-				break;
+					case NAME:  // (-)Name [List of Names]
+						List<String> theNames = new LinkedList<String>(); // = Arrays.asList(arguments);
+						for(String arg : arguments) if (arg != null) theNames.add(arg.toUpperCase());
+						theNames.remove(0);   /* Remove the command from the list */
+						if (plugin.getPlayer.checkName((Player) theEntity, theNames, negativeRequirement)) numberMet++;
+						break;
 
-			case POTIONEFFECT: // (-)POTIONEFFECT [List of POITION_TYPESs]
-				List<String> thePotions = new LinkedList<String>(); // = Arrays.asList(arguments);
-				for(String arg : arguments) if (arg != null) thePotions.add(arg.toUpperCase());
-				thePotions.remove(0);   /* Remove the command from the list */
-				if (plugin.getPlayer.checkEffects((Player) theEntity, thePotions, negativeRequirement)) numberMet++;
-				break;
+					case MONEY: // (-)MONEY [# or more]
+						if (plugin.getPlayer.checkFunds((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
+						break;
 
-			case FINISHED:
-			case SCRIPT: // (-)FINISHED (#) [Script Name]
-				if (plugin.getCommandRegistry().getCommand(FinishCommand.class).getScriptCompletes((Player) theEntity, requirementEntry.split(" ", 2)[1], requirementEntry.split(" ", 3)[1], negativeRequirement)) numberMet++;
-				break;
+					case ITEM: // (-)ITEM [ITEM_NAME|#:#] (# or more)
+						String[] itemArgs = splitItem(arguments[1]);
+						if (plugin.getPlayer.checkInventory((Player) theEntity, itemArgs[0], itemArgs[1], arguments[2], negativeRequirement)) numberMet++;
+						break;
 
-			case FAILED: // (-)SCRIPT [Script Name]
-				if (plugin.getCommandRegistry().getCommand(FailCommand.class).getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
-				break;
+					case HOLDING: // (-)HOLDING [ITEM_NAME|#:#] (# or more)
+						String[] holdingArgs = splitItem(arguments[1]);
+						if (plugin.getPlayer.checkHand((Player) theEntity, holdingArgs[0], holdingArgs[1], arguments[2], negativeRequirement)) numberMet++;
+						break;
 
-			case GROUP:
-				List<String> theGroups = new LinkedList<String>(); // = Arrays.asList(arguments);
-				for(String arg : arguments) if (arg != null) theGroups.add(arg);
-				theGroups.remove(0);   /* Remove the command from the list */
-				if (plugin.getPlayer.checkGroups((Player) theEntity, theGroups, negativeRequirement)) numberMet++;
-				break;
+					case WEARING: // (-) WEARING [ITEM_NAME|#]
+						if (plugin.getPlayer.checkArmor((Player) theEntity, arguments[1], negativeRequirement)) numberMet++;
+						break;
 
-			case PERMISSION:  // (-)PERMISSION [this.permission.node]
-				List<String> thePermissions = new LinkedList<String>(); // = Arrays.asList(arguments);
-				for(String arg : arguments) if (arg != null) thePermissions.add(arg);
-				thePermissions.remove(0);   /* Remove the command from the list */
-				if (plugin.getPlayer.checkPermissions((Player) theEntity, thePermissions, negativeRequirement)) numberMet++;
-				break;
+					case POTIONEFFECT: // (-)POTIONEFFECT [List of POITION_TYPESs]
+						List<String> thePotions = new LinkedList<String>(); // = Arrays.asList(arguments);
+						for(String arg : arguments) if (arg != null) thePotions.add(arg.toUpperCase());
+						thePotions.remove(0);   /* Remove the command from the list */
+						if (plugin.getPlayer.checkEffects((Player) theEntity, thePotions, negativeRequirement)) numberMet++;
+						break;
 
-			case DURABILITY:  // (-)DURABILITY [>,<,=] [#|#%]
-				if (plugin.getPlayer.checkDurability((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
-				break;
+					case FINISHED:
+					case SCRIPT: // (-)FINISHED (#) [Script Name]
+						if (plugin.getCommandRegistry().getCommand(FinishCommand.class).getScriptCompletes((Player) theEntity, requirementEntry.split(" ", 2)[1], requirementEntry.split(" ", 3)[1], negativeRequirement)) numberMet++;
+						break;
+
+					case FAILED: // (-)SCRIPT [Script Name]
+						if (plugin.getCommandRegistry().getCommand(FailCommand.class).getScriptFail((Player) theEntity, requirementEntry.split(" ", 2)[1], negativeRequirement)) numberMet++;
+						break;
+
+					case GROUP:
+						List<String> theGroups = new LinkedList<String>(); // = Arrays.asList(arguments);
+						for(String arg : arguments) if (arg != null) theGroups.add(arg);
+						theGroups.remove(0);   /* Remove the command from the list */
+						if (plugin.getPlayer.checkGroups((Player) theEntity, theGroups, negativeRequirement)) numberMet++;
+						break;
+
+					case PERMISSION:  // (-)PERMISSION [this.permission.node]
+						List<String> thePermissions = new LinkedList<String>(); // = Arrays.asList(arguments);
+						for(String arg : arguments) if (arg != null) thePermissions.add(arg);
+						thePermissions.remove(0);   /* Remove the command from the list */
+						if (plugin.getPlayer.checkPermissions((Player) theEntity, thePermissions, negativeRequirement)) numberMet++;
+						break;
+
+					case DURABILITY:  // (-)DURABILITY [>,<,=] [#|#%]
+						if (plugin.getPlayer.checkDurability((Player) theEntity, arguments[1], arguments[2], negativeRequirement)) numberMet++;
+						break;
+					}
+
+				} catch (Throwable e) {
+					if (plugin.showStackTraces) plugin.getLogger().info(e.getMessage());
+					if (plugin.showStackTraces) e.printStackTrace();
+					throw new RequirementMissingException(e.getMessage());
+				}
+
 			}
-			
-			} catch (Throwable e) {
-				if (plugin.showStackTraces) plugin.getLogger().info(e.getMessage());
-				if (plugin.showStackTraces) e.printStackTrace();
-				throw new RequirementMissingException(e.getMessage());
-			}
-			
-			
+
 		}
 
 		/* Check numberMet */	
@@ -216,6 +228,10 @@ public class GetRequirements {
 
 		return itemArgs;
 	}
+
+
+
+
 
 
 

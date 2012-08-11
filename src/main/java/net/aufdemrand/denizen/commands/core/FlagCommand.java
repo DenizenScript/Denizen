@@ -75,6 +75,7 @@ public class FlagCommand extends AbstractCommand {
 				else {
 					if (plugin.debugMode) 
 						plugin.getLogger().log(Level.INFO, "...matched argument as 'boolean flag'.");
+					theFlag = thisArgument.toUpperCase();
 					flagType = FlagType.BOOLEAN;
 				}
 

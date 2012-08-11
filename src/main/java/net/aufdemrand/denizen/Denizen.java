@@ -15,8 +15,9 @@ import net.aufdemrand.denizen.npc.DenizenNPCRegistry;
 import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.npc.SpeechEngine;
 import net.aufdemrand.denizen.requirements.GetRequirements;
+import net.aufdemrand.denizen.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
-import net.aufdemrand.denizen.scripts.TriggerRegistry;
+import net.aufdemrand.denizen.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.utilities.GetPlayer;
 import net.aufdemrand.denizen.utilities.GetWorld;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -46,7 +47,7 @@ public class Denizen extends JavaPlugin {
 
 	private CommandRegistry commandRegistry = new CommandRegistry(this);
 	private TriggerRegistry triggerRegistry = new TriggerRegistry(this);
-	// private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
+    private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
 	private DenizenNPCRegistry denizenNPCRegistry = new DenizenNPCRegistry(this);
 	private ActivityRegistry activityRegistry = new ActivityRegistry(this);
 
@@ -75,6 +76,10 @@ public class Denizen extends JavaPlugin {
 		return activityRegistry;
 	}
 
+	public RequirementRegistry getRequirementRegistry() {
+		return requirementRegistry;
+	}
+	
 	public CommandRegistry getCommandRegistry() {
 		return commandRegistry;
 	}

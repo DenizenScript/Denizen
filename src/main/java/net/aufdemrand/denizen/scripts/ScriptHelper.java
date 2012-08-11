@@ -24,6 +24,7 @@ import net.aufdemrand.denizen.commands.core.EngageCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.denizen.triggers.AbstractTrigger;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
@@ -62,7 +63,7 @@ public class ScriptHelper {
 				String fileName = files[i].getName();
 				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
 
-					plugin.getLogger().log(Level.INFO, "Processing script " + files[i].getPath() + "... ");
+					plugin.getLogger().log(Level.INFO, "Processing script " + files[i].getName() + "... ");
 					BufferedReader br = new BufferedReader(new FileReader(files[i]
 							.getPath()));
 					String line = br.readLine();

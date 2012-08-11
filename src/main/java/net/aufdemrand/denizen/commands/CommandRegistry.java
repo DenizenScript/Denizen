@@ -42,7 +42,7 @@ public class CommandRegistry {
 	public boolean registerCommand(String commandName, AbstractCommand commandClass) {
 		this.commands.put(commandName.toUpperCase(), commandClass);
 		this.commandsClass.put(commandClass.getClass(), commandName.toUpperCase());
-		plugin.getLogger().log(Level.INFO, "Loaded " + commandName + " successfully!");
+		plugin.getLogger().log(Level.INFO, "Loaded " + commandName + " Command successfully!");
 		return true;
 	}
 
