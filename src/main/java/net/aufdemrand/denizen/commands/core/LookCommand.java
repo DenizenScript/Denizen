@@ -198,13 +198,17 @@ public class LookCommand extends AbstractCommand {
 		}
 
 		if (duration != null) {
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new LookCommandRunnable<DenizenNPC, Location, Boolean>(restoreDenizen, restoreLocation, restoreLookClose) {
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new LookCommandRunnable<DenizenNPC, Location, Boolean, Float>(restoreDenizen, restoreLocation, restoreLookClose, theDenizen.getLocation().getYaw()) {
 				@Override
-				public void run(DenizenNPC denizen, Location location, Boolean lookClose) { 
+				public void run(DenizenNPC denizen, Location location, Boolean lookClose, Float checkYaw) { 
+
+					if (denizen.getLocation().getYaw() == checkYaw) {
 					denizen.getHandle().yaw = location.getYaw();
 					denizen.getHandle().pitch = location.getPitch();
 					denizen.getHandle().as = denizen.getHandle().yaw;				
 					denizen.lookClose(lookClose);
+					}
+					
 				}
 			}, duration * 20);
 		}
