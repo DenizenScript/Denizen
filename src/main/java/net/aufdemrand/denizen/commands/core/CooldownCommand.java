@@ -52,13 +52,13 @@ public class CooldownCommand extends AbstractCommand {
 				// If argument is a Duration modifier
 				if (aRegex.matchesDuration(thisArg)) {
 					duration = getIntegerModifier(thisArg);
-					echoDebug("...cooldown duration now '{0}'.", thisArg);
+					echoDebug("...cooldown duration now '%s'.", thisArg);
 				}
 				
 				// If argument matches duration (by indicating just an Integer)
 				else if (aRegex.matchesInteger(thisArg)) {
 					duration = getIntegerModifier(thisArg);
-					echoDebug("...cooldown duration now '{0}'.", thisArg);
+					echoDebug("...cooldown duration now '%s'.", thisArg);
 				}
 				
 				// If argument is a GLOBAL modifier
@@ -70,12 +70,12 @@ public class CooldownCommand extends AbstractCommand {
 				// If argument is a Script modifier
 				else if (aRegex.matchesScript(thisArg)) {
 					theScript = getModifier(thisArg);
-					echoDebug("...command will now affect '{0}'.", thisArg);
+					echoDebug("...command will now affect '%s'.", thisArg);
 				}
 				
 				// Couldn't find a match!
 				else {
-					echoDebug("...could not match '{0}'!", thisArg);
+					echoDebug("...could not match '%s'!", thisArg);
 				}
 			}	
 		}
@@ -91,7 +91,7 @@ public class CooldownCommand extends AbstractCommand {
 			
 			// If not global, cooldown for player:
 			else if (!isGlobal)
-				plugin.getSaves().set("Players." + theEntry.getPlayer() + "." + theScript + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + "." + theScript + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
 			
 			return true;
 		}
