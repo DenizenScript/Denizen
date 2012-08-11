@@ -49,18 +49,18 @@ public class Utilities {
 	}
 	
 
-	
+	/*
 	@EventHandler
 	public void playerTaskLocationListener(PlayerMoveEvent event) {
 
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
-		/* Do not run any code unless the player actually moves blocks */
+		 Do not run any code unless the player actually moves blocks 
 		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
 
 			try {
 
-				/* ---- saves.yml format ----
+				 ---- saves.yml format ----
 				 * Players:
 				 *   [PlayerName]:
 				 *     Tasks:
@@ -73,7 +73,7 @@ public class Utilities {
 				 *         Leeway: in blocks
 				 *         Duration: in seconds
 				 *         Script to trigger: script name
-				 *         Initiated: System.currentTimeMillis */
+				 *         Initiated: System.currentTimeMillis 
 
 				if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations")) {
 					List<String> listAll = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations");      
@@ -109,7 +109,7 @@ public class Utilities {
 	}
 
 	
-	
+*/	
 	
 	
 	
