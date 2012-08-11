@@ -128,11 +128,11 @@ public class LookCommand extends AbstractCommand {
 		if (lookDir != null) lookWhere = lookDir.name();
 
 		if (lookWhere.equals("CLOSE")) {
-			theDenizen.lookClose(false);
+			theDenizen.lookClose(true);
 		}
 
 		else if (lookWhere.equals("AWAY")) {
-			theDenizen.lookClose(true);
+			theDenizen.lookClose(false);
 		}
 
 		else if (lookWhere.equals("LEFT")) {
