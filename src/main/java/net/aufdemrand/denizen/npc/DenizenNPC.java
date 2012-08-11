@@ -134,12 +134,12 @@ public class DenizenNPC {
 	public void lookClose(boolean lookclose) {
 
 		if (!lookclose) {
-			if (!citizensNPC.getTrait(LookClose.class).toggle())
+			if (citizensNPC.getTrait(LookClose.class).toggle())
 				citizensNPC.getTrait(LookClose.class).toggle();
 		}
 
 		else if (lookclose) {
-			if (citizensNPC.getTrait(LookClose.class).toggle()) 
+			if (!citizensNPC.getTrait(LookClose.class).toggle()) 
 				citizensNPC.getTrait(LookClose.class).toggle();
 		}
 
