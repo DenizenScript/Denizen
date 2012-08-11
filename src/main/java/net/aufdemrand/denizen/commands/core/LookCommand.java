@@ -111,9 +111,10 @@ public class LookCommand extends AbstractCommand {
 			}	
 		}
 
+		// If looking AT
 		if (theEntity == null && direction.equals(Direction.AT)) theEntity = (LivingEntity) theCommand.getPlayer();
-		if (direction != null || theLocation != null) look(theEntity, theDenizen, direction, duration, theLocation);
-
+		if (direction != null) look(theEntity, theDenizen, direction, duration, theLocation);
+		if (theLocation != null) look(theEntity, theDenizen, direction, duration, theLocation);
 		return true;
 	}
 

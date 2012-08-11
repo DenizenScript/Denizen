@@ -83,7 +83,11 @@ public class ScriptEngine {
 							/* Updates the triggerQue map */
 							triggerQue.put(theEntry.getKey(), theEntry.getValue());
 
-							plugin.executer.execute(theCommand);
+							// Catching errors here will kep the queue from locking up.
+							try { plugin.executer.execute(theCommand); }
+							catch (Throwable e) {
+								plugin.getLogger().info("Woah! Bad command! Check syntax...");
+							}
 						
 						} while (instantly);
 					}
