@@ -86,13 +86,15 @@ public class CooldownCommand extends AbstractCommand {
 			if (theScript == null) theScript = theEntry.getScript();
 
 			// If global, cooldown:
-			if (isGlobal)
+			if (isGlobal) {
 				plugin.getSaves().set("Global.Scripts." + theScript + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
-			
+				plugin.saveSaves();
+			}
 			// If not global, cooldown for player:
-			else if (!isGlobal)
-				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + "." + theScript + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
-			
+			else if (!isGlobal) {
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Scripts." + theScript + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
+				plugin.saveSaves();
+			}
 			return true;
 		}
 			
