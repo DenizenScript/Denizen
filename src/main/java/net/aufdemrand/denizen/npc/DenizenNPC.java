@@ -148,8 +148,7 @@ public class DenizenNPC {
 	public boolean isInteracting() {
 		if (!plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(citizensNPC))
 			return true;
-		else		
-			return false;
+		else return false;
 	}
 
 

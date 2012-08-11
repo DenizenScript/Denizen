@@ -247,7 +247,7 @@ public class LookCommand extends AbstractCommand {
 		loc.setPitch((float) -Math.atan(dy / dxz));
 
 		// Set values, convert to degrees (invert the yaw since Bukkit uses a different yaw dimension format)
-		loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI);
+		loc.setYaw(loc.getYaw() * 180f / (float) Math.PI);
 		loc.setPitch(loc.getPitch() * 180f / (float) Math.PI);
 
 		return loc;
