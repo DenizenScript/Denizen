@@ -410,6 +410,9 @@ public class ScriptHelper {
 			scriptList = plugin.getScripts().getStringList(triggerPath.replace("..", "."));
 		}
 
+		if (scriptList.isEmpty())
+			if (plugin.debugMode) plugin.getLogger().info("...could not find script @ " + triggerPath.replace("..", ".") + "... is something spelled wrong in your script?");
+		
 		return scriptList;
 	}
 

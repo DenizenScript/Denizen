@@ -212,12 +212,9 @@ public class LookCommand extends AbstractCommand {
 						denizen.getHandle().as = denizen.getHandle().yaw;				
 						denizen.lookClose(lookClose);
 					}
-
 				}
 			}, duration * 20);
 		}
-
-
 	}
 
 

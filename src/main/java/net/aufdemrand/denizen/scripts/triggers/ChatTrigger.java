@@ -58,7 +58,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				if (theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled("chat")) {
 					if (!plugin.settings.ChatGloballyIfNotInteractable())
 						plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
-					theDenizen.talk(TalkType.CHAT, event.getPlayer(), Reason.DenizenIsUnavailable);
+					theDenizen.talk(TalkType.CHAT_PLAYERONLY, event.getPlayer(), Reason.DenizenIsUnavailable);
 				}
 			}
 		}

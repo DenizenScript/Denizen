@@ -31,8 +31,10 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 			/* Show NPC info if sneaking and right clicking */
 			if (event.getClicker().isSneaking() 
 					&& event.getClicker().isOp()
-					&& plugin.settings.RightClickAndSneakInfoModeEnabled()) 
+					&& plugin.settings.RightClickAndSneakInfoModeEnabled()) { 
 				denizenNPC.showInfo(event.getClicker());
+				return;
+			}
 
 			/* Check if this NPC is a Denizen and is interact-able */
 			if (denizenNPC.IsInteractable(triggerName, event.getClicker())) {
@@ -40,15 +42,13 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 				/* Apply default cool-down to avoid click-spam, then send to parser. */
 				sE.setCooldown(denizenNPC, ClickTrigger.class, plugin.settings.DefaultClickCooldown());
 				if (!parseClickTrigger(denizenNPC, event.getClicker())) {
-					denizenNPC.talk(TalkType.CHAT, event.getClicker(), Reason.NoMatchingClickTrigger);
+					denizenNPC.talk(TalkType.CHAT_PLAYERONLY, event.getClicker(), Reason.NoMatchingClickTrigger);
 				}
 			}
 
 			else {
-				if (denizenNPC.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled("click")) {
-					if (!plugin.settings.ChatGloballyIfNotInteractable())
-						denizenNPC.talk(TalkType.CHAT, event.getClicker(), Reason.DenizenIsUnavailable);
-
+				if (denizenNPC.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled("click")) {	
+					  denizenNPC.talk(TalkType.CHAT_PLAYERONLY, event.getClicker(), Reason.DenizenIsUnavailable);
 				}
 			}
 		}
