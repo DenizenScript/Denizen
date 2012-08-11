@@ -284,7 +284,7 @@ public class SpeechEngine {
 				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))));
 
 		if (plugin.settings.BystandersHearNpcToPlayerChat()) {
-			int theRange = plugin.settings.PlayerToNpcChatRangeInBlocks();
+			int theRange = plugin.settings.NpcToPlayerChatRangeInBlocks();
 			if (theRange > 0) {
 				for (Player otherPlayer : plugin.getDenizenNPCRegistry().getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
 					otherPlayer.sendMessage(colorizeText(plugin.settings.PlayerChatToNpcBystander()

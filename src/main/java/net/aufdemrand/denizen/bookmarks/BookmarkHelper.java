@@ -102,7 +102,7 @@ public class BookmarkHelper {
 		plugin.getLogger().log(Level.INFO, "Building Location Bookmark Trigger List. Size: " + locationTriggerList.size());
 
 		if (plugin.debugMode && locationTriggerList.size() > 0) {
-			plugin.getLogger().log(Level.INFO, "Item Key: [Assignment Type]:[Assigned To]:[Name of Bookmark]" + locationTriggerList.size());
+			plugin.getLogger().log(Level.INFO, "Item Key: [Type]:[Assigned To]:[Name of Bookmark]" + locationTriggerList.size());
 			for (String theEntry : locationTriggerList.values()) {
 				plugin.getLogger().log(Level.INFO, "Item added to list: " + theEntry);
 			}
