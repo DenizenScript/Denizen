@@ -25,8 +25,9 @@ public class ActivityEngine {
 	public void scheduleScripts() {
 
 		if (plugin.getDenizenNPCRegistry().getDenizens().isEmpty()) return;
+		
 		for (DenizenNPC theDenizen : plugin.getDenizenNPCRegistry().getDenizens().values()) {
-
+			
 			// No need to set activities for un-spawned Denizens.
 			if (!theDenizen.isSpawned())
 				continue;
@@ -34,7 +35,7 @@ public class ActivityEngine {
 			int denizenTime = Math.round(theDenizen.getWorld().getTime() / 1000);
 			List<String> denizenActivities = 
 					plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Scheduled Activities");
-
+			
 			if (denizenActivities.isEmpty())
 				continue;
 
@@ -42,7 +43,7 @@ public class ActivityEngine {
 			for (String activity : denizenActivities) {
 				if (activity.startsWith(String.valueOf(denizenTime))) {
 					String activityScript = activity.split(" ", 2)[1];
-					if (!plugin.getSaves().getString("Denizen." + theDenizen.getName() + ".Active Activity Script")
+					if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Active Activity Script")
 							.equals(activityScript))
 						// If so, setActivity for the Denizen!
 						setActivityScript(theDenizen, activityScript);
