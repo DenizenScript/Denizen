@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.commands.core.FinishCommand;
 import net.aufdemrand.denizen.commands.core.FlagCommand;
 import net.aufdemrand.denizen.commands.core.GiveCommand;
 import net.aufdemrand.denizen.commands.core.LookCommand;
+import net.aufdemrand.denizen.commands.core.PauseCommand;
 import net.aufdemrand.denizen.commands.core.PermissCommand;
 import net.aufdemrand.denizen.commands.core.RefuseCommand;
 import net.aufdemrand.denizen.commands.core.ResetCommand;
@@ -73,6 +74,7 @@ public class CommandRegistry {
 
 	public void registerCoreCommands() {
 
+		PauseCommand pauseCommand = new PauseCommand();
 		ZapCommand zapCommand = new ZapCommand();
 		EngageCommand engageCommand = new EngageCommand();
 		SpawnCommand spawnCommand = new SpawnCommand();
@@ -95,6 +97,8 @@ public class CommandRegistry {
 		CooldownCommand cooldownCommand = new CooldownCommand();
 		
 		try {
+			pauseCommand.activateAs("PAUSE");
+			pauseCommand.activateAs("RESUME");
 			cooldownCommand.activateAs("COOLDOWN");
 			dropCommand.activateAs("DROP");
 			permissCommand.activateAs("PERMISS");

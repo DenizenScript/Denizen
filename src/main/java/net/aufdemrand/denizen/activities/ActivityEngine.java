@@ -63,7 +63,7 @@ public class ActivityEngine {
 	public void setActivityScript(DenizenNPC theDenizen, String activityScript) {
 
 		plugin.getLogger().info("Updating activity Script for" + theDenizen.getName());
-		plugin.getSaves().set("Denizen." + theDenizen.getName() + ".Active Activity Script", activityScript);
+		plugin.getSaves().set("Denizens." + theDenizen.getName() + ".Active Activity Script", activityScript);
 
 		if (!plugin.getScripts().contains(activityScript + ".Activities.List")) {
 			plugin.getLogger().info("Tried to load the Activity Script '" + activityScript + "', but it couldn't be found. Perhaps something is spelled wrong, or the script doesn't exist?");
