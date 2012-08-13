@@ -1,11 +1,9 @@
 package net.aufdemrand.denizen.activities;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.citizensnpcs.api.ai.GoalController.GoalEntry;
 
 public class ActivityEngine {
 
@@ -36,7 +34,7 @@ public class ActivityEngine {
 			List<String> denizenActivities = 
 					plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Scheduled Activities");
 
-			plugin.getLogger().info("DEBUG: Scheduling for " + denizenTime + ":00");
+			// plugin.getLogger().info("DEBUG: Scheduling for " + denizenTime + ":00");
 
 			if (denizenActivities.isEmpty())
 				continue;
@@ -46,12 +44,7 @@ public class ActivityEngine {
 				if (activity.startsWith(String.valueOf(denizenTime))) {
 					String activityScript = activity.split(" ", 2)[1];
 
-					if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Active Activity Script")) {
-						if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Active Activity Script")
-								.equals(activityScript))
-							// If so, setActivity for the Denizen!
-							setActivityScript(theDenizen, activityScript);
-					} else setActivityScript(theDenizen, activityScript);
+					setActivityScript(theDenizen, activityScript);
 
 				}
 			}
