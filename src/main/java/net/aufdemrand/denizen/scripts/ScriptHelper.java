@@ -216,6 +216,7 @@ public class ScriptHelper {
 	 */
 
 	// Gets the InteractScript from a NPC Denizen for a Player and returns the appropriate Script.
+	// Returns null if no script found.
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer, Class<? extends AbstractTrigger> theTrigger) {
 
@@ -224,7 +225,7 @@ public class ScriptHelper {
 
 		if (assignedScripts.isEmpty()) { 
 			if (plugin.debugMode) plugin.getLogger().info("Getting interact script... no interact scripts found!");
-			return theScript; 
+			return null; 
 		}
 
 		if (plugin.debugMode) plugin.getLogger().info("Getting interact script... ");
@@ -425,23 +426,17 @@ public class ScriptHelper {
 
 		// NPC must be a Denizen
 
-		if (theDenizen.getCitizensEntity().hasTrait(DenizenTrait.class))
-			if (theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).isToggled()
-					// The Denizen NPC must have the trigger enabled
-					&& theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled(triggerName.toUpperCase())
-					// The Player must be cooled down for this type of Trigger
-					&& plugin.getScriptEngine().helper.checkCooldown(theDenizen, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())
-					// and finally the NPC must not be engaged
-					&& !plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen.getCitizensEntity()))
-				return true;
+		if (theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).isToggled()
+				// The Player must be cooled down for this type of Trigger
+				&& plugin.getScriptEngine().helper.checkCooldown(theDenizen, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())
+				// and finally the NPC must not be engaged
+				&& !plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen.getCitizensEntity()))
+			return true;
 
 		/* For debugging */
 
 		if (plugin.debugMode) {
 			plugin.getLogger().log(Level.INFO, theDenizen.getName() + " is not interactable.");
-
-			if (!theDenizen.getCitizensEntity().hasTrait(DenizenTrait.class)) plugin.getLogger().log(Level.INFO, "...no Denizen Trait.");
-			if (!theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled(triggerName.toUpperCase())) plugin.getLogger().log(Level.INFO, "..." + triggerName.toLowerCase() + " trigger is not enabled on this NPC.");
 			if (!plugin.getScriptEngine().helper.checkCooldown(theDenizen, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())) plugin.getLogger().log(Level.INFO, "...the Player has not yet met cool-down.");
 			if (plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen.getCitizensEntity())) plugin.getLogger().log(Level.INFO, "...the Denizen is ENGAGED.");
 		}

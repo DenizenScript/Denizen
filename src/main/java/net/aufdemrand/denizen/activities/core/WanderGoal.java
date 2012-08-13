@@ -7,35 +7,31 @@ import org.bukkit.World;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.ai.Goal;
 import net.citizensnpcs.api.ai.GoalSelector;
-import net.citizensnpcs.api.event.NPCPushEvent;
-
 
 public class WanderGoal implements Goal {
-
-	public void pushable(NPCPushEvent event) {
-		// if sentry ...
-		event.setCancelled(false);
-	}
-	
 	
 	DenizenNPC denizenNPC;
 	Location wanderLocation = null;
 	final double X;
 	final double Y;
 	final double Z;
+	final int radius;
+	final int delay;
 	final World world;
 	Boolean distracted = false;
 	WanderActivity wA;
 	private GoalSelector goalSelecter;
 
-	WanderGoal(DenizenNPC npc, WanderActivity wA) {
+	WanderGoal(DenizenNPC npc, Integer radius, Integer delay, WanderActivity wA) {
 		this.denizenNPC = npc;
+		this.radius = radius;
+		this.delay = delay;
 		this.wA = wA;
 		this.X = npc.getLocation().getX();
 		this.Y = npc.getLocation().getY();
 		this.Z = npc.getLocation().getZ();
 		this.world = npc.getWorld();
-		this.wanderLocation = wA.getNewLocation(X, Y, Z, world);
+		this.wanderLocation = wA.getNewLocation(X, Y, Z, world, radius);
 	}
 
 	@Override
@@ -48,13 +44,13 @@ public class WanderGoal implements Goal {
 			if (denizenNPC.getNavigator().isNavigating()) {
 				return; }
 			else {
-				wanderLocation = wA.getNewLocation(X, Y, Z, world);
-				wA.cooldown(denizenNPC);
+				wanderLocation = wA.getNewLocation(X, Y, Z, world, radius);
+				wA.cooldown(denizenNPC, delay);
 				denizenNPC.getNavigator().setTarget(wanderLocation);
 				goalSelecter.finish();
 				}
 		} else 
-			Bukkit.getLogger().info("wanderLocation went null!");
+			Bukkit.getLogger().info("Oh no! wanderLocation went null! Report this to aufdemrand.");
 	}
 
 	@Override

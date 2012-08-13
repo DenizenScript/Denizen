@@ -28,7 +28,7 @@ public abstract class AbstractActivity {
 			throw new ActivationException("Error activating Activity with Activity Registry.");
 	}
 	
-	abstract public void addGoal(DenizenNPC npc, int priority);
+	abstract public void addGoal(DenizenNPC npc, String[] arguments, int priority);
 	
 	abstract public void removeGoal(DenizenNPC npc);
 	

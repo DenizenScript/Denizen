@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.aufdemrand.denizen.activities.ActivityEngine;
 import net.aufdemrand.denizen.activities.ActivityRegistry;
 import net.aufdemrand.denizen.bookmarks.BookmarkHelper;
 import net.aufdemrand.denizen.commands.CommandRegistry;
@@ -53,6 +54,7 @@ public class Denizen extends JavaPlugin {
 
 	private ScriptEngine scriptEngine = new ScriptEngine(this);
 	private SpeechEngine speechEngine = new SpeechEngine(this);
+	private ActivityEngine activityEngine = new ActivityEngine(this);
 	public Executer         executer = new Executer(this);
 
 	public BookmarkHelper             bookmarks = new BookmarkHelper(this);
@@ -74,6 +76,10 @@ public class Denizen extends JavaPlugin {
 
 	public ActivityRegistry getActivityRegistry() {
 		return activityRegistry;
+	}
+	
+	public ActivityEngine getActivityEngine() {
+		return activityEngine;
 	}
 
 	public RequirementRegistry getRequirementRegistry() {
@@ -126,7 +132,7 @@ public class Denizen extends JavaPlugin {
 		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			@Override public void run() { scriptEngine.scheduleScripts(); }
+			@Override public void run() { activityEngine.scheduleScripts(); }
 		}, 1, 1000);
 
 		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {

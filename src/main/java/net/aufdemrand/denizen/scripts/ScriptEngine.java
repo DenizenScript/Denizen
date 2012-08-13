@@ -137,32 +137,6 @@ public class ScriptEngine {
 
 
 
-	/* Schedules activity scripts to Denizens based on their schedule defined in the config.
-	 * Runs every Minecraft hour. 
-	 * 
-	 * This will be the backbone to automated activity scripts. Currently this is not used
-	 * any further than what's in this method, but will be built upon soon.	 */
-
-	public void scheduleScripts() {
-
-		if (plugin.getDenizenNPCRegistry().getDenizens().isEmpty()) return;
-		for (DenizenNPC thisDenizen : plugin.getDenizenNPCRegistry().getDenizens().values()) {
-			if (thisDenizen.isSpawned())	{
-				int denizenTime = Math.round(thisDenizen.getWorld().getTime() / 1000);
-				List<String> denizenActivities = plugin.getAssignments().getStringList("Denizens." + thisDenizen.getName() + ".Scheduled Activities");
-				if (!denizenActivities.isEmpty()) {
-					for (String activity : denizenActivities) {
-						if (activity.startsWith(String.valueOf(denizenTime))) {
-							// plugin.getServer().broadcastMessage("Updating Activity Script for " + aDenizen.getName());
-							plugin.getSaves().set("Denizens." + thisDenizen.getName() + ".Active Activity Script", activity.split(" ", 2)[1]);
-							plugin.saveSaves();
-						}
-					}
-				}
-			}
-		}
-	}
-
 
 	/* Parses the script for a task trigger */
 

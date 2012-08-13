@@ -1,10 +1,7 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
 import org.bukkit.Location;
 
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -37,9 +34,8 @@ public class SampleCommand extends AbstractCommand {
 	 * 
 	 */
 
-	@SuppressWarnings("unused") // This should be removed in your code.
+	@SuppressWarnings("unused") // This should be removed from your code.
 	@Override
-	
 	// This is the method that is called when your command is ready to be executed.
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
@@ -52,43 +48,35 @@ public class SampleCommand extends AbstractCommand {
 			
 		/* Match arguments to expected variables */
 		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
+			for (String thisArg : theEntry.arguments()) {
 				
 				// Do this routine for each argument supplied.
-				
-				if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
-
 				// Includes are some typical arguments. Modify/add code to handle your command needs.
 				
 				// If argument is a number.
-				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
-				
+				if (aRegex.matchesInteger(thisArg)) {
 					// Insert code here.
 					
+					echoDebug("...number argument set to '%s'.", thisArg);
 				}
 					
-				// If argument is a valid bookmark, set location.
-				else if (plugin.bookmarks.exists(theEntry.getDenizen(), thisArgument)) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...matched bookmark '" + thisArgument + "'.");
-					sampleBookmark = plugin.bookmarks.get(theEntry.getDenizen(), thisArgument, BookmarkType.LOCATION);
-				} else if (thisArgument.split(":").length == 2) {
-					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...matched bookmark '" + thisArgument.split(":")[0] + "'.");
-						sampleBookmark = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
-				}			
-				
-				// If argument is a modifier.
-				else if (thisArgument.toUpperCase().contains("MODIFIER:")) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...matched modifier '" + thisArgument.split(":")[0].toUpperCase() + "'.");
-
+				else if (aRegex.matchesScript(thisArg)) {
 					// Insert code here.
 					
+					echoDebug("...affected script now set to '%s'.", thisArg);
+				}
+				
+				else if (aRegex.matchesDuration(thisArg)) {
+					// Insert code here.
+					
+					echoDebug("...duration set to '%s'.", thisArg);
 				}
 				
 				// If can't match to anything...
-				// This isn't always possible, depending on the arguments your command uses, but nice if you can.
+				// This isn't always possible, depending on the arguments your 
+				// command uses, but nice if you can. Keep the users informed!
 				else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unable to match argument!");
+					echoDebug("...'%s' could not be matched!", thisArg);
 				}
 				
 			}	
@@ -118,6 +106,5 @@ public class SampleCommand extends AbstractCommand {
 		return false;
 	}
 
-	  // You can include more methods in this class if necessary. Or not. :)
 	
 }

@@ -12,6 +12,11 @@ public abstract class AbstractTrigger {
 	public String triggerName;
 	private boolean enabledByDefault = false;
 	
+	public void echoDebug(String message, String argument) {
+		if (plugin.debugMode)
+			plugin.getLogger().info("[" + triggerName + " Trigger]: "+ message);
+	}
+	
 	/* Activates the command class as a Denizen Command. Should be called on startup. */
 	
 	public void activateAs(String triggerName) throws ActivationException {

@@ -11,16 +11,16 @@ import org.bukkit.World;
 
 public class WanderActivity extends AbstractActivity {
 
-	public Location getNewLocation(double X, double Y, double Z, World world) {
+	public Location getNewLocation(double X, double Y, double Z, World world, int radius) {
 
-		plugin.getLogger().info("Received: " + X + " " + Y + " " + Z);
+		//		plugin.getLogger().info("Received: " + X + " " + Y + " " + Z);
 		Location newLocation = new Location(world, X, Y, Z);
 
 		Random intRandom = new Random();
-		int randomX = intRandom.nextInt(12) - 6;
-		int randomZ = intRandom.nextInt(12) - 6;
-		int randomY = intRandom.nextInt(4) - 4;
-		//plugin.getLogger().info("Adding: " + randomX + " " + randomY + " " + randomZ);
+		int randomX = intRandom.nextInt(radius * 2) - radius;
+		int randomZ = intRandom.nextInt(radius * 2) - radius;
+		int randomY = intRandom.nextInt(4) - 2;
+		// 		plugin.getLogger().info("Adding: " + randomX + " " + randomY + " " + randomZ);
 
 		newLocation.setX(newLocation.getX() + randomX);
 		newLocation.setZ(newLocation.getZ() + randomZ);
@@ -31,13 +31,32 @@ public class WanderActivity extends AbstractActivity {
 
 	private Map<DenizenNPC, WanderGoal> wanderMap = new HashMap<DenizenNPC, WanderGoal>();
 
-	public void addGoal(DenizenNPC npc, int priority) {
+	public void addGoal(DenizenNPC npc, String[] arguments, int priority) {
 
 		if (wanderMap.containsKey(npc)) {
 			wanderMap.get(npc).reset();
 			plugin.getLogger().info("NPC already has this Goal assigned! Resetting instead...");
 		} else {
-			wanderMap.put(npc, new WanderGoal(npc, this));
+			
+			// Check Arguments
+			
+			int delay = 10;
+			int radius = 5;
+			
+			for (String thisArgument : arguments) {
+				if (thisArgument.toUpperCase().contains("DELAY:")) {
+					try { delay = Integer.valueOf(thisArgument.split(":", 2)[1]); }
+					catch (NumberFormatException e) { plugin.getLogger().info("...bad argument!"); }
+				}
+				
+				else if (thisArgument.toUpperCase().contains("RADIUS:")) {
+					try { radius = Integer.valueOf(thisArgument.split(":", 2)[1]); }
+					catch (NumberFormatException e) { plugin.getLogger().info("...bad argument!"); }
+				}
+
+			}
+			
+			wanderMap.put(npc, new WanderGoal(npc, delay, radius, this));
 			npc.getCitizensEntity().getDefaultGoalController().addGoal(wanderMap.get(npc), priority);	
 			plugin.getLogger().info("NPC assigned Wander Activity...");
 		}
@@ -56,8 +75,8 @@ public class WanderActivity extends AbstractActivity {
 
 	private Map<DenizenNPC, Long> cooldownMap = new HashMap<DenizenNPC, Long>();
 
-	public void cooldown(DenizenNPC denizenNPC) {
-		cooldownMap.put(denizenNPC, System.currentTimeMillis() + 10000);
+	public void cooldown(DenizenNPC denizenNPC, int delay) {
+		cooldownMap.put(denizenNPC, System.currentTimeMillis() + (delay * 1000));
 	}
 
 	public boolean isCool(DenizenNPC denizenNPC) {

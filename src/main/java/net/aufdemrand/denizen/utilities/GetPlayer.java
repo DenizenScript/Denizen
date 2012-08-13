@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.Denizen;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
@@ -480,9 +481,6 @@ public class GetPlayer {
 
 
 
-
-
-
 	/**
 	 * Checks the permissions of the player against a given value with Vault. 
 	 *
@@ -503,7 +501,7 @@ public class GetPlayer {
 		for (String theGroup : theGroups) {
 				if (theGroup != null) {
 					if (plugin.perms.playerInGroup(thePlayer, theGroup)
-							|| plugin.perms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), theGroup)) outcome = true;
+							|| plugin.perms.playerInGroup((World) null, thePlayer.getName(), theGroup)) outcome = true;
 				}
 		}	
 

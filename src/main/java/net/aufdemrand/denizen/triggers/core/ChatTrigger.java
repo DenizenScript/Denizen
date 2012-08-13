@@ -2,10 +2,8 @@ package net.aufdemrand.denizen.triggers.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
@@ -26,43 +24,74 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 	@EventHandler
 	public void chatTrigger(PlayerChatEvent event) {
 
+
+		// Check for denizen in range.
 		DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getClosest(event.getPlayer(), 
 				plugin.settings.PlayerToNpcChatRangeInBlocks());
 
-		if (theDenizen != null) {
+		// If none, chat as normal.
+		if (theDenizen == null)
+			return;
 
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Found nearby NPC, interrupting chat...");
+		// Check if trigger is enabled for this Denizen.
+		if (!theDenizen.hasTrigger(triggerName))
+			return;
 
-			if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
+		echoDebug("Found nearby NPC, interrupting chat...", triggerName);
 
-				/* Get the script to use */
-				String theScript = theDenizen.getInteractScript(event.getPlayer(), this.getClass());
-
-				/* No script matches, should we still show the player talking to the Denizen? */
-				if (theScript == null && !plugin.settings.ChatGloballyIfNoChatTriggers()) { 
-					event.setCancelled(true);
-					theDenizen.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
-				}
-
-				/* Awesome! There's a matching script, let's parse the script to see if chat triggers match */
-				if (theScript != null) {
-					if (parseChatScript(theDenizen, event.getPlayer(), theScript, event.getMessage()))
-						event.setCancelled(true);
-					else 
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...resuming chat, no chat triggers found!");
-
-				}
+		// If Denizen is not interactable (ie. Denizen is toggled off, engaged or not cooled down)
+		if (!theDenizen.IsInteractable(triggerName, event.getPlayer())) {
+			if (!plugin.settings.ChatGloballyIfNotInteractable()) {
+				event.setCancelled(true);
+				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
+				theDenizen.talk(TalkType.CHAT_PLAYERONLY, event.getPlayer(), Reason.DenizenIsUnavailable);
+				return;
 			}
-
-			else {
-				if (theDenizen.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled("chat")) {
-					if (!plugin.settings.ChatGloballyIfNotInteractable())
-						plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
-					theDenizen.talk(TalkType.CHAT_PLAYERONLY, event.getPlayer(), Reason.DenizenIsUnavailable);
-				}
-			}
+			// Denizen isn't interactable, and the config.yml specifies that we 
+			// should just treat chat as normal.
+			echoDebug("Not interactable, resuming chat...", triggerName);
+			return;
 		}
 
+		// Denizen should be good to interact with. Let's get the script.
+		String theScript = theDenizen.getInteractScript(event.getPlayer(), this.getClass());
+
+		/* No script matches, should we still show the player talking to the Denizen? */
+		if (theScript == null) {
+			if (!plugin.settings.ChatGloballyIfNoChatTriggers()) { 
+				event.setCancelled(true);
+				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
+				theDenizen.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
+				return;
+			}
+			// Denizen doesn't have a script, and the config.yml specifies that
+			// we should just treat chat normal.
+			echoDebug("No script, resuming chat...", triggerName);
+			return;
+		}
+
+		/* Okay! We have a script, awesome! Let's parse the script to see if chat triggers match */
+
+		// Parse the script and match Triggers.. if found, cancel the text! The parser will
+		// take care of everything else.
+		if (parseChatScript(theDenizen, event.getPlayer(), theScript, event.getMessage())) {
+			event.setCancelled(true);
+			return;
+		} 
+
+		// No matching chat Triggers... handle according to 
+		else { 
+			if (!plugin.settings.ChatGloballyIfFailedChatTriggers()) {
+				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
+				theDenizen.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
+				event.setCancelled(true);
+				return;
+			}
+			// No matching chat triggers, and the config.yml 
+			// says we should just ignore the interaction...
+			echoDebug("No matching triggers in script, resuming chat...", triggerName);
+			return;
+		}
 	}
 
 
@@ -80,65 +109,57 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		/* Get Player's current step */
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 
-		// List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
-
 		/* Get Chat Triggers and check each to see if there are any matches. */
 		List<String> ChatTriggerList = getChatTriggers(theScriptName, theStep);
 		for (int x = 0; x < ChatTriggerList.size(); x++ ) {
 
-			/* The texts required to trigger. */
+			// The texts required to trigger.
 			String chatTriggers = ChatTriggerList.get(x)
 					.replace("<PLAYER>", thePlayer.getName())
 					.replace("<DISPLAYNAME>", ChatColor.stripColor(thePlayer.getDisplayName())).toLowerCase();
 
-			/* The in-game friendly Chat Trigger text to display if triggered. */
+			// The in-game friendly Chat Trigger text to display if triggered.
 			String chatText = plugin.getScripts()
 					.getString(theScriptName + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Trigger")
 					.replace("/", "");
 
+			// Find a matching trigger
 			boolean letsProceed = false;
 			for (String chatTrigger : chatTriggers.split(":")) {
 				if (playerMessage.toLowerCase().contains(chatTrigger)) letsProceed = true;
 			}
 
+			// If a matching trigger is found...
 			if (letsProceed) {
-
 				/* Trigger matches, let's talk to the Denizen and send the script to the 
 				 * triggerQue. No need to continue the loop. */
-				plugin.getSpeechEngine().talkToDenizen(theDenizen, thePlayer, chatText);
-
 				List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + String.valueOf(x + 1) + sE.scriptString);
-				
 				if (theScript.isEmpty()) return false;
 
+				// Chat to the Denizen, then queue the scrip entries!
+				plugin.getSpeechEngine().talkToDenizen(theDenizen, thePlayer, chatText);
 				sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep, playerMessage, chatText), QueueType.TRIGGER);
-
 				return true;
 			}
 		}
-
-		/* If we have made it to this point, there were no matching triggers. */
-		if (plugin.settings.ChatGloballyIfFailedChatTriggers()) return false;
-
-		else {
-			plugin.getSpeechEngine().talkToDenizen(theDenizen, thePlayer, playerMessage);
-			theDenizen.talk(TalkType.CHAT, thePlayer, Reason.NoMatchingChatTriggers);
-			return true;
-		}
+		
+		// Else, no matching trigger found...
+		return false;
 	}
 
 
-	/* GetChatTriggers
+	/* 
+	 * GetChatTriggers
 	 *
-	 * Requires the Script and the Current Step.
 	 * Gets a list of Chat Triggers for the step of the script specified.
-	 * Chat Triggers are words required to trigger one of the chat 
-	 *
-	 * Returns ChatTriggers
+	 * Chat Triggers are words required to trigger one of the chat.
+	 * 
 	 */
 
 	public List<String> getChatTriggers(String theScript, Integer currentStep) {
 
+		// TODO: Cleanup, this seems kind of ghetto.
+		
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
 		for (int x=1; currentTrigger >= 0; x++) {
@@ -158,7 +179,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 				/* Take off excess ":" before adding it to the list */
 				triggerBuilder = triggerBuilder.substring(0, triggerBuilder.length() - 1);
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Found chat trigger: " + triggerBuilder);
+				echoDebug("Found chat trigger: " + triggerBuilder, triggerName);
 				ChatTriggers.add(triggerBuilder);
 				currentTrigger = x + 1; 
 			}

@@ -23,34 +23,38 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 	@EventHandler
 	public void clickTrigger(NPCRightClickEvent event) {
 
+		if (!plugin.getDenizenNPCRegistry().isDenizenNPC(event.getNPC()))
+			return;
+
 		/* Shortcut to the ScriptHelper */
 		ScriptHelper sE = plugin.getScriptEngine().helper;
-		if (plugin.getDenizenNPCRegistry().isDenizenNPC(event.getNPC())) {
-			DenizenNPC denizenNPC = plugin.getDenizenNPCRegistry().getDenizen(event.getNPC());
 
-			/* Show NPC info if sneaking and right clicking */
-			if (event.getClicker().isSneaking() 
-					&& event.getClicker().isOp()
-					&& plugin.settings.RightClickAndSneakInfoModeEnabled()) { 
-				denizenNPC.showInfo(event.getClicker());
-				return;
-			}
+		DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getDenizen(event.getNPC());
 
-			/* Check if this NPC is a Denizen and is interact-able */
-			if (denizenNPC.IsInteractable(triggerName, event.getClicker())) {
+		/* Show NPC info if sneaking and right clicking */
+		if (event.getClicker().isSneaking() 
+				&& event.getClicker().isOp()
+				&& plugin.settings.RightClickAndSneakInfoModeEnabled()) { 
+			theDenizen.showInfo(event.getClicker());
+			return;
+		}
 
-				/* Apply default cool-down to avoid click-spam, then send to parser. */
-				sE.setCooldown(denizenNPC, ClickTrigger.class, plugin.settings.DefaultClickCooldown());
-				if (!parseClickTrigger(denizenNPC, event.getClicker())) {
-					denizenNPC.talk(TalkType.CHAT_PLAYERONLY, event.getClicker(), Reason.NoMatchingClickTrigger);
-				}
-			}
+		if (!theDenizen.hasTrigger(triggerName))
+			return;
 
-			else {
-				if (denizenNPC.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled("click")) {	
-					  denizenNPC.talk(TalkType.CHAT_PLAYERONLY, event.getClicker(), Reason.DenizenIsUnavailable);
-				}
-			}
+		// If Denizen is not interactable (ie. Denizen is toggled off, engaged or not cooled down)
+		if (!theDenizen.IsInteractable(triggerName, event.getClicker())) {
+			theDenizen.talk(TalkType.CHAT_PLAYERONLY, event.getClicker(), Reason.DenizenIsUnavailable);
+			return;
+		}
+
+		// Cool! Parse the Trigger...
+		// Apply default cool-down to avoid click-spam, then send to parser. */
+		sE.setCooldown(theDenizen, ClickTrigger.class, plugin.settings.DefaultClickCooldown());
+		
+		if (!parseClickTrigger(theDenizen, event.getClicker())) {
+			theDenizen.talk(TalkType.CHAT_PLAYERONLY, event.getClicker(), Reason.NoMatchingClickTrigger);
+			return;
 		}
 	}
 

@@ -67,11 +67,11 @@ public class ActivityRegistry {
 	}
 	
 	
-	public void addActivity(String activity, NPC theDenizen, int priority) {
+	public void addActivity(String activity, NPC theDenizen, String[] args, int priority) {
 		if (activities.containsKey(activity.toUpperCase()))
-			activities.get(activity.toUpperCase()).addGoal(plugin.getDenizenNPCRegistry().getDenizen(theDenizen), priority);
+			activities.get(activity.toUpperCase()).addGoal(plugin.getDenizenNPCRegistry().getDenizen(theDenizen), args, priority);
 		else
-			plugin.getLogger().log(Level.SEVERE, "Invalid activity!");
+			plugin.getLogger().log(Level.SEVERE, "'" + activity + "' is an invalid activity!");
 	}
 	
 	public void removeActivity(String activity, NPC theDenizen) {

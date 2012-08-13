@@ -151,5 +151,9 @@ public class DenizenNPC {
 		else return false;
 	}
 
+	public boolean hasTrigger(String triggerName) {
+		return citizensNPC.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName);
+	}
+
 
 }
