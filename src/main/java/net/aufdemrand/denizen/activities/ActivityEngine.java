@@ -25,9 +25,9 @@ public class ActivityEngine {
 	public void scheduleScripts() {
 
 		if (plugin.getDenizenNPCRegistry().getDenizens().isEmpty()) return;
-		
+
 		for (DenizenNPC theDenizen : plugin.getDenizenNPCRegistry().getDenizens().values()) {
-			
+
 			// No need to set activities for un-spawned Denizens.
 			if (!theDenizen.isSpawned())
 				continue;
@@ -35,7 +35,9 @@ public class ActivityEngine {
 			int denizenTime = Math.round(theDenizen.getWorld().getTime() / 1000);
 			List<String> denizenActivities = 
 					plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Scheduled Activities");
-			
+
+			plugin.getLogger().info("DEBUG: Scheduling for " + denizenTime + ":00");
+
 			if (denizenActivities.isEmpty())
 				continue;
 
@@ -43,10 +45,14 @@ public class ActivityEngine {
 			for (String activity : denizenActivities) {
 				if (activity.startsWith(String.valueOf(denizenTime))) {
 					String activityScript = activity.split(" ", 2)[1];
-					if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Active Activity Script")
-							.equals(activityScript))
-						// If so, setActivity for the Denizen!
-						setActivityScript(theDenizen, activityScript);
+
+					if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + ".Active Activity Script")) {
+						if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + ".Active Activity Script")
+								.equals(activityScript))
+							// If so, setActivity for the Denizen!
+							setActivityScript(theDenizen, activityScript);
+					} else setActivityScript(theDenizen, activityScript);
+
 				}
 			}
 
@@ -63,20 +69,20 @@ public class ActivityEngine {
 			plugin.getLogger().info("Tried to load the Activity Script '" + activityScript + "', but it couldn't be found. Perhaps something is spelled wrong, or the script doesn't exist?");
 			return;
 		}
-		
+
 		Iterator<GoalEntry> activeGoal = theDenizen.getCitizensEntity().getDefaultGoalController().iterator();
 		// Remove current Goals from the NPC
 		while (activeGoal.hasNext()) {
 			theDenizen.getCitizensEntity().getDefaultGoalController().removeGoal(activeGoal.next().getGoal());
 		}
-		
+
 		for (String activity : plugin.getScripts().getStringList(activityScript + ".Activities.List")) {
 			String[] arguments = plugin.getScriptEngine().helper.buildArgs(activity.split(" ", 3)[2]);
 			int priority = Integer.parseInt(activity.split(" ", 3)[0]);
 			activity = activity.split(" ", 3)[1];
 			plugin.getActivityRegistry().addActivity(activity, theDenizen.getCitizensEntity(), arguments, priority);
 		}
-		
+
 		// Cool!
 
 	}
