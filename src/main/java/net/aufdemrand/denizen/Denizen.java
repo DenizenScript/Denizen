@@ -412,15 +412,15 @@ public class Denizen extends JavaPlugin {
 			if(args.length == 1) {
 
 				player.sendMessage(ChatColor.GOLD + "------- Denizen Commands -------");
-				player.sendMessage(ChatColor.GOLD + "");
-				player.sendMessage(ChatColor.GOLD + "Denizen Core Commands:");
-				player.sendMessage(ChatColor.GOLD + "use /denizen HELP CORE");
-				player.sendMessage(ChatColor.GOLD + "");
-				player.sendMessage(ChatColor.GOLD + "Denizen NPC Commands:");
-				player.sendMessage(ChatColor.GOLD + "use /denizen HELP NPC ");
-				player.sendMessage(ChatColor.GOLD + "");
-				player.sendMessage(ChatColor.RED + "NOTE! Help system is fleshed out only. Most of these");
-				player.sendMessage(ChatColor.RED + "commands DO NOT YET WORK! ");
+//				player.sendMessage(ChatColor.GOLD + "");
+	//			player.sendMessage(ChatColor.GOLD + "Denizen Core Commands:");
+		//		player.sendMessage(ChatColor.GOLD + "use /denizen HELP CORE");
+			//	player.sendMessage(ChatColor.GOLD + "");
+//				player.sendMessage(ChatColor.GOLD + "Denizen NPC Commands:");
+	//			player.sendMessage(ChatColor.GOLD + "use /denizen HELP NPC ");
+		//		player.sendMessage(ChatColor.GOLD + "");
+			//	player.sendMessage(ChatColor.RED + "NOTE! Help system is fleshed out only. Most of these");
+//				player.sendMessage(ChatColor.RED + "commands DO NOT YET WORK! ");
 				player.sendMessage(ChatColor.GOLD + "For a cheat sheet of commands and arguments,");
 				player.sendMessage(ChatColor.GOLD + "visit the wiki: http://wiki.citizensnpcs.net/Denizen");   }
 
@@ -513,7 +513,7 @@ public class Denizen extends JavaPlugin {
 			player.sendMessage(ChatColor.GREEN + "denizens.yml saved.");
 			return true;
 		}
-
+		
 		if (args[0].equalsIgnoreCase("reload")) {
 			reloadSaves();
 			reloadConfig();
@@ -543,6 +543,13 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("info")) {
 			getScriptEngine().helper.showInfo(player, getDenizenNPCRegistry().getDenizen(theNPC));
+			return true;
+		}
+
+		if (args[0].equalsIgnoreCase("schedule")) {
+			getSaves().set("Denizen." + theNPC.getName() + ".Active Activity Script", null);
+			activityEngine.scheduleScripts();
+			player.sendMessage(ChatColor.GREEN + "denizens.yml saved.");
 			return true;
 		}
 
