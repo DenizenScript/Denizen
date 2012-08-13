@@ -1,12 +1,17 @@
 package net.aufdemrand.denizen.activities.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 
 import net.aufdemrand.denizen.activities.AbstractActivity;
+import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 
 public class WanderActivity extends AbstractActivity {
@@ -26,6 +31,8 @@ public class WanderActivity extends AbstractActivity {
 			int delay = 10;
 			int radius = 5;
 			float speed = npc.getNavigator().getSpeed();
+			Location specifiedLocation = null;
+			ArrayList<Material> materialList = new ArrayList<Material>();
 			
 			for (String thisArgument : arguments) {
 				if (thisArgument.toUpperCase().contains("DELAY:")) {
@@ -43,9 +50,27 @@ public class WanderActivity extends AbstractActivity {
 					catch (NumberFormatException e) { plugin.getLogger().info("...bad argument!"); }
 				}
 				
+				/* If argument is a BOOKMARK modifier */
+				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
+						plugin.bookmarks.exists(npc, thisArgument.split(":")[1])) {
+					specifiedLocation = plugin.bookmarks.get(npc, thisArgument, BookmarkType.LOCATION);
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+				}
+				
+				else if (thisArgument.toUpperCase().contains("FILTER:")) {
+					for (String materialString : thisArgument.split(":")[1].split(",")) {
+						try { materialList.add(Material.valueOf(materialString.toUpperCase())); }
+						catch(Exception e) { if (plugin.debugMode) plugin.getLogger().info("...invalid material for Wander!"); }
+					}
+
+					
+				}
+				
+				
 			}
 			
-			wanderMap.put(npc, new WanderGoal(npc, radius, delay, speed, this));
+			wanderMap.put(npc, new WanderGoal(npc, radius, delay, speed, materialList, specifiedLocation, this));
 			npc.getCitizensEntity().getDefaultGoalController().addGoal(wanderMap.get(npc), priority);	
 			plugin.getLogger().info("NPC assigned Wander Activity...");
 		}

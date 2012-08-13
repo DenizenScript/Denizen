@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.activities.core;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,19 +24,30 @@ public class WanderGoal implements Goal {
 	final float speed;
 	final World world;
 	Boolean distracted = false;
+	final ArrayList<Material> materials;
 	WanderActivity wA;
 	private GoalSelector goalSelecter;
 
-	WanderGoal(DenizenNPC npc, Integer radius, Integer delay, float speed, WanderActivity wA) {
+	WanderGoal(DenizenNPC npc, Integer radius, Integer delay, float speed, ArrayList<Material> materials, Location bookmark, WanderActivity wA) {
+		this.materials = materials;
 		this.denizenNPC = npc;
 		this.radius = radius;
 		this.delay = delay;
 		this.wA = wA;
 		this.speed = speed;
-		this.X = npc.getLocation().getX();
-		this.Y = npc.getLocation().getY();
-		this.Z = npc.getLocation().getZ();
-		this.world = npc.getWorld();
+
+		if (bookmark == null) {
+			this.X = npc.getLocation().getX();
+			this.Y = npc.getLocation().getY();
+			this.Z = npc.getLocation().getZ();
+			this.world = npc.getWorld();
+		} else {
+			this.X = bookmark.getX();
+			this.Y = bookmark.getY();
+			this.Z = bookmark.getZ();
+			this.world = bookmark.getWorld();
+		}
+
 		this.wanderLocation = wA.getNewLocation(X, Y, Z, world, radius);
 	}
 
@@ -45,16 +58,35 @@ public class WanderGoal implements Goal {
 	@Override
 	public void run() {
 		if (wanderLocation != null) {
+			
+			// If already navigating, nothing to do here...
 			if (denizenNPC.getNavigator().isNavigating()) {
 				return; }
+			
+			// If not already navigating.. let's find a new block to navigate to.
 			else {
 				denizenNPC.getNavigator().setSpeed(speed);
 				wanderLocation = wA.getNewLocation(X, Y, Z, world, radius);
-				wA.cooldown(denizenNPC, delay);
-				if (wanderLocation.getBlock().getType() != Material.WATER
-						&& wanderLocation.getBlock().getType() != Material.LAVA)
+
+				if (!materials.isEmpty()) {
+					Boolean move = false;
+					for (Material acceptableMaterial : materials) {
+						if (wanderLocation.getBlock().getType() == acceptableMaterial) move = true;
+					}
+					
+					if (move) {
+						wA.cooldown(denizenNPC, delay);
+						denizenNPC.getNavigator().setTarget(wanderLocation);
+					}
+				
+					goalSelecter.finish();
+
+				} else {
+					wA.cooldown(denizenNPC, delay);
 					denizenNPC.getNavigator().setTarget(wanderLocation);
-				goalSelecter.finish();
+
+					goalSelecter.finish();
+				}
 			}
 		} else 
 			Bukkit.getLogger().info("Oh no! wanderLocation went null! Report this to aufdemrand.");

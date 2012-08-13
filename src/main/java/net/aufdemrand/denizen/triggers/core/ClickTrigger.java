@@ -38,15 +38,17 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 			return;
 		}
 
-		if (!theDenizen.hasTrigger(triggerName))
+		if (!theDenizen.hasTrigger(triggerName)) {
+			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...click trigger not enabled for this Denizen.");
 			return;
-
+		}
+		
 		// If Denizen is not interactable (ie. Denizen is toggled off, engaged or not cooled down)
 		if (!theDenizen.IsInteractable(triggerName, event.getClicker())) {
 			theDenizen.talk(TalkType.CHAT_PLAYERONLY, event.getClicker(), Reason.DenizenIsUnavailable);
 			return;
 		}
-
+		
 		// Cool! Parse the Trigger...
 		// Apply default cool-down to avoid click-spam, then send to parser. */
 		sE.setCooldown(theDenizen, ClickTrigger.class, plugin.settings.DefaultClickCooldown());
@@ -55,6 +57,8 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 			theDenizen.talk(TalkType.CHAT_PLAYERONLY, event.getClicker(), Reason.NoMatchingClickTrigger);
 			return;
 		}
+		
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Error.");
 	}
 
 

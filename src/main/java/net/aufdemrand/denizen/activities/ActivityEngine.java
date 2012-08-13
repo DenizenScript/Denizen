@@ -55,7 +55,7 @@ public class ActivityEngine {
 
 	public void setActivityScript(DenizenNPC theDenizen, String activityScript) {
 
-		plugin.getLogger().info("Updating activity Script for" + theDenizen.getName());
+		if (plugin.debugMode) plugin.getLogger().info("Updating activity Script for" + theDenizen.getName());
 		plugin.getSaves().set("Denizens." + theDenizen.getName() + ".Active Activity Script", activityScript);
 
 		if (!plugin.getScripts().contains(activityScript + ".Activities.List")) {

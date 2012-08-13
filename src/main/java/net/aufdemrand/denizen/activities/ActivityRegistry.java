@@ -30,8 +30,8 @@ public class ActivityRegistry {
 	}
 
 
-	public Map<String, AbstractActivity> listTriggers() {
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Contents of TriggerList: " + activities.keySet().toString());
+	public Map<String, AbstractActivity> listActivities() {
+		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Contents of ActivityList: " + activities.keySet().toString());
 		return activities;
 	}
 
