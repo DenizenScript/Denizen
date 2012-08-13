@@ -586,7 +586,7 @@ public class Denizen extends JavaPlugin {
 					return true;
 				}
 
-				else getActivityRegistry().addActivity(args[2], theNPC, Integer.valueOf(args[3]));
+				else getActivityRegistry().addActivity(args[2], theNPC, new String[0], Integer.valueOf(args[3]));
 
 			}
 

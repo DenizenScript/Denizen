@@ -29,15 +29,15 @@ public class HintCommand extends AbstractCommand {
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
-		plugin.getTriggerRegistry().getTrigger(ChatTrigger.class).
+	//	plugin.getTriggerRegistry().getTrigger(ChatTrigger.class).
 	
-		if (chatTrigger)
+	//	if (chatTrigger)
 		// Execution process.
 			// Do whatever you want the command to do, here.
 			
 			
 			/* Command has sucessfully finished */
-			return true;
+//			return true;
 		/* Error processing */
 		if (plugin.debugMode)
 			throw new CommandException("...no Chat Triggers found!");
