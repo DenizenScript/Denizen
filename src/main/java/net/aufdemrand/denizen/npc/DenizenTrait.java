@@ -81,13 +81,12 @@ public class DenizenTrait extends Trait implements Toggleable {
 	}
 
 	public String listTriggers() {
-		String theList = ChatColor.GRAY + "Current trigger status: ";
+		String theList = "";
 		for (Entry<String, Boolean> theEntry : triggerMap.entrySet()) {
-			theList = theList + theEntry.getKey().toLowerCase() + "-trigger: ";
 			if (theEntry.getValue())
-				theList = theList + ChatColor.GREEN + "ENABLED" + ChatColor.GRAY + ", ";
+				theList = theList + ChatColor.GREEN + theEntry.getKey().toLowerCase() + "-trigger" + ChatColor.GRAY + ", ";
 			else
-				theList = theList + ChatColor.RED + "DISABLED" + ChatColor.GRAY + ", ";
+				theList = theList + ChatColor.RED + theEntry.getKey().toLowerCase() + "-trigger" + ChatColor.GRAY + ", ";
 		}
 		theList = theList.substring(0, theList.length() - 2);
 		return theList;

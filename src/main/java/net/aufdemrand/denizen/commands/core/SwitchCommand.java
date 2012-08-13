@@ -59,14 +59,17 @@ public class SwitchCommand extends AbstractCommand {
 					}
 
 				// If argument is a valid bookmark, set location.
-					else if (plugin.bookmarks.exists(theEntry.getDenizen(), thisArgument)) {
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...matched bookmark '" + thisArgument + "'.");
+					else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
+							&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
+						interactLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
+						if (plugin.debugMode) 
+							plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+					} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
+							plugin.bookmarks.exists(theEntry.getDenizen(), thisArgument.split(":")[1])) {
 						interactLocation = plugin.bookmarks.get(theEntry.getDenizen(), thisArgument, BookmarkType.LOCATION);
-					} else if (thisArgument.split(":").length == 2) {
-						if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
-							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...matched bookmark '" + thisArgument.split(":")[0] + "'.");
-						interactLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
-					}			
+						if (plugin.debugMode) 
+							plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+					}
 
 					else {
 						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unable to match argument!");

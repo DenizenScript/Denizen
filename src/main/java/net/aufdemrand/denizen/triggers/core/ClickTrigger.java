@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scripts.ScriptHelper;

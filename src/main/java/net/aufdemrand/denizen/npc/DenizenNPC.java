@@ -88,7 +88,7 @@ public class DenizenNPC {
 
 
 	public void showInfo(Player theClicker) {
-		sE.showInfo(theClicker, this);
+		plugin.getDenizenNPCRegistry().showInfo(theClicker, this);
 	}
 
 

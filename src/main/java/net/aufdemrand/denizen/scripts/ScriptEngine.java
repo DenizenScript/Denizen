@@ -87,6 +87,7 @@ public class ScriptEngine {
 							try { plugin.executer.execute(theCommand); }
 							catch (Throwable e) {
 								plugin.getLogger().info("Woah! Bad command! Check syntax...");
+								if (plugin.showStackTraces) e.printStackTrace();
 							}
 						
 						} while (instantly);

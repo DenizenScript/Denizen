@@ -35,7 +35,7 @@ public class ActivityRegistry {
 		return activities;
 	}
 
-	
+
 	public AbstractActivity getActivity(String activityName) {
 		if (activities.containsKey(activityName.toUpperCase()))
 			return activities.get(activityName.toUpperCase());
@@ -49,15 +49,15 @@ public class ActivityRegistry {
 		else
 			return null;
 	}
-	
-	
+
+
 	public void registerCoreActivities() {
 
 		WanderActivity wanderActivity = new WanderActivity();
-		
+
 		/* Activate Denizen Triggers */
 		try {
-			
+
 			wanderActivity.activateAs("WANDER");
 
 		} catch (ActivationException e) {
@@ -65,21 +65,27 @@ public class ActivityRegistry {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	public void addActivity(String activity, NPC theDenizen, String[] args, int priority) {
 		if (activities.containsKey(activity.toUpperCase()))
 			activities.get(activity.toUpperCase()).addGoal(plugin.getDenizenNPCRegistry().getDenizen(theDenizen), args, priority);
 		else
 			plugin.getLogger().log(Level.SEVERE, "'" + activity + "' is an invalid activity!");
 	}
-	
+
 	public void removeActivity(String activity, NPC theDenizen) {
 		if (activities.containsKey(activity.toUpperCase()))
-			activities.get(activity.toUpperCase()).removeGoal(plugin.getDenizenNPCRegistry().getDenizen(theDenizen));
+			activities.get(activity.toUpperCase()).removeGoal(plugin.getDenizenNPCRegistry().getDenizen(theDenizen), true);
 		else
 			plugin.getLogger().log(Level.SEVERE, "Invalid activity!");
 	}
-	
-	
+
+	public void removeAllActivities(NPC theDenizen) {
+		for (AbstractActivity theActivity : activities.values()) {
+			theActivity.removeGoal(plugin.getDenizenNPCRegistry().getDenizen(theDenizen), false);
+		}
+	}
+
+
 }

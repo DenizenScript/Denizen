@@ -70,11 +70,8 @@ public class ActivityEngine {
 			return;
 		}
 
-		Iterator<GoalEntry> activeGoal = theDenizen.getCitizensEntity().getDefaultGoalController().iterator();
-		// Remove current Goals from the NPC
-		while (activeGoal.hasNext()) {
-			theDenizen.getCitizensEntity().getDefaultGoalController().removeGoal(activeGoal.next().getGoal());
-		}
+		// Remove all activities for the DenizenNPC
+		plugin.getActivityRegistry().removeAllActivities(theDenizen.getCitizensEntity());
 
 		for (String activity : plugin.getScripts().getStringList(activityScript + ".Activities.List")) {
 			String[] arguments = plugin.getScriptEngine().helper.buildArgs(activity.split(" ", 3)[2]);

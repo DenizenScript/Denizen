@@ -542,14 +542,14 @@ public class Denizen extends JavaPlugin {
 		}
 
 		if (args[0].equalsIgnoreCase("info")) {
-			getScriptEngine().helper.showInfo(player, getDenizenNPCRegistry().getDenizen(theNPC));
+			getDenizenNPCRegistry().showInfo(player, getDenizenNPCRegistry().getDenizen(theNPC));
 			return true;
 		}
 
 		if (args[0].equalsIgnoreCase("schedule")) {
 			getSaves().set("Denizen." + theNPC.getName() + ".Active Activity Script", null);
 			activityEngine.scheduleScripts();
-			player.sendMessage(ChatColor.GREEN + "denizens.yml saved.");
+			player.sendMessage(ChatColor.GREEN + "Reset activities for " + theNPC.getName() + " and rescheduled.");
 			return true;
 		}
 
@@ -559,7 +559,8 @@ public class Denizen extends JavaPlugin {
 				return true;
 			} else {
 				try { 
-					getDenizenNPCRegistry().getDenizen(theNPC).setHealth(Integer.valueOf(args[1]));  
+					getDenizenNPCRegistry().getDenizen(theNPC).setHealth(Integer.valueOf(args[1]));
+					player.sendMessage(ChatColor.GREEN + "Health set.");
 				} catch (NumberFormatException e) {
 					player.sendMessage(ChatColor.GOLD + "Argument must be a number. Use /denizen sethealth [#]");
 				}
@@ -568,6 +569,7 @@ public class Denizen extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("trigger")) {
 			if (args[1].equalsIgnoreCase("list")) {
+				player.sendMessage(ChatColor.GOLD + "Trigger list and status:");
 				player.sendMessage(theNPC.getTrait(DenizenTrait.class).listTriggers());
 				return true;
 			}
@@ -621,7 +623,7 @@ public class Denizen extends JavaPlugin {
 
 			else if (args[1].equalsIgnoreCase("block")) {
 				List<String> blockList = getSaves().getStringList("Denizens." + theNPC.getName() + ".Bookmarks.Block");
-				Block targetBlock = player.getTargetBlock(null, 6);
+				Block targetBlock = player.getTargetBlock(null, 15);
 				blockList.add(args[2] + " " + player.getWorld().getName() + ";" + targetBlock.getX() + ";" +
 						targetBlock.getY() + ";" + targetBlock.getZ());
 

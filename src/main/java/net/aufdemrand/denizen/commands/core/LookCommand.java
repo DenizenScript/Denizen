@@ -91,9 +91,10 @@ public class LookCommand extends AbstractCommand {
 					theLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
 					if (plugin.debugMode) 
 						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-				} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
+				} 
+				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
 						plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument.split(":")[1])) {
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);
+					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument.split(":")[1], BookmarkType.LOCATION);
 					if (plugin.debugMode) 
 						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
 				}
@@ -112,9 +113,9 @@ public class LookCommand extends AbstractCommand {
 		}
 
 		// If looking AT
+		if (theLocation != null) look(theEntity, theDenizen, direction, duration, theLocation);
 		if (theEntity == null && direction.equals(Direction.AT)) theEntity = (LivingEntity) theCommand.getPlayer();
 		if (direction != null) look(theEntity, theDenizen, direction, duration, theLocation);
-		if (theLocation != null) look(theEntity, theDenizen, direction, duration, theLocation);
 		return true;
 	}
 
@@ -207,12 +208,13 @@ public class LookCommand extends AbstractCommand {
 				@Override
 				public void run(DenizenNPC denizen, Location location, Boolean lookClose, Float checkYaw) { 
 
-					if (denizen.getLocation().getYaw() == checkYaw) {
-						denizen.getHandle().yaw = location.getYaw();
-						denizen.getHandle().pitch = location.getPitch();
-						denizen.getHandle().as = denizen.getHandle().yaw;				
-						denizen.lookClose(lookClose);
-					}
+					denizen.lookClose(lookClose);
+
+					//				if (denizen.getLocation().getYaw() == checkYaw) {
+					denizen.getHandle().yaw = location.getYaw();
+					denizen.getHandle().pitch = location.getPitch();
+					denizen.getHandle().as = denizen.getHandle().yaw;				
+					//				}
 				}
 			}, duration * 20);
 		}

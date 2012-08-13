@@ -30,6 +30,6 @@ public abstract class AbstractActivity {
 	
 	abstract public void addGoal(DenizenNPC npc, String[] arguments, int priority);
 	
-	abstract public void removeGoal(DenizenNPC npc);
+	abstract public void removeGoal(DenizenNPC npc, boolean verbose);
 	
 }

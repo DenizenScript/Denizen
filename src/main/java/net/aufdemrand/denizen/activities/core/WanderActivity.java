@@ -11,24 +11,7 @@ import org.bukkit.World;
 
 public class WanderActivity extends AbstractActivity {
 
-	public Location getNewLocation(double X, double Y, double Z, World world, int radius) {
-
-		//		plugin.getLogger().info("Received: " + X + " " + Y + " " + Z);
-		Location newLocation = new Location(world, X, Y, Z);
-
-		Random intRandom = new Random();
-		int randomX = intRandom.nextInt(radius * 2) - radius;
-		int randomZ = intRandom.nextInt(radius * 2) - radius;
-		int randomY = intRandom.nextInt(4) - 2;
-		// 		plugin.getLogger().info("Adding: " + randomX + " " + randomY + " " + randomZ);
-
-		newLocation.setX(newLocation.getX() + randomX);
-		newLocation.setZ(newLocation.getZ() + randomZ);
-		newLocation.setY(newLocation.getY() + randomY);
-
-		return newLocation;
-	}
-
+	
 	private Map<DenizenNPC, WanderGoal> wanderMap = new HashMap<DenizenNPC, WanderGoal>();
 
 	public void addGoal(DenizenNPC npc, String[] arguments, int priority) {
@@ -62,17 +45,18 @@ public class WanderActivity extends AbstractActivity {
 		}
 	}
 
-	public void removeGoal(DenizenNPC npc) {
-
+	public void removeGoal(DenizenNPC npc, boolean verbose) {
 		if (wanderMap.containsKey(npc)) {
 			npc.getCitizensEntity().getDefaultGoalController().removeGoal(wanderMap.get(npc));
 			wanderMap.remove(npc);
-			plugin.getLogger().info("Removed Wander Activity from NPC.");
+			if (verbose) plugin.getLogger().info("Removed Wander Activity from NPC.");
 		} else {
-			plugin.getLogger().info("NPC does not have this activity...");
+			if (verbose) plugin.getLogger().info("NPC does not have this activity...");
 		}
 	}
 
+	
+	
 	private Map<DenizenNPC, Long> cooldownMap = new HashMap<DenizenNPC, Long>();
 
 	public void cooldown(DenizenNPC denizenNPC, int delay) {
@@ -86,4 +70,23 @@ public class WanderActivity extends AbstractActivity {
 		else return true;
 	}
 
+	
+	
+	public Location getNewLocation(double X, double Y, double Z, World world, int radius) {
+
+		Location newLocation = new Location(world, X, Y, Z);
+
+		Random intRandom = new Random();
+		int randomX = intRandom.nextInt(radius * 2) - radius;
+		int randomZ = intRandom.nextInt(radius * 2) - radius;
+		int randomY = intRandom.nextInt(4) - 2;
+
+		newLocation.setX(newLocation.getX() + randomX);
+		newLocation.setZ(newLocation.getZ() + randomZ);
+		newLocation.setY(newLocation.getY() + randomY);
+
+		return newLocation;
+	}
+
+	
 }
