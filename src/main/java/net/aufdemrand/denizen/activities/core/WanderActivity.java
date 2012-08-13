@@ -25,6 +25,7 @@ public class WanderActivity extends AbstractActivity {
 			
 			int delay = 10;
 			int radius = 5;
+			float speed = npc.getNavigator().getSpeed();
 			
 			for (String thisArgument : arguments) {
 				if (thisArgument.toUpperCase().contains("DELAY:")) {
@@ -37,9 +38,14 @@ public class WanderActivity extends AbstractActivity {
 					catch (NumberFormatException e) { plugin.getLogger().info("...bad argument!"); }
 				}
 
+				else if (thisArgument.toUpperCase().contains("SPEED:")) {
+					try { speed = Float.valueOf(thisArgument.split(":", 2)[1]); }
+					catch (NumberFormatException e) { plugin.getLogger().info("...bad argument!"); }
+				}
+				
 			}
 			
-			wanderMap.put(npc, new WanderGoal(npc, radius, delay, this));
+			wanderMap.put(npc, new WanderGoal(npc, radius, delay, speed, this));
 			npc.getCitizensEntity().getDefaultGoalController().addGoal(wanderMap.get(npc), priority);	
 			plugin.getLogger().info("NPC assigned Wander Activity...");
 		}
