@@ -12,30 +12,11 @@ import org.bukkit.Bukkit;
 public abstract class AbstractCommand {
 
 	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-	public ArgumentRegex aRegex = plugin.getCommandRegistry().getArgumentRegex();
 	
-	public void echoDebug(String message, String argument) {
-		if (plugin.debugMode)
-			plugin.getLogger().info(String.format(message, argument));
-	}
-
-	public void echoError(String message) {
-			plugin.getLogger().log(Level.WARNING, message);
-	}
+	/* Helper methods for working with arguments */
 	
-	public String getModifier(String argument) {
-		if (argument.split(":").length >= 2)
-			return argument.split(":")[1];
-		else return argument;
-	}
-	
-	public Integer getIntegerModifier(String argument) {
-		if (argument.split(":").length >= 2)
-			return Integer.valueOf(argument.split(":")[1]);
-		else return Integer.valueOf(argument);
-	}
-	
-	
+	public ArgumentHelper aH = plugin.getCommandRegistry().getArgumentHelper();
+		
 	/* Activates the command class as a Denizen Command. Should be called on startup. */
 	
 	public void activateAs(String commandName) throws ActivationException {

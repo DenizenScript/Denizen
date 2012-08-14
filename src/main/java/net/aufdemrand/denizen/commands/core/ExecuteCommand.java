@@ -33,7 +33,6 @@ public class ExecuteCommand extends AbstractCommand {
 
 	enum ExecuteType { ASSERVER, ASDENIZEN, ASPLAYER }
 
-
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
@@ -42,44 +41,38 @@ public class ExecuteCommand extends AbstractCommand {
 		String commandtoExecute = null;
 		ExecuteType executeType = null;
 
+		if (theEntry.arguments() == null)
+			throw new CommandException("...Usage: EXECUTE [ASSERVER|ASNPC|ASPLAYER] '[Command to execute]'");
+
 		/* Match arguments to expected variables */
-		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
+		for (String thisArg : theEntry.arguments()) {
 
-				if (plugin.debugMode) 
-					plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
+			/* If argument is ASPLAYER */
+			if (thisArg.equalsIgnoreCase("ASPLAYER")) {
+				executeType = ExecuteType.ASPLAYER;
+				aH.echoDebug("...executing '%s'.", thisArg);
+			}
 
-				/* If argument is ASPLAYER */
-				if (thisArgument.equalsIgnoreCase("ASPLAYER")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Execute as Player'.");
-					executeType = ExecuteType.ASPLAYER;
-				}
+			/* If argument is ASNPC */
+			else if (thisArg.equalsIgnoreCase("ASNPC")) {
+				executeType = ExecuteType.ASDENIZEN;
+				aH.echoDebug("...executing '%s'.", thisArg);
+			}
 
-				/* If argument is ASNPC */
-				else if (thisArgument.equalsIgnoreCase("ASNPC")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Execute as NPC'.");
-					executeType = ExecuteType.ASDENIZEN;
-				}
+			/* If argument is ASSERVER */
+			else if (thisArg.equalsIgnoreCase("ASSERVER")) {
+				executeType = ExecuteType.ASSERVER;
+				aH.echoDebug("...executing '%s'.", thisArg);
+			}
 
-				/* If argument is ASSERVER */
-				else if (thisArgument.equalsIgnoreCase("ASSERVER")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Execute as Console'.");
-					executeType = ExecuteType.ASSERVER;
-				}
+			else {
+				aH.echoDebug("...set command to execute.", thisArg);
+				commandtoExecute = thisArg
+						.replace("<PLAYER>", theEntry.getPlayer().getName())
+						.replace("<WORLD>", theEntry.getPlayer().getWorld().getName());
+			}
 
-				else {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument as 'Command to execute'.");
-					commandtoExecute = thisArgument
-							.replace("<PLAYER>", theEntry.getPlayer().getName())
-							.replace("<WORLD>", theEntry.getPlayer().getWorld().getName());
-				}
-				
-			}	
-		}
+		}	
 
 		/* Execute the command, if all required variables are filled. */
 		if (commandtoExecute != null && executeType != null) {
@@ -104,10 +97,6 @@ public class ExecuteCommand extends AbstractCommand {
 
 			return true;
 		}
-
-		/* Error processing */
-		if (plugin.debugMode) if (theEntry.arguments() == null)
-			throw new CommandException("...not enough arguments! Usage: EXECUTE [ASSERVER|ASNPC|ASPLAYER] '[Command to execute]'");
 
 		return false;
 	}

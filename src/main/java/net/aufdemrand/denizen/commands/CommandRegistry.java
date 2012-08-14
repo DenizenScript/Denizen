@@ -31,19 +31,21 @@ import net.aufdemrand.denizen.commands.core.ZapCommand;
 
 public class CommandRegistry {
 
-	private Map<String, AbstractCommand> commands = new HashMap<String, AbstractCommand>();
-	private Map<Class<? extends AbstractCommand>, String> commandsClass = new HashMap<Class<? extends AbstractCommand>, String>();
 	public Denizen plugin;
-	private ArgumentRegex argumentRegex = new ArgumentRegex();
-	
-	public ArgumentRegex getArgumentRegex() {
-		return argumentRegex;
-	}
 
 	public CommandRegistry(Denizen denizen) {
 		plugin = denizen;
 	}
 
+	
+	private Map<String, AbstractCommand> commands = new HashMap<String, AbstractCommand>();
+	private Map<Class<? extends AbstractCommand>, String> commandsClass = new HashMap<Class<? extends AbstractCommand>, String>();
+	
+	private ArgumentHelper argumentHelper = new ArgumentHelper(plugin);
+	
+	public ArgumentHelper getArgumentHelper() {
+		return argumentHelper;
+	}
 
 	public boolean registerCommand(String commandName, AbstractCommand commandClass) {
 		this.commands.put(commandName.toUpperCase(), commandClass);

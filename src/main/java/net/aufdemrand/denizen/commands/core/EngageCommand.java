@@ -2,12 +2,10 @@ package net.aufdemrand.denizen.commands.core;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
 
@@ -49,34 +47,23 @@ public class EngageCommand extends AbstractCommand {
 
 		/* Get arguments */
 		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
+			for (String thisArg : theEntry.arguments()) {
 
-				if (plugin.debugMode) 
-					plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
-
-				/* If argument is a duration */
-				if (thisArgument.matches("\\d+")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Set Duration'." );
-					timedEngage = Integer.valueOf(thisArgument);
+				// If argument is a duration
+				if (aH.matchesInteger(thisArg)) {
+					timedEngage = Integer.valueOf(thisArg);
+					aH.echoDebug("...engage duration set to '%s'.", thisArg);
 				}
 
-				/* If argument is a NPCID: modifier */
-				else if (thisArgument.toUpperCase().matches("(?:NPCID|npcid)(:)(\\d+)")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Specify NPCID'.");
-					try {
-						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])) != null)
-							theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])));	
-					} catch (Exception e) {
-						throw new CommandException("NPCID specified could not be matched to a Denizen.");
-					}
+				// If argument is a NPCID: modifier
+				else if (aH.matchesNPCID(thisArg)) {
+					theDenizen = aH.getNPCIDModifier(thisArg);
+					if (theDenizen != null)
+						aH.echoDebug("...now referencing '%s'.", thisArg);
 				}
-				
-				/* Can't match to anything */
-				else if (plugin.debugMode) 
-					plugin.getLogger().log(Level.INFO, "...unable to match argument!");
-				
+
+				// Can't match to anything
+				else aH.echoError("...unable to match argument!");
 			}	
 		}
 
@@ -91,7 +78,6 @@ public class EngageCommand extends AbstractCommand {
 			setEngaged(theDenizen, timedEngage);
 		else 			
 			setEngaged(theEntry.getDenizen(), true);
-
 		return true;
 	}
 
@@ -115,7 +101,6 @@ public class EngageCommand extends AbstractCommand {
 
 	public void setEngaged(DenizenNPC theDenizen, Integer duration) {
 		engagedNPC.put(theDenizen, System.currentTimeMillis() + duration * 1000 );
-
 	}
 
 

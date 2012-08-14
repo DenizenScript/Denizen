@@ -13,7 +13,7 @@ import net.citizensnpcs.command.exception.CommandException;
  * @author You!
  */
 
-public class SampleCommand extends AbstractCommand {
+public class AnnounceCommand extends AbstractCommand {
 
 	/* COMMAND_NAME [TYPICAL] (ARGUMENTS) */
 
@@ -34,9 +34,7 @@ public class SampleCommand extends AbstractCommand {
 	 * 
 	 */
 
-	@SuppressWarnings("unused") // This should be removed from your code.
 	@Override
-	// This is the method that is called when your command is ready to be executed.
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
 		/* Initialize variables */ 

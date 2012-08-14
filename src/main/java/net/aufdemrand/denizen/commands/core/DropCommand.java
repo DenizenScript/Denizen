@@ -1,29 +1,21 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.logging.Level;
-
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**
- * Your command! 
- * This class is a template for a Command in Denizen.
+ * Drops an item in the world.
  * 
- * @author You!
+ * @author Jeremy Schroeder
  */
 
 public class DropCommand extends AbstractCommand {
 
-	/* DROP [#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
+	/* DROP [#(:#)|MATERIAL_TYPE(:#)] (QTY:#) (BOOKMARK:LocationBookmark) */
 
 	/* 
 	 * Arguments: [] - Required, () - Optional 
@@ -42,102 +34,48 @@ public class DropCommand extends AbstractCommand {
 
 		/* Initialize variables */ 
 
-		int amount = 1;
-		ItemStack item = null;
+		int theAmount = 1;
+		ItemStack theItem = null;
 		Location theLocation = null;
-		
+
+		if (theEntry.arguments() == null)
+			throw new CommandException("...Usage: DROP [#(:#)|MATERIAL_TYPE(:#)] (QTY:#) (BOOKMARK:LocationBookmark)");
+
 		/* Match arguments to expected variables */
-		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
+		for (String thisArg : theEntry.arguments()) {
 
-				if (plugin.debugMode) 
-					plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
+			// If argument is QTY: modifier
+			if (aH.matchesQuantity(thisArg)) {
+				theAmount = aH.getIntegerModifier(thisArg); 
+				aH.echoDebug("...drop quantity now '%s'.", thisArg);
+			}
 
-				// If argument is QTY: modifier */
-				if (thisArgument.matches("(?:QTY|qty)(:)(\\d+)")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Quantity'." );
-					amount = Integer.valueOf(thisArgument.split(":")[1]); 
-				}
+			// If argument is a BOOKMARK modifier
+			if (aH.matchesBookmark(thisArg)) {
+				theLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
+				if (theLocation != null)
+					aH.echoDebug("...drop location now at bookmark '%s'", thisArg);
+			}
 
-				/* If argument is a BOOKMARK modifier */
-				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
-						&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
-					theLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-				} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
-						plugin.bookmarks.exists(theEntry.getDenizen(), thisArgument.split(":")[1])) {
-					theLocation = plugin.bookmarks.get(theEntry.getDenizen(), thisArgument, BookmarkType.LOCATION);
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-				}
-				
-				/* If argument is and ItemID */
-				else if (thisArgument.matches("\\d+")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Item ID'.");
-					try {
-						item = new ItemStack(Integer.valueOf(thisArgument));
-					} catch (Exception e) {
-						plugin.getLogger().log(Level.INFO, "...invalid Item ID.");
-					}
-				}
+			// If argument is an Item
+			else if (aH.matchesItem(thisArg)) {
+				theItem = aH.getItemModifier(thisArg);
+				if (theItem != null)
+					aH.echoDebug("...set ItemID to '%s'.", thisArg);
+			}
 
-				/* If argument is ItemID:Data format */
-				else if (thisArgument.matches("(\\d+)(:)(\\d+)")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify item ID and data'.");
-					try {
-						item = new ItemStack(Integer.valueOf(thisArgument.split(":")[0]));
-						item.setData(new MaterialData(Integer.valueOf(thisArgument.split(":")[1])));
-					} catch (Exception e) {
-						plugin.getLogger().log(Level.INFO, "...invalid Item ID.");
-					}
-				}
-
-				/* If the argument is a Material */
-				else if (thisArgument.matches("([a-zA-Z\\x5F]+)")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify Material type'.");
-					try {
-						item = new ItemStack(Material.valueOf(thisArgument.toUpperCase()));
-					} catch (Exception e) {
-						plugin.getLogger().log(Level.INFO, "...invalid Item ID.");
-					}
-				}
-
-				/* If the argument is Material:Data format */
-				else if (thisArgument.matches("([a-zA-Z]+?)(:)(\\d+)")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify Item ID and data'.");
-					try {
-						item = new ItemStack(Material.valueOf(thisArgument.split(":")[0].toUpperCase()));
-						item.setData(new MaterialData(Integer.valueOf(thisArgument.split(":")[1])));
-					} catch (Exception e) {
-						plugin.getLogger().log(Level.INFO, "...Invalid Material type.");	
-					}
-				}
-
-				/* Can't match to anything */
-				else if (plugin.debugMode) 
-					plugin.getLogger().log(Level.INFO, "...unable to match argument!");
-
-			}	
-		}
+			// Can't match to anything
+			else aH.echoError("...unable to match argument!");
+		}	
 
 
 		/* Execute the command, if all required variables are filled. */
-		if (item != null) {
-			item.setAmount(amount);
+		if (theItem != null) {
+			theItem.setAmount(theAmount);
 			if (theLocation == null) theLocation = theEntry.getDenizen().getLocation();
-			theEntry.getDenizen().getWorld().dropItemNaturally(theLocation, item);
+			theEntry.getDenizen().getWorld().dropItemNaturally(theLocation, theItem);
 			return true;
 		}
-
-		/* Error processing */
-		if (plugin.debugMode)
-			throw new CommandException("...Usage: DROP [#(:#)|MATERIAL_TYPE(:#)] (QTY:#) (BOOKMARK:LocationBookmark)");
 
 		return false;
 	}

@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
@@ -34,39 +32,30 @@ public class FailCommand extends AbstractCommand {
 	public boolean execute(ScriptEntry theCommand) throws CommandException {
 
 		String theScript = theCommand.getScript();
-		
+
 		/* Get arguments */
 		if (theCommand.arguments() != null) {
-			for (String thisArgument : theCommand.arguments()) {
-				
-				if (plugin.debugMode) 
-					plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
+			for (String thisArg : theCommand.arguments()) {
 
-				/* If the argument is a SCRIPT: modifier */
-				if (thisArgument.contains("SCRIPT:")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify script'." );
-					theScript = thisArgument.split(":", 2)[1];
+				// If the argument is a SCRIPT: modifier
+				if (aH.matchesScript(thisArg)) {
+					theScript = aH.getStringModifier(thisArg);
+					aH.echoDebug("...script to fail now '%s'.", thisArg);
 				}
-				
-				/* Can't match to anything */
-				else if (plugin.debugMode) 
-					plugin.getLogger().log(Level.INFO, "...unable to match argument!");
-				
+
+				// Can't match to anything
+				else aH.echoError("...unable to match argument!");
 			}
 		}
-		
-		int fails = plugin.getAssignments().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", 0);
 
-		fails++;	
-		
+		int fails = plugin.getAssignments().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", 0);
+		fails++;
 		plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", fails);
-		plugin.saveSaves();
 
 		return true;
 	}
 
-	
+
 	public boolean getScriptFail(Player thePlayer, String theScript, boolean negativeRequirement) {
 
 		boolean outcome = false;
@@ -80,5 +69,5 @@ public class FailCommand extends AbstractCommand {
 		return false;
 
 	}
-	
+
 }

@@ -47,7 +47,7 @@ public class PauseCommand extends AbstractCommand {
 		if (theEntry.arguments() != null) {
 			for (String thisArg : theEntry.arguments()) {
 
-				if (aRegex.matchesDuration(thisArg)) {
+				if (aH.matchesDuration(thisArg)) {
 					duration = getIntegerModifier(thisArg);
 					echoDebug("...duration set to '%s'.", thisArg);
 				}
