@@ -50,7 +50,7 @@ public class FinishCommand extends AbstractCommand {
 			}
 		}
 		
-		int finishes = plugin.getAssignments().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", 0);
+		int finishes = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", 0);
 
 		finishes++;	
 		
@@ -62,7 +62,7 @@ public class FinishCommand extends AbstractCommand {
 
 	
 	/* 
-	 * GetScriptComplete/GetScriptFail
+	 * GetScriptComplete/
 	 *
 	 * Requires the Player and the Script.
 	 * Reads the config.yml to find if the player has completed or failed the specified script.
