@@ -65,11 +65,11 @@ public class GetRequirements {
 				negativeRequirement = true; 
 				requirementEntry = requirementEntry.substring(1);
 			}
-			
+
 			else negativeRequirement = false;
 
 			// Check requirement with RequirementRegistry
-			
+
 			if (plugin.getRequirementRegistry().listRequirements().containsKey(requirementEntry.split(" ")[0].toUpperCase())) {
 				if (plugin.getRequirementRegistry().getRequirement(requirementEntry.split(" ")[0].toUpperCase())
 						.check(theEntity, theScript, plugin.getScriptEngine().helper.buildArgs(requirementEntry.split(" ")[1]), negativeRequirement))
@@ -195,9 +195,14 @@ public class GetRequirements {
 				&& numberMet == requirementList.size()) return true;
 
 		String[] ModeArgs = requirementMode.split(" ");
-		if (ModeArgs[0].equalsIgnoreCase("ANY") 
-				&& numberMet >= Integer.parseInt(ModeArgs[1])) return true;
-
+		if (ModeArgs[0].equalsIgnoreCase("ANY")) {
+			if (ModeArgs.length == 1) {
+				if (numberMet >= 1) return true;
+			} else {
+				if (numberMet >= Integer.parseInt(ModeArgs[1])) return true;
+			}
+		}
+		
 		/* Nothing met, return FALSE */	
 		return false;
 
