@@ -93,8 +93,6 @@ public class GetWorld {
 			else if (weatherType.equalsIgnoreCase("SUNNY")
 					&& !theWorld.hasStorm()) outcome = true;
 
-			else throw new Error("checkWeather requirement error. Check Syntax.");
-
 		} catch(Throwable error) {
 			Bukkit.getLogger().info("Denizen: An error has occured with a WEATHER requirement.");
 			Bukkit.getLogger().info("Error follows: " + error);
