@@ -56,7 +56,7 @@ public class FailCommand extends AbstractCommand {
 			}
 		}
 		
-		int fails = plugin.getAssignments().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", 0);
+		int fails = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", 0);
 
 		fails++;	
 		
