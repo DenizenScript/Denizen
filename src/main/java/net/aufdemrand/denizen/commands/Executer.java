@@ -27,8 +27,10 @@ public class Executer {
 			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Executing command " + theCommand.getCommand());
 
 			try {
-				if (command.execute(theCommand))
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...success!");
+				if (command.execute(theCommand)) {
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...success!"); }
+				else {
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...check syntax, command was not successfully run!"); }
 			} catch (CommandException e) {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, e.getMessage()); 
 				if (plugin.showStackTraces) e.printStackTrace();

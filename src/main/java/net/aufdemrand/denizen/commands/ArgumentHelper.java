@@ -60,7 +60,7 @@ public class ArgumentHelper {
 		
 		else if (m2.matches()) {
 			if (plugin.bookmarks.exists(denizenNPC, thisArg.split(":")[1]))
-				return plugin.bookmarks.get(denizenNPC, thisArg, BookmarkType.LOCATION);
+				return plugin.bookmarks.get(denizenNPC, thisArg.split(":")[1], BookmarkType.LOCATION);
 		}
 		
 		if (plugin.debugMode) echoError("...bookmark not found!");
