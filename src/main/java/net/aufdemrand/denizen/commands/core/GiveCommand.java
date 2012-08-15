@@ -71,6 +71,7 @@ public class GiveCommand extends AbstractCommand {
 			// If argument is an Item
 			else if (aH.matchesItem(thisArg)) {
 				theItem = aH.getItemModifier(thisArg);
+				giveType = GiveType.ITEM;
 				if (theItem != null)
 					aH.echoDebug("...set item to be given to '%s'.", thisArg);
 			}
