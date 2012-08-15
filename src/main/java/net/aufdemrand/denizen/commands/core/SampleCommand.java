@@ -50,34 +50,46 @@ public class SampleCommand extends AbstractCommand {
 		if (theEntry.arguments() != null) {
 			for (String thisArg : theEntry.arguments()) {
 				
-				// Do this routine for each argument supplied.
-				// Includes are some typical arguments. Modify/add code to handle your command needs.
-				
-				// If argument is a number.
+				// If argument is an Integer
 				if (aH.matchesInteger(thisArg)) {
 					// Insert code here.
-					
 					aH.echoDebug("...number argument set to '%s'.", thisArg);
 				}
 					
+				// If argument is a SCRIPT: modifier
 				else if (aH.matchesScript(thisArg)) {
 					// Insert code here.
-					
 					aH.echoDebug("...affected script now set to '%s'.", thisArg);
 				}
 				
+				// If argument is a DURATION: modifier
 				else if (aH.matchesDuration(thisArg)) {
 					// Insert code here.
 					
 					aH.echoDebug("...duration set to '%s'.", thisArg);
 				}
-				
-				// If can't match to anything...
-				// This isn't always possible, depending on the arguments your 
-				// command uses, but nice if you can. Keep the users informed!
-				else {
-					aH.echoDebug("...'%s' could not be matched!", thisArg);
+				// If argument is QTY: modifier
+				if (aH.matchesQuantity(thisArg)) {
+					//theAmount = aH.getIntegerModifier(thisArg); 
+					aH.echoDebug("...drop quantity now '%s'.", thisArg);
 				}
+
+				// If argument is a BOOKMARK modifier
+				if (aH.matchesBookmark(thisArg)) {
+					//theLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
+					//if (theLocation != null)
+						aH.echoDebug("...drop location now at bookmark '%s'", thisArg);
+				}
+
+				// If argument is an Item
+				else if (aH.matchesItem(thisArg)) {
+					//theItem = aH.getItemModifier(thisArg);
+					//if (theItem != null)
+						aH.echoDebug("...set ItemID to '%s'.", thisArg);
+				}
+
+				// Can't match to anything
+				else aH.echoError("...unable to match argument!");
 				
 			}	
 		}

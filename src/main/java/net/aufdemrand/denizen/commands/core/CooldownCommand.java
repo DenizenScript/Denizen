@@ -23,7 +23,7 @@ public class CooldownCommand extends AbstractCommand {
 	 *   'lock down' all steps -- the entire script!
 	 *   By default, only the interacting player will be affected
 	 *   by the cooldown.
-	 *   
+	 * 
 	 * Modifiers:
 	 * (DURATION:#) Same as [# of Seconds]
 	 * ('SCRIPT:[Name of Script]')

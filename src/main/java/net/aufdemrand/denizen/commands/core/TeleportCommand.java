@@ -4,7 +4,6 @@ import java.util.logging.Level;
 
 import org.bukkit.Location;
 
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -45,29 +44,24 @@ public class TeleportCommand extends AbstractCommand {
 		Location teleportLocation = null;
 		Boolean teleportPlayer = true;
 
-		/* Match arguments to expected variables */
-		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
+		if (theEntry.arguments() == null)
+			throw new CommandException("...not enough arguments! Usage: TELEPORT '[Location Bookmark]|'[Denizen Name]:[Location Bookmark]'");
 
-				if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
+		
+		/* Match arguments to expected variables */
+			for (String thisArg : theEntry.arguments()) {
 
 				// If argument is a modifier.
-				if (thisArgument.toUpperCase().contains("DENIZEN")) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...teleporting the DENIZEN instead of the Player.");
+				if (thisArg.toUpperCase().contains("DENIZEN")) {
 					teleportPlayer = false;
+					aH.echoDebug("...now teleporting DENIZEN instead of PLAYER.", thisArg);
 				}
 
-				/* If argument is a BOOKMARK modifier */
-				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
-						&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
-					teleportLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-				} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
-						plugin.bookmarks.exists(theEntry.getDenizen(), thisArgument.split(":")[1])) {
-					teleportLocation = plugin.bookmarks.get(theEntry.getDenizen(), thisArgument, BookmarkType.LOCATION);
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+				// If argument is a BOOKMARK modifier
+				if (aH.matchesBookmark(thisArg)) {
+					teleportLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
+					if (teleportLocation != null)
+						aH.echoDebug("...teleport location now at '%s'.", thisArg);
 				}
 				
 				else {
@@ -75,7 +69,6 @@ public class TeleportCommand extends AbstractCommand {
 				}
 
 			}	
-		}
 
 		/* Execute the command, if all required variables are filled. */
 		if (teleportLocation != null) {
@@ -85,13 +78,6 @@ public class TeleportCommand extends AbstractCommand {
 
 			return true;
 		}
-
-		// else...
-
-		/* Error processing */
-
-		if (plugin.debugMode) if (theEntry.arguments() == null)
-			throw new CommandException("...not enough arguments! Usage: TELEPORT '[Location Bookmark]|'[Denizen Name]:[Location Bookmark]'");
 
 		return false;
 	}

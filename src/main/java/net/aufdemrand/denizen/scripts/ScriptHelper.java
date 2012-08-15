@@ -128,21 +128,21 @@ public class ScriptHelper {
 		}
 		else theEntity = theDenizen.getBukkitEntity();
 
-		for (String thisScript : assignedScripts) {
-			Integer priority = Integer.valueOf(thisScript.split(" ", 2)[0]);
-			String script = thisScript.split(" ", 2)[1].replace("^", "");
+		for (String scriptAssignment : assignedScripts) {
+			Integer priority = Integer.valueOf(scriptAssignment.split(" ", 2)[0]);
+			String script = scriptAssignment.split(" ", 2)[1].replace("^", "");
 
 			try {
 				if (plugin.getRequirements.check(script, theEntity, isPlayer)) {
 
 					// Meets requirements, but we need to check cooldown, too.
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "..." + ChatColor.GREEN + thisScript + ChatColor.WHITE + " meets requirements.");
+						plugin.getLogger().log(Level.INFO, "..." + ChatColor.GREEN + scriptAssignment + ChatColor.WHITE + " meets requirements.");
 
 					if (thePlayer != null) {
 						if (checkCooldown(thePlayer, script)) {
 							// Cooldown is good, add script!
-							interactableScripts.add(new PriorityPair(priority, thisScript.split(" ", 2)[1]));
+							interactableScripts.add(new PriorityPair(priority, scriptAssignment.split(" ", 2)[1]));
 						} else {
 							// Cooldown failed, alert console!
 							if (plugin.debugMode) 
@@ -158,7 +158,7 @@ public class ScriptHelper {
 
 					// Does not meet requirements, alert the console!
 					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "..." + ChatColor.YELLOW + thisScript + ChatColor.WHITE + " does not meet requirements.");
+						plugin.getLogger().log(Level.INFO, "..." + ChatColor.YELLOW + scriptAssignment + ChatColor.WHITE + " does not meet requirements.");
 				}
 
 			} catch (RequirementMissingException e) {
@@ -166,7 +166,7 @@ public class ScriptHelper {
 				// Had a problem checking requirements, most likely a Legacy Requirement with bad
 				// syntax. Alert the console!
 				if (plugin.debugMode) 
-					plugin.getLogger().log(Level.INFO, "..." + ChatColor.RED + thisScript + ChatColor.WHITE + " had a bad requirement, skipping.");
+					plugin.getLogger().log(Level.INFO, "..." + ChatColor.RED + scriptAssignment + ChatColor.WHITE + " had a bad requirement, skipping.");
 			}
 
 		}
@@ -194,10 +194,10 @@ public class ScriptHelper {
 		for (int a = interactableScripts.size() - 1; a > 0; a--) {
 
 			// Check for Overlay Assignment...
-			if (interactableScripts.get(a).name.contains("^")) {
+			if (interactableScripts.get(a).name.startsWith("^")) {
 
 				// This is an Overlay Assignment, check for the appropriate Trigger Script...
-				String theScriptName = interactableScripts.get(a).name.replace("^", "");
+				String theScriptName = interactableScripts.get(a).name.substring(1);
 				String triggerString = String.valueOf(plugin.getTriggerRegistry().getTrigger(theTrigger).triggerName.charAt(0)).toUpperCase() + plugin.getTriggerRegistry().getTrigger(theTrigger).triggerName.substring(1).toLowerCase() + " Trigger"; 
 
 				// If Trigger exists, cool, this is our script.
