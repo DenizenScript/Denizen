@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.commands.core;
 
 import org.bukkit.Location;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
+import net.aufdemrand.denizen.commands.core.GiveCommand.GiveType;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
@@ -29,6 +31,8 @@ public class DropCommand extends AbstractCommand {
 	 *  
 	 */
 
+	enum DropType {ITEM, EXP}
+
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
@@ -37,6 +41,7 @@ public class DropCommand extends AbstractCommand {
 		int theAmount = 1;
 		ItemStack theItem = null;
 		Location theLocation = null;
+		DropType dropType = null;
 
 		if (theEntry.arguments() == null)
 			throw new CommandException("...Usage: DROP [#(:#)|MATERIAL_TYPE(:#)] (QTY:#) (BOOKMARK:LocationBookmark)");
@@ -57,9 +62,16 @@ public class DropCommand extends AbstractCommand {
 					aH.echoDebug("...drop location now at bookmark '%s'", thisArg);
 			}
 
+			// If the argument is XP
+			else if (thisArg.toUpperCase().contains("XP")) {
+				dropType = DropType.EXP;
+				aH.echoDebug("...giving '%s'.", thisArg);
+			}
+
 			// If argument is an Item
 			else if (aH.matchesItem(thisArg)) {
 				theItem = aH.getItemModifier(thisArg);
+				dropType = DropType.ITEM;
 				if (theItem != null)
 					aH.echoDebug("...set ItemID to '%s'.", thisArg);
 			}
@@ -70,14 +82,25 @@ public class DropCommand extends AbstractCommand {
 
 
 		/* Execute the command, if all required variables are filled. */
-		if (theItem != null) {
-			theItem.setAmount(theAmount);
-			if (theLocation == null) theLocation = theEntry.getDenizen().getLocation();
-			theEntry.getDenizen().getWorld().dropItemNaturally(theLocation, theItem);
-			return true;
+		if (dropType != null) {
+
+			switch (dropType) {
+
+			case ITEM:
+				theItem.setAmount(theAmount);
+				if (theLocation == null) theLocation = theEntry.getDenizen().getLocation();
+				theEntry.getDenizen().getWorld().dropItemNaturally(theLocation, theItem);
+				return true;
+
+			case EXP:
+				if (theLocation == null) theLocation = theEntry.getDenizen().getLocation();
+				((ExperienceOrb) theEntry.getDenizen().getWorld().spawn(theLocation, ExperienceOrb.class)).setExperience(theAmount);
+				return true;
+			}
 		}
 
 		return false;
 	}
-
+	
 }
+

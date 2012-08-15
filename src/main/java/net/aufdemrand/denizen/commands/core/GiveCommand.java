@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -58,13 +56,6 @@ public class GiveCommand extends AbstractCommand {
 				aH.echoDebug("...set quantity to '%s'.", thisArg);
 			}
 
-			// If argument is an Item
-			else if (aH.matchesItem(thisArg)) {
-				theItem = aH.getItemModifier(thisArg);
-				if (theItem != null)
-					aH.echoDebug("...set item to be given to '%s'.", thisArg);
-			}
-
 			// If the argument is MONEY
 			else if (thisArg.toUpperCase().contains("MONEY")) {
 				giveType = GiveType.MONEY;
@@ -76,14 +67,19 @@ public class GiveCommand extends AbstractCommand {
 				giveType = GiveType.EXP;
 				aH.echoDebug("...giving '%s'.", thisArg);
 			}
+
+			// If argument is an Item
+			else if (aH.matchesItem(thisArg)) {
+				theItem = aH.getItemModifier(thisArg);
+				if (theItem != null)
+					aH.echoDebug("...set item to be given to '%s'.", thisArg);
+			}
 			
 			/* Can't match to anything */
-			else if (plugin.debugMode) 
-				plugin.getLogger().log(Level.INFO, "...unable to match argument!");
+			else aH.echoError("...unable to match argument!");
 
 		}	
 	
-
 
 	/* Execute the command, if all required variables are filled. */
 	if (giveType != null) {
@@ -97,11 +93,11 @@ public class GiveCommand extends AbstractCommand {
 			} else {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no economy loaded! Have you installed Vault and a compatible economy plugin?");	
 			}
-			break;
+			return true;
 
 		case EXP:
 			theEntry.getPlayer().giveExp(theAmount);
-			break;
+			return true;			
 			
 		case ITEM:
 			theItem.setAmount(theAmount);
@@ -114,11 +110,8 @@ public class GiveCommand extends AbstractCommand {
 					theEntry.getPlayer().getWorld().dropItem(theEntry.getPlayer().getLocation(), leftoverItem.getValue());
 				}
 			}
-
-			break;
-		}
-
-		return true;
+			return true;
+			}
 	}
 
 	return false;
