@@ -45,40 +45,43 @@ public class PermissCommand extends AbstractCommand {
 		String worldName = null;
 		String groupName = null;
 
-		/* Match arguments to expected variables */
-		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
-
-				if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
-
-				/* Match to GROUP:[group] */
-				if (thisArgument.matches("(?:DURATION|duration)(:)(\\d+)")) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...specified Group.'.");
-					groupName = thisArgument.split(":")[1];
-				}
-
-				/* Match to WORLD:[world] */
-				else if (thisArgument.matches("\\d+")) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...specified World.'.");
-					worldName = thisArgument.split(":")[1];
-				}
-
-				/* Takes current World */
-				else if (thisArgument.toUpperCase().contains("WORLD")) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...specified World.'.");
-					worldName = theEntry.getPlayer().getWorld().getName();
-				}
-
-				else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...specified permissions node.'.");
-					permissionsNode = thisArgument;
-				}
-
-			}	
-		}
-
-		/* Arguments all matched up... */
+		if (theEntry.arguments() == null)
+			throw new CommandException("...Usage: PERMISS [permission.node]|['GROUP:group name'] (WORLD)|(WORLD:'NAME')");
 		
+		/* Match arguments to expected variables */
+		for (String thisArgument : theEntry.arguments()) {
+
+			if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
+
+			/* Match to GROUP:[group] */
+			if (aH.matchesGroup(thisArgument)) {
+				groupName = aH.getStringModifier(thisArgument);
+				aH.echoDebug("...group specified as '%s'.", thisArgument);
+			}
+
+			/* Match to WORLD:[world] */
+			else if (aH.matchesWorld(thisArgument)) {
+				worldName = aH.getStringModifier(thisArgument);
+				aH.echoDebug("...world specified as '%s'.", thisArgument);
+			}
+
+			/* Takes current World */
+			else if (thisArgument.toUpperCase().contains("WORLD")) {
+				worldName = theEntry.getPlayer().getWorld().getName();
+				aH.echoDebug("...world specified as current world.", thisArgument);
+			}
+
+			else {
+				aH.echoDebug("...specified '%s' permissions node.", thisArgument);
+				permissionsNode = thisArgument;
+			}
+
+		}	
+
+		
+		
+		/* Arguments all matched up... */
+
 		if (permissionsNode != null) {
 			if (plugin.perms != null) {
 
@@ -113,13 +116,9 @@ public class PermissCommand extends AbstractCommand {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no permissions loaded! Have you installed Vault and a compatible plugin?");
 				return false;
 			}
-			
+
 			return true;
 		}
-
-		/* Error processing */
-		if (plugin.debugMode) if (theEntry.arguments() == null)
-			throw new CommandException("...not enough arguments! Usage:PERMISS [permission.node]|['GROUP:group name'] (WORLD)|(WORLD:'NAME')");
 
 		return false;
 	}

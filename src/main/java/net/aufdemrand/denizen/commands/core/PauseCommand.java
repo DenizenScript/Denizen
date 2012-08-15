@@ -43,6 +43,7 @@ public class PauseCommand extends AbstractCommand {
 		Integer duration = null;
 
 		/* Match arguments to expected variables */
+		if (theEntry.arguments() != null)
 			for (String thisArg : theEntry.arguments()) {
 
 				if (aH.matchesDuration(thisArg)) {
@@ -53,7 +54,8 @@ public class PauseCommand extends AbstractCommand {
 				else 
 					aH.echoError("...argument could not be matched!");
 
-			}	
+			}
+
 
 		if (theEntry.getCommand().equalsIgnoreCase("RESUME")) {
 			theEntry.getDenizen().getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(false);

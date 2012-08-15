@@ -144,6 +144,18 @@ public class ArgumentHelper {
 		Matcher m = durationArgument.matcher(regex);
 		return m.matches();
 	}
+	
+	final public Pattern worldArgument = Pattern.compile("(?:WORLD|world|World)(:)([a-zA-Z0-9]+?)");
+	public boolean matchesWorld(String regex) {
+		Matcher m = worldArgument.matcher(regex);
+		return m.matches();
+	}
+	
+	final public Pattern groupArgument = Pattern.compile("(?:GROUP|group|Group)(:)([a-zA-Z0-9]+?)");
+	public boolean matchesGroup(String regex) {
+		Matcher m = groupArgument.matcher(regex);
+		return m.matches();
+	}
 
 	final public Pattern integerArgument = Pattern.compile("\\d+");
 	public boolean matchesInteger(String regex) {
