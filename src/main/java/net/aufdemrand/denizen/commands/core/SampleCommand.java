@@ -57,26 +57,26 @@ public class SampleCommand extends AbstractCommand {
 				if (aH.matchesInteger(thisArg)) {
 					// Insert code here.
 					
-					echoDebug("...number argument set to '%s'.", thisArg);
+					aH.echoDebug("...number argument set to '%s'.", thisArg);
 				}
 					
 				else if (aH.matchesScript(thisArg)) {
 					// Insert code here.
 					
-					echoDebug("...affected script now set to '%s'.", thisArg);
+					aH.echoDebug("...affected script now set to '%s'.", thisArg);
 				}
 				
 				else if (aH.matchesDuration(thisArg)) {
 					// Insert code here.
 					
-					echoDebug("...duration set to '%s'.", thisArg);
+					aH.echoDebug("...duration set to '%s'.", thisArg);
 				}
 				
 				// If can't match to anything...
 				// This isn't always possible, depending on the arguments your 
 				// command uses, but nice if you can. Keep the users informed!
 				else {
-					echoDebug("...'%s' could not be matched!", thisArg);
+					aH.echoDebug("...'%s' could not be matched!", thisArg);
 				}
 				
 			}	

@@ -45,7 +45,7 @@ public class LookCommand extends AbstractCommand {
 
 
 	@Override
-	public boolean execute(ScriptEntry theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
 
 		/* Initialize variables */ 
@@ -55,66 +55,48 @@ public class LookCommand extends AbstractCommand {
 		Location theLocation = null;
 		LivingEntity theEntity = null;
 
-		DenizenNPC theDenizen = theCommand.getDenizen();
+		DenizenNPC theDenizen = theEntry.getDenizen();
 
 		/* Get arguments */
-		if (theCommand.arguments() != null) {
-			for (String thisArgument : theCommand.arguments()) {
+			for (String thisArg : theEntry.arguments()) {
 
-				if (plugin.debugMode) 
-					plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
-
-				/* If argument is a NPCID: modifier */
-				if (thisArgument.matches("(?:NPCID|npcid)(:)(\\d+)")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...argument matched to 'specify NPC ID'.");
-					try {
-						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])) != null) {
-							theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(thisArgument.split(":")[1])));
-							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...NPCID specified.");
-						}
-					} catch (Throwable e) {
-						throw new CommandException("NPCID specified could not be matched to a Denizen.");
-					}
+				// If argument is a duration
+				if (aH.matchesDuration(thisArg)) {
+					duration = Integer.valueOf(thisArg);
+					aH.echoDebug("...look duration set to '%s'.", thisArg);
 				}
 
-				/* If argument is a DURATION: modifier */
-				else if (thisArgument.matches("(?:DURATION|duration)(:)(\\d+)")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...argument matched to 'specify duration'.");
-					duration = Integer.valueOf(thisArgument.split(":")[1]);
+				// If argument is a NPCID: modifier
+				else if (aH.matchesNPCID(thisArg)) {
+					theEntity = aH.getNPCIDModifier(thisArg).getEntity();
+					if (theDenizen != null)
+						aH.echoDebug("...now referencing '%s'.", thisArg);
 				}
 
-				/* If argument is a BOOKMARK modifier */
-				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
-						&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
-					theLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-				} 
-				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
-						plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument.split(":")[1])) {
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument.split(":")[1], BookmarkType.LOCATION);
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+				// If argument is a BOOKMARK modifier
+				if (aH.matchesBookmark(thisArg)) {
+					theLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
+					if (theLocation != null)
+						aH.echoDebug("...drop location now at bookmark '%s'", thisArg);
 				}
+
 
 				else {
 					/* If argument is a Direction */
 					for (Direction thisDirection : Direction.values()) {
-						if (thisArgument.toUpperCase().equals(thisDirection.name())) {
-							direction = Direction.valueOf(thisArgument);
+						if (thisArg.toUpperCase().equals(thisDirection.name())) {
+							direction = Direction.valueOf(thisArg);
 							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...argument matched to 'specify direction'.");
 						}
 					}			
 				}
 
+				//////////
+				
 			}	
-		}
 
-		// If looking AT
 		if (theLocation != null) look(theEntity, theDenizen, direction, duration, theLocation);
-		else if (theEntity == null && direction.equals(Direction.AT)) theEntity = (LivingEntity) theCommand.getPlayer();
+		else if (theEntity == null && direction.equals(Direction.AT)) theEntity = (LivingEntity) theEntry.getPlayer();
 		else if (direction != null) look(theEntity, theDenizen, direction, duration, theLocation);
 		return true;
 	}
@@ -203,6 +185,9 @@ public class LookCommand extends AbstractCommand {
 			theDenizen.getHandle().as = theDenizen.getHandle().yaw;
 		}
 
+		
+		// If duration is set...
+		
 		if (duration != null) {
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new LookCommandRunnable<DenizenNPC, Location, Boolean, Float>(restoreDenizen, restoreLocation, restoreLookClose, theDenizen.getLocation().getYaw()) {
 				@Override
@@ -221,6 +206,9 @@ public class LookCommand extends AbstractCommand {
 	}
 
 
+	
+	// Thanks fullwall
+	
 	private void faceEntity(Entity from, Entity at) {
 		if (from.getWorld() != at.getWorld())
 			return;

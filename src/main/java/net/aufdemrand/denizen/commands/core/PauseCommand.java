@@ -9,10 +9,9 @@ import net.citizensnpcs.command.exception.CommandException;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 
 /**
- * Your command! 
- * This class is a template for a Command in Denizen.
+ * Pauses a Denizen's waypoints.
  * 
- * @author You!
+ * @author Jeremy Schroeder
  */
 
 public class PauseCommand extends AbstractCommand {
@@ -44,21 +43,17 @@ public class PauseCommand extends AbstractCommand {
 		Integer duration = null;
 
 		/* Match arguments to expected variables */
-		if (theEntry.arguments() != null) {
 			for (String thisArg : theEntry.arguments()) {
 
 				if (aH.matchesDuration(thisArg)) {
-					duration = getIntegerModifier(thisArg);
-					echoDebug("...duration set to '%s'.", thisArg);
+					duration = aH.getIntegerModifier(thisArg);
+					aH.echoDebug("...duration set to '%s'.", thisArg);
 				}
 
-				else {
-					echoDebug("...'%s' could not be matched!", thisArg);
-				}
+				else 
+					aH.echoError("...argument could not be matched!");
 
 			}	
-		}
-
 
 		if (theEntry.getCommand().equalsIgnoreCase("RESUME")) {
 			theEntry.getDenizen().getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(false);
