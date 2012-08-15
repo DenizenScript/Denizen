@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
@@ -17,7 +15,7 @@ import net.citizensnpcs.command.exception.CommandException;
 
 public class FinishCommand extends AbstractCommand {
 
-	/* 
+	/* FINISH ('SCRIPT:[Script Name]')
 
 	/* Arguments: [] - Required, () - Optional 
 	 * None.
@@ -32,42 +30,38 @@ public class FinishCommand extends AbstractCommand {
 	public boolean execute(ScriptEntry theCommand) throws CommandException {
 
 		String theScript = theCommand.getScript();
-		
+
 		/* Get arguments */
 		if (theCommand.arguments() != null) {
-			for (String thisArgument : theCommand.arguments()) {
+			for (String thisArg : theCommand.arguments()) {
 
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
-
-				/* Change the script to a specified one */
-				if (thisArgument.contains("SCRIPT:")) 
-					theScript = thisArgument.split(":", 2)[1];
-
-				else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Unable to match argument!");
+				// If the argument is a SCRIPT: modifier
+				if (aH.matchesScript(thisArg)) {
+					theScript = aH.getStringModifier(thisArg);
+					aH.echoDebug("...script to finish now '%s'.", thisArg);
 				}
-			
+
+				// Can't match to anything
+				else aH.echoError("...unable to match argument!");
 			}
 		}
-		
-		int finishes = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", 0);
 
-		finishes++;	
 		
-		plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", finishes);
+		/* Write data to saves */
+		
+		int currentFinishes = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", 0);
+		currentFinishes++;	
+		
+		plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", currentFinishes);
 		plugin.saveSaves();
 
 		return true;
 	}
 
 	
-	/* 
-	 * GetScriptComplete/
-	 *
-	 * Requires the Player and the Script.
-	 * Reads the config.yml to find if the player has completed or failed the specified script.
-	 *
-	 */
+
+	// Requirement
+	// TODO: Move to requirements/core
 
 	public boolean getScriptCompletes(Player thePlayer, String theScript, String theAmount, boolean negativeRequirement) {
 

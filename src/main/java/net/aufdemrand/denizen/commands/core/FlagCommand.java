@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -33,58 +31,54 @@ public class FlagCommand extends AbstractCommand {
 	enum FlagType { VALUE, INC, DEC, BOOLEAN }
 
 	@Override
-	public boolean execute(ScriptEntry theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
 		String theFlag = null;
 		FlagType flagType = null;
 		Integer duration = null;
 		String theValue = null;
 
+		if (theEntry.arguments() == null)
+			throw new CommandException("...Usage: FLAG [[NAME]:[VALUE]|[NAME]:++|[NAME]:--]");
+
 		/* Get arguments */
-		if (theCommand.arguments() != null) {
-			for (String thisArgument : theCommand.arguments()) {
+		for (String thisArg : theEntry.arguments()) {
 
-				if (plugin.debugMode) 
-					plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
-
-				/* If argument is a DURATION: modifier */
-				if (thisArgument.matches("(?:DURATION|duration)(:)(\\d+)")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify duration'.");
-					duration = Integer.valueOf(thisArgument.split(":")[1]);
-
-				}
-
-				/* If argument is a flag with value */
-				else if (thisArgument.split(":").length == 2) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument as 'flag with data'.");
-
-					theFlag = thisArgument.split(":")[0].toUpperCase();
-					if (thisArgument.split(":")[1].equals("++")) 
-						flagType = FlagType.INC;
-					else if (thisArgument.split(":")[1].equals("--"))
-						flagType = FlagType.DEC;
-					else {
-						flagType = FlagType.VALUE;
-						theValue = thisArgument.split(":")[1].toUpperCase();
-					}
-				}
-
-				/* Otherwise, argument is a Boolean */
-				else {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument as 'boolean flag'.");
-					theFlag = thisArgument.toUpperCase();
-					flagType = FlagType.BOOLEAN;
-				}
-
+			/* If argument is a DURATION: modifier */
+			if (aH.matchesDuration(thisArg)) {
+				duration = aH.getIntegerModifier(thisArg);
+				aH.echoDebug("...flag will be removed after '&s' seconds.", thisArg);
 			}
+
+			/* If argument is a flag with value */
+			else if (thisArg.split(":").length == 2) {
+				theFlag = thisArg.split(":")[0].toUpperCase();
+
+				if (thisArg.split(":")[1].equals("++")) 
+					flagType = FlagType.INC;
+				else if (thisArg.split(":")[1].equals("--"))
+					flagType = FlagType.DEC;
+				else {
+					flagType = FlagType.VALUE;
+					theValue = thisArg.split(":")[1].toUpperCase();
+				}
+				aH.echoDebug("...setting FLAG '%s'.", thisArg);
+			}
+
+			/* Otherwise, argument is a Boolean */
+			else {
+				theFlag = thisArg.toUpperCase();
+				flagType = FlagType.BOOLEAN;
+				aH.echoDebug("...setting '%s' as boolean flag.", thisArg.toUpperCase());
+			}
+
 		}
 
+
+		/* If a duration is set... */
 		if (duration != null && flagType != null && theFlag != null) {
 
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FlagCommandRunnable<String, String, String>(theCommand.getPlayer().getName(), theFlag, theValue) {
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FlagCommandRunnable<String, String, String>(theEntry.getPlayer().getName(), theFlag, theValue) {
 				@Override
 				public void run(String player, String flag, String checkValue) { 
 					if (plugin.getSaves().getString("Players." + player + ".Flags." + flag).equals(checkValue))
@@ -92,42 +86,35 @@ public class FlagCommand extends AbstractCommand {
 				}
 			}, duration * 20);
 		}
+
 		
+		/* Set the flag! */
 		if (flagType != null && theFlag != null) {
 
 			switch (flagType) {
 
 			case INC:
-				int incValue = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + ".Flags." + theFlag, 0) + 1;
-				plugin.getSaves().set("Players." + theCommand.getPlayer().getName()+ ".Flags." + theFlag, incValue);
-				plugin.saveSaves();
+				int incValue = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, 0) + 1;
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName()+ ".Flags." + theFlag, incValue);
 				break;
 
 			case DEC:
-				int decValue = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + ".Flags." + theFlag, 0) - 1;
-				plugin.getSaves().set("Players." + theCommand.getPlayer().getName()+ ".Flags." + theFlag, decValue);
-				plugin.saveSaves();
+				int decValue = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, 0) - 1;
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName()+ ".Flags." + theFlag, decValue);
 				break;
 
 			case VALUE:
-				plugin.getSaves().set("Players." + theCommand.getPlayer().getName()+ ".Flags." + theFlag, theValue);
-				plugin.saveSaves();
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName()+ ".Flags." + theFlag, theValue);
 				break;
 
 			case BOOLEAN:
-				plugin.getSaves().set("Players." + theCommand.getPlayer().getName()+ ".Flags." + theFlag, true);
-				plugin.saveSaves();
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName()+ ".Flags." + theFlag, true);
 				break;
 
 			}
-
 			return true;
 		}
 
-		/* Error processing */
-		if (plugin.debugMode)
-			throw new CommandException("...Usage: FLAG [[NAME]:[VALUE]|[NAME]:++|[NAME]:--]");
-		
 		return false;
 	}
 
