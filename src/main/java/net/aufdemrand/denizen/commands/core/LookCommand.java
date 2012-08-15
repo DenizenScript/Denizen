@@ -62,13 +62,13 @@ public class LookCommand extends AbstractCommand {
 
 				// If argument is a duration
 				if (aH.matchesDuration(thisArg)) {
-					duration = Integer.valueOf(thisArg);
+					duration = aH.getIntegerModifier(thisArg);
 					aH.echoDebug("...look duration set to '%s'.", thisArg);
 				}
 
 				// If argument is a NPCID: modifier
 				else if (aH.matchesNPCID(thisArg)) {
-					theEntity = aH.getNPCIDModifier(thisArg).getEntity();
+					theDenizen = aH.getNPCIDModifier(thisArg);
 					if (theDenizen != null)
 						aH.echoDebug("...now referencing '%s'.", thisArg);
 				}
@@ -95,9 +95,14 @@ public class LookCommand extends AbstractCommand {
 				
 			}	
 
-		if (theLocation != null) look(theEntity, theDenizen, direction, duration, theLocation);
-		else if (theEntity == null && direction.equals(Direction.AT)) theEntity = (LivingEntity) theEntry.getPlayer();
-		else if (direction != null) look(theEntity, theDenizen, direction, duration, theLocation);
+		if (theLocation != null) {
+			look(theEntity, theDenizen, direction, duration, theLocation);
+			return true;
+		}
+		
+		if (theEntity == null) theEntity = (LivingEntity) theEntry.getPlayer();
+		if (direction != null) look(theEntity, theDenizen, direction, duration, theLocation);
+		
 		return true;
 	}
 

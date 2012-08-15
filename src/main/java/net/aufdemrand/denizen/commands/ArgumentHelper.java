@@ -33,7 +33,7 @@ public class ArgumentHelper {
 		plugin.getLogger().log(Level.WARNING, message);
 	}
 
-	
+
 
 	/* ----------------------------- */
 
@@ -53,12 +53,16 @@ public class ArgumentHelper {
 		Matcher m = bookmarkArgument.matcher(thisArg);
 		Matcher m2 = bookmarkArgument2.matcher(thisArg);
 
-		if (m.matches()	&& plugin.bookmarks.exists(thisArg.split(":")[1], thisArg.split(":")[2])) 
-			return plugin.bookmarks.get(thisArg.split(":")[1], thisArg.split(":")[2], BookmarkType.LOCATION);
-
-		else if (m2.matches() &&	plugin.bookmarks.exists(denizenNPC, thisArg.split(":")[1]))
-			return plugin.bookmarks.get(denizenNPC, thisArg, BookmarkType.LOCATION);
-
+		if (m.matches()) {
+			if (plugin.bookmarks.exists(thisArg.split(":")[1], thisArg.split(":")[2])) 
+				return plugin.bookmarks.get(thisArg.split(":")[1], thisArg.split(":")[2], BookmarkType.LOCATION);
+		}
+		
+		else if (m2.matches()) {
+			if (plugin.bookmarks.exists(denizenNPC, thisArg.split(":")[1]))
+				return plugin.bookmarks.get(denizenNPC, thisArg, BookmarkType.LOCATION);
+		}
+		
 		if (plugin.debugMode) echoError("...bookmark not found!");
 		return null;
 	}
@@ -144,13 +148,13 @@ public class ArgumentHelper {
 		Matcher m = durationArgument.matcher(regex);
 		return m.matches();
 	}
-	
+
 	final public Pattern worldArgument = Pattern.compile("(?:WORLD|world|World)(:)([a-zA-Z0-9]+?)");
 	public boolean matchesWorld(String regex) {
 		Matcher m = worldArgument.matcher(regex);
 		return m.matches();
 	}
-	
+
 	final public Pattern groupArgument = Pattern.compile("(?:GROUP|group|Group)(:)([a-zA-Z0-9]+?)");
 	public boolean matchesGroup(String regex) {
 		Matcher m = groupArgument.matcher(regex);

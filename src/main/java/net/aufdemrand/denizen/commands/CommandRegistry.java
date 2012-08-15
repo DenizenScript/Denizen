@@ -32,16 +32,18 @@ import net.aufdemrand.denizen.commands.core.ZapCommand;
 public class CommandRegistry {
 
 	public Denizen plugin;
-
+	private ArgumentHelper argumentHelper; 
+	
 	public CommandRegistry(Denizen denizen) {
 		plugin = denizen;
+		argumentHelper = new ArgumentHelper(plugin);
 	}
 
 	
 	private Map<String, AbstractCommand> commands = new HashMap<String, AbstractCommand>();
 	private Map<Class<? extends AbstractCommand>, String> commandsClass = new HashMap<Class<? extends AbstractCommand>, String>();
 	
-	private ArgumentHelper argumentHelper = new ArgumentHelper(plugin);
+
 	
 	public ArgumentHelper getArgumentHelper() {
 		return argumentHelper;

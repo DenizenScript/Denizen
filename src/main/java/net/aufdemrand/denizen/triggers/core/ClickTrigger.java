@@ -58,7 +58,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 			return;
 		}
 		
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Error.");
+		// Success!
 	}
 
 
