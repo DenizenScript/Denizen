@@ -2,10 +2,15 @@ package net.aufdemrand.denizen.activities;
 
 import java.util.List;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.DenizenTrait;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
 
-public class ActivityEngine {
+public class ActivityEngine implements Listener {
 
 	Denizen plugin;
 
@@ -50,6 +55,19 @@ public class ActivityEngine {
 			}
 
 		}
+	}
+	
+	
+	@EventHandler
+	public void scheduleonspawn(NPCSpawnEvent event) {
+
+		if (event.getNPC().hasTrait(DenizenTrait.class)) {
+		
+		if (plugin.getAssignments().contains("Denizens." + event.getNPC().getName() + ".Default Activity"))
+			plugin.getActivityEngine().setActivityScript(plugin.getDenizenNPCRegistry().getDenizen(event.getNPC()), plugin.getAssignments().getString("Denizens." + event.getNPC().getName() + ".Default Activity"));
+
+		}
+	
 	}
 
 

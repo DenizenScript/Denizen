@@ -49,9 +49,6 @@ public class DenizenTrait extends Trait implements Toggleable {
 				triggerMap.put(theTriggerName, plugin.getTriggerRegistry().getTrigger(theTriggerName).getEnabledByDefault());
 			}
 
-		if (plugin.getAssignments().contains("Denizens." + npc.getName() + ".Default Activity"))
-			plugin.getActivityEngine().setActivityScript(plugin.getDenizenNPCRegistry().getDenizen(npc), plugin.getAssignments().getString("Denizens." + npc.getName() + ".Default Activity"));
-
 	}
 
 
