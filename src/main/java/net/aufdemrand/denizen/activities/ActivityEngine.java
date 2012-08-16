@@ -62,19 +62,7 @@ public class ActivityEngine implements Listener {
 	
 	@EventHandler
 	public void scheduleonspawn(NPCSpawnEvent event) {
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new PauseCommandRunnable<NPC>(event.getNPC()) {
-			@Override
-			public void run(NPC theNPC) { 
-				if (theNPC != null) {
-					if (theNPC.isSpawned()) {
-						if (theNPC.hasTrait(DenizenTrait.class)) {
-						if (plugin.getAssignments().contains("Denizens." + theNPC.getName() + ".Default Activity"))
-							plugin.getActivityEngine().setActivityScript(plugin.getDenizenNPCRegistry().getDenizen(theNPC), plugin.getAssignments().getString("Denizens." + theNPC.getName() + ".Default Activity"));
-						}
-					}
-				}
-			}
-		}, 20);
+
 	}
 
 
