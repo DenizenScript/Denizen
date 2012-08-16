@@ -165,10 +165,7 @@ public class TakeCommand extends AbstractCommand {
 					// amount is just right!
 					if (amount == inHandAmt) {
 						theEntry.getPlayer().setItemInHand(newHandItem);
-						}
-					
-
-					else {
+					} else {
 						// amount is less than what's in hand, need to make a new itemstack of what's left...
 						newHandItem = new ItemStack(theEntry.getPlayer().getItemInHand().getType(), inHandAmt - amount, theEntry.getPlayer().getItemInHand().getData().getData());
 						theEntry.getPlayer().setItemInHand(newHandItem);

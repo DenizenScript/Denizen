@@ -33,10 +33,6 @@ public class DenizenTrait extends Trait implements Toggleable {
 		for (String theTriggerName : plugin.getTriggerRegistry().listTriggers().keySet())
 			if (!triggerMap.containsKey(theTriggerName))
 				triggerMap.put(theTriggerName, plugin.getTriggerRegistry().getTrigger(theTriggerName).getEnabledByDefault());
-		
-		if (plugin.getAssignments().contains("Denizens." + npc.getName() + ".Default Activity"))
-			plugin.getActivityEngine().setActivityScript(plugin.getDenizenNPCRegistry().getDenizen(npc), plugin.getAssignments().getString("Denizens." + npc.getName() + ".Default Activity"));
-
 	}
 
 	@Override
@@ -52,6 +48,10 @@ public class DenizenTrait extends Trait implements Toggleable {
 			} else {
 				triggerMap.put(theTriggerName, plugin.getTriggerRegistry().getTrigger(theTriggerName).getEnabledByDefault());
 			}
+
+		if (plugin.getAssignments().contains("Denizens." + npc.getName() + ".Default Activity"))
+			plugin.getActivityEngine().setActivityScript(plugin.getDenizenNPCRegistry().getDenizen(npc), plugin.getAssignments().getString("Denizens." + npc.getName() + ".Default Activity"));
+
 	}
 
 
