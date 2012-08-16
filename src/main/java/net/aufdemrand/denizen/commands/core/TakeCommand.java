@@ -10,6 +10,7 @@ import org.bukkit.material.MaterialData;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
+import net.minecraft.server.Block;
 
 /**
  * Your command! 
@@ -158,18 +159,22 @@ public class TakeCommand extends AbstractCommand {
 				if (amount > inHandAmt) {
 					amount = inHandAmt;
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use a HOLDING requirement.");
-					((CraftPlayer) theEntry.getPlayer()).getHandle().inventory.setCarried(null);
-				}
+					((CraftPlayer) theEntry.getPlayer()).getHandle().inventory.setCarried(new net.minecraft.server.ItemStack((Block) null));
+					theEntry.getPlayer().updateInventory();				}
 				else {
 
 					// amount is just right!
-					if (amount == inHandAmt) ((CraftPlayer) theEntry.getPlayer()).getHandle().inventory.setCarried(null);
+					if (amount == inHandAmt) {
+						((CraftPlayer) theEntry.getPlayer()).getHandle().inventory.setCarried(new net.minecraft.server.ItemStack((Block) null));
+						theEntry.getPlayer().updateInventory();
+					}
+					
 
 					else {
 						// amount is less than what's in hand, need to make a new itemstack of what's left...
-						newHandItem = new ItemStack(theEntry.getPlayer().getItemInHand().getType(), inHandAmt - amount);
-						newHandItem.setData(new MaterialData((int) theEntry.getPlayer().getItemInHand().getData().getData()));
+						newHandItem = new ItemStack(theEntry.getPlayer().getItemInHand().getType(), inHandAmt - amount, theEntry.getPlayer().getItemInHand().getData().getData());
 						theEntry.getPlayer().setItemInHand(newHandItem);
+						theEntry.getPlayer().updateInventory();
 					}
 				}
 
