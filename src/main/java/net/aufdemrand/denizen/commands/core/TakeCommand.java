@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.commands.core;
 import java.util.logging.Level;
 
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
@@ -157,12 +158,12 @@ public class TakeCommand extends AbstractCommand {
 				if (amount > inHandAmt) {
 					amount = inHandAmt;
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use a HOLDING requirement.");
-					((net.minecraft.server.EntityPlayer) theEntry.getPlayer()).inventory.setCarried(null);
+					((CraftPlayer) theEntry.getPlayer()).getHandle().inventory.setCarried(null);
 				}
 				else {
 
 					// amount is just right!
-					if (amount == inHandAmt) ((net.minecraft.server.EntityPlayer) theEntry.getPlayer()).inventory.setCarried(null);
+					if (amount == inHandAmt) ((CraftPlayer) theEntry.getPlayer()).getHandle().inventory.setCarried(null);
 
 					else {
 						// amount is less than what's in hand, need to make a new itemstack of what's left...
