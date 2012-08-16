@@ -37,9 +37,6 @@ public class RefuseCommand extends AbstractCommand {
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
 		/* Initialize variables */ 
-
-		// Typically initialized as null and filled as needed. Remember: theEntry
-		// contains some information passed through the execution process.
 		String permissionsNode = null;
 		String worldName = null;
 		String groupName = null;
@@ -49,8 +46,6 @@ public class RefuseCommand extends AbstractCommand {
 		
 		/* Match arguments to expected variables */
 		for (String thisArgument : theEntry.arguments()) {
-
-			if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
 
 			/* Match to GROUP:[group] */
 			if (aH.matchesGroup(thisArgument)) {
@@ -77,15 +72,13 @@ public class RefuseCommand extends AbstractCommand {
 
 		}	
 
-
 		/* Arguments all matched up... */
 
 		if (permissionsNode != null) {
 			if (plugin.perms != null) {
 
 				if (worldName == null) {
-					String nullString = null;
-					plugin.perms.playerRemove(nullString, theEntry.getPlayer().getName(), groupName);
+					plugin.perms.playerRemove((String) null, theEntry.getPlayer().getName(), permissionsNode);
 				} else {
 					plugin.perms.playerRemove(plugin.getServer().getWorld(worldName), theEntry.getPlayer().getName(), permissionsNode);
 				}
@@ -104,8 +97,7 @@ public class RefuseCommand extends AbstractCommand {
 
 			if (plugin.perms != null) {
 				if (worldName == null) {
-					String nullString = null;
-					plugin.perms.playerAddGroup(nullString, theEntry.getPlayer().getName(), groupName);
+					plugin.perms.playerRemoveGroup((String) null, theEntry.getPlayer().getName(), groupName);
 				} else {
 					plugin.perms.playerRemoveGroup(plugin.getServer().getWorld(worldName), theEntry.getPlayer().getName(), groupName);
 				}
