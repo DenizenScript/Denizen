@@ -64,6 +64,11 @@ public class ResetCommand extends AbstractCommand {
 				aH.echoDebug("...will reset '%s'.", thisArg);
 			}
 
+			else if (aH.matchesScript(thisArg)) {
+				theScript = aH.getStringModifier(thisArg);
+				aH.echoDebug("...script affected is now '%s'.", thisArg);
+			}
+			
 			else { 
 				theScript = thisArg;
 				aH.echoDebug("...script affected is now '%s'.", thisArg);
