@@ -95,23 +95,25 @@ public class FlagCommand extends AbstractCommand {
 
 			case INC:
 				int incValue = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, 0) + 1;
-				plugin.getSaves().set("Players." + theEntry.getPlayer().getName()+ ".Flags." + theFlag, incValue);
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, incValue);
 				break;
 
 			case DEC:
 				int decValue = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, 0) - 1;
-				plugin.getSaves().set("Players." + theEntry.getPlayer().getName()+ ".Flags." + theFlag, decValue);
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, decValue);
 				break;
 
 			case VALUE:
-				plugin.getSaves().set("Players." + theEntry.getPlayer().getName()+ ".Flags." + theFlag, theValue);
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, theValue);
 				break;
 
 			case BOOLEAN:
-				plugin.getSaves().set("Players." + theEntry.getPlayer().getName()+ ".Flags." + theFlag, true);
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, true);
 				break;
 
 			}
+			
+			plugin.saveSaves();
 			return true;
 		}
 

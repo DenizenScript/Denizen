@@ -78,7 +78,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 				switch (flagType) {
 
 				case BOOLEAN:
-					if (plugin.getSaves().contains("Players." + thePlayer.getName()+ ".Flags." + flagName)) 
+					if (plugin.getSaves().contains("Players." + thePlayer.getName() + ".Flags." + flagName)) 
 						if (!plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName).toUpperCase()
 								.equals("FALSE")) outcome = true;
 					break;

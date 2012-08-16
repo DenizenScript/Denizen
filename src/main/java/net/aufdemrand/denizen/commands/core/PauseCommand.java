@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.commands.core;
 
-import org.bukkit.Location;
-
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.api.npc.NPC;
@@ -53,23 +51,22 @@ public class PauseCommand extends AbstractCommand {
 
 				else 
 					aH.echoError("...argument could not be matched!");
-
 			}
 
 
 		if (theEntry.getCommand().equalsIgnoreCase("RESUME")) {
-			theEntry.getDenizen().getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(false);
+			theEntry.getDenizen().getCitizensEntity().getDefaultGoalController().setPaused(false);
 			return true;
 		}
 
 		// Pause waypoints!
-		theEntry.getDenizen().getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(true);
+		theEntry.getDenizen().getCitizensEntity().getDefaultGoalController().setPaused(true);
 
 		if (duration != null) 
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new PauseCommandRunnable<NPC>(theEntry.getDenizen().getCitizensEntity()) {
 				@Override
 				public void run(NPC theNPC) { 
-					theNPC.getTrait(Waypoints.class).getCurrentProvider().setPaused(false);
+					theNPC.getDefaultGoalController().setPaused(false);
 				}
 			}, duration * 20);
 
