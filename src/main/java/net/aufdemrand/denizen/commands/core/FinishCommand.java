@@ -74,7 +74,7 @@ public class FinishCommand extends AbstractCommand {
 			if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[1];
 			else theAmount = "1";
 
-			if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") != null) { 
+			if (plugin.getSaves().contains("Players." + thePlayer.getName() + "." + theScript + "." + "Completed")) { 
 				if (plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
 			}
 

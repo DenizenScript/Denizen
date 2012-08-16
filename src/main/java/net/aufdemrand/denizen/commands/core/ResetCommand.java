@@ -37,60 +37,62 @@ public class ResetCommand extends AbstractCommand {
 	@Override
 	public boolean execute(ScriptEntry theCommand) throws CommandException {
 
+		/* Set variables */
 		String theScript = theCommand.getScript();
 		ResetType resetType = null;
 		String theFlag = null;
 
-		if (theCommand.arguments() != null) {
-			for (String thisArgument : theCommand.arguments()) {
+		if (theCommand.arguments() == null)
+			throw new CommandException("...not enough arguments! Use RESET ('Name of Script') [FINISHES|FAILS]  or  RESET [FLAG:[NAME]]");
 
-				if (thisArgument.equals("FINISHES") || thisArgument.equals("FINISHED") || thisArgument.equals("FINISH")) {
-					resetType = ResetType.FINISH;
-					if (plugin.debugMode) 
-						plugin.getLogger().info("Matched " + thisArgument + "...will reset FINISHED.");
-				}
+		/* Check arguments */
+		for (String thisArg : theCommand.arguments()) {
 
-				else if (thisArgument.equals("FAILS") || thisArgument.equals("FAIL") || thisArgument.equals("FAILED")) {
-					resetType = ResetType.FAIL;
-					if (plugin.debugMode) 
-						plugin.getLogger().info("Matched " + thisArgument + "...will reset FAILED.");
-				}
+			if (thisArg.equals("FINISHES") || thisArg.equals("FINISHED") || thisArg.equals("FINISH")) {
+				resetType = ResetType.FINISH;
+				aH.echoDebug("...will reset FINISHED.", thisArg);
+			}
 
-				else if (thisArgument.toUpperCase().contains("FLAG:")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().info("Matched " + thisArgument + "...will reset FLAG.");
-					theFlag = thisArgument.split(":")[1].toUpperCase();
-					resetType = ResetType.FLAG;
-				}
+			else if (thisArg.equals("FAILS") || thisArg.equals("FAIL") || thisArg.equals("FAILED")) {
+				resetType = ResetType.FAIL;
+				aH.echoDebug("...will reset FAILED.", thisArg);
+			}
 
-				else { 
-					theScript = thisArgument;
-					if (plugin.debugMode) 
-						plugin.getLogger().info("Matched " + thisArgument + "...changed script to be RESET.");
-				}
+			else if (thisArg.toUpperCase().contains("FLAG:")) {
+				theFlag = aH.getStringModifier(thisArg);
+				resetType = ResetType.FLAG;
+				aH.echoDebug("...will reset '%s'.", thisArg);
+			}
+
+			else { 
+				theScript = thisArg;
+				aH.echoDebug("...script affected is now '%s'.", thisArg);
 			}
 		}
 
 
+		/* Reset! */
 		if (resetType != null) {
 			switch (resetType) {
 
 			case FINISH:
-				plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", 0);
+				plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", null);
 				break;
 
 			case FAIL:
-				plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", 0);
+				plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", null);
 				break;
 
 			case FLAG:
 				plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + ".Flags." + theFlag, null);
 				break;
 			}
+			
+			plugin.saveSaves();
 			return true;
 		}
 
-		throw new CommandException("...not enough arguments! Use RESET ('Name of Script') [FINISHES|FAILS]  or  RESET [FLAG:[NAME]]");
+		return false;
 	}
 
 
