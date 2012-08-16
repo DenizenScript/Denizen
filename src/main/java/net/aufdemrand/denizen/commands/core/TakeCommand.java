@@ -157,17 +157,15 @@ public class TakeCommand extends AbstractCommand {
 				int inHandAmt = theEntry.getPlayer().getItemInHand().getAmount();
 				ItemStack newHandItem = new ItemStack(Material.AIR);
 				if (amount > inHandAmt) {
-					amount = inHandAmt;
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use a HOLDING requirement.");
-					((CraftPlayer) theEntry.getPlayer()).getHandle().inventory.setCarried(new net.minecraft.server.ItemStack((Block) null));
-					theEntry.getPlayer().updateInventory();				}
+					theEntry.getPlayer().setItemInHand(newHandItem);
+				}
 				else {
 
 					// amount is just right!
 					if (amount == inHandAmt) {
-						((CraftPlayer) theEntry.getPlayer()).getHandle().inventory.setCarried(new net.minecraft.server.ItemStack((Block) null));
-						theEntry.getPlayer().updateInventory();
-					}
+						theEntry.getPlayer().setItemInHand(newHandItem);
+						}
 					
 
 					else {
