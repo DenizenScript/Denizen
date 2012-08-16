@@ -167,7 +167,7 @@ public class ArgumentHelper {
 		return m.matches();
 	}
 
-	final public Pattern scriptArgument = Pattern.compile("(?:SCRIPT|script|Script)(:)(\\w+)");
+	final public Pattern scriptArgument = Pattern.compile("(?:SCRIPT|script|Script)(:)(.+)");
 	public boolean matchesScript(String regex) {
 		Matcher m = scriptArgument.matcher(regex);
 		return m.matches();

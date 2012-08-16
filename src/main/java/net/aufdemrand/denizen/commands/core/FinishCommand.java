@@ -75,7 +75,7 @@ public class FinishCommand extends AbstractCommand {
 			else theAmount = "1";
 
 			if (plugin.getSaves().contains("Players." + thePlayer.getName() + "." + theScript + "." + "Completed")) { 
-				if (plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed", 0) >= Integer.valueOf(theAmount)) outcome = true;
+				if (plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") >= Integer.valueOf(theAmount)) outcome = true;
 			}
 
 		if (negativeRequirement != outcome) return true;
