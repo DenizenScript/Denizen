@@ -164,6 +164,7 @@ public class TakeCommand extends AbstractCommand {
 				}
 
 				theEntry.getPlayer().setItemInHand(newHandItem);
+				theEntry.getPlayer().updateInventory();
 				break;
 
 			case ITEM:
