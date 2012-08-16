@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.activities.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
@@ -30,7 +29,8 @@ public class WanderActivity extends AbstractActivity {
 			
 			int delay = 10;
 			int radius = 5;
-			float speed = npc.getNavigator().getSpeed();
+			float speed;
+			try { speed = npc.getNavigator().getSpeed(); } catch (IllegalStateException e) { speed = 1.00f; }
 			Location specifiedLocation = null;
 			ArrayList<Material> materialList = new ArrayList<Material>();
 			
