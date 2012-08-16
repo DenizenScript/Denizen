@@ -215,7 +215,8 @@ public class ScriptHelper {
 			else { 
 				if (plugin.debugMode) 
 					plugin.getLogger().info("...highest scoring script is " + interactableScripts.get(a).name + ".");
-				return interactableScripts.get(a).name;
+				
+				return interactableScripts.get(a).name.replace("^", "");
 			}
 		}
 

@@ -72,7 +72,7 @@ public class WanderActivity extends AbstractActivity {
 			
 			wanderMap.put(npc, new WanderGoal(npc, radius, delay, speed, materialList, specifiedLocation, this));
 			npc.getCitizensEntity().getDefaultGoalController().addGoal(wanderMap.get(npc), priority);	
-			plugin.getLogger().info("NPC assigned Wander Activity...");
+			if (plugin.debugMode) plugin.getLogger().info(npc.getName() + " assigned Wander Activity...");
 		}
 	}
 
