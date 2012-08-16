@@ -6,9 +6,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.commands.core.PauseCommandRunnable;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
+import net.citizensnpcs.api.npc.NPC;
 
 public class ActivityEngine implements Listener {
 
@@ -60,14 +62,19 @@ public class ActivityEngine implements Listener {
 	
 	@EventHandler
 	public void scheduleonspawn(NPCSpawnEvent event) {
-
-		if (event.getNPC().hasTrait(DenizenTrait.class)) {
-		
-		if (plugin.getAssignments().contains("Denizens." + event.getNPC().getName() + ".Default Activity"))
-			plugin.getActivityEngine().setActivityScript(plugin.getDenizenNPCRegistry().getDenizen(event.getNPC()), plugin.getAssignments().getString("Denizens." + event.getNPC().getName() + ".Default Activity"));
-
-		}
-	
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new PauseCommandRunnable<NPC>(event.getNPC()) {
+			@Override
+			public void run(NPC theNPC) { 
+				if (theNPC != null) {
+					if (theNPC.isSpawned()) {
+						if (theNPC.hasTrait(DenizenTrait.class)) {
+						if (plugin.getAssignments().contains("Denizens." + theNPC.getName() + ".Default Activity"))
+							plugin.getActivityEngine().setActivityScript(plugin.getDenizenNPCRegistry().getDenizen(theNPC), plugin.getAssignments().getString("Denizens." + theNPC.getName() + ".Default Activity"));
+						}
+					}
+				}
+			}
+		}, 20);
 	}
 
 
