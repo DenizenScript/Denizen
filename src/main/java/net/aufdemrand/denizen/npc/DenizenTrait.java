@@ -56,13 +56,9 @@ public class DenizenTrait extends Trait implements Toggleable {
 		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new PauseCommandRunnable<NPC>(npc) {
 			@Override
 			public void run(NPC theNPC) { 
-				plugin.getLogger().info("Running...");
 				if (theNPC != null) {
-					plugin.getLogger().info("not null...");
 					if (theNPC.isSpawned()) {
-						plugin.getLogger().info("is spawned...");
 						if (theNPC.hasTrait(DenizenTrait.class)) {
-							plugin.getLogger().info("has trait");
 						if (plugin.getAssignments().contains("Denizens." + theNPC.getName() + ".Default Activity"))
 							plugin.getActivityEngine().setActivityScript(plugin.getDenizenNPCRegistry().getDenizen(theNPC), plugin.getAssignments().getString("Denizens." + theNPC.getName() + ".Default Activity"));
 						}

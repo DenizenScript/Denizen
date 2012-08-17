@@ -81,15 +81,12 @@ public class StrikeCommand extends AbstractCommand {
 					}
 				}
 				
-				// If argument is a valid bookmark, set location.
-				else if (plugin.bookmarks.exists(theEntry.getDenizen(), thisArgument)) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...matched bookmark '" + thisArgument + "'.");
-					strikeLocation = plugin.bookmarks.get(theEntry.getDenizen(), thisArgument, BookmarkType.LOCATION);
-				} else if (thisArgument.split(":").length == 2) {
-					if (plugin.bookmarks.exists(thisArgument.split(":")[0], thisArgument.split(":")[1]))
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...matched bookmark '" + thisArgument.split(":")[0] + "'.");
-					strikeLocation = plugin.bookmarks.get(thisArgument.split(":")[0], thisArgument.split(":")[1], BookmarkType.LOCATION);
-				}			
+				// If argument is a BOOKMARK modifier
+				if (aH.matchesBookmark(thisArgument)) {
+					strikeLocation = aH.getBookmarkModifier(thisArgument, theEntry.getDenizen());
+					if (strikeLocation != null)
+						aH.echoDebug("...drop location now at bookmark '%s'", thisArgument);
+				}		
 
 				else {
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unable to match argument!");
