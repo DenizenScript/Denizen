@@ -28,13 +28,16 @@ import net.aufdemrand.denizen.triggers.AbstractTrigger;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class ScriptHelper {
 
 	Denizen plugin;
+	CommandSender cs;
 
 	ScriptHelper (Denizen plugin) {
 		this.plugin = plugin;
@@ -106,15 +109,20 @@ public class ScriptHelper {
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer, Class<? extends AbstractTrigger> theTrigger) {
 
+		this.cs = plugin.getServer().getConsoleSender();
+		
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Getting interact script: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
+
 		String theScript = null;
 		List<String> assignedScripts = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Interact Scripts");
 
 		if (assignedScripts.isEmpty()) { 
-			if (plugin.debugMode) plugin.getLogger().info("Getting interact script... no interact scripts found!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "Could not find any scripts assigned!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 			return null; 
 		}
 
-		if (plugin.debugMode) plugin.getLogger().info("Getting interact script... ");
+		// if (plugin.debugMode) plugin.getLogger().info("Getting interact script... ");
 
 		/* Get scripts that meet requirements and add them to interactableScripts. */
 
@@ -129,15 +137,30 @@ public class ScriptHelper {
 		else theEntity = theDenizen.getBukkitEntity();
 
 		for (String scriptAssignment : assignedScripts) {
-			Integer priority = Integer.valueOf(scriptAssignment.split(" ", 2)[0]);
-			String script = scriptAssignment.split(" ", 2)[1].replace("^", "");
 
+			String script = null;
+
+			// Make sure a priority exists.
+			if (Character.isDigit(scriptAssignment.charAt(0))) {
+				script = scriptAssignment.split(" ", 2)[1].replace("^", "");
+			} 
+			else { script = scriptAssignment; }
+
+			// Get priority
+
+			Integer priority = null;
+			try { priority = Integer.valueOf(scriptAssignment.split(" ", 2)[0]); 
+			} catch (NumberFormatException e) { 
+				priority = 0; 
+				if (plugin.debugMode) cs.sendMessage(ChatColor.RED + "ERROR! " + ChatColor.WHITE + "Script '" + script + "' has an invalid priority! Assuming '0'."); 
+			}
+
+			// Get requirements
 			try {
 				if (plugin.getRequirements.check(script, theEntity, isPlayer)) {
 
 					// Meets requirements, but we need to check cooldown, too.
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "..." + ChatColor.GREEN + scriptAssignment + ChatColor.WHITE + " meets requirements.");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "|" + ChatColor.GREEN + " OKAY!" + ChatColor.WHITE + " '" + scriptAssignment + "' meets requirements.");
 
 					if (thePlayer != null) {
 						if (checkCooldown(thePlayer, script)) {
@@ -145,8 +168,7 @@ public class ScriptHelper {
 							interactableScripts.add(new PriorityPair(priority, scriptAssignment.split(" ", 2)[1]));
 						} else {
 							// Cooldown failed, alert console!
-							if (plugin.debugMode) 
-								plugin.getLogger().log(Level.INFO, "   ...but, isn't cooled down, yet! Skipping.");
+							if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "|" + ChatColor.WHITE + " ...but, isn't cooled down, yet! Skipping.");
 						}
 
 					} else {
@@ -157,33 +179,32 @@ public class ScriptHelper {
 				} else {
 
 					// Does not meet requirements, alert the console!
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "..." + ChatColor.YELLOW + scriptAssignment + ChatColor.WHITE + " does not meet requirements.");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE +  "| " + ChatColor.WHITE + "'" + scriptAssignment + "' does not meet requirements.");
 				}
 
 			} catch (RequirementMissingException e) {
 
 				// Had a problem checking requirements, most likely a Legacy Requirement with bad
 				// syntax. Alert the console!
-				if (plugin.debugMode) 
-					plugin.getLogger().log(Level.INFO, "..." + ChatColor.RED + scriptAssignment + ChatColor.WHITE + " had a bad requirement, skipping.");
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "'" + scriptAssignment + "' has a bad requirement, skipping.");
 			}
 
 		}
 
+
+
 		// If list has only one entry, this is it!
 		if (interactableScripts.size() == 1) {
 			theScript = interactableScripts.get(0).name;
-			if (plugin.debugMode) 
-				plugin.getLogger().info("...highest scoring script is " + theScript + ".");
-
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + "Highest scoring script is " + theScript + ".");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 			return theScript;
 		}
 
 		// Or, if list is empty.. uh oh!
 		else if (interactableScripts.isEmpty()) {
-			if (plugin.debugMode) 
-				plugin.getLogger().info("...no interact scripts found!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "Could not find any scripts assigned!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 			return null;
 		}
 
@@ -193,6 +214,8 @@ public class ScriptHelper {
 		// Let's find which script to return since there are multiple.
 		for (int a = interactableScripts.size() - 1; a >= 0; a--) {
 
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Checking script '" + interactableScripts.get(a).name + "'.");
+
 			// Check for Overlay Assignment...
 			if (interactableScripts.get(a).name.startsWith("^")) {
 
@@ -201,42 +224,45 @@ public class ScriptHelper {
 				String triggerString = String.valueOf(plugin.getTriggerRegistry().getTrigger(theTrigger).triggerName.charAt(0)).toUpperCase() + plugin.getTriggerRegistry().getTrigger(theTrigger).triggerName.substring(1).toLowerCase() + " Trigger"; 
 
 				// If Trigger exists, cool, this is our script.
-				if (plugin.getScripts().contains(theScriptName + ".Steps." + getCurrentStep(thePlayer, theScriptName) + "." + triggerString + ".Script")) {
-					if (plugin.debugMode) plugin.getLogger().info("...highest scoring script is " + theScriptName + ".");
+				if (plugin.getScripts().contains(theScriptName + ".Steps." + getCurrentStep(thePlayer, theScriptName) + "." + triggerString)) {
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...found trigger!");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + " Highest scoring script is " + theScriptName + ".");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 					return theScriptName;
 				}
 				else {
-					if (plugin.debugMode) plugin.getLogger().info("...no trigger, next script!");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...no trigger on this overlay assignment. Skipping.");
 					// Trigger does not exist. Next script!
 				}
 			}
 
 			// Not an Overlay Assignment, so return this script, which is the higest scoring.
 			else { 
-				if (plugin.debugMode) 
-					plugin.getLogger().info("...highest scoring script is " + interactableScripts.get(a).name + ".");
-				
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...script is good!");
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + " Highest scoring script is " + interactableScripts.get(a).name + ".");
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 				return interactableScripts.get(a).name.replace("^", "");
 			}
 		}
 
 		// If we got here, something is wrong.
-		if (plugin.debugMode) 
-			plugin.getLogger().info("...no interact scripts found! (There may have been a problem!)");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "No scripts meet requirements! E:1983");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 		return null;
 	}
 
 	// Gets the current step from saves.yml
 
 	public int getCurrentStep(Player thePlayer, String theScript) {
+
 		int currentStep = 1;
 		if (plugin.getSaves().getString("Players." + thePlayer.getName() + "." + theScript + "." + "Current Step") != null) {
 			currentStep =  plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript	+ "." + "Current Step");
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...finding current step... found info in saves.yml. Current step is: " + currentStep + ".");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...current step is: " + currentStep);
 			return currentStep;
 		}
 
-		else if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...finding current step... no step found in saves.yml! Assuming '1'.");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...current step not found, assuming '1'.");
 		return currentStep;
 	}
 
@@ -272,7 +298,7 @@ public class ScriptHelper {
 		String[] split = new String[matchList.size()];
 		matchList.toArray(split);
 
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "   ...built arguments: " + Arrays.toString(split));
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GRAY +  Arrays.toString(split));
 
 		return split;
 	}
@@ -297,9 +323,12 @@ public class ScriptHelper {
 			scriptList = plugin.getScripts().getStringList(triggerPath.replace("..", "."));
 		}
 
-		if (scriptList.isEmpty())
-			if (plugin.debugMode) plugin.getLogger().info("...could not find script @ " + triggerPath.replace("..", ".") + "... is something spelled wrong in your script?");
-
+		if (scriptList.isEmpty()) {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR!" + ChatColor.WHITE + " Could not find script at:");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + triggerPath.replace("..", "."));
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Check YML spacing, or is something spelled wrong in your script?");
+		}
+		
 		return scriptList;
 	}
 
@@ -339,15 +368,15 @@ public class ScriptHelper {
 
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
 
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building Script Entries...");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Building the script:");
 
 		if (theScript == null) {
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "...no entries to build!");
 			return null;
 		}
 
 		if (theScript.isEmpty()) {
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "...no entries to build!");
 			return null;
 		}
 
@@ -364,7 +393,7 @@ public class ScriptHelper {
 
 			try {
 				/* Build new script commands */
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...building " + scriptEntry[0]);
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command.");
 				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep));
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -378,13 +407,15 @@ public class ScriptHelper {
 
 		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Building the script:");
+
 		if (theScript == null) {
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "...no entries to build!");
 			return null;
 		}
 
 		if (theScript.isEmpty()) {
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to build!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "...no entries to build!");
 			return null;
 		}
 
@@ -399,8 +430,8 @@ public class ScriptHelper {
 
 			try {
 				/* Build new script commands */
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command.");
 				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep, playerMessage, theText));
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Building ScriptCommand with " + thisItem);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -412,20 +443,22 @@ public class ScriptHelper {
 
 	public void queueScriptEntries(Player thePlayer, List<ScriptEntry> scriptEntries, QueueType queueType) {
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Queueing script to Player Queues:");
+
 		if (scriptEntries == null) {
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to queue!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "No entries to queue!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 			return;
 		}
 
 		if (scriptEntries.isEmpty()) {
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no entries to queue!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "No entries to queue!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 			return;
 		}
 
 		Map<Player, List<ScriptEntry>> thisQueue = plugin.getScriptEngine().getQueue(queueType);
 		List<ScriptEntry> existingScriptEntries = new ArrayList<ScriptEntry>();
-
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Queueing ScriptEntries...");
 
 		if (thisQueue.containsKey(thePlayer))
 			existingScriptEntries.addAll(thisQueue.get(thePlayer));
@@ -436,11 +469,14 @@ public class ScriptHelper {
 
 		if (!scriptEntries.isEmpty())
 			existingScriptEntries.addAll(scriptEntries);
-		else
-			if (plugin.debugMode) plugin.getLogger().log(Level.SEVERE, "...no items to add!");
+		else {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "No entries to queue!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
+		}
 
 		thisQueue.put(thePlayer, existingScriptEntries);
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...success!");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY!");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 	}
 
 

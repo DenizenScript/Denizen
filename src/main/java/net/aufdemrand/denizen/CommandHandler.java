@@ -234,6 +234,16 @@ public class CommandHandler {
 			plugin.getDenizenNPCRegistry().showInfo(player, plugin.getDenizenNPCRegistry().getDenizen(theNPC));
 			return true;
 		}
+		
+		if (args[0].equalsIgnoreCase("test")) {
+			plugin.getSaves().set("Denizens." + theNPC.getName() + ".Interact Scripts", "TEST");
+			plugin.saveSaves();
+			return true;
+		}
+				
+		
+		
+		
 
 		if (args[0].equalsIgnoreCase("schedule")) {
 			plugin.getSaves().set("Denizen." + theNPC.getName() + ".Active Activity Script", null);

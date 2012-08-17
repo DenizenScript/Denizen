@@ -12,6 +12,9 @@ import net.aufdemrand.denizen.triggers.AbstractTrigger;
 
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -67,6 +70,8 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
 	public boolean parseClickTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
+		CommandSender cs = Bukkit.getConsoleSender();
+
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Click Trigger.");
 
@@ -75,6 +80,8 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
 		if (theScriptName == null) return false;
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing click trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");
 		/* Get Player's current step */
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 

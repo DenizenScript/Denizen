@@ -14,7 +14,10 @@ import net.aufdemrand.denizen.triggers.AbstractTrigger;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,14 +56,17 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 	public boolean parseDamageTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Damage Trigger.");
-
+		CommandSender cs = Bukkit.getConsoleSender();
+		
 		// Play the HURT effect.
 		theDenizen.getEntity().playEffect(EntityEffect.HURT);
 
 		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 		if (theScriptName == null) return false;
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing damage trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");
+		
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 		List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + sE.scriptString);
 		

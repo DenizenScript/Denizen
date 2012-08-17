@@ -9,6 +9,9 @@ import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.triggers.AbstractTrigger;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -87,13 +90,17 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 	public boolean parseProximityTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Proximity Trigger.");
 
+		CommandSender cs = Bukkit.getConsoleSender();
+		
 		/* Get Interact Script, if any. */
 		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 
 		if (theScriptName == null) return false;
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing proximity trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");
+		
 		/* Get Player's current step */
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 

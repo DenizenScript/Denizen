@@ -10,7 +10,9 @@ import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.triggers.AbstractTrigger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -81,6 +83,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 		// No matching chat Triggers... handle according to 
 		else { 
+			
+			CommandSender cs = Bukkit.getConsoleSender();
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "No matching chat trigger.");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
+			
 			if (!plugin.settings.ChatGloballyIfFailedChatTriggers()) {
 				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
 				theDenizen.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
@@ -105,7 +112,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 	public boolean parseChatScript(DenizenNPC theDenizen, Player thePlayer, String theScriptName, String playerMessage) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
+		CommandSender cs = Bukkit.getConsoleSender();
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing proximity trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");
+		
 		/* Get Player's current step */
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 
@@ -179,7 +190,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 				/* Take off excess ":" before adding it to the list */
 				triggerBuilder = triggerBuilder.substring(0, triggerBuilder.length() - 1);
-				echoDebug("Found chat trigger: " + triggerBuilder, triggerName);
+				
+				CommandSender cs = Bukkit.getConsoleSender();
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Found chat trigger: " + triggerBuilder);
 				ChatTriggers.add(triggerBuilder);
 				currentTrigger = x + 1; 
 			}

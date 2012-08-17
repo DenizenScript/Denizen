@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -136,6 +139,11 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 		if (theScriptName == null) return;
+		
+		CommandSender cs = Bukkit.getConsoleSender();
+		
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing location trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");
 
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 
@@ -148,7 +156,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 			if (plugin.getScripts().contains(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger")) {
 				if (plugin.getScripts().getString(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger").equals(theLocationName)) {
 					foundScript = true;
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...found matching Location!");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + "Found location in the script.");
 				} else {
 					foundScript = false;
 					x++;
@@ -161,7 +169,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 			List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + sE.scriptString);
 			sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep), QueueType.TRIGGER);
 		} 
-		else if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no matching Triggers found for this Location.");
+		else 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "No matching Triggers found for this Location.");
 
 		return;
 	}
