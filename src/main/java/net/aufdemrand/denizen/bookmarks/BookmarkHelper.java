@@ -21,6 +21,8 @@ public class BookmarkHelper {
 	}	
 
 
+	// TODO: Rework bookmark system to be more OO
+	
 
 	/*
 	 * Checks a Player's location against a Location (with leeway). Should be faster than

@@ -191,7 +191,7 @@ public class ScriptHelper {
 		else Collections.sort(interactableScripts);
 
 		// Let's find which script to return since there are multiple.
-		for (int a = interactableScripts.size() - 1; a > 0; a--) {
+		for (int a = interactableScripts.size() - 1; a >= 0; a--) {
 
 			// Check for Overlay Assignment...
 			if (interactableScripts.get(a).name.startsWith("^")) {
