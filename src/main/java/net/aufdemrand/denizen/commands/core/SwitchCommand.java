@@ -52,28 +52,22 @@ public class SwitchCommand extends AbstractCommand {
 				if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
 
 				/* Set a duration */
-				else if (thisArgument.toUpperCase().contains("DURATION:"))
-					if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...matched DURATION modifier.");
-						duration = Integer.valueOf(thisArgument.split(":")[1]);
-					}
+				if (aH.matchesDuration(thisArgument)) {
+					duration = Integer.valueOf(thisArgument.split(":")[1]);
+				}
+
 
 				// If argument is a valid bookmark, set location.
-					else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
-							&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
-						interactLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
-						if (plugin.debugMode) 
-							plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-					} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
-							plugin.bookmarks.exists(theEntry.getDenizen(), thisArgument.split(":")[1])) {
-						interactLocation = plugin.bookmarks.get(theEntry.getDenizen(), thisArgument, BookmarkType.LOCATION);
-						if (plugin.debugMode) 
-							plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-					}
+				// If argument is a BOOKMARK modifier
+				else if (aH.matchesBookmark(thisArgument)) {
+					interactLocation = aH.getBookmarkModifier(thisArgument, theEntry.getDenizen());
+					if (interactLocation != null)
+						aH.echoDebug("...switch location now at bookmark '%s'", thisArgument);
+				}		
 
-					else {
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unable to match argument!");
-					}
+				else {
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unable to match argument!");
+				}
 
 			}	
 		}
@@ -104,13 +98,13 @@ public class SwitchCommand extends AbstractCommand {
 				net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
 				return true;
 			}
-			
+
 			else {
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
 			}
 		}
 
-		
+
 		/* Make delayed task to reset step if duration is set */
 		if (duration != null) {
 
@@ -149,8 +143,8 @@ public class SwitchCommand extends AbstractCommand {
 							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
 						}
 					}
-					
-					}
+
+				}
 			}, duration * 20);
 		}
 

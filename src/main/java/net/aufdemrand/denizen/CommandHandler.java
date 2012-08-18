@@ -81,6 +81,11 @@ public class CommandHandler {
 				return true;
 			}
 		}
+		
+		if (args[0].equalsIgnoreCase("testbitch")) {
+			sender.sendMessage("TEST!");
+		}
+
 
 
 		/*
