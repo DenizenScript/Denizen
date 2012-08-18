@@ -60,7 +60,7 @@ public class SwitchCommand extends AbstractCommand {
 				// If argument is a valid bookmark, set location.
 				// If argument is a BOOKMARK modifier
 				else if (aH.matchesBookmark(thisArgument)) {
-					interactLocation = aH.getBookmarkModifier(thisArgument, theEntry.getDenizen());
+					interactLocation = aH.getBlockBookmarkModifier(thisArgument, theEntry.getDenizen());
 					if (interactLocation != null)
 						aH.echoDebug("...switch location now at bookmark '%s'", thisArgument);
 				}		

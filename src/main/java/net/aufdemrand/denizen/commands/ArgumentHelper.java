@@ -4,8 +4,10 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
@@ -13,7 +15,6 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.command.exception.CommandException;
 
 public class ArgumentHelper {
 
@@ -25,14 +26,28 @@ public class ArgumentHelper {
 
 
 	public void echoDebug(String message, String argument) {
+		CommandSender cs = plugin.getServer().getConsoleSender();
 		if (plugin.debugMode)
-			plugin.getLogger().info(String.format(message, argument));
+			cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + String.format(message, argument));
+	}
+	
+	public void echoDebug(String message) {
+		CommandSender cs = plugin.getServer().getConsoleSender();
+		if (plugin.debugMode)
+			cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + message);
 	}
 
 	public void echoError(String message) {
-		plugin.getLogger().log(Level.WARNING, message);
+		CommandSender cs = plugin.getServer().getConsoleSender();
+		if (plugin.debugMode)
+			cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + message);
 	}
 
+	public void echoError(String message, String argument) {
+		CommandSender cs = plugin.getServer().getConsoleSender();
+		if (plugin.debugMode)
+			cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + String.format(message, argument));
+	}
 
 
 	/* ----------------------------- */
@@ -64,6 +79,24 @@ public class ArgumentHelper {
 		}
 		
 		if (plugin.debugMode) echoError("...bookmark not found!");
+		return null;
+	}
+	
+	public Location getBlockBookmarkModifier(String thisArg, DenizenNPC denizenNPC) {
+		Matcher m = bookmarkArgument.matcher(thisArg);
+		Matcher m2 = bookmarkArgument2.matcher(thisArg);
+
+		if (m.matches()) {
+			if (plugin.bookmarks.exists(thisArg.split(":")[1], thisArg.split(":")[2])) 
+				return plugin.bookmarks.get(thisArg.split(":")[1], thisArg.split(":")[2], BookmarkType.BLOCK);
+		}
+		
+		else if (m2.matches()) {
+			if (plugin.bookmarks.exists(denizenNPC, thisArg.split(":")[1]))
+				return plugin.bookmarks.get(denizenNPC, thisArg.split(":")[1], BookmarkType.BLOCK);
+		}
+		
+		if (plugin.debugMode) echoError("...block bookmark not found!");
 		return null;
 	}
 
