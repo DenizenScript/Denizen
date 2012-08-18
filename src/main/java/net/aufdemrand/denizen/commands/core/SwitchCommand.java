@@ -52,112 +52,113 @@ public class SwitchCommand extends AbstractCommand {
 				if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
 
 				/* Set a duration */
-				else if (thisArgument.toUpperCase().contains("DURATION:"))
+
+				if (thisArgument.toUpperCase().contains("DURATION:")){
 					if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
 						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...matched DURATION modifier.");
 						duration = Integer.valueOf(thisArgument.split(":")[1]);
 					}
-
+				}
 				// If argument is a valid bookmark, set location.
-					else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
-							&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
-						interactLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
-						if (plugin.debugMode) 
-							plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-					} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
-							plugin.bookmarks.exists(theEntry.getDenizen(), thisArgument.split(":")[1])) {
-						interactLocation = plugin.bookmarks.get(theEntry.getDenizen(), thisArgument, BookmarkType.LOCATION);
-						if (plugin.debugMode) 
-							plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-					}
+				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
+						&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
+					interactLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+				} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
+						plugin.bookmarks.exists(theEntry.getDenizen(), thisArgument.split(":")[1])) {
+					interactLocation = plugin.bookmarks.get(theEntry.getDenizen(), thisArgument, BookmarkType.LOCATION);
+					if (plugin.debugMode) 
+						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
+				}
 
-					else {
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unable to match argument!");
-					}
+				else {
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unable to match argument!");
+				}
 
-			}	
+
+			}
+
+			/* Execute the command. */
+
+			if (interactLocation != null) {
+				if (interactLocation.getBlock().getType() == Material.LEVER) {
+					World theWorld = interactLocation.getWorld();
+					net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+					return true;
+				}
+
+				else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
+					World theWorld = interactLocation.getWorld();
+					net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+					return true;
+				}
+
+				else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
+					World theWorld = interactLocation.getWorld();
+					net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+					return true;
+				}
+
+				else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
+					World theWorld = interactLocation.getWorld();
+					net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+					return true;
+				}
+
+				else {
+					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
+				}
+			}
+
+
+			/* Make delayed task to reset step if duration is set */
+			if (duration != null) {
+
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
+						new SwitchCommandRunnable<Location>(interactLocation) {
+
+					@Override
+					public void run(Location interactLocation) { 
+
+						if (interactLocation != null) {
+							if (interactLocation.getBlock().getType() == Material.LEVER) {
+								World theWorld = interactLocation.getWorld();
+								net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+								return;
+							}
+
+							else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
+								World theWorld = interactLocation.getWorld();
+								net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+								return;
+							}
+
+							else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
+								World theWorld = interactLocation.getWorld();
+								net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+								return;
+							}
+
+							else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
+								World theWorld = interactLocation.getWorld();
+								net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+								return;
+							}
+
+							else {
+								if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
+							}
+						}
+
+					}
+				}, duration * 20);
+			}
+
+
+
+			return false;
 		}
 
-		/* Execute the command. */
 
-		if (interactLocation != null) {
-			if (interactLocation.getBlock().getType() == Material.LEVER) {
-				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-				return true;
-			}
-
-			else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
-				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-				return true;
-			}
-
-			else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
-				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-				return true;
-			}
-
-			else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
-				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-				return true;
-			}
-			
-			else {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
-			}
-		}
-
-		
-		/* Make delayed task to reset step if duration is set */
-		if (duration != null) {
-
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
-					new SwitchCommandRunnable<Location>(interactLocation) {
-
-				@Override
-				public void run(Location interactLocation) { 
-
-					if (interactLocation != null) {
-						if (interactLocation.getBlock().getType() == Material.LEVER) {
-							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-							return;
-						}
-
-						else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
-							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-							return;
-						}
-
-						else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
-							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-							return;
-						}
-
-						else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
-							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-							return;
-						}
-
-						else {
-							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
-						}
-					}
-					
-					}
-			}, duration * 20);
-		}
-
-
-
-		return false;
 	}
-
-
-}

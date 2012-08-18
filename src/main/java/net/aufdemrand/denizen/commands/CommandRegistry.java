@@ -101,6 +101,7 @@ public class CommandRegistry {
 		DropCommand dropCommand = new DropCommand();
 		CooldownCommand cooldownCommand = new CooldownCommand();
 		HintCommand hintCommand = new HintCommand();
+		net.aufdemrand.denizen.commands.core.CastCommand castCommand = new net.aufdemrand.denizen.commands.core.CastCommand();
 		
 		try {
 			hintCommand.activateAs("HINT");
@@ -119,6 +120,7 @@ public class CommandRegistry {
 			talkCommand.activateAs("SHOUT");
 			talkCommand.activateAs("NARRATE");
 			talkCommand.activateAs("EMOTE");
+			talkCommand.activateAs("ANNOUNCE");
 			switchCommand.activateAs("SWITCH");
 			zapCommand.activateAs("ZAP");
 			engageCommand.activateAs("ENGAGE");
@@ -131,6 +133,7 @@ public class CommandRegistry {
 			resetCommand.activateAs("RESET");
 			flagCommand.activateAs("FLAG");	
 			strikeCommand.activateAs("STRIKE");
+			castCommand.activateAs("CAST");
 			
 		} catch (ActivationException e) {
 			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core commands!");

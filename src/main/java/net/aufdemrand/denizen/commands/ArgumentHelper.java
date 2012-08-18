@@ -27,12 +27,12 @@ public class ArgumentHelper {
 	public void echoDebug(String message, String argument) {
 		if (plugin.debugMode)
 			plugin.getLogger().info(String.format(message, argument));
+		/// WHAT ^^^ ????
 	}
 
 	public void echoError(String message) {
 		plugin.getLogger().log(Level.WARNING, message);
 	}
-
 
 
 	/* ----------------------------- */
