@@ -119,6 +119,7 @@ public class CommandRegistry {
 			talkCommand.activateAs("SHOUT");
 			talkCommand.activateAs("NARRATE");
 			talkCommand.activateAs("EMOTE");
+			talkCommand.activateAs("ANNOUNCE");
 			switchCommand.activateAs("SWITCH");
 			zapCommand.activateAs("ZAP");
 			engageCommand.activateAs("ENGAGE");

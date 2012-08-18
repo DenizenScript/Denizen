@@ -59,7 +59,7 @@ public class StrikeCommand extends AbstractCommand {
 				// If argument is a modifier.
 				else if (thisArgument.toUpperCase().equals("DENIZEN")) {
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...matched DENIZEN.");
-					strikePlayer = false;
+						strikePlayer = false;
 				}
 
 				// If argument is a modifier.
@@ -84,8 +84,10 @@ public class StrikeCommand extends AbstractCommand {
 				// If argument is a BOOKMARK modifier
 				if (aH.matchesBookmark(thisArgument)) {
 					strikeLocation = aH.getBookmarkModifier(thisArgument, theEntry.getDenizen());
-					if (strikeLocation != null)
-						aH.echoDebug("...drop location now at bookmark '%s'", thisArgument);
+					if (strikeLocation != null){
+						aH.echoDebug("...strike location now at bookmark '%s'", thisArgument);
+						strikePlayer = false;
+					}
 				}		
 
 				else {
@@ -108,17 +110,18 @@ public class StrikeCommand extends AbstractCommand {
 		else {
 			// Striking Denizen..
 			if (strikeLocation == null) {
-				if (isLethal) theEntry.getDenizen().getWorld().strikeLightning(theEntry.getPlayer().getLocation());
-				else theEntry.getDenizen().getWorld().strikeLightningEffect(theEntry.getPlayer().getLocation());
+				if (isLethal) theEntry.getDenizen().getWorld().strikeLightning(theEntry.getDenizen().getLocation());
+				else theEntry.getDenizen().getWorld().strikeLightningEffect(theEntry.getDenizen().getLocation());
+				return true;
 			} 
 			// Striking Location (or specified NPCID)
 			else {
-				if (isLethal) strikeLocation.getWorld().strikeLightning(theEntry.getPlayer().getLocation());
-				else strikeLocation.getWorld().strikeLightningEffect(theEntry.getPlayer().getLocation());
+				if (isLethal) strikeLocation.getWorld().strikeLightning(strikeLocation);
+				else strikeLocation.getWorld().strikeLightningEffect(strikeLocation);
+				return true;
 			}
 		}
 
-		return false;
 	}
 
 }

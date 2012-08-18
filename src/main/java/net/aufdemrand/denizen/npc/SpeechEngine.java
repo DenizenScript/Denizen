@@ -20,7 +20,7 @@ public class SpeechEngine {
 		DenizenIsUnavailable, NoMatchingChatTriggers, NoMatchingClickTrigger, NoMatchingDamageTrigger	}
 
 	public enum TalkType {
-		CHAT, EMOTE, SHOUT, WHISPER, NARRATE, CHAT_PLAYERONLY
+		CHAT, EMOTE, SHOUT, WHISPER, NARRATE, CHAT_PLAYERONLY, ANNOUNCE
 	}
 
 	/* TODO: MAJOR FRIKKIN CLEANUP!  */
@@ -54,7 +54,7 @@ public class SpeechEngine {
 			TalkType talkType) {
 
 		String textToSend = null;
-		
+
 		switch (theReason) {
 
 		case DenizenIsUnavailable:
@@ -82,7 +82,7 @@ public class SpeechEngine {
 			break;
 
 		}
-	
+
 
 	}
 
@@ -135,30 +135,35 @@ public class SpeechEngine {
 			bystanderMessageFormat = plugin.settings.NpcChatToPlayerBystander();
 			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcChatToBystanders();
 			break;
-		
+
 		case CHAT_PLAYERONLY:
 			playerMessageFormat = plugin.settings.NpcChatToPlayer();
 			break;
-			
-	}
+		case ANNOUNCE:
+			playerMessageFormat = "<TEXT>";
+			break;
+		default:
+			break;
+
+		}
 
 		if (playerMessageFormat != null)
 			playerMessageFormat = colorizeText(playerMessageFormat
-			.replace("<NPC>", denizenName)
-			.replace("<TEXT>", theMessage)
-			.replace("<PLAYER>", thePlayer.getName())
-			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
-			.replace("<WORLD>", thePlayer.getWorld().getName())
-			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+					.replace("<NPC>", denizenName)
+					.replace("<TEXT>", theMessage)
+					.replace("<PLAYER>", thePlayer.getName())
+					.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
+					.replace("<WORLD>", thePlayer.getWorld().getName())
+					.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
 
 		if (bystanderMessageFormat != null)
 			bystanderMessageFormat = colorizeText(bystanderMessageFormat
-			.replace("<NPC>", denizenName)
-			.replace("<TEXT>", theMessage)
-			.replace("<PLAYER>", thePlayer.getName())
-			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
-			.replace("<WORLD>", thePlayer.getWorld().getName())
-			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+					.replace("<NPC>", denizenName)
+					.replace("<TEXT>", theMessage)
+					.replace("<PLAYER>", thePlayer.getName())
+					.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
+					.replace("<WORLD>", thePlayer.getWorld().getName())
+					.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
 
 		String[] returnedText = {playerMessageFormat, bystanderMessageFormat};
 
@@ -229,7 +234,9 @@ public class SpeechEngine {
 			theRange = plugin.settings.NpcEmoteRangeInBlocks();
 			thePlayer.sendMessage(theBystanderMessage);
 			break;
-
+		case ANNOUNCE:
+			if (thePlayerMessage!=null) theDenizen.getEntity().getServer().broadcastMessage(thePlayerMessage);	
+			return;
 		default:
 			theRange = plugin.settings.NpcToPlayerChatRangeInBlocks();
 			break;
@@ -250,27 +257,27 @@ public class SpeechEngine {
 		return;
 	}
 
-	
-	
-	// Thanks geckon :)
-	
-    public String colorizeText(String text) {
-	    Integer i = 0;
-        String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
 
-        for (ChatColor color : ChatColor.values()) 
-        {
-	        if (i > 15) break;
-            text = text.replaceAll("(?i)<" + color.name() + ">", "" + color);
-            text = text.replaceAll("(?i)<&" + code[i] + ">", "" + color);
-            text = text.replaceAll("(?i)%%" + code[i], "" + color);
-            i++;
-	    }
-	    return text;
+
+	// Thanks geckon :)
+
+	public String colorizeText(String text) {
+		Integer i = 0;
+		String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
+
+		for (ChatColor color : ChatColor.values()) 
+		{
+			if (i > 15) break;
+			text = text.replaceAll("(?i)<" + color.name() + ">", "" + color);
+			text = text.replaceAll("(?i)<&" + code[i] + ">", "" + color);
+			text = text.replaceAll("(?i)%%" + code[i], "" + color);
+			i++;
+		}
+		return text;
 	}
 
 
-    
+
 	/**
 	 * Talks to a NPC. Also has replaceable data, end-user, when using <NPC> <TEXT> <PLAYER> <FULLPLAYERNAME> <WORLD> or <HEALTH>.
 	 *
