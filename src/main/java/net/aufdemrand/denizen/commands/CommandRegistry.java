@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.commands.core.CastCommand;
 import net.aufdemrand.denizen.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.commands.core.DropCommand;
 import net.aufdemrand.denizen.commands.core.EngageCommand;
@@ -103,8 +104,10 @@ public class CommandRegistry {
 		CooldownCommand cooldownCommand = new CooldownCommand();
 		HintCommand hintCommand = new HintCommand();
 		WeatherCommand weatherCommand = new WeatherCommand();
+		CastCommand castCommand = new CastCommand();
 		
 		try {
+			castCommand.activateAs("CAST");
 			hintCommand.activateAs("HINT");
 			weatherCommand.activateAs("WEATHER");
 			pauseCommand.activateAs("PAUSE");
