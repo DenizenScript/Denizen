@@ -23,15 +23,24 @@ public class HintCommand extends AbstractCommand {
 
 	/* 
 	 * Arguments: [] - Required, () - Optional 
-	 * None.
+	 * (SHORT)
 	 *   
 	 * Example Usage:
 	 * HINT
-	 * 
+	 * HINT SHORT
 	 */
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
+
+		boolean shortformat =false;
+
+
+		if (theEntry.arguments() != null) {
+			for (String thisArgument : theEntry.arguments()) {
+				if (thisArgument.toLowerCase().contains("short")) shortformat = true;
+			}
+		}
 
 		String theScript = theEntry.getScript();
 		Integer theStep = theEntry.getStep();
@@ -41,19 +50,17 @@ public class HintCommand extends AbstractCommand {
 		List<String> chatTriggers = new ArrayList<String>();
 		String scriptPath = theScript + ".Steps." + theStep + ".Chat Trigger."; 
 
-
 		boolean thisTriggerExists = true;
 		int x = 1;
 
 		do {
+
 			if (plugin.getScripts().contains(scriptPath + x + ".Trigger")) {
-				if (!plugin.getScripts().getString(scriptPath + x + ".Trigger").contains("*")) {
-					chatTriggers.add(plugin.getScripts().getString(scriptPath + x + ".Trigger"));
-					plugin.getLogger().info("added" + chatTriggers.get(x));
-				}
+				chatTriggers.add(plugin.getScripts().getString(scriptPath + x + ".Trigger"));
+				if (plugin.debugMode) plugin.getLogger().info("found " + chatTriggers.get(x));
 			}
 			else thisTriggerExists = false;
-			
+
 			x++;
 		} while (thisTriggerExists);
 
@@ -61,40 +68,42 @@ public class HintCommand extends AbstractCommand {
 		if (chatTriggers.isEmpty()) return false;
 
 		// Format the chatTriggers
-		int numberOfTriggers = chatTriggers.size();
 
-		String template = "[HINT] You can say |%s|, %s|or %s.";
-		String result = "";
+		StringBuilder sb = new StringBuilder();
 
-		String firstItem = chatTriggers.get(0);
-		plugin.getLogger().info("firstitem " + firstItem);
-		String lastItem = chatTriggers.get(numberOfTriggers = 1);
-		plugin.getLogger().info("lastItem " + lastItem);
-		
-		String [] otherItems = null;
+		sb.append(plugin.settings.NpcHintPrefix());
 
-		if (numberOfTriggers > 2) {
-			chatTriggers.remove(numberOfTriggers - 1);
-			chatTriggers.remove(0);
-			otherItems = (String[]) chatTriggers.toArray();
+		for(int i=0;i<chatTriggers.size();i++) {
+			String item = chatTriggers.get(i);
+			if(item.contains("/*/")) continue;
+			String fitem = getFormattedTrigger(item, shortformat);
+			if (plugin.debugMode)	plugin.getLogger().info("formatted "  + fitem);
+			sb.append(fitem);	
+			if (i != chatTriggers.size() -1) sb.append(", ");
 		}
 
-		// Build String
-		result = template.split("|")[0];
-		result = result + template.split("|")[1].replace("%s", firstItem.replace(" /", ChatColor.UNDERLINE + "").replace("/ ", ChatColor.RESET + ""));
-
-		if (otherItems != null) {
-			for (String otherItem : otherItems) {
-				result = result + template.split("|")[2].replace("%s", otherItem.replace(" /", ChatColor.UNDERLINE + "").replace("/ ", ChatColor.RESET + ""));
-				plugin.getLogger().info("building... " + result);
-			}
-		}
-		
-		result = result + template.split("|")[3].replace("%s", lastItem.replace(" /", ChatColor.UNDERLINE + "").replace("/ ", ChatColor.RESET + ""));
-
-		theEntry.getPlayer().sendMessage(result);
+		theEntry.getPlayer().sendMessage(sb.toString());
 		return true;
 	}
 
+
+	private String getFormattedTrigger(String str, boolean shortformat){
+		if (str ==null) return "";
+
+		if (shortformat) {
+			try {
+				int start = str.indexOf("/");
+				int end = str.indexOf("/",start+1);
+				if(start !=-1 && end !=-1 && start != end){
+					str = str.substring(start,  end+1);
+				}	
+			} catch (Exception e) {
+				// all kinds of possible index exceptions.
+			}
+		}
+
+		return str.replace("/", ChatColor.UNDERLINE + "").replace("/", ChatColor.RESET + ""); 
+
+	}
 
 }
