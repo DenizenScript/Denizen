@@ -18,7 +18,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 	 * (DURATION:#) Reverts to the previous head position after # amount of seconds.
 	 * 
 	 * Example usages:
-	 * FLAG 'MAGICSHOPITEM:FEATHER' 'DURATION:60'
+	 * FLAGG 'MAGICSHOPITEM:FEATHER' 'DURATION:60'
 	 * FLAG 'HOSTILECOUNT:++'
 	 * FLAG 'ALIGNMENT:--'
 	 * FLAG 'CUSTOMFLAG:SET'

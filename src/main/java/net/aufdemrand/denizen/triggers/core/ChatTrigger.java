@@ -83,11 +83,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 		// No matching chat Triggers... handle according to 
 		else { 
-			
+
 			CommandSender cs = Bukkit.getConsoleSender();
 			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "No matching chat trigger.");
 			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
-			
+
 			if (!plugin.settings.ChatGloballyIfFailedChatTriggers()) {
 				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
 				theDenizen.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
@@ -114,9 +114,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 		CommandSender cs = Bukkit.getConsoleSender();
 
-		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing proximity trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing chat trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");
-		
+
 		/* Get Player's current step */
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 
@@ -138,6 +138,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			boolean letsProceed = false;
 			for (String chatTrigger : chatTriggers.split(":")) {
 				if (playerMessage.toLowerCase().contains(chatTrigger)) letsProceed = true;
+				if (chatTrigger.contains("*")) {
+					chatText = chatText.replace("*", playerMessage);
+					letsProceed = true;
+				}
+
 			}
 
 			// If a matching trigger is found...
@@ -153,7 +158,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				return true;
 			}
 		}
-		
+
 		// Else, no matching trigger found...
 		return false;
 	}
@@ -170,7 +175,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 	public List<String> getChatTriggers(String theScript, Integer currentStep) {
 
 		// TODO: Cleanup, this seems kind of ghetto.
-		
+
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
 		for (int x=1; currentTrigger >= 0; x++) {
@@ -190,7 +195,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 				/* Take off excess ":" before adding it to the list */
 				triggerBuilder = triggerBuilder.substring(0, triggerBuilder.length() - 1);
-				
+
 				CommandSender cs = Bukkit.getConsoleSender();
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Found chat trigger: " + triggerBuilder);
 				ChatTriggers.add(triggerBuilder);

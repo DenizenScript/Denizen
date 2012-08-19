@@ -43,7 +43,7 @@ public class Executer {
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "Could not find any scripts assigned!");
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 					}
-			} catch (CommandException e) {
+			} catch (Exception e) {
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "SEVERE! " + ChatColor.WHITE + "Command has called an exception! /denizen stacktrace for more.");
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, e.getMessage()); 
