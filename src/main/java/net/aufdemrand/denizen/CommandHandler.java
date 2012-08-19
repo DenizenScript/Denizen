@@ -202,6 +202,22 @@ public class CommandHandler {
 			}
 		}
 
+		if (args[0].equalsIgnoreCase("stacktrace"))  {
+
+			if (!plugin.showStackTraces) { 
+				plugin.showStackTraces = true; 
+				sender.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode will show stacktraces."); 
+				return true;
+			}
+
+			else if (plugin.showStackTraces) { 
+				plugin.showStackTraces = false; 
+				sender.sendMessage(ChatColor.GREEN + "Denizen DEBUG logging mode will NOT show stacktraces."); 
+				return true;
+			}
+		}
+		
+		
 		if (args[0].equalsIgnoreCase("save")) {
 			plugin.saveSaves();
 			player.sendMessage(ChatColor.GREEN + "denizens.yml saved.");
@@ -245,10 +261,7 @@ public class CommandHandler {
 			plugin.saveSaves();
 			return true;
 		}
-				
-		
-		
-		
+					
 
 		if (args[0].equalsIgnoreCase("schedule")) {
 			plugin.getSaves().set("Denizen." + theNPC.getName() + ".Active Activity Script", null);
@@ -337,7 +350,9 @@ public class CommandHandler {
 				return true;
 			}
 		}
-		return true;	
+		
+		
+		return false;	
 	}
 
 }
