@@ -211,15 +211,11 @@ public class SpawnCommand extends AbstractCommand {
 						throw new CommandException("Problem setting flag!");
 					}
 
-
-				return true;
 			}
 
-			return false;
+			return true;
 		}
+		
 		return false;
-
-
-
 	}
 }
