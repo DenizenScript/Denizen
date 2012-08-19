@@ -118,7 +118,7 @@ public class SpawnCommand extends AbstractCommand {
 							PotionEffectType.getByName(thisArg.split(":", 2)[1].split(" ")[0]),
 							Integer.MAX_VALUE,
 							theAmplifier);
-					aH.echoDebug("...spawning with effect: '%s'.", thisArg);	
+					aH.echoDebug("...spawning with effect: '%s'.", thisArg);  
 				} catch (Exception e) {
 					aH.echoError("Invalid Potion_Type! '%s'.", thisArg);
 
@@ -128,7 +128,7 @@ public class SpawnCommand extends AbstractCommand {
 				String thisFlag = thisArg.split(":", 2)[1];
 				hasFlag = true;
 				if (thisFlag.toUpperCase().equals("BABY")) isBaby = true;
-				if (thisFlag.toUpperCase().equals("ANGRY"))	isAngry = true;
+				if (thisFlag.toUpperCase().equals("ANGRY"))  isAngry = true;
 				if (thisFlag.toUpperCase().equals("POWERED")) isPowered = true;
 				if (thisFlag.toUpperCase().equals("SHEARED")) isSheared = true;
 				if (thisFlag.toUpperCase().equals("TAME")) isTame = true;
@@ -153,7 +153,7 @@ public class SpawnCommand extends AbstractCommand {
 
 		/* Location and Quantity are optional, so if they weren't set, let's use the information we have
 		 * to set the defaults. Default amount is 1, default Location is the location of the Denizen. If no
-		 * denizen attached (ie. this is a Task Script), default location is the location of the Player. */		
+		 * denizen attached (ie. this is a Task Script), default location is the location of the Player. */    
 
 		if (theAmount == null) theAmount = 1;
 		if (theLocation == null && theEntry.getDenizen() != null) 
@@ -165,23 +165,32 @@ public class SpawnCommand extends AbstractCommand {
 		if (theLocation != null && theAmount != null && theEntity != null) {
 			for (int x = 0; x < theAmount; x++) {
 
-				Location oldLocation = null;
+				Location spawnLoc =  theLocation.clone();
 
 				/* Account for SPREAD: */
 				if (theSpread != null) {
+					int randomX, randomZ;
 					Random randomGenerator = new Random();
-					int randomX = randomGenerator.nextInt(theSpread * 2);
-					int randomZ = randomGenerator.nextInt(theSpread * 2);
-					randomX =- theSpread;
-					randomZ =- theSpread;
-					oldLocation = theLocation;
-					theLocation.add(randomX, 0, randomZ);
+					int i = 0;
+					boolean ok = false;
+					do {
+						randomX = randomGenerator.nextInt(theSpread * 2);
+						randomZ = randomGenerator.nextInt(theSpread * 2);
+						randomX =- theSpread;
+						randomZ =- theSpread;
+						i++;
+						if (theLocation.getWorld().getBlockAt(theLocation.getBlockX() + randomX, theLocation.getBlockY()+1 , theLocation.getBlockZ() + randomZ).getTypeId() == 0)
+						{
+							spawnLoc.add(randomX, 0, randomZ);
+							ok = true;
+						}
+					} while (i < theSpread*theSpread && !ok);
 				}
 
 				Entity spawnedEntity = null;
-				if (theEntity.equals(EntityType.BOAT)) theLocation.getWorld().spawn(theLocation, Boat.class);
-				if (theEntity.equals(EntityType.MINECART)) theLocation.getWorld().spawn(theLocation, Minecart.class);
-				else spawnedEntity = theLocation.getWorld().spawnEntity(theLocation, theEntity);
+				if (theEntity.equals(EntityType.BOAT)) spawnLoc.getWorld().spawn(spawnLoc, Boat.class);
+				if (theEntity.equals(EntityType.MINECART)) spawnLoc.getWorld().spawn(spawnLoc, Minecart.class);
+				else spawnedEntity = spawnLoc.getWorld().spawnEntity(spawnLoc, theEntity);
 
 				if (theEffect != null)
 					((LivingEntity) spawnedEntity).addPotionEffect(theEffect);
@@ -202,17 +211,15 @@ public class SpawnCommand extends AbstractCommand {
 						throw new CommandException("Problem setting flag!");
 					}
 
-				/* Reset theLocation for the next Entity, if more than 1 */
-				if (theSpread != null) 
-					theLocation = oldLocation;
+
+				return true;
 			}
 
-			return true;
+			return false;
 		}
-
 		return false;
+
+
+
 	}
-
-
-
 }
