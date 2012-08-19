@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.commands.core;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.bukkit.Location;
 
@@ -23,7 +22,7 @@ public class WalkToCommand extends AbstractCommand {
 
 
 
-	/* WALKTO '[Location Bookmark]|'[Denizen Name]:[Location Bookmark]'  */
+	/* WALKTO '[Location Bookmark]|'[Denizen Name]:[Location Bookmark] [PLAYER]'  */
 
 	/* 
 	 * Arguments: [] - Required, () - Optional 
@@ -69,7 +68,18 @@ public class WalkToCommand extends AbstractCommand {
 			/* Match arguments to expected variables */
 			for (String thisArg : theEntry.arguments()) {
 
-				// If argument is a modifier.
+				// If argument is a modifier.				
+
+				if(thisArg.equalsIgnoreCase("PLAYER")){
+					if (theEntry.getPlayer() == null) return false;
+
+					walkLocation = theEntry.getPlayer().getLocation();
+					org.bukkit.util.Vector victor = walkLocation.getDirection();
+					walkLocation.subtract(victor);
+					aH.echoDebug("...walk location now at '%s'.", theEntry.getPlayer().getName());
+
+				}
+
 
 				// If argument is a BOOKMARK modifier
 				if (aH.matchesBookmark(thisArg)) {
@@ -77,8 +87,10 @@ public class WalkToCommand extends AbstractCommand {
 					if (walkLocation != null)
 						aH.echoDebug("...walk location now at '%s'.", thisArg);
 				}
-
 				else aH.echoError("...unable to match '%s'!", thisArg);
+
+
+
 
 			}	
 
