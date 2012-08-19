@@ -27,6 +27,7 @@ import net.aufdemrand.denizen.commands.core.TakeCommand;
 import net.aufdemrand.denizen.commands.core.TalkCommand;
 import net.aufdemrand.denizen.commands.core.TeleportCommand;
 import net.aufdemrand.denizen.commands.core.WaitCommand;
+import net.aufdemrand.denizen.commands.core.WeatherCommand;
 import net.aufdemrand.denizen.commands.core.ZapCommand;
 
 
@@ -34,18 +35,18 @@ public class CommandRegistry {
 
 	public Denizen plugin;
 	private ArgumentHelper argumentHelper; 
-	
+
 	public CommandRegistry(Denizen denizen) {
 		plugin = denizen;
 		argumentHelper = new ArgumentHelper(plugin);
 	}
 
-	
+
 	private Map<String, AbstractCommand> commands = new HashMap<String, AbstractCommand>();
 	private Map<Class<? extends AbstractCommand>, String> commandsClass = new HashMap<Class<? extends AbstractCommand>, String>();
-	
 
-	
+
+
 	public ArgumentHelper getArgumentHelper() {
 		return argumentHelper;
 	}
@@ -62,14 +63,14 @@ public class CommandRegistry {
 		return commands;
 	}
 
-	
+
 	public <T extends AbstractCommand> T getCommand(Class<T> theClass) {
 		if (commandsClass.containsKey(theClass))
 			return (T) theClass.cast(commands.get(commandsClass.get(theClass)));
 		else
 			return null;
 	}
-	
+
 	public AbstractCommand getCommand(String commandName) {
 		if (commands.containsKey(commandName.toUpperCase()))
 			return commands.get(commandName);
@@ -101,7 +102,8 @@ public class CommandRegistry {
 		DropCommand dropCommand = new DropCommand();
 		CooldownCommand cooldownCommand = new CooldownCommand();
 		HintCommand hintCommand = new HintCommand();
-		
+		WeatherCommand weatherCommand = new WeatherCommand();
+
 		try {
 			hintCommand.activateAs("HINT");
 			pauseCommand.activateAs("PAUSE");
@@ -131,13 +133,15 @@ public class CommandRegistry {
 			resetCommand.activateAs("RESET");
 			flagCommand.activateAs("FLAG");	
 			strikeCommand.activateAs("STRIKE");
-			
+			hintCommand.activateAs("HINT");
+			weatherCommand.activateAs("WEATHER");
+
 		} catch (ActivationException e) {
 			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core commands!");
 			e.printStackTrace();
 		}
-		
-		
+
+
 	}
 
 

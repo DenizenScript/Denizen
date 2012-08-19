@@ -282,6 +282,10 @@ public class Settings {
 		return plugin.getConfig().getString("npc_whisper_to_player_bystander", "<NPC> whispers to <PLAYER>, '<TEXT>'");
 	}
 	
+	public String NpcHintPrefix() {
+		return plugin.getConfig().getString("npc_hint_prefix", "[HINT] You can say: ");
+	}
+	
 	/*
 
 	player_shout_to_bystanders: "You shout, '<TEXT>'"
