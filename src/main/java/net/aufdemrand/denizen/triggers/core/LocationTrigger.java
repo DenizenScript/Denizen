@@ -148,28 +148,41 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 
 		boolean foundScript = false;
-		boolean noMatch = false;
+		boolean noMatch = true;
 		int x = 1;
 
 		do {
 			foundScript = true;
 			if (plugin.getScripts().contains(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger")) {
 				if (plugin.getScripts().getString(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger").equals(theLocationName)) {
-					foundScript = true;
+					noMatch = false;
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + "Found location in the script.");
 				} else {
 					foundScript = false;
 					x++;
 				}
 			}
-			else noMatch = true;
 		} while (foundScript == false);
 
 		if (!noMatch) {
 			List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + sE.scriptString);
 			sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep), QueueType.TRIGGER);
 		} 
-		else 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "No matching Triggers found for this Location.");
+		else {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "No matching Triggers found for this Location.");
+			if (plugin.debugMode) {
+				String locationbookmarks = "Available triggers on this NPC: ";
+				boolean hasbookmark = false;
+				for (String triggerlistitem : plugin.bookmarks.getLocationTriggerList().values()) {
+					hasbookmark = true;
+					if (triggerlistitem.contains(theDenizen.getName())) locationbookmarks = locationbookmarks + triggerlistitem.split(":")[2] + ", ";
+				}
+				if (!hasbookmark) locationbookmarks = locationbookmarks + "NONE!";
+				else locationbookmarks = locationbookmarks.substring(0, locationbookmarks.length() - 2);
+				cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + locationbookmarks);
+			}
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
+		}
 
 		return;
 	}
