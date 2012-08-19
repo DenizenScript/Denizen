@@ -339,6 +339,17 @@ public class Settings {
 	public String DefaultNoDamageTriggerText() {
 		return plugin.getConfig().getString("default_no_damage_trigger_text", "Ouch! That hurts!");
 	}
+	
+	/* 
+	 
+	# Default Hint command prefix. This can be changed globally and will affect the output of all HINT commands.
+	
+	npc_hint-prefix: "[HINT] You can say:"
 
+     */
+	
+	public String NpcHintPrefix() {
+	 	return plugin.getConfig().getString("npc_hint_prefix", "[HINT] You can say: ");
+	 }
 
 }

@@ -26,62 +26,64 @@ public class ZapCommand extends AbstractCommand {
 	 */
 
 	@Override
-	public boolean execute(ScriptEntry theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
-		String theScript = theCommand.getScript();
+		String theScript = theEntry.getScript();
 		Integer theStep = null;
 		Integer duration = null;
 
 		/* Get arguments */
-		if (theCommand.arguments() != null) {
-			for (String thisArgument : theCommand.arguments()) {
+		if (theEntry.arguments() != null) {
+			for (String thisArg : theEntry.arguments()) {
 
 				/* Set the step to ZAP to */
-				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
-					theStep = Integer.valueOf(thisArgument);
+				if (aH.matchesInteger(thisArg))
+					theStep = aH.getIntegerModifier(thisArg);
 
 				/* Change the script to a specified one */
-				else if (thisArgument.contains("SCRIPT:")) 
-					theScript = thisArgument.split(":", 2)[1];
+				else if (aH.matchesScript(thisArg)) 
+					theScript = aH.getStringModifier(thisArg);
 
 				/* Pick a random step */
-				else if (thisArgument.contains("RANDOM:")) {
+				else if (thisArg.toUpperCase().contains("RANDOM:")) {
 					int high = 1, low = 1;
-					if (thisArgument.split(":")[1].split(" ").length == 1) {
-						if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
+					if (thisArg.split(":")[1].split(" ").length == 1) {
+						if (aH.matchesInteger(thisArg.split(":")[1])) {
 							low = 1;
-							high = Integer.valueOf(thisArgument.split(":")[1]); 
+							high = Integer.valueOf(thisArg.split(":")[1]); 
 						} 
 					}
-					else if (thisArgument.split(":")[1].split(" ").length == 2) {
-						if (thisArgument.split(":")[1].split(" ")[0].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")
-								&& thisArgument.split(":")[1].split(" ")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+") ) {
-							low = Integer.valueOf(thisArgument.split(":")[1].split(" ")[0]);
-							high = Integer.valueOf(thisArgument.split(":")[1].split(" ")[1]);
+					else if (thisArg.split(":")[1].split(" ").length == 2) {
+						if (aH.matchesInteger(thisArg.split(":")[1].split(" ")[0])
+								&& aH.matchesInteger(thisArg.split(":")[1].split(" ")[1])) {
+							low = Integer.valueOf(thisArg.split(":")[1].split(" ")[0]);
+							high = Integer.valueOf(thisArg.split(":")[1].split(" ")[1]);
 						}
 					}
 					Random randomInt = new Random();
 					if (high - low > 0) theStep = randomInt.nextInt(high - low + 1) + low;
 					else theStep = high;
 				}
-				
-				/* Set a duration */
-				else if (thisArgument.toUpperCase().contains("DURATION:"))
-					if (thisArgument.split(":")[1].matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+"))
-						duration = Integer.valueOf(thisArgument.split(":")[1]);
 
+				/* Set a duration */
+				else if (aH.matchesDuration(thisArg)) {
+					duration = aH.getIntegerModifier(thisArg);
+					aH.echoDebug("...duration set to '%s'.", thisArg);
+				}
+
+				else aH.echoError("Could not match argument '%s'!", thisArg);
 			}
 		}
 
-		if (theStep == null) theStep = plugin.getScriptEngine().helper.getCurrentStep(theCommand.getPlayer(), theScript) + 1;
-		
+		if (theStep == null) theStep = plugin.getScriptEngine().helper.getCurrentStep(theEntry.getPlayer(), theScript) + 1;
+
 		/* Make delayed task to reset step if duration is set */
 		if (duration != null) {
 
-			Integer oldStep = plugin.getScriptEngine().helper.getCurrentStep(theCommand.getPlayer(), theScript);
-			
+			Integer oldStep = plugin.getScriptEngine().helper.getCurrentStep(theEntry.getPlayer(), theScript);
+
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
-					new ZapCommandRunnable<String, String, Integer, Integer>(theCommand.getPlayer().getName(), theScript, theStep, oldStep) {
+					new ZapCommandRunnable<String, String, Integer, Integer>(theEntry.getPlayer().getName(), theScript, theStep, oldStep) {
 
 				@Override
 				public void run(String player, String script, Integer step, Integer oldStep) { 
@@ -90,25 +92,24 @@ public class ZapCommand extends AbstractCommand {
 					if (plugin.getSaves().getInt("Players." + player + "." + script + ".Current Step") == step) {
 						plugin.getSaves().set("Players." + player + "." + script + ".Current Step", oldStep);
 					}
-					
+
 				}
 			}, duration * 20);
 		}
-		
+
 		/* Warn console if step doesn't actually exist. */
 		if (!plugin.getScripts().contains(theScript + ".Steps." + theStep))
-			if (plugin.debugMode)
-				plugin.getLogger().info("...this command is ZAPPING to a step that does not exist! Is this indended?");
-		
-		
+			aH.echoDebug("...this command is ZAPPING to a step that does not exist! Is this indended?");
+
+
 		/* Set saves.yml */
-		if (theCommand.getPlayer() != null && theScript != null && theStep != null) {
-			plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + ".Current Step", theStep); 
+		if (theEntry.getPlayer() != null && theScript != null && theStep != null) {
+			plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + "." + theScript + ".Current Step", theStep); 
 			plugin.saveSaves();
 			return true;
 		}
 
-		throw new CommandException("Unknown error, check syntax!");
+		return false;
 	}
 
 }

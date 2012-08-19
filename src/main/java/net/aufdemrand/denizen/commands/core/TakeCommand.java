@@ -37,7 +37,7 @@ public class TakeCommand extends AbstractCommand {
 	 *  
 	 */
 
-	enum TakeType { ITEM, ITEMINHAND, MONEY }
+	enum TakeType { ITEM, ITEMINHAND, MONEY, EXP }
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -45,93 +45,54 @@ public class TakeCommand extends AbstractCommand {
 		/* Initialize variables */ 
 
 		TakeType takeType = null;
-		int amount = 1;
-		ItemStack item = null;
+		int theAmount = 1;
+		ItemStack theItem = null;
 
 		/* Match arguments to expected variables */
-		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
+		if (theEntry.arguments() == null)
+			throw new CommandException("...Usage: TAKE [ITEM_IN_HAND|EXP|MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#)");
 
-				if (plugin.debugMode) 
-					plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
+		/* Match arguments to expected variables */
+		for (String thisArg : theEntry.arguments()) {
 
-				// If argument is QTY: modifier */
-				if (thisArgument.matches("(?:QTY|qty)(:)(\\d+)")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Quantity'." );
-					amount = Integer.valueOf(thisArgument.split(":")[1]); 
-				}
+			// If argument is QTY: modifier
+			if (aH.matchesQuantity(thisArg)) {
+				theAmount = aH.getIntegerModifier(thisArg);
+				aH.echoDebug("...set quantity to '%s'.", thisArg);
+			}
 
-				/* If the argument is ITEMINHAND */
-				else if (thisArgument.toUpperCase().contains("ITEMINHAND")) {
-					takeType = TakeType.ITEMINHAND;
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Item in hand'.");
-				}
+			// If the argument is MONEY
+			else if (thisArg.toUpperCase().contains("MONEY")) {
+				takeType = TakeType.MONEY;
+				aH.echoDebug("...taking MONEY.");
+			}
 
-				/* If the argument is MONEY */
-				else if (thisArgument.toUpperCase().contains("MONEY")) {
-					takeType = TakeType.MONEY;
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Money'.");
-				}
+			// If the argument is XP
+			else if (thisArg.toUpperCase().contains("XP")
+					|| thisArg.toUpperCase().contains("EXP")) {
+				takeType = TakeType.EXP;
+				aH.echoDebug("...taking EXP.");
+			}
 
-				/* If argument is and ItemID */
-				else if (thisArgument.matches("\\d+")) {
-					takeType = TakeType.ITEM;
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Item ID'.");
-					try {
-						item = new ItemStack(Integer.valueOf(thisArgument));
-					} catch (Exception e) {
-						plugin.getLogger().log(Level.INFO, "...invalid Item ID.");
-					}
-				}
+			/* If the argument is ITEMINHAND */
+			else if (thisArg.toUpperCase().contains("ITEMINHAND")
+					|| thisArg.toUpperCase().contains("ITEM_IN_HAND")) {
+				takeType = TakeType.ITEMINHAND;
+				aH.echoDebug("...matched argument to 'Item in hand'.");
+			}
+			
+			// If argument is an Item
+			else if (aH.matchesItem(thisArg)) {
+				theItem = aH.getItemModifier(thisArg);
+				takeType = TakeType.ITEM;
+				if (theItem != null)
+					aH.echoDebug("...set item to be taken to '%s'.", thisArg);
+			}
 
-				/* If argument is ItemID:Data format */
-				else if (thisArgument.matches("(\\d+)(:)(\\d+)")) {
-					takeType = TakeType.ITEM;
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify item ID and data'.");
-					try {
-						item = new ItemStack(Integer.valueOf(thisArgument.split(":")[0]));
-						item.setData(new MaterialData(Integer.valueOf(thisArgument.split(":")[1])));
-					} catch (Exception e) {
-						plugin.getLogger().log(Level.INFO, "...invalid Item ID.");
-					}
-				}
+			/* Can't match to anything */
+			else aH.echoError("...unable to match '%s'!", thisArg);
 
-				/* If the argument is a Material */
-				else if (thisArgument.matches("([a-zA-Z\\x5F]+)")) {
-					takeType = TakeType.ITEM;
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify Material type'.");
-					try {
-						item = new ItemStack(Material.valueOf(thisArgument.toUpperCase()));
-					} catch (Exception e) {
-						plugin.getLogger().log(Level.INFO, "...invalid Item ID.");
-					}
-				}
-
-				/* If the argument is Material:Data format */
-				else if (thisArgument.matches("([a-zA-Z]+?)(:)(\\d+)")) {
-					takeType = TakeType.ITEM;
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'specify Item ID and data'.");
-					try {
-						item = new ItemStack(Material.valueOf(thisArgument.split(":")[0].toUpperCase()));
-						item.setData(new MaterialData(Integer.valueOf(thisArgument.split(":")[1])));
-					} catch (Exception e) {
-						plugin.getLogger().log(Level.INFO, "...Invalid Material type.");	
-					}
-				}
-
-				/* Can't match to anything */
-				else if (plugin.debugMode) 
-					plugin.getLogger().log(Level.INFO, "...unable to match argument!");
-
-			}	
-		}
+		}	
 
 
 		/* Execute the command, if all required variables are filled. */
@@ -142,32 +103,32 @@ public class TakeCommand extends AbstractCommand {
 			case MONEY:
 				if (plugin.economy != null) {
 					double playerBalance = plugin.economy.getBalance(theEntry.getPlayer().getName());
-					double doubleAmount = Double.valueOf(amount);
+					double doubleAmount = Double.valueOf(theAmount);
 					if (doubleAmount > playerBalance) { 
-						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...player did not have enough money to take. New amount is balance of the Player's account. To avoid this situation, use a MONEY requirement.");
+						aH.echoDebug("...player did not have enough money to take. New amount is balance of the Player's account. To avoid this situation, use a MONEY requirement.");
 						doubleAmount = playerBalance;
 					}
 					plugin.economy.withdrawPlayer(theEntry.getPlayer().getName(), doubleAmount);
 				} else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no economy loaded! Have you installed Vault and a compatible economy plugin?");	
+					aH.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");	
 				}
 				break;
 
 			case ITEMINHAND:
 				int inHandAmt = theEntry.getPlayer().getItemInHand().getAmount();
 				ItemStack newHandItem = new ItemStack(Material.AIR);
-				if (amount > inHandAmt) {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use a HOLDING requirement.");
+				if (theAmount > inHandAmt) {
+					aH.echoDebug("...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use a HOLDING requirement.");
 					theEntry.getPlayer().setItemInHand(newHandItem);
 				}
 				else {
 
 					// amount is just right!
-					if (amount == inHandAmt) {
+					if (theAmount == inHandAmt) {
 						theEntry.getPlayer().setItemInHand(newHandItem);
 					} else {
 						// amount is less than what's in hand, need to make a new itemstack of what's left...
-						newHandItem = new ItemStack(theEntry.getPlayer().getItemInHand().getType(), inHandAmt - amount, theEntry.getPlayer().getItemInHand().getData().getData());
+						newHandItem = new ItemStack(theEntry.getPlayer().getItemInHand().getType(), inHandAmt - theAmount, theEntry.getPlayer().getItemInHand().getData().getData());
 						theEntry.getPlayer().setItemInHand(newHandItem);
 						theEntry.getPlayer().updateInventory();
 					}
@@ -176,8 +137,8 @@ public class TakeCommand extends AbstractCommand {
 				break;
 
 			case ITEM:
-				item.setAmount(amount);
-				if (!theEntry.getPlayer().getInventory().removeItem(item).isEmpty())
+				theItem.setAmount(theAmount);
+				if (!theEntry.getPlayer().getInventory().removeItem(theItem).isEmpty())
 					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...player did not have enough of the item specified, so Denizen just took as many as it could. To avoid this situation, use an ITEM requirement.");
 				break;
 			}

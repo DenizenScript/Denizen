@@ -1,11 +1,9 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
-import net.minecraft.server.World;
+
 
 /**
  * Gives permissions to a Player via Vault.
@@ -51,8 +49,6 @@ public class PermissCommand extends AbstractCommand {
 		/* Match arguments to expected variables */
 		for (String thisArgument : theEntry.arguments()) {
 
-			if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
-
 			/* Match to GROUP:[group] */
 			if (aH.matchesGroup(thisArgument)) {
 				groupName = aH.getStringModifier(thisArgument);
@@ -68,7 +64,7 @@ public class PermissCommand extends AbstractCommand {
 			/* Takes current World */
 			else if (thisArgument.toUpperCase().contains("WORLD")) {
 				worldName = theEntry.getPlayer().getWorld().getName();
-				aH.echoDebug("...world specified as current world.", thisArgument);
+				aH.echoDebug("...world specified as current world.");
 			}
 
 			else {
@@ -93,7 +89,7 @@ public class PermissCommand extends AbstractCommand {
 				}
 
 			} else {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no permissions loaded! Have you installed Vault and a compatible plugin?");
+				aH.echoError("No permissions loaded! Have you installed Vault and a compatible plugin?");
 				return false;
 			}
 
@@ -113,7 +109,7 @@ public class PermissCommand extends AbstractCommand {
 				}
 
 			} else {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no permissions loaded! Have you installed Vault and a compatible plugin?");
+				aH.echoError("No permissions loaded! Have you installed Vault and a compatible plugin?");
 				return false;
 			}
 

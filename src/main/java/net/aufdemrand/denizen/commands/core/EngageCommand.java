@@ -63,7 +63,7 @@ public class EngageCommand extends AbstractCommand {
 				}
 
 				// Can't match to anything
-				else aH.echoError("...unable to match argument!");
+				else aH.echoError("...unable to match '%s'!", thisArg);
 			}	
 		}
 

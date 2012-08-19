@@ -64,9 +64,7 @@ public class TeleportCommand extends AbstractCommand {
 						aH.echoDebug("...teleport location now at '%s'.", thisArg);
 				}
 				
-				else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unable to match argument!");
-				}
+				else aH.echoError("...unable to match '%s'!", thisArg);
 
 			}	
 

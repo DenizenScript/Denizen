@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.commands.core;
 
 import java.util.Random;
-import java.util.logging.Level;
 
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -35,7 +33,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class SpawnCommand extends AbstractCommand {
 
-	/* SPAWN [ENTITY_TYPE] (QUANTITY) (Location Bookmark|Denizen Name:Location Bookmark) */
+	/* SPAWN [ENTITY_TYPE] (QUANTITY) (BOOKMARK:LocationBookmark) */
 
 	/* Arguments: [] - Required, () - Optional 
 	 * [ENTITY_TYPE] 
@@ -65,7 +63,7 @@ public class SpawnCommand extends AbstractCommand {
 	 */
 
 	@Override
-	public boolean execute(ScriptEntry theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
 		/* Initialize variables */
 
@@ -84,93 +82,83 @@ public class SpawnCommand extends AbstractCommand {
 		String hasColor = null;
 		String hasProfession = null;
 
-		if (theCommand.arguments() != null) {
+		if (theEntry.arguments() == null)
+			throw new CommandException("...Usage: SPAWN [ENTITY_TYPE] (QTY:#) (BOOKMARK:LocationBookmark)");
 
-			for (String thisArgument : theCommand.arguments()) {
+		for (String thisArg : theEntry.arguments()) {
 
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Processing command " + theCommand.getCommand() + " argument: " + thisArgument);
-
-				/* If a valid name of an Entity, set theEntity. */
-				if (plugin.utilities.isEntity(thisArgument)) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to valid Entity." );
-					theEntity = EntityType.valueOf(thisArgument.toUpperCase());	
-				}
-					
-				/* If argument is a #, set theAmount. */
-				else if (thisArgument.matches("\\d+")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Quantity'." );
-					theAmount = Integer.valueOf(thisArgument);
-				}
-				
-				/* If argument is QTY: modifier */
-				else if (thisArgument.matches("(?:QTY|qty)(:)(\\d+)")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...matched argument to 'Quantity'." );
-					theAmount = Integer.valueOf(thisArgument.split(":")[1]); 
-				}
-
-				/* If argument is a modifier, modify */
-				else if (thisArgument.matches("(?:SPREAD|spread)(:)(\\d+)"))
-					theSpread = Integer.valueOf(thisArgument.split(":", 2)[1]);
-
-				else if (thisArgument.toUpperCase().contains("EFFECT:"))
-					try { 
-						int theAmplifier = 1;
-						if (thisArgument.split(":", 2)[1].split(" ").length == 2) 
-							theAmplifier = Integer.valueOf(thisArgument.split(":", 2)[1].split(" ")[1]);
-						theEffect = new PotionEffect(
-								PotionEffectType.getByName(thisArgument.split(":", 2)[1].split(" ")[0]),
-								Integer.MAX_VALUE,
-								theAmplifier);
-					} catch (Exception e) {
-						throw new CommandException("Invalid PotionEffect!");
-					}
-
-				else if (thisArgument.toUpperCase().contains("OPTION:")) {
-					String thisFlag = thisArgument.split(":", 2)[1];
-					hasFlag = true;
-					if (thisFlag.toUpperCase().equals("BABY")) isBaby = true;
-					if (thisFlag.toUpperCase().equals("ANGRY"))	isAngry = true;
-					if (thisFlag.toUpperCase().equals("POWERED")) isPowered = true;
-					if (thisFlag.toUpperCase().equals("SHEARED")) isSheared = true;
-					if (thisFlag.toUpperCase().equals("TAME")) isTame = true;
-					if (thisFlag.toUpperCase().equals("SADDLED")) isSaddled = true;
-					if (thisFlag.toUpperCase().contains("COLORED ")) hasColor = thisFlag.split(" ")[1];
-					if (thisFlag.toUpperCase().contains("PROFESSION "))
-						hasProfession = thisFlag.split(" ")[1];
-				}
-
-				/* If argument is a BOOKMARK modifier */
-				else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)(:)(\\w+)") 
-						&& plugin.bookmarks.exists(thisArgument.split(":")[1], thisArgument.split(":")[2])) {
-					theLocation = plugin.bookmarks.get(thisArgument.split(":")[1], thisArgument.split(":")[2], BookmarkType.LOCATION);
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-				} else if (thisArgument.matches("(?:bookmark|BOOKMARK)(:)(\\w+)") &&
-						plugin.bookmarks.exists(theCommand.getDenizen(), thisArgument.split(":")[1])) {
-					theLocation = plugin.bookmarks.get(theCommand.getDenizen(), thisArgument, BookmarkType.LOCATION);
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...argument matched to 'valid bookmark location'.");
-				}
-				
-				else {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "Unable to match argument!");
-				}
-
+			/* If a valid name of an Entity, set theEntity. */
+			if (plugin.utilities.isEntity(thisArg)) {
+				theEntity = EntityType.valueOf(thisArg.toUpperCase());
+				aH.echoDebug("...entity to spawn set to '%s'.", thisArg);
 			}
+
+			/* If argument is a #, set theAmount. */
+			else if (aH.matchesInteger(thisArg)) {
+				theAmount = aH.getIntegerModifier(thisArg);
+				aH.echoDebug("...quantity to spawn: '%s'.", thisArg);
+			}
+
+			/* If argument is QTY: modifier */
+			else if (aH.matchesQuantity(thisArg)) {
+				theAmount = aH.getIntegerModifier(thisArg);
+				aH.echoDebug("...quantity to spawn: '%s'.", thisArg);
+			}
+
+			/* If argument is a modifier, modify */
+			else if (thisArg.matches("(?:SPREAD|spread|Spread)(:)(\\d+)"))
+				theSpread = Integer.valueOf(thisArg.split(":", 2)[1]);
+
+			else if (thisArg.toUpperCase().contains("EFFECT:"))
+				try { 
+					int theAmplifier = 1;
+					if (thisArg.split(":", 2)[1].split(" ").length == 2) 
+						theAmplifier = Integer.valueOf(thisArg.split(":", 2)[1].split(" ")[1]);
+					theEffect = new PotionEffect(
+							PotionEffectType.getByName(thisArg.split(":", 2)[1].split(" ")[0]),
+							Integer.MAX_VALUE,
+							theAmplifier);
+					aH.echoDebug("...spawning with effect: '%s'.", thisArg);	
+				} catch (Exception e) {
+					aH.echoError("Invalid Potion_Type! '%s'.", thisArg);
+
+				}
+
+			else if (thisArg.toUpperCase().contains("OPTION:")) {
+				String thisFlag = thisArg.split(":", 2)[1];
+				hasFlag = true;
+				if (thisFlag.toUpperCase().equals("BABY")) isBaby = true;
+				if (thisFlag.toUpperCase().equals("ANGRY"))	isAngry = true;
+				if (thisFlag.toUpperCase().equals("POWERED")) isPowered = true;
+				if (thisFlag.toUpperCase().equals("SHEARED")) isSheared = true;
+				if (thisFlag.toUpperCase().equals("TAME")) isTame = true;
+				if (thisFlag.toUpperCase().equals("SADDLED")) isSaddled = true;
+				if (thisFlag.toUpperCase().contains("COLORED ")) hasColor = thisFlag.split(" ")[1];
+				if (thisFlag.toUpperCase().contains("PROFESSION "))
+					hasProfession = thisFlag.split(" ")[1];
+				aH.echoDebug("...setting: '%s'.", thisArg);
+			}
+
+			/* If argument is a BOOKMARK modifier */
+			else if (aH.matchesBookmark(thisArg)) {
+				theLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
+				if (theLocation != null)
+					aH.echoDebug("...using location: '%s'", thisArg);
+			}
+
+			else aH.echoError("Could not match argument '%s'.", thisArg);
+
 		}
+
 
 		/* Location and Quantity are optional, so if they weren't set, let's use the information we have
 		 * to set the defaults. Default amount is 1, default Location is the location of the Denizen. If no
 		 * denizen attached (ie. this is a Task Script), default location is the location of the Player. */		
 
 		if (theAmount == null) theAmount = 1;
-		if (theLocation == null && theCommand.getDenizen() != null) 
-			theLocation = theCommand.getDenizen().getLocation();
-		if (theLocation == null) theLocation = theCommand.getPlayer().getLocation();
+		if (theLocation == null && theEntry.getDenizen() != null) 
+			theLocation = theEntry.getDenizen().getLocation();
+		if (theLocation == null) theLocation = theEntry.getPlayer().getLocation();
 
 
 		/* Now the creature spawning! */
@@ -222,9 +210,6 @@ public class SpawnCommand extends AbstractCommand {
 			return true;
 		}
 
-		if (plugin.debugMode)
-			throw new CommandException("...Usage: SPAWN (QTY:#) [ENTITY_TYPE]");
-		
 		return false;
 	}
 

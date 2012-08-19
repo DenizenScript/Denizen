@@ -42,7 +42,7 @@ public class FinishCommand extends AbstractCommand {
 				}
 
 				// Can't match to anything
-				else aH.echoError("...unable to match argument!");
+				else aH.echoError("Unable to match '%s'!", thisArg);
 			}
 		}
 

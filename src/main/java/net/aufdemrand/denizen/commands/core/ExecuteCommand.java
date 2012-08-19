@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -42,34 +40,37 @@ public class ExecuteCommand extends AbstractCommand {
 		ExecuteType executeType = null;
 
 		if (theEntry.arguments() == null)
-			throw new CommandException("...Usage: EXECUTE [ASSERVER|ASNPC|ASPLAYER] '[Command to execute]'");
+			throw new CommandException("...Usage: EXECUTE [AS_SERVER|AS_NPC|AS_PLAYER] '[Command to execute]'");
 
 		/* Match arguments to expected variables */
 		for (String thisArg : theEntry.arguments()) {
 
 			/* If argument is ASPLAYER */
-			if (thisArg.equalsIgnoreCase("ASPLAYER")) {
+			if (thisArg.equalsIgnoreCase("ASPLAYER")
+					|| thisArg.equalsIgnoreCase("AS_PLAYER")) {
 				executeType = ExecuteType.ASPLAYER;
 				aH.echoDebug("...executing '%s'.", thisArg);
 			}
 
 			/* If argument is ASNPC */
-			else if (thisArg.equalsIgnoreCase("ASNPC")) {
+			else if (thisArg.equalsIgnoreCase("ASNPC")
+					|| thisArg.equalsIgnoreCase("AS_NPC")) {
 				executeType = ExecuteType.ASDENIZEN;
 				aH.echoDebug("...executing '%s'.", thisArg);
 			}
 
 			/* If argument is ASSERVER */
-			else if (thisArg.equalsIgnoreCase("ASSERVER")) {
+			else if (thisArg.equalsIgnoreCase("ASSERVER")
+					|| thisArg.equalsIgnoreCase("AS_SERVER")) {
 				executeType = ExecuteType.ASSERVER;
 				aH.echoDebug("...executing '%s'.", thisArg);
 			}
 
 			else {
-				aH.echoDebug("...set command to execute.", thisArg);
 				commandtoExecute = thisArg
 						.replace("<PLAYER>", theEntry.getPlayer().getName())
 						.replace("<WORLD>", theEntry.getPlayer().getWorld().getName());
+				aH.echoDebug("...command: '%s'", commandtoExecute);
 			}
 
 		}	
@@ -88,7 +89,9 @@ public class ExecuteCommand extends AbstractCommand {
 					((Player) theEntry.getDenizen().getEntity()).setOp(true);
 					((Player) theEntry.getDenizen().getEntity()).performCommand(commandtoExecute);
 					((Player) theEntry.getDenizen().getEntity()).setOp(false);
-				} else throw new CommandException("...cannot EXECUTE ASNPC unless NPC is Human!");
+				} else {
+					aH.echoError("Cannot EXECUTE AS_NPC unless NPC is Human!");
+				}
 				break;
 
 			case ASSERVER:

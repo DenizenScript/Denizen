@@ -84,7 +84,7 @@ public class RefuseCommand extends AbstractCommand {
 				}
 
 			} else {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no permissions loaded! Have you installed Vault and a compatible plugin?");
+				aH.echoError("No permissions loaded! Have you installed Vault and a compatible plugin?");
 				return false;
 			}
 
@@ -103,7 +103,7 @@ public class RefuseCommand extends AbstractCommand {
 				}
 
 			} else {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no permissions loaded! Have you installed Vault and a compatible plugin?");
+				aH.echoError("No permissions loaded! Have you installed Vault and a compatible plugin?");
 				return false;
 			}
 

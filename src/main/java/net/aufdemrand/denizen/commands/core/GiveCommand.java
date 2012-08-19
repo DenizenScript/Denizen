@@ -59,13 +59,14 @@ public class GiveCommand extends AbstractCommand {
 			// If the argument is MONEY
 			else if (thisArg.toUpperCase().contains("MONEY")) {
 				giveType = GiveType.MONEY;
-				aH.echoDebug("...giving '%s'.", thisArg);
+				aH.echoDebug("...giving MONEY.");
 			}
 
 			// If the argument is XP
-			else if (thisArg.toUpperCase().contains("XP")) {
+			else if (thisArg.toUpperCase().contains("XP")
+					|| thisArg.toUpperCase().contains("EXP")) {
 				giveType = GiveType.EXP;
-				aH.echoDebug("...giving '%s'.", thisArg);
+				aH.echoDebug("...giving EXP.");
 			}
 
 			// If argument is an Item
@@ -77,7 +78,7 @@ public class GiveCommand extends AbstractCommand {
 			}
 			
 			/* Can't match to anything */
-			else aH.echoError("...unable to match argument!");
+			else aH.echoError("...unable to match '%s'!", thisArg);
 
 		}	
 	
@@ -92,7 +93,7 @@ public class GiveCommand extends AbstractCommand {
 				double doubleAmount = Double.valueOf(theAmount);
 				plugin.economy.depositPlayer(theEntry.getPlayer().getName(), doubleAmount);
 			} else {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no economy loaded! Have you installed Vault and a compatible economy plugin?");	
+				aH.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");	
 			}
 			return true;
 
@@ -106,7 +107,7 @@ public class GiveCommand extends AbstractCommand {
 
 			if (!leftovers.isEmpty()) {
 				if (plugin.debugMode)
-					plugin.getLogger().log(Level.INFO, "...Player did not have enough space in their inventory, the rest of the items have been placed on the floor.");
+					aH.echoDebug("...Player did not have enough space in their inventory, the rest of the items have been placed on the floor.");
 				for (Entry<Integer, ItemStack> leftoverItem : leftovers.entrySet()) {
 					theEntry.getPlayer().getWorld().dropItem(theEntry.getPlayer().getLocation(), leftoverItem.getValue());
 				}

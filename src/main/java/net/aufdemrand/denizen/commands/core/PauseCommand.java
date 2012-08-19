@@ -50,7 +50,7 @@ public class PauseCommand extends AbstractCommand {
 				}
 
 				else 
-					aH.echoError("...argument could not be matched!");
+					aH.echoError("...could not match '%s'!", thisArg);
 			}
 
 
@@ -59,7 +59,7 @@ public class PauseCommand extends AbstractCommand {
 			return true;
 		}
 
-		// Pause waypoints!
+		// Pause GoalController!
 		theEntry.getDenizen().getCitizensEntity().getDefaultGoalController().setPaused(true);
 
 		if (duration != null) 

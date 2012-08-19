@@ -24,7 +24,7 @@ public class CastCommand extends AbstractCommand{
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 		/* Initialize variables */ 
-		String PotionName = null;
+		String potionName = null;
 		int duration = 60;
 		int amplitude = 1;
 
@@ -38,37 +38,37 @@ public class CastCommand extends AbstractCommand{
 
 			// If argument is a modifier.
 			if (thisArg.toUpperCase().contains("SPELL:")) {
-				PotionName = aH.getStringModifier(thisArg);
-				aH.echoDebug("...spell name is '" + PotionName + "'.", thisArg);
+				potionName = aH.getStringModifier(thisArg);
+				aH.echoDebug("...will cast effect '%s'.", thisArg);
 			}
 
 			// DURATION argument
 			else if (aH.matchesDuration(thisArg)) {
 				duration = aH.getIntegerModifier(thisArg);
-				aH.echoDebug("...Duration is '" + duration + "'.", thisArg);
+				aH.echoDebug("...duration set to '%s'.", thisArg);
 			}
 
 			// POWER argument
 			else if (thisArg.toUpperCase().contains("POWER:")) {
 				amplitude = aH.getIntegerModifier(thisArg);
-				aH.echoDebug("...Power is " + amplitude, thisArg);
+				aH.echoDebug("...power set to '%s'.", thisArg);
 			}
 
 			// NPCID argument
 			else if (aH.matchesNPCID(thisArg)) {
 				target = aH.getNPCIDModifier(thisArg).getEntity();
-				if (target !=null)	aH.echoDebug("...now targeting '" + target.toString() + "'.", thisArg);
+				if (target !=null)	aH.echoDebug("...now targeting '%s'.", thisArg);
 			}
 
 			// Would this ever be used? A hard-coded player in a script?
 			else if (thisArg.toUpperCase().contains("PLAYER:")) {
 				target = theEntry.getDenizen().getEntity().getServer().getPlayer(aH.getStringModifier(thisArg));
-				if (target !=null)	aH.echoDebug("...now targeting '" + target.toString() + "'.", thisArg);
+				if (target !=null)	aH.echoDebug("...now targeting '%s'.", thisArg);
 			}
 
 			else {
-				PotionName = aH.getStringModifier(thisArg);
-				aH.echoDebug("...will cast effect '" + PotionName + "'.", thisArg);
+				potionName = aH.getStringModifier(thisArg);
+				aH.echoDebug("...will cast effect '%s'.", thisArg);
 			}
 
 		}	
@@ -79,9 +79,9 @@ public class CastCommand extends AbstractCommand{
 		}
 
 		/* Execute the command, if all required variables are filled. */
-		if (PotionName !=null) {
+		if (potionName !=null) {
 			try {
-				target.addPotionEffect(new PotionEffect(PotionEffectType.getByName(PotionName), duration * 20, amplitude));
+				target.addPotionEffect(new PotionEffect(PotionEffectType.getByName(potionName), duration * 20, amplitude));
 				return true;
 			} catch (Exception e) {
 				aH.echoError("Invalid potion effect!");

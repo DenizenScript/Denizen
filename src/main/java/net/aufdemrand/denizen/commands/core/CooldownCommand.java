@@ -66,7 +66,7 @@ public class CooldownCommand extends AbstractCommand {
 			// If argument is a GLOBAL modifier
 			else if (thisArg.equalsIgnoreCase("GLOBAL")) {
 				isGlobal = true;
-				aH.echoDebug("...script COOLDOWN will now be GLOBAL.", thisArg);
+				aH.echoDebug("...script COOLDOWN will now be GLOBAL.");
 			}
 
 			// If argument is a Script modifier
@@ -76,7 +76,7 @@ public class CooldownCommand extends AbstractCommand {
 			}
 
 			// Can't match to anything
-			else aH.echoError("...unable to match argument!");
+			else aH.echoError("Unable to match argument '%s'!", thisArg);
 		}	
 
 

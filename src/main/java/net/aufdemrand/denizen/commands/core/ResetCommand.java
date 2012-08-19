@@ -50,12 +50,12 @@ public class ResetCommand extends AbstractCommand {
 
 			if (thisArg.equals("FINISHES") || thisArg.equals("FINISHED") || thisArg.equals("FINISH")) {
 				resetType = ResetType.FINISH;
-				aH.echoDebug("...will reset FINISHED.", thisArg);
+				aH.echoDebug("...will reset FINISHED.");
 			}
 
 			else if (thisArg.equals("FAILS") || thisArg.equals("FAIL") || thisArg.equals("FAILED")) {
 				resetType = ResetType.FAIL;
-				aH.echoDebug("...will reset FAILED.", thisArg);
+				aH.echoDebug("...will reset FAILED.");
 			}
 
 			else if (thisArg.toUpperCase().contains("FLAG:")) {

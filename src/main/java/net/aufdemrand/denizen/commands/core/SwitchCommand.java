@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
 
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -45,32 +44,29 @@ public class SwitchCommand extends AbstractCommand {
 		Location interactLocation = null;
 		Integer duration = null;
 
+		if (theEntry.arguments() == null)
+			throw new CommandException("...Usage: SWITCH (BOOKMARK:BlockBookmark) (DURATION:#)");
+
 		/* Match arguments to expected variables */
-		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
+		for (String thisArg : theEntry.arguments()) {
 
-				if (plugin.debugMode) plugin.getLogger().info("Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
+			// DURATION argument
+			if (aH.matchesDuration(thisArg)) {
+				duration = Integer.valueOf(thisArg.split(":")[1]);
+			}
 
-				/* Set a duration */
-				if (aH.matchesDuration(thisArgument)) {
-					duration = Integer.valueOf(thisArgument.split(":")[1]);
-				}
+			// If argument is a BOOKMARK modifier
+			else if (aH.matchesBookmark(thisArg)) {
+				interactLocation = aH.getBlockBookmarkModifier(thisArg, theEntry.getDenizen());
+				if (interactLocation != null)
+					aH.echoDebug("...switch location now at bookmark '%s'", thisArg);
+			}		
 
+			else {
+				aH.echoError("...unable to match '%s'.", thisArg);
+			}
 
-				// If argument is a valid bookmark, set location.
-				// If argument is a BOOKMARK modifier
-				else if (aH.matchesBookmark(thisArgument)) {
-					interactLocation = aH.getBlockBookmarkModifier(thisArgument, theEntry.getDenizen());
-					if (interactLocation != null)
-						aH.echoDebug("...switch location now at bookmark '%s'", thisArgument);
-				}		
-
-				else {
-					if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unable to match argument!");
-				}
-
-			}	
-		}
+		}	
 
 		/* Execute the command. */
 
@@ -100,7 +96,7 @@ public class SwitchCommand extends AbstractCommand {
 			}
 
 			else {
-				if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
+				aH.echoError("Unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
 			}
 		}
 

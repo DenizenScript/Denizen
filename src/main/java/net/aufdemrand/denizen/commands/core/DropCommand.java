@@ -5,7 +5,6 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
-import net.aufdemrand.denizen.commands.core.GiveCommand.GiveType;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
@@ -56,7 +55,7 @@ public class DropCommand extends AbstractCommand {
 			}
 
 			// If argument is a BOOKMARK modifier
-			if (aH.matchesBookmark(thisArg)) {
+			else if (aH.matchesBookmark(thisArg)) {
 				theLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
 				if (theLocation != null)
 					aH.echoDebug("...drop location now at bookmark '%s'", thisArg);
@@ -77,7 +76,7 @@ public class DropCommand extends AbstractCommand {
 			}
 
 			// Can't match to anything
-			else aH.echoError("...unable to match argument!");
+			else aH.echoError("...unable to match '%s'!", thisArg);
 		}	
 
 

@@ -43,8 +43,7 @@ public class WaitCommand extends AbstractCommand {
 		 * around, and therefore finish the command right now. */
 
 		if (theEntry.getDelayedTime() > theEntry.getInitiatedTime()) {
-			if (plugin.debugMode) 
-				plugin.getLogger().log(Level.INFO, "...and we've waited. Resuming.");
+			aH.echoDebug("...and we've waited. Resuming.");
 			return true;
 		}
 
@@ -57,58 +56,51 @@ public class WaitCommand extends AbstractCommand {
 
 		/* Process arguments */
 
-		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
+		for (String thisArgument : theEntry.arguments()) {
 
+			if (aH.matchesInteger(thisArgument)) {
 				if (plugin.debugMode) 
-					plugin.getLogger().log(Level.INFO, "Processing command " + theEntry.getCommand() + " argument: " + thisArgument);
-				
-				if (thisArgument.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...setting delay.");
-					theDelay = (Long.valueOf(thisArgument) * 1000);
-					
-				}
-				
-				if (thisArgument.toUpperCase().contains("QUEUETYPE:")) {
-					if (plugin.debugMode) 
-						plugin.getLogger().log(Level.INFO, "...setting QueueType.");
-					try {
-						queueToHold = QueueType.valueOf(thisArgument.split(":")[1]);
-					} catch (Throwable e) {
-						throw new CommandException("Invalid QUEUETYPE.");
-					}
-				}
+					plugin.getLogger().log(Level.INFO, "...setting delay.");
+				theDelay = (Long.valueOf(thisArgument) * 1000);
+
+			}
+
+			if (thisArgument.toUpperCase().contains("QUEUETYPE:")) {
+				aH.echoDebug("...setting QueueType.");
+						try {
+							queueToHold = QueueType.valueOf(thisArgument.split(":")[1]);
+						} catch (Throwable e) {
+							throw new CommandException("Invalid QUEUETYPE.");
+						}
 			}
 		}
+	
 
-		/* Put itself back into the queue */
+	/* Put itself back into the queue */
 
-		List<ScriptEntry> theList = new ArrayList<ScriptEntry>();
-		ScriptEntry newEntry = null;
-		try {
-			newEntry = new ScriptEntry(theEntry.getCommand(), theEntry.arguments(), theEntry.getPlayer(), theEntry.getDenizen(), theEntry.getScript(), theEntry.getStep());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		newEntry.setDelay(System.currentTimeMillis() + theDelay);
-		theList.add(newEntry);
-
-		if (queueToHold == QueueType.TASK) {
-			if (plugin.debugMode) 
-				plugin.getLogger().log(Level.INFO, "...now holding Task Queue.");
-			plugin.getScriptEngine().injectToQueue(thePlayer, theList, QueueType.TASK, 0);
-			return true;
-		}
-
-		if (queueToHold == QueueType.TRIGGER) {
-			if (plugin.debugMode) 
-				plugin.getLogger().log(Level.INFO, "...now holding Trigger Queue.");
-			plugin.getScriptEngine().injectToQueue(thePlayer, theList, QueueType.TRIGGER, 0);
-			return true;
-		}
-
-		throw new CommandException("...Usage: WAIT [# OF SECONDS]");
+	List<ScriptEntry> theList = new ArrayList<ScriptEntry>();
+	ScriptEntry newEntry = null;
+	try {
+		newEntry = new ScriptEntry(theEntry.getCommand(), theEntry.arguments(), theEntry.getPlayer(), theEntry.getDenizen(), theEntry.getScript(), theEntry.getStep());
+	} catch (Exception e) {
+		e.printStackTrace();
 	}
+	newEntry.setDelay(System.currentTimeMillis() + theDelay);
+	theList.add(newEntry);
+
+	if (queueToHold == QueueType.TASK) {
+		aH.echoDebug("...now holding Task Queue.");
+		plugin.getScriptEngine().injectToQueue(thePlayer, theList, QueueType.TASK, 0);
+		return true;
+	}
+
+	if (queueToHold == QueueType.TRIGGER) {
+		aH.echoDebug("...now holding Trigger Queue.");
+		plugin.getScriptEngine().injectToQueue(thePlayer, theList, QueueType.TRIGGER, 0);
+		return true;
+	}
+
+	throw new CommandException("...Usage: WAIT [# OF SECONDS]");
+}
 
 }
