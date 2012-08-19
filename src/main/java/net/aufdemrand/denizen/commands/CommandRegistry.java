@@ -27,6 +27,7 @@ import net.aufdemrand.denizen.commands.core.TakeCommand;
 import net.aufdemrand.denizen.commands.core.TalkCommand;
 import net.aufdemrand.denizen.commands.core.TeleportCommand;
 import net.aufdemrand.denizen.commands.core.WaitCommand;
+import net.aufdemrand.denizen.commands.core.WalkToCommand;
 import net.aufdemrand.denizen.commands.core.WeatherCommand;
 import net.aufdemrand.denizen.commands.core.ZapCommand;
 
@@ -103,8 +104,11 @@ public class CommandRegistry {
 		CooldownCommand cooldownCommand = new CooldownCommand();
 		HintCommand hintCommand = new HintCommand();
 		WeatherCommand weatherCommand = new WeatherCommand();
+		WalkToCommand walktocommand = new WalkToCommand();
 		
 		try {
+			walktocommand.activateAs("WALKTO");
+			walktocommand.activateAs("RETURN");			
 			hintCommand.activateAs("HINT");
 			weatherCommand.activateAs("WEATHER");
 			pauseCommand.activateAs("PAUSE");
