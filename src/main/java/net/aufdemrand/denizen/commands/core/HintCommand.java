@@ -55,7 +55,7 @@ public class HintCommand extends AbstractCommand {
 
 			if (plugin.getScripts().contains(scriptPath + x + ".Trigger")) {
 				chatTriggers.add(plugin.getScripts().getString(scriptPath + x + ".Trigger"));
-				if (plugin.debugMode) plugin.getLogger().info("found " + chatTriggers.get(x-1));
+				aH.echoDebug("...found '" + chatTriggers.get(x-1) + "'");
 			}
 			else thisTriggerExists = false;
 			x++;
