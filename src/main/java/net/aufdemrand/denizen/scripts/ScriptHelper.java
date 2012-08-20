@@ -500,7 +500,8 @@ public class ScriptHelper {
 			for (int i = 0; i < files.length; i++) {
 
 				String fileName = files[i].getName();
-				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
+				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")
+						&& !fileName.startsWith(".")) {
 					plugin.getLogger().log(Level.INFO, "Processing script " + files[i].getName() + "... ");
 					BufferedReader br = new BufferedReader(new FileReader(files[i]
 							.getPath()));
