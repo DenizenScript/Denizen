@@ -114,6 +114,7 @@ public class CommandRegistry {
 			healcommand.activateAs("HARM");
 			healcommand.activateAs("HEAL");
 			castCommand.activateAs("CAST");
+			walktoCommand.activateAs("WALK");
 			walktoCommand.activateAs("WALKTO");
 			walktoCommand.activateAs("RETURN");			
 			hintCommand.activateAs("HINT");
