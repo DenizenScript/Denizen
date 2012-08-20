@@ -37,17 +37,22 @@ public class ZapCommand extends AbstractCommand {
 			for (String thisArg : theEntry.arguments()) {
 
 				/* Set the step to ZAP to */
-				if (aH.matchesInteger(thisArg))
+				if (aH.matchesInteger(thisArg)) {
 					theStep = aH.getIntegerModifier(thisArg);
+					aH.echoDebug("...zapping to step '" + theStep + "'.");
+				}
 
 				/* Change the script to a specified one */
-				else if (aH.matchesScript(thisArg)) 
+				else if (aH.matchesScript(thisArg)) {
 					theScript = aH.getStringModifier(thisArg);
+					aH.echoDebug("...zapping script '" + theScript + "'.");	
+				}
 
 				/* Pick a random step */
 				else if (thisArg.toUpperCase().contains("RANDOM:")) {
 					int high = 1, low = 1;
-					if (thisArg.split(":")[1].split(" ").length == 1) {
+					if (thisArg.split(":")[1].split(" ").length == 1
+							&& thisArg.split("-").length == 1) {
 						if (aH.matchesInteger(thisArg.split(":")[1])) {
 							low = 1;
 							high = Integer.valueOf(thisArg.split(":")[1]); 
@@ -58,6 +63,13 @@ public class ZapCommand extends AbstractCommand {
 								&& aH.matchesInteger(thisArg.split(":")[1].split(" ")[1])) {
 							low = Integer.valueOf(thisArg.split(":")[1].split(" ")[0]);
 							high = Integer.valueOf(thisArg.split(":")[1].split(" ")[1]);
+						}
+					}
+					else if (thisArg.split(":")[1].split("-").length == 2) {
+						if (aH.matchesInteger(thisArg.split(":")[1].split("-")[0])
+								&& aH.matchesInteger(thisArg.split(":")[1].split("-")[1])) {
+							low = Integer.valueOf(thisArg.split(":")[1].split("-")[0]);
+							high = Integer.valueOf(thisArg.split(":")[1].split("-")[1]);
 						}
 					}
 					Random randomInt = new Random();
