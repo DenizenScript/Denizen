@@ -32,6 +32,8 @@ public class HealCommand extends AbstractCommand {
 
 		if (theEntry.getPlayer() == null) {
 			target = theEntry.getDenizen().getEntity();			
+		} else {
+			target = theEntry.getPlayer();
 		}
 
 		Integer amount = null;
@@ -55,7 +57,7 @@ public class HealCommand extends AbstractCommand {
 		
 		// Execute the command
 
-		if (target !=null) {
+		if (target != null) {
 			if (hurts) {
 				if (amount == null) amount = 1;
 				target.setHealth(target.getHealth() - amount);		
