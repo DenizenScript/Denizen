@@ -146,7 +146,7 @@ public class DenizenNPC {
 	}
 
 	public boolean isInteracting() {
-		if (!plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(citizensNPC))
+		if (!plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(this))
 			return true;
 		else return false;
 	}
