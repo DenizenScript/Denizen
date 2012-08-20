@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.commands.core.FailCommand;
 import net.aufdemrand.denizen.commands.core.FinishCommand;
 import net.aufdemrand.denizen.commands.core.FlagCommand;
 import net.aufdemrand.denizen.commands.core.GiveCommand;
+import net.aufdemrand.denizen.commands.core.HealCommand;
 import net.aufdemrand.denizen.commands.core.HintCommand;
 import net.aufdemrand.denizen.commands.core.LookCommand;
 import net.aufdemrand.denizen.commands.core.PauseCommand;
@@ -107,8 +108,11 @@ public class CommandRegistry {
 		WeatherCommand weatherCommand = new WeatherCommand();
 		CastCommand castCommand = new CastCommand();
 		WalkToCommand walktoCommand = new WalkToCommand();
+		HealCommand healcommand = new HealCommand();
 		
 		try {
+			healcommand.activateAs("HARM");
+			healcommand.activateAs("HEAL");
 			castCommand.activateAs("CAST");
 			walktoCommand.activateAs("WALKTO");
 			walktoCommand.activateAs("RETURN");			

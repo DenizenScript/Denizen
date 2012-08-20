@@ -54,7 +54,7 @@ public class SpeechEngine {
 			TalkType talkType) {
 
 		String textToSend = null;
-		
+
 		switch (theReason) {
 
 		case DenizenIsUnavailable:
@@ -82,7 +82,7 @@ public class SpeechEngine {
 			break;
 
 		}
-	
+
 
 	}
 
@@ -105,7 +105,11 @@ public class SpeechEngine {
 		boolean toPlayer = true;
 		if (thePlayer == null) toPlayer = false;
 		String denizenName = ""; 
-		if (theDenizen != null) denizenName = theDenizen.getName();
+		String worldName = "";
+		if (theDenizen != null){
+			denizenName = theDenizen.getName();
+			worldName= theDenizen.getWorld().getName();
+		}
 
 		switch (talkType) {
 
@@ -133,32 +137,46 @@ public class SpeechEngine {
 		case CHAT:
 			playerMessageFormat = plugin.settings.NpcChatToPlayer();
 			bystanderMessageFormat = plugin.settings.NpcChatToPlayerBystander();
-			if (!toPlayer) bystanderMessageFormat = plugin.settings.NpcChatToBystanders();
+			if (!toPlayer){	bystanderMessageFormat = plugin.settings.NpcChatToBystanders();
+			}
 			break;
-		
+
 		case CHAT_PLAYERONLY:
 			playerMessageFormat = plugin.settings.NpcChatToPlayer();
 			break;
-			
-	}
+
+		}
+
+		String playername = "";
+		String playerdispname = "";
+		String playerhealth = "";
+
+		if (thePlayer!=null)
+		{
+			playerhealth = String.valueOf(thePlayer.getHealth());
+			playerdispname =  thePlayer.getDisplayName();
+			playername =  thePlayer.getName();
+		}
+
+
 
 		if (playerMessageFormat != null)
 			playerMessageFormat = colorizeText(playerMessageFormat
-			.replace("<NPC>", denizenName)
-			.replace("<TEXT>", theMessage)
-			.replace("<PLAYER>", thePlayer.getName())
-			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
-			.replace("<WORLD>", thePlayer.getWorld().getName())
-			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+					.replace("<NPC>", denizenName)
+					.replace("<TEXT>", theMessage)			
+					.replace("<PLAYER>", playername)
+					.replace("<DISPLAYNAME>", playerdispname)
+					.replace("<WORLD>", worldName)
+					.replace("<HEALTH>", playerhealth));
 
 		if (bystanderMessageFormat != null)
 			bystanderMessageFormat = colorizeText(bystanderMessageFormat
-			.replace("<NPC>", denizenName)
-			.replace("<TEXT>", theMessage)
-			.replace("<PLAYER>", thePlayer.getName())
-			.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
-			.replace("<WORLD>", thePlayer.getWorld().getName())
-			.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())));
+					.replace("<NPC>", denizenName)
+					.replace("<TEXT>", theMessage)			
+					.replace("<PLAYER>", playername)
+					.replace("<DISPLAYNAME>", playerdispname)
+					.replace("<WORLD>", worldName)
+					.replace("<HEALTH>", playerhealth));
 
 		String[] returnedText = {playerMessageFormat, bystanderMessageFormat};
 
@@ -250,27 +268,27 @@ public class SpeechEngine {
 		return;
 	}
 
-	
-	
-	// Thanks geckon :)
-	
-    public String colorizeText(String text) {
-	    Integer i = 0;
-        String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
 
-        for (ChatColor color : ChatColor.values()) 
-        {
-	        if (i > 15) break;
-            text = text.replaceAll("(?i)<" + color.name() + ">", "" + color);
-            text = text.replaceAll("(?i)<&" + code[i] + ">", "" + color);
-            text = text.replaceAll("(?i)%%" + code[i], "" + color);
-            i++;
-	    }
-	    return text;
+
+	// Thanks geckon :)
+
+	public String colorizeText(String text) {
+		Integer i = 0;
+		String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
+
+		for (ChatColor color : ChatColor.values()) 
+		{
+			if (i > 15) break;
+			text = text.replaceAll("(?i)<" + color.name() + ">", "" + color);
+			text = text.replaceAll("(?i)<&" + code[i] + ">", "" + color);
+			text = text.replaceAll("(?i)%%" + code[i], "" + color);
+			i++;
+		}
+		return text;
 	}
 
 
-    
+
 	/**
 	 * Talks to a NPC. Also has replaceable data, end-user, when using <NPC> <TEXT> <PLAYER> <FULLPLAYERNAME> <WORLD> or <HEALTH>.
 	 *
