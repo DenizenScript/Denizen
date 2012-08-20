@@ -63,6 +63,8 @@ public class ZapCommand extends AbstractCommand {
 					Random randomInt = new Random();
 					if (high - low > 0) theStep = randomInt.nextInt(high - low + 1) + low;
 					else theStep = high;
+					aH.echoDebug("...randomly selected step '" + theStep + "'.");
+					
 				}
 
 				/* Set a duration */

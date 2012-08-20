@@ -48,11 +48,10 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 					hasLocation = true;
 
-
 					DenizenNPC theDenizen = null;
 					String locationTriggered = plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[2];
 
-					if (plugin.debugMode) 	plugin.getLogger().info("Found location: " + locationTriggered);
+					if (plugin.debugMode) plugin.getLogger().info("[Location Trigger] '" + event.getPlayer().getName() + "' just walked over bookmark '" + locationTriggered + "'");
 
 					/* Player matches Location, find NPC it belongs to */
 
@@ -73,7 +72,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 						/* Check which NPC is closest */
 						for (DenizenNPC npc : denizenList) {
-							if(npc.getEntity() == null) continue;
+							if (npc.getEntity() == null) continue;
 							if (npc.getEntity().getLocation().distance(event.getPlayer().getLocation())
 									< theDenizen.getEntity().getLocation().distance(event.getPlayer().getLocation()))
 								theDenizen = npc;
