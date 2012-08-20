@@ -83,7 +83,6 @@ public class HintCommand extends AbstractCommand {
 		return true;
 	}
 
-
 	private String getFormattedTrigger(String str, boolean shortformat){
 		if (str ==null) return "";
 
@@ -99,7 +98,7 @@ public class HintCommand extends AbstractCommand {
 			}
 		}
 
-		return str.replace("/", ChatColor.UNDERLINE + "").replace("/", ChatColor.RESET + ""); 
+		return str.replaceFirst("/", ChatColor.UNDERLINE + "").replaceFirst("/", ChatColor.RESET + ""); 
 
 	}
 
