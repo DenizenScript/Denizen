@@ -35,6 +35,6 @@ public abstract class AbstractCommand {
 	/* Execute is the method called when the Denizen Command is called from a script.
 	 * If the command runs successfully, the method should return true. */
 
-	public abstract boolean execute(ScriptEntry theCommand) throws CommandException;
+	public abstract boolean execute(ScriptEntry theEntry) throws CommandException;
 
 }
