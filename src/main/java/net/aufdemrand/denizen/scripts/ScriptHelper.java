@@ -198,7 +198,7 @@ public class ScriptHelper {
 			theScript = interactableScripts.get(0).name;
 			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + "Highest scoring script is " + theScript + ".");
 			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
-			return theScript;
+			return theScript.replace("^", "");
 		}
 
 		// Or, if list is empty.. uh oh!
