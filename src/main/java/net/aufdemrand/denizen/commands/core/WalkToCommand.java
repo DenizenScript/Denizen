@@ -19,6 +19,7 @@ import net.citizensnpcs.trait.waypoint.Waypoints;
  * @author You!
  */
 
+            
 public class WalkToCommand extends AbstractCommand {
 
 	/* WALKTO [BOOKMARK:locationbookmark]|(PLAYER)'  */
@@ -128,7 +129,7 @@ public class WalkToCommand extends AbstractCommand {
 		for (String thisArg : theEntry.arguments()) {
 
 			if(thisArg.toUpperCase().contains("FORWARD:")){
-				double amt = aH.getIntegerModifier(thisArg);
+				double amt = Double.valueOf( aH.getStringModifier(thisArg));
 				Vector victor = theEntry.getDenizen().getLocation().getDirection();
 				victor.multiply(amt);
 				aH.echoDebug("... offset forward " + amt);
@@ -136,38 +137,38 @@ public class WalkToCommand extends AbstractCommand {
 			}
 			
 			if(thisArg.toUpperCase().contains("NORTH:") || thisArg.toUpperCase().contains("Z:"  )){
-				double amt = aH.getIntegerModifier(thisArg);
+				double amt = Double.valueOf( aH.getStringModifier(thisArg));
 				out.add(0, 0, amt);
 				aH.echoDebug("... offset z " + amt);
 			}
 			
 			if(thisArg.toUpperCase().contains("SOUTH:")){
-				double amt = aH.getIntegerModifier(thisArg);
+				double amt = Double.valueOf( aH.getStringModifier(thisArg));
 				out.add(0, 0, -amt);
 				aH.echoDebug("... offset -z " + amt);
 			}
 			
 			
 			if(thisArg.toUpperCase().contains("WEST:") || thisArg.toUpperCase().contains("X:"  )){
-				double amt = aH.getIntegerModifier(thisArg);
+				double amt = Double.valueOf( aH.getStringModifier(thisArg));
 				out.add(amt, 0, 0);
 				aH.echoDebug("... offset x " + amt);
 			}
 			
 			if(thisArg.toUpperCase().contains("EAST:")){
-				double amt = aH.getIntegerModifier(thisArg);
+				double amt = Double.valueOf( aH.getStringModifier(thisArg));
 				out.add(-amt, 0, 0);
 				aH.echoDebug("... offset -x " + amt);
 			}
 			
 			if(thisArg.toUpperCase().contains("UP:") || thisArg.toUpperCase().contains("Y:"  )){
-				double amt = aH.getIntegerModifier(thisArg);
+				double amt = Double.valueOf( aH.getStringModifier(thisArg));
 				out.add(0, amt, 0);
 				aH.echoDebug("... offset y " + amt);
 			}
 			
 			if(thisArg.toUpperCase().contains("DOWN:")){
-				double amt = aH.getIntegerModifier(thisArg);
+				double amt = Double.valueOf( aH.getStringModifier(thisArg));
 				out.add(0, -amt,0);
 				aH.echoDebug("... offset -y " + amt);
 			}
@@ -176,8 +177,7 @@ public class WalkToCommand extends AbstractCommand {
 		}
 
 		return out;	
-
 	}
 
-
+	
 }
