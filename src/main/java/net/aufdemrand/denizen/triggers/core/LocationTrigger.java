@@ -153,6 +153,8 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		boolean noMatch = true;
 		int x = 1;
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Trying to match Location: " + theLocationName);
+		
 		do {
 			foundScript = true;
 			if (plugin.getScripts().contains(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger")) {
@@ -164,6 +166,8 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 					x++;
 				}
 			}
+			else if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "Current step does not contain Location Triggers");
+				
 		} while (foundScript == false);
 
 		if (!noMatch) {
