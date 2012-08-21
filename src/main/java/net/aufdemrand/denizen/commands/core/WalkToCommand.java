@@ -19,6 +19,7 @@ import net.citizensnpcs.trait.waypoint.Waypoints;
  * @author You!
  */
 
+            
 public class WalkToCommand extends AbstractCommand {
 
 	/* WALKTO [BOOKMARK:locationbookmark]|(PLAYER)'  */
@@ -176,8 +177,7 @@ public class WalkToCommand extends AbstractCommand {
 		}
 
 		return out;	
-
 	}
 
-
+	
 }
