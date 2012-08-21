@@ -155,8 +155,8 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 		do {
 			foundScript = true;
-			if (plugin.getScripts().contains(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger")) {
-				if (plugin.getScripts().getString(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger").equals(theLocationName)) {
+			if (plugin.getScripts().contains(sE.getTriggerPath(theScriptName, theStep, triggerName) + "."+ x + ".Trigger")) {
+				if (plugin.getScripts().getString(sE.getTriggerPath(theScriptName, theStep, triggerName) + "." + x + ".Trigger").equals(theLocationName)) {
 					noMatch = false;
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + "Found location in the script.");
 				} else {
