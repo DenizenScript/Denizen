@@ -147,12 +147,12 @@ public class ScriptHelper {
 			else { script = scriptAssignment; }
 
 			// Get priority
-
 			Integer priority = null;
 			try { priority = Integer.valueOf(scriptAssignment.split(" ", 2)[0]); 
 			} catch (NumberFormatException e) { 
 				priority = 0; 
-				if (plugin.debugMode) cs.sendMessage(ChatColor.RED + "ERROR! " + ChatColor.WHITE + "Script '" + script + "' has an invalid priority! Assuming '0'."); 
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "|" + ChatColor.RED + " ERROR! " + ChatColor.WHITE + "Script '" + script + "' has an invalid priority! Assuming '0'.");
+				scriptAssignment = "0 " + scriptAssignment;
 			}
 
 			// Get requirements
