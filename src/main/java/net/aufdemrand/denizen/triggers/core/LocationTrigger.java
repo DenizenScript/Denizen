@@ -29,9 +29,10 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 	@EventHandler
 	public void locationTrigger(PlayerMoveEvent event) {
 
+
 		/* Do not run any code unless the player actually moves blocks */
 		if (event.getTo().getBlock().equals(event.getFrom().getBlock()))
-				return;
+			return;
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 
@@ -46,17 +47,17 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 				if (plugin.bookmarks.checkLocation(event.getPlayer(), theLocation, plugin.settings.LocationTriggerRangeInBlocks())) {
 
 					hasLocation = true;
-			
 
 					DenizenNPC theDenizen = null;
 					String locationTriggered = plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[2];
 
-					plugin.getLogger().info("Found location: " + locationTriggered);
-					
+					if (plugin.debugMode) plugin.getLogger().info("[Location Trigger] '" + event.getPlayer().getName() + "' just walked over bookmark '" + locationTriggered + "'");
+
 					/* Player matches Location, find NPC it belongs to */
 
 					if (plugin.bookmarks.getLocationTriggerList().get(theLocation).contains("ID:"))
 						theDenizen = plugin.getDenizenNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(plugin.bookmarks.getLocationTriggerList().get(theLocation).split(":")[1])));
+
 
 					else if (plugin.bookmarks.getLocationTriggerList().get(theLocation).contains("NAME:")) {
 						List<DenizenNPC> denizenList = new ArrayList<DenizenNPC>();
@@ -71,6 +72,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 						/* Check which NPC is closest */
 						for (DenizenNPC npc : denizenList) {
+							if (npc.getEntity() == null) continue;
 							if (npc.getEntity().getLocation().distance(event.getPlayer().getLocation())
 									< theDenizen.getEntity().getLocation().distance(event.getPlayer().getLocation()))
 								theDenizen = npc;
@@ -139,9 +141,9 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 		if (theScriptName == null) return;
-		
+
 		CommandSender cs = Bukkit.getConsoleSender();
-		
+
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing location trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");
 
@@ -151,6 +153,8 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		boolean noMatch = true;
 		int x = 1;
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Trying to match Location: " + theLocationName);
+		
 		do {
 			foundScript = true;
 			if (plugin.getScripts().contains(sE.getTriggerPath(theScriptName, theStep, triggerName) + x + ".Trigger")) {
@@ -162,6 +166,8 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 					x++;
 				}
 			}
+			else if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "Current step does not contain Location Triggers");
+				
 		} while (foundScript == false);
 
 		if (!noMatch) {

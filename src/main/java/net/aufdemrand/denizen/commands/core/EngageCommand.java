@@ -86,7 +86,7 @@ public class EngageCommand extends AbstractCommand {
 
 	private Map<DenizenNPC, Long> engagedNPC = new HashMap<DenizenNPC, Long>();
 
-	public boolean getEngaged(NPC theDenizen) {
+	public boolean getEngaged(DenizenNPC theDenizen) {
 		if (engagedNPC.containsKey(theDenizen)) 
 			if (engagedNPC.get(theDenizen) > System.currentTimeMillis())
 				return true;

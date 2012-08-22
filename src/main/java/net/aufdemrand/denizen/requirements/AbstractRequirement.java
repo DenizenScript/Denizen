@@ -30,6 +30,6 @@ public abstract class AbstractRequirement {
 	/* Execute is the method called when the Denizen Requirement is called from a script.
 	 * If the requirement is met, the method should return true. */
 
-	public abstract boolean check(LivingEntity theEntity, String theScript, String[] strings, Boolean negativeRequirement) throws RequirementMissingException;
+	public abstract boolean check(LivingEntity checkEntity, String scriptName, String[] args, Boolean negativeRequirement) throws RequirementMissingException;
 
 }

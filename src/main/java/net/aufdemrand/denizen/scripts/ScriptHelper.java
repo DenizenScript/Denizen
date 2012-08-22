@@ -147,12 +147,12 @@ public class ScriptHelper {
 			else { script = scriptAssignment; }
 
 			// Get priority
-
 			Integer priority = null;
 			try { priority = Integer.valueOf(scriptAssignment.split(" ", 2)[0]); 
 			} catch (NumberFormatException e) { 
 				priority = 0; 
-				if (plugin.debugMode) cs.sendMessage(ChatColor.RED + "ERROR! " + ChatColor.WHITE + "Script '" + script + "' has an invalid priority! Assuming '0'."); 
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "|" + ChatColor.RED + " ERROR! " + ChatColor.WHITE + "Script '" + script + "' has an invalid priority! Assuming '0'.");
+				scriptAssignment = "0 " + scriptAssignment;
 			}
 
 			// Get requirements
@@ -198,7 +198,7 @@ public class ScriptHelper {
 			theScript = interactableScripts.get(0).name;
 			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + "Highest scoring script is " + theScript + ".");
 			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
-			return theScript;
+			return theScript.replace("^", "");
 		}
 
 		// Or, if list is empty.. uh oh!
@@ -346,7 +346,7 @@ public class ScriptHelper {
 				// The Player must be cooled down for this type of Trigger
 				&& plugin.getScriptEngine().helper.checkCooldown(theDenizen, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())
 				// and finally the NPC must not be engaged
-				&& !plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen.getCitizensEntity()))
+				&& !plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen))
 			return true;
 
 		/* For debugging */
@@ -354,7 +354,7 @@ public class ScriptHelper {
 		if (plugin.debugMode) {
 			plugin.getLogger().log(Level.INFO, theDenizen.getName() + " is not interactable.");
 			if (!plugin.getScriptEngine().helper.checkCooldown(theDenizen, plugin.getTriggerRegistry().getTrigger(triggerName).getClass())) plugin.getLogger().log(Level.INFO, "...the Player has not yet met cool-down.");
-			if (plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen.getCitizensEntity())) plugin.getLogger().log(Level.INFO, "...the Denizen is ENGAGED.");
+			if (plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(theDenizen)) plugin.getLogger().log(Level.INFO, "...the Denizen is ENGAGED.");
 		}
 
 		return false;
@@ -500,7 +500,8 @@ public class ScriptHelper {
 			for (int i = 0; i < files.length; i++) {
 
 				String fileName = files[i].getName();
-				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
+				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")
+						&& !fileName.startsWith(".")) {
 					plugin.getLogger().log(Level.INFO, "Processing script " + files[i].getName() + "... ");
 					BufferedReader br = new BufferedReader(new FileReader(files[i]
 							.getPath()));

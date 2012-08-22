@@ -6,6 +6,11 @@ import java.util.logging.Level;
 
 import org.bukkit.inventory.ItemStack;
 
+import com.herocraftonline.heroes.Heroes;
+import com.herocraftonline.heroes.characters.CharacterTemplate;
+import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.classes.HeroClass.ExperienceType;
+
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -34,7 +39,7 @@ public class GiveCommand extends AbstractCommand {
 	 *  
 	 */
 
-	enum GiveType { ITEM, MONEY, EXP }
+	enum GiveType { ITEM, MONEY, EXP, HEROESEXP }
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -63,6 +68,13 @@ public class GiveCommand extends AbstractCommand {
 			}
 
 			// If the argument is XP
+			else if (thisArg.toUpperCase().contains("HEROESEXP")
+					|| thisArg.toUpperCase().contains("HEROES_EXP")) {
+				giveType = GiveType.HEROESEXP;
+				aH.echoDebug("...giving Heroes Quest EXP.");
+			}
+
+			// If the argument is XP
 			else if (thisArg.toUpperCase().contains("XP")
 					|| thisArg.toUpperCase().contains("EXP")) {
 				giveType = GiveType.EXP;
@@ -76,47 +88,56 @@ public class GiveCommand extends AbstractCommand {
 				if (theItem != null)
 					aH.echoDebug("...set item to be given to '%s'.", thisArg);
 			}
-			
+
 			/* Can't match to anything */
 			else aH.echoError("...unable to match '%s'!", thisArg);
 
 		}	
-	
 
-	/* Execute the command, if all required variables are filled. */
-	if (giveType != null) {
 
-		switch (giveType) {
+		/* Execute the command, if all required variables are filled. */
+		if (giveType != null) {
 
-		case MONEY:
-			if (plugin.economy != null) {
-				double doubleAmount = Double.valueOf(theAmount);
-				plugin.economy.depositPlayer(theEntry.getPlayer().getName(), doubleAmount);
-			} else {
-				aH.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");	
-			}
-			return true;
+			switch (giveType) {
 
-		case EXP:
-			theEntry.getPlayer().giveExp(theAmount);
-			return true;			
-			
-		case ITEM:
-			theItem.setAmount(theAmount);
-			HashMap<Integer, ItemStack> leftovers = theEntry.getPlayer().getInventory().addItem(theItem);
-
-			if (!leftovers.isEmpty()) {
-				if (plugin.debugMode)
-					aH.echoDebug("...Player did not have enough space in their inventory, the rest of the items have been placed on the floor.");
-				for (Entry<Integer, ItemStack> leftoverItem : leftovers.entrySet()) {
-					theEntry.getPlayer().getWorld().dropItem(theEntry.getPlayer().getLocation(), leftoverItem.getValue());
+			case MONEY:
+				if (plugin.economy != null) {
+					double doubleAmount = Double.valueOf(theAmount);
+					plugin.economy.depositPlayer(theEntry.getPlayer().getName(), doubleAmount);
+				} else {
+					aH.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");	
 				}
-			}
-			return true;
-			}
-	}
+				return true;
 
-	return false;
-}
+			case EXP:
+				theEntry.getPlayer().giveExp(theAmount);
+				return true;			
+
+			case ITEM:
+				theItem.setAmount(theAmount);
+				HashMap<Integer, ItemStack> leftovers = theEntry.getPlayer().getInventory().addItem(theItem);
+
+				if (!leftovers.isEmpty()) {
+					if (plugin.debugMode)
+						aH.echoDebug("...Player did not have enough space in their inventory, the rest of the items have been placed on the floor.");
+					for (Entry<Integer, ItemStack> leftoverItem : leftovers.entrySet()) {
+						theEntry.getPlayer().getWorld().dropItem(theEntry.getPlayer().getLocation(), leftoverItem.getValue());
+					}
+				}
+				return true;
+
+			case HEROESEXP:
+				if (plugin.getServer().getPluginManager().getPlugin("Heroes") != null) {
+					Heroes heroes = (Heroes) plugin.getServer().getPluginManager().getPlugin("Heroes");
+					Hero theHero = heroes.getCharacterManager().getHero(theEntry.getPlayer());
+					theHero.gainExp(theAmount, ExperienceType.QUESTING, theEntry.getPlayer().getLocation());
+				}
+				else aH.echoError("Could not find Heroes!");
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 }
