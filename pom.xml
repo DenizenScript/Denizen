@@ -94,7 +94,7 @@
 
 	<ciManagement>
 		<system>jenkins</system>
-		<url>http://ci.citizensnpcs.net</url>
+		<url>http://ci.citizensnpcs.com</url>
 	</ciManagement>
 	<scm>
 		<connection>scm:git:git://github.com/aufdemrand/Denizen.git</connection>
@@ -116,5 +116,5 @@
 		</plugins>
 	</build>
 
-	<url>http://wiki.citizensnpcs.net/Denizen</url>
+	<url>http://wiki.citizensnpcs.com/Denizen</url>
 </project>
