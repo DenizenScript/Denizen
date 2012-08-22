@@ -70,7 +70,7 @@ public class GiveCommand extends AbstractCommand {
 			// If the argument is XP
 			else if (thisArg.toUpperCase().contains("HEROESEXP")
 					|| thisArg.toUpperCase().contains("HEROES_EXP")) {
-				giveType = GiveType.EXP;
+				giveType = GiveType.HEROESEXP;
 				aH.echoDebug("...giving Heroes Quest EXP.");
 			}
 
