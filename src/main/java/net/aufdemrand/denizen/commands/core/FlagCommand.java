@@ -28,7 +28,7 @@ public class FlagCommand extends AbstractCommand {
 	 * FLAG 'CUSTOMFLAG:SET'
 	 */
 
-	enum FlagType { VALUE, INC, DEC, BOOLEAN }
+	private enum FlagType { VALUE, INC, DEC, BOOLEAN }
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
