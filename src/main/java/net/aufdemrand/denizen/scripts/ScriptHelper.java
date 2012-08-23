@@ -365,7 +365,48 @@ public class ScriptHelper {
 	/* 
 	 * Builds/Queues ScriptEntry(ies) of items read from a script. 
 	 */
+	
+	// Build scriptEntries for "Task"-type triggers
+	public List<ScriptEntry> buildScriptEntries(Player thePlayer, List<String> theScript, String theScriptName) {
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Building the script:");
+
+		if (theScript == null) {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "...no entries to build!");
+			return null;
+		}
+
+		if (theScript.isEmpty()) {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "...no entries to build!");
+			return null;
+		}
+
+		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
+
+		for (String thisItem : theScript) {
+			String[] scriptEntry = new String[2];
+			if (thisItem.split(" ", 2).length == 1) {
+				scriptEntry[0] = thisItem;
+				scriptEntry[1] = null;
+			} else {
+				scriptEntry = thisItem.split(" ", 2);
+			}
+
+			try {
+				/* Build new script commands */
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command.");
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theScriptName));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return scriptCommands;
+	}
+
+	
+	
+	
+	// Build scriptEntries for "Interact"-type triggers
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
 
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Building the script:");
@@ -403,6 +444,7 @@ public class ScriptHelper {
 
 	}
 
+	// Build ScriptEntries for "Chat"-like Triggers
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep, String playerMessage, String theText) {
 
 		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();

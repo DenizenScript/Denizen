@@ -71,9 +71,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 	public boolean parseClickTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
 		CommandSender cs = Bukkit.getConsoleSender();
-
 		ScriptHelper sE = plugin.getScriptEngine().helper;
-		if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Parsing Click Trigger.");
 
 		/* Get Interact Script, if any. */
 		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
