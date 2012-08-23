@@ -40,7 +40,8 @@ public class FlaggedRequirement extends AbstractRequirement {
 			FlagType flagType = null;
 			Integer flagValue = null;
 			String flagString = null;
-			Boolean exactly = false;
+			boolean exactly = false;
+			boolean global = false;
 
 			/* Get arguments */
 			if (arguments != null) {
@@ -63,6 +64,10 @@ public class FlaggedRequirement extends AbstractRequirement {
 						exactly = true;
 					}
 
+					else if (thisArgument.equalsIgnoreCase("GLOBAL")) {
+						global = true;
+					}
+
 					// Boolean value
 					else {
 						flagType = FlagType.BOOLEAN;
@@ -78,27 +83,53 @@ public class FlaggedRequirement extends AbstractRequirement {
 				switch (flagType) {
 
 				case BOOLEAN:
-					if (plugin.getSaves().contains("Players." + thePlayer.getName() + ".Flags." + flagName)) 
-						if (!plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName).toUpperCase()
-								.equals("FALSE")) outcome = true;
+
+					if (global) {
+						if (plugin.getSaves().contains("Global.Flags." + flagName)) 
+							if (!plugin.getSaves().getString("Global.Flags." + flagName).toUpperCase()
+									.equals("FALSE")) outcome = true;
+					} else {
+						if (plugin.getSaves().contains("Players." + thePlayer.getName() + ".Flags." + flagName)) 
+							if (!plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName).toUpperCase()
+									.equals("FALSE")) outcome = true;
+					}
+
 					break;
 
 				case STRING:
-					if (plugin.getSaves().contains("Players." + thePlayer.getName()+ ".Flags." + flagName)) 
-						if (plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName).toUpperCase()
-								.equalsIgnoreCase(flagString)) outcome = true;
+					if (global) {
+						if (plugin.getSaves().contains("Global.Flags." + flagName)) 
+							if (plugin.getSaves().getString("Global.Flags." + flagName).toUpperCase()
+									.equalsIgnoreCase(flagString)) outcome = true;
+					} else {
+						if (plugin.getSaves().contains("Players." + thePlayer.getName()+ ".Flags." + flagName)) 
+							if (plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName).toUpperCase()
+									.equalsIgnoreCase(flagString)) outcome = true;
+					}
 					break;
 
 				case INTEGER:
-					if (plugin.getSaves().contains("Players." + thePlayer.getName()+ ".Flags." + flagName)) {
-						
-						// Looking for exact number...
-						if (exactly) {
-							if (plugin.getSaves().getInt("Players." + thePlayer.getName()+ ".Flags." + flagName)
-									== (flagValue)) outcome = true;
-						} else { // Looking for more than or equal...
-							if (plugin.getSaves().getInt("Players." + thePlayer.getName()+ ".Flags." + flagName)
-									>= (flagValue)) outcome = true;
+					if (global) {
+						if (plugin.getSaves().contains("Global.Flags." + flagName)) {
+							// Looking for exact number...
+							if (exactly) {
+								if (plugin.getSaves().getInt("Global.Flags." + flagName)
+										== (flagValue)) outcome = true;
+							} else { // Looking for more than or equal...
+								if (plugin.getSaves().getInt("Global.Flags." + flagName)
+										>= (flagValue)) outcome = true;
+							}
+						}
+					} else {
+						if (plugin.getSaves().contains("Players." + thePlayer.getName()+ ".Flags." + flagName)) {
+							// Looking for exact number...
+							if (exactly) {
+								if (plugin.getSaves().getInt("Players." + thePlayer.getName()+ ".Flags." + flagName)
+										== (flagValue)) outcome = true;
+							} else { // Looking for more than or equal...
+								if (plugin.getSaves().getInt("Players." + thePlayer.getName()+ ".Flags." + flagName)
+										>= (flagValue)) outcome = true;
+							}
 						}
 					}
 					break;
