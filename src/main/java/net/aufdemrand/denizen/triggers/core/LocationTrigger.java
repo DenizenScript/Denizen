@@ -145,7 +145,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		CommandSender cs = Bukkit.getConsoleSender();
 
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing location trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
-		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step for '" + theScriptName + "':");
 
 		Integer theStep = sE.getCurrentStep(thePlayer, theScriptName);
 
@@ -153,7 +153,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		boolean noMatch = true;
 		int x = 1;
 
-		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Trying to match Location: " + theLocationName);
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "INFO: Trying to match Location: " + theLocationName);
 		
 		do {
 			foundScript = true;
@@ -166,7 +166,8 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 					x++;
 				}
 			}
-			else if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "Current step does not contain Location Triggers");
+			// Wouldn't this trigger every time?
+			// else if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "Current step does not seem to contain any Location Triggers.");
 				
 		} while (foundScript == false);
 
@@ -175,7 +176,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 			sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep), QueueType.TRIGGER);
 		} 
 		else {
-			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "No matching Triggers found for this Location.");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "No matching Triggers found for this Location. Check spacing in your script, or maybe you have spelled something wrong?");
 			if (plugin.debugMode) {
 				String locationbookmarks = "Available triggers on this NPC: ";
 				boolean hasbookmark = false;

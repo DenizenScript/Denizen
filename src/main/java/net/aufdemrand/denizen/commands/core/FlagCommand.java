@@ -28,7 +28,7 @@ public class FlagCommand extends AbstractCommand {
 	 * FLAG 'CUSTOMFLAG:SET'
 	 */
 
-	enum FlagType { VALUE, INC, DEC, BOOLEAN }
+	private enum FlagType { VALUE, INC, DEC, BOOLEAN }
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -37,6 +37,7 @@ public class FlagCommand extends AbstractCommand {
 		FlagType flagType = null;
 		Integer duration = null;
 		String theValue = null;
+		boolean global = false;
 
 		if (theEntry.arguments() == null)
 			throw new CommandException("...Usage: FLAG [[NAME]:[VALUE]|[NAME]:++|[NAME]:--]");
@@ -48,6 +49,11 @@ public class FlagCommand extends AbstractCommand {
 			if (aH.matchesDuration(thisArg)) {
 				duration = aH.getIntegerModifier(thisArg);
 				aH.echoDebug("...flag will be removed after '&s' seconds.", thisArg);
+			}
+
+			else if (thisArg.toUpperCase().contains("GLOBAL")) {
+				global = true;
+				aH.echoDebug("...this flag will be GLOBAL.");
 			}
 
 			/* If argument is a flag with value */
@@ -87,32 +93,50 @@ public class FlagCommand extends AbstractCommand {
 			}, duration * 20);
 		}
 
-		
+
 		/* Set the flag! */
 		if (flagType != null && theFlag != null) {
 
 			switch (flagType) {
 
 			case INC:
-				int incValue = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, 0) + 1;
-				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, incValue);
+				if (global) {
+					int incValue = plugin.getSaves().getInt("Server.Flags." + theFlag, 0) + 1;
+					plugin.getSaves().set("Server.Flags." + theFlag, incValue);
+				} else {
+					int incValue = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, 0) + 1;
+					plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, incValue);
+				}
 				break;
 
 			case DEC:
-				int decValue = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, 0) - 1;
-				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, decValue);
+				if (global) {
+					int decValue = plugin.getSaves().getInt("Global.Flags." + theFlag, 0) - 1;
+					plugin.getSaves().set("Global.Flags." + theFlag, decValue);
+				} else {
+					int decValue = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, 0) - 1;
+					plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, decValue);
+				}
 				break;
 
 			case VALUE:
-				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, theValue);
+				if (global) {
+					plugin.getSaves().set("Global.Flags." + theFlag, theValue);
+				} else {
+					plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, theValue);
+				}
 				break;
 
 			case BOOLEAN:
-				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, true);
+				if (global) {
+					plugin.getSaves().set("Global.Flags." + theFlag, true);	
+				} else {
+					plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, true);
+				}
 				break;
 
 			}
-			
+
 			plugin.saveSaves();
 			return true;
 		}

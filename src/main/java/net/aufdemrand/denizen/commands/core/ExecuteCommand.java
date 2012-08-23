@@ -69,7 +69,9 @@ public class ExecuteCommand extends AbstractCommand {
 			else {
 				commandtoExecute = thisArg
 						.replace("<PLAYER>", theEntry.getPlayer().getName())
-						.replace("<WORLD>", theEntry.getPlayer().getWorld().getName());
+						.replace("<WORLD>", theEntry.getPlayer().getWorld().getName()
+						.replace("<NPC>", theEntry.getDenizen().getName())
+						.replace("<NPCID>", "" + theEntry.getDenizen().getCitizensEntity().getId()));
 				aH.echoDebug("...command: '%s'", commandtoExecute);
 			}
 

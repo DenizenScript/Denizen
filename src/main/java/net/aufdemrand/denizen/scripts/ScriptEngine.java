@@ -29,7 +29,7 @@ public class ScriptEngine {
 
 	private Denizen plugin;
 	public ScriptHelper helper;
-	
+
 	public ScriptEngine(Denizen denizen) {
 		plugin = denizen;
 		helper = new ScriptHelper(plugin);
@@ -89,7 +89,7 @@ public class ScriptEngine {
 								plugin.getLogger().info("Woah! Bad command! Check syntax...");
 								if (plugin.showStackTraces) e.printStackTrace();
 							}
-						
+
 						} while (instantly);
 					}
 				}
@@ -118,9 +118,9 @@ public class ScriptEngine {
 
 							theEntry.getValue().remove(0);
 							taskQue.put(theEntry.getKey(), theEntry.getValue());
-							
+
 							plugin.executer.execute(theCommand);
-							
+
 						} while (instantly);
 
 					}
@@ -184,7 +184,7 @@ public class ScriptEngine {
 		case TRIGGER:
 			scriptCommandList = triggerQue.get(thePlayer);
 			triggerQue.remove(thePlayer); 
-	     	if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
+			if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
 			if (scriptCommandList.size() == 0) thePosition = 0;
 			scriptCommandList.addAll(thePosition, scriptCommands);
 			triggerQue.put(thePlayer, scriptCommandList);
@@ -203,6 +203,37 @@ public class ScriptEngine {
 		return;
 	}
 
+	/** Injects commands into a QueueType  */
+
+	public void injectToQueue(Player thePlayer, ScriptEntry scriptCommand, QueueType queueType, int thePosition) {
+
+		List<ScriptEntry> scriptCommandList = new ArrayList<ScriptEntry>();
+
+		switch (queueType) {
+
+		case TRIGGER:
+			scriptCommandList = triggerQue.get(thePlayer);
+			triggerQue.remove(thePlayer); 
+			if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
+			if (scriptCommandList.size() == 0) thePosition = 0;
+			scriptCommandList.add(thePosition, scriptCommand);
+			triggerQue.put(thePlayer, scriptCommandList);
+			break;
+
+		case TASK:
+			scriptCommandList = taskQue.get(thePlayer);
+			taskQue.remove(thePlayer); 
+			if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
+			if (scriptCommandList.size() == 0) thePosition = 0;
+			scriptCommandList.add(thePosition, scriptCommand);
+			taskQue.put(thePlayer, scriptCommandList);
+			break;
+		}
+
+		return;
+	}
+
+
 	public void injectToQue(Denizen theDenizen, List<ScriptEntry> scriptCommands, QueueType queueType, int thePosition) {
 
 		/* 
@@ -211,20 +242,20 @@ public class ScriptEngine {
 
 	}
 
-	
+
 	/** Retrieves a QueueType  */
-	
+
 	public Map<Player, List<ScriptEntry>> getQueue(QueueType queueType) {
 
 		switch (queueType) {
 
 		case TRIGGER:
 			return triggerQue;
-		
+
 		case TASK:
 			return taskQue;
 		}
-		
+
 		return null;
 	}
 
@@ -263,7 +294,7 @@ public class ScriptEngine {
 
 	}
 
-	
-	
-	
+
+
+
 }
