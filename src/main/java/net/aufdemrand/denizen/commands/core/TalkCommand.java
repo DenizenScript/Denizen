@@ -83,14 +83,16 @@ public class TalkCommand extends AbstractCommand {
 		}	
 
 
-		if (theDenizen == null) theDenizen = theEntry.getDenizen();
+		if (theDenizen == null && theEntry.getDenizen() != null) theDenizen = theEntry.getDenizen();
 		if (!noPlayer) thePlayer = theEntry.getPlayer();
 
 		/* Execute the command, if all required variables are filled. */
-		if (theMessage != null) {
+		if (theMessage != null && theDenizen != null) {
 			theDenizen.talk(TalkType.valueOf(theEntry.getCommand()), thePlayer, theMessage);
 			return true;
 		}
+		else if (theMessage != null)
+			plugin.getSpeechEngine().talk(null, thePlayer, theMessage, TalkType.valueOf(theEntry.getCommand()));
 
 		return false;
 	}
