@@ -81,7 +81,7 @@ public class WaitCommand extends AbstractCommand {
 	List<ScriptEntry> theList = new ArrayList<ScriptEntry>();
 	ScriptEntry newEntry = null;
 	try {
-		newEntry = new ScriptEntry(theEntry.getCommand(), theEntry.arguments(), theEntry.getPlayer(), theEntry.getDenizen(), theEntry.getScript(), theEntry.getStep());
+		newEntry = new ScriptEntry(theEntry.getCommand(), theEntry.arguments(), theEntry.getPlayer(), theEntry.getScript());
 	} catch (Exception e) {
 		e.printStackTrace();
 	}

@@ -109,7 +109,7 @@ public class ScriptHelper {
 
 	public String getInteractScript(NPC theDenizen, Player thePlayer, Class<? extends AbstractTrigger> theTrigger) {
 
-		this.cs = plugin.getServer().getConsoleSender();
+		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
 		
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Getting interact script: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 
@@ -317,6 +317,8 @@ public class ScriptHelper {
 
 	public List<String> getScript(String triggerPath) {
 
+		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
+		
 		List<String> scriptList = new ArrayList<String>();
 
 		if (plugin.getScripts().contains(triggerPath.replace("..", "."))) {
@@ -368,6 +370,7 @@ public class ScriptHelper {
 
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
 
+		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Building the script:");
 
 		if (theScript == null) {
@@ -405,6 +408,7 @@ public class ScriptHelper {
 
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep, String playerMessage, String theText) {
 
+		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
 		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Building the script:");
@@ -443,6 +447,7 @@ public class ScriptHelper {
 
 	public void queueScriptEntries(Player thePlayer, List<ScriptEntry> scriptEntries, QueueType queueType) {
 
+		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Queueing script to Player Queues:");
 
 		if (scriptEntries == null) {
