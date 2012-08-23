@@ -228,7 +228,7 @@ public class ScriptHelper {
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...found trigger!");
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + " Highest scoring script is " + theScriptName + ".");
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
-					return theScriptName;
+					return theScriptName.replace("^", "");
 				}
 				else {
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...no trigger on this overlay assignment. Skipping.");
