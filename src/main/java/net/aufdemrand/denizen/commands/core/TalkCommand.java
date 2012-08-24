@@ -82,18 +82,26 @@ public class TalkCommand extends AbstractCommand {
 
 		}	
 
-
+		// Set to Denizen carried over by the ScriptEntry, if possible.
 		if (theDenizen == null && theEntry.getDenizen() != null) theDenizen = theEntry.getDenizen();
 		if (!noPlayer) thePlayer = theEntry.getPlayer();
+		
+		// Catch TASK script trying to use CHAT/etc. without setting NPCID.
+		// Exception is using NARRATE, which does NOT need an NPC.
+		if (theDenizen == null && !theEntry.getCommand().equals("NARRATE")) {
+				aH.echoError("Seems this was sent from a TASK-type script. Must specify NPCID:#!");
+				return false;
+		}
 
 		/* Execute the command, if all required variables are filled. */
 		if (theMessage != null && theDenizen != null) {
 			theDenizen.talk(TalkType.valueOf(theEntry.getCommand()), thePlayer, theMessage);
 			return true;
 		}
-		else if (theMessage != null)
-			plugin.getSpeechEngine().talk(null, thePlayer, theMessage, TalkType.valueOf(theEntry.getCommand()));
-
+		
+		else if (theMessage != null && theEntry.getCommand().equals("NARRATE"))
+			plugin.getSpeechEngine().talk(null, thePlayer, theMessage, TalkType.NARRATE);
+		
 		return false;
 	}
 

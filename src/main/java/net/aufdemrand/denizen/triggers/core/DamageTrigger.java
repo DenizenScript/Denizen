@@ -20,13 +20,14 @@ import org.bukkit.EntityEffect;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class DamageTrigger extends AbstractTrigger implements Listener {
 
 	/* Damage Trigger event. Virtually identical to the Click Trigger, for comments, see ClickTrigger.java */
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void damageTrigger(NPCLeftClickEvent event) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;

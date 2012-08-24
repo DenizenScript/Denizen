@@ -70,11 +70,10 @@ public class CastCommand extends AbstractCommand{
 				potionName = aH.getStringModifier(thisArg);
 				aH.echoDebug("...will cast effect '%s'.", thisArg);
 			}
-
 		}	
 
 		if (target == null) {
-			aH.echoError("Could not find target!");
+			aH.echoError("Could not find target! Perhaps you specified a non-existing NPCID?");
 			return false;
 		}
 
@@ -84,7 +83,7 @@ public class CastCommand extends AbstractCommand{
 				target.addPotionEffect(new PotionEffect(PotionEffectType.getByName(potionName), duration * 20, amplitude));
 				return true;
 			} catch (Exception e) {
-				aH.echoError("Invalid potion effect!");
+				aH.echoError("Invalid potion effect! Check syntax.");
 				return false;
 			}
 		}

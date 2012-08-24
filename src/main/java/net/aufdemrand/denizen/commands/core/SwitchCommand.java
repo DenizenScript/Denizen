@@ -45,7 +45,7 @@ public class SwitchCommand extends AbstractCommand {
 		Integer duration = null;
 
 		if (theEntry.arguments() == null)
-			throw new CommandException("...Usage: SWITCH (BOOKMARK:BlockBookmark) (DURATION:#)");
+			throw new CommandException("...Usage: SWITCH [BOOKMARK:block] (DURATION:#)");
 
 		/* Match arguments to expected variables */
 		for (String thisArg : theEntry.arguments()) {
@@ -62,8 +62,8 @@ public class SwitchCommand extends AbstractCommand {
 				else{
 					aH.echoDebug("... could not find block bookmark: '%s'", thisArg);
 					interactLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
-					if (interactLocation != null)	aH.echoDebug("...Found location bookmark matching '%s' using that.", thisArg);
-					else	aH.echoDebug("... could not find any bookmark: '%s'", thisArg);
+					if (interactLocation != null) aH.echoDebug("...Found location bookmark matching '%s' using that.", thisArg);
+					// else	aH.echoDebug("... could not find any bookmark: '%s'", thisArg);
 				}
 
 			}		
@@ -76,36 +76,35 @@ public class SwitchCommand extends AbstractCommand {
 
 		/* Execute the command. */
 
-		if (interactLocation != null) {
-			if (interactLocation.getBlock().getType() == Material.LEVER) {
-				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-				return true;
-			}
-
-			else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
-				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-				return true;
-			}
-
-			else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
-				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-				return true;
-			}
-
-			else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
-				World theWorld = interactLocation.getWorld();
-				net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-				return true;
-			}
-
-			else {
-				aH.echoError("Unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
-			}
+		if (interactLocation == null) {
+			aH.echoError("No interact location specified! Must use BOOKMARK:block to specify a location.");
+			return false;
 		}
 
+		if (interactLocation.getBlock().getType() == Material.LEVER) {
+			World theWorld = interactLocation.getWorld();
+			net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+		}
+
+		else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
+			World theWorld = interactLocation.getWorld();
+			net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+		}
+
+		else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
+			World theWorld = interactLocation.getWorld();
+			net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+		}
+
+		else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
+			World theWorld = interactLocation.getWorld();
+			net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+		}
+
+		else {
+			aH.echoError("Unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");
+			return false;
+		}
 
 		/* Make delayed task to reset step if duration is set */
 		if (duration != null) {
@@ -145,14 +144,11 @@ public class SwitchCommand extends AbstractCommand {
 							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
 						}
 					}
-
 				}
 			}, duration * 20);
 		}
 
-
-
-		return false;
+		return true;
 	}
 
 

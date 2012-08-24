@@ -86,15 +86,19 @@ public class LookCommand extends AbstractCommand {
 				for (Direction thisDirection : Direction.values()) {
 					if (thisArg.toUpperCase().equals(thisDirection.name())) {
 						direction = Direction.valueOf(thisArg);
-						aH.echoDebug("...look direction '%s'.", thisArg);
+						aH.echoDebug("...set look direction '%s'.", thisArg);
 					}
 				}			
 			}
-
-			//////////
-
+			
+			// End Direction
 		}	
 
+		if (theDenizen == null) {
+			aH.echoError("Seems this was sent from a TASK-type script. Must use NPCID:# to specify a Denizen NPC!");
+			return false;
+		}
+		
 		if (theLocation != null) {
 			look(theEntity, theDenizen, direction, duration, theLocation);
 			return true;

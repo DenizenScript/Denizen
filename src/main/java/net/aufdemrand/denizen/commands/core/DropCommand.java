@@ -60,6 +60,12 @@ public class DropCommand extends AbstractCommand {
 				if (theLocation != null)
 					aH.echoDebug("...drop location now at bookmark '%s'", thisArg);
 			}
+			
+			// NPCID argument
+			else if (aH.matchesNPCID(thisArg)) {
+				theLocation = aH.getNPCIDModifier(thisArg).getLocation();
+				if (theLocation !=null)	aH.echoDebug("...now targeting '%s'.", thisArg);
+			}
 
 			// If the argument is XP
 			else if (thisArg.toUpperCase().contains("XP")) {
@@ -79,7 +85,14 @@ public class DropCommand extends AbstractCommand {
 			else aH.echoError("...unable to match '%s'!", thisArg);
 		}	
 
-
+		// Catch TASK-type script usage.
+		if (theLocation == null && theEntry.getDenizen() == null) {
+			aH.echoError("Seems this was sent from a TASK-type script. Must use BOOKMARK:location or NPCID:# to specify a drop location!");
+			return false;
+		}
+		
+		if (theLocation == null) theLocation = theEntry.getDenizen().getLocation();
+		
 		/* Execute the command, if all required variables are filled. */
 		if (dropType != null) {
 
@@ -87,12 +100,10 @@ public class DropCommand extends AbstractCommand {
 
 			case ITEM:
 				theItem.setAmount(theAmount);
-				if (theLocation == null) theLocation = theEntry.getDenizen().getLocation();
 				theEntry.getDenizen().getWorld().dropItemNaturally(theLocation, theItem);
 				return true;
 
 			case EXP:
-				if (theLocation == null) theLocation = theEntry.getDenizen().getLocation();
 				((ExperienceOrb) theEntry.getDenizen().getWorld().spawn(theLocation, ExperienceOrb.class)).setExperience(theAmount);
 				return true;
 			}

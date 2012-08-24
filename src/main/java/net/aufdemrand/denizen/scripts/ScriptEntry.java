@@ -18,16 +18,27 @@ import org.bukkit.entity.Player;
 
 public class ScriptEntry {
 
-	/* String value of the type of command */
+	/* Possible scriptEntry data */
 	private String theCommand; 
+	private Player thePlayer;
+	private String theScript = null;
+	private Integer theStep = null;
+	private DenizenNPC theDenizen = null;
+
+	private QueueType queueType = null;
+	private boolean isInstant = false; 
+	private LivingEntity theEntity = null;
+	private Long[] commandTimes = new Long[2];
+	private String[] playerText = new String[2];
+	private String[] theArguments = new String[0];
 	
+	
+	/* String value of the type of command */
 	public String getCommand() {
 		return theCommand;
 	}
 	
 	/* Boolean representing whether the command is an instant command ("^") */
-	private boolean isInstant; 
-	
 	public boolean isInstant() {
 		return isInstant;
 	}
@@ -37,9 +48,6 @@ public class ScriptEntry {
 	}
 	
 	/* Player or LivingEntity object that represents the triggering entity */
-	private Player thePlayer;
-	private LivingEntity theEntity;
-
 	public Player getPlayer() {
 		return thePlayer;
 	}
@@ -50,22 +58,16 @@ public class ScriptEntry {
 	}
 	
 	/* the NPC Object of the Denizen associated with the command */
-	private DenizenNPC theDenizen;
-	
 	public DenizenNPC getDenizen() {
 		return theDenizen;
 	}
 
 	/* String[] of the trailing arguments after the CommandType from the script entry */
-	private String[] theArguments = new String[0];
-	
 	public String[] arguments() {
 		return theArguments;
 	}
 
 	/* The Script name that triggered the script. */
-	private String theScript = null;
-
 	public String getScript() {
 		return theScript;
 	}
@@ -73,8 +75,6 @@ public class ScriptEntry {
 	/* String[] of the trigger text. 
 	 * [0] is the raw text the player typed to initiate the trigger
 	 * [1] is the 'friendly' matched text as provided by the trigger: */
-	private String[] playerText = new String[2];
-	
 	public String[] getTexts() {
 		return playerText;
 	}
@@ -82,8 +82,6 @@ public class ScriptEntry {
 	/* Long[] currentSystemTimeMillis of the times associated with the script
 	 * [0] contains time added to the queue
 	 * [1] contains the time allowed to trigger */
-	private Long[] commandTimes = new Long[2];
-
 	public Long getDelayedTime() {
 		return commandTimes[1];
 	}
@@ -97,15 +95,11 @@ public class ScriptEntry {
 	}
 	
 	/* Integer of theStep */ 
-	private Integer theStep = null;
-	
 	public Integer getStep() {
 		return theStep;
 	}
 	
 	/* QueueType */ 
-	private QueueType queueType = null;
-	
 	public QueueType sendingQueue() {
 		return queueType;
 	}
@@ -115,13 +109,15 @@ public class ScriptEntry {
 	}
 	
 	
+	
 	/**
-	 * Creates a ScriptCommand (For use with a CHAT Trigger)
+	 * Creates a ScriptEntry (For use with a CHAT-like Trigger)
 	 */
 
-	public ScriptEntry(String commandType, String[] arguments, Player player, DenizenNPC denizen, String script, Integer step, String theMessage, String formattedText) throws Exception {
+	public ScriptEntry(String commandType, String[] arguments, Player player, DenizenNPC denizen, String script, Integer step, String theMessage, String formattedText) throws ScriptException {
 
-		if (player == null || denizen == null || script == null) throw new Exception("Values cannot be null!");
+		if (commandType == null || player == null) throw new ScriptException("CommandType and Player cannot be null!");
+
 
 		if (commandType.startsWith("^")) {
 			isInstant = true;
@@ -145,12 +141,12 @@ public class ScriptEntry {
 
 	
 	/**
-	 * Creates a ScriptCommand (for use with a CLICK/DAMAGE Trigger)
+	 * Creates a ScriptEntry (for use with a CLICK-like Trigger)
 	 */
 
-	public ScriptEntry(String commandType, String[] arguments, Player player, DenizenNPC denizen, String script, Integer step) throws Exception {
+	public ScriptEntry(String commandType, String[] arguments, Player player, DenizenNPC denizen, String script, Integer step) throws ScriptException {
 
-		if (player == null || denizen == null || script == null || step == null) throw new Exception("Values cannot be null!");
+		if (commandType == null || player == null) throw new ScriptException("CommandType and Player cannot be null!");
 
 		if (commandType.startsWith("^")) {
 			isInstant = true;
@@ -171,12 +167,12 @@ public class ScriptEntry {
 
 	
 	/**
-	 * Creates a ScriptCommand (for use with a TASK Trigger)
+	 * Creates a ScriptEntry (for use with a TASK-like Trigger)
 	 */
 
 	public ScriptEntry(String commandType, String[] arguments, Player player, String script) throws ScriptException {
 
-		if (player == null || script == null) throw new ScriptException("Values cannot be null!");
+		if (commandType == null || player == null) throw new ScriptException("CommandType and Player cannot be null!");
 
 		if (commandType.startsWith("^")) {
 			isInstant = true;
@@ -187,6 +183,29 @@ public class ScriptEntry {
 		theArguments = arguments;
 		thePlayer = player;
 		theScript = script;
+
+		commandTimes[0] = System.currentTimeMillis();
+		commandTimes[1] = commandTimes[0];
+	}
+	
+	
+	
+	/**
+	 * Creates a ScriptEntry with the bare minimum (Player, commandType, and arguments)
+	 */
+
+	public ScriptEntry(String commandType, String[] arguments, Player player) throws ScriptException {
+
+		if (commandType == null || player == null) throw new ScriptException("CommandType and Player cannot be null!");
+
+		if (commandType.startsWith("^")) {
+			isInstant = true;
+			commandType = commandType.substring(1);
+		}
+		
+		theCommand = commandType;
+		theArguments = arguments;
+		thePlayer = player;
 
 		commandTimes[0] = System.currentTimeMillis();
 		commandTimes[1] = commandTimes[0];

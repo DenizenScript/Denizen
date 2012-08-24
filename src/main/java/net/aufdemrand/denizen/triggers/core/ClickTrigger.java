@@ -17,12 +17,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class ClickTrigger extends AbstractTrigger implements Listener {
 
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void clickTrigger(NPCRightClickEvent event) {
 
 		if (!plugin.getDenizenNPCRegistry().isDenizenNPC(event.getNPC()))

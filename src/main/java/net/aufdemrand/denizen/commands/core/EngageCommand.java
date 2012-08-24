@@ -66,6 +66,12 @@ public class EngageCommand extends AbstractCommand {
 				else aH.echoError("...unable to match '%s'!", thisArg);
 			}	
 		}
+		
+		// Catch TASK-type script usage.
+		if (theDenizen == null) {
+			aH.echoError("Seems this was sent from a TASK-type script. Must use NPCID:# to specify a Denizen NPC!");
+			return false;
+		}
 
 		/* If a DISENGAGE, take the Denizen out of the engagedList. */
 		if (theEntry.getCommand().equalsIgnoreCase("DISENGAGE")) {
