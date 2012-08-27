@@ -162,9 +162,11 @@ public class ScriptHelper {
 						if (checkCooldown(thePlayer, script)) {
 							// Cooldown is good, add script!
 							interactableScripts.add(new PriorityPair(priority, scriptAssignment.split(" ", 2)[1]));
+							if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "|");
 						} else {
 							// Cooldown failed, alert console!
 							if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "|" + ChatColor.WHITE + " ...but, isn't cooled down, yet! Skipping.");
+							if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "|");
 						}
 
 					} else {
@@ -176,6 +178,7 @@ public class ScriptHelper {
 
 					// Does not meet requirements, alert the console!
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE +  "| " + ChatColor.WHITE + "'" + scriptAssignment + "' does not meet requirements.");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "|");
 				}
 
 			} catch (RequirementMissingException e) {
@@ -183,6 +186,7 @@ public class ScriptHelper {
 				// Had a problem checking requirements, most likely a Legacy Requirement with bad
 				// syntax. Alert the console!
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "'" + scriptAssignment + "' has a bad requirement, skipping.");
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "|");
 			}
 
 		}
@@ -295,7 +299,8 @@ public class ScriptHelper {
 		matchList.toArray(split);
 
 		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
-		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GRAY +  Arrays.toString(split));
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GRAY + "Args: " + Arrays.toString(split));
+	
 
 		return split;
 	}
@@ -368,6 +373,7 @@ public class ScriptHelper {
 	// Build scriptEntries for "Task"-type triggers
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, List<String> theScript, String theScriptName) {
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| ");
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Building the script:");
 
 		if (theScript == null) {

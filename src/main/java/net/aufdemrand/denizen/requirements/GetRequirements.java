@@ -79,29 +79,23 @@ public class GetRequirements {
 			if (plugin.getRequirementRegistry().listRequirements().containsKey(requirementEntry.split(" ")[0].toUpperCase())) {
 
 				if (!negativeRequirement) {
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...checking Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Checking Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'");
 				} else {
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...checking NEGATIVE Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Checking NEGATIVE Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'");
 				}
 
 				if (plugin.getRequirementRegistry().getRequirement(requirementEntry.split(" ")[0].toUpperCase()).check((Player) theEntity, theDenizen, theScript, plugin.getScriptEngine().helper.buildArgs(requirementEntry.split(" ", 2)[1]), negativeRequirement)) {
 					numberMet++;
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "   OKAY! " + ChatColor.WHITE + "Requirement met!");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "" + ChatColor.WHITE + "Requirement met!");
 				}
 				else {
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "    NOPE! " + ChatColor.WHITE + "Requirement not met!");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "" + ChatColor.WHITE + "Requirement not met!");
 				}
 			}
 
 			else { // Legacy Requirements
 
 				int temp = numberMet;
-
-				if (!negativeRequirement) { 
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...checking LEGACY Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'.");
-				} else {
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...checking LEGACY NEGATIVE Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'.");
-				}
 
 				String[] arguments = new String[25];
 				String[] argumentPopulator = requirementEntry.split(" ");
@@ -211,11 +205,21 @@ public class GetRequirements {
 					throw new RequirementMissingException(e.getMessage());
 				}
 
-				if (numberMet == temp) {
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "   NOPE! " + ChatColor.WHITE + "Requirement not met!");
+				String debugger = "";
+				
+				if (!negativeRequirement) { 
+					if (plugin.debugMode) debugger = debugger + "Checking LEGACY Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'... ";
 				} else {
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "   OKAY! " + ChatColor.WHITE + "Requirement met!");
+					if (plugin.debugMode)  debugger = debugger + "Checking LEGACY NEGATIVE Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'... ";
 				}
+
+				if (numberMet == temp) {
+					if (plugin.debugMode) debugger = debugger + "requirement not met!";
+				} else {
+					if (plugin.debugMode) debugger = debugger + "requirement met!";
+				}
+				
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + debugger);
 
 			}
 		}
