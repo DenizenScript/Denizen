@@ -115,7 +115,8 @@ public class ArgumentHelper {
 
 			if (m2.matches()) {
 				theItem = new ItemStack(Integer.valueOf(thisArg.split(":")[0]));
-				theItem.setData(new MaterialData(Integer.valueOf(thisArg.split(":")[1])));
+				// theItem.setData(new MaterialData(Integer.valueOf(thisArg.split(":")[1])));
+				theItem.setDurability(Short.valueOf(thisArg.split(":")[1]));
 			}
 
 			if (m3.matches()) {
@@ -124,7 +125,8 @@ public class ArgumentHelper {
 
 			if (m4.matches()) {
 				theItem = new ItemStack(Material.valueOf(thisArg.split(":")[0].toUpperCase()));
-				theItem.setData(new MaterialData(Integer.valueOf(thisArg.split(":")[1])));
+				// theItem.setData(new MaterialData());
+				theItem.setDurability(Short.valueOf(thisArg.split(":")[1]));
 			}
 
 		} catch (Exception e) {
