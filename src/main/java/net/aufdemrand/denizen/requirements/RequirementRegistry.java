@@ -7,6 +7,7 @@ import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.requirements.core.FlaggedRequirement;
+import net.aufdemrand.denizen.requirements.core.HeroesRequirement;
 import net.aufdemrand.denizen.requirements.core.LiquidRequirement;
 import net.aufdemrand.denizen.requirements.core.PoweredRequirement;
 
@@ -53,10 +54,12 @@ public class RequirementRegistry {
 		FlaggedRequirement flaggedRequirement = new FlaggedRequirement();
 		PoweredRequirement poweredRequirement = new PoweredRequirement();
 		LiquidRequirement liquidRequirement = new LiquidRequirement();
+		HeroesRequirement heroesRequirement = new HeroesRequirement();
 		
 		plugin.getLogger().info("Loading LEGACY requirements...DONE!");
 		
 		try {
+			heroesRequirement.activateAs("HEROESCLASS");
 			flaggedRequirement.activateAs("FLAGGED");
 			poweredRequirement.activateAs("ISPOWERED");
 			liquidRequirement.activateAs("ISLIQUID");
