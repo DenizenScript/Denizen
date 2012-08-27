@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.activities;
 import java.rmi.activation.ActivationException;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.commands.ArgumentHelper;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 
 import org.bukkit.Bukkit;
@@ -11,6 +12,8 @@ public abstract class AbstractActivity {
 
 	protected Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 	public String activityName;
+	
+	public ArgumentHelper aH = plugin.getCommandRegistry().getArgumentHelper();
 		
 	/* Activates the command class as a Denizen Command. Should be called on startup. */
 	

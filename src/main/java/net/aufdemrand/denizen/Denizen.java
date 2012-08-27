@@ -136,8 +136,8 @@ public class Denizen extends JavaPlugin {
 		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			@Override public void run() { activityEngine.scheduleScripts(); }
-		}, 1, 1000);
+			@Override public void run() { activityEngine.scheduleScripts(false); }
+		}, 1, 600);
 
 		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			@Override public void run() { bookmarks.buildLocationTriggerList(); }

@@ -86,10 +86,10 @@ public class GetRequirements {
 
 				if (plugin.getRequirementRegistry().getRequirement(requirementEntry.split(" ")[0].toUpperCase()).check((Player) theEntity, theDenizen, theScript, plugin.getScriptEngine().helper.buildArgs(requirementEntry.split(" ")[1]), negativeRequirement)) {
 					numberMet++;
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + "Requirement met!");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "   OKAY! " + ChatColor.WHITE + "Requirement met!");
 				}
 				else {
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "NOPE! " + ChatColor.WHITE + "Requirement not met!");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "    NOPE! " + ChatColor.WHITE + "Requirement not met!");
 				}
 			}
 
@@ -212,9 +212,9 @@ public class GetRequirements {
 				}
 
 				if (numberMet == temp) {
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "NOPE! " + ChatColor.WHITE + "Requirement not met!");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "   NOPE! " + ChatColor.WHITE + "Requirement not met!");
 				} else {
-					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + "Requirement met!");
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "   OKAY! " + ChatColor.WHITE + "Requirement met!");
 				}
 
 			}

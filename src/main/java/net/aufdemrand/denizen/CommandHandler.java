@@ -43,7 +43,8 @@ public class CommandHandler {
 			plugin.reloadAssignments();
 			plugin.reloadSaves();
 			plugin.bookmarks.buildLocationTriggerList();
-			sender.sendMessage("Denizens/config.yml, scripts, and assignments.yml reloaded.");
+			plugin.getActivityEngine().scheduleScripts(true);
+			sender.sendMessage(ChatColor.GREEN + "config.yml, saves.yml, assignments.yml, scripts reloaded, and activities reset.");			sender.sendMessage("Denizens/config.yml, scripts, and assignments.yml reloaded.");
 			return true;
 		}
 
@@ -201,6 +202,9 @@ public class CommandHandler {
 				return true;
 			}
 		}
+		
+		
+		
 
 		if (args[0].equalsIgnoreCase("stacktrace"))  {
 
@@ -217,7 +221,6 @@ public class CommandHandler {
 			}
 		}
 		
-		
 		if (args[0].equalsIgnoreCase("save")) {
 			plugin.saveSaves();
 			player.sendMessage(ChatColor.GREEN + "denizens.yml saved.");
@@ -229,10 +232,12 @@ public class CommandHandler {
 			plugin.reloadConfig();
 			plugin.reloadScripts();
 			plugin.reloadAssignments();
-			player.sendMessage(ChatColor.GREEN + "config.yml, assignments.yml and scripts reloaded.");
+			plugin.bookmarks.buildLocationTriggerList();
+			plugin.getActivityEngine().scheduleScripts(true);
+			player.sendMessage(ChatColor.GREEN + "config.yml, saves.yml, assignments.yml, scripts reloaded, and activities reset.");
 			return true;
 		}
-
+		
 		if (args[0].equalsIgnoreCase("version")) {
 			player.sendMessage(ChatColor.GREEN + plugin.utilities.getVersionString());
 			return true;
@@ -262,11 +267,11 @@ public class CommandHandler {
 			return true;
 		}
 					
-
-		if (args[0].equalsIgnoreCase("schedule")) {
+		if (args[0].equalsIgnoreCase("reschedule")) {
 			plugin.getSaves().set("Denizen." + theNPC.getName() + ".Active Activity Script", null);
-			plugin.getActivityEngine().scheduleScripts();
-			player.sendMessage(ChatColor.GREEN + "Reset activities for " + theNPC.getName() + " and rescheduled.");
+			plugin.getActivityEngine().scheduleScripts(false);
+			plugin.getSaves().set("Denizens." + theNPC.getName() + "." + theNPC.getId() + ".Active Activity Script", null);
+			player.sendMessage(ChatColor.GREEN + "Reset activities for " + theNPC.getName() + "/" + theNPC.getId() + " and rescheduled.");
 			return true;
 		}
 

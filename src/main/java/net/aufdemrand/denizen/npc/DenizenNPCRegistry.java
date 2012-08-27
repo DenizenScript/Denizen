@@ -13,7 +13,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
@@ -21,7 +20,7 @@ import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.npc.NPC;
 
-public class DenizenNPCRegistry implements Listener {
+public class DenizenNPCRegistry {
 
 	private Map<NPC, DenizenNPC> denizenNPCs = new ConcurrentHashMap<NPC, DenizenNPC>();
 
@@ -237,6 +236,7 @@ public class DenizenNPCRegistry implements Listener {
 
 		thePlayer.sendMessage(ChatColor.GRAY + "C2 NPCID: " + ChatColor.GREEN + theDenizen.getId() + ChatColor.GRAY + "   Name: " + ChatColor.GREEN + theDenizen.getName() + ChatColor.GRAY + "   HPs: " + ChatColor.GREEN + theDenizen.getEntity().getHealth());
 		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen setname" + ChatColor.GRAY + " to change the Denizen's name.");
+		thePlayer.sendMessage(ChatColor.GRAY + "PF RANGE: " + ChatColor.GREEN + theDenizen.getNavigator().getLocalParameters().range());
 		thePlayer.sendMessage("");
 
 		thePlayer.sendMessage(ChatColor.GRAY + "Trigger Status:");

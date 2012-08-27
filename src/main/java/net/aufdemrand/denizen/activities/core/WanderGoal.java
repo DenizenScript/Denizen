@@ -6,10 +6,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.event.EventHandler;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.ai.Goal;
 import net.citizensnpcs.api.ai.GoalSelector;
+import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 
 
 public class WanderGoal implements Goal {
@@ -23,9 +25,9 @@ public class WanderGoal implements Goal {
 	final int delay;
 	final float speed;
 	final World world;
-	Boolean distracted = false;
 	final ArrayList<Material> materials;
 	WanderActivity wA;
+
 	
 	WanderGoal(DenizenNPC npc, Integer radius, Integer delay, float speed, ArrayList<Material> materials, Location bookmark, WanderActivity wA) {
 		this.materials = materials;
@@ -50,21 +52,37 @@ public class WanderGoal implements Goal {
 		this.wanderLocation = wA.getNewLocation(X, Y, Z, world, radius);
 	}
 
+	
 	@Override
 	public void reset() {
+		// Reset cooldown.
+		// wA.cooldown(denizenNPC, 0);
 	}
 
+	
+	@EventHandler
+	public void navComplete(NavigationCompleteEvent event) {
+		if (event.getNavigator().getTargetAsLocation() == wanderLocation)
+			wA.cooldown(denizenNPC, delay);
+	}
+
+	
 	@Override
 	public void run(GoalSelector goalSelecter) {
 		if (wanderLocation != null) {
+
+			if (denizenNPC.getNavigator().getLocalParameters().range() < ((float) radius * 2)) {
+				denizenNPC.getNavigator().setPathfindingRange(((float) radius * 2 + 10));
+				wA.aH.echoDebug("Pathfinding range now: " + denizenNPC.getNavigator().getPathfindingRange());
+			}
 			
 			// If already navigating, nothing to do here...
 			if (denizenNPC.getNavigator().isNavigating()) {
 				return; }
-			
+
 			// If not already navigating.. let's find a new block to navigate to.
 			else {
-				denizenNPC.getNavigator().setSpeed(speed);
+				denizenNPC.getNavigator().getDefaultParameters().speed(speed);
 				wanderLocation = wA.getNewLocation(X, Y, Z, world, radius);
 
 				if (!materials.isEmpty()) {
@@ -73,24 +91,18 @@ public class WanderGoal implements Goal {
 						if (wanderLocation.getBlock().getType() == acceptableMaterial) move = true;
 					}
 					
-					if (move) {
-						wA.cooldown(denizenNPC, delay);
-						denizenNPC.getNavigator().setTarget(wanderLocation);
-					}
-				
+					if (move) denizenNPC.getNavigator().setTarget(wanderLocation);
 					goalSelecter.finish();
 
 				} else {
-					wA.cooldown(denizenNPC, delay);
 					denizenNPC.getNavigator().setTarget(wanderLocation);
-
 					goalSelecter.finish();
 				}
 			}
-		} else 
-			Bukkit.getLogger().info("Oh no! wanderLocation went null! Report this to aufdemrand.");
+		} 
 	}
 
+	
 	@Override
 	public boolean shouldExecute(GoalSelector arg0) {
 		return (wA.isCool(denizenNPC));

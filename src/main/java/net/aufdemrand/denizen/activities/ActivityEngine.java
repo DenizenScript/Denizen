@@ -2,37 +2,37 @@ package net.aufdemrand.denizen.activities;
 
 import java.util.List;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.commands.core.PauseCommandRunnable;
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.npc.DenizenTrait;
-import net.citizensnpcs.api.event.NPCSpawnEvent;
-import net.citizensnpcs.api.npc.NPC;
 
-public class ActivityEngine implements Listener {
+public class ActivityEngine {
 
 	Denizen plugin;
+	CommandSender cs = null;
 
 	public ActivityEngine(Denizen denizen) {
 		this.plugin = denizen;
 	}
 
 
-	/* Schedules activity scripts to Denizens based on their schedule defined in the config.
-	 * Runs every Minecraft hour. 
+	/* 
+	 * Schedules activity scripts to Denizens based on their schedule defined in the config.
+	 * Runs every 30 seconds, but can only schedule on the per Minecraft hour. 
 	 * 
-	 * This will be the backbone to automated activity scripts. Currently this is not used
-	 * any further than what's in this method, but will be built upon soon.	 */
+     */
 
-	public void scheduleScripts() {
-
+	public void scheduleScripts(boolean forceable) {
+		
 		if (plugin.getDenizenNPCRegistry().getDenizens().isEmpty()) return;
 
 		for (DenizenNPC theDenizen : plugin.getDenizenNPCRegistry().getDenizens().values()) {
 
+			if (forceable) plugin.getSaves().set("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Active Activity Script", null);
+			if (forceable) plugin.getActivityRegistry().removeAllActivities(theDenizen.getCitizensEntity());
+			
 			// No need to set activities for un-spawned Denizens.
 			if (!theDenizen.isSpawned())
 				continue;
@@ -47,32 +47,33 @@ public class ActivityEngine implements Listener {
 				continue;
 
 			// See if any activities match the time.
+			
 			for (String activity : denizenActivities) {
 				if (activity.startsWith(String.valueOf(denizenTime))) {
 					String activityScript = activity.split(" ", 2)[1];
 
-					setActivityScript(theDenizen, activityScript);
-
+					if (!plugin.getSaves().contains("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Active Activity Script"))
+						setActivityScript(theDenizen, activityScript);
+						
+					else if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Active Activity Script").toUpperCase().equals(activityScript.toUpperCase()))
+						setActivityScript(theDenizen, activityScript);
+					
 				}
 			}
-
 		}
 	}
 	
 	
-	@EventHandler
-	public void scheduleonspawn(NPCSpawnEvent event) {
-
-	}
-
-
 	public void setActivityScript(DenizenNPC theDenizen, String activityScript) {
+		
+		if (cs == null) cs = plugin.getServer().getConsoleSender();
 
-		if (plugin.debugMode) plugin.getLogger().info("Updating activity Script for" + theDenizen.getName());
-		plugin.getSaves().set("Denizens." + theDenizen.getName() + ".Active Activity Script", activityScript);
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Updating activity: " + theDenizen.getName() + "/" + theDenizen.getId() + " --------+");
+
+		plugin.getSaves().set("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Active Activity Script", activityScript);
 
 		if (!plugin.getScripts().contains(activityScript + ".Activities.List")) {
-			plugin.getLogger().info("Tried to load the Activity Script '" + activityScript + "', but it couldn't be found. Perhaps something is spelled wrong, or the script doesn't exist?");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "Tried to load the Activity Script '" + activityScript + "', but it couldn't be found. Perhaps something is spelled wrong, or the script doesn't exist?");
 			return;
 		}
 
@@ -86,6 +87,7 @@ public class ActivityEngine implements Listener {
 			plugin.getActivityRegistry().addActivity(activity, theDenizen.getCitizensEntity(), arguments, priority);
 		}
 
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 		// Cool!
 
 	}

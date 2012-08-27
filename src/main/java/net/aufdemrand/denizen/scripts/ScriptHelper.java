@@ -294,6 +294,7 @@ public class ScriptHelper {
 		String[] split = new String[matchList.size()];
 		matchList.toArray(split);
 
+		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GRAY +  Arrays.toString(split));
 
 		return split;
