@@ -1,14 +1,17 @@
 package net.aufdemrand.denizen.requirements;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.commands.core.FailCommand;
 import net.aufdemrand.denizen.commands.core.FinishCommand;
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -28,6 +31,7 @@ public class GetRequirements {
 
 
 	private Denizen plugin;
+	private CommandSender cs;
 
 	public GetRequirements(Denizen denizen) {
 		plugin = denizen;
@@ -40,7 +44,7 @@ public class GetRequirements {
 
 
 
-	public boolean check(String theScript, LivingEntity theEntity, boolean isPlayer) throws RequirementMissingException {
+	public boolean check(String theScript, DenizenNPC theDenizen, LivingEntity theEntity, boolean isPlayer) throws RequirementMissingException {
 
 		String requirementMode = plugin.getScripts().getString(theScript + ".Requirements.Mode");
 		List<String> requirementList = plugin.getScripts().getStringList(theScript + ".Requirements.List");
@@ -49,9 +53,11 @@ public class GetRequirements {
 		int numberMet = 0; 
 		boolean negativeRequirement;
 
+		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
+
 		/* Requirements list null? This script is probably named wrong, or doesn't exist! */
 		if (requirementList == null || requirementMode == null) {
-			if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...no requirements found! This script may be named incorrectly, or simply doesn't exist!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE  + "No requirements found! This script may be named incorrectly, or simply doesn't exist!");
 			return false;
 		}
 
@@ -71,12 +77,31 @@ public class GetRequirements {
 			// Check requirement with RequirementRegistry
 
 			if (plugin.getRequirementRegistry().listRequirements().containsKey(requirementEntry.split(" ")[0].toUpperCase())) {
-				if (plugin.getRequirementRegistry().getRequirement(requirementEntry.split(" ")[0].toUpperCase())
-						.check(theEntity, theScript, plugin.getScriptEngine().helper.buildArgs(requirementEntry.split(" ")[1]), negativeRequirement))
+
+				if (!negativeRequirement) {
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...checking Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'");
+				} else {
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...checking NEGATIVE Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'");
+				}
+
+				if (plugin.getRequirementRegistry().getRequirement(requirementEntry.split(" ")[0].toUpperCase()).check((Player) theEntity, theDenizen, theScript, plugin.getScriptEngine().helper.buildArgs(requirementEntry.split(" ")[1]), negativeRequirement)) {
 					numberMet++;
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + "Requirement met!");
+				}
+				else {
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "NOPE! " + ChatColor.WHITE + "Requirement not met!");
+				}
 			}
 
 			else { // Legacy Requirements
+
+				int temp = numberMet;
+
+				if (!negativeRequirement) { 
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...checking LEGACY Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'.");
+				} else {
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...checking LEGACY NEGATIVE Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'.");
+				}
 
 				String[] arguments = new String[25];
 				String[] argumentPopulator = requirementEntry.split(" ");
@@ -162,7 +187,7 @@ public class GetRequirements {
 						break;
 
 					case GROUP:
-						List<String> theGroups = new LinkedList<String>(); // = Arrays.asList(arguments);
+						List<String> theGroups = new ArrayList<String>(); // = Arrays.asList(arguments);
 						for(String arg : arguments) if (arg != null) theGroups.add(arg);
 						theGroups.remove(0);   /* Remove the command from the list */
 						if (plugin.getPlayer.checkGroups((Player) theEntity, theGroups, negativeRequirement)) numberMet++;
@@ -186,8 +211,13 @@ public class GetRequirements {
 					throw new RequirementMissingException(e.getMessage());
 				}
 
-			}
+				if (numberMet == temp) {
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "NOPE! " + ChatColor.WHITE + "Requirement not met!");
+				} else {
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + "Requirement met!");
+				}
 
+			}
 		}
 
 		/* Check numberMet */	
@@ -202,12 +232,11 @@ public class GetRequirements {
 				if (numberMet >= Integer.parseInt(ModeArgs[1])) return true;
 			}
 		}
-		
+
 		/* Nothing met, return FALSE */	
 		return false;
 
 	}
-
 
 
 

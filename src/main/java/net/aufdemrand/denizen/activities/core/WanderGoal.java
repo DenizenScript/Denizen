@@ -26,8 +26,7 @@ public class WanderGoal implements Goal {
 	Boolean distracted = false;
 	final ArrayList<Material> materials;
 	WanderActivity wA;
-	private GoalSelector goalSelecter;
-
+	
 	WanderGoal(DenizenNPC npc, Integer radius, Integer delay, float speed, ArrayList<Material> materials, Location bookmark, WanderActivity wA) {
 		this.materials = materials;
 		this.denizenNPC = npc;
@@ -56,7 +55,7 @@ public class WanderGoal implements Goal {
 	}
 
 	@Override
-	public void run() {
+	public void run(GoalSelector goalSelecter) {
 		if (wanderLocation != null) {
 			
 			// If already navigating, nothing to do here...
@@ -94,8 +93,6 @@ public class WanderGoal implements Goal {
 
 	@Override
 	public boolean shouldExecute(GoalSelector arg0) {
-		this.goalSelecter = arg0;
 		return (wA.isCool(denizenNPC));
 	}
-
 }

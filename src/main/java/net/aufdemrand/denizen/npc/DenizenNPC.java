@@ -98,7 +98,7 @@ public class DenizenNPC {
 
 
 	public String getInteractScript(Player thePlayer, Class<? extends AbstractTrigger> triggerType) {
-		return sE.getInteractScript(citizensNPC, thePlayer, triggerType);
+		return sE.getInteractScript(this, thePlayer, triggerType);
 	}
 
 

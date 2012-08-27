@@ -36,10 +36,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.herocraftonline.heroes.Heroes;
+
 public class Denizen extends JavaPlugin {
 
 	public Economy   economy = null;
 	public Permission  perms = null;
+	public Heroes heroes = null;
 
 	private CommandRegistry commandRegistry = new CommandRegistry(this);
 	private TriggerRegistry triggerRegistry = new TriggerRegistry(this);
@@ -52,9 +55,9 @@ public class Denizen extends JavaPlugin {
 	private ActivityEngine activityEngine = new ActivityEngine(this);
 
 	public Executer         executer = new Executer(this);
-	public BookmarkHelper             bookmarks = new BookmarkHelper(this);
-	public Utilities			 utilities = new Utilities(this);
-	public Settings               settings = new Settings(this);
+	public BookmarkHelper  bookmarks = new BookmarkHelper(this);
+	public Utilities	   utilities = new Utilities(this);
+	public Settings         settings = new Settings(this);
 
 	public GetPlayer             getPlayer = new GetPlayer(this);
 	public GetRequirements getRequirements = new GetRequirements(this);
@@ -110,6 +113,11 @@ public class Denizen extends JavaPlugin {
 		if (!setupEconomy() || !setupPermissions())
 			getLogger().log(Level.SEVERE, "No permissions an/or economy system found! Some commands may produce errors!");
 
+		if (getServer().getPluginManager().getPlugin("Heroes") != null) {
+			getLogger().log(Level.INFO, "Found HEROES, you can use Heroes-specific commands!");
+			this.heroes = (Heroes) getServer().getPluginManager().getPlugin("Heroes");
+		}
+		
 		/* Load YAML files into memory */
 		reloadConfig();
 		reloadScripts();

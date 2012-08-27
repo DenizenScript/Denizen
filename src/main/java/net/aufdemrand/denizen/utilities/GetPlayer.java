@@ -500,8 +500,9 @@ public class GetPlayer {
 
 		for (String theGroup : theGroups) {
 				if (theGroup != null) {
-					if (plugin.perms.playerInGroup(thePlayer, theGroup)
-							|| plugin.perms.playerInGroup((World) null, thePlayer.getName(), theGroup)) outcome = true;
+					if (plugin.perms.playerInGroup(thePlayer, theGroup)) outcome = true;
+					if (plugin.perms.playerInGroup((World) null, thePlayer.getName(), theGroup)) outcome = true;
+					if (plugin.perms.playerInGroup(thePlayer.getWorld(), thePlayer.getName(), theGroup)) outcome = true;
 				}
 		}	
 

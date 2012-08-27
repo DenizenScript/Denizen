@@ -7,6 +7,8 @@ import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.requirements.core.FlaggedRequirement;
+import net.aufdemrand.denizen.requirements.core.LiquidRequirement;
+import net.aufdemrand.denizen.requirements.core.PoweredRequirement;
 
 public class RequirementRegistry {
 
@@ -49,11 +51,15 @@ public class RequirementRegistry {
 	public void registerCoreRequirements() {
 
 		FlaggedRequirement flaggedRequirement = new FlaggedRequirement();
+		PoweredRequirement poweredRequirement = new PoweredRequirement();
+		LiquidRequirement liquidRequirement = new LiquidRequirement();
 		
 		plugin.getLogger().info("Loading LEGACY requirements...DONE!");
 		
 		try {
 			flaggedRequirement.activateAs("FLAGGED");
+			poweredRequirement.activateAs("ISPOWERED");
+			liquidRequirement.activateAs("ISLIQUID");
 		} catch (ActivationException e) {
 			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core requirements!");
 			e.printStackTrace();

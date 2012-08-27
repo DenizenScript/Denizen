@@ -127,9 +127,8 @@ public class GiveCommand extends AbstractCommand {
 				return true;
 
 			case HEROESEXP:
-				if (plugin.getServer().getPluginManager().getPlugin("Heroes") != null) {
-					Heroes heroes = (Heroes) plugin.getServer().getPluginManager().getPlugin("Heroes");
-					Hero theHero = heroes.getCharacterManager().getHero(theEntry.getPlayer());
+				if (plugin.heroes != null) {
+					Hero theHero = plugin.heroes.getCharacterManager().getHero(theEntry.getPlayer());
 					theHero.gainExp(theAmount, ExperienceType.QUESTING, theEntry.getPlayer().getLocation());
 				}
 				else aH.echoError("Could not find Heroes!");

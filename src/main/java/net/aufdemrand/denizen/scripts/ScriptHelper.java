@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,16 +18,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.core.EngageCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.triggers.AbstractTrigger;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
@@ -107,7 +103,7 @@ public class ScriptHelper {
 	// Gets the InteractScript from a NPC Denizen for a Player and returns the appropriate Script.
 	// Returns null if no script found.
 
-	public String getInteractScript(NPC theDenizen, Player thePlayer, Class<? extends AbstractTrigger> theTrigger) {
+	public String getInteractScript(DenizenNPC theDenizen, Player thePlayer, Class<? extends AbstractTrigger> theTrigger) {
 
 		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
 		
@@ -134,7 +130,7 @@ public class ScriptHelper {
 			theEntity = (LivingEntity) thePlayer;
 			isPlayer = true;
 		}
-		else theEntity = theDenizen.getBukkitEntity();
+		else theEntity = theDenizen.getEntity();
 
 		for (String scriptAssignment : assignedScripts) {
 
@@ -157,7 +153,7 @@ public class ScriptHelper {
 
 			// Get requirements
 			try {
-				if (plugin.getRequirements.check(script, theEntity, isPlayer)) {
+				if (plugin.getRequirements.check(script, theDenizen, theEntity, isPlayer)) {
 
 					// Meets requirements, but we need to check cooldown, too.
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "|" + ChatColor.GREEN + " OKAY!" + ChatColor.WHITE + " '" + scriptAssignment + "' meets requirements.");
