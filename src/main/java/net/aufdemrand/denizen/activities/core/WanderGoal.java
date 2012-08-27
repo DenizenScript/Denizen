@@ -71,11 +71,6 @@ public class WanderGoal implements Goal {
 	public void run(GoalSelector goalSelecter) {
 		if (wanderLocation != null) {
 
-			if (denizenNPC.getNavigator().getLocalParameters().range() < ((float) radius * 2)) {
-				denizenNPC.getNavigator().setPathfindingRange(((float) radius * 2 + 10));
-				wA.aH.echoDebug("Pathfinding range now: " + denizenNPC.getNavigator().getPathfindingRange());
-			}
-			
 			// If already navigating, nothing to do here...
 			if (denizenNPC.getNavigator().isNavigating()) {
 				return; }

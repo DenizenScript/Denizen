@@ -59,6 +59,11 @@ public class HeroesRequirement extends AbstractRequirement {
 		if (plugin.heroes != null) {
 			Hero theHero = plugin.heroes.getCharacterManager().getHero(thePlayer);
 
+			if (classToCheck == null) {
+				aH.echoError("...must provide a CLASS to check!");
+				return false;
+			}
+			
 			switch (classType) {
 			case ANY:
 				if (theHero.getSecondClass().getName().toUpperCase().equals(classToCheck)

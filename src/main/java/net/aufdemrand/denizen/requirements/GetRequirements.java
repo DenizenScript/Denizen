@@ -84,7 +84,7 @@ public class GetRequirements {
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "...checking NEGATIVE Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'");
 				}
 
-				if (plugin.getRequirementRegistry().getRequirement(requirementEntry.split(" ")[0].toUpperCase()).check((Player) theEntity, theDenizen, theScript, plugin.getScriptEngine().helper.buildArgs(requirementEntry.split(" ")[1]), negativeRequirement)) {
+				if (plugin.getRequirementRegistry().getRequirement(requirementEntry.split(" ")[0].toUpperCase()).check((Player) theEntity, theDenizen, theScript, plugin.getScriptEngine().helper.buildArgs(requirementEntry.split(" ", 2)[1]), negativeRequirement)) {
 					numberMet++;
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "   OKAY! " + ChatColor.WHITE + "Requirement met!");
 				}
