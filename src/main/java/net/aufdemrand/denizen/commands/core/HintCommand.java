@@ -54,7 +54,9 @@ public class HintCommand extends AbstractCommand {
 		do {
 
 			if (plugin.getScripts().contains(scriptPath + x + ".Trigger")) {
-				chatTriggers.add(plugin.getScripts().getString(scriptPath + x + ".Trigger"));
+				String ct = plugin.getScripts().getString(scriptPath + x + ".Trigger");
+				if (!ct.contains("/*/"))	chatTriggers.add(ct);
+
 				aH.echoDebug("...found '" + chatTriggers.get(x-1) + "'");
 			}
 			else thisTriggerExists = false;
@@ -70,9 +72,9 @@ public class HintCommand extends AbstractCommand {
 
 		sb.append(plugin.settings.NpcHintPrefix());
 
+
 		for(int i=0;i<chatTriggers.size();i++) {
 			String item = chatTriggers.get(i);
-			if(item.contains("/*/")) continue;
 			String fitem = getFormattedTrigger(item, shortFormat);
 			aH.echoDebug("...formatted "  + fitem);
 			sb.append(fitem);	
