@@ -120,7 +120,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 						if (plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName).toUpperCase()
 								.equalsIgnoreCase(flagString)) {
 							outcome = true;
-							aH.echoDebug("...global flag '%s' matched!", flagName);
+							aH.echoDebug("...player flag '%s' matched!", flagName);
 						} else aH.echoDebug("...player flag '%s' did not match!", flagName);
 						
 						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getInt("Global.Flags." + flagName) + "'.");
