@@ -64,10 +64,12 @@ public class RunTaskCommand extends AbstractCommand {
 		}
 
 		if (theEntry.getCommand().equalsIgnoreCase("CANCELTASK")){
-			int tid = theEntry.getPlayer().getMetadata(theScriptName).get(0).asInt();
-			if (tid > 0) {
-				plugin.getServer().getScheduler().cancelTask(tid);
-				theEntry.getPlayer().removeMetadata(theScriptName, plugin);
+			if (theEntry.getPlayer().hasMetadata(theScriptName)){
+				int tid = theEntry.getPlayer().getMetadata(theScriptName).get(0).asInt();
+				if (tid > 0) {
+					plugin.getServer().getScheduler().cancelTask(tid);
+					theEntry.getPlayer().removeMetadata(theScriptName, plugin);
+				}		
 			}
 			else
 			{
@@ -90,6 +92,14 @@ public class RunTaskCommand extends AbstractCommand {
 
 				@Override
 				public void run(Player player, String theScriptName, DenizenNPC denizen, Integer oldStep) { 
+					if (player.hasMetadata(theScriptName)){
+						int tid = player.getMetadata(theScriptName).get(0).asInt();
+						if (tid > 0) {
+							plugin.getServer().getScheduler().cancelTask(tid);
+							player.removeMetadata(theScriptName, plugin);
+						}	
+					}
+
 					ScriptHelper sE = plugin.getScriptEngine().helper;
 					List<String> theScript = sE.getScript(theScriptName);
 					if (theScript.isEmpty()) return;
