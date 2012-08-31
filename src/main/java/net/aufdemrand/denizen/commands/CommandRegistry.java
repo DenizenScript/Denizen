@@ -23,6 +23,7 @@ import net.aufdemrand.denizen.commands.core.PauseCommand;
 import net.aufdemrand.denizen.commands.core.PermissCommand;
 import net.aufdemrand.denizen.commands.core.RefuseCommand;
 import net.aufdemrand.denizen.commands.core.ResetCommand;
+import net.aufdemrand.denizen.commands.core.RunTaskCommand;
 import net.aufdemrand.denizen.commands.core.SpawnCommand;
 import net.aufdemrand.denizen.commands.core.StrikeCommand;
 import net.aufdemrand.denizen.commands.core.SwitchCommand;
@@ -111,8 +112,11 @@ public class CommandRegistry {
 		WalkToCommand walktoCommand = new WalkToCommand();
 		HealCommand healCommand = new HealCommand();
 		FeedCommand feedCommand = new FeedCommand();
+		RunTaskCommand runtaskcommand = new RunTaskCommand();
 		
 		try {
+			runtaskcommand.activateAs("RUNTASK");
+			runtaskcommand.activateAs("CANCELTASK");
 			feedCommand.activateAs("FEED");
 			healCommand.activateAs("HARM");
 			healCommand.activateAs("HEAL");
