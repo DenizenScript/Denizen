@@ -4,17 +4,43 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.commands.core.PauseCommandRunnable;
 import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.DenizenTrait;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
+import net.citizensnpcs.api.npc.NPC;
 
-public class ActivityEngine {
+public class ActivityEngine implements Listener {
 
 	Denizen plugin;
 	CommandSender cs = null;
 
 	public ActivityEngine(Denizen denizen) {
 		this.plugin = denizen;
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+	}
+
+	public void setDefaultActivity(NPCSpawnEvent event) {
+		if (event.getNPC().hasTrait(DenizenTrait.class)) {
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new PauseCommandRunnable<NPC>(event.getNPC()) {
+				@Override public void run(NPC theNPC) { 
+					try { 
+						setDefaultActivity(plugin.getDenizenNPCRegistry().getDenizen(theNPC)); 
+					} catch (Exception e) { 
+						//
+					}
+				}
+			}, 30);
+
+		}
+	}
+
+	public void setDefaultActivity(DenizenNPC theDenizen) {
+		if (!plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Default Activity"))
+			setActivityScript(theDenizen, plugin.getAssignments().getString("Denizens." + theDenizen.getName() + ".Default Activity"));
 	}
 
 
@@ -22,21 +48,23 @@ public class ActivityEngine {
 	 * Schedules activity scripts to Denizens based on their schedule defined in the config.
 	 * Runs every 30 seconds, but can only schedule on the per Minecraft hour. 
 	 * 
-     */
+	 */
 
 	public void scheduleScripts(boolean forceable) {
-		
+
 		if (plugin.getDenizenNPCRegistry().getDenizens().isEmpty()) return;
 
 		for (DenizenNPC theDenizen : plugin.getDenizenNPCRegistry().getDenizens().values()) {
-
+			
 			if (forceable) plugin.getSaves().set("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Active Activity Script", null);
 			if (forceable) plugin.getActivityRegistry().removeAllActivities(theDenizen.getCitizensEntity());
-			
+
 			// No need to set activities for un-spawned Denizens.
 			if (!theDenizen.isSpawned())
 				continue;
 
+			setDefaultActivity(theDenizen);
+			
 			int denizenTime = Math.round(theDenizen.getWorld().getTime() / 1000);
 			List<String> denizenActivities = 
 					plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Scheduled Activities");
@@ -47,25 +75,25 @@ public class ActivityEngine {
 				continue;
 
 			// See if any activities match the time.
-			
+
 			for (String activity : denizenActivities) {
 				if (activity.startsWith(String.valueOf(denizenTime))) {
 					String activityScript = activity.split(" ", 2)[1];
 
 					if (!plugin.getSaves().contains("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Active Activity Script"))
 						setActivityScript(theDenizen, activityScript);
-						
+
 					else if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Active Activity Script").toUpperCase().equals(activityScript.toUpperCase()))
 						setActivityScript(theDenizen, activityScript);
-					
+
 				}
 			}
 		}
 	}
-	
-	
+
+
 	public void setActivityScript(DenizenNPC theDenizen, String activityScript) {
-		
+
 		if (cs == null) cs = plugin.getServer().getConsoleSender();
 
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Updating activity: " + theDenizen.getName() + "/" + theDenizen.getId() + " --------+");

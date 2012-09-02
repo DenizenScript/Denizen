@@ -13,11 +13,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 
 import net.citizensnpcs.api.event.NPCRemoveEvent;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.npc.NPC;
 
 public class DenizenNPCRegistry {
@@ -29,6 +31,7 @@ public class DenizenNPCRegistry {
 	public DenizenNPCRegistry(Denizen denizen) {
 		plugin = denizen;
 	}
+	
 
 
 	public void registerNPC(NPC citizensNPC) {
