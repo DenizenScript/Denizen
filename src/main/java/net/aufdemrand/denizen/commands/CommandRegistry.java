@@ -18,9 +18,11 @@ import net.aufdemrand.denizen.commands.core.FlagCommand;
 import net.aufdemrand.denizen.commands.core.GiveCommand;
 import net.aufdemrand.denizen.commands.core.HealCommand;
 import net.aufdemrand.denizen.commands.core.HintCommand;
+import net.aufdemrand.denizen.commands.core.IfCommand;
 import net.aufdemrand.denizen.commands.core.LookCommand;
 import net.aufdemrand.denizen.commands.core.PauseCommand;
 import net.aufdemrand.denizen.commands.core.PermissCommand;
+import net.aufdemrand.denizen.commands.core.RandomCommand;
 import net.aufdemrand.denizen.commands.core.RefuseCommand;
 import net.aufdemrand.denizen.commands.core.ResetCommand;
 import net.aufdemrand.denizen.commands.core.RunTaskCommand;
@@ -112,11 +114,15 @@ public class CommandRegistry {
 		WalkToCommand walktoCommand = new WalkToCommand();
 		HealCommand healCommand = new HealCommand();
 		FeedCommand feedCommand = new FeedCommand();
-		RunTaskCommand runtaskcommand = new RunTaskCommand();
+		RunTaskCommand runtaskCommand = new RunTaskCommand();
+		IfCommand ifCommand = new IfCommand();
+		RandomCommand randomCommand = new RandomCommand();
 		
 		try {
-			runtaskcommand.activateAs("RUNTASK");
-			runtaskcommand.activateAs("CANCELTASK");
+			randomCommand.activateAs("RANDOM");
+			ifCommand.activateAs("IF");
+			runtaskCommand.activateAs("RUNTASK");
+			runtaskCommand.activateAs("CANCELTASK");
 			feedCommand.activateAs("FEED");
 			healCommand.activateAs("HARM");
 			healCommand.activateAs("HEAL");
