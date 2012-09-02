@@ -41,6 +41,7 @@ public class ResetCommand extends AbstractCommand {
 		String theScript = theCommand.getScript();
 		ResetType resetType = null;
 		String theFlag = null;
+		boolean globalFlag = false;
 
 		if (theCommand.arguments() == null)
 			throw new CommandException("...not enough arguments! Use RESET ('Name of Script') [FINISHES|FAILS]  or  RESET [FLAG:[NAME]]");
@@ -48,18 +49,23 @@ public class ResetCommand extends AbstractCommand {
 		/* Check arguments */
 		for (String thisArg : theCommand.arguments()) {
 
-			if (thisArg.equals("FINISHES") || thisArg.equals("FINISHED") || thisArg.equals("FINISH")) {
+			if (thisArg.equalsIgnoreCase("FINISHES") || thisArg.equalsIgnoreCase("FINISHED") || thisArg.equalsIgnoreCase("FINISH")) {
 				resetType = ResetType.FINISH;
 				aH.echoDebug("...will reset FINISHED.");
 			}
 
-			else if (thisArg.equals("FAILS") || thisArg.equals("FAIL") || thisArg.equals("FAILED")) {
+			else if (thisArg.equalsIgnoreCase("FAILS") || thisArg.equalsIgnoreCase("FAIL") || thisArg.equalsIgnoreCase("FAILED")) {
 				resetType = ResetType.FAIL;
 				aH.echoDebug("...will reset FAILED.");
 			}
 
+			else if (thisArg.equalsIgnoreCase("GLOBAL")) {
+				globalFlag = true;
+				aH.echoDebug("...affected flag will be GLOBAL.", thisArg);
+			}
+
 			else if (thisArg.toUpperCase().contains("FLAG:")) {
-				theFlag = aH.getStringModifier(thisArg);
+				theFlag = aH.getStringModifier(thisArg).toUpperCase();
 				resetType = ResetType.FLAG;
 				aH.echoDebug("...will reset '%s'.", thisArg);
 			}
@@ -68,7 +74,7 @@ public class ResetCommand extends AbstractCommand {
 				theScript = aH.getStringModifier(thisArg);
 				aH.echoDebug("...script affected is now '%s'.", thisArg);
 			}
-			
+
 			else { 
 				theScript = thisArg;
 				aH.echoDebug("...script affected is now '%s'.", thisArg);
@@ -89,10 +95,11 @@ public class ResetCommand extends AbstractCommand {
 				break;
 
 			case FLAG:
-				plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + ".Flags." + theFlag, null);
+				if (globalFlag) plugin.getSaves().set("Global.Flags." + theFlag, null); 
+				else plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + ".Flags." + theFlag, null);
 				break;
 			}
-			
+
 			plugin.saveSaves();
 			return true;
 		}
