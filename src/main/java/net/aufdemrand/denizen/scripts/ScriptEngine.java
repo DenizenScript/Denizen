@@ -10,6 +10,7 @@ import net.citizensnpcs.api.npc.NPC;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 
 import org.bukkit.entity.Player;
 
@@ -269,7 +270,7 @@ public class ScriptEngine {
 		switch (queueType) {
 
 		case TRIGGER:
-			scriptCommandList = taskQue.get(thePlayer);
+			scriptCommandList = triggerQue.get(thePlayer);
 			triggerQue.remove(thePlayer); 
 			scriptCommandList.addAll(scriptCommands);
 			triggerQue.put(thePlayer, scriptCommandList);
@@ -294,7 +295,31 @@ public class ScriptEngine {
 
 	}
 
+	public List<ScriptEntry> getPlayerQueue(Player thePlayer, QueueType sendingQueue) {
+		return getQueue(sendingQueue).get(thePlayer);
+	}
+
+	
+	// Use with care! This could be confusing to the player if not properly used!
+	public void replacePlayerQue(Player thePlayer, List<ScriptEntry> scriptCommands, QueueType queueType) {
+
+		switch (queueType) {
+
+		case TRIGGER:
+			triggerQue.remove(thePlayer); 
+			triggerQue.put(thePlayer, scriptCommands);
+			break;
+
+		case TASK:
+			taskQue.remove(thePlayer); 
+			taskQue.put(thePlayer, scriptCommands);
+			break;
+		}
+
+		return;
+	}
 
 
+	
 
 }

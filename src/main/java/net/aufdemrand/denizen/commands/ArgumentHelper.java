@@ -14,6 +14,7 @@ import org.bukkit.material.MaterialData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.citizensnpcs.api.CitizensAPI;
 
 public class ArgumentHelper {
@@ -30,7 +31,7 @@ public class ArgumentHelper {
 		if (plugin.debugMode)
 			cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + String.format(message, argument));
 	}
-	
+
 	public void echoDebug(String message) {
 		CommandSender cs = plugin.getServer().getConsoleSender();
 		if (plugin.debugMode)
@@ -58,6 +59,14 @@ public class ArgumentHelper {
 		else return argument;
 	}
 
+	public QueueType getQueueModifier(String argument) {
+		try {
+			if (argument.split(":").length >= 2)
+				return QueueType.valueOf(argument.split(":")[1].toUpperCase());
+			else return QueueType.valueOf(argument.toUpperCase());
+		} catch (Exception e) { echoError("Invalid Queuetype!"); return null; }
+	}
+
 	public Integer getIntegerModifier(String argument) {
 		if (argument.split(":").length >= 2)
 			return Integer.valueOf(argument.split(":")[1]);
@@ -72,16 +81,16 @@ public class ArgumentHelper {
 			if (plugin.bookmarks.exists(thisArg.split(":")[1], thisArg.split(":")[2])) 
 				return plugin.bookmarks.get(thisArg.split(":")[1], thisArg.split(":")[2], BookmarkType.LOCATION);
 		}
-		
+
 		else if (m2.matches()) {
 			if (plugin.bookmarks.exists(denizenNPC, thisArg.split(":")[1]))
 				return plugin.bookmarks.get(denizenNPC, thisArg.split(":")[1], BookmarkType.LOCATION);
 		}
-		
+
 		if (plugin.debugMode) echoError("...bookmark not found!");
 		return null;
 	}
-	
+
 	public Location getBlockBookmarkModifier(String thisArg, DenizenNPC denizenNPC) {
 		Matcher m = bookmarkArgument.matcher(thisArg);
 		Matcher m2 = bookmarkArgument2.matcher(thisArg);
@@ -90,12 +99,12 @@ public class ArgumentHelper {
 			if (plugin.bookmarks.exists(thisArg.split(":")[1], thisArg.split(":")[2])) 
 				return plugin.bookmarks.get(thisArg.split(":")[1], thisArg.split(":")[2], BookmarkType.BLOCK);
 		}
-		
+
 		else if (m2.matches()) {
 			if (plugin.bookmarks.exists(denizenNPC, thisArg.split(":")[1]))
 				return plugin.bookmarks.get(denizenNPC, thisArg.split(":")[1], BookmarkType.BLOCK);
 		}
-		
+
 		if (plugin.debugMode) echoError("...block bookmark not found!");
 		return null;
 	}
@@ -181,6 +190,12 @@ public class ArgumentHelper {
 	final public Pattern durationArgument = Pattern.compile("(?:DURATION|duration|Duration)(:)(\\d+)");
 	public boolean matchesDuration(String regex) {
 		Matcher m = durationArgument.matcher(regex);
+		return m.matches();
+	}
+
+	final public Pattern queuetypeArgument = Pattern.compile("(?:QUEUE|queue|Queue)(:)(?:TASK|Task|Trigger|TRIGGER)");
+	public boolean matchesQueueType(String regex) {
+		Matcher m = queuetypeArgument.matcher(regex);
 		return m.matches();
 	}
 
