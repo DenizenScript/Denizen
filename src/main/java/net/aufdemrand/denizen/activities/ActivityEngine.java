@@ -20,7 +20,6 @@ public class ActivityEngine implements Listener {
 
 	public ActivityEngine(Denizen denizen) {
 		this.plugin = denizen;
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	public void setDefaultActivity(NPCSpawnEvent event) {
