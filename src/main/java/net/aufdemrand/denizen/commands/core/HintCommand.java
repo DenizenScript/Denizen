@@ -57,7 +57,7 @@ public class HintCommand extends AbstractCommand {
 				String ct = plugin.getScripts().getString(scriptPath + x + ".Trigger");
 				if (!ct.contains("/*/"))	chatTriggers.add(ct);
 
-				aH.echoDebug("...found '" + chatTriggers.get(x-1) + "'");
+				aH.echoDebug("...found '" + ct + "'");
 			}
 			else thisTriggerExists = false;
 			x++;

@@ -143,6 +143,8 @@ public class Denizen extends JavaPlugin {
 			@Override public void run() { bookmarks.buildLocationTriggerList(); }
 		}, 50);
 
+		getServer().getPluginManager().registerEvents(activityEngine, this);
+
 	}
 
 
