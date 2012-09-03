@@ -29,7 +29,7 @@ public class ActivityEngine implements Listener {
 					try { 
 						setDefaultActivity(plugin.getDenizenNPCRegistry().getDenizen(theNPC)); 
 					} catch (Exception e) { 
-						//
+						if (plugin.showStackTraces) e.printStackTrace();
 					}
 				}
 			}, 30);
@@ -38,7 +38,7 @@ public class ActivityEngine implements Listener {
 	}
 
 	public void setDefaultActivity(DenizenNPC theDenizen) {
-		if (!plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Default Activity"))
+		if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Default Activity"))
 			setActivityScript(theDenizen, plugin.getAssignments().getString("Denizens." + theDenizen.getName() + ".Default Activity"));
 	}
 
@@ -62,7 +62,7 @@ public class ActivityEngine implements Listener {
 			if (!theDenizen.isSpawned())
 				continue;
 
-			setDefaultActivity(theDenizen);
+			if (forceable) setDefaultActivity(theDenizen);
 			
 			int denizenTime = Math.round(theDenizen.getWorld().getTime() / 1000);
 			List<String> denizenActivities = 
