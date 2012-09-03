@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.commands.core;
 
+import org.bukkit.ChatColor;
+
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -48,7 +50,7 @@ public class FlagCommand extends AbstractCommand {
 			/* If argument is a DURATION: modifier */
 			if (aH.matchesDuration(thisArg)) {
 				duration = aH.getIntegerModifier(thisArg);
-				aH.echoDebug("...flag will be removed after '&s' seconds.", thisArg);
+				aH.echoDebug("...flag will be removed after '%s' seconds.", thisArg);
 			}
 
 			else if (thisArg.toUpperCase().contains("GLOBAL")) {
@@ -74,6 +76,7 @@ public class FlagCommand extends AbstractCommand {
 			/* Otherwise, argument is a Boolean */
 			else {
 				theFlag = thisArg.toUpperCase();
+				theValue = "TRUE";
 				flagType = FlagType.BOOLEAN;
 				aH.echoDebug("...setting '%s' as boolean flag.", thisArg.toUpperCase());
 			}
@@ -84,11 +87,23 @@ public class FlagCommand extends AbstractCommand {
 		/* If a duration is set... */
 		if (duration != null && flagType != null && theFlag != null) {
 
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FlagCommandRunnable<String, String, String>(theEntry.getPlayer().getName(), theFlag, theValue) {
+			aH.echoDebug("Setting delayed task: RESET FLAG '%s'", theFlag);
+
+			String playerName = theEntry.getPlayer().getName();
+			if (global) playerName = "GLOBAL";
+
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FlagCommandRunnable<String, String, String>(playerName, theFlag, theValue) {
 				@Override
 				public void run(String player, String flag, String checkValue) { 
-					if (plugin.getSaves().getString("Players." + player + ".Flags." + flag).equals(checkValue))
-						plugin.getSaves().set("Players." + player + ".Flags." + flag, null);
+					if (player.equals("GLOBAL")) {
+						aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET GLOBAL FLAG '" + flag + ".");
+						if (plugin.getSaves().getString("Global.Flags." + flag).equals(checkValue))
+							plugin.getSaves().set("Global.Flags." + flag, null);
+					} else {
+						aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET FLAG '" + flag + "' for " + player + ".");
+						if (plugin.getSaves().getString("Players." + player + ".Flags." + flag).equals(checkValue))
+							plugin.getSaves().set("Players." + player + ".Flags." + flag, null);
+					}
 				}
 			}, duration * 20);
 		}
@@ -129,9 +144,9 @@ public class FlagCommand extends AbstractCommand {
 
 			case BOOLEAN:
 				if (global) {
-					plugin.getSaves().set("Global.Flags." + theFlag, true);	
+					plugin.getSaves().set("Global.Flags." + theFlag, theValue);	
 				} else {
-					plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, true);
+					plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, theValue);
 				}
 				break;
 
