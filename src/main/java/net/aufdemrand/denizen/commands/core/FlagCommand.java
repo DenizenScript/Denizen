@@ -95,14 +95,17 @@ public class FlagCommand extends AbstractCommand {
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FlagCommandRunnable<String, String, String>(playerName, theFlag, theValue) {
 				@Override
 				public void run(String player, String flag, String checkValue) { 
+
 					if (player.equals("GLOBAL")) {
 						aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET GLOBAL FLAG '" + flag + ".");
-						if (plugin.getSaves().getString("Global.Flags." + flag).equals(checkValue))
-							plugin.getSaves().set("Global.Flags." + flag, null);
+						if (plugin.getSaves().contains("Global.Flags." + flag))
+							if (plugin.getSaves().getString("Global.Flags." + flag).equals(checkValue))
+								plugin.getSaves().set("Global.Flags." + flag, null);
 					} else {
 						aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET FLAG '" + flag + "' for " + player + ".");
-						if (plugin.getSaves().getString("Players." + player + ".Flags." + flag).equals(checkValue))
-							plugin.getSaves().set("Players." + player + ".Flags." + flag, null);
+						if (plugin.getSaves().contains("Players." + player + ".Flags." + flag))
+							if (plugin.getSaves().getString("Players." + player + ".Flags." + flag).equals(checkValue))
+								plugin.getSaves().set("Players." + player + ".Flags." + flag, null);
 					}
 				}
 			}, duration * 20);
