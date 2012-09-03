@@ -1,7 +1,10 @@
 package net.aufdemrand.denizen.commands.core;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -35,6 +38,8 @@ public class SwitchCommand extends AbstractCommand {
 	 * SWITCH Button_3 'DURATION:4'
 	 * 
 	 */
+
+	private Map<String, Integer> taskMap = new ConcurrentHashMap<String, Integer>();
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -108,13 +113,21 @@ public class SwitchCommand extends AbstractCommand {
 
 		/* Make delayed task to reset step if duration is set */
 		if (duration != null) {
+			
+			
+			if (taskMap.containsKey(theEntry.getDenizen().getName())) {
+				try {
+					plugin.getServer().getScheduler().cancelTask(taskMap.get(theEntry.getDenizen().getName()));
+				} catch (Exception e) { }
+			}
+			aH.echoDebug("Setting delayed task: RESET LOOK");
 
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
+			taskMap.put(theEntry.getDenizen().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
 					new SwitchCommandRunnable<Location>(interactLocation) {
 
 				@Override
 				public void run(Location interactLocation) { 
-
+					aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET LOOK.");
 					if (interactLocation != null) {
 						if (interactLocation.getBlock().getType() == Material.LEVER) {
 							World theWorld = interactLocation.getWorld();
@@ -145,7 +158,7 @@ public class SwitchCommand extends AbstractCommand {
 						}
 					}
 				}
-			}, duration * 20);
+			}, duration * 20));
 		}
 
 		return true;

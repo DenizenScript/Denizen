@@ -1,6 +1,10 @@
 package net.aufdemrand.denizen.commands.core;
 
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.bukkit.ChatColor;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -24,6 +28,8 @@ public class ZapCommand extends AbstractCommand {
 	 * ('SCRIPT:[Script Name]') Changes the script from the triggering script to the one specified.
 	 * (DURATION:#) Reverts the ZAP after # amount of seconds.
 	 */
+	
+	private Map<String, Integer> taskMap = new ConcurrentHashMap<String, Integer>();
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -96,11 +102,19 @@ public class ZapCommand extends AbstractCommand {
 
 			Integer oldStep = plugin.getScriptEngine().helper.getCurrentStep(theEntry.getPlayer(), theScript);
 
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
+			if (taskMap.containsKey(theEntry.getPlayer().getName())) {
+				try {
+					plugin.getServer().getScheduler().cancelTask(taskMap.get(theEntry.getPlayer().getName()));
+				} catch (Exception e) { }
+			}
+			aH.echoDebug("Setting delayed task: RESET ZAP");
+
+			taskMap.put(theEntry.getPlayer().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
 					new ZapCommandRunnable<String, String, Integer, Integer>(theEntry.getPlayer().getName(), theScript, theStep, oldStep) {
 
 				@Override
 				public void run(String player, String script, Integer step, Integer oldStep) { 
+					aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET ZAP for " + player + ".");
 
 					// Reset step after duration if step remains the same.
 					if (plugin.getSaves().getInt("Players." + player + "." + script + ".Current Step") == step) {
@@ -108,7 +122,7 @@ public class ZapCommand extends AbstractCommand {
 					}
 
 				}
-			}, duration * 20);
+			}, duration * 20));
 		}
 
 		/* Warn console if step doesn't actually exist. */

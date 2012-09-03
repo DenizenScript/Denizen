@@ -1,8 +1,11 @@
 package net.aufdemrand.denizen.commands.core;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
@@ -43,7 +46,8 @@ public class LookCommand extends AbstractCommand {
 	 * (DURATION:#) Reverts to the previous head position after # amount of seconds.
 	 */
 
-
+	private Map<String, Integer> taskMap = new ConcurrentHashMap<String, Integer>();
+	
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
@@ -90,7 +94,7 @@ public class LookCommand extends AbstractCommand {
 					}
 				}			
 			}
-			
+
 			// End Direction
 		}	
 
@@ -98,7 +102,7 @@ public class LookCommand extends AbstractCommand {
 			aH.echoError("Seems this was sent from a TASK-type script. Must use NPCID:# to specify a Denizen NPC!");
 			return false;
 		}
-		
+
 		if (theLocation != null) {
 			look(theEntity, theDenizen, direction, duration, theLocation);
 			return true;
@@ -198,10 +202,19 @@ public class LookCommand extends AbstractCommand {
 		// If duration is set...
 
 		if (duration != null) {
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new LookCommandRunnable<DenizenNPC, Location, Boolean, Float>(restoreDenizen, restoreLocation, restoreLookClose, theDenizen.getLocation().getYaw()) {
+
+			if (taskMap.containsKey(theDenizen.getName())) {
+				try {
+					plugin.getServer().getScheduler().cancelTask(taskMap.get(theDenizen.getName()));
+				} catch (Exception e) { }
+			}
+
+			aH.echoDebug("Setting delayed task: RESET LOOK");
+
+			taskMap.put(theDenizen.getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new LookCommandRunnable<DenizenNPC, Location, Boolean, Float>(restoreDenizen, restoreLocation, restoreLookClose, theDenizen.getLocation().getYaw()) {
 				@Override
 				public void run(DenizenNPC denizen, Location location, Boolean lookClose, Float checkYaw) { 
-
+					aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET LOOK.");
 					denizen.lookClose(lookClose);
 
 					//				if (denizen.getLocation().getYaw() == checkYaw) {
@@ -210,10 +223,10 @@ public class LookCommand extends AbstractCommand {
 					denizen.getHandle().as = denizen.getHandle().yaw;				
 					//				}
 				}
-			}, duration * 20);
+			}, duration * 20));
 		}
-		
-		
+
+
 	}
 
 

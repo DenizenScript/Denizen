@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.commands.core;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.bukkit.ChatColor;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
@@ -31,6 +34,8 @@ public class FlagCommand extends AbstractCommand {
 	 */
 
 	private enum FlagType { VALUE, INC, DEC, BOOLEAN }
+
+	private Map<String, Integer> taskMap = new ConcurrentHashMap<String, Integer>();
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -92,7 +97,13 @@ public class FlagCommand extends AbstractCommand {
 			String playerName = theEntry.getPlayer().getName();
 			if (global) playerName = "GLOBAL";
 
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FlagCommandRunnable<String, String, String>(playerName, theFlag, theValue) {
+			if (taskMap.containsKey(playerName)) {
+					try {
+						plugin.getServer().getScheduler().cancelTask(taskMap.get(playerName));
+					} catch (Exception e) { }
+			}
+
+			taskMap.put(playerName, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FlagCommandRunnable<String, String, String>(playerName, theFlag, theValue) {
 				@Override
 				public void run(String player, String flag, String checkValue) { 
 
@@ -108,7 +119,7 @@ public class FlagCommand extends AbstractCommand {
 								plugin.getSaves().set("Players." + player + ".Flags." + flag, null);
 					}
 				}
-			}, duration * 20);
+			}, duration * 20));	
 		}
 
 

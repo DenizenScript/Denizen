@@ -1,5 +1,10 @@
 package net.aufdemrand.denizen.commands.core;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.bukkit.ChatColor;
+
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.api.npc.NPC;
@@ -32,6 +37,8 @@ public class PauseCommand extends AbstractCommand {
 	 * COMMAND_NAME ANOTHERVALUE 'MODIFIER:Show one-line examples.'
 	 * 
 	 */
+	
+	private Map<String, Integer> taskMap = new ConcurrentHashMap<String, Integer>();
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -62,13 +69,24 @@ public class PauseCommand extends AbstractCommand {
 		// Pause GoalController!
 		theEntry.getDenizen().getCitizensEntity().getDefaultGoalController().setPaused(true);
 
+		
+		
 		if (duration != null) 
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new PauseCommandRunnable<NPC>(theEntry.getDenizen().getCitizensEntity()) {
+
+			if (taskMap.containsKey(theEntry.getDenizen().getName())) {
+				try {
+					plugin.getServer().getScheduler().cancelTask(taskMap.get(theEntry.getDenizen().getName()));
+				} catch (Exception e) { }
+			}
+			aH.echoDebug("Setting delayed task: UNPAUSE GOAL SELECTOR.");
+
+			taskMap.put(theEntry.getDenizen().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new PauseCommandRunnable<NPC>(theEntry.getDenizen().getCitizensEntity()) {
 				@Override
 				public void run(NPC theNPC) { 
+					aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: UNPAUSE GOAL SELECTOR.");
 					theNPC.getDefaultGoalController().setPaused(false);
 				}
-			}, duration * 20);
+			}, duration * 20));
 
 
 		return true;
