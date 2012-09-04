@@ -11,7 +11,10 @@ import net.citizensnpcs.api.npc.NPC;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.events.ScriptFinishEvent;
+import net.aufdemrand.events.ScriptQueueEvent;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 
@@ -79,13 +82,25 @@ public class ScriptEngine {
 								instantly = true; 
 							// ----
 
+							// Fire event for possible cancellation/alterations
+							ScriptQueueEvent event = new ScriptQueueEvent(theCommand.getPlayer(), theCommand);
+							Bukkit.getServer().getPluginManager().callEvent(event);
+
+							// If event is altered, update the command.
+							if (event.isAltered()) theCommand = event.getScriptEntry();
+							
 							theEntry.getValue().remove(0);
 
 							/* Updates the triggerQue map */
 							triggerQue.put(theEntry.getKey(), theEntry.getValue());
 
 							// Catching errors here will kep the queue from locking up.
-							try { plugin.executer.execute(theCommand); }
+							try { 
+								// Check if execution was cancelled by the event
+								if (event.isCancelled())
+									plugin.getLogger().info("Note: ScriptEntry cancelled!");
+								// Nope! Execute the command!
+								else plugin.executer.execute(theCommand); }
 							catch (Throwable e) {
 								plugin.getLogger().info("Woah! Bad command! Check syntax...");
 								if (plugin.showStackTraces) e.printStackTrace();
@@ -299,7 +314,7 @@ public class ScriptEngine {
 		return getQueue(sendingQueue).get(thePlayer);
 	}
 
-	
+
 	// Use with care! This could be confusing to the player if not properly used!
 	public void replacePlayerQue(Player thePlayer, List<ScriptEntry> scriptCommands, QueueType queueType) {
 
@@ -320,6 +335,6 @@ public class ScriptEngine {
 	}
 
 
-	
+
 
 }

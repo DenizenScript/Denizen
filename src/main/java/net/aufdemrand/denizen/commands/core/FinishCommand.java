@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.commands.core;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.events.ScriptFinishEvent;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**
@@ -46,19 +48,22 @@ public class FinishCommand extends AbstractCommand {
 			}
 		}
 
-		
+
 		/* Write data to saves */
-		
+
 		int currentFinishes = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", 0);
 		currentFinishes++;	
-		
+
 		plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", currentFinishes);
 		plugin.saveSaves();
 
+		// Call Finish Event
+		ScriptFinishEvent event = new ScriptFinishEvent(theCommand.getPlayer(), theScript, currentFinishes);
+		Bukkit.getServer().getPluginManager().callEvent(event);
 		return true;
 	}
 
-	
+
 
 	// Requirement
 	// TODO: Move to requirements/core
@@ -71,12 +76,12 @@ public class FinishCommand extends AbstractCommand {
 		 * (-)FINISHED (#) [Name of Script]
 		 */
 
-			if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[1];
-			else theAmount = "1";
+		if (Character.isDigit(theAmount.charAt(0))) theScript = theScript.split(" ", 2)[1];
+		else theAmount = "1";
 
-			if (plugin.getSaves().contains("Players." + thePlayer.getName() + "." + theScript + "." + "Completed")) { 
-				if (plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") >= Integer.valueOf(theAmount)) outcome = true;
-			}
+		if (plugin.getSaves().contains("Players." + thePlayer.getName() + "." + theScript + "." + "Completed")) { 
+			if (plugin.getSaves().getInt("Players." + thePlayer.getName() + "." + theScript + "." + "Completed") >= Integer.valueOf(theAmount)) outcome = true;
+		}
 
 		if (negativeRequirement != outcome) return true;
 

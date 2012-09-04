@@ -62,7 +62,7 @@ public class Denizen extends JavaPlugin {
 	public GetPlayer             getPlayer = new GetPlayer(this);
 	public GetRequirements getRequirements = new GetRequirements(this);
 	public GetWorld               getWorld = new GetWorld(this);
-
+	
 	public Boolean   debugMode = false;
 	public Boolean preciseMode = false;
 	public Boolean    newbMode = true;

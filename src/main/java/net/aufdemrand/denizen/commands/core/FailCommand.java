@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.commands.core;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.events.ScriptFailEvent;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**
@@ -52,6 +54,9 @@ public class FailCommand extends AbstractCommand {
 		int fails = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", 0);
 		fails++;
 		plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", fails);
+
+		ScriptFailEvent event = new ScriptFailEvent(theCommand.getPlayer(), theScript, fails);
+		Bukkit.getServer().getPluginManager().callEvent(event);
 
 		return true;
 	}
