@@ -138,10 +138,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			boolean letsProceed = false;
 			for (String chatTrigger : chatTriggers.split(":")) {
 				if (playerMessage.toLowerCase().contains(chatTrigger)) letsProceed = true;
-				if (chatTrigger.contains("*")) {
-					chatText = chatText.replace("*", playerMessage);
-					letsProceed = true;
-				}
 
 			}
 
@@ -158,6 +154,43 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				return true;
 			}
 		}
+
+		for (int x = 0; x < ChatTriggerList.size(); x++ ) {
+
+			// The texts required to trigger.
+			String chatTriggers = ChatTriggerList.get(x)
+					.replace("<PLAYER>", thePlayer.getName())
+					.replace("<DISPLAYNAME>", ChatColor.stripColor(thePlayer.getDisplayName())).toLowerCase();
+
+			// The in-game friendly Chat Trigger text to display if triggered.
+			String chatText = plugin.getScripts()
+					.getString(theScriptName + ".Steps." + theStep + ".Chat Trigger." + String.valueOf(x + 1) + ".Trigger")
+					.replace("/", "");
+
+			// Find a matching trigger
+			boolean letsProceed = false;
+			for (String chatTrigger : chatTriggers.split(":")) {
+				if (chatTrigger.contains("/*/")) {
+					chatText = chatText.replace("/*/", playerMessage);
+					letsProceed = true;
+				}
+			}
+
+			// If a matching trigger is found...
+			if (letsProceed) {
+				/* Trigger matches, let's talk to the Denizen and send the script to the 
+				 * triggerQue. No need to continue the loop. */
+				List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + String.valueOf(x + 1) + sE.scriptString);
+				if (theScript.isEmpty()) return false;
+
+				// Chat to the Denizen, then queue the scrip entries!
+				plugin.getSpeechEngine().talkToDenizen(theDenizen, thePlayer, chatText);
+				sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep, playerMessage, chatText), QueueType.TRIGGER);
+				return true;
+			}
+
+		}
+
 
 		// Else, no matching trigger found...
 		return false;
