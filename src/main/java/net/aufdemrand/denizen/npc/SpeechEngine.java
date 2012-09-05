@@ -176,17 +176,17 @@ public class SpeechEngine {
 
 		if (playerMessageFormat != null)
 			playerMessageFormat = colorizeText(aH.fillFlags(thePlayer, playerMessageFormat
+					.replace("<TEXT>", theMessage)
 					.replace("<NPC>", denizenName)
-					.replace("<TEXT>", theMessage)			
 					.replace("<PLAYER>", playername)
 					.replace("<DISPLAYNAME>", playerdispname)
 					.replace("<WORLD>", worldName)
 					.replace("<HEALTH>", playerhealth)));
 
 		if (bystanderMessageFormat != null)
-			bystanderMessageFormat = colorizeText(aH.fillFlags(thePlayer, playerMessageFormat
+			bystanderMessageFormat = colorizeText(aH.fillFlags(thePlayer, bystanderMessageFormat
+					.replace("<TEXT>", theMessage)
 					.replace("<NPC>", denizenName)
-					.replace("<TEXT>", theMessage)			
 					.replace("<PLAYER>", playername)
 					.replace("<DISPLAYNAME>", playerdispname)
 					.replace("<WORLD>", worldName)
@@ -313,8 +313,8 @@ public class SpeechEngine {
 	public void talkToDenizen(DenizenNPC theDenizen, Player thePlayer, String theMessage) {
 
 		thePlayer.sendMessage(colorizeText(aH.fillFlags(thePlayer, plugin.settings.PlayerChatToNpc()
-				.replace("<NPC>", theDenizen.getName())
 				.replace("<TEXT>", theMessage)
+				.replace("<NPC>", theDenizen.getName())
 				.replace("<PLAYER>", thePlayer.getName())
 				.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 				.replace("<WORLD>", thePlayer.getWorld().getName())
@@ -325,8 +325,8 @@ public class SpeechEngine {
 			if (theRange > 0) {
 				for (Player otherPlayer : plugin.getDenizenNPCRegistry().getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
 					otherPlayer.sendMessage(colorizeText(aH.fillFlags(thePlayer, plugin.settings.PlayerChatToNpcBystander()
-							.replace("<NPC>", theDenizen.getName())
 							.replace("<TEXT>", theMessage)
+							.replace("<NPC>", theDenizen.getName())
 							.replace("<PLAYER>", thePlayer.getName())
 							.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 							.replace("<WORLD>", thePlayer.getWorld().getName())
@@ -337,10 +337,5 @@ public class SpeechEngine {
 
 		return;
 	}
-
-
-
-
-
 
 }
