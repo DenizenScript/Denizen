@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.runnables.FiveItemRunnable;
+import net.aufdemrand.denizen.runnables.FourItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
@@ -89,7 +90,7 @@ public class RunTaskCommand extends AbstractCommand {
 		if (secs>0) {
 
 			int id = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
-					new FiveItemRunnable<Player, String, DenizenNPC, Integer>(theEntry.getPlayer(), theScriptName, executer, 0) {
+					new FourItemRunnable<Player, String, DenizenNPC, Integer>(theEntry.getPlayer(), theScriptName, executer, 0) {
 
 				@Override
 				public void run(Player player, String theScriptName, DenizenNPC denizen, Integer oldStep) { 
