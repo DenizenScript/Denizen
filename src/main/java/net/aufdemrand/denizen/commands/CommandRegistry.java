@@ -18,6 +18,7 @@ import net.aufdemrand.denizen.commands.core.FlagCommand;
 import net.aufdemrand.denizen.commands.core.GiveCommand;
 import net.aufdemrand.denizen.commands.core.HealCommand;
 import net.aufdemrand.denizen.commands.core.HintCommand;
+import net.aufdemrand.denizen.commands.core.HoldCommand;
 import net.aufdemrand.denizen.commands.core.IfCommand;
 import net.aufdemrand.denizen.commands.core.LookCommand;
 import net.aufdemrand.denizen.commands.core.PauseCommand;
@@ -117,8 +118,10 @@ public class CommandRegistry {
 		RunTaskCommand runtaskCommand = new RunTaskCommand();
 		IfCommand ifCommand = new IfCommand();
 		RandomCommand randomCommand = new RandomCommand();
+		HoldCommand holdCommand = new HoldCommand();
 		
 		try {
+			holdCommand.activateAs("HOLD");
 			randomCommand.activateAs("RANDOM");
 			ifCommand.activateAs("IF");
 			runtaskCommand.activateAs("RUNTASK");

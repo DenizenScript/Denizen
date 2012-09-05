@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.commands.core.PauseCommandRunnable;
+import net.aufdemrand.denizen.runnables.OneItemRunnable;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
@@ -53,7 +53,7 @@ public class DenizenTrait extends Trait implements Toggleable {
 
 		// Load activities
 		
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new PauseCommandRunnable<NPC>(npc) {
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new OneItemRunnable<NPC>(npc) {
 			@Override
 			public void run(NPC theNPC) { 
 				if (theNPC != null) {

@@ -14,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.runnables.FourItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.command.exception.CommandException;
@@ -211,7 +212,7 @@ public class LookCommand extends AbstractCommand {
 
 			aH.echoDebug("Setting delayed task: RESET LOOK");
 
-			taskMap.put(theDenizen.getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new LookCommandRunnable<DenizenNPC, Location, Boolean, Float>(restoreDenizen, restoreLocation, restoreLookClose, theDenizen.getLocation().getYaw()) {
+			taskMap.put(theDenizen.getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FourItemRunnable<DenizenNPC, Location, Boolean, Float>(restoreDenizen, restoreLocation, restoreLookClose, theDenizen.getLocation().getYaw()) {
 				@Override
 				public void run(DenizenNPC denizen, Location location, Boolean lookClose, Float checkYaw) { 
 					aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET LOOK.");

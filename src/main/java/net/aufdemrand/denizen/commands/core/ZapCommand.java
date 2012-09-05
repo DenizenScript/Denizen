@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.ChatColor;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
+import net.aufdemrand.denizen.runnables.FourItemRunnable;
+import net.aufdemrand.denizen.runnables.FiveItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
@@ -110,7 +112,7 @@ public class ZapCommand extends AbstractCommand {
 			aH.echoDebug("Setting delayed task: RESET ZAP");
 
 			taskMap.put(theEntry.getPlayer().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
-					new ZapCommandRunnable<String, String, Integer, Integer>(theEntry.getPlayer().getName(), theScript, theStep, oldStep) {
+					new FourItemRunnable<String, String, Integer, Integer>(theEntry.getPlayer().getName(), theScript, theStep, oldStep) {
 
 				@Override
 				public void run(String player, String script, Integer step, Integer oldStep) { 

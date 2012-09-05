@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.ChatColor;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
+import net.aufdemrand.denizen.runnables.OneItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
@@ -80,7 +81,7 @@ public class PauseCommand extends AbstractCommand {
 			}
 			aH.echoDebug("Setting delayed task: UNPAUSE GOAL SELECTOR.");
 
-			taskMap.put(theEntry.getDenizen().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new PauseCommandRunnable<NPC>(theEntry.getDenizen().getCitizensEntity()) {
+			taskMap.put(theEntry.getDenizen().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new OneItemRunnable<NPC>(theEntry.getDenizen().getCitizensEntity()) {
 				@Override
 				public void run(NPC theNPC) { 
 					aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: UNPAUSE GOAL SELECTOR.");

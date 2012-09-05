@@ -11,6 +11,8 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
+import net.aufdemrand.denizen.runnables.OneItemRunnable;
+import net.aufdemrand.denizen.runnables.TwoItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
@@ -123,7 +125,7 @@ public class SwitchCommand extends AbstractCommand {
 			aH.echoDebug("Setting delayed task: RESET LOOK");
 
 			taskMap.put(theEntry.getDenizen().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
-					new SwitchCommandRunnable<Location>(interactLocation) {
+					new OneItemRunnable<Location>(interactLocation) {
 
 				@Override
 				public void run(Location interactLocation) { 

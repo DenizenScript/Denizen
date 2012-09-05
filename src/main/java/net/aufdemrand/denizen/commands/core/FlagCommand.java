@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.ChatColor;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
+import net.aufdemrand.denizen.runnables.ThreeItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
@@ -103,7 +104,7 @@ public class FlagCommand extends AbstractCommand {
 					} catch (Exception e) { }
 			}
 
-			taskMap.put(playerName, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FlagCommandRunnable<String, String, String>(playerName, theFlag, theValue) {
+			taskMap.put(playerName, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new ThreeItemRunnable<String, String, String>(playerName, theFlag, theValue) {
 				@Override
 				public void run(String player, String flag, String checkValue) { 
 

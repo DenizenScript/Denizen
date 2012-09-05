@@ -7,9 +7,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.commands.core.PauseCommandRunnable;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.DenizenTrait;
+import net.aufdemrand.denizen.runnables.OneItemRunnable;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -24,7 +24,7 @@ public class ActivityEngine implements Listener {
 
 	public void setDefaultActivity(NPCSpawnEvent event) {
 		if (event.getNPC().hasTrait(DenizenTrait.class)) {
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new PauseCommandRunnable<NPC>(event.getNPC()) {
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new OneItemRunnable<NPC>(event.getNPC()) {
 				@Override public void run(NPC theNPC) { 
 					try { 
 						setDefaultActivity(plugin.getDenizenNPCRegistry().getDenizen(theNPC)); 
