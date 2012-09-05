@@ -61,22 +61,22 @@ public class TalkCommand extends AbstractCommand {
 			aH.echoError("Woah! Lots of arguments detected in " + theEntry.getCommand() + ".  Perhaps you are failing to enclose your Talk Text in quotes?  Example usage: CHAT 'Hello world!'");
 		} else {
 
-			for (String thisArgument : theEntry.arguments()) {
+			for (String thisArg : theEntry.arguments()) {
 
-				if (thisArgument.toUpperCase().equalsIgnoreCase("NOPLAYER")) {
+				if (thisArg.toUpperCase().equalsIgnoreCase("NOPLAYER")) {
 					aH.echoError("...will not target Player.");
 					noPlayer = true;
 				}
 
-				else if (aH.matchesNPCID(thisArgument)) {
-					theDenizen = aH.getNPCIDModifier(thisArgument);
+				else if (aH.matchesNPCID(thisArg)) {
+					theDenizen = aH.getNPCIDModifier(thisArg);
 					if (theDenizen != null)
-						aH.echoDebug("...specified NPCID.");
+						aH.echoDebug("...specified '%s'.", thisArg);
 				} 
 
 				else {
-					aH.echoDebug("...found text!");
-					theMessage = thisArgument;
+					aH.echoDebug("...text: '%s'", thisArg);
+					theMessage = thisArg;
 				}
 			}
 

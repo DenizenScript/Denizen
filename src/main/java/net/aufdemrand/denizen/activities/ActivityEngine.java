@@ -100,7 +100,7 @@ public class ActivityEngine implements Listener {
 		plugin.getSaves().set("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Active Activity Script", activityScript);
 
 		if (!plugin.getScripts().contains(activityScript + ".Activities.List")) {
-			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "Tried to load the Activity Script '" + activityScript + "', but it couldn't be found. Perhaps something is spelled wrong, or the script doesn't exist?");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "Tried to load the Activity Script '" + activityScript + ".Activities.List', but it couldn't be found. Perhaps something is spelled wrong, or the script doesn't exist?");
 			return;
 		}
 

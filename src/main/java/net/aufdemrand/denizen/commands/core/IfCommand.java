@@ -1,9 +1,6 @@
 package net.aufdemrand.denizen.commands.core;
 
 import java.util.List;
-import java.util.Random;
-
-import org.bukkit.Location;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.requirements.core.FlaggedRequirement;
@@ -48,7 +45,7 @@ public class IfCommand extends AbstractCommand {
 		boolean inject = true;
 
 		if (theEntry.arguments() == null) {
-			aH.echoError("No arguments! Usage: IF (EXACTLY) [FLAG] (APPEND) [SCRIPT:Task Script to Run] (QUEUETYPE:TRIGGER|TASK)");
+			aH.echoError("No arguments! Usage: IF (EXACTLY) [FLAG:FLAG_NAME] (APPEND) [SCRIPT:Task Script to Run] (QUEUETYPE:TRIGGER|TASK)");
 			return false;
 		}
 
@@ -75,7 +72,7 @@ public class IfCommand extends AbstractCommand {
 				inject = false;
 			}
 
-			else if (!flagFound) {
+			else if (thisArg.toUpperCase().contains("FLAG:") && !flagFound) {
 				if (thisArg.startsWith("-")) {
 					invertedLogic = true;
 					aH.echoDebug("...logic inverted, checking inverse.");
@@ -83,17 +80,17 @@ public class IfCommand extends AbstractCommand {
 				}
 
 				/* If argument is a flag with value */
-				if (thisArg.split(":").length == 2) {
-					theFlag = thisArg.split(":")[0].toUpperCase();
-					theValue = thisArg.split(":")[1].toUpperCase();
-					aH.echoDebug("...using FLAG '%s'.", thisArg.toUpperCase());
+				if (thisArg.split(":").length == 3) {
+					theFlag = thisArg.split(":")[1].toUpperCase();
+					theValue = thisArg.split(":")[2].toUpperCase();
+					aH.echoDebug("...using '%s'.", thisArg.toUpperCase());
 					flagFound = true;
 				}
 				/* Otherwise, argument is a Boolean */
 				else {
-					theFlag = thisArg.toUpperCase();
+					theFlag = aH.getStringModifier(thisArg.toUpperCase());
 					flagFound = true;
-					aH.echoDebug("...using Boolean FLAG '%s'.", thisArg.toUpperCase());
+					aH.echoDebug("...using Boolean '%s'.", thisArg.toUpperCase());
 				}
 			}
 
@@ -103,7 +100,7 @@ public class IfCommand extends AbstractCommand {
 			}
 
 			// Can't match to anything
-			else aH.echoError("...unable to match argument '%'!", thisArg);
+			else aH.echoError("...unable to match argument '%s'!", thisArg);
 		}	
 
 

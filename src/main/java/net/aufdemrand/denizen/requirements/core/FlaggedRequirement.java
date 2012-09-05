@@ -116,7 +116,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 					} else aH.echoDebug("...global flag '%s' not set!", flagName);
 				} 
 				else {
-					if (plugin.getSaves().contains("Players." + thePlayer.getName()+ ".Flags." + flagName)) {
+					if (plugin.getSaves().contains("Players." + thePlayer.getName() + ".Flags." + flagName)) {
 						if (plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName).toUpperCase()
 								.equalsIgnoreCase(flagString)) {
 							outcome = true;

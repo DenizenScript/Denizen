@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.commands.ArgumentHelper;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -98,6 +99,7 @@ public class SpeechEngine {
 
 	}
 
+	private ArgumentHelper aH = null;
 
 	/* 
 	 * Takes chat/whisper/etc. text and formats it based on the config settings. 
@@ -170,25 +172,25 @@ public class SpeechEngine {
 			playername =  thePlayer.getName();
 		}
 
-
+		if (aH == null) aH = plugin.getCommandRegistry().getArgumentHelper();
 
 		if (playerMessageFormat != null)
-			playerMessageFormat = colorizeText(playerMessageFormat
+			playerMessageFormat = colorizeText(aH.fillFlags(thePlayer, playerMessageFormat
 					.replace("<NPC>", denizenName)
 					.replace("<TEXT>", theMessage)			
 					.replace("<PLAYER>", playername)
 					.replace("<DISPLAYNAME>", playerdispname)
 					.replace("<WORLD>", worldName)
-					.replace("<HEALTH>", playerhealth));
+					.replace("<HEALTH>", playerhealth)));
 
 		if (bystanderMessageFormat != null)
-			bystanderMessageFormat = colorizeText(bystanderMessageFormat
+			bystanderMessageFormat = colorizeText(aH.fillFlags(thePlayer, playerMessageFormat
 					.replace("<NPC>", denizenName)
 					.replace("<TEXT>", theMessage)			
 					.replace("<PLAYER>", playername)
 					.replace("<DISPLAYNAME>", playerdispname)
 					.replace("<WORLD>", worldName)
-					.replace("<HEALTH>", playerhealth));
+					.replace("<HEALTH>", playerhealth)));
 
 		String[] returnedText = {playerMessageFormat, bystanderMessageFormat};
 
@@ -310,25 +312,25 @@ public class SpeechEngine {
 
 	public void talkToDenizen(DenizenNPC theDenizen, Player thePlayer, String theMessage) {
 
-		thePlayer.sendMessage(colorizeText(plugin.settings.PlayerChatToNpc()
+		thePlayer.sendMessage(colorizeText(aH.fillFlags(thePlayer, plugin.settings.PlayerChatToNpc()
 				.replace("<NPC>", theDenizen.getName())
 				.replace("<TEXT>", theMessage)
 				.replace("<PLAYER>", thePlayer.getName())
 				.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 				.replace("<WORLD>", thePlayer.getWorld().getName())
-				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))));
+				.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())))));
 
 		if (plugin.settings.BystandersHearNpcToPlayerChat()) {
 			int theRange = plugin.settings.NpcToPlayerChatRangeInBlocks();
 			if (theRange > 0) {
 				for (Player otherPlayer : plugin.getDenizenNPCRegistry().getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
-					otherPlayer.sendMessage(colorizeText(plugin.settings.PlayerChatToNpcBystander()
+					otherPlayer.sendMessage(colorizeText(aH.fillFlags(thePlayer, plugin.settings.PlayerChatToNpcBystander()
 							.replace("<NPC>", theDenizen.getName())
 							.replace("<TEXT>", theMessage)
 							.replace("<PLAYER>", thePlayer.getName())
 							.replace("<DISPLAYNAME>", thePlayer.getDisplayName())
 							.replace("<WORLD>", thePlayer.getWorld().getName())
-							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth()))));
+							.replace("<HEALTH>", String.valueOf(thePlayer.getHealth())))));
 				}
 			}
 		}

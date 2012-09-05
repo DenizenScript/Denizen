@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
@@ -238,9 +239,57 @@ public class ArgumentHelper {
 		else return false;
 	}
 
+	// -----------------
 
+	final public Pattern replaceableFlagWithFallback = Pattern.compile("(<)(FLAG|flag|Flag)(:)(.*?)(:)(.*?)(>)");
+	final public Pattern replaceableFlag = Pattern.compile("(<)(FLAG|flag|Flag)(:)(.*?)(>)");
+	public String fillFlags(Player thePlayer, String stringToFill) {
 
+		if (stringToFill == null) return null;
+		String filledString = stringToFill;
+		Matcher fF = replaceableFlagWithFallback.matcher(stringToFill);
+		String searchString = "Global";
+		if (thePlayer != null) searchString = "Players." + thePlayer.getName();
 
+		while (fF.find()) {
+			if (plugin.getSaves().contains(searchString + ".Flags." + fF.group(4).toUpperCase())) {
+				filledString = fF.replaceFirst(plugin.getSaves().getString(searchString + ".Flags." + fF.group(4).toUpperCase()));
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", fF.group(4));
+			}
+			else if (plugin.getSaves().contains("Global.Flags." + fF.group(4).toUpperCase())) {
+				filledString = fF.replaceFirst(plugin.getSaves().getString("Global.Flags." + fF.group(4).toUpperCase()));
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", fF.group(4));
+			}
+			// No flags found, use fallback text
+			else {
+				filledString = fF.replaceFirst(fF.group(6));
+				echoDebug(ChatColor.YELLOW + "//REPLACED//"  +ChatColor.WHITE + " '%s' with fallback value.", fF.group(4));
+			}
+		}
+
+		stringToFill = filledString;
+
+		// okay, now check for without fallback.
+		Matcher f = replaceableFlag.matcher(stringToFill);
+
+		while (f.find()) {
+			if (plugin.getSaves().contains(searchString + ".Flags." + f.group(4).toUpperCase())) {
+				filledString = f.replaceFirst(plugin.getSaves().getString(searchString + ".Flags." + f.group(4).toUpperCase()));
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(4));
+			}
+			else if (plugin.getSaves().contains("Global.Flags." + f.group(4).toUpperCase())){
+				filledString = f.replaceFirst(plugin.getSaves().getString("Global.Flags." + f.group(4).toUpperCase()));
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(4));
+			}
+			// No flags found, use ""
+			else  {
+				filledString = f.replaceFirst("");
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with nothing, no flag value found.", f.group(4));
+			}
+		}
+
+		return filledString;
+	}
 
 
 

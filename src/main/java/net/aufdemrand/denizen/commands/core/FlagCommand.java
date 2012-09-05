@@ -73,7 +73,7 @@ public class FlagCommand extends AbstractCommand {
 					flagType = FlagType.DEC;
 				else {
 					flagType = FlagType.VALUE;
-					theValue = thisArg.split(":")[1].toUpperCase();
+					theValue = thisArg.split(":")[1];
 				}
 				aH.echoDebug("...setting FLAG '%s'.", thisArg);
 			}

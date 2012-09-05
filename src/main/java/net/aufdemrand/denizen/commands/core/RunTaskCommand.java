@@ -47,11 +47,11 @@ public class RunTaskCommand extends AbstractCommand {
 			}
 
 			/* Set a duration */
-			if (thisArg.toUpperCase().contains("DELAY:")){
+			else if (thisArg.toUpperCase().contains("DELAY:")){
 				secs = aH.getIntegerModifier(thisArg);
 			}
 
-			if (aH.matchesNPCID(thisArg)){
+			else if (aH.matchesNPCID(thisArg)){
 				executer = aH.getNPCIDModifier(thisArg);
 			}
 
@@ -101,7 +101,7 @@ public class RunTaskCommand extends AbstractCommand {
 					}
 
 					ScriptHelper sE = plugin.getScriptEngine().helper;
-					List<String> theScript = sE.getScript(theScriptName);
+					List<String> theScript = sE.getScript(theScriptName + ".Script");
 					if (theScript.isEmpty()) return;
 					sE.queueScriptEntries(player, sE.buildScriptEntries(player, denizen, theScript, theScriptName, 1), QueueType.TASK);		
 					player.removeMetadata(theScriptName, plugin);
@@ -114,7 +114,7 @@ public class RunTaskCommand extends AbstractCommand {
 		}
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
-		List<String> theScript = sE.getScript(theScriptName);
+		List<String> theScript = sE.getScript(theScriptName + ".Script");
 		if (theScript.isEmpty()) return false;
 		sE.queueScriptEntries(theEntry.getPlayer(), sE.buildScriptEntries(theEntry.getPlayer(), executer, theScript, theScriptName, 1), QueueType.TASK);	
 

@@ -68,14 +68,14 @@ public class RandomCommand extends AbstractCommand {
 			return false;
 		}
 
-		Random random = new Random(numberOfEntries);
-		int selected = random.nextInt();
+		Random random = new Random();
+		int selected = random.nextInt(numberOfEntries);
 		ScriptEntry sEtoKeep = null;
 
-		aH.echoDebug("...random number generator selected '%s'", String.valueOf(selected));
+		aH.echoDebug("...random number generator selected '%s'", String.valueOf(selected + 1));
 		
 		for (int x = 0; x < numberOfEntries; x++) {
-			if (x != random.nextInt()) {
+			if (x != selected) {
 				aH.echoDebug("...removing '%s'", currentQueue.get(0).getCommand());
 				currentQueue.remove(0);
 			} else {

@@ -76,7 +76,7 @@ public class ExecuteCommand extends AbstractCommand {
 			}
 
 			else {
-				commandtoExecute = thisArg
+				commandtoExecute = aH.fillFlags(theEntry.getPlayer(), thisArg)
 						.replace("<PLAYER>", theEntry.getPlayer().getName())
 						.replace("<WORLD>", theEntry.getPlayer().getWorld().getName());
 			}
