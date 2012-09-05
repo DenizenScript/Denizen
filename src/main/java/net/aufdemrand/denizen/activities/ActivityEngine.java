@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.runnables.OneItemRunnable;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.waypoint.Waypoints;
 
 public class ActivityEngine implements Listener {
 
@@ -104,6 +105,12 @@ public class ActivityEngine implements Listener {
 			return;
 		}
 
+		// Remove waypoints
+		if (theDenizen.getCitizensEntity().hasTrait(Waypoints.class)) {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "This NPC currently has Waypoints loaded. These have been paused. Use the Denizen command RESUME WAYPOINTS to resume them.");
+			theDenizen.getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(true);
+		}
+		
 		// Remove all activities for the DenizenNPC
 		plugin.getActivityRegistry().removeAllActivities(theDenizen.getCitizensEntity());
 

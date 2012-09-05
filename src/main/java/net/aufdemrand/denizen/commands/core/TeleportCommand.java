@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
 import org.bukkit.Location;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;

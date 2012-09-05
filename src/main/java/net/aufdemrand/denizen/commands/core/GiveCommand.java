@@ -2,12 +2,9 @@ package net.aufdemrand.denizen.commands.core;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import org.bukkit.inventory.ItemStack;
 
-import com.herocraftonline.heroes.Heroes;
-import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass.ExperienceType;
 

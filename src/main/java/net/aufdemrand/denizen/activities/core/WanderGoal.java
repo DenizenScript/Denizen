@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.activities.core;
 
 import java.util.ArrayList;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

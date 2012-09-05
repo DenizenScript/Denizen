@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.citizensnpcs.command.exception.CommandException;
 
 public class Executer {
 

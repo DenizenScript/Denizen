@@ -2,23 +2,18 @@ package net.aufdemrand.denizen.commands.core;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.runnables.FourItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.command.exception.CommandException;
-import net.citizensnpcs.*;
 import net.minecraft.server.EntityLiving;
 
 

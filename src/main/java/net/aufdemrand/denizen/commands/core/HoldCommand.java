@@ -4,15 +4,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.runnables.FourItemRunnable;
 import net.aufdemrand.denizen.runnables.ThreeItemRunnable;
-import net.aufdemrand.denizen.runnables.TwoItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 

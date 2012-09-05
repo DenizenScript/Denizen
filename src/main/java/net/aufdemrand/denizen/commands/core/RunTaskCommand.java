@@ -1,13 +1,11 @@
 package net.aufdemrand.denizen.commands.core;
 
 import java.util.List;
-import java.util.Random;
 
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.runnables.FiveItemRunnable;
 import net.aufdemrand.denizen.runnables.FourItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptHelper;

@@ -3,14 +3,11 @@ package net.aufdemrand.denizen.commands.core;
 import java.util.logging.Level;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
-import net.minecraft.server.Block;
 
 /**
  * Your command! 

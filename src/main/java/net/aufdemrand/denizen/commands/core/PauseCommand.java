@@ -6,7 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.ChatColor;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.runnables.OneItemRunnable;
+import net.aufdemrand.denizen.runnables.TwoItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
@@ -38,7 +40,7 @@ public class PauseCommand extends AbstractCommand {
 	 * COMMAND_NAME ANOTHERVALUE 'MODIFIER:Show one-line examples.'
 	 * 
 	 */
-	
+
 	private Map<String, Integer> taskMap = new ConcurrentHashMap<String, Integer>();
 
 	@Override
@@ -47,6 +49,7 @@ public class PauseCommand extends AbstractCommand {
 		/* Initialize variables */ 
 
 		Integer duration = null;
+		boolean waypoints = false;
 
 		/* Match arguments to expected variables */
 		if (theEntry.arguments() != null)
@@ -57,21 +60,38 @@ public class PauseCommand extends AbstractCommand {
 					aH.echoDebug("...duration set to '%s'.", thisArg);
 				}
 
+				else if (thisArg.contains("WAYPOINTS")) {
+					waypoints = true;
+					aH.echoDebug("...affecting WAYPOINTS.", thisArg);
+				}
+
 				else 
 					aH.echoError("...could not match '%s'!", thisArg);
+
+
 			}
 
 
 		if (theEntry.getCommand().equalsIgnoreCase("RESUME")) {
-			theEntry.getDenizen().getCitizensEntity().getDefaultGoalController().setPaused(false);
+			if (waypoints) {
+				if (theEntry.getDenizen().getCitizensEntity().hasTrait(Waypoints.class))
+					theEntry.getDenizen().getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(false);
+			} else
+				theEntry.getDenizen().getCitizensEntity().getDefaultGoalController().setPaused(false);
 			return true;
 		}
 
-		// Pause GoalController!
-		theEntry.getDenizen().getCitizensEntity().getDefaultGoalController().setPaused(true);
+		// Pause GoalController or waypoints!
+		if (waypoints) {
+			if (theEntry.getDenizen().getCitizensEntity().hasTrait(Waypoints.class)) {
+				theEntry.getDenizen().getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(true);
+				theEntry.getDenizen().getNavigator().cancelNavigation();
+			}
+		} else {
+			theEntry.getDenizen().getCitizensEntity().getDefaultGoalController().setPaused(true);
+			theEntry.getDenizen().getNavigator().cancelNavigation();
+		}
 
-		
-		
 		if (duration != null) 
 
 			if (taskMap.containsKey(theEntry.getDenizen().getName())) {
@@ -79,15 +99,23 @@ public class PauseCommand extends AbstractCommand {
 					plugin.getServer().getScheduler().cancelTask(taskMap.get(theEntry.getDenizen().getName()));
 				} catch (Exception e) { }
 			}
-			aH.echoDebug("Setting delayed task: UNPAUSE GOAL SELECTOR.");
+		aH.echoDebug("Setting delayed task: UNPAUSE GOAL SELECTOR.");
 
-			taskMap.put(theEntry.getDenizen().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new OneItemRunnable<NPC>(theEntry.getDenizen().getCitizensEntity()) {
-				@Override
-				public void run(NPC theNPC) { 
-					aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: UNPAUSE GOAL SELECTOR.");
-					theNPC.getDefaultGoalController().setPaused(false);
+		taskMap.put(theEntry.getDenizen().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new TwoItemRunnable<DenizenNPC, Boolean>(theEntry.getDenizen(), waypoints) {
+			@Override
+			public void run(DenizenNPC theNPC, Boolean waypoints) { 
+				aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: UNPAUSE GOAL SELECTOR for '%s'.", theNPC.getName());
+				if (waypoints) {
+					if (theNPC.getCitizensEntity().hasTrait(Waypoints.class)) {
+						theNPC.getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(false);
+						theNPC.getNavigator().cancelNavigation();
+					}
+				} else {
+					theNPC.getCitizensEntity().getDefaultGoalController().setPaused(false);
+					theNPC.getNavigator().cancelNavigation();
 				}
-			}, duration * 20));
+			}
+		}, duration * 20));
 
 
 		return true;

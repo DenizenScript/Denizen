@@ -1,12 +1,9 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
 import org.bukkit.Location;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**

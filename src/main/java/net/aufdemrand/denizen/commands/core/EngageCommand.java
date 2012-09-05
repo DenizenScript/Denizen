@@ -6,7 +6,6 @@ import java.util.Map;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**

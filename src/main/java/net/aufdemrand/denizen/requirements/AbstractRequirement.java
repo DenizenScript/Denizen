@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public abstract class AbstractRequirement {

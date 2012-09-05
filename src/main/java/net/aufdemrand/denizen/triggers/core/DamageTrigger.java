@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.triggers.core;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.DenizenTrait;

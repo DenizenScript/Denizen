@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.commands;
 
 import java.rmi.activation.ActivationException;
-import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.ScriptEntry;

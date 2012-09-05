@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.logging.Level;
 
 import net.aufdemrand.denizen.activities.AbstractActivity;
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import org.bukkit.Location;
 import org.bukkit.Material;

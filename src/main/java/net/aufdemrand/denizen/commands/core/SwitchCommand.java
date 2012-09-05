@@ -12,7 +12,6 @@ import org.bukkit.craftbukkit.CraftWorld;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.runnables.OneItemRunnable;
-import net.aufdemrand.denizen.runnables.TwoItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 

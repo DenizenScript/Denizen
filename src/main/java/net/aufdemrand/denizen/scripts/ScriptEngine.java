@@ -9,9 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.citizensnpcs.api.npc.NPC;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
-import net.aufdemrand.events.ScriptFinishEvent;
 import net.aufdemrand.events.ScriptQueueEvent;
 
 import org.bukkit.Bukkit;

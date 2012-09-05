@@ -1,17 +1,11 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
 
 /**

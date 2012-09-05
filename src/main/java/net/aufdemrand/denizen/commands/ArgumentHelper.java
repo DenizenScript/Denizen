@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.commands;
 
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.bookmarks.BookmarkHelper.BookmarkType;

@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.commands.core;
 
-import java.util.logging.Level;
-
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
