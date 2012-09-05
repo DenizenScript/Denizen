@@ -7,10 +7,8 @@ import org.bukkit.ChatColor;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.runnables.OneItemRunnable;
 import net.aufdemrand.denizen.runnables.TwoItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 
@@ -60,7 +58,7 @@ public class PauseCommand extends AbstractCommand {
 					aH.echoDebug("...duration set to '%s'.", thisArg);
 				}
 
-				else if (thisArg.contains("WAYPOINTS")) {
+				else if (thisArg.toUpperCase().contains("WAYPOINTS")) {
 					waypoints = true;
 					aH.echoDebug("...affecting WAYPOINTS.", thisArg);
 				}

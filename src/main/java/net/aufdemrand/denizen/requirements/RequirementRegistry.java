@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.requirements.core.FlaggedRequirement;
 import net.aufdemrand.denizen.requirements.core.HeroesRequirement;
 import net.aufdemrand.denizen.requirements.core.LiquidRequirement;
+import net.aufdemrand.denizen.requirements.core.OwnerRequirement;
 import net.aufdemrand.denizen.requirements.core.PoweredRequirement;
 
 public class RequirementRegistry {
@@ -55,11 +56,13 @@ public class RequirementRegistry {
 		PoweredRequirement poweredRequirement = new PoweredRequirement();
 		LiquidRequirement liquidRequirement = new LiquidRequirement();
 		HeroesRequirement heroesRequirement = new HeroesRequirement();
+		OwnerRequirement ownerRequirement = new OwnerRequirement();
 		
 		plugin.getLogger().info("Loading LEGACY requirements...DONE!");
 		
 		try {
 			heroesRequirement.activateAs("HEROESCLASS");
+			ownerRequirement.activateAs("OWNER");
 			flaggedRequirement.activateAs("FLAGGED");
 			poweredRequirement.activateAs("ISPOWERED");
 			liquidRequirement.activateAs("ISLIQUID");
