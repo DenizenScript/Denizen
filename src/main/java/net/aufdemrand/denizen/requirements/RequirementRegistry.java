@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.requirements.core.HeroesRequirement;
 import net.aufdemrand.denizen.requirements.core.LiquidRequirement;
 import net.aufdemrand.denizen.requirements.core.OwnerRequirement;
 import net.aufdemrand.denizen.requirements.core.PoweredRequirement;
+import net.aufdemrand.denizen.requirements.core.SneakingRequirement;
 
 public class RequirementRegistry {
 
@@ -57,10 +58,12 @@ public class RequirementRegistry {
 		LiquidRequirement liquidRequirement = new LiquidRequirement();
 		HeroesRequirement heroesRequirement = new HeroesRequirement();
 		OwnerRequirement ownerRequirement = new OwnerRequirement();
+		SneakingRequirement sneakingRequirement = new SneakingRequirement();
 		
 		plugin.getLogger().info("Loading LEGACY requirements...DONE!");
 		
 		try {
+			sneakingRequirement.activateAs("SNEAKING");
 			heroesRequirement.activateAs("HEROESCLASS");
 			ownerRequirement.activateAs("OWNER");
 			flaggedRequirement.activateAs("FLAGGED");
