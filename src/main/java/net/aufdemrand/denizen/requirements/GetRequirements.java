@@ -78,13 +78,18 @@ public class GetRequirements {
 
 			if (plugin.getRequirementRegistry().listRequirements().containsKey(requirementEntry.split(" ")[0].toUpperCase())) {
 
+				String[] builtArgs = null;
+
+				if (requirementEntry.split(" ").length > 1) 
+					builtArgs = plugin.getScriptEngine().helper.buildArgs(requirementEntry.split(" ", 2)[1]);
+
 				if (!negativeRequirement) {
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Checking Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'");
 				} else {
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Checking NEGATIVE Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'");
 				}
 
-				if (plugin.getRequirementRegistry().getRequirement(requirementEntry.split(" ")[0].toUpperCase()).check((Player) theEntity, theDenizen, theScript, plugin.getScriptEngine().helper.buildArgs(requirementEntry.split(" ", 2)[1]), negativeRequirement)) {
+				if (plugin.getRequirementRegistry().getRequirement(requirementEntry.split(" ")[0].toUpperCase()).check((Player) theEntity, theDenizen, theScript, builtArgs, negativeRequirement)) {
 					numberMet++;
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "" + ChatColor.WHITE + "Requirement met!");
 				}
@@ -206,7 +211,7 @@ public class GetRequirements {
 				}
 
 				String debugger = "";
-				
+
 				if (!negativeRequirement) { 
 					if (plugin.debugMode) debugger = debugger + "Checking LEGACY Requirement '" + requirementEntry.split(" ")[0].toUpperCase() + "'... ";
 				} else {
@@ -218,7 +223,7 @@ public class GetRequirements {
 				} else {
 					if (plugin.debugMode) debugger = debugger + "requirement met!";
 				}
-				
+
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + debugger);
 
 			}

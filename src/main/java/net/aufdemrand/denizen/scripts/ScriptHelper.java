@@ -294,7 +294,12 @@ public class ScriptHelper {
 				// Add unquoted word
 				matchList.add(regexMatcher.group());
 			}
-		} 
+		}
+		
+		// Check for build-time flags.
+		// List<String> flaggedList = new ArrayList<String>();
+		// for ()
+		
 		String[] split = new String[matchList.size()];
 		matchList.toArray(split);
 
