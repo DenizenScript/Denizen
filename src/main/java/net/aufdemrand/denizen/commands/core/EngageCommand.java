@@ -53,6 +53,12 @@ public class EngageCommand extends AbstractCommand {
 					timedEngage = Integer.valueOf(thisArg);
 					aH.echoDebug("...engage duration set to '%s'.", thisArg);
 				}
+				
+				// If argument is a duration
+				else if (aH.matchesDuration(thisArg)) {
+					timedEngage = aH.getIntegerModifier(thisArg);
+					aH.echoDebug("...engage duration set to '%s'.", thisArg);
+				}
 
 				// If argument is a NPCID: modifier
 				else if (aH.matchesNPCID(thisArg)) {

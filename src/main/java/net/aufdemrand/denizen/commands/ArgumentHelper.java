@@ -289,6 +289,58 @@ public class ArgumentHelper {
 		return filledString;
 	}
 
+	
+	
+	final public Pattern replaceableBuildFlagWithFallback = Pattern.compile("(<)(\\^)(FLAG|flag|Flag)(:)(.*?)(:)(.*?)(>)");
+	final public Pattern replaceableBuildFlag = Pattern.compile("(<)(\\^)(FLAG|flag|Flag)(:)(.*?)(>)");
+	public String fillBuildFlags(Player thePlayer, String stringToFill) {
+
+		if (stringToFill == null) return null;
+		String filledString = stringToFill;
+		Matcher fF = replaceableBuildFlagWithFallback.matcher(stringToFill);
+		String searchString = "Global";
+		if (thePlayer != null) searchString = "Players." + thePlayer.getName();
+
+		while (fF.find()) {
+			if (plugin.getSaves().contains(searchString + ".Flags." + fF.group(5).toUpperCase())) {
+				filledString = fF.replaceFirst(plugin.getSaves().getString(searchString + ".Flags." + fF.group(5).toUpperCase()));
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", fF.group(5));
+			}
+			else if (plugin.getSaves().contains("Global.Flags." + fF.group(5).toUpperCase())) {
+				filledString = fF.replaceFirst(plugin.getSaves().getString("Global.Flags." + fF.group(5).toUpperCase()));
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", fF.group(5));
+			}
+			// No flags found, use fallback text
+			else {
+				filledString = fF.replaceFirst(fF.group(7));
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with fallback value.", fF.group(5));
+			}
+		}
+
+		stringToFill = filledString;
+
+		// okay, now check for without fallback.
+		Matcher f = replaceableBuildFlag.matcher(stringToFill);
+
+		while (f.find()) {
+			if (plugin.getSaves().contains(searchString + ".Flags." + f.group(5).toUpperCase())) {
+				filledString = f.replaceFirst(plugin.getSaves().getString(searchString + ".Flags." + f.group(5).toUpperCase()));
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(5));
+			}
+			else if (plugin.getSaves().contains("Global.Flags." + f.group(5).toUpperCase())){
+				filledString = f.replaceFirst(plugin.getSaves().getString("Global.Flags." + f.group(5).toUpperCase()));
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(5));
+			}
+			// No flags found, use ""
+			else  {
+				filledString = f.replaceFirst("");
+				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with nothing, no flag value found.", f.group(5));
+			}
+		}
+
+		return filledString;
+	}
+
 
 
 

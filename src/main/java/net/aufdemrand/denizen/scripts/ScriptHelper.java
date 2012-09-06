@@ -276,7 +276,12 @@ public class ScriptHelper {
 	 * as this is pretty much a copy/paste.
 	 */
 
-	public String[] buildArgs(String stringArgs) {
+	@Deprecated
+	public String[] buildArgs(String stringArgs) { 
+		return buildArgs(null, stringArgs);
+	}
+	
+	public String[] buildArgs(Player thePlayer, String stringArgs) {
 
 		if (stringArgs == null) return null;
 
@@ -295,17 +300,18 @@ public class ScriptHelper {
 				matchList.add(regexMatcher.group());
 			}
 		}
-		
-		// Check for build-time flags.
-		// List<String> flaggedList = new ArrayList<String>();
-		// for ()
-		
-		String[] split = new String[matchList.size()];
-		matchList.toArray(split);
 
 		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
-		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GRAY + "Args: " + Arrays.toString(split));
-	
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GRAY + "Args: " + Arrays.toString(matchList.toArray()));
+		
+		// Check for build-time flags.
+		List<String> flaggedList = new ArrayList<String>();
+		for (String arg : matchList) {
+			flaggedList.add(plugin.getCommandRegistry().getArgumentHelper().fillBuildFlags(thePlayer, arg));
+		}
+		
+		String[] split = new String[flaggedList.size()];
+		flaggedList.toArray(split);
 
 		return split;
 	}
@@ -405,7 +411,7 @@ public class ScriptHelper {
 			try {
 				/* Build new script commands */
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command.");
-				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theScriptName));
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(thePlayer, scriptEntry[1]), thePlayer, theScriptName));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -446,7 +452,7 @@ public class ScriptHelper {
 			try {
 				/* Build new script commands */
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command.");
-				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep));
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(thePlayer, scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -485,7 +491,7 @@ public class ScriptHelper {
 			try {
 				/* Build new script commands */
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command.");
-				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep, playerMessage, theText));
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(thePlayer, scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep, playerMessage, theText));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
