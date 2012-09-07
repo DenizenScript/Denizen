@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.activities.core.TaskActivity;
 import net.aufdemrand.denizen.activities.core.WanderActivity;
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.npc.NPC;
 
 
@@ -54,11 +56,13 @@ public class ActivityRegistry {
 	public void registerCoreActivities() {
 
 		WanderActivity wanderActivity = new WanderActivity();
-
+		TaskActivity taskActivity = new TaskActivity();
+		
 		/* Activate Denizen Triggers */
 		try {
 
 			wanderActivity.activateAs("WANDER");
+			taskActivity.activateAs("TASK");
 
 		} catch (ActivationException e) {
 			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core triggers!");
@@ -67,9 +71,9 @@ public class ActivityRegistry {
 	}
 
 
-	public void addActivity(String activity, NPC theDenizen, String[] args, int priority) {
+	public void addActivity(String activity, DenizenNPC theDenizen, String[] args, int priority) {
 		if (activities.containsKey(activity.toUpperCase()))
-			activities.get(activity.toUpperCase()).addGoal(plugin.getDenizenNPCRegistry().getDenizen(theDenizen), args, priority);
+			activities.get(activity.toUpperCase()).addGoal(theDenizen, args, priority);
 		else
 			plugin.getLogger().log(Level.SEVERE, "'" + activity + "' is an invalid activity!");
 	}

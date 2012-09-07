@@ -1,57 +1,77 @@
-# Send stacktraces of errors anonymously to aufdemrand? This helps fix
-# problems faster since all errors are sent automatically.
-send_errors_automatically: true
-
-# Interact delay sets the pace of the 'Player Queue' and 'Denizen Queue' 
-# execution, which is where commands triggered by scripts are stored.
-# Recommend 10-20. (Default, 10)
-interact_delay_in_ticks: 10
-
+# OPs can sneak and right click a NPC to see information about the NPC. If disabled,
+# the command '/denizen info' can still be used to obtain the information.
+right_click_and_sneak_info_mode_enabled: true
+ 
+# Default time in seconds of cooldown set to Denizens when a trigger is triggered.
+default_click_cooldown_in_seconds: 2.0
+default_location_cooldown_in_seconds: 30.0
+default_proximity_cooldown_in_seconds: 15.0
+default_death_cooldown_in_seconds: 0.0
+default_damage_cooldown_in_seconds: 0.5
+default_chat_cooldown_in_seconds: 2.0
+ 
+# if the damage trigger (left click) is disabled. Select false if you would prefer
+# to have click triggers activate with the right mouse button only.
+disabled_damage_trigger_instead_triggers_click: false
+ 
 # Default engage timeout. When NPCs are set to ENGAGE, this is the default timeout
 # that they DISENGAGE if not specified. (Default, 5 minutes)
 engage_timeout_in_seconds: 150
-
-# How long should the maximum line length be for multi-line text? (Default, 55)
+ 
+# Interact delay sets the pace of the 'Player Queue' and 'Denizen Queue' 
+# execution, which is where commands triggered by scripts are stored.
+# Recommend 10-20.
+interact_delay_in_ticks: 10
+ 
+# How long should the maximum line length be for multi-line text?
 multi_line_text_maximum_length: 55
-
+ 
 # By default, players can talk to Denizens even if there are no
 # chat triggers in the script. I believe this is best for RPG-type
 # behavior. Change this to true if you would like chat near a 
 # Denizen to be global if there are no chat triggers for the
-# script being triggered. (Default, false)
+# script being triggered.
 chat_globally_if_no_chat_triggers: false
-
+ 
 # Furthermore, if there are chat triggers available, and the Player
 # doesn't match one, should the player still talk and recieve a
 # response from the Denizen, or should he just chat globally and
 # ignore the Denizen. Change this to true if you would like
 # chat near a Denizen to be global if there are available chat
-# triggers, but the player failed to match one. (Default, false)
+# triggers, but the player failed to match one.
 chat_globally_if_failed_chat_triggers: false
-
+ 
+# Also.. if the Denizen happens to be un-interactable 
+# (Engaged, or not cooled-down, for instance), by default
+# chat is still targeted to the NPC. You can turn this
+# behavior off by changing this config node to true.
+chat_globally_if_not_interactable: false
+ 
 # Should players around the player interacting with the Denizen
-# hear the conversation? (Default, true)
+# hear the conversation?
 bystanders_hear_player_to_npc_chat: true
 bystanders_hear_npc_to_player_chat: true
-
+ 
 # This set of nodes defines ranges for different types of
 # chat/interaction/etc.
-player_to_npc_chat_range_in_blocks: 3       # (Default 3)
-npc_to_player_chat_range_in_blocks: 7       # (Default 7)
-npc_emote_range_in_blocks: 7                # (Default 7)
-player_to_npc_shout_range_in_blocks: 15     # (Default 15)
-npc_to_player_shout_range_in_blocks: 15     # (Default 15)
-player_to_npc_whisper_range_in_blocks: 3    # (Default 3)
-npc_to_player_whisper_range_in_blocks: 3    # (Default 3)
-
+player_to_npc_chat_range_in_blocks: 3
+npc_to_player_chat_range_in_blocks: 7
+npc_emote_range_in_blocks: 7
+player_to_npc_shout_range_in_blocks: 15
+npc_to_player_shout_range_in_blocks: 15
+player_to_npc_whisper_range_in_blocks: 2
+npc_to_player_whisper_range_in_blocks: 5
+proximity_trigger_range_in_blocks: 3
+location_trigger_range_in_blocks: 1
+ 
 # These nodes define how chatting, shouting, etc. is displayed
 # to players in the game. <PLAYER>, <NPC>, and <TEXT> are all
 # replaceable variables. Remember to use " around your string
 # if your text contains a single apostrophe.
 player_chat_to_npc: "You say to <NPC>, '<TEXT>'"
 player_chat_to_npc_bystander: "<PLAYER> says to <NPC>, '<TEXT>'"
-npc_chat_to_bystanders: "<NPC> says, '<TEXT>'"
-npc_chat_to_player: "<NPC> says to you, '<TEXT>'"
+npc_chat_to_bystanders: "§4§l<NPC>§r says, '<TEXT>'"
+npc_chat_to_player: "§4§l<NPC>§r says to you, '<TEXT>'"
 npc_chat_to_player_bystander: "<NPC> says to <PLAYER>, '<TEXT>'"
 
 player_whisper_to_npc: "You whisper to <NPC>, '<TEXT>'"
@@ -66,8 +86,12 @@ npc_shout_to_bystanders: "<NPC> shouts, '<TEXT>'"
 npc_shout_to_player: "<NPC> shouts at you, '<TEXT>'"
 npc_shout_to_player_bystander: "<NPC> shouts at <PLAYER>, '<TEXT>'"
 
+npc_hint_prefix: "[HINT] You can say: "
+ 
 # Default texts that Denizens use when interacting. These
 # can also be set per-denizen, which will override the
 # defaults set below.
-default_no_requirements_met_text: Sorry, I have nothing else for you right now.
-default_no_chat_triggers_met_text: Perhaps you can tell me more clearly what it is you need.
+default_denizen_unavailable_text: "I'm busy at the moment, can't you see?"
+default_no_click_trigger_text: "I have nothing else for you right now."
+default_no_damage_trigger_text: "Ouch! That hurts!"
+default_no_chat_trigger_text: "Sorry, I don't understand."

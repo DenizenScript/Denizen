@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.citizensnpcs.api.npc.NPC;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.events.ScriptQueueEvent;
 
 import org.bukkit.Bukkit;
@@ -43,7 +44,7 @@ public class ScriptEngine {
 
 	private Map<Player, List<ScriptEntry>> triggerQue = new ConcurrentHashMap<Player, List<ScriptEntry>>();
 	private Map<Player, List<ScriptEntry>>    taskQue = new ConcurrentHashMap<Player, List<ScriptEntry>>();
-	private Map<NPC, List<ScriptEntry>>   activityQue = new ConcurrentHashMap<NPC, List<ScriptEntry>>();
+	private Map<DenizenNPC, List<ScriptEntry>>   activityQue = new ConcurrentHashMap<DenizenNPC, List<ScriptEntry>>();
 
 
 	/* Processes commands from the Queues. */
@@ -142,18 +143,45 @@ public class ScriptEngine {
 			/* Next Player */
 		}
 
+		// ACTIVITY QUEUE!
+		
+		if (!activityQue.isEmpty()) {	
+			for (Entry<DenizenNPC, List<ScriptEntry>> theEntry : activityQue.entrySet()) {
+				if (!theEntry.getValue().isEmpty()) {
+					if (theEntry.getValue().get(0).getDelayedTime() < System.currentTimeMillis()) {
+						boolean instantly;
+						do { 
+							instantly = false;
+							ScriptEntry theCommand = theEntry.getValue().get(0);
+							theCommand.setSendingQueue(QueueType.ACTIVITY);
 
-		/* 
-		 * TODO: activityQue
-		 */
+							// Instant command check
+							if (theEntry.getValue().size() > 1
+									&& theEntry.getValue().get(0).isInstant())
+								instantly = true; 
+							// ----
 
+							theEntry.getValue().remove(0);
+							activityQue.put(theEntry.getKey(), theEntry.getValue());
+
+							plugin.executer.execute(theCommand);
+
+						} while (instantly);
+
+					}
+				}
+			}
+			/* Next Denizen */
+		}
+
+		
 	}
 
 
 
 
-	/* Parses the script for a task trigger */
-
+	@Deprecated
+	// Is this still used????
 	public boolean parseTaskScript(Player thePlayer, String theScript) {
 
 		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
@@ -246,12 +274,44 @@ public class ScriptEngine {
 		return;
 	}
 
+	/** Injects commands into a QueueType  */
 
-	public void injectToQue(Denizen theDenizen, List<ScriptEntry> scriptCommands, QueueType queueType, int thePosition) {
+	public void injectToQueue(DenizenNPC theDenizen, List<ScriptEntry> scriptCommands, QueueType queueType, int thePosition) {
 
-		/* 
-		 * TODO: ActivityQue injection sequence
-		 */
+		List<ScriptEntry> scriptCommandList = new ArrayList<ScriptEntry>();
+
+		switch (queueType) {
+
+		case ACTIVITY:
+			scriptCommandList = activityQue.get(theDenizen);
+			triggerQue.remove(theDenizen); 
+			if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
+			if (scriptCommandList.size() == 0) thePosition = 0;
+			scriptCommandList.addAll(thePosition, scriptCommands);
+			activityQue.put(theDenizen, scriptCommandList);
+			break;
+		}
+
+		return;
+	}
+
+	public void injectToQue(DenizenNPC theDenizen, ScriptEntry scriptCommand, QueueType queueType, int thePosition) {
+
+		List<ScriptEntry> scriptCommandList = new ArrayList<ScriptEntry>();
+
+		switch (queueType) {
+
+		case ACTIVITY:
+			scriptCommandList = activityQue.get(theDenizen);
+			activityQue.remove(theDenizen); 
+			if (thePosition > scriptCommandList.size() || thePosition < 0) thePosition = 1;
+			if (scriptCommandList.size() == 0) thePosition = 0;
+			scriptCommandList.add(thePosition, scriptCommand);
+			activityQue.put(theDenizen, scriptCommandList);
+			break;
+		}
+		
+		return;
 
 	}
 
@@ -272,7 +332,19 @@ public class ScriptEngine {
 		return null;
 	}
 
+	public Map<DenizenNPC, List<ScriptEntry>> getDQueue(QueueType queueType) {
 
+		switch (queueType) {
+
+		case ACTIVITY:
+			return activityQue;
+		}
+
+		return null;
+	}
+
+	
+	
 	/** Adds commands to a QueueType  */
 
 	public void addToQue(Player thePlayer, List<ScriptEntry> scriptCommands, QueueType queueType) {
@@ -299,19 +371,29 @@ public class ScriptEngine {
 		return;
 	}
 
-	public void addToQue(Denizen theDenizen, List<ScriptEntry> scriptCommands, QueueType queueType) {
+	public void addToQue(DenizenNPC theDenizen, List<ScriptEntry> scriptCommands, QueueType queueType) {
+		List<ScriptEntry> scriptCommandList;
 
-		/* 
-		 * TODO: ActivityQue add sequence
-		 */
+		switch (queueType) {
+
+		case ACTIVITY:
+			scriptCommandList = activityQue.get(theDenizen);
+			activityQue.remove(theDenizen); 
+			scriptCommandList.addAll(scriptCommands);
+			activityQue.put(theDenizen, scriptCommandList);
+			break;
+		}
+		
+		return;
 
 	}
 
+	
 	public List<ScriptEntry> getPlayerQueue(Player thePlayer, QueueType sendingQueue) {
 		return getQueue(sendingQueue).get(thePlayer);
 	}
 
-
+	
 	// Use with care! This could be confusing to the player if not properly used!
 	public void replacePlayerQue(Player thePlayer, List<ScriptEntry> scriptCommands, QueueType queueType) {
 

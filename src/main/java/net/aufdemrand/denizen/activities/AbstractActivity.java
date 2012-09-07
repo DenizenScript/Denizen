@@ -10,7 +10,7 @@ import org.bukkit.Bukkit;
 
 public abstract class AbstractActivity {
 
-	protected Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 	public String activityName;
 	
 	public ArgumentHelper aH = plugin.getCommandRegistry().getArgumentHelper();

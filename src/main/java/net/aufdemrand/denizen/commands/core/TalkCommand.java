@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
+import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
@@ -55,6 +56,8 @@ public class TalkCommand extends AbstractCommand {
 			aH.echoError("Woah! Lots of arguments detected in " + theEntry.getCommand() + ".  Perhaps you are failing to enclose your Talk Text in quotes?  Example usage: CHAT 'Hello world!'");
 		} else {
 
+			if (theEntry.getPlayer() == null) noPlayer = true;
+			
 			for (String thisArg : theEntry.arguments()) {
 
 				if (thisArg.toUpperCase().equalsIgnoreCase("NOPLAYER")) {
@@ -85,6 +88,11 @@ public class TalkCommand extends AbstractCommand {
 		if (theDenizen == null && !theEntry.getCommand().equals("NARRATE")) {
 				aH.echoError("Seems this was sent from a TASK-type script. Must specify NPCID:#!");
 				return false;
+		}
+		
+		if (theEntry.getCommand().equals("NARRATE") && theEntry.sendingQueue() == QueueType.ACTIVITY) {
+			aH.echoError("NARRATE is not applicable to an ACTIVITY Task.");
+			return false;
 		}
 
 		/* Execute the command, if all required variables are filled. */

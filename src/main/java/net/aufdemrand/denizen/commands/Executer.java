@@ -31,7 +31,11 @@ public class Executer {
 
 			AbstractCommand command = plugin.getCommandRegistry().getCommand(theCommand.getCommand());
 
-			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Executing command: " + theCommand.getCommand() + "/" + theCommand.getPlayer().getName() + " -+");
+			
+			if (plugin.debugMode) {
+				if (theCommand.getPlayer() != null) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Executing command: " + theCommand.getCommand() + "/" + theCommand.getPlayer().getName() + " -+");
+				else cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Executing command: " + theCommand.getCommand() + "/" + theCommand.getDenizen().getName() + " -+");
+			}
 
 			try {
 				if (command.execute(theCommand)) {

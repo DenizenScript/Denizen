@@ -118,7 +118,7 @@ public class ActivityEngine implements Listener {
 			String[] arguments = plugin.getScriptEngine().helper.buildArgs(activity.split(" ", 3)[2]);
 			int priority = Integer.parseInt(activity.split(" ", 3)[0]);
 			activity = activity.split(" ", 3)[1];
-			plugin.getActivityRegistry().addActivity(activity, theDenizen.getCitizensEntity(), arguments, priority);
+			plugin.getActivityRegistry().addActivity(activity, theDenizen, arguments, priority);
 		}
 
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");

@@ -106,7 +106,7 @@ public class ScriptHelper {
 	public String getInteractScript(DenizenNPC theDenizen, Player thePlayer, Class<? extends AbstractTrigger> theTrigger) {
 
 		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
-		
+
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Getting interact script: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 
 		String theScript = null;
@@ -280,7 +280,7 @@ public class ScriptHelper {
 	public String[] buildArgs(String stringArgs) { 
 		return buildArgs(null, stringArgs);
 	}
-	
+
 	public String[] buildArgs(Player thePlayer, String stringArgs) {
 
 		if (stringArgs == null) return null;
@@ -303,13 +303,13 @@ public class ScriptHelper {
 
 		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GRAY + "Args: " + Arrays.toString(matchList.toArray()));
-		
+
 		// Check for build-time flags.
 		List<String> flaggedList = new ArrayList<String>();
 		for (String arg : matchList) {
 			flaggedList.add(plugin.getCommandRegistry().getArgumentHelper().fillBuildFlags(thePlayer, arg));
 		}
-		
+
 		String[] split = new String[flaggedList.size()];
 		flaggedList.toArray(split);
 
@@ -331,7 +331,7 @@ public class ScriptHelper {
 	public List<String> getScript(String triggerPath) {
 
 		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
-		
+
 		List<String> scriptList = new ArrayList<String>();
 
 		if (plugin.getScripts().contains(triggerPath.replace("..", "."))) {
@@ -343,7 +343,7 @@ public class ScriptHelper {
 			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + triggerPath.replace("..", "."));
 			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Check YML spacing, or is something spelled wrong in your script?");
 		}
-		
+
 		return scriptList;
 	}
 
@@ -380,7 +380,7 @@ public class ScriptHelper {
 	/* 
 	 * Builds/Queues ScriptEntry(ies) of items read from a script. 
 	 */
-	
+
 	// Build scriptEntries for "Task"-type triggers
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, List<String> theScript, String theScriptName) {
 
@@ -419,9 +419,9 @@ public class ScriptHelper {
 		return scriptCommands;
 	}
 
-	
-	
-	
+
+
+
 	// Build scriptEntries for "Interact"-type triggers
 	public List<ScriptEntry> buildScriptEntries(Player thePlayer, DenizenNPC theDenizen, List<String> theScript, String theScriptName, Integer theStep) {
 
@@ -539,6 +539,91 @@ public class ScriptHelper {
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY!");
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 	}
+
+
+	// For Denizen Activity Queue
+	public void queueScriptEntries(DenizenNPC theDenizen, List<ScriptEntry> scriptEntries, QueueType queueType) {
+
+		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Queueing script to Denizen Queue:");
+
+		if (scriptEntries == null) {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "No entries to queue!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
+			return;
+		}
+
+		if (scriptEntries.isEmpty()) {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "No entries to queue!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
+			return;
+		}
+
+		Map<DenizenNPC, List<ScriptEntry>> thisQueue = plugin.getScriptEngine().getDQueue(queueType);
+		List<ScriptEntry> existingScriptEntries = new ArrayList<ScriptEntry>();
+
+		if (thisQueue.containsKey(theDenizen))
+			existingScriptEntries.addAll(thisQueue.get(theDenizen));
+
+		/* Keeps the commandQue from removing items while
+		working on them here. They will be added back in. */ 
+		thisQueue.remove(theDenizen); 
+
+		if (!scriptEntries.isEmpty())
+			existingScriptEntries.addAll(scriptEntries);
+		else {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "No entries to queue!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
+		}
+
+		thisQueue.put(theDenizen, existingScriptEntries);
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY!");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
+	}
+
+
+
+
+	// Build scriptEntries for "Task"-type triggers
+	public List<ScriptEntry> buildScriptEntries(DenizenNPC theDenizen, List<String> theScript, String theScriptName) {
+
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| ");
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Building the script:");
+
+		if (theScript == null) {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "...no entries to build!");
+			return null;
+		}
+
+		if (theScript.isEmpty()) {
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "...no entries to build!");
+			return null;
+		}
+
+		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
+
+		for (String thisItem : theScript) {
+			String[] scriptEntry = new String[2];
+			if (thisItem.split(" ", 2).length == 1) {
+				scriptEntry[0] = thisItem;
+				scriptEntry[1] = null;
+			} else {
+				scriptEntry = thisItem.split(" ", 2);
+			}
+
+			try {
+				if (plugin.getCommandRegistry().getCommand(scriptEntry[0]).activityQueueCompatible) {
+					/* Build new script commands */
+					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command for " + theDenizen.getName() + ".");
+					scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(null, scriptEntry[1]), theDenizen, theScriptName));
+				} else if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "'" + scriptEntry[0] + "' command is not compatible with the Activity Queue.");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return scriptCommands;
+	}
+
 
 
 

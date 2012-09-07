@@ -15,6 +15,7 @@ public abstract class AbstractCommand {
 	/* Helper methods for working with arguments */
 	
 	public ArgumentHelper aH = plugin.getCommandRegistry().getArgumentHelper();
+	public boolean activityQueueCompatible = false;
 		
 	/* Activates the command class as a Denizen Command. Should be called on startup. */
 	
@@ -27,6 +28,11 @@ public abstract class AbstractCommand {
 		if (plugin.getCommandRegistry().registerCommand(commandName, this)) return;
 		else 
 			throw new ActivationException("Error activating Command with Command Registry.");
+	}
+	
+	public void activateAs(String commandName, boolean activityQueueCompatible) throws ActivationException {
+		activateAs(commandName);
+		this.activityQueueCompatible = activityQueueCompatible;
 	}
 
 

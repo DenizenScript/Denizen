@@ -28,7 +28,7 @@ public class CastCommand extends AbstractCommand{
 		int duration = 60;
 		int amplitude = 1;
 
-		LivingEntity target = theEntry.getEntity();
+		LivingEntity target = theEntry.getPlayer();
 
 		if (theEntry.arguments() == null)
 			throw new CommandException("Usage: CAST [SpellName] (DURATION:#) (POWER:#) (NPC:#) (PLAYER:PlayerName)");

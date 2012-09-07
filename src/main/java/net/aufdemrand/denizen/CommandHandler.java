@@ -317,7 +317,7 @@ public class CommandHandler {
 					return true;
 				}
 
-				else plugin.getActivityRegistry().addActivity(args[2], theNPC, new String[0], Integer.valueOf(args[3]));
+				else plugin.getActivityRegistry().addActivity(args[2], plugin.getDenizenNPCRegistry().getDenizen(theNPC), new String[0], Integer.valueOf(args[3]));
 
 			}
 

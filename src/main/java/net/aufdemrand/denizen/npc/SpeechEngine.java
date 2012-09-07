@@ -268,7 +268,7 @@ public class SpeechEngine {
 
 		}
 
-		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!")) 
+		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!") && thePlayer != null) 
 			thePlayer.sendMessage(thePlayerMessage);
 
 		if ((plugin.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
@@ -288,11 +288,11 @@ public class SpeechEngine {
 
 	public String colorizeText(String text) {
 		Integer i = 0;
-		String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"};
+		String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","k","l","m","n","o","r"};
 
 		for (ChatColor color : ChatColor.values()) 
 		{
-			if (i > 15) break;
+			if (i > 22) break;
 			text = text.replaceAll("(?i)<" + color.name() + ">", "" + color);
 			text = text.replaceAll("(?i)<&" + code[i] + ">", "" + color);
 			text = text.replaceAll("(?i)%%" + code[i], "" + color);

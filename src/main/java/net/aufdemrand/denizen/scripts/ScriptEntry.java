@@ -211,6 +211,28 @@ public class ScriptEntry {
 		commandTimes[1] = commandTimes[0];
 	}
 
+	
+	/**
+	 * Creates a ScriptEntry with the bare minimum (Denizen, commandType, and arguments)
+	 */
+
+	public ScriptEntry(String commandType, String[] arguments, DenizenNPC theDenizen, String theScript) throws ScriptException {
+
+		if (commandType == null || theDenizen == null) throw new ScriptException("CommandType and Denizen cannot be null!");
+
+		if (commandType.startsWith("^")) {
+			isInstant = true;
+			commandType = commandType.substring(1);
+		}
+		
+		this.theScript = theScript;
+		theCommand = commandType;
+		theArguments = arguments;
+		this.theDenizen = theDenizen;
+
+		commandTimes[0] = System.currentTimeMillis();
+		commandTimes[1] = commandTimes[0];
+	}
 
 
 }

@@ -171,7 +171,7 @@ public class DenizenNPCRegistry {
 	public List<Player> getInRange (LivingEntity theEntity, int theRange, Player excludePlayer) {
 
 		List<Player> PlayersWithinRange = getInRange(theEntity, theRange);
-		PlayersWithinRange.remove(excludePlayer);
+		if (excludePlayer != null) PlayersWithinRange.remove(excludePlayer);
 
 		return PlayersWithinRange;
 	}
