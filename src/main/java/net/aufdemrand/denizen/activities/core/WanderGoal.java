@@ -17,6 +17,7 @@ import net.citizensnpcs.api.ai.GoalSelector;
 import net.citizensnpcs.api.ai.event.CancelReason;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
+import net.citizensnpcs.api.event.NPCDamageEvent;
 
 
 public class WanderGoal implements Goal {
@@ -34,9 +35,11 @@ public class WanderGoal implements Goal {
 	final ArrayList<Material> materials;
 	WanderActivity wA;
 
+	private Long cooldownMap;
 
 	WanderGoal(DenizenNPC npc, Integer radius, Integer depth, Integer delay, float speed, ArrayList<Material> materials, Location bookmark, WanderActivity wA) {
 		this.materials = materials;
+		cooldownMap = 12345L;
 		this.denizenNPC = npc;
 		this.radius = radius;
 		this.depth = depth;
@@ -56,25 +59,21 @@ public class WanderGoal implements Goal {
 			this.world = bookmark.getWorld();
 		}
 
-		this.wanderLocation = wA.getNewLocation(X, Y, Z, world, radius, depth).add(0, 1, 0);
+		this.wanderLocation = wA.getNewLocation(X, Y, Z, world, radius, depth);
 	}
 
 
 	@Override
 	public void reset() {
-		// Reset cooldown.
-		// wA.cooldown(denizenNPC, 0);
 	}
 
-	@EventHandler
+//	@EventHandler
     public void navFail(NavigationCancelEvent event) {
 		if (event.getNavigator().getLocalParameters().hashCode() == denizenNPC.getNavigator().getLocalParameters().hashCode())
 			if (event.getCancelReason().equals(CancelReason.STUCK))
 				if (event.getNavigator().getLocalParameters().avoidWater() && event.getNavigator().getTargetAsLocation().getBlock().isLiquid()) {
 					denizenNPC.getEntity().teleport(new Location(world,X,Y,Z));
-					Bukkit.getServer().broadcastMessage("Denizen was stuck in wander. TP activated.");
 				}
-
 	}
 
 	@EventHandler
@@ -86,8 +85,9 @@ public class WanderGoal implements Goal {
 
 	@Override
 	public void run(GoalSelector goalSelecter) {
+//		Bukkit.getServer().getLogger().info("Wandering...");
 		if (wanderLocation != null) {
-
+	//		Bukkit.getServer().getLogger().info("Wandering not null...");
 			// If already navigating, nothing to do here...
 			if (denizenNPC.getNavigator().isNavigating()) {
 				return; }
@@ -111,17 +111,16 @@ public class WanderGoal implements Goal {
 					goalSelecter.finish();
 				}
 			}
-		} 
+		 } else wanderLocation = wA.getNewLocation(X, Y, Z, world, radius, depth);
 	}
 
 
 	@Override
 	public boolean shouldExecute(GoalSelector arg0) {
+		// Bukkit.getServer().getLogger().info("Should wander? " + isCool());
 		return (isCool());
 	}
 	
-	private Long cooldownMap = 0L;
-
 	public void cooldown() {
 		cooldownMap = System.currentTimeMillis() + (this.delay * 1000);
 	}

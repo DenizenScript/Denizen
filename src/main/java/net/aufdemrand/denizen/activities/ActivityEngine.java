@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
@@ -23,6 +24,7 @@ public class ActivityEngine implements Listener {
 		this.plugin = denizen;
 	}
 
+	@EventHandler
 	public void setDefaultActivity(NPCSpawnEvent event) {
 		if (event.getNPC().hasTrait(DenizenTrait.class)) {
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new OneItemRunnable<NPC>(event.getNPC()) {
@@ -105,11 +107,11 @@ public class ActivityEngine implements Listener {
 			return;
 		}
 
-		// Remove waypoints
-		if (theDenizen.getCitizensEntity().hasTrait(Waypoints.class)) {
+		// Pause waypoints
+		 if (theDenizen.getCitizensEntity().hasTrait(Waypoints.class)) {
 			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "This NPC currently has Waypoints loaded. These have been paused. Use the Denizen command RESUME WAYPOINTS to resume them.");
 			theDenizen.getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(true);
-		}
+		 }
 		
 		// Remove all activities for the DenizenNPC
 		plugin.getActivityRegistry().removeAllActivities(theDenizen.getCitizensEntity());

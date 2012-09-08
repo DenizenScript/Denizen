@@ -235,9 +235,11 @@ public class DenizenNPCRegistry {
 
 		/* Show Citizens NPC info. */
 
-		thePlayer.sendMessage(ChatColor.GRAY + "C2 NPCID: " + ChatColor.GREEN + theDenizen.getId() + ChatColor.GRAY + "   Name: " + ChatColor.GREEN + theDenizen.getName() + ChatColor.GRAY + "   HPs: " + ChatColor.GREEN + theDenizen.getEntity().getHealth());
+		thePlayer.sendMessage(ChatColor.GRAY + "C2 NPCID: " + ChatColor.GREEN + theDenizen.getId() + ChatColor.GRAY + "   Name: " + ChatColor.GREEN + theDenizen.getName() + ChatColor.GRAY + "   HPs: " + ChatColor.GREEN + theDenizen.getEntity().getHealth() + ChatColor.GRAY + "   GOAL CNTRLR: " + ChatColor.GREEN + String.valueOf(!Boolean.valueOf(theDenizen.getCitizensEntity().getDefaultGoalController().isPaused())));
 		//if (plugin.newbMode) thePlayer.sendMessage(ChatColor.GRAY + "Tip: Use " + ChatColor.WHITE + "/denizen setname" + ChatColor.GRAY + " to change the Denizen's name.");
-		thePlayer.sendMessage(ChatColor.GRAY + "PF RANGE: " + ChatColor.GREEN + theDenizen.getNavigator().getDefaultParameters().range());
+		thePlayer.sendMessage(ChatColor.GRAY + "PF RANGE: " + ChatColor.GREEN + theDenizen.getNavigator().getDefaultParameters().range() +  "   " + ChatColor.GRAY + "SPEED: " + ChatColor.GREEN + String.valueOf(theDenizen.getNavigator().getDefaultParameters().speed()) + "    " + ChatColor.GRAY + "AVOID WATER: " + ChatColor.GREEN + theDenizen.getNavigator().getDefaultParameters().avoidWater());
+		thePlayer.sendMessage(ChatColor.GRAY + "NAVIGATING: " + ChatColor.GREEN + theDenizen.getNavigator().isNavigating() +  "   " + ChatColor.GRAY + "STATIONARY TICKS: " + ChatColor.GREEN + theDenizen.getNavigator().getDefaultParameters().stationaryTicks());
+		
 		thePlayer.sendMessage("");
 
 		thePlayer.sendMessage(ChatColor.GRAY + "Trigger Status:");
@@ -276,7 +278,7 @@ public class DenizenNPCRegistry {
 		if (!activitiesPresent) thePlayer.sendMessage(ChatColor.RED + "  No activities scheduled!");
 		thePlayer.sendMessage("");
 		
-		/* Show Bookmarks */
+				/* Show Bookmarks */
 
 		DecimalFormat lf = new DecimalFormat("###.##");
 		boolean bookmarksPresent = false;

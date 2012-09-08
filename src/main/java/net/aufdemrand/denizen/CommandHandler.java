@@ -223,7 +223,7 @@ public class CommandHandler {
 		
 		if (args[0].equalsIgnoreCase("save")) {
 			plugin.saveSaves();
-			player.sendMessage(ChatColor.GREEN + "denizens.yml saved.");
+			player.sendMessage(ChatColor.GREEN + "saves.yml saved.");
 			return true;
 		}
 

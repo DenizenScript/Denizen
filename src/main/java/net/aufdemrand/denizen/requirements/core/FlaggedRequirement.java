@@ -111,7 +111,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 							outcome = true;
 							aH.echoDebug("...global flag '%s' matched!", flagName);
 						} else aH.echoDebug("...global flag '%s' did not match!", flagName);
-						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getInt("Global.Flags." + flagName) + "'.");
+						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getString("Global.Flags." + flagName) + "'.");
 
 					} else aH.echoDebug("...global flag '%s' not set!", flagName);
 				} 
@@ -123,7 +123,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 							aH.echoDebug("...player flag '%s' matched!", flagName);
 						} else aH.echoDebug("...player flag '%s' did not match!", flagName);
 						
-						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getInt("Global.Flags." + flagName) + "'.");
+						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getString("Players." + thePlayer.getName() + ".Flags." + flagName) + "'.");
 					} else aH.echoDebug("...player flag '%s' not set!", flagName);
 				}
 				break;
