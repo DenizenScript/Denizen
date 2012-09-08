@@ -118,7 +118,7 @@ public class WanderActivity extends AbstractActivity {
 		newLocation.setZ(newLocation.getZ() + randomZ);
 		newLocation.setY(newLocation.getY() + randomY);
 
-		if (newLocation != null) Bukkit.getServer().getLogger().info("Location not null...");
+		//if (newLocation != null) Bukkit.getServer().getLogger().info("Location not null...");
 		return newLocation;
 	}
 
