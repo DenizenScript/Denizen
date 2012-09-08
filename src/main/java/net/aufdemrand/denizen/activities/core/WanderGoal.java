@@ -33,11 +33,13 @@ public class WanderGoal implements Goal {
 	final float speed;
 	final World world;
 	final ArrayList<Material> materials;
+	final ArrayList<Integer> materialIds;
 	WanderActivity wA;
 
 	private Long cooldownMap;
 
-	WanderGoal(DenizenNPC npc, Integer radius, Integer depth, Integer delay, float speed, ArrayList<Material> materials, Location bookmark, WanderActivity wA) {
+	WanderGoal(DenizenNPC npc, Integer radius, Integer depth, Integer delay, float speed, ArrayList<Material> materials, ArrayList<Integer> materialIds, Location bookmark, WanderActivity wA) {
+		this.materialIds = materialIds;
 		this.materials = materials;
 		cooldownMap = 12345L;
 		this.denizenNPC = npc;
@@ -102,6 +104,8 @@ public class WanderGoal implements Goal {
 					for (Material acceptableMaterial : materials) {
 						if (wanderLocation.getBlock().getType() == acceptableMaterial) move = true;
 					}
+					
+					if (materialIds.contains(Integer.valueOf(wanderLocation.getBlock().getTypeId()))) move = true;
 
 					if (move) denizenNPC.getNavigator().setTarget(wanderLocation);
 					goalSelecter.finish();

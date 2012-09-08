@@ -37,6 +37,7 @@ public class WanderActivity extends AbstractActivity {
 		float speed = npc.getNavigator().getDefaultParameters().speed();
 		Location specifiedLocation = null;
 		ArrayList<Material> materialList = new ArrayList<Material>();
+		ArrayList<Integer> materialIdList = new ArrayList<Integer>();
 
 		npc.getNavigator().getDefaultParameters().avoidWater(true);
 
@@ -63,7 +64,11 @@ public class WanderActivity extends AbstractActivity {
 
 			else if (thisArgument.toUpperCase().contains("FILTER:")) {
 				for (String materialString : thisArgument.split(":")[1].split(",")) {
-					try { materialList.add(Material.valueOf(materialString.toUpperCase().trim())); }
+					try { 
+						if (materialString.matches("//d+"))
+							materialIdList.add(Integer.valueOf(materialString));
+						else 
+							materialList.add(Material.valueOf(materialString.toUpperCase().trim())); }
 					catch(Exception e) { aH.echoError("...bad argument '%s'! Check to be sure this is a valid Material.", thisArgument); }
 				}
 			}
@@ -75,13 +80,13 @@ public class WanderActivity extends AbstractActivity {
 				aH.echoDebug("...will wander '%s'.", thisArgument);
 			}
 		}
-		
+
 		List<WanderGoal> wanderGoals = new ArrayList<WanderGoal>();
 
 		if (wanderMap.containsKey(npc)) 
 			wanderGoals = wanderMap.get(npc);
 
-		wanderGoals.add(0, new WanderGoal(npc, radius, depth, delay, speed, materialList, specifiedLocation, this));
+		wanderGoals.add(0, new WanderGoal(npc, radius, depth, delay, speed, materialList, materialIdList, specifiedLocation, this));
 
 		wanderMap.put(npc, wanderGoals);
 		npc.getCitizensEntity().getDefaultGoalController().addGoal(wanderMap.get(npc).get(0), priority);	
