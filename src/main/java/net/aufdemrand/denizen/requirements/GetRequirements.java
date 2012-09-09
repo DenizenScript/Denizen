@@ -57,7 +57,7 @@ public class GetRequirements {
 
 		/* Requirements list null? This script is probably named wrong, or doesn't exist! */
 		if (requirementList == null || requirementMode == null) {
-			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE  + "No requirements found! This script may be named incorrectly, or simply doesn't exist!");
+			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE  + "No requirements found! This script may be named incorrectly, or simply doesn't exist! Looking for '" + theScript + ".Requirements.List'");
 			return false;
 		}
 
