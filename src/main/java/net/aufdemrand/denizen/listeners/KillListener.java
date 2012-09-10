@@ -1,16 +1,11 @@
 package net.aufdemrand.denizen.listeners;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.events.ListenerCompleteEvent;
-import net.aufdemrand.events.ScriptFinishEvent;
+import net.aufdemrand.denizen.commands.core.ListenCommand;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 public class KillListener extends AbstractListener {
@@ -20,29 +15,27 @@ public class KillListener extends AbstractListener {
 	KillType killType;
 	List<String> killTargets;
 	Integer killQty;
+	String killId;
 	
 	Integer currentKills = 0;
 	
-	public KillListener(Player thePlayer, String[] args, String scriptName) {
-		super(thePlayer, args, scriptName);
-
-		killTargets = new ArrayList<String>();
-		killQty = 1;
+	// new String[] { killType, killName, killNPCId, killListenerId, killQty }
+	
+	@Override
+	public void build(Player thePlayer, String[] args, String scriptName) {
 		
-		for (String thisArg : args) {
-			
-			if (thisArg.toUpperCase().contains("TYPE:")) {
-				killType = KillType.valueOf(thisArg.toUpperCase());
-			}
-			
-			else if (thisArg.toUpperCase().contains("TARGET:")) {
-				killTargets.add(thisArg.toUpperCase());
-			}
-			
-			else if (aH.matchesQuantity(thisArg)) {
-				killQty = aH.getIntegerModifier(thisArg);
-			}
-		}
+		try {
+		
+		this.thePlayer = thePlayer;
+		this.args = args;
+		this.scriptName = scriptName;
+	
+		
+	
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+
+		} catch (Exception e) { cancel(); }
+		
 	}
 
 
@@ -52,25 +45,26 @@ public class KillListener extends AbstractListener {
 			if (killTargets.contains(event.getEntityType().toString()))
 			{ 
 				currentKills++;
-				complete();
+				complete(false);
 			}
 		}
 	}
 
 	@Override
-	public void complete() {
+	public void complete(boolean forceable) {
 
-		if (killQty == currentKills) {
+		if (killQty == currentKills || forceable) {
 			EntityDeathEvent.getHandlerList().unregister(this);
 
-			// Finish event
-			ListenerCompleteEvent event = new ListenerCompleteEvent(thePlayer, this);
-			Bukkit.getServer().getPluginManager().callEvent(event);
+			// Call script
+			plugin.getCommandRegistry().getCommand(ListenCommand.class).finish(thePlayer, killId, scriptName, this);
 		}
 	}
 
 	@Override
 	public void cancel() {
+		
+		
 		EntityDeathEvent.getHandlerList().unregister(this);
 	}
 
@@ -82,6 +76,7 @@ public class KillListener extends AbstractListener {
 
 	@Override
 	public void load(Player thePlayer) {
+		
 		// TODO Auto-generated method stub
 		
 	}

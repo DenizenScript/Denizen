@@ -4,15 +4,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.listeners.AbstractListener;
+import net.aufdemrand.denizen.listeners.KillListener;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.runnables.FourItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.events.ListenerCancelEvent;
+import net.aufdemrand.events.ListenerFinishEvent;
 import net.citizensnpcs.command.exception.CommandException;
 
 
@@ -33,40 +37,37 @@ public class ListenCommand extends AbstractCommand {
 	 * 
 	 */
 
-	//Player    //Listener Instance
-	Map<String, List<AbstractListener>> playerListeners = new ConcurrentHashMap<String, List<AbstractListener>>();
+	//Player:ListenerId  //Listener Instance
+	Map<String, AbstractListener> playerListeners = new ConcurrentHashMap<String, AbstractListener>();
 
 	enum ListenerType { KILL }
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
-		/* Get arguments */
 		if (theEntry.arguments() == null) {
 			aH.echoDebug("...No arguments!");
 			return false;
 		}
 
 		ListenerType listenerType;
-		
-		try {
-			listenerType = ListenerType.valueOf(theEntry.arguments()[0].toUpperCase());
-		} catch (Exception e) {
-			aH.echoError("Invalid LISTENER_TYPE!");
-			return false;
-		}
+		try { listenerType = ListenerType.valueOf(theEntry.arguments()[0].toUpperCase()); } 
+		catch (Exception e) { aH.echoError("Invalid LISTENER_TYPE!"); return false;	}
+
 
 		switch (listenerType) {
 
 		case KILL:
 
-			 // KILL [TYPE:GROUP|PLAYER|ENTITY|NPC] [NAME:Name|NPCID:#] (QTY:#) [SCRIPT:Script to trigger]
-			String killType;
-			String killName;
-			Integer killQty = 1;
-			String killScript;
-			Integer killNPCId = -1;
-			
+			// KILL [TYPE:GROUP|PLAYER|ENTITY|NPC] [NAME:Name|NPCID:#] (QTY:#) [SCRIPT:Script to trigger]
+
+			String killType = null;
+			String killName = null;
+			String killQty = "1";
+			String killScript = null;
+			String killNPCId = null;
+			String killListenerId = null;
+
 			for (String thisArg : theEntry.arguments()){
 
 				if (aH.matchesScript(thisArg)) {
@@ -75,12 +76,17 @@ public class ListenCommand extends AbstractCommand {
 				}
 
 				else if (aH.matchesQuantity(thisArg)) {
-					killQty = aH.getIntegerModifier(thisArg);
+					killQty = aH.getStringModifier(thisArg);
 					aH.echoDebug("...completion on '" + killQty + "' kill(s).");	
 				}
 
 				else if (thisArg.toUpperCase().contains("NAME:")) {
 					killName = aH.getStringModifier(thisArg);
+					aH.echoDebug("...kill target is/are '" + thisArg + "'.");	
+				}
+
+				else if (thisArg.toUpperCase().contains("ID:")) {
+					killListenerId = aH.getStringModifier(thisArg);
 					aH.echoDebug("...kill target is '" + thisArg + "'.");	
 				}
 
@@ -90,83 +96,72 @@ public class ListenCommand extends AbstractCommand {
 				}
 
 				else if (aH.matchesNPCID(thisArg)) {
-					killNPCId = aH.getIntegerModifier(thisArg);
+					killNPCId = aH.getStringModifier(thisArg);
 					aH.echoDebug("...kill target is '" + thisArg + "'.");	
 				}
+
 				else aH.echoError("Could not match argument '%s'!", thisArg);
 			}
+
+			if (killType == null || killName == null || killScript == null || killListenerId == null) {
+				aH.echoError("Not enough arguments! Check syntax.");
+				return false;
+			}
+
+			playerListeners.put(theEntry.getPlayer().getName() + ":" + killListenerId, new KillListener());
+			playerListeners.get(theEntry.getPlayer().getName() + ":" + killListenerId).build(theEntry.getPlayer(), new String[] { killType, killName, killNPCId, killListenerId, killQty }, killScript);
+
 			
+			List<String> newList = plugin.getSaves().getStringList("Players." + theEntry.getPlayer().getName() + ".Listeners.List");
+			newList.add(killListenerId);
+			plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Listeners.List", newList);
 			
-	
-			break;
-			
+			return true;
 
 		}
 
+		return false;
+	}
 
-		
-//		if (theScriptName == null){
-//			aH.echoDebug("...No task specified!");
-//			return false;
-//		}
-//
-//		if (theEntry.getCommand().equalsIgnoreCase("CANCELTASK")){
-//			if (theEntry.getPlayer().hasMetadata(theScriptName)){
-//				int tid = theEntry.getPlayer().getMetadata(theScriptName).get(0).asInt();
-//				if (tid > 0) {
-//					plugin.getServer().getScheduler().cancelTask(tid);
-//					theEntry.getPlayer().removeMetadata(theScriptName, plugin);
-//				}		
-//			}
-//			else
-//			{
-//				aH.echoDebug("...Pending task " + theScriptName + " not found for this player");
-//				return false;
-//			}
-//			return true;
-//		}
-//
-//		if (executer ==null){
-//			aH.echoDebug("...Invalid NPC specified!");
-//			return false;
-//		}
-//
-//		/* Make delayed task to reset step if duration is set */
-//		if (secs>0) {
-//
-//			int id = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
-//					new FourItemRunnable<Player, String, DenizenNPC, Integer>(theEntry.getPlayer(), theScriptName, executer, 0) {
-//
-//				@Override
-//				public void run(Player player, String theScriptName, DenizenNPC denizen, Integer oldStep) { 
-//					if (player.hasMetadata(theScriptName)){
-//						int tid = player.getMetadata(theScriptName).get(0).asInt();
-//						if (tid > 0) {
-//							plugin.getServer().getScheduler().cancelTask(tid);
-//							player.removeMetadata(theScriptName, plugin);
-//						}	
-//					}
-//
-//					ScriptHelper sE = plugin.getScriptEngine().helper;
-//					List<String> theScript = sE.getScript(theScriptName + ".Script");
-//					if (theScript.isEmpty()) return;
-//					sE.queueScriptEntries(player, sE.buildScriptEntries(player, denizen, theScript, theScriptName, 1), QueueType.TASK);		
-//					player.removeMetadata(theScriptName, plugin);
-//				}		
-//			}, secs * 20);
-//
-//			theEntry.getPlayer().setMetadata(theScriptName,new org.bukkit.metadata.FixedMetadataValue(plugin,id));
-//
-//			return true;
-//		}
-//
-//		ScriptHelper sE = plugin.getScriptEngine().helper;
-//		List<String> theScript = sE.getScript(theScriptName + ".Script");
-//		if (theScript.isEmpty()) return false;
-//		sE.queueScriptEntries(theEntry.getPlayer(), sE.buildScriptEntries(theEntry.getPlayer(), executer, theScript, theScriptName, 1), QueueType.TASK);	
-//
+	
+	
+	
 
-		return true;
+	
+	
+	
+	// Called when a listener is finished.
+
+	public void finish(Player thePlayer, String listenerId, String theScriptName, AbstractListener theListener) {
+
+		// Call event
+		ListenerFinishEvent event = new ListenerFinishEvent(thePlayer, theListener);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+
+		// Run task script
+		ScriptHelper sE = plugin.getScriptEngine().helper;
+		List<String> theScript = sE.getScript(theScriptName + ".Script");
+
+		if (theScript.isEmpty()) {
+			return;
+		}
+		sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theScript, theScriptName), QueueType.TASK);
+
+		// Remove from Map
+		playerListeners.remove(thePlayer.getName() + ":" + listenerId);
+
+	}
+
+	public void cancel(Player thePlayer, String listenerId) {
+
+		// Call Event
+		ListenerCancelEvent event = new ListenerCancelEvent(thePlayer, listenerId);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+
+		// Remove from Map
+		playerListeners.remove(thePlayer.getName() + ":" + listenerId);
+
+
 	}
 
 }

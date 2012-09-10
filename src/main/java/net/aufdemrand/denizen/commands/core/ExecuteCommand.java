@@ -84,11 +84,16 @@ public class ExecuteCommand extends AbstractCommand {
 
 		if (theDenizen == null && theEntry.getDenizen() != null) theDenizen = theEntry.getDenizen();
 
+		if (theEntry.getTexts()[0] != null) {
+			commandtoExecute = commandtoExecute.replace("<*>", theEntry.getTexts()[0]);
+		}
+		
 		if (theDenizen != null) {
 			commandtoExecute = commandtoExecute.replace("<NPC>", theEntry.getDenizen().getName())
 					.replace("<NPCID>", "" + theEntry.getDenizen().getCitizensEntity().getId());
 			aH.echoDebug("...command: '%s'", commandtoExecute);
 		} else aH.echoDebug("...command: '%s'", commandtoExecute);
+		
 
 		
 		/* Execute the command, if all required variables are filled. */

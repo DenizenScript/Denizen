@@ -78,6 +78,10 @@ public class TalkCommand extends AbstractCommand {
 			}
 
 		}	
+		
+		if (theEntry.getTexts()[0] != null) {
+			theMessage = theMessage.replace("<*>", theEntry.getTexts()[0]);
+		}
 
 		// Set to Denizen carried over by the ScriptEntry, if possible.
 		if (theDenizen == null && theEntry.getDenizen() != null) theDenizen = theEntry.getDenizen();
