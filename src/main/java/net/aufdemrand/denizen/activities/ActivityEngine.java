@@ -108,10 +108,10 @@ public class ActivityEngine implements Listener {
 		}
 
 		// Pause waypoints
-		 if (theDenizen.getCitizensEntity().hasTrait(Waypoints.class)) {
-			if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "This NPC currently has Waypoints loaded. These have been paused. Use the Denizen command RESUME WAYPOINTS to resume them.");
-			theDenizen.getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(true);
-		 }
+//		 if (theDenizen.getCitizensEntity().hasTrait(Waypoints.class)) {
+	//		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "This NPC currently has Waypoints loaded. These have been paused. Use the Denizen command RESUME WAYPOINTS to resume them.");
+		//	theDenizen.getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(true);
+//		 }
 		
 		// Remove all activities for the DenizenNPC
 		plugin.getActivityRegistry().removeAllActivities(theDenizen.getCitizensEntity());
