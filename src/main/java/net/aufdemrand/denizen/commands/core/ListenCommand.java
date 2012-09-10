@@ -6,6 +6,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.listeners.AbstractListener;
@@ -20,7 +24,7 @@ import net.aufdemrand.events.ListenerFinishEvent;
 import net.citizensnpcs.command.exception.CommandException;
 
 
-public class ListenCommand extends AbstractCommand {
+public class ListenCommand extends AbstractCommand implements Listener {
 
 	/* LISTEN (ID:ID_String) [LISTENER_TYPE] (ARGUMENTS) 
 	 *
@@ -41,6 +45,10 @@ public class ListenCommand extends AbstractCommand {
 	Map<String, AbstractListener> playerListeners = new ConcurrentHashMap<String, AbstractListener>();
 
 	enum ListenerType { KILL }
+
+	public ListenCommand() {
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
+	}
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -109,31 +117,89 @@ public class ListenCommand extends AbstractCommand {
 			}
 
 			playerListeners.put(theEntry.getPlayer().getName() + ":" + killListenerId, new KillListener());
-			playerListeners.get(theEntry.getPlayer().getName() + ":" + killListenerId).build(theEntry.getPlayer(), new String[] { killType, killName, killNPCId, killListenerId, killQty }, killScript);
+			playerListeners.get(theEntry.getPlayer().getName() + ":" + killListenerId).build(killListenerId, theEntry.getPlayer(), new String[] { killType, killName, killNPCId, killQty }, killScript);
 
-			
+
 			List<String> newList = plugin.getSaves().getStringList("Players." + theEntry.getPlayer().getName() + ".Listeners.List");
-			newList.add(killListenerId);
-			plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Listeners.List", newList);
-			
+
+			if (!newList.contains(killListenerId)) {
+				newList.add(killListenerId);
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Listeners.List", newList);
+			} else {
+				aH.echoError("Already listening!");
+				return false;
+			}
 			return true;
+
+
+			// case CHAT:	
+
 
 		}
 
 		return false;
 	}
 
-	
-	
-	
 
-	
-	
-	
+	@EventHandler
+	public void playerLogoff(PlayerQuitEvent event) {
+
+		List<String> listenerList = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Listeners.List");
+
+		if (!listenerList.isEmpty()) {
+
+			for (String listener : listenerList) {
+				playerListeners.get(event.getPlayer().getName() + ":" + listener).save();
+				playerListeners.remove(event.getPlayer().getName() + ":" + listener);
+			}
+		}
+
+	}
+
+
+	@EventHandler
+	public void playerLogon(PlayerJoinEvent event) {
+
+		List<String> listenerList = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Listeners.List");
+
+		if (!listenerList.isEmpty()) {
+			for (String listener : listenerList) {
+
+				try {
+					switch ( ListenerType.valueOf(plugin.getSaves().getString("Players." + event.getPlayer().getName() + ".Listeners.Saves." + listener + ".Listen Type"))) {
+
+					case KILL:
+						playerListeners.put(event.getPlayer().getName() + ":" + listener, new KillListener());
+						playerListeners.get(event.getPlayer().getName() + ":" + listener).load(event.getPlayer(), listener);
+						break;
+
+
+						// case CHAT:
+
+
+					}
+
+				} catch (Exception e) { aH.echoError("Error loading player listener '%s'!", listener); }
+			}
+		}
+	}
+
+
+
+
 	// Called when a listener is finished.
 
 	public void finish(Player thePlayer, String listenerId, String theScriptName, AbstractListener theListener) {
 
+		// Remove from saves
+		List<String> newList = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Listeners.List");
+		if (newList.contains(listenerId)) {
+			newList.remove(listenerId);
+		}
+		plugin.getSaves().set("Players." + thePlayer.getName() + ".Listeners.List", newList);
+		plugin.getSaves().set("Players." + thePlayer.getName() + ".Listeners.Saves." + listenerId, null);
+		
+		
 		// Call event
 		ListenerFinishEvent event = new ListenerFinishEvent(thePlayer, theListener);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -154,6 +220,13 @@ public class ListenCommand extends AbstractCommand {
 
 	public void cancel(Player thePlayer, String listenerId) {
 
+		// Remove from saves
+		List<String> newList = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Listeners.List");
+		if (newList.contains(listenerId)) {
+			newList.remove(listenerId);
+		}
+		plugin.getSaves().set("Players." + thePlayer.getName() + ".Listeners.List", newList);
+		
 		// Call Event
 		ListenerCancelEvent event = new ListenerCancelEvent(thePlayer, listenerId);
 		Bukkit.getServer().getPluginManager().callEvent(event);

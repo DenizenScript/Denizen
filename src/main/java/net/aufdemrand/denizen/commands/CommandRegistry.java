@@ -20,6 +20,7 @@ import net.aufdemrand.denizen.commands.core.HealCommand;
 import net.aufdemrand.denizen.commands.core.HintCommand;
 import net.aufdemrand.denizen.commands.core.HoldCommand;
 import net.aufdemrand.denizen.commands.core.IfCommand;
+import net.aufdemrand.denizen.commands.core.ListenCommand;
 import net.aufdemrand.denizen.commands.core.LookCommand;
 import net.aufdemrand.denizen.commands.core.PauseCommand;
 import net.aufdemrand.denizen.commands.core.PermissCommand;
@@ -119,8 +120,10 @@ public class CommandRegistry {
 		IfCommand ifCommand = new IfCommand();
 		RandomCommand randomCommand = new RandomCommand();
 		HoldCommand holdCommand = new HoldCommand();
+		ListenCommand listenCommand = new ListenCommand();
 		
 		try {
+			listenCommand.activateAs("LISTEN");
 			holdCommand.activateAs("HOLD", true);
 			randomCommand.activateAs("RANDOM", true);
 			ifCommand.activateAs("IF", true);
