@@ -42,7 +42,7 @@ public class LookCommand extends AbstractCommand {
 	 * (DURATION:#) Reverts to the previous head position after # amount of seconds.
 	 */
 
-	private Map<String, Integer> taskMap = new ConcurrentHashMap<String, Integer>();
+	private Map<Integer, Integer> taskMap = new ConcurrentHashMap<Integer, Integer>();
 	
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -199,15 +199,15 @@ public class LookCommand extends AbstractCommand {
 
 		if (duration != null) {
 
-			if (taskMap.containsKey(theDenizen.getName())) {
+			if (taskMap.containsKey(theDenizen.getCitizensEntity().getId())) {
 				try {
-					plugin.getServer().getScheduler().cancelTask(taskMap.get(theDenizen.getName()));
+					plugin.getServer().getScheduler().cancelTask(taskMap.get(theDenizen.getId()));
 				} catch (Exception e) { }
 			}
 
 			aH.echoDebug("Setting delayed task: RESET LOOK");
 
-			taskMap.put(theDenizen.getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FourItemRunnable<DenizenNPC, Location, Boolean, Float>(restoreDenizen, restoreLocation, restoreLookClose, theDenizen.getLocation().getYaw()) {
+			taskMap.put(theDenizen.getCitizensEntity().getId(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FourItemRunnable<DenizenNPC, Location, Boolean, Float>(restoreDenizen, restoreLocation, restoreLookClose, theDenizen.getLocation().getYaw()) {
 				@Override
 				public void run(DenizenNPC denizen, Location location, Boolean lookClose, Float checkYaw) { 
 					aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET LOOK.");

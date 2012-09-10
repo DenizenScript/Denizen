@@ -1,10 +1,20 @@
 package net.aufdemrand.denizen.commands.core;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.bukkit.Location;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.command.exception.CommandException;
+import net.citizensnpcs.trait.Controllable;
 
 /**
  * Strikes the player (or NPC) with lightning.
@@ -12,7 +22,7 @@ import net.citizensnpcs.command.exception.CommandException;
  * @author Jeremy Schroeder
  */
 
-public class MountCommand extends AbstractCommand {
+public class MountCommand extends AbstractCommand implements Listener {
 
 	/* STRIKE (DENIZEN|[Location Bookmark]|'[Denizen Name]:[Location Bookmark]') */
 
@@ -37,60 +47,65 @@ public class MountCommand extends AbstractCommand {
 	 * 
 	 */
 
+	private Map<String, Controllable> mounted = new ConcurrentHashMap<String, Controllable>();
+	
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
 		/* Initialize variables */ 
+		
+		int radius = -1;
+		Location bookmark = null;
+		DenizenNPC mount = null;
 
-		Boolean isLethal = true;
-		Location strikeLocation = null;
-
+		if (theEntry.getCommand().equalsIgnoreCase("UNMOUNT")) {
+			mounted.get(theEntry.getPlayer().getName()).toggle();
+			mounted.remove(theEntry.getPlayer().getName());
+			aH.echoDebug("Player removed.");
+			return true;
+		}
+		
 		/* Match arguments to expected variables */
 		if (theEntry.arguments() != null) {
 			for (String thisArgument : theEntry.arguments()) {
 
-				// If argument is a modifier.
-				if (thisArgument.toUpperCase().equals("DENIZEN")) {
-					aH.echoDebug("...matched DENIZEN.");
-					strikeLocation = theEntry.getDenizen().getLocation();
-				}
-
-				// If argument is a modifier.
-				else if (thisArgument.toUpperCase().equals("NODAMAGE")) {
-					aH.echoDebug("...strike is now non-lethal.");
-					isLethal = false;
-				}
-
 				// If argument is a NPCID modifier...
-				else if (aH.matchesNPCID(thisArgument)) {
-					strikeLocation = aH.getNPCIDModifier(thisArgument).getLocation();
-					if (strikeLocation != null)
-						aH.echoDebug("...striking '%s'", thisArgument);
+				if (aH.matchesNPCID(thisArgument)) {
+					mount = aH.getNPCIDModifier(thisArgument);
+					if (mount != null)
+						aH.echoDebug("...mounting '%s'", thisArgument);
 				}
 
 				// If argument is a BOOKMARK modifier
 				else if (aH.matchesBookmark(thisArgument)) {
-					strikeLocation = aH.getBookmarkModifier(thisArgument, theEntry.getDenizen());
-					if (strikeLocation != null)
-						aH.echoDebug("...strike location now at bookmark '%s'", thisArgument);
+					bookmark = aH.getBookmarkModifier(thisArgument, theEntry.getDenizen());
+					if (bookmark != null)
+						aH.echoDebug("...allowed radius within '%s'", thisArgument);
 
 				}		
+				
+				else if (thisArgument.toUpperCase().matches("(?RADIUS|radius|Radius)(:)(//d.)")) {
+					radius = aH.getIntegerModifier(thisArgument);
+					aH.echoDebug("...set '%s'", thisArgument);
 
+				}
+				
 				else aH.echoError("...unable to match argument!");
 			}
 
 		}	
 
-
-		if (strikeLocation == null) strikeLocation = theEntry.getPlayer().getLocation();
-
-		/* Execute the command. */
-
-		// Striking Denizen..
-		if (isLethal) strikeLocation.getWorld().strikeLightning(strikeLocation);
-		else strikeLocation.getWorld().strikeLightningEffect(strikeLocation);
-
+		if (mount == null) mount = theEntry.getDenizen();
+		
+		Controllable mountController = mount.getCitizensEntity().getTrait(Controllable.class);
+		
+		mountController.onRightClick(new NPCRightClickEvent(mount.getCitizensEntity(), theEntry.getPlayer()));
+		mounted.put(theEntry.getPlayer().getName(), mount.getCitizensEntity().getTrait(Controllable.class));
+		
 		return true;
 	}
 
+
+	
+	
 }

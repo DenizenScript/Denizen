@@ -39,7 +39,7 @@ public class PauseCommand extends AbstractCommand {
 	 * 
 	 */
 
-	private Map<String, Integer> taskMap = new ConcurrentHashMap<String, Integer>();
+	private Map<Integer, Integer> taskMap = new ConcurrentHashMap<Integer, Integer>();
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -92,14 +92,14 @@ public class PauseCommand extends AbstractCommand {
 
 		if (duration != null) 
 
-			if (taskMap.containsKey(theEntry.getDenizen().getName())) {
+			if (taskMap.containsKey(theEntry.getDenizen().getCitizensEntity().getId())) {
 				try {
-					plugin.getServer().getScheduler().cancelTask(taskMap.get(theEntry.getDenizen().getName()));
+					plugin.getServer().getScheduler().cancelTask(taskMap.get(theEntry.getDenizen().getCitizensEntity().getId()));
 				} catch (Exception e) { }
 			}
 		aH.echoDebug("Setting delayed task: UNPAUSE GOAL SELECTOR.");
 
-		taskMap.put(theEntry.getDenizen().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new TwoItemRunnable<DenizenNPC, Boolean>(theEntry.getDenizen(), waypoints) {
+		taskMap.put(theEntry.getDenizen().getCitizensEntity().getId(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new TwoItemRunnable<DenizenNPC, Boolean>(theEntry.getDenizen(), waypoints) {
 			@Override
 			public void run(DenizenNPC theNPC, Boolean waypoints) { 
 				aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: UNPAUSE GOAL SELECTOR for '%s'.", theNPC.getName());

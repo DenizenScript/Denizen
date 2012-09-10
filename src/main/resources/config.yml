@@ -70,8 +70,8 @@ location_trigger_range_in_blocks: 1
 # if your text contains a single apostrophe.
 player_chat_to_npc: "You say to <NPC>, '<TEXT>'"
 player_chat_to_npc_bystander: "<PLAYER> says to <NPC>, '<TEXT>'"
-npc_chat_to_bystanders: "§4§l<NPC>§r says, '<TEXT>'"
-npc_chat_to_player: "§4§l<NPC>§r says to you, '<TEXT>'"
+npc_chat_to_bystanders: "<NPC> says, '<TEXT>'"
+npc_chat_to_player: "<NPC> says to you, '<TEXT>'"
 npc_chat_to_player_bystander: "<NPC> says to <PLAYER>, '<TEXT>'"
 
 player_whisper_to_npc: "You whisper to <NPC>, '<TEXT>'"
