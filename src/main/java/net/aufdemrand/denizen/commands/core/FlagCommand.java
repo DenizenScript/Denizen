@@ -88,6 +88,10 @@ public class FlagCommand extends AbstractCommand {
 			}
 
 		}
+		
+		if (theEntry.getTexts()[0] != null) {
+			theValue = theValue.replace("<*>", theEntry.getTexts()[0]);
+		}
 
 
 		/* If a duration is set... */
