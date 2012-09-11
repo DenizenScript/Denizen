@@ -122,7 +122,9 @@ public class SpeechEngine {
 		String worldName = "";
 		if (theDenizen != null){
 			denizenName = theDenizen.getName();
-			worldName= theDenizen.getWorld().getName();
+			if (theDenizen.isSpawned()) {
+			worldName = theDenizen.getWorld().getName();
+			}
 		}
 
 		switch (talkType) {

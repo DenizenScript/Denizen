@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.requirements.core.EnchantedRequirement;
 import net.aufdemrand.denizen.requirements.core.FlaggedRequirement;
 import net.aufdemrand.denizen.requirements.core.HeroesRequirement;
 import net.aufdemrand.denizen.requirements.core.LiquidRequirement;
@@ -59,11 +60,13 @@ public class RequirementRegistry {
 		HeroesRequirement heroesRequirement = new HeroesRequirement();
 		OwnerRequirement ownerRequirement = new OwnerRequirement();
 		SneakingRequirement sneakingRequirement = new SneakingRequirement();
+		EnchantedRequirement enchantedRequirement = new EnchantedRequirement();
 		
 		plugin.getLogger().info("Loading LEGACY requirements...DONE!");
 		
 		try {
 			sneakingRequirement.activateAs("SNEAKING");
+			enchantedRequirement.activateAs("ENCHANTED");
 			heroesRequirement.activateAs("HEROESCLASS");
 			ownerRequirement.activateAs("OWNER");
 			flaggedRequirement.activateAs("FLAGGED");

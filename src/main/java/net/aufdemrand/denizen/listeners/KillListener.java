@@ -58,6 +58,18 @@ public class KillListener extends AbstractListener {
 				complete(false);
 			}
 		}
+		
+		else if (type == KillType.NPC) {
+			
+		}
+		
+		else if (type == KillType.PLAYER) {
+			
+		}
+		
+		else if (type == KillType.GROUP) {
+			
+		}
 	}
 
 

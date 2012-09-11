@@ -76,7 +76,7 @@ public class MountCommand extends AbstractCommand implements Listener {
 						aH.echoDebug("...mounting '%s'", thisArgument);
 				}
 
-				// If argument is a BOOKMARK modifier
+/*				// If argument is a BOOKMARK modifier
 				else if (aH.matchesBookmark(thisArgument)) {
 					bookmark = aH.getBookmarkModifier(thisArgument, theEntry.getDenizen());
 					if (bookmark != null)
@@ -89,6 +89,7 @@ public class MountCommand extends AbstractCommand implements Listener {
 					aH.echoDebug("...set '%s'", thisArgument);
 
 				}
+				*/
 				
 				else aH.echoError("...unable to match argument!");
 			}
@@ -105,6 +106,14 @@ public class MountCommand extends AbstractCommand implements Listener {
 		return true;
 	}
 
+	
+	
+	
+// 	private Map<String, Controllable> mounted = new ConcurrentHashMap<String, Controllable>();
+
+	// @EventHandler
+	//
+	
 
 	
 	

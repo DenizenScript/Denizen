@@ -30,7 +30,7 @@ public class ExecuteCommand extends AbstractCommand {
 	 * 
 	 */
 
-	enum ExecuteType { ASSERVER, ASDENIZEN, ASPLAYER }
+	enum ExecuteType { ASSERVER, ASDENIZEN, ASPLAYER, ASOPPLAYER }
 
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -51,6 +51,12 @@ public class ExecuteCommand extends AbstractCommand {
 			if (thisArg.equalsIgnoreCase("ASPLAYER")
 					|| thisArg.equalsIgnoreCase("AS_PLAYER")) {
 				executeType = ExecuteType.ASPLAYER;
+				aH.echoDebug("...executing '%s'.", thisArg);
+			}
+			
+			if (thisArg.equalsIgnoreCase("ASOPPLAYER")
+					|| thisArg.equalsIgnoreCase("AS_OP_PLAYER")) {
+				executeType = ExecuteType.ASOPPLAYER;
 				aH.echoDebug("...executing '%s'.", thisArg);
 			}
 
@@ -105,6 +111,14 @@ public class ExecuteCommand extends AbstractCommand {
 				theEntry.getPlayer().performCommand(commandtoExecute);
 				break;
 
+			case ASOPPLAYER:
+				boolean isOp = false;
+				if (theEntry.getPlayer().isOp()) isOp = true;
+				if (!isOp) theEntry.getPlayer().setOp(true);
+				theEntry.getPlayer().performCommand(commandtoExecute);
+				if (!isOp) theEntry.getPlayer().setOp(false);
+				break;
+			
 			case ASDENIZEN:
 				// Catch TASK-type script usage.
 				if (theDenizen == null) {
