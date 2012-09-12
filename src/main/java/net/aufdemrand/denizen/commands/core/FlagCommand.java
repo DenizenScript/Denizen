@@ -67,7 +67,6 @@ public class FlagCommand extends AbstractCommand {
 			/* If argument is a flag with value */
 			else if (thisArg.split(":").length == 2) {
 				theFlag = thisArg.split(":")[0].toUpperCase();
-
 				if (thisArg.split(":")[1].equals("++")) 
 					flagType = FlagType.INC;
 				else if (thisArg.split(":")[1].equals("--"))
@@ -89,8 +88,17 @@ public class FlagCommand extends AbstractCommand {
 
 		}
 		
-		if (theEntry.getTexts()[0] != null) {
+		if (theEntry.getTexts()[0] != null && theValue != null) {
 			theValue = theValue.replace("<*>", theEntry.getTexts()[0]);
+		}
+		
+		if (theValue != null && theEntry.getPlayer() != null) {
+			theValue = theValue.replace("<ITEM_IN_HAND.MATERIAL>", theEntry.getPlayer().getItemInHand().getType().name()
+					.replace("<ITEM_IN_HAND.QTY>", String.valueOf(theEntry.getPlayer().getItemInHand().getAmount()))
+					.replace("<ITEM_IN_HAND.ID>", String.valueOf(theEntry.getPlayer().getItemInHand().getTypeId()))
+					.replace("<PLAYER.NAME>", theEntry.getPlayer().getName())
+					.replace("<PLAYER.KILLER>", theEntry.getPlayer().getKiller().getName())
+					.replace("<PLAYER.HEALTH>", String.valueOf(theEntry.getPlayer().getHealth())));
 		}
 
 

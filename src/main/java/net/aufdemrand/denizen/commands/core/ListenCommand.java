@@ -110,7 +110,10 @@ public class ListenCommand extends AbstractCommand implements Listener {
 
 				else aH.echoError("Could not match argument '%s'!", thisArg);
 			}
-
+			
+			if (killListenerId == null && killScript != null) killListenerId = killScript;
+			else if (killListenerId == null) killScript = "Kill_Listener_" + System.currentTimeMillis();
+			
 			if (killType == null || killName == null || killScript == null || killListenerId == null) {
 				aH.echoError("Not enough arguments! Check syntax.");
 				return false;
