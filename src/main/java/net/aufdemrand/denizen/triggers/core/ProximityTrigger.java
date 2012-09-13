@@ -93,6 +93,26 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
 		CommandSender cs = Bukkit.getConsoleSender();
 		
+		/* Check for Quick Click Script */
+		if (!plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Interact Scripts")) {
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Quick Scripts.Proximity")) {
+
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing QUICK PROX script: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
+				
+				/* Get the contents of the Script. */
+				List<String> theScript = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Quick Scripts.Proximity");
+
+				if (theScript.isEmpty()) return false;
+
+				/* Build scriptEntries from theScript and add it into the queue */
+				sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, "Quick Proximity", 1), QueueType.TASK);
+				
+				return true;
+				
+			}
+		}
+		
+		
 		/* Get Interact Script, if any. */
 		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 
