@@ -48,7 +48,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 		}
 		
 		// If Denizen is not interactable (ie. Denizen is toggled off, engaged or not cooled down)
-		if (!theDenizen.IsInteractable(triggerName, event.getClicker())) {
+		if (!theDenizen.isInteractable(triggerName, event.getClicker())) {
 			theDenizen.talk(TalkType.CHAT_PLAYERONLY, event.getClicker(), Reason.DenizenIsUnavailable);
 			return;
 		}

@@ -42,7 +42,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		echoDebug("Found nearby NPC, interrupting chat...", triggerName);
 
 		// If Denizen is not interactable (ie. Denizen is toggled off, engaged or not cooled down)
-		if (!theDenizen.IsInteractable(triggerName, event.getPlayer())) {
+		if (!theDenizen.isInteractable(triggerName, event.getPlayer())) {
 			if (!plugin.settings.ChatGloballyIfNotInteractable()) {
 				event.setCancelled(true);
 				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());

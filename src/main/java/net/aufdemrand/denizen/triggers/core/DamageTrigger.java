@@ -36,7 +36,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 			/* Check if trigger is enabled, because if not, send click trigger (if enabled in settings) */
 			if (denizenNPC.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled(triggerName.toUpperCase())) {
 
-				if (denizenNPC.IsInteractable(triggerName, event.getClicker())) {
+				if (denizenNPC.isInteractable(triggerName, event.getClicker())) {
 					sE.setCooldown(denizenNPC, DamageTrigger.class, plugin.settings.DefaultDamageCooldown());
 					if (!parseDamageTrigger(denizenNPC, event.getClicker())) {
 						denizenNPC.talk(TalkType.CHAT, event.getClicker(), Reason.NoMatchingDamageTrigger);

@@ -55,7 +55,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 						if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...proximity metadata now: '" + event.getPlayer().getMetadata("proximity").get(0).asString() + "'");
 
 						/* If closest is different than stored metadata and proximity trigger is enabled for said NPC, trigger */
-						if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
+						if (theDenizen.isInteractable(triggerName, event.getPlayer())) {
 
 							/* TRIGGER! */
 							sE.setCooldown(theDenizen, ProximityTrigger.class, plugin.settings.DefaultProximityCooldown());
@@ -65,7 +65,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 					} else { /* Player does not have metadata */
 
 						/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
-						if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
+						if (theDenizen.isInteractable(triggerName, event.getPlayer())) {
 
 							/* Set Metadata value to avoid retrigger. */
 							event.getPlayer().setMetadata("proximity", new FixedMetadataValue(plugin, theDenizen.toString()));

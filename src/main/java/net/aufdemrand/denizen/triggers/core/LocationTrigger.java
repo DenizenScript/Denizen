@@ -101,7 +101,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 
 							/* Before triggering, check if LocationTriggers are enabled, cooldown is met, and NPC
 							 * is not already engaged... */
-							if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
+							if (theDenizen.isInteractable(triggerName, event.getPlayer())) {
 
 								/* TRIGGER! */
 								sE.setCooldown(theDenizen, LocationTrigger.class, plugin.settings.DefaultLocationCooldown());
@@ -115,7 +115,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...location metadata was empty, now: " + event.getPlayer().getMetadata("locationtrigger").get(0).asString() + "'");
 
 							/* Check if proximity triggers are enabled, check player cooldown, check if NPC is engaged... */
-							if (theDenizen.IsInteractable(triggerName, event.getPlayer())) {
+							if (theDenizen.isInteractable(triggerName, event.getPlayer())) {
 
 								/* TRIGGER! */
 								sE.setCooldown(theDenizen, LocationTrigger.class, plugin.settings.DefaultLocationCooldown());

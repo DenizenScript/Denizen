@@ -136,7 +136,7 @@ public class IfCommand extends AbstractCommand {
 
 			aH.echoDebug("...logic met, adding script to be executed.");
 			ScriptHelper sE = plugin.getScriptEngine().helper;
-			List<String> theScriptEntries = sE.getScript(theScript);
+			List<String> theScriptEntries = sE.getScript(theScript + ".Script");
 			if (theScript.isEmpty()) return false;
 
 			if (!inject)
