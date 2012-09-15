@@ -87,49 +87,52 @@ public class FlagCommand extends AbstractCommand {
 			}
 
 		}
-		
+
 		if (theEntry.getTexts()[0] != null && theValue != null) {
 			theValue = theValue.replace("<*>", theEntry.getTexts()[0]);
+			theFlag = theFlag.replace("<*>", theEntry.getTexts()[0]);
 		}
-		
+
 		if (theValue != null && theEntry.getPlayer() != null) {
-			
+
 			String itemInHandMaterial = "FALSE"; 
 			if (theEntry.getPlayer().getItemInHand() != null) 
 				itemInHandMaterial = theEntry.getPlayer().getItemInHand().getType().name();
-			
+
 			String itemInHandQty = "FALSE"; 
 			if (theEntry.getPlayer().getItemInHand() != null) 
 				itemInHandQty = String.valueOf(theEntry.getPlayer().getItemInHand().getAmount());
-			
+
 			String itemInHandId = "FALSE"; 
 			if (theEntry.getPlayer().getItemInHand() != null) 
 				itemInHandId = String.valueOf(theEntry.getPlayer().getItemInHand().getTypeId());
-			
+
 			String playerKiller = "FALSE"; 
 			if (theEntry.getPlayer().getKiller() != null) 
 				playerKiller = theEntry.getPlayer().getKiller().getName();
-			
+
 			String playerHelm = "FALSE"; 
 			if (theEntry.getPlayer().getInventory().getHelmet() != null) 
 				playerHelm = theEntry.getPlayer().getInventory().getHelmet().getType().name();
-			
+
 			String playerBoots = "FALSE"; 
 			if (theEntry.getPlayer().getInventory().getBoots() != null) 
 				playerBoots = theEntry.getPlayer().getInventory().getBoots().getType().name();
-			
+
 			String playerChestplate = "FALSE"; 
 			if (theEntry.getPlayer().getInventory().getChestplate() != null) 
 				playerChestplate = theEntry.getPlayer().getInventory().getChestplate().getType().name();
-			
+
 			String playerLeggings = "FALSE"; 
 			if (theEntry.getPlayer().getInventory().getLeggings() != null) 
 				playerLeggings = theEntry.getPlayer().getInventory().getLeggings().getType().name();
-			
+
 			String playerMoney = "0";
 			if (plugin.economy != null) 
 				playerMoney = String.valueOf(plugin.economy.getBalance(theEntry.getPlayer().getName()));
-			
+
+
+
 			theValue = theValue.replace("<ITEM_IN_HAND.MATERIAL>", itemInHandMaterial)
 					.replace("<ITEM_IN_HAND.QTY>", itemInHandQty)
 					.replace("<ITEM_IN_HAND.ID>", itemInHandId)
@@ -142,6 +145,26 @@ public class FlagCommand extends AbstractCommand {
 					.replace("<PLAYER.CHESTPLATE>", playerChestplate)
 					.replace("<PLAYER.WORLD>", theEntry.getPlayer().getWorld().getName())
 					.replace("<PLAYER.MONEY>", playerMoney);
+			theFlag = theFlag.replace("<ITEM_IN_HAND.MATERIAL>", itemInHandMaterial)
+					.replace("<ITEM_IN_HAND.QTY>", itemInHandQty)
+					.replace("<ITEM_IN_HAND.ID>", itemInHandId)
+					.replace("<PLAYER.NAME>", theEntry.getPlayer().getName())
+					.replace("<PLAYER.KILLER>", playerKiller)
+					.replace("<PLAYER.HEALTH>", String.valueOf(theEntry.getPlayer().getHealth()))
+					.replace("<PLAYER.HELM>", playerHelm)
+					.replace("<PLAYER.LEGGINGS>", playerLeggings)
+					.replace("<PLAYER.BOOTS>", playerBoots)
+					.replace("<PLAYER.CHESTPLATE>", playerChestplate)
+					.replace("<PLAYER.WORLD>", theEntry.getPlayer().getWorld().getName())
+					.replace("<PLAYER.MONEY>", playerMoney);
+
+		}
+
+		String denizenNPCId = "";
+		if (theValue != null && theEntry.getDenizen() != null) {
+			denizenNPCId = String.valueOf(theEntry.getDenizen().getName());
+			theValue = theValue.replace("<DENIZEN.NPCID>", denizenNPCId);
+			theFlag = theFlag.replace("<DENIZEN.NPCID>", denizenNPCId);
 		}
 
 
@@ -154,9 +177,9 @@ public class FlagCommand extends AbstractCommand {
 			if (global) playerName = "GLOBAL";
 
 			if (taskMap.containsKey(playerName)) {
-					try {
-						plugin.getServer().getScheduler().cancelTask(taskMap.get(playerName));
-					} catch (Exception e) { }
+				try {
+					plugin.getServer().getScheduler().cancelTask(taskMap.get(playerName));
+				} catch (Exception e) { }
 			}
 
 			taskMap.put(playerName, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new ThreeItemRunnable<String, String, String>(playerName, theFlag, theValue) {
