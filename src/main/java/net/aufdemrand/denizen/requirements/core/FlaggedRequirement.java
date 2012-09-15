@@ -133,20 +133,20 @@ public class FlaggedRequirement extends AbstractRequirement {
 					if (plugin.getSaves().contains("Global.Flags." + flagName)) {
 						// Looking for exact number...
 						if (exactly) {
-							if (plugin.getSaves().getInt("Global.Flags." + flagName)
+							if (Integer.valueOf(plugin.getSaves().getString("Global.Flags." + flagName))
 									== (flagValue)) {
 								outcome = true;
 								aH.echoDebug("...global flag '%s' matched!", flagName);
 							} else aH.echoDebug("...global flag '%s' did not exactly match!", flagName);
 						} else { // Looking for more than or equal...
-							if (plugin.getSaves().getInt("Global.Flags." + flagName)
+							if (Integer.valueOf(plugin.getSaves().getString("Global.Flags." + flagName))
 									>= (flagValue)) {
 								outcome = true;
 								aH.echoDebug("...global flag '%s' matched!", flagName);
 							} else 	aH.echoDebug("...global flag '%s' did not match!", flagName);
 						}
 						
-						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getInt("Global.Flags." + flagName) + "'.");
+						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getString("Global.Flags." + flagName) + "'.");
 					} else aH.echoDebug("...global flag '%s' not set!", flagName);
 				} 
 
@@ -154,20 +154,20 @@ public class FlaggedRequirement extends AbstractRequirement {
 					if (plugin.getSaves().contains("Players." + thePlayer.getName()+ ".Flags." + flagName)) {
 						// Looking for exact number...
 						if (exactly) {
-							if (plugin.getSaves().getInt("Players." + thePlayer.getName()+ ".Flags." + flagName)
+							if (Integer.valueOf(plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName))
 									== (flagValue)) {
 								outcome = true;
 								aH.echoDebug("...player flag '%s' matched!", flagName);
 							} else aH.echoDebug("...player flag '%s' did not exactly match!", flagName);
 						} else { // Looking for more than or equal...
-							if (plugin.getSaves().getInt("Players." + thePlayer.getName()+ ".Flags." + flagName)
+							if (Integer.valueOf(plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName))
 									>= (flagValue)) {
 								outcome = true;
 								aH.echoDebug("...player flag '%s' matched!", flagName);
 							} else aH.echoDebug("...player flag '%s' did not match!", flagName);
 						}
 						
-						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getInt("Players." + thePlayer.getName()+ ".Flags." + flagName) + "'.");
+						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName) + "'.");
 					} else aH.echoDebug("...player flag '%s' not set!", flagName);
 				}		
 
