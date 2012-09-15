@@ -209,8 +209,8 @@ public class FlagCommand extends AbstractCommand {
 
 			case INC:
 				if (global) {
-					int incValue = plugin.getSaves().getInt("Server.Flags." + theFlag, 0) + 1;
-					plugin.getSaves().set("Server.Flags." + theFlag, incValue);
+					int incValue = plugin.getSaves().getInt("Global.Flags." + theFlag, 0) + 1;
+					plugin.getSaves().set("Global.Flags." + theFlag, incValue);
 				} else {
 					int incValue = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, 0) + 1;
 					plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, incValue);
