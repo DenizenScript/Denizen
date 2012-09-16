@@ -60,6 +60,9 @@ public class LookCommand extends AbstractCommand {
 		/* Get arguments */
 		for (String thisArg : theEntry.arguments()) {
 
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			// If argument is a duration
 			if (aH.matchesDuration(thisArg)) {
 				duration = aH.getIntegerModifier(thisArg);

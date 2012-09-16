@@ -41,7 +41,10 @@ public class WalkToCommand extends AbstractCommand {
 		Float Speed = null;
 
 		for (String thisArg : theEntry.arguments()) {
-
+			
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			if(thisArg.toUpperCase().contains("SPEED:")){
 
 				try {

@@ -35,8 +35,13 @@ public class HintCommand extends AbstractCommand {
 
 
 		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
-				if (thisArgument.toUpperCase().contains("SHORT")) shortFormat = true;
+
+			for (String thisArg : theEntry.arguments()) {
+
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+				
+				if (thisArg.toUpperCase().contains("SHORT")) shortFormat = true;
 			}
 		}
 

@@ -53,6 +53,9 @@ public class PauseCommand extends AbstractCommand {
 		if (theEntry.arguments() != null)
 			for (String thisArg : theEntry.arguments()) {
 
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+				
 				if (aH.matchesDuration(thisArg)) {
 					duration = aH.getIntegerModifier(thisArg);
 					aH.echoDebug("...duration set to '%s'.", thisArg);

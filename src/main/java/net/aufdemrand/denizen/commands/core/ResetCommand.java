@@ -35,20 +35,23 @@ public class ResetCommand extends AbstractCommand {
 	}
 
 	@Override
-	public boolean execute(ScriptEntry theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
 		/* Set variables */
-		String theScript = theCommand.getScript();
+		String theScript = theEntry.getScript();
 		ResetType resetType = null;
 		String theFlag = null;
 		boolean globalFlag = false;
 
-		if (theCommand.arguments() == null)
+		if (theEntry.arguments() == null)
 			throw new CommandException("...not enough arguments! Use RESET ('Name of Script') [FINISHES|FAILS]  or  RESET [FLAG:[NAME]]");
 
 		/* Check arguments */
-		for (String thisArg : theCommand.arguments()) {
+		for (String thisArg : theEntry.arguments()) {
 
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			if (thisArg.equalsIgnoreCase("FINISHES") || thisArg.equalsIgnoreCase("FINISHED") || thisArg.equalsIgnoreCase("FINISH")) {
 				resetType = ResetType.FINISH;
 				aH.echoDebug("...will reset FINISHED.");
@@ -87,16 +90,16 @@ public class ResetCommand extends AbstractCommand {
 			switch (resetType) {
 
 			case FINISH:
-				plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", null);
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + "." + theScript + "." + "Completed", null);
 				break;
 
 			case FAIL:
-				plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", null);
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + "." + theScript + "." + "Failed", null);
 				break;
 
 			case FLAG:
 				if (globalFlag) plugin.getSaves().set("Global.Flags." + theFlag, null); 
-				else plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + ".Flags." + theFlag, null);
+				else plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, null);
 				break;
 			}
 

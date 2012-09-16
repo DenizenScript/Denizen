@@ -44,10 +44,12 @@ public class ExecuteCommand extends AbstractCommand {
 		if (theEntry.arguments() == null)
 			throw new CommandException("...Usage: EXECUTE [AS_SERVER|AS_NPC|AS_PLAYER] '[Command to execute]'");
 
-		/* Match arguments to expected variables */
+		// Match arguments to expected variables
 		for (String thisArg : theEntry.arguments()) {
 
-			/* If argument is ASPLAYER */
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			if (thisArg.equalsIgnoreCase("ASPLAYER")
 					|| thisArg.equalsIgnoreCase("AS_PLAYER")) {
 				executeType = ExecuteType.ASPLAYER;
@@ -82,27 +84,20 @@ public class ExecuteCommand extends AbstractCommand {
 			}
 
 			else {
-				commandtoExecute = aH.fillFlags(theEntry.getPlayer(), thisArg)
-						.replace("<PLAYER>", theEntry.getPlayer().getName())
-						.replace("<WORLD>", theEntry.getPlayer().getWorld().getName());
+				commandtoExecute = thisArg;
+				aH.echoDebug("...executing command '%s'.", thisArg);
 			}
 		}	
 
 		if (theDenizen == null && theEntry.getDenizen() != null) theDenizen = theEntry.getDenizen();
 
+		// Replaceable data for <*>
 		if (theEntry.getTexts()[0] != null) {
 			commandtoExecute = commandtoExecute.replace("<*>", theEntry.getTexts()[0]);
 		}
 		
-		if (theDenizen != null) {
-			commandtoExecute = commandtoExecute.replace("<NPC>", theEntry.getDenizen().getName())
-					.replace("<NPCID>", "" + theEntry.getDenizen().getCitizensEntity().getId());
-			aH.echoDebug("...command: '%s'", commandtoExecute);
-		} else aH.echoDebug("...command: '%s'", commandtoExecute);
 		
-
-		
-		/* Execute the command, if all required variables are filled. */
+		// Execute the command, if all required variables are filled.
 		if (commandtoExecute != null && executeType != null) {
 
 			switch (executeType) {

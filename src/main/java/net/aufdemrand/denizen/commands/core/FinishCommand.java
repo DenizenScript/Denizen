@@ -29,21 +29,21 @@ public class FinishCommand extends AbstractCommand {
 	 */
 
 	@Override
-	public boolean execute(ScriptEntry theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
-		String theScript = theCommand.getScript();
+		String theScript = theEntry.getScript();
 
-		/* Get arguments */
-		if (theCommand.arguments() != null) {
-			for (String thisArg : theCommand.arguments()) {
+		if (theEntry.arguments() != null) {
+			for (String thisArg : theEntry.arguments()) {
 
-				// If the argument is a SCRIPT: modifier
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+
 				if (aH.matchesScript(thisArg)) {
 					theScript = aH.getStringModifier(thisArg);
 					aH.echoDebug("...script to finish now '%s'.", thisArg);
 				}
 
-				// Can't match to anything
 				else aH.echoError("Unable to match '%s'!", thisArg);
 			}
 		}
@@ -51,14 +51,14 @@ public class FinishCommand extends AbstractCommand {
 
 		/* Write data to saves */
 
-		int currentFinishes = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", 0);
+		int currentFinishes = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + "." + theScript + "." + "Completed", 0);
 		currentFinishes++;	
 
-		plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Completed", currentFinishes);
+		plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + "." + theScript + "." + "Completed", currentFinishes);
 		plugin.saveSaves();
 
 		// Call Finish Event
-		ScriptFinishEvent event = new ScriptFinishEvent(theCommand.getPlayer(), theScript, currentFinishes);
+		ScriptFinishEvent event = new ScriptFinishEvent(theEntry.getPlayer(), theScript, currentFinishes);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		return true;
 	}

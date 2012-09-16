@@ -278,10 +278,10 @@ public class ScriptHelper {
 
 	@Deprecated
 	public String[] buildArgs(String stringArgs) { 
-		return buildArgs(null, stringArgs);
+		return buildArgs(null, null, stringArgs);
 	}
 
-	public String[] buildArgs(Player thePlayer, String stringArgs) {
+	public String[] buildArgs(Player thePlayer, DenizenNPC theDenizen, String stringArgs) {
 
 		if (stringArgs == null) return null;
 
@@ -301,17 +301,22 @@ public class ScriptHelper {
 			}
 		}
 
-		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
-		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GRAY + "Args: " + Arrays.toString(matchList.toArray()));
-
 		// Check for build-time flags.
 		List<String> flaggedList = new ArrayList<String>();
 		for (String arg : matchList) {
-			flaggedList.add(plugin.getCommandRegistry().getArgumentHelper().fillBuildFlags(thePlayer, arg));
+
+			// Fill queue-time flags and replaceables
+			if (arg.contains("<^")) {
+				arg = plugin.getCommandRegistry().getArgumentHelper().fillReplaceables(thePlayer, theDenizen, arg, true);
+			}
+			flaggedList.add(arg);
 		}
 
 		String[] split = new String[flaggedList.size()];
 		flaggedList.toArray(split);
+
+		if (this.cs == null) this.cs = plugin.getServer().getConsoleSender();
+		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GRAY + "Args: " + Arrays.toString(flaggedList.toArray()));
 
 		return split;
 	}
@@ -349,7 +354,7 @@ public class ScriptHelper {
 
 
 
-	/*
+	/**
 	 * Checks whether a Denizen NPC should be interact-able.
 	 */
 
@@ -411,7 +416,7 @@ public class ScriptHelper {
 			try {
 				/* Build new script commands */
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command.");
-				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(thePlayer, scriptEntry[1]), thePlayer, theScriptName));
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(thePlayer, null, scriptEntry[1]), thePlayer, theScriptName));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -452,7 +457,7 @@ public class ScriptHelper {
 			try {
 				/* Build new script commands */
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command.");
-				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(thePlayer, scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep));
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(thePlayer, theDenizen, scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -491,7 +496,7 @@ public class ScriptHelper {
 			try {
 				/* Build new script commands */
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command.");
-				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(thePlayer, scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep, playerMessage, theText));
+				scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(thePlayer, theDenizen, scriptEntry[1]), thePlayer, theDenizen, theScriptName, theStep, playerMessage, theText));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -615,7 +620,7 @@ public class ScriptHelper {
 				if (plugin.getCommandRegistry().getCommand(scriptEntry[0]).activityQueueCompatible) {
 					/* Build new script commands */
 					if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Adding '" + scriptEntry[0] + "' command for " + theDenizen.getName() + ".");
-					scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(null, scriptEntry[1]), theDenizen, theScriptName));
+					scriptCommands.add(new ScriptEntry(scriptEntry[0], buildArgs(null, theDenizen, scriptEntry[1]), theDenizen, theScriptName));
 				} else if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + "'" + scriptEntry[0] + "' command is not compatible with the Activity Queue.");
 			} catch (Exception e) {
 				e.printStackTrace();

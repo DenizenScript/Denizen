@@ -18,7 +18,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 	 * (DURATION:#) Reverts to the previous head position after # amount of seconds.
 	 * 
 	 * Example usages:
-	 * FLAGG 'MAGICSHOPITEM:FEATHER' 'DURATION:60'
+	 * FLAG 'MAGICSHOPITEM:FEATHER' 'DURATION:60'
 	 * FLAG 'HOSTILECOUNT:++'
 	 * FLAG 'ALIGNMENT:--'
 	 * FLAG 'CUSTOMFLAG:SET'
@@ -39,6 +39,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 		String flagString = null;
 		boolean exactly = false;
 		boolean global = false;
+		boolean denizen = false;
 
 		if (arguments == null)
 			throw new RequirementMissingException("Must provide a flag to be checked!");
@@ -71,6 +72,15 @@ public class FlaggedRequirement extends AbstractRequirement {
 				aH.echoDebug("...checking global flags.");
 				global = true;
 			}
+			
+			else if (thisArgument.equalsIgnoreCase("PLAYER")) {
+				aH.echoDebug("...checking player flags.");
+			}
+			
+			else if (thisArgument.equalsIgnoreCase("DENIZEN")) {
+				aH.echoDebug("...checking denizen flags.");
+				denizen = true;
+			}
 
 			// Boolean value
 			else {
@@ -93,6 +103,16 @@ public class FlaggedRequirement extends AbstractRequirement {
 						} else aH.echoDebug("...global boolean flag '%s' is FALSE!", flagName);
 					} else aH.echoDebug("...did not find global boolean flag '%s'!", flagName);
 				} 
+
+				else if (denizen) {
+					if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName)) {
+						if (!plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName).toUpperCase().equals("FALSE")) {
+							outcome = true;
+							aH.echoDebug("...found denizen boolean flag '%s'!", flagName);
+						} else aH.echoDebug("...denizen boolean flag '%s' is FALSE!", flagName);
+					} else aH.echoDebug("...did not find denizen boolean flag '%s'!", flagName);
+				}
+				
 				else {
 					if (plugin.getSaves().contains("Players." + thePlayer.getName() + ".Flags." + flagName)) {
 						if (!plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName).toUpperCase().equals("FALSE")) {
@@ -115,6 +135,19 @@ public class FlaggedRequirement extends AbstractRequirement {
 
 					} else aH.echoDebug("...global flag '%s' not set!", flagName);
 				} 
+				
+				else if (denizen) {
+					if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName)) {
+						if (plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName).toUpperCase()
+								.equalsIgnoreCase(flagString)) {
+							outcome = true;
+							aH.echoDebug("...denizen flag '%s' matched!", flagName);
+						} else aH.echoDebug("...denizen flag '%s' did not match!", flagName);
+						
+						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName) + "'.");
+					} else aH.echoDebug("...denizen flag '%s' not set!", flagName);
+				}
+
 				else {
 					if (plugin.getSaves().contains("Players." + thePlayer.getName() + ".Flags." + flagName)) {
 						if (plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName).toUpperCase()
@@ -150,6 +183,27 @@ public class FlaggedRequirement extends AbstractRequirement {
 					} else aH.echoDebug("...global flag '%s' not set!", flagName);
 				} 
 
+				else if (denizen) {
+					if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName)) {
+						// Looking for exact number...
+						if (exactly) {
+							if (Integer.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName))
+									== (flagValue)) {
+								outcome = true;
+								aH.echoDebug("...denizen flag '%s' matched!", flagName);
+							} else aH.echoDebug("...denizen flag '%s' did not exactly match!", flagName);
+						} else { // Looking for more than or equal...
+							if (Integer.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName))
+									>= (flagValue)) {
+								outcome = true;
+								aH.echoDebug("...denizen flag '%s' matched!", flagName);
+							} else aH.echoDebug("...denizen flag '%s' did not match!", flagName);
+						}
+						
+						if (outcome == false) aH.echoDebug("...was looking for '" + flagValue + "', found '" + plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName) + "'.");
+					} else aH.echoDebug("...denizen flag '%s' not set!", flagName);
+				}		
+				
 				else {
 					if (plugin.getSaves().contains("Players." + thePlayer.getName()+ ".Flags." + flagName)) {
 						// Looking for exact number...

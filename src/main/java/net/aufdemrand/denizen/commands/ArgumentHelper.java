@@ -237,112 +237,175 @@ public class ArgumentHelper {
 		else return false;
 	}
 
-	// -----------------
 
-	final public Pattern replaceableFlagWithFallback = Pattern.compile("(<)(FLAG|flag|Flag)(:)(.*?)(:)(.*?)(>)");
-	final public Pattern replaceableFlag = Pattern.compile("(<)(FLAG|flag|Flag)(:)(.*?)(>)");
-	public String fillFlags(Player thePlayer, String stringToFill) {
+
+	/**
+	 * Fills in replaceable data for flags and more.
+	 * 
+	 * Handles 2 types of replacement, queue-time and run-time. 
+	 * 
+	 * Use quickReplaceable = true 
+	 * for queue-time. This type of replacement is made when the script is being put into the player
+	 * queue.
+	 * 
+	 * Use quickReplaceable = false
+	 * for run-time. This type of replacement is made right at the time of code-execution.
+	 *
+	 */
+
+	final public Pattern replaceableFlag = Pattern.compile("(<)(\\^FLAG|FLAG)(.G|.GLOBAL|.P|.PLAYER|.D|.DENIZEN)(:)(.*?)(>)");
+	public String fillReplaceables(Player thePlayer, DenizenNPC theDenizen, String stringToFill, boolean quickReplaceable) {
 
 		if (stringToFill == null) return null;
-		String filledString = stringToFill;
-		Matcher fF = replaceableFlagWithFallback.matcher(stringToFill);
-		String searchString = "Global";
-		if (thePlayer != null) searchString = "Players." + thePlayer.getName();
 
-		while (fF.find()) {
-			if (plugin.getSaves().contains(searchString + ".Flags." + fF.group(4).toUpperCase())) {
-				filledString = fF.replaceFirst(plugin.getSaves().getString(searchString + ".Flags." + fF.group(4).toUpperCase()));
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", fF.group(4));
-			}
-			else if (plugin.getSaves().contains("Global.Flags." + fF.group(4).toUpperCase())) {
-				filledString = fF.replaceFirst(plugin.getSaves().getString("Global.Flags." + fF.group(4).toUpperCase()));
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", fF.group(4));
-			}
-			// No flags found, use fallback text
-			else {
-				filledString = fF.replaceFirst(fF.group(6));
-				echoDebug(ChatColor.YELLOW + "//REPLACED//"  +ChatColor.WHITE + " '%s' with fallback value.", fF.group(4));
-			}
-		}
-
-		stringToFill = filledString;
-
-		// okay, now check for without fallback.
+		// First, check for flags.
 		Matcher f = replaceableFlag.matcher(stringToFill);
 
-		while (f.find()) {
-			if (plugin.getSaves().contains(searchString + ".Flags." + f.group(4).toUpperCase())) {
-				filledString = f.replaceFirst(plugin.getSaves().getString(searchString + ".Flags." + f.group(4).toUpperCase()));
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(4));
-			}
-			else if (plugin.getSaves().contains("Global.Flags." + f.group(4).toUpperCase())){
-				filledString = f.replaceFirst(plugin.getSaves().getString("Global.Flags." + f.group(4).toUpperCase()));
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(4));
-			}
-			// No flags found, use ""
-			else  {
-				filledString = f.replaceFirst("");
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with nothing, no flag value found.", f.group(4));
-			}
-		}
-
-		return filledString;
-	}
-
-	
-	
-	final public Pattern replaceableBuildFlagWithFallback = Pattern.compile("(<)(\\^)(FLAG|flag|Flag)(:)(.*?)(:)(.*?)(>)");
-	final public Pattern replaceableBuildFlag = Pattern.compile("(<)(\\^)(FLAG|flag|Flag)(:)(.*?)(>)");
-	public String fillBuildFlags(Player thePlayer, String stringToFill) {
-
-		if (stringToFill == null) return null;
+		// Filled string to send back. Obviously, not filled yet...
 		String filledString = stringToFill;
-		Matcher fF = replaceableBuildFlagWithFallback.matcher(stringToFill);
-		String searchString = "Global";
-		if (thePlayer != null) searchString = "Players." + thePlayer.getName();
 
-		while (fF.find()) {
-			if (plugin.getSaves().contains(searchString + ".Flags." + fF.group(5).toUpperCase())) {
-				filledString = fF.replaceFirst(plugin.getSaves().getString(searchString + ".Flags." + fF.group(5).toUpperCase()));
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", fF.group(5));
-			}
-			else if (plugin.getSaves().contains("Global.Flags." + fF.group(5).toUpperCase())) {
-				filledString = fF.replaceFirst(plugin.getSaves().getString("Global.Flags." + fF.group(5).toUpperCase()));
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", fF.group(5));
-			}
-			// No flags found, use fallback text
-			else {
-				filledString = fF.replaceFirst(fF.group(7));
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with fallback value.", fF.group(5));
-			}
-		}
-
-		stringToFill = filledString;
-
-		// okay, now check for without fallback.
-		Matcher f = replaceableBuildFlag.matcher(stringToFill);
-
+		// For each find in the String
 		while (f.find()) {
-			if (plugin.getSaves().contains(searchString + ".Flags." + f.group(5).toUpperCase())) {
-				filledString = f.replaceFirst(plugin.getSaves().getString(searchString + ".Flags." + f.group(5).toUpperCase()));
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(5));
+
+			// Check which type of replaceable
+			if (f.group(2).contains("^") && !quickReplaceable)
+				continue;
+
+			if (!f.group(2).contains("^") && quickReplaceable)
+				continue;
+
+			String searchPath = "";
+
+			// Check flag replacement type
+			if (f.group(3).startsWith(".G"))
+				searchPath = "Global.Flags.";
+			else if (f.group(3).startsWith(".D") && theDenizen != null)
+				searchPath = "Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags";
+			else if (f.group(3).startsWith(".P") && thePlayer != null)
+				searchPath = "Players." + thePlayer.getName() + ".Flags.";
+
+			// Replaceable data detected
+			if (f.group(5).split(":").length > 1) {
+				if (plugin.getSaves().contains(searchPath + f.group(5).split(":")[0].toUpperCase() )) {
+					filledString = f.replaceFirst(plugin.getSaves().getString(searchPath + f.group(5).split(":")[0].toUpperCase() ));
+					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(4));
+				} else {
+					filledString = f.replaceFirst(f.group(5).split(":")[1]);
+					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!");
+				}
 			}
-			else if (plugin.getSaves().contains("Global.Flags." + f.group(5).toUpperCase())){
-				filledString = f.replaceFirst(plugin.getSaves().getString("Global.Flags." + f.group(5).toUpperCase()));
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(5));
-			}
-			// No flags found, use ""
-			else  {
-				filledString = f.replaceFirst("");
-				echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with nothing, no flag value found.", f.group(5));
+
+			// No replaceable data
+			else {
+				if (plugin.getSaves().contains(searchPath + f.group(5).split(":")[0].toUpperCase() )) {
+					filledString = f.replaceFirst(plugin.getSaves().getString(searchPath + f.group(5).split(":")[0].toUpperCase() ));
+					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(4));
+				} else {
+					filledString = f.replaceFirst(f.group(5).split(":")[1]);
+					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found!");
+				}
 			}
 		}
 
+		// Player object flag replacement
+		if (thePlayer != null && filledString.contains("<")) {
+
+			String itemInHandMaterial = "FALSE"; 
+			if (thePlayer.getItemInHand() != null) 
+				itemInHandMaterial = thePlayer.getItemInHand().getType().name();
+
+			String itemInHandQty = "0"; 
+			if (thePlayer.getItemInHand() != null) 
+				itemInHandQty = String.valueOf(thePlayer.getItemInHand().getAmount());
+
+			String itemInHandId = "0"; 
+			if (thePlayer.getItemInHand() != null) 
+				itemInHandId = String.valueOf(thePlayer.getItemInHand().getTypeId());
+
+			String playerKiller = "FALSE"; 
+			if (thePlayer.getKiller() != null) 
+				playerKiller = thePlayer.getKiller().getName();
+
+			String playerHelm = "FALSE"; 
+			if (thePlayer.getInventory().getHelmet() != null) 
+				playerHelm = thePlayer.getInventory().getHelmet().getType().name();
+
+			String playerBoots = "FALSE"; 
+			if (thePlayer.getInventory().getBoots() != null) 
+				playerBoots = thePlayer.getInventory().getBoots().getType().name();
+
+			String playerChestplate = "FALSE"; 
+			if (thePlayer.getInventory().getChestplate() != null) 
+				playerChestplate = thePlayer.getInventory().getChestplate().getType().name();
+
+			String playerLeggings = "FALSE"; 
+			if (thePlayer.getInventory().getLeggings() != null) 
+				playerLeggings = thePlayer.getInventory().getLeggings().getType().name();
+
+			String playerMoney = "0";
+			if (plugin.economy != null) 
+				playerMoney = String.valueOf(plugin.economy.getBalance(thePlayer.getName()));
+
+			if (quickReplaceable) 
+				filledString = filledString
+				.replace("<^PLAYER.ITEM_IN_HAND.MATERIAL>", itemInHandMaterial)
+				.replace("<^PLAYER.ITEM_IN_HAND.QTY>", itemInHandQty)
+				.replace("<^PLAYER.ITEM_IN_HAND.ID>", itemInHandId)
+				.replace("<^PLAYER.NAME>", thePlayer.getName())
+				.replace("<^PLAYER>", thePlayer.getName())
+				.replace("<^PLAYER.KILLER>", playerKiller)
+				.replace("<^PLAYER.HEALTH>", String.valueOf(thePlayer.getHealth()))
+				.replace("<^PLAYER.HELM>", playerHelm)
+				.replace("<^PLAYER.LEGGINGS>", playerLeggings)
+				.replace("<^PLAYER.BOOTS>", playerBoots)
+				.replace("<^PLAYER.CHESTPLATE>", playerChestplate)
+				.replace("<^PLAYER.WORLD>", thePlayer.getWorld().getName())
+				.replace("<^PLAYER.MONEY>", playerMoney)
+				.replace("<^PLAYER.EXP_TO_NEXT_LEVEL>", String.valueOf(thePlayer.getExpToLevel()))
+				.replace("<^PLAYER.EXP>", String.valueOf(thePlayer.getTotalExperience()))
+				.replace("<^PLAYER.FOOD_LEVEL>", String.valueOf(thePlayer.getFoodLevel()));
+
+			else 
+				filledString = filledString
+				.replace("<PLAYER.ITEM_IN_HAND.MATERIAL>", itemInHandMaterial)
+				.replace("<PLAYER.ITEM_IN_HAND.QTY>", itemInHandQty)
+				.replace("<PLAYER.ITEM_IN_HAND.ID>", itemInHandId)
+				.replace("<PLAYER.NAME>", thePlayer.getName())
+				.replace("<PLAYER>", thePlayer.getName())
+				.replace("<PLAYER.KILLER>", playerKiller)
+				.replace("<PLAYER.HEALTH>", String.valueOf(thePlayer.getHealth()))
+				.replace("<PLAYER.HELM>", playerHelm)
+				.replace("<PLAYER.LEGGINGS>", playerLeggings)
+				.replace("<PLAYER.BOOTS>", playerBoots)
+				.replace("<PLAYER.CHESTPLATE>", playerChestplate)
+				.replace("<PLAYER.WORLD>", thePlayer.getWorld().getName())
+				.replace("<PLAYER.MONEY>", playerMoney)
+				.replace("<^PLAYER.EXP_TO_NEXT_LEVEL>", String.valueOf(thePlayer.getExpToLevel()))
+				.replace("<^PLAYER.EXP>", String.valueOf(thePlayer.getTotalExperience()))
+				.replace("<^PLAYER.FOOD_LEVEL>", String.valueOf(thePlayer.getFoodLevel()));
+
+		}
+
+		// Replaceables for Denizen
+		if (theDenizen != null && filledString.contains("<")) {
+			if (quickReplaceable) 
+				filledString = filledString
+				.replace("<^DENIZEN.NPCID>", String.valueOf(theDenizen.getId()))
+				.replace("<^NPCID>", String.valueOf(theDenizen.getId()))
+				.replace("<^NPC>", theDenizen.getName())
+				.replace("<^DENIZEN.NAME>", theDenizen.getName());
+
+			else
+				filledString = filledString
+				.replace("<DENIZEN.NPCID>", String.valueOf(theDenizen.getId()))
+				.replace("<NPCID>", String.valueOf(theDenizen.getId()))
+				.replace("<NPC>", theDenizen.getName())
+				.replace("<DENIZEN.NAME>", theDenizen.getName());
+		}
+
+		// Done!
 		return filledString;
 	}
-
-
-
 
 
 }

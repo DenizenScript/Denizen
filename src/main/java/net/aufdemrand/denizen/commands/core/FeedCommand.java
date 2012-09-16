@@ -35,13 +35,16 @@ public class FeedCommand extends AbstractCommand {
 		if (theEntry.arguments() != null)
 			for (String thisArg : theEntry.arguments()) {
 
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+				
 				if (thisArg.matches("(?:QTY|qty|Qty|AMT|Amt|amt|AMOUNT|Amount|amount)(:)(\\d+)")){
 					amount = aH.getIntegerModifier(thisArg);
 					aH.echoDebug("...amount set to '" + amount + "'.");
 				}
 			}
 
-		theEntry.getPlayer().setSaturation(theEntry.getPlayer().getSaturation() + amount);
+
 		theEntry.getPlayer().setFoodLevel(theEntry.getPlayer().getFoodLevel() + amount);
 		net.citizensnpcs.util.Util.sendPacketNearby(theEntry.getDenizen().getLocation(), 
 				new Packet18ArmAnimation(((CraftEntity)theEntry.getDenizen().getEntity()).getHandle(),6) , 64); 

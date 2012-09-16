@@ -40,6 +40,9 @@ public class RunTaskCommand extends AbstractCommand {
 
 		for (String thisArg : theEntry.arguments()){
 
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			/* Change the script to a specified one */
 			if (aH.matchesScript(thisArg)) {
 				theScriptName = aH.getStringModifier(thisArg);

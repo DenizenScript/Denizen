@@ -51,6 +51,10 @@ public class IfCommand extends AbstractCommand {
 
 		/* Match arguments to expected variables */
 		for (String thisArg : theEntry.arguments()) {
+			
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			// If argument is an Integer
 			if (thisArg.toUpperCase().contains("GLOBAL")) {
 				global = true;

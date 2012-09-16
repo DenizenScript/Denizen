@@ -77,7 +77,10 @@ public class ListenCommand extends AbstractCommand implements Listener {
 			String killListenerId = null;
 
 			for (String thisArg : theEntry.arguments()){
-
+				
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+				
 				if (aH.matchesScript(thisArg)) {
 					killScript = aH.getStringModifier(thisArg);
 					aH.echoDebug("...script to run on completion '" + killScript + "'.");	

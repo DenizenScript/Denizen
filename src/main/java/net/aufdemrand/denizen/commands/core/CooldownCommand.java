@@ -40,7 +40,6 @@ public class CooldownCommand extends AbstractCommand {
 
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
-		/* Initialize variables */ 
 		Boolean isGlobal = false;
 		Integer duration = null;
 		String theScript = null;
@@ -48,34 +47,31 @@ public class CooldownCommand extends AbstractCommand {
 		if (theEntry.arguments() == null)
 			throw new CommandException("...Usage: COOLDOWN [# of Seconds] (GLOBAL) ('SCRIPT:[Name of Script]')");
 
-		/* Match arguments to expected variables */
 		for (String thisArg : theEntry.arguments()) {
+			
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
 
-			// If argument is a Duration modifier
 			if (aH.matchesDuration(thisArg)) {
 				duration = aH.getIntegerModifier(thisArg);
 				aH.echoDebug("...cooldown duration now '%s'.", thisArg);
 			}
 
-			// If argument matches duration (by indicating just an Integer)
 			else if (aH.matchesInteger(thisArg)) {
 				duration = aH.getIntegerModifier(thisArg);
 				aH.echoDebug("...cooldown duration now '%s'.", thisArg);
 			}
 
-			// If argument is a GLOBAL modifier
 			else if (thisArg.equalsIgnoreCase("GLOBAL")) {
 				isGlobal = true;
 				aH.echoDebug("...script COOLDOWN will now be GLOBAL.");
 			}
 
-			// If argument is a Script modifier
 			else if (aH.matchesScript(thisArg)) {
 				theScript = aH.getStringModifier(thisArg);
 				aH.echoDebug("...command will now affect '%s'.", thisArg);
 			}
 
-			// Can't match to anything
 			else aH.echoError("Unable to match argument '%s'!", thisArg);
 		}	
 
@@ -92,7 +88,7 @@ public class CooldownCommand extends AbstractCommand {
 			}
 
 			// If not global, set cool-down for player:
-			else if (!isGlobal) {
+			else {
 				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Scripts." + theScript + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
 				plugin.saveSaves();
 			}

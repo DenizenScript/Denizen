@@ -47,29 +47,32 @@ public class PermissCommand extends AbstractCommand {
 			throw new CommandException("...Usage: PERMISS [permission.node]|['GROUP:group name'] (WORLD)|(WORLD:'NAME')");
 		
 		/* Match arguments to expected variables */
-		for (String thisArgument : theEntry.arguments()) {
+		for (String thisArg : theEntry.arguments()) {
 
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			/* Match to GROUP:[group] */
-			if (aH.matchesGroup(thisArgument)) {
-				groupName = aH.getStringModifier(thisArgument);
-				aH.echoDebug("...group specified as '%s'.", thisArgument);
+			if (aH.matchesGroup(thisArg)) {
+				groupName = aH.getStringModifier(thisArg);
+				aH.echoDebug("...group specified as '%s'.", thisArg);
 			}
 
 			/* Match to WORLD:[world] */
-			else if (aH.matchesWorld(thisArgument)) {
-				worldName = aH.getStringModifier(thisArgument);
-				aH.echoDebug("...world specified as '%s'.", thisArgument);
+			else if (aH.matchesWorld(thisArg)) {
+				worldName = aH.getStringModifier(thisArg);
+				aH.echoDebug("...world specified as '%s'.", thisArg);
 			}
 
 			/* Takes current World */
-			else if (thisArgument.toUpperCase().contains("WORLD")) {
+			else if (thisArg.toUpperCase().contains("WORLD")) {
 				worldName = theEntry.getPlayer().getWorld().getName();
 				aH.echoDebug("...world specified as current world.");
 			}
 
 			else {
-				aH.echoDebug("...specified '%s' permissions node.", thisArgument);
-				permissionsNode = thisArgument;
+				aH.echoDebug("...specified '%s' permissions node.", thisArg);
+				permissionsNode = thisArg;
 			}
 
 		}	

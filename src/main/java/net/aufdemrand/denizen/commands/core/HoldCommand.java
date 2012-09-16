@@ -54,6 +54,10 @@ public class HoldCommand extends AbstractCommand {
 		}
 
 		for (String thisArg : theEntry.arguments()) {
+
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			if (aH.matchesItem(thisArg)) {
 				holdItem = aH.getItemModifier(thisArg);
 				if (holdItem != null)

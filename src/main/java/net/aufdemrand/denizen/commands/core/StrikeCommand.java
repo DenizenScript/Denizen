@@ -47,32 +47,35 @@ public class StrikeCommand extends AbstractCommand {
 
 		/* Match arguments to expected variables */
 		if (theEntry.arguments() != null) {
-			for (String thisArgument : theEntry.arguments()) {
-
+			for (String thisArg : theEntry.arguments()) {
+				
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+				
 				// If argument is a modifier.
-				if (thisArgument.toUpperCase().equals("DENIZEN")) {
+				if (thisArg.toUpperCase().equals("DENIZEN")) {
 					aH.echoDebug("...matched DENIZEN.");
 					strikeLocation = theEntry.getDenizen().getLocation();
 				}
 
 				// If argument is a modifier.
-				else if (thisArgument.toUpperCase().equals("NODAMAGE")) {
+				else if (thisArg.toUpperCase().equals("NODAMAGE")) {
 					aH.echoDebug("...strike is now non-lethal.");
 					isLethal = false;
 				}
 
 				// If argument is a NPCID modifier...
-				else if (aH.matchesNPCID(thisArgument)) {
-					strikeLocation = aH.getNPCIDModifier(thisArgument).getLocation();
+				else if (aH.matchesNPCID(thisArg)) {
+					strikeLocation = aH.getNPCIDModifier(thisArg).getLocation();
 					if (strikeLocation != null)
-						aH.echoDebug("...striking '%s'", thisArgument);
+						aH.echoDebug("...striking '%s'", thisArg);
 				}
 
 				// If argument is a BOOKMARK modifier
-				else if (aH.matchesBookmark(thisArgument)) {
-					strikeLocation = aH.getBookmarkModifier(thisArgument, theEntry.getDenizen());
+				else if (aH.matchesBookmark(thisArg)) {
+					strikeLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
 					if (strikeLocation != null)
-						aH.echoDebug("...strike location now at bookmark '%s'", thisArgument);
+						aH.echoDebug("...strike location now at bookmark '%s'", thisArg);
 
 				}		
 

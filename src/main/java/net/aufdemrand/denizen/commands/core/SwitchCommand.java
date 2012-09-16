@@ -56,6 +56,9 @@ public class SwitchCommand extends AbstractCommand {
 		/* Match arguments to expected variables */
 		for (String thisArg : theEntry.arguments()) {
 
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			// DURATION argument
 			if (aH.matchesDuration(thisArg)) {
 				duration = Integer.valueOf(thisArg.split(":")[1]);

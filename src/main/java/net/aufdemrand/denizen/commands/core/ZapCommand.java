@@ -43,6 +43,9 @@ public class ZapCommand extends AbstractCommand {
 		if (theEntry.arguments() != null) {
 			for (String thisArg : theEntry.arguments()) {
 
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+				
 				/* Set the step to ZAP to */
 				if (aH.matchesInteger(thisArg)) {
 					theStep = aH.getIntegerModifier(thisArg);

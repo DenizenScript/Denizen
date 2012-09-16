@@ -35,32 +35,30 @@ public class CastCommand extends AbstractCommand{
 
 		/* Match arguments to expected variables */
 		for (String thisArg : theEntry.arguments()) {
+			
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
 
-			// If argument is a modifier.
 			if (thisArg.toUpperCase().contains("SPELL:")) {
 				potionName = aH.getStringModifier(thisArg);
 				aH.echoDebug("...will cast effect '%s'.", thisArg);
 			}
 
-			// DURATION argument
 			else if (aH.matchesDuration(thisArg)) {
 				duration = aH.getIntegerModifier(thisArg);
 				aH.echoDebug("...duration set to '%s'.", thisArg);
 			}
 
-			// POWER argument
 			else if (thisArg.toUpperCase().contains("POWER:")) {
 				amplitude = aH.getIntegerModifier(thisArg);
 				aH.echoDebug("...power set to '%s'.", thisArg);
 			}
 
-			// NPCID argument
 			else if (aH.matchesNPCID(thisArg)) {
 				target = aH.getNPCIDModifier(thisArg).getEntity();
 				if (target !=null)	aH.echoDebug("...now targeting '%s'.", thisArg);
 			}
 
-			// Would this ever be used? A hard-coded player in a script?
 			else if (thisArg.toUpperCase().contains("PLAYER:")) {
 				target = theEntry.getDenizen().getEntity().getServer().getPlayer(aH.getStringModifier(thisArg));
 				if (target !=null)	aH.echoDebug("...now targeting '%s'.", thisArg);
@@ -70,6 +68,7 @@ public class CastCommand extends AbstractCommand{
 				potionName = aH.getStringModifier(thisArg);
 				aH.echoDebug("...will cast effect '%s'.", thisArg);
 			}
+
 		}	
 
 		if (target == null) {

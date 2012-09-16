@@ -49,6 +49,9 @@ public class TeleportCommand extends AbstractCommand {
 		/* Match arguments to expected variables */
 			for (String thisArg : theEntry.arguments()) {
 
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+				
 				// If argument is a modifier.
 				if (thisArg.toUpperCase().contains("DENIZEN")) {
 					teleportPlayer = false;

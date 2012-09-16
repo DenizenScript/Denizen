@@ -51,34 +51,32 @@ public class GiveCommand extends AbstractCommand {
 
 		/* Match arguments to expected variables */
 		for (String thisArg : theEntry.arguments()) {
+			
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
 
-			// If argument is QTY: modifier
 			if (aH.matchesQuantity(thisArg)) {
 				theAmount = aH.getIntegerModifier(thisArg);
 				aH.echoDebug("...set quantity to '%s'.", thisArg);
 			}
 
-			// If the argument is MONEY
-			else if (thisArg.toUpperCase().contains("MONEY")) {
+			else if (thisArg.toUpperCase().equals("MONEY")) {
 				giveType = GiveType.MONEY;
 				aH.echoDebug("...giving MONEY.");
 			}
 
-			// If the argument is XP
 			else if (thisArg.toUpperCase().contains("HEROESEXP")
 					|| thisArg.toUpperCase().contains("HEROES_EXP")) {
 				giveType = GiveType.HEROESEXP;
 				aH.echoDebug("...giving Heroes Quest EXP.");
 			}
 
-			// If the argument is XP
 			else if (thisArg.toUpperCase().contains("XP")
 					|| thisArg.toUpperCase().contains("EXP")) {
 				giveType = GiveType.EXP;
 				aH.echoDebug("...giving EXP.");
 			}
 
-			// If argument is an Item
 			else if (aH.matchesItem(thisArg)) {
 				theItem = aH.getItemModifier(thisArg);
 				giveType = GiveType.ITEM;
@@ -86,9 +84,7 @@ public class GiveCommand extends AbstractCommand {
 					aH.echoDebug("...set item to be given to '%s'.", thisArg);
 			}
 
-			/* Can't match to anything */
 			else aH.echoError("...unable to match '%s'!", thisArg);
-
 		}	
 
 

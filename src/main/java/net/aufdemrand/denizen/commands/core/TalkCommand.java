@@ -59,7 +59,10 @@ public class TalkCommand extends AbstractCommand {
 			if (theEntry.getPlayer() == null) noPlayer = true;
 			
 			for (String thisArg : theEntry.arguments()) {
-
+				
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+				
 				if (thisArg.toUpperCase().equalsIgnoreCase("NOPLAYER")) {
 					aH.echoError("...will not target Player.");
 					noPlayer = true;

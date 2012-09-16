@@ -51,7 +51,10 @@ public class TakeCommand extends AbstractCommand {
 
 		/* Match arguments to expected variables */
 		for (String thisArg : theEntry.arguments()) {
-
+			
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			// If argument is QTY: modifier
 			if (aH.matchesQuantity(thisArg)) {
 				theAmount = aH.getIntegerModifier(thisArg);

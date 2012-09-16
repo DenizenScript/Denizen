@@ -44,6 +44,10 @@ public class RandomCommand extends AbstractCommand {
 
 		/* Match arguments to expected variables */
 		for (String thisArg : theEntry.arguments()) {
+			
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			// If argument is an Integer
 			if (aH.matchesInteger(thisArg)) {
 				numberOfEntries = aH.getIntegerModifier(thisArg);

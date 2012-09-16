@@ -25,7 +25,7 @@ public class OwnerRequirement extends AbstractRequirement {
 
 		boolean outcome = false;
 
-		if (theDenizen.getCitizensEntity().getTrait(Owner.class).getOwner().equals(thePlayer.getName())) {
+		if (theDenizen.getCitizensEntity().getTrait(Owner.class).getOwner().equalsIgnoreCase(thePlayer.getName())) {
 			outcome = true;
 		}
 				

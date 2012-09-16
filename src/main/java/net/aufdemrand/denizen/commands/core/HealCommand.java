@@ -42,6 +42,9 @@ public class HealCommand extends AbstractCommand {
 
 		if (theEntry.arguments() != null)
 			for (String thisArg : theEntry.arguments()) {
+				
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
 
 				if (thisArg.toUpperCase().contains("DENIZEN")){
 					if (theEntry.getDenizen() != null) {

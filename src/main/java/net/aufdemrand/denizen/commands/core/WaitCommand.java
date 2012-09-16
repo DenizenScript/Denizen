@@ -56,19 +56,22 @@ public class WaitCommand extends AbstractCommand {
 
 		/* Process arguments */
 
-		for (String thisArgument : theEntry.arguments()) {
+		for (String thisArg : theEntry.arguments()) {
 
-			if (aH.matchesInteger(thisArgument)) {
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
+			if (aH.matchesInteger(thisArg)) {
 				if (plugin.debugMode) 
 					plugin.getLogger().log(Level.INFO, "...setting delay.");
-				theDelay = (Long.valueOf(thisArgument) * 1000);
+				theDelay = (Long.valueOf(thisArg) * 1000);
 
 			}
 
-			if (thisArgument.toUpperCase().contains("QUEUETYPE:")) {
+			if (thisArg.toUpperCase().contains("QUEUETYPE:")) {
 				aH.echoDebug("...setting QueueType.");
 						try {
-							queueToHold = QueueType.valueOf(thisArgument.split(":")[1]);
+							queueToHold = QueueType.valueOf(thisArg.split(":")[1]);
 						} catch (Throwable e) {
 							throw new CommandException("Invalid QUEUETYPE.");
 						}

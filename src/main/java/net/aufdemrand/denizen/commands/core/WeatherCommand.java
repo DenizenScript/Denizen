@@ -20,6 +20,7 @@ public class WeatherCommand extends AbstractCommand {
 		if (theEntry.arguments().length == 0 || theEntry.arguments() == null)
 			throw new CommandException("...Usage: WEATHER [SUN|STORM|PRECIPITATION]");
 
+		
 		String arg = theEntry.arguments()[0].toLowerCase();
 
 		if (arg.contains("sun")) { 

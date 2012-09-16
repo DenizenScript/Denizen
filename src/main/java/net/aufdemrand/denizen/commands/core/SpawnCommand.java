@@ -86,7 +86,10 @@ public class SpawnCommand extends AbstractCommand {
 			throw new CommandException("...Usage: SPAWN [ENTITY_TYPE] (QTY:#) (BOOKMARK:LocationBookmark)");
 
 		for (String thisArg : theEntry.arguments()) {
-
+			
+			// Fill replaceables
+			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+			
 			/* If a valid name of an Entity, set theEntity. */
 			if (plugin.utilities.isEntity(thisArg)) {
 				theEntity = EntityType.valueOf(thisArg.toUpperCase());

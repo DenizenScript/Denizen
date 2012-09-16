@@ -39,35 +39,31 @@ public class EngageCommand extends AbstractCommand {
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
-		/* Initialize variables */ 
-
 		Integer timedEngage = null;
 		DenizenNPC theDenizen = theEntry.getDenizen();
 
-		/* Get arguments */
 		if (theEntry.arguments() != null) {
 			for (String thisArg : theEntry.arguments()) {
 
-				// If argument is a duration
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+
 				if (aH.matchesInteger(thisArg)) {
 					timedEngage = Integer.valueOf(thisArg);
 					aH.echoDebug("...engage duration set to '%s'.", thisArg);
 				}
 				
-				// If argument is a duration
 				else if (aH.matchesDuration(thisArg)) {
 					timedEngage = aH.getIntegerModifier(thisArg);
 					aH.echoDebug("...engage duration set to '%s'.", thisArg);
 				}
 
-				// If argument is a NPCID: modifier
 				else if (aH.matchesNPCID(thisArg)) {
 					theDenizen = aH.getNPCIDModifier(thisArg);
 					if (theDenizen != null)
 						aH.echoDebug("...now referencing '%s'.", thisArg);
 				}
 
-				// Can't match to anything
 				else aH.echoError("...unable to match '%s'!", thisArg);
 			}	
 		}
@@ -89,10 +85,12 @@ public class EngageCommand extends AbstractCommand {
 			setEngaged(theDenizen, timedEngage);
 		else 			
 			setEngaged(theEntry.getDenizen(), true);
+
 		return true;
 	}
 
 
+	
 	/* Engaged NPCs cannot interact with Players */
 
 	private Map<DenizenNPC, Long> engagedNPC = new HashMap<DenizenNPC, Long>();

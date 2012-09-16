@@ -31,31 +31,32 @@ public class FailCommand extends AbstractCommand {
 	 */
 
 	@Override
-	public boolean execute(ScriptEntry theCommand) throws CommandException {
+	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
-		String theScript = theCommand.getScript();
+		String theScript = theEntry.getScript();
 
 		/* Get arguments */
-		if (theCommand.arguments() != null) {
-			for (String thisArg : theCommand.arguments()) {
+		if (theEntry.arguments() != null) {
+			for (String thisArg : theEntry.arguments()) {
+				
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
 
-				// If the argument is a SCRIPT: modifier
 				if (aH.matchesScript(thisArg)) {
 					theScript = aH.getStringModifier(thisArg);
 					aH.echoDebug("...script to fail now '%s'.", thisArg);
 				}
 
-				// Can't match to anything
 				else aH.echoError("Unable to match '%s'!", thisArg);
 			}
 		}
 
 
-		int fails = plugin.getSaves().getInt("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", 0);
+		int fails = plugin.getSaves().getInt("Players." + theEntry.getPlayer().getName() + "." + theScript + "." + "Failed", 0);
 		fails++;
-		plugin.getSaves().set("Players." + theCommand.getPlayer().getName() + "." + theScript + "." + "Failed", fails);
+		plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + "." + theScript + "." + "Failed", fails);
 
-		ScriptFailEvent event = new ScriptFailEvent(theCommand.getPlayer(), theScript, fails);
+		ScriptFailEvent event = new ScriptFailEvent(theEntry.getPlayer(), theScript, fails);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 
 		return true;
