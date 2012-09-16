@@ -380,9 +380,9 @@ public class ArgumentHelper {
 				.replace("<PLAYER.CHESTPLATE>", playerChestplate)
 				.replace("<PLAYER.WORLD>", thePlayer.getWorld().getName())
 				.replace("<PLAYER.MONEY>", playerMoney)
-				.replace("<^PLAYER.EXP_TO_NEXT_LEVEL>", String.valueOf(thePlayer.getExpToLevel()))
-				.replace("<^PLAYER.EXP>", String.valueOf(thePlayer.getTotalExperience()))
-				.replace("<^PLAYER.FOOD_LEVEL>", String.valueOf(thePlayer.getFoodLevel()));
+				.replace("<PLAYER.EXP_TO_NEXT_LEVEL>", String.valueOf(thePlayer.getExpToLevel()))
+				.replace("<PLAYER.EXP>", String.valueOf(thePlayer.getTotalExperience()))
+				.replace("<PLAYER.FOOD_LEVEL>", String.valueOf(thePlayer.getFoodLevel()));
 
 		}
 
