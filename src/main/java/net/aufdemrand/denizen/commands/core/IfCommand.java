@@ -43,6 +43,7 @@ public class IfCommand extends AbstractCommand {
 		boolean exactly = false;
 		QueueType queueType = theEntry.sendingQueue();
 		boolean inject = true;
+		boolean denizen = false;
 
 		if (theEntry.arguments() == null) {
 			aH.echoError("No arguments! Usage: IF (EXACTLY) [FLAG:FLAG_NAME] (APPEND) [SCRIPT:Task Script to Run] (QUEUETYPE:TRIGGER|TASK)");
@@ -51,14 +52,27 @@ public class IfCommand extends AbstractCommand {
 
 		/* Match arguments to expected variables */
 		for (String thisArg : theEntry.arguments()) {
-			
+
 			// Fill replaceables
 			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
-			
+
 			// If argument is an Integer
 			if (thisArg.toUpperCase().contains("GLOBAL")) {
 				global = true;
+				denizen = false;
 				aH.echoDebug("...flag check will be GLOBAL.");
+			}
+
+			else if (thisArg.toUpperCase().contains("DENIZEN")) {
+				denizen = true;
+				global = false;
+				aH.echoDebug("...flag check will be for DENIZEN.");
+			}
+			
+			else if (thisArg.toUpperCase().contains("PLAYER")) {
+				denizen = false;
+				global = false;
+				aH.echoDebug("...flag check will be for PLAYER.");
 			}
 
 			else if (aH.matchesQueueType(thisArg)) {
@@ -117,12 +131,20 @@ public class IfCommand extends AbstractCommand {
 
 		String[] arguments = null;
 
-		if (exactly && global) {
+		if (exactly && denizen) {
+			String[] argument = {theFlag + ":" + theValue, "EXACTLY", "DENIZEN"};
+			arguments = argument;
+		}
+		else if (exactly && global) {
 			String[] argument = {theFlag + ":" + theValue, "EXACTLY", "GLOBAL"};
 			arguments = argument;
 		}
 		else if (exactly) {
 			String[] argument = {theFlag + ":" + theValue, "EXACTLY"};
+			arguments = argument;
+		}
+		else if (denizen) {
+			String[] argument = {theFlag + ":" + theValue, "DENIZEN"};
 			arguments = argument;
 		}
 		else if (global) {
