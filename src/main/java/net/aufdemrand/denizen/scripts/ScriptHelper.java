@@ -446,6 +446,12 @@ public class ScriptHelper {
 		List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
 		for (String thisItem : theScript) {
+			
+			if (thisItem.toUpperCase().contains("ENGAGE NOW")) {
+				plugin.getCommandRegistry().getCommand(EngageCommand.class).setEngaged(theDenizen, true);
+				continue;
+			}
+				
 			String[] scriptEntry = new String[2];
 			if (thisItem.split(" ", 2).length == 1) {
 				scriptEntry[0] = thisItem;
