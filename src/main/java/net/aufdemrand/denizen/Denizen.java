@@ -119,6 +119,7 @@ public class Denizen extends JavaPlugin {
 		}
 		
 		/* Load YAML files into memory */
+		saveDefaultConfig();
 		reloadConfig();
 		reloadScripts();
 		reloadSaves();
