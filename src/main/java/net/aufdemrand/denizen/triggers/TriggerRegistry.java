@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.triggers.core.ChatTrigger;
 import net.aufdemrand.denizen.triggers.core.ClickTrigger;
 import net.aufdemrand.denizen.triggers.core.DamageTrigger;
 import net.aufdemrand.denizen.triggers.core.LocationTrigger;
+import net.aufdemrand.denizen.triggers.core.PlayerdeathTrigger;
 import net.aufdemrand.denizen.triggers.core.ProximityTrigger;
 
 public class TriggerRegistry {
@@ -61,12 +62,15 @@ public class TriggerRegistry {
 		ClickTrigger clickTrigger = new ClickTrigger();
 		DamageTrigger damageTrigger = new DamageTrigger();
 		ProximityTrigger proximityTrigger = new ProximityTrigger();
+		PlayerdeathTrigger playerdeathTrigger = new PlayerdeathTrigger();
 		
 		/* Activate Denizen Triggers */
 		try {
 			
 			locationTrigger.activateAs("Location");
 			locationTrigger.setEnabledByDefault(false);
+			playerdeathTrigger.activateAs("Playerdeath");
+			playerdeathTrigger.setEnabledByDefault(false);
 			chatTrigger.activateAs("Chat");
 			chatTrigger.setEnabledByDefault(true);
 			clickTrigger.activateAs("Click");
@@ -86,6 +90,7 @@ public class TriggerRegistry {
 		plugin.getServer().getPluginManager().registerEvents(clickTrigger, plugin);
 		plugin.getServer().getPluginManager().registerEvents(damageTrigger, plugin);
 		plugin.getServer().getPluginManager().registerEvents(proximityTrigger, plugin);
+		plugin.getServer().getPluginManager().registerEvents(playerdeathTrigger, plugin);
 		
 	}
 
