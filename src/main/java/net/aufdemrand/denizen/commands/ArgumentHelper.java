@@ -297,11 +297,11 @@ public class ArgumentHelper {
 
 			// No replaceable data
 			else {
-				if (plugin.getSaves().contains(searchPath + f.group(5).split(":")[0].toUpperCase() )) {
+				if (plugin.getSaves().contains(searchPath + f.group(5).toUpperCase() )) {
 					filledString = f.replaceFirst(plugin.getSaves().getString(searchPath + f.group(5).split(":")[0].toUpperCase() ));
 					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(4));
 				} else {
-					filledString = f.replaceFirst(f.group(5).split(":")[1]);
+					filledString = f.replaceFirst("");
 					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found!");
 				}
 			}
@@ -310,10 +310,14 @@ public class ArgumentHelper {
 		// Player object flag replacement
 		if (thePlayer != null && filledString.contains("<")) {
 
-			String itemInHandMaterial = "FALSE"; 
+			String itemInHandMaterial = "AIR"; 
 			if (thePlayer.getItemInHand() != null) 
 				itemInHandMaterial = thePlayer.getItemInHand().getType().name();
-
+			
+			String itemInHandName = "nothing"; 
+			if (thePlayer.getItemInHand() != null) 
+				itemInHandName = thePlayer.getItemInHand().getType().name().toLowerCase().replace("_", " ");
+			
 			String itemInHandQty = "0"; 
 			if (thePlayer.getItemInHand() != null) 
 				itemInHandQty = String.valueOf(thePlayer.getItemInHand().getAmount());
@@ -322,7 +326,7 @@ public class ArgumentHelper {
 			if (thePlayer.getItemInHand() != null) 
 				itemInHandId = String.valueOf(thePlayer.getItemInHand().getTypeId());
 
-			String playerKiller = "FALSE"; 
+			String playerKiller = "nobody"; 
 			if (thePlayer.getKiller() != null) 
 				playerKiller = thePlayer.getKiller().getName();
 
@@ -349,6 +353,7 @@ public class ArgumentHelper {
 			if (quickReplaceable) 
 				filledString = filledString
 				.replace("<^PLAYER.ITEM_IN_HAND.MATERIAL>", itemInHandMaterial)
+				.replace("<^PLAYER.ITEM_IN_HAND.NAME>", itemInHandName)
 				.replace("<^PLAYER.ITEM_IN_HAND.QTY>", itemInHandQty)
 				.replace("<^PLAYER.ITEM_IN_HAND.ID>", itemInHandId)
 				.replace("<^PLAYER.NAME>", thePlayer.getName())
