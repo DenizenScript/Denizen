@@ -52,36 +52,37 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 
 
 	/* Parses the Damage Trigger */
-
+	CommandSender cs;
+	
 	public boolean parseDamageTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
-		CommandSender cs = Bukkit.getConsoleSender();
+		if (cs == null) cs = Bukkit.getConsoleSender();
 		
 		// Play the HURT effect.
 		theDenizen.getEntity().playEffect(EntityEffect.HURT);
-		
-		/* Check for Quick Click Script */
-		if (!plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Interact Scripts")) {
-			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Quick Scripts.Damage")) {
+
+		/* Get Interact Script, if any. */
+		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
+
+		if (theScriptName == null) {
+			
+			// Check for Quick Script
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Quick Scripts.Damage Trigger.Script")) {
 
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing QUICK DAMAGE script: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 				
 				/* Get the contents of the Script. */
-				List<String> theScript = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Quick Scripts.Damage");
+				List<String> theScript = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Quick Scripts.Damage Trigger.Script");
 
 				if (theScript.isEmpty()) return false;
 
 				/* Build scriptEntries from theScript and add it into the queue */
-				sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, "Quick Damage", 1), QueueType.TASK);
+				sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theDenizen.getName() + " Quick Damage", 1), QueueType.TASK);
 				
 				return true;
-				
 			}
 		}
-
-		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
-		if (theScriptName == null) return false;
 
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing damage trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");

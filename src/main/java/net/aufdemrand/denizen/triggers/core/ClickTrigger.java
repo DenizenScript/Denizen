@@ -69,34 +69,34 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
 	/* Parses the script for a click trigger */
 
+	CommandSender cs;
+	
 	public boolean parseClickTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
-		CommandSender cs = Bukkit.getConsoleSender();
+		if (cs == null) cs = Bukkit.getConsoleSender();
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 
-		/* Check for Quick Click Script */
-		if (!plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Interact Scripts")) {
-			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Quick Scripts.Click")) {
+		/* Get Interact Script, if any. */
+		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
+
+		if (theScriptName == null) {
+			
+			// Check for Quick Script
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Quick Scripts.Click Trigger.Script")) {
 
 				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing QUICK CLICK script: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 				
 				/* Get the contents of the Script. */
-				List<String> theScript = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Quick Scripts.Click");
-
+				List<String> theScript = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Quick Scripts.Click Trigger.Script");
 				if (theScript.isEmpty()) return false;
 
 				/* Build scriptEntries from theScript and add it into the queue */
-				sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, "Quick Click", 1), QueueType.TASK);
+				sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theDenizen.getName() + " Quick Click", 1), QueueType.TASK);
 				
 				return true;
-				
 			}
 		}
 		
-		/* Get Interact Script, if any. */
-		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
-
-		if (theScriptName == null) return false;
 
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing click trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");

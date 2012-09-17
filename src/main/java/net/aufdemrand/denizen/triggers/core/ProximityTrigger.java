@@ -86,37 +86,34 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 		}
 	}
 
-
+	CommandSender cs;
+	
 	public boolean parseProximityTrigger(DenizenNPC theDenizen, Player thePlayer) {
 
+		if (cs == null) cs = Bukkit.getConsoleSender();
 		ScriptHelper sE = plugin.getScriptEngine().helper;
 
-		CommandSender cs = Bukkit.getConsoleSender();
-		
-		/* Check for Quick Click Script */
-		if (!plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Interact Scripts")) {
-			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Quick Scripts.Proximity")) {
+		/* Get Interact Script, if any. */
+		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
 
-				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing QUICK PROX script: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
+		if (theScriptName == null) {
+			
+			// Check for Quick Script
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Quick Scripts.Proximity Trigger.Script")) {
+
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing QUICK PROXIMITY script: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 				
 				/* Get the contents of the Script. */
-				List<String> theScript = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Quick Scripts.Proximity");
+				List<String> theScript = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Quick Scripts.Proximity Trigger.Script");
 
 				if (theScript.isEmpty()) return false;
 
 				/* Build scriptEntries from theScript and add it into the queue */
-				sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, "Quick Proximity", 1), QueueType.TASK);
+				sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theDenizen.getName() + " Quick Proximity", 1), QueueType.TASK);
 				
 				return true;
-				
 			}
 		}
-		
-		
-		/* Get Interact Script, if any. */
-		String theScriptName = theDenizen.getInteractScript(thePlayer, this.getClass());
-
-		if (theScriptName == null) return false;
 
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing proximity trigger: " + theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 		if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + "Getting current step:");

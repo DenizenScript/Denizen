@@ -23,6 +23,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 	/* Listens for player chat and determines if player is near a Denizen, and if so,
 	 * checks if there are scripts to interact with. */
 
+	CommandSender cs;
+	
 	@EventHandler
 	public void chatTrigger(PlayerChatEvent event) {
 
@@ -54,42 +56,38 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			echoDebug("Not interactable, resuming chat...", triggerName);
 			return;
 		}
-		
-		/* Check for Quick Chat Script */
-		if (!plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Interact Scripts")) {
-			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Quick Scripts.Chat")) {
-
-				CommandSender cs = Bukkit.getConsoleSender();
-				ScriptHelper sE = plugin.getScriptEngine().helper;
-				
-				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing QUICK CHAT script: " + theDenizen.getName() + "/" + event.getPlayer().getName() + " -+");
-				
-				event.setCancelled(true);
-				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
-				
-				/* Get the contents of the Script. */
-				List<String> theScript = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Quick Scripts.Chat");
-
-				if (theScript.isEmpty()) { 
-					
-					// Insert debug info.
-					
-					return;
-				}
-
-				/* Build scriptEntries from theScript and add it into the queue */
-				sE.queueScriptEntries(event.getPlayer(), sE.buildScriptEntries(event.getPlayer(), theDenizen, theScript, "Quick Click", 1), QueueType.TASK);
-				
-				return;
-				
-			}
-		}
 
 		// Denizen should be good to interact with. Let's get the script.
 		String theScript = theDenizen.getInteractScript(event.getPlayer(), this.getClass());
 
 		/* No script matches, should we still show the player talking to the Denizen? */
 		if (theScript == null) {
+
+			// Check for Quick Script
+			if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Quick Scripts.Chat Trigger.Script")) {
+
+				event.setCancelled(true);
+				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
+
+				if (cs == null) cs = Bukkit.getConsoleSender();
+				
+				if (plugin.debugMode) cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- Parsing QUICK CHAT script: " + theDenizen.getName() + "/" + event.getPlayer().getName() + " -+");
+
+				/* Get the contents of the Script. */
+				List<String> theScript1 = plugin.getAssignments().getStringList("Denizens." + theDenizen.getName() + ".Quick Scripts.Chat Trigger.Script");
+
+				if (theScript1.isEmpty()) {
+					theDenizen.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
+					return;
+				}
+
+				ScriptHelper sE = plugin.getScriptEngine().helper;
+				/* Build scriptEntries from theScript and add it into the queue */
+				sE.queueScriptEntries(event.getPlayer(), sE.buildScriptEntries(event.getPlayer(), theDenizen, theScript1, theDenizen.getName() + " Quick Chat", 1), QueueType.TASK);
+
+				return;
+			}
+
 			if (!plugin.settings.ChatGloballyIfNoChatTriggers()) { 
 				event.setCancelled(true);
 				plugin.getSpeechEngine().talkToDenizen(theDenizen, event.getPlayer(), event.getMessage());
