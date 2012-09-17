@@ -26,7 +26,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 
 	/* Damage Trigger event. Virtually identical to the Click Trigger, for comments, see ClickTrigger.java */
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void damageTrigger(NPCLeftClickEvent event) {
 
 		ScriptHelper sE = plugin.getScriptEngine().helper;
