@@ -172,7 +172,7 @@ public class FlagCommand extends AbstractCommand {
 						plugin.getSaves().set("Global.Flags." + theFlag, incValue);
 					} else if (isDenizen) {
 						int incValue = Integer.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + theFlag, "0")) + 1;
-						plugin.getSaves().set("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + "." + theFlag, incValue);
+						plugin.getSaves().set("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + theFlag, incValue);
 					} else {
 						int incValue = Integer.valueOf(plugin.getSaves().getString("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, "0")) + 1;
 						plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, incValue);
@@ -189,7 +189,7 @@ public class FlagCommand extends AbstractCommand {
 						plugin.getSaves().set("Global.Flags." + theFlag, incValue);
 					} else if (isDenizen) {
 						int incValue = Integer.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + theFlag, "0")) - 1;
-						plugin.getSaves().set("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + "." + theFlag, incValue);
+						plugin.getSaves().set("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + theFlag, incValue);
 					} else {
 						int incValue = Integer.valueOf(plugin.getSaves().getString("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, "0")) - 1;
 						plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, incValue);
