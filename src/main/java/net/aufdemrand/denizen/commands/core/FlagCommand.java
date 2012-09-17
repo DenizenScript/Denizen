@@ -125,17 +125,17 @@ public class FlagCommand extends AbstractCommand {
 
 			aH.echoDebug("Setting delayed task: RESET FLAG '%s'", theFlag);
 
-			String playerName = theEntry.getPlayer().getName();
-			if (global) playerName = "GLOBAL";
-			if (isDenizen) playerName = theDenizen.getName() + "." + theDenizen.getId();
+			String flagKey = theEntry.getPlayer().getName() + " " + theFlag;
+			if (global) flagKey = "GLOBAL" + " " + theFlag;
+			if (isDenizen) flagKey = theDenizen.getName() + "." + theDenizen.getId() + " " + theFlag;
 
-			if (taskMap.containsKey(playerName)) {
+			if (taskMap.containsKey(flagKey)) {
 				try {
-					plugin.getServer().getScheduler().cancelTask(taskMap.get(playerName));
+					plugin.getServer().getScheduler().cancelTask(taskMap.get(flagKey));
 				} catch (Exception e) { }
 			}
 
-			taskMap.put(playerName, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FourItemRunnable<String, String, String, Boolean>(playerName, theFlag, theValue, isDenizen) {
+			taskMap.put(flagKey, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FourItemRunnable<String, String, String, Boolean>(flagKey, theFlag, theValue, isDenizen) {
 				@Override
 				public void run(String player, String flag, String checkValue, Boolean denizen) { 
 
