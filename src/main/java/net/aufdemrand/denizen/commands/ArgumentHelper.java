@@ -280,7 +280,7 @@ public class ArgumentHelper {
 			if (f.group(3).startsWith(".G"))
 				searchPath = "Global.Flags.";
 			else if (f.group(3).startsWith(".D") && theDenizen != null)
-				searchPath = "Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags";
+				searchPath = "Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags.";
 			else if (f.group(3).startsWith(".P") && thePlayer != null)
 				searchPath = "Players." + thePlayer.getName() + ".Flags.";
 
