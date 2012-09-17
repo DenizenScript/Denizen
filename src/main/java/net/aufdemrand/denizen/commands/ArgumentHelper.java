@@ -260,6 +260,7 @@ public class ArgumentHelper {
 
 		// First, check for flags.
 		Matcher f = replaceableFlag.matcher(stringToFill);
+		StringBuffer sb = new StringBuffer(stringToFill.length());
 
 		// Filled string to send back. Obviously, not filled yet...
 		String filledString = stringToFill;
@@ -287,25 +288,29 @@ public class ArgumentHelper {
 			// Replaceable data detected
 			if (f.group(5).split(":").length > 1) {
 				if (plugin.getSaves().contains(searchPath + f.group(5).split(":")[0].toUpperCase() )) {
-					filledString = f.replaceFirst(plugin.getSaves().getString(searchPath + f.group(5).split(":")[0].toUpperCase() ));
-					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(4));
+					f.appendReplacement(sb, plugin.getSaves().getString(searchPath + f.group(5).split(":")[0].toUpperCase() ));
+					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(5));
 				} else {
-					filledString = f.replaceFirst(f.group(5).split(":")[1]);
-					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!");
+					f.appendReplacement(sb, f.group(5).split(":")[1]);
+					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", f.group(5));
 				}
 			}
 
 			// No replaceable data
 			else {
 				if (plugin.getSaves().contains(searchPath + f.group(5).toUpperCase() )) {
-					filledString = f.replaceFirst(plugin.getSaves().getString(searchPath + f.group(5).split(":")[0].toUpperCase() ));
-					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(4));
+					f.appendReplacement(sb, plugin.getSaves().getString(searchPath + f.group(5).split(":")[0].toUpperCase() ));
+					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", f.group(5));
 				} else {
-					filledString = f.replaceFirst("");
-					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found!");
+					f.appendReplacement(sb, "");
+					echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found!", f.group(5));
 				}
 			}
 		}
+
+		f.appendTail(sb);
+		
+		filledString = sb.toString();
 
 		// Player object flag replacement
 		if (thePlayer != null && filledString.contains("<")) {
