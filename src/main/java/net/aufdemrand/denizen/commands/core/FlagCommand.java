@@ -134,6 +134,8 @@ public class FlagCommand extends AbstractCommand {
 					plugin.getServer().getScheduler().cancelTask(taskMap.get(flagKey));
 				} catch (Exception e) { }
 			}
+			
+			flagKey = flagKey.split(" ")[0];
 
 			taskMap.put(flagKey, plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FourItemRunnable<String, String, String, Boolean>(flagKey, theFlag, theValue, isDenizen) {
 				@Override
