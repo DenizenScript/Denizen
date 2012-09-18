@@ -122,7 +122,8 @@ public class WanderGoal implements Goal {
 	@Override
 	public boolean shouldExecute(GoalSelector arg0) {
 		// Bukkit.getServer().getLogger().info("Should wander? " + isCool());
-		return (isCool());
+		if (!denizenNPC.getNavigator().isNavigating())  return (isCool());
+		else return false;
 	}
 	
 	public void cooldown() {
