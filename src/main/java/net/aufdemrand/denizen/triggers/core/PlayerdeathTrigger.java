@@ -55,7 +55,7 @@ public class PlayerdeathTrigger extends net.aufdemrand.denizen.triggers.Abstract
         continue;
       }
 
-      if ( radius == -1 || thisDenizen.getLocation().distance(player.getLocation()) < radius ){
+      if ( radius == -1 || (thisDenizen.isSpawned() && thisDenizen.getLocation().distance(player.getLocation()) < radius )){
         List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName ) +  sE.scriptString);
         if(theScript ==null || theScript.isEmpty()){
           if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Commands missing or empty");
