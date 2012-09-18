@@ -6,25 +6,91 @@ import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.runnables.OneItemRunnable;
+import net.aufdemrand.denizen.runnables.TwoItemRunnable;
+import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
+import net.citizensnpcs.api.event.NPCPushEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.trait.Toggleable;
+import net.minecraft.server.EntityLiving;
 
 
-public class DenizenTrait extends Trait implements Toggleable {
+public class DenizenTrait extends Trait implements Toggleable, Listener {
 
 	private Map<String, Boolean> triggerMap = new HashMap<String, Boolean>();
 	private Denizen plugin;
 
 	private boolean isToggled = true;
+	private boolean pushable;
+	private boolean pushLocation = false;
+	private Location pushedLocation;
 
 	public DenizenTrait() {
 		super("denizen");
+		pushable = false;
+	}
+
+	@EventHandler
+	public void NPCPush (NPCPushEvent event) {
+		if (event.getNPC() == npc && pushable && isToggled) {
+			event.setCancelled(false);
+
+			if (!pushLocation) {
+				pushLocation = true;
+				pushedLocation = npc.getBukkitEntity().getLocation().clone();
+
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new TwoItemRunnable<NPC, Location>(npc, npc.getBukkitEntity().getLocation().clone()) {
+					@Override
+					public void run(NPC theNPC, Location theLocation) { 
+						navigateBack();
+					}
+
+				}, 20);
+			}
+		}
+		
+		
+		
+	}
+
+	protected void navigateBack() {
+
+		if (npc.getNavigator().isNavigating())
+			pushLocation = false;
+
+		if (pushLocation != false) {
+			pushLocation = false;
+			npc.getNavigator().setTarget(pushedLocation);
+			pushLocation = true;
+		}
+
+	}
+
+	@EventHandler
+	public void NPCCompleteDestination (NavigationCompleteEvent event) {
+
+		if (pushLocation && event.getNPC() == npc) {
+
+			EntityLiving handle = ((CraftLivingEntity) npc.getBukkitEntity()).getHandle();
+			handle.yaw = pushedLocation.getYaw();
+			handle.pitch = pushedLocation.getPitch();
+			handle.as = handle.yaw;
+			plugin.getLogger().info("1");
+
+			pushLocation = false;
+		}
+
+		
+		
 	}
 
 	@Override
@@ -35,6 +101,7 @@ public class DenizenTrait extends Trait implements Toggleable {
 		for (String theTriggerName : plugin.getTriggerRegistry().listTriggers().keySet())
 			if (!triggerMap.containsKey(theTriggerName))
 				triggerMap.put(theTriggerName, plugin.getTriggerRegistry().getTrigger(theTriggerName).getEnabledByDefault());
+
 	}
 
 	@Override
@@ -44,6 +111,7 @@ public class DenizenTrait extends Trait implements Toggleable {
 		plugin.getDenizenNPCRegistry().registerNPC(npc);
 
 		isToggled = key.getBoolean("toggled", true);
+		pushable = key.getBoolean("pushable", false);
 		for (String theTriggerName : plugin.getTriggerRegistry().listTriggers().keySet())
 			if (key.keyExists("enable." + theTriggerName.toLowerCase() + "-trigger")) {
 				triggerMap.put(theTriggerName, key.getBoolean("enable." + theTriggerName.toLowerCase() + "-trigger"));
@@ -51,29 +119,13 @@ public class DenizenTrait extends Trait implements Toggleable {
 				triggerMap.put(theTriggerName, plugin.getTriggerRegistry().getTrigger(theTriggerName).getEnabledByDefault());
 			}
 
-		// Load activities
-		
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new OneItemRunnable<NPC>(npc) {
-			@Override
-			public void run(NPC theNPC) { 
-				if (theNPC != null) {
-					if (theNPC.isSpawned()) {
-						if (theNPC.hasTrait(DenizenTrait.class)) {
-						if (plugin.getAssignments().contains("Denizens." + theNPC.getName() + ".Default Activity"))
-							plugin.getActivityEngine().setActivityScript(plugin.getDenizenNPCRegistry().getDenizen(theNPC), plugin.getAssignments().getString("Denizens." + theNPC.getName() + ".Default Activity"));
-						}
-					}
-				}
-			}
-		}, 40);
-		
 	}
-
 
 	@Override
 	public void save(DataKey key) {
 
 		key.setBoolean("toggled", isToggled);
+		key.setBoolean("pushable", pushable);
 
 		for (Entry<String, Boolean> theEntry : triggerMap.entrySet()) {
 			key.setBoolean("enable." + theEntry.getKey().toLowerCase() + "-trigger", theEntry.getValue());
@@ -123,6 +175,19 @@ public class DenizenTrait extends Trait implements Toggleable {
 		} else {
 			return "Trigger not found!";
 		}
+	}
+
+	public boolean isPushable() {
+		return pushable;
+	}
+
+	public boolean togglePushable() {
+		pushable = !pushable;
+		return pushable;
+	}
+
+	public void setPushable(boolean pushable) {
+		this.pushable = pushable;
 	}
 
 }

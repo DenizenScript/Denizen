@@ -261,9 +261,9 @@ public class CommandHandler {
 			return true;
 		}
 		
-		if (args[0].equalsIgnoreCase("test")) {
-			plugin.getSaves().set("Denizens." + theNPC.getName() + ".Interact Scripts", "TEST");
-			plugin.saveSaves();
+		if (args[0].equalsIgnoreCase("pushable")) {
+			theNPC.getTrait(DenizenTrait.class).togglePushable();
+			player.sendMessage(ChatColor.GREEN + "Toggled 'pushable'. Now: " + theNPC.getTrait(DenizenTrait.class).isPushable());
 			return true;
 		}
 					

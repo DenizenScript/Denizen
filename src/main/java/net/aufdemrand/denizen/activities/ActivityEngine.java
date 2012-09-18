@@ -26,11 +26,11 @@ public class ActivityEngine implements Listener {
 
 	@EventHandler
 	public void setDefaultActivity(NPCSpawnEvent event) {
-		if (event.getNPC().hasTrait(DenizenTrait.class)) {
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new OneItemRunnable<NPC>(event.getNPC()) {
 				@Override public void run(NPC theNPC) { 
 					try { 
-						setDefaultActivity(plugin.getDenizenNPCRegistry().getDenizen(theNPC)); 
+						if (theNPC.hasTrait(DenizenTrait.class))
+								setDefaultActivity(plugin.getDenizenNPCRegistry().getDenizen(theNPC)); 
 					} catch (Exception e) { 
 						if (plugin.showStackTraces) e.printStackTrace();
 					}
@@ -38,7 +38,6 @@ public class ActivityEngine implements Listener {
 			}, 30);
 
 		}
-	}
 
 	public void setDefaultActivity(DenizenNPC theDenizen) {
 		if (plugin.getAssignments().contains("Denizens." + theDenizen.getName() + ".Default Activity"))
