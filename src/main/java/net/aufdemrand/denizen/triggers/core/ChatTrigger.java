@@ -198,8 +198,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			// Find a matching trigger
 			boolean letsProceed = false;
 			for (String chatTrigger : chatTriggers.split(":")) {
-				if (chatTrigger.contains("/*/")) {
-					chatText = chatText.replace("/*/", playerMessage);
+				if (chatTrigger.contains("*")) {
+					chatText = chatText.replace("*", playerMessage);
 					letsProceed = true;
 				}
 			}
