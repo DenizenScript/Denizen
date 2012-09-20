@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.listeners.AbstractListener;
+import net.aufdemrand.denizen.listeners.BlockListener;
 import net.aufdemrand.denizen.listeners.KillListener;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.runnables.FourItemRunnable;
@@ -44,7 +45,7 @@ public class ListenCommand extends AbstractCommand implements Listener {
 	//Player:ListenerId  //Listener Instance
 	Map<String, AbstractListener> playerListeners = new ConcurrentHashMap<String, AbstractListener>();
 
-	enum ListenerType { KILL }
+	enum ListenerType { KILL, BLOCK }
 
 	public ListenCommand() {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -61,7 +62,6 @@ public class ListenCommand extends AbstractCommand implements Listener {
 		ListenerType listenerType;
 		try { listenerType = ListenerType.valueOf(theEntry.arguments()[0].toUpperCase()); } 
 		catch (Exception e) { aH.echoError("Invalid LISTENER_TYPE!"); return false;	}
-
 
 		switch (listenerType) {
 
@@ -126,20 +126,85 @@ public class ListenCommand extends AbstractCommand implements Listener {
 			playerListeners.get(theEntry.getPlayer().getName() + ":" + killListenerId).build(killListenerId, theEntry.getPlayer(), new String[] { killType, killName, killNPCId, killQty }, killScript);
 
 
-			List<String> newList = plugin.getSaves().getStringList("Players." + theEntry.getPlayer().getName() + ".Listeners.List");
+			List<String> killList = plugin.getSaves().getStringList("Players." + theEntry.getPlayer().getName() + ".Listeners.List");
 
-			if (!newList.contains(killListenerId)) {
-				newList.add(killListenerId);
-				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Listeners.List", newList);
+			if (!killList.contains(killListenerId)) {
+				killList.add(killListenerId);
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Listeners.List", killList);
+			} else {
+				aH.echoError("Already listening!");
+				return false;
+			}
+			return true;
+			
+			
+		case BLOCK:
+
+			// KILL [TYPE:GROUP|PLAYER|ENTITY|NPC] [NAME:Name|NPCID:#] (QTY:#) [SCRIPT:Script to trigger]
+
+			String blockType = null;
+			String blockName = null;
+			String blockQty = "1";
+			String blockScript = null;
+			String blockListenerId = null;
+
+			for (String thisArg : theEntry.arguments()){
+
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+
+				if (aH.matchesScript(thisArg)) {
+					blockScript = aH.getStringModifier(thisArg);
+					aH.echoDebug("...script to run on completion '" + blockScript + "'.");	
+				}
+
+				else if (aH.matchesQuantity(thisArg)) {
+					blockQty = aH.getStringModifier(thisArg);
+					aH.echoDebug("...completion on '" + blockQty + "' block(s).");	
+				}
+
+				else if (thisArg.toUpperCase().contains("NAME:")) {
+					blockName = aH.getStringModifier(thisArg);
+					aH.echoDebug("...block(s) to listen for is/are '" + blockName + "'.");	
+				}
+
+				else if (thisArg.toUpperCase().contains("ID:")) {
+					blockListenerId = aH.getStringModifier(thisArg);
+					aH.echoDebug("...kill target is '" + thisArg + "'.");	
+				}
+
+				else if (thisArg.toUpperCase().contains("TYPE:")) {
+					blockType = aH.getStringModifier(thisArg);
+					aH.echoDebug("...block event type is '" + blockType + "'.");	
+				}
+
+				else aH.echoError("Could not match argument '%s'!", thisArg);
+			}
+
+			if (blockListenerId == null && blockScript != null) killListenerId = blockScript;
+			else if (blockListenerId == null) killScript = "Block_Listener_" + System.currentTimeMillis();
+
+			if (blockType == null || blockName == null || blockScript == null || blockListenerId == null) {
+				aH.echoError("Not enough arguments! Check syntax.");
+				return false;
+			}
+
+			playerListeners.put(theEntry.getPlayer().getName() + ":" + blockListenerId, new BlockListener());
+			playerListeners.get(theEntry.getPlayer().getName() + ":" + blockListenerId).build(blockListenerId, theEntry.getPlayer(), new String[] { blockType, blockName, blockQty }, blockScript);
+
+			List<String> blockList = plugin.getSaves().getStringList("Players." + theEntry.getPlayer().getName() + ".Listeners.List");
+
+			if (!blockList.contains(blockListenerId)) {
+				blockList.add(blockListenerId);
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Listeners.List", blockList);
 			} else {
 				aH.echoError("Already listening!");
 				return false;
 			}
 			return true;
 
-
-			// case CHAT:	
-
+			
+			// case SCRIPT:
 
 		}
 
