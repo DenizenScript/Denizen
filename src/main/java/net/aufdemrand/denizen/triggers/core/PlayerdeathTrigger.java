@@ -25,7 +25,7 @@ public class PlayerdeathTrigger extends net.aufdemrand.denizen.triggers.Abstract
     ScriptHelper sE = plugin.getScriptEngine().helper;
 
     for (DenizenNPC thisDenizen:list) {
-      if (thisDenizen.getLocation().getWorld() != player.getLocation().getWorld()) continue;
+      if (thisDenizen != null && thisDenizen.isSpawned() && thisDenizen.getLocation().getWorld() != player.getLocation().getWorld()) continue;
     
       try {
         if (thisDenizen.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled("Playerdeath")) {
