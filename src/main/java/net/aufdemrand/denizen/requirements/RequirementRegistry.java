@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.requirements.core.HeroesRequirement;
 import net.aufdemrand.denizen.requirements.core.LiquidRequirement;
 import net.aufdemrand.denizen.requirements.core.OwnerRequirement;
 import net.aufdemrand.denizen.requirements.core.PoweredRequirement;
+import net.aufdemrand.denizen.requirements.core.ScriptRequirement;
 import net.aufdemrand.denizen.requirements.core.SneakingRequirement;
 
 public class RequirementRegistry {
@@ -61,6 +62,7 @@ public class RequirementRegistry {
 		OwnerRequirement ownerRequirement = new OwnerRequirement();
 		SneakingRequirement sneakingRequirement = new SneakingRequirement();
 		EnchantedRequirement enchantedRequirement = new EnchantedRequirement();
+		ScriptRequirement scriptRequirement = new ScriptRequirement();
 		
 		plugin.getLogger().info("Loading LEGACY requirements...DONE!");
 		
@@ -71,7 +73,9 @@ public class RequirementRegistry {
 			ownerRequirement.activateAs("OWNER");
 			flaggedRequirement.activateAs("FLAGGED");
 			poweredRequirement.activateAs("ISPOWERED");
+			scriptRequirement.activateAs("SCRIPT");
 			liquidRequirement.activateAs("ISLIQUID");
+			
 		} catch (ActivationException e) {
 			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core requirements!");
 			e.printStackTrace();

@@ -77,10 +77,10 @@ public class ListenCommand extends AbstractCommand implements Listener {
 			String killListenerId = null;
 
 			for (String thisArg : theEntry.arguments()){
-				
+
 				// Fill replaceables
 				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
-				
+
 				if (aH.matchesScript(thisArg)) {
 					killScript = aH.getStringModifier(thisArg);
 					aH.echoDebug("...script to run on completion '" + killScript + "'.");	
@@ -113,10 +113,10 @@ public class ListenCommand extends AbstractCommand implements Listener {
 
 				else aH.echoError("Could not match argument '%s'!", thisArg);
 			}
-			
+
 			if (killListenerId == null && killScript != null) killListenerId = killScript;
 			else if (killListenerId == null) killScript = "Kill_Listener_" + System.currentTimeMillis();
-			
+
 			if (killType == null || killName == null || killScript == null || killListenerId == null) {
 				aH.echoError("Not enough arguments! Check syntax.");
 				return false;
@@ -155,11 +155,23 @@ public class ListenCommand extends AbstractCommand implements Listener {
 		if (!listenerList.isEmpty()) {
 
 			for (String listener : listenerList) {
-				playerListeners.get(event.getPlayer().getName() + ":" + listener).save();
-				playerListeners.remove(event.getPlayer().getName() + ":" + listener);
-			}
-		}
+				if (playerListeners.get(event.getPlayer().getName() + ":" + listener) != null) {
+					playerListeners.get(event.getPlayer().getName() + ":" + listener).save();
+					playerListeners.remove(event.getPlayer().getName() + ":" + listener);
+				} else {
+					
+					// Stray entry? Let's remove it.
+					
+					List<String> newList = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Listeners.List");
+					if (newList.contains(listener)) {
+						newList.remove(listener);
+					}
+					plugin.getSaves().set("Players." + event.getPlayer().getName() + ".Listeners.List", newList);
+				}
 
+			}
+
+		}
 	}
 
 
@@ -204,8 +216,8 @@ public class ListenCommand extends AbstractCommand implements Listener {
 		}
 		plugin.getSaves().set("Players." + thePlayer.getName() + ".Listeners.List", newList);
 		plugin.getSaves().set("Players." + thePlayer.getName() + ".Listeners.Saves." + listenerId, null);
-		
-		
+
+
 		// Call event
 		ListenerFinishEvent event = new ListenerFinishEvent(thePlayer, theListener);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -232,7 +244,7 @@ public class ListenCommand extends AbstractCommand implements Listener {
 			newList.remove(listenerId);
 		}
 		plugin.getSaves().set("Players." + thePlayer.getName() + ".Listeners.List", newList);
-		
+
 		// Call Event
 		ListenerCancelEvent event = new ListenerCancelEvent(thePlayer, listenerId);
 		Bukkit.getServer().getPluginManager().callEvent(event);
