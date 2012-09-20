@@ -84,7 +84,6 @@ public class DenizenTrait extends Trait implements Toggleable, Listener {
 			handle.yaw = pushedLocation.getYaw();
 			handle.pitch = pushedLocation.getPitch();
 			handle.as = handle.yaw;
-			plugin.getLogger().info("1");
 
 			pushLocation = false;
 		}
