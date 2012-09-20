@@ -25,7 +25,6 @@ public class PlayerdeathTrigger extends net.aufdemrand.denizen.triggers.Abstract
     ScriptHelper sE = plugin.getScriptEngine().helper;
 
     for (DenizenNPC thisDenizen:list) {
-      if (thisDenizen.getLocation().getWorld() != player.getLocation().getWorld()) continue;
     
       try {
         if (thisDenizen.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled("Playerdeath")) {
@@ -36,6 +35,8 @@ public class PlayerdeathTrigger extends net.aufdemrand.denizen.triggers.Abstract
         continue;
       }
             
+      if (!thisDenizen.isSpawned() ||  thisDenizen.getLocation().getWorld() != player.getLocation().getWorld()) continue;
+      
       String theScriptName = thisDenizen.getInteractScript(player, PlayerdeathTrigger.class);
 
       if (theScriptName == null) {
@@ -55,7 +56,9 @@ public class PlayerdeathTrigger extends net.aufdemrand.denizen.triggers.Abstract
         continue;
       }
 
-      if ( radius == -1 || (thisDenizen.isSpawned() && thisDenizen.getLocation().distance(player.getLocation()) < radius )){
+      
+      
+      if ( radius == -1 || thisDenizen.getLocation().distance(player.getLocation()) < radius )){
         List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName ) +  sE.scriptString);
         if(theScript ==null || theScript.isEmpty()){
           if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "Commands missing or empty");
