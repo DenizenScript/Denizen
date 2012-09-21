@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -85,6 +86,10 @@ public class ListenCommand extends AbstractCommand implements Listener {
 					killScript = aH.getStringModifier(thisArg);
 					aH.echoDebug("...script to run on completion '" + killScript + "'.");	
 				}
+				
+				else if (thisArg.equalsIgnoreCase("KILL")) {
+					aH.echoDebug("...creating new KILL listener.");	
+				}
 
 				else if (aH.matchesQuantity(thisArg)) {
 					killQty = aH.getStringModifier(thisArg);
@@ -122,13 +127,13 @@ public class ListenCommand extends AbstractCommand implements Listener {
 				return false;
 			}
 
-			playerListeners.put(theEntry.getPlayer().getName() + ":" + killListenerId, new KillListener());
-			playerListeners.get(theEntry.getPlayer().getName() + ":" + killListenerId).build(killListenerId, theEntry.getPlayer(), new String[] { killType, killName, killNPCId, killQty }, killScript);
-
-
 			List<String> killList = plugin.getSaves().getStringList("Players." + theEntry.getPlayer().getName() + ".Listeners.List");
 
 			if (!killList.contains(killListenerId)) {
+
+				playerListeners.put(theEntry.getPlayer().getName() + ":" + killListenerId, new KillListener());
+				playerListeners.get(theEntry.getPlayer().getName() + ":" + killListenerId).build(killListenerId, theEntry.getPlayer(), new String[] { killType, killName, killNPCId, killQty }, killScript);
+				
 				killList.add(killListenerId);
 				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Listeners.List", killList);
 			} else {
@@ -153,7 +158,11 @@ public class ListenCommand extends AbstractCommand implements Listener {
 				// Fill replaceables
 				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
 
-				if (aH.matchesScript(thisArg)) {
+				if (thisArg.equalsIgnoreCase("BLOCK")) {
+					aH.echoDebug("...creating new BLOCK listener.");	
+				}
+				
+				else if (aH.matchesScript(thisArg)) {
 					blockScript = aH.getStringModifier(thisArg);
 					aH.echoDebug("...script to run on completion '" + blockScript + "'.");	
 				}
@@ -181,20 +190,21 @@ public class ListenCommand extends AbstractCommand implements Listener {
 				else aH.echoError("Could not match argument '%s'!", thisArg);
 			}
 
-			if (blockListenerId == null && blockScript != null) killListenerId = blockScript;
-			else if (blockListenerId == null) killScript = "Block_Listener_" + System.currentTimeMillis();
+			if (blockListenerId == null && blockScript != null) blockListenerId = blockScript;
+			else if (blockListenerId == null) blockScript = "Block_Listener_" + System.currentTimeMillis();
 
 			if (blockType == null || blockName == null || blockScript == null || blockListenerId == null) {
 				aH.echoError("Not enough arguments! Check syntax.");
 				return false;
 			}
 
-			playerListeners.put(theEntry.getPlayer().getName() + ":" + blockListenerId, new BlockListener());
-			playerListeners.get(theEntry.getPlayer().getName() + ":" + blockListenerId).build(blockListenerId, theEntry.getPlayer(), new String[] { blockType, blockName, blockQty }, blockScript);
-
 			List<String> blockList = plugin.getSaves().getStringList("Players." + theEntry.getPlayer().getName() + ".Listeners.List");
 
 			if (!blockList.contains(blockListenerId)) {
+
+				playerListeners.put(theEntry.getPlayer().getName() + ":" + blockListenerId, new BlockListener());
+				playerListeners.get(theEntry.getPlayer().getName() + ":" + blockListenerId).build(blockListenerId, theEntry.getPlayer(), new String[] { blockType, blockName, blockQty }, blockScript);
+				
 				blockList.add(blockListenerId);
 				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Listeners.List", blockList);
 			} else {
@@ -221,6 +231,9 @@ public class ListenCommand extends AbstractCommand implements Listener {
 
 			for (String listener : listenerList) {
 				if (playerListeners.get(event.getPlayer().getName() + ":" + listener) != null) {
+					
+					aH.echoDebug(ChatColor.YELLOW + "// " + event.getPlayer().getName() + " has a LISTENER in progress. Saving " + listener + ".");
+					
 					playerListeners.get(event.getPlayer().getName() + ":" + listener).save();
 					playerListeners.remove(event.getPlayer().getName() + ":" + listener);
 				} else {
@@ -248,17 +261,22 @@ public class ListenCommand extends AbstractCommand implements Listener {
 		if (!listenerList.isEmpty()) {
 			for (String listener : listenerList) {
 
+				aH.echoDebug(ChatColor.YELLOW + "// " + event.getPlayer().getName() + " has a LISTENER in progress. Loading " + listener + ".");
+				
 				try {
 					switch ( ListenerType.valueOf(plugin.getSaves().getString("Players." + event.getPlayer().getName() + ".Listeners.Saves." + listener + ".Listen Type"))) {
-
+					
 					case KILL:
 						playerListeners.put(event.getPlayer().getName() + ":" + listener, new KillListener());
 						playerListeners.get(event.getPlayer().getName() + ":" + listener).load(event.getPlayer(), listener);
 						break;
 
+					case BLOCK:
+						playerListeners.put(event.getPlayer().getName() + ":" + listener, new BlockListener());
+						playerListeners.get(event.getPlayer().getName() + ":" + listener).load(event.getPlayer(), listener);
+						break;
 
 						// case CHAT:
-
 
 					}
 

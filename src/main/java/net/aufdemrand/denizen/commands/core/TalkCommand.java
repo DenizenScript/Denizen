@@ -68,6 +68,11 @@ public class TalkCommand extends AbstractCommand {
 					noPlayer = true;
 				}
 
+				else if (thisArg.toUpperCase().equalsIgnoreCase("ASPLAYER")) {
+					aH.echoError("...will make the Player talk.");
+					noPlayer = true;
+				}
+				
 				else if (aH.matchesNPCID(thisArg)) {
 					theDenizen = aH.getNPCIDModifier(thisArg);
 					if (theDenizen != null)
@@ -108,8 +113,10 @@ public class TalkCommand extends AbstractCommand {
 			return true;
 		}
 		
-		else if (theMessage != null && theEntry.getCommand().equals("NARRATE"))
+		else if (theMessage != null && theEntry.getCommand().equals("NARRATE")) {
 			plugin.getSpeechEngine().talk(null, thePlayer, theMessage, TalkType.NARRATE);
+			return true;
+		}
 		
 		return false;
 	}
