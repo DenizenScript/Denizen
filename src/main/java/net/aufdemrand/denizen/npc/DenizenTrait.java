@@ -39,7 +39,7 @@ public class DenizenTrait extends Trait implements Toggleable, Listener {
 		pushable = false;
 	}
 
-	@EventHandler
+//	@EventHandler
 	public void NPCPush (NPCPushEvent event) {
 		if (event.getNPC() == npc && pushable && isToggled) {
 			event.setCancelled(false);
@@ -75,7 +75,7 @@ public class DenizenTrait extends Trait implements Toggleable, Listener {
 
 	}
 
-	@EventHandler
+//	@EventHandler
 	public void NPCCompleteDestination (NavigationCompleteEvent event) {
 
 		if (pushLocation && event.getNPC() == npc) {
@@ -87,8 +87,6 @@ public class DenizenTrait extends Trait implements Toggleable, Listener {
 
 			pushLocation = false;
 		}
-
-		
 		
 	}
 

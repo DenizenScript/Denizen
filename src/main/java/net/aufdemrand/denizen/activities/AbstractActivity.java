@@ -10,10 +10,10 @@ import org.bukkit.Bukkit;
 
 public abstract class AbstractActivity {
 
-	public Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+	public Denizen plugin;
 	public String activityName;
 	
-	public ArgumentHelper aH = plugin.getCommandRegistry().getArgumentHelper();
+	public ArgumentHelper aH;
 		
 	/* Activates the command class as a Denizen Command. Should be called on startup. */
 	
@@ -24,6 +24,7 @@ public abstract class AbstractActivity {
 		
 		/* Use Bukkit to reference Denizen Plugin */
 		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		aH = plugin.getCommandRegistry().getArgumentHelper();
 		
 		/* Register command with Registry */
 		if (plugin.getActivityRegistry().registerActivity(activityName, this)) return;

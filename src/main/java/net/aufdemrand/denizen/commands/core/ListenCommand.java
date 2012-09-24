@@ -74,7 +74,7 @@ public class ListenCommand extends AbstractCommand implements Listener {
 			String killName = null;
 			String killQty = "1";
 			String killScript = null;
-			String killNPCId = null;
+			String killNPCId = "-1";
 			String killListenerId = null;
 
 			for (String thisArg : theEntry.arguments()){
@@ -101,11 +101,6 @@ public class ListenCommand extends AbstractCommand implements Listener {
 					aH.echoDebug("...kill target is/are '" + thisArg + "'.");	
 				}
 
-				else if (thisArg.toUpperCase().contains("ID:")) {
-					killListenerId = aH.getStringModifier(thisArg);
-					aH.echoDebug("...kill target is '" + thisArg + "'.");	
-				}
-
 				else if (thisArg.toUpperCase().contains("TYPE:")) {
 					killType = aH.getStringModifier(thisArg);
 					aH.echoDebug("...kill type is '" + killType + "'.");	
@@ -113,6 +108,11 @@ public class ListenCommand extends AbstractCommand implements Listener {
 
 				else if (aH.matchesNPCID(thisArg)) {
 					killNPCId = aH.getStringModifier(thisArg);
+					aH.echoDebug("...kill target is '" + thisArg + "'.");	
+				}
+				
+				else if (thisArg.toUpperCase().contains("ID:")) {
+					killListenerId = aH.getStringModifier(thisArg);
 					aH.echoDebug("...kill target is '" + thisArg + "'.");	
 				}
 

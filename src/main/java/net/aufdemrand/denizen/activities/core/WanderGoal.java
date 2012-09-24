@@ -1,11 +1,7 @@
 package net.aufdemrand.denizen.activities.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -14,16 +10,13 @@ import org.bukkit.event.EventHandler;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.ai.Goal;
 import net.citizensnpcs.api.ai.GoalSelector;
-import net.citizensnpcs.api.ai.event.CancelReason;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
-import net.citizensnpcs.api.event.NPCDamageEvent;
 
 
 public class WanderGoal implements Goal {
 
-	DenizenNPC denizenNPC;
-	Location wanderLocation = null;
+	final DenizenNPC denizenNPC;
 	final double X;
 	final double Y;
 	final double Z;
@@ -34,14 +27,17 @@ public class WanderGoal implements Goal {
 	final World world;
 	final ArrayList<Material> materials;
 	final ArrayList<Integer> materialIds;
-	WanderActivity wA;
+	final WanderActivity wA;
 
-	private Long cooldownMap;
+	private Location wanderLocation = null;
+	
+	private Long cooldownTimer;
 
 	WanderGoal(DenizenNPC npc, Integer radius, Integer depth, Integer delay, float speed, ArrayList<Material> materials, ArrayList<Integer> materialIds, Location bookmark, WanderActivity wA) {
+
 		this.materialIds = materialIds;
 		this.materials = materials;
-		cooldownMap = 12345L;
+		cooldownTimer = 0L;
 		this.denizenNPC = npc;
 		this.radius = radius;
 		this.depth = depth;
@@ -60,51 +56,60 @@ public class WanderGoal implements Goal {
 			this.Z = bookmark.getZ();
 			this.world = bookmark.getWorld();
 		}
-
+		
 		this.wanderLocation = wA.getNewLocation(X, Y, Z, world, radius, depth);
 	}
 
-
 	@Override
 	public void reset() {
+
 	}
 
-//	@EventHandler
-    public void navFail(NavigationCancelEvent event) {
-		if (event.getNavigator().getLocalParameters().hashCode() == denizenNPC.getNavigator().getLocalParameters().hashCode())
-			if (event.getCancelReason().equals(CancelReason.STUCK))
-				if (event.getNavigator().getLocalParameters().avoidWater() && event.getNavigator().getTargetAsLocation().getBlock().isLiquid()) {
-					denizenNPC.getEntity().teleport(new Location(world,X,Y,Z));
-				}
-	}
-
-	@EventHandler
+	//@EventHandler
 	public void navComplete(NavigationCompleteEvent event) {
-		if (event.getNavigator().getTargetAsLocation() == wanderLocation)
+		wA.plugin.getLogger().info("1 " + this + " " + event.getNPC().getName() + " " + event.getNPC().getId());
+		if (event.getNPC().getId() == denizenNPC.getId()) {
 			cooldown();
+			wA.plugin.getLogger().info("3");
+		}
 	}
 
+	//@EventHandler
+	public void navFail(NavigationCancelEvent event) {
+		wA.plugin.getLogger().info("2" + this);
+		if (event.getNPC() == denizenNPC.getCitizensEntity()) {
+			wA.plugin.getLogger().info(event.getCancelReason().name());
+			cooldown();
+		}
+	}
 
 	@Override
 	public void run(GoalSelector goalSelecter) {
-//		Bukkit.getServer().getLogger().info("Wandering...");
 		if (wanderLocation != null) {
-	//		Bukkit.getServer().getLogger().info("Wandering not null...");
 			// If already navigating, nothing to do here...
 			if (denizenNPC.getNavigator().isNavigating()) {
 				return; }
 
 			// If not already navigating.. let's find a new block to navigate to.
 			else {
-				denizenNPC.getNavigator().getDefaultParameters().speed(speed);
+				denizenNPC.getNavigator().getDefaultParameters().speedModifier(speed);
 				wanderLocation = wA.getNewLocation(X, Y, Z, world, radius, depth);
+
+				Location checkLocation = new Location(wanderLocation.getWorld(), wanderLocation.getX()
+						, wanderLocation.getY() + 2, wanderLocation.getZ());
+				
+				if (checkLocation.getBlock().getType() != Material.AIR) { 
+					wanderLocation = wA.getNewLocation(X, Y, Z, world, radius, depth);
+					goalSelecter.finish();
+					return;
+				}
 
 				if (!materials.isEmpty()) {
 					Boolean move = false;
 					for (Material acceptableMaterial : materials) {
 						if (wanderLocation.getBlock().getType() == acceptableMaterial) move = true;
 					}
-					
+
 					if (materialIds.contains(Integer.valueOf(wanderLocation.getBlock().getTypeId()))) move = true;
 
 					if (move) denizenNPC.getNavigator().setTarget(wanderLocation);
@@ -115,24 +120,24 @@ public class WanderGoal implements Goal {
 					goalSelecter.finish();
 				}
 			}
-		 } else wanderLocation = wA.getNewLocation(X, Y, Z, world, radius, depth);
-	}
-
+		}
+		else wanderLocation = wA.getNewLocation(X, Y, Z, world, radius, depth);
+	} 
 
 	@Override
 	public boolean shouldExecute(GoalSelector arg0) {
-		// Bukkit.getServer().getLogger().info("Should wander? " + isCool());
-		if (!denizenNPC.getNavigator().isNavigating())  return (isCool());
+		if (!denizenNPC.getNavigator().isNavigating()) return (isCool());
 		else return false;
 	}
-	
+
 	public void cooldown() {
-		cooldownMap = System.currentTimeMillis() + (this.delay * 1000);
+		wA.plugin.getLogger().info("Cooldown!");
+		cooldownTimer = System.currentTimeMillis() + (this.delay * 1000);
 	}
 
 	public boolean isCool() {
-		if (cooldownMap < System.currentTimeMillis()) return true;
-			else return false;
+		if (cooldownTimer < System.currentTimeMillis()) return true;
+		else return false;
 	}
 
 }

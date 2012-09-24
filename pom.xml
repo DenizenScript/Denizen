@@ -6,7 +6,7 @@
 
 	<groupId>net.aufdemrand</groupId>
 	<artifactId>denizen</artifactId>
-	<version>0.75-SNAPSHOT</version>
+	<version>0.76-SNAPSHOT</version>
 	<name>Denizen</name>
 	<description>Denizen Character for Citizens2</description>
 
@@ -109,6 +109,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
+				    <packagingExcludes>${basedir}/src/main/resources/Heroes.jar</packagingExcludes>
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
