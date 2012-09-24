@@ -5,13 +5,10 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.event.EventHandler;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.ai.Goal;
 import net.citizensnpcs.api.ai.GoalSelector;
-import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
-import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 
 
 public class WanderGoal implements Goal {
@@ -65,24 +62,6 @@ public class WanderGoal implements Goal {
 
 	}
 
-	//@EventHandler
-	public void navComplete(NavigationCompleteEvent event) {
-		wA.plugin.getLogger().info("1 " + this + " " + event.getNPC().getName() + " " + event.getNPC().getId());
-		if (event.getNPC().getId() == denizenNPC.getId()) {
-			cooldown();
-			wA.plugin.getLogger().info("3");
-		}
-	}
-
-	//@EventHandler
-	public void navFail(NavigationCancelEvent event) {
-		wA.plugin.getLogger().info("2" + this);
-		if (event.getNPC() == denizenNPC.getCitizensEntity()) {
-			wA.plugin.getLogger().info(event.getCancelReason().name());
-			cooldown();
-		}
-	}
-
 	@Override
 	public void run(GoalSelector goalSelecter) {
 		if (wanderLocation != null) {
@@ -131,7 +110,6 @@ public class WanderGoal implements Goal {
 	}
 
 	public void cooldown() {
-		wA.plugin.getLogger().info("Cooldown!");
 		cooldownTimer = System.currentTimeMillis() + (this.delay * 1000);
 	}
 

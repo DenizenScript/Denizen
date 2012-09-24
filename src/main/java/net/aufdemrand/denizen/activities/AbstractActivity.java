@@ -23,7 +23,7 @@ public abstract class AbstractActivity {
 		if (activityName.split(" ").length > 1) throw new ActivationException("Activity names can only be one word.");
 		
 		/* Use Bukkit to reference Denizen Plugin */
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		this.plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		aH = plugin.getCommandRegistry().getArgumentHelper();
 		
 		/* Register command with Registry */

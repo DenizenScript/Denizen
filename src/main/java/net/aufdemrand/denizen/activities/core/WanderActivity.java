@@ -2,24 +2,23 @@ package net.aufdemrand.denizen.activities.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import net.aufdemrand.denizen.activities.AbstractActivity;
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.ai.Goal;
-import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
+import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
-public class WanderActivity extends AbstractActivity {
+public class WanderActivity extends AbstractActivity implements Listener {
 
-	private Map<DenizenNPC, List<WanderGoal>> wanderMap = new HashMap<DenizenNPC, List<WanderGoal>>();
+	private Map<NPC, WanderGoal> wanderMap = new HashMap<NPC, WanderGoal>();
 
 	public void addGoal(DenizenNPC npc, String[] arguments, int priority) {
 
@@ -76,30 +75,21 @@ public class WanderActivity extends AbstractActivity {
 			}
 		}
 
-		List<WanderGoal> wanderGoals = new ArrayList<WanderGoal>();
+		if (wanderMap.containsKey(npc)) {
+			aH.echoDebug("Already found a WANDER instance for this NPC! Removing first...");
+			removeGoal(npc, true);
+		}
 
-		if (wanderMap.containsKey(npc)) 
-			wanderGoals = wanderMap.get(npc);
-
-		wanderGoals.add(0, new WanderGoal(npc, radius, depth, delay, speed, materialList, materialIdList, specifiedLocation, this));
-
-		wanderMap.put(npc, wanderGoals);
-		CitizensAPI.registerEvents(wanderMap.get(npc).get(0));
-		npc.getCitizensEntity().getDefaultGoalController().addGoal(wanderMap.get(npc).get(0), priority);	
-
+		wanderMap.put(npc.getCitizensEntity(), new WanderGoal(npc, radius, depth, delay, speed, materialList, materialIdList, specifiedLocation, this));
+		npc.getCitizensEntity().getDefaultGoalController().addGoal(wanderMap.get(npc.getCitizensEntity()), priority);
 	}
 
 
 	public void removeGoal(DenizenNPC npc, boolean verbose) {
 
-		if (wanderMap.containsKey(npc)) {
-			for (Goal goal : wanderMap.get(npc)) {
-				NavigationCompleteEvent.getHandlerList().unregister(goal);
-				NavigationCancelEvent.getHandlerList().unregister(goal);
-				npc.getCitizensEntity().getDefaultGoalController().removeGoal(goal);
-			}
-			
-			wanderMap.remove(npc);
+		if (wanderMap.containsKey(npc.getCitizensEntity())) {
+			npc.getCitizensEntity().getDefaultGoalController().removeGoal(wanderMap.get(npc.getCitizensEntity()));
+			wanderMap.remove(npc.getCitizensEntity());
 			if (verbose) plugin.getLogger().info("Removed Wander Activities from NPC.");
 		} 
 
@@ -110,7 +100,6 @@ public class WanderActivity extends AbstractActivity {
 	public Location getNewLocation(double X, double Y, double Z, World world, int radius, int depth) {
 
 		Location newLocation = new Location(world, X, Y, Z);
-
 		Random intRandom = new Random();
 		int randomX = intRandom.nextInt(radius * 2) - radius;
 		int randomZ = intRandom.nextInt(radius * 2) - radius;
@@ -125,5 +114,12 @@ public class WanderActivity extends AbstractActivity {
 		return newLocation;
 	}
 
+	
+	@EventHandler
+	public void navComplete(NavigationCompleteEvent event) {
+		if (wanderMap.containsKey(event.getNPC())) {
+			wanderMap.get(event.getNPC()).cooldown();
+		}
+	}
 
 }

@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.runnables.FourItemRunnable;
-import net.aufdemrand.denizen.runnables.ThreeItemRunnable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
 
@@ -170,13 +169,13 @@ public class FlagCommand extends AbstractCommand {
 			case INC:
 				try {
 					if (global) {
-						int incValue = Integer.valueOf(plugin.getSaves().getString("Global.Flags." + theFlag, "0")) + 1;
+						double incValue = Double.valueOf(plugin.getSaves().getString("Global.Flags." + theFlag, "0")) + 1;
 						plugin.getSaves().set("Global.Flags." + theFlag, incValue);
 					} else if (isDenizen) {
-						int incValue = Integer.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + theFlag, "0")) + 1;
+						double incValue = Double.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + theFlag, "0")) + 1;
 						plugin.getSaves().set("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + theFlag, incValue);
 					} else {
-						int incValue = Integer.valueOf(plugin.getSaves().getString("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, "0")) + 1;
+						double incValue = Double.valueOf(plugin.getSaves().getString("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, "0")) + 1;
 						plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, incValue);
 					}
 				} catch (NumberFormatException e) {
@@ -187,13 +186,13 @@ public class FlagCommand extends AbstractCommand {
 			case DEC:
 				try {
 					if (global) {
-						int incValue = Integer.valueOf(plugin.getSaves().getString("Global.Flags." + theFlag, "0")) - 1;
+						double incValue = Double.valueOf(plugin.getSaves().getString("Global.Flags." + theFlag, "0")) - 1;
 						plugin.getSaves().set("Global.Flags." + theFlag, incValue);
 					} else if (isDenizen) {
-						int incValue = Integer.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + theFlag, "0")) - 1;
+						double incValue = Double.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + theFlag, "0")) - 1;
 						plugin.getSaves().set("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + theFlag, incValue);
 					} else {
-						int incValue = Integer.valueOf(plugin.getSaves().getString("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, "0")) - 1;
+						double incValue = Double.valueOf(plugin.getSaves().getString("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, "0")) - 1;
 						plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Flags." + theFlag, incValue);
 					}
 				} catch (NumberFormatException e) {

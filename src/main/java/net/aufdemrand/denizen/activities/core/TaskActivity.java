@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import net.aufdemrand.denizen.activities.AbstractActivity;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.ai.Goal;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
 
 public class TaskActivity extends AbstractActivity {
 

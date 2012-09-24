@@ -35,7 +35,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 
 		String flagName = null;
 		FlagType flagType = null;
-		Integer flagValue = null;
+		Double flagValue = null;
 		String flagString = null;
 		boolean exactly = false;
 		boolean global = false;
@@ -52,10 +52,10 @@ public class FlaggedRequirement extends AbstractRequirement {
 
 				aH.echoDebug("...flag to check is '%s'.", thisArgument);
 
-				if (thisArgument.split(":")[1].matches("\\d+")) {
+				if (thisArgument.split(":")[1].matches("\\d+\\.\\d+")) {
 					flagType = FlagType.INTEGER;
 					flagName = thisArgument.split(":")[0].toUpperCase();
-					flagValue = Integer.valueOf(thisArgument.split(":")[1]);
+					flagValue = Double.valueOf(thisArgument.split(":")[1]);
 				} else {
 					flagType = FlagType.STRING;
 					flagName = thisArgument.split(":")[0].toUpperCase();
@@ -166,13 +166,13 @@ public class FlaggedRequirement extends AbstractRequirement {
 					if (plugin.getSaves().contains("Global.Flags." + flagName)) {
 						// Looking for exact number...
 						if (exactly) {
-							if (Integer.valueOf(plugin.getSaves().getString("Global.Flags." + flagName))
+							if (Double.valueOf(plugin.getSaves().getString("Global.Flags." + flagName))
 									== (flagValue)) {
 								outcome = true;
 								aH.echoDebug("...global flag '%s' matched!", flagName);
 							} else aH.echoDebug("...global flag '%s' did not exactly match!", flagName);
 						} else { // Looking for more than or equal...
-							if (Integer.valueOf(plugin.getSaves().getString("Global.Flags." + flagName))
+							if (Double.valueOf(plugin.getSaves().getString("Global.Flags." + flagName))
 									>= (flagValue)) {
 								outcome = true;
 								aH.echoDebug("...global flag '%s' matched!", flagName);
@@ -187,13 +187,13 @@ public class FlaggedRequirement extends AbstractRequirement {
 					if (plugin.getSaves().contains("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName)) {
 						// Looking for exact number...
 						if (exactly) {
-							if (Integer.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName))
+							if (Double.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName))
 									== (flagValue)) {
 								outcome = true;
 								aH.echoDebug("...denizen flag '%s' matched!", flagName);
 							} else aH.echoDebug("...denizen flag '%s' did not exactly match!", flagName);
 						} else { // Looking for more than or equal...
-							if (Integer.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName))
+							if (Double.valueOf(plugin.getSaves().getString("Denizens." + theDenizen.getName() + "." + theDenizen.getId() + ".Flags." + flagName))
 									>= (flagValue)) {
 								outcome = true;
 								aH.echoDebug("...denizen flag '%s' matched!", flagName);
@@ -208,13 +208,13 @@ public class FlaggedRequirement extends AbstractRequirement {
 					if (plugin.getSaves().contains("Players." + thePlayer.getName()+ ".Flags." + flagName)) {
 						// Looking for exact number...
 						if (exactly) {
-							if (Integer.valueOf(plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName))
+							if (Double.valueOf(plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName))
 									== (flagValue)) {
 								outcome = true;
 								aH.echoDebug("...player flag '%s' matched!", flagName);
 							} else aH.echoDebug("...player flag '%s' did not exactly match!", flagName);
 						} else { // Looking for more than or equal...
-							if (Integer.valueOf(plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName))
+							if (Double.valueOf(plugin.getSaves().getString("Players." + thePlayer.getName()+ ".Flags." + flagName))
 									>= (flagValue)) {
 								outcome = true;
 								aH.echoDebug("...player flag '%s' matched!", flagName);

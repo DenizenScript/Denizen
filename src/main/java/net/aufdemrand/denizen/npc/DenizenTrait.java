@@ -12,7 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.runnables.OneItemRunnable;
 import net.aufdemrand.denizen.runnables.TwoItemRunnable;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.event.NPCPushEvent;
@@ -39,7 +38,7 @@ public class DenizenTrait extends Trait implements Toggleable, Listener {
 		pushable = false;
 	}
 
-//	@EventHandler
+	@EventHandler
 	public void NPCPush (NPCPushEvent event) {
 		if (event.getNPC() == npc && pushable && isToggled) {
 			event.setCancelled(false);
@@ -57,9 +56,6 @@ public class DenizenTrait extends Trait implements Toggleable, Listener {
 				}, 20);
 			}
 		}
-		
-		
-		
 	}
 
 	protected void navigateBack() {
@@ -75,7 +71,7 @@ public class DenizenTrait extends Trait implements Toggleable, Listener {
 
 	}
 
-//	@EventHandler
+	@EventHandler
 	public void NPCCompleteDestination (NavigationCompleteEvent event) {
 
 		if (pushLocation && event.getNPC() == npc) {

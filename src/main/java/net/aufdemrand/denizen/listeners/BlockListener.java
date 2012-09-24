@@ -5,16 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.aufdemrand.denizen.commands.core.ListenCommand;
-import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class BlockListener extends AbstractListener {

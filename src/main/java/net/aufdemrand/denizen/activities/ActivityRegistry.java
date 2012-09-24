@@ -68,6 +68,8 @@ public class ActivityRegistry {
 			plugin.getLogger().log(Level.SEVERE, "Oh no! Denizen has run into a problem registering the core triggers!");
 			e.printStackTrace();
 		}
+		
+		plugin.getServer().getPluginManager().registerEvents(wanderActivity, plugin);
 	}
 
 

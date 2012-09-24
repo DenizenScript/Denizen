@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.requirements.AbstractRequirement;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class EnchantedRequirement extends AbstractRequirement {

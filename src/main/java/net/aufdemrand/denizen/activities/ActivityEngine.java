@@ -13,7 +13,7 @@ import net.aufdemrand.denizen.npc.DenizenTrait;
 import net.aufdemrand.denizen.runnables.OneItemRunnable;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.trait.waypoint.Waypoints;
+
 
 public class ActivityEngine implements Listener {
 
