@@ -69,7 +69,7 @@ public class ListenCommand extends AbstractCommand implements Listener {
 			// KILL [TYPE:GROUP|PLAYER|ENTITY|NPC] [NAME:Name|NPCID:#] (QTY:#) [SCRIPT:Script to trigger]
 
 			String killType = null;
-			String killName = null;
+			String killName = "*";
 			String killQty = "1";
 			String killScript = null;
 			String killNPCId = "-1";

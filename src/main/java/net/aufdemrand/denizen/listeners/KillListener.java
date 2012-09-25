@@ -76,7 +76,7 @@ public class KillListener extends AbstractListener {
 
 			else if (type == KillType.PLAYER) {
 				if (event.getEntityType() == EntityType.PLAYER) {
-					if (targets.contains(((Player) event.getEntity()).getName().toUpperCase())) {
+					if (targets.contains(((Player) event.getEntity()).getName().toUpperCase()) || targets.contains("*")) {
 						currentKills++;
 						aH.echoDebug(ChatColor.YELLOW + "// " + thePlayer.getName() + " killed " + ((Player) event.getEntity()).getName().toUpperCase() + ".");
 						complete(false);
