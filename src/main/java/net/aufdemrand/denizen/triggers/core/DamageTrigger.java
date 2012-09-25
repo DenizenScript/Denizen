@@ -22,6 +22,7 @@ import org.bukkit.EntityEffect;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -38,7 +39,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 		Player thePlayer = null;
 		
 		if (event.getDamager() instanceof Player) thePlayer = (Player) event.getDamager();
-		if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player) thePlayer = (Player)(((Arrow)event.getDamager()).getShooter());
+		if (event.getDamager() instanceof Projectile && ((Projectile) event.getDamager()).getShooter() instanceof Player) thePlayer = (Player) ((Projectile)event.getDamager()).getShooter();
 		
 		if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity()) && thePlayer != null) {
 			NPC theNPC = CitizensAPI.getNPCRegistry().getNPC(event.getEntity());
