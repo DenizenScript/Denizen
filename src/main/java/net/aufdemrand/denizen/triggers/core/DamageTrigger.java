@@ -20,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.EntityEffect;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,7 +35,12 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void damageTrigger(EntityDamageByEntityEvent event) {
 
-		if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity()) && event.getDamager() instanceof Player) {
+		Player thePlayer = null;
+		
+		if (event.getDamager() instanceof Player) thePlayer = (Player) event.getDamager();
+		if (event.getDamager() instanceof Arrow) thePlayer = (Player)(((Arrow)event.getDamager()).getShooter());
+		
+		if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity()) && thePlayer != null) {
 			NPC theNPC = CitizensAPI.getNPCRegistry().getNPC(event.getEntity());
 
 			if (plugin.getDenizenNPCRegistry().isDenizenNPC(theNPC)) {
@@ -46,16 +52,16 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 					/* Check if trigger is enabled, because if not, send click trigger (if enabled in settings) */
 					if (denizenNPC.getCitizensEntity().getTrait(DenizenTrait.class).triggerIsEnabled(triggerName.toUpperCase())) {
 
-						if (denizenNPC.isInteractable(triggerName, (Player) event.getDamager())) {
+						if (denizenNPC.isInteractable(triggerName, thePlayer)) {
 							sE.setCooldown(denizenNPC, DamageTrigger.class, plugin.settings.DefaultDamageCooldown());
-							if (!parseDamageTrigger(denizenNPC, (Player) event.getDamager())) {
-								denizenNPC.talk(TalkType.CHAT, (Player) event.getDamager(), Reason.NoMatchingDamageTrigger);
+							if (!parseDamageTrigger(denizenNPC, thePlayer)) {
+								denizenNPC.talk(TalkType.CHAT, thePlayer, Reason.NoMatchingDamageTrigger);
 							}
 						}
 					}
 
 					else if (plugin.settings.DisabledDamageTriggerInsteadTriggersClick()) {
-						plugin.getTriggerRegistry().getTrigger(ClickTrigger.class).clickTrigger(new NPCRightClickEvent(theNPC, (Player) event.getDamager()));
+						plugin.getTriggerRegistry().getTrigger(ClickTrigger.class).clickTrigger(new NPCRightClickEvent(theNPC, thePlayer));
 					}
 				}
 			}
