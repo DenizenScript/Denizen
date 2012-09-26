@@ -44,6 +44,9 @@ public class IfCommand extends AbstractCommand {
 		QueueType queueType = theEntry.sendingQueue();
 		boolean inject = true;
 		boolean denizen = false;
+		boolean checkNumber = false;
+		String elseScript = null;
+		boolean elseFound = false;
 
 		if (theEntry.arguments() == null) {
 			aH.echoError("No arguments! Usage: IF (EXACTLY) [FLAG:FLAG_NAME] (APPEND) [SCRIPT:Task Script to Run] (QUEUETYPE:TRIGGER|TASK)");
@@ -78,7 +81,16 @@ public class IfCommand extends AbstractCommand {
 					aH.echoDebug("...using Boolean '%s'.", thisArg.toUpperCase());
 				}
 			}
-			
+
+			else if (thisArg.toUpperCase().contains("IS_NUMBER")) {
+				checkNumber = true;
+				aH.echoDebug("...will check if FLAG is a number.", thisArg.toUpperCase());
+			}
+
+			else if (thisArg.toUpperCase().equals("ELSE")) {
+				elseFound = true;
+			}
+
 			else if (thisArg.toUpperCase().contains("GLOBAL")) {
 				global = true;
 				denizen = false;
@@ -90,7 +102,7 @@ public class IfCommand extends AbstractCommand {
 				global = false;
 				aH.echoDebug("...flag check will be for DENIZEN.");
 			}
-			
+
 			else if (thisArg.toUpperCase().contains("PLAYER")) {
 				denizen = false;
 				global = false;
@@ -108,27 +120,26 @@ public class IfCommand extends AbstractCommand {
 			}
 
 
-			
+
 			// LITERAL IF (STRING/
 			else if (thisArg.toUpperCase().contains("LITERAL:")) {
-				
+
 			}
-			
-			
-			
+
 			else if (thisArg.equalsIgnoreCase("APPEND")) {
 				aH.echoDebug("...will APPEND script!");
 				inject = false;
 			}
 
-			
-			
-			
-			
-
 			else if (aH.matchesScript(thisArg)) {
-				theScript = aH.getStringModifier(thisArg);
-				aH.echoDebug("...script to run is '%s'.", thisArg);
+
+				if (!elseFound) {
+					theScript = aH.getStringModifier(thisArg);
+					aH.echoDebug("...script to run if true is '%s'.", thisArg);
+				} else {
+					elseScript = aH.getStringModifier(thisArg);
+					aH.echoDebug("...script to run if false is '%s'.", thisArg);
+				}
 			}
 
 			// Can't match to anything
@@ -145,7 +156,19 @@ public class IfCommand extends AbstractCommand {
 
 		String[] arguments = null;
 
-		if (exactly && denizen) {
+		if (checkNumber && denizen) {
+			String[] argument = {theFlag + ":" + theValue, "CHECKNUMBER", "DENIZEN"};
+			arguments = argument;
+		}
+		else if (checkNumber && global) {
+			String[] argument = {theFlag + ":" + theValue, "CHECKNUMBER", "GLOBAL"};
+			arguments = argument;
+		}
+		else if (checkNumber) {
+			String[] argument = {theFlag + ":" + theValue, "CHECKNUMBER"};
+			arguments = argument;
+		}
+		else if (exactly && denizen) {
 			String[] argument = {theFlag + ":" + theValue, "EXACTLY", "DENIZEN"};
 			arguments = argument;
 		}
@@ -177,12 +200,26 @@ public class IfCommand extends AbstractCommand {
 			aH.echoDebug("...logic met, adding script to be executed.");
 			ScriptHelper sE = plugin.getScriptEngine().helper;
 			List<String> theScriptEntries = sE.getScript(theScript + ".Script");
-			if (theScript.isEmpty()) return false;
+			if (theScriptEntries.isEmpty()) return false;
 
 			if (!inject)
 				sE.queueScriptEntries(theEntry.getPlayer(), sE.buildScriptEntries(theEntry.getPlayer(), theEntry.getDenizen(), theScriptEntries, theScript, 1), queueType);	
 			else
 				plugin.getScriptEngine().injectToQueue(theEntry.getPlayer(), sE.buildScriptEntries(theEntry.getPlayer(), theEntry.getDenizen(), theScriptEntries, theScript, 1), queueType, 0);
+		} 
+		
+		// Run elseScript
+		else if (elseScript != null) {
+			aH.echoDebug("...logic met, adding script to be executed.");
+			ScriptHelper sE = plugin.getScriptEngine().helper;
+			List<String> theScriptEntries = sE.getScript(elseScript + ".Script");
+			if (theScriptEntries.isEmpty()) return false;
+
+			if (!inject)
+				sE.queueScriptEntries(theEntry.getPlayer(), sE.buildScriptEntries(theEntry.getPlayer(), theEntry.getDenizen(), theScriptEntries, theScript, 1), queueType);	
+			else
+				plugin.getScriptEngine().injectToQueue(theEntry.getPlayer(), sE.buildScriptEntries(theEntry.getPlayer(), theEntry.getDenizen(), theScriptEntries, theScript, 1), queueType, 0);
+			
 		}
 
 		return true;
