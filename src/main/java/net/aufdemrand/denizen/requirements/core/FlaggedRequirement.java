@@ -52,7 +52,8 @@ public class FlaggedRequirement extends AbstractRequirement {
 
 				aH.echoDebug("...flag to check is '%s'.", thisArgument);
 
-				if (thisArgument.split(":")[1].matches("\\d+\\.\\d+")) {
+				if (thisArgument.split(":")[1].matches("\\d+\\.\\d+")
+						|| thisArgument.split(":")[1].matches("\\d+")) {
 					flagType = FlagType.INTEGER;
 					flagName = thisArgument.split(":")[0].toUpperCase();
 					flagValue = Double.valueOf(thisArgument.split(":")[1]);
