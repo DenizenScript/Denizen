@@ -56,8 +56,30 @@ public class IfCommand extends AbstractCommand {
 			// Fill replaceables
 			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
 
-			// If argument is an Integer
-			if (thisArg.toUpperCase().contains("GLOBAL")) {
+			// FLAG IF
+			if (thisArg.toUpperCase().contains("FLAG:") && !flagFound) {
+				if (thisArg.startsWith("-")) {
+					invertedLogic = true;
+					aH.echoDebug("...logic inverted, checking inverse.");
+					thisArg.substring(1, thisArg.length() - 1);
+				}
+
+				/* If argument is a flag with value */
+				if (thisArg.split(":").length == 3) {
+					theFlag = thisArg.split(":")[1].toUpperCase();
+					theValue = thisArg.split(":")[2].toUpperCase();
+					aH.echoDebug("...using '%s'.", thisArg.toUpperCase());
+					flagFound = true;
+				}
+				/* Otherwise, argument is a Boolean */
+				else {
+					theFlag = aH.getStringModifier(thisArg.toUpperCase());
+					flagFound = true;
+					aH.echoDebug("...using Boolean '%s'.", thisArg.toUpperCase());
+				}
+			}
+			
+			else if (thisArg.toUpperCase().contains("GLOBAL")) {
 				global = true;
 				denizen = false;
 				aH.echoDebug("...flag check will be GLOBAL.");
@@ -85,32 +107,24 @@ public class IfCommand extends AbstractCommand {
 				exactly = true;
 			}
 
+
+			
+			// LITERAL IF (STRING/
+			else if (thisArg.toUpperCase().contains("LITERAL:")) {
+				
+			}
+			
+			
+			
 			else if (thisArg.equalsIgnoreCase("APPEND")) {
 				aH.echoDebug("...will APPEND script!");
 				inject = false;
 			}
 
-			else if (thisArg.toUpperCase().contains("FLAG:") && !flagFound) {
-				if (thisArg.startsWith("-")) {
-					invertedLogic = true;
-					aH.echoDebug("...logic inverted, checking inverse.");
-					thisArg.substring(1, thisArg.length() - 1);
-				}
-
-				/* If argument is a flag with value */
-				if (thisArg.split(":").length == 3) {
-					theFlag = thisArg.split(":")[1].toUpperCase();
-					theValue = thisArg.split(":")[2].toUpperCase();
-					aH.echoDebug("...using '%s'.", thisArg.toUpperCase());
-					flagFound = true;
-				}
-				/* Otherwise, argument is a Boolean */
-				else {
-					theFlag = aH.getStringModifier(thisArg.toUpperCase());
-					flagFound = true;
-					aH.echoDebug("...using Boolean '%s'.", thisArg.toUpperCase());
-				}
-			}
+			
+			
+			
+			
 
 			else if (aH.matchesScript(thisArg)) {
 				theScript = aH.getStringModifier(thisArg);

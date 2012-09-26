@@ -55,7 +55,7 @@ public class KillListener extends AbstractListener {
 
 		if (event.getEntity().getKiller() == thePlayer) {
 			if (type == KillType.ENTITY) {
-				if (targets.contains(event.getEntityType().toString()))
+				if (targets.contains(event.getEntityType().toString()) || targets.contains("*"))
 				{ 
 					currentKills++;
 					aH.echoDebug(ChatColor.YELLOW + "// " + thePlayer.getName() + " killed a " + event.getEntityType().toString() + ".");
@@ -65,7 +65,7 @@ public class KillListener extends AbstractListener {
 
 			else if (type == KillType.NPC) {
 				if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
-					if (targets.contains(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName().toUpperCase())
+					if (targets.contains(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName().toUpperCase()) || targets.contains("*")
 							|| targetIds.contains(String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId() ))) {
 						currentKills++;
 						aH.echoDebug(ChatColor.YELLOW + "// " + thePlayer.getName() + " killed " + String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId()) + "/" + CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName() + ".");

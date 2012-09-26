@@ -70,11 +70,12 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 							}
 						}
 
-						/* Check which NPC is closest */
+						// Check which NPC is closest
 						for (DenizenNPC npc : denizenList) {
+
+							// Skip if entity is somehow null, isn't spawned, or worlds don't match.
 							if (npc.getEntity() == null || !npc.isSpawned()) continue;
-							
-							// if (plugin.debugMode) plugin.getLogger().info("[Location Trigger] '" + event.getPlayer().getName() + "' '" + npc.getName() + "'");
+							if (npc.getWorld() != event.getPlayer().getWorld()) continue;
 							
 							if (npc.getEntity().getLocation().distance(event.getPlayer().getLocation())
 									< theDenizen.getEntity().getLocation().distance(event.getPlayer().getLocation()))
