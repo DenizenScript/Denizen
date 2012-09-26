@@ -75,8 +75,9 @@ public class FlaggedRequirement extends AbstractRequirement {
 				global = true;
 			}
 
-			else if (thisArgument.equals("CHECKNUMBER")) {
+			else if (thisArgument.equals("CHECKNUMBER") || thisArgument.equals("IS_NUMBER") ) {
 				aH.echoDebug("...checking if flag is a valid NUMBER.");
+				flagType = FlagType.BOOLEAN;
 				checkNumber = true;
 			}
 
