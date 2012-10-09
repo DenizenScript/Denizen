@@ -48,22 +48,22 @@ public class ScriptRequirement extends AbstractRequirement {
 			}
 			
 			
-			if (aH.matchesScript(thisArg)) {
+			else if (aH.matchesScript(thisArg)) {
 				checkScript = aH.getStringModifier(thisArg);
 				aH.echoDebug("...script to check is '%s'.", checkScript);
 			}
 
-			if (thisArg.toUpperCase().matches("(?:STEP)(:)(\\d+)")) {
+			else if (thisArg.toUpperCase().matches("(?:STEP)(:)(\\d+)")) {
 				step = aH.getIntegerModifier(thisArg);
 				aH.echoDebug("...step to check is '%s'.", step.toString());
 			}
 
-			if (aH.matchesQuantity(thisArg)) {
+			else if (aH.matchesQuantity(thisArg)) {
 				quantity = aH.getIntegerModifier(thisArg);
 				aH.echoDebug("...quantity to check for is '%s'.", quantity.toString());
 			}
 
-			if (thisArg.toUpperCase().equals("EXACTLY")) {
+			else if (thisArg.toUpperCase().equals("EXACTLY")) {
 				quantity = aH.getIntegerModifier(thisArg);
 				aH.echoDebug("...will check for EXACT quantity.");
 			}
