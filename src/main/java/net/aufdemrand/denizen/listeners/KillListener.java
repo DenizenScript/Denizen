@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.listeners;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.*;
 
 import net.aufdemrand.denizen.commands.core.ListenCommand;
 import net.citizensnpcs.api.CitizensAPI;
@@ -35,8 +36,8 @@ public class KillListener extends AbstractListener {
 
 		try {
 			this.type = KillType.valueOf(args[0]);
-			this.targets = Arrays.asList(args[1].toUpperCase().split(","));
-			this.targetIds = Arrays.asList(args[2].split(","));
+			this.targets = new ArrayList(Arrays.asList(args[1].toUpperCase().split(",")));
+			this.targetIds = new ArrayList(Arrays.asList(args[2].split(",")));
 			this.quantity = Integer.valueOf(args[3]);
 
 			plugin.getServer().getPluginManager().registerEvents(this, plugin);
