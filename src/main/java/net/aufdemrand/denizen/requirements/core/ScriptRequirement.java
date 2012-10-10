@@ -94,6 +94,7 @@ public class ScriptRequirement extends AbstractRequirement {
 						if (finishes >= quantity) outcome = true;
 					}
 				}
+				break;
 				
 
 			case FAILED:
@@ -114,6 +115,7 @@ public class ScriptRequirement extends AbstractRequirement {
 						if (fails >= quantity) outcome = true;
 					}
 				}
+				break;
 
 				
 			case STEP:
@@ -134,10 +136,9 @@ public class ScriptRequirement extends AbstractRequirement {
 						if (currentStep >= step) outcome = true;
 					}
 				}
-				
+				break;
 			
 			}
-			
 		}
 
 		if (negativeRequirement != outcome) return true;
