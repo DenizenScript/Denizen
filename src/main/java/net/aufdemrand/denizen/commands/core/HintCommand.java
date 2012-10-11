@@ -32,7 +32,7 @@ public class HintCommand extends AbstractCommand {
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 
 		boolean shortFormat =false;
-
+		ChatColor color = ChatColor.UNDERLINE;
 
 		if (theEntry.arguments() != null) {
 
@@ -40,8 +40,18 @@ public class HintCommand extends AbstractCommand {
 
 				// Fill replaceables
 				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
-				
+
 				if (thisArg.toUpperCase().contains("SHORT")) shortFormat = true;
+
+				if (thisArg.toUpperCase().contains("COLOR:")) {
+					String test = aH.getStringModifier(thisArg);
+					try {
+						color = ChatColor.valueOf(test);
+					} catch (Exception e) {
+						aH.echoDebug("Invalid color: " + test);
+					}
+
+				}
 			}
 		}
 
@@ -77,20 +87,24 @@ public class HintCommand extends AbstractCommand {
 
 		sb.append(plugin.settings.NpcHintPrefix());
 
+		if(!shortFormat)sb.append("\n");
 
 		for(int i=0;i<chatTriggers.size();i++) {
 			String item = chatTriggers.get(i);
-			String fitem = getFormattedTrigger(item, shortFormat);
+			String fitem = getFormattedTrigger(item, shortFormat, color);
 			aH.echoDebug("...formatted "  + fitem);
 			sb.append(fitem);	
-			if (i != chatTriggers.size() -1) sb.append(", ");
+			if (i != chatTriggers.size() -1){
+				if(shortFormat)sb.append(", ");
+				else sb.append("\n");
+			}
 		}
 
-		theEntry.getPlayer().sendMessage(sb.toString());
+		theEntry.getPlayer().sendMessage(sb.toString().split("\n"));
 		return true;
 	}
 
-	private String getFormattedTrigger(String str, boolean shortformat){
+	private String getFormattedTrigger(String str, boolean shortformat, ChatColor color){
 		if (str ==null) return "";
 
 		if (shortformat) {
@@ -105,7 +119,7 @@ public class HintCommand extends AbstractCommand {
 			}
 		}
 
-		return str.replaceFirst("/", ChatColor.UNDERLINE + "").replaceFirst("/", ChatColor.RESET + ""); 
+		return str.replaceFirst("/", color + "").replaceFirst("/", ChatColor.RESET + ""); 
 
 	}
 

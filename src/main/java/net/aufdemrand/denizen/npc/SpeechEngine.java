@@ -261,7 +261,7 @@ public class SpeechEngine {
 
 		case EMOTE:
 			theRange = plugin.settings.NpcEmoteRangeInBlocks();
-			thePlayer.sendMessage(theBystanderMessage);
+			thePlayer.sendMessage(theBystanderMessage.split("\n"));
 			break;
 
 		default:
@@ -271,12 +271,12 @@ public class SpeechEngine {
 		}
 
 		if (thePlayerMessage != null && !thePlayerMessage.equals("shhh...don't speak!") && thePlayer != null) 
-			thePlayer.sendMessage(thePlayerMessage);
+			thePlayer.sendMessage(thePlayerMessage.split("\n"));
 
 		if ((plugin.settings.BystandersHearNpcToPlayerChat() || thePlayerMessage == null)  && theBystanderMessage != null) {
 			if (theRange > 0) {
 				for (Player otherPlayer : plugin.getDenizenNPCRegistry().getInRange(theDenizen.getEntity(), theRange, thePlayer)) {
-					otherPlayer.sendMessage(theBystanderMessage);
+					otherPlayer.sendMessage(theBystanderMessage.split("\n"));
 				}
 			}
 		}
