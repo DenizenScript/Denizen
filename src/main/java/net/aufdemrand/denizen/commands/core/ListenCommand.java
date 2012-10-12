@@ -279,6 +279,8 @@ public class ListenCommand extends AbstractCommand implements Listener {
 					}
 
 				} catch (Exception e) { aH.echoError("Error loading player listener '%s'!", listener); }
+			
+			playerListeners.get(event.getPlayer().getName() + ":" + listener).report();
 			}
 		}
 	}
