@@ -148,10 +148,10 @@ public class KillListener extends AbstractListener {
 			this.scriptName = plugin.getSaves().getString("Players." + thePlayer.getName() + ".Listeners.Saves." + listenerId + ".Script"); 
 
 			this.type = KillType.valueOf(plugin.getSaves().getString("Players." + thePlayer.getName() + ".Listeners.Saves." + listenerId + ".Type"));
-			this.targets = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Listeners.Saves." + listenerId + ".Target");
+			this.targets = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Listeners.Saves." + listenerId + ".Targets");
 			this.quantity = plugin.getSaves().getInt("Players." + thePlayer.getName() + ".Listeners.Saves." + listenerId + ".Quantity");
 			this.currentKills = plugin.getSaves().getInt("Players." + thePlayer.getName() + ".Listeners.Saves." + listenerId + ".Current Kills");
-			this.targetIds = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Listeners.Saves." + listenerId + ".Target NPCId");
+			this.targetIds = plugin.getSaves().getStringList("Players." + thePlayer.getName() + ".Listeners.Saves." + listenerId + ".Target NPCIds");
 
 			plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
