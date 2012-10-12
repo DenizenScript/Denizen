@@ -164,7 +164,7 @@ public class KillListener extends AbstractListener {
 
 	@Override
 	public void report() {
-
+		aH.echoDebug(thePlayer.getName() + " ID: " + listenerId + " SCRIPT: " + scriptName + " TYPE: " + type.name() + " TARGETS: " + targets.toString() + "/" + targetIds.toString() + " QTY: "  + quantity.toString() + " CURRENT: " + currentKills.toString());
 	}
 
 }
