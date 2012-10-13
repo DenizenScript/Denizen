@@ -28,7 +28,7 @@ public class ScriptRequirement extends AbstractRequirement {
 
 		ScriptCheck scriptCheck = null;
 		Integer step = null;
-		Integer quantity = null;
+		Integer quantity = 1;
 		boolean exactly = false;
 		String checkScript = null;
 
