@@ -93,16 +93,16 @@ public class PauseCommand extends AbstractCommand {
 			theEntry.getDenizen().getNavigator().cancelNavigation();
 		}
 
-		if (duration != null) 
+		if (duration != null) {
 
 			if (taskMap.containsKey(theEntry.getDenizen().getCitizensEntity().getId())) {
 				try {
 					plugin.getServer().getScheduler().cancelTask(taskMap.get(theEntry.getDenizen().getCitizensEntity().getId()));
 				} catch (Exception e) { }
 			}
-		aH.echoDebug("Setting delayed task: UNPAUSE GOAL SELECTOR.");
+			aH.echoDebug("Setting delayed task: UNPAUSE GOAL SELECTOR.");
 
-		taskMap.put(theEntry.getDenizen().getCitizensEntity().getId(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new TwoItemRunnable<DenizenNPC, Boolean>(theEntry.getDenizen(), waypoints) {
+			taskMap.put(theEntry.getDenizen().getCitizensEntity().getId(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new TwoItemRunnable<DenizenNPC, Boolean>(theEntry.getDenizen(), waypoints) {
 			@Override
 			public void run(DenizenNPC theNPC, Boolean waypoints) { 
 				aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: UNPAUSE GOAL SELECTOR for '%s'.", theNPC.getName());
@@ -116,8 +116,9 @@ public class PauseCommand extends AbstractCommand {
 					theNPC.getNavigator().cancelNavigation();
 				}
 			}
-		}, duration * 20));
+			}, duration * 20));
 
+		}
 
 		return true;
 	}
