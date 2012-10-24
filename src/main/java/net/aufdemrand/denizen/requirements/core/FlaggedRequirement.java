@@ -48,6 +48,9 @@ public class FlaggedRequirement extends AbstractRequirement {
 		/* Get arguments */
 		for (String thisArgument : arguments) {
 
+			// Fill replaceables
+			if (thisArgument.contains("<")) thisArgument = aH.fillReplaceables(thePlayer, theDenizen, thisArgument, false);
+
 			// Integer or String value
 			if (thisArgument.split(":").length == 2) {
 
