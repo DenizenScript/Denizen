@@ -134,55 +134,55 @@ public class LookCommand extends AbstractCommand {
 		else if (lookWhere.equals("LEFT")) {
 			theDenizen.lookClose(false);						
 			theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() - (float) 80;
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;
+			theDenizen.getHandle().ay = theDenizen.getHandle().yaw;
 		}
 
 		else if (lookWhere.equals("RIGHT")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() + (float) 80;
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;
+			theDenizen.getHandle().ay = theDenizen.getHandle().yaw;
 		}
 
 		else if (lookWhere.equals("UP")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().pitch = theDenizen.getHandle().pitch - (float) 60;
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;
+			theDenizen.getHandle().ay = theDenizen.getHandle().yaw;
 		}
 
 		else if (lookWhere.equals("DOWN")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().pitch = theDenizen.getHandle().pitch + (float) 40;
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;
+			theDenizen.getHandle().ay = theDenizen.getHandle().yaw;
 		}
 
 		else if (lookWhere.equals("BACK")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() - 180;
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;			
+			theDenizen.getHandle().ay = theDenizen.getHandle().yaw;			
 		}
 
 		else if (lookWhere.equals("SOUTH")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = 0;
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;			
+			theDenizen.getHandle().ay = theDenizen.getHandle().yaw;			
 		}
 
 		else if (lookWhere.equals("WEST")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = 90;
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;			
+			theDenizen.getHandle().ay = theDenizen.getHandle().yaw;			
 		}
 
 		else if (lookWhere.equals("NORTH")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = 180;
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;			
+			theDenizen.getHandle().ay = theDenizen.getHandle().yaw;			
 		}
 
 		else if (lookWhere.equals("EAST")) {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().yaw = 270;
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;			
+			theDenizen.getHandle().ay = theDenizen.getHandle().yaw;			
 		}
 
 		else if (lookWhere.equals("AT")) {
@@ -194,7 +194,7 @@ public class LookCommand extends AbstractCommand {
 			theDenizen.lookClose(false);
 			theDenizen.getHandle().pitch = lookLoc.getPitch();
 			theDenizen.getHandle().yaw = lookLoc.getYaw();
-			theDenizen.getHandle().as = theDenizen.getHandle().yaw;
+			theDenizen.getHandle().ay = theDenizen.getHandle().yaw;
 		}
 
 
@@ -219,7 +219,7 @@ public class LookCommand extends AbstractCommand {
 					//				if (denizen.getLocation().getYaw() == checkYaw) {
 					denizen.getHandle().yaw = location.getYaw();
 					denizen.getHandle().pitch = location.getPitch();
-					denizen.getHandle().as = denizen.getHandle().yaw;				
+					denizen.getHandle().ay = denizen.getHandle().yaw;				
 					//				}
 				}
 			}, duration * 20));
@@ -253,7 +253,7 @@ public class LookCommand extends AbstractCommand {
 		EntityLiving handle = ((CraftLivingEntity) from).getHandle();
 		handle.yaw = (float) yaw - 90;
 		handle.pitch = (float) pitch;
-		handle.as = handle.yaw;
+		handle.ay = handle.yaw;
 	}
 
 }
