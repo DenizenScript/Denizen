@@ -79,7 +79,7 @@ public class DenizenTrait extends Trait implements Toggleable, Listener {
 			EntityLiving handle = ((CraftLivingEntity) npc.getBukkitEntity()).getHandle();
 			handle.yaw = pushedLocation.getYaw();
 			handle.pitch = pushedLocation.getPitch();
-			handle.as = handle.yaw;
+			handle.ay = handle.yaw;
 
 			pushLocation = false;
 		}
