@@ -77,7 +77,8 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 							if (npc.getEntity() == null || !npc.isSpawned()) continue;
 							if (npc.getWorld() != event.getPlayer().getWorld()) continue;
 							
-							if (npc.getEntity().getLocation().distance(event.getPlayer().getLocation())
+							if (theDenizen == null) theDenizen = npc;
+							else if (npc.getEntity().getLocation().distance(event.getPlayer().getLocation())
 									< theDenizen.getEntity().getLocation().distance(event.getPlayer().getLocation()))
 								theDenizen = npc;
 						}
