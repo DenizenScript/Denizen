@@ -87,6 +87,11 @@ public class RunTaskCommand extends AbstractCommand {
 			return false;
 		}
 
+		if (!plugin.getScriptEngine().helper.checkCooldown(theEntry.getPlayer(), theScriptName)) {
+				aH.echoDebug("...Did not run " + theScriptName + ", is is currently not cooled down.");
+				return true;
+		}
+
 		/* Make delayed task to reset step if duration is set */
 		if (secs>0) {
 
