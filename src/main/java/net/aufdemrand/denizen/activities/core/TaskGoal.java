@@ -82,7 +82,7 @@ public class TaskGoal implements Goal {
 	}
 
 	public boolean isCool() {
-		tA.aH.echoDebug("if " + coldownMap + " < " + System.currentTimeMillis() + "...");
+		tA.aH.echoDebug("if " + cooldownMap + " < " + System.currentTimeMillis() + "...");
 		if (cooldownMap < System.currentTimeMillis()) return true;
 		else return false;
 	}
