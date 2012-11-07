@@ -11,7 +11,7 @@ import net.citizensnpcs.api.ai.Goal;
 
 public class TaskActivity extends AbstractActivity {
 
-	private Map<DenizenNPC, List<TaskGoal>> taskMap = new HashMap<DenizenNPC, List<TaskGoal>>();
+	private Map<Integer, List<TaskGoal>> taskMap = new HashMap<Integer, List<TaskGoal>>();
 
 
 	public void addGoal(DenizenNPC npc, String[] arguments, int priority) {
@@ -47,13 +47,17 @@ public class TaskActivity extends AbstractActivity {
 
 		List<TaskGoal> taskGoals = new ArrayList<TaskGoal>();
 
-		if (taskMap.containsKey(npc)) 
-			taskGoals = taskMap.get(npc);
+		if (taskMap.containsKey(npc.getId())) {
+			aH.echoDebug("Has TASK activity already, size now: " + taskMap.get(npc.getId()).size());
+			taskGoals = taskMap.get(npc.getId());
+		}
 
 		taskGoals.add(0, new TaskGoal(npc, delay, duration, script, repeats, this));
+		aH.echoDebug("Added activity, size now: " + taskMap.size());
 
-		taskMap.put(npc, taskGoals);
-		npc.getCitizensEntity().getDefaultGoalController().addGoal(taskMap.get(npc).get(0), priority);	
+		taskMap.put(npc.getId(), taskGoals);
+		npc.getCitizensEntity().getDefaultGoalController().addGoal(taskMap.get(npc.getId()).get(0), priority);
+		aH.echoDebug("Goal Controller: " + taskMap.size());
 	}
 
 
