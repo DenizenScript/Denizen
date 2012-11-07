@@ -63,7 +63,7 @@ public class TaskGoal implements Goal {
 	@Override
 	public boolean shouldExecute(GoalSelector arg0) {
 		
-		tA.aH.echoDebug("Debug: " + counter + ", " + delay + ", " + duration + ", " + repeats + ", " + npc.getId());
+		tA.aH.echoDebug("Debug: " + counter + ", " + delay + ", " + duration + ", " + repeats + ", " + denizenNPC.getId());
 
 		if (counter <= repeats || repeats == -1) {
 			return (isCool());
