@@ -77,10 +77,12 @@ public class TaskGoal implements Goal {
 	private Long cooldownMap = 0L;
 
 	public void cooldown() {
+		tA.aH.echoDebug("Cooldown.");
 		cooldownMap = System.currentTimeMillis() + (this.delay * 1000);
 	}
 
 	public boolean isCool() {
+		tA.aH.echoDebug("if " + coldownMap + " < " + System.currentTimeMillis() + "...");
 		if (cooldownMap < System.currentTimeMillis()) return true;
 		else return false;
 	}
