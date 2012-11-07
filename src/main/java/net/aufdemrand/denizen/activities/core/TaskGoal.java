@@ -74,7 +74,7 @@ public class TaskGoal implements Goal {
 
 
 
-	private Long cooldownMap = 0L;
+	private long cooldownMap = 0;
 
 	public void cooldown() {
 		tA.aH.echoDebug("Cooldown.");
@@ -82,24 +82,23 @@ public class TaskGoal implements Goal {
 	}
 
 	public boolean isCool() {
-		tA.aH.echoDebug("if " + cooldownMap + " < " + System.currentTimeMillis() + "...");
 		if (cooldownMap < System.currentTimeMillis()) return true;
 		else return false;
 	}
 
 
-	private Long durationMap = 0L;
+	private long durationMap = 0;
 
 	public void setDuration() {
 		durationMap = System.currentTimeMillis() + (this.duration * 1000);
 	}
 
 	public void removeDuration() {
-		durationMap = 0L;
+		durationMap = 0;
 	}
 
 	public boolean hasDuration() {
-		if (durationMap == 0L) return false;
+		if (durationMap == 0) return false;
 		else return true;
 	}
 
