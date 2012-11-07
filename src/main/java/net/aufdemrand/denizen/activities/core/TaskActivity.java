@@ -63,10 +63,10 @@ public class TaskActivity extends AbstractActivity {
 
 
 	public void removeGoal(DenizenNPC npc, boolean verbose) {
-		if (taskMap.containsKey(npc)) {
-			for (Goal goal : taskMap.get(npc))
+		if (taskMap.containsKey(npc.getId())) {
+			for (Goal goal : taskMap.get(npc.getId()))
 				npc.getCitizensEntity().getDefaultGoalController().removeGoal(goal);
-			taskMap.remove(npc);
+			taskMap.remove(npc.getId());
 			if (verbose) plugin.getLogger().info("Removed Wander Activity from NPC.");
 		} 
 		else if (verbose) plugin.getLogger().info("NPC does not have this activity...");
