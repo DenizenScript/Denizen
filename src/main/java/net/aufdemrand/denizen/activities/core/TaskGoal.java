@@ -39,6 +39,8 @@ public class TaskGoal implements Goal {
 	@Override
 	public void run(GoalSelector goalSelecter) {
 
+		tA.aH.echoDebug("Running TASK, counter now: " + counter);
+
 		if (hasDuration()) {
 			if (getDurationTimeout() < System.currentTimeMillis()) {
 				counter++;
