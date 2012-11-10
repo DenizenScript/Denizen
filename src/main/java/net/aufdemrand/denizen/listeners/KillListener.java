@@ -20,10 +20,10 @@ public class KillListener extends AbstractListener {
 	KillType type;
 	List<String> targets;
 	List<String> targetIds;
-	Integer quantity;
+	int quantity = 0;
 	String listenerId;
 
-	Integer currentKills = 0;
+	int currentKills = 0;
 
 	// new String[] { killType, killName, killNPCId, killListenerId, killQty }
 
@@ -105,7 +105,7 @@ public class KillListener extends AbstractListener {
 	@Override
 	public void complete(boolean forceable) {
 
-		if (quantity == currentKills || forceable) {
+		if (quantity >= currentKills || forceable) {
 			EntityDeathEvent.getHandlerList().unregister(this);
 
 			// Call script
