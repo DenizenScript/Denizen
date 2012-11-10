@@ -105,7 +105,7 @@ public class KillListener extends AbstractListener {
 	@Override
 	public void complete(boolean forceable) {
 
-		if (quantity >= currentKills || forceable) {
+		if (currentKills >= quantity || forceable) {
 			EntityDeathEvent.getHandlerList().unregister(this);
 
 			// Call script
@@ -164,7 +164,7 @@ public class KillListener extends AbstractListener {
 
 	@Override
 	public void report() {
-		aH.echoDebug(thePlayer.getName() + " ID: " + listenerId + " SCRIPT: " + scriptName + " TYPE: " + type.name() + " TARGETS: " + targets.toString() + "/" + targetIds.toString() + " QTY: "  + quantity.toString() + " CURRENT: " + currentKills.toString());
+		aH.echoDebug(thePlayer.getName() + " ID: " + listenerId + " SCRIPT: " + scriptName + " TYPE: " + type.name() + " TARGETS: " + targets.toString() + "/" + targetIds.toString() + " QTY: "  + quantity + " CURRENT: " + currentKills);
 	}
 
 }
