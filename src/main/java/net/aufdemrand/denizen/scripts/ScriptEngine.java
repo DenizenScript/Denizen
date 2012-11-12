@@ -332,13 +332,7 @@ public class ScriptEngine {
 
 	public Map<DenizenNPC, List<ScriptEntry>> getDQueue(QueueType queueType) {
 
-		switch (queueType) {
-
-		case ACTIVITY:
-			return activityQue;
-		}
-
-		return null;
+		return activityQue;
 	}
 
 	
