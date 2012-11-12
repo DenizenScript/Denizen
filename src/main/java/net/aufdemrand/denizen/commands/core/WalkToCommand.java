@@ -40,6 +40,18 @@ public class WalkToCommand extends AbstractCommand {
 		boolean returning = false;
 		Float Speed = null;
 
+		if (theEntry.getCommand().equalsIgnoreCase("return")) {
+			if (returns.containsKey(theEntry.getDenizen())){
+				walkLocation = returns.get(theEntry.getDenizen());
+				returning = true;
+			}
+			else
+			{
+				aH.echoDebug("Return location not found for " + theEntry.getDenizen().getName());
+				return false;
+			}
+		}
+
 		for (String thisArg : theEntry.arguments()) {
 			
 			// Fill replaceables
@@ -53,19 +65,6 @@ public class WalkToCommand extends AbstractCommand {
 				} catch (Exception e) {
 					aH.echoDebug("... Invalid Speed!");
 				}
-			}
-		}
-
-
-		if (theEntry.getCommand().equalsIgnoreCase("return")) {
-			if (returns.containsKey(theEntry.getDenizen())){
-				walkLocation = returns.get(theEntry.getDenizen());
-				returning = true;
-			}
-			else
-			{
-				aH.echoDebug("Return location not found for " + theEntry.getDenizen().getName());
-				return false;
 			}
 		}
 
