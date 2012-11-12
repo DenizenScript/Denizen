@@ -388,11 +388,11 @@ public class ScriptEngine {
 
 	
 	public List<ScriptEntry> getPlayerQueue(Player thePlayer, QueueType sendingQueue) {
-		return getQueue(sendingQueue).get(thePlayer);
+		return (getQueue(sendingQueue).get(thePlayer) != null) ? getQueue(sendingQueue).get(thePlayer) : new ArrayList<ScriptEntry>();
 	}
 
 	public List<ScriptEntry> getDenizenQueue(DenizenNPC theDenizen, QueueType sendingQueue) {
-		return getQueue(sendingQueue).get(theDenizen);
+		return (getDQueue(sendingQueue).get(theDenizen) != null) ? getDQueue(sendingQueue).get(theDenizen) : new ArrayList<ScriptEntry>();
 	}
 
 	
