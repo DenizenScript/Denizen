@@ -68,7 +68,7 @@ public class WalkToCommand extends AbstractCommand {
 			}
 		}
 
-		else if(theEntry.getCommand().equalsIgnoreCase("walkto"))  {
+		if(theEntry.getCommand().equalsIgnoreCase("walkto"))  {
 			walkLocation = handleWalkTo(theEntry);
 		}
 		else if(theEntry.getCommand().equalsIgnoreCase("walk"))  {
