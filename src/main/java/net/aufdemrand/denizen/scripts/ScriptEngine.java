@@ -391,6 +391,10 @@ public class ScriptEngine {
 		return getQueue(sendingQueue).get(thePlayer);
 	}
 
+	public List<ScriptEntry> getDenizenQueue(DenizenNPC theDenizen, QueueType sendingQueue) {
+		return getQueue(sendingQueue).get(theDenizen);
+	}
+
 	
 	// Use with care! This could be confusing to the player if not properly used!
 	public void replacePlayerQue(Player thePlayer, List<ScriptEntry> scriptCommands, QueueType queueType) {
@@ -412,7 +416,7 @@ public class ScriptEngine {
 	}
 
 	// Use with care! This could be confusing to the player if not properly used!
-	public void replaceDenizenQue(Denizen theDenizen, List<ScriptEntry> scriptCommands) {
+	public void replaceDenizenQue(DenizenNPC theDenizen, List<ScriptEntry> scriptCommands) {
 
 		activityQue.remove(theDenizen); 
 		activityQue.put(theDenizen, scriptCommands);
