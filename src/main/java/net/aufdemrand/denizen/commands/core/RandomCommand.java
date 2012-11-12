@@ -63,7 +63,9 @@ public class RandomCommand extends AbstractCommand {
 			return false;
 		}
 
-		List<ScriptEntry> currentQueue = plugin.getScriptEngine().getPlayerQueue(theEntry.getPlayer(), theEntry.sendingQueue());
+		List<ScriptEntry> currentQueue = new ArrayList<ScriptEntry>();
+		if (theEntry.getPlayer() != null) plugin.getScriptEngine().getPlayerQueue(theEntry.getPlayer(), theEntry.sendingQueue());
+		else if (theEntry.getPlayer() != null) plugin.getScriptEngine().getDQueue(theEntry.getDenizen());
 
 		if (currentQueue.size() < numberOfEntries) {
 			aH.echoError("Invalid Size! RANDOM [#] must not be larger than the script!");
@@ -88,7 +90,8 @@ public class RandomCommand extends AbstractCommand {
 		}
 		
 		currentQueue.add(0, sEtoKeep);
-		plugin.getScriptEngine().replacePlayerQue(theEntry.getPlayer(), currentQueue, theEntry.sendingQueue());
+		if (theEntry.getPlayer() != null) plugin.getScriptEngine().replacePlayerQue(theEntry.getPlayer(), currentQueue, theEntry.sendingQueue());
+		else plugin.getScriptEngine().replaceDenizenQue(theEntry.getDenizen(), currentQueue);
 		return true;
 	}
 
