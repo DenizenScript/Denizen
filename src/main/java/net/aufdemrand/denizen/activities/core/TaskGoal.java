@@ -39,7 +39,7 @@ public class TaskGoal implements Goal {
 	@Override
 	public void run(GoalSelector goalSelecter) {
 
-		tA.aH.echoDebug("Running TASK, counter now: " + counter);
+		// tA.aH.echoDebug("Running TASK, counter now: " + counter);
 
 		if (hasDuration()) {
 			if (getDurationTimeout() < System.currentTimeMillis()) {
@@ -63,7 +63,7 @@ public class TaskGoal implements Goal {
 	@Override
 	public boolean shouldExecute(GoalSelector arg0) {
 		
-		tA.aH.echoDebug("Should execute: " + isCool());
+		// tA.aH.echoDebug("Should execute: " + isCool());
 
 		if (counter <= repeats || repeats == -1) {
 			return (isCool());
