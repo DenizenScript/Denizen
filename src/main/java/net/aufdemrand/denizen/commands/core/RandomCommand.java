@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.commands.core;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
 import net.aufdemrand.denizen.commands.AbstractCommand;
@@ -65,7 +66,7 @@ public class RandomCommand extends AbstractCommand {
 
 		List<ScriptEntry> currentQueue = new ArrayList<ScriptEntry>();
 		if (theEntry.getPlayer() != null) plugin.getScriptEngine().getPlayerQueue(theEntry.getPlayer(), theEntry.sendingQueue());
-		else if (theEntry.getPlayer() != null) plugin.getScriptEngine().getDQueue(theEntry.getDenizen());
+		else if (theEntry.getPlayer() != null) plugin.getScriptEngine().getDQueue(theEntry.getDenizen(), theEntry.sendingQueue());
 
 		if (currentQueue.size() < numberOfEntries) {
 			aH.echoError("Invalid Size! RANDOM [#] must not be larger than the script!");
