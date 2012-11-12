@@ -411,6 +411,14 @@ public class ScriptEngine {
 		return;
 	}
 
+	// Use with care! This could be confusing to the player if not properly used!
+	public void replaceDenizenQue(Denizen theDenizen, List<ScriptEntry> scriptCommands) {
+
+		activityQue.remove(theDenizen); 
+		activityQue.put(theDenizen, scriptCommands);
+
+		return;
+	}
 
 
 
