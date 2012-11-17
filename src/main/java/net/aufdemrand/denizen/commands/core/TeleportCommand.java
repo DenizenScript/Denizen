@@ -59,7 +59,7 @@ public class TeleportCommand extends AbstractCommand {
 				}
 
 				// If argument is a BOOKMARK modifier
-				if (aH.matchesBookmark(thisArg)) {
+				else if (aH.matchesBookmark(thisArg)) {
 					teleportLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
 					if (teleportLocation != null)
 						aH.echoDebug("...teleport location now at '%s'.", thisArg);
