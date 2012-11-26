@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class BlockListener extends AbstractListener {
 
-	enum BlockType {BUILD, COLLECT, BREAK, CRAFT}
+	enum BlockType {BUILD, COLLECT, BREAK}
 
 	BlockType type;
 	List<String> blocks;
