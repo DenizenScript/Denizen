@@ -113,8 +113,10 @@ public class Denizen extends JavaPlugin {
 	public void onEnable() {
 
 		/* Set up Vault */
-		if (!setupEconomy() || !setupPermissions())
-			getLogger().log(Level.SEVERE, "No permissions an/or economy system found! Some commands may produce errors!");
+		if (!setupEconomy())
+			getLogger().log(Level.SEVERE, "No economy system found! Some commands may produce errors!");
+		if (!setupPermissions())
+			getLogger().log(Level.SEVERE, "No permissions system found! Some commands may produce errors!");
 
 		if (getServer().getPluginManager().getPlugin("Heroes") != null) {
 			getLogger().log(Level.INFO, "Found HEROES, you can use Heroes-specific commands!");
