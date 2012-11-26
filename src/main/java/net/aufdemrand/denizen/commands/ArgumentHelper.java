@@ -411,6 +411,7 @@ public class ArgumentHelper {
 				.replace("<NPCID>", String.valueOf(theDenizen.getId()))
 				.replace("<NPC>", theDenizen.getName())
 				.replace("<DENIZEN.NAME>", theDenizen.getName());
+				.replace("<NPC.ENTITYID>", String.valueOf(theDenizen.getEntity().getEntityId()));
 		}
 
 		// Done!
