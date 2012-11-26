@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import net.aufdemrand.denizen.commands.AbstractCommand;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.BlockListener;
+import net.aufdemrand.denizen.listeners.ItemListener;
 import net.aufdemrand.denizen.listeners.KillListener;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
