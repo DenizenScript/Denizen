@@ -44,7 +44,7 @@ public class ListenCommand extends AbstractCommand implements Listener {
 	//Player:ListenerId  //Listener Instance
 	Map<String, AbstractListener> playerListeners = new ConcurrentHashMap<String, AbstractListener>();
 
-	enum ListenerType { KILL, BLOCK }
+	enum ListenerType { KILL, BLOCK, ITEM }
 
 	public ListenCommand() {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -211,6 +211,75 @@ public class ListenCommand extends AbstractCommand implements Listener {
 			}
 			return true;
 
+    case ITEM:
+
+			// KILL [TYPE:GROUP|PLAYER|ENTITY|NPC] [NAME:Name|NPCID:#] (QTY:#) [SCRIPT:Script to trigger]
+
+			String itemType = null;
+			String itemName = null;
+			String itemQty = "1";
+			String itemScript = null;
+			String itemListenerId = null;
+
+			for (String thisArg : theEntry.arguments()){
+
+				// Fill replaceables
+				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
+
+				if (thisArg.equalsIgnoreCase("ITEM")) {
+					aH.echoDebug("...creating new ITEM listener.");	
+				}
+				
+				else if (aH.matchesScript(thisArg)) {
+					itemScript = aH.getStringModifier(thisArg);
+					aH.echoDebug("...script to run on completion '" + itemScript + "'.");	
+				}
+
+				else if (aH.matchesQuantity(thisArg)) {
+					itemQty = aH.getStringModifier(thisArg);
+					aH.echoDebug("...completion on '" + itemQty + "' item(s).");	
+				}
+
+				else if (thisArg.toUpperCase().contains("NAME:")) {
+					itemName = aH.getStringModifier(thisArg);
+					aH.echoDebug("...item(s) to listen for is/are '" + itemName + "'.");	
+				}
+
+				else if (thisArg.toUpperCase().contains("ID:")) {
+					itemListenerId = aH.getStringModifier(thisArg);
+					aH.echoDebug("...item is '" + thisArg + "'.");	
+				}
+
+				else if (thisArg.toUpperCase().contains("TYPE:")) {
+					itemType = aH.getStringModifier(thisArg);
+					aH.echoDebug("...item event type is '" + itemType + "'.");	
+				}
+
+				else aH.echoError("Could not match argument '%s'!", thisArg);
+			}
+
+			if (itemListenerId == null && itemScript != null) itemListenerId = itemScript;
+			else if (itemListenerId == null) itemScript = "Item_Listener_" + System.currentTimeMillis();
+
+			if (itemType == null || itemName == null || itemScript == null || itemListenerId == null) {
+				aH.echoError("Not enough arguments! Check syntax.");
+				return false;
+			}
+
+			List<String> itemList = plugin.getSaves().getStringList("Players." + theEntry.getPlayer().getName() + ".Listeners.List");
+
+			if (!itemList.contains(itemListenerId)) {
+
+				playerListeners.put(theEntry.getPlayer().getName() + ":" + itemListenerId, new ItemListener());
+				playerListeners.get(theEntry.getPlayer().getName() + ":" + itemListenerId).build(itemListenerId, theEntry.getPlayer(), new String[] { itemType, itemName, itemQty }, itemScript);
+				
+				itemList.add(itemListenerId);
+				plugin.getSaves().set("Players." + theEntry.getPlayer().getName() + ".Listeners.List", itemList);
+			} else {
+				aH.echoError("Already listening!");
+				return false;
+			}
+			return true;
 			
 			// case SCRIPT:
 
@@ -271,6 +340,11 @@ public class ListenCommand extends AbstractCommand implements Listener {
 
 					case BLOCK:
 						playerListeners.put(event.getPlayer().getName() + ":" + listener, new BlockListener());
+						playerListeners.get(event.getPlayer().getName() + ":" + listener).load(event.getPlayer(), listener);
+						break;
+            
+          case ITEM:
+						playerListeners.put(event.getPlayer().getName() + ":" + listener, new ItemListener());
 						playerListeners.get(event.getPlayer().getName() + ":" + listener).load(event.getPlayer(), listener);
 						break;
 
