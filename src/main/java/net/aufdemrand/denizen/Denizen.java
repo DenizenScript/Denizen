@@ -38,6 +38,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.event.HandlerList;
 
 import com.herocraftonline.heroes.Heroes;
 
@@ -168,6 +169,7 @@ public class Denizen extends JavaPlugin {
 		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
 		Bukkit.getServer().getScheduler().cancelTasks(this);
 		saveSaves();
+		HandlerList.unregisterAll(this);
 	}
 
 
