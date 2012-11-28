@@ -6,342 +6,315 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.aufdemrand.denizen.activities.ActivityEngine;
-import net.aufdemrand.denizen.activities.ActivityRegistry;
-import net.aufdemrand.denizen.bookmarks.BookmarkHelper;
-import net.aufdemrand.denizen.commands.CommandRegistry;
-import net.aufdemrand.denizen.commands.Executer;
+import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.interfaces.SpeechEngine;
+import net.aufdemrand.denizen.notables.NotableManager;
 import net.aufdemrand.denizen.npc.DenizenNPCRegistry;
-import net.aufdemrand.denizen.npc.DenizenTrait;
-import net.aufdemrand.denizen.npc.SpeechEngine;
-import net.aufdemrand.denizen.requirements.GetRequirements;
-import net.aufdemrand.denizen.requirements.RequirementRegistry;
+import net.aufdemrand.denizen.npc.activities.ActivityEngine;
+import net.aufdemrand.denizen.npc.activities.ActivityRegistry;
+import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
+import net.aufdemrand.denizen.npc.traits.HealthTrait;
+import net.aufdemrand.denizen.npc.traits.NicknameTrait;
+import net.aufdemrand.denizen.npc.traits.TalkTrait;
+import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.npc.traits.PushableTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
-import net.aufdemrand.denizen.triggers.TriggerRegistry;
-import net.aufdemrand.denizen.utilities.GetPlayer;
-import net.aufdemrand.denizen.utilities.GetWorld;
+import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
+import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
+import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
+import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.debugging.Debugger;
+import net.aufdemrand.denizen.utilities.debugging.Debugger.DebugElement;
 
+import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.event.NPCPushEvent;
 import net.citizensnpcs.api.trait.TraitInfo;
 
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
-
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import com.herocraftonline.heroes.Heroes;
 
 public class Denizen extends JavaPlugin {
 
-	public Economy   economy = null;
-	public Permission  perms = null;
-	public Heroes heroes = null;
-
-	private CommandRegistry commandRegistry = new CommandRegistry(this);
-	private TriggerRegistry triggerRegistry = new TriggerRegistry(this);
-	private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
-	private DenizenNPCRegistry denizenNPCRegistry = new DenizenNPCRegistry(this);
-	private ActivityRegistry activityRegistry = new ActivityRegistry(this);
-
-	private ScriptEngine scriptEngine = new ScriptEngine(this);
-	private SpeechEngine speechEngine = new SpeechEngine(this);
-	private ActivityEngine activityEngine = new ActivityEngine(this);
-
-	public Executer         executer = new Executer(this);
-	public BookmarkHelper  bookmarks = new BookmarkHelper(this);
-	public Utilities	   utilities = new Utilities(this);
-	public Settings         settings = new Settings(this);
-
-	public GetPlayer             getPlayer = new GetPlayer(this);
-	public GetRequirements getRequirements = new GetRequirements(this);
-	public GetWorld               getWorld = new GetWorld(this);
-	
-	public Boolean   debugMode = false;
-	public Boolean preciseMode = false;
-	public Boolean    newbMode = true;
-
-
-	public DenizenNPCRegistry getDenizenNPCRegistry() {
-		return denizenNPCRegistry;
-	}
-
-	public ActivityRegistry getActivityRegistry() {
-		return activityRegistry;
-	}
-
-	public ActivityEngine getActivityEngine() {
-		return activityEngine;
-	}
-
-	public RequirementRegistry getRequirementRegistry() {
-		return requirementRegistry;
-	}
-
-	public CommandRegistry getCommandRegistry() {
-		return commandRegistry;
-	}
-
-	public TriggerRegistry getTriggerRegistry() {
-		return triggerRegistry;
-	}
-
-	public SpeechEngine getSpeechEngine() {
-		return speechEngine;
-	}
-
-	public ScriptEngine getScriptEngine() {
-		return scriptEngine;
-	}
-
-
-	
-	/*
-	 * Sets up Denizen on start of the craftbukkit server.	
-	 */
-
-	@Override
-	public void onEnable() {
-
-		/* Set up Vault */
-		if (!setupEconomy())
-			getLogger().log(Level.SEVERE, "No economy system found! Some commands may produce errors!");
-		if (!setupPermissions())
-			getLogger().log(Level.SEVERE, "No permissions system found! Some commands may produce errors!");
-
-		if (getServer().getPluginManager().getPlugin("Heroes") != null) {
-			getLogger().log(Level.INFO, "Found HEROES, you can use Heroes-specific commands!");
-			this.heroes = (Heroes) getServer().getPluginManager().getPlugin("Heroes");
-		}
-		
-		/* Load YAML files into memory */
-		saveDefaultConfig();
-		reloadConfig();
-		reloadScripts();
-		reloadSaves();
-		reloadAssignments();
-
-		/* Register Citizens2 trait, Denizen Modules, and Bukkit tasks */
-		CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(DenizenTrait.class).withName("denizen"));
-		commandRegistry.registerCoreCommands();
-		triggerRegistry.registerCoreTriggers();
-		activityRegistry.registerCoreActivities();
-		requirementRegistry.registerCoreRequirements();
-
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			@Override public void run() { scriptEngine.runQueues(); }
-		}, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
-
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-			@Override public void run() { activityEngine.scheduleScripts(false); }
-		}, 1, 600);
-
-		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-			@Override public void run() { bookmarks.buildLocationTriggerList(); }
-		}, 50);
-
-		getServer().getPluginManager().registerEvents(activityEngine, this);
-
-	}
-
-	
-	
-
-	/*
-	 * onDisable
-	 * 
-	 * Unloads Denizen on shutdown of the craftbukkit server.
-	 *	
-	 */
-
-	@Override
-	public void onDisable() {
-		getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
-		Bukkit.getServer().getScheduler().cancelTasks(this);
-		saveSaves();
-		HandlerList.unregisterAll(this);
-	}
-
-
-
-	/*
-	 * setupEconomy/setupPermissions
-	 * 
-	 * Sets up Economy/Permissions object with Vault.
-	 *	
-	 */
-
-	private boolean setupEconomy() {
-		if (getServer().getPluginManager().getPlugin("Vault") == null) return false;
-		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-		if (rsp == null) return false;
-		economy = rsp.getProvider();
-		return economy != null;
-	}
-
-	private boolean setupPermissions() {
-		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-		perms = rsp.getProvider();
-		return perms != null;
-	}
-
-
-
-	/*
-	 * reloadScripts/getScripts
-	 * 
-	 * Reloads and retrieves information from the Denizen/scripts.yml.
-	 * 
-	 */
-
-	private FileConfiguration scriptConfig = null;
-	private File scriptConfigFile = null;
-
-	public void reloadScripts() {
-
-		try {
-			scriptEngine.helper.ConcatenateScripts();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		if (scriptConfigFile == null) {
-			scriptConfigFile = new File(getDataFolder(), "read-only-scripts.yml");
-		}
-		scriptConfig = YamlConfiguration.loadConfiguration(scriptConfigFile);
-
-		// Look for defaults in the jar
-		InputStream defConfigStream = getResource("read-only-scripts.yml");
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			scriptConfig.setDefaults(defConfig);
-		}
-	}
-
-
-	public FileConfiguration getScripts() {
-		if (scriptConfig == null) {
-			reloadScripts();
-		}
-		return scriptConfig;
-	}
-
-
-
-	/*
-	 * reloadSaves/getSaves/saveSaves
-	 * 
-	 * Reloads, retrieves and saves progress information Denizen/saves.yml.
-	 * 
-	 */
-
-	private FileConfiguration savesConfig = null;
-	private File savesConfigFile = null;
-
-	public void reloadSaves() {
-		if (savesConfigFile == null) {
-			savesConfigFile = new File(getDataFolder(), "saves.yml");
-		}
-		savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
-
-		// Look for defaults in the jar
-		InputStream defConfigStream = getResource("saves.yml");
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			savesConfig.setDefaults(defConfig);
-		}
-	}
-
-	public FileConfiguration getSaves() {
-		if (savesConfig == null) {
-			reloadSaves();
-		}
-		return savesConfig;
-	}
-
-	public void saveSaves() {
-		if (savesConfig == null || savesConfigFile == null) {
-			return;
-		}
-		try {
-			savesConfig.save(savesConfigFile);
-		} catch (IOException ex) {
-			Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + savesConfigFile, ex);
-		}
-	}
-
-
-
-	/*
-	 * reloadAssignments/getAssignments/saveAssignments
-	 * 
-	 * Reloads, retrieves and saves information from the Denizen/assignments.yml.
-	 * 
-	 */
-
-	private FileConfiguration assignmentConfig = null;
-	private File assignmentConfigFile = null;
-	public boolean showStackTraces = false;
-
-	public void reloadAssignments() {
-		if (assignmentConfigFile == null) {
-			assignmentConfigFile = new File(getDataFolder(), "assignments.yml");
-		}
-		assignmentConfig = YamlConfiguration.loadConfiguration(assignmentConfigFile);
-
-		// Look for defaults in the jar
-		InputStream defConfigStream = getResource("assignments.yml");
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			assignmentConfig.setDefaults(defConfig);
-		}
-	}
-
-	public FileConfiguration getAssignments() {
-		if (assignmentConfig == null) {
-			reloadAssignments();
-		}
-		return assignmentConfig;
-	}
-
-
-
-	/*
-	 * onCommand
-	 * 
-	 * Handles incoming bukkit console commands.
-	 * 
-	 */
-
-	private CommandHandler commandHandler = new CommandHandler(this);
-	
-	public CommandHandler getCommandHandler() {
-		return commandHandler;
-	}
-	
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String cmdLabel, String[] args) {
-
-		return getCommandHandler().onCommand(sender, cmd, cmdLabel, args);
-		
-	}
-
-
-
-
-
-
-
+    public static String versionTag = "0.8.1 pre-release";
+    
+    private Debugger debugger = new Debugger(this);
+
+    public Debugger getDebugger() {
+        return debugger;
+    }
+    
+    private CommandHandler commandHandler;
+    
+    public CommandHandler getCommandHandler() {
+        return commandHandler;
+    }
+    
+    
+    /*
+     * Denizen Engines
+     */
+
+    private ScriptEngine scriptEngine = new ScriptEngine(this);
+    private ActivityEngine activityEngine = new ActivityEngine(this);
+    private SpeechEngine speechEngine;
+
+    public ActivityEngine getActivityEngine() {
+        return activityEngine;
+    }
+    
+    public ScriptEngine getScriptEngine() {
+        return scriptEngine;
+    }
+
+    public SpeechEngine getSpeechEngine() {
+        return speechEngine;
+    }
+
+    public void registerSpeechEngine(SpeechEngine speechEngine) {
+        this.speechEngine = speechEngine;
+    }
+
+    
+    /*
+     * Denizen Registries
+     */
+
+    private CommandRegistry commandRegistry = new CommandRegistry(this);
+    private TriggerRegistry triggerRegistry = new TriggerRegistry(this);
+    private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
+    private ActivityRegistry activityRegistry = new ActivityRegistry(this);
+    private DenizenNPCRegistry denizenNPCRegistry;
+    
+    public ActivityRegistry getActivityRegistry() {
+        return activityRegistry;
+    }
+
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
+    }
+
+    public DenizenNPCRegistry getNPCRegistry() {
+        return denizenNPCRegistry;
+    }
+
+    public RequirementRegistry getRequirementRegistry() {
+        return requirementRegistry;
+    }
+
+    public TriggerRegistry getTriggerRegistry() {
+        return triggerRegistry;
+    }
+
+    
+    /*
+     * Denizen Managers
+     */
+    
+    private NotableManager notableManager = new NotableManager(this);
+    private FlagManager flagManager = new FlagManager(this);
+    private TagManager tagManager = new TagManager(this);
+
+    public FlagManager flagManager() {
+        return flagManager;
+    }
+
+    public TagManager tagManager() {
+        return tagManager;
+    }
+
+    public NotableManager notableManager() {
+        return notableManager;
+    }
+    
+    
+    /*
+     * Utilities
+     */
+
+    public static Settings settings;
+    public static Utilities utilities = new Utilities();
+
+
+    /*
+     * Sets up Denizen on start of the craftbukkit server.	
+     */
+
+    @Override
+    public void onEnable() {
+        // Startup procedure
+        debugger.echoDebug(DebugElement.Footer);
+        debugger.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
+        debugger.echoDebug(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable NPCs"); 
+        debugger.echoDebug(DebugElement.Spacer);
+        debugger.echoDebug(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
+        debugger.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
+        debugger.echoDebug(DebugElement.Footer);
+        
+        // Register commandHandler with Citizens2
+        Citizens citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
+        commandHandler = new CommandHandler(citizens);
+        
+        denizenNPCRegistry = new DenizenNPCRegistry(this);
+        settings =  new Settings();
+
+        // Populate config.yml if it doesn't yet exist.
+        saveDefaultConfig(); 
+        reloadConfig();
+        reloadScripts();
+        reloadSaves();
+
+        // Register traits
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(PushableTrait.class).withName("pushable"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(AssignmentTrait.class).withName("assignment"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TalkTrait.class).withName("talk"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NicknameTrait.class).withName("nickname"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HealthTrait.class).withName("health"));
+
+        // Compile and load Denizen externals
+        RuntimeCompiler compiler = new RuntimeCompiler(this);
+        compiler.loader();
+        
+        // Register Core Members in the Denizen Registries
+        getCommandRegistry().registerCoreMembers();
+        getTriggerRegistry().registerCoreMembers();
+        getActivityRegistry().registerCoreMembers();
+        getRequirementRegistry().registerCoreMembers();
+        
+        // Load Notables into memory (for the Location Triggers to reference)
+        notableManager().loadNotables();
+        tagManager().registerCoreTags();
+        citizens.registerCommandClass(CommandHandler.class);
+
+        // Start the scriptEngine.. VROOM VROOM!
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override public void run() { getScriptEngine().run(); }
+        }, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
+
+        // Start the activityEngine
+        getServer().getPluginManager().registerEvents(getActivityEngine(), this);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override public void run() { getActivityEngine().scheduler(false); }
+        }, 1, 600);
+
+        debugger.echoDebug(DebugElement.Footer);
+    }
+
+
+    /*
+     * Unloads Denizen on shutdown of the craftbukkit server.
+     */
+
+    @Override
+    public void onDisable() {
+        getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
+        Bukkit.getServer().getScheduler().cancelTasks(this);
+        HandlerList.unregisterAll(this);
+        saveSaves();
+    }
+
+
+    /*
+     * Reloads and retrieves information from the Denizen/scripts.yml.
+     */
+
+    private YamlConfiguration scriptConfig = null;
+
+    public void reloadScripts() {
+        String concatenated = scriptEngine.getScriptHelper().concatenateScripts();
+        if (scriptConfig == null) scriptConfig = new YamlConfiguration();
+
+        try { scriptConfig.loadFromString(concatenated);
+        } catch (InvalidConfigurationException e) {
+            getLogger().log(Level.SEVERE, "Error loading scripts to memory!");
+            e.printStackTrace();
+        }
+    }
+
+    public FileConfiguration getScripts() {
+        if (scriptConfig == null) {
+            reloadScripts();
+        }
+        return scriptConfig;
+    }
+
+    /*
+     * Reloads, retrieves and saves progress information Denizen/saves.yml.
+     */
+
+    private FileConfiguration savesConfig = null;
+    private File savesConfigFile = null;
+
+    public void reloadSaves() {
+        if (savesConfigFile == null) {
+            savesConfigFile = new File(getDataFolder(), "saves.yml");
+        }
+        savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
+    }
+
+    public FileConfiguration getSaves() {
+        if (savesConfig == null) {
+            reloadSaves();
+        }
+        return savesConfig;
+    }
+
+    public void saveSaves() {
+        if (savesConfig == null || savesConfigFile == null) {
+            return;
+        }
+        try {
+            savesConfig.save(savesConfigFile);
+        } catch (IOException ex) {
+            Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + savesConfigFile, ex);
+        }
+    }
+
+    /*
+     * Reloads, retrieves and saves information from the Denizen/assignments.yml.
+     */
+
+    private FileConfiguration assignmentConfig = null;
+    private File assignmentConfigFile = null;
+
+    public void reloadAssignments() {
+        if (assignmentConfigFile == null) {
+            assignmentConfigFile = new File(getDataFolder(), "assignments.yml");
+        }
+        assignmentConfig = YamlConfiguration.loadConfiguration(assignmentConfigFile);
+
+        // Look for defaults in the jar
+        InputStream defConfigStream = getResource("assignments.yml");
+        if (defConfigStream != null) {
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            assignmentConfig.setDefaults(defConfig);
+        }
+    }
+
+    public FileConfiguration getAssignments() {
+        if (assignmentConfig == null) {
+            reloadAssignments();
+        }
+        return assignmentConfig;
+    }
+
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
+        Citizens citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
+        return citizens.onCommand(sender, cmd, cmdName, args);
+    }
+    
 }
 
 

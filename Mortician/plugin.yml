@@ -1,5 +1,0 @@
-name: Mortician
-author: aufdemrand
-version: 1.0
-main: net.aufdemrand.denizen.mortician.Mortician
-depend: [Citizens, Denizen]

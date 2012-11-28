@@ -1,57 +1,7 @@
 Denizen: Helpful Citizens for Bukkit!
 
-End user:
 Need help using Denizen? Try one of these places:
 
-WIKI: wiki.citizensnpcs.net/Denizen
+WIKI: wiki.citizensnpcs.com/Denizen
 IRC: irc.esper.net in the channel #citizens or #denizen-dev
 BukkitDev: dev.bukkit.org/server-mods/Denizen
-
-
-Coders:
-Style Guide for submitting code to Denizen:
-
-One goal I have for Denizen is to make the code easy to read, even for
-non-programmers and novices alike. This sometimes means sacrificing 
-some habits that I've seen programmers use with one letter variable names
-and non-descriptive method names.
-
-Let me admit this up front: I am not a professional programmer. But I think
-that's why I want to be picky about my style. I think it's important
-for novices that want to read through code and see how it works to have
-everything laid out and described as clearly as possible. Think of this as a 
-kind of an anti-obfuscation.
-
-Here's a couple pointers I'd like to see followed, in no particular order.
-
-1) Be descriptive. When adding chunks of code into methods, explain what it does.
-   When describing a block of code, use format the explanation with multi-line
-   comments like below, even if your explanation is only one line. Typically, if
-   you have more than 10 lines of code in a method, you probably need to break
-   down the code and explain.
-
-2) Be consistent. When using statements with { brackets, (for, if, else, try, etc.) 
-   put the starting bracket on the end of the first statement, and try to have the 
-   first line of code directly below, except if a comment directly follows. Then use
-   an empty line. Comments should always have a blank line above, and the code that
-   is being referred to directly below.
-   
-3) For methods that could possibly used in a future API, or even possibly used outside
-   of your class, use java-docs commenting above the method. If only being used
-   internally, please still use commenting to explain the purpose of the method.
-   
-4) Stay away from one-word variables, in most cases. Or at least make sure the variable
-   is descriptive. One exception to the rule would be int variables used in looping
-   statements. 'x' or something similar should suffice. When referring to objects, use
-   'the' in front. For instance: Player thePlayer, or World theWorld, or String theScript.
-   When being used in a for statement or other kind of loop, or when referring to an
-   item in a list, use 'this'. For example: 'thisPlayer' or 'thisEntry'.
-
- * These are only suggestions, and when fleshing out code, I don't expect everything to
-   be followed to the 'T'. But as your code matures and everything is set into place,
-   tested, debugged, etc., these pointers should be in place. 
-   
-   There is a lot of code inside Denizen right now that lacks these guidelines, as a lot
-   of it was added early on, or was added 'quickly' to make things functional. I will 
-   eventually update all my code to follow suit, but let's try to make it easier on 
-   everyone by adhering these suggestions to new code.

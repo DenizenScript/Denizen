@@ -56,7 +56,9 @@ bystanders_hear_npc_to_player_chat: true
 # chat/interaction/etc.
 player_to_npc_chat_range_in_blocks: 3
 npc_to_player_chat_range_in_blocks: 7
+
 npc_emote_range_in_blocks: 7
+player_emote_range_in_blocks: 7
 player_to_npc_shout_range_in_blocks: 15
 npc_to_player_shout_range_in_blocks: 15
 player_to_npc_whisper_range_in_blocks: 2

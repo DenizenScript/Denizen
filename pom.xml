@@ -6,15 +6,15 @@
 
 	<groupId>net.aufdemrand</groupId>
 	<artifactId>denizen</artifactId>
-	<version>0.76-SNAPSHOT</version>
+	<version>0.8-PRERELEASE</version>
 	<name>Denizen</name>
-	<description>Denizen Character for Citizens2</description>
+	<description>Scriptable NPCs for Citizens2</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<craftbukkit.version>LATEST</craftbukkit.version>
-		<citizensapi.version>2.0.2</citizensapi.version>
-		<citizens.version>2.0.2</citizens.version>
+		<citizensapi.version>2.0.4-SNAPSHOT</citizensapi.version>
+		<citizens.version>2.0.4-SNAPSHOT</citizens.version>
 		<vault.version>1.2.13-SNAPSHOT</vault.version>
 		<build.number>Unknown</build.number>
 	</properties>
@@ -72,23 +72,17 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.jmock</groupId>
 			<artifactId>jmock-junit4</artifactId>
 			<version>2.5.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.herocraftonline</groupId>
-			<artifactId>heroes</artifactId>
-			<version>1.5.0-b1545</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/main/resources/Heroes.jar</systemPath>
+    		<groupId>org.abstractmeta</groupId>
+    		<artifactId>compilation-toolbox</artifactId>
+    		<version>0.3.2-MODIFIED</version>
+    		<type>jar</type>
+            <scope>compile</scope>
 		</dependency>
 	</dependencies>
 
@@ -101,21 +95,61 @@
 		<developerConnection>scm:git:git:@github.com:aufdemrand/Denizen.git</developerConnection>
 		<url>https://github.com/aufdemrand/Denizen/tree/master/</url>
 	</scm>
+
 	<build>
-		<defaultGoal>clean package install</defaultGoal>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-				    <packagingExcludes>${basedir}/src/main/resources/Heroes.jar</packagingExcludes>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.abstractmeta</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.abstractmeta</pattern>
+                                    <shadedPattern>org.shade.abstractmeta</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Svn-Revision>${SVN_REVISION}</Svn-Revision>
+                            <Build-Tag>${BUILD_TAG}</Build-Tag>
+                            <Build-Number>${BUILD_NUMBER}</Build-Number>
+                            <Build-Id>${BUILD_ID}</Build-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <!-- put your configurations here -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 	<url>http://wiki.citizensnpcs.com/Denizen</url>
 </project>

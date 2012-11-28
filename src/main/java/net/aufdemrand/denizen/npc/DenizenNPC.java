@@ -10,150 +10,104 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.commands.core.EngageCommand;
-import net.aufdemrand.denizen.npc.SpeechEngine.Reason;
-import net.aufdemrand.denizen.npc.SpeechEngine.TalkType;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
-import net.aufdemrand.denizen.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
+import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
+import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
+import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.trait.LookClose;
 import net.minecraft.server.EntityLiving;
 
 public class DenizenNPC {
 
-	private NPC citizensNPC;
+	private NPC npc;
 	private Denizen plugin;
-	private ScriptHelper sE;
-
+	private ScriptHelper sH;
 
 	DenizenNPC(NPC citizensNPC) {
-		this.citizensNPC = citizensNPC;
+		this.npc = citizensNPC;
 		this.plugin = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
-		this.sE = plugin.getScriptEngine().helper;
+		this.sH = plugin.getScriptEngine().getScriptHelper();
 	}
 
 	public EntityLiving getHandle() {
 		return ((CraftLivingEntity) getEntity()).getHandle();
 	}
 
-	public NPC getCitizensEntity() {
-		return citizensNPC;
+	public NPC getCitizen() {
+		return npc;
 	}
-
 
 	public LivingEntity getEntity() {
-		try {
-			return citizensNPC.getBukkitEntity();
-		} catch (NullPointerException e) {
-
-			return null;
-		}
+		try { return npc.getBukkitEntity();
+		} catch (NullPointerException e) { return null;	}
 	}
-
-
-	public void talk(TalkType talkType, Player thePlayer, String theText) {
-		plugin.getSpeechEngine().talk(this, thePlayer, theText, talkType);
-	}
-
-
-	public void talk(TalkType talkType, Player thePlayer, Reason theReason) {
-		plugin.getSpeechEngine().talk(this, thePlayer, theReason, talkType);
-	}
-
-
-	public boolean isToggled() {
-		return citizensNPC.getTrait(DenizenTrait.class).isToggled();
-	}
-
 
 	public EntityType getEntityType() {
-		return citizensNPC.getBukkitEntity().getType();
+		return npc.getBukkitEntity().getType();
 	}
-
 
 	public Navigator getNavigator() {
-		return citizensNPC.getNavigator();
+		return npc.getNavigator();
 	}
-
 
 	public int getId() {
-		return citizensNPC.getId();
+		return npc.getId();
 	}
-
 
 	public String getName() {
-		return citizensNPC.getName();
+		return npc.getName();
 	}
-
 
 	public void showInfo(Player theClicker) {
-		plugin.getDenizenNPCRegistry().showInfo(theClicker, this);
+		// plugin.getNPCRegistry().showInfo(theClicker, this);
 	}
-
-
-	public boolean isInteractable(String triggerName, Player thePlayer) {
-		return sE.denizenIsInteractable(triggerName, this);
-	}
-
 
 	public String getInteractScript(Player thePlayer, Class<? extends AbstractTrigger> triggerType) {
-		return sE.getInteractScript(this, thePlayer, triggerType);
+		return sH.getInteractScript(getCitizen(), thePlayer, triggerType);
 	}
-
 
 	public boolean isSpawned() {
-		return citizensNPC.isSpawned();
+		return npc.isSpawned();
 	}
-
 
 	public Location getLocation() {
-		return citizensNPC.getBukkitEntity().getLocation();
+		return npc.getBukkitEntity().getLocation();
 	}
-
 
 	public World getWorld() {
-		return citizensNPC.getBukkitEntity().getWorld();
+		return npc.getBukkitEntity().getWorld();
 	}
-
 
 	public void setHealth(int newHealth) {
 		((CraftLivingEntity) getEntity()).getHandle().setHealth(newHealth);
 	}
-
+	
+	public int getHealth() {
+        return ((CraftLivingEntity) getEntity()).getHandle().getHealth();
+    }
+    
 	@Override
 	public String toString() {
-		return "DenizenNPC " + citizensNPC.getName() + "/" + citizensNPC.getId();
-	}
-
-	public boolean isLookingClose() {
-		citizensNPC.getTrait(LookClose.class).toggle();
-		return citizensNPC.getTrait(LookClose.class).toggle();
-	}
-
-	public void lookClose(boolean lookclose) {
-
-		if (!lookclose) {
-			if (citizensNPC.getTrait(LookClose.class).toggle())
-				citizensNPC.getTrait(LookClose.class).toggle();
-		}
-
-		else if (lookclose) {
-			if (!citizensNPC.getTrait(LookClose.class).toggle()) 
-				citizensNPC.getTrait(LookClose.class).toggle();
-		}
-
+		return npc.getName() + "/" + npc.getId();
 	}
 
 	public boolean isInteracting() {
-		if (!plugin.getCommandRegistry().getCommand(EngageCommand.class).getEngaged(this))
-			return true;
+		if (!plugin.getCommandRegistry().get(EngageCommand.class).getEngaged(getCitizen())) return true;
 		else return false;
 	}
 
-	public boolean hasTrigger(String triggerName) {
-		return citizensNPC.getTrait(DenizenTrait.class).triggerIsEnabled(triggerName);
+	public String getAssignment() {
+		return npc.getTrait(AssignmentTrait.class).getAssignment();
 	}
 
+	public boolean setAssignment(String assignment) {
+		return npc.getTrait(AssignmentTrait.class).setAssignment(assignment);
+	}
+	
+	public void action(String actionName, Player player) {
+	    if (npc.hasTrait(AssignmentTrait.class)) 
+	        plugin.getNPCRegistry().getActionHandler().doAction(actionName, this, player, getAssignment());
+	}
 
 }

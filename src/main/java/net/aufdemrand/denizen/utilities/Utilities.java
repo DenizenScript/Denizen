@@ -11,15 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
-import net.aufdemrand.denizen.Denizen;
-
 public class Utilities {
-
-	private Denizen plugin;
-
-	public Utilities(Denizen plugin) {
-		this.plugin = plugin;
-	}
 
 	/* 
 	 * Used to check against, same as EntityType, but minus a few that are useless and/or could cause problems spawning
@@ -29,7 +21,7 @@ public class Utilities {
 	private enum ValidEntities {
 		BLAZE, BOAT, CAVE_SPIDER, CHICKEN, COW, CREEPER, ENDER_DRAGON, ENDERMAN, GHAST, GIANT, IRON_GOLEM, MAGMA_CUBE,
 		MUSHROOM_COW, MINECART, OCELOT, PIG, PIG_ZOMBIE, PRIMED_TNT, SHEEP, SILVERFISH, SKELETON, SLIME, SNOWMAN,
-		SQUID, VILLAGER, WOLF, ZOMBIE, WITCH, BAT
+		SQUID, VILLAGER, WOLF, ZOMBIE
 	}
 
 	public boolean isEntity(String theString) {
@@ -42,72 +34,23 @@ public class Utilities {
 		return false;
 	}
 	
-
-	/*
-	@EventHandler
-	public void playerTaskLocationListener(PlayerMoveEvent event) {
-
-		Denizen plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-
-		 Do not run any code unless the player actually moves blocks 
-		if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
-
-			try {
-
-				 ---- saves.yml format ----
-				 * Players:
-				 *   [PlayerName]:
-				 *     Tasks:
-				 *       List All:
-				 *         Locations:
-				 *         - theLocation:theDenizen:theId
-				 *       List Entries:
-				 *         Id: theId
-				 *         Type: Location
-				 *         Leeway: in blocks
-				 *         Duration: in seconds
-				 *         Script to trigger: script name
-				 *         Initiated: System.currentTimeMillis 
-
-				if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations")) {
-					List<String> listAll = plugin.getSaves().getStringList("Players." + event.getPlayer().getName() + ".Tasks.List All.Locations");      
-
-					if (!listAll.isEmpty()) {
-						for (String theTask : listAll) {
-							String[] taskArgs = theTask.split(";");
-							Location theLocation = plugin.bookmarks.get(taskArgs[1], taskArgs[0], BookmarkType.LOCATION);
-							int theLeeway = plugin.getSaves().getInt("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Leeway");
-							long theDuration = plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Duration");
-							if (plugin.bookmarks.checkLocation(event.getPlayer(), theLocation, theLeeway)) {
-								if (plugin.getSaves().contains("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")) {
-									if (plugin.getSaves().getLong("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated")
-											+ (theDuration * 1000) <= System.currentTimeMillis()) 
-
-										plugin.getScriptEngine().finishLocationTask(event.getPlayer(), taskArgs[2]);
-								}
-								else {
-									plugin.getSaves().set("Players." + event.getPlayer().getName() + ".Tasks.List Entries." + taskArgs[2] + ".Initiated", System.currentTimeMillis());
-									plugin.saveSaves();
-								}
-							}
-
-						}
-					}
-				}
-			}
-
-			catch (Exception e) {
-				plugin.getLogger().log(Level.SEVERE, "Error processing location task event.", e);
-			}
-		}
+	public int lastIndexOfUCL(String str) {        
+	    for(int i=str.length()-1; i>=0; i--) {
+	        if(Character.isUpperCase(str.charAt(i))) {
+	            return i;
+	        }
+	    }
+	    return -1;
 	}
-
 	
-*/	
-	
-	
-	
-	
+	public int lastIndexOfLCL(String str) {        
+	    for(int i=str.length()-1; i>=0; i--) {
+	        if(Character.isLowerCase(str.charAt(i))) {
+	            return i;
+	        }
+	    }
+	    return -1;
+	}
 	
 	/**
 	 * Gets the plugin version from the maven info in the jar, if available.
@@ -136,15 +79,7 @@ public class Utilities {
 		return "Denizen version: " + getVersionNumber();
 	}
 	
-	
-
-	
-	
-
-
-	
-	
-	/**
+	/*
 	 * Gets a Map of a player's inventory with a bukkit Material and Integer amount for each item. Unlike bukkit's build in getInventory, this will add up the total number of each Material. 
 	 *
 	 * @param  thePlayer  the Player whose inventory is being checked.
@@ -171,7 +106,7 @@ public class Utilities {
 		return playerInv;
 	}
 
-	/**
+	/*
 	 * Alternate usage that gets a Map of a player's inventory with a String representation of itemID:data and Integer amount for each item. Unlike bukkit's build in getInventory, this will add up the total number of each itemID. 
 	 *
 	 * @param  thePlayer  the Player whose inventory is being checked.
