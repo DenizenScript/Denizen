@@ -1,20 +1,11 @@
 package net.aufdemrand.denizen.tags.core;
 
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.core.FlagCommand;
-import net.minecraft.server.ItemStack;
 import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
 
-import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -23,31 +14,9 @@ import org.bukkit.event.Listener;
 
 public class PlayerTags implements Listener {
 
-    private Denizen denizen;
-
-    public PlayerTags(Denizen plugin) {
-        denizen = plugin;
-    }
-
-
-    public void registerCoreTags() {
-        denizen.getServer().getPluginManager().registerEvents(denizen.getCommandRegistry().get(FlagCommand.class), denizen);
+    public PlayerTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
-
-    // Thanks geckon :)
-    final String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","k","l","m","n","o","r"};
-    @EventHandler
-    public void colorTags(ReplaceableTagEvent event) {
-        int i = 0;
-        for (ChatColor color : ChatColor.values()) 
-        {
-            if (i > 22) break;
-            if (event.matches(color.name()) || event.matches("&" + i))
-                event.setReplaceable(color.toString());
-        }
-    }
-    
 
     @EventHandler
     public void playerTags(ReplaceableTagEvent event) {

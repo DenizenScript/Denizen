@@ -9,7 +9,6 @@ import net.citizensnpcs.command.exception.RequirementMissingException;
 
 import org.bukkit.entity.Player;
 
-@SuppressWarnings("deprecation")
 public class RequirementChecker {
 
     private Denizen plugin;
