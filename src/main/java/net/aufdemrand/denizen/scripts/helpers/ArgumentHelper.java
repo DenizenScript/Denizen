@@ -59,7 +59,7 @@ public class ArgumentHelper {
 	 */
 
 	final Pattern durationPattern = Pattern.compile("duration:(\\d+)", Pattern.CASE_INSENSITIVE);
-	final Pattern scriptPattern = Pattern.compile("(script:.+", Pattern.CASE_INSENSITIVE);
+	final Pattern scriptPattern = Pattern.compile("script:.+", Pattern.CASE_INSENSITIVE);
 	final Pattern locationPattern = Pattern.compile("location:\\d+,\\d+,\\d+,\\w+)", Pattern.CASE_INSENSITIVE);
 	final Pattern queuetypePattern = Pattern.compile("(?:queue|queuetype):(?:player|player_task|npc)", Pattern.CASE_INSENSITIVE);
 	final Pattern quantityPattern = Pattern.compile("qty:\\d+", Pattern.CASE_INSENSITIVE);
