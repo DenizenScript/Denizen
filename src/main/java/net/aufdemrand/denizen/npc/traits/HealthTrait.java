@@ -19,10 +19,12 @@ public class HealthTrait extends Trait implements Listener {
 	
 	@Override public void load(DataKey key) throws NPCLoadException {
 		maxHealth = key.getInt("maxhealth", 20);
+		setHealth(key.getInt("currenthealth", maxHealth));
 	}
 	
 	@Override public void save(DataKey key) {
 		key.setInt("maxhealth", maxHealth);
+		key.setInt("currenthealth", getHealth());
 	}
 	
 	@EventHandler

@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.helpers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
