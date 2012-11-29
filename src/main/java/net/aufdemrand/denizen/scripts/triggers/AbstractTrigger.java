@@ -23,11 +23,11 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
     public class TriggerOptions { 
         public boolean ENABLED_BY_DEFAULT = true; 
-        public int DEFAULT_COOLDOWN = -1;
+        public double DEFAULT_COOLDOWN = -1;
 
         public TriggerOptions() { }
         
-        public TriggerOptions(boolean enabledByDefault, int defaultCooldown) {
+        public TriggerOptions(boolean enabledByDefault, double defaultCooldown) {
             this.ENABLED_BY_DEFAULT = enabledByDefault;
             this.DEFAULT_COOLDOWN = defaultCooldown;
         }

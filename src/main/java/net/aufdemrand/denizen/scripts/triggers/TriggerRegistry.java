@@ -48,6 +48,7 @@ public class TriggerRegistry implements DenizenRegistry {
     @Override
     public void registerCoreMembers() {
         new ClickTrigger().activate().as("Click").withOptions(true, 2);
+        new ClickTrigger().activate().as("Damage").withOptions(true, 1);
         denizen.getDebugger().echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 
@@ -65,9 +66,9 @@ public class TriggerRegistry implements DenizenRegistry {
         else return false;
     }
 
-    public void setCooldown(NPC npc, Class<?> triggerClass, int seconds) {
+    public void setCooldown(NPC npc, Class<?> triggerClass, double seconds) {
         Map<Class<?>, Long> triggerMap = new HashMap<Class<?>, Long>();
-        triggerMap.put(triggerClass, System.currentTimeMillis() + (seconds * 1000));
+        triggerMap.put(triggerClass, System.currentTimeMillis() + Long.valueOf((long) (seconds * 1000)));
         cooldown.put(npc, triggerMap);
     }
 

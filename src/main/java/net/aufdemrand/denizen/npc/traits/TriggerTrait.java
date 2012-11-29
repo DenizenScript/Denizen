@@ -23,7 +23,7 @@ import net.citizensnpcs.util.Paginator;
 public class TriggerTrait extends Trait implements Listener {
 
     private Map<String, Boolean> enabled = new HashMap<String, Boolean>();
-    private Map<String, Integer> localCooldown = new HashMap<String, Integer>();
+    private Map<String, Double> localCooldown = new HashMap<String, Double>();
     private Denizen denizen;
 
     public TriggerTrait() {
@@ -42,7 +42,7 @@ public class TriggerTrait extends Trait implements Listener {
         for (String triggerName : denizen.getTriggerRegistry().list().keySet()) {
             enabled.put(triggerName, key.getBoolean(triggerName.toLowerCase() + "-trigger" + ".enabled", false));
             if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".cooldown")) 
-                localCooldown.put(triggerName, key.getInt(triggerName.toLowerCase() + "-trigger" + ".cooldown"));
+                localCooldown.put(triggerName, key.getDouble(triggerName.toLowerCase() + "-trigger" + ".cooldown"));
         }
     }
 
@@ -50,8 +50,8 @@ public class TriggerTrait extends Trait implements Listener {
     public void save(DataKey key) {
         for (Entry<String, Boolean> entry : enabled.entrySet())
             key.setBoolean(entry.getKey().toLowerCase() + "-trigger" + ".enabled", entry.getValue());
-        for (Entry<String, Integer> entry : localCooldown.entrySet()) 
-            key.setInt(entry.getKey().toLowerCase() + "-trigger" + ".cooldown", entry.getValue());
+        for (Entry<String, Double> entry : localCooldown.entrySet()) 
+            key.setDouble(entry.getKey().toLowerCase() + "-trigger" + ".cooldown", entry.getValue());
     }
 
     // Setting/Adjusting/Describing
@@ -74,12 +74,12 @@ public class TriggerTrait extends Trait implements Listener {
         else return false;
     }
 
-    public void setLocalCooldown(String triggerName, int value) {
+    public void setLocalCooldown(String triggerName, double value) {
         if (localCooldown.containsKey(triggerName.toUpperCase()))
             localCooldown.put(triggerName, value);
     }
 
-    public int getCooldownDuration(String triggerName) {
+    public double getCooldownDuration(String triggerName) {
         if (localCooldown.containsKey(triggerName.toUpperCase()))
             return localCooldown.get(triggerName.toUpperCase());
         else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN;
