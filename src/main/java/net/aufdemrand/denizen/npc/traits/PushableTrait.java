@@ -39,7 +39,7 @@ public class PushableTrait extends Trait implements Listener {
 
     @Override 
     public void load(DataKey key) throws NPCLoadException {
-        pushable = key.getBoolean("toggled", false);
+        pushable = key.getBoolean("toggled", true);
         returnable = key.getBoolean("returnable", false);
         delay = key.getInt("delay", 2);
     }
