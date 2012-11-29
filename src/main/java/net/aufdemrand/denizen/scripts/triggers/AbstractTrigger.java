@@ -52,7 +52,7 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         return this;
     }
     
-    public AbstractTrigger withOptions(boolean enabledByDefault, int defaultCooldown) {
+    public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown) {
         this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown);
         return this;
     }

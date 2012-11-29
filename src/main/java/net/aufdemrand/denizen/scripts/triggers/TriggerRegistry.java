@@ -47,8 +47,8 @@ public class TriggerRegistry implements DenizenRegistry {
 
     @Override
     public void registerCoreMembers() {
-        new ClickTrigger().activate().as("Click").withOptions(true, 2);
-        new ClickTrigger().activate().as("Damage").withOptions(true, 1);
+        new ClickTrigger().activate().as("Click").withOptions(true, 2.0);
+        new ClickTrigger().activate().as("Damage").withOptions(true, 0.5);
         denizen.getDebugger().echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 
