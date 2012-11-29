@@ -40,7 +40,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         dB.echoDebug(DebugElement.Header, "Parsing click trigger: " + npc.getName() + "/" + player.getName() + " -+");
 
         dB.echoDebug("Getting current step:");
-        Integer theStep = sH.getCurrentStep(player, script);
+        int theStep = sH.getCurrentStep(player, script);
 
         // Gets entries from the script
         List<String> theScript = sH.getScriptContents(sH.getKeys(script, theStep, name) + sH.scriptKey);
