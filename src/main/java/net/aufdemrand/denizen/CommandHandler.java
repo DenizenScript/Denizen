@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen;
 
+import java.util.Set;
+
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
@@ -8,9 +10,12 @@ import net.aufdemrand.denizen.npc.traits.PushableTrait;
 
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.command.Command;
 import net.citizensnpcs.command.CommandContext;
 import net.citizensnpcs.command.exception.CommandException;
+import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Messaging;
+import net.citizensnpcs.util.Paginator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -26,21 +31,21 @@ public class CommandHandler {
 
 
 
-        /*
+    /*
            getdata|adddata|decdata shows/modifies the block data for block in targets.
-        
+
         if (args[0].equalsIgnoreCase("getdata")) {
             player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
             return true;
         }
-        
+
         if (args[0].equalsIgnoreCase("adddata")) {
             Block toAddData = player.getTargetBlock(null, 20);
             toAddData.setData((byte) (toAddData.getData() + 1));
             player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
             return true;	
         }
-        
+
         if (args[0].equalsIgnoreCase("decdata")) {
             Block toAddData = player.getTargetBlock(null, 20);
             toAddData.setData((byte) (toAddData.getData() - 1));
@@ -48,9 +53,9 @@ public class CommandHandler {
             return true;
         }
 
-         */
+     */
 
-        // Help commands
+    // Help commands
 
     /*
         if (args[0].equalsIgnoreCase("help")) {
@@ -139,8 +144,8 @@ public class CommandHandler {
         return false;	
     }
 
-    */
-    
+     */
+
 
     @net.citizensnpcs.command.Command(
             aliases = { "npc" }, usage = "pushable (-r) (--delay #)", desc = "Makes a NPC pushable.",
@@ -158,7 +163,7 @@ public class CommandHandler {
                 Messaging.send(sender, "Return delay set to " + args.getFlag("delay") + " seconds.");
             } else Messaging.send(sender, ChatColor.RED + "Delay must be a valid number of seconds!");
         } else trait.toggle();
-        Messaging.send(sender, ChatColor.YELLOW + npc.getName() + (trait.isPushable() ? "is" : "is not") + " currently pushable" +
+        Messaging.send(sender, ChatColor.YELLOW + npc.getName() + (trait.isPushable() ? " is" : " is not") + " currently pushable" +
                 (trait.isReturnable() ? " and will return when pushed after " + trait.getDelay() + " seconds." : "."));
     }
 
@@ -265,7 +270,7 @@ public class CommandHandler {
                 ((denizen.getDebugger().showStackTraces) ? "enabled and showing stack-traces." : "enabled.") : "disabled."));
     }    
 
-    
+
     @net.citizensnpcs.command.Command(
             aliases = { "denizen" }, usage = "version", 
             desc = "Shows the currently loaded version of Denizen.", modifiers = { "version"},
@@ -278,47 +283,90 @@ public class CommandHandler {
         Messaging.send(sender, ChatColor.GRAY + "version: "+ ChatColor.WHITE + Denizen.versionTag);
     }    
 
-    
+
     @net.citizensnpcs.command.Command(
             aliases = { "denizen" }, usage = "save", 
             desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "save"},
             min = 1, max = 3, permission = "denizen.basic", flags = "s")
     public void save(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         ((Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen")).saveSaves();
-        
+
         Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml saved to disk from memory.");
     }
 
+
     
-    @net.citizensnpcs.command.Command(
-            aliases = { "denizen" }, usage = "reload (saves|config|scripts) (-a)", 
-            desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "save"},
-            min = 1, max = 3, permission = "denizen.basic", flags = "a")
-    public void reload(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+   @Command ( aliases = { "denizen" }, usage = "reload (saves|config|scripts) (-a)", 
+              desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "save"},
+              min = 1, max = 3, permission = "denizen.basic", flags = "a" )
+
+   public void reload(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
-        
-        if (args.getString(1).equalsIgnoreCase("saves")) {
-            denizen.reloadSaves();
-            Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml reloaded from disk to memory.");
-            return;
-        } else if (args.getString(1).equalsIgnoreCase("config")) {
-            denizen.reloadConfig();
-            Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
-            return;
-        } else if (args.getString(1).equalsIgnoreCase("scripts")) {
-            denizen.reloadScripts();
-            Messaging.send(sender, ChatColor.GREEN + "Denizen/scripts/... reloaded from disk to memory.");
-            return;
-        } else if (args.hasFlag('a')) {
-            denizen.reloadSaves();
-            denizen.reloadConfig();
-            denizen.reloadScripts();
-            Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml, Denizen/config.yml, and Denizen/scripts/... reloaded from disk to memory.");
-            return;
-        }
-        throw new CommandException();
+
+     // Get reload type
+        if  (args.getString(1).equalsIgnoreCase("saves")) {
+             denizen.reloadSaves();
+             Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml reloaded from disk to memory.");
+           return;
+
+      } else if (args.getString(1).equalsIgnoreCase("config")) {
+             denizen.reloadConfig();
+             Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
+           return;
+
+      } else if (args.getString(1).equalsIgnoreCase("scripts")) {
+             denizen.reloadScripts();
+             Messaging.send(sender, ChatColor.GREEN + "Denizen/scripts/... reloaded from disk to memory.");
+           return;
+
+      } else if (args.hasFlag('a')) {
+             denizen.reloadSaves();
+             denizen.reloadConfig();
+             denizen.reloadScripts();
+             Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml, Denizen/config.yml, and Denizen/scripts/... reloaded from disk to memory.");
+           return;
+
+      } else throw new CommandException();
     }
-    
+
+
+    @net.citizensnpcs.command.Command(
+            aliases = { "denizen" }, usage = "scripts (--type assignment|task|activity|interact) (--filter string)", 
+            desc = "Lists currently loaded dScripts.", modifiers = { "scripts"},
+            min = 1, max = 4, permission = "denizen.basic")
+    public void scripts(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
+        // Fill arguments
+        String type = null;   if (args.hasValueFlag("type"))   type = args.getFlag("type");
+        String filter = null; if (args.hasValueFlag("filter")) filter = args.getFlag("filter");
+        // Get script names from the scripts.yml in memory
+        Set<String> scripts = denizen.getScripts().getKeys(false);
+        // New Paginator to display script names
+        Paginator paginator = new Paginator().header("Scripts");
+        paginator.addLine("<e>Key: <a>Type  <b>Name");
+        // Add scripts to Paginator
+        for (String script : scripts) {
+            if (denizen.getScripts().contains(script + ".TYPE")) {
+                // If a --type has been specified... 
+                if (type != null) {
+                    if (denizen.getScripts().getString(script + ".TYPE").equalsIgnoreCase(type))
+                        if (filter != null) { 
+                            if (script.contains(filter.toUpperCase()))
+                                paginator.addLine("<a>" + denizen.getScripts().getString(script + ".TYPE").toUpperCase().substring(0, 4) + "  <b>" + script);
+                        }
+                        else paginator.addLine("<a>" + denizen.getScripts().getString(script + ".TYPE").toUpperCase().substring(0, 4) + "  <b>" + script);
+                // If a --filter has been specified...
+              } else if (filter != null) { 
+                    if (script.contains(filter.toUpperCase()))
+                        paginator.addLine("<a>" + denizen.getScripts().getString(script + ".TYPE").toUpperCase().substring(0, 4) + "  <b>" + script);
+              } else paginator.addLine("<a>" + denizen.getScripts().getString(script + ".TYPE").toUpperCase().substring(0, 4) + "  <b>" + script);
+           }
+        }
+    // Send the contents of the Paginator to the Player (or Console)
+    if (!paginator.sendPage(sender, args.getInteger(1, 1)))
+        throw new CommandException(Messages.COMMAND_PAGE_MISSING);
+}
+
 }
 
 
