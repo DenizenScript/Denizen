@@ -65,7 +65,7 @@ public class ReplaceableTagEvent extends Event {
             instant = true;
             name = name.substring(1);
         }
-        if (value.contains("[")) {
+        if (value != null && value.contains("[")) {
             index = value.split("\\[")[1].replace("]", "");
             name = value.split("\\[")[0];
         }
