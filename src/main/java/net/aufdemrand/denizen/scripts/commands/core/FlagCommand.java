@@ -31,19 +31,19 @@ public class FlagCommand extends AbstractCommand implements Listener {
      * NAME specifies flag Name
      *  ...[#] specifies optional index, if working with a Flag List.
      *     ...:VALUE specifies the value to set the flag to.
-     *  or ...:FLAG_ACTION:(VALUE) specifies the FlagAction (and value if necessary).
-     *         Valid FLAG_ACTIONs: +,        -,        *,        /,      A,      R
+     *  or ...:FLAG_ACTION(:VALUE) specifies the FlagAction (and value if necessary).
+     *         Valid FLAG_ACTIONs: ++|+      --|-      *         /       ->      <-
      *                Description: Increase, Decrease, Multiply, Divide, Insert, Remove
      * 
      * DURATION:# Sets an expiration on the Flag. After this time, the flag is no longer valid.
      * 
      * Example usages:
      * FLAG 'MAGICSHOPITEM:FEATHER' 'DURATION:60'
-     * FLAG 'HOSTILECOUNT:+'
-     * FLAG 'ALIGNMENT:-:10'
+     * FLAG 'HOSTILECOUNT:++'
+     * FLAG 'ALIGNMENT:--:10'
      * FLAG 'CUSTOMFLAG:VALUE'
-     * FLAG 'COMPLETED_QUESTS:A:This Quest'
-     * FLAG 'COMPLETED_QUESTS:R:Other Quest'
+     * FLAG 'COMPLETED_QUESTS:->:This Quest'
+     * FLAG 'REQUIRED_QUESTS:<-:Other Quest'
      * FLAG 'CUSTOM_PRICE[2]:12'
      */
 
@@ -87,15 +87,23 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 flagName = flagArgs[0].toUpperCase();
 
                 if (flagArgs.length == 2) {
-                    flagAction = FlagAction.SET_VALUE;
-                    flagValue = arg.split(":")[1];
+                    if (flagArgs[1].contains("+")) {
+                        flagAction = FlagAction.INCREASE;
+                        flagValue = "1";
+                    }   else if (flagArgs[1].contains("-")) {
+                        flagAction = FlagAction.DECREASE;
+                        flagValue = "1";
+                    }   else {
+                        flagAction = FlagAction.SET_VALUE;
+                        flagValue = arg.split(":")[1];
+                    }
                 } else if (flagArgs.length == 3) {
-                    if      (flagArgs[1].contains("+")) flagAction = FlagAction.INCREASE;
+                    if (flagArgs[1].contains("->")) flagAction = FlagAction.INSERT;
+                    else if (flagArgs[1].contains("<-")) flagAction = FlagAction.REMOVE;
+                    else if (flagArgs[1].contains("+")) flagAction = FlagAction.INCREASE;
                     else if (flagArgs[1].contains("-")) flagAction = FlagAction.DECREASE;
                     else if (flagArgs[1].contains("*")) flagAction = FlagAction.MULTIPLY;
                     else if (flagArgs[1].contains("/")) flagAction = FlagAction.DIVIDE;
-                    else if (flagArgs[1].contains("A")) flagAction = FlagAction.INSERT;
-                    else if (flagArgs[1].contains("R")) flagAction = FlagAction.REMOVE;
                     flagValue = flagArgs[2];
                 }
 
@@ -176,14 +184,14 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         // Replace <FLAG...> TAGs.
         String flagName = event.getValue().split(":").length > 1 ? event.getValue().split(":")[0].toUpperCase() : event.getValue().toUpperCase();
-        String flagFallback = event.getValue().split(":").length > 1 ? event.getValue().split(":")[1] : "";
+        String flagFallback = event.getFallback() != null ? event.getFallback() : "EMPTY";
         int index = -1;
         ReplaceType replaceType = ReplaceType.ASSTRING;
 
         // Get format, if specified
         if (flagName.contains(".")) {
             if (flagName.split(".")[1].equalsIgnoreCase("ASSTRING")) replaceType = ReplaceType.ASSTRING;
-            else if (flagName.split(".")[1].equalsIgnoreCase("ASLIST")) replaceType = ReplaceType.ASLIST;
+            else if (flagName.split(".")[1].equalsIgnoreCase("ASCSLIST")) replaceType = ReplaceType.ASLIST;
             else if (flagName.split(".")[1].equalsIgnoreCase("ASINT")) replaceType = ReplaceType.ASINT;
             else if (flagName.split(".")[1].equalsIgnoreCase("ASDOUBLE")) replaceType = ReplaceType.ASDOUBLE;
             else if (flagName.split(".")[1].equalsIgnoreCase("ASMONEY")) replaceType = ReplaceType.ASMONEY;
@@ -226,8 +234,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
     }
 
-    DecimalFormat d = new DecimalFormat("0.00");
-
     private String getReplaceable(Value flag, ReplaceType replaceType) {
 
         switch (replaceType) {
@@ -240,6 +246,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
         case ASLIST:
             return String.valueOf(flag.asCommaSeparatedList());
         case ASMONEY:
+            DecimalFormat d = new DecimalFormat("0.00");
             return String.valueOf(d.format(flag.asDouble()));
         }
 
@@ -248,8 +255,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
     @Override
     public void onEnable() {
-        // TODO Auto-generated method stub
-        
+        denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
 }
