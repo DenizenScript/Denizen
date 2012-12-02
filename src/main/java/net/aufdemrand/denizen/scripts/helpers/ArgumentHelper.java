@@ -16,7 +16,7 @@ import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.utilities.debugging.Debugger;
 
 /**
- * The DenizenScript Argument Helper will aide you in parsing and formatting arguments from a ScriptEntry.  The Argument Helper (aH)
+ * The dScript Argument Helper will aide you in parsing and formatting arguments from a ScriptEntry.  The Argument Helper (aH)
  * object reference is included with AbstractCommand, AbstractRequirement, AbstractActivity and AbstractTrigger.
  * 
  * @author Jeremy Schroeder
@@ -29,7 +29,7 @@ public class ArgumentHelper {
     Denizen denizen;
 
     public enum ArgumentType {
-        String, Word, Integer, Double, Float, Custom
+        String, Word, Integer, Double, Float, Boolean, Custom
     }
 
     public ArgumentHelper(Denizen denizen) {
@@ -42,9 +42,10 @@ public class ArgumentHelper {
      *  +------------------------+----------------------+---------------------+-------------+----------------------------------------------
      *   NPCID:#                  parsed in executer     done in executer      DenizenNPC    (matched against current NPCs)
      *   PLAYER:player_name       parsed in executer     done in executer      Player        (matched against online/offline Players)
+     *   TOGGLE:true|false        matchesToggle(arg)     getBooleanFrom(arg)   boolean       trigger:(true|false)
      *   DURATION:#               matchesDuration(arg)   getIntegerFrom(arg)   int           duration:\d+ 
      *   SCRIPT:script_name       matchesScript(arg)     getStringFrom(arg)    String        script:.+ matched against loaded Scripts    
-     *   LOCATION:x#,y#,z#,world  matchesLocation(arg)   getLocationFrom(arg)  Location      location:x\d+,y\d+,z\d+(?:(?:,\w+)|)
+     *   LOCATION:x#,y#,z#,world  matchesLocation(arg)   getLocationFrom(arg)  Location      location:\d+,\d+,\d+,\w+
      *   QUEUE:Queue_Type         matchesQueueType(arg)  getQueueFrom(arg)     QueueType     queue:(?:player|task|denizen)
      *   QTY:#                    matchesQuantity(arg)   getQuantityFrom(arg)  int           qty:\d+ 
      *   ITEM:Material_Type(:#)   matchesItem(arg)       getItemFrom(arg)      ItemStack     item:\.+:(\d+) matched against Material_Type
@@ -130,6 +131,10 @@ public class ArgumentHelper {
         case Float:
             m = floatPattern.matcher(argument);
             return m.matches();
+            
+        case Boolean:
+            if (argument.equalsIgnoreCase("true")) return true;
+            else return false;
 
         default:
             return true;
