@@ -23,22 +23,22 @@ public class DisengageCommand extends AbstractCommand {
      * 
      */
 
-    int duration = -1;
-    NPC denizenNPC = null;
+    NPC npc;
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Set some defaults based on the scriptEntry
-        denizenNPC = scriptEntry.getDenizen().getCitizen();
-
-        if (denizenNPC == null)
+        if (scriptEntry.getDenizen() == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+
+        // Set some defaults based on the scriptEntry
+        npc = scriptEntry.getDenizen().getCitizen();
+
     }
 
     @Override
     public void execute(String commandName) throws CommandExecutionException {
-        denizen.getCommandRegistry().get(EngageCommand.class).setEngaged(denizenNPC, false);
+        denizen.getCommandRegistry().get(EngageCommand.class).setEngaged(npc, false);
     }
 
     @Override

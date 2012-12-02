@@ -29,14 +29,18 @@ public class EngageCommand extends AbstractCommand {
 	 * (NPCID:#) Changes the Denizen affected to the Citizens2 NPCID specified
 	 */
 
-	int duration = -1;
-	NPC denizenNPC = null;
+	int duration;
+	NPC npc;
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+	    duration = 1;
+	    if (scriptEntry.getDenizen() == null)
+            throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+        
 		// Set some defaults based on the scriptEntry
-		denizenNPC = scriptEntry.getDenizen().getCitizen();
+		npc = scriptEntry.getDenizen().getCitizen();
 
 		// Parse arguments
 		for (String arg : scriptEntry.getArguments()) {
@@ -52,15 +56,13 @@ public class EngageCommand extends AbstractCommand {
 			}	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT);
 		}	
 
-		if (denizenNPC == null)
-			throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
 	}
 
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
 
-		if (duration > 0) setEngaged(denizenNPC, duration);
-		else setEngaged(denizenNPC, true);
+		if (duration > 0) setEngaged(npc, duration);
+		else setEngaged(npc, true);
 	}
 
 	

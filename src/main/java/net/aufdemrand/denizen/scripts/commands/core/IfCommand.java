@@ -42,25 +42,31 @@ public class IfCommand extends AbstractCommand {
 
     List<Comparable> comparables = new ArrayList<Comparable>();
 
-    String outcomeCommand = null;
+    String outcomeCommand;
     List<String> outcomeArgs = new ArrayList<String>();
 
-    String elseCommand = null;
+    String elseCommand;
     List<String> elseArgs = new ArrayList<String>();
 
-    Player player = null;
-    DenizenNPC npc = null;
-    String script = null;
-    Integer step = 1;
+    Player player;
+    DenizenNPC npc;
+    String script;
+    Integer step;
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        comparables.clear();
+        outcomeCommand = null;
+        outcomeArgs.clear();
+        elseCommand = null;
+        elseArgs.clear();
+        
         player = scriptEntry.getPlayer();
         npc = scriptEntry.getDenizen();
         script = scriptEntry.getScript();
         step = scriptEntry.getStep();
-
+                
         comparables.add(new Comparable());
         int index = 0;
 

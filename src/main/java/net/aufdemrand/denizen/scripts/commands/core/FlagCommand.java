@@ -50,20 +50,30 @@ public class FlagCommand extends AbstractCommand implements Listener {
     public enum FlagAction { SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY, DIVIDE, INSERT, REMOVE }
     public enum FlagType { GLOBAL, DENIZEN, PLAYER }
 
-    private String flagName = null;
-    private String flagValue = null;
-    private String playerName = null;
-    private Flag flag = null;
-    private int denizenId = -1; 
-    private int index = -1;
-    private int duration = -1;
-    FlagAction flagAction = null;
-    FlagType flagType = FlagType.PLAYER;
+    private String flagName;
+    private String flagValue;
+    private String playerName;
+    private Flag flag;
+    private int denizenId;
+    private int index;
+    private int duration;
+    FlagAction flagAction;
+    FlagType flagType;
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Set some defaults with information from the scriptEntry
+        flagName = null;
+        flagValue = null;
+        playerName = null;
+        flag = null;
+        denizenId = -1; 
+        index = -1;
+        duration = -1;
+        flagAction = null;
+        flagType = FlagType.PLAYER;
+        
         if (scriptEntry.getDenizen() != null) denizenId = scriptEntry.getDenizen().getId();
         if (scriptEntry.getPlayer() != null) playerName = scriptEntry.getPlayer().getName();
         else if (scriptEntry.getOfflinePlayer() != null) playerName = scriptEntry.getOfflinePlayer().getName();

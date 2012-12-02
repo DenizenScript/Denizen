@@ -33,15 +33,18 @@ public class CooldownCommand extends AbstractCommand {
 	 */
 
 	String scriptName;
-	int duration = 0;
-	String playerName = null;
-	boolean global = false;
+	int duration;
+	String playerName;
+	boolean global;
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 		// Set some defaults based on the scriptEntry
 		scriptName = scriptEntry.getScript();
+	    duration = 0;
+	    playerName = null;
+	    global = false;
 		if (scriptEntry.getPlayer() != null) playerName = scriptEntry.getPlayer().getName();
 		else if (scriptEntry.getOfflinePlayer() != null) playerName = scriptEntry.getOfflinePlayer().getName();
 		

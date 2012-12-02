@@ -30,18 +30,22 @@ public class PauseCommand extends AbstractCommand {
 	 */
 
 	private Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>();
-
-	int duration = -1;
-	enum PauseType { ACTIVITY, WAYPOINTS, NAVIGATION }
-	PauseType pauseType = null;
-	DenizenNPC denizenNPC = null;
-	Player player = null;
+    enum PauseType { ACTIVITY, WAYPOINTS, NAVIGATION }
+    
+	int duration;
+	PauseType pauseType;
+	DenizenNPC denizenNPC;
+	Player player;
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 		// Set defaults with information from the ScriptEntry
-		if (scriptEntry.getDenizen() != null) denizenNPC = scriptEntry.getDenizen();
+	    duration = -1;
+	    pauseType = null;
+	    denizenNPC = null;
+	    player = null;
+	    if (scriptEntry.getDenizen() != null) denizenNPC = scriptEntry.getDenizen();
 		if (scriptEntry.getPlayer() != null) player = scriptEntry.getPlayer();
 
 		// Parse arguments

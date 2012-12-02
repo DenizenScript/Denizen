@@ -31,14 +31,15 @@ public class FailCommand extends AbstractCommand {
 	 * FAIL 'SCRIPT:A different script'
 	 */
 
-	String scriptName = null;
-	String playerName = null;
+	String scriptName;
+	String playerName;
 	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 		// Get some defaults from the ScriptEntry
 		scriptName = scriptEntry.getScript();
+		playerName = null;
 		if (scriptEntry.getPlayer() != null) playerName = scriptEntry.getPlayer().getName();
 		
 		// Parse the arguments
