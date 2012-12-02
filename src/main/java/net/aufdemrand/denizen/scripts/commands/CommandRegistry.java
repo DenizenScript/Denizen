@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FlagCommand;
 import net.aufdemrand.denizen.scripts.commands.core.IfCommand;
+import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
 
 public class CommandRegistry implements DenizenRegistry {
 
@@ -58,6 +59,8 @@ public class CommandRegistry implements DenizenRegistry {
         new FinishCommand().activate().as("FINISH").withOptions("(PLAYER:player_name)", 0);
         new FailCommand().activate().as("FAIL").withOptions("(PLAYER:player_name)", 0);
         new IfCommand().activate().as("IF").withOptions("(!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
+        new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
+
         denizen.getDebugger().echoApproval("Loaded core commands: " + instances.keySet().toString());
     }
 
