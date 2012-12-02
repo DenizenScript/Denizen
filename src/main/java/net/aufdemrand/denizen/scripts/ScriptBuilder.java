@@ -35,7 +35,7 @@ public class ScriptBuilder {
     public String[] buildArgs(String stringArgs) { 
         return buildArgs(null, null, stringArgs);
     }
-
+    
     public String[] buildArgs(Player player, DenizenNPC npc, String stringArgs) {
         return buildArgs(player, npc, stringArgs, true);
     }

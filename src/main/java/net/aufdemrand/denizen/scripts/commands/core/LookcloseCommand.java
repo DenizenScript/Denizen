@@ -18,7 +18,7 @@ import net.citizensnpcs.trait.LookClose;
 
 public class LookcloseCommand extends AbstractCommand {
 
-	/* LOOKCLOSE [TOGGLE:TRUE|FALSE)] (RANGE:#.#) (REALISTIC)  */
+	/* LOOKCLOSE [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)  */
 
 	/* 
 	 * Arguments: [] - Required, () - Optional 
@@ -60,7 +60,6 @@ public class LookcloseCommand extends AbstractCommand {
 
 			}	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
-		
 	}
 
 	@Override
@@ -68,17 +67,9 @@ public class LookcloseCommand extends AbstractCommand {
 		if (npc == null) throw new CommandExecutionException(Messages.ERROR_NO_NPCID);
 		
 		LookClose trait = npc.getTrait(LookClose.class);
-
 		trait.lookClose(toggle);
-		
-		if (realistic) {
-		    trait.configure(new CommandContext("-r"));
-		}
-		
-		if (range != null) {
-		    trait.configure(new CommandContext("--range " + range));
-		}
-		
+		if (realistic) trait.configure(new CommandContext("/npc lookclose -r"));
+		if (range != null) trait.configure(new CommandContext("/npc lookclose --range " + range));
 	}
 	
     @Override

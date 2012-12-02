@@ -111,18 +111,6 @@ public class ScriptEntry {
 		return allowedRunTime;
 	}
 
-	// getArguments auto-fills tags.
-
-	public void fillArguments() {
-		List<String> filledArgs = new ArrayList<String>();
-		if (args != null) {
-			for (String argument : args) {
-				filledArgs.add(denizen.tagManager().tag(this, argument));
-			} 
-		}
-		args = filledArgs;
-	}
-
 	public List<String> getArguments() {
 		return args;
 	}

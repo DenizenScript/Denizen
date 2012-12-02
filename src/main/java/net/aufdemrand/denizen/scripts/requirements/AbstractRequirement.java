@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.requirements;
 
+import java.util.List;
+
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
@@ -73,6 +75,6 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
         return !requirementOptions.USAGE_HINT.equals("") ? requirementOptions.USAGE_HINT : "No usage defined! See documentation for more information!";
     }
 
-	public abstract boolean check(Player player, DenizenNPC npc, String scriptName, String[] args) throws RequirementCheckException;
+	public abstract boolean check(Player player, DenizenNPC npc, String scriptName, List<String> args) throws RequirementCheckException;
 
 }

@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.tags;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -34,10 +37,6 @@ public class TagManager {
         colorTags = new ColorTags(denizen);
     }
     
-    public String tag(ScriptEntry scriptEntry, String arg) {
-        return tag(scriptEntry.getPlayer(), scriptEntry.getDenizen(), arg, false);
-    }
-
     public String tag(Player player, DenizenNPC npc, String arg, boolean instant) {
         if (arg == null) return null;
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
@@ -93,5 +92,24 @@ public class TagManager {
         int[] returnable = {openPos, closePos};
         return returnable;
     }
+    
+    public List<String> fillArguments(List<String> args, ScriptEntry scriptEntry) {
+        List<String> filledArgs = new ArrayList<String>();
+        if (args != null) {
+            for (String argument : args) {
+                filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getDenizen(), argument, false));
+            } 
+        }
+        return filledArgs;
+    }
 
+    public List<String> fillArguments(String[] args, Player player, DenizenNPC npc) {
+        List<String> filledArgs = new ArrayList<String>();
+        if (args != null) {
+            for (String argument : args) {
+                filledArgs.add(tag(player, npc, argument, false));
+            } 
+        }
+        return filledArgs;
+    }
 }

@@ -57,7 +57,7 @@ public class CommandExecuter {
 			 *     here, instead of requiring each command to take care of the argument.
 			 */
 
-			scriptEntry.fillArguments(); // Replace tags
+			scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry)); // Replace tags
 			
 			List<String> newArgs = new ArrayList<String>(); 
 

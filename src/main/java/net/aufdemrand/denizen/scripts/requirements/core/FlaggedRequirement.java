@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
+import java.util.List;
+
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
@@ -21,7 +23,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 	FlagType flagType;
 	
 	@Override
-	public boolean check(Player thePlayer, DenizenNPC theDenizen, String theScript, String[] arguments) throws RequirementCheckException {
+	public boolean check(Player thePlayer, DenizenNPC theDenizen, String theScript, List<String> arguments) throws RequirementCheckException {
 
 	    boolean outcome = false;
 	    String flagName = null;
