@@ -39,8 +39,9 @@ public class TagManager {
     }
 
     public String tag(Player player, DenizenNPC npc, String arg, boolean instant) {
-        // confirm there are replaceable TAGs, if not, return the arg.
-        if (arg.indexOf('>') == -1) return arg;
+        if (arg == null) return null;
+        // confirm there are/is a replaceable TAG(s), if not, return the arg.
+        if (arg.indexOf('>') == -1 || arg.length() < 3) return arg;
 
         // Find location of the first tag
         int[] positions = locateTag(arg);
