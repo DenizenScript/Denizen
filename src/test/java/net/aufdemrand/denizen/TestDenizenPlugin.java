@@ -23,6 +23,8 @@ public class TestDenizenPlugin {
 	/**
 	 * Test the plugin handing no arguments passed with an invocation of "/denizen"
 	 */
+
+	/* 
 	@Test
 	public void testNoArgCommand() {
 		Denizen denizen = new Denizen();
@@ -34,10 +36,13 @@ public class TestDenizenPlugin {
 		
 		denizen.onCommand(sender, null, null, new String[0]);
 	}
+	*/
 
 	/**
 	 * Test the plugin handing no arguments passed with an invocation of "/denizen"
 	 */
+	
+	/*
 	@Test
 	public void testVersion() {
 		Denizen denizen = new Denizen();
@@ -49,4 +54,5 @@ public class TestDenizenPlugin {
 		
 		denizen.onCommand(sender, null, null, new String[]{"version"});
 	}
+	*/
 }
