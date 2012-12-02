@@ -69,7 +69,7 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
         return name;
     }
     
-    public String getUsageHint(String commandName) {
+    public String getUsageHint() {
         return !requirementOptions.USAGE_HINT.equals("") ? requirementOptions.USAGE_HINT : "No usage defined! See documentation for more information!";
     }
 

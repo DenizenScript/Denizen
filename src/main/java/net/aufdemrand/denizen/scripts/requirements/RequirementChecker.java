@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.requirements;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.utilities.debugging.Debugger;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.RequirementMissingException;
@@ -47,25 +48,31 @@ public class RequirementChecker {
 
         boolean firstReqMet = false;
         boolean firstReqChecked = false;
-        
+
         for (String reqEntry : reqList) {
-            
+
             // Check if this is a Negative Requirement
             if (reqEntry.startsWith("-")) { 
                 negativeRequirement = true; 
                 reqEntry = reqEntry.substring(1);
             } else negativeRequirement = false;
 
-            String requirement = reqEntry.split(" ")[0];
+            String req = reqEntry.split(" ")[0];
 
             // Check requirement with RequirementRegistry
-            if (plugin.getRequirementRegistry().list().containsKey(requirement)) {
+            if (plugin.getRequirementRegistry().list().containsKey(req)) {
+
+                AbstractRequirement requirement = plugin.getRequirementRegistry().get(req);
                 String[] arguments = null;
                 if (reqEntry.split(" ").length > 1)	arguments = plugin.getScriptEngine().getScriptBuilder().buildArgs(reqEntry.split(" ", 2)[1]);
-
+                
                 // Get requirement class and check
                 try {
-                    boolean requirementmet = plugin.getRequirementRegistry().get(requirement).check(player, plugin.getNPCRegistry().getDenizen(npc), scriptName, arguments);
+                    if ((arguments == null && requirement.requirementOptions.REQUIRED_ARGS > 0) ||
+                            arguments.length < requirement.requirementOptions.REQUIRED_ARGS) throw new RequirementCheckException("");
+
+                    boolean requirementmet = requirement.check(player, plugin.getNPCRegistry().getDenizen(npc), scriptName, arguments);
+
                     if (requirementmet != negativeRequirement) {
                         // Check first requirement for mode 'FIRST AND ANY #'
                         if (!firstReqChecked) {
@@ -73,20 +80,31 @@ public class RequirementChecker {
                             firstReqChecked = true;
                         }
                         numberMet++;
-                        dB.echoApproval("Checking Requirement '" + reqEntry.split(" ")[0].toUpperCase() + "'" + " ...requirement met!");
+                        dB.echoApproval("Checking Requirement '" + requirement.getName() + "'" + " ...requirement met!");
                     } else {
                         if (!firstReqChecked) {
                             firstReqMet = false;
                             firstReqChecked = true;
                         }
-                        dB.echoApproval("Checking Requirement '" + reqEntry.split(" ")[0].toUpperCase() + "'" + " ...requirement not met!");
+                        dB.echoApproval("Checking Requirement '" + requirement.getName() + "'" + " ...requirement not met!");
                     }
+
                 } catch (Throwable e) {
-                    dB.echoError("Woah! An exception has been called for Requirement '" + reqEntry.split(" ")[0].toUpperCase() + "'!");
-                    if (!dB.showStackTraces)
-                        dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
-                    else e.printStackTrace(); }
+
+                    if (e instanceof RequirementCheckException) {
+                        dB.echoError("Woah! Invalid arguments were specified!");
+                        dB.echoError(requirement.getUsageHint());
+                    }
+                    else {
+
+                        dB.echoError("Woah! An exception has been called for Requirement '" + reqEntry.split(" ")[0].toUpperCase() + "'!");
+                        if (!dB.showStackTraces)
+                            dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
+                        else e.printStackTrace(); 
+                    }
+                }
             }
+
             else dB.echoError("Requirement not found! Check that the requirement is installed!");
         }
 

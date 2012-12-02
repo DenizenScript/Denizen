@@ -64,7 +64,7 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 	    return name;
 	}
 	
-	public String getUsageHint(String commandName) {
+	public String getUsageHint() {
 		return !commandOptions.USAGE_HINT.equals("") ? commandOptions.USAGE_HINT : "No usage defined! See documentation for more information!";
 	}
 	
