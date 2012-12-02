@@ -24,12 +24,19 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     public class TriggerOptions { 
         public boolean ENABLED_BY_DEFAULT = true; 
         public double DEFAULT_COOLDOWN = -1;
+        public int DEFAULT_RADIUS = -1;
 
         public TriggerOptions() { }
         
         public TriggerOptions(boolean enabledByDefault, double defaultCooldown) {
             this.ENABLED_BY_DEFAULT = enabledByDefault;
             this.DEFAULT_COOLDOWN = defaultCooldown;
+        }
+        
+        public TriggerOptions(boolean enabledByDefault, double defaultCooldown, int defaultRadius) {
+            this.ENABLED_BY_DEFAULT = enabledByDefault;
+            this.DEFAULT_COOLDOWN = defaultCooldown;
+            this.DEFAULT_RADIUS = defaultRadius;
         }
     }
 

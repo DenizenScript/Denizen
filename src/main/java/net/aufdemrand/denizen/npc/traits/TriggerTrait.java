@@ -24,6 +24,7 @@ public class TriggerTrait extends Trait implements Listener {
 
     private Map<String, Boolean> enabled = new HashMap<String, Boolean>();
     private Map<String, Double> localCooldown = new HashMap<String, Double>();
+    private Map<String, Integer> localRadius = new HashMap<String, Integer>();
     private Denizen denizen;
 
     public TriggerTrait() {
@@ -43,6 +44,8 @@ public class TriggerTrait extends Trait implements Listener {
             enabled.put(triggerName, key.getBoolean(triggerName.toLowerCase() + "-trigger" + ".enabled", false));
             if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".cooldown")) 
                 localCooldown.put(triggerName, key.getDouble(triggerName.toLowerCase() + "-trigger" + ".cooldown"));
+            if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".radius")) 
+                localRadius.put(triggerName, key.getInt(triggerName.toLowerCase() + "-trigger" + ".radius"));
         }
     }
 
@@ -52,6 +55,9 @@ public class TriggerTrait extends Trait implements Listener {
             key.setBoolean(entry.getKey().toLowerCase() + "-trigger" + ".enabled", entry.getValue());
         for (Entry<String, Double> entry : localCooldown.entrySet()) 
             key.setDouble(entry.getKey().toLowerCase() + "-trigger" + ".cooldown", entry.getValue());
+        for (Entry<String, Integer> entry : localRadius.entrySet()) 
+            key.setInt(entry.getKey().toLowerCase() + "-trigger" + ".radius", entry.getValue());
+
     }
 
     // Setting/Adjusting/Describing
@@ -85,12 +91,26 @@ public class TriggerTrait extends Trait implements Listener {
         else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN;
     }
 
+    public void setLocalRadius(String triggerName, int value) {
+        if (localRadius.containsKey(triggerName.toUpperCase()))
+            localRadius.put(triggerName, value);
+    }
+
+    public int getRadius(String triggerName) {
+        if (localRadius.containsKey(triggerName.toUpperCase()))
+            return localRadius.get(triggerName.toUpperCase());
+        else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_RADIUS;
+    }
+
     public void describe(CommandSender sender, int page) throws CommandException {
         Paginator paginator = new Paginator().header("Triggers");
-        paginator.addLine("<e>Key: <a>Name  <b>Status  <c>Cooldown");
+        paginator.addLine("<e>Key: <a>Name  <b>Status  <c>Cooldown  <d>(Radius)");
         int i = 0;
         for (Entry<String, Boolean> entry : enabled.entrySet()) {
-            String line = "<e>" + i + "<a>  " + entry.getKey() +  "<b>  " + (entry.getValue() ? "Enabled" : "Disabled") + "<c>  " + getCooldownDuration(entry.getKey());
+            String line = "<e>" + i + "<a>  " + entry.getKey() 
+                    + "<b>  " + (entry.getValue() ? "Enabled" : "Disabled") 
+                    + "<c>  " + getCooldownDuration(entry.getKey())
+                    + "<d>  " + (getRadius(entry.getKey()) == -1 ? "" : getRadius(entry.getKey()));
             paginator.addLine(line);
             i++;
         }

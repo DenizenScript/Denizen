@@ -192,7 +192,7 @@ public class CommandHandler {
 
 
     @net.citizensnpcs.command.Command(
-            aliases = { "npc" }, usage = "trigger --name [trigger name] --cooldown [seconds] (-t)", 
+            aliases = { "npc" }, usage = "trigger [--name trigger name] [(--cooldown [seconds])|(--radius [radius])|(-t)]", 
             desc = "Controls the various triggers for an NPC.", flags = "t", modifiers = { "trigger", "tr" },
             min = 1, max = 3, permission = "npc.trigger")
     @net.citizensnpcs.command.Requirements(selected = true, ownership = true)
@@ -201,7 +201,11 @@ public class CommandHandler {
         TriggerTrait trait = npc.getTrait(TriggerTrait.class);
         if (args.hasValueFlag("name")) {
             if (args.hasFlag('t')) trait.toggleTrigger(args.getFlag("name"));
-            if (args.hasValueFlag("cooldown")) trait.setLocalCooldown(args.getFlag("Name"), args.getFlagInteger("cooldown"));
+            if (args.hasValueFlag("cooldown")) trait.setLocalCooldown(args.getFlag("Name"), args.getFlagDouble("cooldown"));
+            if (args.hasValueFlag("radius")) {
+                trait.setLocalRadius(args.getFlag("Name"), args.getFlagInteger("radius"));
+                Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger radius now " + args.getFlag("radius") + ".");
+            }
             Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger " + (trait.isEnabled(args.getFlag("name")) ? "is" : "is not") + " currently enabled" +
                     (trait.isEnabled(args.getFlag("name")) ?  "with a cooldown of '" + trait.getCooldownDuration(args.getFlag("name")) + "' seconds."  : "."));
             return;
@@ -211,7 +215,7 @@ public class CommandHandler {
 
 
     @net.citizensnpcs.command.Command(
-            aliases = { "npc" }, usage = "nickname --set [nickname]", 
+            aliases = { "npc" }, usage = "nickname [--set nickname]", 
             desc = "Gives the NPC a nickname, used with a Denizen-compatible Speech Engine.", modifiers = { "nickname", "nick", "ni" },
             min = 1, max = 3, permission = "npc.nickname")
     @net.citizensnpcs.command.Requirements(selected = true, ownership = true)
