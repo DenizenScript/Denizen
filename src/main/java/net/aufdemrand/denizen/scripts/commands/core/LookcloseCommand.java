@@ -68,8 +68,8 @@ public class LookcloseCommand extends AbstractCommand {
 		
 		LookClose trait = npc.getTrait(LookClose.class);
 		trait.lookClose(toggle);
-		if (realistic) trait.configure(new CommandContext("/npc lookclose -r"));
-		if (range != null) trait.configure(new CommandContext("/npc lookclose --range " + range));
+	//	if (realistic) trait.configure(new CommandContext("/npc lookclose -r"));
+	//	if (range != null) trait.configure(new CommandContext("/npc lookclose --range " + range));
 	}
 	
     @Override
