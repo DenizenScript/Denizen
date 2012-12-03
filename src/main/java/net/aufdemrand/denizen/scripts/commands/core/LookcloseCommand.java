@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -61,6 +64,8 @@ public class LookcloseCommand extends AbstractCommand {
 			}	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 	}
+	
+	String[] realisticArgs = "/npc lookclose -r".split(" ");
 
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
@@ -68,8 +73,13 @@ public class LookcloseCommand extends AbstractCommand {
 		
 		LookClose trait = npc.getTrait(LookClose.class);
 		trait.lookClose(toggle);
-	//	if (realistic) trait.configure(new CommandContext("/npc lookclose -r"));
-	//	if (range != null) trait.configure(new CommandContext("/npc lookclose --range " + range));
+		if (realistic) {
+		    trait.configure(new CommandContext(realisticArgs));
+		}
+		if (range != null) {
+		    String[] rangeArgs = ("npc lookclose --range " + range).split(" ");
+		    trait.configure(new CommandContext(rangeArgs));
+		}
 	}
 	
     @Override
