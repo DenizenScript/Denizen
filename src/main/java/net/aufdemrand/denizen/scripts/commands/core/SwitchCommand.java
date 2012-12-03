@@ -11,7 +11,10 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.material.Lever;
 
+import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
+import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable1;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.command.exception.CommandException;
@@ -19,177 +22,189 @@ import net.citizensnpcs.command.exception.CommandException;
 /**
  * Switches a button or lever.
  * 
- * @author Jeremy Schroeder
+ * @author Jeremy Schroeder, Mason Adkins
+ * @version 1.0 Last updated 12/3/2012 
  */
 
 public class SwitchCommand extends AbstractCommand {
 
-	/* SWITCH [Location_Bookmark|'Denizen Name:Location_Bookmark'] */
+    @Override
+    public void onEnable() {
+        // Nothing to do here
+    }
+    
+    /* SWITCH [LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#) */
 
-	/* 
-	 * Arguments: [] - Required, () - Optional 
-	 * [Location_Bookmark|'Denizen Name:Location_Bookmark']
-	 *   specifies the location of the switch
-	 *   
-	 * Modifiers:
-	 * (DURATION:#) Reverts to the previous head position after # amount of seconds.
-	 * 
-	 * Example Usage:
-	 * SWITCH Lever_1
-	 * SWITCH 'Gatekeeper:Gate' 'DURATION:15' 
-	 * SWITCH Button_3 'DURATION:4'
-	 * 
-	 */
+    /* 
+     * Arguments: [] - Required, () - Optional 
+     * [LOCATION:x,y,z,world] specifies location of a switch, lever, or pressure plate.
+     * (STATE:ON|OFF|TOGGLE) can be used on locations with switches. Default: TOGGLE
+     * (DURATION:#) Reverts to the previous head position after # amount of seconds.
+     * 
+     * Example Usage:
+     * SWITCH LOCATION:<BOOKMARK:Lever_1> STATE:ON
+     * SWITCH LOCATION:99,64,125,world 'DURATION:15' 
+     * SWITCH LOCATION:<ANCHOR:button_location>
+     * 
+     */
 
-	private Map<String, Integer> taskMap = new ConcurrentHashMap<String, Integer>();
-	
-	@Override
-	public boolean execute(ScriptEntry theEntry) throws CommandException {
+    private enum SwitchState { ON, OFF, TOGGLE } 
 
-		/* Initialize variables */ 
+    private Map<String, Integer> taskMap = new ConcurrentHashMap<String, Integer>();
 
-		
-		Location interactLocation = null;
-		Integer duration = null;
-		Boolean switchState = null;
+    SwitchState switchState;
+    Location interactLocation;
+    int duration = -1;
 
-		if (theEntry.arguments() == null)
-			throw new CommandException("...Usage: SWITCH [BOOKMARK:block] (DURATION:#) (STATE:ON|OFF)");
+    @Override
+    public void parseArgs(ScriptEntry theEntry)  {
 
-		/* Match arguments to expected variables */
-		for (String thisArg : theEntry.arguments()) {
+        /* Initialize variables */ 
+        interactLocation = null;
+        duration = -1;
+        switchState = SwitchState.TOGGLE;
 
-			// Fill replaceables
-			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
-			
-			// DURATION argument
-			if (aH.matchesDuration(thisArg)) {
-				duration = Integer.valueOf(thisArg.split(":")[1]);
-			}
-			
-			// STATE argument
-			if (thisArg.startsWith("STATE:")){
-				if (thisArg.contains("ON")){
-					switchState = true;
-					aH.echoDebug("...switch state ON");
-				} else if(thisArg.contains("OFF")) {
-					switchState = false;
-					aH.echoDebug("...switch state OFF");
-				}
-				
-			}
+        for (String thisArg : theEntry.getArguments()) {
+            if (aH.matchesDuration(thisArg)) {
+                duration = Integer.valueOf(thisArg.split(":")[1]);
+                dB.echoDebug(Messages.DEBUG_SET_DURATION, thisArg);
+                continue;
 
-			// If argument is a BOOKMARK modifier
-			else if (aH.matchesBookmark(thisArg)) {
-				interactLocation = aH.getBlockBookmarkModifier(thisArg, theEntry.getDenizen());
-				if (interactLocation != null)	aH.echoDebug("...switch location now at bookmark '%s'", thisArg);
-				else{
-					aH.echoDebug("... could not find block bookmark: '%s'", thisArg);
-					interactLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
-					if (interactLocation != null) aH.echoDebug("...Found location bookmark matching '%s' using that.", thisArg);
-					// else	aH.echoDebug("... could not find any bookmark: '%s'", thisArg);
-				}
+            } else if (aH.matchesValueArg("STATE", thisArg, ArgumentType.Custom)) {
+                if (aH.getStringFrom(thisArg).equalsIgnoreCase("ON")) {
+                    switchState = SwitchState.ON;
+                    dB.echoDebug("...set STATE: 'ON'.");
+                } else if (aH.getStringFrom(thisArg).equalsIgnoreCase("OFF")) {
+                    switchState = SwitchState.OFF;
+                    dB.echoDebug("...set STATE: 'OFF'.");
+                } else if (aH.getStringFrom(thisArg).equalsIgnoreCase("TOGGLE")) {
+                    switchState = SwitchState.TOGGLE;
+                    dB.echoDebug("...set STATE: 'TOGGLE'.");
+                } else dB.echoError("Unknown STATE! Valid: ON, OFF, TOGGLE");
+                continue;
 
-			}		
+ 
+   // LEFT OFF HERE
+                
+            } else if (aH.matchesBookmark(thisArg)) {
+                interactLocation = aH.getBlockBookmarkModifier(thisArg, theEntry.getDenizen());
+                if (interactLocation != null)	aH.echoDebug("...switch location now at bookmark '%s'", thisArg);
+                else{
+                    aH.echoDebug("... could not find block bookmark: '%s'", thisArg);
+                    interactLocation = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
+                    if (interactLocation != null) aH.echoDebug("...Found location bookmark matching '%s' using that.", thisArg);
+                    // else	aH.echoDebug("... could not find any bookmark: '%s'", thisArg);
+                }
 
-			else {
-				aH.echoError("...unable to match '%s'.", thisArg);
-			}
+            }		
 
-		}	
+            else {
+                aH.echoError("...unable to match '%s'.", thisArg);
+            }
 
-		/* Execute the command. */
+        }	
 
-		if (interactLocation == null) {
-			aH.echoError("No interact location specified! Must use BOOKMARK:block to specify a location.");
-			return false;
-		}
+        
+            }
 
-		if (interactLocation.getBlock().getType() == Material.LEVER) {
-			World theWorld = interactLocation.getWorld();
-			boolean leverCurrentState = (interactLocation.getBlock().getData() & 0x8) > 0;
-			if (leverCurrentState != switchState){
-				net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-				aH.echoDebug("...changing lever state");
-			}
-		}
 
-		else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
-			World theWorld = interactLocation.getWorld();
-			boolean buttonCurrentState = (interactLocation.getBlock().getData() & 0x8) > 0;
-			if (buttonCurrentState != switchState){
-				net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-				aH.echoDebug("...changing button state");
-			}
-		}
 
-		else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
-			World theWorld = interactLocation.getWorld();
-			net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-		}
+    @Override
+    public void execute(String commandName) throws CommandExecutionException {
 
-		else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
-			World theWorld = interactLocation.getWorld();
-			net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-		}
+        /* Execute the command. */
 
-		else {
-			aH.echoError("Unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");
-			return false;
-		}
+        if (interactLocation == null) {
+            aH.echoError("No interact location specified! Must use BOOKMARK:block to specify a location.");
+            return false;
+        }
 
-		/* Make delayed task to reset step if duration is set */
-		if (duration != null) {
-			
-			
-			if (taskMap.containsKey(theEntry.getDenizen().getName())) {
-				try {
-					plugin.getServer().getScheduler().cancelTask(taskMap.get(theEntry.getDenizen().getName()));
-				} catch (Exception e) { }
-			}
-			aH.echoDebug("Setting delayed task: RESET LOOK");
+        if (interactLocation.getBlock().getType() == Material.LEVER) {
+            World theWorld = interactLocation.getWorld();
+            boolean leverCurrentState = (interactLocation.getBlock().getData() & 0x8) > 0;
+            if (leverCurrentState != switchState){
+                net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+                aH.echoDebug("...changing lever state");
+            }
+        }
 
-			taskMap.put(theEntry.getDenizen().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
-					new OneItemRunnable<Location>(interactLocation) {
+        else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
+            World theWorld = interactLocation.getWorld();
+            boolean buttonCurrentState = (interactLocation.getBlock().getData() & 0x8) > 0;
+            if (buttonCurrentState != switchState){
+                net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+                aH.echoDebug("...changing button state");
+            }
+        }
 
-				@Override
-				public void run(Location interactLocation) { 
-					aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET LOOK.");
-					if (interactLocation != null) {
-						if (interactLocation.getBlock().getType() == Material.LEVER) {
-							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-							return;
-						}
+        else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
+            World theWorld = interactLocation.getWorld();
+            net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+        }
 
-						else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
-							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-							return;
-						}
+        else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
+            World theWorld = interactLocation.getWorld();
+            net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+        }
 
-						else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
-							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-							return;
-						}
+        else {
+            aH.echoError("Unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");
+            return false;
+        }
 
-						else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
-							World theWorld = interactLocation.getWorld();
-							net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-							return;
-						}
+        /* Make delayed task to reset step if duration is set */
+        if (duration != null) {
 
-						else {
-							if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");			
-						}
-					}
-				}
-			}, duration * 20));
-		}
 
-		return true;
-	}
+            if (taskMap.containsKey(theEntry.getDenizen().getName())) {
+                try {
+                    plugin.getServer().getScheduler().cancelTask(taskMap.get(theEntry.getDenizen().getName()));
+                } catch (Exception e) { }
+            }
+            aH.echoDebug("Setting delayed task: RESET LOOK");
+
+            taskMap.put(theEntry.getDenizen().getName(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, 
+                    new OneItemRunnable<Location>(interactLocation) {
+
+                @Override
+                public void run(Location interactLocation) { 
+                    aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET LOOK.");
+                    if (interactLocation != null) {
+                        if (interactLocation.getBlock().getType() == Material.LEVER) {
+                            World theWorld = interactLocation.getWorld();
+                            net.minecraft.server.Block.LEVER.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+                            return;
+                        }
+
+                        else if (interactLocation.getBlock().getType() == Material.STONE_BUTTON) {
+                            World theWorld = interactLocation.getWorld();
+                            net.minecraft.server.Block.STONE_BUTTON.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+                            return;
+                        }
+
+                        else if (interactLocation.getBlock().getType() == Material.STONE_PLATE) {
+                            World theWorld = interactLocation.getWorld();
+                            net.minecraft.server.Block.STONE_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+                            return;
+                        }
+
+                        else if (interactLocation.getBlock().getType() == Material.WOOD_PLATE) {
+                            World theWorld = interactLocation.getWorld();
+                            net.minecraft.server.Block.WOOD_PLATE.interact(((CraftWorld)theWorld).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
+                            return;
+                        }
+
+                        else {
+                            if (plugin.debugMode) plugin.getLogger().log(Level.INFO, "...unusable block at this location! Found " + interactLocation.getBlock().getType().name() + ".");            
+                        }
+                    }
+                }
+            }, duration * 20));
+        }
+
+        return true;
+
+    }
 
 
 }
