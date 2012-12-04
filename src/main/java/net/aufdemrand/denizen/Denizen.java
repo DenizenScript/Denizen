@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.interfaces.SpeechEngine;
+import net.aufdemrand.denizen.interfaces.NPCSpeechEngine;
 import net.aufdemrand.denizen.notables.NotableManager;
 import net.aufdemrand.denizen.npc.DenizenNPCRegistry;
 import net.aufdemrand.denizen.npc.activities.ActivityEngine;
@@ -66,7 +66,7 @@ public class Denizen extends JavaPlugin {
 
     private ScriptEngine scriptEngine = new ScriptEngine(this);
     private ActivityEngine activityEngine = new ActivityEngine(this);
-    private SpeechEngine speechEngine;
+    private NPCSpeechEngine speechEngine;
 
     public ActivityEngine getActivityEngine() {
         return activityEngine;
@@ -76,11 +76,11 @@ public class Denizen extends JavaPlugin {
         return scriptEngine;
     }
 
-    public SpeechEngine getSpeechEngine() {
+    public NPCSpeechEngine getSpeechEngine() {
         return speechEngine;
     }
 
-    public void registerSpeechEngine(SpeechEngine speechEngine) {
+    public void registerSpeechEngine(NPCSpeechEngine speechEngine) {
         this.speechEngine = speechEngine;
     }
 

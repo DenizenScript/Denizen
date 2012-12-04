@@ -12,17 +12,17 @@ import org.bukkit.Location;
 
 public class NotableManager {
 
-	Denizen plugin;
+	Denizen denizen;
 	
 	public NotableManager(Denizen denizenPlugin) {
-		this.plugin = denizenPlugin;
+		this.denizen = denizenPlugin;
 		loadNotables();
 	}
 	
 	private final List<Notable> notables = new ArrayList<Notable>();
 	
 	public void loadNotables() {
-		List<String> notablesList = plugin.getSaves().getStringList("Notables.List");
+		List<String> notablesList = denizen.getSaves().getStringList("Notables.List");
 		if (notablesList.isEmpty()) return;
 		notables.clear();
 		for (String notable : notablesList) {
@@ -32,7 +32,7 @@ public class NotableManager {
 				for (int x = 5; x < ns.length; x++)
 					try {
 						getNotable(ns[0]).addLink(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(ns[x])));
-					} catch (Exception e) { plugin.getDebugger().echoDebug("Invalid NPC linked to Notable '%s'", ns[0]); }
+					} catch (Exception e) { denizen.getDebugger().echoDebug("Invalid NPC linked to Notable '%s'", ns[0]); }
 		}
 	}
 	
@@ -40,7 +40,7 @@ public class NotableManager {
 		List<String> notablesList = new ArrayList<String>();
 		for (Notable notable : notables)
 			notablesList.add(notable.stringValue());
-		plugin.getSaves().set("Notables.List", notablesList);
+		denizen.getSaves().set("Notables.List", notablesList);
 	}
 	
     public boolean addNotable(String name, Location location) {

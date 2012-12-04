@@ -55,7 +55,7 @@ public class ArgumentHelper {
      *   #.## (Float)             matchesFloat(arg)      getFloatFrom(arg)     float         ^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)
      *   'NPCs rule!' (String)    matchesString(arg)     getStringFrom(arg)    String        \.+
      *   single_word (Word)       matchesWord(arg)       getStringFrom(arg)    String        \w+
-     *   string|string2 (List)    ...                    getListFrom(arg)      List<String>  String.split("|")
+     *   string|string2 (List)    matchesString(arg)     getListFrom(arg)      List<String>  String.split("|")
      */
 
     final Pattern durationPattern = Pattern.compile("duration:(\\d+)", Pattern.CASE_INSENSITIVE);
@@ -63,17 +63,17 @@ public class ArgumentHelper {
     final Pattern locationPattern = Pattern.compile("location:\\d+,\\d+,\\d+,\\w+", Pattern.CASE_INSENSITIVE);
     final Pattern queuetypePattern = Pattern.compile("(?:queue|queuetype):(?:player|player_task|npc)", Pattern.CASE_INSENSITIVE);
     final Pattern quantityPattern = Pattern.compile("qty:\\d+", Pattern.CASE_INSENSITIVE);
+    final Pattern togglePattern = Pattern.compile("toggle:(true|false)", Pattern.CASE_INSENSITIVE);
     final Pattern materialPattern = Pattern.compile("[a-zA-Z\\x5F]+", Pattern.CASE_INSENSITIVE);
     final Pattern materialDataPattern = Pattern.compile("[a-zA-Z]+?:\\d+", Pattern.CASE_INSENSITIVE);
     final Pattern itemIdPattern = Pattern.compile("(?:(item:)|)\\d+");
     final Pattern itemIdDataPattern = Pattern.compile("(?:(item:)|)(\\d+)(:)(\\d+)");
     final Pattern integerPattern = Pattern.compile("\\d+");
-    final Pattern doublePattern = Pattern.compile("\\d+\\.\\d+");
+    final Pattern doublePattern = Pattern.compile("\\d+(\\.\\d+|)");
     final Pattern floatPattern = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
     final Pattern stringPattern = Pattern.compile("\\.+", Pattern.CASE_INSENSITIVE);
     final Pattern wordPattern = Pattern.compile("\\w+", Pattern.CASE_INSENSITIVE);
-    final Pattern togglePattern = Pattern.compile("toggle:(true|false)", Pattern.CASE_INSENSITIVE);
-
+    
     /*
      * Argument Matchers
      */
@@ -108,12 +108,13 @@ public class ArgumentHelper {
      * 
      */
 
+    Matcher m;
+    
     public boolean matchesValueArg(String argumentName, String argument, ArgumentType type) {
         if (argument == null) return false;
         if (argument.split(":").length == 1) return false;
         if (!argument.toUpperCase().contains(argumentName.toUpperCase() + ":")) return false;
         argument = argument.split(":", 2)[1];
-        Matcher m;
 
         switch (type) {
         case Word:
@@ -147,22 +148,21 @@ public class ArgumentHelper {
     }
 
     public boolean matchesInteger(String argument) {
-        Matcher m = integerPattern.matcher(argument);
+        m = integerPattern.matcher(argument);
         return m.matches();
     }
 
     public boolean matchesDouble(String argument) {
-        Matcher m = doublePattern.matcher(argument);
+        m = doublePattern.matcher(argument);
         return m.matches();
     }
 
     public boolean matchesLocation(String argument) {
-        Matcher m = locationPattern.matcher(argument);
+        m = locationPattern.matcher(argument);
         return m.matches();
     }
 
     public boolean matchesItem(String argument) {
-        Matcher m;
         m = itemIdPattern.matcher(argument);
         if (m.matches())
             return true;
@@ -192,22 +192,22 @@ public class ArgumentHelper {
     }
 
     public boolean matchesDuration(String regex) {
-        Matcher m = durationPattern.matcher(regex);
+        m = durationPattern.matcher(regex);
         return m.matches();
     }
 
     public boolean matchesToggle(String regex) {
-        Matcher m = togglePattern.matcher(regex);
+        m = togglePattern.matcher(regex);
         return m.matches();
     }
 
     public boolean matchesQueueType(String regex) {
-        Matcher m = queuetypePattern.matcher(regex);
+        m = queuetypePattern.matcher(regex);
         return m.matches();
     }
 
     public boolean matchesScript(String regex) {
-        Matcher m = scriptPattern.matcher(regex);
+        m = scriptPattern.matcher(regex);
         // Check if script exists by looking for  Script Name:
         //                                          Type: ...
         if (m.matches() && denizen.getScripts().contains(regex.toUpperCase() + ".TYPE"))
@@ -216,7 +216,7 @@ public class ArgumentHelper {
     }
 
     public boolean matchesQuantity(String regex) {
-        Matcher m = quantityPattern.matcher(regex);
+        m = quantityPattern.matcher(regex);
         return m.matches();
     }
 
@@ -286,7 +286,7 @@ public class ArgumentHelper {
     }
 
     public ItemStack getItemFrom(String thisArg) {
-        Matcher m = itemIdPattern.matcher(thisArg);
+        m = itemIdPattern.matcher(thisArg);
         Matcher m2 = itemIdDataPattern.matcher(thisArg);
         Matcher m3 = materialPattern.matcher(thisArg);
         Matcher m4 = materialDataPattern.matcher(thisArg);
