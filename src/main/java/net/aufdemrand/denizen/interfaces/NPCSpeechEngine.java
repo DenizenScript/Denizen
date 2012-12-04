@@ -35,7 +35,7 @@ public interface NPCSpeechEngine {
      * @param message
      *      The message to shout.
      * @param shoutTarget
-     *      The Entity that the chatter is shouting to. Can be null to indicate no target.
+     *      The Entity that the shouter is shouting to. Can be null to indicate no target.
      */
     
     public void shout(LivingEntity shouter, String message, LivingEntity shoutTarget);
@@ -49,10 +49,16 @@ public interface NPCSpeechEngine {
      * @param message
      *      The message to whisper.
      * @param chatTarget
-     *      The Entity that the chatter is chatting to. Can be null to indicate no target
+     *      The Entity that the whisperer is whispering to. Can be null to indicate no target
      */
     
     public void whisper(LivingEntity whisperer, String message, LivingEntity whisperTarget);
 
+    
+    /**
+     * If new SpeechEngine is loaded, disable.
+     */
+    
+    public void disable(); 
     
 }
