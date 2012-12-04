@@ -7,6 +7,7 @@ public abstract class Runnable2<A, B> implements Runnable {
    
     public Runnable2(A a, B b) {
         this.a = a;
+        this.b = b;
     }
    
     @Override
