@@ -4,46 +4,80 @@ import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.LivingEntity;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.citizensnpcs.command.exception.CommandException;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
+import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
 import net.minecraft.server.Packet18ArmAnimation;
+
+/**
+ * Heals/Harms the Player/Denizen.
+ * 
+ * @author Jeremy Schroeder, Mason Adkins
+ */
 
 public class HealCommand extends AbstractCommand {
 
-	/* HEAL/HARM */
+    /* HEAL|HARM (DENIZEN) (AMT|QTY:#) */
 
-	/* 
-	 * Arguments: [] - Required, () - Optional 
-	 * (DENIZEN)
-	 * (AMOUNT:#)
-	 *   
-	 * Example Usage:
-	 * HEAL
-	 * HARM DENIZEN 1
-	 *
-	 */
-	
-	@Override
-    public void onEnable() {
-        // Nothing to do here
-    }
+    /* 
+     * Arguments: [] - Required, () - Optional 
+     * (QTY|AMT:#) sets the amount to heal/harm the target.
+     * (DENIZEN) selects the Denizen as the target of the command.
+     * 
+     * Example Usage:
+     * HEAL
+     * HEAL QTY:5
+     * HARM DENIZEN AMT:12
+     * 
+     */
 	
 	boolean hurts = false;
 	LivingEntity target = null;
 	Integer amount = null;
 	
 	@Override
-    public void parseArgs(ScriptEntry theEntry)  {
-		if (theEntry.getPlayer() == null) {
-			target = theEntry.getDenizen().getEntity();			
+	public void onEnable() {
+		// nothing needed here
+	}
+
+	@Override
+	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+		
+		if (scriptEntry.getPlayer() == null) {
+			target = scriptEntry.getDenizen().getEntity();			
 		} else {
-			target = theEntry.getPlayer();
+			target = scriptEntry.getPlayer();
+		}
+		
+		hurts = scriptEntry.getCommand().equalsIgnoreCase("HARM");
+		
+		for (String arg : scriptEntry.getArguments()) {
+			if (aH.getStringFrom(arg).equalsIgnoreCase("DENIZEN")) {
+				if (scriptEntry.getDenizen() != null) {
+					target = scriptEntry.getDenizen().getEntity();
+					dB.echoDebug("...targeting '" + scriptEntry.getDenizen().getName() + "'.");
+				} else dB.echoError("Seems this was sent from a TASK-type script. Must use NPCID:# to specify a Denizen NPC.");
+				continue;
+
+//			LEFT OUT DUE TO NO .matchesNPCID()	
+//			} else if (aH.matchesNPCID(arg)) {
+//				target = aH.getNPCIDModifier(arg).getEntity();
+//				if (target != null) dB.echoDebug("...now targeting '%s'.", arg);
+				
+			} else if (aH.matchesValueArg("AMT", arg, ArgumentType.Integer) || aH.matchesValueArg("QTY", arg, ArgumentType.Integer)) {
+				amount = aH.getIntegerFrom(arg);
+				dB.echoDebug("...amount set to '" + amount + "'.");
+				continue;
+				
+			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 	}
 
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
+		
 		if (target != null) {
 			if (hurts) {
 				if (amount == null) amount = 1;
@@ -58,57 +92,6 @@ public class HealCommand extends AbstractCommand {
 						new Packet18ArmAnimation( ((CraftEntity)target).getHandle(),6) , 64); // white sparks
 				return;
 			}
-		} 
+		}
 	}
 }
-	
-	/*	
-	@Override
-	public boolean execute(ScriptEntry theEntry) throws CommandException {
-
-
-
-
-
-		
-
-		hurts = theEntry.getCommand().equalsIgnoreCase("HARM");
-
-		if (theEntry.arguments() != null)
-			for (String thisArg : theEntry.arguments()) {
-				
-				// Fill replaceables
-				if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
-
-				if (thisArg.toUpperCase().contains("DENIZEN")){
-					if (theEntry.getDenizen() != null) {
-					target = theEntry.getDenizen().getEntity();
-					aH.echoDebug("...targeting '" + theEntry.getDenizen().getName() + "'.");
-					} else {
-						aH.echoError("Seems this was sent from a TASK-type script. Must use NPCID:# to specify a Denizen NPC.");
-					}
-				} 
-				
-				// If argument is a NPCID: modifier
-				else if (aH.matchesNPCID(thisArg)) {
-					target = aH.getNPCIDModifier(thisArg).getEntity();
-					if (target != null)
-						aH.echoDebug("...now targeting '%s'.", thisArg);
-				}
-
-				else if (thisArg.matches("(?:QTY|qty|Qty|AMT|Amt|amt|AMOUNT|Amount|amount)(:)(\\d+)")){
-					amount = aH.getIntegerModifier(thisArg);
-					aH.echoDebug("...amount set to '" + amount + "'.");
-				}
-			}
-
-		
-		// Execute the command
-
-
-
-		return false;
-	}
-
-}
-*/
