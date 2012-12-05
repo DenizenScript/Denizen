@@ -24,19 +24,11 @@ public class TestDenizenPlugin {
 	 * Test the plugin handing no arguments passed with an invocation of "/denizen"
 	 */
 
-	/* 
+	 
 	@Test
 	public void testNoArgCommand() {
-		Denizen denizen = new Denizen();
-		final CommandSender sender = context.mock(CommandSender.class);
-		
-		context.checking(new Expectations() {{
-			oneOf(sender).sendMessage(with(aNonNull(String.class)));
-		}});
-		
-		denizen.onCommand(sender, null, null, new String[0]);
 	}
-	*/
+	
 
 	/**
 	 * Test the plugin handing no arguments passed with an invocation of "/denizen"
