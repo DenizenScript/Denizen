@@ -66,7 +66,7 @@ public class HealCommand extends AbstractCommand {
 //				target = aH.getNPCIDModifier(arg).getEntity();
 //				if (target != null) dB.echoDebug("...now targeting '%s'.", arg);
 				
-			} else if (aH.matchesValueArg("AMT", arg, ArgumentType.Integer) || aH.matchesValueArg("QTY", arg, ArgumentType.Integer)) {
+			} else if (arg.matches("(?:QTY|qty|Qty|AMT|Amt|amt|AMOUNT|Amount|amount)(:)(\\d+)")) {
 				amount = aH.getIntegerFrom(arg);
 				dB.echoDebug("...amount set to '" + amount + "'.");
 				continue;
