@@ -124,6 +124,15 @@ public class FlagManager {
 
             return false;
         }
+        
+        /**
+         * Gets all values currently stored in the flag.
+         * 
+         */
+        public List<String> values() {
+            checkExpired();
+            return value.values;
+        }
 
         /**
          * Gets a specific value stored in a flag when given an index.
@@ -446,6 +455,8 @@ public class FlagManager {
                 return values.get(index);
             } catch (Exception e) { return ""; } 
         }
+        
+        
 
         /**
          * Returns an instance of the appropriate Object, as detected by this method.
