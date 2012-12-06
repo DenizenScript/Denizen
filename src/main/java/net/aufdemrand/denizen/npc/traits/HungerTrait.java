@@ -84,12 +84,39 @@ public class HungerTrait extends Trait implements Listener {
         return maxHunger;
     }
     
+    public int getHungerPercentage() {
+        return (int) ((int) currentHunger/maxHunger);
+    }
+    
+    public int getHungerMultiplier() {
+        return multiplier;
+    }
+    
+    public void setHungerMultiplier(int multiplier) {
+        this.multiplier = multiplier;
+    }
+    
     public void setHunger(double hunger) {
         currentHunger = hunger;
     }
     
+    public void feed(double hunger) {
+        currentHunger = currentHunger - hunger;
+        if (currentHunger < 0) currentHunger = 0;
+    }
+    
     public void setMaxHunger(double hunger) {
         maxHunger = hunger;
+    }
+    
+    public boolean isStarving() {
+        if (currentHunger >= maxHunger) return true;
+        else return false;
+    }
+    
+    public boolean isHungry() {
+        if (currentHunger > (maxHunger/10)) return true;
+        else return false;
     }
 
 }
