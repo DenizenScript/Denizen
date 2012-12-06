@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_5.CraftWorld;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -14,7 +14,7 @@ import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable2;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.minecraft.server.Block;
+import net.minecraft.server.v1_4_5.Block;
 
 /**
  * Switches a button or lever.

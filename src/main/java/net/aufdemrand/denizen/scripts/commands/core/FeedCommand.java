@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_4_5.entity.CraftEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -11,7 +11,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
-import net.minecraft.server.Packet18ArmAnimation;
+import net.minecraft.server.v1_4_5.Packet18ArmAnimation;
 
 /**
  * Feeds a (Player) entity.
