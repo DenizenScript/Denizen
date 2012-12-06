@@ -26,7 +26,7 @@ public class RuntimeCompiler {
     public void loader() {
 
         List<String> dependencies = new ArrayList<String>();
-        
+
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals" + File.separator + "dependencies");
             File[] files = file.listFiles();
@@ -39,8 +39,8 @@ public class RuntimeCompiler {
                     }
                 }
             }   
-        } catch (Exception error) { error.printStackTrace(); }
-        
+        } catch (Exception error) { denizen.getDebugger().log("No dependencies to load."); }
+
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals");
             File[] files = file.listFiles();
@@ -54,7 +54,7 @@ public class RuntimeCompiler {
                         JavaSourceCompiler javaSourceCompiler = new JavaSourceCompilerImpl();
                         JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();
                         if (!dependencies.isEmpty()) compilationUnit.addClassPathEntries(dependencies);
-                        
+
                         try {
                             compilationUnit.addJavaSource(fileName.replace(".java", ""), readFile(f.getAbsolutePath()));
                             ClassLoader classLoader = javaSourceCompiler.compile(compilationUnit);
@@ -62,13 +62,17 @@ public class RuntimeCompiler {
                             ExternalDenizenClass loadedClass = load.newInstance();
                             loadedClass.load();
                         } catch (Exception e) {
-                            denizen.getDebugger().echoError(ChatColor.RED + "Woah! Error compiling " + fileName + "!");
-                            e.printStackTrace();
+                            if (e instanceof IllegalStateException)
+                                denizen.getDebugger().log("No JDK found! External .java files will not be loaded.");
+                            else {
+                                denizen.getDebugger().echoError(ChatColor.RED + "Woah! Error compiling " + fileName + "!");
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
-                denizen.getDebugger().echoApproval("All externals loaded!");
-            } else denizen.getDebugger().echoError(ChatColor.RED + "Woah! No externals in /plugins/Denizen/externals/.../ to load!");  
+                denizen.getDebugger().log(ChatColor.GREEN + "OKAY!" + ChatColor.WHITE + "All externals loaded!");
+            } else denizen.getDebugger().log(ChatColor.RED + "Woah! No externals in /plugins/Denizen/externals/.../ to load!");  
         } catch (Exception error) { /* No externals */ }
     }
 
