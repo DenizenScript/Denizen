@@ -93,9 +93,9 @@ public class PlayerTags implements Listener {
 
 
         } else if (type.equals("LOCATION")) {
-            event.setReplaceable("x" + p.getLocation().getBlockX() 
-                    + ",y" + p.getLocation().getBlockY()
-                    + ",z" + p.getLocation().getBlockZ()
+            event.setReplaceable(p.getLocation().getBlockX() 
+                    + "," + p.getLocation().getBlockY()
+                    + "," + p.getLocation().getBlockZ()
                     + "," + p.getWorld().getName());
             if (subType.equals("FORMATTED")) 
                 event.setReplaceable("X '" + p.getLocation().getBlockX() 
@@ -105,14 +105,14 @@ public class PlayerTags implements Listener {
             else if (subType.equals("STANDING_ON"))
                 event.setReplaceable(p.getLocation().add(0, -1, 0).getBlock().getType().name());
             else if (subType.equals("WORLD_SPAWN"))
-                event.setReplaceable("x" + p.getWorld().getSpawnLocation().getBlockX() 
-                        + ",y" + p.getWorld().getSpawnLocation().getBlockY()
-                        + ",z" + p.getWorld().getSpawnLocation().getBlockZ()
+                event.setReplaceable(p.getWorld().getSpawnLocation().getBlockX() 
+                        + "," + p.getWorld().getSpawnLocation().getBlockY()
+                        + "," + p.getWorld().getSpawnLocation().getBlockZ()
                         + "," + p.getWorld().getName());
             else if (subType.equals("BED_SPAWN"))
-                event.setReplaceable("x" + p.getBedSpawnLocation().getBlockX() 
-                        + ",y" + p.getBedSpawnLocation().getBlockY()
-                        + ",z" + p.getBedSpawnLocation().getBlockZ()
+                event.setReplaceable(p.getBedSpawnLocation().getBlockX() 
+                        + "," + p.getBedSpawnLocation().getBlockY()
+                        + "," + p.getBedSpawnLocation().getBlockZ()
                         + "," + p.getWorld().getName());
             else if (subType.equals("WORLD"))
                 event.setReplaceable(p.getWorld().getName());
@@ -177,7 +177,7 @@ public class PlayerTags implements Listener {
 
         } else if (event.getType().startsWith("XP")) {
             event.setReplaceable(String.valueOf(event.getPlayer().getExp() * 100));
-            if (subType.equals("TO_LEVEL"))
+            if (subType.equals("TO_NEXT_LEVEL"))
                 event.setReplaceable(String.valueOf(p.getExpToLevel()));
             else if (subType.equals("TOTAL"))
                 event.setReplaceable(String.valueOf(p.getTotalExperience()));
@@ -185,14 +185,14 @@ public class PlayerTags implements Listener {
                 event.setReplaceable(String.valueOf(p.getLevel()));
             return;
 
+        }
+
     }
-
-}
 }
 
 
 
-///*    .replace("<^PLAYER.ITEM_IN_HAND.MATERIAL>", itemInHandMaterial)
+//    .replace("<^PLAYER.ITEM_IN_HAND.MATERIAL>", itemInHandMaterial)
 //    .replace("<^PLAYER.ITEM_IN_HAND.NAME>", itemInHandName)
 //    .replace("<^PLAYER.ITEM_IN_HAND.QTY>", itemInHandQty)
 //    .replace("<^PLAYER.ITEM_IN_HAND.ID>", itemInHandId)
@@ -209,134 +209,4 @@ public class PlayerTags implements Listener {
 //    .replace("<^PLAYER.EXP_TO_NEXT_LEVEL>", String.valueOf(thePlayer.getExpToLevel()))
 //    .replace("<^PLAYER.EXP>", String.valueOf(thePlayer.getTotalExperience()))
 //    .replace("<^PLAYER.FOOD_LEVEL>", String.valueOf(thePlayer.getFoodLevel()));*/
-//
-//    @EventHandler
-//    public void NPCTags(ReplaceableTagEvent event) {
-//
-//    }
-//
-//}
-//
-//
-//
-//
-///*
-// * Fills in replaceable data for flags and more.
-// * 
-// * Use quickReplaceable = true 
-// * for queue-time. This type of replacement is made when the script is being put into the player queue.
-// * Use quickReplaceable = false
-// * for run-time. This type of replacement is made right at the time of code-execution.
-// */
-//
-//
-//// Player object flag replacement
-//if (thePlayer != null && filledString.contains("<")) {
-//
-//    String itemInHandMaterial = "AIR"; 
-//    if (thePlayer.getItemInHand() != null) 
-//        itemInHandMaterial = thePlayer.getItemInHand().getType().name();
-//
-//    String itemInHandName = "nothing"; 
-//    if (thePlayer.getItemInHand() != null) 
-//        itemInHandName = thePlayer.getItemInHand().getType().name().toLowerCase().replace("_", " ");
-//
-//    String itemInHandQty = "0"; 
-//    if (thePlayer.getItemInHand() != null) 
-//        itemInHandQty = String.valueOf(thePlayer.getItemInHand().getAmount());
-//
-//    String itemInHandId = "0"; 
-//    if (thePlayer.getItemInHand() != null) 
-//        itemInHandId = String.valueOf(thePlayer.getItemInHand().getTypeId());
-//
-//    String playerKiller = "nobody"; 
-//    if (thePlayer.getKiller() != null) 
-//        playerKiller = thePlayer.getKiller().getName();
-//
-//    String playerHelm = "FALSE"; 
-//    if (thePlayer.getInventory().getHelmet() != null) 
-//        playerHelm = thePlayer.getInventory().getHelmet().getType().name();
-//
-//    String playerBoots = "FALSE"; 
-//    if (thePlayer.getInventory().getBoots() != null) 
-//        playerBoots = thePlayer.getInventory().getBoots().getType().name();
-//
-//    String playerChestplate = "FALSE"; 
-//    if (thePlayer.getInventory().getChestplate() != null) 
-//        playerChestplate = thePlayer.getInventory().getChestplate().getType().name();
-//
-//    String playerLeggings = "FALSE"; 
-//    if (thePlayer.getInventory().getLeggings() != null) 
-//        playerLeggings = thePlayer.getInventory().getLeggings().getType().name();
-//
-//    // TODO: Fix this!
-//    String playerMoney = "0";
-//    //  if (plugin.economy != null) 
-//    //	  playerMoney = String.valueOf(plugin.economy.getBalance(thePlayer.getName()));
-//
-//    if (quickReplaceable) 
-//        filledString = filledString
-//        .replace("<^PLAYER.ITEM_IN_HAND.MATERIAL>", itemInHandMaterial)
-//        .replace("<^PLAYER.ITEM_IN_HAND.NAME>", itemInHandName)
-//        .replace("<^PLAYER.ITEM_IN_HAND.QTY>", itemInHandQty)
-//        .replace("<^PLAYER.ITEM_IN_HAND.ID>", itemInHandId)
-//        .replace("<^PLAYER.NAME>", thePlayer.getName())
-//        .replace("<^PLAYER>", thePlayer.getName())
-//        .replace("<^PLAYER.KILLER>", playerKiller)
-//        .replace("<^PLAYER.HEALTH>", String.valueOf(thePlayer.getHealth()))
-//        .replace("<^PLAYER.HELM>", playerHelm)
-//        .replace("<^PLAYER.LEGGINGS>", playerLeggings)
-//        .replace("<^PLAYER.BOOTS>", playerBoots)
-//        .replace("<^PLAYER.CHESTPLATE>", playerChestplate)
-//        .replace("<^PLAYER.WORLD>", thePlayer.getWorld().getName())
-//        .replace("<^PLAYER.MONEY>", playerMoney)
-//        .replace("<^PLAYER.EXP_TO_NEXT_LEVEL>", String.valueOf(thePlayer.getExpToLevel()))
-//        .replace("<^PLAYER.EXP>", String.valueOf(thePlayer.getTotalExperience()))
-//        .replace("<^PLAYER.FOOD_LEVEL>", String.valueOf(thePlayer.getFoodLevel()));
-//
-//    else 
-//        filledString = filledString
-//        .replace("<PLAYER.ITEM_IN_HAND.MATERIAL>", itemInHandMaterial)
-//        .replace("<PLAYER.ITEM_IN_HAND.NAME>", itemInHandName)
-//        .replace("<PLAYER.ITEM_IN_HAND.QTY>", itemInHandQty)
-//        .replace("<PLAYER.ITEM_IN_HAND.ID>", itemInHandId)
-//        .replace("<PLAYER.NAME>", thePlayer.getName())
-//        .replace("<PLAYER>", thePlayer.getName())
-//        .replace("<PLAYER.KILLER>", playerKiller)
-//        .replace("<PLAYER.HEALTH>", String.valueOf(thePlayer.getHealth()))
-//        .replace("<PLAYER.HELM>", playerHelm)
-//        .replace("<PLAYER.LEGGINGS>", playerLeggings)
-//        .replace("<PLAYER.BOOTS>", playerBoots)
-//        .replace("<PLAYER.CHESTPLATE>", playerChestplate)
-//        .replace("<PLAYER.WORLD>", thePlayer.getWorld().getName())
-//        .replace("<PLAYER.MONEY>", playerMoney)
-//        .replace("<PLAYER.EXP_TO_NEXT_LEVEL>", String.valueOf(thePlayer.getExpToLevel()))
-//        .replace("<PLAYER.EXP>", String.valueOf(thePlayer.getTotalExperience()))
-//        .replace("<PLAYER.FOOD_LEVEL>", String.valueOf(thePlayer.getFoodLevel()));
-//
-//}
-//
-//// Replaceables for Denizen
-//if (theDenizen != null && filledString.contains("<")) {
-//    if (quickReplaceable) 
-//        filledString = filledString
-//        .replace("<^DENIZEN.NPCID>", String.valueOf(theDenizen.getId()))
-//        .replace("<^NPCID>", String.valueOf(theDenizen.getId()))
-//        .replace("<^NPC>", theDenizen.getName())
-//        .replace("<^DENIZEN.NAME>", theDenizen.getName());
-//
-//    else
-//        filledString = filledString
-//        .replace("<DENIZEN.NPCID>", String.valueOf(theDenizen.getId()))
-//        .replace("<NPCID>", String.valueOf(theDenizen.getId()))
-//        .replace("<NPC>", theDenizen.getName())
-//        .replace("<DENIZEN.NAME>", theDenizen.getName());
-//}
-//
-//// Done!
-//return filledString;
-//}
-//
-//
-//
-//}
+

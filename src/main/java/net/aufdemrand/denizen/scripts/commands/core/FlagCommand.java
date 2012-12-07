@@ -1,16 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.text.DecimalFormat;
-
-import org.bukkit.ChatColor;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.flags.FlagManager.Flag;
-import net.aufdemrand.denizen.flags.FlagManager.Value;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;

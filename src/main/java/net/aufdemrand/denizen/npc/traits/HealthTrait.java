@@ -40,6 +40,10 @@ public class HealthTrait extends Trait implements Listener {
 		this.maxHealth = newMax;
 	}
 	
+	public void heal(int health) {
+	    setHealth(getHealth() + health);
+	}
+	
 	public int getMaxHealth() {
 	    return maxHealth;
     }

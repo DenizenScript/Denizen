@@ -1,12 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import org.bukkit.craftbukkit.v1_4_5.entity.CraftEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.HungerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -14,7 +12,6 @@ import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_4_5.Packet18ArmAnimation;
 
 /**
  * Feeds a (Player) entity.
@@ -71,7 +68,7 @@ public class FeedCommand extends AbstractCommand {
             } else if (aH.matchesValueArg("target", arg, ArgumentType.String)) {
                 try {
                     targetType = TargetType.valueOf(aH.getStringFrom(arg));
-                    dB.echoDebug("Target to FEED: " + targetType.name());
+                    dB.echoDebug("TARGET to FEED: " + targetType.name());
                 } catch (Exception e) {
                     dB.echoError("Invalid TARGET! Valid: NPC, PLAYER");
                 }

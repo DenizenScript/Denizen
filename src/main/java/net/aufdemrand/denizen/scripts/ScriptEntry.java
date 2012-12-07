@@ -6,9 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.script.ScriptException;
-
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 
@@ -50,29 +49,29 @@ public class ScriptEntry {
 	 * ScriptEntry constructors
 	 */
 	
-	public ScriptEntry(String command, String[] arguments) throws ScriptException {
+	public ScriptEntry(String command, String[] arguments) throws ScriptEntryCreationException {
 		this(command, arguments, (Player) null, (DenizenNPC) null, (String) null, (Integer) null, (String) null, (String) null);
 	}
 
-	public ScriptEntry(String command, String[] arguments, Player player) throws ScriptException {
+	public ScriptEntry(String command, String[] arguments, Player player) throws ScriptEntryCreationException {
 		this(command, arguments, player, (DenizenNPC) null, (String) null, (Integer) null, (String) null, (String) null);
 	}
 
-	public ScriptEntry(String command, String[] arguments, Player player, String script) throws ScriptException {
+	public ScriptEntry(String command, String[] arguments, Player player, String script) throws ScriptEntryCreationException {
 		this(command, arguments, player, (DenizenNPC) null, script, (Integer) null, (String) null, (String) null);
 	}
 
-	public ScriptEntry(String command, String[] arguments, DenizenNPC denizen, String script) throws ScriptException {
+	public ScriptEntry(String command, String[] arguments, DenizenNPC denizen, String script) throws ScriptEntryCreationException {
 		this(command, arguments, (Player) null, denizen, script, (Integer) null, (String) null, (String) null);
 	}
 
-	public ScriptEntry(String command, String[] arguments, Player player, DenizenNPC denizen, String script, Integer step) throws ScriptException {
+	public ScriptEntry(String command, String[] arguments, Player player, DenizenNPC denizen, String script, Integer step) throws ScriptEntryCreationException {
 		this(command, arguments, player, denizen, script, step, (String) null, (String) null);
 	}
 
-	public ScriptEntry(String command, String[] arguments, Player player, DenizenNPC npc, String script, Integer step, String messageRaw, String messageFormatted) throws ScriptException {
+	public ScriptEntry(String command, String[] arguments, Player player, DenizenNPC npc, String script, Integer step, String messageRaw, String messageFormatted) throws ScriptEntryCreationException {
 
-		if (command == null) throw new ScriptException("CommandType cannot be null!");
+		if (command == null) throw new ScriptEntryCreationException("CommandType cannot be null!");
 
 		if (denizen == null) denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 

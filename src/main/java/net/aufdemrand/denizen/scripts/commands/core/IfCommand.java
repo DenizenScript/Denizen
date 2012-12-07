@@ -3,13 +3,12 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.script.ScriptException;
-
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -295,7 +294,7 @@ public class IfCommand extends AbstractCommand {
     private void doCommand() {
         try {
             denizen.getScriptEngine().getScriptExecuter().execute(new ScriptEntry(outcomeCommand.toUpperCase(), (String[]) outcomeArgs.toArray(), player, npc, script, step));
-        } catch (ScriptException e) {
+        } catch (ScriptEntryCreationException e) {
             e.printStackTrace();
         }
     }
@@ -303,7 +302,7 @@ public class IfCommand extends AbstractCommand {
     private void doElse() {
         try {
             denizen.getScriptEngine().getScriptExecuter().execute(new ScriptEntry(elseCommand.toUpperCase(), (String[]) elseArgs.toArray(), player, npc, script, step));
-        } catch (ScriptException e) {
+        } catch (ScriptEntryCreationException e) {
             e.printStackTrace();
         }
 
