@@ -68,6 +68,7 @@ public class LookcloseCommand extends AbstractCommand {
 	public void execute(String commandName) throws CommandExecutionException {
 		if (npc == null) throw new CommandExecutionException(Messages.ERROR_NO_NPCID);
 		
+		// Get the instance of the trait that belongs to the target NPC
 		LookClose trait = npc.getTrait(LookClose.class);
 		trait.lookClose(toggle);
 		if (realistic) {

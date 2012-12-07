@@ -113,7 +113,7 @@ public class AssignmentTrait extends Trait {
         paginator.addLine(ChatColor.GRAY + "Linked Notable Locations:");
         paginator.addLine("<e>Name  <a>World  <b>Location");
         for (Notable notable : denizen.notableManager().getNotables()) {
-            if (notable.hasLink(npc)) paginator.addLine(notable.describe());
+            if (notable.hasLink(npc.getId())) paginator.addLine(notable.describe());
         } paginator.addLine("");
 
         // TODO: Actions

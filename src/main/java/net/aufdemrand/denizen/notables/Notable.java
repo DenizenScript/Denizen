@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.notables;
 
 import java.util.List;
 
-import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.CitizensAPI;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -16,11 +16,11 @@ import org.bukkit.Location;
 public class Notable {
 	private final String name;
 	private final Location location;
-	private List<NPC> links;
+	private List<Integer> links;
 
 	public Notable(String name, Location location) {
 		this.location = location;
-		this.name = name;
+		this.name = name.toUpperCase();
 	}
 
 	@Override
@@ -30,33 +30,33 @@ public class Notable {
 		if (object.getClass() != getClass())
 			return false;
 
-		Notable op = (Notable) object;
+		Notable onote = (Notable) object;
 		return new EqualsBuilder().
-				append(name, op.getName()).
+				append(name, onote.getName()).
 				isEquals();
 	}
 
-	public boolean addLink(NPC npc) {
-		if (links.contains(npc)) 
+	public boolean addLink(Integer npcid) {
+		if (links.contains(npcid)) 
 			return false;
-		else links.add(npc);
+		else links.add(npcid);
 		return true;
 	}
 	
-	public boolean hasLink(NPC npc) {
-	    if (!links.contains(npc))
+	public boolean hasLink(Integer npcid) {
+	    if (!links.contains(npcid))
             return false;
 	    else return true;
 	}
 
-	public boolean removeLink(NPC npc) {
-		if (!links.contains(npc))
+	public boolean removeLink(Integer npcid) {
+		if (!links.contains(npcid))
 			return false;
-		else links.remove(npc);
+		else links.remove(npcid);
 		return true;
 	}
 
-	public List<NPC> getLinks() {
+	public List<Integer> getLinks() {
 		return links;
 	}
 
@@ -77,16 +77,16 @@ public class Notable {
 
 	public String stringValue() {
 		String linkString = "";
-		for (NPC npc : links)
-			linkString = ";" + npc.getId();
+		for (Integer npcid : links)
+			linkString = ";" + npcid;
 		return name + ";" + location.getWorld().getName() + ";" + location.getX() + ";" + location.getY() + ";" + location.getZ() + linkString; 
 	}
 
 	@Override
 	public String toString() {
 		String linkString = " Links: ";
-		for (NPC npc : links)
-			linkString = npc.getName() + "/" + npc.getId() + ", ";
+		for (Integer npcid : links)
+			linkString = CitizensAPI.getNPCRegistry().getById(npcid) + "/" + npcid + ", ";
 		if (links.size() > 0)
 			linkString = " Links: none";
 		else linkString = linkString.substring(0, linkString.length() - 2);

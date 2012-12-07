@@ -10,6 +10,14 @@ commands:
     description: Lists denizen commands.
     usage: /denizen help
     permission: denizen.basic
+  notable:
+    description: Lists notable commands.
+    usage: /notable help
+    permission: notable.basic
+  flag:
+    description: Lists flag commands.
+    usage: /flag help
+    permission: notable.basic
 
 permissions:
   denizen.*:
