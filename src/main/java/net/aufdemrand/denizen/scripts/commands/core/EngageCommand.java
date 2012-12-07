@@ -36,11 +36,11 @@ public class EngageCommand extends AbstractCommand {
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 	    duration = 1;
-	    if (scriptEntry.getDenizen() == null)
+	    if (scriptEntry.getNPC() == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
         
 		// Set some defaults based on the scriptEntry
-		npc = scriptEntry.getDenizen().getCitizen();
+		npc = scriptEntry.getNPC().getCitizen();
 
 		// Parse arguments
 		for (String arg : scriptEntry.getArguments()) {

@@ -63,7 +63,7 @@ public class IfCommand extends AbstractCommand {
         elseArgs.clear();
         
         player = scriptEntry.getPlayer();
-        npc = scriptEntry.getDenizen();
+        npc = scriptEntry.getNPC();
         script = scriptEntry.getScript();
         step = scriptEntry.getStep();
                 

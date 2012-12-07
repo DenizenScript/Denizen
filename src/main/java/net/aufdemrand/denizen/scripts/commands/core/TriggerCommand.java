@@ -39,7 +39,7 @@ public class TriggerCommand extends AbstractCommand {
 	    cooldown = null;
 	    radius = null; 
 	    npc = null;
-	    if (scriptEntry.getDenizen() != null) npc = scriptEntry.getDenizen().getCitizen();
+	    if (scriptEntry.getNPC() != null) npc = scriptEntry.getNPC().getCitizen();
 	    
 	    // Parse Arguments
 		for (String arg : scriptEntry.getArguments()) {

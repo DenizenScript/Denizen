@@ -60,7 +60,7 @@ public class LookCommand extends AbstractCommand {
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 		for (String arg : scriptEntry.getArguments()) {
 			
-			theDenizen = scriptEntry.getDenizen();
+			theDenizen = scriptEntry.getNPC();
 			
 			// If argument is a duration
 			if (aH.matchesDuration(arg)) {

@@ -27,7 +27,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
     /* FLAG (DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)] (PLAYER:name) (NPCID:#)
 
 	/* Arguments: [] - Required, () - Optional 
-     * DENIZEN|PLAYER|GLOBAL specified FlagType.
+     * NPC|PLAYER|GLOBAL specified FlagType.
      * NAME specifies flag Name
      *  ...[#] specifies optional index, if working with a Flag List.
      *     ...:VALUE specifies the value to set the flag to.
@@ -48,13 +48,13 @@ public class FlagCommand extends AbstractCommand implements Listener {
      */
 
     public enum FlagAction { SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY, DIVIDE, INSERT, REMOVE }
-    public enum FlagType { GLOBAL, DENIZEN, PLAYER }
+    public enum FlagType { GLOBAL, NPC, PLAYER }
 
     private String flagName;
     private String flagValue;
     private String playerName;
     private Flag flag;
-    private int denizenId;
+    private int npcId;
     private int index;
     private int duration;
     FlagAction flagAction;
@@ -68,13 +68,13 @@ public class FlagCommand extends AbstractCommand implements Listener {
         flagValue = null;
         playerName = null;
         flag = null;
-        denizenId = -1; 
+        npcId = -1; 
         index = -1;
         duration = -1;
         flagAction = null;
         flagType = FlagType.PLAYER;
         
-        if (scriptEntry.getDenizen() != null) denizenId = scriptEntry.getDenizen().getId();
+        if (scriptEntry.getNPC() != null) npcId = scriptEntry.getNPC().getId();
         if (scriptEntry.getPlayer() != null) playerName = scriptEntry.getPlayer().getName();
         else if (scriptEntry.getOfflinePlayer() != null) playerName = scriptEntry.getOfflinePlayer().getName();
 
@@ -143,7 +143,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
         }
 
         // Get flag
-        if (flagType.equals(FlagType.DENIZEN)) flag = denizen.flagManager().getDenizenFlag(denizenId, flagName);
+        if (flagType.equals(FlagType.NPC)) flag = denizen.flagManager().getNPCFlag(npcId, flagName);
         else if (flagType.equals(FlagType.PLAYER)) flag = denizen.flagManager().getPlayerFlag(playerName, flagName);
         else flag = denizen.flagManager().getGlobalFlag(flagName);
 
@@ -224,12 +224,12 @@ public class FlagCommand extends AbstractCommand implements Listener {
             }
 
         } else if (event.getType().toUpperCase().startsWith("D")) {
-            if (!denizen.flagManager().getDenizenFlag(event.getNPC().getId(), flagName).get(index).isEmpty()) {
+            if (!denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index).isEmpty()) {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
                 event.setReplaceable(flagFallback);
             } else {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", flagName);
-                event.setReplaceable(getReplaceable(denizen.flagManager().getDenizenFlag(event.getNPC().getId(), flagName).get(index), replaceType));
+                event.setReplaceable(getReplaceable(denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index), replaceType));
             }
 
         } else if (event.getType().toUpperCase().startsWith("P")) {

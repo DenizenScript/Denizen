@@ -28,11 +28,11 @@ public class DisengageCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        if (scriptEntry.getDenizen() == null)
+        if (scriptEntry.getNPC() == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
 
         // Set some defaults based on the scriptEntry
-        npc = scriptEntry.getDenizen().getCitizen();
+        npc = scriptEntry.getNPC().getCitizen();
 
     }
 

@@ -23,7 +23,7 @@ public class FlagManager {
      * When given a FlagType and necessary information, this returns a Flag object.
      * When getting a FlagType.GLOBAL, targetName/npcid are not necessary and can be 
      * null. When getting a FlagType.PLAYER, npcid is not necessary and can be null. When
-     * getting a FlagType.DENIZEN, targetName is not necessary, as Denizen flags
+     * getting a FlagType.NPC, targetName is not necessary, as NPC flags
      * require an npcid instead. If it isn't obvious, flagType and flagName are required.
      * If this flag currently exists it will be populated with the current values. If 
      * the flag does NOT exist, it will be created with blank values.
@@ -37,20 +37,20 @@ public class FlagManager {
             return new Flag("Global.Flags." + flagName.toUpperCase());
         else if (flagType == FlagType.PLAYER)
             return new Flag("Players." + targetName + ".Flags." + flagName.toUpperCase());
-        else if (flagType == FlagType.DENIZEN)
-            return new Flag("Denizens." + npcid + ".Flags." + flagName.toUpperCase());
+        else if (flagType == FlagType.NPC)
+            return new Flag("NPCs." + npcid + ".Flags." + flagName.toUpperCase());
 
         return new Flag("Global.Flags.null");
     }
 
     /**
-     * Returns a Denizen Flag object. If this flag currently exists
+     * Returns a NPC Flag object. If this flag currently exists
      * it will be populated with the current values. If the flag does NOT exist,
      * it will be created with blank values.
      * 
      */
-    public Flag getDenizenFlag(int npcid, String flagName) {
-        return new Flag("Denizens." + npcid + ".Flags." + flagName.toUpperCase());
+    public Flag getNPCFlag(int npcid, String flagName) {
+        return new Flag("NPCs." + npcid + ".Flags." + flagName.toUpperCase());
     }
 
     /**

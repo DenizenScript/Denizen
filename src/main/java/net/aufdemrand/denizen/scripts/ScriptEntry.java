@@ -119,7 +119,7 @@ public class ScriptEntry {
 		return command;
 	}
 
-	public DenizenNPC getDenizen() {
+	public DenizenNPC getNPC() {
 		return npc;
 	}
 
@@ -186,7 +186,7 @@ public class ScriptEntry {
 		return this;
 	}
 	
-	public ScriptEntry setDenizen(DenizenNPC denizenNPC) {
+	public ScriptEntry setNPC(DenizenNPC denizenNPC) {
 		this.npc = denizenNPC;
 		return this;
 	}

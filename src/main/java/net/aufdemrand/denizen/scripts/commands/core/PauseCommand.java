@@ -45,7 +45,7 @@ public class PauseCommand extends AbstractCommand {
 	    pauseType = null;
 	    denizenNPC = null;
 	    player = null;
-	    if (scriptEntry.getDenizen() != null) denizenNPC = scriptEntry.getDenizen();
+	    if (scriptEntry.getNPC() != null) denizenNPC = scriptEntry.getNPC();
 		if (scriptEntry.getPlayer() != null) player = scriptEntry.getPlayer();
 
 		// Parse arguments

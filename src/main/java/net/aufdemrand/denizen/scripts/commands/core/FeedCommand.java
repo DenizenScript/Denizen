@@ -56,7 +56,7 @@ public class FeedCommand extends AbstractCommand {
         // Must reset ALL private variables, else information left over from last time
         // might be used.
         targetType = TargetType.PLAYER;
-        amount = -1;
+        amount = Integer.MAX_VALUE;
         // Set target to Player by default, if available
         if (scriptEntry.getPlayer() != null) target = (LivingEntity) scriptEntry.getPlayer();
         else target = null;
@@ -82,9 +82,9 @@ public class FeedCommand extends AbstractCommand {
 
         // If TARGET is NPC/PLAYER and no NPC/PLAYER available, throw exception.
         if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
-        else if (targetType == TargetType.NPC && scriptEntry.getDenizen() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+        else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
         // If TARGET is NPC, set entity.
-        else if (targetType == TargetType.NPC) target = scriptEntry.getDenizen().getEntity();
+        else if (targetType == TargetType.NPC) target = scriptEntry.getNPC().getEntity();
         
         return;
     }
@@ -98,14 +98,14 @@ public class FeedCommand extends AbstractCommand {
             NPC npc = CitizensAPI.getNPCRegistry().getNPC(target);
             if (!npc.hasTrait(HungerTrait.class)) throw new CommandExecutionException("This NPC does not have the HungerTrait enabled! Use /trait hunger");
             // Set hunger level to zero
-            if (amount == -1) npc.getTrait(HungerTrait.class).setHunger(0.00);
+            if (amount == Integer.MAX_VALUE) npc.getTrait(HungerTrait.class).setHunger(0.00);
             // else, feed NPC
             else npc.getTrait(HungerTrait.class).feed(amount);
         
         // Target is a Player
         } else {
            // Set to max food level
-           if (amount == -1) ((Player) target).setFoodLevel(20);
+           if (amount == Integer.MAX_VALUE) ((Player) target).setFoodLevel(20);
            // else, increase food levels
            else ((Player) target).setFoodLevel(((Player) target).getFoodLevel() + amount);
         }

@@ -42,7 +42,7 @@ public class CommandExecuter {
 
 		// Debugger information
 		if (scriptEntry.getPlayer() != null) dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommand() + "/" + scriptEntry.getPlayer().getName());
-		else dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommand() + "/" + scriptEntry.getDenizen().getName());
+		else dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommand() + "/" + scriptEntry.getNPC().getName());
 
 		try {
 
@@ -95,11 +95,11 @@ public class CommandExecuter {
 					dB.echoDebug("...replacing the NPCID link.");
 					try {
 						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(arg.split(":")[1])) != null)
-							scriptEntry.setDenizen(plugin.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(arg.split(":")[1]))));
+							scriptEntry.setNPC(plugin.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(arg.split(":")[1]))));
 						dB.echoDebug("...DenizenNPC set to '%s'.", arg.split(":")[1]);
 					} catch (Exception e) {
 						dB.echoError("NPCID specified could not be matched to a Denizen!");
-						scriptEntry.setDenizen(null);
+						scriptEntry.setNPC(null);
 					}
 
 				}

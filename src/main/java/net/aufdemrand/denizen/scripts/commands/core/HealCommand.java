@@ -46,7 +46,7 @@ public class HealCommand extends AbstractCommand {
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 		
 		if (scriptEntry.getPlayer() == null) {
-			target = scriptEntry.getDenizen().getEntity();			
+			target = scriptEntry.getNPC().getEntity();			
 		} else {
 			target = scriptEntry.getPlayer();
 		}
@@ -55,9 +55,9 @@ public class HealCommand extends AbstractCommand {
 		
 		for (String arg : scriptEntry.getArguments()) {
 			if (aH.getStringFrom(arg).equalsIgnoreCase("DENIZEN")) {
-				if (scriptEntry.getDenizen() != null) {
-					target = scriptEntry.getDenizen().getEntity();
-					dB.echoDebug("...targeting '" + scriptEntry.getDenizen().getName() + "'.");
+				if (scriptEntry.getNPC() != null) {
+					target = scriptEntry.getNPC().getEntity();
+					dB.echoDebug("...targeting '" + scriptEntry.getNPC().getName() + "'.");
 				} else dB.echoError("Seems this was sent from a TASK-type script. Must use NPCID:# to specify a Denizen NPC.");
 				continue;
 

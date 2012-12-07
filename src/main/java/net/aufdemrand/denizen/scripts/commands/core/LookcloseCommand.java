@@ -1,8 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -24,7 +21,7 @@ public class LookcloseCommand extends AbstractCommand {
 	/* LOOKCLOSE [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)  */
 
 	/* 
-	 * Arguments: [] - Required, () - Optional 
+	 * Arguments: [] - Required, () - Optional
 	 * 
 	 */
 
@@ -41,7 +38,7 @@ public class LookcloseCommand extends AbstractCommand {
 	    range = null;
 	    realistic = false;
 	    toggle = true;
-	    if (scriptEntry.getDenizen() != null) npc = scriptEntry.getDenizen().getCitizen();
+	    if (scriptEntry.getNPC() != null) npc = scriptEntry.getNPC().getCitizen();
 	    
 	    // Parse Arguments
 		for (String arg : scriptEntry.getArguments()) {

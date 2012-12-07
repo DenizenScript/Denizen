@@ -74,7 +74,7 @@ public class CastCommand extends AbstractCommand{
 //			}
 
 			else if (aH.getStringFrom(arg).equalsIgnoreCase("PLAYER:")) {
-				target = scriptEntry.getDenizen().getEntity().getServer().getPlayer(aH.getStringFrom(arg));
+				target = scriptEntry.getNPC().getEntity().getServer().getPlayer(aH.getStringFrom(arg));
 				if (target !=null)	dB.echoDebug("...now targeting '%s'.", arg);
 				continue;
 				

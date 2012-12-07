@@ -97,7 +97,7 @@ public class TagManager {
         List<String> filledArgs = new ArrayList<String>();
         if (args != null) {
             for (String argument : args) {
-                filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getDenizen(), argument, false));
+                filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, false));
             } 
         }
         return filledArgs;
