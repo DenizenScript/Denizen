@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
+import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
 import net.aufdemrand.denizen.utilities.debugging.Debugger;
 
 import org.bukkit.Bukkit;
@@ -25,6 +26,7 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         public boolean ENABLED_BY_DEFAULT = true; 
         public double DEFAULT_COOLDOWN = -1;
         public int DEFAULT_RADIUS = -1;
+        public CooldownType DEFAULT_COOLDOWN_TYPE = CooldownType.NPC;
 
         public TriggerOptions() { }
         
@@ -33,10 +35,23 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
             this.DEFAULT_COOLDOWN = defaultCooldown;
         }
         
+        public TriggerOptions(boolean enabledByDefault, double defaultCooldown, CooldownType defaultCooldownType) {
+            this.ENABLED_BY_DEFAULT = enabledByDefault;
+            this.DEFAULT_COOLDOWN = defaultCooldown;
+            this.DEFAULT_COOLDOWN_TYPE = defaultCooldownType;
+        }
+        
         public TriggerOptions(boolean enabledByDefault, double defaultCooldown, int defaultRadius) {
             this.ENABLED_BY_DEFAULT = enabledByDefault;
             this.DEFAULT_COOLDOWN = defaultCooldown;
             this.DEFAULT_RADIUS = defaultRadius;
+        }
+        
+        public TriggerOptions(boolean enabledByDefault, double defaultCooldown, int defaultRadius, CooldownType defaultCooldownType) {
+            this.ENABLED_BY_DEFAULT = enabledByDefault;
+            this.DEFAULT_COOLDOWN = defaultCooldown;
+            this.DEFAULT_RADIUS = defaultRadius;
+            this.DEFAULT_COOLDOWN_TYPE = defaultCooldownType;
         }
     }
 
@@ -59,8 +74,13 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         return this;
     }
     
-    public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown) {
-        this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown);
+    public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown, CooldownType defaultCooldownType) {
+        this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultCooldownType);
+        return this;
+    }
+    
+    public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown, int defaultRadius, CooldownType defaultCooldownType) {
+        this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultRadius, defaultCooldownType);
         return this;
     }
     
@@ -74,4 +94,5 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     }
 
     public abstract boolean parse(DenizenNPC npc, Player player, String script);
+
 }

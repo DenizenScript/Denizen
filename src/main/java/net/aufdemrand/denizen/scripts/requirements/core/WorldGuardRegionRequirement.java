@@ -87,7 +87,7 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
 		// No boolean for negative requirement like there was in 0.76?
 		//if (negativeRequirement != outcome) return true;
 
-		return false;
+		return outcome;
 	}
 
 }

@@ -81,14 +81,10 @@ public class HealCommand3 extends AbstractCommand {
 			if (hurts) {
 				if (amount == null) amount = 1;
 				target.setHealth(target.getHealth() - amount);		
-				net.citizensnpcs.util.Util.sendPacketNearby(target.getLocation(), 
-						new Packet18ArmAnimation(((CraftEntity)target).getHandle(),2) , 64); // hurt effect
 				return;
 			} else {
 				if (amount == null) amount = target.getMaxHealth() - target.getHealth();
 				target.setHealth(target.getHealth() + amount);			
-				net.citizensnpcs.util.Util.sendPacketNearby(target.getLocation(),
-						new Packet18ArmAnimation( ((CraftEntity)target).getHandle(),6) , 64); // white sparks
 				return;
 			}
 		}

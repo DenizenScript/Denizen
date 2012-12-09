@@ -10,16 +10,13 @@ import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.event.Listener;
 
-public class NotableManager implements Listener {
+public class NotableManager {
 
     Denizen denizen;
 
     public NotableManager(Denizen denizen) {
         this.denizen = denizen;
-        loadNotables();
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
     private List<Notable> notables = new ArrayList<Notable>();

@@ -26,7 +26,7 @@ public class RuntimeCompiler {
     public void loader() {
 
         List<String> dependencies = new ArrayList<String>();
-
+        denizen.getDebugger().echoDebug("Loading external dependencies for run-time compiler.");
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals" + File.separator + "dependencies");
             File[] files = file.listFiles();
@@ -35,7 +35,7 @@ public class RuntimeCompiler {
                     String fileName = f.getName();
                     if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("JAR")) {
                         dependencies.add(f.getPath());
-                        denizen.getDebugger().echoApproval("Loading dependency " + f.getName());
+                        denizen.getDebugger().echoDebug("Loaded  " + f.getName());
                     }
                 }
             }   
@@ -63,16 +63,16 @@ public class RuntimeCompiler {
                             loadedClass.load();
                         } catch (Exception e) {
                             if (e instanceof IllegalStateException)
-                                denizen.getDebugger().log("No JDK found! External .java files will not be loaded.");
+                                denizen.getDebugger().echoError("No JDK found! External .java files will not be loaded.");
                             else {
                                 denizen.getDebugger().echoError(ChatColor.RED + "Woah! Error compiling " + fileName + "!");
                                 e.printStackTrace();
                             }
                         }
-                    }
+                    } 
                 }
-                denizen.getDebugger().log(ChatColor.GREEN + "OKAY!" + ChatColor.WHITE + "All externals loaded!");
-            } else denizen.getDebugger().log(ChatColor.RED + "Woah! No externals in /plugins/Denizen/externals/.../ to load!");  
+                denizen.getDebugger().echoApproval("All externals loaded!");
+            } else denizen.getDebugger().echoError("Woah! No externals in /plugins/Denizen/externals/.../ to load!");  
         } catch (Exception error) { /* No externals */ }
     }
 

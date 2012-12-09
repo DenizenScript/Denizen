@@ -37,7 +37,7 @@ public class ScriptHelper {
 	public String getInteractScript(NPC npc, Player player, Class<? extends AbstractTrigger> trigger) {
 
 		String theScript = null;
-		List<String> assignedScripts = denizen.getAssignments().getStringList(npc.getTrait(AssignmentTrait.class).getAssignment() + ".Interact Scripts");
+		List<String> assignedScripts = denizen.getAssignments().getStringList(npc.getTrait(AssignmentTrait.class).getAssignment() + ".INTERACT SCRIPTS");
 
 		dB.echoDebug(DebugElement.Header, "Getting interact script: " + npc.getName() + "/" + player.getName());
 
@@ -116,10 +116,10 @@ public class ScriptHelper {
 
 				// This is an Overlay Assignment, check for the appropriate Trigger Script...
 				String scriptName = interactableScripts.get(a).getName().substring(1);
-				String triggerString = String.valueOf(denizen.getTriggerRegistry().get(trigger).getName().charAt(0)).toUpperCase() + denizen.getTriggerRegistry().get(trigger).getName().substring(1).toLowerCase() + " Trigger"; 
+				String triggerString = denizen.getTriggerRegistry().get(trigger).getName().toUpperCase() + " Trigger"; 
 
 				// If Trigger exists, cool, this is our script.
-				if (denizen.getScripts().contains(scriptName + ".Steps." + getCurrentStep(player, scriptName) + "." + triggerString)) {
+				if (denizen.getScripts().contains(scriptName.toUpperCase() + ".STEPS." + getCurrentStep(player, scriptName) + "." + triggerString)) {
 					dB.echoDebug("...found trigger!");
 					dB.echoApproval("Highest scoring script is " + scriptName + ".");
 					dB.echoDebug(DebugElement.Footer);

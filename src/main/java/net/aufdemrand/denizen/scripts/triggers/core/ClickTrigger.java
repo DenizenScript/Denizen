@@ -15,19 +15,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class ClickTrigger extends AbstractTrigger implements Listener {
-
+    
     @EventHandler
     public void clickTrigger(NPCRightClickEvent event) {
+        // Check if NPC has triggers.
+        if (!event.getNPC().hasTrait(TriggerTrait.class)) return;
         // Check if trigger is enabled.
         if (!event.getNPC().getTrait(TriggerTrait.class).isEnabled(name)) return;
 
         // If engaged or not cool, calls On Unavailable, if cool, calls On Click
         // If available (not engaged, and cool) sets cool down and returns true. 
         if (!event.getNPC().getTrait(TriggerTrait.class).trigger(this, event.getClicker())) return;
-
+        denizen.getDebugger().log("TEST4");
         // Get Interact Script for Player/NPC
         String script = sH.getInteractScript(event.getNPC(), event.getClicker(), this.getClass());
-
+        denizen.getDebugger().log("TEST5");
         // Parse Click Trigger, if unable to parse call No Click Trigger action
         if (!parse(denizen.getNPCRegistry().getDenizen(event.getNPC()), event.getClicker(), script))
             denizen.getNPCRegistry().getDenizen(event.getNPC()).action("no click trigger", event.getClicker());
@@ -35,13 +37,14 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
     @Override
     public boolean parse(DenizenNPC npc, Player player, String script) {
+        denizen.getDebugger().log("TEST6");
         if (script == null) return false;
 
         dB.echoDebug(DebugElement.Header, "Parsing click trigger: " + npc.getName() + "/" + player.getName() + " -+");
 
         dB.echoDebug("Getting current step:");
         int theStep = sH.getCurrentStep(player, script);
-
+        denizen.getDebugger().log("TEST7");
         // Gets entries from the script
         List<String> theScript = sH.getScriptContents(sH.getKeys(script, theStep, name) + sH.scriptKey);
 

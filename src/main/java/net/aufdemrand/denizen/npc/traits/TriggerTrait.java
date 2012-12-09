@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -23,7 +24,8 @@ import net.citizensnpcs.util.Paginator;
 public class TriggerTrait extends Trait implements Listener {
 
     private Map<String, Boolean> enabled = new HashMap<String, Boolean>();
-    private Map<String, Double> localCooldown = new HashMap<String, Double>();
+    private Map<String, Double> cooldownDuration = new HashMap<String, Double>();
+    private Map<String, CooldownType> cooldownType = new HashMap<String, CooldownType>();
     private Map<String, Integer> localRadius = new HashMap<String, Integer>();
     private Denizen denizen;
 
@@ -43,7 +45,9 @@ public class TriggerTrait extends Trait implements Listener {
         for (String triggerName : denizen.getTriggerRegistry().list().keySet()) {
             enabled.put(triggerName, key.getBoolean(triggerName.toLowerCase() + "-trigger" + ".enabled", false));
             if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".cooldown")) 
-                localCooldown.put(triggerName, key.getDouble(triggerName.toLowerCase() + "-trigger" + ".cooldown"));
+                cooldownDuration.put(triggerName, key.getDouble(triggerName.toLowerCase() + "-trigger" + ".cooldown"));
+            if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".cooldowntype")) 
+                cooldownType.put(triggerName, CooldownType.valueOf(key.getString(triggerName.toLowerCase() + "-trigger" + ".cooldowntype")));
             if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".radius")) 
                 localRadius.put(triggerName, key.getInt(triggerName.toLowerCase() + "-trigger" + ".radius"));
         }
@@ -53,11 +57,12 @@ public class TriggerTrait extends Trait implements Listener {
     public void save(DataKey key) {
         for (Entry<String, Boolean> entry : enabled.entrySet())
             key.setBoolean(entry.getKey().toLowerCase() + "-trigger" + ".enabled", entry.getValue());
-        for (Entry<String, Double> entry : localCooldown.entrySet()) 
+        for (Entry<String, Double> entry : cooldownDuration.entrySet()) 
             key.setDouble(entry.getKey().toLowerCase() + "-trigger" + ".cooldown", entry.getValue());
+        for (Entry<String, CooldownType> entry : cooldownType.entrySet()) 
+            key.setString(entry.getKey().toLowerCase() + "-trigger" + ".cooldowntype", entry.getValue().name());
         for (Entry<String, Integer> entry : localRadius.entrySet()) 
             key.setInt(entry.getKey().toLowerCase() + "-trigger" + ".radius", entry.getValue());
-
     }
 
     // Setting/Adjusting/Describing
@@ -81,14 +86,20 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public void setLocalCooldown(String triggerName, double value) {
-        if (localCooldown.containsKey(triggerName.toUpperCase()))
-            localCooldown.put(triggerName, value);
+        if (cooldownDuration.containsKey(triggerName.toUpperCase()))
+            cooldownDuration.put(triggerName, value);
     }
 
     public double getCooldownDuration(String triggerName) {
-        if (localCooldown.containsKey(triggerName.toUpperCase()))
-            return localCooldown.get(triggerName.toUpperCase());
+        if (cooldownDuration.containsKey(triggerName.toUpperCase()))
+            return cooldownDuration.get(triggerName.toUpperCase());
         else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN;
+    }
+    
+    public CooldownType getCooldownType(String triggerName) {
+        if (cooldownType.containsKey(triggerName.toUpperCase()))
+            return cooldownType.get(triggerName.toUpperCase());
+        else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN_TYPE;
     }
 
     public void setLocalRadius(String triggerName, int value) {
@@ -104,13 +115,14 @@ public class TriggerTrait extends Trait implements Listener {
 
     public void describe(CommandSender sender, int page) throws CommandException {
         Paginator paginator = new Paginator().header("Triggers");
-        paginator.addLine("<e>Key: <a>Name  <b>Status  <c>Cooldown  <d>(Radius)");
+        paginator.addLine("<e>Key: <a>Name  <b>Status  <c>Cooldown  <d>Cooldown Type  <e>(Radius)");
         int i = 0;
         for (Entry<String, Boolean> entry : enabled.entrySet()) {
             String line = "<e>" + i + "<a>  " + entry.getKey() 
                     + "<b>  " + (entry.getValue() ? "Enabled" : "Disabled") 
                     + "<c>  " + getCooldownDuration(entry.getKey())
-                    + "<d>  " + (getRadius(entry.getKey()) == -1 ? "" : getRadius(entry.getKey()));
+                    + "<d>  " + getCooldownType(entry.getKey()).name()
+                    + "<e>  " + (getRadius(entry.getKey()) == -1 ? "" : getRadius(entry.getKey()));
             paginator.addLine(line);
             i++;
         }
@@ -119,15 +131,17 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public boolean trigger(AbstractTrigger triggerClass, Player player) {
-        // Check cool down
-        if (!denizen.getTriggerRegistry().checkCooldown(npc, triggerClass)
-                || denizen.getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
+        // Check cool down, return false if not yet met
+        if (!denizen.getTriggerRegistry().checkCooldown(npc, player, triggerClass))
+                return false;
+        // Check engaged
+        if (denizen.getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
             // On Unavailable Action
             denizen.getNPCRegistry().getDenizen(npc).action("unavailable", player);
             return false;
         }
         // Set cool down, On [TriggerName] Action
-        denizen.getTriggerRegistry().setCooldown(npc, triggerClass.getClass(), getCooldownDuration(triggerClass.getName()));
+        denizen.getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()), getCooldownType(triggerClass.getName()));
         denizen.getNPCRegistry().getDenizen(npc).action(triggerClass.getName(), player);
         return true;
     }

@@ -164,6 +164,7 @@ public class Denizen extends JavaPlugin {
         Citizens citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
         commandHandler = new CommandHandler(citizens);
         
+        
         denizenNPCRegistry = new DenizenNPCRegistry(this);
         settings =  new Settings();
 

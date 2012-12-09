@@ -3,14 +3,12 @@ package net.aufdemrand.denizen.flags;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.event.Listener;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.core.FlagCommand.FlagType;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
 import net.aufdemrand.denizen.utilities.debugging.Debugger;
 
-public class FlagManager implements Listener {
+public class FlagManager {
 
     private Denizen denizen;
     private Debugger dB;
@@ -19,7 +17,6 @@ public class FlagManager implements Listener {
     public FlagManager(Denizen denizen) {
         this.denizen = denizen;
         this.dB = denizen.getDebugger();
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
     
     /**
