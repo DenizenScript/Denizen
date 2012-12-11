@@ -98,13 +98,6 @@ public class ModifyBlockCommand extends AbstractCommand{
 
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
-
-		dB.echoDebug("...trying to execute");
-		dB.echoDebug("material: " + material);
-		dB.echoDebug("location: " + location);
-		dB.echoDebug("radius: " + radius);
-		dB.echoDebug("depth: " + depth);
-		dB.echoDebug("height: " + height);
 		
 		if (location == null || material == null){
 			dB.echoDebug("...can not exectue");
@@ -118,25 +111,23 @@ public class ModifyBlockCommand extends AbstractCommand{
 		startBlock.setType(material);
 		
 		if (radius != 0){
-			for (int x = 0; x < radius;  x++){
-				for (int z = 0; z < radius; z++){
-					currentBlock = theWorld.getBlockAt(startBlock.getX() + x, startBlock.getY(), startBlock.getZ() + z);
+			for (int x = 0; x  < 2*radius+1;  x++){
+				for (int z = 0; z < 2*radius+1; z++){
+					currentBlock = theWorld.getBlockAt(startBlock.getX() + x - radius, startBlock.getY(), startBlock.getZ() + z - radius);
 					if (currentBlock.getType() != material){
 						currentBlock.setType(material);
-						dB.echoDebug("...changing block");
 					}
 				}
 			}
 		}
 		
 		if (height != 0){
-			for (int x = 0; x < radius;  x++){
-				for (int z = 0; z < radius; z++){
-					for (int y = 0; y < height; y++){
-						currentBlock = theWorld.getBlockAt(startBlock.getX() + x, startBlock.getY() + y, startBlock.getZ() + z);
+			for (int x = 0; x  < 2*radius+1;  x++){
+				for (int z = 0; z < 2*radius+1; z++){
+					for (int y = 1; y < height + 1; y++){
+						currentBlock = theWorld.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() + y, startBlock.getZ() + z - radius);
 						if (currentBlock.getType() != material){
 							currentBlock.setType(material);
-							dB.echoDebug("...changing block");
 						}
 					}
 				}
@@ -144,13 +135,12 @@ public class ModifyBlockCommand extends AbstractCommand{
 		}
 		
 		if (depth != 0){
-			for (int x = 0; x < radius;  x++){
-				for (int z = 0; z < radius; z++){
-					for (int y = 0; y < depth; y++){
-						currentBlock = theWorld.getBlockAt(startBlock.getX() + x, startBlock.getY() - y, startBlock.getZ() + z);
+			for (int x = 0; x  < 2*radius+1;  x++){
+				for (int z = 0; z < 2*radius+1; z++){
+					for (int y = 1; y < depth + 1; y++){
+						currentBlock = theWorld.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() - y, startBlock.getZ() + z - radius);
 						if (currentBlock.getType() != material){
 							currentBlock.setType(material);
-							dB.echoDebug("...changing block");
 						}
 					}
 				}
