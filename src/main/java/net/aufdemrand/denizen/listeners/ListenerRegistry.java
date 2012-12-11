@@ -35,6 +35,11 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 	}
 
 	@Override
+	public void registerCoreMembers() {
+		new KillListenerType().activate().withClass(KillListenerInstance.class).as("KILL");
+	}
+	
+	@Override
 	public boolean register(String registrationName, RegistrationableInstance listenerType) {
 		types.put(registrationName, (AbstractListenerType) listenerType);
 		return false;
@@ -59,11 +64,6 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 	public AbstractListenerType get(String listenerType) {
 		if (types.containsKey(listenerType.toUpperCase())) return types.get(listenerType.toUpperCase());
 		return null;
-	}
-
-	@Override
-	public void registerCoreMembers() {
-		new KillListenerType().activate().withClass(KillListenerInstance.class).as("KILL");
 	}
 
 	public List<? extends AbstractListener> getListenersFor(Player player) {

@@ -1,10 +1,8 @@
 package net.aufdemrand.denizen.listeners.core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
