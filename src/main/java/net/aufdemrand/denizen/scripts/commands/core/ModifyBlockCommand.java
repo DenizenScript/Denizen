@@ -20,66 +20,77 @@ public class ModifyBlockCommand extends AbstractCommand{
 		//nothing to do here
 	}
     
-    /* MODIFYBLOCK [LOCATION:<??>] [MATERIAL:DATA VALUE] [RADIUS:##] [HEIGHT:##] [DEPTH:##] */
+    /* MODIFYBLOCK [LOCATION:<??>] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##) */
 
     /* 
      * Arguments: [] - Required, () - Optional 
-     * [BOOKMARK:???] Block location
-     * [ID|MATERIAL:DATA VALUE|BUKKIT MATERIAL] Material/ID to change block to.. 
+     * [LOCATION:???] Block location
+     * [MATERIAL|M] Material/ID to change block(s) to
+     * (RADIUS|R) Radius of the selection, default is zero (only changes the one block)
+     * (DEPTH|D) Depth of the selection, default is zero 
+     * (HEIGHT|H) Height of the selection, default is zero 
      *   
      * Example Usage:
-     * MODIFYBLOCK LOCATION:??? ID:4
-     * MODIFYBLOCK LOCATION:??? MATERIAL:STONE
+     * MODIFYBLOCK LOCATION:??? MATERIAL:GRASS RADIUS:2 DEPTH:1 HEIGHT:1
+     * MODIFYBLOCK LOCATION:??? M:STONE R:2 D:3 H:2
      *
      */
 	
 	private World theWorld;
 	private Player thePlayer;
-	private Material material = null;
-	private Location location = null;
+	private Material material;
+	private Location location;
 	
-	private int radius = 0;
-	private int height = 0;
-	private int depth = 0;
+	private int radius;
+	private int height;
+	private int depth;
 	
 	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
 		
 		thePlayer = scriptEntry.getPlayer();
+		Material material = null;
+		Location location = null;
+		radius = 0;
+		height = 0;
+		depth = 0;
 		
 		for (String arg : scriptEntry.getArguments()) {
 		    if (aH.matchesLocation(arg)){
 		    	location = aH.getLocationFrom(arg);
-		    	dB.echoError("...location set.");
+		    	dB.echoDebug("...location set.");
 		    	continue;
 		    	
 		    }
 			
 			else if (aH.matchesValueArg("MATERIAL", arg, ArgumentType.Custom) || aH.matchesValueArg("M", arg, ArgumentType.Custom)) {
 				material = Material.getMaterial(aH.getStringFrom(arg));
-				dB.echoError("...material set to " + material);
+				
+				if (material != null) dB.echoDebug("...material set to " + material);
+				else dB.echoDebug("...material not valid.");
+				
 				continue;
 				
 			}
 			
-			else if (aH.matchesValueArg("RADIUS", arg, ArgumentType.Custom) || aH.matchesValueArg("R", arg, ArgumentType.Custom)) {
+			else if (aH.matchesValueArg("RADIUS", arg, ArgumentType.Integer) || aH.matchesValueArg("R", arg, ArgumentType.Integer)) {
 				radius = aH.getIntegerFrom(arg);
-				dB.echoError("...radius set to " + radius);
+				dB.echoDebug("...radius set to " + radius);
 				continue;
 				
 			}
 			
-			else if (aH.matchesValueArg("HEIGHT", arg, ArgumentType.Custom) || aH.matchesValueArg("H", arg, ArgumentType.Custom)) {
+			else if (aH.matchesValueArg("HEIGHT", arg, ArgumentType.Integer) || aH.matchesValueArg("H", arg, ArgumentType.Integer)) {
 				height = aH.getIntegerFrom(arg);
-				dB.echoError("...height set to " + height);
+				dB.echoDebug("...height set to " + height);
 				continue;
 				
 			}
 			
-			else if (aH.matchesValueArg("DEPTH", arg, ArgumentType.Custom) || aH.matchesValueArg("D", arg, ArgumentType.Custom)) {
+			else if (aH.matchesValueArg("DEPTH", arg, ArgumentType.Integer) || aH.matchesValueArg("D", arg, ArgumentType.Integer)) {
 				depth = aH.getIntegerFrom(arg);
-				dB.echoError("...depth set to " + depth);
+				dB.echoDebug("...depth set to " + depth);
 				continue;
 				
 			}
