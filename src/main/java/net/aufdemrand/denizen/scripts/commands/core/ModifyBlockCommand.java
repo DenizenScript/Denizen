@@ -20,11 +20,11 @@ public class ModifyBlockCommand extends AbstractCommand{
 		//nothing to do here
 	}
     
-    /* MODIFYBLOCK [LOCATION:<??>] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##) */
+    /* MODIFYBLOCK [LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##) */
 
     /* 
      * Arguments: [] - Required, () - Optional 
-     * [LOCATION:???] Block location
+     * [LOCATION:x,y,z,world] Block location
      * [MATERIAL|M] Material/ID to change block(s) to
      * (RADIUS|R) Radius of the selection, default is zero (only changes the one block)
      * (DEPTH|D) Depth of the selection, default is zero 
@@ -106,6 +106,8 @@ public class ModifyBlockCommand extends AbstractCommand{
 		theWorld = thePlayer.getWorld();
 		Block startBlock = location.getBlock();
 		Block currentBlock;
+		
+		startBlock.setType(material);
 		
 		if (radius != 0){
 			for (int x = 0; x < radius;  x++){

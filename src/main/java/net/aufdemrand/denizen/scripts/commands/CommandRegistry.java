@@ -60,6 +60,7 @@ public class CommandRegistry implements DenizenRegistry {
         new FailCommand().activate().as("FAIL").withOptions("(PLAYER:player_name)", 0);
         new IfCommand().activate().as("IF").withOptions("(!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
         new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
+        new ModifyBlockCommand().activate().as("MODIFYBLOCK").withOptions("[LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)", 2);
 
         denizen.getDebugger().echoApproval("Loaded core commands: " + instances.keySet().toString());
     }
