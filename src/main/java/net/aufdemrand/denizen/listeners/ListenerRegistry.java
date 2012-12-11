@@ -31,12 +31,12 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 	public ListenerRegistry(Denizen denizen) {
 		this.denizen = denizen;
 		dB = denizen.getDebugger();
-		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
 	@Override
 	public void registerCoreMembers() {
 		new KillListenerType().activate().withClass(KillListenerInstance.class).as("KILL");
+		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 	
 	@Override
