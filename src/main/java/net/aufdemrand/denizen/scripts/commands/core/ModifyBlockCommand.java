@@ -50,8 +50,8 @@ public class ModifyBlockCommand extends AbstractCommand{
 	public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
 		
 		thePlayer = scriptEntry.getPlayer();
-		Material material = null;
-		Location location = null;
+		material = null;
+		location = null;
 		radius = 0;
 		height = 0;
 		depth = 0;
@@ -59,7 +59,7 @@ public class ModifyBlockCommand extends AbstractCommand{
 		for (String arg : scriptEntry.getArguments()) {
 		    if (aH.matchesLocation(arg)){
 		    	location = aH.getLocationFrom(arg);
-		    	dB.echoDebug("...location set.");
+		    	dB.echoDebug("...location set to: " + location);
 		    	continue;
 		    	
 		    }
@@ -69,7 +69,6 @@ public class ModifyBlockCommand extends AbstractCommand{
 				
 				if (material != null) dB.echoDebug("...material set to " + material);
 				else dB.echoDebug("...material not valid.");
-				
 				continue;
 				
 			}
@@ -99,7 +98,16 @@ public class ModifyBlockCommand extends AbstractCommand{
 
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
+
+		dB.echoDebug("...trying to execute");
+		dB.echoDebug("material: " + material);
+		dB.echoDebug("location: " + location);
+		dB.echoDebug("radius: " + radius);
+		dB.echoDebug("depth: " + depth);
+		dB.echoDebug("height: " + height);
+		
 		if (location == null || material == null){
+			dB.echoDebug("...can not exectue");
 			return;
 		}
 		
@@ -115,6 +123,7 @@ public class ModifyBlockCommand extends AbstractCommand{
 					currentBlock = theWorld.getBlockAt(startBlock.getX() + x, startBlock.getY(), startBlock.getZ() + z);
 					if (currentBlock.getType() != material){
 						currentBlock.setType(material);
+						dB.echoDebug("...changing block");
 					}
 				}
 			}
@@ -127,6 +136,7 @@ public class ModifyBlockCommand extends AbstractCommand{
 						currentBlock = theWorld.getBlockAt(startBlock.getX() + x, startBlock.getY() + y, startBlock.getZ() + z);
 						if (currentBlock.getType() != material){
 							currentBlock.setType(material);
+							dB.echoDebug("...changing block");
 						}
 					}
 				}
@@ -140,6 +150,7 @@ public class ModifyBlockCommand extends AbstractCommand{
 						currentBlock = theWorld.getBlockAt(startBlock.getX() + x, startBlock.getY() - y, startBlock.getZ() + z);
 						if (currentBlock.getType() != material){
 							currentBlock.setType(material);
+							dB.echoDebug("...changing block");
 						}
 					}
 				}
