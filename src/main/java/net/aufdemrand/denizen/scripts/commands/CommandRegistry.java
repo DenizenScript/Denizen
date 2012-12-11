@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FlagCommand;
 import net.aufdemrand.denizen.scripts.commands.core.IfCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ModifyBlockCommand;
 import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
 
 public class CommandRegistry implements DenizenRegistry {
