@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.interfaces.NPCSpeechEngine;
+import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.notables.NotableManager;
 import net.aufdemrand.denizen.npc.DenizenNPCRegistry;
 import net.aufdemrand.denizen.npc.activities.ActivityEngine;
@@ -93,7 +94,9 @@ public class Denizen extends JavaPlugin {
     private TriggerRegistry triggerRegistry = new TriggerRegistry(this);
     private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
     private ActivityRegistry activityRegistry = new ActivityRegistry(this);
+    private ListenerRegistry listenerRegistry = new ListenerRegistry(this);
     private DenizenNPCRegistry denizenNPCRegistry;
+    
     
     public ActivityRegistry getActivityRegistry() {
         return activityRegistry;
@@ -107,6 +110,10 @@ public class Denizen extends JavaPlugin {
         return denizenNPCRegistry;
     }
 
+    public ListenerRegistry getListenerRegistry() {
+        return listenerRegistry;
+    }
+    
     public RequirementRegistry getRequirementRegistry() {
         return requirementRegistry;
     }

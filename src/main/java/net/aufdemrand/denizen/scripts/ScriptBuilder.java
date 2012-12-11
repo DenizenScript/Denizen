@@ -163,4 +163,34 @@ public class ScriptBuilder {
         dB.echoDebug(DebugElement.Footer);
     }
 
+    
+    /**
+     * Cheater method for running a task script with a Player attached.
+     * 
+     * @param player
+     * 		The player whose queue to use.
+     * @param scriptName
+     * 		The name of the task script.
+     */
+    public void runTaskScript(Player player, String scriptName) {
+        List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
+        // Build scriptEntries from the script and queue them up
+        queueScriptEntries(player, buildScriptEntries(player, theScript, scriptName), QueueType.PLAYER);
+    }
+    
+    /**
+     * Cheater method for running a task script with a Player attached.
+     * 
+     * @param player
+     * 		The player whose queue to use.
+     * @param scriptName
+     * 		The name of the task script.
+     */
+    public void runTaskScript(Player player, DenizenNPC npc, String scriptName) {
+        List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
+        // Build scriptEntries from the script and queue them up
+        queueScriptEntries(player, buildScriptEntries(player, npc, theScript, scriptName, null), QueueType.PLAYER);
+    }
+
+    
 }

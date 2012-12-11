@@ -45,7 +45,7 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 	public AbstractCommand as(String commandName) {
 		// Register command with Registry with a Name
 		name = commandName.toUpperCase();
-		denizen.getCommandRegistry().register(commandName, (RegistrationableInstance) this);
+		denizen.getCommandRegistry().register(this.name, this);
 		onEnable();
 		return this;
 	}
