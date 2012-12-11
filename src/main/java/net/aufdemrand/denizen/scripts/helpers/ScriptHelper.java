@@ -160,7 +160,7 @@ public class ScriptHelper {
 		return currentStep;
 	}
 
-	/*
+	/**
 	 * Methods to help get String script entries from a YAML script.
 	 */
 
@@ -189,7 +189,7 @@ public class ScriptHelper {
 		return contents;
 	}
 
-	/**
+	/*
 	 * ConcatenateScripts reads script files in the /Denizen/scripts/ folder, parses them
 	 * for YAML errors and adds them to Memory for usage.
 	 */
@@ -224,7 +224,7 @@ public class ScriptHelper {
 			if (denizen.getDebugger().showStackTraces) error.printStackTrace();
 		}
 
-		return null;
+		return "";
 	}
 
 	/**

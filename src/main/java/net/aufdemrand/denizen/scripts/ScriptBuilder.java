@@ -165,7 +165,8 @@ public class ScriptBuilder {
 
     
     /**
-     * Cheater method for running a task script with a Player attached.
+     * Cheater method for running a Player task script. Will automatically
+     * build script entries, arguments, and queue to a Player_Task Queue.
      * 
      * @param player
      * 		The player whose queue to use.
@@ -175,22 +176,58 @@ public class ScriptBuilder {
     public void runTaskScript(Player player, String scriptName) {
         List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
         // Build scriptEntries from the script and queue them up
-        queueScriptEntries(player, buildScriptEntries(player, theScript, scriptName), QueueType.PLAYER);
+        queueScriptEntries(player, buildScriptEntries(player, theScript, scriptName), QueueType.PLAYER_TASK);
     }
     
     /**
-     * Cheater method for running a task script with a Player attached.
+     * Cheater method for running a Player task script with a NPC attached. Will automatically
+     * build script entries, arguments, and queue to a Player_Task Queue.
      * 
      * @param player
      * 		The player whose queue to use.
+     * @param npc
+     * 		The DenizenNPC object of which to attach to the scriptEntries.
      * @param scriptName
      * 		The name of the task script.
      */
     public void runTaskScript(Player player, DenizenNPC npc, String scriptName) {
         List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
         // Build scriptEntries from the script and queue them up
-        queueScriptEntries(player, buildScriptEntries(player, npc, theScript, scriptName, null), QueueType.PLAYER);
+        queueScriptEntries(player, buildScriptEntries(player, npc, theScript, scriptName, null), QueueType.PLAYER_TASK);
     }
 
+    /**
+     * Cheater method for running a NPC task script. Will automatically
+     * build script entries, arguments, and queue to a NPC Queue.
+     * 
+     * @param player
+     * 		The player whose queue to use.
+     * @param npc
+     * 		The DenizenNPC object of which to attach to the scriptEntries.
+     * @param scriptName
+     * 		The name of the task script.
+     */
+    public void runTaskScript(DenizenNPC npc, String scriptName) {
+        List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
+        // Build scriptEntries from the script and queue them up
+        queueScriptEntries(npc, buildScriptEntries(npc, theScript, scriptName), QueueType.NPC);
+    }
+    
+    /**
+     * Cheater method for running a NPC task script with a Player attached. Will automatically
+     * build script entries, arguments, and queue to a NPC Queue.
+     * 
+     * @param player
+     * 		The player whose queue to use.
+     * @param npc
+     * 		The DenizenNPC object of which to attach to the scriptEntries.
+     * @param scriptName
+     * 		The name of the task script.
+     */
+    public void runTaskScript(DenizenNPC npc, Player player, String scriptName) {
+        List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
+        // Build scriptEntries from the script and queue them up
+        queueScriptEntries(npc, buildScriptEntries(player, npc, theScript, scriptName, null), QueueType.NPC);
+    }
     
 }
