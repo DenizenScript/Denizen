@@ -3,6 +3,7 @@ package net.aufdemrand.denizen;
 import java.util.Set;
 
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
+import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
@@ -29,124 +30,10 @@ public class CommandHandler {
 		this.plugin = plugin;
 	}
 
-
-
+	
 	/*
-           getdata|adddata|decdata shows/modifies the block data for block in targets.
-
-        if (args[0].equalsIgnoreCase("getdata")) {
-            player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
-            return true;
-        }
-
-        if (args[0].equalsIgnoreCase("adddata")) {
-            Block toAddData = player.getTargetBlock(null, 20);
-            toAddData.setData((byte) (toAddData.getData() + 1));
-            player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
-            return true;	
-        }
-
-        if (args[0].equalsIgnoreCase("decdata")) {
-            Block toAddData = player.getTargetBlock(null, 20);
-            toAddData.setData((byte) (toAddData.getData() - 1));
-            player.sendMessage("Current block data: " + player.getTargetBlock(null, 20).getData());
-            return true;
-        }
-
+	 * PUSHABLE
 	 */
-
-	// Help commands
-
-	/*
-        if (args[0].equalsIgnoreCase("help")) {
-
-            if(args.length == 1) {
-
-                player.sendMessage(ChatColor.GOLD + "------- Denizen Commands -------");
-                player.sendMessage(ChatColor.GOLD + "");
-                player.sendMessage(ChatColor.GOLD + "Denizen Core Commands:");
-                player.sendMessage(ChatColor.GOLD + "use /denizen HELP CORE");
-                player.sendMessage(ChatColor.GOLD + "");
-                player.sendMessage(ChatColor.GOLD + "Denizen NPC Commands:");
-                player.sendMessage(ChatColor.GOLD + "use /denizen HELP NPC ");
-                player.sendMessage(ChatColor.GOLD + "");
-                player.sendMessage(ChatColor.GOLD + "For a cheat sheet of commands and arguments,");
-                player.sendMessage(ChatColor.GOLD + "visit the wiki: http://wiki.citizensnpcs.net/Denizen");   
-            }
-
-            else if (args[1].equalsIgnoreCase("core")) {
-
-                player.sendMessage(ChatColor.GOLD + "------- Denizen Core Commands -------");
-                player.sendMessage(ChatColor.GOLD + "");
-                player.sendMessage(ChatColor.GOLD + "/denizen RELOAD");
-                player.sendMessage(ChatColor.GOLD + "  Reloads config.yml, scripts.yml and saves.yml");
-                player.sendMessage(ChatColor.GOLD + "/denizen SAVE");
-                player.sendMessage(ChatColor.GOLD + "  Saves to disk config.yml and saves.yml");
-                player.sendMessage(ChatColor.GOLD + "/denizen VERSION");
-                player.sendMessage(ChatColor.GOLD + "  Displays version and build of Denizen plugin");
-                player.sendMessage(ChatColor.GOLD + "/denizen DEBUG");
-                player.sendMessage(ChatColor.GOLD + "  Logs debugging information for reporting problems");
-                player.sendMessage(ChatColor.GOLD + "/denizen SCHEDULE");
-                player.sendMessage(ChatColor.GOLD + "  Forces the Denizens to check their schedules");   
-            }
-
-            else if (args[1].equalsIgnoreCase("npc")) {
-
-                player.sendMessage(ChatColor.GOLD + "------- Denizen NPC Commands -------");
-                player.sendMessage(ChatColor.GOLD + "");
-                player.sendMessage(ChatColor.GOLD + "/denizen INFO");
-                player.sendMessage(ChatColor.GOLD + "  Shows the config nodes for the Denizen NPC");
-                player.sendMessage(ChatColor.GOLD + "/denizen ASSIGN [PRIORITY] [SCRIPT NAME]");
-                player.sendMessage(ChatColor.GOLD + "  Assigns a script and priority for the Denizen NPC");
-                player.sendMessage(ChatColor.GOLD + "/denizen UNASSIGN [SCRIPT NAME]");
-                player.sendMessage(ChatColor.GOLD + "  Unassigns a script from the Denizen NPC");
-                player.sendMessage(ChatColor.GOLD + "/denizen TRIGGER TOGGLE|LIST [TRIGGER NAME]");
-                player.sendMessage(ChatColor.GOLD + "  Toggles triggers for a Denizen NPC");
-                player.sendMessage(ChatColor.GOLD + "/denizen BOOKMARK LOCATION|BLOCK [Name]");
-                player.sendMessage(ChatColor.GOLD + "  Set bookmarks the Denizens. Use /denizen HELP BOOKMARK");
-                player.sendMessage(ChatColor.GOLD + "/denizen SCHEDULE");
-                player.sendMessage(ChatColor.GOLD + "  Clears current Activity and forces a schedule check");   }
-
-            else if (args[1].equalsIgnoreCase("bookmark")) {
-
-                player.sendMessage(ChatColor.GOLD + "------- Denizen Bookmark Commands -------");
-                player.sendMessage(ChatColor.GOLD + "");
-                player.sendMessage(ChatColor.GOLD + "/denizen BOOKMARK LOCATION [Location Name]");
-                player.sendMessage(ChatColor.GOLD + "  Saves the location you are in to the Denizen for reference");
-                player.sendMessage(ChatColor.GOLD + "  with Script commands such as MOVETO, SPAWN and REMEMBER");
-                player.sendMessage(ChatColor.GOLD + "/denizen BOOKMARK BLOCK [Block Name]");
-                player.sendMessage(ChatColor.GOLD + "  Sets a bookmark for the block that is in your crosshairs");
-                player.sendMessage(ChatColor.GOLD + "  to be referenced to with Script commands such as SWITCH,");
-                player.sendMessage(ChatColor.GOLD + "  and CHANGE");   
-            }
-
-            return true;
-        } 
-
-        // TODO: Fix info command
-        // if (args[0].equalsIgnoreCase("info")) {
-        //	plugin.getNPCRegistry().showInfo(player, plugin.getNPCRegistry().getDenizen(theNPC));
-        //	return true;
-        // }
-
-        if (args[0].equalsIgnoreCase("reschedule")) {
-            plugin.getSaves().set("Denizen." + theNPC.getName() + ".Active Activity Script", null);
-            plugin.getActivityEngine().scheduler(false);
-            plugin.getSaves().set("Denizens." + theNPC.getName() + "." + theNPC.getId() + ".Active Activity Script", null);
-            player.sendMessage(ChatColor.GREEN + "Reset activities for " + theNPC.getName() + "/" + theNPC.getId() + " and rescheduled.");
-            return true;
-        }
-
-        if (args[0].equalsIgnoreCase("test")) {
-            plugin.getDebugger().log(plugin.getScripts().saveToString());
-            return true;
-        }
-        return false;	
-    }
-
-	 */
-
-
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "pushable (-r) (--delay #)", desc = "Makes a NPC pushable.",
 			flags = "r", modifiers = { "pushable", "push", "pu" }, min = 1, max = 2, permission = "npc.pushable")
@@ -167,7 +54,35 @@ public class CommandHandler {
 				(trait.isReturnable() ? " and will return when pushed after " + trait.getDelay() + " seconds." : "."));
 	}
 
-
+	
+	/*
+	 * CONSTANTS
+	 */
+	@net.citizensnpcs.command.Command(
+			aliases = { "npc" }, usage = "constant --set|remove name --value constant value", 
+			desc = "Views/adds/removes NPC string constants.", flags = "r", modifiers = { "constant", "const", "co" },
+			min = 1, max = 3, permission = "npc.constants")
+	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
+	public void constants(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+		if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
+		ConstantsTrait trait = npc.getTrait(ConstantsTrait.class);
+		if (args.hasValueFlag("set")) {
+			if (!args.hasValueFlag("value")) throw new CommandException("SET requires use of the VALUE argument."); 
+			trait.setConstant(args.getFlag("set"), args.getFlag("value"));
+			Messaging.send(sender, ChatColor.GREEN + "Added constant '" + args.getFlag("remove") + "'");
+			
+		} else if (args.hasValueFlag("remove")) {
+			trait.removeConstant(args.getFlag("remove"));
+			Messaging.send(sender, ChatColor.GREEN + "Removed constant '" + args.getFlag("remove") + "'");
+		}
+		
+		trait.describe(sender, args.getInteger(1, 1));
+	}
+	
+	
+	/*
+	 * ASSIGNMENT
+	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "assignment --set [assignment name] (-r)", 
 			desc = "Controls the assignment for an NPC.", flags = "r", modifiers = { "assignment", "assign", "as" },
@@ -190,7 +105,10 @@ public class CommandHandler {
 		trait.describe(sender, args.getInteger(1, 1));
 	}
 
-
+	
+	/*
+	 * TRIGGER
+	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "trigger [--name trigger name] [(--cooldown [seconds])|(--radius [radius])|(-t)]", 
 			desc = "Controls the various triggers for an NPC.", flags = "t", modifiers = { "trigger", "tr" },
@@ -214,6 +132,9 @@ public class CommandHandler {
 	}
 
 
+	/*
+	 * NICKNAME
+	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "nickname [--set nickname]", 
 			desc = "Gives the NPC a nickname, used with a Denizen-compatible Speech Engine.", modifiers = { "nickname", "nick", "ni" },
@@ -237,6 +158,9 @@ public class CommandHandler {
 	}
 
 
+	/*
+	 * HEALTH
+	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "health --set # (-r)", 
 			desc = "Sets the max health for an NPC.", modifiers = { "health", "he", "hp" },
@@ -258,6 +182,9 @@ public class CommandHandler {
 	}
 
 
+	/*
+	 * DENIZEN DEBUG
+	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "denizen" }, usage = "debug", 
 			desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db" },
@@ -274,7 +201,10 @@ public class CommandHandler {
 				((denizen.getDebugger().showStackTraces) ? "enabled and showing stack-traces." : "enabled.") : "disabled."));
 	}    
 
-
+	
+	/*
+	 * DENIZEN VERSION
+	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "denizen" }, usage = "version", 
 			desc = "Shows the currently loaded version of Denizen.", modifiers = { "version"},
@@ -288,9 +218,12 @@ public class CommandHandler {
 	}    
 
 
+	/*
+	 * DENIZEN SAVE
+	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "denizen" }, usage = "save", 
-			desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "save"},
+			desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "save" },
 			min = 1, max = 3, permission = "denizen.basic", flags = "s")
 	public void save(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		((Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen")).saveSaves();
@@ -299,10 +232,12 @@ public class CommandHandler {
 	}
 
 
+	/*
+	 * DENIZEN RELOAD 
+	 */
 	@Command ( aliases = { "denizen" }, usage = "reload (saves|config|scripts) (-a)", 
-			desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "reload"},
+			desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "reload" },
 			min = 1, max = 3, permission = "denizen.basic", flags = "a" )
-
 	public void reload(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
 
@@ -313,28 +248,34 @@ public class CommandHandler {
 			denizen.reloadScripts();
 			Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml, Denizen/config.yml, and Denizen/scripts/... reloaded from disk to memory.");
 			return;
-		} else   if  (args.getString(1).equalsIgnoreCase("saves")) {
-			denizen.reloadSaves();
-			Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml reloaded from disk to memory.");
-			return;
-
-		} else if (args.getString(1).equalsIgnoreCase("config")) {
-			denizen.reloadConfig();
-			Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
-			return;
-
-		} else if (args.getString(1).equalsIgnoreCase("scripts")) {
-			denizen.reloadScripts();
-			Messaging.send(sender, ChatColor.GREEN + "Denizen/scripts/... reloaded from disk to memory.");
-			return;
-
-		} else throw new CommandException();
+		}
+		// Reload a specific item
+		if (args.length() > 0) {
+			if  (args.getString(1).equalsIgnoreCase("saves")) {
+				denizen.reloadSaves();
+				Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml reloaded from disk to memory.");
+				return;
+			} else if (args.getString(1).equalsIgnoreCase("config")) {
+				denizen.reloadConfig();
+				Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
+				return;
+			} else if (args.getString(1).equalsIgnoreCase("scripts")) {
+				denizen.reloadScripts();
+				Messaging.send(sender, ChatColor.GREEN + "Denizen/scripts/... reloaded from disk to memory.");
+				return;
+			}
+		}
+		// Show usage hint
+		throw new CommandException();
 	}
 
-
+	
+	/*
+	 * DENIZEN SCRIPTS
+	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "denizen" }, usage = "scripts (--type assignment|task|activity|interact) (--filter string)", 
-			desc = "Lists currently loaded dScripts.", modifiers = { "scripts"},
+			desc = "Lists currently loaded dScripts.", modifiers = { "scripts" },
 			min = 1, max = 4, permission = "denizen.basic")
 	public void scripts(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
@@ -369,6 +310,9 @@ public class CommandHandler {
 			throw new CommandException(Messages.COMMAND_PAGE_MISSING);
 	}
 
+	
+	
+	
 }
 
 

@@ -1,17 +1,13 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.notables.Notable;
-import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -23,8 +19,8 @@ import net.citizensnpcs.util.Paginator;
 public class ConstantsTrait extends Trait {
 
 	private Denizen denizen;
-	private Map<String, String> constants;
-	private Map<String, String> assignmentConstants;
+	private Map<String, String> constants = new HashMap<String, String>();
+	private Map<String, String> assignmentConstants = new HashMap<String, String>();
 	private String assignment;
 
 	public ConstantsTrait() {
@@ -46,6 +42,14 @@ public class ConstantsTrait extends Trait {
 		}
 	}
 
+	public String getConstant(String name) {
+		if (constants.containsKey(name.toUpperCase()))
+			return constants.get(name.toUpperCase());
+		else if (getAssignmentConstants().containsKey(name.toUpperCase()))
+			return assignmentConstants.get(name.toUpperCase());
+		return null;
+	}
+
 	public void setConstant(String name, String value) {
 		constants.put(name.toUpperCase(), value);
 	}
@@ -55,14 +59,13 @@ public class ConstantsTrait extends Trait {
 			constants.remove(name.toUpperCase());
 	}
 
-	public boolean hasConstants() {
+	public boolean hasNPCConstants() {
 		return !constants.isEmpty();
 	}
 
 	public void describe(CommandSender sender, int page) throws CommandException {
-		ScriptHelper sH = denizen.getScriptEngine().getScriptHelper();
 		Paginator paginator = new Paginator().header("Constants");
-		paginator.addLine("<e>NPC-specific constants: " + (hasConstants() ? "" : "None.") + "");
+		paginator.addLine("<e>NPC-specific constants: " + (hasNPCConstants() ? "" : "None.") + "");
 		paginator.addLine("<e>ID  <a>Name  <b>Value");
 		int x = 0;
 		for (Entry<String, String> constant : constants.entrySet()) {
@@ -78,26 +81,34 @@ public class ConstantsTrait extends Trait {
 				paginator.addLine("<a>" + constant.getKey() + "  <b> " + constant.getValue());
 			paginator.addLine("");
 
-			if (!paginator.sendPage(sender, page))
-				throw new CommandException(Messages.COMMAND_PAGE_MISSING);
-			return;
 		}
 
 		if (!paginator.sendPage(sender, page))
 			throw new CommandException(Messages.COMMAND_PAGE_MISSING);
 	}
-	
+
+
 	public Map<String, String> getAssignmentConstants() {
 		if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()) {
 			// Has assignment
 			if (assignment.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment()))
 				return assignmentConstants;
-			
-			
+			else return rebuildAssignmentConstants();
 		}
-		
 		return assignmentConstants;
-		
+	}
+
+	private Map<String, String> rebuildAssignmentConstants() {
+
+		assignment = npc.getTrait(AssignmentTrait.class).getAssignment();
+		assignmentConstants.clear();
+
+		if (denizen.getScripts().contains(assignment.toUpperCase() + ".DEFAULT CONSTANTS")) 
+
+			for (String constant : denizen.getScripts().getStringList(assignment.toUpperCase() + ".DEFAULT CONSTANTS"))
+				try { assignmentConstants.put(constant.split(":", 2)[0], constant.split(":", 2)[1]); } catch (Exception e) { }
+
+		return assignmentConstants;
 	}
 
 }

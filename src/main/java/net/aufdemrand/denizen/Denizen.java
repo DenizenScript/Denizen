@@ -46,7 +46,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Denizen extends JavaPlugin {
 
-    public static String versionTag = "0.8.1 pre-release";
+    public static String versionTag = "0.8.2 pre-release";
     
     private Debugger debugger = new Debugger(this);
 
@@ -162,7 +162,6 @@ public class Denizen extends JavaPlugin {
         debugger.echoDebug(DebugElement.Footer);
         debugger.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
         debugger.echoDebug(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable NPCs"); 
-        debugger.echoDebug(DebugElement.Spacer);
         debugger.echoDebug(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
         debugger.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
         debugger.echoDebug(DebugElement.Footer);
