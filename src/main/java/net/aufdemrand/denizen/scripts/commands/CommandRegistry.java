@@ -21,6 +21,7 @@ import net.aufdemrand.denizen.scripts.commands.core.IfCommand;
 import net.aufdemrand.denizen.scripts.commands.core.LookcloseCommand;
 import net.aufdemrand.denizen.scripts.commands.core.ModifyBlockCommand;
 import net.aufdemrand.denizen.scripts.commands.core.NarrateCommand;
+import net.aufdemrand.denizen.scripts.commands.core.PlaySoundCommand;
 import net.aufdemrand.denizen.scripts.commands.core.SwitchCommand;
 import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
 
@@ -78,6 +79,7 @@ public class CommandRegistry implements DenizenRegistry {
         new AnnounceCommand().activate().as("ANNOUNCE").withOptions("['Text to announce']", 1);
         new NarrateCommand().activate().as("NARRATE").withOptions("(PLAYER:player_name) ['Text to narrate']", 1);
         new ExecuteCommand().activate().as("EXECUTE").withOptions("[AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']", 2);
+        new PlaySoundCommand().activate().as("PLAYSOUND").withOptions("[LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)", 2);
 
         denizen.getDebugger().echoApproval("Loaded core commands: " + instances.keySet().toString());
     }
