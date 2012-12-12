@@ -34,60 +34,64 @@ public class PlaySoundCommand extends AbstractCommand {
      */
 
 	
-	Sound theSound;
+	Sound sound;
 	Location location;
 	
 	private float volume;
 	private float pitch;
+	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 		
 		location = null;
-		theSound = null;
+		sound = null;
 		volume = 1;
 		pitch = 1;
 		
 		for (String arg : scriptEntry.getArguments()){
 			if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
-                if (location != null) dB.echoDebug("...sound location now at bookmark '%s'", arg);
+                if (location != null) dB.echoDebug(Messages.DEBUG_SET_LOCATION, aH.getStringFrom(arg));
                 continue;
 
             } 
 			
 			else if (aH.matchesValueArg("SOUND", arg, ArgumentType.Custom) || aH.matchesValueArg("S", arg, ArgumentType.Custom)) {
         		try {
-            		theSound = Sound.valueOf(aH.getStringFrom(arg));
-                	dB.echoDebug("...sound set to: " + theSound);
-            	} catch (IllegalArgumentException e) {
-            		dB.echoError(e.getMessage());
+            		sound = Sound.valueOf(aH.getStringFrom(arg));
+                	dB.echoDebug("...SOUND set to: " + sound.name());
+            	} catch (Exception e) {
+            		dB.echoError("Invalid SOUND!");
             	}
             	continue;
             	
             }  
 			
-			else if (aH.matchesValueArg("VOLUME", arg, ArgumentType.Float) || aH.matchesValueArg("V", arg, ArgumentType.Integer)) {
+			else if (aH.matchesValueArg("VOLUME", arg, ArgumentType.Integer) || aH.matchesValueArg("V", arg, ArgumentType.Integer)) {
             	volume = aH.getIntegerFrom(arg);
-            	dB.echoDebug("...volume set to: " + volume);
+            	dB.echoDebug("...VOLUME set to: " + volume);
             	continue;
             	
             }  
 			
-			else if (aH.matchesValueArg("PITCH", arg, ArgumentType.Float) || aH.matchesValueArg("P", arg, ArgumentType.Integer)) {
+			else if (aH.matchesValueArg("PITCH", arg, ArgumentType.Integer) || aH.matchesValueArg("P", arg, ArgumentType.Integer)) {
             	pitch = aH.getIntegerFrom(arg);
-            	dB.echoDebug("...pitch set to: " + pitch);
+            	dB.echoDebug("...PITCH set to: " + pitch);
             	continue;
             	
             }
             
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
+		
+		if (sound == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "SOUND");
+		if (location == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
 	}
 
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
-    	dB.echoDebug("...playing sound");
-		if (theSound != null && location != null) location.getWorld().playSound(location, theSound, volume, pitch);
+    	dB.echoDebug("...playing sound.");
+		location.getWorld().playSound(location, sound, volume, pitch);
 	}
 
 }
