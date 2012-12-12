@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
 
 /**
- * Switches a button or lever.
+ * 'Casts' a Minecraft Potion_Effect
  * 
  * @author Jeremy Schroeder, Mason Adkins
  */
@@ -34,79 +34,63 @@ public class CastCommand extends AbstractCommand{
 	 * 
 	 */
 	
-	//Initialize variables 
-	String potionName = null;
-	int duration = 60;
-	int amplitude = 1;
+	// Initialize variables 
+	PotionEffect potionEffect;
 	LivingEntity target;
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 		
-		target = scriptEntry.getPlayer();
+		int duration = 60;
+		int amplifier = 1;
+		PotionEffectType potion = null;
 		
+		// Default target as Player, if no Player, default target to NPC
+		if (scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer();
+		else if (scriptEntry.getNPC() != null) target = scriptEntry.getNPC().getEntity();
+
 		for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesDuration(arg)) {
                 duration = Integer.valueOf(arg.split(":")[1]);
                 dB.echoDebug(Messages.DEBUG_SET_DURATION, arg);
                 continue;
                 
-            } 
-            
-            else if (aH.matchesValueArg("SPELL", arg, ArgumentType.String)) {
-				potionName = aH.getStringFrom(arg);
-				dB.echoDebug("...will cast effect '%s'.", arg);
+            }   else if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
+				try {
+					potion = PotionEffectType.getByName(aH.getStringFrom(arg));
+					dB.echoDebug(Messages.DEBUG_SET_TYPE, aH.getStringFrom(arg));
+				} catch (Exception e) {
+					dB.echoError("Invalid PotionEffectType!");
+				}
 				continue;
-			}
 
-			else if (aH.getStringFrom(arg).equalsIgnoreCase("POWER:")) {
-				amplitude = aH.getIntegerFrom(arg);
-				dB.echoDebug("...power set to '%s'.", arg);
-				continue;
-				
-			}
-
-// 			LEFT OUT DUE TO LACK OF .matchesNPCID()
-//			else if (aH.matchesNPCID(arg)) {
-//				target = aH.getNPCIDModifier(arg).getEntity();
-//				if (target !=null)	dB.echoDebug("...now targeting '%s'.", arg);
-//				continue;
-//			}
-
-			else if (aH.getStringFrom(arg).equalsIgnoreCase("PLAYER:")) {
-				target = scriptEntry.getNPC().getEntity().getServer().getPlayer(aH.getStringFrom(arg));
-				if (target !=null)	dB.echoDebug("...now targeting '%s'.", arg);
+            }	else if (aH.matchesValueArg("POWER",  arg,  ArgumentType.Integer)) {
+				amplifier = aH.getIntegerFrom(arg);
+				dB.echoDebug("...set POWER to '%s'.", String.valueOf(amplifier));
 				continue;
 				
-			}
-
-			else {
-				potionName = aH.getStringFrom(arg);
-				dB.echoDebug("...will cast effect '%s'.", arg);
+			}   else if (aH.matchesValueArg("TARGET", arg, ArgumentType.Custom)) {
+				if (aH.getStringFrom(arg).equalsIgnoreCase("PLAYER")
+						&& scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer();
+				else if (aH.getStringFrom(arg).equalsIgnoreCase("NPC")
+					&& scriptEntry.getNPC() != null) target = scriptEntry.getNPC().getEntity();
+				else dB.echoError("Invalid TARGET type or unavailable TARGET object! Valid: PLAYER, NPC");
 				continue;
 				
-			}
+			}   else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
+
+        if (potion == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "TYPE");
+        if (target == null) throw new InvalidArgumentsException("No target Object! Perhaps you specified a non-existing Player or NPCID? Use PLAYER:player_name or NPCID:#.");
+        
+		potionEffect = new PotionEffect(potion, duration, amplifier);
 	}
 
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
-		if (target == null) {
-			dB.echoError("Could not find target! Perhaps you specified a non-existing NPCID?");
-			return;
-		}
+
+		// Apply the Potion_Effect!
+		potionEffect.apply(target);
 		
-		if (potionName !=null) {
-			try {
-				target.addPotionEffect(new PotionEffect(PotionEffectType.getByName(potionName), duration * 20, amplitude));
-				return;
-			} catch (Exception e) {
-				dB.echoError("Invalid potion effect! Check syntax.");
-				return;
-			}
-		} 
-		
-		else dB.echoError("Usage: CAST [SpellName] (DURATION:#) (POWER:#) (NPC:#) (PLAYER:PlayerName)");
-		return;
 	}	
 }

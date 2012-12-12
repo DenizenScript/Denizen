@@ -70,7 +70,7 @@ public class CommandRegistry implements DenizenRegistry {
         new IfCommand().activate().as("IF").withOptions("(!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
         new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
         new ModifyBlockCommand().activate().as("MODIFYBLOCK").withOptions("[LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)", 2);
-        new CastCommand().activate().as("CAST").withOptions("[POTION_EFFECT] (DURATION:#) (POWER:#) (NPCID:#) (PLAYER:PlayerName)", 1);
+        new CastCommand().activate().as("CAST").withOptions("TYPE:PotionEffectType (DURATION:#) (POWER:#) (TARGET:NPC|PLAYER)", 1);
         new FeedCommand().activate().as("FEED").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
         new HealCommand().activate().as("HEAL").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
         new SwitchCommand().activate().as("SWITCH").withOptions("[LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
