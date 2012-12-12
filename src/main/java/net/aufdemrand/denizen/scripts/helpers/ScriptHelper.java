@@ -37,12 +37,12 @@ public class ScriptHelper {
 	public String getInteractScript(NPC npc, Player player, Class<? extends AbstractTrigger> trigger) {
 
 		String theScript = null;
-		List<String> assignedScripts = denizen.getAssignments().getStringList(npc.getTrait(AssignmentTrait.class).getAssignment() + ".INTERACT SCRIPTS");
-
+		List<String> assignedScripts = denizen.getScriptEngine().getScriptHelper().getStringListIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment() + ".INTERACT SCRIPTS");
+		
 		dB.echoDebug(DebugElement.Header, "Getting interact script: " + npc.getName() + "/" + player.getName());
 
 		if (assignedScripts.isEmpty()) { 
-			dB.echoError("Could not find any interact scripts.");
+			dB.echoError("Could not find any interact scripts!");
 			dB.echoDebug(DebugElement.Footer);
 			return null; 
 		}
@@ -69,24 +69,26 @@ public class ScriptHelper {
 			// Get requirements
 			try {
 				if (denizen.getScriptEngine().getRequirementChecker().check(script, npc, player)) {
-					dB.echoApproval("'" + assignment + "' meets requirements.");
+					dB.echoApproval(ChatColor.GREEN + "'" + assignment + "' meets requirements.");
 
 					// Meets requirements, but we need to check cool down, too.
-					if (denizen.getCommandRegistry().get(CooldownCommand.class).checkCooldown(player.getName(), script)) 
+					if (denizen.getCommandRegistry().get(CooldownCommand.class).checkCooldown(player.getName(), script)) { 
 						interactableScripts.add(new PriorityPair(priority, assignment.split(" ", 2)[1]));
-					else dB.echoDebug(" ...but, isn't cooled down, yet! Skipping.");
+					}	else {
+						dB.echoDebug(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
+					}
 
 				} else
 					// Does not meet requirements, alert the console!
-					dB.echoDebug("'" + assignment + "' does not meet requirements.");
+					dB.echoDebug(ChatColor.GOLD + "'" + assignment + "' does not meet requirements.");
 
 			} catch (RequirementMissingException e) {
 				// Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!
-				dB.echoError("'" + assignment + "' has a bad requirement, skipping.");
+				dB.echoError(ChatColor.RED + "'" + assignment + "' has a bad requirement, skipping.");
 			}
+			
+			dB.echoDebug(DebugElement.Spacer);
 		}
-
-		dB.echoDebug(DebugElement.Spacer);
 
 		// If list has only one entry, this is it!
 		if (interactableScripts.size() == 1) {
@@ -98,7 +100,7 @@ public class ScriptHelper {
 
 		// Or, if list is empty.. uh oh!
 		else if (interactableScripts.isEmpty()) {
-			dB.echoError("Could not find any scripts assigned!");
+			dB.echoDebug(ChatColor.YELLOW + "Uh oh!" + ChatColor.WHITE + " No scripts meet requirements!");
 			dB.echoDebug(DebugElement.Footer);
 			return null;
 		}
@@ -116,7 +118,7 @@ public class ScriptHelper {
 
 				// This is an Overlay Assignment, check for the appropriate Trigger Script...
 				String scriptName = interactableScripts.get(a).getName().substring(1);
-				String triggerString = denizen.getTriggerRegistry().get(trigger).getName().toUpperCase() + " Trigger"; 
+				String triggerString = denizen.getTriggerRegistry().get(trigger).getName().toUpperCase() + " TRIGGER"; 
 
 				// If Trigger exists, cool, this is our script.
 				if (denizen.getScripts().contains(scriptName.toUpperCase() + ".STEPS." + getCurrentStep(player, scriptName) + "." + triggerString)) {
