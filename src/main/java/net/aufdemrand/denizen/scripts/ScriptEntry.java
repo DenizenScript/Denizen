@@ -91,7 +91,7 @@ public class ScriptEntry {
 		this.player = player;
 		this.npc = npc;
 		this.args = new ArrayList<String>();
-		if (args != null) this.args = Arrays.asList(arguments);
+		if (arguments != null) this.args = Arrays.asList(arguments);
 		this.script = script;
 		this.step = step;
 
