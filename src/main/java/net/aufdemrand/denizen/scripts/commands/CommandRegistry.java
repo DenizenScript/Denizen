@@ -6,14 +6,19 @@ import java.util.Map;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizen.scripts.commands.core.CastCommand;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.commands.core.DisengageCommand;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
+import net.aufdemrand.denizen.scripts.commands.core.FeedCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FlagCommand;
+import net.aufdemrand.denizen.scripts.commands.core.HealCommand;
 import net.aufdemrand.denizen.scripts.commands.core.IfCommand;
+import net.aufdemrand.denizen.scripts.commands.core.LookcloseCommand;
 import net.aufdemrand.denizen.scripts.commands.core.ModifyBlockCommand;
+import net.aufdemrand.denizen.scripts.commands.core.SwitchCommand;
 import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
 
 public class CommandRegistry implements DenizenRegistry {
@@ -62,6 +67,11 @@ public class CommandRegistry implements DenizenRegistry {
         new IfCommand().activate().as("IF").withOptions("(!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
         new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
         new ModifyBlockCommand().activate().as("MODIFYBLOCK").withOptions("[LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)", 2);
+        new CastCommand().activate().as("CAST").withOptions("[POTION_EFFECT] (DURATION:#) (POWER:#) (NPCID:#) (PLAYER:PlayerName)", 1);
+        new FeedCommand().activate().as("FEED").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
+        new HealCommand().activate().as("HEAL").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
+        new SwitchCommand().activate().as("SWITCH").withOptions("[LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
+        new LookcloseCommand().activate().as("LOOKCLOSE").withOptions("[TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)", 1);
 
         denizen.getDebugger().echoApproval("Loaded core commands: " + instances.keySet().toString());
     }
