@@ -6,10 +6,12 @@ import java.util.Map;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizen.scripts.commands.core.AnnounceCommand;
 import net.aufdemrand.denizen.scripts.commands.core.CastCommand;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.commands.core.DisengageCommand;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ExecuteCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FeedCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
@@ -18,6 +20,7 @@ import net.aufdemrand.denizen.scripts.commands.core.HealCommand;
 import net.aufdemrand.denizen.scripts.commands.core.IfCommand;
 import net.aufdemrand.denizen.scripts.commands.core.LookcloseCommand;
 import net.aufdemrand.denizen.scripts.commands.core.ModifyBlockCommand;
+import net.aufdemrand.denizen.scripts.commands.core.NarrateCommand;
 import net.aufdemrand.denizen.scripts.commands.core.SwitchCommand;
 import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
 
@@ -72,6 +75,9 @@ public class CommandRegistry implements DenizenRegistry {
         new HealCommand().activate().as("HEAL").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
         new SwitchCommand().activate().as("SWITCH").withOptions("[LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
         new LookcloseCommand().activate().as("LOOKCLOSE").withOptions("[TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)", 1);
+        new AnnounceCommand().activate().as("ANNOUNCE").withOptions("['Text to announce']", 1);
+        new NarrateCommand().activate().as("NARRATE").withOptions("(PLAYER:player_name) ['Text to narrate']", 1);
+        new ExecuteCommand().activate().as("EXECUTE").withOptions("[AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']", 2);
 
         denizen.getDebugger().echoApproval("Loaded core commands: " + instances.keySet().toString());
     }
