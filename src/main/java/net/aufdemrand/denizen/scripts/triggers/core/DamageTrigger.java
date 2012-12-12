@@ -56,7 +56,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
         int theStep = sH.getCurrentStep(player, script);
 
         // Gets entries from the script
-        List<String> theScript = sH.getScriptContents(sH.getKeys(script, theStep, name) + sH.scriptKey);
+        List<String> theScript = sH.getScriptContents(sH.getTriggerScriptPath(script, theStep, name) + sH.scriptKey);
 
         // Build scriptEntries from the script and queue them up
         sB.queueScriptEntries(player, sB.buildScriptEntries(player, npc, theScript, script, theStep), QueueType.PLAYER);

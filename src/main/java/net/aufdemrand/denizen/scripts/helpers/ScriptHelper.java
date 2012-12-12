@@ -168,15 +168,15 @@ public class ScriptHelper {
 
 	public String scriptKey = ".SCRIPT";
 
-	public String getKeys(String scriptName, int step, String triggerName) {
+	public String getTriggerScriptPath(String scriptName, int step, String triggerName) {
 		return scriptName.toUpperCase() + ".STEPS." + step + "." +  triggerName.toUpperCase() + " TRIGGER.";
 	}
 
 	public List<String> getScriptContents(String path) {
 		List<String> contents = new ArrayList<String>();
 		path = path.toUpperCase().replace("..", ".");
-		if (denizen.getScripts().contains(path))
-			contents = denizen.getScripts().getStringList(path);
+		if (denizen.getScripts().contains(path.toUpperCase()))
+			contents = denizen.getScripts().getStringList(path.toUpperCase());
 		if (contents.isEmpty()) {
 			dB.echoError("Non-valid script structure at:");
 			String spacing = "";
