@@ -55,7 +55,7 @@ public class TagManager {
         boolean changeBack = false;
         int failsafe = 0;
         do {
-            // Just in case, do-loops make me nervous
+            // Just in case, do-loops make me nervous, but does implement a limit of 25 tags per argument.
             failsafe++;
             ReplaceableTagEvent event = null;
             if (positions == null) break;

@@ -23,16 +23,14 @@ public class ActionHandler {
         List<String> script = denizen.getScriptEngine().getScriptHelper().getStringListIgnoreCase(assignment + ".actions.on " + actionName);
         if (script.isEmpty()) return;
         
-        denizen.getDebugger().echoDebug(DebugElement.Header, "Executing action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
+        denizen.getDebugger().echoDebug(DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
         
         // Build script entries
         List<ScriptEntry> scriptEntries = denizen.getScriptEngine().getScriptBuilder().buildScriptEntries(player, npc, script, null, null);
-        
+
         // Execute scriptEntries
         for (ScriptEntry scriptEntry : scriptEntries)
            denizen.getScriptEngine().getScriptExecuter().execute(scriptEntry);
-        
-        denizen.getDebugger().echoDebug(DebugElement.Footer);
         
     }
     
