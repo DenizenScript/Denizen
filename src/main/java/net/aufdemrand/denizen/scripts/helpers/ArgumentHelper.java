@@ -247,7 +247,7 @@ public class ArgumentHelper {
         String[] num = argument.split(",");
         Location location = null;
         try {
-            location = new Location(Bukkit.getWorld(num[3]), Double.valueOf(num[1]), Double.valueOf(num[2]), Double.valueOf(num[0]));
+            location = new Location(Bukkit.getWorld(num[3]), Double.valueOf(num[0]), Double.valueOf(num[1]), Double.valueOf(num[2]));
         } catch (Exception e) { dB.echoError("Invalid Location!"); return null; }
         return location;
     }
