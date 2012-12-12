@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 public class Debugger {
 
 	Denizen plugin;
-	CommandSender cs = null;
+	
+	ConsoleSender cs = new ConsoleSender();
 	
 	public boolean debugMode = true;
 	public boolean showStackTraces = true;
@@ -20,6 +21,27 @@ public class Debugger {
 
 	public enum DebugElement {
 		Header,	Footer, Spacer
+	}
+	
+	private class ConsoleSender {
+		
+		CommandSender commandSender = null;
+		
+		public void sendMessage(String string) {
+			if (commandSender == null) commandSender = plugin.getServer().getConsoleSender(); 
+			String[] words = string.split(" ");
+			String buffer = "";
+			int modifier = 1;
+			for (String word : words) {
+				if (buffer.length() + word.length() < (79 * modifier) - 14) buffer = buffer + word + " ";
+				else {
+					modifier++;
+					buffer = buffer + "\n" + "                   " + word + " ";
+				}
+			}
+			commandSender.sendMessage(buffer);
+		}
+		
 	}
 	
 	public enum Messages {
@@ -86,68 +108,57 @@ public class Debugger {
 	
 	public void echoDebug(Messages message, String arg) {
 		if (!debugMode) return;
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + String.format(message.toString(), arg));
+		cs.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + String.format(message.toString(), arg));
 	}
 	
 	public void echoDebug(DebugElement element, String string) {
 		if (!debugMode) return;
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-
 		if (element == DebugElement.Footer) 
 			cs.sendMessage(ChatColor.LIGHT_PURPLE + "+---------------------+");
 		else if (element == DebugElement.Header)
 			cs.sendMessage(ChatColor.LIGHT_PURPLE + "+- " + string + " ------+");
 		else if (element == DebugElement.Spacer)
-			cs.sendMessage("");
+			cs.sendMessage(ChatColor.LIGHT_PURPLE + "");
 	}
 	
 	public void echoDebug(String message, String arg) {
 		if (!debugMode) return;
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + String.format(message, arg));
+		cs.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + String.format(message, arg));
 	}
 
 	public void echoDebug(String message) {
 		if (!debugMode) return;
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE + message);
+		cs.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + message);
 	}
 
 	public void echoApproval(String message, String arg) {
 		if (!debugMode) return;
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + String.format(message, arg));
+		cs.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + String.format(message, arg));
 	}
 
 	public void echoApproval(String message) {
 		if (!debugMode) return;
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + message);
+		cs.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + message);
 	}
 	
 	public void echoError(String message) {
 		if (!debugMode) return;
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + message);
+		cs.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + message);
 	}
 
 	public void echoError(Messages message) {
 		if (!debugMode) return;
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + message.toString());
+		cs.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + message.toString());
 	}
 
 	public void echoError(Messages message, String arg) {
 		if (!debugMode) return;
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + String.format(message.toString(), arg));
+		cs.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + String.format(message.toString(), arg));
 	}
 	
 	public void echoError(String message, String arg) {
 		if (!debugMode) return;
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.LIGHT_PURPLE + "| " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + String.format(message, arg));
+		cs.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + String.format(message, arg));
 	}
 
 	/* 
@@ -155,21 +166,19 @@ public class Debugger {
 	 */
 	
 	public void log(String message, String arg) {
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.YELLOW + "// " + ChatColor.WHITE + String.format(message, arg));
+		cs.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + String.format(message, arg));
 	}
 
 	public void log(String message) {
-		if (cs == null) cs = plugin.getServer().getConsoleSender();
-		cs.sendMessage(ChatColor.YELLOW + "// " + ChatColor.WHITE + message);
+		cs.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + message);
 	}
 
 	public void notify(Player player, String message, String arg) {
-		player.sendMessage(ChatColor.YELLOW + "// " + ChatColor.WHITE + String.format(message, arg));
+		player.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + String.format(message, arg));
 	}
 
 	public void notify(Player player, String message) {
-		player.sendMessage(ChatColor.YELLOW + "// " + ChatColor.WHITE + ChatColor.WHITE + message);
+		player.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + ChatColor.WHITE + message);
 	}
 
     public void toggle() {

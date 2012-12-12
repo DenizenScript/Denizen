@@ -32,8 +32,9 @@ public class CommandExecuter {
 
 	public boolean execute(ScriptEntry scriptEntry) {
 		if (plugin.getCommandRegistry().get(scriptEntry.getCommand()) == null) {
-			dB.echoError(scriptEntry.getCommand() + " is an invalid dScript command!");
-			dB.echoError("   Are you sure the command loaded?");
+			dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommand());
+			dB.echoError(scriptEntry.getCommand() + " is an invalid dScript command! Are you sure the command loaded?");
+			dB.echoDebug(DebugElement.Footer);
 			return false;
 		}
 
