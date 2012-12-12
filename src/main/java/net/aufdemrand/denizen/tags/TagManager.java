@@ -11,8 +11,10 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.tags.core.AnchorTags;
 import net.aufdemrand.denizen.tags.core.BookmarkTags;
 import net.aufdemrand.denizen.tags.core.ColorTags;
+import net.aufdemrand.denizen.tags.core.ConstantTags;
 import net.aufdemrand.denizen.tags.core.FlagTags;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
 
@@ -36,8 +38,9 @@ public class TagManager {
         new ColorTags(denizen);
         new FlagTags(denizen);
         new BookmarkTags(denizen);
+        new ConstantTags(denizen);
         // new NPCTags(denizen);
-        // new AnchorTags(denizen);
+        new AnchorTags(denizen);
     }
     
     public String tag(Player player, DenizenNPC npc, String arg, boolean instant) {
