@@ -251,15 +251,15 @@ public class CommandHandler {
 		}
 		// Reload a specific item
 		if (args.length() > 0) {
-			if  (args.getString(1).equalsIgnoreCase("saves")) {
+			if  (args.getString(0).equalsIgnoreCase("saves")) {
 				denizen.reloadSaves();
 				Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml reloaded from disk to memory.");
 				return;
-			} else if (args.getString(1).equalsIgnoreCase("config")) {
+			} else if (args.getString(0).equalsIgnoreCase("config")) {
 				denizen.reloadConfig();
 				Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
 				return;
-			} else if (args.getString(1).equalsIgnoreCase("scripts")) {
+			} else if (args.getString(0).equalsIgnoreCase("scripts")) {
 				denizen.reloadScripts();
 				Messaging.send(sender, ChatColor.GREEN + "Denizen/scripts/... reloaded from disk to memory.");
 				return;
