@@ -30,6 +30,9 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity()) && player != null) {
             NPC npc = CitizensAPI.getNPCRegistry().getNPC(event.getEntity());
 
+            // Check if NPC has triggers.
+            if (!npc.hasTrait(TriggerTrait.class)) return;
+            
             // Check if trigger is enabled.
             if (!npc.getTrait(TriggerTrait.class).isEnabled(name)) return;
 
@@ -50,7 +53,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     public boolean parse(DenizenNPC npc, Player player, String script) {
         if (script == null) return false;
 
-        dB.echoDebug(DebugElement.Header, "Parsing damage trigger: " + npc.getName() + "/" + player.getName() + " -+");
+        dB.echoDebug(DebugElement.Header, "Parsing damage trigger: " + npc.getName() + "/" + player.getName());
 
         dB.echoDebug("Getting current step:");
         int theStep = sH.getCurrentStep(player, script);
