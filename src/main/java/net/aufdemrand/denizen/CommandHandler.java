@@ -132,7 +132,7 @@ public class CommandHandler {
 	 * ASSIGNMENT
 	 */
 	@net.citizensnpcs.command.Command(
-			aliases = { "npc" }, usage = "assignment --set [assignment name] (-r)", 
+			aliases = { "npc" }, usage = "assignment --set assignment_name (-r)", 
 			desc = "Controls the assignment for an NPC.", flags = "r", modifiers = { "assignment", "assign" },
 			min = 1, max = 3, permission = "npc.assign")
 	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
@@ -141,17 +141,27 @@ public class CommandHandler {
 		Player player = null;
 		if (sender instanceof Player) player = (Player) sender;
 		AssignmentTrait trait = npc.getTrait(AssignmentTrait.class);
+
 		if (args.hasValueFlag("set")) {
-			if (trait.setAssignment(args.getFlag("set"), player)) Messaging.send(sender, ChatColor.GREEN + "Assignment set.");
-			else Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded?");
+			if (trait.setAssignment(args.getFlag("set"), player)) 
+				Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " has been assigned '" + trait.getAssignment() + "'.");
+			else Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
 			return;
+
 		} else if (args.hasFlag('r')) {
 			trait.removeAssignment(player);
-			Messaging.send(sender,  ChatColor.YELLOW + "Assignment removed.");
+			Messaging.send(sender,  ChatColor.YELLOW + npc.getName() + "'s assignment has been removed.");
+			return;
+
+		} else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
+			Messaging.send(sender, "");
+			Messaging.send(sender, "<f>Use '--set name' to set an assignment script to this NPC.");
+			Messaging.send(sender, "<b>Example: /npc assignment --set \"Magic Shop\"");
+			Messaging.send(sender, "<f>Remove an assignment with '-r'.");
+			Messaging.send(sender, "<f>Note: Assigning a script will fire an 'On Assignment:' action.");
+			Messaging.send(sender, "");
 			return;
 		}
-
-		if (args.length() < 2) throw new CommandException();
 
 		trait.describe(sender, args.getInteger(1, 1));
 	}

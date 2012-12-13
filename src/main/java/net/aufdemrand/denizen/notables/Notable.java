@@ -95,7 +95,7 @@ public class Notable {
 	}
 	
 	public String describe() {
-	    return "<e>" + name + " <a> " + location.getWorld().getName() + " <b> " + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ();
+	    return "<a>" + name + "<b> " + location.getWorld().getName() + "<c> " + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ();
 	}
 	
 
