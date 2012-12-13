@@ -2,6 +2,7 @@ package net.aufdemrand.denizen;
 
 import java.util.Set;
 
+import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
@@ -231,6 +232,61 @@ public class CommandHandler {
 		Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml saved to disk from memory.");
 	}
 
+	
+	/*
+	 * DENIZEN LISTENER
+	 */
+	@net.citizensnpcs.command.Command(
+			aliases = { "denizen" }, usage = "listener (--player) --id listener_id --report|cancel|finish", 
+			desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "listener" },
+			min = 1, max = 3, permission = "denizen.basic", flags = "s")
+	public void listener(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+		Denizen denizen = ((Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen"));
+
+		Player player = null;
+		if (sender instanceof Player) player = (Player) sender;
+		
+		if (args.hasValueFlag("player"))
+			player = denizen.getScriptEngine().getArgumentHelper().getPlayerFrom(args.getFlag("player"));
+		
+		if (player == null) throw new CommandException("Specified player not online or not found!");
+
+		if (!args.hasValueFlag("id")) {
+			Paginator paginator = new Paginator();
+			paginator.header("Active quest listeners for " + player.getName() + ":");
+			paginator.addLine("<e>Key: <a>Type  <b>ID");
+			if (denizen.getListenerRegistry().getListenersFor(player).isEmpty())
+				paginator.addLine("None.");
+			else for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
+				paginator.addLine("<a>" + quest.getListenerType() + "  <b>" + quest.getListenerId());
+			
+			paginator.sendPage(sender, args.getInteger(1, 1));
+			return;
+		}
+
+		if (args.hasValueFlag("report")) {
+			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
+				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("id")))
+					Messaging.send(sender, quest.report());
+			return;
+			
+		} else if (args.hasValueFlag("cancel")) {
+			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
+				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("id")))
+					quest.cancel();
+			return;
+			
+		} else if (args.hasValueFlag("finish")) {
+			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
+				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("id")))
+					quest.finish();
+			return;			
+		}
+
+		
+	
+	}
+	
 
 	/*
 	 * DENIZEN RELOAD 
@@ -251,15 +307,15 @@ public class CommandHandler {
 		}
 		// Reload a specific item
 		if (args.length() > 0) {
-			if  (args.getString(0).equalsIgnoreCase("saves")) {
+			if  (args.getString(1).equalsIgnoreCase("saves")) {
 				denizen.reloadSaves();
 				Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml reloaded from disk to memory.");
 				return;
-			} else if (args.getString(0).equalsIgnoreCase("config")) {
+			} else if (args.getString(1).equalsIgnoreCase("config")) {
 				denizen.reloadConfig();
 				Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
 				return;
-			} else if (args.getString(0).equalsIgnoreCase("scripts")) {
+			} else if (args.getString(1).equalsIgnoreCase("scripts")) {
 				denizen.reloadScripts();
 				Messaging.send(sender, ChatColor.GREEN + "Denizen/scripts/... reloaded from disk to memory.");
 				return;
