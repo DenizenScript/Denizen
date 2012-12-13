@@ -88,7 +88,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 				dB.log(player.getName() + " killed a " + event.getEntityType().toString() + ".");
 				check();
 			}
-		
+			
 		} else if (type == KillType.NPC) {
 			if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
 				if (targets.contains(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName().toUpperCase()) || targets.contains("*")
