@@ -100,7 +100,7 @@ public class RequirementChecker {
 				} catch (Throwable e) {
 					if (e instanceof RequirementCheckException) {
 						dB.echoError("Woah! Invalid arguments were specified!");
-						dB.echoError(requirement.getUsageHint());
+						dB.echoError("Usage: " + requirement.getUsageHint());
 					} else {
 						dB.echoError("Woah! An exception has been called for Requirement '" + requirement.getName() + "'!");
 						if (!dB.showStackTraces) dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");

@@ -33,7 +33,7 @@ public class Debugger {
 			String buffer = "";
 			int modifier = 1;
 			for (String word : words) {
-				if (buffer.length() + word.length() < (80 * modifier) - 12) buffer = buffer + word + " ";
+				if (buffer.length() + word.length() < (80 * modifier) - 16) buffer = buffer + word + " ";
 				else {
 					modifier++;
 					buffer = buffer + "\n" + "                   " + word + " ";

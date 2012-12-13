@@ -120,7 +120,7 @@ public class CommandExecuter {
 			// Give usage hint if InvalidArgumentsException was called.
 			if (e instanceof InvalidArgumentsException) {
 				dB.echoError("Woah! Invalid arguments were specified!");
-				dB.echoError(command.getUsageHint());
+				dB.echoError("Usage: " + command.getUsageHint());
 				dB.echoDebug(DebugElement.Footer);
 
 			} else { // Else, print stack-trace (if enabled in Debugger)
