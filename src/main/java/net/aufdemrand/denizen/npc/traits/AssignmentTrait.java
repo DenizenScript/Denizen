@@ -139,7 +139,7 @@ public class AssignmentTrait extends Trait {
 
 
 		if (!paginator.sendPage(sender, page))
-			throw new CommandException(Messages.COMMAND_PAGE_MISSING);
+			throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
 	}
 
 }

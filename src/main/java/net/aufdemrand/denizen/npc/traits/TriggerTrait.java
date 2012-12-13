@@ -116,18 +116,16 @@ public class TriggerTrait extends Trait implements Listener {
     public void describe(CommandSender sender, int page) throws CommandException {
         Paginator paginator = new Paginator().header("Triggers");
         paginator.addLine("<e>Key: <a>Name  <b>Status  <c>Cooldown  <d>Cooldown Type  <e>(Radius)");
-        int i = 0;
         for (Entry<String, Boolean> entry : enabled.entrySet()) {
-            String line = "<e>" + i + "<a>  " + entry.getKey() 
-                    + "<b>  " + (entry.getValue() ? "Enabled" : "Disabled") 
-                    + "<c>  " + getCooldownDuration(entry.getKey())
-                    + "<d>  " + getCooldownType(entry.getKey()).name()
-                    + "<e>  " + (getRadius(entry.getKey()) == -1 ? "" : getRadius(entry.getKey()));
+            String line = "<a> " + entry.getKey() 
+                    + "<b> " + (entry.getValue() ? "Enabled" : "Disabled") 
+                    + "<c> " + getCooldownDuration(entry.getKey())
+                    + "<d> " + getCooldownType(entry.getKey()).name()
+                    + "<e> " + (getRadius(entry.getKey()) == -1 ? "" : getRadius(entry.getKey()));
             paginator.addLine(line);
-            i++;
         }
         if (!paginator.sendPage(sender, page))
-            throw new CommandException(Messages.COMMAND_PAGE_MISSING);
+            throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
     }
 
     public boolean trigger(AbstractTrigger triggerClass, Player player) {
