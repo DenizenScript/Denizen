@@ -31,37 +31,69 @@ public class CommandHandler {
 		this.plugin = plugin;
 	}
 
-	
+
 	/*
 	 * PUSHABLE
 	 */
 	@net.citizensnpcs.command.Command(
-			aliases = { "npc" }, usage = "pushable (-r) (--delay #)", desc = "Makes a NPC pushable.",
-			flags = "r", modifiers = { "pushable", "push", "pu" }, min = 1, max = 2, permission = "npc.pushable")
+			aliases = { "npc" }, usage = "pushable -t (-r) (--delay #)", desc = "Makes a NPC pushable.",
+			flags = "rt", modifiers = { "pushable", "push" }, min = 1, max = 2, permission = "npc.pushable")
 	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
 	public void pushable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(PushableTrait.class)) npc.addTrait(PushableTrait.class);
 		PushableTrait trait = npc.getTrait(PushableTrait.class);
-		if (args.hasFlag('r')) {
-			trait.setReturnable(true);
-			Messaging.send(sender, ChatColor.GREEN + npc.getName() + " will return when being pushed.");
-		} else if (args.hasValueFlag("delay")) {
-			if (args.getFlag("delay").matches("\\d+")) {
+
+		if (args.hasFlag('r') && !args.hasFlag('t')) {
+			trait.setReturnable(!trait.isReturnable());
+			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + (trait.isReturnable() ? " will " : " will not ") + "return when being pushed" 
+					+ (!trait.isReturnable() || trait.isPushable() ? "." : ", but is currently not pushable."));
+			return;
+
+		} else if (args.hasValueFlag("delay") && !args.hasFlag('t')) {
+			if (args.getFlag("delay").matches("\\d+") && args.getFlagInteger("delay") > 0) {
 				trait.setDelay(Integer.valueOf(args.getFlag("delay")));
-				Messaging.send(sender, "Return delay set to " + args.getFlag("delay") + " seconds.");
-			} else Messaging.send(sender, ChatColor.RED + "Delay must be a valid number of seconds!");
-		} else trait.toggle();
+				trait.setReturnable(true);
+				Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " will return after '" + args.getFlag("delay") + "' seconds"
+						+ (trait.isPushable() ? "." : ", but is currently not pushable."));
+				return;
+			} else {
+				Messaging.send(sender, ChatColor.RED + "Delay must be a valid number of seconds!");
+				return;
+			}
+
+		} else if (args.hasFlag('t') && !args.hasValueFlag("delay") && !args.hasFlag('r')) {
+			trait.toggle();
+			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + (trait.isPushable() ? " is" : " is not") + " currently pushable" +
+					(trait.isReturnable() && trait.isPushable() ? " and will return when pushed after '" + trait.getDelay() + "' seconds." : "."));
+			return;
+
+		} else if (args.hasFlag('t')) {
+			trait.toggle();
+			if (args.hasFlag('r')) trait.setReturnable(true);
+			if (args.hasValueFlag("delay") && args.getFlag("delay").matches("\\d+") && args.getFlagInteger("delay") > 0)
+				trait.setDelay(args.getFlagInteger("delay"));
+			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + (trait.isPushable() ? " is" : " is not") + " currently pushable" +
+					(trait.isReturnable() && trait.isPushable() ? " and will return when pushed after '" + trait.getDelay() + "' seconds." : "."));
+			return;
+			
+		} else if (args.length() > 2) {
+			Messaging.send(sender, "Use '-t' to toggle pushable state. Example: /npc pushable -t");
+			Messaging.send(sender, "To have the NPC return when pushed, use '-r'.");
+			Messaging.send(sender, "Change the return delay with '--delay #'.");
+			Messaging.send(sender, "");
+		}
+
 		Messaging.send(sender, ChatColor.YELLOW + npc.getName() + (trait.isPushable() ? " is" : " is not") + " currently pushable" +
 				(trait.isReturnable() ? " and will return when pushed after " + trait.getDelay() + " seconds." : "."));
 	}
 
-	
+
 	/*
 	 * CONSTANTS
 	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "constant --set|remove name --value constant value", 
-			desc = "Views/adds/removes NPC string constants.", flags = "r", modifiers = { "constant", "const", "co" },
+			desc = "Views/adds/removes NPC string constants.", flags = "r", modifiers = { "constant", "const" },
 			min = 1, max = 3, permission = "npc.constants")
 	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
 	public void constants(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
@@ -71,22 +103,24 @@ public class CommandHandler {
 			if (!args.hasValueFlag("value")) throw new CommandException("SET requires use of the VALUE argument."); 
 			trait.setConstant(args.getFlag("set"), args.getFlag("value"));
 			Messaging.send(sender, ChatColor.GREEN + "Added constant '" + args.getFlag("remove") + "'");
-			
+
 		} else if (args.hasValueFlag("remove")) {
 			trait.removeConstant(args.getFlag("remove"));
 			Messaging.send(sender, ChatColor.GREEN + "Removed constant '" + args.getFlag("remove") + "'");
 		}
-		
+
+		if (args.length() < 2) throw new CommandException();
+
 		trait.describe(sender, args.getInteger(1, 1));
 	}
-	
-	
+
+
 	/*
 	 * ASSIGNMENT
 	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "assignment --set [assignment name] (-r)", 
-			desc = "Controls the assignment for an NPC.", flags = "r", modifiers = { "assignment", "assign", "as" },
+			desc = "Controls the assignment for an NPC.", flags = "r", modifiers = { "assignment", "assign" },
 			min = 1, max = 3, permission = "npc.assign")
 	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
 	public void assignment(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
@@ -103,10 +137,13 @@ public class CommandHandler {
 			Messaging.send(sender,  ChatColor.YELLOW + "Assignment removed.");
 			return;
 		}
+
+		if (args.length() < 2) throw new CommandException();
+
 		trait.describe(sender, args.getInteger(1, 1));
 	}
 
-	
+
 	/*
 	 * TRIGGER
 	 */
@@ -129,6 +166,7 @@ public class CommandHandler {
 					(trait.isEnabled(args.getFlag("name")) ?  "with a cooldown of '" + trait.getCooldownDuration(args.getFlag("name")) + "' seconds."  : "."));
 			return;
 		}
+
 		trait.describe(sender, args.getInteger(1, 1));
 	}
 
@@ -153,6 +191,7 @@ public class CommandHandler {
 			Messaging.send(sender, ChatColor.YELLOW + "Nickname removed.");
 			return;
 		}
+
 		if (trait.hasNickname())
 			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s nickname is '" + trait.getNickname() + "'.");
 		else Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " does not have a nickname!");
@@ -202,7 +241,7 @@ public class CommandHandler {
 				((denizen.getDebugger().showStackTraces) ? "enabled and showing stack-traces." : "enabled.") : "disabled."));
 	}    
 
-	
+
 	/*
 	 * DENIZEN VERSION
 	 */
@@ -232,7 +271,7 @@ public class CommandHandler {
 		Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml saved to disk from memory.");
 	}
 
-	
+
 	/*
 	 * DENIZEN LISTENER
 	 */
@@ -245,10 +284,10 @@ public class CommandHandler {
 
 		Player player = null;
 		if (sender instanceof Player) player = (Player) sender;
-		
+
 		if (args.hasValueFlag("player"))
 			player = denizen.getScriptEngine().getArgumentHelper().getPlayerFrom(args.getFlag("player"));
-		
+
 		if (player == null) throw new CommandException("Specified player not online or not found!");
 
 		if (!args.hasValueFlag("id")) {
@@ -259,7 +298,7 @@ public class CommandHandler {
 				paginator.addLine("None.");
 			else for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
 				paginator.addLine("<a>" + quest.getListenerType() + "  <b>" + quest.getListenerId());
-			
+
 			paginator.sendPage(sender, args.getInteger(1, 1));
 			return;
 		}
@@ -269,13 +308,13 @@ public class CommandHandler {
 				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("id")))
 					Messaging.send(sender, quest.report());
 			return;
-			
+
 		} else if (args.hasValueFlag("cancel")) {
 			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
 				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("id")))
 					quest.cancel();
 			return;
-			
+
 		} else if (args.hasValueFlag("finish")) {
 			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
 				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("id")))
@@ -283,10 +322,10 @@ public class CommandHandler {
 			return;			
 		}
 
-		
-	
+
+
 	}
-	
+
 
 	/*
 	 * DENIZEN RELOAD 
@@ -306,7 +345,7 @@ public class CommandHandler {
 			return;
 		}
 		// Reload a specific item
-		if (args.length() > 0) {
+		if (args.length() > 1) {
 			if  (args.getString(1).equalsIgnoreCase("saves")) {
 				denizen.reloadSaves();
 				Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml reloaded from disk to memory.");
@@ -325,7 +364,7 @@ public class CommandHandler {
 		throw new CommandException();
 	}
 
-	
+
 	/*
 	 * DENIZEN SCRIPTS
 	 */
@@ -366,9 +405,9 @@ public class CommandHandler {
 			throw new CommandException(Messages.COMMAND_PAGE_MISSING);
 	}
 
-	
-	
-	
+
+
+
 }
 
 
