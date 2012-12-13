@@ -48,7 +48,8 @@ public class NarrateCommand extends AbstractCommand {
                 text = aH.getStringFrom(arg);
                 dB.echoDebug(Messages.DEBUG_SET_TEXT, aH.getStringFrom(arg));
             }
-
+        
+        if (player == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
         if (text == null) throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
     }
 
