@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.listeners.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.entity.EntityType;
@@ -131,8 +132,10 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 	}
 
 	@Override
-	public void report() {
-		// Will probably be used in a ReplaceableTagEvent
+	public String report() {
+		return player.getName() + " current has quest listener '" + listenerId 
+				+ "' active and must kill " + Arrays.toString(targets.toArray())
+				+ " '" + type.name() + "'(s). Current progress '" + currentKills + "/" + quantity + "'.";
 	}
 
 	@Override

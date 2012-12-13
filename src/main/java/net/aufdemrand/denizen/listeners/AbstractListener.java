@@ -31,7 +31,14 @@ public abstract class AbstractListener {
 		this.dB = denizen.getDebugger();
 	}
 
+	public String getListenerId() {
+		return listenerId != null ? listenerId : "";
+	}
 
+	public String getListenerType() {
+		return listenerType != null ? listenerType : "";
+	}
+	
 	/**
 	 * Method to handle building a new quest listener List<String> of arguments.
 	 * Most likely called from a LISTEN dScript command. The player and listenerId fields
@@ -128,7 +135,7 @@ public abstract class AbstractListener {
 		denizen.getListenerRegistry().cancel(player, listenerId, this);
 	}
 
-	public abstract void report();
+	public abstract String report();
 
 }
 
