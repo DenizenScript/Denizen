@@ -77,9 +77,10 @@ public class CommandHandler {
 			return;
 			
 		} else if (args.length() > 2) {
-			Messaging.send(sender, "Use '-t' to toggle pushable state. Example: /npc pushable -t");
-			Messaging.send(sender, "To have the NPC return when pushed, use '-r'.");
-			Messaging.send(sender, "Change the return delay with '--delay #'.");
+			Messaging.send(sender, "");
+			Messaging.send(sender, "<f>Use '-t' to toggle pushable state. <b>Example: /npc pushable -t");
+			Messaging.send(sender, "<f>To have the NPC return when pushed, use '-r'.");
+			Messaging.send(sender, "<f>Change the return delay with '--delay #'.");
 			Messaging.send(sender, "");
 		}
 
@@ -93,23 +94,35 @@ public class CommandHandler {
 	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "constant --set|remove name --value constant value", 
-			desc = "Views/adds/removes NPC string constants.", flags = "r", modifiers = { "constant", "const" },
+			desc = "Views/adds/removes NPC string constants.", flags = "r", modifiers = { "constants", "constant", "const" },
 			min = 1, max = 3, permission = "npc.constants")
 	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
 	public void constants(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
 		ConstantsTrait trait = npc.getTrait(ConstantsTrait.class);
 		if (args.hasValueFlag("set")) {
-			if (!args.hasValueFlag("value")) throw new CommandException("SET requires use of the VALUE argument."); 
+			if (!args.hasValueFlag("value")) throw new CommandException("--SET requires use of the '--VALUE \"constant value\"' argument."); 
 			trait.setConstant(args.getFlag("set"), args.getFlag("value"));
-			Messaging.send(sender, ChatColor.GREEN + "Added constant '" + args.getFlag("remove") + "'");
-
+			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " has added constant '" + args.getFlag("set") + "'.");
+			return;
+			
 		} else if (args.hasValueFlag("remove")) {
 			trait.removeConstant(args.getFlag("remove"));
-			Messaging.send(sender, ChatColor.GREEN + "Removed constant '" + args.getFlag("remove") + "'");
+			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " has removed constant '" + args.getFlag("remove") + "'.");
+			return;
+			
+		} else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
+			Messaging.send(sender, "");
+			Messaging.send(sender, "<f>Use '--set name' to add/set a new NPC-specific constant.");
+			Messaging.send(sender, "<f>Must also specify '--value \"constant value\"'.");
+			Messaging.send(sender, "<b>Example: /npc constant --set constant_1 --value \"test value\"");
+			Messaging.send(sender, "<f>Remove NPC-specific constants with '--remove name'");
+			Messaging.send(sender, "<f>Note: Constants set will override any specified in an");
+			Messaging.send(sender, "<f>assignment. Constants specified in assignments cannot be");
+			Messaging.send(sender, "<f>removed with this command.");
+			Messaging.send(sender, "");
+			return;
 		}
-
-		if (args.length() < 2) throw new CommandException();
 
 		trait.describe(sender, args.getInteger(1, 1));
 	}

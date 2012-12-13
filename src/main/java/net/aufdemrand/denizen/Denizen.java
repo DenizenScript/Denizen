@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.aufdemrand.denizen.events.ScriptsReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.interfaces.NPCSpeechEngine;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
@@ -243,7 +244,10 @@ public class Denizen extends JavaPlugin {
         String concatenated = scriptEngine.getScriptHelper().concatenateScripts();
         if (scriptConfig == null) scriptConfig = new YamlConfiguration();
 
-        try { scriptConfig.loadFromString(concatenated);
+        try { 
+        	scriptConfig.loadFromString(concatenated);
+        	Bukkit.getServer().getPluginManager().callEvent(new ScriptsReloadEvent());
+        	
         } catch (InvalidConfigurationException e) {
             getLogger().log(Level.SEVERE, "Error loading scripts to memory!");
             e.printStackTrace();
