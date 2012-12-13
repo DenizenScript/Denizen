@@ -67,14 +67,14 @@ public class PlaySoundCommand extends AbstractCommand {
             	
             }  
 			
-			else if (aH.matchesValueArg("VOLUME", arg, ArgumentType.Float) || aH.matchesValueArg("V", arg, ArgumentType.Integer)) {
+			else if (aH.matchesValueArg("VOLUME", arg, ArgumentType.Float) || aH.matchesValueArg("V", arg, ArgumentType.Float)) {
             	volume = aH.getFloatFrom(arg);
             	dB.echoDebug("...VOLUME set to: " + volume);
             	continue;
             	
             }  
 			
-			else if (aH.matchesValueArg("PITCH", arg, ArgumentType.Float) || aH.matchesValueArg("P", arg, ArgumentType.Integer)) {
+			else if (aH.matchesValueArg("PITCH", arg, ArgumentType.Float) || aH.matchesValueArg("P", arg, ArgumentType.Float)) {
             	pitch = aH.getFloatFrom(arg);
             	dB.echoDebug("...PITCH set to: " + pitch);
             	continue;
