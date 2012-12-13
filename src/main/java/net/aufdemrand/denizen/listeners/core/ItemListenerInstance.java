@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemListenerType.ItemType;
-import net.aufdemrand.denizen.listeners.core.KillListenerType.KillType;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
 
@@ -24,7 +23,6 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	ItemType type;
 	List<String> items;
 	int quantity = 0;
-	String listenerId;
 	
 	int currentItems = 0;
 	
@@ -74,7 +72,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 					currentItems++;
 					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " crafted a " + event.getCurrentItem().getType().toString() + ".");
-					complete(false);
+					check();
 				}
 			}
 		}
@@ -94,7 +92,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 					currentItems++;
 					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " smelted a " + event.getBlock().getType().toString() + ".");
-					complete(false);
+					check();
 				}
 			}
 		}
@@ -112,7 +110,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 					currentItems++;
 					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " fished a " + event.getCaught().getType().toString() + ".");
-					complete(false);
+					check();
 				}
 			}
 		}
@@ -153,16 +151,14 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 	}
 
-	public void complete(boolean forceable) {
-		if (quantity >= currentItems || forceable) {
+	public void check() {
+		if (quantity >= currentItems) {
 			CraftItemEvent.getHandlerList().unregister(this);
 			FurnaceSmeltEvent.getHandlerList().unregister(this);
 			InventoryClickEvent.getHandlerList().unregister(this);
 			PlayerFishEvent.getHandlerList().unregister(this);
-
 			finish();
 		}
-
 	}
 	
 	@Override

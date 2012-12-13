@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.World;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -54,7 +53,7 @@ public class PlaySoundCommand extends AbstractCommand {
                 if (location != null) dB.echoDebug(Messages.DEBUG_SET_LOCATION, aH.getStringFrom(arg));
                 continue;
 
-            } 
+            }
 			
 			else if (aH.matchesValueArg("SOUND", arg, ArgumentType.Custom) || aH.matchesValueArg("S", arg, ArgumentType.Custom)) {
         		try {

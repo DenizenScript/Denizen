@@ -16,6 +16,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizen.listeners.core.ItemListenerInstance;
+import net.aufdemrand.denizen.listeners.core.ItemListenerType;
 import net.aufdemrand.denizen.listeners.core.KillListenerInstance;
 import net.aufdemrand.denizen.listeners.core.KillListenerType;
 import net.aufdemrand.denizen.utilities.debugging.Debugger;
@@ -36,6 +38,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 	@Override
 	public void registerCoreMembers() {
 		new KillListenerType().activate().withClass(KillListenerInstance.class).as("KILL");
+		new ItemListenerType().activate().withClass(ItemListenerInstance.class).as("ITEM");
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 	
