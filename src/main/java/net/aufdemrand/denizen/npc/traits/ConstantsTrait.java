@@ -21,7 +21,7 @@ public class ConstantsTrait extends Trait {
 	private Denizen denizen;
 	private Map<String, String> constants = new HashMap<String, String>();
 	private Map<String, String> assignmentConstants = new HashMap<String, String>();
-	private String assignment;
+	private String assignment = null;
 
 	public ConstantsTrait() {
 		super("constants");
@@ -91,7 +91,7 @@ public class ConstantsTrait extends Trait {
 	public Map<String, String> getAssignmentConstants() {
 		if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()) {
 			// Has assignment
-			if (assignment.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment()))
+			if (assignment != null && assignment.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment()))
 				return assignmentConstants;
 			else return rebuildAssignmentConstants();
 		}
