@@ -131,7 +131,7 @@ public class AssignmentTrait extends Trait {
 		entriesPresent = false;
 		paginator.addLine(ChatColor.GRAY + "Actions:");
 		paginator.addLine("<e>Key: <a>Action name  <b>Script Size");
-		if (!denizen.getScripts().contains(assignment.toUpperCase() + ".Actions")) entriesPresent = true;
+		if (denizen.getScripts().contains(assignment.toUpperCase() + ".Actions")) entriesPresent = true;
 		if (entriesPresent)
 		for (String action : denizen.getScripts().getConfigurationSection(assignment.toUpperCase() + ".ACTIONS").getKeys(false))
 			paginator.addLine("<a>" + action + " <b>" + sH.getStringListIgnoreCase(assignment + ".ACTIONS." + action).size());
