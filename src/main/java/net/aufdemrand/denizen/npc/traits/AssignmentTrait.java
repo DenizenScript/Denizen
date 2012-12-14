@@ -74,6 +74,8 @@ public class AssignmentTrait extends Trait {
 		if (checkAssignment(assignment)) {
 			this.assignment = assignment.toUpperCase();
 			denizen.getNPCRegistry().getDenizen(npc).action("assignment", player);
+			if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
+			if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
 			return true;
 		}   else return false;
 	}
