@@ -69,7 +69,7 @@ public class ScriptHelper {
 			// Get requirements
 			try {
 				if (denizen.getScriptEngine().getRequirementChecker().check(script, npc, player)) {
-					dB.echoApproval(ChatColor.GREEN + "'" + assignment + "' meets requirements.");
+					dB.echoApproval("'" + assignment + "' meets requirements.");
 
 					// Meets requirements, but we need to check cool down, too.
 					if (denizen.getCommandRegistry().get(CooldownCommand.class).checkCooldown(player.getName(), script)) { 
@@ -80,7 +80,7 @@ public class ScriptHelper {
 
 				} else
 					// Does not meet requirements, alert the console!
-					dB.echoDebug(ChatColor.GOLD + "'" + assignment + "' does not meet requirements.");
+					dB.echoDebug("'" + assignment + "' does not meet requirements.");
 
 			} catch (RequirementMissingException e) {
 				// Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!

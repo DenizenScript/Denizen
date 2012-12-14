@@ -132,9 +132,10 @@ public class AssignmentTrait extends Trait {
 		paginator.addLine(ChatColor.GRAY + "Actions:");
 		paginator.addLine("<e>Key: <a>Action name  <b>Script Size");
 		if (!denizen.getScripts().contains(assignment.toUpperCase() + ".Actions")) entriesPresent = true;
-		for (String constant : denizen.getScripts().getConfigurationSection(assignment.toUpperCase() + ".ACTIONS").getKeys(false))
-			paginator.addLine("<a>" + constant + " <b>" + sH.getStringListIgnoreCase(assignment + ".ACTIONS." + constant).size());
-		if (!entriesPresent) paginator.addLine("<c>No actions defined in the assignment."); 
+		if (entriesPresent)
+		for (String action : denizen.getScripts().getConfigurationSection(assignment.toUpperCase() + ".ACTIONS").getKeys(false))
+			paginator.addLine("<a>" + action + " <b>" + sH.getStringListIgnoreCase(assignment + ".ACTIONS." + action).size());
+		else paginator.addLine("<c>No actions defined in the assignment."); 
 		paginator.addLine("");
 
 

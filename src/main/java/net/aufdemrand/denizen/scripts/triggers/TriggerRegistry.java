@@ -51,7 +51,7 @@ public class TriggerRegistry implements DenizenRegistry {
     @Override
     public void registerCoreMembers() {
         new ClickTrigger().activate().as("Click").withOptions(true, 2.0, CooldownType.PLAYER);
-        new DamageTrigger().activate().as("Damage").withOptions(true, 0.5, CooldownType.NPC);
+        new DamageTrigger().activate().as("Damage").withOptions(false, 0.5, CooldownType.NPC);
         denizen.getDebugger().echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 

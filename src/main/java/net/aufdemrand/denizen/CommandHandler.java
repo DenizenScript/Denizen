@@ -300,7 +300,7 @@ public class CommandHandler {
 	 */
 	@net.citizensnpcs.command.Command(
 			aliases = { "denizen" }, usage = "listener (--player) --id listener_id --report|cancel|finish", 
-			desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "listener" },
+			desc = "Checks/cancels/finishes listeners in progress.", modifiers = { "listener" },
 			min = 1, max = 3, permission = "denizen.basic", flags = "s")
 	public void listener(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		Denizen denizen = ((Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen"));
@@ -354,7 +354,7 @@ public class CommandHandler {
 	 * DENIZEN RELOAD 
 	 */
 	@Command ( aliases = { "denizen" }, usage = "reload (saves|config|scripts) (-a)", 
-			desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "reload" },
+			desc = "Reloads various Denizen YML files from disk to memory.", modifiers = { "reload" },
 			min = 1, max = 3, permission = "denizen.basic", flags = "a" )
 	public void reload(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
@@ -368,7 +368,7 @@ public class CommandHandler {
 			return;
 		}
 		// Reload a specific item
-		if (args.length() > 1) {
+		if (args.length() > 2) {
 			if  (args.getString(1).equalsIgnoreCase("saves")) {
 				denizen.reloadSaves();
 				Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml reloaded from disk to memory.");
@@ -383,8 +383,13 @@ public class CommandHandler {
 				return;
 			}
 		}
-		// Show usage hint
-		throw new CommandException();
+		
+		Messaging.send(sender, "");
+		Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, CONFIG, SCRIPTS");
+		Messaging.send(sender, "<b>Example: /denizen reload scripts");
+		Messaging.send(sender, "<f>Use '-a' to reload all parts.");
+		Messaging.send(sender, "");
+		return;
 	}
 
 
