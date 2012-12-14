@@ -119,12 +119,10 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	@Override
 	public void onSave() {
 		try {
-			store("Players." + player.getName() + ".Listeners.Saves." + listenerId + ".Listen Type", "ITEM");
-			store("Players." + player.getName() + ".Listeners.Saves." + listenerId + ".Script", this.scriptName);
-			store("Players." + player.getName() + ".Listeners.Saves." + listenerId + ".Type", this.type.toString());
-			store("Players." + player.getName() + ".Listeners.Saves." + listenerId + ".Items", this.items);
-			store("Players." + player.getName() + ".Listeners.Saves." + listenerId + ".Quantity", this.quantity);
-			store("Players." + player.getName() + ".Listeners.Saves." + listenerId + ".Current Items", this.currentItems);
+			store("Type", type.name());
+			store("Items", this.items);
+			store("Quantity Needed", this.quantity);
+			store("Quantity Done", this.currentItems);
 		} catch (Exception e) {
 			dB.echoError("Unable to save ITEM listener for '%s'!", player.getName());
 		}
@@ -132,18 +130,15 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 	@Override
 	public void onLoad() {
-		// NOT ENTIRELY SURE HOW THE LOADING PART WORKS
-		/*
 		try {
-			this.type = ItemType.valueOf(plugin.getSaves().getString("Players." + player.getName() + ".Listeners.Saves." + listenerId + ".Type"));
-			this.items = plugin.getSaves().getStringList("Players." + player.getName() + ".Listeners.Saves." + listenerId + ".Items");
-			this.quantity = plugin.getSaves().getInt("Players." + player.getName() + ".Listeners.Saves." + listenerId + ".Quantity");
-			this.currentItems = plugin.getSaves().getInt("Players." + player.getName() + ".Listeners.Saves." + listenerId + ".Current Items");
+			type = ItemType.valueOf((String) get("Type"));
+			items = (List<String>) (get("Items"));
+			quantity = (Integer) get("Quantity Needed");
+			currentItems = (Integer) get("Quantity Done");
 		} catch (Exception e) { 
 			dB.echoError("Unable to load ITEM listener for '%s'!", player.getName());
 			cancel();
 		}
-		 */
 	}
 
 	@Override
