@@ -35,7 +35,7 @@ public class RequirementChecker {
 		boolean negativeRequirement;
 
 		// Requirements list null? This script is probably named wrong, or doesn't exist!
-		if (reqList.isEmpty() && !reqMode.equals("NONE")) {
+		if (reqList.isEmpty() && !reqMode.equalsIgnoreCase("NONE")) {
 			dB.echoError("Non-valid requirements structure at:");
 			dB.echoDebug(ChatColor.GRAY + scriptName + ":");
 			dB.echoDebug(ChatColor.GRAY + "  Requirements:");
