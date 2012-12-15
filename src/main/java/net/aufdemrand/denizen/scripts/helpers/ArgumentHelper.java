@@ -113,7 +113,7 @@ public class ArgumentHelper {
     public boolean matchesValueArg(String argumentName, String argument, ArgumentType type) {
         if (argument == null) return false;
         if (argument.split(":").length == 1) return false;
-        if (!argument.toUpperCase().contains(argumentName.toUpperCase() + ":")) return false;
+        if (!argument.split(":")[0].equalsIgnoreCase(argumentName)) return false;
         argument = argument.split(":", 2)[1];
 
         switch (type) {
