@@ -60,16 +60,16 @@ public class ArgumentHelper {
 
     final Pattern durationPattern = Pattern.compile("duration:(\\d+)", Pattern.CASE_INSENSITIVE);
     final Pattern scriptPattern = Pattern.compile("script:.+", Pattern.CASE_INSENSITIVE);
-    final Pattern locationPattern = Pattern.compile("location:\\d+,\\d+,\\d+,\\w+", Pattern.CASE_INSENSITIVE);
+    final Pattern locationPattern = Pattern.compile("location:(?:-|)\\d+,(?:-|)\\d+,(?:-|)\\d+,\\w+", Pattern.CASE_INSENSITIVE);
     final Pattern queuetypePattern = Pattern.compile("(?:queue|queuetype):(?:player|player_task|npc)", Pattern.CASE_INSENSITIVE);
-    final Pattern quantityPattern = Pattern.compile("qty:\\d+", Pattern.CASE_INSENSITIVE);
+    final Pattern quantityPattern = Pattern.compile("qty:(?:-|)\\d+", Pattern.CASE_INSENSITIVE);
     final Pattern togglePattern = Pattern.compile("toggle:(true|false)", Pattern.CASE_INSENSITIVE);
     final Pattern materialPattern = Pattern.compile("[a-zA-Z\\x5F]+", Pattern.CASE_INSENSITIVE);
     final Pattern materialDataPattern = Pattern.compile("[a-zA-Z]+?:\\d+", Pattern.CASE_INSENSITIVE);
     final Pattern itemIdPattern = Pattern.compile("(?:(item:)|)\\d+");
     final Pattern itemIdDataPattern = Pattern.compile("(?:(item:)|)(\\d+)(:)(\\d+)");
-    final Pattern integerPattern = Pattern.compile("\\d+");
-    final Pattern doublePattern = Pattern.compile("\\d+(\\.\\d+|)");
+    final Pattern integerPattern = Pattern.compile("(?:-|)\\d+");
+    final Pattern doublePattern = Pattern.compile("(?:-|)\\d+(\\.\\d+|)");
     final Pattern floatPattern = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
     final Pattern stringPattern = Pattern.compile("\\.+", Pattern.CASE_INSENSITIVE);
     final Pattern wordPattern = Pattern.compile("\\w+", Pattern.CASE_INSENSITIVE);
