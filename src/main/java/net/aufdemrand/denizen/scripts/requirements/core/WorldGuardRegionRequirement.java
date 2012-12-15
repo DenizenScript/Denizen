@@ -17,12 +17,17 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+/**
+ * Feeds a (Player) entity.
+ * 
+ * @author Mason Adkins
+ */
+
 public class WorldGuardRegionRequirement extends AbstractRequirement {
 
 	@Override
 	public void onEnable() {
-		// TODO Auto-generated method stub
-		
+		// nothing to do here
 	}
 	
 	/* INREGION [NAME:regionname]
@@ -83,11 +88,7 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
 		//check the outcome
 		if (outcome == true) dB.echoDebug("...player in region!");
 		else dB.echoDebug("...player is not in region!");
-		
-		// No boolean for negative requirement like there was in 0.76?
-		//if (negativeRequirement != outcome) return true;
 
 		return outcome;
 	}
-
 }

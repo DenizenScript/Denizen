@@ -13,6 +13,12 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+/**
+ * Modifies blocks based based of single block location.
+ * Possibility to do faux animations with blocks.
+ * 
+ * @author Mason Adkins
+ */
 
 public class ModifyBlockCommand extends AbstractCommand{
 
@@ -45,8 +51,7 @@ public class ModifyBlockCommand extends AbstractCommand{
 	private int radius;
 	private int height;
 	private int depth;
-	
-	
+
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
 		
@@ -57,8 +62,7 @@ public class ModifyBlockCommand extends AbstractCommand{
 		height = 0;
 		depth = 0;
 		
-		for (String arg : scriptEntry.getArguments()) {
-			dB.echoDebug("Checking arg: " + arg);			
+		for (String arg : scriptEntry.getArguments()) {			
 		    if (aH.matchesLocation(arg)){
 		    	location = aH.getLocationFrom(arg);
 		    	dB.echoDebug("...location set to: " + location);
@@ -148,6 +152,5 @@ public class ModifyBlockCommand extends AbstractCommand{
 				}
 			}
 		}
-		
 	}
 }

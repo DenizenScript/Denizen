@@ -92,7 +92,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 	
 	public boolean inRegion(Player thePlayer) {
 		boolean inRegion = false;
-		ApplicableRegionSet currentRegions = WorldGuard.getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
+		ApplicableRegionSet currentRegions = WorldGuard.getRegionManager(thePlayer.getWorld()).getApplicableRegions(thePlayer.getLocation());
 
 		for(ProtectedRegion thisRegion: currentRegions){
 			dB.echoDebug("...checking current player region: " + thisRegion.getId());
