@@ -86,7 +86,7 @@ public class ModifyBlockCommand extends AbstractCommand{
 				
 			}
 			
-			else if (aH.matchesValueArg("HEIGHT", arg, ArgumentType.Integer) || aH.matchesValueArg("H", arg, ArgumentType.Integer)) {
+			else if (aH.matchesValueArg("HEIGHT, H", arg, ArgumentType.Integer) || aH.matchesValueArg("H", arg, ArgumentType.Integer)) {
 				height = aH.getIntegerFrom(arg);
 				dB.echoDebug("...height set to " + height);
 				continue;

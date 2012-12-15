@@ -119,7 +119,7 @@ public class ArgumentHelper {
 		} else {
 			boolean matched = false;
 			for (String string : argumentName.split(","))
-				if (argument.split(":")[0].equalsIgnoreCase(string)) matched = true;
+				if (argument.split(":")[0].equalsIgnoreCase(string.trim())) matched = true;
 			if (matched == false) return false;
 		}
 
