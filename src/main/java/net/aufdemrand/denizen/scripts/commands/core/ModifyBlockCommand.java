@@ -70,8 +70,9 @@ public class ModifyBlockCommand extends AbstractCommand{
 		    	
 		    }
 			
-			else if (aH.matchesValueArg("MATERIAL", arg, ArgumentType.Custom) || aH.matchesValueArg("M", arg, ArgumentType.Custom)) {
-				material = Material.getMaterial(aH.getStringFrom(arg));
+			else if (aH.matchesValueArg("MATERIAL, M", arg, ArgumentType.Custom)) {
+				if (aH.matchesValueArg("MATERIAL", arg, ArgumentType.Integer)) material = Material.getMaterial(aH.getIntegerFrom(arg));
+				else material = Material.getMaterial(aH.getStringFrom(arg));
 				
 				if (material != null) dB.echoDebug("...material set to " + material);
 				else dB.echoDebug("...material not valid.");
@@ -79,21 +80,21 @@ public class ModifyBlockCommand extends AbstractCommand{
 				
 			}
 			
-			else if (aH.matchesValueArg("RADIUS", arg, ArgumentType.Integer) || aH.matchesValueArg("R", arg, ArgumentType.Integer)) {
+			else if (aH.matchesValueArg("RADIUS, R", arg, ArgumentType.Integer)) {
 				radius = aH.getIntegerFrom(arg);
 				dB.echoDebug("...radius set to " + radius);
 				continue;
 				
 			}
 			
-			else if (aH.matchesValueArg("HEIGHT, H", arg, ArgumentType.Integer) || aH.matchesValueArg("H", arg, ArgumentType.Integer)) {
+			else if (aH.matchesValueArg("HEIGHT, H", arg, ArgumentType.Integer)) {
 				height = aH.getIntegerFrom(arg);
 				dB.echoDebug("...height set to " + height);
 				continue;
 				
 			}
 			
-			else if (aH.matchesValueArg("DEPTH", arg, ArgumentType.Integer) || aH.matchesValueArg("D", arg, ArgumentType.Integer)) {
+			else if (aH.matchesValueArg("DEPTH, D", arg, ArgumentType.Integer)) {
 				depth = aH.getIntegerFrom(arg);
 				dB.echoDebug("...depth set to " + depth);
 				continue;
