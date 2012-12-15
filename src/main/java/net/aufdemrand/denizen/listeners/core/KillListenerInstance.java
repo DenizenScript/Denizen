@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.KillListenerType.KillType;
@@ -22,10 +27,13 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 	List<String> targets = new ArrayList<String>();
 	int quantity = 1;
 	int currentKills = 0;
+	String argRegion = null;
+	
+	WorldGuardPlugin WorldGuard = null;
 
 	@Override
 	public void onBuild(List<String> args) {
-
+		
 		for (String arg : args) {
 			if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
 				try { 
@@ -40,6 +48,10 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 			} else if (aH.matchesValueArg("TARGETS", arg, ArgumentType.Custom)) {
 				targets = aH.getListFrom(arg);
 				dB.echoDebug("...set TARGETS.");
+				
+			} else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
+				argRegion = aH.getStringFrom(arg);
+				dB.echoDebug("...set REGION.");
 			}
 		}
 
@@ -78,8 +90,29 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		}
 	}
 	
+	public boolean inRegion(Player thePlayer) {
+		boolean inRegion = false;
+		ApplicableRegionSet currentRegions = WorldGuard.getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
+
+		for(ProtectedRegion thisRegion: currentRegions){
+			dB.echoDebug("...checking current player region: " + thisRegion.getId());
+			if (thisRegion.getId().contains(argRegion)) {
+				inRegion = true;
+				dB.echoDebug("...matched region");
+			} 
+		}
+		return inRegion;
+	}
+	
 	@EventHandler
 	public void listen(EntityDeathEvent event) {
+		if (WorldGuard == null) WorldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+
+		if (argRegion != null) {
+			//if player is not in argRegion, don't count kill!
+			if (!inRegion (player)) return;
+		}
+		
 		if (event.getEntity().getKiller() != player) return;
 		if (type == KillType.ENTITY) {
 			if (targets.contains(event.getEntityType().toString()) || targets.contains("*"))

@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.scripts.requirements.core.FlaggedRequirement;
+import net.aufdemrand.denizen.scripts.requirements.core.WorldGuardRegionRequirement;
 
 public class RequirementRegistry implements DenizenRegistry {
 
@@ -46,6 +47,7 @@ public class RequirementRegistry implements DenizenRegistry {
     @Override
     public void registerCoreMembers() {
         new FlaggedRequirement().activate().as("FLAGGED");
+        new WorldGuardRegionRequirement().activate().as("INREGION");
         denizen.getDebugger().echoApproval("Loaded core requirements: " + instances.keySet().toString());
     }
 

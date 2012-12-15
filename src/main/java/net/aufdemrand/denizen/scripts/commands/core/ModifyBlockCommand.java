@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
+import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -57,6 +58,7 @@ public class ModifyBlockCommand extends AbstractCommand{
 		depth = 0;
 		
 		for (String arg : scriptEntry.getArguments()) {
+			dB.echoDebug("Checking arg: " + arg);			
 		    if (aH.matchesLocation(arg)){
 		    	location = aH.getLocationFrom(arg);
 		    	dB.echoDebug("...location set to: " + location);
@@ -92,7 +94,7 @@ public class ModifyBlockCommand extends AbstractCommand{
 				dB.echoDebug("...depth set to " + depth);
 				continue;
 				
-			}
+			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 	}
 
