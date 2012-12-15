@@ -200,6 +200,7 @@ public class Denizen extends JavaPlugin {
         getTriggerRegistry().registerCoreMembers();
         getActivityRegistry().registerCoreMembers();
         getRequirementRegistry().registerCoreMembers();
+        getListenerRegistry().registerCoreMembers();
         
         // Load Notables into memory (for the Location Triggers to reference)
         notableManager().loadNotables();

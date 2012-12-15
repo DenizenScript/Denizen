@@ -37,7 +37,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		for (String arg : args) {
 			if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
 				try { 
-					this.type = KillType.valueOf(arg); 
+					this.type = KillType.valueOf(aH.getStringFrom(arg).toUpperCase()); 
 					dB.echoDebug(Messages.DEBUG_SET_TYPE, this.type.name());
 				} catch (Exception e) { }
 
@@ -47,7 +47,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
 			} else if (aH.matchesValueArg("TARGETS", arg, ArgumentType.Custom)) {
 				targets = aH.getListFrom(arg);
-				dB.echoDebug("...set TARGETS.");
+				dB.echoDebug("...set TARGETS: " + Arrays.toString(targets.toArray()));
 				
 			} else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
 				argRegion = aH.getStringFrom(arg);
@@ -65,7 +65,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 			cancel();
 		}
 		
-		denizen.getServer().getPluginManager().registerEvents((Listener) this, denizen);
+		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
 	@Override
@@ -82,6 +82,8 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		targets = (List<String>) get("Targets");
 		quantity = (Integer) get("Quantity");
 		currentKills = (Integer) get("Current Kills");
+		
+		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
 	public void check() {
@@ -110,7 +112,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
 		if (argRegion != null) {
 			//if player is not in argRegion, don't count kill!
-			if (!inRegion (player)) return;
+			if (!inRegion(player)) return;
 		}
 		
 		if (event.getEntity().getKiller() != player) return;
@@ -118,7 +120,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 			if (targets.contains(event.getEntityType().toString()) || targets.contains("*"))
 			{ 
 				currentKills++;
-				dB.log(player.getName() + " killed a " + event.getEntityType().toString() + ".");
+				dB.log(player.getName() + " killed a " + event.getEntityType().toString() + ". Current progress '" + currentKills + "/" + quantity + "'.");
 				check();
 			}
 			
@@ -127,7 +129,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 				if (targets.contains(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName().toUpperCase()) || targets.contains("*")
 						|| targets.contains(String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId() ))) {
 					currentKills++;
-					dB.log(player.getName() + " killed " + String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId()) + "/" + CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName() + ".");
+					dB.log(player.getName() + " killed " + String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId()) + "/" + CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName() + ". Current progress '" + currentKills + "/" + quantity + "'.");
 					check();
 				}
 			}
@@ -136,7 +138,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 			if (event.getEntityType() == EntityType.PLAYER) {
 				if (targets.contains(((Player) event.getEntity()).getName().toUpperCase()) || targets.contains("*")) {
 					currentKills++;
-					dB.log(player.getName() + " killed " + ((Player) event.getEntity()).getName().toUpperCase() + ".");
+					dB.log(player.getName() + " killed " + ((Player) event.getEntity()).getName().toUpperCase() + ". Current progress '" + currentKills + "/" + quantity + "'.");
 					check();
 				}
 			}

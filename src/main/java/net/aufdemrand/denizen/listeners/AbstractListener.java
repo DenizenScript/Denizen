@@ -19,7 +19,7 @@ public abstract class AbstractListener {
 	protected Debugger dB;
 
 	protected String listenerType;
-	protected String listenerId;
+	public String listenerId;
 	protected Player player;
 	protected String scriptName;
 	protected Map<String, Object> saveable = new HashMap<String, Object>();
@@ -75,7 +75,7 @@ public abstract class AbstractListener {
 	 * 
 	 */
 	public void store(String key, Object object) {
-		saveable.put(key.toLowerCase(), object);
+		saveable.put(key, object);
 	}
 
 	/**
@@ -96,6 +96,7 @@ public abstract class AbstractListener {
 		this.listenerType = listenerType;
 		this.scriptName = finishScript;
 		onBuild(args);
+		save();
 	}
 
 	public void save() {

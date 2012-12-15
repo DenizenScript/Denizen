@@ -88,6 +88,7 @@ public class ListenCommand extends AbstractCommand {
 			}   else if (aH.matchesScript(arg)) {
 				script = aH.getStringFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
+				continue;
 				
             }   else if (aH.matchesArg("FINISH", arg)) {
                 listenAction = ListenAction.FINISH;
@@ -99,9 +100,9 @@ public class ListenCommand extends AbstractCommand {
                 dB.echoDebug("...ID set: '%s'", id);
                 continue;
                 
-			}   else if (denizen.getListenerRegistry().get(aH.getStringFrom(arg)) != null) {
-				listenerType = aH.getStringFrom(arg);
-				dB.echoDebug("...TYPE set: '%'", listenerType);
+			}   else if (denizen.getListenerRegistry().get(arg) != null) {
+				listenerType = arg;
+				dB.echoDebug("...TYPE set: '%s'", listenerType);
 				continue;
 
 			}	else listenerArguments.add(arg);
@@ -116,7 +117,7 @@ public class ListenCommand extends AbstractCommand {
 
 		case NEW:
 			denizen.getListenerRegistry().get(listenerType).createInstance(player)
-				.build(player, id, commandName, listenerArguments, script);
+				.build(player, id, listenerType, listenerArguments, script);
 			
 		case FINISH:
 			for (AbstractListener listener : denizen.getListenerRegistry().getListenersFor(player))

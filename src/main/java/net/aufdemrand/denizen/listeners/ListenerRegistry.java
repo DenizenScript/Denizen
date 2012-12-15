@@ -24,7 +24,7 @@ import net.aufdemrand.denizen.utilities.debugging.Debugger;
 
 public class ListenerRegistry implements DenizenRegistry, Listener {
 
-	private Map<Player, List<AbstractListener>> listeners = new ConcurrentHashMap<Player, List<AbstractListener>>();
+	private Map<String, List<AbstractListener>> listeners = new ConcurrentHashMap<String, List<AbstractListener>>();
 	private Map<String, AbstractListenerType> types = new ConcurrentHashMap<String, AbstractListenerType>();
 
 	private Denizen denizen;
@@ -37,8 +37,8 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 
 	@Override
 	public void registerCoreMembers() {
-		new KillListenerType().activate().withClass(KillListenerInstance.class).as("KILL");
-		new ItemListenerType().activate().withClass(ItemListenerInstance.class).as("ITEM");
+		new KillListenerType().activate().as("KILL").withClass(KillListenerInstance.class);
+		new ItemListenerType().activate().as("ITEM").withClass(ItemListenerInstance.class);
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 	
@@ -70,16 +70,22 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 	}
 
 	public List<? extends AbstractListener> getListenersFor(Player player) {
-		if (listeners.containsKey(player)) return listeners.get(player);
+		if (listeners.containsKey(player.getName())) {
+			List<AbstractListener> returnable = new ArrayList<AbstractListener>();
+			returnable.addAll(listeners.get(player.getName()));
+			return returnable;
+		}
 		else return Collections.emptyList();
 	}
 	
 	public void addInstanceOfListener(Player player, AbstractListener instance) {
-		if (listeners.get(player) == null) {
-			List<AbstractListener> playerList = new ArrayList<AbstractListener>();
-			listeners.put(player, playerList);
+		if (!listeners.containsKey(player.getName())) {
+			listeners.put(player.getName(), new ArrayList<AbstractListener>());
 		}
-		listeners.get(player).add(instance);
+		List<AbstractListener> working = listeners.get(player.getName());
+		working.add(instance);
+		listeners.put(player.getName(), working);
+		dB.log("Added. Size now: " + listeners.get(player.getName()).size() + " | " + listeners.get(player.getName()).get(0).listenerId);
 	}
 	
 	@EventHandler
@@ -88,9 +94,14 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		// Clear previous MemorySection in saves
 		denizen.getSaves().set("Listeners." + event.getPlayer().getName(), null);
 		
-		if (!listeners.containsKey(event.getPlayer()) || listeners.get(event.getPlayer()).isEmpty()) return;
+		dB.log(String.valueOf(listeners.size()) + " .. " + String.valueOf(listeners.containsKey(event.getPlayer())));
 		
-		for (AbstractListener instance : listeners.get(event.getPlayer())) {
+		if (!listeners.containsKey(event.getPlayer().getName())) {
+			dB.log("TEST");
+			return;
+		}
+		
+		for (AbstractListener instance : getListenersFor(event.getPlayer())) {
 			dB.log(event.getPlayer().getName() + " has a LISTENER in progress. Saving " + instance.listenerId + ".");
 			instance.save();
 		}
@@ -110,7 +121,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		String path = "Listeners." + event.getPlayer().getName() + ".";
 		
 		for (String listenerId : inProgress) {
-			String type = denizen.getSaves().getString(path + "Type");
+			String type = denizen.getSaves().getString(path + listenerId + ".Listener Type");
 			if (get(type) == null) return;
 			get(type).createInstance(event.getPlayer()).load(event.getPlayer(), listenerId, type);
 		}
@@ -121,12 +132,17 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 	public void finish(Player player, String listenerId, String finishScript, AbstractListener instance) {
 		if (finishScript != null) 
 			denizen.getScriptEngine().getScriptBuilder().runTaskScript(player, finishScript);
-		listeners.get(player).remove(instance);
+		List<AbstractListener> working = listeners.get(player.getName());
+		working.remove(instance);
+		listeners.put(player.getName(), working);
+
 	}
 
 	// Called when a listener is cancelled.
 	public void cancel(Player player, String listenerId, AbstractListener instance) {
-		listeners.get(player).remove(instance);
+		List<AbstractListener> working = listeners.get(player.getName());
+		working.remove(instance);
+		listeners.put(player.getName(), working);
 	}
 
 

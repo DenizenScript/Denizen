@@ -219,7 +219,7 @@ public class ArgumentHelper {
 		m = scriptPattern.matcher(regex);
 		// Check if script exists by looking for  Script Name:
 		//                                          Type: ...
-		if (m.matches() && denizen.getScripts().contains(regex.toUpperCase() + ".TYPE"))
+		if (m.matches() && denizen.getScripts().contains(regex.split(":")[1].toUpperCase() + ".TYPE"))
 			return true;
 		return false;
 	}
@@ -262,7 +262,9 @@ public class ArgumentHelper {
 	}
 
 	public List<String> getListFrom(String argument) {
-		return Arrays.asList(argument.split("\\|"));
+		if (argument.split(":").length >= 2)
+		return Arrays.asList(argument.split(":")[1].split("\\|"));
+		else return Arrays.asList(argument.split("\\|"));
 	}
 
 	public QueueType getQueueFrom(String argument) {
