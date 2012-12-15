@@ -18,7 +18,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 /**
- * Feeds a (Player) entity.
+ * Checks if Player is inside specified WorldGuard region.
  * 
  * @author Mason Adkins
  */
