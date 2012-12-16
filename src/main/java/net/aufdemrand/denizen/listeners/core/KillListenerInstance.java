@@ -4,38 +4,51 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.KillListenerType.KillType;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
+import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
 import net.citizensnpcs.api.CitizensAPI;
 
 public class KillListenerInstance extends AbstractListener implements Listener {
 
-	KillType type;
+	KillType type = null;
 	List<String> targets = new ArrayList<String>();
 	int quantity = 1;
 	int currentKills = 0;
 	String argRegion = null;
-	
-	WorldGuardPlugin WorldGuard = null;
+
+
+	@Override
+	public String report() {
+		// Called by the '/denizen listener --report listenerId' command, meant to give information
+		// to server-operators about the current status of this listener.
+		return player.getName() + " current has quest listener '" + listenerId 
+				+ "' active and must kill " + Arrays.toString(targets.toArray())
+				+ " '" + type.name() + "'(s). Current progress '" + currentKills + "/" + quantity + "'.";
+	}
+
 
 	@Override
 	public void onBuild(List<String> args) {
-		
+		// Build the listener from script arguments. onBuild() is called when a new listener is
+		// made with the LISTEN command. All arguments except listenerType, listenerId, and script
+		// are passed through to here.
 		for (String arg : args) {
+
 			if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
+				// Note: Not to be confused with listenerType (which in this case is KILL). This is the
+				// KillType, which is an argument unique to the KillListener.
 				try { 
 					this.type = KillType.valueOf(aH.getStringFrom(arg).toUpperCase()); 
 					dB.echoDebug(Messages.DEBUG_SET_TYPE, this.type.name());
@@ -48,54 +61,152 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 			} else if (aH.matchesValueArg("TARGETS", arg, ArgumentType.Custom)) {
 				targets = aH.getListFrom(arg);
 				dB.echoDebug("...set TARGETS: " + Arrays.toString(targets.toArray()));
-				
+
 			} else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
 				argRegion = aH.getStringFrom(arg);
 				dB.echoDebug("...set REGION.");
 			}
 		}
 
+		// Need targets, need type
 		if (targets.isEmpty()) {
 			dB.echoError("Missing TARGETS argument!");
 			cancel();
 		}
-		
+
 		if (type == null) {
 			dB.echoError("Missing TYPE argument! Valid: NPC, ENTITY, PLAYER, GROUP");
 			cancel();
 		}
-		
-		denizen.getServer().getPluginManager().registerEvents(this, denizen);
+
+		// At this point, constructed() is called.
 	}
 
-	@Override
-	public void onSave() {
-		store("Type", type.name());
-		store("Targets", this.targets);
-		store("Quantity", this.quantity);
-		store("Current Kills", this.currentKills);
-	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onLoad() {
+		// Build the listener from saved data. listenerId and listenerType are saved automatically.
+		// onBuild() will not be called, this should handle everything onBuild() would with the
+		// saved data from onSave().
 		type = KillType.valueOf(((String) get("Type")));
 		targets = (List<String>) get("Targets");
 		quantity = (Integer) get("Quantity");
 		currentKills = (Integer) get("Current Kills");
-		
+
+		// At this point, constructed() is called.
+	}
+
+
+	@Override
+	public void onSave() {
+		// If the player leaves the game while a listener is in progress, save the information
+		// so that it can be rebuilt onLoad(). listenerId and listenerType are done automatically.
+		store("Type", type.name());
+		store("Targets", this.targets);
+		store("Quantity", this.quantity);
+		store("Current Kills", this.currentKills);
+
+		// At this point, deconstructed() is called.
+	}
+
+
+	@Override
+	public void onFinish() {
+		// Nothing to do here for now, but this is called when the quest listener is
+		// finished, after the script is run, and right before deconstructed().
+
+		// At this point, deconstructed() is called.
+	}
+
+
+	@Override
+	public void onCancel() {
+		// Nothing to do here for now, but this is called when the quest listener is
+		// cancelled, right before deconstructed().
+
+		// At this point, deconstructed() is called.
+	}
+
+
+	@Override
+	public void constructed() {
+		// Called after build and load methods. Perfect place to register
+		// any bukkit events!
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
+
+	@Override
+	public void deconstructed() {
+		// Called when the instance is deconstructed due to either it being
+		// saved, finished, or cancelled.
+		// This is the perfect place to unregister any bukkit events so it
+		// can be cleanly removed from memory.
+		EntityDeathEvent.getHandlerList().unregister(this);
+	}
+
+
+	@EventHandler
+	public void listen(EntityDeathEvent event) {
+		// Only continue if the event is an event for the player that owns this listener.
+		if (event.getEntity().getKiller() != player) return;
+
+		// If REGION argument specified, check. If not in region, don't count kill!
+		if (argRegion != null) 
+			if (!inRegion(player)) return;
+
+		// Check type!
+		if (type == KillType.ENTITY) {
+			if (targets.contains(event.getEntityType().toString()) || targets.contains("*")) { 
+				currentKills++;
+				dB.log(player.getName() + " killed a " + event.getEntityType().toString() + ". Current progress '" + currentKills + "/" + quantity + "'.");
+				check();
+			}
+
+		} else if (type == KillType.NPC) {
+			if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) 
+				if (targets.contains(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName().toUpperCase()) || targets.contains("*")
+						|| targets.contains(String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId() ))) {
+					currentKills++;
+					dB.log(player.getName() + " killed " + String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId()) + "/" + CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName() + ". Current progress '" + currentKills + "/" + quantity + "'.");
+					check();
+				}
+
+		} else if (type == KillType.PLAYER) {
+			if (event.getEntityType() == EntityType.PLAYER) 
+				if (targets.contains(((Player) event.getEntity()).getName().toUpperCase()) || targets.contains("*")) {
+					currentKills++;
+					dB.log(player.getName() + " killed " + ((Player) event.getEntity()).getName().toUpperCase() + ". Current progress '" + currentKills + "/" + quantity + "'.");
+					check();
+				}
+
+		} else if (type == KillType.GROUP) {
+			if (event.getEntityType() == EntityType.PLAYER) 
+				for (String group : Depends.permissions.getPlayerGroups((Player) event.getEntity())) 
+					if (targets.contains(group.toUpperCase())) {
+						currentKills++;
+						dB.log(player.getName() + " killed " + ((Player) event.getEntity()).getName().toUpperCase() + " of group " + group + ".");
+						check();
+						break;
+					}
+		}
+
+	}
+
+
 	public void check() {
+		// Check current kills vs. required kills; finish() if necessary.
 		if (currentKills >= quantity) {
 			finish();
 		}
 	}
-	
-	public boolean inRegion(Player thePlayer) {
-		boolean inRegion = false;
-		ApplicableRegionSet currentRegions = WorldGuard.getRegionManager(thePlayer.getWorld()).getApplicableRegions(thePlayer.getLocation());
 
+
+	public boolean inRegion(Player thePlayer) {
+		if (Depends.worldGuard == null) return false;
+		boolean inRegion = false;
+		ApplicableRegionSet currentRegions = Depends.worldGuard.getRegionManager(thePlayer.getWorld()).getApplicableRegions(thePlayer.getLocation());
 		for(ProtectedRegion thisRegion: currentRegions){
 			dB.echoDebug("...checking current player region: " + thisRegion.getId());
 			if (thisRegion.getId().contains(argRegion)) {
@@ -104,78 +215,6 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 			} 
 		}
 		return inRegion;
-	}
-	
-	@EventHandler
-	public void listen(EntityDeathEvent event) {
-		if (WorldGuard == null) WorldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-
-		if (argRegion != null) {
-			//if player is not in argRegion, don't count kill!
-			if (!inRegion(player)) return;
-		}
-		
-		if (event.getEntity().getKiller() != player) return;
-		if (type == KillType.ENTITY) {
-			if (targets.contains(event.getEntityType().toString()) || targets.contains("*"))
-			{ 
-				currentKills++;
-				dB.log(player.getName() + " killed a " + event.getEntityType().toString() + ". Current progress '" + currentKills + "/" + quantity + "'.");
-				check();
-			}
-			
-		} else if (type == KillType.NPC) {
-			if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
-				if (targets.contains(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName().toUpperCase()) || targets.contains("*")
-						|| targets.contains(String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId() ))) {
-					currentKills++;
-					dB.log(player.getName() + " killed " + String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId()) + "/" + CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName() + ". Current progress '" + currentKills + "/" + quantity + "'.");
-					check();
-				}
-			}
-		
-		} else if (type == KillType.PLAYER) {
-			if (event.getEntityType() == EntityType.PLAYER) {
-				if (targets.contains(((Player) event.getEntity()).getName().toUpperCase()) || targets.contains("*")) {
-					currentKills++;
-					dB.log(player.getName() + " killed " + ((Player) event.getEntity()).getName().toUpperCase() + ". Current progress '" + currentKills + "/" + quantity + "'.");
-					check();
-				}
-			}
-		}
-		
-		// Will put this back in ASAP.
-		
-		//	else if (type == KillType.GROUP) {
-		//		if (event.getEntityType() == EntityType.PLAYER) {
-		//			for (String group : plugin.perms.getPlayerGroups((Player) event.getEntity())) {
-		//				if (targets.contains(group.toUpperCase())) {
-		//					currentKills++;
-		//					aH.echoDebug(ChatColor.YELLOW + "// " + thePlayer.getName() + " killed " + ((Player) event.getEntity()).getName().toUpperCase() + " of group " + group + ".");
-		//					complete(false);
-		//					break;
-		//				}
-		//			}
-		//		}
-		//	}
-
-	}
-
-	@Override
-	public void onCancel() {
-		EntityDeathEvent.getHandlerList().unregister(this);
-	}
-
-	@Override
-	public String report() {
-		return player.getName() + " current has quest listener '" + listenerId 
-				+ "' active and must kill " + Arrays.toString(targets.toArray())
-				+ " '" + type.name() + "'(s). Current progress '" + currentKills + "/" + quantity + "'.";
-	}
-
-	@Override
-	public void onFinish() {
-		// Nothing to do here, the finishScript will automatically execute at this point.
 	}
 
 

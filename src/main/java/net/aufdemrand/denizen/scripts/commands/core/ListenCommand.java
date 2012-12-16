@@ -8,14 +8,10 @@ import org.bukkit.entity.Player;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.listeners.AbstractListenerType;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.command.CommandContext;
-import net.citizensnpcs.trait.LookClose;
 
 /**
  * Initiates/finishes/cancels a 'quest listener'.
@@ -116,16 +112,19 @@ public class ListenCommand extends AbstractCommand {
 		switch (listenAction) {
 
 		case NEW:
-			denizen.getListenerRegistry().get(listenerType).createInstance(player)
+			denizen.getListenerRegistry().get(listenerType).createInstance(player, id)
 				.build(player, id, listenerType, listenerArguments, script);
+			break;
 			
 		case FINISH:
-			for (AbstractListener listener : denizen.getListenerRegistry().getListenersFor(player))
-				if (listener.getListenerId().equalsIgnoreCase(id)) listener.finish();
+			if (denizen.getListenerRegistry().getListenerFor(player, id) != null)
+				denizen.getListenerRegistry().getListenerFor(player, id).finish();
+			break;
 			
 		case CANCEL:
-			for (AbstractListener listener : denizen.getListenerRegistry().getListenersFor(player))
-				if (listener.getListenerId().equalsIgnoreCase(id)) listener.cancel();
+			if (denizen.getListenerRegistry().getListenerFor(player, id) != null)
+				denizen.getListenerRegistry().getListenerFor(player, id).cancel();
+			break;
 		}
 	}
 	

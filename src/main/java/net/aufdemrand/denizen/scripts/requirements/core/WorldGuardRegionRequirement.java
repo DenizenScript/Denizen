@@ -6,6 +6,7 @@ import java.util.List;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
+import net.aufdemrand.denizen.utilities.Depends;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
 import org.bukkit.Bukkit;
@@ -39,7 +40,7 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
 	 * INREGION NAME:ilovejeebiss
 	 */
 
-	WorldGuardPlugin WorldGuard = null;
+
 
 	@Override
 	public boolean check(Player player, DenizenNPC npc, String scriptName,
@@ -50,8 +51,6 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
 		boolean inRegion = false;
 		World theWorld = player.getWorld();
 		Location playerLocation = player.getLocation();
-		
-		if (WorldGuard == null) WorldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
 		
 		if (args == null)
 			throw new RequirementCheckException("Must provide a NAME:regionname!");
@@ -64,7 +63,7 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
 				dB.echoDebug("...checking if player is in region!");
 				String argRegion = aH.getStringFrom(thisArg);
 				dB.echoDebug("...region to check: " + argRegion);
-				ApplicableRegionSet currentRegions = WorldGuard.getRegionManager(theWorld).getApplicableRegions(playerLocation);
+				ApplicableRegionSet currentRegions = Depends.worldGuard.getRegionManager(theWorld).getApplicableRegions(playerLocation);
 				
 				//checks all regions player is currently in
 				for(ProtectedRegion thisRegion: currentRegions){

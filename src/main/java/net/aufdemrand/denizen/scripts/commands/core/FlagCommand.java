@@ -102,7 +102,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
                         flagValue = arg.split(":")[1];
                     }
                 } else if (flagArgs.length == 3) {
-                    if (flagArgs[1].contains("->")) flagAction = FlagAction.INSERT;
+                         if (flagArgs[1].contains("->")) flagAction = FlagAction.INSERT;
                     else if (flagArgs[1].contains("<-")) flagAction = FlagAction.REMOVE;
                     else if (flagArgs[1].contains("+")) flagAction = FlagAction.INCREASE;
                     else if (flagArgs[1].contains("-")) flagAction = FlagAction.DECREASE;
@@ -175,6 +175,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
             return currentValue * value;
         case DIVIDE:
             return currentValue / value;
+		default:
+			break;
         }
 
         return 0;

@@ -75,7 +75,7 @@ public class CommandHandler {
 			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + (trait.isPushable() ? " is" : " is not") + " currently pushable" +
 					(trait.isReturnable() && trait.isPushable() ? " and will return when pushed after '" + trait.getDelay() + "' seconds." : "."));
 			return;
-			
+
 		} else if (args.length() > 2) {
 			Messaging.send(sender, "");
 			Messaging.send(sender, "<f>Use '-t' to toggle pushable state. <b>Example: /npc pushable -t");
@@ -105,12 +105,12 @@ public class CommandHandler {
 			trait.setConstant(args.getFlag("set"), args.getFlag("value"));
 			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " has added constant '" + args.getFlag("set") + "'.");
 			return;
-			
+
 		} else if (args.hasValueFlag("remove")) {
 			trait.removeConstant(args.getFlag("remove"));
 			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " has removed constant '" + args.getFlag("remove") + "'.");
 			return;
-			
+
 		} else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
 			Messaging.send(sender, "");
 			Messaging.send(sender, "<f>Use '--set name' to add/set a new NPC-specific constant.");
@@ -313,39 +313,47 @@ public class CommandHandler {
 
 		if (player == null) throw new CommandException("Specified player not online or not found!");
 
-		if (!args.hasValueFlag("id")) {
-			Paginator paginator = new Paginator();
-			paginator.header("Active quest listeners for " + player.getName() + ":");
-			paginator.addLine("<e>Key: <a>Type  <b>ID");
-			if (denizen.getListenerRegistry().getListenersFor(player).isEmpty())
-				paginator.addLine("None.");
-			else for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
-				paginator.addLine("<a>" + quest.getListenerType() + "  <b>" + quest.getListenerId());
-
-			paginator.sendPage(sender, args.getInteger(1, 1));
-			return;
-		}
-
 		if (args.hasValueFlag("report")) {
-			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
-				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("id")))
+			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
+				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("report")))
 					Messaging.send(sender, quest.report());
 			return;
 
 		} else if (args.hasValueFlag("cancel")) {
-			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
-				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("id")))
+			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
+				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("cancel"))) {
+
+					Messaging.send(sender, ChatColor.GREEN + "Cancelling '" + quest.getListenerId() + "' for " + player.getName() + ".");
 					quest.cancel();
+				}
 			return;
 
 		} else if (args.hasValueFlag("finish")) {
-			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player))
-				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("id")))
+			for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
+				if (quest.getListenerId().equalsIgnoreCase(args.getFlag("finish"))) {
+					Messaging.send(sender, ChatColor.GREEN + "Force-finishing '" + quest.getListenerId() + "' for " + player.getName() + ".");
 					quest.finish();
+				}
 			return;			
+
+		} else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
+			Messaging.send(sender, "");
+			Messaging.send(sender, "<f>Use '--report|cancel|finish id' to modify/view a specific quest listener.");
+			Messaging.send(sender, "<b>Example: /npc listener --report \"Journey 1\"");
+			Messaging.send(sender, "");
+			return;
 		}
 
+		Paginator paginator = new Paginator();
+		paginator.header("Active quest listeners for " + player.getName() + ":");
+		paginator.addLine("<e>Key: <a>Type  <b>ID");
+		if (denizen.getListenerRegistry().getListenersFor(player).isEmpty())
+			paginator.addLine("None.");
+		else for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
+			paginator.addLine("<a>" + quest.getListenerType() + "  <b>" + quest.getListenerId());
 
+		paginator.sendPage(sender, args.getInteger(1, 1));
+		return;
 
 	}
 
@@ -383,7 +391,7 @@ public class CommandHandler {
 				return;
 			}
 		}
-		
+
 		Messaging.send(sender, "");
 		Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, CONFIG, SCRIPTS");
 		Messaging.send(sender, "<b>Example: /denizen reload scripts");

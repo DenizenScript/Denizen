@@ -26,6 +26,7 @@ import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.Debugger;
@@ -151,8 +152,8 @@ public class Denizen extends JavaPlugin {
      */
 
     public static Settings settings;
-    public static Utilities utilities = new Utilities();
-
+    public static Utilities utilities;
+    public static Depends depends;
 
     /*
      * Sets up Denizen on start of the craftbukkit server.	
@@ -167,14 +168,14 @@ public class Denizen extends JavaPlugin {
         debugger.echoDebug(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
         debugger.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
         debugger.echoDebug(DebugElement.Footer);
+
+        depends = new Depends();
+        utilities = new Utilities();
+        settings =  new Settings();
+        denizenNPCRegistry = new DenizenNPCRegistry(this);
         
         // Register commandHandler with Citizens2
-        Citizens citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
-        commandHandler = new CommandHandler(citizens);
-        
-        
-        denizenNPCRegistry = new DenizenNPCRegistry(this);
-        settings =  new Settings();
+        commandHandler = new CommandHandler(Depends.citizens);
 
         // Populate config.yml if it doesn't yet exist.
         saveDefaultConfig(); 
@@ -205,7 +206,7 @@ public class Denizen extends JavaPlugin {
         // Load Notables into memory (for the Location Triggers to reference)
         notableManager().loadNotables();
         tagManager().registerCoreTags();
-        citizens.registerCommandClass(CommandHandler.class);
+        Depends.citizens.registerCommandClass(CommandHandler.class);
 
         // Start the scriptEngine.. VROOM VROOM!
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {

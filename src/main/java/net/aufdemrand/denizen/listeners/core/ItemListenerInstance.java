@@ -158,9 +158,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	
 	@Override
 	public void onCancel() {
-		CraftItemEvent.getHandlerList().unregister(this);
-		FurnaceSmeltEvent.getHandlerList().unregister(this);
-		InventoryClickEvent.getHandlerList().unregister(this);
+		
 	}
 
 	@Override
@@ -168,6 +166,18 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 		return player.getName() + " current has quest listener '" + listenerId 
 				+ "' active and must " + type.name() + " " + Arrays.toString(items.toArray())
 				+ " '(s). Current progress '" + currentItems + "/" + quantity + "'.";
+	}
+
+	@Override
+	public void constructed() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void deconstructed() {
+		CraftItemEvent.getHandlerList().unregister(this);
+		FurnaceSmeltEvent.getHandlerList().unregister(this);
+		InventoryClickEvent.getHandlerList().unregister(this);
 	}
 
 }

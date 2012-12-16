@@ -97,6 +97,7 @@ public abstract class AbstractListener {
 		this.scriptName = finishScript;
 		onBuild(args);
 		save();
+		constructed();
 	}
 
 	public void save() {
@@ -110,6 +111,7 @@ public abstract class AbstractListener {
 		} catch (Exception e) {
 			dB.echoError("Problem saving listener '" + listenerId + "' for " + player.getName() + "!");
 		}
+		deconstructed();
 	}
 
 	public void load(Player player, String listenerId, String listenerType) {
@@ -120,6 +122,7 @@ public abstract class AbstractListener {
 		try { onLoad(); } catch (Exception e) {
 			dB.echoError("Problem loading saved listener '" + listenerId + "' for " + player.getName() + "!");
 		}
+		constructed();
 	}
 
 	public abstract void onFinish();
@@ -127,6 +130,7 @@ public abstract class AbstractListener {
 	public void finish() {
 		onFinish();
 		denizen.getListenerRegistry().finish(player, listenerId, scriptName, this);
+		deconstructed();
 	}
 
 	public abstract void onCancel();
@@ -134,9 +138,14 @@ public abstract class AbstractListener {
 	public void cancel() {
 		onCancel();
 		denizen.getListenerRegistry().cancel(player, listenerId, this);
+		deconstructed();
 	}
 
 	public abstract String report();
+	
+	public abstract void constructed();
+	
+	public abstract void deconstructed();
 
 }
 

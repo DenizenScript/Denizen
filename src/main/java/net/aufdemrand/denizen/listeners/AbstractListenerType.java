@@ -39,10 +39,10 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
 		return null;
 	}
 	
-	public AbstractListener createInstance(Player player) {
+	public AbstractListener createInstance(Player player, String listenerId) {
 		try {
-			denizen.getListenerRegistry().addInstanceOfListener(player, instanceClass.newInstance());
-			return denizen.getListenerRegistry().getListenersFor(player).get(0);
+			denizen.getListenerRegistry().addListenerFor(player, instanceClass.newInstance(), listenerId);
+			return denizen.getListenerRegistry().getListenerFor(player, listenerId);
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
