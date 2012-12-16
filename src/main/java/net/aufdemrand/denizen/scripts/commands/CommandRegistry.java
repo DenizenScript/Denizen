@@ -63,25 +63,25 @@ public class CommandRegistry implements DenizenRegistry {
     
     @Override
     public void registerCoreMembers() {
+        new AnnounceCommand().activate().as("ANNOUNCE").withOptions("['Text to announce']", 1);
+        new CastCommand().activate().as("CAST").withOptions("TYPE:PotionEffectType (DURATION:#) (POWER:#) (TARGET:NPC|PLAYER)", 1);
         new CooldownCommand().activate().as("COOLDOWN").withOptions("[DURATION:#] (GLOBAL) (PLAYER:player_name) ('SCRIPT:name of script')", 1);
-        new EngageCommand().activate().as("ENGAGE").withOptions("(DURATION:#) (NPCID:#)", 0);
         new DisengageCommand().activate().as("DISENGAGE").withOptions("(NPCID:#)", 0);
+        new EngageCommand().activate().as("ENGAGE").withOptions("(DURATION:#) (NPCID:#)", 0);
+        new ExecuteCommand().activate().as("EXECUTE").withOptions("[AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']", 2);
+        new FeedCommand().activate().as("FEED").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
         new FlagCommand().activate().as("FLAG").withOptions("(DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]", 1);
         new FinishCommand().activate().as("FINISH").withOptions("(PLAYER:player_name)", 0);
         new FailCommand().activate().as("FAIL").withOptions("(PLAYER:player_name)", 0);
-        new IfCommand().activate().as("IF").withOptions("(!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
-        new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
-        new ModifyBlockCommand().activate().as("MODIFYBLOCK").withOptions("[LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)", 2);
-        new CastCommand().activate().as("CAST").withOptions("TYPE:PotionEffectType (DURATION:#) (POWER:#) (TARGET:NPC|PLAYER)", 1);
-        new FeedCommand().activate().as("FEED").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
         new HealCommand().activate().as("HEAL").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
-        new SwitchCommand().activate().as("SWITCH").withOptions("[LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
-        new LookcloseCommand().activate().as("LOOKCLOSE").withOptions("[TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)", 1);
-        new AnnounceCommand().activate().as("ANNOUNCE").withOptions("['Text to announce']", 1);
-        new NarrateCommand().activate().as("NARRATE").withOptions("(PLAYER:player_name) ['Text to narrate']", 1);
-        new ExecuteCommand().activate().as("EXECUTE").withOptions("[AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']", 2);
-        new PlaySoundCommand().activate().as("PLAYSOUND").withOptions("[LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)", 2);
+        new IfCommand().activate().as("IF").withOptions("(!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
         new ListenCommand().activate().as("LISTEN").withOptions("[Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation.", 2);
+        new LookcloseCommand().activate().as("LOOKCLOSE").withOptions("[TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)", 1);
+        new ModifyBlockCommand().activate().as("MODIFYBLOCK").withOptions("[LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)", 2);
+        new NarrateCommand().activate().as("NARRATE").withOptions("(PLAYER:player_name) ['Text to narrate']", 1);
+        new PlaySoundCommand().activate().as("PLAYSOUND").withOptions("[LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)", 2);
+        new SwitchCommand().activate().as("SWITCH").withOptions("[LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
+        new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
         
         denizen.getDebugger().echoApproval("Loaded core commands: " + instances.keySet().toString());
     }
