@@ -41,7 +41,7 @@ public class ScriptRequirement extends AbstractRequirement{
 					|| aH.matchesValueArg("STEP", thisArg, ArgumentType.Custom)) {
 
 				scriptCheck = ScriptCheck.valueOf(aH.getStringFrom(thisArg));
-				dB.echoDebug("...checking '%s'.", thisArg.toUpperCase());
+				dB.echoDebug("...checking '%s'.", aH.getStringFrom(thisArg));
 			}
 
 
@@ -60,7 +60,9 @@ public class ScriptRequirement extends AbstractRequirement{
 				dB.echoDebug("...quantity to check for is '%s'.", quantity.toString());
 			}
 
-			else if (thisArg.toUpperCase().equals("EXACTLY")) {
+			else if (aH.matchesValueArg("EXACTLY", thisArg, ArgumentType.Integer)) {
+				//im pretty confident this was missing from the original requirement
+				exactly = true;
 				quantity = aH.getIntegerFrom(thisArg);
 				dB.echoDebug("...will check for EXACT quantity.");
 			}
