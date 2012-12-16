@@ -15,10 +15,6 @@ import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
 
 public class AnnounceCommand extends AbstractCommand {
 
-    public void load() {
-        this.activate().as("ANNOUNCE").withOptions("['Text to announce']", 1);
-    }
-
     @Override
     public void onEnable() {
         // Nothing to do here.

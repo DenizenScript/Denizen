@@ -1,13 +1,11 @@
 package net.aufdemrand.denizen.tags.core;
 
-import java.util.Map.Entry;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.minecraft.server.v1_4_5.NBTTagCompound;
+import net.aufdemrand.denizen.utilities.nbt.ListOfLore;
+import net.aufdemrand.denizen.utilities.nbt.MapOfEnchantments;
+import net.aufdemrand.denizen.utilities.nbt.NBT;
 
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,46 +41,21 @@ public class PlayerTags implements Listener {
                 event.setReplaceable(String.valueOf(p.getItemInHand().getData()));
             else if (subType.equals("MAX_STACK"))
                 event.setReplaceable(String.valueOf(p.getItemInHand().getMaxStackSize()));
-            else if (subType.equals("ENCHANTMENTS")) {
-                String enchantments = "";
-                int enchants = 0;
-                for (Entry<Enchantment, Integer> e : p.getItemInHand().getEnchantments().entrySet()) {
-                    if (enchants > 0) enchantments = enchantments + "|";
-                    enchantments = enchantments +e.getKey().getName();
-                    enchants++;
-                }
-                event.setReplaceable(enchantments);
-            }
-            else if (subType.equals("ENCHANTMENTS_WITH_LEVEL")) {
-                String enchantments = "";
-                int enchants = 0;
-                for (Entry<Enchantment, Integer> e : p.getItemInHand().getEnchantments().entrySet()) {
-                    if (enchants > 0) enchantments = enchantments + "|";
-                    enchantments = enchantments + e.getKey().getName() + ":" + e.getValue();
-                    enchants++;
-                }
-                event.setReplaceable(enchantments);
-            }
-            else if (subType.equals("LORE")) {
-                String lore = "";
-                int lores = 0;
-                NBTTagCompound d = ((CraftItemStack) p.getItemInHand()).getHandle().getTag();
-                for (lores = 0; lores < d.getList("Lore").size(); lores++) {
-                    if (lores > 0) lore = lore + "|";
-                    lore = lore + d.getList("Lore").get(lores);
-                }
-                event.setReplaceable(lore);
-            }
-            else if (subType.equals("NAME")) {
-                String name = "";
-                name = ((CraftItemStack) p.getItemInHand()).getHandle().getTag().getCompound("display").getString("Name");
-                event.setReplaceable(name);
-            }
+            else if (subType.equals("ENCHANTMENTS"))
+            	event.setReplaceable(new MapOfEnchantments(p.getItemInHand()).asDScriptList());
+            else if (subType.equals("ENCHANTMENTS_WITH_LEVEL"))
+                event.setReplaceable(new MapOfEnchantments(p.getItemInHand()).asDScriptListWithLevels());
+            else if (subType.equals("ENCHANTMENTS_WITH_LEVEL_ONLY"))
+                event.setReplaceable(new MapOfEnchantments(p.getItemInHand()).asDScriptListLevelsOnly());
+            else if (subType.equals("LORE")) 
+                event.setReplaceable(new ListOfLore(p.getItemInHand()).asDScriptList());
+            else if (subType.equals("NAME"))
+                event.setReplaceable(new NBT(p.getItemInHand()).getDisplayName());
             else // No subType, send back material_type
                 event.setReplaceable(p.getItemInHand().getType().name());
             return;
 
-
+            
         } else if (type.equals("NAME")) { 
             event.setReplaceable(p.getName());
             if (subType.equals("DISPLAY"))
@@ -91,7 +64,7 @@ public class PlayerTags implements Listener {
                 event.setReplaceable(p.getPlayerListName());
             return;
 
-
+            
         } else if (type.equals("LOCATION")) {
             event.setReplaceable(p.getLocation().getBlockX() 
                     + "," + p.getLocation().getBlockY()
@@ -118,7 +91,7 @@ public class PlayerTags implements Listener {
                 event.setReplaceable(p.getWorld().getName());
             return;
 
-
+            
         } else if (type.equals("HEALTH")) {
             event.setReplaceable(String.valueOf(p.getHealth()));
             if (subType.equals("FORMATTED")) {
@@ -142,7 +115,7 @@ public class PlayerTags implements Listener {
                 event.setReplaceable(String.valueOf(((float) p.getHealth() / maxHealth) * 100));
             }
 
-
+            
         } else if (type.equals("FOOD_LEVEL")) {
             event.setReplaceable(String.valueOf(p.getFoodLevel()));
             if (subType.equals("FORMATTED")) {
