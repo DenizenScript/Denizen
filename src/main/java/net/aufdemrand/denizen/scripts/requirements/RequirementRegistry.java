@@ -14,6 +14,8 @@ import net.aufdemrand.denizen.scripts.requirements.core.OwnerRequirement;
 import net.aufdemrand.denizen.scripts.requirements.core.PoweredRequirement;
 import net.aufdemrand.denizen.scripts.requirements.core.ScriptRequirement;
 import net.aufdemrand.denizen.scripts.requirements.core.SneakingRequirement;
+import net.aufdemrand.denizen.scripts.requirements.core.StormRequirement;
+import net.aufdemrand.denizen.scripts.requirements.core.SunnyRequirement;
 import net.aufdemrand.denizen.scripts.requirements.core.WorldGuardRegionRequirement;
 
 public class RequirementRegistry implements DenizenRegistry {
@@ -61,6 +63,8 @@ public class RequirementRegistry implements DenizenRegistry {
         new PoweredRequirement().activate().as("ISPOWERED");
         new ScriptRequirement().activate().as("SCRIPT");
         new SneakingRequirement().activate().as("SNEAKING");
+        new StormRequirement().activate().as("STORMING");
+        new SunnyRequirement().activate().as("SUNNY");
         new WorldGuardRegionRequirement().activate().as("INREGION");
         denizen.getDebugger().echoApproval("Loaded core requirements: " + instances.keySet().toString());
     }
