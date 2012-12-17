@@ -16,10 +16,10 @@ public class ListOfLore extends ArrayList<String> {
 		if (item == null) return;
 		NBTTagCompound d = ((CraftItemStack) item).getHandle().getTag();
 		int lores;
-		if (d.getList("Lore") == null) return;
-		for (lores = 0; lores < d.getList("Lore").size(); lores++) {
-			add(d.getList("Lore").get(lores).getName());
-		}
+		if (d.hasKey("display") && d.getCompound("display").hasKey("Lore")) 
+			for (lores = 0; lores < d.getCompound("display").getList("Lore").size(); lores++) {
+				add(d.getCompound("display").getList("Lore").get(lores).getName());
+			}
 	}	
 
 	public String asDScriptList() {

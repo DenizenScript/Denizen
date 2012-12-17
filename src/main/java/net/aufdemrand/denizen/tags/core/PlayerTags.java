@@ -2,9 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.utilities.nbt.ListOfLore;
-import net.aufdemrand.denizen.utilities.nbt.MapOfEnchantments;
-import net.aufdemrand.denizen.utilities.nbt.NBT;
+import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,15 +40,15 @@ public class PlayerTags implements Listener {
             else if (subType.equals("MAX_STACK"))
                 event.setReplaceable(String.valueOf(p.getItemInHand().getMaxStackSize()));
             else if (subType.equals("ENCHANTMENTS"))
-            	event.setReplaceable(new MapOfEnchantments(p.getItemInHand()).asDScriptList());
+            	event.setReplaceable(NBTItem.getEnchantments(p.getItemInHand()).asDScriptList());
             else if (subType.equals("ENCHANTMENTS_WITH_LEVEL"))
-                event.setReplaceable(new MapOfEnchantments(p.getItemInHand()).asDScriptListWithLevels());
+                event.setReplaceable(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels());
             else if (subType.equals("ENCHANTMENTS_WITH_LEVEL_ONLY"))
-                event.setReplaceable(new MapOfEnchantments(p.getItemInHand()).asDScriptListLevelsOnly());
+                event.setReplaceable(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly());
             else if (subType.equals("LORE")) 
-                event.setReplaceable(new ListOfLore(p.getItemInHand()).asDScriptList());
+                event.setReplaceable(NBTItem.getLore(p.getItemInHand()).asDScriptList());
             else if (subType.equals("DISPLAY"))
-                event.setReplaceable(new NBT(p.getItemInHand()).getDisplayName());
+                event.setReplaceable(NBTItem.getDisplayName(p.getItemInHand()));
             else // No subType, send back material_type
                 event.setReplaceable(p.getItemInHand().getType().name());
             return;

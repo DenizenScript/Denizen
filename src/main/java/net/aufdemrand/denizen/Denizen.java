@@ -31,6 +31,7 @@ import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.Debugger;
 import net.aufdemrand.denizen.utilities.debugging.Debugger.DebugElement;
+import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
@@ -154,6 +155,7 @@ public class Denizen extends JavaPlugin {
     public static Settings settings;
     public static Utilities utilities;
     public static Depends depends;
+    public static NBTItem nbtItem;
 
     /*
      * Sets up Denizen on start of the craftbukkit server.	
@@ -165,6 +167,7 @@ public class Denizen extends JavaPlugin {
         debugger.echoDebug(DebugElement.Footer);
         debugger.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
         debugger.echoDebug(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable NPCs"); 
+        debugger.echoDebug(DebugElement.Spacer);
         debugger.echoDebug(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
         debugger.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
         debugger.echoDebug(DebugElement.Footer);
@@ -172,6 +175,7 @@ public class Denizen extends JavaPlugin {
         depends = new Depends();
         utilities = new Utilities();
         settings =  new Settings();
+        nbtItem = new NBTItem();
         denizenNPCRegistry = new DenizenNPCRegistry(this);
         
         // Register commandHandler with Citizens2

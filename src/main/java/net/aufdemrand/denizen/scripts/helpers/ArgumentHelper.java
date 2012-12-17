@@ -110,15 +110,15 @@ public class ArgumentHelper {
 
 	Matcher m;
 
-	public boolean matchesValueArg(String argumentName, String argument, ArgumentType type) {
+	public boolean matchesValueArg(String argumentNames, String argument, ArgumentType type) {
 		if (argument == null) return false;
 		if (argument.split(":").length == 1) return false;
 
-		if (argumentName.split(",").length == 1) {
-			if (!argument.split(":")[0].equalsIgnoreCase(argumentName)) return false;
+		if (argumentNames.split(",").length == 1) {
+			if (!argument.split(":")[0].equalsIgnoreCase(argumentNames)) return false;
 		} else {
 			boolean matched = false;
-			for (String string : argumentName.split(","))
+			for (String string : argumentNames.split(","))
 				if (argument.split(":")[0].equalsIgnoreCase(string.trim())) matched = true;
 			if (matched == false) return false;
 		}
@@ -151,8 +151,13 @@ public class ArgumentHelper {
 		}
 	}
 
-	public boolean matchesArg(String name, String argument) {
-		if (argument.toUpperCase().equals(name.toUpperCase())) return true;
+	public boolean matchesArg(String names, String argument) {
+		if (argument.split(",").length == 1) {
+			if (argument.toUpperCase().equals(names.toUpperCase())) return true;
+		} else {
+			for (String string : argument.split(","))
+				if (argument.split(":")[0].equalsIgnoreCase(string.trim())) return true;
+		}
 		return false;
 	}
 
