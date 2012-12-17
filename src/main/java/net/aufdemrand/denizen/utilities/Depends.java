@@ -31,11 +31,13 @@ public class Depends {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
+        try {
         RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
         }
         economy = rsp.getProvider();
+        } catch (Exception e) { }
         return economy != null;
     }
 
@@ -43,17 +45,20 @@ public class Depends {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
-        RegisteredServiceProvider<Chat> rsp = Bukkit.getServer().getServicesManager().getRegistration(Chat.class);
+        try { RegisteredServiceProvider<Chat> rsp = Bukkit.getServer().getServicesManager().getRegistration(Chat.class);
         chat = rsp.getProvider();
+        } catch (Exception e) { }
         return chat != null;
     }
 
     private boolean setupPermissions() {
-        if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
+    	if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
+    	try {
     	RegisteredServiceProvider<Permission> rsp = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
         permissions = rsp.getProvider();
+    	} catch (Exception e) { }
         return permissions != null;
     }
     
