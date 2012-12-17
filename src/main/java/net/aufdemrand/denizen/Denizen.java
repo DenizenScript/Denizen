@@ -162,13 +162,13 @@ public class Denizen extends JavaPlugin {
     	debugger = new dB();
     	
         // Startup procedure
-        debugger.echoDebug(DebugElement.Footer);
-        debugger.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
-        debugger.echoDebug(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable NPCs"); 
-        debugger.echoDebug(DebugElement.Spacer);
-        debugger.echoDebug(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
-        debugger.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
-        debugger.echoDebug(DebugElement.Footer);
+        dB.echoDebug(DebugElement.Footer);
+        dB.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
+        dB.echoDebug(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable NPCs"); 
+        dB.echoDebug(DebugElement.Spacer);
+        dB.echoDebug(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
+        dB.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
+        dB.echoDebug(DebugElement.Footer);
 
         depends = new Depends();
         utilities = new Utilities();
@@ -221,7 +221,7 @@ public class Denizen extends JavaPlugin {
             @Override public void run() { getActivityEngine().scheduler(false); }
         }, 1, 600);
 
-        debugger.echoDebug(DebugElement.Footer);
+        dB.echoDebug(DebugElement.Footer);
     }
 
 
