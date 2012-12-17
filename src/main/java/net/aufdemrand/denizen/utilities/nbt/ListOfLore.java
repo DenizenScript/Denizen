@@ -14,7 +14,7 @@ public class ListOfLore extends ArrayList<String> {
 	public ListOfLore(ItemStack item) {
 		super();
 		if (item == null) return;
-		NBTTagCompound d = ((CraftItemStack) item).getHandle().getTag();
+		NBTTagCompound d = CraftItemStack.asNMSCopy(item).getTag();
 		int lores;
 		if (d.hasKey("display") && d.getCompound("display").hasKey("Lore")) 
 			for (lores = 0; lores < d.getCompound("display").getList("Lore").size(); lores++) {

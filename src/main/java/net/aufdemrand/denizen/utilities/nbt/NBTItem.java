@@ -29,13 +29,12 @@ public class NBTItem {
 
 	
 	 public static ItemStack setName(ItemStack is, String name) {
-	        CraftItemStack cis = (CraftItemStack) is;
 	 
-	        NBTTagCompound tag = cis.getHandle().getTag();
+	        NBTTagCompound tag = CraftItemStack.asNMSCopy(is).getTag();
 	 
 	        if (tag == null) {
-	            cis.getHandle().setTag(new NBTTagCompound());
-	            tag = cis.getHandle().getTag();
+	            CraftItemStack.asNMSCopy(is).setTag(new NBTTagCompound());
+	            tag = CraftItemStack.asNMSCopy(is).getTag();
 	        }
 	 
 	        if (tag.getCompound("display") == null) {
@@ -44,7 +43,7 @@ public class NBTItem {
 	 
 	        NBTTagCompound display = tag.getCompound("display");
 	 
-	        display.remove("Name");
+	        display.o("Name");
 	        display.setString("Name", name);
 	 
 	        return is;
@@ -56,11 +55,11 @@ public class NBTItem {
 	        }
 	        CraftItemStack cis = (CraftItemStack) is;
 	 
-	        NBTTagCompound tag = cis.getHandle().getTag();
+	        NBTTagCompound tag = CraftItemStack.asNMSCopy(is).getTag();
 	 
 	        if (tag == null) {
-	            cis.getHandle().setTag(new NBTTagCompound());
-	            tag = cis.getHandle().getTag();
+	            CraftItemStack.asNMSCopy(is).setTag(new NBTTagCompound());
+	            tag = CraftItemStack.asNMSCopy(is).getTag();
 	        }
 	 
 	        if (tag.getCompound("display") == null) {
@@ -76,7 +75,7 @@ public class NBTItem {
 	            lore.add(line);
 	        }
 	 
-	        display.remove("Lore");
+	        display.o("Lore");
 	        display.set("Lore", lore);
 	 
 	        return is;
@@ -88,7 +87,7 @@ public class NBTItem {
 	        }
 	        CraftItemStack cis = (CraftItemStack) is;
 	 
-	        NBTTagCompound tag = cis.getHandle().getTag();
+	        NBTTagCompound tag = CraftItemStack.asNMSCopy(is).getTag();
 	 
 	        if (tag == null) {
 	            return null;
@@ -113,7 +112,7 @@ public class NBTItem {
 	        }
 	        CraftItemStack cis = (CraftItemStack) is;
 	 
-	        NBTTagCompound tag = cis.getHandle().getTag();
+	        NBTTagCompound tag = CraftItemStack.asNMSCopy(is).getTag();
 	 
 	        if (tag == null) {
 	            return null;
@@ -144,26 +143,26 @@ public class NBTItem {
 
 	public static boolean hasEngraving(ItemStack item) {
         NBTTagCompound tag;
-        if (!((CraftItemStack) item).getHandle().hasTag()) return false;
-		tag = ((CraftItemStack) item).getHandle().getTag();
+        if (!CraftItemStack.asNMSCopy(item).hasTag()) return false;
+		tag = CraftItemStack.asNMSCopy(item).getTag();
 		return tag.hasKey("owner");
 	}
 
 	public static String getEngraving(ItemStack item) {
         NBTTagCompound tag;
-        if (!((CraftItemStack) item).getHandle().hasTag())
-			((CraftItemStack) item).getHandle().setTag(new NBTTagCompound());
-		tag = ((CraftItemStack) item).getHandle().getTag();
+        if (!CraftItemStack.asNMSCopy(item).hasTag())
+			CraftItemStack.asNMSCopy(item).setTag(new NBTTagCompound());
+		tag = CraftItemStack.asNMSCopy(item).getTag();
 		if (tag.hasKey("owner")) return tag.getString("owner");
 		return "";
 	}
 
 	public static void removeEngraving(ItemStack item, String player) {
 		NBTTagCompound tag;
-		if (!((CraftItemStack) item).getHandle().hasTag())
-			((CraftItemStack) item).getHandle().setTag(new NBTTagCompound());
-		tag = ((CraftItemStack) item).getHandle().getTag();
-		tag.remove("owner");
+		if (!CraftItemStack.asNMSCopy(item).hasTag())
+			CraftItemStack.asNMSCopy(item).setTag(new NBTTagCompound());
+		tag = CraftItemStack.asNMSCopy(item).getTag();
+		tag.o("owner");
 	}
 
 	public static void addEngraving(ItemStack item, String player) {
@@ -174,9 +173,9 @@ public class NBTItem {
 //        tag.set("Lore", list);
 //        itemStack.tag.setCompound("display", tag);
 		NBTTagCompound tag;
-		if (!((CraftItemStack) item).getHandle().hasTag())
-			((CraftItemStack) item).getHandle().setTag(new NBTTagCompound());
-		tag = ((CraftItemStack) item).getHandle().getTag();
+		if (!CraftItemStack.asNMSCopy(item).hasTag())
+			CraftItemStack.asNMSCopy(item).setTag(new NBTTagCompound());
+		tag = CraftItemStack.asNMSCopy(item).getTag();
 		tag.setString("owner", player);
 //		if (!tag.hasKey("display"))
 //			tag.setCompound("display", new NBTTagCompound());
