@@ -49,7 +49,7 @@ public class PlayerTags implements Listener {
                 event.setReplaceable(new MapOfEnchantments(p.getItemInHand()).asDScriptListLevelsOnly());
             else if (subType.equals("LORE")) 
                 event.setReplaceable(new ListOfLore(p.getItemInHand()).asDScriptList());
-            else if (subType.equals("NAME"))
+            else if (subType.equals("DISPLAY"))
                 event.setReplaceable(new NBT(p.getItemInHand()).getDisplayName());
             else // No subType, send back material_type
                 event.setReplaceable(p.getItemInHand().getType().name());
@@ -96,7 +96,7 @@ public class PlayerTags implements Listener {
             event.setReplaceable(String.valueOf(p.getHealth()));
             if (subType.equals("FORMATTED")) {
                 int maxHealth = p.getMaxHealth();
-                if (event.getType().split(".").length > 2)
+                if (event.getType().split("\\.").length > 2)
                     maxHealth = Integer.valueOf(event.getType().split(".")[2]);
                 if ((float)p.getHealth() / maxHealth < .10)
                     event.setReplaceable("dying");
@@ -110,7 +110,7 @@ public class PlayerTags implements Listener {
                     event.setReplaceable("healthy");
             } else if (subType.equals("PERCENTAGE")) {
                 int maxHealth = p.getMaxHealth();
-                if (event.getType().split(".").length > 2)
+                if (event.getType().split("\\.").length > 2)
                     maxHealth = Integer.valueOf(event.getType().split(".")[2]);
                 event.setReplaceable(String.valueOf(((float) p.getHealth() / maxHealth) * 100));
             }
@@ -120,7 +120,7 @@ public class PlayerTags implements Listener {
             event.setReplaceable(String.valueOf(p.getFoodLevel()));
             if (subType.equals("FORMATTED")) {
                 int maxFood = 20;
-                if (event.getType().split(".").length > 2)
+                if (event.getType().split("\\.").length > 2)
                     maxFood = Integer.valueOf(event.getType().split(".")[2]);
                 if ((float)p.getHealth() / maxFood < .10)
                     event.setReplaceable("starving");
@@ -134,7 +134,7 @@ public class PlayerTags implements Listener {
                     event.setReplaceable("healthy");
             } else if (subType.equals("PERCENTAGE")) {
                 int maxFood = 20;
-                if (event.getType().split(".").length > 2)
+                if (event.getType().split("\\.").length > 2)
                     maxFood = Integer.valueOf(event.getType().split(".")[2]);
                 event.setReplaceable(String.valueOf(((float) p.getFoodLevel() / maxFood) * 100));
             }

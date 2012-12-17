@@ -468,6 +468,9 @@ public class ScriptEngine {
             playerTaskQueue.remove(player); 
             playerTaskQueue.put(player, scriptEntries);
             break;
+        
+        default:
+        	break;
         }
 
         return;
