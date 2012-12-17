@@ -52,10 +52,7 @@ public class PlayerTags implements Listener {
                 event.setReplaceable(NBTItem.getLore(p.getItemInHand()).asDScriptList());
             else if (subType.equals("DISPLAY"))
                 event.setReplaceable(NBTItem.getName(p.getItemInHand()));
-            else if (subType.equals("OWNER")) {
-            	event.setReplaceable(NBTItem.getEngraving(p.getItemInHand()));
-            }
-            else // No subType, send back material_type
+            else if (subType.equals("MATERIAL"))
                 event.setReplaceable(p.getItemInHand().getType().name());
             return;
 

@@ -29,7 +29,9 @@ public class ListOfLore extends ArrayList<String> {
 		for (String lore : this)
 			dScriptList = dScriptList + lore + "|";
 		return dScriptList.substring(1, dScriptList.length() - 1);
-
 	}
 
+	
+	
+	
 }
