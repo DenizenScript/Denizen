@@ -7,7 +7,8 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  * Sets a Script as 'FAILED'. Scripts can be failed multiple times and Denizen will keep track

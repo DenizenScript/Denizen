@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
  * The dScript Argument Helper will aide you in parsing and formatting arguments from a ScriptEntry.  The Argument Helper (aH)
@@ -25,7 +25,6 @@ import net.aufdemrand.denizen.utilities.debugging.Debugger;
 
 public class ArgumentHelper {
 
-	Debugger dB;
 	Denizen denizen;
 
 	public enum ArgumentType {
@@ -34,7 +33,6 @@ public class ArgumentHelper {
 
 	public ArgumentHelper(Denizen denizen) {
 		this.denizen = denizen;
-		dB = denizen.getDebugger();
 	}
 
 	/**
@@ -319,7 +317,7 @@ public class ArgumentHelper {
 				stack = new ItemStack(Material.valueOf(thisArg.split(":")[0].toUpperCase()));
 				stack.setDurability(Short.valueOf(thisArg.split(":")[1]));
 			}
-		} catch (Exception e) { dB.echoError("Invalid item!"); if (denizen.getDebugger().showStackTraces) e.printStackTrace(); }
+		} catch (Exception e) { dB.echoError("Invalid item!"); if (dB.showStackTraces) e.printStackTrace(); }
 		return stack;
 	}
 

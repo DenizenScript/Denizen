@@ -29,8 +29,8 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.DebugElement;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 
 import net.citizensnpcs.Citizens;
@@ -51,12 +51,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Denizen extends JavaPlugin {
 
     public static String versionTag = "0.8.2 pre-release";
-    
-    private Debugger debugger = new Debugger(this);
-
-    public Debugger getDebugger() {
-        return debugger;
-    }
     
     private CommandHandler commandHandler;
     
@@ -156,6 +150,7 @@ public class Denizen extends JavaPlugin {
     public static Utilities utilities;
     public static Depends depends;
     public static NBTItem nbtItem;
+    public static dB debugger;
 
     /*
      * Sets up Denizen on start of the craftbukkit server.	
@@ -163,6 +158,9 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public void onEnable() {
+    	
+    	debugger = new dB();
+    	
         // Startup procedure
         debugger.echoDebug(DebugElement.Footer);
         debugger.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");

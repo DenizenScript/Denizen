@@ -37,7 +37,7 @@ public class ScriptEntry {
 	private Player player = null;
 	private OfflinePlayer offlinePlayer = null;
 	private String script = null;
-	private Integer step = null;
+	private String step = null;
 	private DenizenNPC npc = null;
 	private QueueType queueType = null;
 	private List<String> args = null;
@@ -50,26 +50,26 @@ public class ScriptEntry {
 	 */
 	
 	public ScriptEntry(String command, String[] arguments) throws ScriptEntryCreationException {
-		this(command, arguments, (Player) null, (DenizenNPC) null, (String) null, (Integer) null, (String) null, (String) null);
+		this(command, arguments, (Player) null, (DenizenNPC) null, (String) null, (String) null, (String) null, (String) null);
 	}
 
 	public ScriptEntry(String command, String[] arguments, Player player) throws ScriptEntryCreationException {
-		this(command, arguments, player, (DenizenNPC) null, (String) null, (Integer) null, (String) null, (String) null);
+		this(command, arguments, player, (DenizenNPC) null, (String) null, (String) null, (String) null, (String) null);
 	}
 
 	public ScriptEntry(String command, String[] arguments, Player player, String script) throws ScriptEntryCreationException {
-		this(command, arguments, player, (DenizenNPC) null, script, (Integer) null, (String) null, (String) null);
+		this(command, arguments, player, (DenizenNPC) null, script, (String) null, (String) null, (String) null);
 	}
 
 	public ScriptEntry(String command, String[] arguments, DenizenNPC denizen, String script) throws ScriptEntryCreationException {
-		this(command, arguments, (Player) null, denizen, script, (Integer) null, (String) null, (String) null);
+		this(command, arguments, (Player) null, denizen, script, (String) null, (String) null, (String) null);
 	}
 
-	public ScriptEntry(String command, String[] arguments, Player player, DenizenNPC denizen, String script, Integer step) throws ScriptEntryCreationException {
+	public ScriptEntry(String command, String[] arguments, Player player, DenizenNPC denizen, String script, String step) throws ScriptEntryCreationException {
 		this(command, arguments, player, denizen, script, step, (String) null, (String) null);
 	}
 
-	public ScriptEntry(String command, String[] arguments, Player player, DenizenNPC npc, String script, Integer step, String messageRaw, String messageFormatted) throws ScriptEntryCreationException {
+	public ScriptEntry(String command, String[] arguments, Player player, DenizenNPC npc, String script, String step, String messageRaw, String messageFormatted) throws ScriptEntryCreationException {
 
 		if (command == null) throw new ScriptEntryCreationException("CommandType cannot be null!");
 
@@ -148,8 +148,8 @@ public class ScriptEntry {
 		return queueType;
 	}
 
-	public Integer getStep() {
-		return step;
+	public String getStep() {
+		return step.toUpperCase();
 	}
 
 	public Long getQueueTime() {
@@ -195,8 +195,8 @@ public class ScriptEntry {
 		return this;
 	}
 	
-	public ScriptEntry setStep(int Step) {
-		this.step = Step;
+	public ScriptEntry setStep(String step) {
+		this.step = step;
 		return this;
 	}
 	

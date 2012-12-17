@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
 import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
 
@@ -17,7 +17,6 @@ public abstract class AbstractActivity implements RegistrationableInstance {
     protected ArgumentHelper aH;
     protected ScriptHelper sH;
     protected ScriptBuilder sB;
-    protected Debugger dB;
 
     protected String name;
     public ActivityOptions activityOptions = new ActivityOptions();
@@ -42,7 +41,6 @@ public abstract class AbstractActivity implements RegistrationableInstance {
         aH = denizen.getScriptEngine().getArgumentHelper();
         sH = denizen.getScriptEngine().getScriptHelper();
         sB = denizen.getScriptEngine().getScriptBuilder();
-        dB = denizen.getDebugger();
         return this;
     }
 

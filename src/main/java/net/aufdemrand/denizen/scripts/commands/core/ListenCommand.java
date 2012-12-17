@@ -11,7 +11,8 @@ import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  * Initiates/finishes/cancels a 'quest listener'.

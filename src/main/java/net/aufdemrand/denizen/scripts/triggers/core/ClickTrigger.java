@@ -6,7 +6,8 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.DebugElement;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
@@ -42,7 +43,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         dB.echoDebug(DebugElement.Header, "Parsing click trigger: " + npc.getName() + "/" + player.getName());
 
         dB.echoDebug("Getting current step:");
-        int theStep = sH.getCurrentStep(player, script);
+        String theStep = sH.getCurrentStep(player, script);
 
         // Gets entries from the script
         List<String> theScript = sH.getScriptContents(sH.getTriggerScriptPath(script, theStep, name) + sH.scriptKey);

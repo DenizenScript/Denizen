@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.exceptions;
 
-import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class RequirementCheckException extends Exception {
 

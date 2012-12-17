@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager.Value;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -14,11 +14,9 @@ import org.bukkit.event.Listener;
 public class FlagTags implements Listener {
 
     Denizen denizen;
-    Debugger dB;
     
     public FlagTags(Denizen denizen) {
         this.denizen = denizen;
-        dB = denizen.getDebugger();
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 

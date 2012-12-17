@@ -8,8 +8,8 @@ import org.bukkit.event.Listener;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.DebugElement;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.aufdemrand.denizen.utilities.runnables.Runnable1;
 
 import net.citizensnpcs.api.event.NPCSpawnEvent;
@@ -18,13 +18,11 @@ import net.citizensnpcs.api.npc.NPC;
 public class ActivityEngine implements Listener {
 
 	Denizen denizen;
-	Debugger dB;
 
 	// This requires rewriting
 	
 	public ActivityEngine(Denizen denizen) {
 		this.denizen = denizen;
-		this.dB = denizen.getDebugger();
 	}
 
 	@EventHandler
@@ -33,7 +31,7 @@ public class ActivityEngine implements Listener {
 			denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen, new Runnable1<NPC>(event.getNPC()) {
 				@Override public void run(NPC theNPC) { 
 					try { setDefaultActivity(denizen.getNPCRegistry().getDenizen(theNPC)); } 
-					catch (Exception e) { if (denizen.getDebugger().showStackTraces) e.printStackTrace(); }
+					catch (Exception e) { if (dB.showStackTraces) e.printStackTrace(); }
 				}
 			}, 30);
 	}

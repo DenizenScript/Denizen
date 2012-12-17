@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.notables.Notable;
 import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -28,11 +29,10 @@ public class AssignmentTrait extends Trait {
 
 	@Override 
 	public void load(DataKey key) throws NPCLoadException {
-		if (denizen == null) denizen = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 		assignment = key.getString("assignment");
 		if (hasAssignment()) 
 			if (!checkAssignment(this.assignment))
-				denizen.getDebugger().echoError("Missing assignment '" + assignment + "' for NPC '" 
+				dB.echoError("Missing assignment '" + assignment + "' for NPC '" 
 						+ npc.getName() + "/" + npc.getId() + "! Perhaps the script has been removed?");
 	}
 

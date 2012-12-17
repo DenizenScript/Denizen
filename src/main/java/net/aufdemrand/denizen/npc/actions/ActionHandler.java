@@ -7,7 +7,8 @@ import org.bukkit.entity.Player;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.DebugElement;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 
 public class ActionHandler {
 
@@ -23,7 +24,7 @@ public class ActionHandler {
         List<String> script = denizen.getScriptEngine().getScriptHelper().getStringListIgnoreCase(assignment + ".actions.on " + actionName);
         if (script.isEmpty()) return;
         
-        denizen.getDebugger().echoDebug(DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
+        dB.echoDebug(DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
         
         // Build script entries
         List<ScriptEntry> scriptEntries = denizen.getScriptEngine().getScriptBuilder().buildScriptEntries(player, npc, script, null, null);

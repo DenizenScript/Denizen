@@ -8,6 +8,7 @@ import java.util.Random;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.activities.AbstractActivity;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.npc.NPC;
 

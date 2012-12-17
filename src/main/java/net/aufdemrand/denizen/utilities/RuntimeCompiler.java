@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.ExternalDenizenClass;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
@@ -26,7 +27,7 @@ public class RuntimeCompiler {
     public void loader() {
 
         List<String> dependencies = new ArrayList<String>();
-        denizen.getDebugger().echoDebug("Loading external dependencies for run-time compiler.");
+        dB.echoDebug("Loading external dependencies for run-time compiler.");
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals" + File.separator + "dependencies");
             File[] files = file.listFiles();
@@ -35,11 +36,11 @@ public class RuntimeCompiler {
                     String fileName = f.getName();
                     if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("JAR")) {
                         dependencies.add(f.getPath());
-                        denizen.getDebugger().echoDebug("Loaded  " + f.getName());
+                        dB.echoDebug("Loaded  " + f.getName());
                     }
                 }
             }   
-        } catch (Exception error) { denizen.getDebugger().log("No dependencies to load."); }
+        } catch (Exception error) { dB.log("No dependencies to load."); }
 
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals");
@@ -49,7 +50,7 @@ public class RuntimeCompiler {
                     String fileName = f.getName();
 
                     if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("JAVA") && !fileName.startsWith(".")) {
-                        denizen.getDebugger().echoDebug("Processing '" + fileName + "'... ");
+                    	dB.echoDebug("Processing '" + fileName + "'... ");
 
                         JavaSourceCompiler javaSourceCompiler = new JavaSourceCompilerImpl();
                         JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();
@@ -63,16 +64,16 @@ public class RuntimeCompiler {
                             loadedClass.load();
                         } catch (Exception e) {
                             if (e instanceof IllegalStateException)
-                                denizen.getDebugger().echoError("No JDK found! External .java files will not be loaded.");
+                            	dB.echoError("No JDK found! External .java files will not be loaded.");
                             else {
-                                denizen.getDebugger().echoError(ChatColor.RED + "Woah! Error compiling " + fileName + "!");
+                            	dB.echoError(ChatColor.RED + "Woah! Error compiling " + fileName + "!");
                                 e.printStackTrace();
                             }
                         }
                     } 
                 }
-                denizen.getDebugger().echoApproval("All externals loaded!");
-            } else denizen.getDebugger().echoError("Woah! No externals in /plugins/Denizen/externals/.../ to load!");  
+                dB.echoApproval("All externals loaded!");
+            } else dB.echoError("Woah! No externals in /plugins/Denizen/externals/.../ to load!");  
         } catch (Exception error) { /* No externals */ }
     }
 

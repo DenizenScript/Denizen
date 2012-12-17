@@ -14,18 +14,16 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.DebugElement;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 
 public class ScriptBuilder {
 
     Denizen plugin;
-    Debugger dB;
     Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
 
     public ScriptBuilder(Denizen denizenPlugin) {
         plugin = denizenPlugin;
-        dB = plugin.getDebugger();
     }
 
     /* 
@@ -71,11 +69,11 @@ public class ScriptBuilder {
         return buildScriptEntries(player, null, script, scriptName, null, null, null);
     }
 
-    public List<ScriptEntry> buildScriptEntries(Player player, DenizenNPC npc, List<String> script, String scriptName, Integer step) {
+    public List<ScriptEntry> buildScriptEntries(Player player, DenizenNPC npc, List<String> script, String scriptName, String step) {
         return buildScriptEntries(player, npc, script, scriptName, step, null, null);
     }
 
-    public List<ScriptEntry> buildScriptEntries(Player player, DenizenNPC npc, List<String> script, String scriptName, Integer step, String playerText, String formattedText) {
+    public List<ScriptEntry> buildScriptEntries(Player player, DenizenNPC npc, List<String> script, String scriptName, String step, String playerText, String formattedText) {
         List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
         if (script == null || script.isEmpty()) {

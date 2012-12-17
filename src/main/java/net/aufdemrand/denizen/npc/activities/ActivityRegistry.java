@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.activities.core.TaskActivity;
 import net.aufdemrand.denizen.npc.activities.core.WanderActivity;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
 
 public class ActivityRegistry implements DenizenRegistry {
@@ -57,7 +58,7 @@ public class ActivityRegistry implements DenizenRegistry {
         wanderActivity.activate().as("WANDER");
         taskActivity.activate().as("TASK");
 
-        denizen.getDebugger().echoApproval("Loaded core activities: " + instances.keySet().toString());
+        dB.echoApproval("Loaded core activities: " + instances.keySet().toString());
 
         // Activate Listeners for
         

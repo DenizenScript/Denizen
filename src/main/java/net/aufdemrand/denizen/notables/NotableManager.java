@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
@@ -39,7 +40,7 @@ public class NotableManager {
                         if (links.containsKey(Integer.valueOf(ns[x]))) tempList = links.get(Integer.valueOf(ns[x]));
                         tempList.add(ns[0]);
                         links.put(Integer.valueOf(ns[x]), tempList);
-                    } catch (Exception e) { denizen.getDebugger().echoDebug("Invalid NPC linked to Notable '%s'", ns[0]); }
+                    } catch (Exception e) { dB.echoDebug("Invalid NPC linked to Notable '%s'", ns[0]); }
         }
     }
 

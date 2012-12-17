@@ -50,7 +50,7 @@ public class IfCommand extends AbstractCommand {
     Player player;
     DenizenNPC npc;
     String script;
-    Integer step;
+    String step;
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

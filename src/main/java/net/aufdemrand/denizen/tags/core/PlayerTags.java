@@ -3,10 +3,13 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
+import net.minecraft.server.v1_4_5.NBTTagCompound;
 
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerTags implements Listener {
 
@@ -48,7 +51,10 @@ public class PlayerTags implements Listener {
             else if (subType.equals("LORE")) 
                 event.setReplaceable(NBTItem.getLore(p.getItemInHand()).asDScriptList());
             else if (subType.equals("DISPLAY"))
-                event.setReplaceable(NBTItem.getDisplayName(p.getItemInHand()));
+                event.setReplaceable(NBTItem.getName(p.getItemInHand()));
+            else if (subType.equals("OWNER")) {
+            	event.setReplaceable(NBTItem.getEngraving(p.getItemInHand()));
+            }
             else // No subType, send back material_type
                 event.setReplaceable(p.getItemInHand().getType().name());
             return;

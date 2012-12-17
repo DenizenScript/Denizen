@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,7 +17,6 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
     protected ScriptHelper sH;
     protected ScriptBuilder sB;
-    protected Debugger dB;
 
     protected String name;
     public TriggerOptions triggerOptions = new TriggerOptions();
@@ -61,7 +60,6 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         // Reference Helper Classes
         sH = denizen.getScriptEngine().getScriptHelper();
         sB = denizen.getScriptEngine().getScriptBuilder();		
-        dB = denizen.getDebugger();
         return this;
     }
 

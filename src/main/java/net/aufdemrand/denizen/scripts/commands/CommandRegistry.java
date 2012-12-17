@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.scripts.commands.core.CastCommand;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.commands.core.DisengageCommand;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
-import net.aufdemrand.denizen.scripts.commands.core.EngraveCommand;
 import net.aufdemrand.denizen.scripts.commands.core.ExecuteCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FeedCommand;
@@ -26,6 +25,7 @@ import net.aufdemrand.denizen.scripts.commands.core.NarrateCommand;
 import net.aufdemrand.denizen.scripts.commands.core.PlaySoundCommand;
 import net.aufdemrand.denizen.scripts.commands.core.SwitchCommand;
 import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class CommandRegistry implements DenizenRegistry {
 
@@ -69,7 +69,6 @@ public class CommandRegistry implements DenizenRegistry {
         new CooldownCommand().activate().as("COOLDOWN").withOptions("[DURATION:#] (GLOBAL) (PLAYER:player_name) ('SCRIPT:name of script')", 1);
         new DisengageCommand().activate().as("DISENGAGE").withOptions("(NPCID:#)", 0);
         new EngageCommand().activate().as("ENGAGE").withOptions("(DURATION:#) (NPCID:#)", 0);
-        new EngraveCommand().activate().as("ENGRAVE").withOptions("(SET|REMOVE) (PLAYER:player_name)", 0);
         new ExecuteCommand().activate().as("EXECUTE").withOptions("[AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']", 2);
         new FeedCommand().activate().as("FEED").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
         new FlagCommand().activate().as("FLAG").withOptions("(DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]", 1);
@@ -86,7 +85,7 @@ public class CommandRegistry implements DenizenRegistry {
         new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
         
         
-        denizen.getDebugger().echoApproval("Loaded core commands: " + instances.keySet().toString());
+        dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
     }
 
 

@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.scripts.commands.CommandExecuter;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
 import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
 import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.entity.Player;
 
@@ -136,9 +137,9 @@ public class ScriptEngine {
                             // Catching errors here will keep the queue from locking up.
                             try { getScriptExecuter().execute(scriptEntry); }
                             catch (Throwable e) {
-                                denizen.getDebugger().echoError("Woah! An exception has been called with this command!");
-                                if (!denizen.getDebugger().showStackTraces)
-                                    denizen.getDebugger().echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
+                                dB.echoError("Woah! An exception has been called with this command!");
+                                if (!dB.showStackTraces)
+                                    dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
                                 else e.printStackTrace(); }
                         } while (instantly);
                     }
@@ -157,9 +158,9 @@ public class ScriptEngine {
                             playerTaskQueue.put(theEntry.getKey(), theEntry.getValue());
                             try { getScriptExecuter().execute(scriptEntry); }
                             catch (Throwable e) {
-                                denizen.getDebugger().echoError("Woah! An exception has been called with this command!");
-                                if (!denizen.getDebugger().showStackTraces)
-                                    denizen.getDebugger().echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
+                                dB.echoError("Woah! An exception has been called with this command!");
+                                if (!dB.showStackTraces)
+                                    dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
                                 else e.printStackTrace(); }
                         } while (instantly);
                     }
@@ -178,9 +179,9 @@ public class ScriptEngine {
                             npcQueue.put(theEntry.getKey(), theEntry.getValue());
                             try { getScriptExecuter().execute(scriptEntry); }
                             catch (Throwable e) {
-                                denizen.getDebugger().echoError("Woah! An exception has been called with this command!");
-                                if (!denizen.getDebugger().showStackTraces)
-                                    denizen.getDebugger().echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
+                                dB.echoError("Woah! An exception has been called with this command!");
+                                if (!dB.showStackTraces)
+                                    dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
                                 else e.printStackTrace(); }
                         } while (instantly);
                     }

@@ -11,8 +11,8 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.DebugElement;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
@@ -23,11 +23,9 @@ import org.bukkit.entity.Player;
 public class ScriptHelper {
 
 	Denizen denizen;
-	Debugger dB;
 
 	public ScriptHelper (Denizen denizenPlugin) {
 		denizen = denizenPlugin;
-		dB = denizen.getDebugger();
 	}
 
 	/*
@@ -147,14 +145,14 @@ public class ScriptHelper {
 	 * Gets the current step of a script for a Player
 	 */
 
-	public int getCurrentStep(Player player, String scriptName) {
+	public String getCurrentStep(Player player, String scriptName) {
 		return getCurrentStep(player, scriptName, true);
 	}
 
-	public int getCurrentStep(Player player, String scriptName, Boolean verbose) {
-		int currentStep = 1;
+	public String getCurrentStep(Player player, String scriptName, Boolean verbose) {
+		String currentStep = "1";
 		if (denizen.getSaves().getString("Players." + player.getName() + "." + scriptName.toUpperCase() + "." + "Current Step") != null) {
-			currentStep =  denizen.getSaves().getInt("Players." + player.getName() + "." + scriptName.toUpperCase() + "." + "Current Step");
+			currentStep =  denizen.getSaves().getString("Players." + player.getName() + "." + scriptName.toUpperCase() + "." + "Current Step");
 			if (verbose) dB.echoDebug("Getting current step... found '" + currentStep + "'");
 			return currentStep;
 		}
@@ -168,7 +166,7 @@ public class ScriptHelper {
 
 	public String scriptKey = ".SCRIPT";
 
-	public String getTriggerScriptPath(String scriptName, int step, String triggerName) {
+	public String getTriggerScriptPath(String scriptName, String step, String triggerName) {
 		return scriptName.toUpperCase() + ".STEPS." + step + "." +  triggerName.toUpperCase() + " TRIGGER.";
 	}
 
@@ -208,22 +206,22 @@ public class ScriptHelper {
 					if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")
 							|| fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("DSCRIPT")
 							&& !fileName.startsWith(".")) {
-						denizen.getDebugger().echoDebug("Processing '" + fileName + "'... ");
+						dB.echoDebug("Processing '" + fileName + "'... ");
 						try {
 							YamlConfiguration yaml = YamlConfiguration.loadConfiguration(f);
 							sb.append(yaml.saveToString() + "\r\n");
 						} catch (Exception e) {
-							denizen.getDebugger().echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "!");
+							dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "!");
 							e.printStackTrace();
 						}
 					}
 				}
-				denizen.getDebugger().echoApproval("All scripts loaded!");
+				dB.echoApproval("All scripts loaded!");
 				return yamlKeysToUpperCase(sb.toString());
-			} else denizen.getDebugger().echoError(ChatColor.RED + "Woah! No scripts in /plugins/Denizen/scripts/ to load!");  
+			} else dB.echoError(ChatColor.RED + "Woah! No scripts in /plugins/Denizen/scripts/ to load!");  
 		} catch (Exception error) {
-		    denizen.getDebugger().echoError(ChatColor.RED + "Woah! No script folder found in /plugins/Denizen/scripts/");
-			if (denizen.getDebugger().showStackTraces) error.printStackTrace();
+		    dB.echoError(ChatColor.RED + "Woah! No script folder found in /plugins/Denizen/scripts/");
+			if (dB.showStackTraces) error.printStackTrace();
 		}
 
 		return "";

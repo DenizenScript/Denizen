@@ -9,7 +9,8 @@ import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 

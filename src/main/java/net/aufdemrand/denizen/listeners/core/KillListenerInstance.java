@@ -17,7 +17,8 @@ import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.KillListenerType.KillType;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.Depends;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.CitizensAPI;
 
 public class KillListenerInstance extends AbstractListener implements Listener {

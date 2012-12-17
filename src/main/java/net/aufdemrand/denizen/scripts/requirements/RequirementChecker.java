@@ -5,8 +5,7 @@ import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.DebugElement;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
@@ -16,11 +15,9 @@ import org.bukkit.entity.Player;
 public class RequirementChecker {
 
 	private Denizen plugin;
-	private Debugger dB;
 
 	public RequirementChecker(Denizen denizen) {
 		plugin = denizen;
-		dB = plugin.getDebugger();
 	}
 
 	public boolean check(String scriptName, NPC npc, Player player) throws RequirementMissingException {

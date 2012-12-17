@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
@@ -22,7 +22,6 @@ public class DenizenNPCRegistry implements Listener {
     private Map<NPC, DenizenNPC> denizenNPCs = new ConcurrentHashMap<NPC, DenizenNPC>();
 
     private Denizen plugin;
-    private Debugger dB;
     private ActionHandler actionHandler;
     
     public ActionHandler getActionHandler() {
@@ -31,7 +30,6 @@ public class DenizenNPCRegistry implements Listener {
 
     public DenizenNPCRegistry(Denizen denizen) {
         plugin = denizen;
-        dB = plugin.getDebugger();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         actionHandler = new ActionHandler(plugin);
     }

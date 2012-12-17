@@ -6,17 +6,15 @@ import java.util.List;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.core.FlagCommand.FlagType;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class FlagManager {
 
     private Denizen denizen;
-    private Debugger dB;
     private ArgumentHelper aH;
 
     public FlagManager(Denizen denizen) {
         this.denizen = denizen;
-        this.dB = denizen.getDebugger();
     }
     
     /**

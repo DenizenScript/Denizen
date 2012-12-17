@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.npc.traits.PushableTrait;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.npc.NPC;
@@ -253,15 +254,13 @@ public class CommandHandler {
 			desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db" },
 			min = 1, max = 3, permission = "denizen.debug", flags = "s")
 	public void debug(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-		Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
-
 		if (args.hasFlag('s')) {
-			if (!denizen.getDebugger().debugMode) denizen.getDebugger().toggle();
-			denizen.getDebugger().showStackTraces = !denizen.getDebugger().showStackTraces;
-		} else denizen.getDebugger().toggle();
+			if (!dB.debugMode) dB.toggle();
+			dB.showStackTraces = !dB.showStackTraces;
+		} else dB.toggle();
 
-		Messaging.send(sender, ChatColor.YELLOW + "Denizen debugger is " + (denizen.getDebugger().debugMode ? 
-				((denizen.getDebugger().showStackTraces) ? "enabled and showing stack-traces." : "enabled.") : "disabled."));
+		Messaging.send(sender, ChatColor.YELLOW + "Denizen debugger is " + (dB.debugMode ? 
+				((dB.showStackTraces) ? "enabled and showing stack-traces." : "enabled.") : "disabled."));
 	}    
 
 

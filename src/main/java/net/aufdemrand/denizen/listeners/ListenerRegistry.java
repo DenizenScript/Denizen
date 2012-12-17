@@ -19,7 +19,7 @@ import net.aufdemrand.denizen.listeners.core.ItemListenerInstance;
 import net.aufdemrand.denizen.listeners.core.ItemListenerType;
 import net.aufdemrand.denizen.listeners.core.KillListenerInstance;
 import net.aufdemrand.denizen.listeners.core.KillListenerType;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ListenerRegistry implements DenizenRegistry, Listener {
 
@@ -27,11 +27,9 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 	private Map<String, AbstractListenerType> types = new ConcurrentHashMap<String, AbstractListenerType>();
 
 	private Denizen denizen;
-	private Debugger dB;
 
 	public ListenerRegistry(Denizen denizen) {
 		this.denizen = denizen;
-		dB = denizen.getDebugger();
 	}
 
 	@Override

@@ -10,13 +10,12 @@ import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
-import net.aufdemrand.denizen.utilities.debugging.Debugger;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public abstract class AbstractListener {
 
 	protected Denizen denizen;
 	protected ArgumentHelper aH;
-	protected Debugger dB;
 
 	protected String listenerType;
 	public String listenerId;
@@ -28,7 +27,6 @@ public abstract class AbstractListener {
 	public AbstractListener() {
 		this.denizen = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 		this.aH = denizen.getScriptEngine().getArgumentHelper();
-		this.dB = denizen.getDebugger();
 	}
 
 	public String getListenerId() {

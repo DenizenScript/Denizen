@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.utilities.Depends;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.command.exception.RequirementMissingException;
 
 import org.bukkit.Bukkit;

@@ -7,7 +7,8 @@ import java.util.List;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemListenerType.ItemType;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
-import net.aufdemrand.denizen.utilities.debugging.Debugger.Messages;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
