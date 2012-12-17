@@ -34,14 +34,14 @@ public class HoldingRequirement extends AbstractRequirement{
 				quantity = aH.getIntegerFrom(thisArg);
 				dB.echoDebug("...quantity set to: " + quantity);
 			} else {
-				material = Material.getMaterial(aH.getStringFrom(thisArg));
-				dB.echoDebug("...checking item: " + material);
+				itemToCheck = aH.getItemFrom(thisArg);
+				dB.echoDebug("...item set to: " + itemToCheck);
 			}
 		} 
 		
-		if (material != null){
-			itemToCheck = new ItemStack (material.getId(), quantity);
-		} else dB.echoDebug("...material not valid!");
+		if (quantity > 1){
+			itemToCheck.setAmount(quantity);
+		}
 		
 		if (player.getItemInHand().equals(itemToCheck)){
 			outcome = true;
