@@ -153,7 +153,7 @@ public class ArgumentHelper {
 		if (argument.split(",").length == 1) {
 			if (argument.toUpperCase().equals(names.toUpperCase())) return true;
 		} else {
-			for (String string : argument.split(","))
+			for (String string : names.split(","))
 				if (argument.split(":")[0].equalsIgnoreCase(string.trim())) return true;
 		}
 		return false;
