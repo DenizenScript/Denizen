@@ -5,6 +5,49 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * Preferred method of outputting debugger information with Denizen and
+ * denizen-related plugins.
+ * 
+ * Attempts to unify the style of reporting information to the Console and
+ * player with the use of color, headers, footers, and formatting.
+ * 
+ * 
+ * Example, this code:
+ * 
+ * dB.echoDebug(DebugElement.Header, "Sample debug information");
+ * dB.echoDebug("This is an example of a piece of debug information. Parts and pieces " +
+ * 		"of an entire debug sequence may be in completely different classes, so making " +
+ * 		"a unified way to output to the console can make a world of difference with " +
+ * 		"debugging and usability.");
+ * dB.echoDebug(DebugElement.Spacer);
+ * dB.echoDebug("Here are some examples of a few different ways to log with the logger.");
+ * dB.echoApproval("Notable events can nicely show success or approval.");
+ * dB.echoError("Your users will be able to easily distinguish problems.");
+ * dB.info("...and important pieces of information can be easily spotted.");
+ * dB.echoDebug(DebugElement.Footer);
+ * 
+ * 
+ * will produce this output (with color):
+ * 
+ * 16:05:05 [INFO] +- Sample debug information ------+
+ * 16:05:05 [INFO] This is an example of a piece of debug information. Parts
+ *                   and pieces of an entire debug sequence may be in completely 
+ *                   different classes, so making a unified way to output to the
+ *                   console can make a world of difference with debugging and 
+ *                   usability.
+ * 16:05:05 [INFO]  
+ * 16:05:05 [INFO] Here are some examples of a few different ways to log with the
+ * 					 logger.
+ * 16:05:05 [INFO]  OKAY! Notable events can nicely show success or approval.
+ * 16:05:05 [INFO]  ERROR! Your users will be able to easily distinguish problems.
+ * 16:05:05 [INFO] +> ...and important pieces of information can easily be spotted.
+ * 16:05:05 [INFO] +---------------------+
+ * 
+ * 
+ * @author Jeremy Schroeder
+ *
+ */
 public class dB {
 
 	static ConsoleSender cs = new ConsoleSender();
@@ -12,31 +55,69 @@ public class dB {
 	public static boolean debugMode = true;
 	public static boolean showStackTraces = true;
 
-	public enum DebugElement {
+	/**
+	 * Can be used with echoDebug(...) to output a header, footer, 
+	 * or a spacer.
+	 * 
+	 * DebugElement.Header = +- string description ------+
+	 * DebugElement.Spacer = 
+	 * DebugElement.Footer = +--------------+
+	 *	
+	 * Also includes color.
+	 *
+	 */
+	public static enum DebugElement {
 		Header,	Footer, Spacer
 	}
+
 	
+	/**
+	 * ConsoleSender sends dScript debugging information to the logger
+	 * will attempt to intelligently wrap any debug information that is more
+	 * than one line. This is used by the dB static methods which do some
+	 * additional formatting.
+	 * 
+	 * Example:
+	 * 
+	 * 16:05:05 [INFO] +- Executing command: ENGRAVE/aufdemrand ------+
+	 * 16:05:05 [INFO]  ...set TYPE: 'TARGET:fullwall'
+     * 16:05:05 [INFO]  Engraving 'DIAMOND_CHESTPLATE' with an inscription of
+                         'Mastaba'.
+     * 16:05:05 [INFO] +---------------------+
+     * 16:05:05 [INFO] +- Executing command: SUPERZAP ------+
+     * 16:05:05 [INFO]  ERROR! SUPERZAP is an invalid dScript command! Are you
+                          sure the command loaded?
+     * 16:05:05 [INFO] +---------------------+
+	 * 
+	 */
 	private static class ConsoleSender {
-		
+		// Bukkit CommandSender sends color nicely to the logger.
 		static CommandSender commandSender = null;
-		
+
 		public static void sendMessage(String string) {
 			if (commandSender == null) commandSender = Bukkit.getServer().getConsoleSender(); 
+			// Create buffer for wrapping debug text nicely.
 			String[] words = string.split(" ");
 			String buffer = "";
 			int modifier = 1;
-			for (String word : words) {
-				if (buffer.length() + word.length() < (80 * modifier) - 16) buffer = buffer + word + " ";
+			for (String word : words) { // # of total chars * # of lines - timestamp
+				if (buffer.length() + word.length()  <  (80 * modifier)  - 19) 
+					buffer = buffer + word + " ";
 				else {
+					// Increase # of lines to account for
 					modifier++;
+					// Leave spaces to account for timestamp and indent
 					buffer = buffer + "\n" + "                   " + word + " ";
-				}
+				}                          // 16:05:06 [INFO]    
 			}
+			// Send buffer to the player
 			commandSender.sendMessage(buffer);
 		}
-		
 	}
 	
+
+	// TODO: Clean up messages. Plan is to have all vanilla core debugging dialog
+	// nicely organized here. Outside plugins which use the debugger can use this as well.
 	public enum Messages {
 		
 		ERROR_NO_NPCID ("No 'NPCID:#' argument."),
@@ -47,12 +128,9 @@ public class dB {
 		ERROR_INVALID_NOTABLE("Missing 'TEXT' argument."),
 		ERROR_MISSING_LOCATION("Missing 'LOCATION'."),
 		ERROR_NO_SCRIPT("Missing 'SCRIPT' argument."),
-		
 		ERROR_MISSING_OTHER("Missing '%s' argument."),
-		
 		ERROR_LOTS_OF_ARGUMENTS("Woah!! Seems like there are a lot of arguments. Did you forget to use quotes?"), 
 		ERROR_UNKNOWN_ARGUMENT("Woah!! Unknown argument! Check syntax."),
-		
 		DEBUG_SET_TEXT("...set TEXT: '%s'"),
 		DEBUG_TOGGLE("...TOGGLE: '%s'"), 
 		DEBUG_SET_DURATION("...set DURATION: '%s'"), 
