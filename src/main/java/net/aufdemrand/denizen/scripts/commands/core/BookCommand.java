@@ -21,31 +21,34 @@ public class BookCommand extends AbstractCommand {
 	public void onEnable() {
 		//nothing to do here
 	}
+	
 	//BOOK GIVE|DROP|EQUIP PLAYER: NAME:book_script
 	
 	BookType TYPE;
 	
-	//defaults for now
-	
 	Player player;
 	String scriptName;
 	ItemStack book;
+
+	String author = null;
+	String title = null;
+	List<String> pages = null;
 	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry)
 			throws InvalidArgumentsException {
 		
-		TYPE = null;
+		TYPE = BookType.GIVE;
 		player = scriptEntry.getPlayer();
 		scriptName = null;
 		
 		for (String arg : scriptEntry.getArguments()) {
-			if (aH.matchesArg("GIVE, DROP, EQUIP", arg)) {
+			if (aH.matchesArg("DROP", arg)) {
 				TYPE = BookType.valueOf(arg.toUpperCase());
-			} else if (aH.matchesValueArg("BOOK", arg, ArgumentType.Custom)) {
+			} else if (aH.matchesScript(arg)) {
 				scriptName = aH.getStringFrom(arg);
-				
-			}
+				dB.echoDebug("... script name set to " + scriptName);
+			} else dB.echoDebug("... arg doesnt work D: " + arg);
 		}
 	}
 
@@ -63,14 +66,12 @@ public class BookCommand extends AbstractCommand {
 		
 		ItemStack book = new ItemStack(387);
 		BookMeta bookInfo = (BookMeta) book.getItemMeta();
-
-		String author = null;
-		String title = null;
-		List<String> pages = null;
+		
+		if (scriptName == null) return null;
 		
 		//if script TYPE:BOOK
-		if (denizen.getScripts().contains(scriptName + ".TYPE") && 
-				denizen.getScripts().getString(scriptName + ".TYPE").equalsIgnoreCase("BOOK")) {
+		if (denizen.getScripts().contains(scriptName.toUpperCase() + ".TYPE") && 
+				denizen.getScripts().getString(scriptName.toUpperCase() + ".TYPE").equalsIgnoreCase("BOOK")) {
 			
 			if (denizen.getScripts().getString(scriptName.toUpperCase() + ".TITLE") != null){
 				title = denizen.getScripts().getString(scriptName.toUpperCase() + ".TITLE");
