@@ -241,7 +241,7 @@ public class dB {
 	}
 
 	public static void log(String message) {
-		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + message);
+		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> [" + message.getClass() + "] " + ChatColor.WHITE + message);
 	}
 
 	public static void notify(Player player, String message, String arg) {

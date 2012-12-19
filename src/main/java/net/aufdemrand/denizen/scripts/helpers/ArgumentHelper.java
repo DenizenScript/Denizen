@@ -150,7 +150,7 @@ public class ArgumentHelper {
 	}
 
 	public boolean matchesArg(String names, String argument) {
-		if (argument.split(",").length == 1) {
+		if (names.split(",").length == 1) {
 			if (argument.toUpperCase().equals(names.toUpperCase())) return true;
 		} else {
 			for (String string : names.split(","))
