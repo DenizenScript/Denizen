@@ -77,7 +77,7 @@ public class ArgumentHelper {
 	 */
 
 	/**
-	 * In practice, the remaining standard arguments should be used whenever possible to keep things consistant across the entire 
+	 * In practice, the remaining standard arguments should be used whenever possible to keep things consistent across the entire 
 	 * Denizen experience. Should you need to use custom arguments, however, there is support for that as well. After all, while using 
 	 * standard arguments is nice, you should never reach. Arguments should make as much sense to the user as possible.
 	 * 
