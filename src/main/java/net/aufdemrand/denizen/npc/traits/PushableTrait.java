@@ -117,7 +117,7 @@ public class PushableTrait extends Trait implements Listener {
             EntityLiving handle = ((CraftLivingEntity) npc.getBukkitEntity()).getHandle();
             handle.yaw = returnLocation.getYaw();
             handle.pitch = returnLocation.getPitch();
-            handle.ay = handle.yaw;
+            handle.az = handle.yaw;
             pushed = false;
             // Push Return action
             denizen.getNPCRegistry().getDenizen(npc).action("push return", null);
