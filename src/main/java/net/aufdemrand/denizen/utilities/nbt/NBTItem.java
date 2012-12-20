@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.server.v1_4_5.NBTBase;
-import net.minecraft.server.v1_4_5.NBTTagCompound;
-import net.minecraft.server.v1_4_5.NBTTagList;
-import net.minecraft.server.v1_4_5.NBTTagString;
+import net.minecraft.server.v1_4_6.NBTBase;
+import net.minecraft.server.v1_4_6.NBTTagCompound;
+import net.minecraft.server.v1_4_6.NBTTagList;
+import net.minecraft.server.v1_4_6.NBTTagString;
 
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
@@ -29,7 +29,7 @@ public class NBTItem {
 
 	
 	 public static ItemStack setName(ItemStack is, String name) {
-	        net.minecraft.server.v1_4_5.ItemStack cis =  CraftItemStack.asNMSCopy(is);
+	        net.minecraft.server.v1_4_6.ItemStack cis =  CraftItemStack.asNMSCopy(is);
 	 
 	        NBTTagCompound tag = cis.getTag();
 	 
@@ -53,7 +53,7 @@ public class NBTItem {
 	        if (desc.isEmpty()) {
 	            return is;
 	        }
-	        net.minecraft.server.v1_4_5.ItemStack cis =  CraftItemStack.asNMSCopy(is);
+	        net.minecraft.server.v1_4_6.ItemStack cis =  CraftItemStack.asNMSCopy(is);
 	 
 	        NBTTagCompound tag = cis.getTag();
 	 
@@ -84,7 +84,7 @@ public class NBTItem {
 	        if(is == null){
 	            return null;
 	        }
-	        net.minecraft.server.v1_4_5.ItemStack cis =  CraftItemStack.asNMSCopy(is);
+	        net.minecraft.server.v1_4_6.ItemStack cis =  CraftItemStack.asNMSCopy(is);
 
 	 
 	        NBTTagCompound tag = cis.getTag();
@@ -110,7 +110,7 @@ public class NBTItem {
 	        if (is == null) {
 	            return null;
 	        }
-	        net.minecraft.server.v1_4_5.ItemStack cis =  CraftItemStack.asNMSCopy(is);
+	        net.minecraft.server.v1_4_6.ItemStack cis =  CraftItemStack.asNMSCopy(is);
 
 	 
 	        NBTTagCompound tag = cis.getTag();

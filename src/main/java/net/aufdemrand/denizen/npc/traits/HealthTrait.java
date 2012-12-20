@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.npc.traits;
 
 
-import org.bukkit.craftbukkit.v1_4_5.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
 import org.bukkit.event.Listener;
 
 import net.citizensnpcs.api.exception.NPCLoadException;

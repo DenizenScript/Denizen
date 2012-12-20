@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.npc.traits;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_4_5.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,7 +15,7 @@ import net.citizensnpcs.api.event.NPCPushEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
-import net.minecraft.server.v1_4_5.EntityLiving;
+import net.minecraft.server.v1_4_6.EntityLiving;
 
 
 
