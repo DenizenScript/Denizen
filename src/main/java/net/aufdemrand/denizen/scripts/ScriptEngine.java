@@ -23,6 +23,7 @@ import org.bukkit.entity.Player;
  * 
  */
 
+@SuppressWarnings("incomplete-switch")
 public class ScriptEngine {
 
     final private Denizen denizen;
@@ -199,7 +200,7 @@ public class ScriptEngine {
      *      The queue type to add the entries to.
      * 
      */
-    public void addToQue(Player player, List<ScriptEntry> scriptEntries, QueueType queueType) {
+	public void addToQue(Player player, List<ScriptEntry> scriptEntries, QueueType queueType) {
         List<ScriptEntry> scriptCommandList;
         switch (queueType) {
         case PLAYER:

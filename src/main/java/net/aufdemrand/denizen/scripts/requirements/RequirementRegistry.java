@@ -57,13 +57,13 @@ public class RequirementRegistry implements DenizenRegistry {
     @Override
     public void registerCoreMembers() {
         new EnchantedRequirement().activate().as("ENCHANTED").withOptions("NO ARGS", 0);
-        new FlaggedRequirement().activate().as("FLAGGED").withOptions("NO ARGS", 0);;
-        new HoldingRequirement().activate().as("HOLDING").withOptions("NO ARGS", 0);;
-        new LiquidRequirement().activate().as("ISLIQUID").withOptions("NO ARGS", 0);;
-        new OwnerRequirement().activate().as("OWNER").withOptions("NO ARGS", 0);;
-        new PoweredRequirement().activate().as("ISPOWERED").withOptions("NO ARGS", 0);;
-        new ScriptRequirement().activate().as("SCRIPT").withOptions("NO ARGS", 0);;
-        new SneakingRequirement().activate().as("SNEAKING").withOptions("NO ARGS", 0);;
+        new FlaggedRequirement().activate().as("FLAGGED").withOptions("NO ARGS", 0);
+        new HoldingRequirement().activate().as("HOLDING").withOptions("NO ARGS", 0);
+        new LiquidRequirement().activate().as("ISLIQUID").withOptions("NO ARGS", 0);
+        new OwnerRequirement().activate().as("OWNER").withOptions("NO ARGS", 0);
+        new PoweredRequirement().activate().as("ISPOWERED").withOptions("NO ARGS", 0);
+        new ScriptRequirement().activate().as("SCRIPT").withOptions("NO ARGS", 0);
+        new SneakingRequirement().activate().as("SNEAKING").withOptions("NO ARGS", 0);
         new StormRequirement().activate().as("STORMING").withOptions("NO ARGS", 0);
         new SunnyRequirement().activate().as("SUNNY").withOptions("NO ARGS", 0);
         new WorldGuardRegionRequirement().activate().as("INREGION");
