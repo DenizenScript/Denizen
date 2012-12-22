@@ -17,9 +17,6 @@ import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import net.minecraft.server.v1_4_6.EntityLiving;
 
-
-
-
 public class PushableTrait extends Trait implements Listener {
 
     private boolean pushable = true;
