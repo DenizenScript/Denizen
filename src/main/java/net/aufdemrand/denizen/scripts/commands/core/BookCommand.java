@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import java.util.List;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -91,7 +90,6 @@ public class BookCommand extends AbstractCommand {
 			case GIVE:
 				inv = player.getInventory();
 				emptySpot = inv.firstEmpty();
-				dB.echoDebug("emptySpot: " + emptySpot);
 				if (emptySpot != -1) {
 					player.getInventory().addItem(book);
 					dB.echoDebug("... added book to player inventory");

@@ -56,17 +56,17 @@ public class RequirementRegistry implements DenizenRegistry {
 
     @Override
     public void registerCoreMembers() {
-        new EnchantedRequirement().activate().as("ENCHANTED").withOptions("NO ARGS", 0);
+        new EnchantedRequirement().activate().as("ENCHANTED").withOptions("(ITEMINHAND)", 1);
         new FlaggedRequirement().activate().as("FLAGGED").withOptions("NO ARGS", 0);
-        new HoldingRequirement().activate().as("HOLDING").withOptions("NO ARGS", 0);
-        new LiquidRequirement().activate().as("ISLIQUID").withOptions("NO ARGS", 0);
-        new OwnerRequirement().activate().as("OWNER").withOptions("NO ARGS", 0);
-        new PoweredRequirement().activate().as("ISPOWERED").withOptions("NO ARGS", 0);
-        new ScriptRequirement().activate().as("SCRIPT").withOptions("NO ARGS", 0);
-        new SneakingRequirement().activate().as("SNEAKING").withOptions("NO ARGS", 0);
-        new StormRequirement().activate().as("STORMING").withOptions("NO ARGS", 0);
-        new SunnyRequirement().activate().as("SUNNY").withOptions("NO ARGS", 0);
-        new WorldGuardRegionRequirement().activate().as("INREGION");
+        new HoldingRequirement().activate().as("HOLDING").withOptions("[ITEMNAME]", 1);
+        new LiquidRequirement().activate().as("ISLIQUID").withOptions("[LOCATION:x,y,z,world", 1);
+        new OwnerRequirement().activate().as("OWNER").withOptions("NONE", 0);
+        new PoweredRequirement().activate().as("ISPOWERED").withOptions("[LOCATION:x,y,z,world", 1);
+        new ScriptRequirement().activate().as("SCRIPT").withOptions("TBD", 0);
+        new SneakingRequirement().activate().as("SNEAKING").withOptions("NONE", 0);
+        new StormRequirement().activate().as("STORMING").withOptions("NONE", 0);
+        new SunnyRequirement().activate().as("SUNNY").withOptions("NONE", 0);
+        new WorldGuardRegionRequirement().activate().as("INREGION").withOptions("[NAME:regionname]", 1);
         dB.echoApproval("Loaded core requirements: " + instances.keySet().toString());
     }
 

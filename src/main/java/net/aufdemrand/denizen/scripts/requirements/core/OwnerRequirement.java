@@ -32,5 +32,4 @@ public class OwnerRequirement extends AbstractRequirement{
 		
 		return outcome;
 	}
-
 }

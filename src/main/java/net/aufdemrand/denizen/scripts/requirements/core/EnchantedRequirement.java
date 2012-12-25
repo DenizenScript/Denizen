@@ -14,7 +14,7 @@ public class EnchantedRequirement extends AbstractRequirement{
 	private enum CheckType { ITEMINHAND };
 	@Override
 	public void onEnable() {
-		
+		// nothing to do here
 	}
 
 	@Override
@@ -39,7 +39,6 @@ public class EnchantedRequirement extends AbstractRequirement{
 			else dB.echoError("Could not match argument '%s'!", thisArg);
 		}
 
-
 		if (checkType != null) {
 			switch (checkType) {
 
@@ -55,5 +54,4 @@ public class EnchantedRequirement extends AbstractRequirement{
 
 		return outcome;
 	}
-
 }

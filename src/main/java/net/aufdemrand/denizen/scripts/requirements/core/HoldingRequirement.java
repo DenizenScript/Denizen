@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.requirements.core;
 
 import java.util.List;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,7 +18,6 @@ public class HoldingRequirement extends AbstractRequirement{
 	}
 	
 	private int quantity;
-    private Material material;
     private ItemStack itemToCheck;
     
 	@Override
@@ -51,5 +49,4 @@ public class HoldingRequirement extends AbstractRequirement{
 		
 		return outcome;
 	}
-
 }

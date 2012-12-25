@@ -8,8 +8,6 @@ import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 
-
-
 public class TimeRequirement extends AbstractRequirement{
 	
 	private enum TIME {DAWN, DAY, DUSK, NIGHT }
@@ -29,13 +27,7 @@ public class TimeRequirement extends AbstractRequirement{
 		
 		for (String thisArg : args){
 			
-			if (aH.matchesArg("DAWN", thisArg)) time = time.DAWN;
-			
-			else if (aH.matchesArg("DAY", thisArg)) time = time.DAY;
-			
-			else if (aH.matchesArg("DUSK", thisArg)) time = time.DUSK;
-			
-			else if (aH.matchesArg("NIGHT", thisArg)) time = time.NIGHT;
+			if (aH.matchesArg("DAWN, DAY, DUSK, NIGHT", thisArg)) time = TIME.valueOf(thisArg);
 			
 		}
 		/* IM LOST

@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
@@ -8,14 +7,11 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.command.exception.RequirementMissingException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
@@ -40,7 +36,6 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
 	 * Example usages:
 	 * INREGION NAME:ilovejeebiss
 	 */
-
 
 
 	@Override

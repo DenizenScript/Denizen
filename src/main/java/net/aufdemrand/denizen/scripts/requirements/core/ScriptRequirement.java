@@ -45,7 +45,6 @@ public class ScriptRequirement extends AbstractRequirement{
 				dB.echoDebug("...checking '%s'.", aH.getStringFrom(thisArg));
 			}
 
-
 			else if (aH.matchesScript(thisArg)) {
 				checkScript = aH.getStringFrom(thisArg);
 				dB.echoDebug("...script to check is '%s'.", checkScript);
@@ -71,9 +70,7 @@ public class ScriptRequirement extends AbstractRequirement{
 			else dB.echoError("Could not match argument '%s'!", thisArg);
 		}
 
-
 		if (scriptCheck != null) {
-
 			switch (scriptCheck) {
 
 			case FINISHED:
@@ -96,7 +93,6 @@ public class ScriptRequirement extends AbstractRequirement{
 				}
 				break;
 
-
 			case FAILED:
 
 				Integer fails = plugin.getSaves().getInt("Players." + player.getName() + "." + checkScript + "." + "Failed", 0);
@@ -117,7 +113,6 @@ public class ScriptRequirement extends AbstractRequirement{
 				}
 				break;
 
-
 			case STEP:
 
 				Integer currentStep = plugin.getSaves().getInt("Players." + player.getName() + "." + checkScript	+ "." + "Current Step", 0);
@@ -137,11 +132,8 @@ public class ScriptRequirement extends AbstractRequirement{
 					}
 				}
 				break;
-
 			}
 		}
-
 		return outcome;
 	}
-
 }

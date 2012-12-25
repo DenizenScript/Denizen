@@ -30,5 +30,4 @@ public class SneakingRequirement extends AbstractRequirement {
 
 		return outcome;
 	}
-
 }

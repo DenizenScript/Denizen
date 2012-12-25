@@ -46,5 +46,4 @@ public class LiquidRequirement extends AbstractRequirement{
 
 		return outcome;
 	}
-
 }

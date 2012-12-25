@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -19,7 +18,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.BlockListenerType.BlockType;
-import net.aufdemrand.denizen.listeners.core.KillListenerType.KillType;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.debugging.dB;
