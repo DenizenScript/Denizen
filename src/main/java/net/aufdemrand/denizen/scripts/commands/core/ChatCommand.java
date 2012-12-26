@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -13,7 +12,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
-import net.citizensnpcs.api.ai.speech.TalkableEntity;
 import net.citizensnpcs.api.npc.NPC;
 
 /**
@@ -55,7 +53,7 @@ public class ChatCommand extends AbstractCommand {
 
 		context = new SpeechContext("");    	
 		if (scriptEntry.getNPC() != null)
-			context.setTalker(new TalkableEntity(scriptEntry.getNPC().getCitizen()));
+			context.setTalker(scriptEntry.getNPC().getEntity());
 
 		for (String arg : scriptEntry.getArguments()) {
 
@@ -64,13 +62,13 @@ public class ChatCommand extends AbstractCommand {
 					if (target.matches("\\d+")) {
 						NPC npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(target)); 
 						if ( npc != null) {
-							context.addRecipient(new TalkableEntity(npc));
+							context.addRecipient(npc.getBukkitEntity());
 							continue;
 						}
 					} else {
 						Player player = Bukkit.getPlayer(target);
 						if (player != null) {
-							context.addRecipient(new TalkableEntity(player));
+							context.addRecipient(player);
 							continue;
 						}
 					}
@@ -85,7 +83,7 @@ public class ChatCommand extends AbstractCommand {
 					NPC npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(talker)); 
 					if ( npc != null) {
 						dB.echoDebug("...set TALKER: '%s'", talker);
-						context.setTalker(new TalkableEntity(npc));
+						context.setTalker(npc.getBukkitEntity());
 						continue;
 					}
 				} 
@@ -115,6 +113,7 @@ public class ChatCommand extends AbstractCommand {
 		
 		// else
 		// Chat via Player with Converse
+	
 	}
 
 }
