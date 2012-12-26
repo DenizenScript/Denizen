@@ -59,7 +59,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 				this.quantity = aH.getIntegerFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
 
-			} else if (aH.matchesValueArg("TARGETS", arg, ArgumentType.Custom)) {
+			} else if (aH.matchesValueArg("TARGETS, TARGET, NAME, NAMES", arg, ArgumentType.Custom)) {
 				targets = aH.getListFrom(arg);
 				dB.echoDebug("...set TARGETS: " + Arrays.toString(targets.toArray()));
 
