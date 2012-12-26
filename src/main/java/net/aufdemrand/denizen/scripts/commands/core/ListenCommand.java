@@ -105,6 +105,7 @@ public class ListenCommand extends AbstractCommand {
 			}	else listenerArguments.add(arg);
 		}
 
+		if (id == null) 
 		if (player == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
 	}
 	
@@ -113,8 +114,13 @@ public class ListenCommand extends AbstractCommand {
 		switch (listenAction) {
 
 		case NEW:
-			denizen.getListenerRegistry().get(listenerType).createInstance(player, id)
+			try { 
+				denizen.getListenerRegistry().get(listenerType).createInstance(player, id)
 				.build(player, id, listenerType, listenerArguments, script);
+			} catch (Exception e) { dB.echoDebug("Cancelled creation of NEW listener!");
+			try { denizen.getListenerRegistry().getListenerFor(player, id).cancel(); }
+			catch (Exception ex) { }
+			}
 			break;
 			
 		case FINISH:
