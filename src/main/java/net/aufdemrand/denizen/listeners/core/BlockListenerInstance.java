@@ -54,9 +54,10 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
 			}
 			
-			else if (aH.matchesValueArg ("BLOCKS", arg, ArgumentType.Custom)){
+			else if (aH.matchesValueArg ("BLOCKS, BLOCK", arg, ArgumentType.Custom)){
+				
 				blocks = aH.getListFrom(arg);
-				dB.echoDebug("...set BLOCKS: " + Arrays.toString(blocks.toArray()));
+				dB.echoDebug("...set BLOCK(S): " + Arrays.toString(blocks.toArray()));
 			}
 			
 			else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
@@ -176,7 +177,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 						return;
 					else itemsCollected.add(event.getItem().getEntityId());
 
-					currentBlocks++;
+					currentBlocks = currentBlocks + event.getItem().getItemStack().getAmount();
 					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " collected a " + event.getItem().getItemStack().getType().toString() + ".");
 					check();
 

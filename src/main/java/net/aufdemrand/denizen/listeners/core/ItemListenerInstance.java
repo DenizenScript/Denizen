@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
+import net.aufdemrand.denizen.listeners.core.BlockListenerType.BlockType;
 import net.aufdemrand.denizen.listeners.core.ItemListenerType.ItemType;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -23,25 +24,30 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 	ItemType type;
 	List<String> items;
-	int quantity = 0;
-	
-	int currentItems = 0;
+	int quantity;
+	int currentItems;
 	
 	@Override
 	public void onBuild(List<String> args) {
+		type = null;
+		items = null;
+		quantity = 0;
+		currentItems = 0;
 		
 		for (String arg : args) {
-			if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
+			if (aH.matchesValueArg ("TYPE", arg, ArgumentType.Custom)) {
 				try { 
-					this.type = ItemType.valueOf(arg); 
+					this.type = ItemType.valueOf(aH.getStringFrom(arg).toUpperCase()); 
 					dB.echoDebug(Messages.DEBUG_SET_TYPE, this.type.name());
-				} catch (Exception e) { }
-
-			} else if (aH.matchesQuantity(arg)) {
+				} catch (Exception e) { dB.echoError("Invalid ItemType!"); }
+			}
+			
+			else if (aH.matchesQuantity(arg)) {
 				this.quantity = aH.getIntegerFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
-
-			} else if (aH.matchesValueArg("ITEMS", arg, ArgumentType.Custom)) {
+			} 
+			
+			else if (aH.matchesValueArg("ITEMS, ITEM", arg, ArgumentType.Custom)) {
 				items = aH.getListFrom(arg);
 				dB.echoDebug("...set ITEMS.");
 			}
