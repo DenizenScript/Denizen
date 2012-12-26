@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.commands.core.AnnounceCommand;
 import net.aufdemrand.denizen.scripts.commands.core.BookCommand;
 import net.aufdemrand.denizen.scripts.commands.core.CastCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ChatCommand;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.commands.core.DisengageCommand;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
@@ -66,8 +67,9 @@ public class CommandRegistry implements DenizenRegistry {
     @Override
     public void registerCoreMembers() {
         new AnnounceCommand().activate().as("ANNOUNCE").withOptions("['Text to announce']", 1);
-        new BookCommand().activate().as("Book").withOptions("TBD", 0);
-        new CastCommand().activate().as("CAST").withOptions("TYPE:PotionEffectType (DURATION:#) (POWER:#) (TARGET:NPC|PLAYER)", 1);
+        new BookCommand().activate().as("BOOK").withOptions("TBD", 0);
+        new CastCommand().activate().as("CAST").withOptions("[TYPE:PotionEffectType] (DURATION:#) (POWER:#) (TARGET:NPC|PLAYER)", 1);
+        new ChatCommand().activate().as("CHAT").withOptions("['Message to chat'] (NPCID:#) (TARGETS:#|player_name)", 1);
         new CooldownCommand().activate().as("COOLDOWN").withOptions("[DURATION:#] (GLOBAL) (PLAYER:player_name) ('SCRIPT:name of script')", 1);
         new DisengageCommand().activate().as("DISENGAGE").withOptions("(NPCID:#)", 0);
         new EngageCommand().activate().as("ENGAGE").withOptions("(DURATION:#) (NPCID:#)", 0);
