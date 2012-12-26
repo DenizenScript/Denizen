@@ -26,7 +26,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 public class BlockListenerInstance extends AbstractListener implements Listener {
 
 	BlockType type;
-	List<String> blocks;
+	List<String> blocks = new ArrayList<String>();
 	Integer quantity;
 	String listenerId;
 	String argRegion = null;
@@ -44,12 +44,12 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 			}
 			
 			else if (aH.matchesQuantity(arg)) {
-				this.quantity = aH.getIntegerFrom(arg);
+				quantity = aH.getIntegerFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
 			}
 			
 			else if (aH.matchesArg("BLOCKS", arg)){
-				this.blocks = Arrays.asList(arg.toUpperCase().split(","));
+				blocks = aH.getListFrom(arg);
 				dB.echoDebug("...set BLOCKS: " + Arrays.toString(blocks.toArray()));
 			}
 			
