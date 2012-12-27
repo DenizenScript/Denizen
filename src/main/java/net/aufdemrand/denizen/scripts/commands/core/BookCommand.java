@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -61,6 +62,7 @@ public class BookCommand extends AbstractCommand {
 		player = scriptEntry.getPlayer();
 		scriptName = null;
 		npcLocation = scriptEntry.getNPC().getLocation();
+		book = null;
 		
 		for (String arg : scriptEntry.getArguments()) {
 			if (aH.matchesArg("DROP", arg) || aH.matchesArg("GIVE", arg) || aH.matchesArg("EQUIP", arg)) {
@@ -68,17 +70,20 @@ public class BookCommand extends AbstractCommand {
 			} else if (aH.matchesScript(arg)) {
 				scriptName = aH.getStringFrom(arg);
 				dB.echoDebug("... script name set to " + scriptName);
+			} else if (aH.matchesItem(arg)) {
+				if (aH.getItemFrom(arg).equals(Material.BOOK))
+				book = aH.getItemFrom(arg);
 			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
 		
 		Inventory inv;
-		
-		book = createBook(scriptName);
 		int emptySpot;
+		if (book == null) book = createBook(scriptName);
 		
 		if (book != null) {
 			switch (TYPE){
