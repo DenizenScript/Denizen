@@ -5,13 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.listeners.core.BlockListenerType.BlockType;
 import net.aufdemrand.denizen.listeners.core.ItemListenerType.ItemType;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,20 +21,22 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class ItemListenerInstance extends AbstractListener implements Listener {
 
 	ItemType type;
-	List<String> items;
+	List<String> items = new ArrayList<String>();
 	int quantity;
 	int currentItems;
+	Server server;
 	
 	@Override
 	public void onBuild(List<String> args) {
 		type = null;
-		items = null;
 		quantity = 0;
 		currentItems = 0;
+		server = Bukkit.getServer();
 		
 		for (String arg : args) {
 			if (aH.matchesValueArg ("TYPE", arg, ArgumentType.Custom)) {
@@ -48,21 +52,22 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			} 
 			
 			else if (aH.matchesValueArg("ITEMS, ITEM", arg, ArgumentType.Custom)) {
-				items = aH.getListFrom(arg);
-				dB.echoDebug("...set ITEMS.");
-			}
-
-			if (items.isEmpty()) {
-				dB.echoError("Missing ITEMS argument!");
-				cancel();
-			}
-			
-			if (type == null) {
-				dB.echoError("Missing TYPE argument! Valid: CRAFT, SMELT, FISH");
-				cancel();
-			}
-			
-			denizen.getServer().getPluginManager().registerEvents((Listener) this, denizen);
+				for (String thisItem : aH.getListFrom(arg))
+					if (server.getRecipesFor(new ItemStack(Material.matchMaterial(thisItem))) != null) {
+						items.add(thisItem);
+					} else dB.echoError("..." + thisItem + " is not a craftable item");
+				dB.echoDebug("...set ITEMS.: " + Arrays.toString(items.toArray()));
+			}			
+		}
+		
+		if (items.isEmpty()) {
+			dB.echoError("Missing ITEMS argument!");
+			cancel();
+		}
+		
+		if (type == null) {
+			dB.echoError("Missing TYPE argument! Valid: CRAFT, SMELT, FISH");
+			cancel();
 		}
 	}
 
@@ -154,7 +159,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	}
 
 	public void check() {
-		if (quantity >= currentItems) {
+		if (currentItems >= quantity) {
 			CraftItemEvent.getHandlerList().unregister(this);
 			FurnaceSmeltEvent.getHandlerList().unregister(this);
 			InventoryClickEvent.getHandlerList().unregister(this);
@@ -177,7 +182,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 	@Override
 	public void constructed() {
-		// TODO Auto-generated method stub
+		denizen.getServer().getPluginManager().registerEvents((Listener) this, denizen);
 	}
 
 	@Override
