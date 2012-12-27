@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.scripts.commands.core.CastCommand;
 import net.aufdemrand.denizen.scripts.commands.core.ChatCommand;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.commands.core.DisengageCommand;
+import net.aufdemrand.denizen.scripts.commands.core.DropCommand;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
 import net.aufdemrand.denizen.scripts.commands.core.ExecuteCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
@@ -24,6 +25,7 @@ import net.aufdemrand.denizen.scripts.commands.core.ListenCommand;
 import net.aufdemrand.denizen.scripts.commands.core.LookcloseCommand;
 import net.aufdemrand.denizen.scripts.commands.core.ModifyBlockCommand;
 import net.aufdemrand.denizen.scripts.commands.core.NarrateCommand;
+import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
 import net.aufdemrand.denizen.scripts.commands.core.PlaySoundCommand;
 import net.aufdemrand.denizen.scripts.commands.core.SwitchCommand;
 import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
@@ -72,6 +74,7 @@ public class CommandRegistry implements DenizenRegistry {
         new ChatCommand().activate().as("CHAT").withOptions("['Message to chat'] (NPCID:#) (TARGETS:#|player_name)", 1);
         new CooldownCommand().activate().as("COOLDOWN").withOptions("[DURATION:#] (GLOBAL) (PLAYER:player_name) ('SCRIPT:name of script')", 1);
         new DisengageCommand().activate().as("DISENGAGE").withOptions("(NPCID:#)", 0);
+        new DropCommand().activate().as("DROP").withOptions("[ITEM:item] (QTY:#)", 1);
         new EngageCommand().activate().as("ENGAGE").withOptions("(DURATION:#) (NPCID:#)", 0);
         new ExecuteCommand().activate().as("EXECUTE").withOptions("[AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']", 2);
         new FailCommand().activate().as("FAIL").withOptions("(PLAYER:player_name)", 0);
@@ -82,12 +85,12 @@ public class CommandRegistry implements DenizenRegistry {
         new IfCommand().activate().as("IF").withOptions("(!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
         new ListenCommand().activate().as("LISTEN").withOptions("[Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation.", 2);
         new LookcloseCommand().activate().as("LOOKCLOSE").withOptions("[TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)", 1);
+        new NewCommand().activate().as("NEW").withOptions("ITEMSTACK [ITEM:item] (QTY:qty)", 2);
         new ModifyBlockCommand().activate().as("MODIFYBLOCK").withOptions("[LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)", 2);
         new NarrateCommand().activate().as("NARRATE").withOptions("(PLAYER:player_name) ['Text to narrate']", 1);
         new PlaySoundCommand().activate().as("PLAYSOUND").withOptions("[LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)", 2);
         new SwitchCommand().activate().as("SWITCH").withOptions("[LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
         new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
-        
         
         dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
     }

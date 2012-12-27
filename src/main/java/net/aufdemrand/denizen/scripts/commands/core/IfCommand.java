@@ -177,10 +177,10 @@ public class IfCommand extends AbstractCommand {
                 case CONTAINS:
                     for (String string : ((List<String>) com.comparable)) {
                         if (com.comparedto instanceof Integer) {
-                            if (aH.getIntegerFrom(string).intValue() == ((Integer) com.comparedto).intValue()) com.outcome = true;
+                            if (aH.getIntegerFrom(string) == ((Integer) com.comparedto).intValue()) com.outcome = true;
                             break;
                         }   else if (com.comparedto instanceof Double) {
-                            if (aH.getDoubleFrom(string).doubleValue() == ((Double) com.comparedto).doubleValue()) com.outcome = true;
+                            if (aH.getDoubleFrom(string) == ((Double) com.comparedto).doubleValue()) com.outcome = true;
                             break;
                         }	else if (com.comparedto instanceof Boolean) {
                             if (Boolean.valueOf(string).booleanValue() == ((Boolean) com.comparedto).booleanValue()) com.outcome = true;

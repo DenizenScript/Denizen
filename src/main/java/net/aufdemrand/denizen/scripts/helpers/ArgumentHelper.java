@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
@@ -62,14 +63,15 @@ public class ArgumentHelper {
 	final Pattern queuetypePattern = Pattern.compile("(?:queue|queuetype):(?:player|player_task|npc)", Pattern.CASE_INSENSITIVE);
 	final Pattern quantityPattern = Pattern.compile("qty:(?:-|)\\d+", Pattern.CASE_INSENSITIVE);
 	final Pattern togglePattern = Pattern.compile("toggle:(true|false)", Pattern.CASE_INSENSITIVE);
-	final Pattern materialPattern = Pattern.compile("[a-zA-Z\\x5F]+", Pattern.CASE_INSENSITIVE);
-	final Pattern materialDataPattern = Pattern.compile("[a-zA-Z]+?:\\d+", Pattern.CASE_INSENSITIVE);
-	final Pattern itemIdPattern = Pattern.compile("(?:(item:)|)\\d+");
-	final Pattern itemIdDataPattern = Pattern.compile("(?:(item:)|)(\\d+)(:)(\\d+)");
+	final Pattern newItemPattern = Pattern.compile("item:itemstack\\..+", Pattern.CASE_INSENSITIVE);
+	final Pattern materialPattern = Pattern.compile("item:[a-zA-Z\\x5F]+", Pattern.CASE_INSENSITIVE);
+	final Pattern materialDataPattern = Pattern.compile("item:[a-zA-Z]+?:\\d+", Pattern.CASE_INSENSITIVE);
+	final Pattern itemIdPattern = Pattern.compile("item:\\d+");
+	final Pattern itemIdDataPattern = Pattern.compile("item:\\d+:\\d+");
 	final Pattern integerPattern = Pattern.compile("(?:-|)\\d+");
 	final Pattern doublePattern = Pattern.compile("(?:-|)\\d+(\\.\\d+|)");
 	final Pattern floatPattern = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
-	final Pattern stringPattern = Pattern.compile("\\.+", Pattern.CASE_INSENSITIVE);
+	final Pattern stringPattern = Pattern.compile(".+", Pattern.CASE_INSENSITIVE);
 	final Pattern wordPattern = Pattern.compile("\\w+", Pattern.CASE_INSENSITIVE);
 
 	/*
@@ -175,20 +177,20 @@ public class ArgumentHelper {
 	}
 
 	public boolean matchesItem(String argument) {
+		m = newItemPattern.matcher(argument);
+		if (m.matches())
+			return true;
 		m = itemIdPattern.matcher(argument);
 		if (m.matches())
 			return true;
 		m = itemIdDataPattern.matcher(argument);
 		if (m.matches())
 			return true;
-		// Strip ITEM: to check against a valid Material
-		if (argument.toUpperCase().startsWith("ITEM:"))
-			argument = argument.substring(5);
 		m = materialPattern.matcher(argument);
 		if (m.matches()) {
 			// Check against Materials
 			for (Material mat : Material.values())
-				if (mat.name().equalsIgnoreCase(argument))
+				if (mat.name().equalsIgnoreCase(argument.substring(5)))
 					return true;
 		}
 		m = materialDataPattern.matcher(argument);
@@ -266,7 +268,7 @@ public class ArgumentHelper {
 
 	public List<String> getListFrom(String argument) {
 		if (argument.split(":").length >= 2)
-		return Arrays.asList(argument.split(":")[1].split("\\|"));
+			return Arrays.asList(argument.split(":")[1].split("\\|"));
 		else return Arrays.asList(argument.split("\\|"));
 	}
 
@@ -278,46 +280,56 @@ public class ArgumentHelper {
 		return null;
 	}
 
-	public Integer getIntegerFrom(String argument) {
+	public int getIntegerFrom(String argument) {
 		try { if (argument.split(":").length >= 2)
 			return Integer.valueOf(argument.split(":")[1]);
 		else return Integer.valueOf(argument);
 		} catch (Exception e) { return 0; }
 	}
 
-	public Float getFloatFrom(String argument) {
+	public float getFloatFrom(String argument) {
 		try { if (argument.split(":").length >= 2)
 			return Float.valueOf(argument.split(":")[1]);
 		else return Float.valueOf(argument);
 		} catch (Exception e) { return 0f; }
 	}
 
-	public Double getDoubleFrom(String argument) {
+	public double getDoubleFrom(String argument) {
 		try { if (argument.split(":").length >= 2)
 			return Double.valueOf(argument.split(":")[1]);
 		else return Double.valueOf(argument);
 		} catch (Exception e) { return 0.00; }
 	}
 
-	public ItemStack getItemFrom(String thisArg) {
-		m = itemIdPattern.matcher(thisArg);
-		Matcher m2 = itemIdDataPattern.matcher(thisArg);
-		Matcher m3 = materialPattern.matcher(thisArg);
-		Matcher m4 = materialDataPattern.matcher(thisArg);
+	public ItemStack getItemFrom(String argument) {
+		// First check for an item made with the NEW command.
+		m = newItemPattern.matcher(argument);
+		if (m.matches()) {
+			String itemName = argument.split("\\.")[1].toUpperCase();
+			if (denizen.getCommandRegistry().get(NewCommand.class).itemStacks.containsKey(itemName))
+				return denizen.getCommandRegistry().get(NewCommand.class).itemStacks.get(itemName);
+			else dB.echoError("Invalid item!");
+		}
+		// Now check traditional item patterns.
+        m = itemIdPattern.matcher(argument);
+		Matcher m2 = itemIdDataPattern.matcher(argument);
+		Matcher m3 = materialPattern.matcher(argument);
+		Matcher m4 = materialDataPattern.matcher(argument);
 		ItemStack stack = null;
 		try {
 			if (m.matches())
-				stack = new ItemStack(Integer.valueOf(thisArg));
+				stack = new ItemStack(Integer.valueOf(argument.substring(5)));
 			else if (m2.matches()) {
-				stack = new ItemStack(Integer.valueOf(thisArg.split(":")[0]));
-				stack.setDurability(Short.valueOf(thisArg.split(":")[1]));
+				stack = new ItemStack(Integer.valueOf(argument.substring(5).split(":")[0]));
+				stack.setDurability(Short.valueOf(argument.substring(5).split(":")[1]));
 			} else if (m3.matches()) {
-				stack = new ItemStack(Material.valueOf(thisArg.toUpperCase()));
+				stack = new ItemStack(Material.valueOf(argument.substring(5).toUpperCase()));
 			} else if (m4.matches()) {
-				stack = new ItemStack(Material.valueOf(thisArg.split(":")[0].toUpperCase()));
-				stack.setDurability(Short.valueOf(thisArg.split(":")[1]));
+				stack = new ItemStack(Material.valueOf(argument.substring(5).split(":")[0].toUpperCase()));
+				stack.setDurability(Short.valueOf(argument.substring(5).split(":")[1]));
 			}
 		} catch (Exception e) { dB.echoError("Invalid item!"); if (dB.showStackTraces) e.printStackTrace(); }
+		
 		return stack;
 	}
 

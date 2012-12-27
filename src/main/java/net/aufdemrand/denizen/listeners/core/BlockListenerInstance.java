@@ -27,22 +27,15 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
 	BlockType type;
 	List<String> blocks = new ArrayList<String>();
-	Integer quantity;
-	String listenerId;
-	String argRegion;
+	int quantity = 1;
+	String argRegion = null;
 
 	Integer currentBlocks = 0;
 	
 	@Override
 	public void onBuild(List<String> args) {
-		
-		type = null;
-		quantity = null;
-		listenerId = null;
-		argRegion = null;
-		
 		for (String arg : args) {
-			if (aH.matchesValueArg ("TYPE", arg, ArgumentType.Custom)) {
+			if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
 				try { 
 					this.type = BlockType.valueOf(aH.getStringFrom(arg).toUpperCase()); 
 					dB.echoDebug(Messages.DEBUG_SET_TYPE, this.type.name());
@@ -54,8 +47,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
 			}
 			
-			else if (aH.matchesValueArg ("BLOCKS, BLOCK", arg, ArgumentType.Custom)){
-				
+			else if (aH.matchesArg("BLOCKS, BLOCK", arg)){
 				blocks = aH.getListFrom(arg);
 				dB.echoDebug("...set BLOCK(S): " + Arrays.toString(blocks.toArray()));
 			}
@@ -67,7 +59,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 		}
 		
 		if (blocks.isEmpty()) {
-			dB.echoError("Missing BLOCKS argument!");
+			dB.echoError("Missing BLOCK(S) argument!");
 			cancel();
 			return;
 		}
@@ -87,6 +79,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 		store("Current Blocks", this.currentBlocks);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onLoad() {
 		type = BlockType.valueOf(((String) get("Type")));

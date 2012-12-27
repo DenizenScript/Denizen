@@ -54,7 +54,7 @@ public class ListenCommand extends AbstractCommand {
 	 */
 
 	private enum ListenAction { NEW, CANCEL, FINISH }
-	
+
 	Player player;
 	AbstractListener listener;
 	String id;
@@ -62,19 +62,19 @@ public class ListenCommand extends AbstractCommand {
 	String listenerType;
 	List<String> listenerArguments;
 	String script;
-	
+
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 		listenAction = ListenAction.NEW;
 		id = null;
 		listenerType = null;
-		
+
 		// Set some defaults based on the scriptEntry
-	    player = scriptEntry.getPlayer();
-	    listenerArguments = new ArrayList<String>();
-	    
-	    // Parse Arguments
+		player = scriptEntry.getPlayer();
+		listenerArguments = new ArrayList<String>();
+
+		// Parse Arguments
 		for (String arg : scriptEntry.getArguments()) {
 
 			if (aH.matchesArg("CANCEL", arg)) {
@@ -86,17 +86,17 @@ public class ListenCommand extends AbstractCommand {
 				script = aH.getStringFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
 				continue;
-				
-            }   else if (aH.matchesArg("FINISH", arg)) {
-                listenAction = ListenAction.FINISH;
-                dB.echoDebug("...marked to FINISH.");
-                continue;
-				
+
+			}   else if (aH.matchesArg("FINISH", arg)) {
+				listenAction = ListenAction.FINISH;
+				dB.echoDebug("...marked to FINISH.");
+				continue;
+
 			}   else if (aH.matchesValueArg("ID", arg, ArgumentType.String)) {
 				id = aH.getStringFrom(arg);
-                dB.echoDebug("...ID set: '%s'", id);
-                continue;
-                
+				dB.echoDebug("...ID set: '%s'", id);
+				continue;
+
 			}   else if (denizen.getListenerRegistry().get(arg) != null) {
 				listenerType = arg;
 				dB.echoDebug("...TYPE set: '%s'", listenerType);
@@ -106,9 +106,9 @@ public class ListenCommand extends AbstractCommand {
 		}
 
 		if (id == null) 
-		if (player == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
+			if (player == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
 	}
-	
+
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
 		switch (listenAction) {
@@ -117,26 +117,27 @@ public class ListenCommand extends AbstractCommand {
 			try { 
 				denizen.getListenerRegistry().get(listenerType).createInstance(player, id)
 				.build(player, id, listenerType, listenerArguments, script);
-			} catch (Exception e) { dB.echoDebug("Cancelled creation of NEW listener!");
-			try { denizen.getListenerRegistry().getListenerFor(player, id).cancel(); }
-			catch (Exception ex) { }
+			} catch (Exception e) { 
+				dB.echoDebug("Cancelled creation of NEW listener!");
+				try { denizen.getListenerRegistry().getListenerFor(player, id).cancel(); }
+				catch (Exception ex) { }
 			}
 			break;
-			
+
 		case FINISH:
 			if (denizen.getListenerRegistry().getListenerFor(player, id) != null)
 				denizen.getListenerRegistry().getListenerFor(player, id).finish();
 			break;
-			
+
 		case CANCEL:
 			if (denizen.getListenerRegistry().getListenerFor(player, id) != null)
 				denizen.getListenerRegistry().getListenerFor(player, id).cancel();
 			break;
 		}
 	}
-	
-    @Override
-    public void onEnable() {
-    	// Nothing to do here.    
-    }
+
+	@Override
+	public void onEnable() {
+		// Nothing to do here.    
+	}
 }
