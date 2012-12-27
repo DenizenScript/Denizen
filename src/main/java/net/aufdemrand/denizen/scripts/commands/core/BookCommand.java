@@ -31,7 +31,7 @@ public class BookCommand extends AbstractCommand {
 		//nothing to do here
 	}
 	
-    /* BOOK (GIVE|DROP|EQUIP) [SCRIPT:NAME] */
+    /* BOOK (GIVE|DROP|EQUIP) [SCRIPT:NAME] (ITEM:ITEMSTACK.name) */
 
     /* 
      * Arguments: [] - Required, () - Optional 
@@ -39,11 +39,12 @@ public class BookCommand extends AbstractCommand {
      * 		the player inventory. DROP drops the book on the ground by the NPC. EQUIP 
      * 		places the book in the player's hand. (default GIVE)
      * [SCRIPT:NAME] defines the name of the Book script to use.
+     * (ITEM:ITEMSTACK.name) specifies an itemstack created with the NEW command. 
      * 
      * Example Usage:
      * BOOK DROP SCRIPT:RuleBook
      * BOOK EQUIP SCRIPT:QuestJournal
-     * BOOK SCRIPT:WelcomeGuide
+     * BOOK SCRIPT:WelcomeGuide ITEM:ITEMSTACK.guide
      * 
      */
 	
@@ -58,7 +59,7 @@ public class BookCommand extends AbstractCommand {
 	public void parseArgs(ScriptEntry scriptEntry)
 			throws InvalidArgumentsException {
 		
-		TYPE = BookType.GIVE;
+		TYPE = null;
 		player = scriptEntry.getPlayer();
 		scriptName = null;
 		npcLocation = scriptEntry.getNPC().getLocation();
@@ -81,52 +82,23 @@ public class BookCommand extends AbstractCommand {
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
 		
-		Inventory inv;
-		int emptySpot;
 		if (book == null) book = createBook(scriptName);
 		
 		if (book != null) {
 			switch (TYPE){
+			default:
+				giveBook(player);
+				break;
 			case DROP:
-				player.getWorld().dropItem(npcLocation, book);
-				dB.echoDebug("... dropped book by NPC");
+				dropBook();
 				break;
 				
 			case GIVE:
-				inv = player.getInventory();
-				emptySpot = inv.firstEmpty();
-				if (emptySpot != -1) {
-					player.getInventory().addItem(book);
-					dB.echoDebug("... added book to player inventory");
-				} else {
-					player.getWorld().dropItem(player.getLocation(), book);
-					dB.echoDebug("... player inventtory full, dropped book");
-				}
+				giveBook(player);
 				break;
 				
 			case EQUIP:
-				inv = player.getInventory();
-				ItemStack currItem = player.getItemInHand();
-				
-				//if they aren't holding anything 
-				if (currItem == null || currItem == new ItemStack(0)) {
-					player.setItemInHand(book);
-					dB.echoDebug("... added book to player hand");
-				}
-				//drop it if inventory has no empty slots
-				emptySpot = inv.firstEmpty();
-				dB.echoDebug("emptySpot: " + emptySpot);
-				
-				if (emptySpot == -1) {
-					player.getWorld().dropItem(player.getLocation(), book);
-					dB.echoDebug("... dropped book, player inventory full");
-				}
-				//move current held item to empty spot, set item in hand to the book
-				else {
-					inv.setItem(emptySpot, currItem);
-					player.setItemInHand(book);
-					dB.echoDebug("... added book to player hand, moved original item");
-				}
+				equipBook(player);
 				
 				break;
 			}
@@ -175,5 +147,48 @@ public class BookCommand extends AbstractCommand {
 			return book;
 			
 		} else return null;
+	}
+	
+	private void giveBook(Player player) {
+		Inventory inv = player.getInventory();
+		int emptySpot = inv.firstEmpty();
+		if (emptySpot != -1) {
+			player.getInventory().addItem(book);
+			dB.echoDebug("... added book to player inventory");
+		} else {
+			player.getWorld().dropItem(player.getLocation(), book);
+			dB.echoDebug("... player inventtory full, dropped book");
+		}
+	}
+	
+	public void equipBook (Player player) {
+		ItemStack currItem = player.getItemInHand();
+		Inventory inv = player.getInventory();
+		int emptySpot = inv.firstEmpty();
+		
+		//if they aren't holding anything 
+		if (currItem == null || currItem == new ItemStack(0)) {
+			player.setItemInHand(book);
+			dB.echoDebug("... added book to player hand");
+		}
+		//drop it if inventory has no empty slots
+		emptySpot = inv.firstEmpty();
+		dB.echoDebug("emptySpot: " + emptySpot);
+		
+		if (emptySpot == -1) {
+			player.getWorld().dropItem(player.getLocation(), book);
+			dB.echoDebug("... dropped book, player inventory full");
+		}
+		//move current held item to empty spot, set item in hand to the book
+		else {
+			inv.setItem(emptySpot, currItem);
+			player.setItemInHand(book);
+			dB.echoDebug("... added book to player hand, moved original item");
+		}
+	}
+	
+	public void dropBook() {
+		player.getWorld().dropItem(npcLocation, book);
+		dB.echoDebug("... dropped book by NPC");
 	}
 }
