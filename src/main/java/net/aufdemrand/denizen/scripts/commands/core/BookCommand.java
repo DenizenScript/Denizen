@@ -5,10 +5,13 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
+import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -22,13 +25,13 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * @author Mason Adkins
  */
 
-public class BookCommand extends AbstractCommand {
+public class BookCommand extends AbstractCommand implements Listener{
 
 	private enum BookAction { GIVE, DROP, EQUIP, NONE }
 
 	@Override
 	public void onEnable() {
-		//nothing to do here
+		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
 	/* BOOK (GIVE|DROP|EQUIP) [SCRIPT:NAME] (ITEM:ITEMSTACK.name) */
@@ -203,5 +206,11 @@ public class BookCommand extends AbstractCommand {
 	public void dropBook() {
 		player.getWorld().dropItem(npcLocation, book);
 		dB.echoDebug("... dropped book by NPC");
+	}
+	
+	@EventHandler
+	public void paragraph(ReplaceableTagEvent e) {
+	if (e.getType().equalsIgnoreCase("P"))
+		e.setReplaceable("\n \u00A7r \n");
 	}
 }
