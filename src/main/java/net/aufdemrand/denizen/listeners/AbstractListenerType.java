@@ -29,16 +29,6 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
 		return this;
 	}
 
-	@Override
-	public String getName() {
-		return this.name;
-	}
-
-	public AbstractListenerType withClass(Class<? extends AbstractListener> listenerInstanceClass) {
-		this.instanceClass = listenerInstanceClass;
-		return null;
-	}
-	
 	public AbstractListener createInstance(Player player, String listenerId) {
 		try {
 			denizen.getListenerRegistry().addListenerFor(player, instanceClass.newInstance(), listenerId);
@@ -52,6 +42,11 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
 		}
 		return null;
 	}
+
+	@Override
+	public String getName() {
+		return this.name;
+	}
 	
 	/**
 	 * Part of the Plugin disable sequence.
@@ -62,6 +57,11 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
 	 */
 	public void onDisable() {
 	
+	}
+	
+	public AbstractListenerType withClass(Class<? extends AbstractListener> listenerInstanceClass) {
+		this.instanceClass = listenerInstanceClass;
+		return null;
 	}
 
 	

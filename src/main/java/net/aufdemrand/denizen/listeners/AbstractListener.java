@@ -23,57 +23,35 @@ public abstract class AbstractListener {
 	protected String scriptName;
 	protected Map<String, Object> saveable = new HashMap<String, Object>();
 
-
 	public AbstractListener() {
 		this.denizen = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 		this.aH = denizen.getScriptEngine().getArgumentHelper();
 	}
 
-	public String getListenerId() {
-		return listenerId != null ? listenerId : "";
+	public void build(Player player, String listenerId, String listenerType, List<String> args, String finishScript) {
+		this.player = player;
+		this.listenerId = listenerId;
+		this.listenerType = listenerType;
+		this.scriptName = finishScript;
+		onBuild(args);
+		save();
+		constructed();
 	}
 
-	public String getListenerType() {
-		return listenerType != null ? listenerType : "";
+	public void cancel() {
+		onCancel();
+		denizen.getListenerRegistry().cancel(player, listenerId, this);
+		deconstructed();
 	}
 	
-	/**
-	 * Method to handle building a new quest listener List<String> of arguments.
-	 * Most likely called from a LISTEN dScript command. The player and listenerId fields
-	 * are non-null at this point.
-	 * 
-	 * @param args  
-	 * 			a list of dScript arguments
-	 * 
-	 */
-	public abstract void onBuild(List<String> args);
+	public abstract void constructed();
 
+	public abstract void deconstructed();
 
-	/**
-	 * When a Player logs off, the quest listener's progress is stored to saves.yml.
-	 * This method should use the store(stringKey, object) method to save the fields needed to
-	 * successfully reload the current state of this quest listener when the onLoad()
-	 * method is called. The fields for player, type, and listenerId are done automatically.
-	 * 
-	 */
-	public abstract void onSave();
-
-
-	/**
-	 * Called when a Player logs on if an instance of this quest listener was saved
-	 * with progress. Any variables that were saved with the store(stringKey, object) method 
-	 * should be called and restored.
-	 * 
-	 */
-	public abstract void onLoad();
-
-
-	/**
-	 * Stores a field away for retrieving later. Should be used in the onSave() method.
-	 * 
-	 */
-	public void store(String key, Object object) {
-		saveable.put(key, object);
+	public void finish() {
+		onFinish();
+		denizen.getListenerRegistry().finish(player, listenerId, scriptName, this);
+		deconstructed();
 	}
 
 	/**
@@ -88,28 +66,12 @@ public abstract class AbstractListener {
 		return denizen.getSaves().get("Listeners." + player.getName() + "." + listenerId + "." + key);
 	}
 
-	public void build(Player player, String listenerId, String listenerType, List<String> args, String finishScript) {
-		this.player = player;
-		this.listenerId = listenerId;
-		this.listenerType = listenerType;
-		this.scriptName = finishScript;
-		onBuild(args);
-		save();
-		constructed();
+	public String getListenerId() {
+		return listenerId != null ? listenerId : "";
 	}
 
-	public void save() {
-		denizen.getSaves().set("Listeners." + player.getName() + "." + listenerId + ".Listener Type", listenerType);
-		denizen.getSaves().set("Listeners." + player.getName() + "." + listenerId + ".Finish Script", scriptName);
-		onSave();
-		try {
-			if (!saveable.isEmpty())
-				for (Entry<String, Object> entry : saveable.entrySet()) 
-					denizen.getSaves().set("Listeners." + player.getName() + "." + listenerId + "." + entry.getKey(), entry.getValue());
-		} catch (Exception e) {
-			dB.echoError("Problem saving listener '" + listenerId + "' for " + player.getName() + "!");
-		}
-		deconstructed();
+	public String getListenerType() {
+		return listenerType != null ? listenerType : "";
 	}
 
 	public void load(Player player, String listenerId, String listenerType) {
@@ -123,27 +85,86 @@ public abstract class AbstractListener {
 		constructed();
 	}
 
-	public abstract void onFinish();
-
-	public void finish() {
-		onFinish();
-		denizen.getListenerRegistry().finish(player, listenerId, scriptName, this);
-		deconstructed();
-	}
+	/**
+	 * Method to handle building a new quest listener List<String> of arguments.
+	 * Most likely called from a LISTEN dScript command. The player and listenerId fields
+	 * are non-null at this point.
+	 * 
+	 * @param args  
+	 * 			a list of dScript arguments
+	 * 
+	 */
+	public abstract void onBuild(List<String> args);
 
 	public abstract void onCancel();
 
-	public void cancel() {
-		onCancel();
-		denizen.getListenerRegistry().cancel(player, listenerId, this);
-		deconstructed();
-	}
+	public abstract void onFinish();
 
+	/**
+	 * Called when a Player logs on if an instance of this quest listener was saved
+	 * with progress. Any variables that were saved with the store(stringKey, object) method 
+	 * should be called and restored.
+	 * 
+	 */
+	public abstract void onLoad();
+
+	/**
+	 * When a Player logs off, the quest listener's progress is stored to saves.yml.
+	 * This method should use the store(stringKey, object) method to save the fields needed to
+	 * successfully reload the current state of this quest listener when the onLoad()
+	 * method is called. The fields for player, type, and listenerId are done automatically.
+	 * 
+	 */
+	public abstract void onSave();
+
+	/**
+	 * Sums up the current status of a this AbstractListenerInstance in a way that would be
+	 * useful by itself to a Player or Console administrator.
+	 * 
+	 * Called by the '/denizen listener --report listenerId' bukkit command.
+	 * 
+	 * This should include all applicable variables when reporting. Suggested format would
+	 * follow suit with core Listeners. For example:
+	 * 
+	 * return player.getName() + " currently has quest listener '" + listenerId 
+	 *		+ "' active and must kill " + Arrays.toString(targets.toArray())
+	 *		+ " '" + type.name() + "'(s). Current progress '" + currentKills 
+	 *		+ "/" + quantity + "'.";
+	 * 
+	 * Output:
+	 * aufdemrand currently has quest listener 'example_quest' active and must kill
+	 *  '[ZOMBIE, SKELETON] ENTITY'(s). Current progress '10/15'. 
+	 * 
+	 * Note: This is not intended to be a 'Quest Log' for a Player, rather is used when
+	 * administrators/server operators are checking up on this Listener. Ideally,
+	 * that kind of information should be handled with the use of replaceable tags.
+	 * 
+	 * @return a 'formatted' String that contains current progress
+	 * 
+	 */
 	public abstract String report();
 	
-	public abstract void constructed();
+	public void save() {
+		denizen.getSaves().set("Listeners." + player.getName() + "." + listenerId + ".Listener Type", listenerType);
+		denizen.getSaves().set("Listeners." + player.getName() + "." + listenerId + ".Finish Script", scriptName);
+		onSave();
+		try {
+			if (!saveable.isEmpty())
+				for (Entry<String, Object> entry : saveable.entrySet()) 
+					denizen.getSaves().set("Listeners." + player.getName() + "." + listenerId + "." + entry.getKey(), entry.getValue());
+		} catch (Exception e) {
+			dB.echoError("Problem saving listener '" + listenerId + "' for " + player.getName() + "!");
+		}
+		deconstructed();
+	}
 	
-	public abstract void deconstructed();
+	/**
+	 * Stores a field away for retrieving later. Should be used in the onSave() method.
+	 * 
+	 */
+	public void store(String key, Object object) {
+		saveable.put(key, object);
+	}
 
 }
 
