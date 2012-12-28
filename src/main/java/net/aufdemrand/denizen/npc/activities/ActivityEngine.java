@@ -19,7 +19,7 @@ public class ActivityEngine implements Listener {
 
 	Denizen denizen;
 
-	// This requires rewriting
+	// TODO: This requires some rewriting before the launch of 0.8.
 	
 	public ActivityEngine(Denizen denizen) {
 		this.denizen = denizen;

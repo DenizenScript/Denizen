@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 public class FlaggedRequirement extends AbstractRequirement {
 
+	// TODO: Finish.
 
 	/* FLAGGED [FLAG_NAME]
 
@@ -26,8 +27,6 @@ public class FlaggedRequirement extends AbstractRequirement {
 	public boolean check(Player thePlayer, DenizenNPC theDenizen, String theScript, List<String> arguments) throws RequirementCheckException {
 
 	    boolean outcome = false;
-	    String flagName = null;
-		FlagType flagType = FlagType.PLAYER;
 
 
     	return outcome;

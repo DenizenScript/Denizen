@@ -6,21 +6,17 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public abstract class AbstractTrigger implements RegistrationableInstance {
 
-    public Denizen denizen;
-
-    protected ScriptHelper sH;
-    protected ScriptBuilder sB;
-
-    protected String name;
-    public TriggerOptions triggerOptions = new TriggerOptions();
-
+	/**
+	 * Contains required options for a Trigger in a single class for the
+	 * ability to add optional options in the future.
+	 *
+	 */
     public class TriggerOptions { 
         public boolean ENABLED_BY_DEFAULT = true; 
         public double DEFAULT_COOLDOWN = -1;
@@ -54,6 +50,14 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         }
     }
 
+    public Denizen denizen;
+    protected ScriptHelper sH;
+
+    protected ScriptBuilder sB;
+    protected String name;
+
+    public TriggerOptions triggerOptions = new TriggerOptions();
+
     @Override
     public AbstractTrigger activate() {
         denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
@@ -72,28 +76,16 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         return this;
     }
     
-    public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown, CooldownType defaultCooldownType) {
-        this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultCooldownType);
-        return this;
-    }
-    
-    public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown, int defaultRadius, CooldownType defaultCooldownType) {
-        this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultRadius, defaultCooldownType);
-        return this;
+    @Override
+    public String getName() {
+        return name;
     }
     
     public TriggerOptions getOptions() {
         return triggerOptions;
     }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public abstract boolean parse(DenizenNPC npc, Player player, String script);
-
-	/**
+    
+    /**
 	 * Part of the Plugin disable sequence.
 	 * 
 	 * Can be '@Override'n by a Trigger which requires a method when bukkit sends a
@@ -103,5 +95,17 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 	public void onDisable() {
 	
 	}
+
+    public abstract boolean parse(DenizenNPC npc, Player player, String script);
+
+    public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown, CooldownType defaultCooldownType) {
+        this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultCooldownType);
+        return this;
+    }
+
+	public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown, int defaultRadius, CooldownType defaultCooldownType) {
+        this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultRadius, defaultCooldownType);
+        return this;
+    }
 
 }

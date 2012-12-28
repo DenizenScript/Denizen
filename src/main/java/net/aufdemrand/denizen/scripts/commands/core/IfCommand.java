@@ -116,7 +116,7 @@ public class IfCommand extends AbstractCommand {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "incomplete-switch" })
     @Override
     public void execute(String commandName) throws CommandExecutionException {
 

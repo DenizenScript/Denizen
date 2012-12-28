@@ -23,23 +23,28 @@ public class RequirementRegistry implements DenizenRegistry {
 
     public Denizen denizen;
 
+    private Map<String, AbstractRequirement> instances = new HashMap<String, AbstractRequirement>();
+
+    private Map<Class<? extends AbstractRequirement>, String> classes = new HashMap<Class<? extends AbstractRequirement>, String>();
     public RequirementRegistry(Denizen denizen) {
         this.denizen = denizen;
     }
 
-    private Map<String, AbstractRequirement> instances = new HashMap<String, AbstractRequirement>();
-    private Map<Class<? extends AbstractRequirement>, String> classes = new HashMap<Class<? extends AbstractRequirement>, String>();
+    @Override
+	public void disableCoreMembers() {
+		for (RegistrationableInstance member : instances.values())
+			try { 
+				member.onDisable(); 
+			} catch (Exception e) {
+				dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
+				if (dB.showStackTraces) e.printStackTrace();
+			}
+	}
 
     @Override
-    public boolean register(String requirementName, RegistrationableInstance requirementClass) {
-        this.instances.put(requirementName.toUpperCase(), (AbstractRequirement) requirementClass);
-        this.classes.put(((AbstractRequirement) requirementClass).getClass(), requirementName.toUpperCase());
-        return true;
-    }
-
-    @Override
-    public Map<String, AbstractRequirement> list() {
-        return instances;
+    public <T extends RegistrationableInstance> T get(Class<T> clazz) {
+        if (classes.containsKey(clazz)) return (T) clazz.cast(instances.get(classes.get(clazz)));
+        else return null;
     }
 
     @Override
@@ -49,12 +54,18 @@ public class RequirementRegistry implements DenizenRegistry {
     }
 
     @Override
-    public <T extends RegistrationableInstance> T get(Class<T> clazz) {
-        if (classes.containsKey(clazz)) return (T) clazz.cast(instances.get(classes.get(clazz)));
-        else return null;
+    public Map<String, AbstractRequirement> list() {
+        return instances;
     }
 
     @Override
+    public boolean register(String requirementName, RegistrationableInstance requirementClass) {
+        this.instances.put(requirementName.toUpperCase(), (AbstractRequirement) requirementClass);
+        this.classes.put(((AbstractRequirement) requirementClass).getClass(), requirementName.toUpperCase());
+        return true;
+    }
+
+	@Override
     public void registerCoreMembers() {
         new EnchantedRequirement().activate().as("ENCHANTED").withOptions("(ITEMINHAND)", 1);
         new FlaggedRequirement().activate().as("FLAGGED").withOptions("NO ARGS", 0);
@@ -69,16 +80,5 @@ public class RequirementRegistry implements DenizenRegistry {
         new WorldGuardRegionRequirement().activate().as("INREGION").withOptions("[NAME:regionname]", 1);
         dB.echoApproval("Loaded core requirements: " + instances.keySet().toString());
     }
-
-	@Override
-	public void disableCoreMembers() {
-		for (RegistrationableInstance member : instances.values())
-			try { 
-				member.onDisable(); 
-			} catch (Exception e) {
-				dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
-				if (dB.showStackTraces) e.printStackTrace();
-			}
-	}
 
 }

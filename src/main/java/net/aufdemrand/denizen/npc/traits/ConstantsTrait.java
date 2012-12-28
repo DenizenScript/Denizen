@@ -69,10 +69,8 @@ public class ConstantsTrait extends Trait {
 		Paginator paginator = new Paginator().header("Constants for " + npc.getName());
 		paginator.addLine("<e>NPC-specific constants: " + (hasNPCConstants() ? "" : "None.") + "");
 		if (hasNPCConstants()) paginator.addLine("<e>Key: <a>Name  <b>Value");
-		int x = 0;
 		for (Entry<String, String> constant : constants.entrySet()) {
 			paginator.addLine("<a> " + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<b>  " + constant.getValue());
-			x++;
 		}
 		paginator.addLine("");
 

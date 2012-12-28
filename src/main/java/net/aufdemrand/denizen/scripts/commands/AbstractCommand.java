@@ -11,24 +11,27 @@ import org.bukkit.Bukkit;
 
 public abstract class AbstractCommand implements RegistrationableInstance {
 
-	public Denizen denizen;
-	
-	protected ArgumentHelper aH;
-		
-	protected String name;
-    public CommandOptions commandOptions = new CommandOptions();
-
-    public class CommandOptions { 
+	/**
+	 * Contains required options for a Command in a single class for the
+	 * ability to add optional options in the future.
+	 *
+	 */
+	public class CommandOptions { 
         public String USAGE_HINT = ""; 
         public int REQUIRED_ARGS = -1;
-
-        public CommandOptions() { }
         
         public CommandOptions(String usageHint, int numberOfRequiredArgs) {
             this.USAGE_HINT = usageHint;
             this.REQUIRED_ARGS = numberOfRequiredArgs;
         }
     }
+	
+	public Denizen denizen;
+		
+	protected ArgumentHelper aH;
+    protected String name;
+
+    public CommandOptions commandOptions;
 
 	@Override
 	public AbstractCommand activate() {
@@ -47,27 +50,20 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 		return this;
 	}
 	
-    public AbstractCommand withOptions(String usageHint, int numberOfRequiredArgs) {
-        this.commandOptions = new CommandOptions(usageHint, numberOfRequiredArgs);
-        return this;
-    }
+    public abstract void execute(String commandName) throws CommandExecutionException;
     
-    public CommandOptions getOptions() {
-        return commandOptions;
-    }
-	
-	@Override
+    @Override
 	public String getName() {
 	    return name;
 	}
 	
+	public CommandOptions getOptions() {
+        return commandOptions;
+    }
+	
 	public String getUsageHint() {
 		return !commandOptions.USAGE_HINT.equals("") ? commandOptions.USAGE_HINT : "No usage defined! See documentation for more information!";
 	}
-	
-	public abstract void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException;
-
-	public abstract void execute(String commandName) throws CommandExecutionException;
 	
 	/**
 	 * Part of the Plugin disable sequence.
@@ -79,5 +75,12 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 	public void onDisable() {
 	
 	}
+
+	public abstract void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException;
+	
+	public AbstractCommand withOptions(String usageHint, int numberOfRequiredArgs) {
+        this.commandOptions = new CommandOptions(usageHint, numberOfRequiredArgs);
+        return this;
+    }
 	
 }

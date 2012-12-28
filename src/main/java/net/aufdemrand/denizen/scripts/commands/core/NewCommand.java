@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,16 +45,16 @@ public class NewCommand extends AbstractCommand implements Listener {
 	 * NEW ITEMSTACK ITEM:DIAMOND QTY:36 ID:itemstack_name
 	 * 
 	 */
-	
+
 	public Map<String, ItemStack> itemStacks = new ConcurrentHashMap<String, ItemStack>();
-	
+
 	private enum ObjectType { ITEMSTACK, ENTITY, NPC }
 
 	ObjectType objectType;
 	String ID;
 	long timeout = 0;
 	ItemStack item;
-	
+
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -64,31 +63,29 @@ public class NewCommand extends AbstractCommand implements Listener {
 		int qty = 1;
 
 		for (String arg : scriptEntry.getArguments()) {
-			
-			if (aH.matchesArg("ITEMSTACK,  ENTITY, BLOCK, NPC", arg)) {
-				try {
-					objectType = ObjectType.valueOf(arg.toUpperCase());
-					dB.echoDebug("...set NEW object type: '%s'", arg.toUpperCase());
-				} catch (Exception e) {e.printStackTrace();}
+
+			if (aH.matchesArg("ITEMSTACK, ENTITY, NPC", arg)) {
+				objectType = ObjectType.valueOf(arg.toUpperCase());
+				dB.echoDebug("...set NEW object type: '%s'", arg.toUpperCase());
 				continue;
-				
+
 			}   else if (aH.matchesValueArg("ID", arg, ArgumentType.String)) {
 				ID = aH.getStringFrom(arg);
 				dB.echoDebug("...set ID: '%s'", ID);
 				continue;
-				
+
 			} else if (aH.matchesItem(arg)) {
-				 item = aH.getItemFrom(arg);
-				 dB.echoDebug("...set ITEM: '%s'", aH.getStringFrom(arg));
-				 continue;
-				
+				item = aH.getItemFrom(arg);
+				dB.echoDebug("...set ITEM: '%s'", aH.getStringFrom(arg));
+				continue;
+
 			} else if (aH.matchesQuantity(arg)) {
-				 qty = aH.getIntegerFrom(arg);
-				 dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(qty));
-				 continue;
-				 
+				qty = aH.getIntegerFrom(arg);
+				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(qty));
+				continue;
+
 			} else {
-				
+
 			}
 		}
 
@@ -104,10 +101,10 @@ public class NewCommand extends AbstractCommand implements Listener {
 			dB.echoApproval("New ItemStack created and saved as 'ITEMSTACK." + ID + "'");
 		}
 	}
-	
+
 	@EventHandler
 	public void replaceableItemStacks(ReplaceableTagEvent e) {
 		//
 	}
-	
+
 }

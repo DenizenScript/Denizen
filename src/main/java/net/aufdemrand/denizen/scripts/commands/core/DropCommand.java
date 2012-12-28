@@ -1,25 +1,17 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.bukkit.Location;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
- * Drops items in a world.
+ * Drops items in a location.
  * 
  * @author Jeremy Schroeder
  */
@@ -48,6 +40,7 @@ public class DropCommand extends AbstractCommand {
 
 		item = null;
 		Integer qty = null;
+		location = null;
 
 		for (String arg : scriptEntry.getArguments()) {
 			
@@ -71,6 +64,9 @@ public class DropCommand extends AbstractCommand {
 			}
 		}
 
+		if (item == null) throw new InvalidArgumentsException(Messages.ERROR_INVALID_ITEM);
+		if (location == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
+		
 		if (qty != null)
 			item.setAmount(qty);
 	}

@@ -42,6 +42,9 @@ public class CommandExecuter {
 		if (scriptEntry.getPlayer() != null) dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommand() + "/" + scriptEntry.getPlayer().getName());
 		else dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommand() + "/" + scriptEntry.getNPC().getName());
 
+		// Don't execute() if problems arise in parseArgs()
+		boolean keepGoing = true;
+		
 		try {
 
 			// Throw exception if arguments are required for this command, but not supplied.
@@ -49,14 +52,14 @@ public class CommandExecuter {
 
 			/*  If using NPCID:# or PLAYER:Name arguments, these need to be changed out immediately because...
 			 *  1) Denizen/Player flags need the desired NPC/PLAYER before parseArgs's getFilledArguments() so that
-		  	 *     the Player/Denizen flags will read from the correct Object. If using PLAYER or NPCID arguments,
+			 *     the Player/Denizen flags will read from the correct Object. If using PLAYER or NPCID arguments,
 			 *     the desired Objects are obviously not the same objects that were sent with the ScriptEntry.
 			 *  2) These arguments should be valid for EVERY ScriptCommand, so why not just take care of it
 			 *     here, instead of requiring each command to take care of the argument.
 			 */
 
 			scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry)); // Replace tags
-			
+
 			List<String> newArgs = new ArrayList<String>(); 
 
 			for (String arg : scriptEntry.getArguments()) {
@@ -81,8 +84,8 @@ public class CommandExecuter {
 							}
 					}
 					if (foundNewPlayer) {
-					    dB.echoDebug("Found an offline player with this name!");
-					    dB.echoDebug("   Saving offlinePlayer object.");
+						dB.echoDebug("Found an offline player with this name!");
+						dB.echoDebug("   Saving offlinePlayer object.");
 					}
 					else { dB.echoError("Could not find a valid player!"); scriptEntry.setPlayer(null); }
 					continue;	
@@ -99,9 +102,7 @@ public class CommandExecuter {
 						dB.echoError("NPCID specified could not be matched to a Denizen!");
 						scriptEntry.setNPC(null);
 					}
-
 				}
-
 				else {
 					newArgs.add(arg);
 				}
@@ -112,35 +113,36 @@ public class CommandExecuter {
 
 			// Parse the rest of the arguments for execution. 
 			command.parseArgs(scriptEntry);
-		}	catch (Exception e) {
-
+		}	catch (InvalidArgumentsException e) {
+			keepGoing = false;
 			// Give usage hint if InvalidArgumentsException was called.
-			if (e instanceof InvalidArgumentsException) {
-				dB.echoError("Woah! Invalid arguments were specified!");
-				dB.echoError("Usage: " + command.getUsageHint());
-				dB.echoDebug(DebugElement.Footer);
+			dB.echoError("Woah! Invalid arguments were specified!");
+			dB.echoDebug(e.getMessage());
+			dB.echoDebug("Usage: " + command.getUsageHint());
+			dB.echoDebug(DebugElement.Footer);
+		} catch (Exception e) {
+			keepGoing = false;
+			dB.echoError("Woah! An exception has been called with this command!");
+			if (!dB.showStackTraces)
+				dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
+			else e.printStackTrace(); 
+			dB.echoDebug(DebugElement.Footer);
 
-			} else { // Else, print stack-trace (if enabled in Debugger)
-				dB.echoError("Woah! An exception has been called with this command!");
-				if (!dB.showStackTraces)
-					dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
-				else e.printStackTrace(); 
-				dB.echoDebug(DebugElement.Footer);
-				
-			} 
 		} finally {
+		
+			if (keepGoing)
 			try {
-                // Fire event for last minute cancellation/alterations
-                ScriptEntryExecuteEvent event = new ScriptEntryExecuteEvent(scriptEntry.getPlayer(), scriptEntry);
-                Bukkit.getServer().getPluginManager().callEvent(event);
-                
-                // If event is altered, update the scriptEntry.
-                if (event.isAltered()) scriptEntry = event.getScriptEntry();
-                    
+				// Fire event for last minute cancellation/alterations
+				ScriptEntryExecuteEvent event = new ScriptEntryExecuteEvent(scriptEntry.getPlayer(), scriptEntry);
+				Bukkit.getServer().getPluginManager().callEvent(event);
+
+				// If event is altered, update the scriptEntry.
+				if (event.isAltered()) scriptEntry = event.getScriptEntry();
+
 				// Run the execute method in the command
-                if (!event.isCancelled()) command.execute(scriptEntry.getCommand());
-                
-                else dB.echoDebug("ScriptEntry has been cancelled.");
+				if (!event.isCancelled()) command.execute(scriptEntry.getCommand());
+
+				else dB.echoDebug("ScriptEntry has been cancelled.");
 			} catch (Exception e) {
 				dB.echoError("Woah!! An exception has been called with this command!");
 				if (!dB.showStackTraces)

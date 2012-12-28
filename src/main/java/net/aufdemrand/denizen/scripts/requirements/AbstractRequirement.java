@@ -15,15 +15,11 @@ import org.bukkit.entity.Player;
 
 public abstract class AbstractRequirement implements RegistrationableInstance {
 
-	protected Denizen plugin;
-	
-	protected ArgumentHelper aH;
-	protected ScriptHelper sH;
-	protected ScriptBuilder sB;
-
-	protected String name;
-    public RequirementOptions requirementOptions = new RequirementOptions();
-
+	/**
+	 * Contains required options for a Requirement in a single class for the
+	 * ability to add optional options in the future.
+	 *
+	 */
     public class RequirementOptions { 
         public String USAGE_HINT = ""; 
         public int REQUIRED_ARGS = -1;
@@ -35,6 +31,15 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
             this.REQUIRED_ARGS = numberOfRequiredArgs;
         }
     }
+	
+	protected Denizen plugin;
+	protected ArgumentHelper aH;
+	protected ScriptHelper sH;
+
+	protected ScriptBuilder sB;
+    protected String name;
+
+	public RequirementOptions requirementOptions;
 	
     @Override
 	public AbstractRequirement activate() {
@@ -54,25 +59,20 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
 		return this;
 	}
     
-    public AbstractRequirement withOptions(String usageHint, int numberOfRequiredArgs) {
-        this.requirementOptions = new RequirementOptions(usageHint, numberOfRequiredArgs);
-        return this;
-    }
-    
-    public RequirementOptions getOptions() {
-        return requirementOptions;
-    }
+    public abstract boolean check(Player player, DenizenNPC npc, String scriptName, List<String> args) throws RequirementCheckException;
     
     @Override
     public String getName() {
         return name;
     }
     
+    public RequirementOptions getOptions() {
+        return requirementOptions;
+    }
+    
     public String getUsageHint() {
         return !requirementOptions.USAGE_HINT.equals("") ? requirementOptions.USAGE_HINT : "No usage defined! See documentation for more information!";
     }
-
-	public abstract boolean check(Player player, DenizenNPC npc, String scriptName, List<String> args) throws RequirementCheckException;
 
 	/**
 	 * Part of the Plugin disable sequence.
@@ -84,5 +84,10 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
 	public void onDisable() {
 	
 	}
+
+	public AbstractRequirement withOptions(String usageHint, int numberOfRequiredArgs) {
+        this.requirementOptions = new RequirementOptions(usageHint, numberOfRequiredArgs);
+        return this;
+    }
 
 }

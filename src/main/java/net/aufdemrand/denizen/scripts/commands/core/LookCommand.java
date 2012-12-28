@@ -1,8 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
@@ -12,8 +9,6 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
-
 
 /**
  * Controls Denizen's heads.
@@ -26,6 +21,8 @@ enum Direction { UP, DOWN, LEFT, RIGHT, NORTH, SOUTH, EAST, WEST, BACK, AT, CLOS
 
 public class LookCommand extends AbstractCommand {
 
+	// TODO: Finish
+	
 	@Override
 	public void onEnable() {
 		//nothing to do here
@@ -53,7 +50,7 @@ public class LookCommand extends AbstractCommand {
 	LivingEntity theEntity = null;
 	DenizenNPC theDenizen = null;
 	
-	private Map<Integer, Integer> taskMap = new ConcurrentHashMap<Integer, Integer>();
+	// private Map<Integer, Integer> taskMap = new ConcurrentHashMap<Integer, Integer>();
 	
 	
 	
