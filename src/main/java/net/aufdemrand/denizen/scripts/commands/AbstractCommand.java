@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
 
@@ -69,5 +68,16 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 	public abstract void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException;
 
 	public abstract void execute(String commandName) throws CommandExecutionException;
+	
+	/**
+	 * Part of the Plugin disable sequence.
+	 * 
+	 * Can be '@Override'n by a Command which requires a method when bukkit sends a
+	 * onDisable() to Denizen. (ie. Server shuts down or restarts)
+	 * 
+	 */
+	public void onDisable() {
+	
+	}
 	
 }

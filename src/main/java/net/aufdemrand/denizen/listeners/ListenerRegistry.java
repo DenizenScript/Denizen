@@ -161,8 +161,19 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		removeListenerFor(player, listenerId);
 	}
 
-
-
-
+	@Override
+	public void disableCoreMembers() {
+		// Note: This runs a onDisable() for each AbstractListenerType, NOT each 
+		// AbstractListener, which should be fine considering in-progress
+		// AbstractListeners deconstruct automatically based on PlayerLogoutEvent
+		// which is also run on a server disable or restart.
+		for (RegistrationableInstance member : types.values())
+			try { 
+				member.onDisable(); 
+			} catch (Exception e) {
+				dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
+				if (dB.showStackTraces) e.printStackTrace();
+			}
+	}
 
 }

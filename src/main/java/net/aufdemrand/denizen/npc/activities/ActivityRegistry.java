@@ -59,9 +59,6 @@ public class ActivityRegistry implements DenizenRegistry {
         taskActivity.activate().as("TASK");
 
         dB.echoApproval("Loaded core activities: " + instances.keySet().toString());
-
-        // Activate Listeners for
-        
     }
 
     
@@ -84,4 +81,16 @@ public class ActivityRegistry implements DenizenRegistry {
         }
     }
 
+	@Override
+	public void disableCoreMembers() {
+		for (RegistrationableInstance member : instances.values())
+			try { 
+				member.onDisable(); 
+			} catch (Exception e) {
+				dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
+				if (dB.showStackTraces) e.printStackTrace();
+			}
+	}
+
+    
 }

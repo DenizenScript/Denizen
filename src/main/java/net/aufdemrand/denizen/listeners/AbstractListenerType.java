@@ -53,6 +53,18 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
 		return null;
 	}
 	
+	/**
+	 * Part of the Plugin disable sequence.
+	 * 
+	 * Can be '@Override'n by a Listener which requires a method when bukkit sends a
+	 * onDisable() to Denizen. (ie. Server shuts down or restarts)
+	 * 
+	 */
+	public void onDisable() {
+	
+	}
+
+	
 }
 
 

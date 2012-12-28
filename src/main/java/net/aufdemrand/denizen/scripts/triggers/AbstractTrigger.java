@@ -93,4 +93,15 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
     public abstract boolean parse(DenizenNPC npc, Player player, String script);
 
+	/**
+	 * Part of the Plugin disable sequence.
+	 * 
+	 * Can be '@Override'n by a Trigger which requires a method when bukkit sends a
+	 * onDisable() to Denizen. (ie. Server shuts down or restarts)
+	 * 
+	 */
+	public void onDisable() {
+	
+	}
+
 }

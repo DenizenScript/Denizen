@@ -75,5 +75,15 @@ public abstract class AbstractActivity implements RegistrationableInstance {
 
     abstract public boolean removeGoal(DenizenNPC npc, boolean verbose);
 
+	/**
+	 * Part of the Plugin disable sequence.
+	 * 
+	 * Can be '@Override'n by a Command which requires a method when bukkit sends a
+	 * onDisable() to Denizen. (ie. Server shuts down or restarts)
+	 * 
+	 */
+	public void onDisable() {
+	
+	}
 
 }

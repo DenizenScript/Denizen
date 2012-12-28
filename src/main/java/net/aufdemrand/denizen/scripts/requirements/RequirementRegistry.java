@@ -70,4 +70,15 @@ public class RequirementRegistry implements DenizenRegistry {
         dB.echoApproval("Loaded core requirements: " + instances.keySet().toString());
     }
 
+	@Override
+	public void disableCoreMembers() {
+		for (RegistrationableInstance member : instances.values())
+			try { 
+				member.onDisable(); 
+			} catch (Exception e) {
+				dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
+				if (dB.showStackTraces) e.printStackTrace();
+			}
+	}
+
 }

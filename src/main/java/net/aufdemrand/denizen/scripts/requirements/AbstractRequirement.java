@@ -74,4 +74,15 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
 
 	public abstract boolean check(Player player, DenizenNPC npc, String scriptName, List<String> args) throws RequirementCheckException;
 
+	/**
+	 * Part of the Plugin disable sequence.
+	 * 
+	 * Can be '@Override'n by a Requirement which requires a method when bukkit sends a
+	 * onDisable() to Denizen. (ie. Server shuts down or restarts)
+	 * 
+	 */
+	public void onDisable() {
+	
+	}
+
 }

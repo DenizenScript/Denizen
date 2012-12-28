@@ -16,5 +16,7 @@ public interface RegistrationableInstance {
     public String getName();
     
     public void onEnable();
+    
+    public void onDisable();
 
 }

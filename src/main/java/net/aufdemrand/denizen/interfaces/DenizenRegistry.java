@@ -66,4 +66,11 @@ public interface DenizenRegistry {
      */
     public void registerCoreMembers();
 
+    
+    /**
+     * Calls an onDisable method on all registered instances.
+     *  
+     */
+    public void disableCoreMembers();
+    
 }
