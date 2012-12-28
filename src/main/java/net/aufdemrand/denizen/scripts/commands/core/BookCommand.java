@@ -5,10 +5,13 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
+import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -22,9 +25,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * @author Mason Adkins
  */
 
-public class BookCommand extends AbstractCommand {
+public class BookCommand extends AbstractCommand implements Listener{
 	
-	private enum BookType { GIVE, DROP, EQUIP }
+	private enum BookType { GIVE, DROP, EQUIP, NONE }
 	
 	@Override
 	public void onEnable() {
@@ -59,7 +62,7 @@ public class BookCommand extends AbstractCommand {
 	public void parseArgs(ScriptEntry scriptEntry)
 			throws InvalidArgumentsException {
 		
-		TYPE = null;
+		TYPE = BookType.NONE;
 		player = scriptEntry.getPlayer();
 		scriptName = null;
 		npcLocation = scriptEntry.getNPC().getLocation();
@@ -72,9 +75,14 @@ public class BookCommand extends AbstractCommand {
 				scriptName = aH.getStringFrom(arg);
 				dB.echoDebug("... script name set to " + scriptName);
 			} else if (aH.matchesItem(arg)) {
-				if (aH.getItemFrom(arg).equals(Material.BOOK))
+				if (aH.getItemFrom(arg).equals(Material.BOOK) || aH.getItemFrom(arg).equals(Material.WRITTEN_BOOK))
 				book = aH.getItemFrom(arg);
+				dB.echoDebug("...will edit ITEMSTACK");
 			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+		}
+		
+		if (book == null) {
+			TYPE = BookType.GIVE;
 		}
 	}
 
@@ -87,7 +95,7 @@ public class BookCommand extends AbstractCommand {
 		if (book != null) {
 			switch (TYPE){
 			default:
-				giveBook(player);
+				dB.echoDebug("...ITEMSTACK edited with bookscript info");
 				break;
 			case DROP:
 				dropBook();
@@ -154,10 +162,10 @@ public class BookCommand extends AbstractCommand {
 		int emptySpot = inv.firstEmpty();
 		if (emptySpot != -1) {
 			player.getInventory().addItem(book);
-			dB.echoDebug("... added book to player inventory");
+			dB.echoDebug("...added book to player inventory");
 		} else {
 			player.getWorld().dropItem(player.getLocation(), book);
-			dB.echoDebug("... player inventtory full, dropped book");
+			dB.echoDebug("...player inventtory full, dropped book");
 		}
 	}
 	
@@ -169,7 +177,7 @@ public class BookCommand extends AbstractCommand {
 		//if they aren't holding anything 
 		if (currItem == null || currItem == new ItemStack(0)) {
 			player.setItemInHand(book);
-			dB.echoDebug("... added book to player hand");
+			dB.echoDebug("...added book to player hand");
 		}
 		//drop it if inventory has no empty slots
 		emptySpot = inv.firstEmpty();
@@ -177,18 +185,25 @@ public class BookCommand extends AbstractCommand {
 		
 		if (emptySpot == -1) {
 			player.getWorld().dropItem(player.getLocation(), book);
-			dB.echoDebug("... dropped book, player inventory full");
+			dB.echoDebug("...dropped book, player inventory full");
 		}
 		//move current held item to empty spot, set item in hand to the book
 		else {
 			inv.setItem(emptySpot, currItem);
 			player.setItemInHand(book);
-			dB.echoDebug("... added book to player hand, moved original item");
+			dB.echoDebug("...added book to player hand, moved original item");
 		}
 	}
 	
 	public void dropBook() {
 		player.getWorld().dropItem(npcLocation, book);
-		dB.echoDebug("... dropped book by NPC");
+		dB.echoDebug("...dropped book by NPC");
+	}
+	
+	@EventHandler
+	public void paragraph(ReplaceableTagEvent event) {
+		if (event.getType().equalsIgnoreCase("P")){ 
+			// TODO event.setReplaceable("\n \u00A7r \");
+		}
 	}
 }
