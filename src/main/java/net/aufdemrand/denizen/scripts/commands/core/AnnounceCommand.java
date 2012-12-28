@@ -11,9 +11,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * Announces a message to the server.
  * 
  * @author Jeremy Schroeder
- * Version 1.0 Last Updated 11/29 12:21
+ * 
  */
-
 public class AnnounceCommand extends AbstractCommand {
 
     @Override
@@ -29,25 +28,35 @@ public class AnnounceCommand extends AbstractCommand {
      * ANNOUNCE 'ANNOUNCEMENT! Today is Christmas!'
      */
 
-    String text = null;
+    String text;
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+    	// Reset fields
+    	text = null;
+    	
+    	// Users tend to forget quotes sometimes on commands like this, so
+    	// let's check if there are more argument than usual.
         if (scriptEntry.getArguments().size() > 3) 
             throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
 
+        // Should only be one argument, since PlAYER: and NPCID: are handled
+        // internally. Let's get that argument and set it as the text.
         for (String arg : scriptEntry.getArguments()) {
                 text = aH.getStringFrom(arg);
                 dB.echoDebug(Messages.DEBUG_SET_TEXT, aH.getStringFrom(arg));
             }
 
+        // If text is missing, alert the console.
         if (text == null) throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
     }
 
     @Override
     public void execute(String commandName) throws CommandExecutionException {
-        denizen.getServer().broadcastMessage(text);
+        
+    	// Use Bukkit to broadcast the message to everybody in the server.
+    	denizen.getServer().broadcastMessage(text);
     }
 
 }
