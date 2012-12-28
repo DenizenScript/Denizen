@@ -16,29 +16,27 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
- * Randomly selects a random script entry from the proceeding
- * entries, discards the rest.
+ * Randomly selects a random script entry from the proceeding entries, discards
+ * the rest.
+ *
+ * 	<ol><tt>Usage:  RANDOM [#]</tt></ol>
+ * 
+ * [#] of entries to randomly select from. Will select 1 of # to execute and
+ * discard the rest.<br/><br/>
+ *   
+ * Example Usage:<br/>
+ * <ul style="list-style-type: none;">
+ * <li><tt>Script:</tt></li>
+ * <li><tt>- RANDOM 3</tt></li>
+ * <li><tt>- CHAT Random Message 1</tt></li>
+ * <li><tt>- CHAT Random Message 2</tt></li>
+ * <li><tt>- CHAT Random Message 3 </tt></li>
+ * </ul>
  * 
  * @author Jeremy Schroeder
  */
 
 public class RandomCommand extends AbstractCommand {
-
-	/* RANDOM [#] */
-
-	/* 
-	 * Arguments: [] - Required, () - Optional 
-	 * [#] of entries to randomly select from. Will select 1 of # to execute
-	 *   and discard the rest.
-	 *   
-	 * Example Usage:
-	 * RANDOM 3
-	 * CHAT Random Message 1
-	 * CHAT Random Message 2
-	 * CHAT Random Message 3
-	 * 
-	 */
-	
 	Integer numberOfEntries;
 	Player player;
 	List<ScriptEntry> currentQueue = new ArrayList<ScriptEntry>();
@@ -47,7 +45,6 @@ public class RandomCommand extends AbstractCommand {
 	
 	@Override
 	public void onEnable() {
-		// nothing to do here
 	}
 
 	@Override

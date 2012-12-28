@@ -20,8 +20,8 @@ import net.citizensnpcs.api.npc.NPC;
 /**
  * This command will teleport an entity to a new location.
  * 	<br/>
- *  <pre>Usage: TELEPORT (NPC) [LOCATION:x,y,z,world] (TARGETS:[[NPCID|PlayerName]...])</pre>
- *  <br/><br/>
+ *  <pre>Usage: TELEPORT (NPC) [LOCATION:x,y,z,world] (TARGETS:[[NPCID|PlayerName](,)+])</pre>
+ *  <br/>
  *  Examples:
  *  <br/><br/>
  *  1)  NPC wants to teleport the player to 100,100,100 in world:<br/>
@@ -33,16 +33,19 @@ import net.citizensnpcs.api.npc.NPC;
  *  3)  NPC wants to teleport NPC #456 and the player named "Dave" to 25,25,25
  *  		in world:<br/>
  *  		<pre>- teleport location:25,25,25,world targets:456,Dave</pre>
+ *  <br/>
  */
-
 public class TeleportCommand extends AbstractCommand {
 	public	static	final	String	NPC_ARG = "NPC";
 
 	//
-	// List of entities being teleported.
+	// List of entities to be teleported.
 	//
 	List<LivingEntity> teleportEntities = new ArrayList<LivingEntity> ();
 	
+	//
+	// List of NPCs to be teleported.
+	//
 	private	List<NPC> teleportNPCs = new ArrayList<NPC> ();
 
 	//
