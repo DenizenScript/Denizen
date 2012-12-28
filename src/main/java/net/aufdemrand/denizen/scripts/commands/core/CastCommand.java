@@ -101,8 +101,10 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  */
 public class CastCommand extends AbstractCommand{
 
+	// Required fields
 	PotionEffect potionEffect;
 	LivingEntity target;
+	LivingEntity caster;
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -116,6 +118,10 @@ public class CastCommand extends AbstractCommand{
 		if (scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer();
 		else if (scriptEntry.getNPC() != null) target = scriptEntry.getNPC().getEntity();
 
+		// Default caster as NPC, if no NPC, default target to Player.
+		if (scriptEntry.getNPC() != null) caster = scriptEntry.getNPC().getEntity();
+		else if (scriptEntry.getPlayer() != null) caster = scriptEntry.getPlayer();
+		
 		for (String arg : scriptEntry.getArguments()) {
 			if (aH.matchesDuration(arg)) {
 				duration = Integer.valueOf(arg.split(":")[1]);
@@ -141,14 +147,26 @@ public class CastCommand extends AbstractCommand{
 						&& scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer();
 				else if (aH.getStringFrom(arg).equalsIgnoreCase("NPC")
 						&& scriptEntry.getNPC() != null) target = scriptEntry.getNPC().getEntity();
-				else dB.echoError("Invalid TARGET type or unavailable TARGET object! Valid: PLAYER, NPC");
+				
+				else dB.echoError("Invalid TARGET type or unavailable TARGET object! " +
+						"Valid: PLAYER, NPC");
 				continue;
 
+			}   else if (aH.matchesValueArg("TARGET", arg, ArgumentType.Custom)) {
+				if (aH.getStringFrom(arg).equalsIgnoreCase("PLAYER")
+						&& scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer();
+				else if (aH.getStringFrom(arg).equalsIgnoreCase("NPC")
+						&& scriptEntry.getNPC() != null) target = scriptEntry.getNPC().getEntity();
+				else dB.echoError("Invalid TARGET type or unavailable TARGET object! " +
+						"Valid: PLAYER, NPC");
+				continue;
+				
 			}   else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 
 		if (potion == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "TYPE");
-		if (target == null) throw new InvalidArgumentsException("No target Object! Perhaps you specified a non-existing Player or NPCID? Use PLAYER:player_name or NPCID:#.");
+		if (target == null) throw new InvalidArgumentsException("No target Object! Perhaps you specified a non-existing  " +
+				"Player or NPCID? Use PLAYER:player_name or NPCID:#.");
 
 		potionEffect = new PotionEffect(potion, duration, amplifier);
 	}

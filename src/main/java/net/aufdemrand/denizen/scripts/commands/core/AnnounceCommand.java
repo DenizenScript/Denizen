@@ -8,22 +8,29 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
- * Announces a message to the server.
+ * <p>Announces a message to the server.</p>
  * 
+ * 
+ * <br><b>dScript Usage:</b><br>
+ * <pre>ANNOUNCE ['message to announce']</pre>
+ * 
+ * <ol><tt>Arguments: [] - Required</ol></tt>
+ * 
+ * <ol><tt>['message to announce']</tt><br> 
+ *         The message to send to the server. This will be seen by all Players.</ol>
+ * 
+ * 
+ * <br><b>Example Usage:</b><br>
+ * <ol><tt>
+ *  - ANNOUNCE 'Today is Christmas!' <br>
+ *  - ANNOUNCE "<PLAYER.NAME> has completed '<FLAG.P:currentQuest>'!" <br>
+ *  - ANNOUNCE "<GOLD>$$$ <WHITE>- Make some quick cash at our <RED>MINEA-SINO<WHITE>!" 
+ * </ol></tt>
+
  * @author Jeremy Schroeder
  * 
  */
 public class AnnounceCommand extends AbstractCommand {
-
-    /* ANNOUNCE ['Text to announce'] */
-    
-    /* 
-     * Arguments: [] - Required, () - Optional 
-     * ['Text to announce'] sets the text.
-     * 
-     * Example Usage:
-     * ANNOUNCE 'ANNOUNCEMENT! Today is Christmas!'
-     */
 
 	// the 'text' to announce
 	String text;
