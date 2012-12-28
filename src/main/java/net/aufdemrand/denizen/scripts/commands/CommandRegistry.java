@@ -28,6 +28,7 @@ import net.aufdemrand.denizen.scripts.commands.core.ModifyBlockCommand;
 import net.aufdemrand.denizen.scripts.commands.core.NarrateCommand;
 import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
 import net.aufdemrand.denizen.scripts.commands.core.PlaySoundCommand;
+import net.aufdemrand.denizen.scripts.commands.core.RandomCommand;
 import net.aufdemrand.denizen.scripts.commands.core.SwitchCommand;
 import net.aufdemrand.denizen.scripts.commands.core.TeleportCommand;
 import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
@@ -92,6 +93,7 @@ public class CommandRegistry implements DenizenRegistry {
 		new ModifyBlockCommand().activate().as("MODIFYBLOCK").withOptions("[LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)", 2);
 		new NarrateCommand().activate().as("NARRATE").withOptions("(PLAYER:player_name) ['Text to narrate']", 1);
 		new PlaySoundCommand().activate().as("PLAYSOUND").withOptions("[LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)", 2);
+		new RandomCommand().activate ().as("RANDOM").withOptions("[#]", 1);
 		new SwitchCommand().activate().as("SWITCH").withOptions("[LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
 		new TeleportCommand ().activate ().as ("TELEPORT").withOptions ("(NPC) [LOCATION:x,y,z,world] (TARGETS:[NPCID:#]|[PLAYER:PlayerName])", 1);
 		new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
