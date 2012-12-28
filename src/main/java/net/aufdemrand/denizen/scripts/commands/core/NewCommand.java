@@ -66,8 +66,10 @@ public class NewCommand extends AbstractCommand implements Listener {
 		for (String arg : scriptEntry.getArguments()) {
 			
 			if (aH.matchesArg("ITEMSTACK,  ENTITY, BLOCK, NPC", arg)) {
-				objectType = ObjectType.valueOf(arg.toUpperCase());
-				dB.echoDebug("...set NEW object type: '%s'", arg.toUpperCase());
+				try {
+					objectType = ObjectType.valueOf(arg.toUpperCase());
+					dB.echoDebug("...set NEW object type: '%s'", arg.toUpperCase());
+				} catch (Exception e) {e.printStackTrace();}
 				continue;
 				
 			}   else if (aH.matchesValueArg("ID", arg, ArgumentType.String)) {
