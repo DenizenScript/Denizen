@@ -140,6 +140,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onLoad() {
 		try {

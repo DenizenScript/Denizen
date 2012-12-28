@@ -16,12 +16,47 @@ public class NotableManager {
 
     Denizen denizen;
 
+    private List<Notable> notables = new ArrayList<Notable>();
+
+    private Map<Integer, List<String>> links = new ConcurrentHashMap<Integer, List<String>>();
     public NotableManager(Denizen denizen) {
         this.denizen = denizen;
     }
 
-    private List<Notable> notables = new ArrayList<Notable>();
-    private Map<Integer, List<String>> links = new ConcurrentHashMap<Integer, List<String>>();
+    public boolean addLink(String notableName, NPC npc) {
+        Notable notable = getNotable(notableName);
+        if (notable == null) return false;
+        // Add to notable
+        getNotable(notableName).addLink(npc.getId());
+        // Add to links list for easy recall by NPCID
+        List<String> tempList = new ArrayList<String>();
+        if (links.containsKey(Integer.valueOf(npc.getId()))) tempList = links.get(Integer.valueOf(npc.getId()));
+        tempList.add(notableName.toUpperCase());
+        links.put(Integer.valueOf(npc.getId()), tempList);
+        // Save to saves.yml
+        saveNotables();
+        return true;
+    }
+
+    public boolean addNotable(String name, Location location) {
+        Notable newNotable = new Notable(name, location);
+        if (notables.contains(newNotable))
+            return false;
+        notables.add(newNotable);
+        saveNotables();
+        return true;
+    }
+
+    public Notable getNotable(String name) {
+        for (Notable notable : notables)
+            if (notable.getName().equalsIgnoreCase(name))
+                return notable;
+        return null;
+    }
+
+    public List<Notable> getNotables() {
+        return notables;
+    }
 
     public void loadNotables() {
         List<String> notablesList = denizen.getSaves().getStringList("Notables.List");
@@ -44,38 +79,6 @@ public class NotableManager {
         }
     }
 
-    public void saveNotables() {
-        List<String> notablesList = new ArrayList<String>();
-        for (Notable notable : notables) {
-            notablesList.add(notable.stringValue());
-        }
-        denizen.getSaves().set("Notables.List", notablesList);
-    }
-
-    public boolean addNotable(String name, Location location) {
-        Notable newNotable = new Notable(name, location);
-        if (notables.contains(newNotable))
-            return false;
-        notables.add(newNotable);
-        saveNotables();
-        return true;
-    }
-
-    public boolean addLink(String notableName, NPC npc) {
-        Notable notable = getNotable(notableName);
-        if (notable == null) return false;
-        // Add to notable
-        getNotable(notableName).addLink(npc.getId());
-        // Add to links list for easy recall by NPCID
-        List<String> tempList = new ArrayList<String>();
-        if (links.containsKey(Integer.valueOf(npc.getId()))) tempList = links.get(Integer.valueOf(npc.getId()));
-        tempList.add(notableName.toUpperCase());
-        links.put(Integer.valueOf(npc.getId()), tempList);
-        // Save to saves.yml
-        saveNotables();
-        return true;
-    }
-
     public boolean removeLink(String notableName, NPC npc) {
         Notable notable = getNotable(notableName);
         if (notable == null) return false;
@@ -90,15 +93,12 @@ public class NotableManager {
         return true;
     }
 
-    public Notable getNotable(String name) {
-        for (Notable notable : notables)
-            if (notable.getName().equalsIgnoreCase(name))
-                return notable;
-        return null;
-    }
-
-    public List<Notable> getNotables() {
-        return notables;
+    public boolean removeNotable(Notable notable) {
+        if (notables.contains(notable)) {
+            notables.remove(notable);
+            return true;
+        }
+        return false;
     }
 
     public boolean removeNotable(String notableName) {
@@ -108,12 +108,12 @@ public class NotableManager {
         return true;
     }
     
-    public boolean removeNotable(Notable notable) {
-        if (notables.contains(notable)) {
-            notables.remove(notable);
-            return true;
+    public void saveNotables() {
+        List<String> notablesList = new ArrayList<String>();
+        for (Notable notable : notables) {
+            notablesList.add(notable.stringValue());
         }
-        return false;
+        denizen.getSaves().set("Notables.List", notablesList);
     }
 
 }

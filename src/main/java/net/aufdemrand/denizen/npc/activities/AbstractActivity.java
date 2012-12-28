@@ -6,32 +6,34 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
 import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
 
 public abstract class AbstractActivity implements RegistrationableInstance {
 
-    public Denizen denizen;
-
-    protected ArgumentHelper aH;
-    protected ScriptHelper sH;
-    protected ScriptBuilder sB;
-
-    protected String name;
-    public ActivityOptions activityOptions = new ActivityOptions();
-
+	/**
+	 * Contains required options for an Activity in a single class for the
+	 * ability to add optional options in the future.
+	 *
+	 */
     public class ActivityOptions { 
         public String USAGE_HINT = ""; 
         public int REQUIRED_ARGS = -1;
 
-        public ActivityOptions() { }
-        
         public ActivityOptions(String usageHint, int numberOfRequiredArgs) {
             this.USAGE_HINT = usageHint;
             this.REQUIRED_ARGS = numberOfRequiredArgs;
         }
     }
+
+    public Denizen denizen;
+    protected ArgumentHelper aH;
+    protected ScriptHelper sH;
+
+    protected ScriptBuilder sB;
+    protected String name;
+
+    public ActivityOptions activityOptions;
     
     @Override
     public AbstractActivity activate() {
@@ -44,6 +46,8 @@ public abstract class AbstractActivity implements RegistrationableInstance {
         return this;
     }
 
+    abstract public boolean addGoal(DenizenNPC npc, String[] arguments, int priority);
+
     @Override
     public AbstractActivity as(String activityName) {
         this.name = activityName.toUpperCase();
@@ -51,19 +55,14 @@ public abstract class AbstractActivity implements RegistrationableInstance {
         onEnable();
         return this;
     }
-
-    public AbstractActivity withOptions(String usageHint, int numberOfRequiredArgs) {
-        this.activityOptions = new ActivityOptions(usageHint, numberOfRequiredArgs);
-        return this;
-    }
-    
-    public ActivityOptions getOptions() {
-        return activityOptions;
-    }
     
     @Override
     public String getName() {
         return name;
+    }
+    
+    public ActivityOptions getOptions() {
+        return activityOptions;
     }
     
     public String getUsageHint(String commandName) {
@@ -71,11 +70,7 @@ public abstract class AbstractActivity implements RegistrationableInstance {
     }
 
     
-    abstract public boolean addGoal(DenizenNPC npc, String[] arguments, int priority);
-
-    abstract public boolean removeGoal(DenizenNPC npc, boolean verbose);
-
-	/**
+    /**
 	 * Part of the Plugin disable sequence.
 	 * 
 	 * Can be '@Override'n by a Command which requires a method when bukkit sends a
@@ -85,5 +80,12 @@ public abstract class AbstractActivity implements RegistrationableInstance {
 	public void onDisable() {
 	
 	}
+
+    abstract public boolean removeGoal(DenizenNPC npc, boolean verbose);
+
+	public AbstractActivity withOptions(String usageHint, int numberOfRequiredArgs) {
+        this.activityOptions = new ActivityOptions(usageHint, numberOfRequiredArgs);
+        return this;
+    }
 
 }
