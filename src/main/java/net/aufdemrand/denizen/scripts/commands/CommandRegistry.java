@@ -82,7 +82,7 @@ public class CommandRegistry implements DenizenRegistry {
 		new FeedCommand().activate().as("FEED").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
 		new FinishCommand().activate().as("FINISH").withOptions("(PLAYER:player_name)", 0);
 		new FlagCommand().activate().as("FLAG").withOptions("(DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]", 1);
-		new GiveCommand().activate().as("FLAG").withOptions("[MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#)", 1);
+		new GiveCommand().activate().as("GIVE").withOptions("[MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#)", 1);
 		new HealCommand().activate().as("HEAL").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
 		new IfCommand().activate().as("IF").withOptions("(!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
 		new ListenCommand().activate().as("LISTEN").withOptions("[Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation.", 2);

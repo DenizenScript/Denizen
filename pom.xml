@@ -156,6 +156,9 @@
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-javadoc-plugin</artifactId>
 							<configuration>
+							    <stylesheetfile>${basedir}/src/javadoc/stylesheet.css</stylesheetfile>
+          						<javadocDirectory>${basedir}/src/javadoc</javadocDirectory>
+          						<docfilessubdirs>true</docfilessubdirs>
 								<links>
 									<link>http://commons.apache.org/lang/api</link>
 									<link>http://java.sun.com/j2se/1.5.0/docs/api</link>

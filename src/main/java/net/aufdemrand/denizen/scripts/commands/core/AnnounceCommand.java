@@ -15,11 +15,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  */
 public class AnnounceCommand extends AbstractCommand {
 
-    @Override
-    public void onEnable() {
-        // Nothing to do here.
-    }
-
+    /* ANNOUNCE ['Text to announce'] */
+    
     /* 
      * Arguments: [] - Required, () - Optional 
      * ['Text to announce'] sets the text.
@@ -28,7 +25,8 @@ public class AnnounceCommand extends AbstractCommand {
      * ANNOUNCE 'ANNOUNCEMENT! Today is Christmas!'
      */
 
-    String text;
+	// the 'text' to announce
+	String text;
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
