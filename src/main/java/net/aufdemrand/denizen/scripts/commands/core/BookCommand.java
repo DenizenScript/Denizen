@@ -103,7 +103,7 @@ public class BookCommand extends AbstractCommand implements Listener{
 		writeBook(book, scriptName);
 
 		switch (action) {
-		
+
 		case DROP:
 			dropBook();
 			break;
@@ -115,12 +115,12 @@ public class BookCommand extends AbstractCommand implements Listener{
 		case EQUIP:
 			equipBook(player);
 			break;
-			
+
 		case NONE:
 			break;
-			
+
 		}
-		
+
 		player.updateInventory();
 	}
 
@@ -207,10 +207,10 @@ public class BookCommand extends AbstractCommand implements Listener{
 		player.getWorld().dropItem(npcLocation, book);
 		dB.echoDebug("... dropped book by NPC");
 	}
-	
+
 	@EventHandler
 	public void paragraph(ReplaceableTagEvent e) {
-	if (e.getType().equalsIgnoreCase("P"))
+		if (!e.matches("P")) return;
 		e.setReplaceable("\n \u00A7r \n");
 	}
 }
