@@ -81,13 +81,15 @@ public class BookCommand extends AbstractCommand implements Listener{
 
 			} else if (aH.matchesItem(arg)) {
 				book = aH.getItemFrom(arg);
-				if (book.getType() != Material.BOOK) {
+				if (book.getType() == Material.BOOK
+						|| book.getType() == Material.WRITTEN_BOOK) {
+					dB.echoDebug("...using existing book '%s'.", arg);
+					newItem = true;
+				} else {
 					dB.echoError("This ItemStack is not a BOOK!");
 					book = null;
-					continue;
 				}
-				newItem = true;
-
+				
 			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 
