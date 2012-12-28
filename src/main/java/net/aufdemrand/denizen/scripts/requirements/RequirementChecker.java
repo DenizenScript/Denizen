@@ -12,6 +12,11 @@ import net.citizensnpcs.command.exception.RequirementMissingException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+/**
+ * This class implements requirement checking for the Denizen NPCs.  
+ * 
+ * @author aufdemrand
+ */
 public class RequirementChecker {
 
 	private Denizen plugin;
@@ -21,7 +26,6 @@ public class RequirementChecker {
 	}
 
 	public boolean check(String scriptName, NPC npc, Player player) throws RequirementMissingException {
-
 		String reqMode = plugin.getScripts().getString(scriptName + ".REQUIREMENTS.MODE", "NONE");
 		List<String> reqList = plugin.getScripts().getStringList(scriptName + ".REQUIREMENTS.LIST");
 
@@ -29,7 +33,6 @@ public class RequirementChecker {
 		
 		// No requirements met yet, we just started!
 		int numberMet = 0; 
-		boolean negativeRequirement;
 
 		// Requirements list null? This script is probably named wrong, or doesn't exist!
 		if (reqList.isEmpty() && !reqMode.equalsIgnoreCase("NONE")) {
@@ -43,10 +46,15 @@ public class RequirementChecker {
 			return false;
 		}
 
-		// Requirement node "NONE"? No requirements in the LIST? No need to continue, return TRUE
-		if (reqMode.equals("NONE") || reqList.isEmpty()) return true;
-
 		dB.echoDebug("Requirement mode: '%s'", reqMode.toUpperCase());
+
+		//
+		// Requirement node "NONE"? No requirements in the LIST? No need to 
+		// continue, return true.
+		//
+		if (reqMode.equalsIgnoreCase ("NONE") || reqList.isEmpty()) {
+			return true;
+		}
 
 		// Set up checks for requirement mode 'FIRST AND ANY #'
 		boolean firstReqMet = false;
@@ -54,28 +62,39 @@ public class RequirementChecker {
 
 		// Check all requirements
 		for (String reqEntry : reqList) {
+			boolean negativeRequirement = false;
 
-			// Check if this is a Negative Requirement
-			if (reqEntry.startsWith("-")) { 
+			//
+			// Check if this is a Negative Requirement.  Negative requirements start
+			// with a... negative sign :).
+			//
+			if (reqEntry.startsWith("-")) {
 				negativeRequirement = true; 
 				reqEntry = reqEntry.substring(1);
-			}   else negativeRequirement = false;
+			}
 
 			// Check requirement with RequirementRegistry
 			if (plugin.getRequirementRegistry().list().containsKey(reqEntry.split(" ")[0])) {
 
 				AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqEntry.split(" ")[0]);
 				String[] arguments = null;
-				if (reqEntry.split(" ").length > 1)	arguments = plugin.getScriptEngine().getScriptBuilder().buildArgs(reqEntry.split(" ", 2)[1]);
+				if (reqEntry.split(" ").length > 1)	{
+					arguments = plugin.getScriptEngine().getScriptBuilder().buildArgs(reqEntry.split(" ", 2)[1]);
+				}
 
 				// Replace tags
 				List<String> argumentList = new ArrayList<String>();
-				if (arguments != null) argumentList = plugin.tagManager().fillArguments(arguments, player, plugin.getNPCRegistry().getDenizen(npc)); 
+				if (arguments != null) {
+					argumentList = plugin.tagManager().fillArguments(arguments, player, plugin.getNPCRegistry().getDenizen(npc)); 
+				}
 
 				try {
 					// Check if # of required args are met
-					if ((arguments == null && requirement.requirementOptions.REQUIRED_ARGS > 0) ||
-							arguments.length < requirement.requirementOptions.REQUIRED_ARGS) throw new RequirementCheckException("");
+					int	numArguments = arguments == null ? 0 : arguments.length;
+					if ((numArguments == 0 && requirement.requirementOptions.REQUIRED_ARGS > 0) ||
+							 numArguments < requirement.requirementOptions.REQUIRED_ARGS) {
+						throw new RequirementCheckException("");
+					}
 
 					// Check the Requirement
 					if (requirement.check(player, plugin.getNPCRegistry().getDenizen(npc), scriptName, argumentList) != negativeRequirement) {

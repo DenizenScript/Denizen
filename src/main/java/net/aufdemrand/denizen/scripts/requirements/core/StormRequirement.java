@@ -8,6 +8,9 @@ import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 
+/**
+ * Returns whether or not it's storming in the world where the player is.
+ */
 public class StormRequirement extends AbstractRequirement {
 
 	@Override
@@ -18,15 +21,6 @@ public class StormRequirement extends AbstractRequirement {
 	@Override
 	public boolean check(Player player, DenizenNPC npc, String scriptName,
 			List<String> args) throws RequirementCheckException {
-		boolean outcome = false;
-
-		/*
-		 * (-)STORMING
-		 */
-		
-		if (player.getWorld().hasStorm()) outcome = true;
-		
-		return outcome;
+		return player.getWorld ().hasStorm ();
 	}
-
 }
