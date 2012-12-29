@@ -37,7 +37,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  */
 
 public class RandomCommand extends AbstractCommand {
-	Integer numberOfEntries;
+	Integer numberOfEntries = null;
 	Player player;
 	List<ScriptEntry> currentQueue = new ArrayList<ScriptEntry>();
 	QueueType sendingQueue;
@@ -51,40 +51,48 @@ public class RandomCommand extends AbstractCommand {
 	public void parseArgs(ScriptEntry scriptEntry)
 			throws InvalidArgumentsException {
 		
-		Integer numberOfEntries = null;
 		sendingQueue = scriptEntry.getSendingQueue();
-		npc = scriptEntry.getNPC();
+		this.npc = scriptEntry.getNPC();
+		
+		if (scriptEntry.getPlayer() != null) {
+			this.player = scriptEntry.getPlayer();
+		}
 		
 		for (String arg : scriptEntry.getArguments()) {
-			
-			if (scriptEntry.getPlayer() != null) player = scriptEntry.getPlayer();
-
+			//
+			// Make sure the random number is an integer.
+			//
 			if (aH.matchesInteger(arg)) {
-				numberOfEntries = aH.getIntegerFrom(arg);
+				this.numberOfEntries = aH.getIntegerFrom(arg);
 				dB.echoDebug("...will randomly select from the next %s entries.", arg);
+			} else {
+				throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 			}
-			
-			else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}	
 
-		if (numberOfEntries == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
-		
-		if (player != null) currentQueue = denizen.getScriptEngine().getPlayerQueue(player, sendingQueue);
-		else currentQueue = denizen.getScriptEngine().getDenizenQueue(npc, sendingQueue);
+		if (this.numberOfEntries == null) {
+			throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
+		}
 
-		if (currentQueue.size() < numberOfEntries) throw new InvalidArgumentsException("Invalid Size! RANDOM [#] must not be larger than the script!");
+		currentQueue = (this.player != null) ?
+			denizen.getScriptEngine().getPlayerQueue(player, sendingQueue) :
+			denizen.getScriptEngine().getDenizenQueue(npc, sendingQueue);
+
+		if (currentQueue.size() < this.numberOfEntries) {
+			throw new InvalidArgumentsException("Invalid Size! RANDOM [#] must not be larger than the script!");
+		}
 		
 	}
 
 	@Override
 	public void execute(String commandName) throws CommandExecutionException {
 		Random random = new Random();
-		int selected = random.nextInt(numberOfEntries);
+		int selected = random.nextInt(this.numberOfEntries);
 		ScriptEntry sEtoKeep = null;
 		
 		dB.echoDebug("...random number generator selected '%s'", String.valueOf(selected + 1));
 		
-		for (int x = 0; x < numberOfEntries; x++) {
+		for (int x = 0; x < this.numberOfEntries; x++) {
 			if (x != selected) {
 				dB.echoDebug("...removing '%s'", currentQueue.get(0).getCommand());
 				currentQueue.remove(0);
