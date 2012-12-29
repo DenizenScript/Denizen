@@ -2,15 +2,26 @@ package net.aufdemrand.denizen.utilities;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
+/**
+ * This class has utility methods for various tasks.
+ * 
+ * @author Aufdemrand, dbixler
+ */
 public class Utilities {
 
 	/* 
@@ -133,6 +144,34 @@ public class Utilities {
 		}
 
 		return playerInv;
+	}
+	
+	/**
+	 * This is a Utility method for finding the closest NPC to a particular
+	 * location.
+	 * 
+	 * @param location	The location to find the closest NPC to.
+	 * @param range	The maximum range to look for the NPC.
+	 * 
+	 * @return	The closest NPC to the location, or null if no NPC was found
+	 * 					within the range specified.
+	 */
+	public static NPC getClosestNPC (Location location, int range) {
+		NPC			closestNPC = null;
+		Double	closestDistance = Double.valueOf(range);
+
+		Iterator<NPC>	it = CitizensAPI.getNPCRegistry().iterator();
+		while (it.hasNext ()) {
+			NPC	npc = it.next ();
+			if (npc.isSpawned()			&&
+					npc.getBukkitEntity().getLocation().getWorld().equals(location.getWorld())	&&
+					npc.getBukkitEntity().getLocation().distance(location) < closestDistance) {
+				closestNPC = npc;
+				closestDistance = npc.getBukkitEntity().getLocation().distance(location);
+			}
+		}
+		
+		return closestNPC;
 	}
 	
 //    public DenizenNPC getClosestDenizen (Player thePlayer, int Range) {
