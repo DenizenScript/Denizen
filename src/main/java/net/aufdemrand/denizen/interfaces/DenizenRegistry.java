@@ -21,7 +21,7 @@ public interface DenizenRegistry {
      * @param commandInstance  
      *      A cast (AbstractInstance) of the instance being registered. Usually '(AbstractInstance) this'.
      * 
-     * @returns false if an exception has been thrown.
+     * @return false if an exception has been thrown.
      *   
      */
     public boolean register(String registrationName, RegistrationableInstance commandInstance);
@@ -42,7 +42,7 @@ public interface DenizenRegistry {
      * @param clazz  
      *      class of the requested AbstractInstance.
      *      
-     * @returns the instance of the class specified.
+     * @return the instance of the class specified.
      * 
      */
     public <T extends RegistrationableInstance> T get(Class<T> clazz);
@@ -54,7 +54,7 @@ public interface DenizenRegistry {
      * @param instanceName
      *      string key in which the AbstractInstance was registered with.
      *      
-     * @returns the instance of the key specified.
+     * @return the instance of the key specified.
      * 
      */
     public RegistrationableInstance get(String instanceKey);

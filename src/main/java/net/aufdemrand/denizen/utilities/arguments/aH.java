@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.scripts.helpers;
+package net.aufdemrand.denizen.utilities.arguments;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,85 +18,82 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * The dScript Argument Helper will aide you in parsing and formatting arguments from a ScriptEntry.  The Argument Helper (aH)
- * object reference is included with AbstractCommand, AbstractRequirement, AbstractActivity and AbstractTrigger.
+ * The dScript Argument Helper will aide you in parsing and formatting arguments from a 
+ * dScript argument string (such as those found in a ScriptEntry.getArguments() method).
  * 
- * TODO: Update following information
+ * <br><br>TODO: Update following information
  * 
- *   dScript Argument         JAVA Parse Method      JAVA Get Method       Returns       Pattern Matcher (Case_Insensitive)
- *  +------------------------+----------------------+---------------------+-------------+----------------------------------------------
- *   NPCID:#                  parsed in executer     done in executer      DenizenNPC    (matched against current NPCs)
- *   PLAYER:player_name       parsed in executer     done in executer      Player        (matched against online/offline Players)
- *   TOGGLE:true|false        matchesToggle(arg)     getBooleanFrom(arg)   boolean       trigger:(true|false)
- *   DURATION:#               matchesDuration(arg)   getIntegerFrom(arg)   int           duration:\d+ 
- *   SCRIPT:script_name       matchesScript(arg)     getStringFrom(arg)    String        script:.+ matched against loaded Scripts    
- *   LOCATION:x#,y#,z#,world  matchesLocation(arg)   getLocationFrom(arg)  Location      location:\d+,\d+,\d+,\w+
- *   QUEUE:Queue_Type         matchesQueueType(arg)  getQueueFrom(arg)     QueueType     queue:(?:player|task|denizen)
- *   QTY:#                    matchesQuantity(arg)   getQuantityFrom(arg)  int           qty:\d+ 
- *   ITEM:Material_Type(:#)   matchesItem(arg)       getItemFrom(arg)      ItemStack     item:\.+:(\d+) matched against Material_Type
- *   ITEM:#(:#)               matchesItem(arg)       getItemFrom(arg)      ItemStack     item:\d+|(\d+:\d+)    
- *   # (Integer)              matchesInteger(arg)    getIntegerFrom(arg)   int           \d+
- *   #.# (Double)             matchesDouble(arg)     getDoubleFrom(arg)    double        \d+\.\d+
- *   #.## (Float)             matchesFloat(arg)      getFloatFrom(arg)     float         ^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)
- *   'NPCs rule!' (String)    matchesString(arg)     getStringFrom(arg)    String        \.+
- *   single_word (Word)       matchesWord(arg)       getStringFrom(arg)    String        \w+
- *   string|string2 (List)    matchesString(arg)     getListFrom(arg)      List<String>  String.split("|")
- *
+ * <br><pre>
+ * 	 dScript argument         recommended            recommended
+ *   string format            JAVA parse method      JAVA get method       returns       
+ *  +------------------------+----------------------+---------------------+-------------+
+ *   NPCID:#                  parsed in executer     done in executer      DenizenNPC    
+ *   PLAYER:player_name       parsed in executer     done in executer      Player        
+ *   TOGGLE:true|false        matchesToggle(arg)     getBooleanFrom(arg)   boolean       
+ *   DURATION:#               matchesDuration(arg)   getIntegerFrom(arg)   int            
+ *   SCRIPT:script_name       matchesScript(arg)     getStringFrom(arg)    String            
+ *   LOCATION:#y#,#,world     matchesLocation(arg)   getLocationFrom(arg)  Location      
+ *   QUEUE:Queue_Type         matchesQueueType(arg)  getQueueFrom(arg)     QueueType     
+ *   QTY:#                    matchesQuantity(arg)   getQuantityFrom(arg)  int            
+ *   ITEM:Material_Type(:#)   matchesItem(arg)       getItemFrom(arg)      ItemStack     
+ *   ITEM:#(:#)               matchesItem(arg)       getItemFrom(arg)      ItemStack         
+ *   # (Integer)              matchesInteger(arg)    getIntegerFrom(arg)   int           
+ *   #.# (Double)             matchesDouble(arg)     getDoubleFrom(arg)    double        
+ *   #.## (Float)             matchesFloat(arg)      getFloatFrom(arg)     float         
+ *   'NPCs rule!' (String)    matchesString(arg)     getStringFrom(arg)    String        
+ *   single_word (Word)       matchesWord(arg)       getStringFrom(arg)    String        
+ *   string|string2 (List)    matchesString(arg)     getListFrom(arg)      List<String>  
+ *</pre><br>
  *
  * In practice, the standard arguments should be used whenever possible to keep things consistent across the entire 
  * Denizen experience. Should you need to use custom arguments, however, there is support for that as well. After all, while using 
  * standard arguments is nice, you should never reach. Arguments should make as much sense to the user as possible.
  * 
+ * <br><br><b>
  * Small code examples:
- * 0  if (aH.matchesArg("HARD", arg))
- * 1     hardness = Hardness.HARD;
+ * </b><ol><code>
+ * 0  if (aH.matchesArg("HARD", arg)) <br>
+ * 1     hardness = Hardness.HARD; <br>
+ *  <br>
+ * 0 if (aH.matchesValueArg("HARDNESS", arg, ArgumentType.Word)) <br> 
+ * 1     try { hardness = Hardness.valueOf(aH.getStringFrom(arg));} <br>
+ * 2     catch (Exception e) { dB.echoError("Invalid HARDNESS!")} <br>
+ * </code></ol>
  * 
- * 0 if (aH.matchesValueArg("HARDNESS", arg, ArgumentType.Word)) 
- * 1     try { hardness = Hardness.valueOf(aH.getStringFrom(arg));}
- * 2     catch (Exception e) { dB.echoError("Invalid HARDNESS!")}
- * 
- * 
+ * <br><br><b>
  * Methods for dealing with Custom Denizen Arguments
- * 
+ * </b><ol><code>
  * DenizenScript Argument   JAVA Parse Method                                 JAVA Get Method       Returns    
  * +------------------------+-------------------------------------------------+---------------------+---------------------------------
  * CUSTOM_ARGUMENT          matchesArg("CUSTOM_ARGUMENT", arg)                None. No value        boolean     
  * CSTM_ARG:value           MatchesValueArg("CSTM_ARG", arg, ArgumentType)    get____From(arg)      depends on get method
- * 
+ * </code></ol><br>
  * 
  * Note: ArgumentType will filter the type of value to match to. If anything should be excepted as the value, or you plan
- * on parsing the value yourself, use ArgumentType.Custom.
+ * on parsing the value yourself, use ArgumentType.Custom.<br><br>
  * 
  * Valid ArgumentTypes: ArgumentType.String, ArgumentType.Word, ArgumentType.Integer, ArgumentType.Double, ArgumentType.Float,
  * and ArgumentType.Custom
  *
- *
  * @author Jeremy Schroeder
  *
  */
-public class ArgumentHelper {
+public class aH {
 
 	public enum ArgumentType {
 		Entity, Item, Boolean, Custom, Double, Float, Integer, String, Word, Location, Script
 	}
 
-	Denizen denizen;
+	//	Denizen denizen;
 
-	final Pattern doublePtrn = Pattern.compile("(?:-|)(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
-	final Pattern floatPtrn = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
-	final Pattern integerPtrn = Pattern.compile("(?:-|)\\d+");
-	final Pattern stringPtrn = Pattern.compile(".+");
-	final Pattern wordPtrn = Pattern.compile("\\w+");
-
+	final static Pattern doublePtrn = Pattern.compile("(?:-|)(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
+	final static Pattern floatPtrn = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
+	final static Pattern integerPtrn = Pattern.compile("(?:-|)\\d+");
+	final static Pattern stringPtrn = Pattern.compile(".+");
+	final static Pattern wordPtrn = Pattern.compile("\\w+");
 
 	final Pattern matchesEntityPattern = Pattern.compile("entity:(.+)", Pattern.CASE_INSENSITIVE);
 	final Pattern getEntityFromPtrn = Pattern.compile("(?:(?:.+?:)|)(.+)");
-
-
-
-	public ArgumentHelper(Denizen denizen) {
-		this.denizen = denizen;
-	}
 
 	/**
 	 * Returns a boolean value from a dScript argument string. Also accounts
@@ -115,7 +112,7 @@ public class ArgumentHelper {
 	 * @return true or false
 	 * 
 	 */
-	public boolean getBooleanFrom(String arg) {
+	public static boolean getBooleanFrom(String arg) {
 		if (arg.split(":").length >= 2)
 			return Boolean.valueOf(arg.split(":", 2)[1]).booleanValue();
 		else return Boolean.valueOf(arg).booleanValue();
@@ -139,7 +136,7 @@ public class ArgumentHelper {
 	 * @return a double interpretation of the argument
 	 * 
 	 */
-	public double getDoubleFrom(String arg) {
+	public static double getDoubleFrom(String arg) {
 		try { 
 			if (arg.split(":").length >= 2)
 				return Double.valueOf(arg.split(":", 2)[1]).doubleValue();
@@ -159,7 +156,7 @@ public class ArgumentHelper {
 	 * @return a float interpretation of the argument
 	 * 
 	 */
-	public float getFloatFrom(String arg) {
+	public static float getFloatFrom(String arg) {
 		try { 
 			if (arg.split(":").length >= 2)
 				return Float.valueOf(arg.split(":", 2)[1]);
@@ -187,7 +184,7 @@ public class ArgumentHelper {
 	 * @return an int interpretation of the argument
 	 * 
 	 */
-	public int getIntegerFrom(String arg) {
+	public static int getIntegerFrom(String arg) {
 		try { 
 			if (arg.split(":").length >= 2)
 				return Integer.valueOf(arg.split(":", 2)[1]);
@@ -222,7 +219,7 @@ public class ArgumentHelper {
 	 * @return an ItemStack or null
 	 * 
 	 */
-	public ItemStack getItemFrom(String arg) {
+	public static ItemStack getItemFrom(String arg) {
 
 		final Pattern[] getItemPtrn = {
 				Pattern.compile("(?:(?:.+?:)|)(\\d+):(\\d+)"),
@@ -238,10 +235,10 @@ public class ArgumentHelper {
 		// These are in the 'ITEMSTACK.item_name' format.
 		m[0] = getItemPtrn[4].matcher(arg);
 		if (m[0].matches()) {
-			String itemName = m[0].group(1).toUpperCase();
-			if (denizen.getCommandRegistry().get(NewCommand.class).itemStacks.containsKey(itemName))
-				return denizen.getCommandRegistry().get(NewCommand.class).itemStacks.get(itemName);
-			else dB.echoError("Invalid item! '" + itemName + "' could not be found.");
+			ItemStack returnable = ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
+					.getCommandRegistry().get(NewCommand.class).getItem(m[0].group(1));
+			if (returnable != null) return returnable;
+			else dB.echoError("Invalid item! '" + m[0].group(1) + "' could not be found.");
 		}
 
 		// Now check traditional item patterns.
@@ -303,7 +300,7 @@ public class ArgumentHelper {
 	 * @return a List<String> of the string, split by the '|' character
 	 * 
 	 */
-	public List<String> getListFrom(String arg) {
+	public static List<String> getListFrom(String arg) {
 		if (arg == null || arg.equals("")) return new ArrayList<String>();
 		if (arg.split(":").length >= 2)
 			return Arrays.asList(arg.split(":", 2)[1].split("\\|"));
@@ -329,7 +326,7 @@ public class ArgumentHelper {
 	 * @return a Bukkit Location, or null
 	 * 
 	 */
-	public Location getLocationFrom(String arg) {
+	public static Location getLocationFrom(String arg) {
 		arg = arg.split(":", 2)[1];
 		String[] num = arg.split(",");
 		Location location = null;
@@ -361,7 +358,7 @@ public class ArgumentHelper {
 	 * @param arg the dScript argument string
 	 * @return a Bukkit Player object, or null
 	 */
-	public Player getPlayerFrom(String arg) {
+	public static Player getPlayerFrom(String arg) {
 		if (arg.split(":").length >= 2)
 			arg = arg.split(":", 2)[1];
 		for (Player player : Bukkit.getOnlinePlayers())
@@ -396,7 +393,7 @@ public class ArgumentHelper {
 	 * @return a Bukkit OfflinePlayer object, or null
 	 * 
 	 */
-	public Player getOfflinePlayerFrom(String arg) {
+	public static Player getOfflinePlayerFrom(String arg) {
 		if (arg.split(":").length >= 2)
 			arg = arg.split(":", 2)[1];
 		for (Player player : Bukkit.getOnlinePlayers())
@@ -426,7 +423,7 @@ public class ArgumentHelper {
 	 * @return a QueueType, or null
 	 * 
 	 */
-	public QueueType getQueueFrom(String arg) {
+	public static QueueType getQueueFrom(String arg) {
 		try { 
 			if (arg.split(":").length >= 2)
 				return QueueType.valueOf(arg.split(":")[1].toUpperCase());
@@ -451,7 +448,7 @@ public class ArgumentHelper {
 	 * @return a String, minus any argument prefix
 	 * 
 	 */
-	public String getStringFrom(String arg) {
+	public static String getStringFrom(String arg) {
 		if (arg.split(":").length >= 2 &&
 				((arg.indexOf(':') < arg.indexOf(' ') || arg.indexOf(' ') == -1)))
 			return arg.split(":", 2)[1];
@@ -477,7 +474,7 @@ public class ArgumentHelper {
 	 * @return true if matched, false if not
 	 * 
 	 */
-	public boolean matchesArg(String names, String arg) {
+	public static boolean matchesArg(String names, String arg) {
 		if (names.split(",").length == 1) {
 			if (arg.toUpperCase().equals(names.toUpperCase())) return true;
 		} else {
@@ -502,7 +499,7 @@ public class ArgumentHelper {
 	 * @return true if matched, otherwise false
 	 * 
 	 */
-	public boolean matchesDouble(String arg) {
+	public static boolean matchesDouble(String arg) {
 		Matcher m = doublePtrn.matcher(arg);
 		return m.matches();
 	}
@@ -528,15 +525,15 @@ public class ArgumentHelper {
 	 * @return true if matched, otherwise false
 	 * 
 	 */
-	public boolean matchesDuration(String arg) {
+	public static boolean matchesDuration(String arg) {
 		final Pattern matchesDurationPtrn = Pattern.compile("duration:\\d+", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesDurationPtrn.matcher(arg);
 		return m.matches();
 	}
 
-	public boolean matchesEntity(String arg) {
-		
-		// TODO: finish
+	public static boolean matchesEntity(String arg) {
+
+
 
 		return false;
 	}
@@ -556,7 +553,7 @@ public class ArgumentHelper {
 	 * @return true if matched, otherwise false
 	 * 
 	 */
-	public boolean matchesInteger(String arg) {
+	public static boolean matchesInteger(String arg) {
 		Matcher m = integerPtrn.matcher(arg);
 		return m.matches();
 	}
@@ -581,8 +578,8 @@ public class ArgumentHelper {
 	 * @return true if matches, false otherwise
 	 * 
 	 */
-	public boolean matchesItem(String arg) {
-		
+	public static boolean matchesItem(String arg) {
+
 		final Pattern[] matchesItemPtrn = {
 				Pattern.compile("item:\\d+:\\d+", Pattern.CASE_INSENSITIVE),
 				Pattern.compile("item:\\d+", Pattern.CASE_INSENSITIVE),
@@ -593,13 +590,13 @@ public class ArgumentHelper {
 		Matcher m;
 		m = matchesItemPtrn[3].matcher(arg);
 		if (m.matches()) return true;
-		
+
 		m = matchesItemPtrn[0].matcher(arg);
 		if (m.matches()) return true;
-		
+
 		m = matchesItemPtrn[1].matcher(arg);
 		if (m.matches()) return true;
-		
+
 		m = matchesItemPtrn[2].matcher(arg);
 		if (m.matches()) {
 			for (Material mat : Material.values())
@@ -627,7 +624,7 @@ public class ArgumentHelper {
 	 * @return true if matched, otherwise false
 	 * 
 	 */
-	public boolean matchesLocation(String arg) {
+	public static boolean matchesLocation(String arg) {
 		final Pattern locationPattern = Pattern.compile("location:(?:-|)\\d+,(?:-|)\\d+,(?:-|)\\d+,\\w+", Pattern.CASE_INSENSITIVE);
 		Matcher m = locationPattern.matcher(arg);
 		return m.matches();
@@ -655,7 +652,7 @@ public class ArgumentHelper {
 	 * @return true if matched, otherwise false
 	 * 
 	 */
-	public boolean matchesQuantity(String arg) {
+	public static boolean matchesQuantity(String arg) {
 		final Pattern matchesQuantityPtrn = Pattern.compile("qty:(?:-|)\\d+", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesQuantityPtrn.matcher(arg);
 		return m.matches();
@@ -682,7 +679,7 @@ public class ArgumentHelper {
 	 * @return true if matched, otherwise false
 	 * 
 	 */
-	public boolean matchesQueueType(String arg) {
+	public static boolean matchesQueueType(String arg) {
 		final Pattern matchesQueuePtrn = Pattern.compile("(?:(?:queue)|(?:queuetype)):(?:(?:player)|(?:player_task)|(?:npc))", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesQueuePtrn.matcher(arg);
 		return m.matches();
@@ -706,12 +703,13 @@ public class ArgumentHelper {
 	 * @return true if matched, otherwise false
 	 * 
 	 */
-	public boolean matchesScript(String arg) {
+	public static boolean matchesScript(String arg) {
 		final Pattern matchesScriptPtrn = Pattern.compile("script:(.+)", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesScriptPtrn.matcher(arg);
 		// Check if script exists by looking for  Script Name:
 		//                                          Type: ...
-		if (m.matches() && denizen.getScripts().contains(arg.split(":")[1].toUpperCase() + ".TYPE"))
+		if (m.matches() && ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
+				.getScripts().contains(arg.split(":")[1].toUpperCase() + ".TYPE"))
 			return true;
 		return false;
 	}
@@ -734,7 +732,7 @@ public class ArgumentHelper {
 	 * @return true if matched, otherwise false
 	 * 
 	 */	
-	public boolean matchesToggle(String arg) {
+	public static boolean matchesToggle(String arg) {
 		final Pattern matchesTogglePtrn = Pattern.compile("toggle:(?:(?:true)|(?:false)|(?:toggle))", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesTogglePtrn.matcher(arg);
 		return m.matches();
@@ -782,7 +780,7 @@ public class ArgumentHelper {
 	 * @return true if matched, false otherwise
 	 * 
 	 */
-	public boolean matchesValueArg(String names, String arg, ArgumentType type) {
+	public static boolean matchesValueArg(String names, String arg, ArgumentType type) {
 		if (arg == null) return false;
 		if (arg.split(":").length == 1) return false;
 
@@ -819,11 +817,11 @@ public class ArgumentHelper {
 		case Boolean:
 			if (arg.equalsIgnoreCase("true")) return true;
 			else return false;
-			
+
 		case Location:
 			if (matchesLocation("location:" + arg)) return true;
 			else return false;
-			
+
 		case Script:
 			if (matchesLocation("script:" + arg)) return true;
 			else return false;
@@ -831,7 +829,7 @@ public class ArgumentHelper {
 		case Item:
 			if (matchesItem("item:" + arg)) return true;
 			else return false;
-			
+
 		case Entity:
 			if (matchesEntity("entity:" + arg)) return true;
 			else return false;

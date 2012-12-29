@@ -9,13 +9,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public abstract class AbstractListener {
 
 	protected Denizen denizen;
-	protected ArgumentHelper aH;
 
 	protected String listenerType;
 	public String listenerId;
@@ -25,7 +23,6 @@ public abstract class AbstractListener {
 
 	public AbstractListener() {
 		this.denizen = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
-		this.aH = denizen.getScriptEngine().getArgumentHelper();
 	}
 
 	public void build(Player player, String listenerId, String listenerType, List<String> args, String finishScript) {
@@ -59,7 +56,7 @@ public abstract class AbstractListener {
 	 * 
 	 * @param key
 	 * 		the name (key) of the Object requested
-	 * @returns the Object associated with the key
+	 * @return the Object associated with the key
 	 * 
 	 */
 	public Object get(String key) {

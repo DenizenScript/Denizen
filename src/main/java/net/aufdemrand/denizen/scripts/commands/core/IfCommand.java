@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 
 /**
  * Core dScript IF command.
@@ -269,11 +270,11 @@ public class IfCommand extends AbstractCommand {
 
         // If a Integer
         if (aH.matchesInteger(arg))
-            return aH.getIntegerFrom(arg);
+            return Integer.valueOf(aH.getIntegerFrom(arg));
 
         // If a Double
         else if (aH.matchesDouble(arg))
-            return aH.getDoubleFrom(arg);
+            return Double.valueOf(aH.getDoubleFrom(arg));
 
         // If a Boolean
         else if (arg.equalsIgnoreCase("true")) return Boolean.valueOf(true);

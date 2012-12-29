@@ -6,7 +6,8 @@ import java.util.List;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemListenerType.ItemType;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
+import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 

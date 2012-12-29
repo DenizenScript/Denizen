@@ -9,9 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.commands.CommandExecuter;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
 import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
 import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.entity.Player;
@@ -28,7 +28,6 @@ public class ScriptEngine {
 
     final private Denizen denizen;
     
-    final private ArgumentHelper argumentHelper;
     final private ScriptHelper scriptHelper;
     final private ScriptBuilder scriptBuilder;
     final private RequirementChecker requirementChecker;
@@ -39,7 +38,6 @@ public class ScriptEngine {
 
         scriptHelper  = new ScriptHelper(denizen);
         scriptBuilder = new ScriptBuilder(denizen);
-        argumentHelper = new ArgumentHelper(denizen);
         commandExecuter = new CommandExecuter(denizen);
         requirementChecker = new RequirementChecker(denizen);
     }	
@@ -50,13 +48,13 @@ public class ScriptEngine {
 
     private Map<Player, List<ScriptEntry>>      playerQueue = new ConcurrentHashMap<Player, List<ScriptEntry>>();
     private Map<Player, List<ScriptEntry>>  playerTaskQueue = new ConcurrentHashMap<Player, List<ScriptEntry>>();
-    private Map<DenizenNPC, List<ScriptEntry>> npcQueue = new ConcurrentHashMap<DenizenNPC, List<ScriptEntry>>();
+    private Map<DenizenNPC, List<ScriptEntry>>     npcQueue = new ConcurrentHashMap<DenizenNPC, List<ScriptEntry>>();
 
 
     /**
      * Gets the currently loaded instance of the ScriptHelper
      * 
-     * @returns ScriptHelper
+     * @return ScriptHelper
      * 
      */
     public ScriptHelper getScriptHelper() {
@@ -67,7 +65,7 @@ public class ScriptEngine {
     /**
      * Gets the currently loaded instance of the RequirementChecker
      * 
-     * @returns ScriptHelper
+     * @return ScriptHelper
      * 
      */
     public RequirementChecker getRequirementChecker() {
@@ -78,29 +76,18 @@ public class ScriptEngine {
     /**
      * Gets the currently loaded instance of the ScriptBuilder
      * 
-     * @returns ScriptBuilder
+     * @return ScriptBuilder
      * 
      */
     public ScriptBuilder getScriptBuilder() {
         return scriptBuilder;
     }
 
-
-    /**
-     * Gets the currently loaded instance of the ArgumentHelper
-     * 
-     * @returns ArgumentHelper
-     * 
-     */
-    public ArgumentHelper getArgumentHelper() {
-        return argumentHelper;
-    }
-
     
     /**
      * Gets the currently loaded instance of the ScriptExecuter
      * 
-     * @returns Executer
+     * @return Executer
      * 
      */
     public CommandExecuter getScriptExecuter() {
@@ -254,7 +241,7 @@ public class ScriptEngine {
      * @param queueType 
      *      The queue type to retrieve.
      *      
-     * @returns the specified queue.
+     * @return the specified queue.
      * 
      */
     public Map<Player, List<ScriptEntry>> getQueue(QueueType queueType) {
@@ -275,7 +262,7 @@ public class ScriptEngine {
      * @param queueType 
      *      The queue type to retrieve.
      *      
-     * @returns the specified queue.
+     * @return the specified queue.
      * 
      */
     public Map<DenizenNPC, List<ScriptEntry>> getDQueue(QueueType queueType) {
@@ -296,7 +283,7 @@ public class ScriptEngine {
      * @param queueType
      *      The queue type to retrieve.
      * 
-     * @returns the Player's Queue of ScriptEntries.
+     * @return the Player's Queue of ScriptEntries.
      * 
      */
     public List<ScriptEntry> getPlayerQueue(Player player, QueueType queueType) {
@@ -312,7 +299,7 @@ public class ScriptEngine {
      * @param queueType
      *      The queue type to retrieve.
      * 
-     * @returns the NPCs's Queue of ScriptEntries.
+     * @return the NPCs's Queue of ScriptEntries.
      * 
      */
     public List<ScriptEntry> getDenizenQueue(DenizenNPC npc, QueueType queueType) {
@@ -334,7 +321,7 @@ public class ScriptEngine {
      * @param position
      *      The position in the queue to inject the entries.
      * 
-     * @returns false if the specified queueType doesn't exist.
+     * @return false if the specified queueType doesn't exist.
      * 
      */
     public boolean injectToQueue(Player player, List<ScriptEntry> scriptEntries, QueueType queueType, int position) {
@@ -377,7 +364,7 @@ public class ScriptEngine {
      * @param position
      *      The position in the queue to inject the entries.
      * 
-     * @returns false if the specified queueType doesn't exist.
+     * @return false if the specified queueType doesn't exist.
      * 
      */
     public boolean injectToQueue(Player player, ScriptEntry scriptEntry, QueueType queueType, int position) {
@@ -402,7 +389,7 @@ public class ScriptEngine {
      * @param position
      *      The position in the queue to inject the entries.
      * 
-     * @returns false if the specified queueType doesn't exist.
+     * @return false if the specified queueType doesn't exist.
      * 
      */
     public boolean injectToQueue(DenizenNPC npc, List<ScriptEntry> scriptEntries, QueueType queueType, int position) {
@@ -437,7 +424,7 @@ public class ScriptEngine {
      * @param position
      *      The position in the queue to inject the entries.
      * 
-     * @returns false if the specified queueType doesn't exist.
+     * @return false if the specified queueType doesn't exist.
      * 
      */
     public boolean injectToQue(DenizenNPC npc, ScriptEntry scriptEntry, QueueType queueType, int position) {

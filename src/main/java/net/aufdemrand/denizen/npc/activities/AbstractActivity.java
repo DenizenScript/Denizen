@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
 import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
 
 import org.bukkit.Bukkit;
@@ -27,7 +26,6 @@ public abstract class AbstractActivity implements RegistrationableInstance {
     }
 
     public Denizen denizen;
-    protected ArgumentHelper aH;
     protected ScriptHelper sH;
 
     protected ScriptBuilder sB;
@@ -40,7 +38,6 @@ public abstract class AbstractActivity implements RegistrationableInstance {
         this.denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 
         // Reference Helper Classes
-        aH = denizen.getScriptEngine().getArgumentHelper();
         sH = denizen.getScriptEngine().getScriptHelper();
         sB = denizen.getScriptEngine().getScriptBuilder();
         return this;

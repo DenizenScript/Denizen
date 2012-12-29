@@ -29,6 +29,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
@@ -147,10 +148,6 @@ public class Denizen extends JavaPlugin {
      */
 
     public static Settings settings;
-    public static Utilities utilities;
-    public static Depends depends;
-    public static NBTItem nbtItem;
-    public static dB debugger;
 
     /*
      * Sets up Denizen on start of the craftbukkit server.	
@@ -158,8 +155,6 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public void onEnable() {
-    	
-    	debugger = new dB();
     	
         // Startup procedure
         dB.echoDebug(DebugElement.Footer);
@@ -170,10 +165,7 @@ public class Denizen extends JavaPlugin {
         dB.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
         dB.echoDebug(DebugElement.Footer);
 
-        depends = new Depends();
-        utilities = new Utilities();
         settings =  new Settings();
-        nbtItem = new NBTItem();
         denizenNPCRegistry = new DenizenNPCRegistry(this);
         
         // Register commandHandler with Citizens2

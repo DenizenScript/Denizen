@@ -6,8 +6,9 @@ import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
+import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class EnchantedRequirement extends AbstractRequirement{

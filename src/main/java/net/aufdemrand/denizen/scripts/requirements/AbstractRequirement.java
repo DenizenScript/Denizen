@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
 import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
 
 import org.bukkit.Bukkit;
@@ -33,9 +32,7 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
     }
 	
 	protected Denizen plugin;
-	protected ArgumentHelper aH;
 	protected ScriptHelper sH;
-
 	protected ScriptBuilder sB;
     protected String name;
 
@@ -45,7 +42,6 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
 	public AbstractRequirement activate() {
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		// Reference Helper Classes
-		aH = plugin.getScriptEngine().getArgumentHelper();
 		sH = plugin.getScriptEngine().getScriptHelper();
 		sB = plugin.getScriptEngine().getScriptBuilder();
 		return this;

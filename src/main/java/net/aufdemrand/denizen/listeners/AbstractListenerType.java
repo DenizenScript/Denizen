@@ -6,12 +6,12 @@ import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 
 public abstract class AbstractListenerType implements RegistrationableInstance {
 
 	Denizen denizen;
-	ArgumentHelper aH;
+	aH aH;
 	String name;
 	Class<? extends AbstractListener> instanceClass;
 	

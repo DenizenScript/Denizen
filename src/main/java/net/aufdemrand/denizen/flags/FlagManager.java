@@ -5,13 +5,12 @@ import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.core.FlagCommand.FlagType;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class FlagManager {
 
     private Denizen denizen;
-    private ArgumentHelper aH;
 
     public FlagManager(Denizen denizen) {
         this.denizen = denizen;
@@ -464,16 +463,15 @@ public class FlagManager {
         public Object asAutoDetectedObject() {
             adjustIndex();
             String arg = values.get(index);
-            if (aH == null) aH = denizen.getScriptEngine().getArgumentHelper();
 
             try {
                 // If an Integer
                 if (aH.matchesInteger(arg))
-                    return aH.getIntegerFrom(arg);
+                    return Integer.valueOf(aH.getIntegerFrom(arg));
 
                 // If a Double
                 else if (aH.matchesDouble(arg))
-                    return aH.getDoubleFrom(arg);
+                    return Double.valueOf(aH.getDoubleFrom(arg));
 
                 // If a Boolean
                 else if (arg.equalsIgnoreCase("true")) return Boolean.valueOf(true);

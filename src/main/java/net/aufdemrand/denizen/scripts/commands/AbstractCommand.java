@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper;
 
 import org.bukkit.Bukkit;
 
@@ -30,7 +29,6 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 	
 	public Denizen denizen;
 		
-	protected ArgumentHelper aH;
     protected String name;
 
     public CommandOptions commandOptions;
@@ -38,8 +36,6 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 	@Override
 	public AbstractCommand activate() {
 		this.denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		// Reference Helper Classes
-		aH = denizen.getScriptEngine().getArgumentHelper();
 		return this;
 	}
 

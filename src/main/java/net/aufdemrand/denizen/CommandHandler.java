@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.npc.traits.PushableTrait;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import net.citizensnpcs.Citizens;
@@ -308,7 +309,7 @@ public class CommandHandler {
 		if (sender instanceof Player) player = (Player) sender;
 
 		if (args.hasValueFlag("player"))
-			player = denizen.getScriptEngine().getArgumentHelper().getPlayerFrom(args.getFlag("player"));
+			player = aH.getPlayerFrom(args.getFlag("player"));
 
 		if (player == null) throw new CommandException("Specified player not online or not found!");
 

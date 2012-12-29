@@ -12,7 +12,8 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
+import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -77,11 +78,8 @@ public class TeleportCommand extends AbstractCommand {
 		// Sanity check to make sure the number of arguments being passed in is
 		// reasonable.
 		//
-		if (scriptEntry.getArguments() == null			||
-				scriptEntry.getArguments().size () == 0	||
-				scriptEntry.getArguments ().size () > 3) {
-			throw new InvalidArgumentsException(
-					"Usage: TELEPORT (NPC) [LOCATION:x,y,z,world] (TARGETS:[[NPCID:#]|[PLAYER:PlayerName],])");
+		if (scriptEntry.getArguments ().size () > 3) {
+			throw new InvalidArgumentsException("Too many arguments.");
 		}
 
 		//
