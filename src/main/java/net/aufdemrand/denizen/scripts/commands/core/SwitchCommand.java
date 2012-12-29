@@ -94,7 +94,7 @@ public class SwitchCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String commandName) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Switch the Block
         switchBlock(interactLocation, switchState);

@@ -85,7 +85,7 @@ public class NewCommand extends AbstractCommand implements Listener {
 	}
 
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
 		if (objectType == ObjectType.ITEMSTACK) {
 			itemStacks.put(ID.toUpperCase(), item);

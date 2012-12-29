@@ -89,7 +89,7 @@ public class PlaySoundCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
     	dB.echoDebug("...playing sound.");
 		location.getWorld().playSound(location, sound, volume, pitch);
 	}

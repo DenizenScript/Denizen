@@ -87,7 +87,7 @@ public class HealCommand extends AbstractCommand {
 
     
     @Override
-    public void execute(String commandName) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Target is a NPC
         if (CitizensAPI.getNPCRegistry().isNPC(target)) {

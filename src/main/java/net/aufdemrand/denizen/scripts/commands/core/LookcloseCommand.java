@@ -66,7 +66,7 @@ public class LookcloseCommand extends AbstractCommand {
 	String[] realisticArgs = "/npc lookclose -r".split(" ");
 
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		if (npc == null) throw new CommandExecutionException(Messages.ERROR_NO_NPCID);
 		
 		// Get the instance of the trait that belongs to the target NPC

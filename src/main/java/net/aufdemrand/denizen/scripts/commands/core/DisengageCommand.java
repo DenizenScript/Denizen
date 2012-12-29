@@ -37,7 +37,7 @@ public class DisengageCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(String commandName) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         denizen.getCommandRegistry().get(EngageCommand.class).setEngaged(npc, false);
     }
 

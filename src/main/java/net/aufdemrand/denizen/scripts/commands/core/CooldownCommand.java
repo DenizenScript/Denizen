@@ -72,7 +72,7 @@ public class CooldownCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
 		if (playerName == null && !global) throw new CommandExecutionException(Messages.ERROR_NO_PLAYER);
 		

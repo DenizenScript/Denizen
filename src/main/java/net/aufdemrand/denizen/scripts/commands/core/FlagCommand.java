@@ -125,7 +125,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
     }
 
     @Override
-    public void execute(String commandName) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Set working index, if specified. Usage example: - FLAG FLAGNAME[3]:VALUE specifies an index of 3 should be set with VALUE.
         if (flagName.split("[").length > 1) {

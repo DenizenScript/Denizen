@@ -144,7 +144,7 @@ public class TeleportCommand extends AbstractCommand {
 	 * @param	commandName	The name of the command
 	 */
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		if (this.teleportLocation != null) {
 			for (LivingEntity entity : this.teleportEntities) {
 				entity.teleport(teleportLocation);

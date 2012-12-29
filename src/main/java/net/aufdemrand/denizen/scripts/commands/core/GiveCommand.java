@@ -97,8 +97,8 @@ public class GiveCommand  extends AbstractCommand {
 
 	@SuppressWarnings("incomplete-switch")
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
-		dB.echoDebug ("execute (" + commandName + ")");
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+		dB.echoDebug ("execute (" + scriptEntry.toString () + ")");
 		if (giveType != null) {
 			switch (giveType) {
 

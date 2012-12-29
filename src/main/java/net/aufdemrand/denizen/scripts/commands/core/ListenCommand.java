@@ -110,7 +110,7 @@ public class ListenCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		switch (listenAction) {
 
 		case NEW:

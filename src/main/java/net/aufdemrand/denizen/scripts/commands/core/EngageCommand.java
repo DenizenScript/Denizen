@@ -60,7 +60,7 @@ public class EngageCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
 		if (duration > 0) setEngaged(npc, duration);
 		else setEngaged(npc, true);

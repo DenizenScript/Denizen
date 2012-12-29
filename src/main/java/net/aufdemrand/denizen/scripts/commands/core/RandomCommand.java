@@ -37,11 +37,11 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  */
 
 public class RandomCommand extends AbstractCommand {
-	Integer numberOfEntries = null;
-	Player player;
-	List<ScriptEntry> currentQueue = new ArrayList<ScriptEntry>();
-	QueueType sendingQueue;
-	DenizenNPC npc;
+	private	Integer numberOfEntries = null;
+	private	Player player;
+	private	List<ScriptEntry> currentQueue = new ArrayList<ScriptEntry>();
+	private	QueueType sendingQueue;
+	private	DenizenNPC npc;
 	
 	@Override
 	public void onEnable() {
@@ -85,7 +85,7 @@ public class RandomCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		Random random = new Random();
 		int selected = random.nextInt(this.numberOfEntries);
 		ScriptEntry sEtoKeep = null;

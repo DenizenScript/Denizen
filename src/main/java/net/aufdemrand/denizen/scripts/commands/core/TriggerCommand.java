@@ -73,7 +73,7 @@ public class TriggerCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		if (npc == null) throw new CommandExecutionException(Messages.ERROR_NO_NPCID);
 		
 		if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);

@@ -118,7 +118,7 @@ public class IfCommand extends AbstractCommand {
 
     @SuppressWarnings({ "unchecked", "incomplete-switch" })
     @Override
-    public void execute(String commandName) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // IF (!)[COMPARABLE] (OPERATOR) [COMPARED_TO] (BRIDGE) (...add'l Comparable) [COMMAND] (Command Arguments) ELSE [COMMAND] (Command Agruments)
 

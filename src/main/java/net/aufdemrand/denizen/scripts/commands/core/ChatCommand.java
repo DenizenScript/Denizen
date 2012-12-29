@@ -105,7 +105,7 @@ public class ChatCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void execute(String commandName) throws CommandExecutionException {
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
 		if (CitizensAPI.getNPCRegistry().isNPC(context.getTalker().getEntity()))
 			CitizensAPI.getNPCRegistry().getNPC(context.getTalker().getEntity())
