@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.notables.Notable;
-import net.aufdemrand.denizen.scripts.helpers.ScriptHelper;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;

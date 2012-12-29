@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.scripts.helpers;
+package net.aufdemrand.denizen.scripts;
 
 import java.io.File;
 import java.util.ArrayList;
