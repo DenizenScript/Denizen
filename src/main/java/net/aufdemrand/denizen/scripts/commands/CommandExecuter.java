@@ -140,7 +140,7 @@ public class CommandExecuter {
 				if (event.isAltered()) scriptEntry = event.getScriptEntry();
 
 				// Run the execute method in the command
-				if (!event.isCancelled()) command.execute(scriptEntry.getCommand());
+				if (!event.isCancelled()) command.execute(scriptEntry);
 
 				else dB.echoDebug("ScriptEntry has been cancelled.");
 			} catch (Exception e) {

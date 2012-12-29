@@ -32,14 +32,11 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  */
 public class AnnounceCommand extends AbstractCommand {
 
-	// the 'text' to announce
-	String text;
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-    	// Reset fields
-    	text = null;
+    	// Initialize fields
+    	String text = null;
     	
     	// Users tend to forget quotes sometimes on commands like this, so
     	// let's check if there are more argument than usual.
@@ -55,13 +52,16 @@ public class AnnounceCommand extends AbstractCommand {
 
         // If text is missing, alert the console.
         if (text == null) throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
+    
+        // Add objects that need to be passed to execute() to the scriptEntry
+        scriptEntry.addObject("text", text);
     }
 
     @Override
-    public void execute(String commandName) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         
     	// Use Bukkit to broadcast the message to everybody in the server.
-    	denizen.getServer().broadcastMessage(text);
+    	denizen.getServer().broadcastMessage((String) scriptEntry.getObject("text"));
     }
 
 }

@@ -52,7 +52,7 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 		return this;
 	}
 	
-    public abstract void execute(String commandName) throws CommandExecutionException;
+    public abstract void execute(ScriptEntry scriptEntry) throws CommandExecutionException;
     
     @Override
 	public String getName() {
