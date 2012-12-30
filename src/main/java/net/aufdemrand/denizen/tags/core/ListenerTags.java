@@ -12,8 +12,16 @@ public class ListenerTags implements Listener {
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 	
+	/*
+	 * <@aufdemrand> LISTENER is event.getName()
+	 * <@aufdemrand> listener_ID is event.getType()
+	 * <@aufdemrand> and variable_name is event.getValue()
+	 * <@aufdemrand> fallback data is valid in all tags too
+	 * <@aufdemrand> <LISTENER.TEST:VAR(Fallback text.)>
+	 */
+	
 	@EventHandler
-    public void flagTag(ReplaceableTagEvent event) {
+    public void listenTag(ReplaceableTagEvent event) {
 		
 	}
 

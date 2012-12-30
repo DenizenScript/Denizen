@@ -12,6 +12,21 @@ import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
+/* PLAYSOUND [LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)*/
+
+/* 
+ * Arguments: [] - Required, () - Optional 
+ * [LOCATION:x,y,z,world] specifies location of the sound
+ * [SOUND:NAME] name of sound to be played
+ * (VOLUME:#) adjusts the volume of the sound
+ * (PITCH:#) adjusts the pitch of the sound
+ * 
+ * Example Usage:
+ * PLAYSOUND LOCATION:123,65,765,world SOUND:SPLASH VOLUME:1 PITCH:2
+ * PLAYSOUND LOCATION:123,65,765,world S:SPLASH V:2 P:1
+ * 
+ */
+
 public class PlaySoundCommand extends AbstractCommand {
 
 	@Override
@@ -19,22 +34,6 @@ public class PlaySoundCommand extends AbstractCommand {
 		// nothing to do here
 	}
 
-    /* PLAYSOUND [LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)*/
-
-    /* 
-     * Arguments: [] - Required, () - Optional 
-     * [LOCATION:x,y,z,world] specifies location of the sound
-     * [SOUND:NAME] name of sound to be played
-     * (VOLUME:#) adjusts the volume of the sound
-     * (PITCH:#) adjusts the pitch of the sound
-     * 
-     * Example Usage:
-     * PLAYSOUND LOCATION:123,65,765,world SOUND:SPLASH VOLUME:1 PITCH:2
-     * PLAYSOUND LOCATION:123,65,765,world S:SPLASH V:2 P:1
-     * 
-     */
-
-	
 	Sound sound;
 	Location location;
 	
