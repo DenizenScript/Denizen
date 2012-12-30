@@ -226,7 +226,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		if (!event.matches("LISTENER")) return;
 		if (!event.getType().equalsIgnoreCase(listenerId)) return;
 		
-		if (event.getValue().equalsIgnoreCase(region)) {
+		if (event.getValue().equalsIgnoreCase("region")) {
 			event.setReplaceable(region);
 		}
 		

@@ -13,6 +13,22 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.milkbowl.vault.economy.Economy;
 
+/* TAKE [MONEY|ITEMINHAND|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
+
+/* 
+ * Arguments: [] - Required, () - Optional 
+ * [MONEY|ITEMINHAND|[#](:#)|[MATERIAL_TYPE](:#)] specifies what to take.
+ *   [MONEY] takes money using your economy.
+ *   [ITEMINHAND] takes from the item the Player has in their hand.
+ *   [#](:#) takes the item with the specified item ID. Optional
+ *     argument (:#) can specify a specific data value.
+ *   [MATERIAL_TYPE](:#) takes the item with the specified
+ *     bukkit MaterialType. Optional argument (:#) can specify
+ *     a specific data value.
+ * (QTY:#) specifies quantity. If not specified, assumed 'QTY:1'    
+ *  
+ */
+
 public class TakeCommand extends AbstractCommand{
 	
 	private enum TakeType { MONEY, ITEMINHAND, ITEM }

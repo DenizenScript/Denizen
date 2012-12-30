@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.BlockListenerType.BlockType;
 import net.aufdemrand.denizen.utilities.Depends;
@@ -28,7 +29,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
 	BlockType type;
 	List<String> blocks = new ArrayList<String>();
-	int quantity = 1;
+	Integer quantity = 1;
 	String argRegion = null;
 
 	Integer currentBlocks = 0;
@@ -197,6 +198,34 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 					check();
 				}
 			}
+		}
+	}
+	
+	@EventHandler
+    public void listenTag(ReplaceableTagEvent event) {
+		
+		if (!event.matches("LISTENER")) return;
+		if (!event.getType().equalsIgnoreCase(listenerId)) return;
+		
+		if (event.getValue().equalsIgnoreCase("region")) {
+			event.setReplaceable(argRegion);
+		}
+		
+		else if (event.getValue().equalsIgnoreCase("quantity")) {
+			event.setReplaceable(quantity.toString());
+		}
+		
+		else if (event.getValue().equalsIgnoreCase("currentblocks")) {
+			event.setReplaceable(currentBlocks.toString());
+		}
+		
+		else if (event.getValue().equalsIgnoreCase("targets")) {
+			String blockList = "";
+			for (String curTar : blocks){
+				blockList = blockList + curTar + ", ";
+				blockList = blockList.substring(0, blockList.length() - 1);
+			}
+			event.setReplaceable(blockList);
 		}
 	}
 
