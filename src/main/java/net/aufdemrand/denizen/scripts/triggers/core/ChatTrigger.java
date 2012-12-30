@@ -49,8 +49,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 	@EventHandler
 	public void chatTrigger(AsyncPlayerChatEvent event) {
 		dB.echoDebug("chatTrigger (" + event.toString () + ")");
-		String	triggerName = "FIX THIS SHIT";
-		
+
 		//
 		// Try to find the closest NPC to the player's location.
 		//
@@ -86,7 +85,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		}
 */
 
-		dB.echoDebug("Found nearby NPC, interrupting chat...", triggerName);
+		dB.echoDebug("Found nearby NPC, interrupting chat...", this.name);
 
 		// If Denizen is not interactable (ie. Denizen is toggled off, engaged or
 		// not cooled down)
@@ -105,7 +104,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			// Denizen isn't interactable, and the config.yml specifies that we
 			// should just treat chat as normal.
 			//
-			dB.echoDebug("Not interactable, resuming chat...", triggerName);
+			dB.echoDebug("Not interactable, resuming chat...", this.name);
 			return;
 		}
 
@@ -166,7 +165,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			}
 			// Denizen doesn't have a script, and the config.yml specifies that
 			// we should just treat chat normal.
-			dB.echoDebug("No script, resuming chat...", triggerName);
+			dB.echoDebug("No script, resuming chat...", this.name);
 			return;
 		}
 
@@ -202,7 +201,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 			// No matching chat triggers, and the config.yml
 			// says we should just ignore the interaction...
-			dB.echoDebug("No matching triggers in script, resuming chat...", triggerName);
+			dB.echoDebug("No matching triggers in script, resuming chat...", this.name);
 			return;
 		}
 	}
