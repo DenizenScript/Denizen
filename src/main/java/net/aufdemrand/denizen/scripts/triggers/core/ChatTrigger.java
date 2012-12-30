@@ -249,11 +249,16 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 							ChatColor.stripColor(thePlayer.getDisplayName())).toLowerCase();
 
 			// The in-game friendly Chat Trigger text to display if triggered.
-			String chatText = denizen
-					.getScripts()
-					.getString(
-							theScriptName + ".Steps." + theStep + ".Chat Trigger."
-									+ String.valueOf(x + 1) + ".Trigger").replace("/", "");
+			String	chatKey = 
+				theScriptName + 
+				".Steps." + 
+				theStep + 
+				".Chat Trigger."
+				+ String.valueOf(x + 1) + 
+				".Trigger";
+			dB.echoDebug ("chatKey: " + chatKey);
+			String chatText = denizen.getScripts().getString(chatKey.toUpperCase()).replace("/", "");
+			dB.echoDebug ("chatText: " + chatText);
 
 			// Find a matching trigger
 			boolean letsProceed = false;
@@ -280,18 +285,19 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 					return false;
 				}
 
-				// Chat to the Denizen, then queue the scrip entries!
+				// Chat to the Denizen, then queue the script entries!
 				denizen.getSpeechEngine().whisper (theDenizen.getEntity(), chatText, thePlayer);
 
 				sE.getPlayerQueue(thePlayer, QueueType.PLAYER)
-					.addAll(sE.getScriptBuilder().buildScriptEntries (
-						thePlayer,
-						theDenizen, 
-						theScript, 
-						theScriptName, 
-						theStep, 
-						playerMessage, 
-						chatText));
+					.addAll(
+						sE.getScriptBuilder().buildScriptEntries (
+							thePlayer,
+							theDenizen, 
+							theScript, 
+							theScriptName, 
+							theStep, 
+							playerMessage, 
+							chatText));
 
 				return true;
 			}
@@ -385,9 +391,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				String.valueOf(currentTrigger) + 
 				".Trigger";
 			
-			String theChatTrigger = denizen.getScripts().getString(scriptKey);
-			
-			dB.echoDebug ("Getting chat trigger for: " + scriptKey);
+			dB.echoDebug ("Checking: " + scriptKey);
+			String theChatTrigger = denizen.getScripts().getString(scriptKey.toUpperCase());
+			dB.echoDebug ("  trigger: " + theChatTrigger);
 			if (theChatTrigger != null) {
 				boolean isTrigger = false;
 				String triggerBuilder = "";
