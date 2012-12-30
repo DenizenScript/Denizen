@@ -47,12 +47,13 @@ public class ChatCommand extends AbstractCommand {
 	 * 
 	 */
 
-	SpeechContext context = null;
+	
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-		context = new SpeechContext("");    	
+		SpeechContext context = new SpeechContext("");    	
+		
 		if (scriptEntry.getNPC() != null)
 			context.setTalker(scriptEntry.getNPC().getEntity());
 
@@ -101,13 +102,21 @@ public class ChatCommand extends AbstractCommand {
 			}
 		}
 
-		if (context.getTalker() == null) throw new InvalidArgumentsException("Must specify a valid TalkableEntity for TALKER!");
-
+		if (context.getTalker() == null) 
+			throw new InvalidArgumentsException("Must specify a valid TALKER.");
+		if (context.getMessage().length() < 1) 
+			throw new InvalidArgumentsException("Must specify a message.");
+		
+		// Add context to the ScriptEntry to pass along to execute().
+		scriptEntry.addObject("context", context);
+		
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
+		SpeechContext context = (SpeechContext) scriptEntry.getObject("context");
+		
 		if (CitizensAPI.getNPCRegistry().isNPC(context.getTalker().getEntity()))
 			CitizensAPI.getNPCRegistry().getNPC(context.getTalker().getEntity())
 				.getDefaultSpeechController().speak(context, "chat");

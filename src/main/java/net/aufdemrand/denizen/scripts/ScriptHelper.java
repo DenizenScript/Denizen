@@ -34,6 +34,8 @@ public class ScriptHelper {
 
 	public String getInteractScript(NPC npc, Player player, Class<? extends AbstractTrigger> trigger) {
 
+		if (npc == null || player == null) return null;
+		
 		String theScript = null;
 		List<String> assignedScripts = denizen.getScriptEngine().getScriptHelper().getStringListIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment() + ".INTERACT SCRIPTS");
 		

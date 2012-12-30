@@ -14,6 +14,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -92,12 +94,9 @@ public class aH {
 	final static Pattern stringPtrn = Pattern.compile(".+");
 	final static Pattern wordPtrn = Pattern.compile("\\w+");
 
-	final Pattern matchesEntityPattern = Pattern.compile("entity:(.+)", Pattern.CASE_INSENSITIVE);
-	final Pattern getEntityFromPtrn = Pattern.compile("(?:(?:.+?:)|)(.+)");
-
 	/**
 	 * Returns a boolean value from a dScript argument string. Also accounts
-	 * for the argument name being passed along, for convenience.<br><br>
+	 * for the argument prefix being passed along, for convenience.<br><br>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -120,7 +119,7 @@ public class aH {
 
 	/**
 	 * Returns a primitive double from a dScript argument string. Also accounts
-	 * for the argument name being passed along, for convenience. Never returns
+	 * for the argument prefix being passed along, for convenience. Never returns
 	 * null, if not a valid double, 0D will return. If given an integer value, 
 	 * a double representation will be returned.<br><br>
 	 * 
@@ -147,8 +146,60 @@ public class aH {
 	}
 
 	/**
+	 * Returns a Bukkit LivingEntity from a dScript argument string. Also accounts
+	 * for the argument prefix being passed along, for convenience. Though the
+	 * <tt>matchesItem(...)</tt> requires an <tt>ITEM:</tt> prefix, this method
+	 * does not, so it could be used in a CustomValueArg.<br><br>
+	 * 
+	 * Accounts for several formats, including <tt>ItemId</tt>, <tt>ItemId:Data</tt>,
+	 * <tt>Material</tt>, <tt>Material:Data</tt>, and finally <tt>ITEMSTACK.item_name</tt>.<br><br>
+	 * 
+	 * Provides a line of dB output if returning null. Also note that Bukkit requires
+	 * a LivingEntity to be spawned, so a location is also necessary unless using
+	 * a stored 'ENTITY.entity_name'<br><br>
+	 * 
+	 * <b>Examples:</b>
+	 * <ol>
+	 * <tt>'ITEM:DIAMOND'</tt> will return 'new ItemStack(Material.DIAMOND)'.<br>
+	 * <tt>'1'</tt> will return 'new ItemStack(1)'.<br>
+	 * <tt>'1950'</tt> will return 'null'.<br>
+	 * <tt>'FLOOR:35:15'</tt> will return a new Black Wool ItemStack.<br>
+	 * <tt>'ITEMSTACK.enchantedItem'</tt> will return the {@link NewCommand}'s
+	 *     instance of 'enchantedItem', if it exists, otherwise 'null'.<br>
+	 * </ol>
+	 * 
+	 * @param arg the argument to check
+	 * @param spawnLocation the location to spawn the entity, not used (and may be null)
+	 * 		if using a 'ENTITY.entity_name' format
+	 * @return an ItemStack or null
+	 * 
+	 */
+	public static LivingEntity getEntityFrom(String arg, Location spawnLocation) {
+		final Pattern matchesEntityPtrn = Pattern.compile("(?:(?:.+?:)|)(.+)", Pattern.CASE_INSENSITIVE);
+		Matcher m = matchesEntityPtrn.matcher(arg);
+		if (m.matches()) {
+			// Check for NEW ENTITY command format (ENTITY.entity_name)
+			if (m.group(1).toUpperCase().startsWith("ENTITY.")) {
+				LivingEntity returnable = ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
+						.getCommandRegistry().get(NewCommand.class).getEntity(m.group(1));
+				if (returnable != null) return returnable;
+				else dB.echoError("Invalid entity! '" + m.group(1) + "' could not be found.");
+			} else {
+				// Location required past this point
+				if (spawnLocation == null) return null;
+				// Check against valid EntityTypes using Bukkit's EntityType enum
+				for (EntityType validEntity : EntityType.values())
+					if (m.group(1).equalsIgnoreCase(validEntity.getName()))
+						spawnLocation.getWorld().spawnEntity(spawnLocation, validEntity);
+			}
+		}
+		// No match
+		return null;
+	}
+
+	/**
 	 * Returns a primitive float from a dScript argument string. Also
-	 * accounts for the argument name being passed along, for convenience. 
+	 * accounts for the argument prefix being passed along, for convenience. 
 	 * Never returns null, if not a valid float, 0F will return. If given
 	 * an integer or double value, a float representation will be returned.<br><br>
 	 * 
@@ -168,7 +219,7 @@ public class aH {
 
 	/**
 	 * Returns a primitive int from a dScript argument string. Also accounts
-	 * for the argument name being passed along, for convenience. Never returns
+	 * for the argument prefix being passed along, for convenience. Never returns
 	 * null, if not a valid integer, 0 will return. If given a double value, 
 	 * an integer representation will be returned.<br><br>
 	 * 
@@ -196,7 +247,7 @@ public class aH {
 
 	/**
 	 * Returns a Bukkit ItemStack from a dScript argument string. Also accounts
-	 * for the argument name being passed along, for convenience. Though the
+	 * for the argument prefix being passed along, for convenience. Though the
 	 * <tt>matchesItem(...)</tt> requires an <tt>ITEM:</tt> prefix, this method
 	 * does not, so it could be used in a CustomValueArg.<br><br>
 	 * 
@@ -280,7 +331,7 @@ public class aH {
 
 	/**
 	 * Returns a List<String> from a dScript argument string. Also accounts
-	 * for the argument name being passed along, for convenience. Lists in dScript
+	 * for the argument prefix being passed along, for convenience. Lists in dScript
 	 * use a pipe ('|') character to divide entries. This method will not trim(), so 
 	 * whitespace is included between pipes. If no pipes are present, it is assumed 
 	 * there is only one item, and the resulting List will have exactly 1 member.
@@ -309,7 +360,7 @@ public class aH {
 
 	/**
 	 * Returns a Bukkit Location from a dScript argument string. Accounts for
-	 * the argument name being passed along, for convenience. Locations in
+	 * the argument prefix being passed along, for convenience. Locations in
 	 * dScript need to be in the format '#,#,#,world_name', whereas the numbers
 	 * required are double or integer values of x, y and z coordinates, in that
 	 * order.<br><br>
@@ -341,7 +392,7 @@ public class aH {
 
 	/**
 	 * Returns a Bukkit Player object from a dScript argument string. Accounts for
-	 * the argument name being passed along, for convenience. For a non-null
+	 * the argument prefix being passed along, for convenience. For a non-null
 	 * value to return, the specified player must be currently online. This method
 	 * does not require case-sensitivity as an additional convenience. For a similar,
 	 * but less powerful OfflinePlayer object, use getOfflinePlayerFrom(...).<br><br>
@@ -369,7 +420,7 @@ public class aH {
 
 	/**
 	 * Returns a Bukkit OfflinePlayer object from a dScript argument string. Accounts for
-	 * the argument name being passed along, for convenience. For a non-null value to 
+	 * the argument prefix being passed along, for convenience. For a non-null value to 
 	 * return, the specified player must have logged on to this server at least once. If
 	 * this returns null, the specified player does not exist. This may also be used for
 	 * players currently 'online', as Bukkit's Player object extends OfflinePlayer. This
@@ -531,10 +582,40 @@ public class aH {
 		return m.matches();
 	}
 
+	/**
+	 * Used to determine if a dScript argument string is a valid LivingEntity. Will check
+	 * against Bukkit's EntityType enum as well as {@link NewCommand}'s 'ENTITY' format, 
+	 * <code>'ENTITY.entity_name'</code>.<br><br>
+	 * 
+	 * When extracting the value from a match, using {@link #getEntityFrom(String)} is
+	 * encouraged.<br><br>
+	 *
+	 * <b>Examples:</b>
+	 * <ol>
+	 * <tt>'ENTITY:ZOMBIE'</tt> will return true.<br>
+	 * <tt>'ENTITY:-1'</tt> will return false.<br>
+	 * <tt>'ENTITY:ENTITY.creeper_boss_17'</tt> will return true.<br>
+	 * </ol>
+	 *
+	 * @param arg the dScript argument string
+	 * @return true if matched, otherwise false
+	 * 
+	 */
 	public static boolean matchesEntity(String arg) {
-
-
-
+		final Pattern matchesEntityPtrn = Pattern.compile("entity:(.+)", Pattern.CASE_INSENSITIVE);
+		Matcher m = matchesEntityPtrn.matcher(arg);
+		if (m.matches()) {
+			// Check for NEW ENTITY command format (ENTITY.entity_name)
+			if (m.group(1).toUpperCase().startsWith("ENTITY."))
+				return true;
+			else {
+				// Check against valid EntityTypes using Bukkit's EntityType enum
+				for (EntityType validEntity : EntityType.values())
+					if (m.group(1).equalsIgnoreCase(validEntity.getName()))
+						return true;
+			}
+		}
+		// No match
 		return false;
 	}
 
@@ -559,7 +640,7 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid Bukkit item
+	 * Used to determine if a dScript argument string is a valid Bukkit ItemStack
 	 * or a currently saved instance from the {@link NewCommand} using 'NEW
 	 * ITEMSTACK'.<br><br>
 	 * 

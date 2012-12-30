@@ -136,6 +136,19 @@ public class TriggerTrait extends Trait implements Listener {
             throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
     }
 
+    public boolean triggerCooldownOnly(AbstractTrigger triggerClass, Player player) {
+        // Check cool down, return false if not yet met
+        if (!denizen.getTriggerRegistry().checkCooldown(npc, player, triggerClass))
+                return false;
+        // Check engaged
+        if (denizen.getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
+            return false;
+        }
+        // Set cool down, On [TriggerName] Action
+        denizen.getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()), getCooldownType(triggerClass.getName()));
+        return true;
+    }
+    
     public boolean trigger(AbstractTrigger triggerClass, Player player) {
         // Check cool down, return false if not yet met
         if (!denizen.getTriggerRegistry().checkCooldown(npc, player, triggerClass))

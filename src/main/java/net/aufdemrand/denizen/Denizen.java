@@ -28,11 +28,8 @@ import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
-import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
-import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
@@ -51,7 +48,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Denizen extends JavaPlugin {
 
-    public static String versionTag = "0.8.2 pre-release";
+    public static String versionTag = "0.8.3 pre-release";
     
     private CommandHandler commandHandler;
     
@@ -149,6 +146,7 @@ public class Denizen extends JavaPlugin {
 
     public static Settings settings;
 
+    
     /*
      * Sets up Denizen on start of the craftbukkit server.	
      */

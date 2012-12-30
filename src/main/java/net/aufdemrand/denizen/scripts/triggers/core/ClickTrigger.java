@@ -1,17 +1,10 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
-import java.util.List;
-
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -34,24 +27,6 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         // Parse Click Trigger, if unable to parse call No Click Trigger action
         if (!parse(denizen.getNPCRegistry().getDenizen(event.getNPC()), event.getClicker(), script))
             denizen.getNPCRegistry().getDenizen(event.getNPC()).action("no click trigger", event.getClicker());
-    }
-
-    @Override
-    public boolean parse(DenizenNPC npc, Player player, String script) {
-        if (script == null) return false;
-
-        dB.echoDebug(DebugElement.Header, "Parsing click trigger: " + npc.getName() + "/" + player.getName());
-
-        dB.echoDebug("Getting current step:");
-        String theStep = sH.getCurrentStep(player, script);
-
-        // Gets entries from the script
-        List<String> theScript = sH.getScriptContents(sH.getTriggerScriptPath(script, theStep, name) + sH.scriptKey);
-
-        // Build scriptEntries from the script and queue them up
-        sB.queueScriptEntries(player, sB.buildScriptEntries(player, npc, theScript, script, theStep), QueueType.PLAYER);
-
-        return true;
     }
 
     @Override

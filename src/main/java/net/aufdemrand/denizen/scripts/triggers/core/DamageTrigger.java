@@ -1,13 +1,7 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
-import java.util.List;
-
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -48,24 +42,6 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
             if (!parse(denizen.getNPCRegistry().getDenizen(npc), player, script))
                 denizen.getNPCRegistry().getDenizen(npc).action("no damage trigger", player);
         }
-    }
-
-    @Override
-    public boolean parse(DenizenNPC npc, Player player, String script) {
-        if (script == null) return false;
-
-        dB.echoDebug(DebugElement.Header, "Parsing damage trigger: " + npc.getName() + "/" + player.getName());
-
-        dB.echoDebug("Getting current step:");
-        String theStep = sH.getCurrentStep(player, script);
-
-        // Gets entries from the script
-        List<String> theScript = sH.getScriptContents(sH.getTriggerScriptPath(script, theStep, name) + sH.scriptKey);
-
-        // Build scriptEntries from the script and queue them up
-        sB.queueScriptEntries(player, sB.buildScriptEntries(player, npc, theScript, script, theStep), QueueType.PLAYER);
-
-        return true;
     }
 
     @Override

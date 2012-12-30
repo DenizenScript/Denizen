@@ -1,11 +1,16 @@
 package net.aufdemrand.denizen.scripts.triggers;
 
+import java.util.List;
+
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -96,7 +101,22 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 	
 	}
 
-    public abstract boolean parse(DenizenNPC npc, Player player, String script);
+    public boolean parse(DenizenNPC npc, Player player, String script) {
+        if (npc == null || player == null || script == null) return false;
+
+        dB.echoDebug(DebugElement.Header, "Parsing " + name + " trigger: " + npc.getName() + "/" + player.getName());
+
+        dB.echoDebug("Getting current step:");
+        String theStep = sH.getCurrentStep(player, script);
+
+        // Gets entries from the script
+        List<String> theScript = sH.getScriptContents(sH.getTriggerScriptPath(script, theStep, name) + sH.scriptKey);
+
+        // Build scriptEntries from the script and queue them up
+        sB.queueScriptEntries(player, sB.buildScriptEntries(player, npc, theScript, script, theStep), QueueType.PLAYER);
+
+        return true;
+    }
 
     public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown, CooldownType defaultCooldownType) {
         this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultCooldownType);
