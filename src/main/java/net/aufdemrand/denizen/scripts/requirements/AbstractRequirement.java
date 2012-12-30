@@ -81,6 +81,18 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
 	
 	}
 
+	/**
+	 * Part of the Plugin enable sequence. This is called when the requirement is 
+	 * instanced by the RequirementRegistry, which is generally on a server startup.
+	 * 
+	 * Can be '@Override'n by a Requirement which requires a method when starting, such
+	 * as registering as a Bukkit Listener.
+	 * 
+	 */
+	public void onEnable() {
+	
+	}
+
 	public AbstractRequirement withOptions(String usageHint, int numberOfRequiredArgs) {
         this.requirementOptions = new RequirementOptions(usageHint, numberOfRequiredArgs);
         return this;

@@ -71,10 +71,10 @@ public class SwitchCommand extends AbstractCommand {
             } else if (aH.matchesValueArg("STATE", arg, ArgumentType.Custom)) {
                 if (aH.getStringFrom(arg).equalsIgnoreCase("ON") || aH.getStringFrom(arg).equalsIgnoreCase("OPEN")) {
                     switchState = SwitchState.ON;
-                    dB.echoDebug("...set STATE: '%s'.", aH.getStringFrom(arg));
+                    dB.echoDebug("...set STATE: 'ON'.");
                 } else if (aH.getStringFrom(arg).equalsIgnoreCase("OFF") || aH.getStringFrom(arg).equalsIgnoreCase("CLOSE")) {
                     switchState = SwitchState.OFF;
-                    dB.echoDebug("...set STATE: '%s'.", aH.getStringFrom(arg));
+                    dB.echoDebug("...set STATE: 'OFF'.");
                 } else if (aH.getStringFrom(arg).equalsIgnoreCase("TOGGLE")) {
                     switchState = SwitchState.TOGGLE;
                     dB.echoDebug("...set STATE: 'TOGGLE'.");
@@ -83,7 +83,7 @@ public class SwitchCommand extends AbstractCommand {
 
             } else if (aH.matchesLocation(arg)) {
                 interactLocation = aH.getLocationFrom(arg);
-                if (interactLocation != null) dB.echoError("...switch location now at bookmark '%s'", arg);
+                if (interactLocation != null) dB.echoError("...switch LOCATION now: '%s'", arg);
                 continue;
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);

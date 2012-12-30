@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.events.ScriptsReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.interfaces.NPCSpeechEngine;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.notables.NotableManager;
 import net.aufdemrand.denizen.npc.DenizenNPCRegistry;
@@ -18,7 +17,6 @@ import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
-import net.aufdemrand.denizen.npc.traits.TalkTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.npc.traits.PushableTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
@@ -63,7 +61,6 @@ public class Denizen extends JavaPlugin {
 
     private ScriptEngine scriptEngine = new ScriptEngine(this);
     private ActivityEngine activityEngine = new ActivityEngine(this);
-    private NPCSpeechEngine speechEngine;
 
     public ActivityEngine getActivityEngine() {
         return activityEngine;
@@ -71,14 +68,6 @@ public class Denizen extends JavaPlugin {
     
     public ScriptEngine getScriptEngine() {
         return scriptEngine;
-    }
-
-    public NPCSpeechEngine getSpeechEngine() {
-        return speechEngine;
-    }
-
-    public void registerSpeechEngine(NPCSpeechEngine speechEngine) {
-        this.speechEngine = speechEngine;
     }
 
     
@@ -180,7 +169,6 @@ public class Denizen extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(PushableTrait.class).withName("pushable"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(AssignmentTrait.class).withName("assignment"));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TalkTrait.class).withName("talk"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NicknameTrait.class).withName("nickname"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HealthTrait.class).withName("health"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ConstantsTrait.class).withName("constants"));

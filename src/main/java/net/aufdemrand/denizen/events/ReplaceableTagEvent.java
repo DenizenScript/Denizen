@@ -21,8 +21,8 @@ import org.bukkit.event.HandlerList;
  *   is substituted. Must be in '( )'s. 
  *   
  * Examples:
- * <PLAYER> (Defaults to PLAYER.NAME)
- * <PLAYER.ITEM_IN_HAND:LORE[1](None)>
+ * <PLAYER.NAME>
+ * <PLAYER.ITEM_IN_HAND:LORE[1](None.)>
  * <NPC.NAME:NICKNAME>
  * <^FLAG.D:FRIENDS(None.)>
  *   
@@ -85,7 +85,7 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public String getIndex() {
-        return index;
+        return index != null ? index : "";
     }
 
     public String getName() {
@@ -105,11 +105,11 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public String getType() {
-        return type;
+        return type != null ? type : "";
     }
 
     public String getValue() {
-        return value;
+        return value != null ? value : "";
     }
 
     public boolean isInstant() {

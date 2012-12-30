@@ -190,6 +190,15 @@ public class CommandHandler {
 			Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger " + (trait.isEnabled(args.getFlag("name")) ? "is" : "is not") + " currently enabled" +
 					(trait.isEnabled(args.getFlag("name")) ?  "with a cooldown of '" + trait.getCooldownDuration(args.getFlag("name")) + "' seconds."  : "."));
 			return;
+			
+		} else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
+			Messaging.send(sender, "<f>Usage: /npc trigger [--name trigger_name] [(--cooldown #)|(--radius #)|(-t)]");
+			Messaging.send(sender, "");
+			Messaging.send(sender, "<f>Use '--name trigger_name' to specify a specific trigger, and '-t' to toggle.");
+			Messaging.send(sender, "<b>Example: /npc trigger --name damage -t");
+			Messaging.send(sender, "<f>You may also use '--cooldown #' to specify a new cooldown time, and '--radius #' to specify a specific radius, when applicable.");
+			Messaging.send(sender, "");
+			return;
 		}
 
 		trait.describe(sender, args.getInteger(1, 1));
@@ -440,9 +449,6 @@ public class CommandHandler {
 		if (!paginator.sendPage(sender, args.getInteger(1, 1)))
 			throw new CommandException(Messages.COMMAND_PAGE_MISSING);
 	}
-
-
-
 
 }
 

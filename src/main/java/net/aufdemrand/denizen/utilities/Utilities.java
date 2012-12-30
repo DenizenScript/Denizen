@@ -23,28 +23,7 @@ import org.bukkit.material.MaterialData;
  */
 public class Utilities {
 
-	/* 
-	 * Used to check against, same as EntityType, but minus a few that are useless and/or could cause problems spawning
-	 * arbitrarily, such as FISHING_HOOK, UNKNOWN, COMPLEX_PART, etc.
-	 */
-	
-	private enum ValidEntities {
-		BLAZE, BOAT, CAVE_SPIDER, CHICKEN, COW, CREEPER, ENDER_DRAGON, ENDERMAN, GHAST, GIANT, IRON_GOLEM, MAGMA_CUBE,
-		MUSHROOM_COW, MINECART, OCELOT, PIG, PIG_ZOMBIE, PRIMED_TNT, SHEEP, SILVERFISH, SKELETON, SLIME, SNOWMAN,
-		SQUID, VILLAGER, WOLF, ZOMBIE
-	}
-
-	public boolean isEntity(String theString) {
-
-		for (ValidEntities entity : ValidEntities.values()) {
-			if (entity.name().equals(theString.toUpperCase()))
-				return true;
-		}
-
-		return false;
-	}
-	
-	public int lastIndexOfUCL(String str) {        
+	public static int lastIndexOfUCL(String str) {        
 	    for(int i=str.length()-1; i>=0; i--) {
 	        if(Character.isUpperCase(str.charAt(i))) {
 	            return i;
@@ -53,7 +32,7 @@ public class Utilities {
 	    return -1;
 	}
 	
-	public int lastIndexOfLCL(String str) {        
+	public static int lastIndexOfLCL(String str) {        
 	    for(int i=str.length()-1; i>=0; i--) {
 	        if(Character.isLowerCase(str.charAt(i))) {
 	            return i;

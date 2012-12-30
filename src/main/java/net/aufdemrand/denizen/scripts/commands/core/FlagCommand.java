@@ -129,13 +129,13 @@ public class FlagCommand extends AbstractCommand implements Listener {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Set working index, if specified. Usage example: - FLAG FLAGNAME[3]:VALUE specifies an index of 3 should be set with VALUE.
-        if (flagName.split("[").length > 1) {
+        if (flagName.split("\\[").length > 1) {
             try {
-                index = Integer.valueOf(flagName.split("[")[1].replace("]", ""));
+                index = Integer.valueOf(flagName.split("\\[")[1].replace("]", ""));
             } catch (Exception e) { index = -1; }
 
             dB.echoDebug("...flag list index set to '" + index + "'.");
-            flagName = flagName.split("[")[0];
+            flagName = flagName.split("\\[")[0];
         }
 
         // Get flag

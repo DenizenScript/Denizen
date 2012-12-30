@@ -57,8 +57,13 @@ public class ScriptHelper {
 
 			// Make sure a priority exists.
 			if (Character.isDigit(assignment.charAt(0))) {
-				priority = Integer.valueOf(assignment.split(" ", 2)[0]);
-				script = assignment.split(" ", 2)[1].replace("^", "");
+				try {
+					priority = Integer.valueOf(assignment.split(" ", 2)[0]);
+					script = assignment.split(" ", 2)[1].replace("^", "");
+				} catch (Exception e) {
+					dB.echoError("Invalid Interact assignment for '" + assignment + "'. Is the script name missing?");
+					continue;
+				}
 			} else {
 				dB.echoError("Script '" + script + "' has an invalid priority! Assuming '0'.");
 				script = assignment;

@@ -12,11 +12,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 public class SneakingRequirement extends AbstractRequirement {
 
 	@Override
-	public void onEnable() {
-		// nothing to do here
-	}
-
-	@Override
 	public boolean check(Player player, DenizenNPC npc, String scriptName,
 			List<String> args) throws RequirementCheckException {
 		boolean outcome = false;

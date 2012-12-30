@@ -21,7 +21,25 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
- * Creates written books from Book scripts..
+ * <p>Creates a Written Book from a dScript 'Book-type Script' and a Book ItemStack.</p>
+ * 
+ * 
+ * <br><b>dScript Usage:</b><br>
+ * <pre>BOOK [SCRIPT:book_script] (GIVE|DROP|EQUIP) (ITEM:ITEMSTACK.name)</pre>
+ * 
+ * <ol><tt>Arguments: [] - Required</ol></tt>
+ * 
+ * <ol><tt>['message to announce']</tt><br> 
+ *         The message to send to the server. This will be seen by all Players.</ol>
+ * 
+ * 
+ * <br><b>Example Usage:</b><br>
+ * <ol><tt>
+ *  - ANNOUNCE 'Today is Christmas!' <br>
+ *  - ANNOUNCE "&#60;PLAYER.NAME> has completed '&#60;FLAG.P:currentQuest>'!" <br>
+ *  - ANNOUNCE "&#60;GOLD>$$$ &#60;WHITE>- Make some quick cash at our &#60;RED>MINEA-SINO&#60;WHITE>!" 
+ * </ol></tt>
+ * 
  * 
  * @author Mason Adkins
  */
@@ -52,38 +70,37 @@ public class BookCommand extends AbstractCommand implements Listener{
 	 * 
 	 */
 
-	BookAction action;
-
-	Player player;
-	String scriptName;
-	ItemStack book;
-	Location npcLocation;
-
 	@Override
-	public void parseArgs(ScriptEntry scriptEntry)
-			throws InvalidArgumentsException {
+	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-		boolean newItem = false;
-		action = BookAction.NONE;
-		player = scriptEntry.getPlayer();
-		scriptName = null;
-		npcLocation = null;
+		// Initialize required fields
+		boolean newItem = false; // Used in determining if a 'NEW ItemStack' is being used
+		BookAction action = BookAction.NONE;
+		
+		ItemStack book = null;
+		Player player = scriptEntry.getPlayer();
+		String scriptName = null;
+		Location location = null;
+		
 		if (scriptEntry.getNPC() != null)
-			npcLocation = scriptEntry.getNPC().getLocation();
-		book = null;
-
+			location = scriptEntry.getNPC().getLocation();
+		
 		for (String arg : scriptEntry.getArguments()) {
-			if (aH.matchesArg("DROP", arg) || aH.matchesArg("GIVE", arg) || aH.matchesArg("EQUIP", arg)) {
+			if (aH.matchesArg("DROP, GIVE, EQUIP", arg)) {
 				action = BookAction.valueOf(arg.toUpperCase());
 
 			} else if (aH.matchesScript(arg)) {
 				scriptName = aH.getStringFrom(arg);
-				dB.echoDebug("... script name set to '" + scriptName + "'.");
+				dB.echoDebug("...SCRIPT to use '" + scriptName + "'.");
 
+			} else if (aH.matchesLocation(arg)) {
+				location = aH.getLocationFrom(arg);
+				action = BookAction.DROP;
+				dB.echoDebug("...set DROP location: '%s'", aH.getStringFrom(arg));
+				
 			} else if (aH.matchesItem(arg)) {
 				book = aH.getItemFrom(arg);
-				if (book.getType() == Material.BOOK
-						|| book.getType() == Material.WRITTEN_BOOK) {
+				if (book.getType() == Material.BOOK || book.getType() == Material.WRITTEN_BOOK) {
 					dB.echoDebug("...using existing book '%s'.", arg);
 					newItem = true;
 				} else {
@@ -97,45 +114,61 @@ public class BookCommand extends AbstractCommand implements Listener{
 		if (action == BookAction.NONE && !newItem) action = BookAction.GIVE;
 		if (scriptName == null) throw new InvalidArgumentsException("Missing SCRIPT argument!");
 		if (book == null) book = new ItemStack(387);
+		
+		// Save objects to ScriptEntry for usage in execute
+		scriptEntry.addObject("action", action);
+		scriptEntry.addObject("book", book);
+		scriptEntry.addObject("script", scriptName);
+		scriptEntry.addObject("player", player);
+		scriptEntry.addObject("location", location);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-		writeBook(book, scriptName);
+		// Retrieve objects from ScriptEntry
+		BookAction action = (BookAction) scriptEntry.getObject("action");
+		ItemStack book = (ItemStack) scriptEntry.getObject("book");
+		String scriptName = (String) scriptEntry.getObject("script");
+		Player player = (Player) scriptEntry.getObject("player");
+		Location location = (Location) scriptEntry.getObject("location");
+		
+		// Write to the book item using the script specified
+		if (!writeBook(book, scriptName))
+			throw new CommandExecutionException("Invalid BOOK script!");
 
+		// Post-write action? Can be NONE.
 		switch (action) {
-
 		case DROP:
-			dropBook();
+			dropBook(location, book);
 			break;
 
 		case GIVE:
-			giveBook(player);
+			giveBook(player, book);
 			break;
 
 		case EQUIP:
-			equipBook(player);
+			equipBook(player, book);
 			break;
 
 		case NONE:
 			break;
-
 		}
 
+		// Update player's inventory
 		player.updateInventory();
 	}
 
-	private ItemStack writeBook(ItemStack book, String scriptName) {
-
+	private boolean writeBook(ItemStack book, String scriptName) {
+		// Get current ItemMeta from the book
 		BookMeta bookInfo = (BookMeta) book.getItemMeta();
 
 		String author = null;
 		String title = null;
 		List<String> pages = null;
 
-		if (scriptName == null) return null;
+		if (scriptName == null) return false;
 
 		//if script TYPE:BOOK
 		if (denizen.getScripts().contains(scriptName.toUpperCase() + ".TYPE") && 
@@ -162,12 +195,12 @@ public class BookCommand extends AbstractCommand implements Listener{
 			} else dB.echoDebug("...no text specified.");
 
 			book.setItemMeta(bookInfo);
-			return book;
+			return true;
 
-		} else return null;
+		} else return false;
 	}
 
-	private void giveBook(Player player) {
+	private void giveBook(Player player, ItemStack book) {
 		Inventory inv = player.getInventory();
 		int emptySpot = inv.firstEmpty();
 		if (emptySpot != -1) {
@@ -179,12 +212,12 @@ public class BookCommand extends AbstractCommand implements Listener{
 		}
 	}
 
-	public void equipBook (Player player) {
+	private void equipBook (Player player, ItemStack book) {
 		ItemStack currItem = player.getItemInHand();
 		Inventory inv = player.getInventory();
 		int emptySpot = inv.firstEmpty();
 
-		// if they aren't holding anything 
+		// if player isn't holding anything 
 		if (currItem == null || currItem.getType() == Material.AIR) {
 			player.setItemInHand(book);
 			dB.echoDebug("... added book to player hand");
@@ -206,11 +239,17 @@ public class BookCommand extends AbstractCommand implements Listener{
 		}
 	}
 
-	public void dropBook() {
-		player.getWorld().dropItem(npcLocation, book);
+	private void dropBook(Location location, ItemStack book) {
+		location.getWorld().dropItem(location, book);
 		dB.echoDebug("... dropped book by NPC");
 	}
 
+	/**
+	 * Catches a replaceable tag event for '<P>' and replaces it with
+	 * a book-friendly 'newline'.
+	 * 
+	 * @param e ReplaceableTagEvent
+	 */
 	@EventHandler
 	public void paragraph(ReplaceableTagEvent e) {
 		if (!e.matches("P")) return;
