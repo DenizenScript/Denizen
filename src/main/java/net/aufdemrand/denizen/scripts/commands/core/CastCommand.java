@@ -26,7 +26,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * 
  * <ol><tt>[PotionEffectType]</tt><br> 
  *         Uses Bukkit's PotionEffectType for specifying the potion effect to use. 
- *         See: {@link CastCommand}</ol>
+ *         See below for a list of valid PotionEffectTypes.</ol>
  * 
  * <ol><tt>(TARGET:NPC|{PLAYER}|ENTITY.entity_name)</tt><br> 
  *         Optional. Defaults to {@link Player}. The recipient of the PotionEffectType. </ol>
