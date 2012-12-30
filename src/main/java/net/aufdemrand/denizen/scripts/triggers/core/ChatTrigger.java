@@ -18,8 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 
 public class ChatTrigger extends AbstractTrigger implements Listener {
 	private	String	playerMessage;
@@ -86,23 +84,19 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		// trigger.
 		//
 		DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(closestNPC);
-		/*
-		if (!denizenNPC.hasTrigger(triggerName)) {
-			return;
-		}
-*/
-
 		dB.echoDebug("Found nearby NPC, interrupting chat...", this.name);
 
+		//
 		// If Denizen is not interactable (ie. Denizen is toggled off, engaged or
 		// not cooled down)
+		//
 		if (!this.isInteractable(denizenNPC, event.getPlayer())) {
 			if (!this.chatGloballyIfNotInteractable ()) {
 				event.setCancelled(true);
 
-				denizen.getSpeechEngine().whisper(denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
+//				denizen.getSpeechEngine().whisper(denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
 //				denizenNPC.talk(TalkType.CHAT_PLAYERONLY, event.getPlayer(), Reason.DenizenIsUnavailable);
-				denizen.getSpeechEngine().whisper(denizenNPC.getEntity(), "Denizen is unavailable", event.getPlayer());
+//				denizen.getSpeechEngine().whisper(denizenNPC.getEntity(), "Denizen is unavailable", event.getPlayer());
 				
 				return;
 			}
@@ -116,8 +110,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		}
 
 		// Denizen should be good to interact with. Let's get the script.
-		String theScript = denizenNPC.getInteractScript(event.getPlayer(),
-				this.getClass());
+		String theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
 
 		/*
 		 * No script matches, should we still show the player talking to the
@@ -134,7 +127,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				//
 				// Whisper the message to the player.
 				//
-				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
+//				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
 
 				dB.echoDebug (ChatColor.LIGHT_PURPLE
 							+ "+- Parsing QUICK CHAT script: " + denizenNPC.getName() + "/"
@@ -146,7 +139,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 								+ ".Quick Scripts.Chat Trigger.Script");
 
 				if (theScript1.isEmpty()) {
-					denizen.getSpeechEngine().whisper(closestNPC.getBukkitEntity(), "No matching chat triggers.", event.getPlayer ());
+//					denizen.getSpeechEngine().whisper(closestNPC.getBukkitEntity(), "No matching chat triggers.", event.getPlayer ());
 //					denizenNPC.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
 					return;
 				}
@@ -156,17 +149,23 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				// queue.
 				//
 				ScriptEngine 	sE = denizen.getScriptEngine();
-				sE.getPlayerQueue(event.getPlayer(), QueueType.PLAYER_TASK).addAll(sE.getScriptBuilder ().buildScriptEntries(
-						event.getPlayer(), denizenNPC, theScript1, denizenNPC.getName()
-								+ " Quick Chat", "1"));
+				sE.getPlayerQueue (
+					event.getPlayer(), 
+					QueueType.PLAYER_TASK)
+					.addAll(
+						sE.getScriptBuilder ().buildScriptEntries(
+							event.getPlayer(), 
+							denizenNPC, 
+							theScript1, 
+							denizenNPC.getName() + " Quick Chat", "1"));
 
 				return;
 			}
 
 			if (!this.chatGloballyIfNoChatTriggers ()) {
 				event.setCancelled(true);
-				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
-				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), "No matching chat triggers.", event.getPlayer());
+//				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
+//				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), "No matching chat triggers.", event.getPlayer());
 //				denizenNPC.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
 				return;
 			}
@@ -198,9 +197,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			dB.echoDebug(ChatColor.LIGHT_PURPLE + "+---------------------+");
 
 			if (!this.ChatGloballyIfFailedChatTriggers ()) {
-				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
-
-				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), "No matching chat triggers", event.getPlayer());
+//				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
+//				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), "No matching chat triggers", event.getPlayer());
 //				denizenNPC.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
 
 				event.setCancelled(true);
@@ -248,7 +246,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 					.replace("<DISPLAYNAME>",
 							ChatColor.stripColor(thePlayer.getDisplayName())).toLowerCase();
 
+			//
 			// The in-game friendly Chat Trigger text to display if triggered.
+			//
 			String	chatKey = 
 				theScriptName + 
 				".Steps." + 
@@ -260,12 +260,14 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			String chatText = denizen.getScripts().getString(chatKey.toUpperCase()).replace("/", "");
 			dB.echoDebug ("chatText: " + chatText);
 
-			// Find a matching trigger
+			//
+			// Find a matching trigger.
+			//
 			boolean letsProceed = false;
 			for (String chatTrigger : chatTriggers.split(":")) {
-				if (playerMessage.toLowerCase().contains(chatTrigger))
+				if (playerMessage.toLowerCase().contains(chatTrigger)) {
 					letsProceed = true;
-
+				}
 			}
 
 			// If a matching trigger is found...
@@ -286,18 +288,18 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				}
 
 				// Chat to the Denizen, then queue the script entries!
-				denizen.getSpeechEngine().whisper (theDenizen.getEntity(), chatText, thePlayer);
-
-				sE.getPlayerQueue(thePlayer, QueueType.PLAYER)
-					.addAll(
-						sE.getScriptBuilder().buildScriptEntries (
-							thePlayer,
-							theDenizen, 
-							theScript, 
-							theScriptName, 
-							theStep, 
-							playerMessage, 
-							chatText));
+//				denizen.getSpeechEngine().whisper (thePlayer, chatText, theDenizen.getEntity());
+				dB.echoDebug ("Queing to player queue: " + sE.getPlayerQueue(thePlayer, QueueType.PLAYER));
+				
+				sB.queueScriptEntries (
+					thePlayer, 
+					sB.buildScriptEntries (
+						thePlayer, 
+						theDenizen, 
+						theScript, 
+						theScriptName, 
+						theStep), 
+					QueueType.PLAYER);
 
 				return true;
 			}
@@ -347,9 +349,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 				if (theScript.isEmpty())
 					return false;
-
-				// Chat to the Denizen, then queue the scrip entries!
-				denizen.getSpeechEngine().whisper (theDenizen.getEntity(), chatText, thePlayer);
 
 				sE.getPlayerQueue(thePlayer, QueueType.PLAYER)
 					.addAll(sE.getScriptBuilder().buildScriptEntries (
@@ -416,9 +415,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				ChatTriggers.add(triggerBuilder);
 				currentTrigger = x + 1;
 			} else {
-				dB.echoDebug ("No chat triggers found.");
-				dB.echoDebug (denizen.getScripts ().toString ());
-				currentTrigger = -1;
+				return ChatTriggers;				
 			}
 		}
 
