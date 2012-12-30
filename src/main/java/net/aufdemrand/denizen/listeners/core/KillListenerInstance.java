@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.KillListenerType.KillType;
 import net.aufdemrand.denizen.utilities.Depends;
@@ -26,9 +27,9 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
 	KillType type = null;
 	List<String> targets = new ArrayList<String>();
-	int quantity = 1;
-	int currentKills = 0;
-	String argRegion = null;
+	Integer quantity = 1;
+	Integer currentKills = 0;
+	String region = null;
 
 
 	@Override
@@ -65,7 +66,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 				dB.echoDebug("...set TARGETS: " + Arrays.toString(targets.toArray()));
 
 			} else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
-				argRegion = aH.getStringFrom(arg);
+				region = aH.getStringFrom(arg);
 				dB.echoDebug("...set REGION.");
 			}
 		}
@@ -155,7 +156,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		if (event.getEntity().getKiller() != player) return;
 
 		// If REGION argument specified, check. If not in region, don't count kill!
-		if (argRegion != null) 
+		if (region != null) 
 			if (!inRegion(player)) return;
 
 		// Check type!
@@ -211,13 +212,39 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		ApplicableRegionSet currentRegions = Depends.worldGuard.getRegionManager(thePlayer.getWorld()).getApplicableRegions(thePlayer.getLocation());
 		for(ProtectedRegion thisRegion: currentRegions){
 			dB.echoDebug("...checking current player region: " + thisRegion.getId());
-			if (thisRegion.getId().contains(argRegion)) {
+			if (thisRegion.getId().contains(region)) {
 				inRegion = true;
 				dB.echoDebug("...matched region");
 			} 
 		}
 		return inRegion;
 	}
-
-
+	
+	@EventHandler
+    public void listenTag(ReplaceableTagEvent event) {
+		
+		if (!event.matches("LISTENER")) return;
+		if (!event.getType().equalsIgnoreCase(listenerId)) return;
+		
+		if (event.getValue().equalsIgnoreCase(region)) {
+			event.setReplaceable(region);
+		}
+		
+		else if (event.getValue().equalsIgnoreCase("quantity")) {
+			event.setReplaceable(quantity.toString());
+		}
+		
+		else if (event.getValue().equalsIgnoreCase("currentkills")) {
+			event.setReplaceable(currentKills.toString());
+		}
+		
+		else if (event.getValue().equalsIgnoreCase("targets")) {
+			String targetList = "";
+			for (String curTar : targets){
+				targetList = targetList + curTar + ", ";
+				targetList = targetList.substring(0, targetList.length() - 1);
+			}
+			event.setReplaceable(targetList);
+		}
+	}
 }

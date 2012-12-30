@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -12,10 +11,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.citizensnpcs.util.Messaging;
 import net.milkbowl.vault.economy.Economy;
-
-
 
 public class TakeCommand extends AbstractCommand{
 	
@@ -86,5 +82,4 @@ public class TakeCommand extends AbstractCommand{
         	break;
 		}
 	}
-
 }
