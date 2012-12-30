@@ -145,7 +145,7 @@ public class Denizen extends JavaPlugin {
      */
 
     public static Settings settings;
-
+    public static Depends depends;
     
     /*
      * Sets up Denizen on start of the craftbukkit server.	
@@ -164,6 +164,7 @@ public class Denizen extends JavaPlugin {
         dB.echoDebug(DebugElement.Footer);
 
         settings =  new Settings();
+        depends = new Depends();
         denizenNPCRegistry = new DenizenNPCRegistry(this);
         
         // Register commandHandler with Citizens2
