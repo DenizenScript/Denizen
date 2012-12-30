@@ -1,7 +1,11 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
@@ -45,11 +49,13 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
   private Boolean isInteractable (DenizenNPC npc, Player player) {
   	return true;
   }
-
+  
+  private Boolean isKeywordRegex (String keyWord) {
+  	return keyWord.toUpperCase().startsWith("REGEX:");
+  }
+  
 	@EventHandler
 	public void chatTrigger(AsyncPlayerChatEvent event) {
-		dB.echoDebug("chatTrigger (" + event.toString () + ")");
-
 		//
 		// Try to find the closest NPC to the player's location.
 		//
@@ -67,15 +73,18 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			dB.echoDebug("  NPC does not have the trigger trait: " + TriggerTrait.class);
 			return;
 		}
-		
+
 		if (!closestNPC.getTrait(TriggerTrait.class).isEnabled(name)) {
 			dB.echoDebug("  Trigger " + this.name + " is not enabled.");
 			return;
 		}
 		
+		//
 		// If engaged or not cool, calls On Unavailable, if cool, calls On Click
-		// If available (not engaged, and cool) sets cool down and returns true. 
+		// If available (not engaged, and cool) sets cool down and returns true.
+		//
 		if (!closestNPC.getTrait(TriggerTrait.class).trigger(this, event.getPlayer())) {
+			dB.echoDebug ("  The NPC is currently unavailable.");
 //			return;
 		}
 
@@ -93,11 +102,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		if (!this.isInteractable(denizenNPC, event.getPlayer())) {
 			if (!this.chatGloballyIfNotInteractable ()) {
 				event.setCancelled(true);
-
-//				denizen.getSpeechEngine().whisper(denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
-//				denizenNPC.talk(TalkType.CHAT_PLAYERONLY, event.getPlayer(), Reason.DenizenIsUnavailable);
-//				denizen.getSpeechEngine().whisper(denizenNPC.getEntity(), "Denizen is unavailable", event.getPlayer());
-				
 				return;
 			}
 			
@@ -123,11 +127,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 							+ ".Quick Scripts.Chat Trigger.Script")) {
 
 				event.setCancelled(true);
-				
-				//
-				// Whisper the message to the player.
-				//
-//				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
 
 				dB.echoDebug (ChatColor.LIGHT_PURPLE
 							+ "+- Parsing QUICK CHAT script: " + denizenNPC.getName() + "/"
@@ -139,8 +138,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 								+ ".Quick Scripts.Chat Trigger.Script");
 
 				if (theScript1.isEmpty()) {
-//					denizen.getSpeechEngine().whisper(closestNPC.getBukkitEntity(), "No matching chat triggers.", event.getPlayer ());
-//					denizenNPC.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
 					return;
 				}
 
@@ -164,21 +161,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 			if (!this.chatGloballyIfNoChatTriggers ()) {
 				event.setCancelled(true);
-//				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
-//				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), "No matching chat triggers.", event.getPlayer());
-//				denizenNPC.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
 				return;
 			}
-			// Denizen doesn't have a script, and the config.yml specifies that
-			// we should just treat chat normal.
+
 			dB.echoDebug("No script, resuming chat...", this.name);
 			return;
 		}
-
-		/*
-		 * Okay! We have a script, awesome! Let's parse the script to see if chat
-		 * triggers match
-		 */
 
 		//
 		// Parse the script and match Triggers.. if found, cancel the text! The
@@ -188,7 +176,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		// metaData.add(new FixedMetadataValue(denizen, event.getMessage()));
 		this.playerMessage = event.getMessage ();
 		
-		if (this.parse (denizenNPC, event.getPlayer(), theScript /*, event.getMessage() */)) {
+		if (this.parse (denizenNPC, event.getPlayer(), theScript)) {
 			event.setCancelled(true);
 			return;
 		} else {
@@ -197,16 +185,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 			dB.echoDebug(ChatColor.LIGHT_PURPLE + "+---------------------+");
 
 			if (!this.ChatGloballyIfFailedChatTriggers ()) {
-//				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), event.getMessage(), event.getPlayer());
-//				denizen.getSpeechEngine().whisper (denizenNPC.getEntity(), "No matching chat triggers", event.getPlayer());
-//				denizenNPC.talk(TalkType.CHAT, event.getPlayer(), Reason.NoMatchingChatTriggers);
-
 				event.setCancelled(true);
 				return;
 			}
 
-			// No matching chat triggers, and the config.yml
-			// says we should just ignore the interaction...
+			// No matching chat triggers, and the config.yml says we should just 
+			// ignore the interaction...
 			dB.echoDebug("No matching triggers in script, resuming chat...", this.name);
 			return;
 		}
@@ -217,8 +201,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 	 * queue if found matched. Returning FALSE will cancel intervention and allow
 	 * the PlayerChatEvent to pass through.
 	 */
-
 	public boolean parse (DenizenNPC theDenizen, Player thePlayer, String theScriptName) {
+		Boolean	foundTrigger = false;
 		ScriptEngine	sE = denizen.getScriptEngine();
 		ScriptHelper	sH = sE.getScriptHelper();
 
@@ -228,69 +212,72 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 					+ "Getting current step:");
 		dB.echoDebug (ChatColor.LIGHT_PURPLE + "| Script Name:" + ChatColor.WHITE + theScriptName);
 
-		/* Get Player's current step */
+		//
+		// Get Player's current step.
+		//
 		String	theStep = sH.getCurrentStep(thePlayer, theScriptName);
-
-		/* Get Chat Triggers and check each to see if there are any matches. */
-		List<String> ChatTriggerList = getChatTriggers(theScriptName, theStep);
-		if (ChatTriggerList.size () == 0) {
-			dB.echoDebug(ChatColor.RED + "There are no chat triggers defined.");
-		}
-		for (int x = 0; x < ChatTriggerList.size(); x++) {
-			dB.echoDebug ("  Checking: " + ChatTriggerList.get (x));
-
-			// The texts required to trigger.
-			String chatTriggers = ChatTriggerList
-					.get(x)
-					.replace("<PLAYER>", thePlayer.getName())
-					.replace("<DISPLAYNAME>",
-							ChatColor.stripColor(thePlayer.getDisplayName())).toLowerCase();
+		
+		//
+		// Figure out if any of the triggers fired.
+		//
+		Map<String,List<String>> triggerMap = this.getChatTriggers(theScriptName, theStep);
+		for (String triggerStep : triggerMap.keySet()) {
+			dB.echoDebug ("Checking step: " + triggerStep);
 
 			//
-			// The in-game friendly Chat Trigger text to display if triggered.
+			// Iterate over the keywords that can trigger this step and see if all of
+			// them match what the user typed.  All of the keywords must match in
+			// order for the trigger to fire.
 			//
-			String	chatKey = 
-				theScriptName + 
-				".Steps." + 
-				theStep + 
-				".Chat Trigger."
-				+ String.valueOf(x + 1) + 
-				".Trigger";
-			dB.echoDebug ("chatKey: " + chatKey);
-			String chatText = denizen.getScripts().getString(chatKey.toUpperCase()).replace("/", "");
-			dB.echoDebug ("chatText: " + chatText);
+			Boolean	foundMatch = true;
+			for (String keyWord : triggerMap.get(triggerStep)) {
+				dB.echoDebug(ChatColor.LIGHT_PURPLE + "Checking: " + keyWord);
 
-			//
-			// Find a matching trigger.
-			//
-			boolean letsProceed = false;
-			for (String chatTrigger : chatTriggers.split(":")) {
-				if (playerMessage.toLowerCase().contains(chatTrigger)) {
-					letsProceed = true;
+				//
+				// Is this a REGEX keyword?  If so, and it doesn't match what the user
+				// entered, we can stop looking.
+				//
+				if (this.isKeywordRegex(keyWord)) {
+					dB.echoDebug ("REGEX");
+					Pattern	pattern = Pattern.compile(keyWord.substring(6));
+					if (pattern.matcher(playerMessage).find () ) {
+						continue;
+					}
+					dB.echoDebug (ChatColor.GOLD + "  " + playerMessage + " does not match regex: " + keyWord.substring(6) + ".");
+					foundMatch = false;
+					break;
+				}
+
+				//
+				// This is a normal keyword.  If the player's message doesn't match the
+				// keyword, then stop looking.
+				//
+				if (playerMessage.toLowerCase().contains(keyWord.toLowerCase()) == false) {
+					dB.echoDebug (ChatColor.GOLD + "  \"" + playerMessage + "\" does not match.");
+					foundMatch = false;
+					break;
 				}
 			}
 
-			// If a matching trigger is found...
-			if (letsProceed) {
-				/*
-				 * Trigger matches, let's talk to the Denizen and send the script to the
-				 * triggerQue. No need to continue the loop if the script is empty.
-				 */
-				List<String> theScript = 
-					sE.getScriptHelper().getScriptContents (
-							sE.getScriptHelper().getTriggerScriptPath (
-							theScriptName,
-							theStep, 
-							this.name) + String.valueOf(x + 1) + sE.getScriptHelper().scriptKey);
-
-				if (theScript.isEmpty()) {
-					return false;
+			//
+			// Did we find a match?
+			//
+			if (foundMatch) {
+				//
+				// Found a match to the keyword.  Now get the script that needs to be
+				// executed by using the triggerStep that we're on.
+				//
+				dB.echoDebug(ChatColor.GREEN + "  found match.");
+				foundTrigger = true;
+				List<String> theScript = sE.getScriptHelper().getScriptContents (triggerStep + sE.getScriptHelper().scriptKey);
+				if (theScript == null || theScript.isEmpty()) {
+					dB.echoDebug ("    No script found for: " + triggerStep + sE.getScriptHelper().scriptKey);
+					continue;
 				}
-
-				// Chat to the Denizen, then queue the script entries!
-//				denizen.getSpeechEngine().whisper (thePlayer, chatText, theDenizen.getEntity());
-				dB.echoDebug ("Queing to player queue: " + sE.getPlayerQueue(thePlayer, QueueType.PLAYER));
 				
+				//
+				// Queue the script in the player's queue.
+				//
 				sB.queueScriptEntries (
 					thePlayer, 
 					sB.buildScriptEntries (
@@ -300,125 +287,65 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 						theScriptName, 
 						theStep), 
 					QueueType.PLAYER);
-
-				return true;
 			}
 		}
 
-		for (int x = 0; x < ChatTriggerList.size(); x++) {
-
-			// The texts required to trigger.
-			String chatTriggers = ChatTriggerList
-					.get(x)
-					.replace("<PLAYER>", thePlayer.getName())
-					.replace("<DISPLAYNAME>",
-							ChatColor.stripColor(thePlayer.getDisplayName())).toLowerCase();
-
-			// The in-game friendly Chat Trigger text to display if triggered.
-			String chatText = denizen
-					.getScripts()
-					.getString(
-							theScriptName + ".Steps." + theStep + ".Chat Trigger."
-									+ String.valueOf(x + 1) + ".Trigger").replace("/", "");
-
-			//
-			// Find a matching trigger.
-			//
-			boolean letsProceed = false;
-			for (String chatTrigger : chatTriggers.split(":")) {
-				if (chatTrigger.contains("*")) {
-					chatText = chatText.replace("*", playerMessage);
-					letsProceed = true;
-				}
-			}
-
-			//
-			// If a matching trigger is found...
-			//
-			if (letsProceed) {
-				//
-				// Trigger matches, let's talk to the Denizen and send the script to the
-				// triggerQue. No need to continue the loop if the script is empty.
-				//
-				List<String> theScript = sE.getScriptHelper().getScriptContents(
-					sE.getScriptHelper().getTriggerScriptPath (
-						theScriptName,
-						theStep, 
-						this.name) 
-						+ String.valueOf (x + 1) + sE.getScriptHelper().scriptKey);
-
-				if (theScript.isEmpty())
-					return false;
-
-				sE.getPlayerQueue(thePlayer, QueueType.PLAYER)
-					.addAll(sE.getScriptBuilder().buildScriptEntries (
-						thePlayer,
-						theDenizen, 
-						theScript, 
-						theScriptName, 
-						theStep, 
-						playerMessage, 
-						chatText));
-
-				return true;
-			}
-		}
-
-		// Else, no matching trigger found...
-		return false;
+		return foundTrigger;
 	}
 
-	/**
-	 * Gets a list of Chat Triggers for the step of the script specified. Chat
-	 * Triggers are words required to trigger one of the chat.
-	 * 
-	 * @param theScript	The name of the script that is running.
-	 * @param currentStep	The name of the step to get the chat triggers for.
-	 * 
-	 * @return	The list of chat triggers for the given script and step.
-	 */
-	public List<String> getChatTriggers(String theScript, String currentStep) {
-		// TODO: Cleanup, this seems kind of ghetto?
-		List<String> ChatTriggers = new ArrayList<String>();
-		int currentTrigger = 1;
-		for (int x = 1; currentTrigger >= 0; x++) {
-			String	scriptKey =
-				theScript + 
-				".Steps." + 
-				currentStep + 
-				".Chat Trigger."	+
-				String.valueOf(currentTrigger) + 
-				".Trigger";
+	public Map<String,List<String>> getChatTriggers(String theScript, String currentStep) {
+		dB.echoDebug ("getChatTriggers ()");
+
+		//
+		// This is the REGEX for extracting the "key words" from a trigger.
+		//
+		Pattern	triggerPattern = Pattern.compile ("\\/([^/]*)\\/");
+
+		//
+		// This is the path to the "Chat Trigger" we're processing.
+		//
+		String	path = (theScript + ".Steps." + currentStep + ".Chat Trigger").toUpperCase();
+		
+		//
+		// This is the map of the script keys to the keywords that can trigger the
+		// step.
+		//
+		Map<String,List<String>> triggerMap = new HashMap<String,List<String>> ();
+
+		//
+		// Iterate over all of this step's keys looking for chat triggers.
+		//
+		for (String key : denizen.getScripts().getConfigurationSection(path).getKeys(false)) {
+			//
+			// Build the key to the trigger and attempt to get it for the step that
+			// we're currently processing.
+			//
+			String	stepKey = (path + "." + key + ".Trigger").toUpperCase();
+			String	triggerValue = denizen.getScripts ().getString (stepKey);
+			dB.echoDebug("stepKey: " + stepKey);
+			dB.echoDebug("  triggerValue: " + triggerValue);
 			
-			dB.echoDebug ("Checking: " + scriptKey);
-			String theChatTrigger = denizen.getScripts().getString(scriptKey.toUpperCase());
-			dB.echoDebug ("  trigger: " + theChatTrigger);
-			if (theChatTrigger != null) {
-				boolean isTrigger = false;
-				String triggerBuilder = "";
-
-				for (String trigger : theChatTrigger.split("/")) {
-					if (isTrigger) {
-						triggerBuilder = triggerBuilder + trigger + ":";
-						isTrigger = false;
-					} else
-						isTrigger = true;
+			//
+			// Did we find a trigger for the current step that we're on and does this
+			// trigger contain a "/" character (which is used for designating the key
+			// text that causes the chat trigger to fire)?
+			//
+			if (triggerValue != null && triggerValue.contains("/")) {
+				List<String>	keyWords = new ArrayList<String> ();
+				//
+				// Now find all of the keywords in the trigger.  Make sure to strip off
+				// the slashes when building the list of key words.
+				//
+				Matcher matcher = triggerPattern.matcher(triggerValue);
+				while (matcher.find ()) {
+					String keyWord = matcher.group ();
+					keyWords.add(keyWord.substring(1, keyWord.length() - 1));
 				}
-
-				//
-				// Take off the excess colon before adding it to the list.
-				//
-				triggerBuilder = triggerBuilder.substring(0, triggerBuilder.length() - 1);
-
-				dB.echoDebug (ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE
-						+ "Found chat trigger: " + triggerBuilder);
-				ChatTriggers.add(triggerBuilder);
-				currentTrigger = x + 1;
-			} else {
-				return ChatTriggers;				
+				
+				triggerMap.put(path + "." + key, keyWords);
 			}
 		}
-
-		return ChatTriggers;
+		
+		return triggerMap;
 	}
 }
