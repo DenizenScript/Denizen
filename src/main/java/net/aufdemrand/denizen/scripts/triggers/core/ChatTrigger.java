@@ -22,6 +22,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
 public class ChatTrigger extends AbstractTrigger implements Listener {
+	private	String	playerMessage;
+	
   @Override
   public void onEnable() {
       denizen.getServer().getPluginManager().registerEvents(this, denizen);
@@ -43,7 +45,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
   }
   
   private Boolean isInteractable (DenizenNPC npc, Player player) {
-  	return !npc.isInteracting();
+  	return true;
   }
 
 	@EventHandler
@@ -55,7 +57,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		//
 		NPC	closestNPC = Utilities.getClosestNPC(event.getPlayer().getLocation(), 3);
 		if (closestNPC == null) {
-			dB.echoDebug("  No NPC found.");
 			return;
 		}
 
@@ -70,14 +71,15 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		}
 		
 		if (!closestNPC.getTrait(TriggerTrait.class).isEnabled(name)) {
-			dB.echoDebug("  Trigger is not enabled: " + this.name);
+			dB.echoDebug("  Trigger " + this.name + " is not enabled.");
 			return;
 		}
-
-/*		if (!closestNPC.getTrait(TriggerTrait.class).trigger(this, event.getClicker())) {
-			return;
+		
+		// If engaged or not cool, calls On Unavailable, if cool, calls On Click
+		// If available (not engaged, and cool) sets cool down and returns true. 
+		if (!closestNPC.getTrait(TriggerTrait.class).trigger(this, event.getPlayer())) {
+//			return;
 		}
-*/
 
 		//
 		// Get the denizen that is associated to this NPC and see if it has a chat
@@ -183,9 +185,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		// Parse the script and match Triggers.. if found, cancel the text! The
 		// parser will take care of everything else.
 		//
-		List<MetadataValue>	metaData = event.getPlayer().getMetadata("denizen.chatmessage");
-		metaData.add(new FixedMetadataValue(denizen, event.getMessage()));
-
+		// List<MetadataValue>	metaData = event.getPlayer().getMetadata("denizen.chatmessage");
+		// metaData.add(new FixedMetadataValue(denizen, event.getMessage()));
+		this.playerMessage = event.getMessage ();
+		
 		if (this.parse (denizenNPC, event.getPlayer(), theScript /*, event.getMessage() */)) {
 			event.setCancelled(true);
 			return;
@@ -218,9 +221,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 	 */
 
 	public boolean parse (DenizenNPC theDenizen, Player thePlayer, String theScriptName) {
-		List<MetadataValue>	metaData = thePlayer.getMetadata("denizen.chatmessage");
-		String	playerMessage = metaData.get(0).asString();
-		
 		ScriptEngine	sE = denizen.getScriptEngine();
 		ScriptHelper	sH = sE.getScriptHelper();
 
@@ -228,14 +228,19 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 					+ theDenizen.getName() + "/" + thePlayer.getName() + " -+");
 		dB.echoDebug(ChatColor.LIGHT_PURPLE + "| " + ChatColor.WHITE
 					+ "Getting current step:");
+		dB.echoDebug (ChatColor.LIGHT_PURPLE + "| Script Name:" + ChatColor.WHITE + theScriptName);
 
 		/* Get Player's current step */
 		String	theStep = sH.getCurrentStep(thePlayer, theScriptName);
 
 		/* Get Chat Triggers and check each to see if there are any matches. */
 		List<String> ChatTriggerList = getChatTriggers(theScriptName, theStep);
+		if (ChatTriggerList.size () == 0) {
+			dB.echoDebug(ChatColor.RED + "There are no chat triggers defined.");
+		}
 		for (int x = 0; x < ChatTriggerList.size(); x++) {
-					
+			dB.echoDebug ("  Checking: " + ChatTriggerList.get (x));
+
 			// The texts required to trigger.
 			String chatTriggers = ChatTriggerList
 					.get(x)
@@ -244,11 +249,16 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 							ChatColor.stripColor(thePlayer.getDisplayName())).toLowerCase();
 
 			// The in-game friendly Chat Trigger text to display if triggered.
-			String chatText = denizen
-					.getScripts()
-					.getString(
-							theScriptName + ".Steps." + theStep + ".Chat Trigger."
-									+ String.valueOf(x + 1) + ".Trigger").replace("/", "");
+			String	chatKey = 
+				theScriptName + 
+				".Steps." + 
+				theStep + 
+				".Chat Trigger."
+				+ String.valueOf(x + 1) + 
+				".Trigger";
+			dB.echoDebug ("chatKey: " + chatKey);
+			String chatText = denizen.getScripts().getString(chatKey.toUpperCase()).replace("/", "");
+			dB.echoDebug ("chatText: " + chatText);
 
 			// Find a matching trigger
 			boolean letsProceed = false;
@@ -275,18 +285,19 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 					return false;
 				}
 
-				// Chat to the Denizen, then queue the scrip entries!
+				// Chat to the Denizen, then queue the script entries!
 				denizen.getSpeechEngine().whisper (theDenizen.getEntity(), chatText, thePlayer);
 
 				sE.getPlayerQueue(thePlayer, QueueType.PLAYER)
-					.addAll(sE.getScriptBuilder().buildScriptEntries (
-						thePlayer,
-						theDenizen, 
-						theScript, 
-						theScriptName, 
-						theStep, 
-						playerMessage, 
-						chatText));
+					.addAll(
+						sE.getScriptBuilder().buildScriptEntries (
+							thePlayer,
+							theDenizen, 
+							theScript, 
+							theScriptName, 
+							theStep, 
+							playerMessage, 
+							chatText));
 
 				return true;
 			}
@@ -372,9 +383,17 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		List<String> ChatTriggers = new ArrayList<String>();
 		int currentTrigger = 1;
 		for (int x = 1; currentTrigger >= 0; x++) {
-			String theChatTrigger = denizen.getScripts().getString(
-					theScript + ".Steps." + currentStep + ".Chat Trigger."
-							+ String.valueOf(currentTrigger) + ".Trigger");
+			String	scriptKey =
+				theScript + 
+				".Steps." + 
+				currentStep + 
+				".Chat Trigger."	+
+				String.valueOf(currentTrigger) + 
+				".Trigger";
+			
+			dB.echoDebug ("Checking: " + scriptKey);
+			String theChatTrigger = denizen.getScripts().getString(scriptKey.toUpperCase());
+			dB.echoDebug ("  trigger: " + theChatTrigger);
 			if (theChatTrigger != null) {
 				boolean isTrigger = false;
 				String triggerBuilder = "";
@@ -396,8 +415,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 						+ "Found chat trigger: " + triggerBuilder);
 				ChatTriggers.add(triggerBuilder);
 				currentTrigger = x + 1;
-			} else
+			} else {
+				dB.echoDebug ("No chat triggers found.");
+				dB.echoDebug (denizen.getScripts ().toString ());
 				currentTrigger = -1;
+			}
 		}
 
 		return ChatTriggers;
