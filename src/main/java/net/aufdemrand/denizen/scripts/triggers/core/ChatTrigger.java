@@ -63,9 +63,14 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		// If the NPC doesn't have triggers, or the triggers are not enabled, then
 		// just return.
 		//
-		if (!closestNPC.hasTrait(TriggerTrait.class)	||
-				!closestNPC.getTrait(TriggerTrait.class).isEnabled(name)) {
-			dB.echoDebug("  NPC does not have a trigger trait, or it is not enabled.");
+		dB.echoDebug ("  Closest NPC: " + closestNPC.getFullName());
+		if (!closestNPC.hasTrait(TriggerTrait.class)) {
+			dB.echoDebug("  NPC does not have the trigger trait: " + TriggerTrait.class);
+			return;
+		}
+		
+		if (!closestNPC.getTrait(TriggerTrait.class).isEnabled(name)) {
+			dB.echoDebug("  Trigger is not enabled: " + this.name);
 			return;
 		}
 
