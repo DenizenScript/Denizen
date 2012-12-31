@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +25,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 	
+	// TODO: This goes into settings.
 	public Integer getProximityRangeInBlocks () {
 		// plugin.settings.ProximityTriggerRangeInBlocks()
 		return 3;
