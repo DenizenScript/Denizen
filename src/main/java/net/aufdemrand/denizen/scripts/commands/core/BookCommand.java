@@ -46,11 +46,11 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *         not specified, a new (untracked) book will be used.</ol>	
  *         
  *         
- * <br><b>Book Script Format:</b><br>
- * <ol><code>
- * "Book Script Name":<br>
+ * <br><b>Sample Book Script:</b><br>
+ * <ol><pre>
+ * "Cosmos Book":<br>
  *   Type: Book<br>
- *   Title: Cosmos, a Personal Voyage
+ *   Title: Cosmos, a Personal Voyage<br>
  *   Author: Carl Sagan<br>
  *   Text:<br>
  *   - Every one of us is, in the cosmic perspective, precious. If a human disagrees with<br> 
@@ -58,7 +58,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *   - The nitrogen in our DNA, the calcium in our teeth, the iron in our blood, the <br>
  *     carbon in our apple pies were made in the interiors of collapsing stars. We are <br>
  *     made of starstuff.<br>
- * </code></ol>
+ * </pre></ol>
  *
  * <p>Note: BookCommand also implements a replaceable tag for &#60;P>, which creates a new
  * paragraph in a written book's text.</p>

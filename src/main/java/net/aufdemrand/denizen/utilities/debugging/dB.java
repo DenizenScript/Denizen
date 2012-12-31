@@ -240,6 +240,10 @@ public class dB {
 		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + String.format(message, arg));
 	}
 
+	public static void log(Messages message, String arg) {
+		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + String.format(message.toString(), arg));
+	}
+	
 	@SuppressWarnings("restriction")
 	public static void log(String message) {
 		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> [" + sun.reflect.Reflection.getCallerClass(2).getSimpleName() + "] " + ChatColor.WHITE + message);
