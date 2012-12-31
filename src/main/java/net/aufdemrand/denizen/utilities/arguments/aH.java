@@ -942,12 +942,6 @@ public class aH {
 			if (matchesEntity("entity:" + arg)) return true;
 			else return false;
 
-		case Player:
-			if (matchesPlayer("player:" + arg)) return true;
-
-		case NPCID:
-			if (matchesNPCID("npcid:" + arg)) return true;
-
 		default:
 			return true;
 		}
