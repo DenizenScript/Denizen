@@ -117,7 +117,17 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 			return false;
 		}
 
+		//
+		// Get teh path to the step that the player is currently on.
+		//
 		String	theStep = sH.getCurrentStep(thePlayer, theScriptName);
+		
+		//
+		// Determine which scripts need to be executed:  Either the entry scripts
+		// or the exit scripts.  To maintain backwards compatibility, the entry
+		// scripts can either be in a section called "Entry" or as a "Script" under
+		// the "Proximity Trigger" setting.
+		//
 		List<String> scriptsToParse;
 		if (entry) {
 			scriptsToParse = Arrays.asList(
@@ -130,6 +140,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 			);
 		}
 		
+		//
+		// Parse the scripts.
+		//
 		for (String path : scriptsToParse) {
 			List<String> theScript = sH.getScriptContents (path);
 			if (theScript != null && theScript.isEmpty() == false) {
