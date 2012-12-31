@@ -24,6 +24,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatTrigger extends AbstractTrigger implements Listener {
+	// TODO:  Should not be instance based, due to this class being a singleton.
+	//				Move to the metadata API.
 	private	String	playerMessage;
 	
   @Override
@@ -115,58 +117,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
 		// Denizen should be good to interact with. Let's get the script.
 		String theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
-
-		/*
-		 * No script matches, should we still show the player talking to the
-		 * Denizen?
-		 */
-		if (theScript == null) {
-			// Check for Quick Script
-			if (denizen.getAssignments().contains(
-					"Denizens." + denizenNPC.getName()
-							+ ".Quick Scripts.Chat Trigger.Script")) {
-
-				event.setCancelled(true);
-
-				dB.echoDebug (ChatColor.LIGHT_PURPLE
-							+ "+- Parsing QUICK CHAT script: " + denizenNPC.getName() + "/"
-							+ event.getPlayer().getName() + " -+");
-
-				/* Get the contents of the Script. */
-				List<String> theScript1 = denizen.getAssignments().getStringList(
-						"Denizens." + denizenNPC.getName()
-								+ ".Quick Scripts.Chat Trigger.Script");
-
-				if (theScript1.isEmpty()) {
-					return;
-				}
-
-				//
-				// Build the script entries and add them all to the player's task
-				// queue.
-				//
-				ScriptEngine 	sE = denizen.getScriptEngine();
-				sE.getPlayerQueue (
-					event.getPlayer(), 
-					QueueType.PLAYER_TASK)
-					.addAll(
-						sE.getScriptBuilder ().buildScriptEntries(
-							event.getPlayer(), 
-							denizenNPC, 
-							theScript1, 
-							denizenNPC.getName() + " Quick Chat", "1"));
-
-				return;
-			}
-
-			if (!this.chatGloballyIfNoChatTriggers ()) {
-				event.setCancelled(true);
-				return;
-			}
-
-			dB.echoDebug("No script, resuming chat...", this.name);
-			return;
-		}
 
 		//
 		// Parse the script and match Triggers.. if found, cancel the text! The
