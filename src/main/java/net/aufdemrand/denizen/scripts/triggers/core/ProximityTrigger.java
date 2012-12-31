@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,13 +33,16 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 	@EventHandler
 	public void proximityTrigger(PlayerMoveEvent event) {
 		//
-		// Make sure that the player actually moved.
+		// Make sure that the player actually moved to a different block.
 		//
 		if (!event.getTo ().getBlock ().equals (event.getFrom ().getBlock ())) {
 			//
 			// Get the player's location.
 			//
 			Location	playerLocation = event.getTo ();
+			
+			Location	fromBlockLocation = event.getFrom ().getBlock().getLocation();
+			Location	toBlockLocation = event.getTo ().getBlock ().getLocation ();
 
 			//
 			// Iterate over all of the NPCs
@@ -75,7 +79,11 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 					continue;
 				}
 
-				if (npc.getBukkitEntity().getLocation().distance(playerLocation) > this.getProximityRangeInBlocks ()) {
+				//
+				// Is the distance beyond the limit of the proximity trigger?
+				//
+				if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) > this.getProximityRangeInBlocks ()) {
+					dB.echoDebug(ChatColor.RED + npc.getFullName() + " Not in range");
 					continue;
 				}
 
@@ -83,10 +91,11 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 				// If the npc was within range previously, then don't fire the trigger
 				// again.
 				//
-				if (npc.getBukkitEntity().getLocation().distance(event.getFrom ()) <= this.getProximityRangeInBlocks ()) {
+				if (npc.getBukkitEntity().getLocation().distance(fromBlockLocation) < this.getProximityRangeInBlocks ()) {
+					dB.echoDebug(ChatColor.RED + npc.getFullName() + " was already in range");
 					continue;
 				}
-				
+
 				dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN RANGE: " + npc.getFullName());
 
 				//
