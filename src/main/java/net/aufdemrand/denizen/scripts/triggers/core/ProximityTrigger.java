@@ -21,16 +21,16 @@ import net.citizensnpcs.api.npc.NPC;
 public class ProximityTrigger extends AbstractTrigger implements Listener {
 	@Override
 	public void onEnable() {
+    denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 	
 	public Integer getProximityRangeInBlocks () {
 		// plugin.settings.ProximityTriggerRangeInBlocks()
-		return 2;
+		return 3;
 	}
 	
 	@EventHandler
 	public void proximityTrigger(PlayerMoveEvent event) {
-		dB.echoDebug("proximityTrigger()");
 		//
 		// Make sure that the player actually moved.
 		//
@@ -39,7 +39,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 			// Get the player's location.
 			//
 			Location	playerLocation = event.getTo ();
-			Integer	maxRange = 3;
 
 			//
 			// Iterate over all of the NPCs
@@ -47,16 +46,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 			Iterator<NPC>	it = CitizensAPI.getNPCRegistry().iterator();
 			while (it.hasNext ()) {
 				NPC	npc = it.next ();
-
-				//
-				// If this NPC is not spawned, in a different world, or too far away,
-				// then ignore it.
-				//
-				if (npc.isSpawned()	&&
-						npc.getBukkitEntity().getLocation().getWorld().equals(playerLocation.getWorld())	&&
-						npc.getBukkitEntity().getLocation().distance(playerLocation) < maxRange) {
-					continue;
-				}
 
 				//
 				// If the NPC doesn't have triggers, or the triggers are not enabled, 
@@ -76,16 +65,29 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 				if (!npc.getTrait(TriggerTrait.class).trigger(this, event.getPlayer())) {
 					continue;
 				}
-				
+
+				//
+				// If this NPC is not spawned or in a different world, no need to 
+				// check.
+				//
+				if (npc.isSpawned() == false ||
+						npc.getBukkitEntity().getLocation().getWorld().equals(playerLocation.getWorld()) == false) {
+					continue;
+				}
+
+				if (npc.getBukkitEntity().getLocation().distance(playerLocation) > this.getProximityRangeInBlocks ()) {
+					continue;
+				}
+
 				//
 				// If the npc was within range previously, then don't fire the trigger
 				// again.
 				//
-				if (npc.getBukkitEntity().getLocation().distance(event.getFrom ()) < maxRange) {
+				if (npc.getBukkitEntity().getLocation().distance(event.getFrom ()) <= this.getProximityRangeInBlocks ()) {
 					continue;
 				}
 				
-				dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN RANGE.");
+				dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN RANGE: " + npc.getFullName());
 
 				//
 				// Fire the trigger.
@@ -98,6 +100,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 	}
 	
 	public boolean parse (DenizenNPC theDenizen, Player thePlayer, String theScriptName) {
+		if (theScriptName == null) {
+			return false;
+		}
+
 		String	theStep = sH.getCurrentStep(thePlayer, theScriptName);
 		String	path = (theScriptName + ".Steps." + theStep + ".Proximity Trigger." + sH.scriptKey).toUpperCase();
 		List<String> theScript = sH.getScriptContents (path);

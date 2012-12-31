@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.triggers.core.ChatTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.ClickTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.DamageTrigger;
+import net.aufdemrand.denizen.scripts.triggers.core.ProximityTrigger;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
 
@@ -88,6 +89,7 @@ public class TriggerRegistry implements DenizenRegistry {
         new ClickTrigger().activate().as("Click").withOptions(true, 2.0, CooldownType.PLAYER);
         new DamageTrigger().activate().as("Damage").withOptions(false, 0.5, CooldownType.NPC);
         new ChatTrigger().activate().as("Chat").withOptions(true, 2.0, CooldownType.PLAYER);
+        new ProximityTrigger().activate ().as("Proximity").withOptions(true, 1.0, CooldownType.PLAYER);
         dB.echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 
