@@ -81,7 +81,11 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 				}
 
 				//
-				// Is the distance beyond the limit of the proximity trigger?
+				// If the user entered the range and were not previously within the
+				// range, then execute the "Entry" script.
+				//
+				// If the user is outside the range, and was previously within the
+				// range, then execute the "Exit" script.
 				//
 				if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) <= this.getProximityRangeInBlocks ()	&&
 						npc.getBukkitEntity().getLocation().distance(fromBlockLocation) > this.getProximityRangeInBlocks ()) {
