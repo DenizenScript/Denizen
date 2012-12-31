@@ -18,7 +18,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * 
  * 
  * <br><b>dScript Usage:</b><br>
- * <pre>CAST [TYPE:PotionEffectType] (TARGET:NPC|{PLAYER}|ENTITY.entity_name) 
+ * <pre>CAST [PotionEffectType] (TARGET:NPC|{PLAYER}|ENTITY.entity_name) 
  *     (CASTER:{NPC}|PLAYER|ENTITY.entity_name) (DURATION:#) (POWER:#) 
  *     (NPCID:#) (PLAYER:player_name)</pre>
  * 
@@ -28,11 +28,11 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *         Uses Bukkit's PotionEffectType for specifying the potion effect to use. 
  *         See below for a list of valid PotionEffectTypes.</ol>
  * 
- * <ol><tt>(TARGET:NPC|{PLAYER}|ENTITY.entity_name)</tt><br> 
- *         Optional. Defaults to {@link Player}. The recipient of the PotionEffectType. </ol>
+ * <ol><tt>(TARGET:NPC|{PLAYER}|ENTITY)</tt><br> 
+ *         Optional. Defaults to the attached Player. The recipient of the PotionEffectType. </ol>
  * 
- * <ol><tt>(CASTER:{NPC}|PLAYER|ENTITY.entity_name)</tt><br>
- *         Optional. Defaults to {@link NPC}. The 'shooter' of the PotionEffectType. 
+ * <ol><tt>(CASTER:{NPC}|PLAYER|ENTITY)</tt><br>
+ *         Optional. Defaults to the attached NPC. The 'shooter' of the PotionEffectType. 
  *         No effect visually. Note: WITHER gives effects to both the target and caster.</ol>
  *
  * <ol><tt>(DURATION:#{60})</tt><br>
@@ -53,6 +53,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *         for use with either TARGET or CASTER. Note: 'player_name's are case-sensitive
  *         in most cases, and this must match an online player to work properly.</ol>
  * 
+ * <ol><tt>(ENTITY:ENTITY.entity_name)</tt><br>
+ *         Optional. Specified a specific {@link NPC} (based on its NPCID) to be linked
+ *         to the command, for use with either TARGET or CASTER.</ol>
  * 
  * <br><b>Example Usage:</b><br>
  * <ol><tt>

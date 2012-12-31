@@ -24,6 +24,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         // Get Interact Script for Player/NPC
         String script = sH.getInteractScript(event.getNPC(), event.getClicker(), this.getClass());
 
+        event.getNPC().getTrait(TriggerTrait.class).getRadius(name);
         // Parse Click Trigger, if unable to parse call No Click Trigger action
         if (!parse(denizen.getNPCRegistry().getDenizen(event.getNPC()), event.getClicker(), script))
             denizen.getNPCRegistry().getDenizen(event.getNPC()).action("no click trigger", event.getClicker());

@@ -10,6 +10,8 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -83,7 +85,7 @@ import org.bukkit.inventory.ItemStack;
 public class aH {
 
 	public enum ArgumentType {
-		Entity, Item, Boolean, Custom, Double, Float, Integer, String, Word, Location, Script
+		NPCID, Player, Entity, Item, Boolean, Custom, Double, Float, Integer, String, Word, Location, Script
 	}
 
 	//	Denizen denizen;
@@ -95,8 +97,8 @@ public class aH {
 	final static Pattern wordPtrn = Pattern.compile("\\w+");
 
 	/**
-	 * Returns a boolean value from a dScript argument string. Also accounts
-	 * for the argument prefix being passed along, for convenience.<br><br>
+	 * <p>Returns a boolean value from a dScript argument string. Also accounts
+	 * for the argument prefix being passed along, for convenience.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -118,10 +120,10 @@ public class aH {
 	}
 
 	/**
-	 * Returns a primitive double from a dScript argument string. Also accounts
+	 * <p>Returns a primitive double from a dScript argument string. Also accounts
 	 * for the argument prefix being passed along, for convenience. Never returns
 	 * null, if not a valid double, 0D will return. If given an integer value, 
-	 * a double representation will be returned.<br><br>
+	 * a double representation will be returned.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -146,62 +148,61 @@ public class aH {
 	}
 
 	/**
-	 * Returns a Bukkit LivingEntity from a dScript argument string. Also accounts
+	 * <p>Returns a Bukkit EntityType from a dScript argument string. Also accounts
 	 * for the argument prefix being passed along, for convenience. Though the
-	 * <tt>matchesItem(...)</tt> requires an <tt>ITEM:</tt> prefix, this method
-	 * does not, so it could be used in a CustomValueArg.<br><br>
+	 * <tt>matchesEntity(...)</tt> requires an <tt>ITEM:</tt> prefix, this method
+	 * does not, so it can be used in a CustomValueArg.<p>
 	 * 
-	 * Accounts for several formats, including <tt>ItemId</tt>, <tt>ItemId:Data</tt>,
-	 * <tt>Material</tt>, <tt>Material:Data</tt>, and finally <tt>ITEMSTACK.item_name</tt>.<br><br>
-	 * 
-	 * Provides a line of dB output if returning null. Also note that Bukkit requires
-	 * a LivingEntity to be spawned, so a location is also necessary unless using
-	 * a stored 'ENTITY.entity_name'<br><br>
+	 * <p>Provides a line of dB output if returning null. For getting saved entities
+	 * make with the 'NEW ENTITY Command', use {@link #getSavedEntityFrom(String)}</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
-	 * <tt>'ITEM:DIAMOND'</tt> will return 'new ItemStack(Material.DIAMOND)'.<br>
-	 * <tt>'1'</tt> will return 'new ItemStack(1)'.<br>
-	 * <tt>'1950'</tt> will return 'null'.<br>
-	 * <tt>'FLOOR:35:15'</tt> will return a new Black Wool ItemStack.<br>
-	 * <tt>'ITEMSTACK.enchantedItem'</tt> will return the {@link NewCommand}'s
-	 *     instance of 'enchantedItem', if it exists, otherwise 'null'.<br>
+	 * <tt>'zombie'</tt> will return 'EntityType.Zombie'.<br>
+	 * <tt>'monster:skeleton'</tt> will return 'EntityType.SKELETON'.<br>
+	 * <tt>'1983'</tt> will return 'null'.<br>
 	 * </ol>
 	 * 
 	 * @param arg the argument to check
-	 * @param spawnLocation the location to spawn the entity, not used (and may be null)
-	 * 		if using a 'ENTITY.entity_name' format
-	 * @return an ItemStack or null
+	 * @return an EntityType or null
 	 * 
 	 */
-	public static LivingEntity getEntityFrom(String arg, Location spawnLocation) {
+	public static EntityType getEntityFrom(String arg) {
 		final Pattern matchesEntityPtrn = Pattern.compile("(?:(?:.+?:)|)(.+)", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesEntityPtrn.matcher(arg);
 		if (m.matches()) {
-			// Check for NEW ENTITY command format (ENTITY.entity_name)
-			if (m.group(1).toUpperCase().startsWith("ENTITY.")) {
-				LivingEntity returnable = ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
-						.getCommandRegistry().get(NewCommand.class).getEntity(m.group(1));
-				if (returnable != null) return returnable;
-				else dB.echoError("Invalid entity! '" + m.group(1) + "' could not be found.");
-			} else {
-				// Location required past this point
-				if (spawnLocation == null) return null;
-				// Check against valid EntityTypes using Bukkit's EntityType enum
-				for (EntityType validEntity : EntityType.values())
-					if (m.group(1).equalsIgnoreCase(validEntity.getName()))
-						spawnLocation.getWorld().spawnEntity(spawnLocation, validEntity);
-			}
+			// Match against valid EntityTypes using Bukkit enum
+			for (EntityType validEntity : EntityType.values())
+				if (m.group(1).equalsIgnoreCase(validEntity.getName()))
+					return validEntity;
 		}
 		// No match
 		return null;
 	}
 
 	/**
-	 * Returns a primitive float from a dScript argument string. Also
+	 * 
+	 * 
+	 */
+	public static LivingEntity getSavedEntityFrom(String arg) {
+		final Pattern matchesEntityPtrn = Pattern.compile("(?:(?:.+?:)|)(.+)", Pattern.CASE_INSENSITIVE);
+		Matcher m = matchesEntityPtrn.matcher(arg);
+		if (m.matches()) {
+			if (m.group(1).toUpperCase().startsWith("ENTITY.")) {
+				LivingEntity returnable = ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
+						.getCommandRegistry().get(NewCommand.class).getEntity(m.group(1));
+				if (returnable != null) return returnable;
+				else dB.echoError("Invalid entity! '" + m.group(1) + "' could not be found.");
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * <p>Returns a primitive float from a dScript argument string. Also
 	 * accounts for the argument prefix being passed along, for convenience. 
 	 * Never returns null, if not a valid float, 0F will return. If given
-	 * an integer or double value, a float representation will be returned.<br><br>
+	 * an integer or double value, a float representation will be returned.</p>
 	 * 
 	 * @param arg the argument to check
 	 * @return a float interpretation of the argument
@@ -218,10 +219,10 @@ public class aH {
 	}
 
 	/**
-	 * Returns a primitive int from a dScript argument string. Also accounts
+	 * <p>Returns a primitive int from a dScript argument string. Also accounts
 	 * for the argument prefix being passed along, for convenience. Never returns
 	 * null, if not a valid integer, 0 will return. If given a double value, 
-	 * an integer representation will be returned.<br><br>
+	 * an integer representation will be returned.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -246,15 +247,15 @@ public class aH {
 	}
 
 	/**
-	 * Returns a Bukkit ItemStack from a dScript argument string. Also accounts
+	 * <p>Returns a Bukkit ItemStack from a dScript argument string. Also accounts
 	 * for the argument prefix being passed along, for convenience. Though the
 	 * <tt>matchesItem(...)</tt> requires an <tt>ITEM:</tt> prefix, this method
-	 * does not, so it could be used in a CustomValueArg.<br><br>
+	 * does not, so it could be used in a CustomValueArg.</p>
 	 * 
-	 * Accounts for several formats, including <tt>ItemId</tt>, <tt>ItemId:Data</tt>,
-	 * <tt>Material</tt>, <tt>Material:Data</tt>, and finally <tt>ITEMSTACK.item_name</tt>.<br><br>
+	 * <p>Accounts for several formats, including <tt>ItemId</tt>, <tt>ItemId:Data</tt>,
+	 * <tt>Material</tt>, <tt>Material:Data</tt>, and finally <tt>ITEMSTACK.item_name</tt>.</p>
 	 * 
-	 * Provides a line of dB output if returning null.<br><br>
+	 * <p>Provides a line of dB output if returning null.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -330,12 +331,12 @@ public class aH {
 	}
 
 	/**
-	 * Returns a List<String> from a dScript argument string. Also accounts
+	 * <p>Returns a String List from a dScript argument string. Also accounts
 	 * for the argument prefix being passed along, for convenience. Lists in dScript
 	 * use a pipe ('|') character to divide entries. This method will not trim(), so 
 	 * whitespace is included between pipes. If no pipes are present, it is assumed 
 	 * there is only one item, and the resulting List will have exactly 1 member.
-	 * If arg is null or contains no characters, and empty list is returned.<br><br>
+	 * If arg is null or contains no characters, and empty list is returned.</p>
 	 *  
 	 * <b>Examples:</b>
 	 * <ol>
@@ -359,20 +360,20 @@ public class aH {
 	}
 
 	/**
-	 * Returns a Bukkit Location from a dScript argument string. Accounts for
+	 * <p>Returns a Bukkit Location from a dScript argument string. Accounts for
 	 * the argument prefix being passed along, for convenience. Locations in
 	 * dScript need to be in the format '#,#,#,world_name', whereas the numbers
 	 * required are double or integer values of x, y and z coordinates, in that
-	 * order.<br><br>
+	 * order.</p>
 	 * 
-	 * Remember: Denizen uses 'Replaceable TAGs' (See: {@link TagManager}) to fill in
+	 * <p>Remember: Denizen uses 'Replaceable TAGs' (See: {@link TagManager}) to fill in
 	 * various types of 'Locations', such as Anchors, Notables, or even an entity's
 	 * current position, so no need to handle such things on their own. It is instead
 	 * encouraged that any type of location uses matchesLocation(...), or at the very
-	 * least, getLocationFrom(...) when getting a location from a CustomValueArg.<br><br>
+	 * least, getLocationFrom(...) when getting a location from a CustomValueArg.</p>
 	 * 
-	 * Provides a line of dB output if returning null.<br><br>
-	 * 
+	 * <p>Provides a line of dB output if returning null.</p>
+	 *
 	 * @param arg the dScript argument string
 	 * @return a Bukkit Location, or null
 	 * 
@@ -391,13 +392,13 @@ public class aH {
 	}
 
 	/**
-	 * Returns a Bukkit Player object from a dScript argument string. Accounts for
+	 * <p>Returns a Bukkit Player object from a dScript argument string. Accounts for
 	 * the argument prefix being passed along, for convenience. For a non-null
 	 * value to return, the specified player must be currently online. This method
 	 * does not require case-sensitivity as an additional convenience. For a similar,
-	 * but less powerful OfflinePlayer object, use getOfflinePlayerFrom(...).<br><br>
+	 * but less powerful OfflinePlayer object, use {@link #getOfflinePlayerFrom(String)}.</p>
 	 *
-	 * Provides a line of dB output if returning null.<br><br>
+	 * <p>Provides a line of dB output if returning null.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -419,17 +420,43 @@ public class aH {
 	}
 
 	/**
-	 * Returns a Bukkit OfflinePlayer object from a dScript argument string. Accounts for
+	 * <p>Returns a NPC object from a dScript argument string. Accounts for
+	 * the argument prefix being passed along, for convenience.</p>
+	 * 
+	 * <p>Provides a line of dB output if returning null.</p>
+	 * 
+	 * <b>Examples:</b>
+	 * <ol>
+	 * <tt>'TARGETNPC:32'</tt> will return a NPC.
+	 * <tt>'83'</tt> will return a NPC.<br>
+	 * <tt>''</tt> will return null.<br>
+	 * <tt>'JOSH'</tt> will return null.<br>
+	 * </ol>
+	 * 
+	 * @param arg the dScript argument string
+	 * @return a Citizens NPC object, or null
+	 */
+	public static NPC getNPCFrom(String arg) {
+		if (arg.split(":").length >= 2)
+			arg = arg.split(":", 2)[1];
+		for (NPC npc : CitizensAPI.getNPCRegistry())
+			if (npc.getId() == Integer.valueOf(arg).intValue()) return npc;
+		dB.echoError("NPC '" + arg + "' is invalid, or has been removed.");
+		return null;
+	}
+	
+	/**
+	 * <p>Returns a Bukkit OfflinePlayer object from a dScript argument string. Accounts for
 	 * the argument prefix being passed along, for convenience. For a non-null value to 
 	 * return, the specified player must have logged on to this server at least once. If
 	 * this returns null, the specified player does not exist. This may also be used for
 	 * players currently 'online', as Bukkit's Player object extends OfflinePlayer. This
-	 * method does not require case-sensitivity as an additional convenience.<br><br>
+	 * method does not require case-sensitivity as an additional convenience.</p>
 	 * 
-	 * OfflinePlayer objects are less powerful than a Player object, but contain some
-	 * important methods such as name, health, inventory, etc.<br><br>
+	 * <p>OfflinePlayer objects are less powerful than a Player object, but contain some
+	 * important methods such as name, health, inventory, etc.</p>
 	 * 
-	 * Provides a line of dB output if returning null.<br><br>
+	 * <p>Provides a line of dB output if returning null.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -454,14 +481,14 @@ public class aH {
 	}
 
 	/**
-	 * Returns a QueueType from a dScript argument string. For convenience, this method
+	 * <p>Returns a QueueType from a dScript argument string. For convenience, this method
 	 * can accept the name of the argument. This method is useful for commands which
-	 * directly affect the script queues.<br><br>
+	 * directly affect the script queues.</p>
 	 * 
-	 * Valid {@link QueueType}s are 'NPC', 'PLAYER' and 'PLAYER_TASK'. Returns null if
-	 * the provided argument doesn't match any of these.<br><br>
+	 * <p>Valid {@link QueueType}s are 'NPC', 'PLAYER' and 'PLAYER_TASK'. Returns null if
+	 * the provided argument doesn't match any of these.</p>
 	 * 
-	 * Provides a line of dB output if returning null.<br><br>
+	 * <p>Provides a line of dB output if returning null.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -486,8 +513,8 @@ public class aH {
 	}
 
 	/**
-	 * Returns a String value from a dScript argument string. Useful for stripping off
-	 * an argument prefix from a dScript argument. ie. TEXT:text will return 'text'.<br><br>
+	 * <p>Returns a String value from a dScript argument string. Useful for stripping off
+	 * an argument prefix from a dScript argument. ie. TEXT:text will return 'text'.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -507,10 +534,10 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a argument string matches a non-valued custom argument.
+	 * <p>Used to determine if a argument string matches a non-valued custom argument.
 	 * If a dScript valued argument (such as PLAYER:NAME) is passed, this method
 	 * will always return false. Also supports multiple argument names, separated by a
-	 * comma (,) character. This method will trim() each name specified.<br><br>
+	 * comma (,) character. This method will trim() each name specified.</p>
 	 *  
 	 * <b>Example use of '<tt>aH.matchesArg("NOW, LATER", arg)</tt>':</b>
 	 * <ol>
@@ -536,15 +563,15 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid double format. Uses
-	 * regex to match the string arg provided.<br><br>
+	 * <p>Used to determine if a dScript argument string is a valid double format. Uses
+	 * regex to match the string arg provided.</p>
 	 * 
-	 * This is the same as doing <tt>arg.matches("(?:-|)(?:(?:\\d+)|)(?:(?:\\.\\d+)|)")</tt> except
-	 * slightly faster since Denizen uses a pre-compiled Pattern for matching.<br><br>
+	 * <p>This is the same as doing <tt>arg.matches("(?:-|)(?:(?:\\d+)|)(?:(?:\\.\\d+)|)")</tt> except
+	 * slightly faster since Denizen uses a pre-compiled Pattern for matching.</p>
 	 * 
-	 * An argument prefix will likely cause this to return false. If wanting a double
+	 * <p>An argument prefix will likely cause this to return false. If wanting a double
 	 * value in a custom ValueArg format, see {@link #matchesValueArg(String)} and 
-	 * {@link ArgumentType}.
+	 * {@link ArgumentType}.</p>
 	 * 
 	 * @param arg the dScript argument string
 	 * @return true if matched, otherwise false
@@ -556,14 +583,14 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid duration argument. Uses
+	 * <p>Used to determine if a dScript argument string is a valid duration argument. Uses
 	 * regex to match the string arg provided. In order to return true, the 'duration:' 
 	 * prefix must be present along with a positive integer number. Since this argument
 	 * is used throughout the core members of Denizen, it is encouraged to use it whenever
-	 * appropriate.<br><br>
+	 * appropriate.</p>
 	 * 
-	 * When extracting the value from a match, using {@link #getIntegerFrom(String)} is
-	 * encouraged.<br><br>
+	 * <p>When extracting the value from a match, using {@link #getIntegerFrom(String)} is
+	 * encouraged.</p>
 	 *
 	 * <b>Examples:</b>
 	 * <ol>
@@ -583,12 +610,12 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid LivingEntity. Will check
+	 * <p>Used to determine if a dScript argument string is a valid LivingEntity. Will check
 	 * against Bukkit's EntityType enum as well as {@link NewCommand}'s 'ENTITY' format, 
-	 * <code>'ENTITY.entity_name'</code>.<br><br>
+	 * <code>'ENTITY.entity_name'</code>.</p>
 	 * 
-	 * When extracting the value from a match, using {@link #getEntityFrom(String)} is
-	 * encouraged.<br><br>
+	 * <p>When extracting the value from a match, using {@link #getEntityFrom(String)} is
+	 * encouraged.</p>
 	 *
 	 * <b>Examples:</b>
 	 * <ol>
@@ -620,15 +647,15 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid integer format. Uses
-	 * regex to match the string arg provided.<br><br>
+	 * <p>Used to determine if a dScript argument string is a valid integer format. Uses
+	 * regex to match the string arg provided.</p>
 	 * 
-	 * This is the same as doing <tt>arg.matches("(?:-|)\\d+")</tt> except
-	 * slightly faster since Denizen uses a pre-compiled Pattern for matching.<br><br>
+	 * <p>This is the same as doing <tt>arg.matches("(?:-|)\\d+")</tt> except
+	 * slightly faster since Denizen uses a pre-compiled Pattern for matching.</p>
 	 * 
-	 * An argument prefix will likely cause this to return false. If wanting an integer
+	 * <p>An argument prefix will likely cause this to return false. If wanting an integer
 	 * value in a custom ValueArg format, see {@link #matchesValueArg(String)} and 
-	 * {@link ArgumentType}.
+	 * {@link ArgumentType}.</p>
 	 * 
 	 * @param arg the dScript argument string
 	 * @return true if matched, otherwise false
@@ -640,12 +667,12 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid Bukkit ItemStack
+	 * <p>Used to determine if a dScript argument string is a valid Bukkit ItemStack
 	 * or a currently saved instance from the {@link NewCommand} using 'NEW
-	 * ITEMSTACK'.<br><br>
+	 * ITEMSTACK'.</p>
 	 * 
-	 * Accounts for several formats, including <tt>ItemId</tt>, <tt>ItemId:Data</tt>,
-	 * <tt>Material</tt>, <tt>Material:Data</tt>, and finally <tt>ITEMSTACK.item_name</tt>.<br><br>
+	 * <p>Accounts for several formats, including <tt>ItemId</tt>, <tt>ItemId:Data</tt>,
+	 * <tt>Material</tt>, <tt>Material:Data</tt>, and finally <tt>ITEMSTACK.item_name</tt>.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -690,16 +717,16 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid location. Uses regex
+	 * <p>Used to determine if a dScript argument string is a valid location. Uses regex
 	 * to match the string arg provided. In order to return true, the 'location:' prefix
 	 * must be present along with a value that matches the format '#,#,#,world_name', 
 	 * whereas the numbers required are double or integer values of x, y and z 
-	 * coordinates, in that order.<br><br>
+	 * coordinates, in that order.</p>
 	 * 
-	 * When extracting the value from a match, using {@link #getLocationFrom(String)} is
+	 * <p>When extracting the value from a match, using {@link #getLocationFrom(String)} is
 	 * encouraged. It is possible that getLocationFrom(...) can produce a 'null' result
 	 * based on the parameters of this method since there is no check for whether the
-	 * location actually exists.<br><br>
+	 * location actually exists.</p>
 	 * 
 	 * @param arg the dScript argument string
 	 * @return true if matched, otherwise false
@@ -712,14 +739,14 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid quantity argument. Uses
+	 * <p>Used to determine if a dScript argument string is a valid quantity argument. Uses
 	 * regex to match the string arg provided. In order to return true, the 'qty:' 
 	 * prefix must be present along with a valid integer number. Since this argument
 	 * is used throughout the core members of Denizen, it is encouraged to use it whenever
-	 * appropriate.<br><br>
+	 * appropriate.</p>
 	 * 
-	 * When extracting the value from a match, using {@link #getIntegerFrom(String)} is
-	 * encouraged.<br><br>
+	 * <p>When extracting the value from a match, using {@link #getIntegerFrom(String)} is
+	 * encouraged.</p>
 	 *
 	 * <b>Examples:</b>
 	 * <ol>
@@ -740,14 +767,14 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid queuetype argument. Uses
+	 * <p>Used to determine if a dScript argument string is a valid queuetype argument. Uses
 	 * regex to match the string arg provided. In order to return true, the 'queue:' or 
 	 * 'queuetype:' prefix must be present along with a valid {@link QueueType}. Since this 
 	 * argument is used throughout the core members of Denizen, it is encouraged to use it
-	 * whenever appropriate.<br><br>
+	 * whenever appropriate.</p>
 	 * 
-	 * When extracting the value from a match, using {@link #getQueueFrom(String)} is
-	 * encouraged. Valid QueueTypes are PLAYER, NPC, and PLAYER_TASK.<br><br>
+	 * <p>When extracting the value from a match, using {@link #getQueueFrom(String)} is
+	 * encouraged. Valid QueueTypes are PLAYER, NPC, and PLAYER_TASK.</p>
 	 *
 	 * <b>Examples:</b>
 	 * <ol>
@@ -767,11 +794,11 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid script argument. Uses
+	 * <p>Used to determine if a dScript argument string is a valid script argument. Uses
 	 * regex to match the string arg provided. In order to return true, the 'script:' 
 	 * prefix must be present along with a valid script currently loaded into Denizen.
 	 * Since this argument is used throughout the core members of Denizen, it is 
-	 * encouraged to use it whenever appropriate.<br><br>
+	 * encouraged to use it whenever appropriate.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -796,11 +823,11 @@ public class aH {
 	}
 
 	/**
-	 * Used to determine if a dScript argument string is a valid toggle argument. Uses
+	 * <p>Used to determine if a dScript argument string is a valid toggle argument. Uses
 	 * regex to match the string arg provided. In order to return true, the 'toggle:' 
 	 * prefix must be present along with a valid value of either TRUE, FALSE or TOGGLE.
 	 * Since this argument is used throughout the core members of Denizen, it is 
-	 * encouraged to use it whenever appropriate.<br><br>
+	 * encouraged to use it whenever appropriate.</p>
 	 * 
 	 * <b>Examples:</b>
 	 * <ol>
@@ -821,12 +848,12 @@ public class aH {
 
 
 	/**
-	 * Used to match a custom argument with a value. In practice, the standard 
+	 * <p>Used to match a custom argument with a value. In practice, the standard 
 	 * arguments should be used whenever possible to keep things consistent across
 	 * the entire Denizen experience. Should you need to use custom arguments, 
 	 * however, this method provides support. After all, while using standard 
 	 * arguments is nice, you should never reach. Arguments should make as much
-	 * sense to the user/script writer as possible.<br><br>
+	 * sense to the user/script writer as possible.</p>
 	 * 
 	 * <b>Small code example:</b>
 	 * <ol>
@@ -838,14 +865,14 @@ public class aH {
 	 * <tt>5 }</tt><br>
 	 * </ol>
 	 * 
-	 * <br><br>Note: Like matchesArg(...), matchesValueArg(...) supports multiple
+	 * <p>Note: Like {@link #matchesArg(String)}, matchesValueArg(String) supports multiple
 	 * argument names, separated by a comma (,) character. This method will trim()
-	 * each name specified.<br><br>
+	 * each name specified.</p>
 	 * 
-	 * Also requires a specified ArgumentType, which will filter the type of value
+	 * <p>Also requires a specified ArgumentType, which will filter the type of value
 	 * to match to. If anything should be excepted as the value, or you plan
 	 * on parsing the value yourself, use ArgumentType.Custom, otherwise use an
-	 * an appropriate ArgumentType. See: {@link ArgumentType}.
+	 * an appropriate ArgumentType. See: {@link ArgumentType}.</p>
 	 *  
 	 * <b>Example use of '<tt>aH.matchesValueArg("TIME", arg, ArgumentType.Integer)</tt>':</b>
 	 * <ol>
@@ -914,6 +941,12 @@ public class aH {
 		case Entity:
 			if (matchesEntity("entity:" + arg)) return true;
 			else return false;
+
+		case Player:
+			if (matchesPlayer("player:" + arg)) return true;
+
+		case NPCID:
+			if (matchesNPCID("npcid:" + arg)) return true;
 
 		default:
 			return true;
