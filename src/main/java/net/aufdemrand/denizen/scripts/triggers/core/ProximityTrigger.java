@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -82,58 +83,67 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 				//
 				// Is the distance beyond the limit of the proximity trigger?
 				//
-				if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) > this.getProximityRangeInBlocks ()) {
-					dB.echoDebug(ChatColor.RED + npc.getFullName() + " Not in range");
-					continue;
+				if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) <= this.getProximityRangeInBlocks ()	&&
+						npc.getBukkitEntity().getLocation().distance(fromBlockLocation) > this.getProximityRangeInBlocks ()) {
+					dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN ENTERING RANGE: " + npc.getFullName());
+					DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(npc);
+					String theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
+					this.parse(denizenNPC, event.getPlayer(), theScript, true);
+				} else if (npc.getBukkitEntity().getLocation().distance(fromBlockLocation) <= this.getProximityRangeInBlocks ()	&&
+									 npc.getBukkitEntity().getLocation().distance(toBlockLocation) > this.getProximityRangeInBlocks ()) {
+					dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN EXITING RANGE: " + npc.getFullName());
+					DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(npc);
+					String theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
+					this.parse(denizenNPC, event.getPlayer(), theScript, false);
 				}
-
-				//
-				// If the npc was within range previously, then don't fire the trigger
-				// again.
-				//
-				if (npc.getBukkitEntity().getLocation().distance(fromBlockLocation) < this.getProximityRangeInBlocks ()) {
-					dB.echoDebug(ChatColor.RED + npc.getFullName() + " was already in range");
-					continue;
-				}
-
-				dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN RANGE: " + npc.getFullName());
-
-				//
-				// Fire the trigger.
-				//
-				DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(npc);
-				String theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
-				this.parse(denizenNPC, event.getPlayer(), theScript);
 			}
 		}
 	}
-	
-	public boolean parse (DenizenNPC theDenizen, Player thePlayer, String theScriptName) {
+
+	/**
+	 * 
+	 * @param theDenizen
+	 * @param thePlayer
+	 * @param theScriptName
+	 * @param entry
+	 * @return
+	 */
+	public boolean parse (DenizenNPC theDenizen, Player thePlayer, String theScriptName, boolean entry) {
 		if (theScriptName == null) {
 			return false;
 		}
 
 		String	theStep = sH.getCurrentStep(thePlayer, theScriptName);
-		String	path = (theScriptName + ".Steps." + theStep + ".Proximity Trigger." + sH.scriptKey).toUpperCase();
-		List<String> theScript = sH.getScriptContents (path);
-		if (theScript == null || theScript.isEmpty()) {
-			dB.echoDebug ("    No script found for: " + path);
-			return false;
+		List<String> scriptsToParse;
+		if (entry) {
+			scriptsToParse = Arrays.asList(
+				(theScriptName + ".Steps." + theStep + ".Proximity Trigger." + sH.scriptKey).toUpperCase(),
+				(theScriptName + ".Steps." + theStep + ".Proximity Trigger.Entry." + sH.scriptKey).toUpperCase()
+			);
+		} else {
+			scriptsToParse = Arrays.asList(
+				(theScriptName + ".Steps." + theStep + ".Proximity Trigger.Exit" + sH.scriptKey).toUpperCase()
+			);
 		}
-
-		//
-		// Queue the script in the player's queue.
-		//
-		sB.queueScriptEntries (
-			thePlayer, 
-			sB.buildScriptEntries (
-				thePlayer, 
-				theDenizen, 
-				theScript, 
-				theScriptName, 
-				theStep), 
-			QueueType.PLAYER);	
-
+		
+		for (String path : scriptsToParse) {
+			List<String> theScript = sH.getScriptContents (path);
+			if (theScript != null && theScript.isEmpty() == false) {
+				//
+				// Queue the script in the player's queue.
+				//
+				sB.queueScriptEntries (
+					thePlayer, 
+					sB.buildScriptEntries (
+						thePlayer, 
+						theDenizen, 
+						theScript, 
+						theScriptName, 
+						theStep), 
+					QueueType.PLAYER);
+			}
+		}
+		
 		return true;
 	}
 	
