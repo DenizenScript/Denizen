@@ -85,7 +85,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		//
 		if (!closestNPC.getTrait(TriggerTrait.class).trigger(this, event.getPlayer())) {
 			dB.echoDebug ("  The NPC is currently unavailable.");
-//			return;
+			return;
 		}
 
 		//
@@ -293,11 +293,23 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		return foundTrigger;
 	}
 
+	/**
+	 * This method will return all of the steps of a script that have chat
+	 * triggers associated to them.  This only returns those steps that have
+	 * associated 'Chat Trigger' sections.
+	 * 
+	 * @param theScript	The script being processed.
+	 * @param currentStep	The current step.
+	 * 
+	 * @return	This will return a map of script paths to the chat triggers that
+	 * 					cause the step to process.
+	 */
 	public Map<String,List<String>> getChatTriggers(String theScript, String currentStep) {
-		dB.echoDebug ("getChatTriggers ()");
-
 		//
 		// This is the REGEX for extracting the "key words" from a trigger.
+		// Keywords are denoted by surround them with forward slahes, such as:
+		//
+		//		/Yes/ I'll help.
 		//
 		Pattern	triggerPattern = Pattern.compile ("\\/([^/]*)\\/");
 

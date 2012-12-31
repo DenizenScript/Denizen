@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -150,6 +151,30 @@ public class Utilities {
 		}
 		
 		return closestNPC;
+	}
+
+	/**
+	 * Returns a list of all NPCs within a certain range.
+	 * 
+	 * @param location	The location to search.
+	 * @param maxRange	The maximum range of the NPCs
+	 * 
+	 * @return	The list of NPCs within the max range.
+	 */
+	public static List<NPC> getClosestNPCs (Location location, int maxRange) {
+		List<NPC> closestNPCs = new ArrayList<NPC> ();;
+
+		Iterator<NPC>	it = CitizensAPI.getNPCRegistry().iterator();
+		while (it.hasNext ()) {
+			NPC	npc = it.next ();
+			if (npc.isSpawned()			&&
+					npc.getBukkitEntity().getLocation().getWorld().equals(location.getWorld())	&&
+					npc.getBukkitEntity().getLocation().distance(location) < maxRange) {
+				closestNPCs.add (npc);
+			}
+		}
+		
+		return closestNPCs;
 	}
 	
 //    public DenizenNPC getClosestDenizen (Player thePlayer, int Range) {
