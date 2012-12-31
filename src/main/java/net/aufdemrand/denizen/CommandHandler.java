@@ -37,6 +37,7 @@ public class CommandHandler {
 	/*
 	 * PUSHABLE
 	 */
+
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "pushable -t (-r) (--delay #)", desc = "Makes a NPC pushable.",
 			flags = "rt", modifiers = { "pushable", "push" }, min = 1, max = 2, permission = "npc.pushable")

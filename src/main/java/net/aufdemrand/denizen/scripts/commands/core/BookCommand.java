@@ -25,21 +25,66 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * 
  * 
  * <br><b>dScript Usage:</b><br>
- * <pre>BOOK [SCRIPT:book_script] (GIVE|DROP|EQUIP) (ITEM:ITEMSTACK.name)</pre>
+ * <pre>BOOK [SCRIPT:book_script] (GIVE|DROP|EQUIP) (LOCATION:x,y,z,world) (ITEM:ITEMSTACK.name)</pre>
  * 
- * <ol><tt>Arguments: [] - Required</ol></tt>
+ * <ol><tt>Arguments: [] - Required () - Optional  {} - Default</ol></tt>
  * 
- * <ol><tt>['message to announce']</tt><br> 
- *         The message to send to the server. This will be seen by all Players.</ol>
+ * <ol><tt>[SCRIPT:book_script]</tt><br> 
+ *         The name of the 'Book Script'. See below for format.</ol>	
  * 
- * 
+ * <ol><tt>[GIVE|{DROP}|EQUIP]</tt><br> 
+ *         What to do with the book after it is written. If not specified, it will default
+ *         to dropping the book near the NPC. Note: When using BOOK with an 'ITEMSTACK.name',
+ *         no default action is set allowing other commands to modify the book.</ol>	
+ *         
+ * <ol><tt>(LOCATION:x,y,z,world)</tt><br> 
+ *         When using DROP, a location may be specified. Default location, if unspecified,
+ *         is the attached NPC.</ol>
+ *         
+ * <ol><tt>(ITEM:ITEMSTACK.name)</tt><br> 
+ *         Allows the use of a specific BOOK created with the 'NEW ITEMSTACK' command. If
+ *         not specified, a new (untracked) book will be used.</ol>	
+ *         
+ *         
+ * <br><b>Book Script Format:</b><br>
+ * <ol><code>
+ * "Book Script Name":<br>
+ *   Type: Book<br>
+ *   Title: Cosmos, a Personal Voyage
+ *   Author: Carl Sagan<br>
+ *   Text:<br>
+ *   - Every one of us is, in the cosmic perspective, precious. If a human disagrees with<br> 
+ *     you, let him live. In a hundred billion galaxies, you will not find another<br>
+ *   - The nitrogen in our DNA, the calcium in our teeth, the iron in our blood, the <br>
+ *     carbon in our apple pies were made in the interiors of collapsing stars. We are <br>
+ *     made of starstuff.<br>
+ * </code></ol>
+ *
+ * <p>Note: BookCommand also implements a replaceable tag for &#60;P>, which creates a new
+ * paragraph in a written book's text.</p>
+ *          
  * <br><b>Example Usage:</b><br>
  * <ol><tt>
- *  - ANNOUNCE 'Today is Christmas!' <br>
- *  - ANNOUNCE "&#60;PLAYER.NAME> has completed '&#60;FLAG.P:currentQuest>'!" <br>
- *  - ANNOUNCE "&#60;GOLD>$$$ &#60;WHITE>- Make some quick cash at our &#60;RED>MINEA-SINO&#60;WHITE>!" 
+ *  - BOOK DROP SCRIPT:Cosmos<br>
+ *  - BOOK EQUIP 'SCRIPT:Spellbook of Haste'<br>
  * </ol></tt>
  * 
+ * <br><b>Extended Usage:</b><br>
+ * <ol><tt>
+ *  Script: <br>
+ *  - ENGAGE NOW DURATION:10 <br>
+ *  - LOOKCLOSE TOGGLE:TRUE DURATION:10 <br>
+ *  - CHAT 'Use this book with care, as it is very powerful and could cause great harm<br>
+ *    if put into the wrong hands!' <br>
+ *  - WAIT 2 <br>
+ *  - ^ANIMATE ANIMATION:ARM_SWING <br>
+ *  - ^NEW ITEMSTACK ITEM:book ID:&#60;PLAYER.NAME>s_enchanted_spellbook<br>
+ *  - ^BOOK SCRIPT:silk_touch_description ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook<br>
+ *  - ^ENCHANT ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook ENCHANTMENT:SILKTOUCH<br>
+ *  - ^LORE ADD ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook 'A spell of Silk-touch, level 1'<br>
+ *  - DROP ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook<br>
+ *  - NARRATE '&#60;NPC.NAME> drops an old book.' <br>
+ * </ol></tt>
  * 
  * @author Mason Adkins
  */
@@ -52,23 +97,6 @@ public class BookCommand extends AbstractCommand implements Listener{
 	public void onEnable() {
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
-
-	/* BOOK (GIVE|DROP|EQUIP) [SCRIPT:NAME] (ITEM:ITEMSTACK.name) */
-
-	/* 
-	 * Arguments: [] - Required, () - Optional 
-	 * (GIVE|DROP|EQUIP) specifies how the player receives the book. GIVE adds book to 
-	 * 		the player inventory. DROP drops the book on the ground by the NPC. EQUIP 
-	 * 		places the book in the player's hand. (default GIVE)
-	 * [SCRIPT:NAME] defines the name of the Book script to use.
-	 * (ITEM:ITEMSTACK.name) specifies an itemstack created with the NEW command. 
-	 * 
-	 * Example Usage:
-	 * BOOK DROP SCRIPT:RuleBook
-	 * BOOK EQUIP SCRIPT:QuestJournal
-	 * BOOK SCRIPT:WelcomeGuide ITEM:ITEMSTACK.guide
-	 * 
-	 */
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
