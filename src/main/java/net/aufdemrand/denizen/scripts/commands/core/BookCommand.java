@@ -23,9 +23,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 /**
  * <p>Creates a Written Book from a dScript 'Book-type Script' and a Book ItemStack.</p>
  * 
- * 
- * <br><b>dScript Usage:</b><br>
- * <pre>BOOK [SCRIPT:book_script] (GIVE|DROP|EQUIP) (LOCATION:x,y,z,world) (ITEM:ITEMSTACK.name)</pre>
+ * <b>dScript Usage:</b><br>
+ * <pre>BOOK [SCRIPT:book_script] (GIVE|{DROP}|EQUIP) (LOCATION:x,y,z,world) (ITEM:ITEMSTACK.name)</pre>
  * 
  * <ol><tt>Arguments: [] - Required () - Optional  {} - Default</ol></tt>
  * 
@@ -42,8 +41,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *         is the attached NPC.</ol>
  *         
  * <ol><tt>(ITEM:ITEMSTACK.name)</tt><br> 
- *         Allows the use of a specific BOOK created with the 'NEW ITEMSTACK' command. If
- *         not specified, a new (untracked) book will be used.</ol>	
+ *         Allows the use of a specific BOOK created with a 'saved ITEMSTACK' from the NEW
+ *         command. If not specified, a new book will be used.</ol>	
  *         
  *         
  * <br><b>Sample Book Script:</b><br>
@@ -77,7 +76,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *  - CHAT 'Use this book with care, as it is very powerful and could cause great harm<br>
  *    if put into the wrong hands!' <br>
  *  - WAIT 2 <br>
- *  - ^ANIMATE ANIMATION:ARM_SWING <br>
+ *  - ^ANIMATE TARGET:NPC ANIMATION:ARM_SWING <br>
  *  - ^NEW ITEMSTACK ITEM:book ID:&#60;PLAYER.NAME>s_enchanted_spellbook<br>
  *  - ^BOOK SCRIPT:silk_touch_description ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook<br>
  *  - ^ENCHANT ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook ENCHANTMENT:SILKTOUCH<br>
@@ -102,7 +101,7 @@ public class BookCommand extends AbstractCommand implements Listener{
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 		// Initialize required fields
-		boolean newItem = false; // Used in determining if a 'NEW ItemStack' is being used
+		boolean savedItem = false; // Used in determining if a 'saved ItemStack' is being used
 		BookAction action = BookAction.NONE;
 		
 		ItemStack book = null;
@@ -119,7 +118,7 @@ public class BookCommand extends AbstractCommand implements Listener{
 
 			} else if (aH.matchesScript(arg)) {
 				scriptName = aH.getStringFrom(arg);
-				dB.echoDebug("...SCRIPT to use '" + scriptName + "'.");
+				dB.echoDebug("...set SCRIPT to use '%s'", scriptName);
 
 			} else if (aH.matchesLocation(arg)) {
 				location = aH.getLocationFrom(arg);
@@ -130,7 +129,7 @@ public class BookCommand extends AbstractCommand implements Listener{
 				book = aH.getItemFrom(arg);
 				if (book.getType() == Material.BOOK || book.getType() == Material.WRITTEN_BOOK) {
 					dB.echoDebug("...using existing book '%s'.", arg);
-					newItem = true;
+					savedItem = true;
 				} else {
 					dB.echoError("This ItemStack is not a BOOK!");
 					book = null;
@@ -139,7 +138,7 @@ public class BookCommand extends AbstractCommand implements Listener{
 			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 
-		if (action == BookAction.NONE && !newItem) action = BookAction.GIVE;
+		if (action == BookAction.NONE && !savedItem) action = BookAction.GIVE;
 		if (scriptName == null) throw new InvalidArgumentsException("Missing SCRIPT argument!");
 		if (book == null) book = new ItemStack(387);
 		

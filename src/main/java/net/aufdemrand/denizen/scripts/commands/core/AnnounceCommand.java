@@ -11,8 +11,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 /**
  * <p>Announces a message to the server.</p>
  * 
- * 
- * <br><b>dScript Usage:</b><br>
+ * <b>dScript Usage:</b><br>
  * <pre>ANNOUNCE ['message to announce']</pre>
  * 
  * <ol><tt>Arguments: [] - Required</ol></tt>

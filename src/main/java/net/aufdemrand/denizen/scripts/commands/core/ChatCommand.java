@@ -1,8 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -13,46 +10,49 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
-import net.citizensnpcs.api.npc.NPC;
 
 /**
- * Uses the Citizens SpeechController to 'chat', the default VocalChord
- * of an NPC.
+ * <p>Uses the Citizens SpeechController to 'chat', the default VocalChord for
+ * of an NPC. Chat prefixes and setup is found in Citizen's config.yml file.</p>
+ * 
+ * <b>dScript Usage:</b><br>
+ * <pre>CHAT  ['message to chat.'] (TARGET(S):list_of_LivingEntities) (TALKER:NPC.#)</pre>
+ * 
+ * <ol><tt>Arguments: [] - Required</ol></tt>
+ * 
+ * <ol><tt>['message to chat']</tt><br> 
+ *         The chat message the Talker will use. This will be seen by all entities within range.</ol>
+ * 
+ * <ol><tt>(TARGET(S):NONE|List of LivingEntities{Interact Player})</tt><br> 
+ *         The LivingEntities that the message is addressed to. Uses the dScript List format
+ *         (item1|item2|etc). Valid entities are: PLAYER.player_name, NPC.npcid, or ENTITY.entity_name.
+ *         If NONE is specified, the NPC speaking will have no target. Default target is set to 
+ *         the Player doing the interaction (if that information is available to the command).</ol>
+ *
+ * <ol><tt>(TALKER:NPC.npcid{Interact NPC})</tt><br> 
+ *         The NPC that will be doing the chatting. Defaults to the NPC interacted with (if that information is
+ *         available to the command), but can be changed by using the NPC LivingEntity format (NPC.npcid).</ol>
+ *
+ * <br><b>Example Usage:</b><br>
+ * <ol><tt>
+ *  - CHAT 'Be careful out there! The road is long and dark.' <br>
+ *  - CHAT TARGET:NONE 'Beer here! Beer for sale! ...anybody need a beer?' <br>
+ *  - CHAT TARGETS:PLAYER.aufdemrand|PLAYER.Jeebiss|PLAYER.DrBix 'Ah, a group of adventurers! Great!'
+ *  - CHAT TALKER:NPC.13 TARGET:NPC.<NPC.ID> 'Shut up, old man!'
+ * </ol></tt>
  * 
  * @author Jeremy Schroeder
- * Version 1.0 Last Updated 11/29 12:21
+ * 
  */
-
 public class ChatCommand extends AbstractCommand {
 
-	@Override
-	public void onEnable() {
-		// Nothing to do here.
-	}
-
-	/* 
-	 * Arguments: [] - Required, () - Optional 
-	 * ['Text to chat'] sets the text.
-	 * (TARGETS:#|player_name) sets the direct recipients, or targets, of the chat.
-	 * 		Can be inn list format -- if more than one recipient, use | to separate
-	 * 		targets. Can be either an NPCID or valid Player name.
-	 * (TALKER:#|player_name) sets the entity doing the talking. Can be either an
-	 * 		NPCID or player_name. 
-	 * 
-	 * Note: NPCID:# argument can be used to set an NPC TALKER as well.
-	 * Note: Talking via a Player will require Converse
-	 * 
-	 * Example Usage:
-	 * CHAT 'Hello there, <PLAYER.NAME>!'
-	 * 
-	 */
-
+	// TODO: Make this class abstract to minimize code duplication for Whisper/Shout/etc.
 	
-
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 		SpeechContext context = new SpeechContext("");    	
+		boolean noTargets = false;
 		
 		if (scriptEntry.getNPC() != null)
 			context.setTalker(scriptEntry.getNPC().getEntity());
@@ -60,40 +60,28 @@ public class ChatCommand extends AbstractCommand {
 		for (String arg : scriptEntry.getArguments()) {
 
 			if (aH.matchesValueArg("TARGET, TARGETS", arg, ArgumentType.Custom)) {
+				if (arg.equalsIgnoreCase("none")) {
+					dB.echoDebug("Removed TARGET(s).");
+					noTargets = true;
+				}
 				for (String target : aH.getListFrom(arg)) {
-					if (target.matches("\\d+")) {
-						NPC npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(target)); 
-						if ( npc != null) {
-							context.addRecipient(npc.getBukkitEntity());
-							continue;
-						}
-					} else {
-						Player player = Bukkit.getPlayer(target);
-						if (player != null) {
-							context.addRecipient(player);
-							continue;
-						}
-					}
-
-					dB.echoError("Invalid TARGET '%s'!", target);
+					if (aH.getLivingEntityFrom(target) != null) {
+						context.addRecipient(aH.getLivingEntityFrom(target));
+						continue;
+					} else
+						dB.echoError("Invalid TARGET: '%s'", target);
 				}
 				dB.echoDebug("Set TARGET(s).");
 
-			} else if (aH.matchesValueArg("TALKER", arg, ArgumentType.Custom)) {
+			} else if (aH.matchesValueArg("TALKER", arg, ArgumentType.LivingEntity)) {
 				String talker = aH.getStringFrom(arg);
-				if (talker.matches("\\d+")) {
-					NPC npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(talker)); 
-					if ( npc != null) {
-						dB.echoDebug("...set TALKER: '%s'", talker);
-						context.setTalker(npc.getBukkitEntity());
+				if (talker.startsWith("NPC.") && aH.getLivingEntityFrom(talker) != null) {
+						context.setTalker(aH.getLivingEntityFrom(talker));
 						continue;
-					}
-				} 
-				
-			 // else { 
-			 // TODO: add hooking into Converse to handle player talking
-			 // }
-			
+				} else
+				//
+				// TODO: add hooking into Converse to handle player talking
+				// 
 				dB.echoError("Invalid TALKER! Perhaps the NPC doesn't exist?");
 
 			} else {
@@ -102,28 +90,34 @@ public class ChatCommand extends AbstractCommand {
 			}
 		}
 
+		// Add default recipient as the scriptEntry Player if no recipients set otherwise
+		if (!context.hasRecipients() && !noTargets && scriptEntry.getPlayer() != null)
+			context.addRecipient(scriptEntry.getPlayer());
+		
+		// Verify essential fields are set
 		if (context.getTalker() == null) 
 			throw new InvalidArgumentsException("Must specify a valid TALKER.");
 		if (context.getMessage().length() < 1) 
 			throw new InvalidArgumentsException("Must specify a message.");
-		
+
 		// Add context to the ScriptEntry to pass along to execute().
 		scriptEntry.addObject("context", context);
-		
+
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
 		SpeechContext context = (SpeechContext) scriptEntry.getObject("context");
-		
+
+		// If the talker is an NPC, use the NPC object to speak
 		if (CitizensAPI.getNPCRegistry().isNPC(context.getTalker().getEntity()))
 			CitizensAPI.getNPCRegistry().getNPC(context.getTalker().getEntity())
-				.getDefaultSpeechController().speak(context, "chat");
-		
+			.getDefaultSpeechController().speak(context, "chat");
+
 		// else
-		// Chat via Player with Converse
-	
+		// TODO: Chat via Player with Converse
+
 	}
 
 }

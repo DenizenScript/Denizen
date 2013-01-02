@@ -16,11 +16,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 /**
  * <p>'Casts' a Bukkit PotionEffectType on a LivingEntity target.</p>
  * 
- * 
  * <br><b>dScript Usage:</b><br>
- * <pre>CAST [PotionEffectType] (TARGET:NPC|{PLAYER}|ENTITY.entity_name) 
- *     (CASTER:{NPC}|PLAYER|ENTITY.entity_name) (DURATION:#) (POWER:#) 
- *     (NPCID:#) (PLAYER:player_name)</pre>
+ * <pre>CAST [PotionEffectType] (TARGET:NPC|{PLAYER}|LivingEntity) 
+ *     (CASTER:{NPC}|PLAYER|LivingEntity) (DURATION:#) (POWER:#)</pre>
  * 
  * <ol><tt>Arguments: [] - Required, () - Optional, {} - Default</ol></tt>
  * 
@@ -28,13 +26,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *         Uses Bukkit's PotionEffectType for specifying the potion effect to use. 
  *         See below for a list of valid PotionEffectTypes.</ol>
  * 
- * <ol><tt>(TARGET:NPC|{PLAYER}|ENTITY)</tt><br> 
+ * <ol><tt>(TARGET:NPC|{PLAYER}|ENTITY.entity|NPC.npcid|PLAYER.player_name)</tt><br> 
  *         Optional. Defaults to the attached Player. The recipient of the PotionEffectType. </ol>
  * 
- * <ol><tt>(CASTER:{NPC}|PLAYER|ENTITY)</tt><br>
- *         Optional. Defaults to the attached NPC. The 'shooter' of the PotionEffectType. 
- *         No effect visually. Note: WITHER gives effects to both the target and caster.</ol>
- *
  * <ol><tt>(DURATION:#{60})</tt><br>
  *         Optional. Number of seconds that the PotionEffectType lasts. If not specified,
  *         assumed 60 seconds.</ol>
@@ -44,24 +38,12 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *         its duration and in some cases has more effect on its target. Usually effective 
  *         between 1-3.</ol>
  * 
- * <ol><tt>(NPCID:#)</tt><br>
- *         Optional. Specified a specific {@link NPC} (based on its NPCID) to be linked
- *         to the command, for use with either TARGET or CASTER.</ol>
- * 
- * <ol><tt>(PLAYER:player_name)</tt><br>
- *         Optional. Specified a specific {@link Player} to be linked to the command, 
- *         for use with either TARGET or CASTER. Note: 'player_name's are case-sensitive
- *         in most cases, and this must match an online player to work properly.</ol>
- * 
- * <ol><tt>(ENTITY:ENTITY.entity_name)</tt><br>
- *         Optional. Specified a specific {@link NPC} (based on its NPCID) to be linked
- *         to the command, for use with either TARGET or CASTER.</ol>
- * 
  * <br><b>Example Usage:</b><br>
  * <ol><tt>
- *  - CAST TYPE:NIGHT_VISION DURATION:60 <br>
- *  - CAST TYPE:WITHER TARGET:NPC NPCID:<FLAG.P:enemy_NPCID> CASTER:PLAYER <br>
- *  - CAST TYPE:REGENERATION DURATION:10 POWER:3
+ *  - CAST NIGHT_VISION DURATION:60 <br>
+ *  - CAST WITHER TARGET:NPC NPCID:<FLAG.P:enemy_NPCID> CASTER:PLAYER <br>
+ *  - CAST REGENERATION DURATION:10 POWER:3
+ *  - CAST CONFUSION TARGET:NPC.25 DURATION:60
  * </ol></tt>
  * 
  * <br><b>Extended Usage:</b><br>
@@ -72,7 +54,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *  - CHAT 'The night-time is blinding around here. Allow me to give you sight.' <br>
  *  - WAIT 2 <br>
  *  - ANIMATE ANIMATION:ARM_SWING <br>
- *  - CAST TYPE:NIGHT_VISION DURATION:360 <br>
+ *  - CAST NIGHT_VISION DURATION:360 <br>
  *  - NARRATE 'You can see through the night!' <br>
  * </ol></tt>
  * 
@@ -105,15 +87,13 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  */
 public class CastCommand extends AbstractCommand{
 
-	// Required fields
-	PotionEffect potionEffect;
-	LivingEntity target;
-	LivingEntity caster;
-
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-		// Reset fields to defaults
+		// Required fields
+		PotionEffect potionEffect;
+		LivingEntity target = null;
+
 		int duration = 60;
 		int amplifier = 1;
 		PotionEffectType potion = null;
@@ -122,64 +102,63 @@ public class CastCommand extends AbstractCommand{
 		if (scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer();
 		else if (scriptEntry.getNPC() != null) target = scriptEntry.getNPC().getEntity();
 
-		// Default caster as NPC, if no NPC, default target to Player.
-		if (scriptEntry.getNPC() != null) caster = scriptEntry.getNPC().getEntity();
-		else if (scriptEntry.getPlayer() != null) caster = scriptEntry.getPlayer();
-		
+		// Iterate through arguments
 		for (String arg : scriptEntry.getArguments()) {
+			
 			if (aH.matchesDuration(arg)) {
 				duration = Integer.valueOf(arg.split(":")[1]);
 				dB.echoDebug(Messages.DEBUG_SET_DURATION, arg);
 				continue;
 
-			}   else if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
-				try {
-					potion = PotionEffectType.getByName(aH.getStringFrom(arg));
-					dB.echoDebug(Messages.DEBUG_SET_TYPE, aH.getStringFrom(arg));
-				} catch (Exception e) {
-					dB.echoError("Invalid PotionEffectType!");
-				}
-				continue;
-
-			}	else if (aH.matchesValueArg("POWER",  arg,  ArgumentType.Integer)) {
+			}	else if (aH.matchesValueArg("POWER", arg, ArgumentType.Integer)) {
 				amplifier = aH.getIntegerFrom(arg);
 				dB.echoDebug("...set POWER to '%s'.", String.valueOf(amplifier));
 				continue;
 
-			}   else if (aH.matchesValueArg("TARGET", arg, ArgumentType.Custom)) {
-				if (aH.getStringFrom(arg).equalsIgnoreCase("PLAYER")
-						&& scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer();
-				else if (aH.getStringFrom(arg).equalsIgnoreCase("NPC")
-						&& scriptEntry.getNPC() != null) target = scriptEntry.getNPC().getEntity();
-				
-				else dB.echoError("Invalid TARGET type or unavailable TARGET object! " +
-						"Valid: PLAYER, NPC");
+			}   else if (aH.matchesValueArg("TARGET", arg, ArgumentType.LivingEntity)) {
+				// If a scriptEntry LivingEntity (Player/NPC)
+				if (aH.getStringFrom(arg).equalsIgnoreCase("PLAYER") && scriptEntry.getPlayer() != null) 
+					target = scriptEntry.getPlayer();
+				else if (aH.getStringFrom(arg).equalsIgnoreCase("NPC") && scriptEntry.getNPC() != null) 
+					target = scriptEntry.getNPC().getEntity();
+				// If a saved LivingEntity
+				else if (aH.getLivingEntityFrom(arg) != null)
+					target = aH.getLivingEntityFrom(arg); 
+				else  {
+					dB.echoError("Invalid TARGET type or unavailable TARGET object!");
+					continue;
+				}
+				dB.echoDebug("...set TARGET to '%s'", aH.getStringFrom(arg));
+		
+			}   else if (potion == null) {
+				try {
+					potion = PotionEffectType.getByName(aH.getStringFrom(arg));
+					dB.echoDebug("...set PotionEffectType: '%s'", aH.getStringFrom(arg));
+				} catch (Exception e) {
+					dB.echoError("Invalid PotionEffectType!");
+				}
 				continue;
-
-			}   else if (aH.matchesValueArg("TARGET", arg, ArgumentType.Custom)) {
-				if (aH.getStringFrom(arg).equalsIgnoreCase("PLAYER")
-						&& scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer();
-				else if (aH.getStringFrom(arg).equalsIgnoreCase("NPC")
-						&& scriptEntry.getNPC() != null) target = scriptEntry.getNPC().getEntity();
-				else dB.echoError("Invalid TARGET type or unavailable TARGET object! " +
-						"Valid: PLAYER, NPC");
-				continue;
 				
-			}   else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+			}   else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);		
 		}
 
-		if (potion == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "TYPE");
-		if (target == null) throw new InvalidArgumentsException("No target Object! Perhaps you specified a non-existing  " +
-				"Player or NPCID? Use PLAYER:player_name or NPCID:#.");
+		if (potion == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PotionType");
+		if (target == null) throw new InvalidArgumentsException("No target Object! Perhaps you specified a non-existing " +
+				"Player or NPCID?");
 
 		potionEffect = new PotionEffect(potion, duration, amplifier);
+		
+		// Save items in the scriptEntry
+		scriptEntry.addObject("potion", potionEffect);
+		scriptEntry.addObject("target", target);	
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-
 		// Apply the Potion_Effect!
-		potionEffect.apply(target);
-
+		PotionEffect potion = (PotionEffect) scriptEntry.getObject("potion");
+		if (!potion.apply((LivingEntity) scriptEntry.getObject("target")))
+			dB.echoError("Bukkit was unable to apply '" + potion.getType().getName() + "'.");
 	}	
+	
 }
