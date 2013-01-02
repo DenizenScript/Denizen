@@ -139,15 +139,40 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 	@EventHandler
 	public void checkLocation(PlayerMoveEvent event) {
 		if (event.getFrom().getBlock() == event.getTo().getBlock()) return;
+		List<NPC> matchingNPCs = checkLocation (event.getPlayer().getLocation());
+		
+		
+		if (matchingNPCs.size () > 0) {
+			// Must be a return at this point, let's get some InteractContext from the matching NPCs
+			List<InteractContext> interactContext = new ArrayList<InteractContext>();
+	
+			// Probe NPCs for context to compare with LocationContext (scriptName/stepName)
+			for (NPC npc : matchingNPCs) {
+				String interactScript = sH.getInteractScript(npc, event.getPlayer(), this.getClass());
+				if (interactScript == null) continue;
+				String step = denizen.getScriptEngine().getScriptHelper().getCurrentStep(event.getPlayer(), interactScript, false);
+				interactContext.add(new InteractContext(npc, interactScript, step));
+			}
+	
+			for (InteractContext ics : interactContext) {
+			}
+		}
+	}
 
-		List<Trigger> matchingTriggers = null;
-		List<Integer> matchingNPCs = null;
+	/**
+	 * This is a method that will find all matching NPCs that have location
+	 * triggers based on a certain location.
+	 * 
+	 * @param location	The location to check
+	 * 
+	 * @return	The list of matching NPCs.
+	 */
+	public List<NPC> checkLocation (Location location) {
+		List<Trigger> matchingTriggers = new ArrayList<Trigger>();
+		List<NPC> matchingNPCs = new ArrayList<NPC>();
 
 		for (Trigger trigger : locationTriggers.keySet()) {
-			if (trigger.matches(event.getPlayer().getLocation())) {
-				if (matchingTriggers == null) matchingTriggers = new ArrayList<Trigger>();
-				if (matchingNPCs == null) matchingNPCs = new ArrayList<Integer>();
-
+			if (trigger.matches(location)) {
 				NPC npc = CitizensAPI.getNPCRegistry().getById(locationTriggers.get(trigger).npcid);
 				// Check NPC (from npcID) for availability and overall trigger range
 				// Has trait? Check. Trigger enabled? Check.
@@ -158,34 +183,15 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 				
 				// Add NPCID to list for checking interactScripts
 				if (!matchingNPCs.contains(npc.getId()))
-					matchingNPCs.add(npc.getId());
+					matchingNPCs.add(npc);
 				
 				// Location matches, add to list.
 				matchingTriggers.add(trigger);
 			}
 		}
 		
-		// No matches, return.
-		if (matchingNPCs.isEmpty()) return;
-		
-		
-		// Must be a return at this point, let's get some InteractContext from the matching NPCs
-		List<InteractContext> interactContext = new ArrayList<InteractContext>();
+		return matchingNPCs;
 
-		// Probe NPCs for context to compare with LocationContext (scriptName/stepName)
-		for (int npcid : matchingNPCs) {
-			NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
-			String interactScript = sH.getInteractScript(npc, event.getPlayer(), this.getClass());
-			if (interactScript == null) continue;
-			String step = denizen.getScriptEngine().getScriptHelper().getCurrentStep(event.getPlayer(), interactScript, false);
-			interactContext.add(new InteractContext(npc, interactScript, step));
-		}
-		
-
-		for (InteractContext ics : interactContext) {
-
-			
-		}
 		
 		
 		
