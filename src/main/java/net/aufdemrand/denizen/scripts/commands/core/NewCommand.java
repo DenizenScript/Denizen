@@ -131,7 +131,7 @@ public class NewCommand extends AbstractCommand implements Listener {
 				continue;
 				
 				// Arguments for ObjectType.ENTITY
-			} else if (aH.matchesEntity(arg)) {
+			//  } else if (aH.matchesEntity(arg)) {
 				
 
 			} else {
