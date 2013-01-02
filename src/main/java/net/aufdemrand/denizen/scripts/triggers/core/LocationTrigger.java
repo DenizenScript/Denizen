@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
@@ -139,7 +141,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 	@EventHandler
 	public void checkLocation(PlayerMoveEvent event) {
 		if (event.getFrom().getBlock() == event.getTo().getBlock()) return;
-		List<NPC> matchingNPCs = checkLocation (event.getPlayer().getLocation());
+		Set<NPC> matchingNPCs = checkLocation (event.getPlayer().getLocation());
 		
 		
 		if (matchingNPCs.size () > 0) {
@@ -167,9 +169,9 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 	 * 
 	 * @return	The list of matching NPCs.
 	 */
-	public List<NPC> checkLocation (Location location) {
+	public Set<NPC> checkLocation (Location location) {
 		List<Trigger> matchingTriggers = new ArrayList<Trigger>();
-		List<NPC> matchingNPCs = new ArrayList<NPC>();
+		Set<NPC> matchingNPCs = new HashSet<NPC>();
 
 		for (Trigger trigger : locationTriggers.keySet()) {
 			if (trigger.matches(location)) {
@@ -182,8 +184,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 				// Check location from LocationContext.. is it valid?
 				
 				// Add NPCID to list for checking interactScripts
-				if (!matchingNPCs.contains(npc.getId()))
-					matchingNPCs.add(npc);
+				matchingNPCs.add(npc);
 				
 				// Location matches, add to list.
 				matchingTriggers.add(trigger);
