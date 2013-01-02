@@ -26,6 +26,13 @@ public class AssignmentTrait extends Trait {
 		super("assignment");
 		denizen = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 	}
+	
+	public void buildLocationContext() {
+		
+		
+		
+		
+	}
 
 	@Override 
 	public void load(DataKey key) throws NPCLoadException {
