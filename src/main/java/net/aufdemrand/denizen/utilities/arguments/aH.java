@@ -85,7 +85,7 @@ import org.bukkit.inventory.ItemStack;
 public class aH {
 
 	public enum ArgumentType {
-		NPCID, Player, Entity, Item, Boolean, Custom, Double, Float, Integer, String, Word, Location, Script
+		LivingEntity, Item, Boolean, Custom, Double, Float, Integer, String, Word, Location, Script
 	}
 
 	//	Denizen denizen;
@@ -184,17 +184,32 @@ public class aH {
 	 * 
 	 * 
 	 */
-	public static LivingEntity getSavedEntityFrom(String arg) {
+	public static LivingEntity getLivingEntityFrom(String arg) {
 		final Pattern matchesEntityPtrn = Pattern.compile("(?:(?:.+?:)|)(.+)", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesEntityPtrn.matcher(arg);
 		if (m.matches()) {
 			if (m.group(1).toUpperCase().startsWith("ENTITY.")) {
 				LivingEntity returnable = ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
-						.getCommandRegistry().get(NewCommand.class).getEntity(m.group(1));
+						.getCommandRegistry().get(NewCommand.class).getEntity(m.group(1).split("\\.")[1]);
 				if (returnable != null) return returnable;
 				else dB.echoError("Invalid entity! '" + m.group(1) + "' could not be found.");
 			}
+
+		} else if (m.matches()) {
+			if (m.group(1).toUpperCase().startsWith("NPC.")) {
+				LivingEntity returnable = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(m.group(1).split("\\.")[1])).getBukkitEntity();
+				if (returnable != null) return returnable;
+				else dB.echoError("Invalid NPC! '" + m.group(1) + "' could not be found.");
+			}
+
+		} else if (m.matches()) {
+			if (m.group(1).toUpperCase().startsWith("PLAYER.")) {
+				LivingEntity returnable = getPlayerFrom(m.group(1).split("\\.")[1]);
+				if (returnable != null) return returnable;
+				else dB.echoError("Invalid Player! '" + m.group(1) + "' could not be found.");
+			}
 		}
+
 		return null;
 	}
 
@@ -444,7 +459,7 @@ public class aH {
 		dB.echoError("NPC '" + arg + "' is invalid, or has been removed.");
 		return null;
 	}
-	
+
 	/**
 	 * <p>Returns a Bukkit OfflinePlayer object from a dScript argument string. Accounts for
 	 * the argument prefix being passed along, for convenience. For a non-null value to 
@@ -589,14 +604,17 @@ public class aH {
 	 * is used throughout the core members of Denizen, it is encouraged to use it whenever
 	 * appropriate.</p>
 	 * 
-	 * <p>When extracting the value from a match, using {@link #getIntegerFrom(String)} is
+	 * TODO: Note compatibility with dScript times (using {@link #getSecondsFrom(String)})
+	 * 
+	 * <p>When extracting the value from a match, using {@link #getTimeFrom(String)} is
 	 * encouraged.</p>
 	 *
 	 * <b>Examples:</b>
 	 * <ol>
 	 * <tt>'DURATION:60'</tt> will return true.<br>
-	 * <tt>'DURATION:-1'</tt> will return false.<br>
+	 * <tt>'DURATION:-1'</tt> will return false, with a warning.<br>
 	 * <tt>'DURATION:0'</tt> will return true.<br>
+	 * <tt>'ENTITY:ZOMBIE'</tt> will return false.
 	 * </ol>
 	 *
 	 * @param arg the dScript argument string
@@ -604,9 +622,61 @@ public class aH {
 	 * 
 	 */
 	public static boolean matchesDuration(String arg) {
-		final Pattern matchesDurationPtrn = Pattern.compile("duration:\\d+", Pattern.CASE_INSENSITIVE);
+		final Pattern matchesDurationPtrn = Pattern.compile("duration:\\d+(|t|m|s|h|d)", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesDurationPtrn.matcher(arg);
-		return m.matches();
+		if (m.matches()) return true;
+		else if (arg.toUpperCase().startsWith("duration:"))
+			dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
+					"prefix is correct, the value is not valid. 'DURATION' requires a positive integer value. " +
+					"Perhaps a replaceable Tag has failed to fill in a valid value?");
+		return false;
+	}
+
+	/**
+	 * <p>Gets seconds from the dScript duration value format. Accepts a prefix in the
+	 * argument for convenience.</p>
+	 * 
+	 * <p>Uses the regex pattern <tt>"(?:.+:|)(\\d+(?:(|\\.\\d+)))(|t|m|s|h|d)"</tt>.
+	 * Valid units: T=ticks, M=minutes, S=seconds, H=hour, D=day. If not specified,
+	 * seconds are assumed.</p>
+	 *
+	 * <b>Examples:</b>
+	 * <ol>
+	 * <tt>'60'</tt> will return '60'.<br>
+	 * <tt>'-1'</tt> will return '0'.<br>
+	 * <tt>'DURATION:1.5m'</tt> will return '90'.<br>
+	 * <tt>'DELAY:derp'</tt> will return false.
+	 * </ol>
+	 *
+	 * @param arg the dScript argument string
+	 * @return true if matched, otherwise false
+	 * 
+	 */
+	public static double getSecondsFrom(String arg) {
+		final Pattern matchesTimePtrn = Pattern.compile("(?:.+:|)(\\d+(?:(|\\.\\d+)))(|t|m|s|h|d)", Pattern.CASE_INSENSITIVE);
+		Matcher m = matchesTimePtrn.matcher(arg);
+		if (m.matches()) {
+			if (m.group().toUpperCase().endsWith("t"))
+				// Matches TICKS, so 1 tick = .05 seconds
+				return (Double.valueOf(m.group(1)) * 0.05);
+
+			else if (m.group().toUpperCase().endsWith("d"))
+				// Matches DAYS, so 1 day = 86400 seconds
+				return (Double.valueOf(m.group(1)) * 86400);			
+
+			else if (m.group().toUpperCase().endsWith("m"))
+				// Matches MINUTES, so 1 minute = 60 seconds
+				return (Double.valueOf(m.group(1)) * 60);			
+
+			else if (m.group().toUpperCase().endsWith("h"))
+				// Matches HOURS, so 1 hour = 3600 seconds
+				return (Double.valueOf(m.group(1)) * 3600);			
+			
+			else // seconds
+				return (Double.valueOf(m.group(1)));
+		}
+		
+		return 0;
 	}
 
 	/**
@@ -628,21 +698,20 @@ public class aH {
 	 * @return true if matched, otherwise false
 	 * 
 	 */
-	public static boolean matchesEntity(String arg) {
+	public static boolean matchesEntityType(String arg) {
 		final Pattern matchesEntityPtrn = Pattern.compile("entity:(.+)", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesEntityPtrn.matcher(arg);
 		if (m.matches()) {
-			// Check for NEW ENTITY command format (ENTITY.entity_name)
-			if (m.group(1).toUpperCase().startsWith("ENTITY."))
-				return true;
-			else {
-				// Check against valid EntityTypes using Bukkit's EntityType enum
-				for (EntityType validEntity : EntityType.values())
-					if (m.group(1).equalsIgnoreCase(validEntity.getName()))
-						return true;
-			}
+			// Check against valid EntityTypes using Bukkit's EntityType enum
+			for (EntityType validEntity : EntityType.values())
+				if (m.group(1).equalsIgnoreCase(validEntity.getName()))
+					return true;
 		}
-		// No match
+		// Check for valid prefix, warn about value.
+		if (arg.toUpperCase().startsWith("entity:"))
+			dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
+					"prefix is correct, the value is not valid. Perhaps a replaceable Tag has failed " +
+					"to fill in a valid EntityType, or the EntityType you provided is not correct?");
 		return false;
 	}
 
@@ -711,8 +780,11 @@ public class aH {
 				if (mat.name().equalsIgnoreCase(m.group(1)))
 					return true;
 		}
-
-		// No match!
+		// Check for valid prefix, warn about value.
+		if (arg.toUpperCase().startsWith("item:"))
+			dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
+					"prefix is correct, the value is not valid. Perhaps a replaceable Tag has failed " +
+					"to fill in a valid item, or you've specified an invalid Material?");
 		return false;
 	}
 
@@ -735,7 +807,13 @@ public class aH {
 	public static boolean matchesLocation(String arg) {
 		final Pattern locationPattern = Pattern.compile("location:(?:-|)\\d+,(?:-|)\\d+,(?:-|)\\d+,\\w+", Pattern.CASE_INSENSITIVE);
 		Matcher m = locationPattern.matcher(arg);
-		return m.matches();
+		if (m.matches())
+			return true;
+		else if (arg.toUpperCase().startsWith("location:"))
+			dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
+					"prefix is correct, the value is not valid. Perhaps a replaceable Tag has failed " +
+					"to fill in a valid location?");
+		return false;
 	}
 
 	/**
@@ -763,7 +841,12 @@ public class aH {
 	public static boolean matchesQuantity(String arg) {
 		final Pattern matchesQuantityPtrn = Pattern.compile("qty:(?:-|)\\d+", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesQuantityPtrn.matcher(arg);
-		return m.matches();
+		if (m.matches()) return true;
+		else if (arg.toUpperCase().startsWith("qty:"))
+			dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
+					"prefix is correct, the value is not valid. 'QTY' requires a an integer value. " +
+					"Perhaps a replaceable Tag has failed to fill in a valid value?");
+		return false;
 	}
 
 	/**
@@ -788,9 +871,14 @@ public class aH {
 	 * 
 	 */
 	public static boolean matchesQueueType(String arg) {
-		final Pattern matchesQueuePtrn = Pattern.compile("(?:(?:queue)|(?:queuetype)):(?:(?:player)|(?:player_task)|(?:npc))", Pattern.CASE_INSENSITIVE);
+		final Pattern matchesQueuePtrn = Pattern.compile("queue:(?:(?:player)|(?:player_task)|(?:npc))", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesQueuePtrn.matcher(arg);
-		return m.matches();
+		if (m.matches()) return true;
+		else if (arg.toUpperCase().startsWith("queue:"))
+			dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
+					"prefix is correct, the value is not valid. 'QUEUE' requires a valid QueueType. " +
+					"Perhaps a replaceable Tag has failed to fill in a valid value?");
+		return false;
 	}
 
 	/**
@@ -816,9 +904,16 @@ public class aH {
 		Matcher m = matchesScriptPtrn.matcher(arg);
 		// Check if script exists by looking for  Script Name:
 		//                                          Type: ...
-		if (m.matches() && ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
-				.getScripts().contains(arg.split(":")[1].toUpperCase() + ".TYPE"))
-			return true;
+		if (m.matches()) {
+			if (((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
+					.getScripts().contains(arg.split(":")[1].toUpperCase() + ".TYPE"))
+				return true;
+			else {
+				dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. This " +
+						"argument's format is correct, but Denizen couldn't locate a script " +
+						"named '" + m.group(1) + "'. Is it spelled correctly?");
+			}
+		}
 		return false;
 	}
 
@@ -843,7 +938,12 @@ public class aH {
 	public static boolean matchesToggle(String arg) {
 		final Pattern matchesTogglePtrn = Pattern.compile("toggle:(?:(?:true)|(?:false)|(?:toggle))", Pattern.CASE_INSENSITIVE);
 		Matcher m = matchesTogglePtrn.matcher(arg);
-		return m.matches();
+		if (m.matches()) return true;
+		else if (arg.toUpperCase().startsWith("toggle:"))
+			dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
+					"prefix is correct, the value is not valid. 'TOGGLE' requires a value of TRUE, FALSE, or TOGGLE. " +
+					"Perhaps a replaceable Tag has failed to fill in a valid value?");
+		return false;
 	}
 
 
@@ -908,23 +1008,28 @@ public class aH {
 		switch (type) {
 		case Word:
 			m = wordPtrn.matcher(arg);
-			return m.matches();
+			if (m.matches()) return true;
+			break;
 
 		case Integer:
 			m = integerPtrn.matcher(arg);
-			return m.matches();
+			if (m.matches()) return true;
+			break;
 
 		case Double:
 			m = doublePtrn.matcher(arg);
-			return m.matches();
+			if (m.matches()) return true;
+			break;
 
 		case Float:
 			m = floatPtrn.matcher(arg);
-			return m.matches();
+			if (m.matches()) return true;
+			break;
 
 		case Boolean:
 			if (arg.equalsIgnoreCase("true")) return true;
-			else return false;
+			if (arg.equalsIgnoreCase("false")) return false;
+			break;
 
 		case Location:
 			if (matchesLocation("location:" + arg)) return true;
@@ -938,13 +1043,20 @@ public class aH {
 			if (matchesItem("item:" + arg)) return true;
 			else return false;
 
-		case Entity:
-			if (matchesEntity("entity:" + arg)) return true;
-			else return false;
+		case LivingEntity:
+			final Pattern matchesEntityPtrn = Pattern.compile("?:.+?|):((ENTITY\\.|PLAYER\\.|NPC\\.).+)|(PLAYER|NPC)", Pattern.CASE_INSENSITIVE);
+			m = matchesEntityPtrn.matcher(arg);
+			if (m.matches()) return true;
+			break;
 
 		default:
 			return true;
 		}
+
+		dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
+				"prefix is correct, the value is not valid. Check documentation for valid value." +
+				"Perhaps a replaceable Tag has failed to fill in a value?");
+		return false;	
 	}
 
 }
