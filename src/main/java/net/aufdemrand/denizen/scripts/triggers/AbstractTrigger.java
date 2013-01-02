@@ -1,18 +1,26 @@
 package net.aufdemrand.denizen.scripts.triggers;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public abstract class AbstractTrigger implements RegistrationableInstance {
@@ -128,4 +136,30 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         return this;
     }
 
+	/**
+	 * This method will find all NPCs within a certain range of a location that
+	 * have a trigger, and the trigger is enabled.
+	 * 
+	 * @param location
+	 * @param maxRange
+	 * 
+	 * @return	The Set of NPCs that are 
+	 */
+	public Set<NPC> getActiveNPCsWithinRangeWithTrigger (Location location, int maxRange) {
+		Set<NPC> closestNPCs = new HashSet<NPC> ();
+
+		Iterator<NPC>	it = CitizensAPI.getNPCRegistry().iterator();
+		while (it.hasNext ()) {
+			NPC	npc = it.next ();
+			if (npc.isSpawned()			&&
+					npc.getBukkitEntity().getLocation().getWorld().equals(location.getWorld())	&&
+					npc.getBukkitEntity().getLocation().distance(location) < maxRange						&&
+					npc.hasTrait(TriggerTrait.class)																						&&
+					npc.getTrait(TriggerTrait.class).isEnabled(name)) {
+				closestNPCs.add (npc);
+			}
+		}
+		
+		return closestNPCs;		
+	}
 }
