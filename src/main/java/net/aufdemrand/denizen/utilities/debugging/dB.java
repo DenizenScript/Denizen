@@ -53,7 +53,7 @@ public class dB {
 	static ConsoleSender cs = new ConsoleSender();
 	
 	public static boolean debugMode = true;
-	public static boolean showStackTraces = true;
+	public static boolean showStackTraces = false;
 
 	/**
 	 * Can be used with echoDebug(...) to output a header, footer, 

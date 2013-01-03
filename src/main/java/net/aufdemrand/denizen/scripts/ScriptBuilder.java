@@ -213,8 +213,6 @@ public class ScriptBuilder {
      * Cheater method for running a NPC task script. Will automatically
      * build script entries, arguments, and queue to a NPC Queue.
      * 
-     * @param player
-     * 		The player whose queue to use.
      * @param npc
      * 		The DenizenNPC object of which to attach to the scriptEntries.
      * @param scriptName
