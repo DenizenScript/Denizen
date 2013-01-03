@@ -115,8 +115,8 @@ public class aH {
 	 */
 	public static boolean getBooleanFrom(String arg) {
 		if (arg.split(":").length >= 2)
-			return Boolean.valueOf(arg.split(":", 2)[1]).booleanValue();
-		else return Boolean.valueOf(arg).booleanValue();
+			return Boolean.valueOf(arg.split(":", 2)[1]);
+		else return Boolean.valueOf(arg);
 	}
 
 	/**
@@ -140,8 +140,8 @@ public class aH {
 	public static double getDoubleFrom(String arg) {
 		try { 
 			if (arg.split(":").length >= 2)
-				return Double.valueOf(arg.split(":", 2)[1]).doubleValue();
-			else return Double.valueOf(arg).doubleValue();
+				return Double.valueOf(arg.split(":", 2)[1]);
+			else return Double.valueOf(arg);
 		} catch (Exception e) { 
 			return 0.00; 
 		}
@@ -965,9 +965,9 @@ public class aH {
 	 * <tt>5 }</tt><br>
 	 * </ol>
 	 * 
-	 * <p>Note: Like {@link #matchesArg(String)}, matchesValueArg(String) supports multiple
-	 * argument names, separated by a comma (,) character. This method will trim()
-	 * each name specified.</p>
+	 * <p>Note: Like {@link #matchesArg(String, String)}, matchesValueArg(String)
+     * supports multiple argument names, separated by a comma (,) character. This method
+     * will trim() each name specified.</p>
 	 * 
 	 * <p>Also requires a specified ArgumentType, which will filter the type of value
 	 * to match to. If anything should be excepted as the value, or you plan
@@ -999,7 +999,7 @@ public class aH {
 			boolean matched = false;
 			for (String string : names.split(","))
 				if (arg.split(":")[0].equalsIgnoreCase(string.trim())) matched = true;
-			if (matched == false) return false;
+			if (!matched) return false;
 		}
 
 		arg = arg.split(":", 2)[1];
@@ -1032,19 +1032,17 @@ public class aH {
 			break;
 
 		case Location:
-			if (matchesLocation("location:" + arg)) return true;
-			else return false;
+            return matchesLocation("location:" + arg);
 
 		case Script:
-			if (matchesLocation("script:" + arg)) return true;
-			else return false;
+            return matchesLocation("script:" + arg);
 
 		case Item:
-			if (matchesItem("item:" + arg)) return true;
-			else return false;
+            return matchesItem("item:" + arg);
 
 		case LivingEntity:
-			final Pattern matchesEntityPtrn = Pattern.compile("?:.+?|):((ENTITY\\.|PLAYER\\.|NPC\\.).+)|(PLAYER|NPC)", Pattern.CASE_INSENSITIVE);
+			final Pattern matchesEntityPtrn =
+                    Pattern.compile("(?:.+?|):((ENTITY\\.|PLAYER\\.|NPC\\.).+)|(PLAYER|NPC)", Pattern.CASE_INSENSITIVE);
 			m = matchesEntityPtrn.matcher(arg);
 			if (m.matches()) return true;
 			break;

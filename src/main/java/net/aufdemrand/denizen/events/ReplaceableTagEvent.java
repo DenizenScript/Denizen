@@ -117,8 +117,7 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean matches(String tagName) {
-        if (!this.name.equalsIgnoreCase(tagName)) return false;
-        return true;
+        return this.name.equalsIgnoreCase(tagName);
     }
     
     public boolean replaced() {

@@ -57,7 +57,7 @@ public class TagManager {
         do {
             // Just in case, do-loops make me nervous, but does implement a limit of 25 tags per argument.
             failsafe++;
-            ReplaceableTagEvent event = null;
+            ReplaceableTagEvent event;
             if (positions == null) break;
             else {
                 event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]));
@@ -95,8 +95,7 @@ public class TagManager {
         // no matching bracket, return null
         if (openPos == -1) return null;
         // return positions of the brackets
-        int[] returnable = {openPos, closePos};
-        return returnable;
+        return new int[]{openPos, closePos};
     }
     
     public List<String> fillArguments(List<String> args, ScriptEntry scriptEntry) {

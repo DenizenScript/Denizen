@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -171,10 +172,17 @@ public class ScriptBuilder {
      * @param scriptName
      * 		The name of the task script.
      */
-    public void runTaskScript(Player player, String scriptName) {
+    public boolean runTaskScript(Player player, String scriptName) {
+        if (!aH.matchesScript("script:" + scriptName)) return false;
+        try {
         List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
         // Build scriptEntries from the script and queue them up
         queueScriptEntries(player, buildScriptEntries(player, theScript, scriptName), QueueType.PLAYER_TASK);
+        } catch (Exception e) {
+            if (dB.showStackTraces) e.printStackTrace();
+            return false;
+        }
+        return true;
     }
     
     /**
@@ -188,10 +196,17 @@ public class ScriptBuilder {
      * @param scriptName
      * 		The name of the task script.
      */
-    public void runTaskScript(Player player, DenizenNPC npc, String scriptName) {
+    public boolean runTaskScript(Player player, DenizenNPC npc, String scriptName) {
+        if (!aH.matchesScript("script:" + scriptName)) return false;
+        try {
         List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
         // Build scriptEntries from the script and queue them up
         queueScriptEntries(player, buildScriptEntries(player, npc, theScript, scriptName, null), QueueType.PLAYER_TASK);
+        } catch (Exception e) {
+            if (dB.showStackTraces) e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -205,10 +220,17 @@ public class ScriptBuilder {
      * @param scriptName
      * 		The name of the task script.
      */
-    public void runTaskScript(DenizenNPC npc, String scriptName) {
+    public boolean runTaskScript(DenizenNPC npc, String scriptName) {
+        if (!aH.matchesScript("script:" + scriptName)) return false;
+        try {
         List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
         // Build scriptEntries from the script and queue them up
         queueScriptEntries(npc, buildScriptEntries(npc, theScript, scriptName), QueueType.NPC);
+        } catch (Exception e) {
+            if (dB.showStackTraces) e.printStackTrace();
+            return false;
+        }
+        return true;
     }
     
     /**
@@ -222,10 +244,17 @@ public class ScriptBuilder {
      * @param scriptName
      * 		The name of the task script.
      */
-    public void runTaskScript(DenizenNPC npc, Player player, String scriptName) {
+    public boolean runTaskScript(DenizenNPC npc, Player player, String scriptName) {
+        if (!aH.matchesScript("script:" + scriptName)) return false;
+        try {
         List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
         // Build scriptEntries from the script and queue them up
         queueScriptEntries(npc, buildScriptEntries(player, npc, theScript, scriptName, null), QueueType.NPC);
+        } catch (Exception e) {
+            if (dB.showStackTraces) e.printStackTrace();
+            return false;
+        }
+        return true;
     }
     
 }

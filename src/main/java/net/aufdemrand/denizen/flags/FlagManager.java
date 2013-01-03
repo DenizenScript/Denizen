@@ -115,7 +115,7 @@ public class FlagManager {
             for (String val : value.values) {
                 if (val.equalsIgnoreCase(stringValue)) return true;
                 try {
-                    if (Double.valueOf(val) == Double.valueOf(stringValue)) return true;
+                    if (Double.valueOf(val).equals(Double.valueOf(stringValue))) return true;
                 } catch (Exception e) { /* Not a valid number, continue. */ } 
             }
 
@@ -241,7 +241,7 @@ public class FlagManager {
 
                     // Evaluate as number
                     try { 
-                        if (Double.valueOf(val) == Double.valueOf((String) obj)) {
+                        if (Double.valueOf(val).equals(Double.valueOf((String) obj))) {
                             value.values.remove(x);
                             return;
                         }
@@ -267,7 +267,6 @@ public class FlagManager {
             denizen.getSaves().set(flagPath, obj);
             denizen.saveSaves();
             rebuild();
-            return;
         }
 
         /**
@@ -370,8 +369,8 @@ public class FlagManager {
 
         private Value(List<String> values) {
             this.values = values;
-            if (values == null) {
-                values = new ArrayList<String>();
+            if (this.values == null) {
+                this.values = new ArrayList<String>();
             }
         }
 
@@ -395,8 +394,7 @@ public class FlagManager {
         public boolean asBoolean() {
             adjustIndex();
             try {
-                if (!values.get(index).equalsIgnoreCase("FALSE")) return true;
-                else return false;
+                return !values.get(index).equalsIgnoreCase("FALSE");
             } catch (Exception e) { return false; } 
         }
 
@@ -474,8 +472,8 @@ public class FlagManager {
                     return Double.valueOf(aH.getDoubleFrom(arg));
 
                 // If a Boolean
-                else if (arg.equalsIgnoreCase("true")) return Boolean.valueOf(true);
-                else if (arg.equalsIgnoreCase("false")) return Boolean.valueOf(false);
+                else if (arg.equalsIgnoreCase("true")) return true;
+                else if (arg.equalsIgnoreCase("false")) return false;
 
                 // If a List<Object>
                 else if (arg.contains("|")) {
@@ -507,8 +505,7 @@ public class FlagManager {
          * 
          */
         public boolean isEmpty() {
-            if (values.size() > 1 || !values.get(0).equals("")) return false;
-            else return true;
+            return !(values.size() > 1 || !values.get(0).equals(""));
         }
 
         /**
