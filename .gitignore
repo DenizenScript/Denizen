@@ -11,6 +11,7 @@ Denizen.iml
 target/
 bin/
 .settings/
+.idea/
 
 *.com
 
