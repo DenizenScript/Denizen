@@ -139,7 +139,10 @@ public class NotableManager {
 	public void saveNotables() {
 		List<String> notablesList = new ArrayList<String>();
 		for (Notable notable : this.notableMap.values()) {
-			notablesList.add(notable.stringValue());
+			String	serializedNotable = notable.stringValue ();
+			if (serializedNotable != null) {
+				notablesList.add(notable.stringValue());
+			}
 		}
 
 		if (this.denizen != null) {
