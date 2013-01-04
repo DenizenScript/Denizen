@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.notables;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -16,7 +17,7 @@ import org.bukkit.Location;
 public class Notable {
 	private final String name;
 	private final Location location;
-	private List<Integer> links;
+	private List<Integer> links = new ArrayList<Integer> ();
 
 	public Notable(String name, Location location) {
 		this.location = location;
