@@ -108,7 +108,7 @@ public class GiveCommand  extends AbstractCommand {
 					 	RegisteredServiceProvider<Economy> provider = Bukkit.getServicesManager().getRegistration (Economy.class);
 					 	if (provider != null && provider.getProvider() != null) {
 					 		Economy economy = provider.getProvider();
-							double doubleAmount = Double.valueOf(theAmount);
+							double doubleAmount = (double) theAmount;
 							dB.echoDebug ("Giving player " + theAmount + " money.");
 							economy.depositPlayer(player.getName(), doubleAmount);
 					 	}
@@ -116,7 +116,6 @@ public class GiveCommand  extends AbstractCommand {
 						dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");	
 						Messaging.logTr(Messages.ERROR_LOADING_ECONOMY);
 				 	}				
-
 				 break;
 
 			case EXP:

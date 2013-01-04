@@ -22,6 +22,8 @@ public class PlayerTags implements Listener {
         String type = event.getType().toUpperCase();
         String subType = "";
 
+
+
         if (event.getType().split("\\.").length > 1) {
             type = event.getType().split("\\.")[0].toUpperCase();
             subType = event.getType().split("\\.")[1].toUpperCase();

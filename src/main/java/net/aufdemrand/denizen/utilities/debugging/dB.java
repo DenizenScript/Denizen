@@ -116,8 +116,9 @@ public class dB {
 	}
 	
 
-	// TODO: Clean up messages. Plan is to have all vanilla core debugging dialog
-	// nicely organized here. Outside plugins which use the debugger can use this as well.
+	// TODO: Clean up messages.
+	// Plan is to have all core debugging dialog nicely organized here. Outside plugins which use the
+	// debugger can use this as well, but the main goal would be to ensure that all 'output' is uniform.
 	public enum Messages {
 		
 		ERROR_NO_NPCID ("No 'NPCID:#' argument."),
@@ -129,8 +130,8 @@ public class dB {
 		ERROR_MISSING_LOCATION("Missing 'LOCATION'."),
 		ERROR_NO_SCRIPT("Missing 'SCRIPT' argument."),
 		ERROR_MISSING_OTHER("Missing '%s' argument."),
-		ERROR_LOTS_OF_ARGUMENTS("Woah!! Seems like there are a lot of arguments. Did you forget to use quotes?"), 
-		ERROR_UNKNOWN_ARGUMENT("Woah!! Unknown argument! Check syntax."),
+		ERROR_LOTS_OF_ARGUMENTS("Whoa!! Seems like there are a lot of arguments. Did you forget to use quotes?"),
+		ERROR_UNKNOWN_ARGUMENT("Whoa!! Unknown argument! Check syntax."),
 		DEBUG_SET_TEXT("...set TEXT: '%s'"),
 		DEBUG_TOGGLE("...TOGGLE: '%s'"), 
 		DEBUG_SET_DURATION("...set DURATION: '%s'"), 

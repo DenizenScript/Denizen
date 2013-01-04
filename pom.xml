@@ -14,7 +14,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<craftbukkit.version>LATEST</craftbukkit.version>
 		<citizens.version>2.0.6-SNAPSHOT</citizens.version>
-		<vault.version>1.2.13-SNAPSHOT</vault.version>
 		<build.number>Unknown</build.number>
 	</properties>
 
@@ -32,10 +31,6 @@
 			<id>sk89q-repo</id>
 			<url>http://maven.sk89q.com/repo/</url>
 		</repository>
-		<repository>
-			<id>vault-repo</id>
-			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
-		</repository>
 	</repositories>
 
 	<!-- Dependencies -->
@@ -50,7 +45,7 @@
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
-			<version>${vault.version}</version>
+			<version>1.2.16</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
@@ -83,7 +78,7 @@
 		<dependency>
 			<groupId>com.sk89q</groupId>
 			<artifactId>worldguard</artifactId>
-			<version>5.7-SNAPSHOT</version>
+			<version>5.6.6-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

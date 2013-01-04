@@ -9,8 +9,11 @@ Denizen.iml
 .gitignore
 
 target/
+
 bin/
+
 .settings/
+
 .idea/
 
 *.com
@@ -29,7 +32,6 @@ bin/
 
 *.iso
 
-
 *.rar
 
 *.tar
@@ -43,5 +45,6 @@ bin/
 *.sqlite
 
 .DS_Store
+
 thumbs.db
 
