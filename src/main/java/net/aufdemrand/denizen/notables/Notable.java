@@ -98,7 +98,11 @@ public class Notable {
 			linkString = " Links: none";
 		else linkString = linkString.substring(0, linkString.length() - 2);
 		
-		return "Name: " + name + " World: " + location.getWorld().getName() + " Location: " + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + linkString;	
+		if (location != null && location.getWorld () != null) {
+			return "Name: " + name + " World: " + location.getWorld().getName() + " Location: " + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + linkString;
+		}
+		
+		return "Name: " + name + " World: [NULL] Location: " + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + linkString;
 	}
 	
 	public String describe() {
