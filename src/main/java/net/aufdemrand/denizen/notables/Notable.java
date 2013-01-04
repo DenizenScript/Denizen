@@ -78,9 +78,15 @@ public class Notable {
 
 	public String stringValue() {
 		String linkString = "";
-		for (Integer npcid : links)
+		for (Integer npcid : links) {
 			linkString = ";" + npcid;
-		return name + ";" + location.getWorld().getName() + ";" + location.getX() + ";" + location.getY() + ";" + location.getZ() + linkString; 
+		}
+		
+		if (location != null && location.getWorld () != null) {
+			return name + ";" + location.getWorld().getName() + ";" + location.getX() + ";" + location.getY() + ";" + location.getZ() + linkString;
+		}
+		
+		return null;
 	}
 
 	@Override
