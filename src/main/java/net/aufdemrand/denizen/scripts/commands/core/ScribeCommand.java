@@ -1,7 +1,13 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.List;
-
+import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.exceptions.CommandExecutionException;
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,20 +17,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
-import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import java.util.List;
 
 /**
- * <p>Creates a Written Book from a dScript 'Book-type Script' and a Book ItemStack.</p>
+ * <p>Scribes information to a Book from a dScript 'Book-type Script' or a Book ItemStack.</p>
  * 
  * <b>dScript Usage:</b><br>
- * <pre>BOOK [SCRIPT:book_script] (GIVE|{DROP}|EQUIP) (LOCATION:x,y,z,world) (ITEM:ITEMSTACK.name)</pre>
+ * <pre>Scribe [SCRIPT:book_script] (GIVE|{DROP}|EQUIP) (LOCATION:x,y,z,world) (ITEM:ITEMSTACK.name)</pre>
  * 
  * <ol><tt>Arguments: [] - Required () - Optional  {} - Default</ol></tt>
  * 
@@ -59,13 +58,13 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *     made of starstuff.<br>
  * </pre></ol>
  *
- * <p>Note: BookCommand also implements a replaceable tag for &#60;P>, which creates a new
+ * <p>Note: ScribeCommand also implements a replaceable tag for &#60;P>, which creates a new
  * paragraph in a written book's text.</p>
  *          
  * <br><b>Example Usage:</b><br>
  * <ol><tt>
- *  - BOOK DROP SCRIPT:Cosmos<br>
- *  - BOOK EQUIP 'SCRIPT:Spellbook of Haste'<br>
+ *  - SCRIBE SCRIPT:Cosmos DROP<br>
+ *  - SCRIBE ITEM:ITEMSTACK.ImportantBook 'SCRIPT:Spellbook of Haste'<br>
  * </ol></tt>
  * 
  * <br><b>Extended Usage:</b><br>
@@ -76,9 +75,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *  - CHAT 'Use this book with care, as it is very powerful and could cause great harm<br>
  *    if put into the wrong hands!' <br>
  *  - WAIT 2 <br>
- *  - ^ANIMATE TARGET:NPC ANIMATION:ARM_SWING <br>
+ *  - ^ANIMATE ANIMATION:ARM_SWING <br>
  *  - ^NEW ITEMSTACK ITEM:book ID:&#60;PLAYER.NAME>s_enchanted_spellbook<br>
- *  - ^BOOK SCRIPT:silk_touch_description ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook<br>
+ *  - ^SCRIBE ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook SCRIPT:silk_touch_description <br>
  *  - ^ENCHANT ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook ENCHANTMENT:SILKTOUCH<br>
  *  - ^LORE ADD ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook 'A spell of Silk-touch, level 1'<br>
  *  - DROP ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook<br>
@@ -88,7 +87,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * @author Mason Adkins
  */
 
-public class BookCommand extends AbstractCommand implements Listener{
+public class ScribeCommand extends AbstractCommand implements Listener{
 
 	private enum BookAction { GIVE, DROP, EQUIP, NONE }
 

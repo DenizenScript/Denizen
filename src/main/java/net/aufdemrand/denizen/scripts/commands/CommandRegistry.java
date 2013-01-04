@@ -1,39 +1,13 @@
 package net.aufdemrand.denizen.scripts.commands;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.scripts.commands.core.AnnounceCommand;
-import net.aufdemrand.denizen.scripts.commands.core.BookCommand;
-import net.aufdemrand.denizen.scripts.commands.core.CastCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ChatCommand;
-import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
-import net.aufdemrand.denizen.scripts.commands.core.DisengageCommand;
-import net.aufdemrand.denizen.scripts.commands.core.DropCommand;
-import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ExecuteCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FeedCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FlagCommand;
-import net.aufdemrand.denizen.scripts.commands.core.GiveCommand;
-import net.aufdemrand.denizen.scripts.commands.core.HealCommand;
-import net.aufdemrand.denizen.scripts.commands.core.IfCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ListenCommand;
-import net.aufdemrand.denizen.scripts.commands.core.LookcloseCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ModifyBlockCommand;
-import net.aufdemrand.denizen.scripts.commands.core.NarrateCommand;
-import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
-import net.aufdemrand.denizen.scripts.commands.core.PlaySoundCommand;
-import net.aufdemrand.denizen.scripts.commands.core.RandomCommand;
-import net.aufdemrand.denizen.scripts.commands.core.SwitchCommand;
-import net.aufdemrand.denizen.scripts.commands.core.TakeCommand;
-import net.aufdemrand.denizen.scripts.commands.core.TeleportCommand;
-import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
+import net.aufdemrand.denizen.scripts.commands.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommandRegistry implements DenizenRegistry {
 
@@ -73,7 +47,8 @@ public class CommandRegistry implements DenizenRegistry {
 	@Override
 	public void registerCoreMembers() {
 		new AnnounceCommand().activate().as("ANNOUNCE").withOptions("['Text to announce']", 1);
-		new BookCommand().activate().as("BOOK").withOptions("TBD", 0);
+		new ScribeCommand().activate().as("SCRIBE").withOptions("TBD", 0);
+        new RuntaskCommand().activate().as("RUNTASK").withOptions("RUNTASK (ID:id_name{script_name}) [SCRIPT:script_name] (INSTANT|QUEUE:QueueType{PLAYER_TASK}) (DELAY:#{0})", 1);
 		new CastCommand().activate().as("CAST").withOptions("[TYPE:PotionEffectType] (DURATION:#) (POWER:#) (TARGET:NPC|PLAYER)", 1);
 		new ChatCommand().activate().as("CHAT").withOptions("['Message to chat'] (NPCID:#) (TARGETS:#|player_name)", 1);
 		new CooldownCommand().activate().as("COOLDOWN").withOptions("[DURATION:#] (GLOBAL) (PLAYER:player_name) ('SCRIPT:name of script')", 1);

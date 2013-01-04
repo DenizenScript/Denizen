@@ -1,11 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
@@ -13,6 +7,11 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Core dScript IF command.
@@ -40,18 +39,18 @@ public class IfCommand extends AbstractCommand {
         Boolean outcome = null;
     }
 
-    List<Comparable> comparables = new ArrayList<Comparable>();
+    private List<Comparable> comparables = new ArrayList<Comparable>();
 
-    String outcomeCommand;
-    List<String> outcomeArgs = new ArrayList<String>();
+    private String outcomeCommand;
+    private List<String> outcomeArgs = new ArrayList<String>();
 
-    String elseCommand;
-    List<String> elseArgs = new ArrayList<String>();
+    private String elseCommand;
+    private List<String> elseArgs = new ArrayList<String>();
 
-    Player player;
-    DenizenNPC npc;
-    String script;
-    String step;
+    private Player player;
+    private DenizenNPC npc;
+    private String script;
+    private String step;
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -257,7 +256,7 @@ public class IfCommand extends AbstractCommand {
         int andmet = 0;
         for (Comparable compareable : comparables) {
             if (compareable.bridge == Bridge.AND)
-                if (compareable.outcome.booleanValue()) andmet++;
+                if (compareable.outcome) andmet++;
             andcount++;
         }
 

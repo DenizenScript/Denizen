@@ -1,20 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
-
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Randomly selects a random script entry from the proceeding entries, discards
@@ -44,10 +43,6 @@ public class RandomCommand extends AbstractCommand {
 	private	QueueType sendingQueue;
 	private	DenizenNPC npc;
 	
-	@Override
-	public void onEnable() {
-	}
-
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry)
 			throws InvalidArgumentsException {
