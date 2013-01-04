@@ -1,16 +1,15 @@
 package net.aufdemrand.denizen.notables;
 
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 
 /**
  * This class manages a list of Notable objects.  Notable objects are named
@@ -103,7 +102,7 @@ public class NotableManager {
 			try {
 				this.notableMap.put (ns[0], new Notable(ns[0], new Location(Bukkit.getServer().getWorld(ns[1]), Double.valueOf(ns[2]), Double.valueOf(ns[3]), Double.valueOf(ns[4]))));
 			} catch (NumberFormatException nfe) {
-				dB.echoError("NumberFormateException loading notable: " + notable);
+				dB.echoError("NumberFormatException loading notable: " + notable);
 			}
 		}
 	}

@@ -74,6 +74,7 @@ public class CommandRegistry implements DenizenRegistry {
 		new TakeCommand().activate ().as("TAKE").withOptions("[MONEY|ITEMINHAND|#(:#)|MATERIAL_TYPE(:#)] (QTY:#)", 1);
 		new TeleportCommand ().activate ().as ("TELEPORT").withOptions ("(NPC) [LOCATION:x,y,z,world] (TARGETS:[NPCID:#]|[PLAYER:PlayerName])", 1);
 		new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
+        new ZapCommand().activate().as("ZAP").withOptions("[#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})", 0);
 
 		dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
 	}
