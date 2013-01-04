@@ -1,119 +1,145 @@
 package net.aufdemrand.denizen.notables;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+/**
+ * This class manages a list of Notable objects.  Notable objects are named
+ * locations in the game. 
+ *
+ * @author	aufdemrand
+ */
 public class NotableManager {
+	//
+	// Keeps a reference to the plugin that this manager is associated to.
+	//
+	Denizen denizen;
 
-    Denizen denizen;
+	//
+	// This contains the Map of notable location names to the actual Location
+	// objects.
+	//
+	private	Map<String,Notable>	notableMap = new ConcurrentHashMap<String,Notable> ();
 
-    private List<Notable> notables = new ArrayList<Notable>();
+	/**
+	 * Create a new NotableManager without a reference to the plugin.
+	 */
+	public NotableManager () {
+	}
 
-    private Map<Integer, List<String>> links = new ConcurrentHashMap<Integer, List<String>>();
-    public NotableManager(Denizen denizen) {
-        this.denizen = denizen;
-    }
+	/**
+	 * Create a new NotableMananger.
+	 * 
+	 * @param denizen
+	 */
+	public NotableManager(Denizen denizen) {
+		this.denizen = denizen;
+	}
+	
+	/**
+	 * This method will add a Notable location to the manager's list of notable
+	 * locations.
+	 * 
+	 * @param name	The name of the location.
+	 * @param location	The location to set as the notable location.
+	 * 
+	 * @return	True if the notable was added, false otherwise.
+	 */
+	public boolean addNotable (String name, Location location) {
+		this.notableMap.put (name, new Notable (name, location));
+		saveNotables();
+		return true;
+	}
 
-    public boolean addLink(String notableName, NPC npc) {
-        Notable notable = getNotable(notableName);
-        if (notable == null) return false;
-        // Add to notable
-        getNotable(notableName).addLink(npc.getId());
-        // Add to links list for easy recall by NPCID
-        List<String> tempList = new ArrayList<String>();
-        if (links.containsKey(Integer.valueOf(npc.getId()))) tempList = links.get(Integer.valueOf(npc.getId()));
-        tempList.add(notableName.toUpperCase());
-        links.put(Integer.valueOf(npc.getId()), tempList);
-        // Save to saves.yml
-        saveNotables();
-        return true;
-    }
+	/**
+	 * Returns the Notable object associated to the specified name.
+	 * 
+	 * @param name	The name of the notable to find.
+	 * 
+	 * @return	The Notable object associated to the name, or null if not found.
+	 */
+	public Notable getNotable(String name) {
+		return this.notableMap.get(name);
+	}
 
-    public boolean addNotable(String name, Location location) {
-        Notable newNotable = new Notable(name, location);
-        if (notables.contains(newNotable))
-            return false;
-        notables.add(newNotable);
-        saveNotables();
-        return true;
-    }
+	/**
+	 * Returns the collection of Notable locations that are managed.
+	 * 
+	 * @return	The collection of Notables managed.
+	 */
+	public Collection<Notable> getNotables() {
+		return this.notableMap.values();
+	}
 
-    public Notable getNotable(String name) {
-        for (Notable notable : notables)
-            if (notable.getName().equalsIgnoreCase(name))
-                return notable;
-        return null;
-    }
+	/**
+	 * This clears the manager's internal collection of Notable locations and
+	 * loads them from external storage.  If there are NO notables found in the
+	 * external storage, this will not clear the manager's internal list.
+	 */
+	public void loadNotables() {
+		//
+		// Grab the saved list, if it's empty, don't change anything.
+		//
+		List<String> notablesList = denizen.getSaves().getStringList("Notables.List");
+		if (notablesList.isEmpty()) {
+			return;
+		}
 
-    public List<Notable> getNotables() {
-        return notables;
-    }
+		//
+		// Clear the internal collection and reload them.
+		//
+		this.notableMap.clear();
+		for (String notable : notablesList) {
+			String[] ns = notable.split(";");
+			try {
+				this.notableMap.put (ns[0], new Notable(ns[0], new Location(Bukkit.getServer().getWorld(ns[1]), Double.valueOf(ns[2]), Double.valueOf(ns[3]), Double.valueOf(ns[4]))));
+			} catch (NumberFormatException nfe) {
+				dB.echoError("NumberFormateException loading notable: " + notable);
+			}
+		}
+	}
 
-    public void loadNotables() {
-        List<String> notablesList = denizen.getSaves().getStringList("Notables.List");
-        if (notablesList.isEmpty()) return;
-        notables.clear();
-        for (String notable : notablesList) {
-            String[] ns = notable.split(";");
-            notables.add(new Notable(ns[0], new Location(Bukkit.getServer().getWorld(ns[1]), Double.valueOf(ns[2]), Double.valueOf(ns[3]), Double.valueOf(ns[4]))));
-            if (ns.length > 5)
-                for (int x = 5; x < ns.length; x++)
-                    try {
-                        // Add to Notable
-                        getNotable(ns[0]).addLink(Integer.valueOf(ns[x]));
-                        // Add to links list for easy recall by NPCID
-                        List<String> tempList = new ArrayList<String>();
-                        if (links.containsKey(Integer.valueOf(ns[x]))) tempList = links.get(Integer.valueOf(ns[x]));
-                        tempList.add(ns[0]);
-                        links.put(Integer.valueOf(ns[x]), tempList);
-                    } catch (Exception e) { dB.echoDebug("Invalid NPC linked to Notable '%s'", ns[0]); }
-        }
-    }
+	/**
+	 * This method removes a Notable location from the manager's internal
+	 * collection.
+	 * 
+	 * @param notable	The Notable to remove.
+	 * 
+	 * @return	The Notable that was removed, or null if not found.
+	 */
+	public Notable removeNotable(Notable notable) {
+		return this.notableMap.remove(notable.getName()); 
+	}
 
-    public boolean removeLink(String notableName, NPC npc) {
-        Notable notable = getNotable(notableName);
-        if (notable == null) return false;
-        // Remove link
-        getNotable(notableName).removeLink(npc.getId());
-        // Get list to modify for links
-        List<String> tempList = new ArrayList<String>();
-        if (links.containsKey(Integer.valueOf(npc.getId()))) tempList = links.get(Integer.valueOf(npc.getId()));
-        tempList.remove(notableName.toUpperCase());
-        links.put(Integer.valueOf(npc.getId()), tempList);
-        saveNotables();
-        return true;
-    }
+	/**
+	 * This removes a Notable from teh manager's internal collection using the
+	 * name of the Notable.
+	 * 
+	 * @param notableName	The name of the Notable to remove.
+	 * 
+	 * @return	The Notable that was removed, or null if not found.
+	 */
+	public Notable removeNotable(String notableName) {
+		return this.notableMap.remove(notableName);
+	}
 
-    public boolean removeNotable(Notable notable) {
-        if (notables.contains(notable)) {
-            notables.remove(notable);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean removeNotable(String notableName) {
-        Notable notable = getNotable(notableName);
-        if (notable == null) return false;
-        removeNotable(notable);
-        return true;
-    }
-    
-    public void saveNotables() {
-        List<String> notablesList = new ArrayList<String>();
-        for (Notable notable : notables) {
-            notablesList.add(notable.stringValue());
-        }
-        denizen.getSaves().set("Notables.List", notablesList);
-    }
-
+	/**
+	 * Saves the list of notable locations to external storage.
+	 */
+	public void saveNotables() {
+		List<String> notablesList = new ArrayList<String>();
+		for (Notable notable : this.notableMap.values()) {
+			notablesList.add(notable.stringValue());
+		}
+		denizen.getSaves().set("Notables.List", notablesList);
+	}
 }
