@@ -1,12 +1,5 @@
 package net.aufdemrand.denizen.scripts;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
@@ -15,10 +8,17 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.RequirementMissingException;
-
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ScriptHelper {
 
@@ -148,30 +148,50 @@ public class ScriptHelper {
 		return null;
 	}
 
-	/*
-	 * Gets the current step of a script for a Player
-	 */
-
 	public String getCurrentStep(Player player, String scriptName) {
 		return getCurrentStep(player, scriptName, true);
 	}
 
+    /**
+     * Returns the current step for a Player and specified script. If no current step is found, the default
+     * step is used, 'Default', unless another default (used by ending the step-name with a '*') is specified
+     * in the script.
+     *
+     * @param player the Player to check
+     * @param scriptName the name of the script to check
+     * @param verbose whether debugging information should be shown
+     *
+     * @return the current, or default, step name
+     *
+     */
 	public String getCurrentStep(Player player, String scriptName, Boolean verbose) {
-		String currentStep = "1";
+		String current = "DEFAULT";
+
 		if (denizen.getSaves().getString("Players." + player.getName() + "." + scriptName.toUpperCase() + "." + "Current Step") != null) {
-			currentStep =  denizen.getSaves().getString("Players." + player.getName() + "." + scriptName.toUpperCase() + "." + "Current Step");
-			if (verbose) dB.echoDebug("Getting current step... found '" + currentStep + "'");
-			return currentStep;
+			current =  denizen.getSaves().getString("Players." + player.getName() + "." + scriptName.toUpperCase() + "." + "Current Step");
+			if (verbose) dB.echoDebug("Getting current step... found '" + current + "'");
+			return current;
 		}
-		if (verbose) dB.echoDebug("Getting current step... not found, assuming '1'");
-		return currentStep;
+
+        // No saved step found, let's look for defaults (dScript default steps end in *)
+        if (denizen.getScripts().contains(scriptName.toUpperCase())) {
+        Set<String> steps = denizen.getScripts().getConfigurationSection(scriptName.toUpperCase()).getKeys(false);
+            // For backwards compatibility (dScript steps used to be numbered, default being '1')
+            if (steps.contains("1")) current = "1";
+            for (String step : steps)
+                if (step.endsWith("*"))
+                    current = step;
+        }
+
+        if (verbose) dB.echoDebug("Getting current step... not found, assuming '" + current + "'");
+		return current;
 	}
 
 	/**
 	 * Methods to help get String script entries from a YAML script.
 	 */
 
-	public String scriptKey = ".SCRIPT";
+	public static String scriptKey = ".SCRIPT";
 
 	public String getTriggerScriptPath(String scriptName, String step, String triggerName) {
 		return scriptName.toUpperCase() + ".STEPS." + step + "." +  triggerName.toUpperCase() + " TRIGGER.";

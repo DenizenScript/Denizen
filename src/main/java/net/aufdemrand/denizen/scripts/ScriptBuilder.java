@@ -1,22 +1,21 @@
 package net.aufdemrand.denizen.scripts;
 
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
+import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.aufdemrand.denizen.utilities.arguments.aH;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
-import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 
 public class ScriptBuilder {
 
@@ -162,9 +161,8 @@ public class ScriptBuilder {
         dB.echoDebug(DebugElement.Footer);
     }
 
-    
     /**
-     * Cheater method for running a Player task script. Will automatically
+     * 'Cheater' method for running a Player task script. Will automatically
      * build script entries, arguments, and queue to a Player_Task Queue.
      * 
      * @param player
@@ -173,6 +171,7 @@ public class ScriptBuilder {
      * 		The name of the task script.
      */
     public boolean runTaskScript(Player player, String scriptName) {
+        // Check to make sure script exists
         if (!aH.matchesScript("script:" + scriptName)) return false;
         try {
         List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
@@ -186,17 +185,21 @@ public class ScriptBuilder {
     }
     
     /**
-     * Cheater method for running a Player task script with a NPC attached. Will automatically
+     * 'Cheater' method for running a Player task script with a NPC attached. Will automatically
      * build script entries, arguments, and queue to a Player_Task Queue.
-     * 
+     *
      * @param player
      * 		The player whose queue to use.
      * @param npc
      * 		The DenizenNPC object of which to attach to the scriptEntries.
      * @param scriptName
      * 		The name of the task script.
+     *
+     * @return true if successful
+     *
      */
     public boolean runTaskScript(Player player, DenizenNPC npc, String scriptName) {
+        // Check to make sure script exists
         if (!aH.matchesScript("script:" + scriptName)) return false;
         try {
         List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
@@ -206,19 +209,24 @@ public class ScriptBuilder {
             if (dB.showStackTraces) e.printStackTrace();
             return false;
         }
+
         return true;
     }
 
     /**
-     * Cheater method for running a NPC task script. Will automatically
+     * 'Cheater' method for running a NPC task script. Will automatically
      * build script entries, arguments, and queue to a NPC Queue.
      * 
      * @param npc
      * 		The DenizenNPC object of which to attach to the scriptEntries.
      * @param scriptName
      * 		The name of the task script.
+     *
+     * @return true if successful
+     *
      */
     public boolean runTaskScript(DenizenNPC npc, String scriptName) {
+        // Check to make sure script exists
         if (!aH.matchesScript("script:" + scriptName)) return false;
         try {
         List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
@@ -228,6 +236,7 @@ public class ScriptBuilder {
             if (dB.showStackTraces) e.printStackTrace();
             return false;
         }
+
         return true;
     }
     
@@ -241,8 +250,12 @@ public class ScriptBuilder {
      * 		The DenizenNPC object of which to attach to the scriptEntries.
      * @param scriptName
      * 		The name of the task script.
+     *
+     * @return true if successful
+     *
      */
     public boolean runTaskScript(DenizenNPC npc, Player player, String scriptName) {
+        // Check to make sure script exists
         if (!aH.matchesScript("script:" + scriptName)) return false;
         try {
         List<String> theScript = plugin.getScriptEngine().getScriptHelper().getScriptContents(scriptName + ".SCRIPT");
@@ -252,6 +265,41 @@ public class ScriptBuilder {
             if (dB.showStackTraces) e.printStackTrace();
             return false;
         }
+
+        return true;
+    }
+
+    /**
+     * Runs a task script without queueing it. All commands are run instantly, in order.
+     *
+     * @param player the Player to attach to the ScriptEntry
+     * @param npc the NPC to attach to the ScriptEntry
+     * @param scriptName the Script to attach to the ScriptEntry
+     *
+     * @return true if successful
+     *
+     */
+    public boolean runTaskScriptInstantly(Player player, DenizenNPC npc, String scriptName) {
+        // Check to make sure script exists
+        if (!aH.matchesScript("script:" + scriptName)) return false;
+        try {
+        // Fetch script
+        List<String> script = plugin.getScriptEngine().getScriptHelper()
+                .getStringListIgnoreCase(scriptName + plugin.getScriptEngine().getScriptHelper().scriptKey);
+        if (script.isEmpty()) return false;
+
+        // Build script entries
+        List<ScriptEntry> scriptEntries = plugin.getScriptEngine().getScriptBuilder().buildScriptEntries(player, npc, script, scriptName, null);
+
+        // Execute scriptEntries
+        for (ScriptEntry scriptEntry : scriptEntries)
+            plugin.getScriptEngine().getScriptExecuter().execute(scriptEntry);
+
+        } catch (Exception e) {
+            if (dB.showStackTraces) e.printStackTrace();
+            return false;
+        }
+
         return true;
     }
     

@@ -2,23 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="57499c69-19b6-467c-8c51-42a0b03fb71a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" />
-      <change type="DELETED" beforePath="C:\Users\Press\Documents\GitHub\Denizen\.idea\libraries\Maven__net_citizensnpcs_citizensapi_2_0_6_SNAPSHOT.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Press\Documents\GitHub\Denizen\.idea\libraries\Maven__org_bukkit_craftbukkit_1_4_6_R0_1_SNAPSHOT.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Press\Documents\GitHub\Denizen\.idea\libraries\Maven__org_uncommons_maths_uncommons_maths_1_2_2a.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/GiveCommand.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/GiveCommand.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/PlayerTags.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/PlayerTags.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/AnnounceCommand.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/AnnounceCommand.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptBuilder.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/debugging/dB.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/debugging/dB.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Denizen.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357257079001" ignored="false" />
+    <file path="/Dummy.txt" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357269141807" ignored="false" />
     <file path="/aH.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357247849093" ignored="false" />
     <file path="/TagManager.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357167003892" ignored="false" />
     <file path="/fragment.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357242032146" ignored="false" />
@@ -33,7 +25,7 @@
     <file path="/pom.xml" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357169382022" ignored="false" />
     <file path="/ScriptBuilder.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357258850580" ignored="false" />
     <file path="/dB.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357233970374" ignored="false" />
-    <file path="/RuntaskCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357258152662" ignored="false" />
+    <file path="/RuntaskCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357266691479" ignored="false" />
     <file path="/a.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357246638742" ignored="false" />
     <file path="/EngageCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357249727640" ignored="false" />
     <file path="/ScriptHelper.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357260109330" ignored="false" />
@@ -100,23 +92,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="EngageCommand.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/EngageCommand.java">
+      <file leaf-file-name="RuntaskCommand.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="61" column="0" selection-start="1995" selection-end="1995" vertical-scroll-proportion="0.0">
+            <state line="47" column="26" selection-start="2349" selection-end="2349" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RuntaskCommand.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java">
+      <file leaf-file-name="aH.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="92" column="33" selection-start="3780" selection-end="3780" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#3254#3271#0" expanded="true" />
-              </folding>
+            <state line="587" column="54" selection-start="24960" selection-end="24960" vertical-scroll-proportion="0.3321033">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -130,10 +119,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ScriptHelper.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ScriptHelper.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="154" column="49" selection-start="5746" selection-end="5746" vertical-scroll-proportion="0.25185186">
+            <state line="192" column="49" selection-start="7463" selection-end="7463" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -142,7 +131,7 @@
       <file leaf-file-name="ConfigurationSection.class" pinned="false" current="false" current-in-tab="false">
         <entry file="jar://$MAVEN_REPOSITORY$/org/bukkit/craftbukkit/1.4.6-R0.4-SNAPSHOT/craftbukkit-1.4.6-R0.4-SNAPSHOT.jar!/org/bukkit/configuration/ConfigurationSection.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="36" selection-start="230" selection-end="230" vertical-scroll-proportion="-4.08">
+            <state line="7" column="36" selection-start="230" selection-end="230" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -151,7 +140,7 @@
       <file leaf-file-name="MemorySection.class" pinned="false" current="false" current-in-tab="false">
         <entry file="jar://$MAVEN_REPOSITORY$/org/bukkit/craftbukkit/1.4.6-R0.4-SNAPSHOT/craftbukkit-1.4.6-R0.4-SNAPSHOT.jar!/org/bukkit/configuration/MemorySection.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="127" column="57" selection-start="5896" selection-end="5896" vertical-scroll-proportion="-7.2">
+            <state line="127" column="57" selection-start="5896" selection-end="5896" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -169,7 +158,7 @@
       <file leaf-file-name="AnnounceCommand.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/AnnounceCommand.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="16" selection-start="576" selection-end="576" vertical-scroll-proportion="0.0">
+            <state line="28" column="3" selection-start="1090" selection-end="1090" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -231,9 +220,10 @@
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/PlayerTags.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/EngageCommand.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptBuilder.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/AnnounceCommand.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" />
       </list>
     </option>
   </component>
@@ -259,38 +249,6 @@
         <PATH_ELEMENT>
           <option name="myItemId" value="Denizen" />
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Dependencies" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$DependenciesNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Denizen" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Plugins" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$PluginsNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Denizen" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="Lifecycle" />
-          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$LifecycleNode" />
         </PATH_ELEMENT>
       </PATH>
     </treeState>
@@ -373,78 +331,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope">
-        <subPane subId="Production">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="Denizen">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="Denizen">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="src">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="main">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="resources">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="Denizen">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="src">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="main">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="java">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="Denizen">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="src">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -753,6 +639,78 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope">
+        <subPane subId="Production">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="Denizen">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="Denizen">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="src">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="main">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="resources">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="Denizen">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="src">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="main">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="java">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="Denizen">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="src">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="PackagesPane">
         <subPane>
           <PATH>
@@ -775,21 +733,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="n.a.d.scripts" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Denizen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="denizen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="n.a.d.n.actions" />
+              <option name="myItemId" value="n.a.d.u.arguments" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -829,9 +773,9 @@
     <property name="restartRequiresConfirmation" value="true" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
@@ -885,6 +829,19 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -910,19 +867,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -1019,21 +963,21 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3030303" sideWeight="0.9991646" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32967034" sideWeight="0.6969697" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32833335" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32682925" sideWeight="0.50374067" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3272727" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.12911184" sideWeight="0.6716667" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17000647" sideWeight="0.6969697" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18092105" sideWeight="0.6716667" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16940789" sideWeight="0.6969697" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="left" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.40032414" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17434211" sideWeight="0.6716667" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24561404" sideWeight="0.66847825" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="32" y="340" width="1078" height="388" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32833335" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -1101,9 +1045,7 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/package-info.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/GiveCommand.java">
@@ -1115,16 +1057,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/PlayerTags.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="86" selection-start="713" selection-end="713" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="596" column="63" selection-start="25264" selection-end="25264" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="21" column="86" selection-start="713" selection-end="713" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/CastCommand.java">
@@ -1155,27 +1088,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/AnnounceCommand.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="16" selection-start="576" selection-end="576" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptEntry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="103" column="23" selection-start="3335" selection-end="3335" vertical-scroll-proportion="0.0">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="33" selection-start="3780" selection-end="3780" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3254#3271#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1195,21 +1111,42 @@
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/bukkit/craftbukkit/1.4.6-R0.4-SNAPSHOT/craftbukkit-1.4.6-R0.4-SNAPSHOT.jar!/org/bukkit/configuration/MemorySection.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="127" column="57" selection-start="5896" selection-end="5896" vertical-scroll-proportion="-7.2">
+        <state line="127" column="57" selection-start="5896" selection-end="5896" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/bukkit/craftbukkit/1.4.6-R0.4-SNAPSHOT/craftbukkit-1.4.6-R0.4-SNAPSHOT.jar!/org/bukkit/configuration/ConfigurationSection.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="36" selection-start="230" selection-end="230" vertical-scroll-proportion="-4.08">
+        <state line="7" column="36" selection-start="230" selection-end="230" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="154" column="49" selection-start="5746" selection-end="5746" vertical-scroll-proportion="0.25185186">
+        <state line="192" column="49" selection-start="7463" selection-end="7463" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/AnnounceCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="3" selection-start="1090" selection-end="1090" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="26" selection-start="2349" selection-end="2349" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="587" column="54" selection-start="24960" selection-end="24960" vertical-scroll-proportion="0.3321033">
           <folding />
         </state>
       </provider>

@@ -26,7 +26,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  *  - ANNOUNCE "&#60;PLAYER.NAME> has completed '&#60;FLAG.P:currentQuest>'!" <br>
  *  - ANNOUNCE "&#60;GOLD>$$$ &#60;WHITE>- Make some quick cash at our &#60;RED>MINEA-SINO&#60;WHITE>!" 
  * </ol></tt>
-
+ *
  * @author Jeremy Schroeder
  * 
  */
