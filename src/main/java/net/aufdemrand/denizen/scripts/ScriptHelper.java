@@ -175,7 +175,7 @@ public class ScriptHelper {
 
         // No saved step found, let's look for defaults (dScript default steps end in *)
         if (denizen.getScripts().contains(scriptName.toUpperCase())) {
-        Set<String> steps = denizen.getScripts().getConfigurationSection(scriptName.toUpperCase()).getKeys(false);
+        Set<String> steps = denizen.getScripts().getConfigurationSection(scriptName.toUpperCase() + ".STEPS").getKeys(false);
             // For backwards compatibility (dScript steps used to be numbered, default being '1')
             if (steps.contains("1")) current = "1";
             for (String step : steps)

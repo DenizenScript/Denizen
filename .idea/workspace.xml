@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="57499c69-19b6-467c-8c51-42a0b03fb71a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/ZapCommand.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandRegistry.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandRegistry.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/notables/NotableManager.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/notables/NotableManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Denizen.iws" />
@@ -95,10 +93,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="CommandRegistry.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="CommandRegistry.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandRegistry.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="76" column="136" selection-start="4849" selection-end="4849" vertical-scroll-proportion="0.5068702">
+            <state line="76" column="136" selection-start="4849" selection-end="4849" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -142,10 +140,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ScriptHelper.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ScriptHelper.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="170" column="139" selection-start="6482" selection-end="6609" vertical-scroll-proportion="0.0">
+            <state line="177" column="107" selection-start="6982" selection-end="6982" vertical-scroll-proportion="0.6183206">
               <folding />
             </state>
           </provider>
@@ -154,7 +152,7 @@
       <file leaf-file-name="NotableManagerTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/net/aufdemrand/denizen/notables/NotableManagerTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="40" selection-start="252" selection-end="252" vertical-scroll-proportion="0.0">
+            <state line="776" column="40" selection-start="15837" selection-end="15837" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="false" />
               </folding>
@@ -165,11 +163,11 @@
       <file leaf-file-name="NotableManager.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/notables/NotableManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="104" column="42" selection-start="2863" selection-end="2863" vertical-scroll-proportion="0.0">
+            <state line="112" column="42" selection-start="3012" selection-end="3012" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="false" />
                 <element signature="e#764#780#0" expanded="false" />
-                <element signature="e#3725#3733#0" expanded="false" />
+                <element signature="e#3776#3784#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -224,7 +222,6 @@
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/EngageCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptBuilder.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/AnnounceCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/IfCommand.java" />
@@ -235,6 +232,7 @@
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/notables/NotableManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/ZapCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandRegistry.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java" />
       </list>
     </option>
   </component>
@@ -297,8 +295,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="101" />
-    <option name="y" value="173" />
+    <option name="x" value="108" />
+    <option name="y" value="124" />
     <option name="width" value="1646" />
     <option name="height" value="882" />
   </component>
@@ -744,7 +742,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="101" y="173" width="1646" height="882" extended-state="0" />
+    <frame x="108" y="124" width="1646" height="882" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3030303" sideWeight="0.9991646" order="8" side_tool="false" content_ui="tabs" />
@@ -898,7 +896,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/net/aufdemrand/denizen/notables/NotableManagerTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="40" selection-start="252" selection-end="252" vertical-scroll-proportion="0.0">
+        <state line="776" column="40" selection-start="15837" selection-end="15837" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="false" />
           </folding>
@@ -907,19 +905,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/notables/NotableManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="104" column="42" selection-start="2863" selection-end="2863" vertical-scroll-proportion="0.0">
+        <state line="112" column="42" selection-start="3012" selection-end="3012" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="false" />
             <element signature="e#764#780#0" expanded="false" />
-            <element signature="e#3725#3733#0" expanded="false" />
+            <element signature="e#3776#3784#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="170" column="139" selection-start="6482" selection-end="6609" vertical-scroll-proportion="0.0">
-          <folding />
         </state>
       </provider>
     </entry>
@@ -948,7 +939,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandRegistry.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="76" column="136" selection-start="4849" selection-end="4849" vertical-scroll-proportion="0.5068702">
+        <state line="76" column="136" selection-start="4849" selection-end="4849" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="177" column="107" selection-start="6982" selection-end="6982" vertical-scroll-proportion="0.6183206">
           <folding />
         </state>
       </provider>
