@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.notables;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Collection;
@@ -778,6 +779,10 @@ public class NotableManagerTest {
   	Location loc = new Location (new TestWorld ("Test Name"), 69, 72, 6972);
   	mgr.addNotable("Test Notable", loc);
   	
-  	assertEquals (loc, mgr.getNotable("Test Notable"));
+  	assertTrue (mgr.getNotable ("Test Notable") != null);
+  	assertTrue (loc.getX() == mgr.getNotable("Test Notable").getLocation().getX());
+  	assertTrue (loc.getY() == mgr.getNotable("Test Notable").getLocation().getY());
+  	assertTrue (loc.getZ() == mgr.getNotable("Test Notable").getLocation().getZ());
+  	assertTrue (loc.getWorld ().getName ().equalsIgnoreCase (mgr.getNotable("Test Notable").getLocation().getWorld ().getName ()));
   }
 }
