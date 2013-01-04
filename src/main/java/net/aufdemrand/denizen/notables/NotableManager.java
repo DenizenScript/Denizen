@@ -88,21 +88,23 @@ public class NotableManager {
 		//
 		// Grab the saved list, if it's empty, don't change anything.
 		//
-		List<String> notablesList = denizen.getSaves().getStringList("Notables.List");
-		if (notablesList.isEmpty()) {
-			return;
-		}
-
-		//
-		// Clear the internal collection and reload them.
-		//
-		this.notableMap.clear();
-		for (String notable : notablesList) {
-			String[] ns = notable.split(";");
-			try {
-				this.notableMap.put (ns[0], new Notable(ns[0], new Location(Bukkit.getServer().getWorld(ns[1]), Double.valueOf(ns[2]), Double.valueOf(ns[3]), Double.valueOf(ns[4]))));
-			} catch (NumberFormatException nfe) {
-				dB.echoError("NumberFormatException loading notable: " + notable);
+		if (this.denizen != null) {
+			List<String> notablesList = denizen.getSaves().getStringList("Notables.List");
+			if (notablesList.isEmpty()) {
+				return;
+			}
+	
+			//
+			// Clear the internal collection and reload them.
+			//
+			this.notableMap.clear();
+			for (String notable : notablesList) {
+				String[] ns = notable.split(";");
+				try {
+					this.notableMap.put (ns[0], new Notable(ns[0], new Location(Bukkit.getServer().getWorld(ns[1]), Double.valueOf(ns[2]), Double.valueOf(ns[3]), Double.valueOf(ns[4]))));
+				} catch (NumberFormatException nfe) {
+					dB.echoError("NumberFormatException loading notable: " + notable);
+				}
 			}
 		}
 	}
@@ -139,6 +141,9 @@ public class NotableManager {
 		for (Notable notable : this.notableMap.values()) {
 			notablesList.add(notable.stringValue());
 		}
-		denizen.getSaves().set("Notables.List", notablesList);
+
+		if (this.denizen != null) {
+			this.denizen.getSaves().set("Notables.List", notablesList);
+		}
 	}
 }
