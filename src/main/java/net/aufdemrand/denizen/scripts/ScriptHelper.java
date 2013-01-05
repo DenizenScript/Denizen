@@ -205,7 +205,7 @@ public class ScriptHelper {
 		if (contents.isEmpty()) {
 			dB.echoError("Non-valid script structure at:");
 			String spacing = "";
-			for (String node : path.split(":")) {
+			for (String node : path.split("\\.")) {
 				dB.echoDebug(spacing + node);
 				spacing = spacing + "  ";
 			}
