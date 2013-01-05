@@ -176,7 +176,8 @@ public class CommandHandler {
 		TriggerTrait trait = npc.getTrait(TriggerTrait.class);
 		if (args.hasValueFlag("name")) {
 			if (args.hasFlag('t')) trait.toggleTrigger(args.getFlag("name"));
-			if (args.hasValueFlag("cooldown")) trait.setLocalCooldown(args.getFlag("name"), args.getFlagDouble("cooldown"));
+			if (args.hasValueFlag("cooldown"))
+                trait.setLocalCooldown(args.getFlag("name"), args.getFlagDouble("cooldown"));
 			if (args.hasValueFlag("radius")) {
 				trait.setLocalRadius(args.getFlag("Name"), args.getFlagInteger("radius"));
 				Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger radius now " + args.getFlag("radius") + ".");
