@@ -1,11 +1,5 @@
 package net.aufdemrand.denizen;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import net.aufdemrand.denizen.events.ScriptsReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
@@ -13,12 +7,7 @@ import net.aufdemrand.denizen.notables.NotableManager;
 import net.aufdemrand.denizen.npc.DenizenNPCRegistry;
 import net.aufdemrand.denizen.npc.activities.ActivityEngine;
 import net.aufdemrand.denizen.npc.activities.ActivityRegistry;
-import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
-import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
-import net.aufdemrand.denizen.npc.traits.HealthTrait;
-import net.aufdemrand.denizen.npc.traits.NicknameTrait;
-import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizen.npc.traits.PushableTrait;
+import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
@@ -28,11 +17,9 @@ import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
-
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -42,6 +29,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Denizen extends JavaPlugin {
@@ -225,7 +218,7 @@ public class Denizen extends JavaPlugin {
 
     public void reloadScripts() {
         String concatenated = scriptEngine.getScriptHelper().concatenateScripts();
-        if (scriptConfig == null) scriptConfig = new YamlConfiguration();
+        scriptConfig = new YamlConfiguration();
 
         try { 
         	scriptConfig.loadFromString(concatenated);

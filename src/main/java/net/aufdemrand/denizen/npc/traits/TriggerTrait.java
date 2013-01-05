@@ -1,14 +1,5 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
@@ -19,6 +10,14 @@ import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.command.exception.CommandException;
 import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Paginator;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 public class TriggerTrait extends Trait implements Listener {
@@ -95,7 +94,7 @@ public class TriggerTrait extends Trait implements Listener {
 
     public void setLocalCooldown(String triggerName, double value) {
         if (cooldownDuration.containsKey(triggerName.toUpperCase()))
-            cooldownDuration.put(triggerName, value);
+            cooldownDuration.put(triggerName.toUpperCase(), value);
     }
 
     public double getCooldownDuration(String triggerName) {

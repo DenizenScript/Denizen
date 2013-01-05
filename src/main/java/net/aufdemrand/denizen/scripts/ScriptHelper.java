@@ -39,13 +39,12 @@ public class ScriptHelper {
 		String theScript = null;
 		List<String> assignedScripts = denizen.getScriptEngine().getScriptHelper().getStringListIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment() + ".INTERACT SCRIPTS");
 		
-		dB.echoDebug(DebugElement.Header, "Getting interact script: " + npc.getName() + "/" + player.getName());
-
+        // No debug necessary if there are no Interact Scripts in this Assignment.
 		if (assignedScripts.isEmpty()) { 
-			dB.echoError("Could not find any interact scripts!");
-			dB.echoDebug(DebugElement.Footer);
-			return null; 
+			return null;
 		}
+
+        dB.echoDebug(DebugElement.Header, "Getting interact script: " + npc.getName() + "/" + player.getName());
 
 		/* Get scripts that meet requirements and add them to interactableScripts. */
 		List<PriorityPair> interactableScripts = new ArrayList<PriorityPair>();
@@ -175,7 +174,7 @@ public class ScriptHelper {
 
         // No saved step found, let's look for defaults (dScript default steps end in *)
         if (denizen.getScripts().contains(scriptName.toUpperCase())) {
-        Set<String> steps = denizen.getScripts().getConfigurationSection(scriptName.toUpperCase()).getKeys(false);
+        Set<String> steps = denizen.getScripts().getConfigurationSection(scriptName.toUpperCase() + ".STEPS").getKeys(false);
             // For backwards compatibility (dScript steps used to be numbered, default being '1')
             if (steps.contains("1")) current = "1";
             for (String step : steps)
@@ -205,7 +204,7 @@ public class ScriptHelper {
 		if (contents.isEmpty()) {
 			dB.echoError("Non-valid script structure at:");
 			String spacing = "";
-			for (String node : path.split(":")) {
+			for (String node : path.split("\\.")) {
 				dB.echoDebug(spacing + node);
 				spacing = spacing + "  ";
 			}
@@ -226,7 +225,7 @@ public class ScriptHelper {
 			File file = new File(denizen.getDataFolder() + File.separator + "scripts");
 			File[] files = file.listFiles();
 
-			if (files.length > 0){
+			if (files.length > 0) {
 				StringBuilder sb = new StringBuilder();  
 				for (File f : files){
 					String fileName = f.getName();

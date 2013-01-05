@@ -1,17 +1,9 @@
 package net.aufdemrand.denizen;
 
-import java.util.Set;
-
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
-import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
-import net.aufdemrand.denizen.npc.traits.HealthTrait;
-import net.aufdemrand.denizen.npc.traits.NicknameTrait;
-import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizen.npc.traits.PushableTrait;
+import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.Command;
@@ -20,10 +12,11 @@ import net.citizensnpcs.command.exception.CommandException;
 import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Messaging;
 import net.citizensnpcs.util.Paginator;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Set;
 
 public class CommandHandler {
 
@@ -146,7 +139,7 @@ public class CommandHandler {
 		AssignmentTrait trait = npc.getTrait(AssignmentTrait.class);
 
 		if (args.hasValueFlag("set")) {
-			if (trait.setAssignment(args.getFlag("set"), player)) 
+			if (trait.setAssignment(args.getFlag("set").replace("\"", ""), player))
 				Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " has been assigned '" + trait.getAssignment() + "'.");
 			else Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
 			return;
@@ -183,7 +176,7 @@ public class CommandHandler {
 		TriggerTrait trait = npc.getTrait(TriggerTrait.class);
 		if (args.hasValueFlag("name")) {
 			if (args.hasFlag('t')) trait.toggleTrigger(args.getFlag("name"));
-			if (args.hasValueFlag("cooldown")) trait.setLocalCooldown(args.getFlag("Name"), args.getFlagDouble("cooldown"));
+			if (args.hasValueFlag("cooldown")) trait.setLocalCooldown(args.getFlag("name"), args.getFlagDouble("cooldown"));
 			if (args.hasValueFlag("radius")) {
 				trait.setLocalRadius(args.getFlag("Name"), args.getFlagInteger("radius"));
 				Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger radius now " + args.getFlag("radius") + ".");
