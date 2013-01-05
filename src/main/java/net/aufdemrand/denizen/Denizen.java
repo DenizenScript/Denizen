@@ -32,7 +32,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -268,35 +267,6 @@ public class Denizen extends JavaPlugin {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + savesConfigFile, ex);
         }
     }
-
-    /*
-     * Reloads, retrieves and saves information from the Denizen/assignments.yml.
-     */
-
-    private FileConfiguration assignmentConfig = null;
-    private File assignmentConfigFile = null;
-
-    public void reloadAssignments() {
-        if (assignmentConfigFile == null) {
-            assignmentConfigFile = new File(getDataFolder(), "assignments.yml");
-        }
-        assignmentConfig = YamlConfiguration.loadConfiguration(assignmentConfigFile);
-
-        // Look for defaults in the jar
-        InputStream defConfigStream = getResource("assignments.yml");
-        if (defConfigStream != null) {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            assignmentConfig.setDefaults(defConfig);
-        }
-    }
-
-    public FileConfiguration getAssignments() {
-        if (assignmentConfig == null) {
-            reloadAssignments();
-        }
-        return assignmentConfig;
-    }
-
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
