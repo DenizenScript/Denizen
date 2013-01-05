@@ -26,7 +26,7 @@
     <file path="/RuntaskCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357266691479" ignored="false" />
     <file path="/a.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357246638742" ignored="false" />
     <file path="/EngageCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357249727640" ignored="false" />
-    <file path="/ScriptHelper.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357260109330" ignored="false" />
+    <file path="/ScriptHelper.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357346503840" ignored="false" />
     <file path="/CooldownCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357273930155" ignored="false" />
     <file path="/ScribeCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357274584424" ignored="false" />
     <file path="/CommandRegistry.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357334110877" ignored="false" />
@@ -132,10 +132,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ScriptHelper.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ScriptHelper.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="190" column="44" selection-start="7444" selection-end="7444" vertical-scroll-proportion="-8.5">
+            <state line="41" column="82" selection-start="1517" selection-end="1517" vertical-scroll-proportion="0.5277778">
               <folding />
             </state>
           </provider>
@@ -150,10 +150,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CommandHandler.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="CommandHandler.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/CommandHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="178" column="85" selection-start="8391" selection-end="8391" vertical-scroll-proportion="0.56629837">
+            <state line="178" column="85" selection-start="8391" selection-end="8391" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -237,8 +237,8 @@
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/notables/NotableManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/ZapCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandRegistry.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/CommandHandler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java" />
       </list>
     </option>
   </component>
@@ -980,13 +980,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="190" column="44" selection-start="7444" selection-end="7444" vertical-scroll-proportion="-8.5">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/traits/TriggerTrait.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="96" column="22" selection-start="4560" selection-end="4560" vertical-scroll-proportion="0.0">
@@ -996,7 +989,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/CommandHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="178" column="85" selection-start="8391" selection-end="8391" vertical-scroll-proportion="0.56629837">
+        <state line="178" column="85" selection-start="8391" selection-end="8391" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="82" selection-start="1517" selection-end="1517" vertical-scroll-proportion="0.5277778">
           <folding />
         </state>
       </provider>
