@@ -225,7 +225,7 @@ public class ScriptHelper {
 			File file = new File(denizen.getDataFolder() + File.separator + "scripts");
 			File[] files = file.listFiles();
 
-			if (files.length > 0){
+			if (files.length > 0) {
 				StringBuilder sb = new StringBuilder();  
 				for (File f : files){
 					String fileName = f.getName();
