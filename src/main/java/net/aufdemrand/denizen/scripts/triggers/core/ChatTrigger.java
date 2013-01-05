@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -277,34 +279,40 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		//
 		// Iterate over all of this step's keys looking for chat triggers.
 		//
-		for (String key : denizen.getScripts().getConfigurationSection(path).getKeys(false)) {
-			//
-			// Build the key to the trigger and attempt to get it for the step that
-			// we're currently processing.
-			//
-			String	stepKey = (path + "." + key + ".Trigger").toUpperCase();
-			String	triggerValue = denizen.getScripts ().getString (stepKey);
-			dB.echoDebug("stepKey: " + stepKey);
-			dB.echoDebug("  triggerValue: " + triggerValue);
-			
-			//
-			// Did we find a trigger for the current step that we're on and does this
-			// trigger contain a "/" character (which is used for designating the key
-			// text that causes the chat trigger to fire)?
-			//
-			if (triggerValue != null && triggerValue.contains("/")) {
-				List<String>	keyWords = new ArrayList<String> ();
-				//
-				// Now find all of the keywords in the trigger.  Make sure to strip off
-				// the slashes when building the list of key words.
-				//
-				Matcher matcher = triggerPattern.matcher(triggerValue);
-				while (matcher.find ()) {
-					String keyWord = matcher.group ();
-					keyWords.add(keyWord.substring(1, keyWord.length() - 1));
+		ConfigurationSection	config = denizen.getScripts ().getConfigurationSection(path);
+		if (config != null) {
+			Set<String> keys = config.getKeys(false);
+			if (keys != null) {
+				for (String key : keys) {
+					//
+					// Build the key to the trigger and attempt to get it for the step that
+					// we're currently processing.
+					//
+					String	stepKey = (path + "." + key + ".Trigger").toUpperCase();
+					String	triggerValue = denizen.getScripts ().getString (stepKey);
+					dB.echoDebug("stepKey: " + stepKey);
+					dB.echoDebug("  triggerValue: " + triggerValue);
+					
+					//
+					// Did we find a trigger for the current step that we're on and does this
+					// trigger contain a "/" character (which is used for designating the key
+					// text that causes the chat trigger to fire)?
+					//
+					if (triggerValue != null && triggerValue.contains("/")) {
+						List<String>	keyWords = new ArrayList<String> ();
+						//
+						// Now find all of the keywords in the trigger.  Make sure to strip off
+						// the slashes when building the list of key words.
+						//
+						Matcher matcher = triggerPattern.matcher(triggerValue);
+						while (matcher.find ()) {
+							String keyWord = matcher.group ();
+							keyWords.add(keyWord.substring(1, keyWord.length() - 1));
+						}
+						
+						triggerMap.put(path + "." + key, keyWords);
+					}
 				}
-				
-				triggerMap.put(path + "." + key, keyWords);
 			}
 		}
 		
