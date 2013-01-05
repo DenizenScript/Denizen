@@ -22,12 +22,20 @@ import net.citizensnpcs.api.npc.NPC;
 
 /**
  * <p>The Proximity Trigger is used to execute a script when a player moves
- * within a certain radius of a location.</p>
+ * within a certain radius of a location.  If the radius are not specified,
+ * then the default for both entry and exit is 5 blocks.</p>
  * 
  * Example Usage:<br/>
+ * This script will execute a script when the player walks within 5 blocks of
+ * the NPC that this trigger is assigned to and they were not previously within
+ * the 5 block range.
+ * It will also execute a script when the player walks outside of a 10 block 
+ * radius of the NPC when they were not previously outside the 10 block radius.<br/>
  * <ol>
  * <tt>
  * Proximity Trigger:<br/>
+ * &nbsp;&nbsp;EntryRadius: 5<br/>
+ * &nbsp;&nbsp;ExitRadius: 10<br/>
  * &nbsp;&nbsp;Entry:<br/>
  * &nbsp;&nbsp;&nbsp;&nbsp;Script:<br/>
  * &nbsp;&nbsp;&nbsp;&nbsp;- CHAT "Hello <PLAYER.NAME>! Welcome to my shop!"<br/>
@@ -36,9 +44,6 @@ import net.citizensnpcs.api.npc.NPC;
  * &nbsp;&nbsp;&nbsp;&nbsp;- CHAT "Thanks for visiting <PLAYER.NAME>"<br/>
  * </tt>
  * </ol>
- * 
- * TODO:  Currently the range that triggers the proximity trigger is hard-coded
- * to 3 blocks.<br/>
  * 
  * @author dbixler
  */
@@ -49,9 +54,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 	}
 	
 	// TODO: This goes into settings.
-	public Integer getProximityRangeInBlocks () {
+	public Integer getMaxProximityRangeInBlocks () {
 		// plugin.settings.ProximityTriggerRangeInBlocks()
-		return 3;
+		return 5;
 	}
 	
 	/**
@@ -138,18 +143,34 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 				// If the user is outside the range, and was previously within the
 				// range, then execute the "Exit" script.
 				//
-				if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) <= this.getProximityRangeInBlocks ()	&&
-						npc.getBukkitEntity().getLocation().distance(fromBlockLocation) > this.getProximityRangeInBlocks ()) {
-					dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN ENTERING RANGE: " + npc.getFullName());
-					DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(npc);
-					String theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
-					this.parse(denizenNPC, event.getPlayer(), theScript, true);
-				} else if (npc.getBukkitEntity().getLocation().distance(fromBlockLocation) <= this.getProximityRangeInBlocks ()	&&
-									 npc.getBukkitEntity().getLocation().distance(toBlockLocation) > this.getProximityRangeInBlocks ()) {
-					dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN EXITING RANGE: " + npc.getFullName());
-					DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(npc);
-					String theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
-					this.parse(denizenNPC, event.getPlayer(), theScript, false);
+				DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(npc);
+				String theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
+				if (theScript != null) {
+					String	theStep = sH.getCurrentStep(event.getPlayer(), theScript);
+					int	entryRadius = this.getMaxProximityRangeInBlocks ();
+					int exitRadius = this.getMaxProximityRangeInBlocks ();
+					try {
+						entryRadius = denizen.getScripts().getInt(theScript + ".STEPS." + theStep + ".PROXIMITY TRIGGER.ENTRYRADIUS", this.getMaxProximityRangeInBlocks ());
+					} catch (NumberFormatException nfe) {
+						dB.echoError("entryRadius was not an integer.  Assuming " + entryRadius + " as the radius.");
+					}
+					try {
+						exitRadius = denizen.getScripts().getInt(theScript + ".STEPS." + theStep + ".PROXIMITY TRIGGER.EXITRADIUS", this.getMaxProximityRangeInBlocks ());
+					} catch (NumberFormatException nfe) {
+						dB.echoError("exitRadius was not an integer.  Assuming " + exitRadius + " as the radius.");
+					}
+
+					if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) <= entryRadius	&&
+							npc.getBukkitEntity().getLocation().distance(fromBlockLocation) > entryRadius) {
+						dB.echoDebug ("theScript: " + theScript);
+						dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN ENTERING RANGE: " + npc.getFullName());
+						this.parse(denizenNPC, event.getPlayer(), theScript, true);
+					} else if (npc.getBukkitEntity().getLocation().distance(fromBlockLocation) <= exitRadius	&&
+										 npc.getBukkitEntity().getLocation().distance(toBlockLocation) > exitRadius) {
+						dB.echoDebug ("theScript: " + theScript);
+						dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN EXITING RANGE: " + npc.getFullName());
+						this.parse(denizenNPC, event.getPlayer(), theScript, false);
+					}
 				}
 			}
 		}
