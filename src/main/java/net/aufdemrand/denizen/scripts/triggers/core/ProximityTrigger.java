@@ -14,11 +14,34 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
+/**
+ * <p>The Proximity Trigger is used to execute a script when a player moves
+ * within a certain radius of a location.</p>
+ * 
+ * Example Usage:<br/>
+ * <ol>
+ * <tt>
+ * Proximity Trigger:<br/>
+ * &nbsp;&nbsp;Entry:<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;Script:<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;- CHAT "Hello <PLAYER.NAME>! Welcome to my shop!"<br/>
+ * &nbsp;&nbsp;Exit:<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;Script:<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;- CHAT "Thanks for visiting <PLAYER.NAME>"<br/>
+ * </tt>
+ * </ol>
+ * 
+ * TODO:  Currently the range that triggers the proximity trigger is hard-coded
+ * to 3 blocks.<br/>
+ * 
+ * @author dbixler
+ */
 public class ProximityTrigger extends AbstractTrigger implements Listener {
 	@Override
 	public void onEnable() {
@@ -31,6 +54,34 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 		return 3;
 	}
 	
+	/**
+	 * <p> This is the trigger that fires when any player moves in the entire
+	 * world.  The trigger ONLY checks if the player moves to a new BLOCK in the 
+	 * world</p>
+	 *
+	 * When the trigger determines that the player has moved to a different block
+	 * in the world, all of the NPCs are checked for the following criteria:
+	 * <ol>
+	 * <li>Does the NPC have the trigger trait?</li>
+	 * <li>Is the trigger enabled?</li>
+	 * <li>Is the NPC available (i.e. not busy)?</li>
+	 * <li>Is the NPC Spawned?</li>
+	 * <li>Is the NPC in the same World as the player</li>
+	 * </ol>
+	 * 
+	 * If the NPC passes all of these criteria, there are two events that can
+	 * occur (one or the other):
+	 * 
+	 * <ol>
+	 * <li>If the player was outside of the NPC's radius, and moved inside the
+	 * radius, and there's a SCRIPT or an ENTRY SCRIPT, then execute that entry
+	 * script.</li>
+	 * <li>If the player was INSIDE of the NPC's radius, and moved OUTSIDE the
+	 * radius, and there's an EXIT SCRIPT, then execute that exit script.
+	 * </ol>
+	 * 
+	 * @param event	The player's move event (which includes their location).
+	 */
 	@EventHandler
 	public void proximityTrigger(PlayerMoveEvent event) {
 		//
@@ -105,11 +156,14 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 	}
 
 	/**
+	 * This parses the ProximityTrigger's script.
 	 * 
-	 * @param theDenizen
-	 * @param thePlayer
-	 * @param theScriptName
-	 * @param entry
+	 * @param theDenizen	The Denizen that has the proximity trigger.
+	 * @param thePlayer	The Player that caused the trigger to fire.
+	 * @param theScriptName	The script that is being executed.
+	 * @param entry	True if this should fire an entry script, or false if this
+	 * 							should fire an exit script.
+	 * 
 	 * @return
 	 */
 	public boolean parse (DenizenNPC theDenizen, Player thePlayer, String theScriptName, boolean entry) {
@@ -118,7 +172,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 		}
 
 		//
-		// Get teh path to the step that the player is currently on.
+		// Get the path to the step that the player is currently on.
 		//
 		String	theStep = sH.getCurrentStep(thePlayer, theScriptName);
 		
@@ -131,12 +185,12 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 		List<String> scriptsToParse;
 		if (entry) {
 			scriptsToParse = Arrays.asList(
-				(theScriptName + ".Steps." + theStep + ".Proximity Trigger." + sH.scriptKey).toUpperCase(),
-				(theScriptName + ".Steps." + theStep + ".Proximity Trigger.Entry." + sH.scriptKey).toUpperCase()
+				(theScriptName + ".Steps." + theStep + ".Proximity Trigger." + ScriptHelper.scriptKey).toUpperCase(),
+				(theScriptName + ".Steps." + theStep + ".Proximity Trigger.Entry." + ScriptHelper.scriptKey).toUpperCase()
 			);
 		} else {
 			scriptsToParse = Arrays.asList(
-				(theScriptName + ".Steps." + theStep + ".Proximity Trigger.Exit" + sH.scriptKey).toUpperCase()
+				(theScriptName + ".Steps." + theStep + ".Proximity Trigger.Exit" + ScriptHelper.scriptKey).toUpperCase()
 			);
 		}
 		
