@@ -39,9 +39,13 @@ public class DropCommand extends AbstractCommand {
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-		item = null;
+		// Initialize necessary fields
+        item = null;
 		Integer qty = null;
 		location = null;
+
+        // Set some defaults
+
 
 		for (String arg : scriptEntry.getArguments()) {
 			
