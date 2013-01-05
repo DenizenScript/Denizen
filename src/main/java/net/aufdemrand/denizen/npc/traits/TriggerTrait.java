@@ -93,8 +93,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public void setLocalCooldown(String triggerName, double value) {
-        if (cooldownDuration.containsKey(triggerName.toUpperCase()))
-            cooldownDuration.put(triggerName.toUpperCase(), value);
+        cooldownDuration.put(triggerName.toUpperCase(), value);
     }
 
     public double getCooldownDuration(String triggerName) {

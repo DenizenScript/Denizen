@@ -183,7 +183,7 @@ public class CommandHandler {
 				Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger radius now " + args.getFlag("radius") + ".");
 			}
 			Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger " + (trait.isEnabled(args.getFlag("name")) ? "is" : "is not") + " currently enabled" +
-					(trait.isEnabled(args.getFlag("name")) ?  "with a cooldown of '" + trait.getCooldownDuration(args.getFlag("name")) + "' seconds."  : "."));
+					(trait.isEnabled(args.getFlag("name")) ?  " with a cooldown of '" + trait.getCooldownDuration(args.getFlag("name")) + "' seconds."  : "."));
 			return;
 			
 		} else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
