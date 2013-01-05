@@ -5,6 +5,7 @@ import java.util.List;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.citizensnpcs.api.ai.Goal;
 import net.citizensnpcs.api.ai.GoalSelector;
 
@@ -47,7 +48,7 @@ public class TaskGoal implements Goal {
 
             } else {
                 dur = System.currentTimeMillis() + (this.duration * 1000);
-                List<String> theScript = scriptEngine.getScriptHelper().getScriptContents(scriptName + scriptEngine.getScriptHelper().scriptKey);
+                List<String> theScript = scriptEngine.getScriptHelper().getScriptContents(scriptName + ScriptHelper.scriptKey);
                 scriptEngine.getScriptBuilder().queueScriptEntries(npc, scriptEngine.getScriptBuilder().buildScriptEntries(npc, theScript, scriptName), QueueType.NPC);	
             }
     }

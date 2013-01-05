@@ -285,7 +285,7 @@ public class ScriptBuilder {
         try {
         // Fetch script
         List<String> script = plugin.getScriptEngine().getScriptHelper()
-                .getStringListIgnoreCase(scriptName + plugin.getScriptEngine().getScriptHelper().scriptKey);
+                .getStringListIgnoreCase(scriptName + ScriptHelper.scriptKey);
         if (script.isEmpty()) return false;
 
         // Build script entries
