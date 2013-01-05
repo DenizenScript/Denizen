@@ -1,32 +1,32 @@
 package net.aufdemrand.denizen.npc;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.npc.actions.ActionHandler;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.event.NPCRemoveEvent;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.actions.ActionHandler;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import net.citizensnpcs.api.event.NPCRemoveEvent;
-import net.citizensnpcs.api.event.NPCSpawnEvent;
-import net.citizensnpcs.api.npc.NPC;
-
+/**
+ * Used for keeping track and retrieving DenizenNPC objects which offer some Denizen-specific
+ * methods when dealing with NPCs.
+ *
+ * @author Jeremy Schroeder
+ *
+ */
 public class DenizenNPCRegistry implements Listener {
 
-    private Map<NPC, DenizenNPC> denizenNPCs = new ConcurrentHashMap<NPC, DenizenNPC>();
+    private static Map<NPC, DenizenNPC> denizenNPCs = new ConcurrentHashMap<NPC, DenizenNPC>();
 
     private Denizen plugin;
     private ActionHandler actionHandler;
-    
-    public ActionHandler getActionHandler() {
-        return actionHandler;
-    }
 
     public DenizenNPCRegistry(Denizen denizen) {
         plugin = denizen;
@@ -34,28 +34,53 @@ public class DenizenNPCRegistry implements Listener {
         actionHandler = new ActionHandler(plugin);
     }
 
-    public void registerNPC(NPC npc) {
+    /**
+     * Gets the currently loaded instance of the ActionHandler
+     *
+     * @return ActionHandler
+     *
+     */
+    public ActionHandler getActionHandler() {
+        return actionHandler;
+    }
+
+    private boolean isDenizenNPC (NPC npc) {
+        if (denizenNPCs.containsKey(npc))
+            return true ;
+        else return false;
+    }
+
+    private void registerNPC(NPC npc) {
         if (!denizenNPCs.containsKey(npc)) {
             denizenNPCs.put(npc, new DenizenNPC(npc));
         }
-        dB.log("Constructing Denizen NPC " + getDenizen(npc).toString() + 
-                "  List size now: " + denizenNPCs.size());
+        dB.log("Constructing NPC " + getDenizen(npc).toString());
     }
 
+    /**
+     * Returns a DenizenNPC object when given a valid NPC. DenizenNPCs have some methods
+     * specific to Denizen functionality as well as easy access to the attached NPC and LivingEntity.
+     *
+     * @param npc the Citizens NPC
+     *
+     * @return a DenizenNPC
+     *
+     */
     public DenizenNPC getDenizen(NPC npc) {
         if (!denizenNPCs.containsKey(npc))
             registerNPC(npc);
         return denizenNPCs.get(npc);
     }
 
-    public boolean isDenizenNPC (NPC npc) {
-        if (denizenNPCs.containsKey(npc)) 
-            return true ;
-        else return false; 
-    }
-
-    public Map<NPC, DenizenNPC> getDenizens() {
-        Iterator<Entry<NPC, DenizenNPC>> it = denizenNPCs.entrySet().iterator();
+    /**
+     * Similar to getting NPCs from Citizens' NPCRegistry, but this will filter out
+     * unspawned NPCs
+     *
+     * @return map of NPC, DenizenNPC of all spawned NPCs
+     *
+     */
+    public Map<NPC, DenizenNPC> getSpawnedNPCs() {
+        Iterator<Map.Entry<NPC, DenizenNPC>> it = denizenNPCs.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<NPC, DenizenNPC> npc = (Map.Entry<NPC, DenizenNPC>)it.next();
             try {
@@ -68,6 +93,12 @@ public class DenizenNPCRegistry implements Listener {
         return denizenNPCs;
     }
 
+    /**
+     * Fires the 'On Spawn:' action in an NPCs Assignment, if set.
+     *
+     * @param event NPCSpawnEvent
+     *
+     */
     @EventHandler 
     public void onSpawn(NPCSpawnEvent event) {
         registerNPC(event.getNPC());
@@ -75,14 +106,18 @@ public class DenizenNPCRegistry implements Listener {
         plugin.getNPCRegistry().getDenizen(event.getNPC()).action("spawn", null);
     }
 
-    @EventHandler 
+    /**
+     * Removes an NPC from the Registry when removed from Citizens.
+     *
+     * @param event NPCRemoveEvent
+     *
+     */
+    @EventHandler
     public void onRemove(NPCRemoveEvent event) {
         plugin.getNPCRegistry().getDenizen(event.getNPC()).action("remove", null);
         if (isDenizenNPC(event.getNPC()))
             denizenNPCs.remove(event.getNPC());
-        dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + event.getNPC().getName() + "/" + event.getNPC().getId() + 
-            "  List size now: " + denizenNPCs.size());
+        dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + event.getNPC().getName() + "/" + event.getNPC().getId());
     }
-
 
 }

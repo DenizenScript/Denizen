@@ -1,33 +1,33 @@
 package net.aufdemrand.denizen.npc;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-
-
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_4_6.EntityLiving;
-
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 public class DenizenNPC {
 
 	private NPC npc;
+    private int npcid;
 	private Denizen plugin;
 	private ScriptHelper sH;
 
 	DenizenNPC(NPC citizensNPC) {
 		this.npc = citizensNPC;
+        this.npcid = citizensNPC.getId();
 		this.plugin = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 		this.sH = plugin.getScriptEngine().getScriptHelper();
 	}
@@ -37,32 +37,39 @@ public class DenizenNPC {
 	}
 
 	public NPC getCitizen() {
-		return npc;
+		if (npc != null)
+            return npc;
+        else {
+            this.npc = CitizensAPI.getNPCRegistry().getById(npcid);
+            if (npc == null)
+                dB.log("Uh oh! Denizen has encountered an NPE while trying to fetch a NPC. Has this NPC been removed?");
+            return npc;
+        }
 	}
 
 	public LivingEntity getEntity() {
-		try { return npc.getBukkitEntity();
-		} catch (NullPointerException e) { return null;	}
+		try {
+            return getCitizen().getBukkitEntity();
+		} catch (NullPointerException e) {
+            dB.log("Uh oh! Denizen has encountered an NPE while trying to fetch a NPC entity. Has this NPC been removed?");
+            return null;
+        }
 	}
 
 	public EntityType getEntityType() {
-		return npc.getBukkitEntity().getType();
+		return getCitizen().getBukkitEntity().getType();
 	}
 
 	public Navigator getNavigator() {
-		return npc.getNavigator();
+		return getCitizen().getNavigator();
 	}
 
 	public int getId() {
-		return npc.getId();
+		return getCitizen().getId();
 	}
 
 	public String getName() {
-		return npc.getName();
-	}
-
-	public void showInfo(Player theClicker) {
-		// plugin.getNPCRegistry().showInfo(theClicker, this);
+		return getCitizen().getName();
 	}
 
 	public String getInteractScript(Player thePlayer, Class<? extends AbstractTrigger> triggerType) {
@@ -70,15 +77,15 @@ public class DenizenNPC {
 	}
 
 	public boolean isSpawned() {
-		return npc.isSpawned();
+		return getCitizen().isSpawned();
 	}
 
 	public Location getLocation() {
-		return npc.getBukkitEntity().getLocation();
+		return getCitizen().getBukkitEntity().getLocation();
 	}
 
 	public World getWorld() {
-		return npc.getBukkitEntity().getWorld();
+		return getCitizen().getBukkitEntity().getWorld();
 	}
 
 	public void setHealth(int newHealth) {
@@ -91,7 +98,7 @@ public class DenizenNPC {
     
 	@Override
 	public String toString() {
-		return npc.getName() + "/" + npc.getId();
+		return getCitizen().getName() + "/" + getCitizen().getId();
 	}
 
 	public boolean isInteracting() {
@@ -99,16 +106,16 @@ public class DenizenNPC {
 		else return false;
 	}
 
-	public String getAssignment() {
-		return npc.getTrait(AssignmentTrait.class).getAssignment();
-	}
+    public String getAssignment() {
+        return getCitizen().getTrait(AssignmentTrait.class).getAssignment();
+    }
 
 	public boolean setAssignment(String assignment) {
-		return npc.getTrait(AssignmentTrait.class).setAssignment(assignment);
+		return getCitizen().getTrait(AssignmentTrait.class).setAssignment(assignment);
 	}
 	
 	public void action(String actionName, Player player) {
-	    if (npc.hasTrait(AssignmentTrait.class)) 
+	    if (getCitizen().hasTrait(AssignmentTrait.class))
 	        plugin.getNPCRegistry().getActionHandler().doAction(actionName, this, player, getAssignment());
 	}
 
