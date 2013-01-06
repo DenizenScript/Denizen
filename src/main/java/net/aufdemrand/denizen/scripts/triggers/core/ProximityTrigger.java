@@ -165,12 +165,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
 					if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) <= entryRadius	&&
 							npc.getBukkitEntity().getLocation().distance(fromBlockLocation) > entryRadius) {
-						dB.echoDebug ("theScript: " + theScript);
 						dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN ENTERING RANGE: " + npc.getFullName());
 						this.parse(denizenNPC, event.getPlayer(), theScript, true);
 					} else if (npc.getBukkitEntity().getLocation().distance(fromBlockLocation) <= exitRadius	&&
 										 npc.getBukkitEntity().getLocation().distance(toBlockLocation) > exitRadius) {
-						dB.echoDebug ("theScript: " + theScript);
 						dB.echoDebug(ChatColor.GOLD + " FOUND NPC IN EXITING RANGE: " + npc.getFullName());
 						this.parse(denizenNPC, event.getPlayer(), theScript, false);
 					}
