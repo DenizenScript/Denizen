@@ -176,13 +176,14 @@ public class CommandHandler {
 		TriggerTrait trait = npc.getTrait(TriggerTrait.class);
 		if (args.hasValueFlag("name")) {
 			if (args.hasFlag('t')) trait.toggleTrigger(args.getFlag("name"));
-			if (args.hasValueFlag("cooldown")) trait.setLocalCooldown(args.getFlag("name"), args.getFlagDouble("cooldown"));
+			if (args.hasValueFlag("cooldown"))
+                trait.setLocalCooldown(args.getFlag("name"), args.getFlagDouble("cooldown"));
 			if (args.hasValueFlag("radius")) {
 				trait.setLocalRadius(args.getFlag("Name"), args.getFlagInteger("radius"));
 				Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger radius now " + args.getFlag("radius") + ".");
 			}
 			Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger " + (trait.isEnabled(args.getFlag("name")) ? "is" : "is not") + " currently enabled" +
-					(trait.isEnabled(args.getFlag("name")) ?  "with a cooldown of '" + trait.getCooldownDuration(args.getFlag("name")) + "' seconds."  : "."));
+					(trait.isEnabled(args.getFlag("name")) ?  " with a cooldown of '" + trait.getCooldownDuration(args.getFlag("name")) + "' seconds."  : "."));
 			return;
 			
 		} else if (args.length() > 2 && args.getInteger(1, 0) < 1) {

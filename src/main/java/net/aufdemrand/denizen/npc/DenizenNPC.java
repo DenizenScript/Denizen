@@ -107,11 +107,19 @@ public class DenizenNPC {
 	}
 
     public String getAssignment() {
-        return getCitizen().getTrait(AssignmentTrait.class).getAssignment();
+        if (getCitizen().hasTrait(AssignmentTrait.class))
+            return getCitizen().getTrait(AssignmentTrait.class).getAssignment();
+        else return null;
+    }
+
+    public boolean hasAssignment() {
+        if (!getCitizen().hasTrait(AssignmentTrait.class)) return false;
+        else return getCitizen().getTrait(AssignmentTrait.class).hasAssignment();
     }
 
 	public boolean setAssignment(String assignment) {
-		return getCitizen().getTrait(AssignmentTrait.class).setAssignment(assignment);
+		if (!getCitizen().hasTrait(AssignmentTrait.class)) getCitizen().addTrait(AssignmentTrait.class);
+        return getCitizen().getTrait(AssignmentTrait.class).setAssignment(assignment);
 	}
 	
 	public void action(String actionName, Player player) {

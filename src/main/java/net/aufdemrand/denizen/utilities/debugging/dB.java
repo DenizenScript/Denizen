@@ -101,7 +101,7 @@ public class dB {
 			String buffer = "";
 			int modifier = 1;
 			for (String word : words) { // # of total chars * # of lines - timestamp
-				if (buffer.length() + word.length()  <  (80 * modifier)  - 19) 
+				if (buffer.length() + word.length()  <  (80 * modifier)  - 25)
 					buffer = buffer + word + " ";
 				else {
 					// Increase # of lines to account for

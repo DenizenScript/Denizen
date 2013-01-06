@@ -15,17 +15,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public class TriggerTrait extends Trait implements Listener {
 
-    private Map<String, Boolean> enabled = new HashMap<String, Boolean>();
-    private Map<String, Double> cooldownDuration = new HashMap<String, Double>();
-    private Map<String, CooldownType> cooldownType = new HashMap<String, CooldownType>();
-    private Map<String, Integer> localRadius = new HashMap<String, Integer>();
+    private Map<String, Boolean> enabled = new ConcurrentHashMap<String, Boolean>();
+    private Map<String, Double> cooldownDuration = new ConcurrentHashMap<String, Double>();
+    private Map<String, CooldownType> cooldownType = new ConcurrentHashMap<String, CooldownType>();
+    private Map<String, Integer> localRadius = new ConcurrentHashMap<String, Integer>();
     private Denizen denizen;
 
     public TriggerTrait() {
@@ -93,8 +93,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public void setLocalCooldown(String triggerName, double value) {
-        if (cooldownDuration.containsKey(triggerName.toUpperCase()))
-            cooldownDuration.put(triggerName.toUpperCase(), value);
+        cooldownDuration.put(triggerName.toUpperCase(), value);
     }
 
     public double getCooldownDuration(String triggerName) {
