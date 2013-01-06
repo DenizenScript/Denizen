@@ -143,12 +143,15 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 				// If the user is outside the range, and was previously within the
 				// range, then execute the "Exit" script.
 				//
+				Boolean	originalDebugState = dB.debugMode;
+				dB.debugMode = false;
 				DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(npc);
 				String theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
 				if (theScript != null) {
 					String	theStep = sH.getCurrentStep(event.getPlayer(), theScript);
 					int	entryRadius = this.getMaxProximityRangeInBlocks ();
 					int exitRadius = this.getMaxProximityRangeInBlocks ();
+					dB.debugMode = originalDebugState;
 					try {
 						entryRadius = denizen.getScripts().getInt(theScript + ".STEPS." + theStep + ".PROXIMITY TRIGGER.ENTRYRADIUS", this.getMaxProximityRangeInBlocks ());
 					} catch (NumberFormatException nfe) {
@@ -172,6 +175,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 						this.parse(denizenNPC, event.getPlayer(), theScript, false);
 					}
 				}
+				dB.debugMode = originalDebugState;
 			}
 		}
 	}
