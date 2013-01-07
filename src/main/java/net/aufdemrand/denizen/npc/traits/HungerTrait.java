@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import org.bukkit.Location;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
+import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
+import org.bukkit.Location;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class HungerTrait extends Trait implements Listener {
 
@@ -17,19 +17,19 @@ public class HungerTrait extends Trait implements Listener {
         super("hunger");
     }
 
-    double maxHunger = 20.0;
-    double currentHunger = 0.0;
-    int multiplier = 1;
+    @Persist("") double maxhunger = 20.0;
+    @Persist("") double currenthunger = 0.0;
+    @Persist("") int multiplier = 1;
 
     @Override public void load(DataKey key) throws NPCLoadException {
-        maxHunger = key.getDouble("maxhunger", 20);
-        currentHunger = key.getDouble("currenthunger", 0);
-        multiplier = key.getInt("multiplier", 1);
+//        maxhunger = key.getDouble("maxhunger", 20);
+//        currenthunger = key.getDouble("currenthunger", 0);
+//        multiplier = key.getInt("multiplier", 1);
     }
 
     @Override public void save(DataKey key) {
-        key.setDouble("maxhealth", maxHunger);
-        key.setDouble("currenthealth", currentHunger);
+//        key.setDouble("maxhealth", maxhunger);
+//        key.setDouble("currenthealth", currenthunger);
     }
 
     boolean listening = false;
@@ -46,14 +46,14 @@ public class HungerTrait extends Trait implements Listener {
             double td = getDistance(npc.getBukkitEntity().getLocation());
             if (td > 0) {
                 location = npc.getBukkitEntity().getLocation().clone();
-                currentHunger = currentHunger - (td * 0.01 * multiplier);
+                currenthunger = currenthunger - (td * 0.01 * multiplier);
             }
         }
     }
 
     @EventHandler
     public void onMove(NavigationBeginEvent event) {
-        location = npc.getBukkitEntity().getLocation().clone();
+        location = npc.getBukkitEntity().getLocation();
         listening = true;
     }
 
@@ -77,15 +77,15 @@ public class HungerTrait extends Trait implements Listener {
     }
     
     public double getHunger() {
-        return currentHunger;
+        return currenthunger;
     }
     
-    public double getMaxHunger() {
-        return maxHunger;
+    public double getMaxhunger() {
+        return maxhunger;
     }
     
     public int getHungerPercentage() {
-        return (int) ((int) currentHunger/maxHunger);
+        return (int) ((int) currenthunger / maxhunger);
     }
     
     public int getHungerMultiplier() {
@@ -97,25 +97,25 @@ public class HungerTrait extends Trait implements Listener {
     }
     
     public void setHunger(double hunger) {
-        currentHunger = hunger;
+        currenthunger = hunger;
     }
     
     public void feed(double hunger) {
-        currentHunger = currentHunger - hunger;
-        if (currentHunger < 0) currentHunger = 0;
+        currenthunger = currenthunger - hunger;
+        if (currenthunger < 0) currenthunger = 0;
     }
     
-    public void setMaxHunger(double hunger) {
-        maxHunger = hunger;
+    public void setMaxhunger(double hunger) {
+        maxhunger = hunger;
     }
     
     public boolean isStarving() {
-        if (currentHunger >= maxHunger) return true;
+        if (currenthunger >= maxhunger) return true;
         else return false;
     }
     
     public boolean isHungry() {
-        if (currentHunger > (maxHunger/10)) return true;
+        if (currenthunger > (maxhunger /10)) return true;
         else return false;
     }
 

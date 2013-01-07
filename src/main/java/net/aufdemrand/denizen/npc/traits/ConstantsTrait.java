@@ -1,13 +1,5 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.EventHandler;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ScriptsReloadEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
@@ -16,14 +8,20 @@ import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.command.exception.CommandException;
 import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Paginator;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class ConstantsTrait extends Trait {
 
 	private Denizen denizen;
-	private Map<String, String> constants = new HashMap<String, String>();
-	private Map<String, String> assignmentConstants = new HashMap<String, String>();
-	private String assignment = null;
+    private Map<String, String> constants = new HashMap<String, String>();
+    private Map<String, String> assignmentConstants = new HashMap<String, String>();
+    private String assignment = null;
 
 	public ConstantsTrait() {
 		super("constants");

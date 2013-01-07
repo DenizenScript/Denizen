@@ -1,26 +1,26 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.notables.Notable;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.exception.NPCLoadException;
+import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.command.exception.CommandException;
 import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Paginator;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 
 public class AssignmentTrait extends Trait {
 
 	private Denizen denizen;
-	private String assignment = "";
+    @Persist("") private String assignment = "";
 
 	public AssignmentTrait() {
 		super("assignment");
@@ -28,23 +28,20 @@ public class AssignmentTrait extends Trait {
 	}
 	
 	public void buildLocationContext() {
-		
-		
-		
-		
+        // TODO: finish this
 	}
 
 	@Override 
 	public void load(DataKey key) throws NPCLoadException {
-		assignment = key.getString("assignment");
-		if (hasAssignment()) 
+//		assignment = key.getString("assignment");
+		if (hasAssignment())
 			if (!checkAssignment(this.assignment))
-				dB.echoError("Missing assignment '" + assignment + "' for NPC '" 
-						+ npc.getName() + "/" + npc.getId() + "! Perhaps the script has been removed?");
+                dB.echoError("Missing assignment '" + assignment + "' for NPC '"
+                        + npc.getName() + "/" + npc.getId() + "! Perhaps the script has been removed?");
 	}
 
 	@Override public void save(DataKey key) {
-		key.setString("assignment", assignment);
+//		key.setString("assignment", assignment);
 	}
 
 	public boolean hasAssignment() {

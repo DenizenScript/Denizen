@@ -239,15 +239,15 @@ public class CommandHandler {
 		if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
 		HealthTrait trait = npc.getTrait(HealthTrait.class);
 		if (args.hasValueFlag("set")) {
-			trait.setMaxHealth(args.getFlagInteger("set"));
+			trait.setMaxhealth(args.getFlagInteger("set"));
 			trait.setHealth();
 			Messaging.send(sender, ChatColor.GREEN + "Max health set.");
 			return;
 		} else if (args.hasFlag('r')) {
 			trait.setHealth();
-			Messaging.send(sender, ChatColor.GREEN + npc.getName() + "'s health reset to " + trait.getMaxHealth() + ".");
+			Messaging.send(sender, ChatColor.GREEN + npc.getName() + "'s health reset to " + trait.getMaxhealth() + ".");
 		}
-		Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s health is '" + trait.getHealth() + "/" + trait.getMaxHealth() + "'.");
+		Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s health is '" + trait.getHealth() + "/" + trait.getMaxhealth() + "'.");
 	}
 
 

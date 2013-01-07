@@ -15,11 +15,11 @@ public class NicknameTrait extends Trait implements Listener {
 	}
 	
 	@Override public void load(DataKey key) throws NPCLoadException {
-		nickname = key.getString("nickname", null);
+//		nickname = key.getString("nickname", null);
 	}
 	
 	@Override public void save(DataKey key) {
-		key.setString("nickname", nickname);
+//		key.setString("nickname", nickname);
 	}
 	
 	public void setNickname(String nickName) {

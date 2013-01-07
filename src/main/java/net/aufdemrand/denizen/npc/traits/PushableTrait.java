@@ -1,5 +1,13 @@
 package net.aufdemrand.denizen.npc.traits;
 
+import net.aufdemrand.denizen.Denizen;
+import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
+import net.citizensnpcs.api.event.NPCPushEvent;
+import net.citizensnpcs.api.exception.NPCLoadException;
+import net.citizensnpcs.api.persistence.Persist;
+import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.util.DataKey;
+import net.minecraft.server.v1_4_6.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
@@ -8,25 +16,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import net.aufdemrand.denizen.Denizen;
-
-import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
-import net.citizensnpcs.api.event.NPCPushEvent;
-import net.citizensnpcs.api.exception.NPCLoadException;
-import net.citizensnpcs.api.trait.Trait;
-import net.citizensnpcs.api.util.DataKey;
-import net.minecraft.server.v1_4_6.EntityLiving;
-
 public class PushableTrait extends Trait implements Listener {
 
-    private boolean pushable = true;
-    private boolean returnable = false;
+    @Persist("") private boolean pushable = true;
+    @Persist("") private boolean returnable = false;
+    @Persist("") private int delay = 2;
 
     private boolean pushed = false;
     private Location returnLocation = null;
     private Denizen denizen;
     private long pushedTimer = 0;
-    private int delay = 2;
+
 
     public PushableTrait() {
         super("pushable");
@@ -37,16 +37,16 @@ public class PushableTrait extends Trait implements Listener {
 
     @Override 
     public void load(DataKey key) throws NPCLoadException {
-        pushable = key.getBoolean("toggled", true);
-        returnable = key.getBoolean("returnable", false);
-        delay = key.getInt("delay", 2);
+//        pushable = key.getBoolean("toggled", true);
+//        returnable = key.getBoolean("returnable", false);
+//        delay = key.getInt("delay", 2);
     }
 
     @Override 
     public void save(DataKey key) {
-        key.setBoolean("toggled", pushable);
-        key.setBoolean("returnable", returnable);
-        key.setInt("delay", delay);
+//        key.setBoolean("toggled", pushable);
+//        key.setBoolean("returnable", returnable);
+//        key.setInt("delay", delay);
     }
 
     // Setting/Adjusting

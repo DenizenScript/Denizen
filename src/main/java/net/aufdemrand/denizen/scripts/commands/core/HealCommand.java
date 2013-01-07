@@ -95,7 +95,7 @@ public class HealCommand extends AbstractCommand {
             NPC npc = CitizensAPI.getNPCRegistry().getNPC(target);
             if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
             // Set health to max
-            if (amount == Integer.MAX_VALUE) npc.getTrait(HealthTrait.class).setHealth(npc.getTrait(HealthTrait.class).getMaxHealth());
+            if (amount == Integer.MAX_VALUE) npc.getTrait(HealthTrait.class).setHealth(npc.getTrait(HealthTrait.class).getMaxhealth());
             // else, set Health
             else npc.getTrait(HealthTrait.class).heal(amount);
         

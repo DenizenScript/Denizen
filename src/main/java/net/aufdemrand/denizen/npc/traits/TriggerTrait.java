@@ -23,17 +23,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TriggerTrait extends Trait implements Listener {
 
     private Map<String, Boolean> enabled = new ConcurrentHashMap<String, Boolean>();
-    private Map<String, Double> cooldownDuration = new ConcurrentHashMap<String, Double>();
-    private Map<String, CooldownType> cooldownType = new ConcurrentHashMap<String, CooldownType>();
-    private Map<String, Integer> localRadius = new ConcurrentHashMap<String, Integer>();
+    private Map<String, Double> cooldownduration = new ConcurrentHashMap<String, Double>();
+    private Map<String, CooldownType> cooldowntype = new ConcurrentHashMap<String, CooldownType>();
+    private Map<String, Integer> localradius = new ConcurrentHashMap<String, Integer>();
     private Denizen denizen;
 
     public TriggerTrait() {
         super("triggers");
         if (denizen == null) denizen = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
         // Populate triggers
-        for (String triggerName : denizen.getTriggerRegistry().list().keySet()) 
-            enabled.put(triggerName, denizen.getTriggerRegistry().get(triggerName).getOptions().ENABLED_BY_DEFAULT);
+        for (String triggerName : denizen.getTriggerRegistry().list().keySet())
+            if (!enabled.containsKey(triggerName))
+                enabled.put(triggerName, denizen.getTriggerRegistry().get(triggerName).getOptions().ENABLED_BY_DEFAULT);
     }
 
     // Loading/Saving
@@ -43,12 +44,12 @@ public class TriggerTrait extends Trait implements Listener {
         // Load triggers from config
         for (String triggerName : denizen.getTriggerRegistry().list().keySet()) {
             enabled.put(triggerName, key.getBoolean(triggerName.toLowerCase() + "-trigger" + ".enabled", false));
-            if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".cooldown")) 
-                cooldownDuration.put(triggerName, key.getDouble(triggerName.toLowerCase() + "-trigger" + ".cooldown"));
-            if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".cooldowntype")) 
-                cooldownType.put(triggerName, CooldownType.valueOf(key.getString(triggerName.toLowerCase() + "-trigger" + ".cooldowntype")));
-            if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".radius")) 
-                localRadius.put(triggerName, key.getInt(triggerName.toLowerCase() + "-trigger" + ".radius"));
+            if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".cooldown"))
+                cooldownduration.put(triggerName, key.getDouble(triggerName.toLowerCase() + "-trigger" + ".cooldown"));
+            if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".cooldowntype"))
+                cooldowntype.put(triggerName, CooldownType.valueOf(key.getString(triggerName.toLowerCase() + "-trigger" + ".cooldowntype")));
+            if (key.keyExists(triggerName.toLowerCase() + "-trigger" + ".radius"))
+                localradius.put(triggerName, key.getInt(triggerName.toLowerCase() + "-trigger" + ".radius"));
         }
     }
 
@@ -56,11 +57,11 @@ public class TriggerTrait extends Trait implements Listener {
     public void save(DataKey key) {
         for (Entry<String, Boolean> entry : enabled.entrySet())
             key.setBoolean(entry.getKey().toLowerCase() + "-trigger" + ".enabled", entry.getValue());
-        for (Entry<String, Double> entry : cooldownDuration.entrySet()) 
+        for (Entry<String, Double> entry : cooldownduration.entrySet())
             key.setDouble(entry.getKey().toLowerCase() + "-trigger" + ".cooldown", entry.getValue());
-        for (Entry<String, CooldownType> entry : cooldownType.entrySet()) 
+        for (Entry<String, CooldownType> entry : cooldowntype.entrySet())
             key.setString(entry.getKey().toLowerCase() + "-trigger" + ".cooldowntype", entry.getValue().name());
-        for (Entry<String, Integer> entry : localRadius.entrySet()) 
+        for (Entry<String, Integer> entry : localradius.entrySet())
             key.setInt(entry.getKey().toLowerCase() + "-trigger" + ".radius", entry.getValue());
     }
 
@@ -93,29 +94,29 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public void setLocalCooldown(String triggerName, double value) {
-        cooldownDuration.put(triggerName.toUpperCase(), value);
+        cooldownduration.put(triggerName.toUpperCase(), value);
     }
 
     public double getCooldownDuration(String triggerName) {
-        if (cooldownDuration.containsKey(triggerName.toUpperCase()))
-            return cooldownDuration.get(triggerName.toUpperCase());
+        if (cooldownduration.containsKey(triggerName.toUpperCase()))
+            return cooldownduration.get(triggerName.toUpperCase());
         else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN;
     }
     
     public CooldownType getCooldownType(String triggerName) {
-        if (cooldownType.containsKey(triggerName.toUpperCase()))
-            return cooldownType.get(triggerName.toUpperCase());
+        if (cooldowntype.containsKey(triggerName.toUpperCase()))
+            return cooldowntype.get(triggerName.toUpperCase());
         else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN_TYPE;
     }
 
     public void setLocalRadius(String triggerName, int value) {
-        if (localRadius.containsKey(triggerName.toUpperCase()))
-            localRadius.put(triggerName, value);
+        if (localradius.containsKey(triggerName.toUpperCase()))
+            localradius.put(triggerName, value);
     }
 
     public int getRadius(String triggerName) {
-        if (localRadius.containsKey(triggerName.toUpperCase()))
-            return localRadius.get(triggerName.toUpperCase());
+        if (localradius.containsKey(triggerName.toUpperCase()))
+            return localradius.get(triggerName.toUpperCase());
         else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_RADIUS;
     }
 
