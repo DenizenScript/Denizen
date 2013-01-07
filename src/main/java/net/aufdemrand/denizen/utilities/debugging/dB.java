@@ -53,7 +53,7 @@ public class dB {
 	static ConsoleSender cs = new ConsoleSender();
 	
 	public static boolean debugMode = true;
-	public static boolean showStackTraces = false;
+	public static boolean showStackTraces = true;
 
 	/**
 	 * Can be used with echoDebug(...) to output a header, footer, 
@@ -93,19 +93,29 @@ public class dB {
 	private static class ConsoleSender {
 		// Bukkit CommandSender sends color nicely to the logger.
 		static CommandSender commandSender = null;
-
+        static boolean skipFooter = false;
 		public static void sendMessage(String string) {
 			if (commandSender == null) commandSender = Bukkit.getServer().getConsoleSender(); 
-			// Create buffer for wrapping debug text nicely.
-			String[] words = string.split(" ");
+
+            // 'Hack-fix' for disallowing multiple 'footers' to print in a row
+            if (string.equals(ChatColor.LIGHT_PURPLE + "+---------------------+")) {
+                if (!skipFooter) skipFooter = true;
+                else {
+                    return;
+                }
+            } else skipFooter = false;
+
+            // Create buffer for wrapping debug text nicely.
+            String[] words = string.split(" ");
 			String buffer = "";
-			int modifier = 1;
+            int length = 0;
 			for (String word : words) { // # of total chars * # of lines - timestamp
-				if (buffer.length() + word.length()  <  (80 * modifier)  - 25)
+				if (length + ChatColor.stripColor(word).length() + 1  < 60) {
 					buffer = buffer + word + " ";
-				else {
+                    length = length + ChatColor.stripColor(word).length() + 1;
+                } else {
 					// Increase # of lines to account for
-					modifier++;
+                    length = ChatColor.stripColor(word).length() + 1;
 					// Leave spaces to account for timestamp and indent
 					buffer = buffer + "\n" + "                   " + word + " ";
 				}                          // 16:05:06 [INFO]    
@@ -236,18 +246,31 @@ public class dB {
 	/* 
 	 * These methods do NOT require DebugMode to be enabled 
 	 */
-	
+
+    @SuppressWarnings("restriction")
 	public static void log(String message, String arg) {
-		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + String.format(message, arg));
+        ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
+                + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
+                sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
+                : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] "
+                + ChatColor.WHITE + String.format(message, arg));
 	}
 
+    @SuppressWarnings("restriction")
 	public static void log(Messages message, String arg) {
-		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + String.format(message.toString(), arg));
+        ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
+                + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
+                sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
+                : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] "
+                + ChatColor.WHITE + String.format(message.toString(), arg));
 	}
 	
 	@SuppressWarnings("restriction")
 	public static void log(String message) {
-		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> [" + sun.reflect.Reflection.getCallerClass(2).getSimpleName() + "] " + ChatColor.WHITE + message);
+		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
+                + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
+                sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
+                : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] " + ChatColor.WHITE + message);
 	}
 
 	public static void notify(Player player, String message, String arg) {
