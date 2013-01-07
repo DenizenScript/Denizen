@@ -12,12 +12,11 @@ import java.util.*;
 
 
 /**
- * ScriptEntry contain information about a single entry from a DenizenScript. 
+ * ScriptEntry contain information about a single entry from a dScript.
  *  
  * @author Jeremy Schroeder
  *
  */
-
 public class ScriptEntry {
 
 	/* 
