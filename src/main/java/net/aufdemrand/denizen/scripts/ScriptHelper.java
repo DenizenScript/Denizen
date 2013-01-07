@@ -235,11 +235,16 @@ public class ScriptHelper {
 						dB.echoDebug("Processing '" + fileName + "'... ");
 						try {
 							YamlConfiguration yaml = YamlConfiguration.loadConfiguration(f);
-							sb.append(yaml.saveToString() + "\r\n");
-						} catch (Exception e) {
+							if (yaml != null)
+                            sb.append(yaml.saveToString() + "\r\n");
+                            else dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. See console for YAML errors.");
+						} catch (RuntimeException e) {
 							dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "!");
-							e.printStackTrace();
-						}
+                            if (dB.showStackTraces) {
+                                dB.echoDebug("STACKTRACE follows:");
+                                e.printStackTrace();
+                            }
+                            else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");						}
 					}
 				}
 				dB.echoApproval("All scripts loaded!");

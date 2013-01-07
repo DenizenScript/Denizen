@@ -355,8 +355,8 @@ public class ScriptEngine {
      * 
      * @param player
      *      The player's queue to inject the entries to.
-     * @param scriptEntries
-     *      The list of ScriptEntries to inject.
+     * @param scriptEntry
+     *      The ScriptEntry to inject.
      * @param queueType
      *      The type of queue to add the entries to.
      * @param position
