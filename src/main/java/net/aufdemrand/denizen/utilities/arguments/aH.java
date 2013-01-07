@@ -760,7 +760,7 @@ public class aH {
         final Pattern[] matchesItemPtrn = {
                 Pattern.compile("item:\\d+:\\d+", Pattern.CASE_INSENSITIVE),
                 Pattern.compile("item:\\d+", Pattern.CASE_INSENSITIVE),
-                Pattern.compile("item:([a-zA-Z\\x5F]+)", Pattern.CASE_INSENSITIVE),
+                Pattern.compile("item:(.+)", Pattern.CASE_INSENSITIVE),
                 Pattern.compile("item:itemstack\\..+", Pattern.CASE_INSENSITIVE)
         };
 
@@ -777,11 +777,11 @@ public class aH {
         m = matchesItemPtrn[2].matcher(arg);
         if (m.matches()) {
             for (Material mat : Material.values())
-                if (mat.name().equalsIgnoreCase(m.group(1)))
+                if (mat.toString().equalsIgnoreCase(m.group(1)))
                     return true;
         }
         // Check for valid prefix, warn about value.
-        if (arg.toUpperCase().startsWith("item:"))
+        if (arg.toUpperCase().startsWith("ITEM:"))
             dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
                     "prefix is correct, the value is not valid. Perhaps a replaceable Tag has failed " +
                     "to fill in a valid item, or you've specified an invalid Material?");

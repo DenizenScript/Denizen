@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.flags;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.core.FlagCommand.FlagType;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FlagManager {
 
@@ -182,7 +182,7 @@ public class FlagManager {
 
             if (size() == 0) value.values.add((String) obj);
             else if (index > 0) {
-                if (value.values.size() > index) {
+                if (value.values.size() > index - 1) {
                     value.values.remove(index - 1);
                     value.values.add(index - 1, (String) obj);
 
@@ -383,6 +383,7 @@ public class FlagManager {
             // -1 = last object.
             if (index < 0)
                 index = size() - 1;
+            dB.echoDebug("adjustIndex: index=" + String.valueOf(index));
         }
 
         /**
@@ -495,7 +496,9 @@ public class FlagManager {
          * 
          */
         private Value get(int i) {
+            dB.echoDebug("get: index=" + String.valueOf(index));
             index = i - 1;
+            dB.echoDebug("compensate: index=" + String.valueOf(index));
             adjustIndex();
             return this;
         }
@@ -505,7 +508,10 @@ public class FlagManager {
          * 
          */
         public boolean isEmpty() {
-            return !(values.size() > 1 || !values.get(0).equals(""));
+            dB.echoDebug("isEmpty?: index=" + String.valueOf(index) + " size=" + this.size());
+            if (this.size() < index + 1) return true;
+            if (values.get(index).equals("")) return true;
+            return false;
         }
 
         /**
