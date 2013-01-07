@@ -17,11 +17,16 @@ public class ScriptRepo {
 	private static String API = "http://scripts.citizensnpcs.com/api.php";
 
 	public static void info(CommandSender cs, String id) throws JSONException {
-		JSONObject data = queryAPI("view&pubID="+id);
+		JSONObject data = queryAPI("view&dscript&pubID="+id);
 		if(data.getBoolean("success")){
 			JSONObject entry = data.getJSONObject("entryData");
 			Messaging.send(cs, entry.getString("pubID")+" - "+entry.getString("name")+" by "+entry.getString("author"));
 			Messaging.send(cs, entry.getString("description").replaceAll("\\r\\n", "\n"));
+			if(entry.getInt("dscript")==1){
+				Messaging.send(cs, "You can load this script with /citizens denizen repo load "+entry.getString("pubID"));
+			}else{
+				Messaging.send(cs, "This script does not support being loaded ingame. Check http://scripts.citizensnpcs.com/view/"+entry.getString("pubID")+" for info.");
+			}
 		}else{
 			Messaging.send(cs, "Could not find that script!");
 		}
@@ -32,7 +37,7 @@ public class ScriptRepo {
 	}
 
 	public static void search(CommandSender cs, String query, int page) throws JSONException {
-		JSONObject data = queryAPI("search&count=8&page="+page+"&query="+query);
+		JSONObject data = queryAPI("search&dscript&count=8&page="+page+"&query="+query);
 		if(data.getBoolean("success")){
 			JSONArray resultlist = data.getJSONArray("results");
 			ArrayList<JSONObject> results = new ArrayList<JSONObject>();
@@ -55,7 +60,7 @@ public class ScriptRepo {
 	}
 
 	public static void load(CommandSender cs, String id) throws JSONException {
-		JSONObject data = queryAPI("download&pubID="+id);
+		JSONObject data = queryAPI("download&dscript&pubID="+id);
 		if(data.getBoolean("success")){
 			String yaml = data.getString("code").replaceAll("\\r\\n", "\n");
 			Denizen plugin = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
@@ -75,6 +80,8 @@ public class ScriptRepo {
 			}else{
 				Messaging.send(cs, "A script by that name appears to already exist!");
 			}
+		}else if(data.keyExists("cause") && data.getString("cause").equalsIgnoreCase("dscript")){
+			Messaging.send(cs, "This script does not support dscript functionality!");
 		}else{
 			Messaging.send(cs, "Could not download that script!");
 		}
