@@ -113,7 +113,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
                     flagValue = flagArgs[2];
                 }
 
-                dB.echoDebug(Messages.DEBUG_SET_FLAG_ACTION, arg);
+                dB.echoDebug(Messages.DEBUG_SET_FLAG_ACTION, flagAction.toString());
                 continue;
 
             }	else {

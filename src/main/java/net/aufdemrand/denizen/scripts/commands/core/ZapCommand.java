@@ -142,7 +142,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
         // FINALLY! ZAP! Change the step in Saves... your step is now ZAPPED!
         // Fun fact: ZAP is named in homage of ZZT-OOPs ZAP command. Google it.
         //
-        denizen.getSaves().set("Players." + scriptEntry.getPlayer().getName() + "." + script.toUpperCase() + "." + "Current Step", step);
+        denizen.getSaves().set("Players." + scriptEntry.getPlayer().getName() + ".Scripts." + script.toUpperCase() + "." + "Current Step", step);
     }
 
 }

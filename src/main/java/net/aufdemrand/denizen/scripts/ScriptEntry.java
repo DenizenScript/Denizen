@@ -1,19 +1,14 @@
 package net.aufdemrand.denizen.scripts;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import java.util.*;
 
 
 /**
@@ -141,7 +136,8 @@ public class ScriptEntry {
 	}
 
 	public String getScript() {
-		return script;
+        if (script == null) return script;
+		else return script.toUpperCase();
 	}
 
 	public QueueType getSendingQueue() {
@@ -149,7 +145,8 @@ public class ScriptEntry {
 	}
 
 	public String getStep() {
-		return step.toUpperCase();
+        if (step == null) return null;
+		else return step.toUpperCase();
 	}
 
 	public Long getQueueTime() {
