@@ -201,23 +201,43 @@ public class IfCommand extends AbstractCommand {
                         break;
                 }
 
+
+                //
+                // COMPARABLE IS DOUBLE
+                //
             }   else if (com.comparable instanceof Double) {
-                switch(com.operator) {
-                    case EQUALS:
-                        if (((Double) com.comparable).compareTo((Double) com.comparedto) == 0) com.outcome = true;
-                        break;
-                    case ORMORE:
-                        if (((Double) com.comparable).compareTo((Double) com.comparedto) >= 0) com.outcome = true;
-                        break;
-                    case ORLESS:
-                        if (((Double) com.comparable).compareTo((Double) com.comparedto) <= 0) com.outcome = true;
-                        break;
-                    case MORE:
-                        if (((Double) com.comparable).compareTo((Double) com.comparedto) > 0) com.outcome = true;
-                        break;
-                    case LESS:
-                        if (((Double) com.comparable).compareTo((Double) com.comparedto) < 0) com.outcome = true;
-                        break;
+
+                // Check comparedto for Double, make it Integer
+                if (com.comparedto instanceof Integer) {
+                    dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Attempting to compare DOUBLE("
+                            + com.comparable + ") with INTEGER(" + com.comparedto + "). Converting INTEGER to DOUBLE "
+                            + "value. If this is not intended, use the .ASINT or .ASDOUBLE modifier. See 'IF' documentation");
+                    com.comparedto = ((Integer) com.comparedto).doubleValue();
+                }
+                // Check to make sure comparedto is Integer
+                if (!(com.comparedto instanceof Integer)) {
+                    dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare DOUBLE("
+                            + com.comparable + ") with " + com.comparable.getClass().getSimpleName() + "("
+                            + com.comparedto + "). Outcome for this Comparable will be false.");
+                } else {
+
+                    switch(com.operator) {
+                        case EQUALS:
+                            if (((Double) com.comparable).compareTo((Double) com.comparedto) == 0) com.outcome = true;
+                            break;
+                        case ORMORE:
+                            if (((Double) com.comparable).compareTo((Double) com.comparedto) >= 0) com.outcome = true;
+                            break;
+                        case ORLESS:
+                            if (((Double) com.comparable).compareTo((Double) com.comparedto) <= 0) com.outcome = true;
+                            break;
+                        case MORE:
+                            if (((Double) com.comparable).compareTo((Double) com.comparedto) > 0) com.outcome = true;
+                            break;
+                        case LESS:
+                            if (((Double) com.comparable).compareTo((Double) com.comparedto) < 0) com.outcome = true;
+                            break;
+                    }
                 }
 
 
@@ -230,7 +250,7 @@ public class IfCommand extends AbstractCommand {
                 if (com.comparedto instanceof Double) {
                     dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Attempting to compare INTEGER("
                             + com.comparable + ") with DOUBLE(" + com.comparedto + "). Converting DOUBLE to INTEGER "
-                            + "value. If this is not intended, use the .ASDOUBLE modifier. See 'IF' documentation");
+                            + "value. If this is not intended, use the .ASDOUBLE or .ASINT modifier. See 'IF' documentation");
                     com.comparedto = ((Double) com.comparedto).intValue();
                 }
 
