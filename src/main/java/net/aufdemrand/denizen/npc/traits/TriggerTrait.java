@@ -136,7 +136,7 @@ public class TriggerTrait extends Trait implements Listener {
 
     public boolean triggerCooldownOnly(AbstractTrigger triggerClass, Player player) {
         // Check cool down, return false if not yet met
-        if (!denizen.getTriggerRegistry().checkCooldown(npc, player, triggerClass))
+        if (!denizen.getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))
                 return false;
         // Check engaged
         if (denizen.getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
@@ -149,7 +149,7 @@ public class TriggerTrait extends Trait implements Listener {
     
     public boolean trigger(AbstractTrigger triggerClass, Player player) {
         // Check cool down, return false if not yet met
-        if (!denizen.getTriggerRegistry().checkCooldown(npc, player, triggerClass))
+        if (!denizen.getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))
                 return false;
         // Check engaged
         if (denizen.getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
