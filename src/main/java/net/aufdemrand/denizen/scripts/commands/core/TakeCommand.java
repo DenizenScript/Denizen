@@ -38,7 +38,7 @@ public class TakeCommand extends AbstractCommand{
 			throws InvalidArgumentsException {
 		
 		TakeType takeType = null;
-		int quantity = 1;
+		double quantity = 1;
 		ItemStack item = null;
 		
 		for (String arg : scriptEntry.getArguments()) {
@@ -53,7 +53,7 @@ public class TakeCommand extends AbstractCommand{
 			}
 			
 			else if (aH.matchesQuantity(arg)) {
-				quantity = aH.getIntegerFrom(arg);
+				quantity = aH.getDoubleFrom(arg);
 			}
 			
 			else if (aH.matchesItem(arg)) {
@@ -86,16 +86,19 @@ public class TakeCommand extends AbstractCommand{
 				 	if (provider != null && provider.getProvider() != null) {
 				 		Economy economy = provider.getProvider();
 						dB.echoDebug ("...taking " + scriptEntry.getObject("quantity") + " money.");
-						economy.withdrawPlayer(scriptEntry.getPlayer().getName(), (Double)scriptEntry.getObject("quantity"));
+						economy.withdrawPlayer(scriptEntry.getPlayer().getName(), ((Double) scriptEntry.getObject("quantity")));
 				 	}
 			 	} catch (NoClassDefFoundError e) {
 					dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
 			 	}
         	break;
+
         case ITEM:
-        	((ItemStack)scriptEntry.getObject("item")).setAmount((Integer)scriptEntry.getObject("quantity"));
+        	((ItemStack)scriptEntry.getObject("item")).setAmount(((Double) scriptEntry.getObject("quantity")).intValue());
 			if (!scriptEntry.getPlayer().getInventory().removeItem((ItemStack)scriptEntry.getObject("item")).isEmpty()) 
-        	break;
+        	    dB.echoDebug("The Player did not have enough " + ((ItemStack) scriptEntry.getObject("item")).getType().toString()
+                        + " on hand, so Denizen took as much as possible. To avoid this situation, use an IF or REQUIREMENT to check.");
+                break;
 		}
 	}
 }
