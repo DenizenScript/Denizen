@@ -3,19 +3,21 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Core dScript IF command.
- * 
+ *
  * @author Jeremy Schroeder
  */
 
@@ -37,49 +39,45 @@ public class IfCommand extends AbstractCommand {
         Operator operator = Operator.EQUALS;
         Object comparedto = (boolean) true;
         Boolean outcome = null;
+
+        @Override
+        public String toString() {
+            return  (logic != Logic.REGULAR ? "Logic=" + logic.toString() + ", " : "")
+                    + "Comparable=" + (comparable == null ? "null" : comparable.getClass().getSimpleName()
+                    + "(" + ChatColor.AQUA + comparable + ChatColor.WHITE + ")")
+                    + ", Operator=" + operator.toString()
+                    + ", ComparedTo=" + (comparedto == null ? "null" : comparedto.getClass().getSimpleName()
+                    + "(" + ChatColor.AQUA + comparedto + ChatColor.WHITE + ") ")
+                    + ChatColor.YELLOW + "--> OUTCOME='" + outcome + "'";
+        }
     }
-
-    private List<Comparable> comparables = new ArrayList<Comparable>();
-
-    private String outcomeCommand;
-    private List<String> outcomeArgs = new ArrayList<String>();
-
-    private String elseCommand;
-    private List<String> elseArgs = new ArrayList<String>();
-
-    private Player player;
-    private DenizenNPC npc;
-    private String script;
-    private String step;
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        comparables.clear();
-        outcomeCommand = null;
-        outcomeArgs.clear();
-        elseCommand = null;
-        elseArgs.clear();
-        
-        player = scriptEntry.getPlayer();
-        npc = scriptEntry.getNPC();
-        script = scriptEntry.getScript();
-        step = scriptEntry.getStep();
-                
+        // Initialize necessary fields
+        List<Comparable> comparables = new ArrayList<Comparable>();
+
+        String outcomeCommand = null;
+        ArrayList<String> outcomeArgs = new ArrayList<String>();
+        String elseCommand = null;
+        ArrayList<String> elseArgs = new ArrayList<String>();
+
         comparables.add(new Comparable());
         int index = 0;
 
+        // Iterate through the arguments, build comparables
         for (String arg : scriptEntry.getArguments()) {
-
             if (outcomeCommand == null) {
                 // Set logic (Optional, default is REGULAR)
                 if (arg.startsWith("!")) {
                     comparables.get(index).logic = Logic.NEGATIVE;
                     arg = arg.substring(1);
                 }
-                // Replace symbol-operator with ENUM value for matching
+                // Replace symbol-operators/bridges with ENUM value for matching
                 arg = arg.replace("==", "EQUALS").replace("<", "LESS").replace(">", "MORE")
-                        .replace("=", "EQUALS").replace(">=", "ORMORE").replace("<=", "ORLESS");
+                        .replace(">=", "ORMORE").replace("<=", "ORLESS")
+                        .replace("||", "OR").replace("&&", "AND");
                 // Set bridge
                 if (aH.matchesArg("OR", arg) || aH.matchesArg("AND", arg)) {
                     index++;
@@ -89,159 +87,192 @@ public class IfCommand extends AbstractCommand {
                 }
                 // Set operator (Optional, default is EQUALS)
                 else if (aH.matchesArg("EQUALS", arg) || aH.matchesArg("ISINT", arg) || aH.matchesArg("ISDOUBLE", arg) || aH.matchesArg("ISPLAYER", arg) || aH.matchesArg("ISEMPTY", arg)
-                        || aH.matchesArg("ORMORE", arg) || aH.matchesArg("MORE", arg) || aH.matchesArg("LESS", arg) || aH.matchesArg("ORLESS", arg) || aH.matchesArg("CONTAINS", arg)) 
+                        || aH.matchesArg("ORMORE", arg) || aH.matchesArg("MORE", arg) || aH.matchesArg("LESS", arg) || aH.matchesArg("ORLESS", arg) || aH.matchesArg("CONTAINS", arg))
                     comparables.get(index).operator = Operator.valueOf(arg.toUpperCase());
-                // Set outcomeCommand
+                    // Set outcomeCommand
                 else if (denizen.getCommandRegistry().get(arg) != null)
                     outcomeCommand = arg;
-                // Set comparable
+                    // Set comparable
                 else if (comparables.get(index).comparable == null) comparables.get(index).comparable = findObjectType(arg);
-                // Set compared-to
+                    // Set compared-to
                 else comparables.get(index).comparedto = findObjectType(arg);
 
             }  else if (elseCommand == null) {
                 // Move to ELSE command
-                if (aH.matchesArg("ELSE", arg)) elseCommand = ""; 
-                // Add outcomeArgs arguments
-                else outcomeArgs.add(arg);
+                if (aH.matchesArg("ELSE", arg)) elseCommand = "";
+                    // Add outcomeArgs arguments
+                else {
+                    outcomeArgs.add(arg);
+                }
 
             } else {
                 // Specify ELSE command
                 if (elseCommand.equals("")) elseCommand = arg;
-                // Add elseArgs arguments
-                else elseArgs.add(arg);
+                    // Add elseArgs arguments
+                else {
+                    elseArgs.add(arg);
+                }
             }
-
-
         }
+
+        // Stash objects required to execute() into the ScriptEntry
+        scriptEntry.addObject("comparables", comparables);
+        scriptEntry.addObject("outcome-command", outcomeCommand);
+        scriptEntry.addObject("outcome-command-args", outcomeArgs.toArray());
+        scriptEntry.addObject("else-command", elseCommand);
+        scriptEntry.addObject("else-command-args", elseArgs.toArray());
     }
 
-    @SuppressWarnings({ "unchecked", "incomplete-switch" })
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // IF (!)[COMPARABLE] (OPERATOR) [COMPARED_TO] (BRIDGE) (...add'l Comparable) [COMMAND] (Command Arguments) ELSE [COMMAND] (Command Agruments)
+        // Grab comparables from the ScriptEntry
+        List<Comparable> comparables = (List<Comparable>) scriptEntry.getObject("comparables");
 
-        // Valid OPERATORs: EQUALS*, ISINT, ISDOUBLE, ISPLAYER, ORMORE, ORLESS, CONTAINS   *Note: If not supplied, EQUALS is used by default.
-        // Valid BRIDGEs: OR, AND
+        int counter = 1;
 
-        // Simple IF THIS equals THAT or THIS equals THAT do COMMAND else COMMAND
-        // IF <FLAG.P:FLAGNAME.ASINT> ORMORE 20 OR <FLAG.P:OTHERFLAG> 'Twenty' NARRATE '20 or more!' ELSE NARRATE 'Not quite 20!'
-
-        // More examples:
-        // IF <CONS.ACCEPTABLE_ITEMS.ASLIST> CONTAINS <PLAYER.ITEM_IN_HAND.MATERIAL> RUNTASK SCRIPT:'Sell items' ELSE RUNTASK SCRIPT:'Item not available'
-
+        // Evaluate comparables
         for (Comparable com : comparables) {
             com.outcome = false;
 
             if (com.comparable instanceof String) {
                 switch(com.operator) {
-                case ISEMPTY:
-                    if (((String) com.comparable).equals("EMPTY")) com.outcome = true;
-                    break;
-                case EQUALS:
-                    if (((String) com.comparable).equalsIgnoreCase((String) com.comparedto)) com.outcome = true;
-                    break;
-                case CONTAINS:
-                    if (((String) com.comparable).toUpperCase().contains(((String) com.comparedto).toUpperCase())) com.outcome = true;
-                    break;
-                case ORMORE:
-                    if (((String) com.comparable).length() >= ((String) com.comparedto).length()) com.outcome = true;
-                    break;
-                case ORLESS:
-                    if (((String) com.comparable).length() <= ((String) com.comparedto).length()) com.outcome = true;
-                    break;
-                case MORE:
-                    if (((String) com.comparable).length() > ((String) com.comparedto).length()) com.outcome = true;
-                    break;
-                case LESS:
-                    if (((String) com.comparable).length() < ((String) com.comparedto).length()) com.outcome = true;
-                    break;
-                case ISPLAYER:
-                    for (Player player : denizen.getServer().getOnlinePlayers())
-                        if (player.getName().equalsIgnoreCase((String) com.comparable)) {
-                            com.outcome = true;
-                            break;
-                        }
-                    if (!com.outcome)
-                        for (OfflinePlayer player : denizen.getServer().getOfflinePlayers())
+                    case ISEMPTY:
+                        if (((String) com.comparable).equals("EMPTY")) com.outcome = true;
+                        break;
+                    case EQUALS:
+                        if (((String) com.comparable).equalsIgnoreCase((String) com.comparedto)) com.outcome = true;
+                        break;
+                    case CONTAINS:
+                        if (((String) com.comparable).toUpperCase().contains(((String) com.comparedto).toUpperCase())) com.outcome = true;
+                        break;
+                    case ORMORE:
+                        if (((String) com.comparable).length() >= ((String) com.comparedto).length()) com.outcome = true;
+                        break;
+                    case ORLESS:
+                        if (((String) com.comparable).length() <= ((String) com.comparedto).length()) com.outcome = true;
+                        break;
+                    case MORE:
+                        if (((String) com.comparable).length() > ((String) com.comparedto).length()) com.outcome = true;
+                        break;
+                    case LESS:
+                        if (((String) com.comparable).length() < ((String) com.comparedto).length()) com.outcome = true;
+                        break;
+                    case ISPLAYER:
+                        for (Player player : denizen.getServer().getOnlinePlayers())
                             if (player.getName().equalsIgnoreCase((String) com.comparable)) {
                                 com.outcome = true;
                                 break;
                             }
-                    break;
+                        if (!com.outcome)
+                            for (OfflinePlayer player : denizen.getServer().getOfflinePlayers())
+                                if (player.getName().equalsIgnoreCase((String) com.comparable)) {
+                                    com.outcome = true;
+                                    break;
+                                }
+                        break;
                 }
 
             }	else if (com.comparable instanceof List) {
                 switch(com.operator) {
-                case CONTAINS:
-                    for (String string : ((List<String>) com.comparable)) {
-                        if (com.comparedto instanceof Integer) {
-                            if (aH.getIntegerFrom(string) == ((Integer) com.comparedto).intValue()) com.outcome = true;
-                            break;
-                        }   else if (com.comparedto instanceof Double) {
-                            if (aH.getDoubleFrom(string) == ((Double) com.comparedto).doubleValue()) com.outcome = true;
-                            break;
-                        }	else if (com.comparedto instanceof Boolean) {
-                            if (Boolean.valueOf(string).booleanValue() == ((Boolean) com.comparedto).booleanValue()) com.outcome = true;
-                            break;
-                        }   else if (com.comparedto instanceof String) {
-                            if (string.equalsIgnoreCase((String) com.comparedto)) com.outcome = true;
-                            break;
+                    case CONTAINS:
+                        for (String string : ((List<String>) com.comparable)) {
+                            if (com.comparedto instanceof Integer) {
+                                if (aH.getIntegerFrom(string) == ((Integer) com.comparedto).intValue()) com.outcome = true;
+                                break;
+                            }   else if (com.comparedto instanceof Double) {
+                                if (aH.getDoubleFrom(string) == ((Double) com.comparedto).doubleValue()) com.outcome = true;
+                                break;
+                            }	else if (com.comparedto instanceof Boolean) {
+                                if (Boolean.valueOf(string).booleanValue() == ((Boolean) com.comparedto).booleanValue()) com.outcome = true;
+                                break;
+                            }   else if (com.comparedto instanceof String) {
+                                if (string.equalsIgnoreCase((String) com.comparedto)) com.outcome = true;
+                                break;
+                            }
                         }
-                    }
-                    break;
-                case ORMORE:
-                    if (((List<String>) com.comparable).size() >= ((Integer) com.comparedto)) com.outcome = true;
-                    break;
-                case ORLESS:
-                    if (((List<String>) com.comparable).size() <= ((Integer) com.comparedto)) com.outcome = true;
-                    break;
+                        break;
+                    case ORMORE:
+                        if (((List<String>) com.comparable).size() >= ((Integer) com.comparedto)) com.outcome = true;
+                        break;
+                    case ORLESS:
+                        if (((List<String>) com.comparable).size() <= ((Integer) com.comparedto)) com.outcome = true;
+                        break;
                 }
 
             }   else if (com.comparable instanceof Double) {
                 switch(com.operator) {
-                case EQUALS:
-                    if (((Double) com.comparable).compareTo((Double) com.comparedto) == 0) com.outcome = true;
-                    break;
-                case ORMORE:
-                    if (((Double) com.comparable).compareTo((Double) com.comparedto) >= 0) com.outcome = true;
-                    break;
-                case ORLESS:
-                    if (((Double) com.comparable).compareTo((Double) com.comparedto) <= 0) com.outcome = true;
-                    break;
-                case MORE:
-                    if (((Double) com.comparable).compareTo((Double) com.comparedto) > 0) com.outcome = true;
-                    break;
-                case LESS:
-                    if (((Double) com.comparable).compareTo((Double) com.comparedto) < 0) com.outcome = true;
-                    break;
+                    case EQUALS:
+                        if (((Double) com.comparable).compareTo((Double) com.comparedto) == 0) com.outcome = true;
+                        break;
+                    case ORMORE:
+                        if (((Double) com.comparable).compareTo((Double) com.comparedto) >= 0) com.outcome = true;
+                        break;
+                    case ORLESS:
+                        if (((Double) com.comparable).compareTo((Double) com.comparedto) <= 0) com.outcome = true;
+                        break;
+                    case MORE:
+                        if (((Double) com.comparable).compareTo((Double) com.comparedto) > 0) com.outcome = true;
+                        break;
+                    case LESS:
+                        if (((Double) com.comparable).compareTo((Double) com.comparedto) < 0) com.outcome = true;
+                        break;
                 }
 
+
+                //
+                // COMPARABLE IS INTEGER
+                //
             }	else if (com.comparable instanceof Integer) {
-                switch(com.operator) {
-                case EQUALS:
-                    if (((Integer) com.comparable).compareTo((Integer) com.comparedto) == 0) com.outcome = true;
-                    break;
-                case ORMORE:
-                    if (((Integer) com.comparable).compareTo((Integer) com.comparedto) >= 0) com.outcome = true;
-                    break;
-                case ORLESS:
-                    if (((Integer) com.comparable).compareTo((Integer) com.comparedto) <= 0) com.outcome = true;
-                    break;
-                case MORE:
-                    if (((Integer) com.comparable).compareTo((Integer) com.comparedto) > 0) com.outcome = true;
-                    break;
-                case LESS:
-                    if (((Integer) com.comparable).compareTo((Integer) com.comparedto) < 0) com.outcome = true;
-                    break;
+
+                // Check comparedto for Double, make it Integer
+                if (com.comparedto instanceof Double) {
+                    dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Attempting to compare INTEGER("
+                            + com.comparable + ") with DOUBLE(" + com.comparedto + "). Converting DOUBLE to INTEGER "
+                            + "value. If this is not intended, use the .ASDOUBLE modifier. See 'IF' documentation");
+                    com.comparedto = ((Double) com.comparedto).intValue();
                 }
 
+                // Check to make sure comparedto is Integer
+                if (!(com.comparedto instanceof Integer)) {
+                    dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare INTEGER("
+                            + com.comparable + ") with " + com.comparable.getClass().getSimpleName() + "("
+                            + com.comparedto + "). Outcome for this Comparable will be false.");
+                } else {
+                    // Comparing integers.. let's do the logic
+                    switch(com.operator) {
+                        case EQUALS:
+                            if (((Integer) com.comparable).compareTo((Integer) com.comparedto) == 0) com.outcome = true;
+                            break;
+                        case ORMORE:
+                            if (((Integer) com.comparable).compareTo((Integer) com.comparedto) >= 0) com.outcome = true;
+                            break;
+                        case ORLESS:
+                            if (((Integer) com.comparable).compareTo((Integer) com.comparedto) <= 0) com.outcome = true;
+                            break;
+                        case MORE:
+                            if (((Integer) com.comparable).compareTo((Integer) com.comparedto) > 0) com.outcome = true;
+                            break;
+                        case LESS:
+                            if (((Integer) com.comparable).compareTo((Integer) com.comparedto) < 0) com.outcome = true;
+                            break;
+                    }
+                }
+
+
+                //
+                // COMPARABLE IS BOOLEAN
+                //
             }   else if (com.comparable instanceof Boolean) {
                 com.outcome = ((Boolean) com.comparable).booleanValue();
             }
 
-            if (com.logic == Logic.NEGATIVE) com.outcome = !com.outcome; 
+            if (com.logic == Logic.NEGATIVE) com.outcome = !com.outcome;
+
+            // Show outcome of Comparable
+            dB.echoDebug(ChatColor.YELLOW + "Comparable " + counter + ": " + ChatColor.WHITE + com.toString());
+            counter++;
         }
 
         // Compare outcomes 
@@ -255,31 +286,34 @@ public class IfCommand extends AbstractCommand {
         int andcount = 0;
         int andmet = 0;
         for (Comparable compareable : comparables) {
-            if (compareable.bridge == Bridge.AND)
+            if (compareable.bridge == Bridge.AND) {
                 if (compareable.outcome) andmet++;
-            andcount++;
+                andcount++;
+            }
         }
 
         // Determine outcome -- do, or else?
-        if (ormet > 0 && andcount == andmet) doCommand();
-        else doElse();
+        if (ormet > 0 && andcount == andmet) doCommand(scriptEntry);
+        else doElse(scriptEntry);
     }
 
+
+    // Convert the string comparable/comparedto argument to a specific Object
     private Object findObjectType(String arg) {
 
         // If a Integer
         if (aH.matchesInteger(arg))
-            return Integer.valueOf(aH.getIntegerFrom(arg));
+            return aH.getIntegerFrom(arg);
 
-        // If a Double
+            // If a Double
         else if (aH.matchesDouble(arg))
-            return Double.valueOf(aH.getDoubleFrom(arg));
+            return aH.getDoubleFrom(arg);
 
-        // If a Boolean
-        else if (arg.equalsIgnoreCase("true")) return Boolean.valueOf(true);
-        else if (arg.equalsIgnoreCase("false")) return Boolean.valueOf(false);
+            // If a Boolean
+        else if (arg.equalsIgnoreCase("true")) return true;
+        else if (arg.equalsIgnoreCase("false")) return false;
 
-        // If a List<Object>
+            // If a List<Object>
         else if (arg.contains("|")) {
             List<String> toList = new ArrayList<String>();
             for (String string : arg.split("|"))
@@ -287,25 +321,47 @@ public class IfCommand extends AbstractCommand {
             return toList;
         }
 
-        // Must be a String
+        // Welp, if none of the above, must be a String! :D
+        // 'arg' is already a String, so return it.
         else return arg;
     }
 
-    private void doCommand() {
+
+    private void doCommand(ScriptEntry scriptEntry) {
+        String outcomeCommand = ((String) scriptEntry.getObject("outcome-command")).toUpperCase();
+        String[] outcomeArgs = Arrays.copyOf((Object[]) scriptEntry.getObject("outcome-command-args"),
+                ((Object[]) scriptEntry.getObject("outcome-command-args")).length, String[].class);
         try {
-            denizen.getScriptEngine().getScriptExecuter().execute(new ScriptEntry(outcomeCommand.toUpperCase(), (String[]) outcomeArgs.toArray(), player, npc, script, step));
+            denizen.getScriptEngine().getScriptExecuter().execute(
+                    new ScriptEntry(outcomeCommand, outcomeArgs, scriptEntry.getPlayer(),
+                            scriptEntry.getNPC(), scriptEntry.getScript(), scriptEntry.getStep()));
         } catch (ScriptEntryCreationException e) {
-            e.printStackTrace();
+            dB.echoError("There has been a problem running the Command. Check syntax.");
+            if (dB.showStackTraces) {
+                dB.echoDebug("STACKTRACE follows:");
+                e.printStackTrace();
+            }
+            else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
         }
     }
 
-    private void doElse() {
-        try {
-            denizen.getScriptEngine().getScriptExecuter().execute(new ScriptEntry(elseCommand.toUpperCase(), (String[]) elseArgs.toArray(), player, npc, script, step));
-        } catch (ScriptEntryCreationException e) {
-            e.printStackTrace();
-        }
 
+    private void doElse(ScriptEntry scriptEntry) {
+        String elseCommand = ((String) scriptEntry.getObject("else-command")).toUpperCase();
+        String[] elseArgs = Arrays.copyOf((Object[]) scriptEntry.getObject("else-command-args"),
+                ((Object[]) scriptEntry.getObject("else-command-args")).length, String[].class);
+        try {
+            denizen.getScriptEngine().getScriptExecuter().execute(
+                    new ScriptEntry(elseCommand, elseArgs, scriptEntry.getPlayer(),
+                            scriptEntry.getNPC(), scriptEntry.getScript(), scriptEntry.getStep()));
+        } catch (ScriptEntryCreationException e) {
+            dB.echoError("There has been a problem running the ELSE Command. Check syntax.");
+            if (dB.showStackTraces) {
+                dB.echoDebug("STACKTRACE follows:");
+                e.printStackTrace();
+            }
+            else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
+        }
     }
 
     @Override
