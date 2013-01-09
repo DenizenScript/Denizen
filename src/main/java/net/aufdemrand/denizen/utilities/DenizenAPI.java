@@ -25,7 +25,7 @@ public class DenizenAPI {
      *
      */
 	public static DenizenNPC getDenizenNPC(NPC npc) {
-		return ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen")).getNPCRegistry().getDenizen(npc);
+		return getCurrentInstance().getNPCRegistry().getDenizen(npc);
 	}
 
     /**
@@ -36,7 +36,17 @@ public class DenizenAPI {
      *
      */
     public static Map<NPC, DenizenNPC> getSpawnedNPCs() {
-        return ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen")).getNPCRegistry().getSpawnedNPCs();
+        return getCurrentInstance().getNPCRegistry().getSpawnedNPCs();
     }
+
+    /**
+     * Gets the current instance of the Denizen plugin.
+     *
+     * @return Denizen instance
+     */
+    public static Denizen getCurrentInstance() {
+        return (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+    }
+
 
 }
