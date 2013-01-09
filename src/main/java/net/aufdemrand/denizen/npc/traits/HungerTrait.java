@@ -1,41 +1,39 @@
 package net.aufdemrand.denizen.npc.traits;
 
+import net.aufdemrand.denizen.events.NPCExhaustedEvent;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
-import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import net.citizensnpcs.api.util.DataKey;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class HungerTrait extends Trait implements Listener {
 
-    public HungerTrait() {
-        super("hunger");
-    }
+    // Saved to the C2 saves.yml
+    @Persist("hunger")
+    private double maxhunger = 20.0;
+    @Persist("hunger")
+    private double currenthunger = 0.0;
+    @Persist("hunger")
+    private int multiplier = 1;
+    @Persist("hunger")
+    private boolean allowexhaustion = false;
 
-    @Persist("") double maxhunger = 20.0;
-    @Persist("") double currenthunger = 0.0;
-    @Persist("") int multiplier = 1;
-
-    @Override public void load(DataKey key) throws NPCLoadException {
-//        maxhunger = key.getDouble("maxhunger", 20);
-//        currenthunger = key.getDouble("currenthunger", 0);
-//        multiplier = key.getInt("multiplier", 1);
-    }
-
-    @Override public void save(DataKey key) {
-//        key.setDouble("maxhealth", maxhunger);
-//        key.setDouble("currenthealth", currenthunger);
-    }
-
-    boolean listening = false;
-    Location location = null;
+    // Used internally
+    private boolean listening = false;
+    private Location location = null;
     private int count = 0;
 
+    /**
+     * Watches the NPCs movement to calculate hunger loss. Loses 0.01 hunger points
+     * per block moved, unless a modifier is used.
+     *
+     */
     @Override public void run() {
         if (!listening) return;
         // We'll only actually calculate Hunger-loss once per second
@@ -51,72 +49,174 @@ public class HungerTrait extends Trait implements Listener {
         }
     }
 
+    /**
+     * Listens for the NPC to move so hunger-loss can be calculated.
+     * Cuts down on processing since loss is only calculated when moving.
+     * Also checks for exhaustion, if enabled. If a NPC is exhausted, that is,
+     * if currenthunger >= maxhunger, the NPC cannot move and a
+     * NPCExhaustedEvent and 'On Exhausted:' action will fire.
+     *
+     */
     @EventHandler
     public void onMove(NavigationBeginEvent event) {
+
+        if (allowexhaustion) {
+            if (isStarving()) {
+                // Create NPCExhaustedEvent, give chance for outside plugins to cancel.
+                NPCExhaustedEvent e = new NPCExhaustedEvent(npc);
+                Bukkit.getServer().getPluginManager().callEvent(e);
+
+                // If still exhausted, cancel navigation and fire 'On Exhausted:' action
+                if (!e.isCancelled()) {
+                    npc.getNavigator().cancelNavigation();
+                    DenizenAPI.getDenizenNPC(npc).action("exhausted", null);
+
+                    // No need to progress any further.
+                    return;
+                }
+            }
+        }
+
         location = npc.getBukkitEntity().getLocation();
         listening = true;
     }
 
+    /**
+     * Stops the listening process for hunger-loss since the NPC is no longer moving.
+     *
+     */
     @EventHandler
     public void onCancel(NavigationCancelEvent event) {
         listening = false;
     }
 
+    /**
+     * Stops the listening process for hunger-loss since the NPC is no longer moving.
+     *
+     */
     @EventHandler
     public void onCancel(NavigationCompleteEvent event) {
         listening = false;
     }
 
-    public double getDistance(Location location) {
+    public HungerTrait() {
+        super("hunger");
+    }
+
+    /**
+     * Gets the NPCs current hunger level. 0.00 = no hunger, NPC is satiated.
+     *
+     * @return current hunger level
+     *
+     */
+    public double getHunger() {
+        return currenthunger;
+    }
+
+    /**
+     * Gets the upper bounds of the hunger level. Default is 20.0. Can be set higher
+     * or lower to require more or less 'feeding'.
+     *
+     * @return max hunger level
+     *
+     */
+    public double getMaxHunger() {
+        return maxhunger;
+    }
+
+    /**
+     * Gets the percentage of hunger based on currenthunger and maxhunger. 100 = npc
+     * is starving. 0 = npc is satiated.
+     *
+     * @return hunger percentage
+     */
+    public int getHungerPercentage() {
+        return (int) ((int) currenthunger / maxhunger);
+    }
+
+    /**
+     * Gets the multiplier used to calculate hunger loss. Default is 1. Setting a higher value
+     * reduces hunger quicker.
+     *
+     * @return current hunger multiplier
+     *
+     */
+    public int getHungerMultiplier() {
+        return multiplier;
+    }
+
+    /**
+     * Sets the multiplier used to calculate hunger loss. Default is 1. Setting a higher value
+     * reduces hunger quicker. Lower value, in turn, makes hunger loss slower.
+     *
+     * @param multiplier new multiplier
+     *
+     */
+    public void setHungerMultiplier(int multiplier) {
+        this.multiplier = multiplier;
+    }
+
+    /**
+     * Sets the current hunger level.
+     *
+     * @param hunger new hunger level
+     *
+     */
+    public void setHunger(double hunger) {
+        if (currenthunger > maxhunger) currenthunger = maxhunger;
+        else currenthunger = hunger;
+    }
+
+    /**
+     * "Feeds" the NPC. The value used will reduce the total currenthunger value.
+     *
+     * @param hunger amount of hunger-points to reduce currenthunger by
+     *
+     */
+    public void feed(double hunger) {
+        currenthunger = currenthunger - hunger;
+        if (currenthunger < 0) currenthunger = 0;
+    }
+
+    /**
+     * Sets the max hunger value. Once hunger reaches this level the NPC is starving and
+     * may not be able to move. This method does not change the NPC's currenthunger.
+     *
+     * @param hunger new max hunger value
+     */
+    public void setMaxhunger(double hunger) {
+        maxhunger = hunger;
+    }
+
+    /**
+     * Checks to see if the NPC is starving. If currenthunger >= maxhunger, the NPC is starving.
+     *
+     * @return true if NPC is starving
+     *
+     */
+    public boolean isStarving() {
+        return currenthunger >= maxhunger;
+    }
+
+    /**
+     * Checks to see if the NPC is hungry. If currenthunger is 10% or more of maxhunger,
+     * the NPC is hungry. A NPC that is starving is also hungry.
+     *
+     * @return true if the NPC is hungry
+     *
+     */
+    public boolean isHungry() {
+        return currenthunger > (maxhunger / 10);
+    }
+
+    // Used internally
+    private double getDistance(Location location) {
         if (!npc.getBukkitEntity().getWorld().equals(location.getWorld())) {
             // World change, update location
             this.location = npc.getBukkitEntity().getLocation();
             return 0;
         }
         return location.distance(this.location);
-    }
-    
-    public double getHunger() {
-        return currenthunger;
-    }
-    
-    public double getMaxhunger() {
-        return maxhunger;
-    }
-    
-    public int getHungerPercentage() {
-        return (int) ((int) currenthunger / maxhunger);
-    }
-    
-    public int getHungerMultiplier() {
-        return multiplier;
-    }
-    
-    public void setHungerMultiplier(int multiplier) {
-        this.multiplier = multiplier;
-    }
-    
-    public void setHunger(double hunger) {
-        currenthunger = hunger;
-    }
-    
-    public void feed(double hunger) {
-        currenthunger = currenthunger - hunger;
-        if (currenthunger < 0) currenthunger = 0;
-    }
-    
-    public void setMaxhunger(double hunger) {
-        maxhunger = hunger;
-    }
-    
-    public boolean isStarving() {
-        if (currenthunger >= maxhunger) return true;
-        else return false;
-    }
-    
-    public boolean isHungry() {
-        if (currenthunger > (maxhunger /10)) return true;
-        else return false;
     }
 
 }
