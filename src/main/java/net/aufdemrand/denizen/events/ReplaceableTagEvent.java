@@ -48,6 +48,15 @@ public class ReplaceableTagEvent extends Event {
     private String fallback = null;
     
     public ReplaceableTagEvent(Player player, DenizenNPC npc, String tag) {
+
+        // TODO: Use REGEX and MATCHER/GROUPS to simplify this code.
+        // 1 quick 2 bindings  3 NAME  4 INDEX    5 SUBTYPE    6 INDEX
+        // "(!|)(?:\\[(.+?)\\]|)(.+?)(\\[.+?\\]|)(?:\\.(.+?)(?:\\[.+?\]|)|)|)(?::(.+?)(?:\[.+?]|)|)|)(?:\\|\\|+.?|)"
+        // <![PLAYER.playerName;NPC.ncpid] TAGNAME[TAG_INDEX].SUBTYPE[TYPE_INDEX] : VALUE[VALUE_INDEX] || FALLBACK >
+
+
+
+
         if (tag.split("\\(").length > 1) {
             fallback = tag.split("\\(", 2)[1];
             tag = tag.split("\\(", 2)[0];

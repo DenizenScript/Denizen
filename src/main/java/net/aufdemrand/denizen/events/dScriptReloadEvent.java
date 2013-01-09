@@ -2,20 +2,18 @@ package net.aufdemrand.denizen.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
- 
 
 /**
- * Bukkit event for when scripts are reloaded.
+ * Bukkit event for when Denizen dScripts are reloaded.
  * 
  * @author Jeremy Schroeder
  *
  */
-
 public class dScriptReloadEvent extends Event {
     
     private static final HandlerList handlers = new HandlerList();
  
-    public ScriptsReloadEvent() {
+    public dScriptReloadEvent() {
     	// Nothing to do here.
     }
     

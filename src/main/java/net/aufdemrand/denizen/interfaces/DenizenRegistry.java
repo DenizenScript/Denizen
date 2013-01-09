@@ -12,7 +12,6 @@ import java.util.Map;
 
 public interface DenizenRegistry {
 
-
     /**
      * Called by an AbstractInstance to get added to the registry.
      * 
@@ -51,7 +50,7 @@ public interface DenizenRegistry {
     /**
      * Gets a specific instance of AbstractInstance that has been previously registered.
      * 
-     * @param instanceName
+     * @param instanceKey
      *      string key in which the AbstractInstance was registered with.
      *      
      * @return the instance of the key specified.

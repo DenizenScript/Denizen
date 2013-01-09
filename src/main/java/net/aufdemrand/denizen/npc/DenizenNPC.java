@@ -117,9 +117,9 @@ public class DenizenNPC {
         else return getCitizen().getTrait(AssignmentTrait.class).hasAssignment();
     }
 
-	public boolean setAssignment(String assignment) {
+	public boolean setAssignment(String assignment, Player player) {
 		if (!getCitizen().hasTrait(AssignmentTrait.class)) getCitizen().addTrait(AssignmentTrait.class);
-        return getCitizen().getTrait(AssignmentTrait.class).setAssignment(assignment);
+        return getCitizen().getTrait(AssignmentTrait.class).setAssignment(assignment, player);
 	}
 	
 	public void action(String actionName, Player player) {

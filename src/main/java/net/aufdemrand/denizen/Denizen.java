@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen;
 
-import net.aufdemrand.denizen.events.ScriptsReloadEvent;
+import net.aufdemrand.denizen.events.dScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.notables.NotableManager;
@@ -221,7 +221,7 @@ public class Denizen extends JavaPlugin {
 
         try { 
         	scriptConfig.loadFromString(concatenated);
-        	Bukkit.getServer().getPluginManager().callEvent(new ScriptsReloadEvent());
+        	Bukkit.getServer().getPluginManager().callEvent(new dScriptReloadEvent());
         	
         } catch (InvalidConfigurationException e) {
             getLogger().log(Level.SEVERE, "Error loading scripts to memory!");

@@ -41,19 +41,19 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * <br><b>Example Usage:</b><br>
  * <ol><tt>
  *  - CAST NIGHT_VISION DURATION:60 <br>
- *  - CAST WITHER TARGET:NPC NPCID:<FLAG.P:enemy_NPCID> CASTER:PLAYER <br>
- *  - CAST REGENERATION DURATION:10 POWER:3
+ *  - CAST WITHER TARGET:NPC NPCID:&#60;FLAG.P:enemy_NPCID> CASTER:PLAYER <br>
+ *  - CAST REGENERATION DURATION:10 POWER:3 <br>
  *  - CAST CONFUSION TARGET:NPC.25 DURATION:60
  * </ol></tt>
  * 
  * <br><b>Extended Usage:</b><br>
  * <ol><tt>
  *  Script: <br>
- *  - ENGAGE NOW DURATION:10 <br>
- *  - LOOKCLOSE TOGGLE:TRUE DURATION:10 <br>
+ *  - ^ENGAGE NOW DURATION:10 <br>
+ *  - ^LOOKCLOSE TOGGLE:TRUE DURATION:10 <br>
  *  - CHAT 'The night-time is blinding around here. Allow me to give you sight.' <br>
  *  - WAIT 2 <br>
- *  - ANIMATE ANIMATION:ARM_SWING <br>
+ *  - ^ANIMATE ANIMATION:ARM_SWING <br>
  *  - CAST NIGHT_VISION DURATION:360 <br>
  *  - NARRATE 'You can see through the night!' <br>
  * </ol></tt>
