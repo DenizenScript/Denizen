@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.notables.Notable;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.persistence.Persist;
@@ -11,144 +11,168 @@ import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.command.exception.CommandException;
 import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Paginator;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-
 public class AssignmentTrait extends Trait {
 
-	private Denizen denizen;
-    @Persist("") private String assignment = "";
+    // Saved to the C2 saves.yml
+    @Persist
+    private String assignment = "";
 
-	public AssignmentTrait() {
-		super("assignment");
-		denizen = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
-	}
-	
-	public void buildLocationContext() {
+    public void buildLocationContext() {
         // TODO: finish this
-	}
+    }
 
-	@Override 
-	public void load(DataKey key) throws NPCLoadException {
-//		assignment = key.getString("assignment");
-		if (hasAssignment())
-			if (!checkAssignment(this.assignment))
-                dB.echoError("Missing assignment '" + assignment + "' for NPC '"
-                        + npc.getName() + "/" + npc.getId() + "! Perhaps the script has been removed?");
-	}
+    public AssignmentTrait() {
+        super("assignment");
+    }
 
-	@Override public void save(DataKey key) {
-//		key.setString("assignment", assignment);
-	}
+    /**
+     * Checks to see if the NPCs assignment is still a valid script on load of NPC.
+     *
+     */
+    @Override
+    public void load(DataKey key) throws NPCLoadException {
+        // Check to make sure assignment is still valid. Throw a dB error if not.
+        if (hasAssignment())
+            dB.echoError("Missing assignment '" + assignment + "' for NPC '"
+                    + npc.getName() + "/" + npc.getId() + "! Perhaps the script has been removed?");
+    }
 
-	public boolean hasAssignment() {
-		if (assignment.equals(""))
-			return false;
-		else return true;
-	}
+    /**
+     * Sets the NPCs Assignment Script and fires an 'On Assignment:' action. Can specify a player for
+     * context with the action.
+     *
+     * @param assignment the name of the Assignment Script, case in-sensitive
+     * @param player the player adding the assignment, can be null
+     *
+     * @return false if the assignment is invalid
+     *
+     */
+    public boolean setAssignment(String assignment, Player player) {
+        if (checkAssignment(assignment)) {
+            this.assignment = assignment.toUpperCase();
+            // Add Constants/Trigger trait if not already added to the NPC.
+            if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
+            if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
+            // 'On Assignment' action.
+            DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action("assignment", player);
+            return true;
+        }
 
-	public String getAssignment() {
-		return assignment;
-	}
+        else return false;
+    }
 
-	public void removeAssignment (Player player) {
-		assignment = "";
-		denizen.getNPCRegistry().getDenizen(npc).action("remove assignment", player);
-	}
+    /**
+     * Gets the name of the current Assignment Script assigned to this NPC.
+     *
+     * @return assignment script name, null if not set or assignment is invalid
+     *
+     */
+    public String getAssignment() {
+        if (hasAssignment())
+            return assignment;
+        else return null;
+    }
 
-	public void removeAssignment() {
-		removeAssignment(null);
-	}
+    /**
+     * Checks to see if this NPC currently has an assignment.
+     *
+     * @return true if NPC has an assignment and it is valid
+     *
+     */
+    public boolean hasAssignment() {
+        return checkAssignment(assignment);
+    }
 
-	public boolean checkAssignment(String assignment) {
-		if (denizen.getScriptEngine().getScriptHelper().getStringIgnoreCase(assignment + ".TYPE", "") != null &&
-				denizen.getScriptEngine().getScriptHelper().getStringIgnoreCase(assignment + ".TYPE", "").equalsIgnoreCase("ASSIGNMENT")) 
-			return true;
-		return false;
-	}
+    /**
+     * Removes the current assignment and fires an 'On Remove Assignment:' action. Can specify a player for
+     * context with the action.
+     *
+     * @param player the player removing the assignment, can be null
+     *
+     */
+    public void removeAssignment (Player player) {
+        assignment = "";
+        DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action("remove assignment", player);
+    }
 
-	public boolean setAssignment(String assignment) {
-		return setAssignment(assignment, null);
-	}
+    private boolean checkAssignment(String assignment) {
+        if (assignment.equals("")) return false;
+        if (DenizenAPI.getCurrentInstance().getScriptEngine().getScriptHelper().getStringIgnoreCase(
+                assignment + ".TYPE", "") != null && DenizenAPI.getCurrentInstance().getScriptEngine()
+                .getScriptHelper().getStringIgnoreCase(assignment + ".TYPE", "").equalsIgnoreCase("ASSIGNMENT"))
+            return true;
 
-	public boolean setAssignment(String assignment, Player player) {
-		if (checkAssignment(assignment)) {
-			this.assignment = assignment.toUpperCase();
-			// Add Constants/Trigger trait if not already added to the NPC.
-			if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
-			if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
-			// 'On Assignment' action.
-			denizen.getNPCRegistry().getDenizen(npc).action("assignment", player);
-			return true;
-		}   else return false;
-	}
+        else return false;
+    }
 
-	public void describe(CommandSender sender, int page) throws CommandException {
-		ScriptHelper sH = denizen.getScriptEngine().getScriptHelper();
-		Paginator paginator = new Paginator().header("Assignment");
-		paginator.addLine("<e>Current assignment: " + (hasAssignment() ? this.assignment : "None.") + "");
-		paginator.addLine("");
+    public void describe(CommandSender sender, int page) throws CommandException {
+        ScriptHelper sH = DenizenAPI.getCurrentInstance().getScriptEngine().getScriptHelper();
+        Paginator paginator = new Paginator().header("Assignment");
+        paginator.addLine("<e>Current assignment: " + (hasAssignment() ? this.assignment : "None.") + "");
+        paginator.addLine("");
 
-		if (!hasAssignment()) {
-			paginator.sendPage(sender, page);
-			return;
-		}
-		
-		// Interact Scripts
-		boolean entriesPresent = false;
-		paginator.addLine(ChatColor.GRAY + "Interact Scripts:");
-		paginator.addLine("<e>Key: <a>Priority  <b>Name");
-		if (!sH.getStringListIgnoreCase(assignment + ".INTERACT SCRIPTS").isEmpty()) {
-			entriesPresent = true;
-			for (String scriptEntry : sH.getStringListIgnoreCase(assignment + ".INTERACT SCRIPTS"))
-				paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
-		} if (!entriesPresent) paginator.addLine("<c>No Interact Scripts assigned.");
-		paginator.addLine("");
+        if (!hasAssignment()) {
+            paginator.sendPage(sender, page);
+            return;
+        }
 
-		if (!entriesPresent) {
-			if (!paginator.sendPage(sender, page))
-				throw new CommandException(Messages.COMMAND_PAGE_MISSING);
-			return;
-		}
+        // Interact Scripts
+        boolean entriesPresent = false;
+        paginator.addLine(ChatColor.GRAY + "Interact Scripts:");
+        paginator.addLine("<e>Key: <a>Priority  <b>Name");
+        if (!sH.getStringListIgnoreCase(assignment + ".INTERACT SCRIPTS").isEmpty()) {
+            entriesPresent = true;
+            for (String scriptEntry : sH.getStringListIgnoreCase(assignment + ".INTERACT SCRIPTS"))
+                paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
+        } if (!entriesPresent) paginator.addLine("<c>No Interact Scripts assigned.");
+        paginator.addLine("");
 
-		// Scheduled Activities
-		entriesPresent = false;
-		paginator.addLine(ChatColor.GRAY + "Scheduled Scripts:");
-		paginator.addLine("<e>Key: <a>Time  <b>Name");
-		if (!sH.getStringListIgnoreCase(assignment + ".SCHEDULED ACTIVITIES").isEmpty()) {
-			entriesPresent = true;
-			for (String scriptEntry : sH.getStringListIgnoreCase(assignment + ".SCHEDULED ACTIVITIES"))
-				paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
-		} if (!entriesPresent) paginator.addLine("<c>No scheduled scripts activities.");
-		paginator.addLine("");
+        if (!entriesPresent) {
+            if (!paginator.sendPage(sender, page))
+                throw new CommandException(Messages.COMMAND_PAGE_MISSING);
+            return;
+        }
 
-		// Linked Notable Locations/Blocks
-		entriesPresent = false;
-		paginator.addLine(ChatColor.GRAY + "Linked Notable Locations:");
-		paginator.addLine("<e>Key: <a>Name  <b>World  <c>Location");
-		if (!denizen.notableManager().getNotables().isEmpty()) entriesPresent = true;
-		for (Notable notable : denizen.notableManager().getNotables())
-			if (notable.hasLink(npc.getId())) paginator.addLine(notable.describe());  
-		if (!entriesPresent) paginator.addLine("<c>No notable locations linked to this NPC."); 
-		paginator.addLine("");
+        // Scheduled Activities
+        entriesPresent = false;
+        paginator.addLine(ChatColor.GRAY + "Scheduled Scripts:");
+        paginator.addLine("<e>Key: <a>Time  <b>Name");
+        if (!sH.getStringListIgnoreCase(assignment + ".SCHEDULED ACTIVITIES").isEmpty()) {
+            entriesPresent = true;
+            for (String scriptEntry : sH.getStringListIgnoreCase(assignment + ".SCHEDULED ACTIVITIES"))
+                paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
+        } if (!entriesPresent) paginator.addLine("<c>No scheduled scripts activities.");
+        paginator.addLine("");
 
-		// Actions
-		entriesPresent = false;
-		paginator.addLine(ChatColor.GRAY + "Actions:");
-		paginator.addLine("<e>Key: <a>Action name  <b>Script Size");
-		if (denizen.getScripts().contains(assignment.toUpperCase() + ".Actions")) entriesPresent = true;
-		if (entriesPresent)
-		for (String action : denizen.getScripts().getConfigurationSection(assignment.toUpperCase() + ".ACTIONS").getKeys(false))
-			paginator.addLine("<a>" + action + " <b>" + sH.getStringListIgnoreCase(assignment + ".ACTIONS." + action).size());
-		else paginator.addLine("<c>No actions defined in the assignment."); 
-		paginator.addLine("");
+        // Linked Notable Locations/Blocks
+        entriesPresent = false;
+        paginator.addLine(ChatColor.GRAY + "Linked Notable Locations:");
+        paginator.addLine("<e>Key: <a>Name  <b>World  <c>Location");
+        if (!DenizenAPI.getCurrentInstance().notableManager().getNotables().isEmpty()) entriesPresent = true;
+        for (Notable notable : DenizenAPI.getCurrentInstance().notableManager().getNotables())
+            if (notable.hasLink(npc.getId())) paginator.addLine(notable.describe());
+        if (!entriesPresent) paginator.addLine("<c>No notable locations linked to this NPC.");
+        paginator.addLine("");
 
+        // Actions
+        entriesPresent = false;
+        paginator.addLine(ChatColor.GRAY + "Actions:");
+        paginator.addLine("<e>Key: <a>Action name  <b>Script Size");
+        if (DenizenAPI.getCurrentInstance().getScripts()
+                .contains(assignment.toUpperCase() + ".Actions")) entriesPresent = true;
+        if (entriesPresent)
+            for (String action : DenizenAPI.getCurrentInstance().getScripts()
+                    .getConfigurationSection(assignment.toUpperCase() + ".ACTIONS").getKeys(false))
+                paginator.addLine("<a>" + action + " <b>" + sH.getStringListIgnoreCase(assignment + ".ACTIONS." + action).size());
+        else paginator.addLine("<c>No actions defined in the assignment.");
+        paginator.addLine("");
 
-		if (!paginator.sendPage(sender, page))
-			throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
-	}
+        if (!paginator.sendPage(sender, page))
+            throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
+    }
 
 }
