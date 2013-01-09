@@ -1,10 +1,12 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
+import net.aufdemrand.denizen.events.dScriptReloadEvent;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -15,9 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>The Proximity Trigger is used to execute a script when a player moves
@@ -63,10 +64,18 @@ import java.util.List;
  * @author dbixler, aufdemrand
  */
 public class ProximityTrigger extends AbstractTrigger implements Listener {
+
     @Override
     public void onEnable() {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
+
+    //
+    // Default to 25, but dynamically set by checkMaxProximities().
+    // If a Player is further than this distance from an NPC, less
+    // logic is run in checking.
+    //
+    private static int maxProximityDistance = 25;
 
     /**
      * <p> This is the trigger that fires when any player moves in the entire
@@ -102,13 +111,11 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
         // Make sure that the player actually moved to a different block.
         //
         if (!event.getTo ().getBlock ().equals (event.getFrom ().getBlock ())) {
-            //
-            // Get the player's location.
-            //
-            Location	playerLocation = event.getTo ();
 
-            Location	fromBlockLocation = event.getFrom ().getBlock().getLocation();
-            Location	toBlockLocation = event.getTo ().getBlock ().getLocation ();
+            //
+            // Get block location
+            //
+            Location toBlockLocation = event.getTo().getBlock().getLocation();
 
             //
             // Iterate over all of the NPCs
@@ -118,7 +125,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 NPC	npc = it.next ();
 
                 //
-                // If the NPC doesn't have triggers, or the triggers are not enabled,
+                // If the NPC doesn't have triggers, or the Proximity Trigger is not enabled,
                 // then just return.
                 //
                 if (!npc.hasTrait(TriggerTrait.class)) {
@@ -130,32 +137,22 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 }
 
                 //
-                // Can the NPC be interacted with or is it busy?
-                //
-                if (!npc.getTrait(TriggerTrait.class).triggerCooldownOnly(this, event.getPlayer())) {
-                    continue;
-                }
-
-                //
-                // If this NPC is not spawned or in a different world, no need to
-                // check.
+                // If this NPC is not spawned or in a different world, no need to check,
+                // unless the Player hasn't yet triggered an Exit Proximity after Entering
                 //
                 if (!npc.isSpawned() ||
-                        !npc.getBukkitEntity().getLocation().getWorld().equals(playerLocation.getWorld())) {
+                        (!npc.getBukkitEntity().getLocation().getWorld().equals(event.getPlayer().getWorld())
+                        && hasExitedProximityOf(event.getPlayer(), npc))) {
                     continue;
                 }
 
                 //
-                // If the user entered the range and were not previously within the
-                // range, then execute the "Entry" script.
+                // If this NPC is more than the maxProximityDistance, skip it, unless
+                // the Player hasn't yet triggerd an 'Exit Proximity' after entering.
                 //
-                // If the user is outside the range, and was previously within the
-                // range, then execute the "Exit" script.
-                //
-                Boolean	originalDebugState = dB.debugMode;
+                if (!isCloseEnough(event.getPlayer(), npc) && hasExitedProximityOf(event.getPlayer(), npc)) continue;
 
-                // Temporarily disable debug mode temporarily for getting interact script to have a cleaner debug.
-                // TODO: Allow for users to see debug for getInteractScript, but not be spammed.
+                boolean originalDebugState = dB.debugMode;
                 dB.debugMode = false;
                 DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(npc);
                 String theScript = null;
@@ -175,8 +172,11 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
                 dB.debugMode = originalDebugState;
 
+                //
+                // If a script was found, it might have custom ranges.
+                //
                 if (theScript != null) {
-
+                    // Need to know the step!
                     String	theStep = sH.getCurrentStep(event.getPlayer(), theScript, false);
                     try {
                         if (denizen.getScripts().contains((theScript + ".STEPS." + theStep + ".PROXIMITY TRIGGER.ENTRY RADIUS").toUpperCase()))
@@ -192,21 +192,34 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     }
                 }
 
-                // TODO: Remove debug
-                dB.echoDebug("to distance: " + npc.getBukkitEntity().getLocation().distance(toBlockLocation));
-                dB.echoDebug("from distance: " + npc.getBukkitEntity().getLocation().distance(fromBlockLocation));
-
+                //
+                // If the user entered the range and were not previously within the
+                // range, then execute the "Entry" script.
+                //
+                // If the user is outside the range, and was previously within the
+                // range, then execute the "Exit" script.
+                //
                 if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) <= entryRadius	&&
-                        npc.getBukkitEntity().getLocation().distance(fromBlockLocation) > entryRadius) {
+                        hasExitedProximityOf(event.getPlayer(), npc)) {
+                    // Cooldown
+                    if (!npc.getTrait(TriggerTrait.class).triggerCooldownOnly(this, event.getPlayer()))
+                        continue;
+                    // Remember that Player has entered proximity of the NPC
+                    enterProximityOf(event.getPlayer(), npc);
                     dB.echoDebug(ChatColor.GOLD + "FOUND! NPC is in ENTERING range: '" + npc.getName() + "'");
-                    // Enter Range Action
+                    // Enter Proximity Action
                     denizenNPC.action("enter proximity", event.getPlayer());
                     // Parse Interact Script
                     this.parse(denizenNPC, event.getPlayer(), theScript, true);
-                } else if (npc.getBukkitEntity().getLocation().distance(fromBlockLocation) <= exitRadius	&&
-                        npc.getBukkitEntity().getLocation().distance(toBlockLocation) > exitRadius) {
+
+                } else if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) >= exitRadius	&&
+                        !hasExitedProximityOf(event.getPlayer(), npc)) {
+                    if (!npc.getTrait(TriggerTrait.class).triggerCooldownOnly(this, event.getPlayer()))
+                        continue;
+                    // Remember that NPC has exited proximity.
+                    exitProximityOf(event.getPlayer(), npc);
                     dB.echoDebug(ChatColor.YELLOW + "FOUND! NPC is in EXITING range: '" + npc.getName() + "'");
-                    // Enter Range Action
+                    // Exit Proximity Action
                     denizenNPC.action("exit proximity", event.getPlayer());
                     // Parse Interact Script
                     this.parse(denizenNPC, event.getPlayer(), theScript, false);
@@ -230,8 +243,6 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      */
     public boolean parse (DenizenNPC theDenizen, Player thePlayer, String theScriptName, boolean entry) {
         if (theScriptName == null) {
-            // TODO: Remove debug
-            dB.echoDebug("Parsing, script null..");
             return false;
         }
 
@@ -281,6 +292,88 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
         }
 
         return true;
+    }
+
+
+    /**
+     * Checks if the Player in Proximity is close enough to be calculated.
+     *
+     * @param player the Player
+     * @param npc the NPC
+     * @return true if within maxProximityDistance in all directions
+     *
+     */
+    private boolean isCloseEnough(Player player, NPC npc) {
+        Location pLoc = player.getLocation();
+        Location nLoc = npc.getBukkitEntity().getLocation();
+        if (Math.abs(pLoc.getBlockX() - nLoc.getBlockX()) > maxProximityDistance) return false;
+        if (Math.abs(pLoc.getBlockY() - nLoc.getBlockY()) > maxProximityDistance) return false;
+        if (Math.abs(pLoc.getBlockZ() - nLoc.getBlockZ()) > maxProximityDistance) return false;
+        return true;
+    }
+
+    /**
+     * Checks all proximity ranges in scripts and finds the largest number. No need to
+     * calculate distances that exceed the largest number.
+     *
+     * @param event dScriptReloadEvent, fired upon server startup or '/denizen reload scripts'
+     *
+     */
+    @EventHandler
+    public void checkMaxProximities(dScriptReloadEvent event) {
+
+        for (String interactScript : DenizenAPI.getCurrentInstance().getScripts().getConfigurationSection("").getKeys(false)) {
+            //
+            // TODO: Check interact scripts for proximity triggers and ranges.
+            // Find largest number, add 10, and set it as maxProximityRange.
+            // For now, let's assume 25.
+            //
+        }
+    }
+
+    private static Map<Player, Set<Integer>> proximityTracker = new ConcurrentHashMap<Player, Set<Integer>>();
+
+    //
+    // Ensures that a Player who has entered proximity of an NPC also fires Exit Proximity.
+    //
+    private boolean hasExitedProximityOf(Player player, NPC npc) {
+        // If Player hasn't entered proximity, it's not in the Map. Return true, must be exited.
+        if (!proximityTracker.containsKey(player)) return true;
+        // If Player has no entry for this NPC, return true.
+        if (!proximityTracker.get(player).contains(npc.getId())) return true;
+        // Entry is present, NPC has not yet triggered exit proximity.
+        return false;
+    }
+
+    /**
+     * Called when a 'Enter Proximity' has been called to make sure an exit
+     * proximity will be called.
+     *
+     * @param player the Player
+     * @param npc the NPC
+     */
+    private void enterProximityOf(Player player, NPC npc) {
+        Set<Integer> npcs = new HashSet<Integer>();
+        if (proximityTracker.containsKey(player))
+            npcs = proximityTracker.get(player);
+        npcs.add(npc.getId());
+        proximityTracker.put(player, npcs);
+    }
+
+    /**
+     * Called when an 'Exit Proximity' has been called. Once successfully exited,
+     * a Player can enter proximity again.
+     *
+     * @param player the Player
+     * @param npc the NPC
+     */
+    private void exitProximityOf(Player player, NPC npc) {
+        Set<Integer> npcs = new HashSet<Integer>();
+        if (proximityTracker.containsKey(player))
+            npcs = proximityTracker.get(player);
+        if (npcs.contains(npc.getId()))
+            npcs.remove(npc.getId());
+        proximityTracker.put(player, npcs);
     }
 
 }
