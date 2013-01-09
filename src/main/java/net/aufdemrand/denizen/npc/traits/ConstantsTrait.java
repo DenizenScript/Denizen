@@ -116,13 +116,21 @@ public class ConstantsTrait extends Trait {
 
         if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()) {
             getAssignmentConstants();
+            // List constants specific to this NPC
+            paginator.addLine("<e>Constants for NPC '" + npc.getName() + "':");
+            paginator.addLine("<e>Key: <a>Name  <b>Value");
+            for (Entry<String, String> constant : constants.entrySet())
+                paginator.addLine("<a>" + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<b>  " + constant.getValue());
+            // List constants inherited from an Assignment.
+            paginator.addLine("");
             paginator.addLine("<e>Constants for assignment '" + assignment.toUpperCase() + "':");
             paginator.addLine("<e>Key: <a>Name  <b>Value");
             for (Entry<String, String> constant : getAssignmentConstants().entrySet()) {
+                // If a constant from the Assignment has been overridden by a NPC constant,
+                // change formatting to indicate so.
                 if (constants.containsKey(constant.getKey()))
                     paginator.addLine("<m>" + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<r>  <m>" + constant.getValue());
-                else
-                    paginator.addLine("<a>" + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<b>  " + constant.getValue());
+                else paginator.addLine("<a>" + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<b>  " + constant.getValue());
             }
             paginator.addLine("");
         }

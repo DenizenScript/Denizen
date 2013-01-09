@@ -52,11 +52,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * <ol>
  * <tt>
  * Actions:<br/>
- * &nbsp;&nbsp;On Enter Proximity: 5<br/>
+ * &nbsp;&nbsp;On Enter Proximity:<br/>
  * &nbsp;&nbsp;- ...<br/>
  * <br/>
  * Actions:<br/>
- * &nbsp;&nbsp;On Exit Proximity: 5<br/>
+ * &nbsp;&nbsp;On Exit Proximity:<br/>
  * &nbsp;&nbsp;- ...<br/>
  * </tt>
  * </ol>

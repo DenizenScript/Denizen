@@ -383,7 +383,6 @@ public class FlagManager {
             // -1 = last object.
             if (index < 0)
                 index = size() - 1;
-            dB.echoDebug("adjustIndex: index=" + String.valueOf(index));
         }
 
         /**
@@ -496,9 +495,7 @@ public class FlagManager {
          * 
          */
         private Value get(int i) {
-            dB.echoDebug("get: index=" + String.valueOf(index));
             index = i - 1;
-            dB.echoDebug("compensate: index=" + String.valueOf(index));
             adjustIndex();
             return this;
         }
@@ -508,7 +505,6 @@ public class FlagManager {
          * 
          */
         public boolean isEmpty() {
-            dB.echoDebug("isEmpty?: index=" + String.valueOf(index) + " size=" + this.size());
             if (this.size() < index + 1) return true;
             if (values.get(index).equals("")) return true;
             return false;

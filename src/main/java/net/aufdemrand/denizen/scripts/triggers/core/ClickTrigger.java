@@ -2,10 +2,7 @@ package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -17,11 +14,10 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         if (!event.getNPC().hasTrait(TriggerTrait.class)) return;
         // Check if trigger is enabled.
         if (!event.getNPC().getTrait(TriggerTrait.class).isEnabled(name)) return;
-        dB.echoDebug("1");
+
         // If engaged or not cool, calls On Unavailable, if cool, calls On Click
         // If available (not engaged, and cool) sets cool down and returns true. 
         if (!event.getNPC().getTrait(TriggerTrait.class).trigger(this, event.getClicker())) return;
-        dB.echoDebug("2");
 
         // Get Interact Script for Player/NPC
         String script = sH.getInteractScript(event.getNPC(), event.getClicker(), this.getClass());

@@ -19,7 +19,9 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
         // Get player
         Player player = null;
         if (event.getDamager() instanceof Player) player = (Player) event.getDamager();
-        else if (event.getDamager() instanceof Projectile && ((Projectile) event.getDamager()).getShooter() instanceof Player) player = (Player) ((Projectile)event.getDamager()).getShooter();
+        else if (event.getDamager() instanceof Projectile
+                && ((Projectile) event.getDamager()).getShooter() instanceof Player)
+            player = (Player) ((Projectile)event.getDamager()).getShooter();
 
         // Get NPC
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity()) && player != null) {
