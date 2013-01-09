@@ -23,7 +23,7 @@ import org.bukkit.event.Listener;
  */
 public class NicknameTrait extends Trait implements Listener {
 
-	@Persist
+	@Persist("")
     private String nickname = null;
 
 	public NicknameTrait() {

@@ -1,27 +1,25 @@
 package net.aufdemrand.denizen.scripts.triggers;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public abstract class AbstractTrigger implements RegistrationableInstance {
 
@@ -114,11 +112,12 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
         dB.echoDebug(DebugElement.Header, "Parsing " + name + " trigger: " + npc.getName() + "/" + player.getName());
 
-        dB.echoDebug("Getting current step:");
         String theStep = sH.getCurrentStep(player, script);
 
         // Gets entries from the script
         List<String> theScript = sH.getScriptContents(sH.getTriggerScriptPath(script, theStep, name) + sH.scriptKey);
+
+        if (theScript.isEmpty()) return false;
 
         // Build scriptEntries from the script and queue them up
         sB.queueScriptEntries(player, sB.buildScriptEntries(player, npc, theScript, script, theStep), QueueType.PLAYER);

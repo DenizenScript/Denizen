@@ -17,11 +17,11 @@ import org.bukkit.event.Listener;
 public class PushableTrait extends Trait implements Listener {
 
     // Saved to the C2 saves.yml
-    @Persist("pushable")
+    @Persist("toggle")
     private boolean pushable = true;
-    @Persist("pushable")
+    @Persist("returnable")
     private boolean returnable = false;
-    @Persist("pushable")
+    @Persist("delay")
     private int delay = 2;
 
     // Used internally

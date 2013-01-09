@@ -8,9 +8,9 @@ import org.bukkit.event.Listener;
 public class HealthTrait extends Trait implements Listener {
 
     // Saved to the C2 saves.yml
-    @Persist("health")
+    @Persist("max")
     private int maxhealth = 20;
-    @Persist("health")
+    @Persist("current")
     private int currenthealth = 20;
 	
     /**

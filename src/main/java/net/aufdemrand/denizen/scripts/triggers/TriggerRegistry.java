@@ -17,6 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TriggerRegistry implements DenizenRegistry {
 
+    // TODO: Add a method that extracts Trigger Options on startup.
+    // ie. Range/Cooldown/etc.
+
     public enum CooldownType { NPC, PLAYER }
 
     public Denizen denizen;
@@ -95,7 +98,7 @@ public class TriggerRegistry implements DenizenRegistry {
         new ClickTrigger().activate().as("Click").withOptions(true, 2.0, CooldownType.PLAYER);
         new DamageTrigger().activate().as("Damage").withOptions(false, 0.5, CooldownType.NPC);
         new ChatTrigger().activate().as("Chat").withOptions(true, 2.0, CooldownType.PLAYER);
-        new ProximityTrigger().activate ().as("Proximity").withOptions(true, 1.0, CooldownType.PLAYER);
+        new ProximityTrigger().activate ().as("Proximity").withOptions(true, 5.0, 5, CooldownType.PLAYER);
         dB.echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 

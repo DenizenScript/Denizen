@@ -199,17 +199,28 @@ public class ScriptHelper {
 	public List<String> getScriptContents(String path) {
 		List<String> contents = new ArrayList<String>();
 		path = path.toUpperCase().replace("..", ".");
-		if (denizen.getScripts().contains(path.toUpperCase()))
+
+        if (denizen.getScripts().contains(path.toUpperCase()))
 			contents = denizen.getScripts().getStringList(path.toUpperCase());
 		if (contents.isEmpty()) {
-			dB.echoError("Non-valid script structure at:");
+
+            // Less severe error for missing trigger script within an interact script-type
+            if (path.toUpperCase().contains("TRIGGER")) {
+                String[] context = path.split("\\.");
+                if (context.length >= 4)
+                dB.echoDebug(ChatColor.YELLOW + "INFO +> " + ChatColor.WHITE + "No " + context[3] + " for '"
+                        + context[0].toUpperCase() + "/" + context[2].toUpperCase() + "'");
+                return contents;
+            }
+
+			dB.echoDebug(ChatColor.YELLOW + "WARNING: " + ChatColor.WHITE + "Unable to locate script at:");
 			String spacing = "";
 			for (String node : path.split("\\.")) {
-				dB.echoDebug(spacing + node);
+				dB.echoDebug(spacing + node + ":");
 				spacing = spacing + "  ";
 			}
-			dB.echoDebug(spacing + "- ???");
-			dB.echoError("Check spacing, validate structure and spelling.");
+			dB.echoDebug(spacing.substring(0, spacing.length() - 1) + "- ???");
+			dB.echoDebug("This script may not exist, or structure may be incorrect. Validate structure and spelling.");
 		}
 
 		return contents;

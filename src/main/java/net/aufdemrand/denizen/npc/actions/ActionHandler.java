@@ -1,14 +1,13 @@
 package net.aufdemrand.denizen.npc.actions;
 
-import java.util.List;
-
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class ActionHandler {
 
@@ -19,6 +18,8 @@ public class ActionHandler {
     }
     
     public void doAction(String actionName, DenizenNPC npc, Player player, String assignment) {
+        // TODO: Remove this debug
+        dB.echoDebug("ACTION! " + actionName + " " + assignment);
 
         // Fetch script from Actions
         List<String> script = denizen.getScriptEngine().getScriptHelper().getStringListIgnoreCase(assignment + ".actions.on " + actionName);

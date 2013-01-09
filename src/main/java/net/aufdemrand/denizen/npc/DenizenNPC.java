@@ -114,7 +114,7 @@ public class DenizenNPC {
 
     public boolean hasAssignment() {
         if (!getCitizen().hasTrait(AssignmentTrait.class)) return false;
-        else return getCitizen().getTrait(AssignmentTrait.class).hasAssignment();
+        return getCitizen().getTrait(AssignmentTrait.class).hasAssignment();
     }
 
 	public boolean setAssignment(String assignment, Player player) {

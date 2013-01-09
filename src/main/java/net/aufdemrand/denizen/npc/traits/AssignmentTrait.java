@@ -100,10 +100,10 @@ public class AssignmentTrait extends Trait {
     }
 
     private boolean checkAssignment(String assignment) {
-        if (assignment.equals("")) return false;
+        if (assignment == null || assignment.equals("")) return false;
         if (DenizenAPI.getCurrentInstance().getScriptEngine().getScriptHelper().getStringIgnoreCase(
-                assignment + ".TYPE", "") != null && DenizenAPI.getCurrentInstance().getScriptEngine()
-                .getScriptHelper().getStringIgnoreCase(assignment + ".TYPE", "").equalsIgnoreCase("ASSIGNMENT"))
+                assignment + ".TYPE") != null && DenizenAPI.getCurrentInstance().getScriptEngine()
+                .getScriptHelper().getStringIgnoreCase(assignment + ".TYPE").equalsIgnoreCase("ASSIGNMENT"))
             return true;
 
         else return false;

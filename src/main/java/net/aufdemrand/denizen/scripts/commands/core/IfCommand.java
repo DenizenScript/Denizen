@@ -367,9 +367,16 @@ public class IfCommand extends AbstractCommand {
 
 
     private void doElse(ScriptEntry scriptEntry) {
-        String elseCommand = ((String) scriptEntry.getObject("else-command")).toUpperCase();
-        String[] elseArgs = Arrays.copyOf((Object[]) scriptEntry.getObject("else-command-args"),
+
+        String elseCommand = null;
+        if (scriptEntry.getObject("else-command") != null)
+            elseCommand = ((String) scriptEntry.getObject("else-command")).toUpperCase();
+        String[] elseArgs = null;
+        if (scriptEntry.getObject("else-command-args") != null)
+            elseArgs = Arrays.copyOf((Object[]) scriptEntry.getObject("else-command-args"),
                 ((Object[]) scriptEntry.getObject("else-command-args")).length, String[].class);
+        if (elseCommand == null) return;
+
         try {
             denizen.getScriptEngine().getScriptExecuter().execute(
                     new ScriptEntry(elseCommand, elseArgs, scriptEntry.getPlayer(),

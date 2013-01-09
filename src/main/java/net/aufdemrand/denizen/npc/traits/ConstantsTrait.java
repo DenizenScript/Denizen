@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConstantsTrait extends Trait {
 
     // Saved to C2 saves.yml
-    @Persist(collectionType = ConcurrentHashMap.class)
+    @Persist(value="", collectionType = ConcurrentHashMap.class)
     private Map<String, String> constants = new HashMap<String, String>();
 
     // Used internally
@@ -144,7 +144,7 @@ public class ConstantsTrait extends Trait {
 
     private Map<String, String> rebuildAssignmentConstants() {
         // Builds a map of constants inherited from the NPCs current Assignment
-        if (!npc.hasTrait(AssignmentTrait.class)) {
+        if (!npc.hasTrait(AssignmentTrait.class) || !npc.getTrait(AssignmentTrait.class).hasAssignment()) {
             assignmentConstants.clear();
             return assignmentConstants;
         }

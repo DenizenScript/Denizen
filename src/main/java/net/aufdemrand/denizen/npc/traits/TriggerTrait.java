@@ -22,13 +22,13 @@ public class TriggerTrait extends Trait implements Listener {
 
     private Denizen denizen;
 
-    @Persist(value="triggers", collectionType=ConcurrentHashMap.class)
+    @Persist(value="enabled", collectionType=ConcurrentHashMap.class)
     private Map<String, Boolean> enabled = new ConcurrentHashMap<String, Boolean>();
-    @Persist(value="triggers", collectionType=ConcurrentHashMap.class)
+    @Persist(value="duration", collectionType=ConcurrentHashMap.class)
     private Map<String, Double> duration = new ConcurrentHashMap<String, Double>();
-    @Persist(value="triggers", collectionType=ConcurrentHashMap.class)
+    @Persist(value="cooldowntype", collectionType=ConcurrentHashMap.class)
     private Map<String, CooldownType> type = new ConcurrentHashMap<String, CooldownType>();
-    @Persist(value="triggers", collectionType=ConcurrentHashMap.class)
+    @Persist(value="radius", collectionType=ConcurrentHashMap.class)
     private Map<String, Integer> radius = new ConcurrentHashMap<String, Integer>();
 
     public TriggerTrait() {
@@ -50,7 +50,7 @@ public class TriggerTrait extends Trait implements Listener {
      * @param toggle new state of the trigger
      * @return
      */
-    public String togleTrigger(String triggerName, boolean toggle) {
+    public String toggleTrigger(String triggerName, boolean toggle) {
     	if (enabled.containsKey(triggerName.toUpperCase())) {
                 enabled.put(triggerName.toUpperCase(), toggle);
                 return triggerName + " trigger is now " + (toggle ? "enabled." : "disabled.");
@@ -71,6 +71,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public boolean isEnabled(String triggerName) {
+        if (!DenizenAPI.getDenizenNPC(npc).hasAssignment()) return false;
         if (enabled.containsKey(triggerName.toUpperCase()))
             return enabled.get(triggerName.toUpperCase());
         else return false;
@@ -93,6 +94,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public void setLocalRadius(String triggerName, int value) {
+        if (triggerName == null) return;
         if (radius.containsKey(triggerName.toUpperCase()))
             radius.put(triggerName, value);
     }
@@ -126,7 +128,7 @@ public class TriggerTrait extends Trait implements Listener {
         if (denizen.getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
             return false;
         }
-        // Set cool down, On [TriggerName] Action
+        // Set cool down
         denizen.getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()), getCooldownType(triggerClass.getName()));
         return true;
     }

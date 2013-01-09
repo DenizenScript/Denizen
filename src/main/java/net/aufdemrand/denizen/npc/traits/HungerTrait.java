@@ -15,13 +15,13 @@ import org.bukkit.event.Listener;
 public class HungerTrait extends Trait implements Listener {
 
     // Saved to the C2 saves.yml
-    @Persist("hunger")
+    @Persist("maxhunger")
     private double maxhunger = 20.0;
-    @Persist("hunger")
+    @Persist("currenthunger")
     private double currenthunger = 0.0;
-    @Persist("hunger")
+    @Persist("multiplier")
     private int multiplier = 1;
-    @Persist("hunger")
+    @Persist("allowexhaustion")
     private boolean allowexhaustion = false;
 
     // Used internally
