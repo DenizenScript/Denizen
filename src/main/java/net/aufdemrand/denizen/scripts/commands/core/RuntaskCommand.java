@@ -153,7 +153,7 @@ public class RuntaskCommand extends AbstractCommand {
             long delay = (long) ((Double) scriptEntry.getObject("delay") * 20);
 
             // Reset delay in scriptEntry so next time it's executed it's not delayed again.
-            scriptEntry.addObject("delay", 0);
+            scriptEntry.addObject("delay", 0d);
 
             // Set delayed task and put id in a map (for cancellations with CANCELTASK [id])
             dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "Run TASK SCRIPT '" + script + "'");

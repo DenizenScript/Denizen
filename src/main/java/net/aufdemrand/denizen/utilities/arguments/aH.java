@@ -1048,7 +1048,7 @@ public class aH {
                 break;
 
             case Duration:
-                return matchesLocation("duration:" + arg);
+                return matchesDuration("duration:" + arg);
 
             default:
                 return true;

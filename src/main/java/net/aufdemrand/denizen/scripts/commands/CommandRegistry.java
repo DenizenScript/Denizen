@@ -75,7 +75,7 @@ public class CommandRegistry implements DenizenRegistry {
 		new TeleportCommand ().activate ().as ("TELEPORT").withOptions ("(NPC) [LOCATION:x,y,z,world] (TARGETS:[NPCID:#]|[PLAYER:PlayerName])", 1);
 		new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
         new ZapCommand().activate().as("ZAP").withOptions("[#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})", 0);
-
+        new FollowCommand().activate().as("FOLLOW").withOptions("(STOP)", 0);
 		dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
 	}
 
