@@ -1,22 +1,16 @@
  package net.aufdemrand.denizen.tags;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.tags.core.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-
-import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.tags.core.AnchorTags;
-import net.aufdemrand.denizen.tags.core.BookmarkTags;
-import net.aufdemrand.denizen.tags.core.ColorTags;
-import net.aufdemrand.denizen.tags.core.ConstantTags;
-import net.aufdemrand.denizen.tags.core.FlagTags;
-import net.aufdemrand.denizen.tags.core.PlayerTags;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Calls a bukkit event for replaceable tags.
@@ -60,16 +54,19 @@ public class TagManager {
             ReplaceableTagEvent event;
             if (positions == null) break;
             else {
+                dB.log(arg);
                 event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]));
                 if (event.isInstant() != instant) {
                     changeBack = true;
                     // Not the right type of tag, change out brackets so it doesn't get parsed again
-                    // TODO: Find better way to do this ;)
-                    arg = arg.substring(0, positions[0]) + "{" + event.getReplaceable() + "}" + arg.substring(positions[1] + 1, arg.length());
+                    arg = arg.substring(0, positions[0]) + "{" + event.getReplaced() + "}" + arg.substring(positions[1] + 1, arg.length());
                 } else {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
-                    arg = arg.substring(0, positions[0]) + event.getReplaceable() + arg.substring(positions[1] + 1, arg.length());
+                    if (!event.replaced() && event.getAlternative() != null) event.setReplaced(event.getAlternative());
+                    arg = arg.substring(0, positions[0]) + event.getReplaced() + arg.substring(positions[1] + 1, arg.length());
+                    // TODO: Take out debug
+                    dB.log(event.toString());
                 }
             }
             // Find new TAG

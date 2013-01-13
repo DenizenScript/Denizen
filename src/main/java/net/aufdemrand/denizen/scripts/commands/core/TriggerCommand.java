@@ -46,14 +46,9 @@ public class TriggerCommand extends AbstractCommand {
 	    // Parse Arguments
 		for (String arg : scriptEntry.getArguments()) {
 
-			if (aH.matchesValueArg("COOLDOWN", arg, ArgumentType.Double)) {
-				cooldown = aH.getDoubleFrom(arg);
+			if (aH.matchesValueArg("COOLDOWN", arg, ArgumentType.Duration)) {
+				cooldown = aH.getSecondsFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_COOLDOWN, String.valueOf(cooldown));
-				continue;
-
-			}	else if (aH.matchesValueArg("NAME", arg, ArgumentType.String)) {
-				triggerName = aH.getStringFrom(arg);
-				dB.echoDebug(Messages.DEBUG_SET_NAME, triggerName);
 				continue;
 
             }   else if (aH.matchesValueArg("RADIUS", arg, ArgumentType.Integer)) {
@@ -64,6 +59,11 @@ public class TriggerCommand extends AbstractCommand {
 			}   else if (aH.matchesToggle(arg)) {
                 toggle = aH.getBooleanFrom(arg);
                 dB.echoDebug(Messages.DEBUG_TOGGLE, String.valueOf(toggle));
+                continue;
+
+            }	else if (aH.matchesValueArg("NAME", arg, ArgumentType.String)) {
+                triggerName = aH.getStringFrom(arg);
+                dB.echoDebug(Messages.DEBUG_SET_NAME, triggerName);
                 continue;
 
 			}	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);

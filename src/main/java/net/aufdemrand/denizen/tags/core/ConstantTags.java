@@ -29,7 +29,7 @@ public class ConstantTags implements Listener {
 
 		if (npc.hasTrait(ConstantsTrait.class)
 				&& npc.getTrait(ConstantsTrait.class).getConstant(event.getValue()) != null)
-			event.setReplaceable(npc.getTrait(ConstantsTrait.class).getConstant(event.getValue()));
+			event.setReplaced(npc.getTrait(ConstantsTrait.class).getConstant(event.getValue()));
 	}
 
 

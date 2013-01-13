@@ -1,19 +1,18 @@
 package net.aufdemrand.denizen.scripts.requirements;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.RequirementMissingException;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * This class implements requirement checking for the Denizen NPCs.  
+ * This class implements requirement checking for scripts.
  * 
  * @author aufdemrand
  */

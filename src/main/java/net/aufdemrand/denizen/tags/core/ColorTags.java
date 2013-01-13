@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +21,7 @@ public class ColorTags implements Listener {
         {
             if (i > 22) break;
             if (event.matches(color.name()) || event.matches("&" + i))
-                event.setReplaceable(color.toString());
+                event.setReplaced(color.toString());
         }
     }
     

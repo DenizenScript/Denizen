@@ -137,7 +137,7 @@ public class CommandHandler {
      */
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "constant --set|remove name --value constant value", 
-			desc = "Views/adds/removes NPC string constants.", flags = "r", modifiers = { "constants", "constant", "const" },
+			desc = "Views/adds/removes NPC string constants.", flags = "r", modifiers = { "constants", "constant", "cons" },
 			min = 1, max = 3, permission = "npc.constants")
 	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
 	public void constants(CommandContext args, CommandSender sender, NPC npc) throws CommandException {

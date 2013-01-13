@@ -279,6 +279,6 @@ public class ScribeCommand extends AbstractCommand implements Listener{
 	@EventHandler
 	public void paragraph(ReplaceableTagEvent e) {
 		if (!e.matches("P")) return;
-		e.setReplaceable("\n \u00A7r \n");
+		e.setReplaced("\n \u00A7r \n");
 	}
 }

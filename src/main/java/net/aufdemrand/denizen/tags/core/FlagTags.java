@@ -37,7 +37,7 @@ public class FlagTags implements Listener {
         // Replace <FLAG...> TAGs.
         String flagName = event.getValue().split(":").length > 1
                 ? event.getValue().split(":")[0].toUpperCase() : event.getValue().toUpperCase();
-        String flagFallback = event.getFallback() != null ? event.getFallback() : "EMPTY";
+        String flagFallback = event.getAlternative() != null ? event.getAlternative() : "EMPTY";
         int index = -1;
         ReplaceType replaceType = ReplaceType.ASSTRING;
 
@@ -60,28 +60,28 @@ public class FlagTags implements Listener {
         if (event.getType().toUpperCase().startsWith("G")) {
             if (denizen.flagManager().getGlobalFlag(flagName).get(index).isEmpty()) {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
-                // event.setReplaceable(flagFallback);
+                // event.setReplaced(flagFallback);
             } else {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", flagName);
-                event.setReplaceable(getReplaceable(denizen.flagManager().getGlobalFlag(flagName).get(index), replaceType));
+                event.setReplaced(getReplaceable(denizen.flagManager().getGlobalFlag(flagName).get(index), replaceType));
             }
 
         } else if (event.getType().toUpperCase().startsWith("D") || event.getType().toUpperCase().startsWith("N")) {
             if (denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index).isEmpty()) {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
-                // event.setReplaceable(flagFallback);
+                // event.setReplaced(flagFallback);
             } else {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", flagName);
-                event.setReplaceable(getReplaceable(denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index), replaceType));
+                event.setReplaced(getReplaceable(denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index), replaceType));
             }
 
         } else if (event.getType().toUpperCase().startsWith("P")) {
             if (denizen.flagManager().getPlayerFlag(event.getPlayer().getName(), flagName).get(index).isEmpty()) {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
-                // event.setReplaceable(flagFallback);
+                // event.setReplaced(flagFallback);
             } else {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", flagName);
-                event.setReplaceable(getReplaceable(
+                event.setReplaced(getReplaceable(
                         denizen.flagManager().getPlayerFlag(event.getPlayer().getName(), flagName).get(index), replaceType));
             }
         }               

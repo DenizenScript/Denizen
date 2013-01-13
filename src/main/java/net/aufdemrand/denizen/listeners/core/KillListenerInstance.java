@@ -227,15 +227,15 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		if (!event.getType().equalsIgnoreCase(listenerId)) return;
 		
 		if (event.getValue().equalsIgnoreCase("region")) {
-			event.setReplaceable(region);
+			event.setReplaced(region);
 		}
 		
 		else if (event.getValue().equalsIgnoreCase("quantity")) {
-			event.setReplaceable(quantity.toString());
+			event.setReplaced(quantity.toString());
 		}
 		
 		else if (event.getValue().equalsIgnoreCase("currentkills")) {
-			event.setReplaceable(currentKills.toString());
+			event.setReplaced(currentKills.toString());
 		}
 		
 		else if (event.getValue().equalsIgnoreCase("targets")) {
@@ -244,7 +244,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 				targetList = targetList + curTar + ", ";
 				targetList = targetList.substring(0, targetList.length() - 1);
 			}
-			event.setReplaceable(targetList);
+			event.setReplaced(targetList);
 		}
 	}
 }

@@ -31,7 +31,7 @@ public class AnchorTags implements Listener {
 		Location anchor = null;
 		if (npc.getTrait(Anchors.class).getAnchor(event.getValue()) != null) {
 			anchor = npc.getTrait(Anchors.class).getAnchor(event.getValue()).getLocation();
-			event.setReplaceable(anchor.getBlockX() + "," + anchor.getBlockY() + "," + anchor.getBlockZ() + "," + anchor.getWorld().getName());
+			event.setReplaced(anchor.getBlockX() + "," + anchor.getBlockY() + "," + anchor.getBlockZ() + "," + anchor.getWorld().getName());
 		}
 	}
 }

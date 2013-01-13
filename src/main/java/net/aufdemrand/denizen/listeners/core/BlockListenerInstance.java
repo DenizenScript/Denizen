@@ -208,15 +208,15 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 		if (!event.getType().equalsIgnoreCase(listenerId)) return;
 		
 		if (event.getValue().equalsIgnoreCase("region")) {
-			event.setReplaceable(argRegion);
+			event.setReplaced(argRegion);
 		}
 		
 		else if (event.getValue().equalsIgnoreCase("quantity")) {
-			event.setReplaceable(quantity.toString());
+			event.setReplaced(quantity.toString());
 		}
 		
 		else if (event.getValue().equalsIgnoreCase("currentblocks")) {
-			event.setReplaceable(currentBlocks.toString());
+			event.setReplaced(currentBlocks.toString());
 		}
 		
 		else if (event.getValue().equalsIgnoreCase("targets")) {
@@ -225,7 +225,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 				blockList = blockList + curTar + ", ";
 				blockList = blockList.substring(0, blockList.length() - 1);
 			}
-			event.setReplaceable(blockList);
+			event.setReplaced(blockList);
 		}
 	}
 

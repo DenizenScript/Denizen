@@ -1,12 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ScriptEntryExecuteEvent;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -14,6 +7,13 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandExecuter {
 
@@ -117,7 +117,7 @@ public class CommandExecuter {
 			keepGoing = false;
 			// Give usage hint if InvalidArgumentsException was called.
 			dB.echoError("Woah! Invalid arguments were specified!");
-			dB.echoDebug(e.getMessage());
+			dB.echoDebug(ChatColor.YELLOW + "+> MESSAGE follows: " + ChatColor.WHITE + "'" + e.getMessage() + "'");
 			dB.echoDebug("Usage: " + command.getUsageHint());
 			dB.echoDebug(DebugElement.Footer);
 		} catch (Exception e) {

@@ -8,8 +8,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,14 +21,9 @@ import java.util.List;
 
 public class IfCommand extends AbstractCommand {
 
-    enum Operator { EQUALS, ISINT, ISDOUBLE, ISPLAYER, ORMORE, ORLESS, MORE, LESS, CONTAINS, ISEMPTY }
+    enum Operator { EQUALS, MATCHES, ORMORE, ORLESS, MORE, LESS, CONTAINS, ISEMPTY }
     enum Bridge { OR, AND, FIRST }
     enum Logic { REGULAR, NEGATIVE }
-
-    // Represents one set of items for comparison in an IF command.
-    // ie. IF <FLAG.P:FLAGNAME.ASINT> 20 OR <FLAG.P:OTHERFLAG> 'Twenty' NARRATE '20 or more!' ELSE NARRATE 'Not quite 20!'
-    //        |                        | |                            |
-    //        +----- comparable[0] ----+ +------- comparable[1] ------+
 
     private class Comparable {
         Logic logic = Logic.REGULAR;
@@ -86,25 +79,33 @@ public class IfCommand extends AbstractCommand {
                     comparables.get(index).bridge = Bridge.valueOf(arg.toUpperCase());
                 }
                 // Set operator (Optional, default is EQUALS)
-                else if (aH.matchesArg("EQUALS", arg) || aH.matchesArg("ISINT", arg) || aH.matchesArg("ISDOUBLE", arg) || aH.matchesArg("ISPLAYER", arg) || aH.matchesArg("ISEMPTY", arg)
-                        || aH.matchesArg("ORMORE", arg) || aH.matchesArg("MORE", arg) || aH.matchesArg("LESS", arg) || aH.matchesArg("ORLESS", arg) || aH.matchesArg("CONTAINS", arg))
+                else if (aH.matchesArg("EQUALS", arg) || aH.matchesArg("MATCHES", arg) || aH.matchesArg("ISEMPTY", arg)
+                        || aH.matchesArg("ORMORE", arg) || aH.matchesArg("MORE", arg) || aH.matchesArg("LESS", arg)
+                        || aH.matchesArg("ORLESS", arg) || aH.matchesArg("CONTAINS", arg))
                     comparables.get(index).operator = Operator.valueOf(arg.toUpperCase());
                     // Set outcomeCommand
                 else if (denizen.getCommandRegistry().get(arg) != null)
                     outcomeCommand = arg;
                     // Set comparable
-                else if (comparables.get(index).comparable == null) comparables.get(index).comparable = findObjectType(arg);
-                    // Set compared-to
-                else comparables.get(index).comparedto = findObjectType(arg);
+                else if (comparables.get(index).comparable == null) {
+                    // If using MATCHES operator, keep as string.
+                    if (comparables.get(index).operator == Operator.MATCHES)
+                        comparables.get(index).comparable = arg;
+                    else comparables.get(index).comparable = findObjectType(arg);
+                }
+                // Set compared-to
+                else {
+                    comparables.get(index).comparedto = matchObjectType(comparables.get(index), arg);
+                }
 
+                // Set outcome command.
             }  else if (elseCommand == null) {
-                // Move to ELSE command
                 if (aH.matchesArg("ELSE", arg)) elseCommand = "";
-                    // Add outcomeArgs arguments
                 else {
                     outcomeArgs.add(arg);
                 }
 
+                // Set ELSE command
             } else {
                 // Specify ELSE command
                 if (elseCommand.equals("")) elseCommand = arg;
@@ -123,8 +124,7 @@ public class IfCommand extends AbstractCommand {
         scriptEntry.addObject("else-command-args", elseArgs.toArray());
     }
 
-
-    @Override
+        @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Grab comparables from the ScriptEntry
@@ -136,17 +136,50 @@ public class IfCommand extends AbstractCommand {
         for (Comparable com : comparables) {
             com.outcome = false;
 
+            //
+            // Comparable is a STRING
+            //
             if (com.comparable instanceof String) {
                 switch(com.operator) {
                     case ISEMPTY:
+                        // For checking if a FLAG is empty.
                         if (((String) com.comparable).equals("EMPTY")) com.outcome = true;
                         break;
                     case EQUALS:
+                        // For checking straight up if comparable is equal to (ignoring case) comparedto
                         if (((String) com.comparable).equalsIgnoreCase((String) com.comparedto)) com.outcome = true;
                         break;
                     case CONTAINS:
+                        // For checking if the comparable contains comparedto
                         if (((String) com.comparable).toUpperCase().contains(((String) com.comparedto).toUpperCase())) com.outcome = true;
                         break;
+
+                    case MATCHES:
+                        // This is a fun one! Can check if something matches a specific argument type
+                        if (((String) com.comparedto).equalsIgnoreCase("location")) {
+
+                        }
+                        else if (((String) com.comparedto).equalsIgnoreCase("pose")) {
+
+                        }
+                        else if (((String) com.comparedto).equalsIgnoreCase("double")) {
+
+                        }
+                        else if (((String) com.comparedto).equalsIgnoreCase("integer")) {
+
+                        }
+                        else if (((String) com.comparedto).equalsIgnoreCase("entitytype")) {
+
+                        }
+                        else if (((String) com.comparedto).equalsIgnoreCase("livingentity")) {
+
+                        }
+                        else if (((String) com.comparedto).equalsIgnoreCase("npc")) {
+
+                        }
+
+
+                    // ORMORE/ORLESS/etc. deal with the LENGTH of the the comparable/comparedto strings
                     case ORMORE:
                         if (((String) com.comparable).length() >= ((String) com.comparedto).length()) com.outcome = true;
                         break;
@@ -159,19 +192,7 @@ public class IfCommand extends AbstractCommand {
                     case LESS:
                         if (((String) com.comparable).length() < ((String) com.comparedto).length()) com.outcome = true;
                         break;
-                    case ISPLAYER:
-                        for (Player player : denizen.getServer().getOnlinePlayers())
-                            if (player.getName().equalsIgnoreCase((String) com.comparable)) {
-                                com.outcome = true;
-                                break;
-                            }
-                        if (!com.outcome)
-                            for (OfflinePlayer player : denizen.getServer().getOfflinePlayers())
-                                if (player.getName().equalsIgnoreCase((String) com.comparable)) {
-                                    com.outcome = true;
-                                    break;
-                                }
-                        break;
+
                 }
 
             }	else if (com.comparable instanceof List) {
@@ -207,18 +228,9 @@ public class IfCommand extends AbstractCommand {
                 //
             }   else if (com.comparable instanceof Double) {
 
-                // Check comparedto for Double, make it Integer
-                if (com.comparedto instanceof Integer) {
-                    dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Attempting to compare DOUBLE("
-                            + com.comparable + ") with INTEGER(" + com.comparedto + "). Converting INTEGER to DOUBLE "
-                            + "value. If this is not intended, use the .ASINT or .ASDOUBLE modifier. See 'IF' documentation");
-                    com.comparedto = ((Integer) com.comparedto).doubleValue();
-                }
-                // Check to make sure comparedto is Integer
-                if (!(com.comparedto instanceof Integer)) {
-                    dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare DOUBLE("
-                            + com.comparable + ") with " + com.comparable.getClass().getSimpleName() + "("
-                            + com.comparedto + "). Outcome for this Comparable will be false.");
+                // Check to make sure comparedto is Double
+                if (!(com.comparedto instanceof Double)) {
+                    // Not comparing with a Double, outcome = false
                 } else {
 
                     switch(com.operator) {
@@ -246,19 +258,9 @@ public class IfCommand extends AbstractCommand {
                 //
             }	else if (com.comparable instanceof Integer) {
 
-                // Check comparedto for Double, make it Integer
-                if (com.comparedto instanceof Double) {
-                    dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Attempting to compare INTEGER("
-                            + com.comparable + ") with DOUBLE(" + com.comparedto + "). Converting DOUBLE to INTEGER "
-                            + "value. If this is not intended, use the .ASDOUBLE or .ASINT modifier. See 'IF' documentation");
-                    com.comparedto = ((Double) com.comparedto).intValue();
-                }
-
                 // Check to make sure comparedto is Integer
                 if (!(com.comparedto instanceof Integer)) {
-                    dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare INTEGER("
-                            + com.comparable + ") with " + com.comparable.getClass().getSimpleName() + "("
-                            + com.comparedto + "). Outcome for this Comparable will be false.");
+                    // Not comparing with an Integer, outcome = false;
                 } else {
                     // Comparing integers.. let's do the logic
                     switch(com.operator) {
@@ -318,34 +320,81 @@ public class IfCommand extends AbstractCommand {
     }
 
 
-    // Convert the string comparable/comparedto argument to a specific Object
+    // Finds the object type of the String arg
+
     private Object findObjectType(String arg) {
 
         // If a Integer
         if (aH.matchesInteger(arg))
             return aH.getIntegerFrom(arg);
 
-            // If a Double
+        // If a Double
         else if (aH.matchesDouble(arg))
             return aH.getDoubleFrom(arg);
 
-            // If a Boolean
+        // If a Boolean
         else if (arg.equalsIgnoreCase("true")) return true;
         else if (arg.equalsIgnoreCase("false")) return false;
 
-            // If a List<Object>
+        // If a List<Object>
         else if (arg.contains("|")) {
-            List<String> toList = new ArrayList<String>();
-            for (String string : arg.split("|"))
-                toList.add(string);
-            return toList;
+            return aH.getListFrom(arg);
         }
 
-        // Welp, if none of the above, must be a String! :D
+        // If none of the above, must be a String! :D
         // 'arg' is already a String, so return it.
         else return arg;
     }
 
+
+    // Attempts to match a String arg with a Comparable's comparable
+
+    private Object matchObjectType(Comparable match, String arg) {
+
+        Object comparable = match.comparable;
+
+        // Comparable is String, return String
+        if (comparable instanceof String)
+            return arg;
+
+            // Comparable is Double, return Double
+        else if (comparable instanceof Double) {
+            if (aH.matchesDouble(arg) || aH.matchesInteger(arg))
+                return aH.getDoubleFrom(arg);
+            else {
+                dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare DOUBLE("
+                        + match.comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
+                return Double.NaN;
+            }
+        }
+
+        else if (comparable instanceof Integer) {
+            // If comparedTo is Double, convert comparable to double as well
+            if (aH.matchesDouble(arg)) {
+                match.comparable = Double.valueOf(String.valueOf((Integer) match.comparable));
+                return aH.getDoubleFrom(arg);
+            } else if (aH.matchesInteger(arg)) {
+                return aH.getIntegerFrom(arg);
+            } else {
+                dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare INTEGER("
+                        + match.comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
+                return Double.NaN;
+            }
+        }
+
+        else if (comparable instanceof Boolean) {
+            return aH.getBooleanFrom(arg);
+        }
+
+        else if (comparable instanceof List) {
+            return arg;
+        }
+
+        return arg;
+    }
+
+
+    // Runs the outcome-command if the evaluation of the statement == true
 
     private void doCommand(ScriptEntry scriptEntry) {
         String outcomeCommand = ((String) scriptEntry.getObject("outcome-command")).toUpperCase();
@@ -366,6 +415,8 @@ public class IfCommand extends AbstractCommand {
     }
 
 
+    // If ELSE command is specified, runs it if the evaluation of the statement == false
+
     private void doElse(ScriptEntry scriptEntry) {
 
         String elseCommand = null;
@@ -374,7 +425,7 @@ public class IfCommand extends AbstractCommand {
         String[] elseArgs = null;
         if (scriptEntry.getObject("else-command-args") != null)
             elseArgs = Arrays.copyOf((Object[]) scriptEntry.getObject("else-command-args"),
-                ((Object[]) scriptEntry.getObject("else-command-args")).length, String[].class);
+                    ((Object[]) scriptEntry.getObject("else-command-args")).length, String[].class);
         if (elseCommand == null) return;
 
         try {
@@ -389,12 +440,6 @@ public class IfCommand extends AbstractCommand {
             }
             else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
         }
-    }
-
-    @Override
-    public void onEnable() {
-        // TODO Auto-generated method stub
-
     }
 
 }

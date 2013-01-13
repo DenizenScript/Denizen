@@ -16,13 +16,12 @@ public class PlayerTags implements Listener {
     @EventHandler
     public void playerTags(ReplaceableTagEvent event) {
 
+        // These tags require a player.
         if (!event.matches("PLAYER") || event.getPlayer() == null) return;
 
         Player p = event.getPlayer();
         String type = event.getType().toUpperCase();
         String subType = "";
-
-
 
         if (event.getType().split("\\.").length > 1) {
             type = event.getType().split("\\.")[0].toUpperCase();
@@ -31,130 +30,130 @@ public class PlayerTags implements Listener {
 
         if (type.equals("ITEM_IN_HAND")) {
             if (subType.equals("QTY"))
-                event.setReplaceable(String.valueOf(p.getItemInHand().getAmount()));
+                event.setReplaced(String.valueOf(p.getItemInHand().getAmount()));
             else if (subType.equals("ID"))
-                event.setReplaceable(String.valueOf(p.getItemInHand().getTypeId()));
+                event.setReplaced(String.valueOf(p.getItemInHand().getTypeId()));
             else if (subType.equals("DURABILITY"))
-                event.setReplaceable(String.valueOf(p.getItemInHand().getDurability()));
+                event.setReplaced(String.valueOf(p.getItemInHand().getDurability()));
             else if (subType.equals("DATA"))
-                event.setReplaceable(String.valueOf(p.getItemInHand().getData()));
+                event.setReplaced(String.valueOf(p.getItemInHand().getData()));
             else if (subType.equals("MAX_STACK"))
-                event.setReplaceable(String.valueOf(p.getItemInHand().getMaxStackSize()));
+                event.setReplaced(String.valueOf(p.getItemInHand().getMaxStackSize()));
             else if (subType.equals("ENCHANTMENTS"))
-            	event.setReplaceable(NBTItem.getEnchantments(p.getItemInHand()).asDScriptList());
+            	event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptList());
             else if (subType.equals("ENCHANTMENTS_WITH_LEVEL"))
-                event.setReplaceable(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels());
+                event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels());
             else if (subType.equals("ENCHANTMENTS_WITH_LEVEL_ONLY"))
-                event.setReplaceable(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly());
+                event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly());
             else if (subType.equals("LORE")) 
-                event.setReplaceable(NBTItem.getLore(p.getItemInHand()).asDScriptList());
+                event.setReplaced(NBTItem.getLore(p.getItemInHand()).asDScriptList());
             else if (subType.equals("DISPLAY"))
-                event.setReplaceable(NBTItem.getName(p.getItemInHand()));
+                event.setReplaced(NBTItem.getName(p.getItemInHand()));
             else if (subType.equals("MATERIAL"))
-                event.setReplaceable(p.getItemInHand().getType().name());
+                event.setReplaced(p.getItemInHand().getType().name());
             return;
 
             
         } else if (type.equals("NAME")) { 
-            event.setReplaceable(p.getName());
+            event.setReplaced(p.getName());
             if (subType.equals("DISPLAY"))
-                event.setReplaceable(p.getDisplayName());
+                event.setReplaced(p.getDisplayName());
             else if (subType.equals("LIST"))
-                event.setReplaceable(p.getPlayerListName());
+                event.setReplaced(p.getPlayerListName());
             return;
 
             
         } else if (type.equals("LOCATION")) {
-            event.setReplaceable(p.getLocation().getBlockX() 
+            event.setReplaced(p.getLocation().getBlockX()
                     + "," + p.getLocation().getBlockY()
                     + "," + p.getLocation().getBlockZ()
                     + "," + p.getWorld().getName());
             if (subType.equals("FORMATTED")) 
-                event.setReplaceable("X '" + p.getLocation().getBlockX() 
+                event.setReplaced("X '" + p.getLocation().getBlockX()
                         + "', Y '" + p.getLocation().getBlockY()
                         + "', Z '" + p.getLocation().getBlockZ()
                         + "', in world '" + p.getWorld().getName() + "'");
             else if (subType.equals("STANDING_ON"))
-                event.setReplaceable(p.getLocation().add(0, -1, 0).getBlock().getType().name());
+                event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name());
             else if (subType.equals("WORLD_SPAWN"))
-                event.setReplaceable(p.getWorld().getSpawnLocation().getBlockX() 
+                event.setReplaced(p.getWorld().getSpawnLocation().getBlockX()
                         + "," + p.getWorld().getSpawnLocation().getBlockY()
                         + "," + p.getWorld().getSpawnLocation().getBlockZ()
                         + "," + p.getWorld().getName());
             else if (subType.equals("BED_SPAWN"))
-                event.setReplaceable(p.getBedSpawnLocation().getBlockX() 
+                event.setReplaced(p.getBedSpawnLocation().getBlockX()
                         + "," + p.getBedSpawnLocation().getBlockY()
                         + "," + p.getBedSpawnLocation().getBlockZ()
                         + "," + p.getWorld().getName());
             else if (subType.equals("WORLD"))
-                event.setReplaceable(p.getWorld().getName());
+                event.setReplaced(p.getWorld().getName());
             return;
 
             
         } else if (type.equals("HEALTH")) {
-            event.setReplaceable(String.valueOf(p.getHealth()));
+            event.setReplaced(String.valueOf(p.getHealth()));
             if (subType.equals("FORMATTED")) {
                 int maxHealth = p.getMaxHealth();
                 if (event.getType().split("\\.").length > 2)
                     maxHealth = Integer.valueOf(event.getType().split(".")[2]);
                 if ((float)p.getHealth() / maxHealth < .10)
-                    event.setReplaceable("dying");
+                    event.setReplaced("dying");
                 else if ((float) p.getHealth() / maxHealth < .40)
-                    event.setReplaceable("seriously wounded");
+                    event.setReplaced("seriously wounded");
                 else if ((float) p.getHealth() / maxHealth < .75)
-                    event.setReplaceable("injured");
+                    event.setReplaced("injured");
                 else if ((float) p.getHealth() / maxHealth < 1)
-                    event.setReplaceable("scraped");
+                    event.setReplaced("scraped");
                 else 
-                    event.setReplaceable("healthy");
+                    event.setReplaced("healthy");
             } else if (subType.equals("PERCENTAGE")) {
                 int maxHealth = p.getMaxHealth();
                 if (event.getType().split("\\.").length > 2)
                     maxHealth = Integer.valueOf(event.getType().split(".")[2]);
-                event.setReplaceable(String.valueOf(((float) p.getHealth() / maxHealth) * 100));
+                event.setReplaced(String.valueOf(((float) p.getHealth() / maxHealth) * 100));
             }
 
             
         } else if (type.equals("FOOD_LEVEL")) {
-            event.setReplaceable(String.valueOf(p.getFoodLevel()));
+            event.setReplaced(String.valueOf(p.getFoodLevel()));
             if (subType.equals("FORMATTED")) {
                 int maxFood = 20;
                 if (event.getType().split("\\.").length > 2)
                     maxFood = Integer.valueOf(event.getType().split(".")[2]);
                 if ((float)p.getHealth() / maxFood < .10)
-                    event.setReplaceable("starving");
+                    event.setReplaced("starving");
                 else if ((float) p.getFoodLevel() / maxFood < .40)
-                    event.setReplaceable("famished");
+                    event.setReplaced("famished");
                 else if ((float) p.getFoodLevel() / maxFood < .75)
-                    event.setReplaceable("hungry");
+                    event.setReplaced("hungry");
                 else if ((float) p.getFoodLevel() / maxFood < 1)
-                    event.setReplaceable("parched");
+                    event.setReplaced("parched");
                 else 
-                    event.setReplaceable("healthy");
+                    event.setReplaced("healthy");
             } else if (subType.equals("PERCENTAGE")) {
                 int maxFood = 20;
                 if (event.getType().split("\\.").length > 2)
                     maxFood = Integer.valueOf(event.getType().split(".")[2]);
-                event.setReplaceable(String.valueOf(((float) p.getFoodLevel() / maxFood) * 100));
+                event.setReplaced(String.valueOf(((float) p.getFoodLevel() / maxFood) * 100));
             }
 
 
         } else if (event.getType().startsWith("EQUIPMENT")) {
-            event.setReplaceable(String.valueOf(event.getNPC().getEntity().getHealth()));
+            event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
 
 
         } else if (event.getType().startsWith("INVENTORY")) {
-            event.setReplaceable(String.valueOf(event.getNPC().getEntity().getHealth()));
+            event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
 
 
         } else if (event.getType().startsWith("XP")) {
-            event.setReplaceable(String.valueOf(event.getPlayer().getExp() * 100));
+            event.setReplaced(String.valueOf(event.getPlayer().getExp() * 100));
             if (subType.equals("TO_NEXT_LEVEL"))
-                event.setReplaceable(String.valueOf(p.getExpToLevel()));
+                event.setReplaced(String.valueOf(p.getExpToLevel()));
             else if (subType.equals("TOTAL"))
-                event.setReplaceable(String.valueOf(p.getTotalExperience()));
+                event.setReplaced(String.valueOf(p.getTotalExperience()));
             else if (subType.equals("LEVEL"))
-                event.setReplaceable(String.valueOf(p.getLevel()));
+                event.setReplaced(String.valueOf(p.getLevel()));
             return;
 
         }

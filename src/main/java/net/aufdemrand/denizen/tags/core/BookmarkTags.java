@@ -38,7 +38,7 @@ public class BookmarkTags implements Listener {
         for (int i = bookmarks.size() - 1; i > 0; i--) {
             if (bookmarks.get(i).split(" ")[0].equalsIgnoreCase(event.getValue())) {
                 String[] location = bookmarks.get(i).split(" ")[1].split(";");
-                event.setReplaceable(location[1] + "," + location[2] + "," + location[3] + "," + location[0]);
+                event.setReplaced(location[1] + "," + location[2] + "," + location[3] + "," + location[0]);
                 break;
             }
         }
