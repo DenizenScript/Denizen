@@ -77,7 +77,7 @@
     <file path="/ScriptsReloadEvent.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357652371574" ignored="false" />
     <file path="/dScriptReloadEvent.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357657640568" ignored="false" />
     <file path="/NPCExhaustedEvent.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357668971005" ignored="false" />
-    <file path="/ReplaceableTagEvent.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1358083660792" ignored="false" />
+    <file path="/ReplaceableTagEvent.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1358100485130" ignored="false" />
     <file path="/DenizenRegistry.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357669181115" ignored="false" />
     <file path="/ExternalDenizenClass.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357679633782" ignored="false" />
     <file path="/CastCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357692757925" ignored="false" />
@@ -180,7 +180,7 @@
       <file leaf-file-name="ReplaceableTagEvent.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="146" column="44" selection-start="4866" selection-end="4866" vertical-scroll-proportion="0.4775281">
+            <state line="149" column="0" selection-start="4937" selection-end="4937" vertical-scroll-proportion="0.8913858">
               <folding />
             </state>
           </provider>
@@ -1346,7 +1346,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="146" column="44" selection-start="4866" selection-end="4866" vertical-scroll-proportion="0.4775281">
+        <state line="149" column="0" selection-start="4937" selection-end="4937" vertical-scroll-proportion="0.8913858">
           <folding />
         </state>
       </provider>
