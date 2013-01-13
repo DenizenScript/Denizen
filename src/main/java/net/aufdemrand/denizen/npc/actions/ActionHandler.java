@@ -19,7 +19,7 @@ public class ActionHandler {
     
     public void doAction(String actionName, DenizenNPC npc, Player player, String assignment) {
         // TODO: Remove this debug
-        dB.echoDebug("ACTION! " + actionName + " " + assignment);
+        // dB.echoDebug("ACTION! " + actionName + " " + assignment);
 
         // Fetch script from Actions
         List<String> script = denizen.getScriptEngine().getScriptHelper().getStringListIgnoreCase(assignment + ".actions.on " + actionName);

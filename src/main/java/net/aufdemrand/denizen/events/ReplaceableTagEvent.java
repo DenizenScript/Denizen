@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-
 /**
  * Bukkit event that fires on the finding of a dScript replaced tag called
  * from argument creation (if a QUICKTAG '^') and upon execution. Replaceable
@@ -284,13 +283,4 @@ public class ReplaceableTagEvent extends Event {
                 + (alternative != null ? "ALTERNATIVE=" + alternative + ", " : "");
     }
 
-
-
-//    return  (logic != Logic.REGULAR ? "Logic=" + logic.toString() + ", " : "")
-//            + "Comparable=" + (comparable == null ? "null" : comparable.getClass().getSimpleName()
-//    + "(" + ChatColor.AQUA + comparable + ChatColor.WHITE + ")")
-//            + ", Operator=" + operator.toString()
-//            + ", ComparedTo=" + (comparedto == null ? "null" : comparedto.getClass().getSimpleName()
-//    + "(" + ChatColor.AQUA + comparedto + ChatColor.WHITE + ") ")
-//            + ChatColor.YELLOW + "--> OUTCOME='" + outcome + "'";
 }

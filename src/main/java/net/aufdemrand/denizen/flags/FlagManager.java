@@ -505,6 +505,7 @@ public class FlagManager {
          * 
          */
         public boolean isEmpty() {
+            adjustIndex();
             if (this.size() < index + 1) return true;
             if (values.get(index).equals("")) return true;
             return false;

@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="57499c69-19b6-467c-8c51-42a0b03fb71a" name="Default" comment="">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/FollowCommand.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/actions/ActionHandler.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/actions/ActionHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/AnchorTags.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/AnchorTags.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/listeners/core/BlockListenerInstance.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/listeners/core/BlockListenerInstance.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/BookmarkTags.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/BookmarkTags.java" />
@@ -11,10 +12,12 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/CommandHandler.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/CommandHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandRegistry.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandRegistry.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/ConstantTags.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/ConstantTags.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/flags/FlagManager.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/flags/FlagManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/FlagTags.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/FlagTags.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/IfCommand.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/IfCommand.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/listeners/core/KillListenerInstance.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/listeners/core/KillListenerInstance.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/PlayerTags.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/PlayerTags.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/triggers/core/ProximityTrigger.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/triggers/core/ProximityTrigger.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/requirements/RequirementChecker.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/requirements/RequirementChecker.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" />
@@ -39,7 +42,7 @@
     <file path="$USER_HOME$/IdeaProjects/untitled/build.xml" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357167538291" ignored="false" />
     <file path="$USER_HOME$/IdeaProjects/untitled/AndroidManifest.xml" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357167538291" ignored="false" />
     <file path="$USER_HOME$/IdeaProjects/untitled/src/net/aufdemrand/pocketDenizen/MyActivity.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357167538291" ignored="false" />
-    <file path="/FlagManager.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357450454207" ignored="false" />
+    <file path="/FlagManager.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1358103009866" ignored="false" />
     <file path="/pom.xml" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357275478323" ignored="false" />
     <file path="/ScriptBuilder.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357258850580" ignored="false" />
     <file path="/dB.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357543818510" ignored="false" />
@@ -81,7 +84,7 @@
     <file path="/DenizenRegistry.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357669181115" ignored="false" />
     <file path="/ExternalDenizenClass.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357679633782" ignored="false" />
     <file path="/CastCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357692757925" ignored="false" />
-    <file path="/ProximityTrigger.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357770544726" ignored="false" />
+    <file path="/ProximityTrigger.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1358101196645" ignored="false" />
     <file path="/ClickTrigger.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357749381832" ignored="false" />
     <file path="/AbstractTrigger.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357750821476" ignored="false" />
     <file path="/ActionHandler.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357752922417" ignored="false" />
@@ -159,47 +162,66 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ScriptBuilder.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptBuilder.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="20" selection-start="869" selection-end="869" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ScriptEntry.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptEntry.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="13" selection-start="503" selection-end="503" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ReplaceableTagEvent.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ReplaceableTagEvent.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="149" column="0" selection-start="4937" selection-end="4937" vertical-scroll-proportion="0.8913858">
+            <state line="21" column="62" selection-start="836" selection-end="836" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ColorTags.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/ColorTags.java">
+      <file leaf-file-name="ProximityTrigger.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/triggers/core/ProximityTrigger.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="61" selection-start="287" selection-end="287" vertical-scroll-proportion="0.0">
+            <state line="249" column="81" selection-start="11097" selection-end="11097" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#14364#14386#0" expanded="true" />
+                <element signature="e#15253#15262#0" expanded="true" />
+                <element signature="e#15751#15760#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ActionHandler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/actions/ActionHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="27" column="42" selection-start="971" selection-end="971" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TagManager.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="TagManager.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/TagManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="65" column="119" selection-start="2375" selection-end="2375" vertical-scroll-proportion="0.0">
+            <state line="55" column="19" selection-start="1616" selection-end="1616" vertical-scroll-proportion="0.18930958">
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ConstantTags.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/ConstantTags.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="31" column="71" selection-start="1077" selection-end="1077" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ConstantsTrait.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/traits/ConstantsTrait.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="22" column="8" selection-start="800" selection-end="800" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#780#796#0" expanded="true" />
+                <element signature="e#889#905#0" expanded="true" />
+                <element signature="e#2718#2734#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -208,15 +230,6 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/FlagTags.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="34" column="53" selection-start="1000" selection-end="1000" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dB.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/debugging/dB.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="145" column="58" selection-start="5873" selection-end="5873" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -248,7 +261,7 @@
       <file leaf-file-name="FlagManager.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/flags/FlagManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="13" selection-start="326" selection-end="326" vertical-scroll-proportion="0.0">
+            <state line="507" column="26" selection-start="17595" selection-end="17595" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -280,9 +293,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/traits/ConstantsTrait.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandRegistry.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/TeleportCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/FollowCommand.java" />
@@ -292,10 +302,13 @@
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/FlagTags.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandExecuter.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/debugging/dB.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/TagManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/ColorTags.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/IfCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/triggers/core/ProximityTrigger.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/actions/ActionHandler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/flags/FlagManager.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/TagManager.java" />
       </list>
     </option>
   </component>
@@ -359,8 +372,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="70" />
-    <option name="y" value="72" />
+    <option name="x" value="57" />
+    <option name="y" value="64" />
     <option name="width" value="1820" />
     <option name="height" value="867" />
   </component>
@@ -629,6 +642,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="n.a.d.n.activities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Denizen" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="denizen" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="n.a.d.n.actions" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1147,7 +1174,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="70" y="72" width="1820" height="867" extended-state="0" />
+    <frame x="57" y="64" width="1820" height="867" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3030303" sideWeight="0.9991646" order="8" side_tool="false" content_ui="tabs" />
@@ -1162,10 +1189,10 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3272727" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16392092" sideWeight="0.6515151" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.12585421" sideWeight="0.83214796" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.12585421" sideWeight="0.71123755" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="left" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.40012643" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.11731207" sideWeight="0.83214796" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16785206" sideWeight="0.66847825" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.11731207" sideWeight="0.71123755" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28876245" sideWeight="0.66847825" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="184" y="442" width="1078" height="388" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1234,34 +1261,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/PlayerTags.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="0" selection-start="984" selection-end="984" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/CommandHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="139" column="120" selection-start="6937" selection-end="6937" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/TriggerCommand.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="0" selection-start="2390" selection-end="2390" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="13" selection-start="821" selection-end="821" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandExecuter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="119" column="43" selection-start="4830" selection-end="4890" vertical-scroll-proportion="0.0">
@@ -1304,13 +1303,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/flags/FlagManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="13" selection-start="326" selection-end="326" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/FlagTags.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="34" column="53" selection-start="1000" selection-end="1000" vertical-scroll-proportion="0.0">
@@ -1337,16 +1329,61 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/TagManager.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="65" column="119" selection-start="2375" selection-end="2375" vertical-scroll-proportion="0.0">
+        <state line="21" column="62" selection-start="836" selection-end="836" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/triggers/core/ProximityTrigger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="149" column="0" selection-start="4937" selection-end="4937" vertical-scroll-proportion="0.8913858">
+        <state line="249" column="81" selection-start="11097" selection-end="11097" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#14364#14386#0" expanded="true" />
+            <element signature="e#15253#15262#0" expanded="true" />
+            <element signature="e#15751#15760#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/actions/ActionHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="42" selection-start="971" selection-end="971" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/ConstantTags.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="71" selection-start="1077" selection-end="1077" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/traits/ConstantsTrait.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="8" selection-start="800" selection-end="800" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#780#796#0" expanded="true" />
+            <element signature="e#889#905#0" expanded="true" />
+            <element signature="e#2718#2734#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/flags/FlagManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="507" column="26" selection-start="17595" selection-end="17595" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/TagManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="55" column="19" selection-start="1616" selection-end="1616" vertical-scroll-proportion="0.18930958">
           <folding />
         </state>
       </provider>

@@ -249,7 +249,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
         //
         // Get the path to the step that the player is currently on.
         //
-        String	theStep = sH.getCurrentStep(thePlayer, theScriptName);
+        String	theStep = sH.getCurrentStep(thePlayer, theScriptName, false);
 
         //
         // Determine which scripts need to be executed:  Either the entry scripts

@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -54,7 +53,7 @@ public class TagManager {
             ReplaceableTagEvent event;
             if (positions == null) break;
             else {
-                dB.log(arg);
+                // dB.log(arg);
                 event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]));
                 if (event.isInstant() != instant) {
                     changeBack = true;
@@ -66,7 +65,7 @@ public class TagManager {
                     if (!event.replaced() && event.getAlternative() != null) event.setReplaced(event.getAlternative());
                     arg = arg.substring(0, positions[0]) + event.getReplaced() + arg.substring(positions[1] + 1, arg.length());
                     // TODO: Take out debug
-                    dB.log(event.toString());
+                    // dB.log(event.toString());
                 }
             }
             // Find new TAG
