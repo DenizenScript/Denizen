@@ -100,7 +100,7 @@ public class ReplaceableTagEvent extends Event {
             } else
                 value = inQuestion.trim();
 
-            tag = tag.split(":")[0];
+            tag = tag.split(":", 2)[0];
         }
 
         // Get tag name/type/subtype and index
@@ -115,7 +115,7 @@ public class ReplaceableTagEvent extends Event {
             } else
                 name = inQuestion.trim();
 
-            tag = tag.split(".", 2)[1];
+            tag = tag.split("\\.", 2)[1];
 
             // Get type
             if (tag.contains(".")) {
@@ -127,7 +127,7 @@ public class ReplaceableTagEvent extends Event {
                     typeContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
                 } else
                     type = inQuestion.trim();
-                tag = tag.split(".")[1];
+                tag = tag.split("\\.")[1];
 
                 if (tag.contains("[")) {
                     // Get index
@@ -135,7 +135,7 @@ public class ReplaceableTagEvent extends Event {
                     subTypeContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
                 } else
                     subType = inQuestion.trim();
-                tag = tag.split(".")[1];
+                tag = tag.split("\\.")[1];
 
                 // No subtype, just get type
             } else {
@@ -147,7 +147,7 @@ public class ReplaceableTagEvent extends Event {
                     typeContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
                 } else
                     type = inQuestion.trim();
-                tag = tag.split(".")[1];
+                tag = tag.split("\\.")[1];
             }
 
         } else name = tag;

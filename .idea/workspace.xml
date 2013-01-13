@@ -64,7 +64,7 @@
     <file path="/FlagCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357447563379" ignored="false" />
     <file path="/ScriptEntry.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357521287474" ignored="false" />
     <file path="/TakeCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357522137760" ignored="false" />
-    <file path="/IfCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1358098448056" ignored="false" />
+    <file path="/IfCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1358099917068" ignored="false" />
     <file path="/ScriptEngine.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357533720141" ignored="false" />
     <file path="/TriggerRegistry.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357753906202" ignored="false" />
     <file path="/AssignmentTrait.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357740717453" ignored="false" />
@@ -177,10 +177,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ReplaceableTagEvent.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ReplaceableTagEvent.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="154" column="0" selection-start="5057" selection-end="5057" vertical-scroll-proportion="0.0">
+            <state line="146" column="44" selection-start="4866" selection-end="4866" vertical-scroll-proportion="0.4775281">
               <folding />
             </state>
           </provider>
@@ -222,15 +222,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IfCommand.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="IfCommand.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/IfCommand.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="178" column="24" selection-start="7797" selection-end="7797" vertical-scroll-proportion="0.5543071">
+            <state line="146" column="63" selection-start="6186" selection-end="6186" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1987#1999#0" expanded="true" />
-                <element signature="e#2095#2103#0" expanded="true" />
-                <element signature="e#2192#2200#0" expanded="true" />
+                <element signature="e#2028#2040#0" expanded="true" />
+                <element signature="e#2136#2144#0" expanded="true" />
+                <element signature="e#2233#2241#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -239,7 +239,7 @@
       <file leaf-file-name="aH.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="139" column="25" selection-start="6438" selection-end="6438" vertical-scroll-proportion="0.0">
+            <state line="427" column="25" selection-start="18505" selection-end="18505" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -292,10 +292,10 @@
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/FlagTags.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/CommandExecuter.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/debugging/dB.java" />
-        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/TagManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/ColorTags.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/IfCommand.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java" />
       </list>
     </option>
   </component>
@@ -1297,20 +1297,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="154" column="0" selection-start="5057" selection-end="5057" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/TagManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="65" column="119" selection-start="2375" selection-end="2375" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/ColorTags.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="9" column="61" selection-start="287" selection-end="287" vertical-scroll-proportion="0.0">
@@ -1334,20 +1320,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="139" column="25" selection-start="6438" selection-end="6438" vertical-scroll-proportion="0.0">
+        <state line="427" column="25" selection-start="18505" selection-end="18505" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/IfCommand.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="178" column="24" selection-start="7797" selection-end="7797" vertical-scroll-proportion="0.5543071">
+        <state line="146" column="63" selection-start="6186" selection-end="6186" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1987#1999#0" expanded="true" />
-            <element signature="e#2095#2103#0" expanded="true" />
-            <element signature="e#2192#2200#0" expanded="true" />
+            <element signature="e#2028#2040#0" expanded="true" />
+            <element signature="e#2136#2144#0" expanded="true" />
+            <element signature="e#2233#2241#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/TagManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="65" column="119" selection-start="2375" selection-end="2375" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="146" column="44" selection-start="4866" selection-end="4866" vertical-scroll-proportion="0.4775281">
+          <folding />
         </state>
       </provider>
     </entry>

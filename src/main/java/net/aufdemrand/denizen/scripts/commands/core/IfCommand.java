@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ public class IfCommand extends AbstractCommand {
         scriptEntry.addObject("else-command-args", elseArgs.toArray());
     }
 
-        @Override
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Grab comparables from the ScriptEntry
@@ -140,59 +141,71 @@ public class IfCommand extends AbstractCommand {
             // Comparable is a STRING
             //
             if (com.comparable instanceof String) {
-                switch(com.operator) {
-                    case ISEMPTY:
-                        // For checking if a FLAG is empty.
-                        if (((String) com.comparable).equals("EMPTY")) com.outcome = true;
-                        break;
-                    case EQUALS:
-                        // For checking straight up if comparable is equal to (ignoring case) comparedto
-                        if (((String) com.comparable).equalsIgnoreCase((String) com.comparedto)) com.outcome = true;
-                        break;
-                    case CONTAINS:
-                        // For checking if the comparable contains comparedto
-                        if (((String) com.comparable).toUpperCase().contains(((String) com.comparedto).toUpperCase())) com.outcome = true;
-                        break;
 
-                    case MATCHES:
-                        // This is a fun one! Can check if something matches a specific argument type
-                        if (((String) com.comparedto).equalsIgnoreCase("location")) {
+                String comparable = (String) com.comparable;
 
-                        }
-                        else if (((String) com.comparedto).equalsIgnoreCase("pose")) {
-
-                        }
-                        else if (((String) com.comparedto).equalsIgnoreCase("double")) {
-
-                        }
-                        else if (((String) com.comparedto).equalsIgnoreCase("integer")) {
-
-                        }
-                        else if (((String) com.comparedto).equalsIgnoreCase("entitytype")) {
-
-                        }
-                        else if (((String) com.comparedto).equalsIgnoreCase("livingentity")) {
-
-                        }
-                        else if (((String) com.comparedto).equalsIgnoreCase("npc")) {
-
-                        }
+                if (!(com.comparedto instanceof String) && com.operator != Operator.ISEMPTY) {
 
 
-                    // ORMORE/ORLESS/etc. deal with the LENGTH of the the comparable/comparedto strings
-                    case ORMORE:
-                        if (((String) com.comparable).length() >= ((String) com.comparedto).length()) com.outcome = true;
-                        break;
-                    case ORLESS:
-                        if (((String) com.comparable).length() <= ((String) com.comparedto).length()) com.outcome = true;
-                        break;
-                    case MORE:
-                        if (((String) com.comparable).length() > ((String) com.comparedto).length()) com.outcome = true;
-                        break;
-                    case LESS:
-                        if (((String) com.comparable).length() < ((String) com.comparedto).length()) com.outcome = true;
-                        break;
+                } else {
+                    switch(com.operator) {
+                        case ISEMPTY:
+                            // For checking if a FLAG is empty.
+                            if (comparable.equalsIgnoreCase("EMPTY")) com.outcome = true;
+                            break;
+                        case EQUALS:
+                            // For checking straight up if comparable is equal to (ignoring case) comparedto
+                            if (comparable.equalsIgnoreCase((String) com.comparedto)) com.outcome = true;
+                            break;
+                        case CONTAINS:
+                            // For checking if the comparable contains comparedto
+                            if (comparable.toUpperCase().contains(((String) com.comparedto).toUpperCase())) com.outcome = true;
+                            break;
+                        case MATCHES:
+                            // This is a fun one! Can check if the STRING compareable matches a specific argument type, as specified by comparedto
+                            if (((String) com.comparedto).equalsIgnoreCase("location")) {
+                                if (aH.matchesLocation(comparable)) com.outcome = true;
+                            }
+                            else if (((String) com.comparedto).equalsIgnoreCase("pose")) {
+                                com.outcome = true; // TODO: if (aH.matchesPose(comparable)) com.outcome = true;
+                            }
+                            else if (((String) com.comparedto).equalsIgnoreCase("double")) {
+                                if (aH.matchesDouble(comparable)) com.outcome = true;
+                            }
+                            else if (((String) com.comparedto).equalsIgnoreCase("integer")) {
+                                if (aH.matchesInteger(comparable)) com.outcome = true;
+                            }
+                            else if (((String) com.comparedto).equalsIgnoreCase("entitytype")) {
+                                if (aH.matchesEntityType(comparable)) com.outcome = true;
+                            }
+                            else if (((String) com.comparedto).equalsIgnoreCase("livingentity")) {
+                                if (aH.getLivingEntityFrom(comparable) != null) com.outcome = true;
+                            }
+                            else if (((String) com.comparedto).equalsIgnoreCase("npc")) {
+                                if (CitizensAPI.getNPCRegistry().getNPC(aH.getLivingEntityFrom(comparable)) != null) com.outcome = true;
+                            }
+                            else if (((String) com.comparedto).equalsIgnoreCase("player")) {
+                                if (aH.getPlayerFrom(comparable) != null) com.outcome = true;
+                            }
+                            else if (((String) com.comparedto).equalsIgnoreCase("item")) {
+                                if (aH.matchesItem(comparable)) com.outcome = true;
+                            }
+                            break;
+                            // ORMORE/ORLESS/etc. deal with the LENGTH of the the comparable/comparedto strings
+                        case ORMORE:
+                            if (((String) com.comparable).length() >= ((String) com.comparedto).length()) com.outcome = true;
+                            break;
+                        case ORLESS:
+                            if (((String) com.comparable).length() <= ((String) com.comparedto).length()) com.outcome = true;
+                            break;
+                        case MORE:
+                            if (((String) com.comparable).length() > ((String) com.comparedto).length()) com.outcome = true;
+                            break;
+                        case LESS:
+                            if (((String) com.comparable).length() < ((String) com.comparedto).length()) com.outcome = true;
+                            break;
 
+                    }
                 }
 
             }	else if (com.comparable instanceof List) {
@@ -328,15 +341,15 @@ public class IfCommand extends AbstractCommand {
         if (aH.matchesInteger(arg))
             return aH.getIntegerFrom(arg);
 
-        // If a Double
+            // If a Double
         else if (aH.matchesDouble(arg))
             return aH.getDoubleFrom(arg);
 
-        // If a Boolean
+            // If a Boolean
         else if (arg.equalsIgnoreCase("true")) return true;
         else if (arg.equalsIgnoreCase("false")) return false;
 
-        // If a List<Object>
+            // If a List<Object>
         else if (arg.contains("|")) {
             return aH.getListFrom(arg);
         }
