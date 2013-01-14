@@ -1,18 +1,17 @@
 package net.aufdemrand.denizen.scripts;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.commands.CommandExecuter;
 import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Contains methods used to manipulate and execute ScriptEntries in Queues.
@@ -415,7 +414,7 @@ public class ScriptEngine {
      * 
      * @param npc
      *      The NPC's queue to inject the entries to.
-     * @param scriptEntries
+     * @param scriptEntry
      *      The list of ScriptEntries to inject.
      * @param queueType
      *      The queue type to add the entries to.

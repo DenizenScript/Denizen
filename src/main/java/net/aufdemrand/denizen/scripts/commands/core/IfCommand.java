@@ -162,7 +162,7 @@ public class IfCommand extends AbstractCommand {
                         case MATCHES:
                             // This is a fun one! Can check if the STRING compareable matches a specific argument type, as specified by comparedto
                             if (((String) com.comparedto).equalsIgnoreCase("location")) {
-                                if (aH.matchesLocation(comparable)) com.outcome = true;
+                                if (aH.matchesLocation("location:" + comparable)) com.outcome = true;
                             }
                             else if (((String) com.comparedto).equalsIgnoreCase("pose")) {
                                 com.outcome = true; // TODO: if (aH.matchesPose(comparable)) com.outcome = true;
@@ -173,8 +173,15 @@ public class IfCommand extends AbstractCommand {
                             else if (((String) com.comparedto).equalsIgnoreCase("integer")) {
                                 if (aH.matchesInteger(comparable)) com.outcome = true;
                             }
+                            else if (((String) com.comparedto).equalsIgnoreCase("duration")) {
+                                if (aH.matchesDuration("duration:" + comparable)) com.outcome = true;
+                            }
+                            else if (((String) com.comparedto).equalsIgnoreCase("boolean")) {
+                                if (comparable.equalsIgnoreCase("true")
+                                        || comparable.equalsIgnoreCase("false")) com.outcome = true;
+                            }
                             else if (((String) com.comparedto).equalsIgnoreCase("entitytype")) {
-                                if (aH.matchesEntityType(comparable)) com.outcome = true;
+                                if (aH.matchesEntityType("entity:" + comparable)) com.outcome = true;
                             }
                             else if (((String) com.comparedto).equalsIgnoreCase("livingentity")) {
                                 if (aH.getLivingEntityFrom(comparable) != null) com.outcome = true;
@@ -186,10 +193,10 @@ public class IfCommand extends AbstractCommand {
                                 if (aH.getPlayerFrom(comparable) != null) com.outcome = true;
                             }
                             else if (((String) com.comparedto).equalsIgnoreCase("item")) {
-                                if (aH.matchesItem(comparable)) com.outcome = true;
+                                if (aH.matchesItem("item:" + comparable)) com.outcome = true;
                             }
                             break;
-                            // ORMORE/ORLESS/etc. deal with the LENGTH of the the comparable/comparedto strings
+                        // ORMORE/ORLESS/etc. deal with the LENGTH of the the comparable/comparedto strings
                         case ORMORE:
                             if (((String) com.comparable).length() >= ((String) com.comparedto).length()) com.outcome = true;
                             break;
@@ -366,7 +373,7 @@ public class IfCommand extends AbstractCommand {
         if (match.operator == Operator.MATCHES)
             match.comparable = String.valueOf(match.comparable);
 
-            Object comparable = match.comparable;
+        Object comparable = match.comparable;
 
         // Comparable is String, return String
         if (comparable instanceof String)

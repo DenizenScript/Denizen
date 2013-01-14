@@ -37,6 +37,7 @@ public class ConstantsTrait extends Trait {
      * @return value of the constant
      */
     public String getConstant(String name) {
+        getAssignmentConstants();
         if (constants.containsKey(name.toLowerCase()))
             return DenizenAPI.getCurrentInstance().tagManager()
                     .tag(null, DenizenAPI.getDenizenNPC(npc), constants.get(name.toLowerCase()), false);
@@ -116,13 +117,7 @@ public class ConstantsTrait extends Trait {
 
         if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()) {
             getAssignmentConstants();
-            // List constants specific to this NPC
-            paginator.addLine("<e>Constants for NPC '" + npc.getName() + "':");
-            paginator.addLine("<e>Key: <a>Name  <b>Value");
-            for (Entry<String, String> constant : constants.entrySet())
-                paginator.addLine("<a>" + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<b>  " + constant.getValue());
             // List constants inherited from an Assignment.
-            paginator.addLine("");
             paginator.addLine("<e>Constants for assignment '" + assignment.toUpperCase() + "':");
             paginator.addLine("<e>Key: <a>Name  <b>Value");
             for (Entry<String, String> constant : getAssignmentConstants().entrySet()) {

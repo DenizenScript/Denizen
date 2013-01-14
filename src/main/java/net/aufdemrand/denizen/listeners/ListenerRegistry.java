@@ -1,27 +1,24 @@
 package net.aufdemrand.denizen.listeners;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.events.ListenerCancelEvent;
+import net.aufdemrand.denizen.events.ListenerFinishEvent;
+import net.aufdemrand.denizen.interfaces.DenizenRegistry;
+import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizen.listeners.core.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.interfaces.DenizenRegistry;
-import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.listeners.core.BlockListenerInstance;
-import net.aufdemrand.denizen.listeners.core.BlockListenerType;
-import net.aufdemrand.denizen.listeners.core.ItemListenerInstance;
-import net.aufdemrand.denizen.listeners.core.ItemListenerType;
-import net.aufdemrand.denizen.listeners.core.KillListenerInstance;
-import net.aufdemrand.denizen.listeners.core.KillListenerType;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ListenerRegistry implements DenizenRegistry, Listener {
 
@@ -45,6 +42,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 
 	public void cancel(Player player, String listenerId, AbstractListener instance) {
 		removeListenerFor(player, listenerId);
+        Bukkit.getPluginManager().callEvent(new ListenerCancelEvent(player, listenerId));
 	}
 
 	@Override
@@ -67,6 +65,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 			denizen.getScriptEngine().getScriptBuilder().runTaskScript(player, finishScript);
 		// Remove listener instance from the player
 		removeListenerFor(player, listenerId);
+        Bukkit.getPluginManager().callEvent(new ListenerFinishEvent(player, listenerId));
 	}
 
 	@Override
