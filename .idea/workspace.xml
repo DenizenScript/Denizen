@@ -5,6 +5,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/traits/AssignmentTrait.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/traits/AssignmentTrait.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/traits/ConstantsTrait.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/npc/traits/ConstantsTrait.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/PlaySoundCommand.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/PlaySoundCommand.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptEngine.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptEngine.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/TeleportCommand.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/TeleportCommand.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java" afterPath="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java" />
@@ -26,7 +27,7 @@
     <file path="/pom.xml" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357275478323" ignored="false" />
     <file path="/ScriptBuilder.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357258850580" ignored="false" />
     <file path="/dB.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357543818510" ignored="false" />
-    <file path="/RuntaskCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357266691479" ignored="false" />
+    <file path="/RuntaskCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1358140022593" ignored="false" />
     <file path="/a.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357246638742" ignored="false" />
     <file path="/EngageCommand.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357249727640" ignored="false" />
     <file path="/ScriptHelper.java" changelist="57499c69-19b6-467c-8c51-42a0b03fb71a" time="1357748719526" ignored="false" />
@@ -193,14 +194,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TeleportCommand.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="TeleportCommand.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/TeleportCommand.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="144" column="98" selection-start="5605" selection-end="5605" vertical-scroll-proportion="0.89032257">
+            <state line="146" column="0" selection-start="5326" selection-end="5714" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2292#2306#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RuntaskCommand.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="126" column="31" selection-start="5487" selection-end="5487" vertical-scroll-proportion="0.5064516">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -236,15 +246,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="aH.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/utilities/arguments/aH.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="428" column="58" selection-start="18602" selection-end="18602" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FindManager">
@@ -271,7 +272,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/TagManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/events/ReplaceableTagEvent.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/tags/core/FlagTags.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/Denizen.java" />
@@ -287,6 +287,7 @@
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/ScriptEngine.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/PlaySoundCommand.java" />
         <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/TeleportCommand.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java" />
       </list>
     </option>
   </component>
@@ -1166,7 +1167,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="32" width="1296" height="776" extended-state="6" />
+    <frame x="-8" y="32" width="1296" height="776" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3030303" sideWeight="0.9991646" order="8" side_tool="false" content_ui="tabs" />
@@ -1253,13 +1254,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/triggers/core/ChatTrigger.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/triggers/core/ClickTrigger.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="29" column="30" selection-start="1403" selection-end="1403" vertical-scroll-proportion="0.0">
@@ -1369,11 +1363,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/TeleportCommand.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="144" column="98" selection-start="5605" selection-end="5605" vertical-scroll-proportion="0.89032257">
+        <state line="146" column="0" selection-start="5326" selection-end="5714" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2292#2306#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/aufdemrand/denizen/scripts/commands/core/RuntaskCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="126" column="31" selection-start="5487" selection-end="5487" vertical-scroll-proportion="0.5064516">
+          <folding />
         </state>
       </provider>
     </entry>

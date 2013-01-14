@@ -75,23 +75,18 @@ public class RuntaskCommand extends AbstractCommand {
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesScript(arg)) {
                 script = aH.getStringFrom(arg);
-                dB.echoDebug(Messages.DEBUG_SET_SCRIPT, script);
 
             } else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
                 delay = aH.getSecondsFrom(arg);
-                dB.echoDebug("...set DELAY: '%s'", String.valueOf(delay));
 
             } else if (aH.matchesArg("INSTANT", arg)) {
                 instant = true;
-                dB.echoDebug("...script will not be queued.");
 
             } else if (aH.matchesQueueType(arg)) {
                 queue = aH.getQueueFrom(arg);
-                dB.echoDebug("...set QUEUE: '%s'", queue.toString());
 
             } else if (aH.matchesValueArg("ID", arg, aH.ArgumentType.Word)) {
                 id = aH.getStringFrom(arg);
-                dB.echoDebug("...set ID: '%s'", id);
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -122,15 +117,27 @@ public class RuntaskCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         String script = (String) scriptEntry.getObject("script");
+        ScriptEngine.QueueType queue = (ScriptEngine.QueueType) scriptEntry.getObject("queue");
+        Boolean instant = (Boolean) scriptEntry.getObject("instant");
+        Double delay = (Double) scriptEntry.getObject("delay");
+
+        // Debug output
+        dB.echoApproval("Executing '" + getName() + "': "
+                + "Script='" + script + "', "
+                + "Delay='" + (delay > 0 ? delay + "', " : "'None', ")
+                + "Player='" + (scriptEntry.getPlayer() != null ? scriptEntry.getPlayer().getName() + "', " : "NULL', ")
+                + "NPC='" + (scriptEntry.getNPC() != null ? scriptEntry.getNPC() + "', " : "NULL', ")
+                + "Queue='" + (instant == false ? queue.toString() + "'" : "INSTANT'"));
+
 
         // Run right now if no delay
-        if ((Double) scriptEntry.getObject("delay") <= 0) {
+        if (delay <= 0) {
 
-            if ((Boolean) scriptEntry.getObject("instant"))
+            if (instant)
                 denizen.getScriptEngine().getScriptBuilder()
                         .runTaskScriptInstantly(scriptEntry.getPlayer(), scriptEntry.getNPC(), script);
 
-            else switch ((ScriptEngine.QueueType) scriptEntry.getObject("queue")) {
+            else switch (queue) {
 
                 case PLAYER:
                 case PLAYER_TASK:
@@ -150,7 +157,7 @@ public class RuntaskCommand extends AbstractCommand {
 
         } else { // Delay this command
             String id = ((String) scriptEntry.getObject("id")).toUpperCase();
-            long delay = (long) ((Double) scriptEntry.getObject("delay") * 20);
+            long ldelay = (long) ((Double) scriptEntry.getObject("delay") * 20);
 
             // Reset delay in scriptEntry so next time it's executed it's not delayed again.
             scriptEntry.addObject("delay", 0d);
@@ -169,7 +176,7 @@ public class RuntaskCommand extends AbstractCommand {
                                         if (dB.showStackTraces) e.printStackTrace();
                                     }
                                 }
-                            }, delay));
+                            }, ldelay));
         }
     }
 
