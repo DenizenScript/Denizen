@@ -81,6 +81,11 @@
 			<version>5.6.6-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+                <dependency>
+                  <groupId>org.json</groupId>
+                  <artifactId>org.json</artifactId>
+                  <version>chargebee-1.0</version>
+                </dependency>
 	</dependencies>
 
 	<ciManagement>

@@ -2,6 +2,8 @@ package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.utilities.ScriptRepo;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.Citizens;
@@ -15,6 +17,7 @@ import net.citizensnpcs.util.Paginator;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.json.JSONException;
 
 import java.util.Set;
 
@@ -492,6 +495,59 @@ public class CommandHandler {
 		// Send the contents of the Paginator to the Player (or Console)
 		if (!paginator.sendPage(sender, args.getInteger(1, 1)))
 			throw new CommandException(Messages.COMMAND_PAGE_MISSING);
+	}
+
+	/*
+	 * CITIZENS SCRIPT REPO
+	 */
+	@net.citizensnpcs.command.Command(
+			aliases = {"denizen"}, usage = "repo (info|search|load)",
+			desc = "Repo commands.", modifiers = {"info", "search", "load"},
+			min = 1, permission = "denizen.repo")
+	public void repo(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+		Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
+		if(args.argsLength()>1 && args.getString(2).equalsIgnoreCase("info")){
+			if(args.argsLength()==3){
+				try{
+					ScriptRepo.info(sender, args.getString(2));
+				}catch (JSONException e){
+					Messaging.send(sender, "The Script Repo sent a bad reply, please try again.");
+				}
+			}else{
+				Messaging.send(sender, "Invalid usage! Correct usage: ");
+				Messaging.send(sender, "/citizens denizen repo info [ID] - View information about a script.");
+			}
+		}else if(args.argsLength()>1 && args.getString(2).equalsIgnoreCase("search")){
+			if(args.argsLength()>=3){
+				String query = Utilities.arrayToString(args.getSlice(3), "+");
+				try{
+					ScriptRepo.search(sender, query);
+				}catch (JSONException e){
+					Messaging.send(sender, "The Script Repo sent a bad reply, please try again.");
+				}
+			}else{
+				Messaging.send(sender, "Invalid usage! Correct usage: ");
+				Messaging.send(sender, "/citizens denizen repo search [search query] - Search the script repo.");
+			}
+		}else if(args.argsLength()>1 && args.getString(2).equalsIgnoreCase("load")){
+			if(args.argsLength()==3){
+				try{
+					ScriptRepo.load(sender, args.getString(2));
+				}catch (JSONException e){
+					Messaging.send(sender, "The Script Repo sent a bad reply, please try again.");
+				}
+			}else{
+				Messaging.send(sender, "Invalid usage! Correct usage: ");
+				Messaging.send(sender, "/citizens denizen repo load (ID) - Load the specified script (or the most recently viewed) onto your server.");
+			}
+		}
+		Messaging.send(sender, "§cThe Citizens Script Repo is a website accessible at §bhttp://scripts.citizensnpcs.com/§c"
+				+ " where you can browse and post numerous types of scripts"
+				+ " including Denizen scripts.");
+		Messaging.send(sender, "§cYou can also search and download scripts directly in game with the repo subcommand.");
+		Messaging.send(sender, "/citizens denizen repo info [ID] - View information about a script.");
+		Messaging.send(sender, "/citizens denizen repo search [search query] - Search the script repo.");
+		Messaging.send(sender, "/citizens denizen repo load (ID) - Load the specified script (or the most recently viewed) onto your server.");
 	}
 
 }
