@@ -57,6 +57,8 @@ public class AssignmentTrait extends Trait {
             // Add Constants/Trigger trait if not already added to the NPC.
             if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
             if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
+            // Reset Constants
+            npc.getTrait(ConstantsTrait.class).rebuildAssignmentConstants();
             // 'On Assignment' action.
             DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action("assignment", player);
             return true;

@@ -30,68 +30,67 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 public class PlaySoundCommand extends AbstractCommand {
 
 	@Override
-	public void onEnable() {
-		// nothing to do here
-	}
-
-	Sound sound;
-	Location location;
-	
-	private float volume;
-	private float pitch;
-	
-	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-		
-		location = null;
-		sound = null;
-		volume = 1;
-		pitch = 1;
-		
-		for (String arg : scriptEntry.getArguments()){
-			if (aH.matchesLocation(arg)) {
-                location = aH.getLocationFrom(arg);
-                if (location != null) dB.echoDebug(Messages.DEBUG_SET_LOCATION, aH.getStringFrom(arg));
-                continue;
 
-            }
-			
+        // Initialize fields
+        Sound sound = null;
+        float volume = 1;
+        float pitch = 1;
+        Location location = null;
+
+        // Iterate through arguments
+		for (String arg : scriptEntry.getArguments()){
+			if (aH.matchesLocation(arg))
+                location = aH.getLocationFrom(arg);
+
 			else if (aH.matchesValueArg("SOUND", arg, ArgumentType.Custom) || aH.matchesValueArg("S", arg, ArgumentType.Custom)) {
         		try {
-            		sound = Sound.valueOf(aH.getStringFrom(arg));
-                	dB.echoDebug("...SOUND set to: " + sound.name());
+            		sound = Sound.valueOf(aH.getStringFrom(arg).toUpperCase());
             	} catch (Exception e) {
             		dB.echoError("Invalid SOUND!");
             	}
-            	continue;
-            	
-            }  
-			
-			else if (aH.matchesValueArg("VOLUME", arg, ArgumentType.Float) || aH.matchesValueArg("V", arg, ArgumentType.Float)) {
-            	volume = aH.getFloatFrom(arg);
-            	dB.echoDebug("...VOLUME set to: " + volume);
-            	continue;
-            	
-            }  
-			
-			else if (aH.matchesValueArg("PITCH", arg, ArgumentType.Float) || aH.matchesValueArg("P", arg, ArgumentType.Float)) {
-            	pitch = aH.getFloatFrom(arg);
-            	dB.echoDebug("...PITCH set to: " + pitch);
-            	continue;
-            	
             }
+			
+			else if (aH.matchesValueArg("VOLUME, V", arg, ArgumentType.Float))
+            	volume = aH.getFloatFrom(arg);
+
+			else if (aH.matchesValueArg("PITCH, P", arg, ArgumentType.Float))
+                pitch = aH.getFloatFrom(arg);
             
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
-		
-		if (sound == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "SOUND");
-		if (location == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+
+        // Check required args
+		if (sound == null)
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "SOUND");
+		if (location == null)
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+
+        // Stash args in ScriptEntry for use in execute()
+        scriptEntry.addObject("location", location);
+        scriptEntry.addObject("sound", sound);
+        scriptEntry.addObject("volume", volume);
+        scriptEntry.addObject("pitch", pitch);
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-    	dB.echoDebug("...playing sound.");
-		location.getWorld().playSound(location, sound, volume, pitch);
+
+        // Extract objects from ScriptEntry
+        Location location = (Location) scriptEntry.getObject("location");
+        Sound sound = (Sound) scriptEntry.getObject("sound");
+        Float volume = (Float) scriptEntry.getObject("volume");
+        Float pitch = (Float) scriptEntry.getObject("pitch");
+
+        // Debugger
+        dB.echoApproval("Executing '" + getName() + "': "
+                + "Location='" + location.getBlockX() + "," + location.getBlockY()
+                + "," + location.getBlockZ() + "," + location.getWorld().getName() + "', "
+                + "Sound='" + sound.toString() + ", "
+                + "Volume/Pitch='" + volume + "/" + pitch + "'");
+
+        // Play the sound
+        location.getWorld().playSound(location, sound, volume, pitch);
 	}
 
 }

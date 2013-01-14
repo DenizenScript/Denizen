@@ -426,6 +426,9 @@ public class aH {
     public static Player getPlayerFrom(String arg) {
         if (arg.split(":").length >= 2)
             arg = arg.split(":", 2)[1];
+        // Remove prefix if using PLAYER.playername format
+        if (arg.toUpperCase().contains("PLAYER."))
+            arg = arg.toUpperCase().replace("PLAYER.", "");
         for (Player player : Bukkit.getOnlinePlayers())
             if (player.getName().equalsIgnoreCase(arg)) return player;
         dB.echoError("Player '" + arg + "' is invalid, or offline.");

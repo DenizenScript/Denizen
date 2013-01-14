@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -76,57 +75,37 @@ public class TeleportCommand extends AbstractCommand {
         Location teleportLocation = null;
 
         //
-        // Sanity check to make sure the number of arguments being passed in is
-        // reasonable.
-        //
-        if (scriptEntry.getArguments ().size () > 3) {
-            throw new InvalidArgumentsException("Too many arguments.");
-        }
-
-        //
         // Process the arguments.
         //
         Boolean teleportPlayer = true;
-        for (String thisArg : scriptEntry.getArguments()) {
+        for (String arg : scriptEntry.getArguments()) {
             //
             // Is this script attempting to teleport the NPC?
             //
-            if (thisArg.equalsIgnoreCase (TeleportCommand.NPC_ARG)) {
-                teleportNPCs.add ((scriptEntry.getNPC().getCitizen()));
+            if (arg.equalsIgnoreCase(TeleportCommand.NPC_ARG)) {
+                teleportNPCs.add (scriptEntry.getNPC().getCitizen());
                 teleportPlayer = false;
-                dB.echoDebug("...Teleporting the NPC instead of the PLAYER", thisArg);
             }
-            // If argument is a location?
-            else if (aH.matchesLocation(thisArg)) {
-                teleportLocation = aH.getLocationFrom(thisArg);
-                dB.echoDebug("...Teleport location now at '%s'.", thisArg);
-            } else if (aH.matchesValueArg("TARGETS", thisArg, ArgumentType.Custom)) {
-                teleportPlayer = false;
-                for (String target : aH.getListFrom(thisArg)) {
-                    if (target.matches("\\d+")) {
-                        NPC npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(target));
-                        if ( npc != null) {
-                            teleportNPCs.add (npc);
-                            continue;
-                        } else {
-                            dB.echoError("Unable to find NPC: %s", target);
-                        }
-                    } else {
-                        Player player = Bukkit.getPlayer(target);
-                        if (player != null) {
-                            teleportEntities.add(player);
-                            continue;
-                        } else {
-                            dB.echoError("Unable to find player: %s", target);
-                        }
-                    }
 
+            // If argument is a location?
+            else if (aH.matchesLocation(arg))
+                teleportLocation = aH.getLocationFrom(arg);
+
+            else if (aH.matchesValueArg("TARGETS", arg, ArgumentType.Custom)) {
+                teleportPlayer = false;
+                for (String target : aH.getListFrom(arg)) {
+                    if (CitizensAPI.getNPCRegistry().getNPC(aH.getLivingEntityFrom(target)) != null) {
+                        teleportNPCs.add(CitizensAPI.getNPCRegistry().getNPC(aH.getLivingEntityFrom(target)));
+                        continue;
+                    } else if (aH.getLivingEntityFrom(target) != null && aH.getLivingEntityFrom(target) instanceof Player) {
+                        teleportEntities.add(aH.getPlayerFrom(target));
+                        continue;
+                    }
                     dB.echoError("Invalid TARGET '%s'!", target);
                 }
             }
-            else {
-                dB.echoError("...unable to match '%s'!", thisArg);
-            }
+
+            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
         //
@@ -136,6 +115,13 @@ public class TeleportCommand extends AbstractCommand {
             teleportEntities.add (scriptEntry.getPlayer());
         }
 
+        // Check some required arguments, make sure they are valid
+        if (teleportLocation == null)
+            throw new InvalidArgumentsException("Missing LOCATION argument. No teleport location.");
+        if (teleportEntities.isEmpty() && teleportNPCs.isEmpty())
+            throw new InvalidArgumentsException("Missing TARGETS argument. Nothing to teleport.");
+
+        // Store objects in ScriptEntry for use in execute()
         scriptEntry.addObject("location", teleportLocation);
         scriptEntry.addObject("entities", teleportEntities);
         scriptEntry.addObject("npcs", teleportNPCs);
@@ -153,15 +139,18 @@ public class TeleportCommand extends AbstractCommand {
         List<LivingEntity> teleportEntities = (List<LivingEntity>) scriptEntry.getObject("entities");
         List<NPC> teleportNPCs = (List<NPC>) scriptEntry.getObject("npcs");
 
+        // Debug output
+        dB.echoApproval("Executing '" + getName() + "': "
+                + "Location='" + teleportLocation.getBlockX() + "," + teleportLocation.getBlockY()
+                + "," + teleportLocation.getBlockZ() + "," + teleportLocation.getWorld().getName() + "', "
+                + "Targets='" + teleportEntities.toString() + "/" + teleportNPCs.toString() + "'");
 
-        if (teleportLocation != null) {
-            for (LivingEntity entity : teleportEntities) {
-                entity.teleport(teleportLocation);
-            }
+        for (LivingEntity entity : teleportEntities) {
+            entity.teleport(teleportLocation);
+        }
 
-            for (NPC npc : teleportNPCs) {
-                npc.getBukkitEntity().teleport(teleportLocation, PlayerTeleportEvent.TeleportCause.COMMAND);
-            }
+        for (NPC npc : teleportNPCs) {
+            npc.getBukkitEntity().teleport(teleportLocation, PlayerTeleportEvent.TeleportCause.COMMAND);
         }
     }
 }

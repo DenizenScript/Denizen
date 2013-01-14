@@ -145,7 +145,7 @@ public class ConstantsTrait extends Trait {
         return assignmentConstants;
     }
 
-    private Map<String, String> rebuildAssignmentConstants() {
+    public Map<String, String> rebuildAssignmentConstants() {
         // Builds a map of constants inherited from the NPCs current Assignment
         if (!npc.hasTrait(AssignmentTrait.class) || !npc.getTrait(AssignmentTrait.class).hasAssignment()) {
             assignmentConstants.clear();

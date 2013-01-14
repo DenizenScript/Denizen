@@ -189,13 +189,17 @@ public class ScriptEngine {
         switch (queueType) {
         case PLAYER:
             scriptCommandList = playerQueue.get(player);
-            playerQueue.remove(player); 
+            if (scriptCommandList == null)
+                scriptCommandList = new ArrayList<ScriptEntry>();
+            playerQueue.remove(player);
             scriptCommandList.addAll(scriptEntries);
             playerQueue.put(player, scriptCommandList);
             break;
     
         case PLAYER_TASK:
             scriptCommandList = playerTaskQueue.get(player);
+            if (scriptCommandList == null)
+                scriptCommandList = new ArrayList<ScriptEntry>();
             playerTaskQueue.remove(player); 
             scriptCommandList.addAll(scriptEntries);
             playerTaskQueue.put(player, scriptCommandList);
@@ -222,6 +226,8 @@ public class ScriptEngine {
         switch (queueType) {
         case NPC:
             scriptCommandList = npcQueue.get(npc);
+            if (scriptCommandList == null)
+                scriptCommandList = new ArrayList<ScriptEntry>();
             npcQueue.remove(npc); 
             scriptCommandList.addAll(scriptEntries);
             npcQueue.put(npc, scriptCommandList);
