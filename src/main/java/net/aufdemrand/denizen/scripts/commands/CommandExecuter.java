@@ -88,8 +88,7 @@ public class CommandExecuter {
 						dB.echoDebug("   Saving offlinePlayer object.");
 					}
 					else { dB.echoError("Could not find a valid player!"); scriptEntry.setPlayer(null); }
-					continue;	
-				}
+                }
 
 				// Fill Denizen with NPCID
 				else if (arg.startsWith("NPCID:")) {

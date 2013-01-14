@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.flags;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.scripts.commands.core.FlagCommand.FlagType;
+import net.aufdemrand.denizen.scripts.commands.core.FlagCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -29,12 +29,12 @@ public class FlagManager {
      * or getGlobalFlag(..) may be a cleaner method of retrieval.
      *   
      */
-    public Flag getFlag(FlagType flagType, String targetName, Integer npcid, String flagName) {
-        if (flagType == FlagType.GLOBAL) 
+    public Flag getFlag(FlagCommand.Type flagType, String targetName, Integer npcid, String flagName) {
+        if (flagType == FlagCommand.Type.GLOBAL)
             return new Flag("Global.Flags." + flagName.toUpperCase());
-        else if (flagType == FlagType.PLAYER)
+        else if (flagType == FlagCommand.Type.PLAYER)
             return new Flag("Players." + targetName + ".Flags." + flagName.toUpperCase());
-        else if (flagType == FlagType.NPC)
+        else if (flagType == FlagCommand.Type.NPC)
             return new Flag("NPCs." + npcid + ".Flags." + flagName.toUpperCase());
 
         return new Flag("Global.Flags.null");
@@ -505,6 +505,7 @@ public class FlagManager {
          * 
          */
         public boolean isEmpty() {
+            if (values.isEmpty()) return true;
             adjustIndex();
             if (this.size() < index + 1) return true;
             if (values.get(index).equals("")) return true;

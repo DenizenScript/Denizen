@@ -60,29 +60,27 @@ public class FlagTags implements Listener {
         if (event.getType().toUpperCase().startsWith("G")) {
             if (denizen.flagManager().getGlobalFlag(flagName).get(index).isEmpty()) {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
-                // event.setReplaced(flagFallback);
             } else {
-                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", flagName);
                 event.setReplaced(getReplaceable(denizen.flagManager().getGlobalFlag(flagName).get(index), replaceType));
+                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
             }
 
         } else if (event.getType().toUpperCase().startsWith("D") || event.getType().toUpperCase().startsWith("N")) {
             if (denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index).isEmpty()) {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
-                // event.setReplaced(flagFallback);
             } else {
-                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", flagName);
                 event.setReplaced(getReplaceable(denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index), replaceType));
+                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
             }
 
         } else if (event.getType().toUpperCase().startsWith("P")) {
             if (denizen.flagManager().getPlayerFlag(event.getPlayer().getName(), flagName).get(index).isEmpty()) {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
-                // event.setReplaced(flagFallback);
             } else {
-                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value.", flagName);
                 event.setReplaced(getReplaceable(
                         denizen.flagManager().getPlayerFlag(event.getPlayer().getName(), flagName).get(index), replaceType));
+                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
+
             }
         }               
     }

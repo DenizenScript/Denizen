@@ -1,18 +1,11 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,6 +13,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The dScript Argument Helper will aide you in parsing and formatting arguments from a 
@@ -93,7 +92,6 @@ public class aH {
     final static Pattern doublePtrn = Pattern.compile("(?:-|)(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
     final static Pattern floatPtrn = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
     final static Pattern integerPtrn = Pattern.compile("(?:-|)\\d+");
-    final static Pattern stringPtrn = Pattern.compile(".+");
     final static Pattern wordPtrn = Pattern.compile("\\w+");
 
     /**
@@ -154,7 +152,7 @@ public class aH {
      * does not, so it can be used in a CustomValueArg.<p>
      *
      * <p>Provides a line of dB output if returning null. For getting saved entities
-     * make with the 'NEW ENTITY Command', use {@link #getSavedEntityFrom(String)}</p>
+     * make with the 'NEW ENTITY Command', use {@link #getLivingEntityFrom(String)}</p>
      *
      * <b>Examples:</b>
      * <ol>
@@ -381,7 +379,7 @@ public class aH {
      * required are double or integer values of x, y and z coordinates, in that
      * order.</p>
      *
-     * <p>Remember: Denizen uses 'Replaceable TAGs' (See: {@link TagManager}) to fill in
+     * <p>Remember: Denizen uses 'Replaceable TAGs' (See: TagManager) to fill in
      * various types of 'Locations', such as Anchors, Notables, or even an entity's
      * current position, so no need to handle such things on their own. It is instead
      * encouraged that any type of location uses matchesLocation(...), or at the very
@@ -585,8 +583,7 @@ public class aH {
      * slightly faster since Denizen uses a pre-compiled Pattern for matching.</p>
      *
      * <p>An argument prefix will likely cause this to return false. If wanting a double
-     * value in a custom ValueArg format, see {@link #matchesValueArg(String)} and
-     * {@link ArgumentType}.</p>
+     * value in a custom ValueArg format, see {@link #matchesValueArg(String, String, ArgumentType)}.</p>
      *
      * @param arg the dScript argument string
      * @return true if matched, otherwise false
@@ -606,7 +603,7 @@ public class aH {
      *
      * TODO: Note compatibility with dScript times (using {@link #getSecondsFrom(String)})
      *
-     * <p>When extracting the value from a match, using {@link #getTimeFrom(String)} is
+     * <p>When extracting the value from a match, using {@link #getSecondsFrom(String)} is
      * encouraged.</p>
      *
      * <b>Examples:</b>
@@ -622,10 +619,10 @@ public class aH {
      *
      */
     public static boolean matchesDuration(String arg) {
-        final Pattern matchesDurationPtrn = Pattern.compile("duration:\\d+(|t|m|s|h|d)", Pattern.CASE_INSENSITIVE);
+        final Pattern matchesDurationPtrn = Pattern.compile("duration:\\d+(?:\\.\\d+)?(t|m|s|h|d)?", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesDurationPtrn.matcher(arg);
         if (m.matches()) return true;
-        else if (arg.toUpperCase().startsWith("duration:"))
+        else if (arg.toUpperCase().startsWith("DURATION:"))
             dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
                     "prefix is correct, the value is not valid. 'DURATION' requires a positive integer value. " +
                     "Perhaps a replaceable Tag has failed to fill in a valid value?");
@@ -723,7 +720,7 @@ public class aH {
      * slightly faster since Denizen uses a pre-compiled Pattern for matching.</p>
      *
      * <p>An argument prefix will likely cause this to return false. If wanting an integer
-     * value in a custom ValueArg format, see {@link #matchesValueArg(String)} and
+     * value in a custom ValueArg format, see {@link #matchesValueArg(String, String, ArgumentType)} and
      * {@link ArgumentType}.</p>
      *
      * @param arg the dScript argument string

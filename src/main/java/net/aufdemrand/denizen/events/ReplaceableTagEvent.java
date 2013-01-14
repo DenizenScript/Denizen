@@ -257,7 +257,7 @@ public class ReplaceableTagEvent extends Event {
 
     private void parseContext() {
         if (baseContext == null || baseContext.length() == 1) return;
-        LivingEntity entity = null;
+        LivingEntity entity;
         for (String context : baseContext.split("\\|")) {
             entity = aH.getLivingEntityFrom(context);
             if (entity != null) {

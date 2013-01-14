@@ -36,12 +36,12 @@ public class IfCommand extends AbstractCommand {
 
         @Override
         public String toString() {
-            return  (logic != Logic.REGULAR ? "Logic=" + logic.toString() + ", " : "")
-                    + "Comparable=" + (comparable == null ? "null" : comparable.getClass().getSimpleName()
-                    + "(" + ChatColor.AQUA + comparable + ChatColor.WHITE + ")")
-                    + ", Operator=" + operator.toString()
-                    + ", ComparedTo=" + (comparedto == null ? "null" : comparedto.getClass().getSimpleName()
-                    + "(" + ChatColor.AQUA + comparedto + ChatColor.WHITE + ") ")
+            return  (logic != Logic.REGULAR ? "Logic='" + logic.toString() + "', " : "")
+                    + "Comparable='" + (comparable == null ? "null'" : comparable.getClass().getSimpleName()
+                    + "(" + ChatColor.AQUA + comparable + ChatColor.WHITE + ")'")
+                    + ", Operator='" + operator.toString()
+                    + "', ComparedTo='" + (comparedto == null ? "null'" : comparedto.getClass().getSimpleName()
+                    + "(" + ChatColor.AQUA + comparedto + ChatColor.WHITE + ")' ")
                     + ChatColor.YELLOW + "--> OUTCOME='" + outcome + "'";
         }
     }
@@ -90,9 +90,7 @@ public class IfCommand extends AbstractCommand {
                     // Set comparable
                 else if (comparables.get(index).comparable == null) {
                     // If using MATCHES operator, keep as string.
-                    if (comparables.get(index).operator == Operator.MATCHES)
-                        comparables.get(index).comparable = arg;
-                    else comparables.get(index).comparable = findObjectType(arg);
+                    comparables.get(index).comparable = findObjectType(arg);
                 }
                 // Set compared-to
                 else {
@@ -364,7 +362,11 @@ public class IfCommand extends AbstractCommand {
 
     private Object matchObjectType(Comparable match, String arg) {
 
-        Object comparable = match.comparable;
+        // If MATCHES, change comparable to String
+        if (match.operator == Operator.MATCHES)
+            match.comparable = String.valueOf(match.comparable);
+
+            Object comparable = match.comparable;
 
         // Comparable is String, return String
         if (comparable instanceof String)

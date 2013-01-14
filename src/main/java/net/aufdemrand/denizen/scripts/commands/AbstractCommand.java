@@ -99,7 +99,7 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 	}
 	
 	/**
-	 * Called by the {@link Executer} before the execute() method is called. Arguments
+	 * Called by the CommandExecuter before the execute() method is called. Arguments
 	 * should be iterated through and checked before continuing to execute(). Note that
 	 * PLAYER:player_name and NPCID:# arguments are parsed automatically by the Executer
 	 * and should not be handled by this Command otherwise. Their output is stored in the

@@ -187,7 +187,9 @@ public class CommandHandler {
 
 		if (args.hasValueFlag("set")) {
 			if (trait.setAssignment(args.getFlag("set").replace("\"", ""), player))
-				Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " has been assigned '" + trait.getAssignment() + "'.");
+				if (trait.hasAssignment())
+                Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment is now: '" + trait.getAssignment() + "'.");
+                else Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment was not able to be set.");
 			else Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
 			return;
 

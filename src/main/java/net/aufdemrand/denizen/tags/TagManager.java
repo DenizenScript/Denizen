@@ -1,4 +1,4 @@
- package net.aufdemrand.denizen.tags;
+package net.aufdemrand.denizen.tags;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
@@ -53,7 +53,6 @@ public class TagManager {
             ReplaceableTagEvent event;
             if (positions == null) break;
             else {
-                // dB.log(arg);
                 event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]));
                 if (event.isInstant() != instant) {
                     changeBack = true;
@@ -64,8 +63,6 @@ public class TagManager {
                     Bukkit.getServer().getPluginManager().callEvent(event);
                     if (!event.replaced() && event.getAlternative() != null) event.setReplaced(event.getAlternative());
                     arg = arg.substring(0, positions[0]) + event.getReplaced() + arg.substring(positions[1] + 1, arg.length());
-                    // TODO: Take out debug
-                    // dB.log(event.toString());
                 }
             }
             // Find new TAG
