@@ -12,9 +12,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<craftbukkit.version>LATEST</craftbukkit.version>
+		<craftbukkit.version>1.4.6-R0.4-SNAPSHOT</craftbukkit.version>
 		<citizens.version>2.0.6-SNAPSHOT</citizens.version>
-		<build.number>Unknown</build.number>
+		<build.number>1.4.6-R0.4-SNAPSHOT</build.number>
 	</properties>
 
 	<!-- Repositories -->
