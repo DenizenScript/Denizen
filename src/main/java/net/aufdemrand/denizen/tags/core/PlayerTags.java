@@ -20,13 +20,8 @@ public class PlayerTags implements Listener {
         if (!event.matches("PLAYER") || event.getPlayer() == null) return;
 
         Player p = event.getPlayer();
-        String type = event.getType().toUpperCase();
-        String subType = "";
-
-        if (event.getType().split("\\.").length > 1) {
-            type = event.getType().split("\\.")[0].toUpperCase();
-            subType = event.getType().split("\\.")[1].toUpperCase();
-        }
+        String type = event.getType() != null ? event.getType().toUpperCase() : "";
+        String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
 
         if (type.equals("ITEM_IN_HAND")) {
             if (subType.equals("QTY"))

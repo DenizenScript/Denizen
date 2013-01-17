@@ -1,23 +1,20 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.List;
-
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import java.util.List;
 
 public class EnchantedRequirement extends AbstractRequirement{
 
 	private enum CheckType { ITEMINHAND };
 
 	@Override
-	public boolean check(Player player, DenizenNPC npc, String scriptName,
-			List<String> args) throws RequirementCheckException {
+	public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		
 		boolean outcome = false;
 		CheckType checkType = null;
@@ -42,7 +39,7 @@ public class EnchantedRequirement extends AbstractRequirement{
 			switch (checkType) {
 
 			case ITEMINHAND:
-				if (!player.getItemInHand().getEnchantments().isEmpty()) outcome = true;
+				if (!context.getPlayer().getItemInHand().getEnchantments().isEmpty()) outcome = true;
 				break;
 
 			}

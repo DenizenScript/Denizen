@@ -192,28 +192,27 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     }
                 }
 
+                Location npcLocation = npc.getBukkitEntity().getLocation();
+
                 //
-                // If the user entered the range and were not previously within the
-                // range, then execute the "Entry" script.
+                // If the Player switches worlds while in range of an NPC, trigger still needs to
+                // fire since technically they have exited proximity. Let's check that before
+                // trying to calculate a distance between the Player and NPC, which will throw
+                // an exception if worlds do not match.
+                //
+                boolean playerChangedWorlds = false;
+                if (npcLocation.getWorld() != event.getPlayer().getWorld())
+                    playerChangedWorlds = true;
+
                 //
                 // If the user is outside the range, and was previously within the
                 // range, then execute the "Exit" script.
                 //
-                if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) <= entryRadius	&&
-                        hasExitedProximityOf(event.getPlayer(), npc)) {
-                    // Cooldown
-                    if (!npc.getTrait(TriggerTrait.class).triggerCooldownOnly(this, event.getPlayer()))
-                        continue;
-                    // Remember that Player has entered proximity of the NPC
-                    enterProximityOf(event.getPlayer(), npc);
-                    dB.echoDebug(ChatColor.GOLD + "FOUND! NPC is in ENTERING range: '" + npc.getName() + "'");
-                    // Enter Proximity Action
-                    denizenNPC.action("enter proximity", event.getPlayer());
-                    // Parse Interact Script
-                    this.parse(denizenNPC, event.getPlayer(), theScript, true);
-
-                } else if (npc.getBukkitEntity().getLocation().distance(toBlockLocation) >= exitRadius	&&
-                        !hasExitedProximityOf(event.getPlayer(), npc)) {
+                // If the user entered the range and were not previously within the
+                // range, then execute the "Entry" script.
+                //
+                if (!hasExitedProximityOf(event.getPlayer(), npc)
+                    && (playerChangedWorlds || npc.getBukkitEntity().getLocation().distance(toBlockLocation) >= exitRadius)) {
                     if (!npc.getTrait(TriggerTrait.class).triggerCooldownOnly(this, event.getPlayer()))
                         continue;
                     // Remember that NPC has exited proximity.
@@ -223,6 +222,19 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     denizenNPC.action("exit proximity", event.getPlayer());
                     // Parse Interact Script
                     this.parse(denizenNPC, event.getPlayer(), theScript, false);
+                }
+                else if (hasExitedProximityOf(event.getPlayer(), npc)
+                    && npc.getBukkitEntity().getLocation().distance(toBlockLocation) <= entryRadius) {
+                    // Cooldown
+                    if (!npc.getTrait(TriggerTrait.class).triggerCooldownOnly(this, event.getPlayer()))
+                        continue;
+                    // Remember that Player has entered proximity of the NPC
+                    enterProximityOf(event.getPlayer(), npc);
+                    dB.echoDebug(ChatColor.YELLOW + "FOUND! NPC is in ENTERING range: '" + npc.getName() + "'");
+                    // Enter Proximity Action
+                    denizenNPC.action("enter proximity", event.getPlayer());
+                    // Parse Interact Script
+                    this.parse(denizenNPC, event.getPlayer(), theScript, true);
                 }
 
                 dB.debugMode = originalDebugState;

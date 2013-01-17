@@ -3,11 +3,12 @@ package net.aufdemrand.denizen.scripts;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.command.exception.RequirementMissingException;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -72,7 +73,8 @@ public class ScriptHelper {
 
 			// Get requirements
 			try {
-				if (denizen.getScriptEngine().getRequirementChecker().check(script, npc, player)) {
+				if (denizen.getScriptEngine().getRequirementChecker().check(
+                        buildInteractScriptRequirementContext(player, npc, script))) {
 					dB.echoApproval("'" + assignment + "' meets requirements.");
 
 					// Meets requirements, but we need to check cool down, too.
@@ -86,7 +88,7 @@ public class ScriptHelper {
 					// Does not meet requirements, alert the console!
 					dB.echoDebug("'" + assignment + "' does not meet requirements.");
 
-			} catch (RequirementMissingException e) {
+			} catch (Exception e) {
 				// Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!
 				dB.echoError(ChatColor.RED + "'" + assignment + "' has a bad requirement, skipping.");
 			}
@@ -146,6 +148,38 @@ public class ScriptHelper {
 
 		return null;
 	}
+
+
+    /**
+     * Builds RequirementsContext for Interact-type Script requirements
+     *
+     * @param player The player interacting
+     * @param npc The NPC interacting with
+     * @param scriptName The name of the script
+     * @return the RequirementsContext
+     *
+     */
+    private RequirementsContext buildInteractScriptRequirementContext(Player player, NPC npc, String scriptName) {
+
+        List<String> reqList = denizen.getScripts().getStringList(scriptName + ".REQUIREMENTS.LIST");
+        RequirementsMode reqMode =
+                new RequirementsMode(denizen.getScripts().getString(scriptName + ".REQUIREMENTS.MODE", "NONE"));
+
+        // Requirements list null? This script is probably named wrong, or doesn't exist!
+        if (reqList.isEmpty() && reqMode.getMode() != RequirementsMode.Mode.NONE) {
+            dB.echoError("Non-valid requirements structure at:");
+            dB.echoDebug(ChatColor.GRAY + scriptName + ":");
+            dB.echoDebug(ChatColor.GRAY + "  Requirements:");
+            dB.echoDebug(ChatColor.GRAY + "    Mode: ???");
+            dB.echoDebug(ChatColor.GRAY + "    List:");
+            dB.echoDebug(ChatColor.GRAY + "    - ???");
+            dB.echoDebug("* Check spacing, validate structure and spelling.");
+            return null;
+        }
+
+        return new RequirementsContext(reqMode, reqList, scriptName).attachNPC(npc).attachPlayer(player);
+    }
+
 
 	public String getCurrentStep(Player player, String scriptName) {
 		return getCurrentStep(player, scriptName, true);

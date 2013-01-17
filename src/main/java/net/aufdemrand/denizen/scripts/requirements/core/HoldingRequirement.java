@@ -1,15 +1,13 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.List;
-
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class HoldingRequirement extends AbstractRequirement{
 
@@ -20,10 +18,9 @@ public class HoldingRequirement extends AbstractRequirement{
 	
 	private int quantity;
     private ItemStack itemToCheck;
-    
-	@Override
-	public boolean check(Player player, DenizenNPC npc, String scriptName,
-			List<String> args) throws RequirementCheckException {
+
+    @Override
+    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		
 		boolean outcome = false;
 		quantity = 1;
@@ -43,7 +40,7 @@ public class HoldingRequirement extends AbstractRequirement{
 			itemToCheck.setAmount(quantity);
 		}
 		
-		if (player.getItemInHand().equals(itemToCheck)){
+		if (context.getPlayer().getItemInHand().equals(itemToCheck)){
 			outcome = true;
 			dB.echoDebug("...player is holding item");
 		}

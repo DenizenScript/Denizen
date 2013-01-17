@@ -1,22 +1,19 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.List;
-
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import java.util.List;
 
 public class SneakingRequirement extends AbstractRequirement {
 
-	@Override
-	public boolean check(Player player, DenizenNPC npc, String scriptName,
-			List<String> args) throws RequirementCheckException {
-		boolean outcome = false;
+    @Override
+    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
+        boolean outcome = false;
 
-		if (player.isSneaking()) {
+		if (context.getPlayer().isSneaking()) {
 			outcome = true;
 		}
 

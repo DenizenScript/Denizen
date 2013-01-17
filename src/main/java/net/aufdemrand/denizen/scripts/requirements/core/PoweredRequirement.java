@@ -1,15 +1,13 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.List;
-
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.block.Block;
+
+import java.util.List;
 
 public class PoweredRequirement extends AbstractRequirement{
 
@@ -18,17 +16,11 @@ public class PoweredRequirement extends AbstractRequirement{
 		//nothing to do here
 	}
 
-	@Override
-	public boolean check(Player player, DenizenNPC npc, String scriptName,
-			List<String> args) throws RequirementCheckException {
+    @Override
+    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		boolean outcome = false;
 		Block blockToCheck = null;
 
-//	    HOW DO YOU WANT TO HANDLE NO ARGS IN REQUIREMENTS?
-//		if (arguments == null)
-//			throw new RequirementMissingException("Must provide a BOOKMARK:block of the block to be checked!");
-
-		/* Get arguments */
 
 		for (String thisArg : args) {
 

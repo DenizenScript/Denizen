@@ -1,13 +1,11 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.List;
-
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+
+import java.util.List;
 
 public class TimeRequirement extends AbstractRequirement{
 	
@@ -19,10 +17,9 @@ public class TimeRequirement extends AbstractRequirement{
 	}
 
 	TIME time;
-	
-	@Override
-	public boolean check(Player player, DenizenNPC npc, String scriptName,
-			List<String> args) throws RequirementCheckException {
+
+    @Override
+    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		
 		boolean outcome = false;
 		

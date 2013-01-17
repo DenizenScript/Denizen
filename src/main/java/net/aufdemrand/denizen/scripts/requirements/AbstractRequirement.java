@@ -1,16 +1,13 @@
 package net.aufdemrand.denizen.scripts.requirements;
 
-import java.util.List;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
-
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public abstract class AbstractRequirement implements RegistrationableInstance {
 
@@ -55,7 +52,7 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
 		return this;
 	}
     
-    public abstract boolean check(Player player, DenizenNPC npc, String scriptName, List<String> args) throws RequirementCheckException;
+    public abstract boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException;
     
     @Override
     public String getName() {

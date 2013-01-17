@@ -3,10 +3,7 @@ package net.aufdemrand.denizen.scripts.requirements;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.command.exception.RequirementMissingException;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,43 +21,38 @@ public class RequirementChecker {
 		plugin = denizen;
 	}
 
-	public boolean check(String scriptName, NPC npc, Player player) throws RequirementMissingException {
-		String reqMode = plugin.getScripts().getString(scriptName + ".REQUIREMENTS.MODE", "NONE");
-		List<String> reqList = plugin.getScripts().getStringList(scriptName + ".REQUIREMENTS.LIST");
+    /**
+     * Checks a RequirementsContext with Requirements from the RequirementsRegistry.
+     *
+     * @param context
+     * @return true if the list meets the requirements and context set
+     *
+     */
+    public boolean check(RequirementsContext context) {
 
-		dB.echoDebug(ChatColor.YELLOW + "CHECK! Now checking '%s'", scriptName);
-		
-		// No requirements met yet, we just started!
-		int numberMet = 0; 
+        //
+        // Requirement node "NONE"? No requirements in the LIST? No need to
+        // continue, return true.
+        //
+        if (context.mode.getMode() == RequirementsMode.Mode.NONE || context.list.isEmpty()) {
+            return true;
+        }
 
-		// Requirements list null? This script is probably named wrong, or doesn't exist!
-		if (reqList.isEmpty() && !reqMode.equalsIgnoreCase("NONE")) {
-			dB.echoError("Non-valid requirements structure at:");
-			dB.echoDebug(ChatColor.GRAY + scriptName + ":");
-			dB.echoDebug(ChatColor.GRAY + "  Requirements:");
-			dB.echoDebug(ChatColor.GRAY + "    Mode: ???");
-			dB.echoDebug(ChatColor.GRAY + "    List:");
-			dB.echoDebug(ChatColor.GRAY + "    - ???");
-			dB.echoDebug("* Check spacing, validate structure and spelling.");
-			return false;
-		}
+        //
+        // Actual requirements that need checking, alert the debugger
+        //
+        dB.echoDebug(ChatColor.YELLOW + "CHECK! Now checking '%s'", context.scriptName);
+        dB.echoDebug("Requirement mode: '%s'", context.mode.toString());
 
-		dB.echoDebug("Requirement mode: '%s'", reqMode.toUpperCase());
-
-		//
-		// Requirement node "NONE"? No requirements in the LIST? No need to 
-		// continue, return true.
-		//
-		if (reqMode.equalsIgnoreCase ("NONE") || reqList.isEmpty()) {
-			return true;
-		}
-
-		// Set up checks for requirement mode 'FIRST AND ANY #'
+        // Set up checks for requirement mode 'FIRST AND ANY #'
 		boolean firstReqMet = false;
 		boolean firstReqChecked = false;
 
+        // Counter for keeping track of met requirements
+        int numberMet = 0;
+
 		// Check all requirements
-		for (String reqEntry : reqList) {
+		for (String reqEntry : context.list) {
 			boolean negativeRequirement = false;
 
 			//
@@ -84,7 +76,7 @@ public class RequirementChecker {
 				// Replace tags
 				List<String> argumentList = new ArrayList<String>();
 				if (arguments != null) {
-					argumentList = plugin.tagManager().fillArguments(arguments, player, plugin.getNPCRegistry().getDenizen(npc)); 
+					argumentList = plugin.tagManager().fillArguments(arguments, context.player, plugin.getNPCRegistry().getDenizen(context.npc));
 				}
 
 				try {
@@ -96,7 +88,7 @@ public class RequirementChecker {
 					}
 
 					// Check the Requirement
-					if (requirement.check(player, plugin.getNPCRegistry().getDenizen(npc), scriptName, argumentList) != negativeRequirement) {
+					if (requirement.check(context, argumentList) != negativeRequirement) {
 						// Check first requirement for mode 'FIRST AND ANY #'
 						if (!firstReqChecked) {
 							firstReqMet = true;
@@ -130,33 +122,26 @@ public class RequirementChecker {
 			}
 		}
 
-		// Check numberMet with mode...
-		String[] ModeArgs = reqMode.split(" ");
+        // Check numberMet with mode-type
+
 		// ALL mode
-		if (reqMode.equalsIgnoreCase("ALL") && numberMet == reqList.size()) return true;
+		if (context.mode.getMode() == RequirementsMode.Mode.ALL && numberMet == context.list.size()) return true;
 
 		// ANY # mode
-		else if (ModeArgs[0].equalsIgnoreCase("ANY")) {
-			if (ModeArgs.length == 1) {
-				if (numberMet >= 1) return true;
+		else if (context.mode.getMode() == RequirementsMode.Mode.ANY_NUM) {
+				if (numberMet >= context.mode.modeInt) return true;
 				else return false;
-			} else {
-				if (numberMet >= Integer.parseInt(ModeArgs[1])) return true;
-				else return false;
-			}
 		}
 
 		// FIRST AND ANY # mode
-		else if (ModeArgs[0].equalsIgnoreCase("FIRST") && ModeArgs[3].matches("\\d+")) {
+		else if (context.mode.getMode() == RequirementsMode.Mode.FIRST_AND_ANY_NUM) {
 			if (firstReqMet) {
-				if (numberMet > Integer.parseInt(ModeArgs[3])) return true;
+				if (numberMet > context.mode.modeInt) return true;
 				else return false;
 			} else return false;
 		}
 
-		else if (!ModeArgs[0].equalsIgnoreCase("ALL")) dB.echoError("Invalid Requirement Mode!");
-
-		// Nothing met, return FALSE	
+		// Nothing met, return FALSE
 		return false;
 	}
 

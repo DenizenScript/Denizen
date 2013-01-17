@@ -1,20 +1,17 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.List;
-
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import java.util.List;
 
 /**
  * Checks if Player is inside specified WorldGuard region.
@@ -39,15 +36,14 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
 	 */
 
 
-	@Override
-	public boolean check(Player player, DenizenNPC npc, String scriptName,
-			List<String> args) throws RequirementCheckException {
+    @Override
+    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		
 		//initialize variables
 		boolean outcome = false;
 		boolean inRegion = false;
-		World theWorld = player.getWorld();
-		Location playerLocation = player.getLocation();
+		World theWorld = context.getPlayer().getWorld();
+		Location playerLocation = context.getPlayer().getLocation();
 		
 		if (args == null)
 			throw new RequirementCheckException("Must provide a NAME:regionname!");

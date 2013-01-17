@@ -1,15 +1,13 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.List;
-
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
+import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import java.util.List;
 
 public class ScriptRequirement extends AbstractRequirement{
 
@@ -20,9 +18,9 @@ public class ScriptRequirement extends AbstractRequirement{
 		//nothing to do here
 	}
 
-	@Override
-	public boolean check(Player player, DenizenNPC npc, String scriptName,
-			List<String> args) throws RequirementCheckException {
+    @Override
+    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
+
 		boolean outcome = false;
 
 		ScriptCheck scriptCheck = null;
@@ -30,11 +28,6 @@ public class ScriptRequirement extends AbstractRequirement{
 		Integer quantity = 1;
 		boolean exactly = false;
 		String checkScript = null;
-
-//		if (args == null)
-//			throw new RequirementMissingException("Not enough arguments! Usage... SCRIPT [FINISHED|FAILED|STEP] (STEP:#) (QTY:#) (EXACTLY) [SCRIPT:Script name]");
-
-		/* Get arguments */
 
 		for (String thisArg : args) {
 
@@ -76,7 +69,7 @@ public class ScriptRequirement extends AbstractRequirement{
 
 			case FINISHED:
 
-				Integer finishes = plugin.getSaves().getInt("Players." + player.getName() + "." + checkScript + "." + "Completed", 0);
+				Integer finishes = plugin.getSaves().getInt("Players." + context.getPlayer().getName() + "." + checkScript + "." + "Completed", 0);
 
 				if (outcome == true) dB.echoDebug("...number of finishes is '%s'", finishes.toString());
 
@@ -96,7 +89,7 @@ public class ScriptRequirement extends AbstractRequirement{
 
 			case FAILED:
 
-				Integer fails = plugin.getSaves().getInt("Players." + player.getName() + "." + checkScript + "." + "Failed", 0);
+				Integer fails = plugin.getSaves().getInt("Players." + context.getPlayer().getName() + "." + checkScript + "." + "Failed", 0);
 
 				if (outcome == true) dB.echoDebug("...number of fails is '%s'", fails.toString());
 
@@ -116,7 +109,7 @@ public class ScriptRequirement extends AbstractRequirement{
 
 			case STEP:
 
-				Integer currentStep = plugin.getSaves().getInt("Players." + player.getName() + "." + checkScript	+ "." + "Current Step", 0);
+				Integer currentStep = plugin.getSaves().getInt("Players." + context.getPlayer().getName() + "." + checkScript + "." + "Current Step", 0);
 
 				if (outcome == true) dB.echoDebug("...current step is '%s'", currentStep.toString());
 
