@@ -1,11 +1,10 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
-import java.util.ArrayList;
-
-import net.minecraft.server.v1_4_6.NBTTagCompound;
-
-import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
+import net.minecraft.server.v1_4_R1.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
 
 public class ListOfLore extends ArrayList<String> {
 
@@ -14,7 +13,7 @@ public class ListOfLore extends ArrayList<String> {
 	public ListOfLore(ItemStack item) {
 		super();
 		if (item == null) return;
-		net.minecraft.server.v1_4_6.ItemStack cis =  CraftItemStack.asNMSCopy(item);
+		net.minecraft.server.v1_4_R1.ItemStack cis =  CraftItemStack.asNMSCopy(item);
 		NBTTagCompound d = cis.getTag();
 		int lores;
 		if (d.hasKey("display") && d.getCompound("display").hasKey("Lore")) 

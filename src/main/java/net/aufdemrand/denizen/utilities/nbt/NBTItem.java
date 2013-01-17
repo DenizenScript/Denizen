@@ -1,16 +1,15 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
+import net.minecraft.server.v1_4_R1.NBTBase;
+import net.minecraft.server.v1_4_R1.NBTTagCompound;
+import net.minecraft.server.v1_4_R1.NBTTagList;
+import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import net.minecraft.server.v1_4_6.NBTBase;
-import net.minecraft.server.v1_4_6.NBTTagCompound;
-import net.minecraft.server.v1_4_6.NBTTagList;
-
-import org.bukkit.craftbukkit.v1_4_6.inventory.CraftItemStack;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
 
 public class NBTItem {
 
@@ -28,7 +27,7 @@ public class NBTItem {
 
 	
 	 public static ItemStack setName(ItemStack is, String name) {
-	        net.minecraft.server.v1_4_6.ItemStack cis =  CraftItemStack.asNMSCopy(is);
+	        net.minecraft.server.v1_4_R1.ItemStack cis =  CraftItemStack.asNMSCopy(is);
 	 
 	        NBTTagCompound tag = cis.getTag();
 	 
@@ -52,7 +51,7 @@ public class NBTItem {
 	        if (desc.isEmpty()) {
 	            return is;
 	        }
-	        net.minecraft.server.v1_4_6.ItemStack cis =  CraftItemStack.asNMSCopy(is);
+	        net.minecraft.server.v1_4_R1.ItemStack cis =  CraftItemStack.asNMSCopy(is);
 	 
 	        NBTTagCompound tag = cis.getTag();
 	 
@@ -83,7 +82,7 @@ public class NBTItem {
 	        if(is == null){
 	            return null;
 	        }
-	        net.minecraft.server.v1_4_6.ItemStack cis =  CraftItemStack.asNMSCopy(is);
+	        net.minecraft.server.v1_4_R1.ItemStack cis =  CraftItemStack.asNMSCopy(is);
 
 	 
 	        NBTTagCompound tag = cis.getTag();
@@ -109,7 +108,7 @@ public class NBTItem {
 	        if (is == null) {
 	            return null;
 	        }
-	        net.minecraft.server.v1_4_6.ItemStack cis =  CraftItemStack.asNMSCopy(is);
+	        net.minecraft.server.v1_4_R1.ItemStack cis =  CraftItemStack.asNMSCopy(is);
 
 	 
 	        NBTTagCompound tag = cis.getTag();

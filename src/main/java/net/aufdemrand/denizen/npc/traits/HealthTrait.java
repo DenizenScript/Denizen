@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
 import org.bukkit.event.Listener;
 
 public class HealthTrait extends Trait implements Listener {
