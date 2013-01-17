@@ -20,9 +20,23 @@ import org.bukkit.material.MaterialData;
 /**
  * This class has utility methods for various tasks.
  * 
- * @author Aufdemrand, dbixler
+ * @author Aufdemrand, dbixler, AgentK
  */
 public class Utilities {
+
+	public static String arrayToString(String[] input, String glue){
+		String output="";
+		int length = input.length;
+		int i = 1;
+		for(String s : input){
+			output.concat(s);
+			i++;
+			if(i!=length){
+				output.concat(glue);
+			}
+		}
+		return output;
+	}
 
 	public static int lastIndexOfUCL(String str) {        
 	    for(int i=str.length()-1; i>=0; i--) {

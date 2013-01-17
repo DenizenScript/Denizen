@@ -81,6 +81,11 @@
 			<version>5.6.6-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+                <dependency>
+                  <groupId>org.json</groupId>
+                  <artifactId>org.json</artifactId>
+                  <version>chargebee-1.0</version>
+                </dependency>
 	</dependencies>
 
 	<ciManagement>
@@ -150,7 +155,8 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-javadoc-plugin</artifactId>
-							<configuration>
+        			<version>2.9</version>
+ 							<configuration>
 							    <stylesheetfile>${basedir}/src/javadoc/stylesheet.css</stylesheetfile>
           						<javadocDirectory>${basedir}/src/javadoc</javadocDirectory>
           						<docfilessubdirs>true</docfilessubdirs>
