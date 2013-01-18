@@ -25,8 +25,6 @@ public class PlayerTags implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void addMessage(AsyncPlayerChatEvent event) {
-        if (!event.isCancelled()) {
-
             List<String> history = new ArrayList<String>();
             if (playerChatHistory.containsKey(event.getPlayer().getName())) {
                 history = playerChatHistory.get(event.getPlayer().getName());
@@ -36,7 +34,6 @@ public class PlayerTags implements Listener {
             history.add(0, event.getMessage());
 
             playerChatHistory.put(event.getPlayer().getName(), history);
-        }
     }
 
     @EventHandler
