@@ -13,6 +13,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<craftbukkit.version>LATEST</craftbukkit.version>
+		<json.version>LATEST</json>
 		<citizens.version>2.0.6-SNAPSHOT</citizens.version>
 		<build.number>Unknown</build.number>
 	</properties>
@@ -55,6 +56,13 @@
 			<version>${citizens.version}</version>
 			<type>jar</type>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${json.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
