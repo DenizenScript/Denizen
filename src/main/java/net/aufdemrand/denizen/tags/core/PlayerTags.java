@@ -2,15 +2,46 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerTags implements Listener {
 
     public PlayerTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+    }
+
+    Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>();
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void addMessage(AsyncPlayerChatEvent event) {
+        if (!event.isCancelled()) {
+
+            List<String> history = new ArrayList<String>();
+            if (playerChatHistory.containsKey(event.getPlayer().getName())) {
+                history = playerChatHistory.get(event.getPlayer().getName());
+            }
+
+            if (history.size() > 10) history.remove(9);
+            history.add(0, event.getMessage());
+
+            playerChatHistory.put(event.getPlayer().getName(), history);
+        }
+    }
+
+    @EventHandler
+    public void replaceableChatTag(ReplaceableTagEvent event) {
+
     }
 
     @EventHandler
@@ -23,7 +54,26 @@ public class PlayerTags implements Listener {
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
 
-        if (type.equals("ITEM_IN_HAND")) {
+        if (type.equals("CHAT_HISTORY")) {
+            if (event.hasTypeContext()) {
+                if (aH.matchesInteger(event.getTypeContext())) {
+                    // Check that player has history
+                    if (playerChatHistory.containsKey(event.getPlayer().getName())) {
+                        List<String> history = playerChatHistory.get(event.getPlayer().getName());
+                        if (history.size() < aH.getIntegerFrom(event.getTypeContext()))
+                            event.setReplaced(history.get(history.size() - 1));
+                        else event.setReplaced(history.get(aH.getIntegerFrom(event.getTypeContext()) - 1));
+                    }
+                }
+
+            } else {
+                if (playerChatHistory.containsKey(event.getPlayer().getName())) {
+                    event.setReplaced(playerChatHistory.get(event.getPlayer().getName()).get(0));
+                }
+            }
+        }
+
+        else if (type.equals("ITEM_IN_HAND")) {
             if (subType.equals("QTY"))
                 event.setReplaced(String.valueOf(p.getItemInHand().getAmount()));
             else if (subType.equals("ID"))
@@ -35,12 +85,12 @@ public class PlayerTags implements Listener {
             else if (subType.equals("MAX_STACK"))
                 event.setReplaced(String.valueOf(p.getItemInHand().getMaxStackSize()));
             else if (subType.equals("ENCHANTMENTS"))
-            	event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptList());
+                event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptList());
             else if (subType.equals("ENCHANTMENTS_WITH_LEVEL"))
                 event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels());
             else if (subType.equals("ENCHANTMENTS_WITH_LEVEL_ONLY"))
                 event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly());
-            else if (subType.equals("LORE")) 
+            else if (subType.equals("LORE"))
                 event.setReplaced(NBTItem.getLore(p.getItemInHand()).asDScriptList());
             else if (subType.equals("DISPLAY"))
                 event.setReplaced(NBTItem.getName(p.getItemInHand()));
@@ -48,8 +98,8 @@ public class PlayerTags implements Listener {
                 event.setReplaced(p.getItemInHand().getType().name());
             return;
 
-            
-        } else if (type.equals("NAME")) { 
+
+        } else if (type.equals("NAME")) {
             event.setReplaced(p.getName());
             if (subType.equals("DISPLAY"))
                 event.setReplaced(p.getDisplayName());
@@ -57,13 +107,13 @@ public class PlayerTags implements Listener {
                 event.setReplaced(p.getPlayerListName());
             return;
 
-            
+
         } else if (type.equals("LOCATION")) {
             event.setReplaced(p.getLocation().getBlockX()
                     + "," + p.getLocation().getBlockY()
                     + "," + p.getLocation().getBlockZ()
                     + "," + p.getWorld().getName());
-            if (subType.equals("FORMATTED")) 
+            if (subType.equals("FORMATTED"))
                 event.setReplaced("X '" + p.getLocation().getBlockX()
                         + "', Y '" + p.getLocation().getBlockY()
                         + "', Z '" + p.getLocation().getBlockZ()
@@ -84,7 +134,7 @@ public class PlayerTags implements Listener {
                 event.setReplaced(p.getWorld().getName());
             return;
 
-            
+
         } else if (type.equals("HEALTH")) {
             event.setReplaced(String.valueOf(p.getHealth()));
             if (subType.equals("FORMATTED")) {
@@ -99,7 +149,7 @@ public class PlayerTags implements Listener {
                     event.setReplaced("injured");
                 else if ((float) p.getHealth() / maxHealth < 1)
                     event.setReplaced("scraped");
-                else 
+                else
                     event.setReplaced("healthy");
             } else if (subType.equals("PERCENTAGE")) {
                 int maxHealth = p.getMaxHealth();
@@ -108,7 +158,7 @@ public class PlayerTags implements Listener {
                 event.setReplaced(String.valueOf(((float) p.getHealth() / maxHealth) * 100));
             }
 
-            
+
         } else if (type.equals("FOOD_LEVEL")) {
             event.setReplaced(String.valueOf(p.getFoodLevel()));
             if (subType.equals("FORMATTED")) {
@@ -123,7 +173,7 @@ public class PlayerTags implements Listener {
                     event.setReplaced("hungry");
                 else if ((float) p.getFoodLevel() / maxFood < 1)
                     event.setReplaced("parched");
-                else 
+                else
                     event.setReplaced("healthy");
             } else if (subType.equals("PERCENTAGE")) {
                 int maxFood = 20;

@@ -1,13 +1,5 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
@@ -17,13 +9,16 @@ import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
-
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatTrigger extends AbstractTrigger implements Listener {
 	// TODO:  Should not be instance based, due to this class being a singleton.
@@ -195,7 +190,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 					if (pattern.matcher(playerMessage).find () ) {
 						continue;
 					}
-					dB.echoDebug (ChatColor.GOLD + "  " + playerMessage + " does not match regex: " + keyWord.substring(6) + ".");
+					dB.echoDebug (ChatColor.YELLOW + "  " + playerMessage + " does not match regex: " + keyWord.substring(6) + ".");
 					foundMatch = false;
 					break;
 				}
@@ -205,7 +200,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 				// keyword, then stop looking.
 				//
 				if (playerMessage.toLowerCase().contains(keyWord.toLowerCase()) == false) {
-					dB.echoDebug (ChatColor.GOLD + "  \"" + playerMessage + "\" does not match.");
+					dB.echoDebug (ChatColor.YELLOW + "  \"" + playerMessage + "\" does not match.");
 					foundMatch = false;
 					break;
 				}
@@ -318,4 +313,5 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 		
 		return triggerMap;
 	}
+
 }
