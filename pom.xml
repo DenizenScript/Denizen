@@ -121,12 +121,17 @@
                             <artifactSet>
                                 <includes>
                                     <include>org.abstractmeta</include>
+                                    <include>org.json</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>org.abstractmeta</pattern>
                                     <shadedPattern>org.shade.abstractmeta</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                	<pattern>org.json</pattern>
+                                	<shadedPattern>org.shade.json</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
