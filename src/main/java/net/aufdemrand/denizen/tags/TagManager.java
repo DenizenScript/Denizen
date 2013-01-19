@@ -34,7 +34,7 @@ public class TagManager {
         new FlagTags(denizen);
         new BookmarkTags(denizen);
         new ConstantTags(denizen);
-        // new NPCTags(denizen);
+        new NPCTags(denizen);
         new AnchorTags(denizen);
     }
     
@@ -76,14 +76,13 @@ public class TagManager {
         return arg;
     }
 
+    private static Pattern tagRegex = Pattern.compile("<[\\w\\[\\]: \\.]*>");
+
     private int[] locateTag(String arg) {
         // find tag brackets pattern
-    	Pattern tagRegex = Pattern.compile("<[\\w\\[\\]: \\.]*>");
     	Matcher tagMatcher = tagRegex.matcher(arg);
     	if (tagMatcher.find())
-    	{
     		return new int[]{tagMatcher.start(), tagMatcher.end() - 1};
-    	}
     	// no matching brackets pattern, return null
     	else return null;        
     }

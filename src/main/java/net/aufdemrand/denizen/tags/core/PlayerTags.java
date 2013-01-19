@@ -37,11 +37,6 @@ public class PlayerTags implements Listener {
     }
 
     @EventHandler
-    public void replaceableChatTag(ReplaceableTagEvent event) {
-
-    }
-
-    @EventHandler
     public void playerTags(ReplaceableTagEvent event) {
 
         // These tags require a player.
@@ -93,7 +88,6 @@ public class PlayerTags implements Listener {
                 event.setReplaced(NBTItem.getName(p.getItemInHand()));
             else if (subType.equals("MATERIAL"))
                 event.setReplaced(p.getItemInHand().getType().name());
-            return;
 
 
         } else if (type.equals("NAME")) {
@@ -102,7 +96,6 @@ public class PlayerTags implements Listener {
                 event.setReplaced(p.getDisplayName());
             else if (subType.equals("LIST"))
                 event.setReplaced(p.getPlayerListName());
-            return;
 
 
         } else if (type.equals("LOCATION")) {
@@ -129,7 +122,6 @@ public class PlayerTags implements Listener {
                         + "," + p.getWorld().getName());
             else if (subType.equals("WORLD"))
                 event.setReplaced(p.getWorld().getName());
-            return;
 
 
         } else if (type.equals("HEALTH")) {
@@ -196,8 +188,6 @@ public class PlayerTags implements Listener {
                 event.setReplaced(String.valueOf(p.getTotalExperience()));
             else if (subType.equals("LEVEL"))
                 event.setReplaced(String.valueOf(p.getLevel()));
-            return;
-
         }
 
     }
