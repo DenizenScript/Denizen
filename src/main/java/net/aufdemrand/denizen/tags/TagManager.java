@@ -76,7 +76,7 @@ public class TagManager {
 
     private int[] locateTag(String arg) {
         // find first >
-        int closePos = arg.indexOf('>');
+        int closePos = arg.lastIndexOf('>');
         int openPos = -1;
         // find closest <
         for (int x = closePos; x >= 0; x-- ) {
