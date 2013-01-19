@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Calls a bukkit event for replaceable tags.
@@ -75,20 +77,15 @@ public class TagManager {
     }
 
     private int[] locateTag(String arg) {
-        // find first >
-        int closePos = arg.lastIndexOf('>');
-        int openPos = -1;
-        // find closest <
-        for (int x = closePos; x >= 0; x-- ) {
-            if (arg.charAt(x) == '<') {
-                openPos = x;
-                break;
-            }
-        }
-        // no matching bracket, return null
-        if (openPos == -1) return null;
-        // return positions of the brackets
-        return new int[]{openPos, closePos};
+        // find tag brackets pattern
+    	Pattern tagRegex = Pattern.compile("<[\\w\\[\\]: \\.]*>");
+    	Matcher tagMatcher = tagRegex.matcher(arg);
+    	if (tagMatcher.find())
+    	{
+    		return new int[]{tagMatcher.start(), tagMatcher.end() - 1};
+    	}
+    	// no matching brackets pattern, return null
+    	else return null;        
     }
     
     public List<String> fillArguments(List<String> args, ScriptEntry scriptEntry) {
