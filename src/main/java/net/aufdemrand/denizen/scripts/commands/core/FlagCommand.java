@@ -148,7 +148,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
         switch (action) {
             case INCREASE: case DECREASE: case MULTIPLY: case DIVIDE:
                 double currentValue = flag.get(index).asDouble();
-                flag.set(math(currentValue, Double.valueOf(value), action), index);
+                flag.set(Double.toString(math(currentValue, Double.valueOf(value), action)), index);
                 break;
             case SET_BOOLEAN:
                 flag.set(true, index);
