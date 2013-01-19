@@ -192,6 +192,9 @@ public class IfCommand extends AbstractCommand {
                             else if (((String) com.comparedto).equalsIgnoreCase("player")) {
                                 if (aH.getPlayerFrom(comparable) != null) com.outcome = true;
                             }
+                            else if (((String) com.comparedto).equalsIgnoreCase("offlineplayer")) {
+                                if (aH.getOfflinePlayerFrom(comparable) != null) com.outcome = true;
+                            }
                             else if (((String) com.comparedto).equalsIgnoreCase("item")) {
                                 if (aH.matchesItem("item:" + comparable)) com.outcome = true;
                             }
