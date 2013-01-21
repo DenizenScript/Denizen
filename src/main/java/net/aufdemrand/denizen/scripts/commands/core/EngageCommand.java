@@ -1,9 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -12,6 +9,9 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Sets an NPC to ENGAGED in the Denizen Engage List. 
@@ -77,7 +77,7 @@ public class EngageCommand extends AbstractCommand {
 	 * Checks if the DenizenNPC is ENGAGED. Engaged NPCs do not respond to
 	 * Player interaction.
 	 * 
-	 * @param denizenNPC
+	 * @param npc
 	 * 		the Denizen NPC being checked 
 	 * @return
 	 *  	if the DenizenNPC is currently engaged
@@ -94,14 +94,14 @@ public class EngageCommand extends AbstractCommand {
 	 * interaction. Note: Denizen NPC will automatically disengage after the
 	 * engage_timeout_in_seconds which is set in the Denizen config.yml.
 	 * 
-	 * @param denizenNPC
+	 * @param npc
 	 * 		the DenizenNPC affected
 	 * @param engaged
 	 * 		true sets the DenizenNPC engaged, false sets the DenizenNPC as disengaged
 	 */
 	public void setEngaged(NPC npc, boolean engaged) {
 		if (engaged) currentlyEngaged.put(npc, System.currentTimeMillis() 
-				+ Denizen.settings.EngageTimeoutInSeconds() * 1000 );
+				+ Settings.EngageTimeoutInSeconds() * 1000 );
 		if (!engaged) currentlyEngaged.remove(npc);
 	}
 
@@ -110,7 +110,7 @@ public class EngageCommand extends AbstractCommand {
 	 * respond to Player interaction. If the NPC is previously engaged, using this will
 	 * over-ride the previously set duration.
 	 * 
-	 * @param denizenNPC
+	 * @param npc
 	 * 		the DenizenNPC to set as engaged
 	 * @param duration
 	 * 		the number of seconds to engage the DenizenNPC

@@ -276,6 +276,7 @@ public class ScriptHelper {
 					String fileName = f.getName();
 					if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")
 							|| fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("DSCRIPT")
+                            || fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YAML")
 							&& !fileName.startsWith(".")) {
 						dB.echoDebug("Processing '" + fileName + "'... ");
 						try {

@@ -119,15 +119,9 @@ public class Denizen extends JavaPlugin {
     public NotableManager notableManager() {
         return notableManager;
     }
-    
-    
-    /*
-     * Utilities
-     */
 
-    public static Settings settings;
-    public static Depends depends;
-    
+    public Depends depends = new Depends();
+
     /*
      * Sets up Denizen on start of the craftbukkit server.	
      */
@@ -144,8 +138,6 @@ public class Denizen extends JavaPlugin {
         dB.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
         dB.echoDebug(DebugElement.Footer);
 
-        settings =  new Settings();
-        depends = new Depends();
         denizenNPCRegistry = new DenizenNPCRegistry(this);
         
         // Register commandHandler with Citizens2
@@ -184,7 +176,7 @@ public class Denizen extends JavaPlugin {
         // Start the scriptEngine.. VROOM VROOM!
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override public void run() { getScriptEngine().run(); }
-        }, settings.InteractDelayInTicks(), settings.InteractDelayInTicks());
+        }, Settings.InteractDelayInTicks(), Settings.InteractDelayInTicks());
 
         // Start the activityEngine
         getServer().getPluginManager().registerEvents(getActivityEngine(), this);

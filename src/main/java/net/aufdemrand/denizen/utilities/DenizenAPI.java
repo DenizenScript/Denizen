@@ -8,9 +8,9 @@ import org.bukkit.Bukkit;
 import java.util.Map;
 
 /**
- * Provides some static methods for working with Denizen-enabled NPCs
+ * Provides some static methods for working with Denizen and Denizen-enabled NPCs
  *
- * @author Jeremy Schroeder
+ * @author aufdemrand
  *
  */
 public class DenizenAPI {

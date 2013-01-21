@@ -1,26 +1,19 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
+import java.util.*;
+
 /**
  * This class has utility methods for various tasks.
  * 
- * @author Aufdemrand, dbixler, AgentK
+ * @author aufdemrand, dbixler, AgentK
  */
 public class Utilities {
 
