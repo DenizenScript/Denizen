@@ -3,12 +3,17 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
+import net.milkbowl.vault.economy.Economy;
+
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +175,21 @@ public class PlayerTags implements Listener {
                     maxFood = Integer.valueOf(event.getType().split(".")[2]);
                 event.setReplaced(String.valueOf(((float) p.getFoodLevel() / maxFood) * 100));
             }
-
+            
+        } else if (type.equals("MONEY")) {
+        	try {
+    		 	RegisteredServiceProvider<Economy> provider = Bukkit.getServicesManager().getRegistration (Economy.class);
+    		 	if (provider != null && provider.getProvider() != null) {
+    		 		Economy economy = provider.getProvider();
+    		 		event.setReplaced(String.valueOf(economy.getBalance(p.getName())));
+    		 		if (subType.equals("CURRENCY_SINGULAR"))
+    		 			event.setReplaced(economy.currencyNameSingular());
+    		 		if (subType.equals("CURRENCY_PLURAL"))
+    		 			event.setReplaced(economy.currencyNamePlural());
+    		 	}
+    	 	} catch (NoClassDefFoundError e) {
+    			dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+    	 	}	
 
         } else if (event.getType().startsWith("EQUIPMENT")) {
             event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
@@ -178,7 +197,6 @@ public class PlayerTags implements Listener {
 
         } else if (event.getType().startsWith("INVENTORY")) {
             event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
-
 
         } else if (event.getType().startsWith("XP")) {
             event.setReplaced(String.valueOf(event.getPlayer().getExp() * 100));
