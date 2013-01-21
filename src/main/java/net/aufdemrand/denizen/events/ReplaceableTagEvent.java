@@ -126,15 +126,14 @@ public class ReplaceableTagEvent extends Event {
                     typeContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
                 } else
                     type = inQuestion.trim();
+                
                 tag = tag.split("\\.")[1];
-
                 if (tag.contains("[")) {
                     // Get index
                     subType = inQuestion.split("\\[", 2)[0].trim();
                     subTypeContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
                 } else
-                    subType = inQuestion.trim();
-                tag = tag.split("\\.")[1];
+                    subType = tag.trim();
 
                 // No subtype, just get type, and possible context
             } else {

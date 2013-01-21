@@ -4,7 +4,10 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+
 import org.bukkit.Location;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class NPCTags implements Listener {
@@ -13,6 +16,7 @@ public class NPCTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
+    @EventHandler
     public void npcTags(ReplaceableTagEvent event) {
         if (!event.matches("npc")) return;
 
