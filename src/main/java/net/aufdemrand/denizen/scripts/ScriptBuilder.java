@@ -57,6 +57,22 @@ public class ScriptBuilder {
         return split;
     }
 
+    /**
+     * Adds an object to a list of ScriptEntries. Can later be retrieved from the ScriptEntry
+     * by using getObject(String key)
+     *
+     * @param scriptEntryList the list of ScriptEntries
+     * @param key the key (name) of the object being added
+     * @param obj the object
+     * @return the List of ScriptEntries, with the object added in each member
+     */
+    public List<ScriptEntry> addObjectToEntries(List<ScriptEntry> scriptEntryList, String key, Object obj) {
+        for (ScriptEntry entry : scriptEntryList) {
+            entry.addObject(key, obj);
+        }
+        return scriptEntryList;
+    }
+
     /* 
      * Builds ScriptEntry(ies) of items read from a script 
      */
