@@ -57,7 +57,7 @@ public class RequirementChecker {
 
 			//
 			// Check if this is a Negative Requirement.  Negative requirements start
-			// with a... negative sign :).
+			// with a... negative sign :)
 			//
 			if (reqEntry.startsWith("-")) {
 				negativeRequirement = true; 

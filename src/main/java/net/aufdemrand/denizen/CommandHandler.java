@@ -231,7 +231,7 @@ public class CommandHandler {
 			if (args.hasValueFlag("cooldown"))
                 trait.setLocalCooldown(args.getFlag("name"), args.getFlagDouble("cooldown"));
 			if (args.hasValueFlag("radius")) {
-				trait.setLocalRadius(args.getFlag("Name"), args.getFlagInteger("radius"));
+				trait.setLocalRadius(args.getFlag("name"), args.getFlagInteger("radius"));
 				Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger radius now " + args.getFlag("radius") + ".");
 			}
 			Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger " + (trait.isEnabled(args.getFlag("name")) ? "is" : "is not") + " currently enabled" +
