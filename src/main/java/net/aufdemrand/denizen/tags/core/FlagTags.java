@@ -41,12 +41,11 @@ public class FlagTags implements Listener {
 
         // Get format, if specified
         if (flagName.contains("\\.")) {
-            if (flagName.split("\\.")[1].equalsIgnoreCase("ASSTRING")) replaceType = ReplaceType.ASSTRING;
-            else if (flagName.split("\\.")[1].equalsIgnoreCase("ASCSLIST")) replaceType = ReplaceType.ASCSLIST;
-            else if (flagName.split("\\.")[1].equalsIgnoreCase("ASLIST")) replaceType = ReplaceType.ASLIST;
-            else if (flagName.split("\\.")[1].equalsIgnoreCase("ASINT")) replaceType = ReplaceType.ASINT;
-            else if (flagName.split("\\.")[1].equalsIgnoreCase("ASDOUBLE")) replaceType = ReplaceType.ASDOUBLE;
-            else if (flagName.split("\\.")[1].equalsIgnoreCase("ASMONEY")) replaceType = ReplaceType.ASMONEY;
+            try {
+                int replaceTypeIndex = flagName.split("\\.").length - 1;
+                replaceType = ReplaceType.valueOf(flagName.split("\\.")[replaceTypeIndex].replace("_", "").toUpperCase());
+                flagName = flagName.replace("." + flagName.split("\\.")[replaceTypeIndex], "");
+            } catch (Exception e) { replaceType = ReplaceType.ASSTRING; }
         }
 
         // Get index, if specified
