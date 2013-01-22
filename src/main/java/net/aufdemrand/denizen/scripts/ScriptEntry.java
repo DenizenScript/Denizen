@@ -126,6 +126,10 @@ public class ScriptEntry {
 		} catch (Exception e) { return null; }
 	}
 
+    public boolean hasObject(String key) {
+        return objects.containsKey(key.toUpperCase());
+    }
+
 	public OfflinePlayer getOfflinePlayer() {
 		return offlinePlayer;
 	}
