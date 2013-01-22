@@ -21,7 +21,7 @@ public class MoneyRequirement extends AbstractRequirement{
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		for (String arg : args) {
-			if (aH.matchesQuantity(arg)) {
+			if (aH.matchesQuantity(arg) || aH.matchesInteger(arg) || aH.matchesDouble(arg)) {
 				quantity = aH.getDoubleFrom(arg);
 				dB.echoDebug("...quantity set to: " + quantity);
 			} else throw new RequirementCheckException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);

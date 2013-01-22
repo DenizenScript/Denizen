@@ -42,7 +42,7 @@ public class RequirementChecker {
         // Actual requirements that need checking, alert the debugger
         //
         dB.echoDebug(ChatColor.YELLOW + "CHECK! Now checking '%s'", context.scriptName);
-        dB.echoDebug("Requirement mode: '%s'", context.mode.toString());
+        dB.echoDebug("Requirement mode: '%s'", context.mode.getMode().toString());
 
         // Set up checks for requirement mode 'FIRST AND ANY #'
 		boolean firstReqMet = false;
