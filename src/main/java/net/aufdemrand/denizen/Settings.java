@@ -120,5 +120,19 @@ public class Settings {
                 .getBoolean("chat_with_npc_only_when_looking_at_npc", true);
     }
 
+    public static boolean ChatGloballyIfFailedChatTriggers() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("chat_globally_if_failed_chat_triggers", false);
+    }
+
+    public static boolean ChatGloballyIfNoChatTriggers() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("chat_globally_if_no_chat_triggers", false);
+    }
+
+    public static boolean ChatGloballyIfNotInteractable() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("chat_globally_if_not_interactable", false);
+    }
 
 }

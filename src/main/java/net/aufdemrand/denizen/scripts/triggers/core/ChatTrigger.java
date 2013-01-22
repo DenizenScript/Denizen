@@ -31,21 +31,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    private	Boolean ChatGloballyIfFailedChatTriggers () {
-        // denizen.settings.ChatGloballyIfFailedChatTriggers
-        return true;
-    }
-
-    private Boolean chatGloballyIfNotInteractable () {
-        // denizen.settings.ChatGloballyIfNotInteractable
-        return true;
-    }
-
-    private Boolean chatGloballyIfNoChatTriggers () {
-        // denizen.settings.ChatGloballyIfNoChatTriggers
-        return true;
-    }
-
     private Boolean isKeywordRegex (String keyWord) {
         return keyWord.toUpperCase().startsWith("REGEX:");
     }
@@ -92,9 +77,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // If available (not engaged, and cool) sets cool down and returns true.
         //
         if (!closestNPC.getTrait(TriggerTrait.class).trigger(this, event.getPlayer())) {
-            if (this.chatGloballyIfNotInteractable()) {
-                dB.echoDebug (ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE +
-                        "The NPC is currently cooling down or engaged.");
+            if (Settings.ChatGloballyIfNotInteractable()) {
+                dB.echoDebug (ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
+                    + "The NPC is currently cooling down or engaged.");
                 return;
             } else {
                 event.setCancelled(true);
@@ -123,11 +108,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         if (this.parse (denizenNPC, event.getPlayer(), theScript)) {
             event.setCancelled(true);
-            return;
 
         } else {
 
-            if (!this.ChatGloballyIfFailedChatTriggers ()) {
+            if (!Settings.ChatGloballyIfFailedChatTriggers ()) {
                 event.setCancelled(true);
                 DenizenPlayer.chat(event.getPlayer(), closestNPC, event.getMessage());
                 dB.echoDebug(ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "No matching chat trigger.");
@@ -139,7 +123,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             // ignore the interaction...
             dB.echoDebug(ChatColor.YELLOW + "INFO! " + ChatColor.WHITE + "No matching chat trigger... resuming chat.");
             dB.echoDebug(dB.DebugElement.Footer);
-            return;
         }
     }
 

@@ -19,8 +19,6 @@ public class FlagTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    // FOR LISTENER
-    
     private enum ReplaceType { ASSTRING, ASINT, ASDOUBLE, ASLIST, ASMONEY }
 
     /**
@@ -51,7 +49,10 @@ public class FlagTags implements Listener {
         }
 
         // Get index, if specified
-        if (flagName.contains("[")) {
+        if (event.hasValueContext()) {
+            try {
+                index = Integer.valueOf(event.getValueContext());
+            } catch (NumberFormatException e) { index = -1; }
             index = Integer.valueOf(flagName.split("\\[")[1].replace("]", ""));
             flagName = flagName.split("\\[")[0];
         }
