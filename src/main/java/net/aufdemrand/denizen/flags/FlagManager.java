@@ -141,6 +141,17 @@ public class FlagManager {
         }
 
         /**
+         * Clears all values from a flag, essentially making it null.
+         *
+         */
+        public void clear() {
+            denizen.getSaves().set(flagPath, null);
+            denizen.getSaves().set(flagPath + "-expiration", null);
+            denizen.saveSaves();
+            rebuild();
+        }
+
+        /**
          * Gets the first value stored in the Flag.
          * 
          */
@@ -229,7 +240,7 @@ public class FlagManager {
             checkExpired();
 
             // No index? Match object and remove it.
-            if (index < 0) {
+            if (index < 0 && obj != null) {
                 int x = 0;
                 for (String val : value.values) {
 

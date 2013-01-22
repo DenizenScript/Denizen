@@ -18,7 +18,7 @@ import org.bukkit.event.Listener;
 
 public class FlagCommand extends AbstractCommand implements Listener {
 
-    public enum Action { SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY, DIVIDE, INSERT, REMOVE }
+    public enum Action { SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY, DIVIDE, INSERT, REMOVE, DELETE }
     public enum Type   { GLOBAL, NPC, PLAYER }
 
     @Override
@@ -51,6 +51,10 @@ public class FlagCommand extends AbstractCommand implements Listener {
                     }   else if (flagArgs[1].contains("-")) {
                         action = Action.DECREASE;
                         value = "1";
+                    }   else if (flagArgs[1].contains("!")) {
+                        action = Action.DELETE;
+                    }   else if (flagArgs[1].contains("<-")) {
+                        action = Action.REMOVE;
                     }   else {
                         action = Action.SET_VALUE;
                         value = arg.split(":")[1];
@@ -126,7 +130,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 + "Name='" + name + "', "
                 + (index > 0 ? "Index='" + index + "', " : "")
                 + "Type='" + type + "', "
-                + "Action/Value='" + action.toString() + "(" + value + ")'"
+                + "Action/Value='" + action.toString() + "(" + (value != null ? value : "null") + ")'"
                 + (duration > 0 ? "Duration='" + duration + "'" : "")
                 + (type == Type.NPC ? "NPC='" + scriptEntry.getNPC() + "'" : "")
                 + (type == Type.PLAYER ? "Player='" + player + "'" : ""));
@@ -162,6 +166,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
             case REMOVE:
                 flag.remove(value, index);
                 break;
+            case DELETE:
+                flag.clear();
         }
 
         // Set flag duration
