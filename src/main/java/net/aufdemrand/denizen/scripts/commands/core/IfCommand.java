@@ -235,14 +235,16 @@ public class IfCommand extends AbstractCommand {
                         }
                         break;
                     case ORMORE:
-                        // If comparable is a double, make it an int
-                        if (com.comparedto instanceof Double) com.comparedto = ((Double) com.comparedto).intValue();
-                        if (((List<String>) com.comparable).size() >= ((Integer) com.comparedto)) com.outcome = true;
+                        if (((List<String>) com.comparable).size() >= (Integer.parseInt(String.valueOf(com.comparedto)))) com.outcome = true;
                         break;
                     case ORLESS:
-                        // If comparable is a double, make it an int
-                        if (com.comparedto instanceof Double) com.comparedto = ((Double) com.comparedto).intValue();
-                        if (((List<String>) com.comparable).size() <= ((Integer) com.comparedto)) com.outcome = true;
+                        if (((List<String>) com.comparable).size() <= (Integer.parseInt(String.valueOf(com.comparedto)))) com.outcome = true;
+                        break;
+                    case MORE:
+                        if (((List<String>) com.comparable).size() > (Integer.parseInt(String.valueOf(com.comparedto)))) com.outcome = true;
+                        break;
+                    case LESS:
+                        if (((List<String>) com.comparable).size() < (Integer.parseInt(String.valueOf(com.comparedto)))) com.outcome = true;
                         break;
                 }
 
