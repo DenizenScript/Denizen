@@ -53,8 +53,6 @@ public class FlagTags implements Listener {
             try {
                 index = Integer.valueOf(event.getValueContext());
             } catch (NumberFormatException e) { index = -1; }
-            index = Integer.valueOf(flagName.split("\\[")[1].replace("]", ""));
-            flagName = flagName.split("\\[")[0];
         }
 
         // Check flag replacement type

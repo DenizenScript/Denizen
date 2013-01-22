@@ -31,11 +31,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    private Boolean isKeywordRegex (String keyWord) {
-        return keyWord.toUpperCase().startsWith("REGEX:");
-    }
-
-
     @EventHandler
     public void chatTrigger(AsyncPlayerChatEvent event) {
         //
@@ -293,5 +288,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         return triggerMap;
     }
+
+    private Boolean isKeywordRegex (String keyWord) {
+        return keyWord.toUpperCase().startsWith("REGEX:");
+    }
+
 
 }
