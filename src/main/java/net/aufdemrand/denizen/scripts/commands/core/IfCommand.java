@@ -222,19 +222,26 @@ public class IfCommand extends AbstractCommand {
                         for (String string : ((List<String>) com.comparable)) {
                             if (com.comparedto instanceof Integer) {
                                 if (aH.getIntegerFrom(string) == (Integer) com.comparedto) com.outcome = true;
+
                             }   else if (com.comparedto instanceof Double) {
                                 if (aH.getDoubleFrom(string) == (Double) com.comparedto) com.outcome = true;
+
                             }	else if (com.comparedto instanceof Boolean) {
                                 if (Boolean.valueOf(string).booleanValue() == ((Boolean) com.comparedto).booleanValue()) com.outcome = true;
+
                             }   else if (com.comparedto instanceof String) {
                                 if (string.equalsIgnoreCase((String) com.comparedto)) com.outcome = true;
                             }
                         }
                         break;
                     case ORMORE:
+                        // If comparable is a double, make it an int
+                        if (com.comparedto instanceof Double) com.comparedto = ((Double) com.comparedto).intValue();
                         if (((List<String>) com.comparable).size() >= ((Integer) com.comparedto)) com.outcome = true;
                         break;
                     case ORLESS:
+                        // If comparable is a double, make it an int
+                        if (com.comparedto instanceof Double) com.comparedto = ((Double) com.comparedto).intValue();
                         if (((List<String>) com.comparable).size() <= ((Integer) com.comparedto)) com.outcome = true;
                         break;
                 }
@@ -304,7 +311,7 @@ public class IfCommand extends AbstractCommand {
                 // COMPARABLE IS BOOLEAN
                 //
             }   else if (com.comparable instanceof Boolean) {
-                com.outcome = ((Boolean) com.comparable).booleanValue();
+                com.outcome = (Boolean) com.comparable;
             }
 
             if (com.logic == Logic.NEGATIVE) com.outcome = !com.outcome;
@@ -392,7 +399,7 @@ public class IfCommand extends AbstractCommand {
         else if (comparable instanceof Integer) {
             // If comparedTo is Double, convert comparable to double as well
             if (aH.matchesDouble(arg)) {
-                match.comparable = Double.valueOf(String.valueOf((Integer) match.comparable));
+                match.comparable = Double.valueOf(String.valueOf(match.comparable));
                 return aH.getDoubleFrom(arg);
             } else if (aH.matchesInteger(arg)) {
                 return aH.getIntegerFrom(arg);
