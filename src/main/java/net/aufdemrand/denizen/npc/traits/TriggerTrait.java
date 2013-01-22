@@ -96,7 +96,7 @@ public class TriggerTrait extends Trait implements Listener {
     public void setLocalRadius(String triggerName, int value) {
         if (triggerName == null) return;
         if (radius.containsKey(triggerName.toUpperCase()))
-            radius.put(triggerName, value);
+            radius.put(triggerName.toUpperCase(), value);
     }
 
     public int getRadius(String triggerName) {
