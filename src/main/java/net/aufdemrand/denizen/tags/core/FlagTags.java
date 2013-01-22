@@ -40,7 +40,7 @@ public class FlagTags implements Listener {
         ReplaceType replaceType = ReplaceType.ASSTRING;
 
         // Get format, if specified
-        if (flagName.contains("\\.")) {
+        if (flagName.contains(".")) {
             try {
                 int replaceTypeIndex = flagName.split("\\.").length - 1;
                 replaceType = ReplaceType.valueOf(flagName.split("\\.")[replaceTypeIndex].replace("_", "").toUpperCase());
