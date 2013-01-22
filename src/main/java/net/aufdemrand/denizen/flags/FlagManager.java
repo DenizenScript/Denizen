@@ -440,6 +440,22 @@ public class FlagManager {
         }
 
         /**
+         * Returns a String value of the entirety of the values
+         * contained as a dScript list. If the value doesn't
+         * exist, "" is returned.
+         *
+         */
+        public String asList() {
+            adjustIndex();
+            String returnList = "";
+
+            for (String string : values)
+                returnList = returnList + string + "|";
+
+            return returnList.substring(0, returnList.length() - 2);
+        }
+
+        /**
          * Returns a String value of the value in the specified index. If
          * the value doesn't exist, "" is returned.
          * 

@@ -172,7 +172,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 // This is a normal keyword.  If the player's message doesn't match the
                 // keyword, then stop looking.
                 //
-                else if (playerMessage.toLowerCase().contains(keyWord.toLowerCase()) == false) {
+                else if (!playerMessage.toLowerCase().contains(keyWord.toLowerCase())) {
                     foundMatch = false;
                     break;
                 }
