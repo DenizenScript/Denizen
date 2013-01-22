@@ -436,7 +436,7 @@ public class FlagManager {
             for (String string : values)
                 returnList = returnList + string + ",";
 
-            return returnList.substring(0, returnList.length() - 2);
+            return returnList.substring(0, returnList.length() - 1);
         }
 
         /**
@@ -452,7 +452,7 @@ public class FlagManager {
             for (String string : values)
                 returnList = returnList + string + "|";
 
-            return returnList.substring(0, returnList.length() - 2);
+            return returnList.substring(0, returnList.length() - 1);
         }
 
         /**

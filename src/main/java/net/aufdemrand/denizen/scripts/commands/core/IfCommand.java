@@ -221,17 +221,13 @@ public class IfCommand extends AbstractCommand {
                     case CONTAINS:
                         for (String string : ((List<String>) com.comparable)) {
                             if (com.comparedto instanceof Integer) {
-                                if (aH.getIntegerFrom(string) == ((Integer) com.comparedto).intValue()) com.outcome = true;
-                                break;
+                                if (aH.getIntegerFrom(string) == (Integer) com.comparedto) com.outcome = true;
                             }   else if (com.comparedto instanceof Double) {
-                                if (aH.getDoubleFrom(string) == ((Double) com.comparedto).doubleValue()) com.outcome = true;
-                                break;
+                                if (aH.getDoubleFrom(string) == (Double) com.comparedto) com.outcome = true;
                             }	else if (com.comparedto instanceof Boolean) {
                                 if (Boolean.valueOf(string).booleanValue() == ((Boolean) com.comparedto).booleanValue()) com.outcome = true;
-                                break;
                             }   else if (com.comparedto instanceof String) {
                                 if (string.equalsIgnoreCase((String) com.comparedto)) com.outcome = true;
-                                break;
                             }
                         }
                         break;
