@@ -54,6 +54,7 @@ public class TakeCommand extends AbstractCommand{
 			
 			else if (aH.matchesQuantity(arg)) {
 				quantity = aH.getDoubleFrom(arg);
+				dB.echoDebug ("...set quantity to " + quantity);
 			}
 			
 			else if (aH.matchesItem(arg)) {
@@ -76,8 +77,25 @@ public class TakeCommand extends AbstractCommand{
 		switch ((TakeType)scriptEntry.getObject("takeType")) {
 
         case ITEMINHAND:
-        	scriptEntry.getPlayer().setItemInHand(new ItemStack(0));
-			dB.echoDebug("...item taken");
+			int inHandAmt = scriptEntry.getPlayer().getItemInHand().getAmount();
+			int theAmount = ((Double) scriptEntry.getObject("quantity")).intValue();
+			ItemStack newHandItem = new ItemStack(0);
+			if (theAmount > inHandAmt) {
+				dB.echoDebug("...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
+				scriptEntry.getPlayer().setItemInHand(newHandItem);
+			}
+			else {
+
+				// amount is just right!
+				if (theAmount == inHandAmt) {
+					scriptEntry.getPlayer().setItemInHand(newHandItem);
+				} else {
+					// amount is less than what's in hand, need to make a new itemstack of what's left...
+					newHandItem = new ItemStack(scriptEntry.getPlayer().getItemInHand().getType(), inHandAmt - theAmount, scriptEntry.getPlayer().getItemInHand().getData().getData());
+					scriptEntry.getPlayer().setItemInHand(newHandItem);
+					scriptEntry.getPlayer().updateInventory();
+				}
+			}
         	break;
         	
         case MONEY:
