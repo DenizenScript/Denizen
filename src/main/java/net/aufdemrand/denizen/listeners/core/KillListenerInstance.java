@@ -161,7 +161,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
 		// Check type!
 		if (type == KillType.ENTITY) {
-			if (targets.contains(event.getEntityType().toString()) || targets.contains("*")) { 
+			if (targets.contains(event.getEntityType().toString()) || targets.contains(event.getEntityType().toString().toLowerCase()) || targets.contains("*")) { 
 				currentKills++;
 				dB.log(player.getName() + " killed a " + event.getEntityType().toString() + ". Current progress '" + currentKills + "/" + quantity + "'.");
 				check();
