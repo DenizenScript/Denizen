@@ -47,7 +47,7 @@ public class CommandRegistry implements DenizenRegistry {
 	@Override
 	public void registerCoreMembers() {
 		new AnnounceCommand().activate().as("ANNOUNCE").withOptions("['Text to announce']", 1);
-		new ScribeCommand().activate().as("SCRIBE").withOptions("TBD", 0);
+		new ScribeCommand().activate().as("SCRIBE").withOptions("[SCRIPT:book_script] (GIVE|{DROP}|EQUIP) (LOCATION:x,y,z,world) (ITEM:ITEMSTACK.name)", 0);
         new RuntaskCommand().activate().as("RUNTASK").withOptions("RUNTASK (ID:id_name{script_name}) [SCRIPT:script_name] (INSTANT|QUEUE:QueueType{PLAYER_TASK}) (DELAY:#{0})", 1);
 		new CastCommand().activate().as("CAST").withOptions("[TYPE:PotionEffectType] (DURATION:#) (POWER:#) (TARGET:NPC|PLAYER)", 1);
 		new ChatCommand().activate().as("CHAT").withOptions("['Message to chat'] (NPCID:#) (TARGETS:#|player_name)", 1);
