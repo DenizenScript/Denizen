@@ -2,6 +2,7 @@ package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptRepo;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -219,34 +220,44 @@ public class CommandHandler {
 	 * TRIGGER
 	 */
 	@net.citizensnpcs.command.Command(
-			aliases = { "npc" }, usage = "trigger [--name trigger name] [(--cooldown [seconds])|(--radius [radius])|(-t)]", 
+			aliases = { "npc" }, usage = "trigger [trigger name] [(--cooldown [seconds])|(--radius [radius])|(-t)]",
 			desc = "Controls the various triggers for an NPC.", flags = "t", modifiers = { "trigger", "tr" },
 			min = 1, max = 3, permission = "npc.trigger")
 	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
 	public void trigger(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
 		TriggerTrait trait = npc.getTrait(TriggerTrait.class);
-		if (args.hasValueFlag("name")) {
-			if (args.hasFlag('t')) trait.toggleTrigger(args.getFlag("name"));
-			if (args.hasValueFlag("cooldown"))
-                trait.setLocalCooldown(args.getFlag("name"), args.getFlagDouble("cooldown"));
-			if (args.hasValueFlag("radius")) {
-				trait.setLocalRadius(args.getFlag("name"), args.getFlagInteger("radius"));
-				Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger radius now " + args.getFlag("radius") + ".");
+		if ((args.hasValueFlag("name") || (args.argsLength() > 1 && (args.getJoinedStrings(1) != null) && !args.getString(1).matches("\\d+")))) {
+            // Get the name of the trigger
+            String triggerName;
+            if (args.hasValueFlag("name")) triggerName = args.getFlag("name");
+            else triggerName = args.getJoinedStrings(1);
+            // Check to make sure trigger exists
+            if (DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName) == null) {
+                Messaging.send(sender, ChatColor.RED + "'" + triggerName.toUpperCase() + "' trigger does not exist.");
+                Messaging.send(sender, "<f>Usage: /npc trigger [trigger_name] [(--cooldown #)|(--radius #)|(-t)]");
+                Messaging.send(sender, "");
+                Messaging.send(sender, "<f>Use '--name trigger_name' to specify a specific trigger, and '-t' to toggle.");
+                Messaging.send(sender, "<b>Example: /npc trigger --name damage -t");
+                Messaging.send(sender, "<f>You may also use '--cooldown #' to specify a new cooldown time, and '--radius #' to specify a specific radius, when applicable.");
+                Messaging.send(sender, "");
+                return;
+            }
+            // If toggling
+			if (args.hasFlag('t')) trait.toggleTrigger(triggerName);
+			// If setting cooldown
+            if (args.hasValueFlag("cooldown"))
+                trait.setLocalCooldown(triggerName, args.getFlagDouble("cooldown"));
+			// If specifying radius
+            if (args.hasValueFlag("radius")) {
+				trait.setLocalRadius(triggerName, args.getFlagInteger("radius"));
+				Messaging.send(sender, ChatColor.YELLOW + triggerName.toUpperCase() + " trigger radius now " + args.getFlag("radius") + ".");
 			}
-			Messaging.send(sender, ChatColor.YELLOW + args.getFlag("name").toUpperCase() + " trigger " + (trait.isEnabled(args.getFlag("name")) ? "is" : "is not") + " currently enabled" +
-					(trait.isEnabled(args.getFlag("name")) ?  " with a cooldown of '" + trait.getCooldownDuration(args.getFlag("name")) + "' seconds."  : "."));
+            // Show current status of the trigger
+			Messaging.send(sender, ChatColor.YELLOW + triggerName.toUpperCase() + " trigger " + (trait.isEnabled(triggerName) ? "is" : "is not") + " currently enabled" +
+					(trait.isEnabled(triggerName) ?  " with a cooldown of '" + trait.getCooldownDuration(triggerName) + "' seconds."  : "."));
 			return;
-			
-		} else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
-			Messaging.send(sender, "<f>Usage: /npc trigger [--name trigger_name] [(--cooldown #)|(--radius #)|(-t)]");
-			Messaging.send(sender, "");
-			Messaging.send(sender, "<f>Use '--name trigger_name' to specify a specific trigger, and '-t' to toggle.");
-			Messaging.send(sender, "<b>Example: /npc trigger --name damage -t");
-			Messaging.send(sender, "<f>You may also use '--cooldown #' to specify a new cooldown time, and '--radius #' to specify a specific radius, when applicable.");
-			Messaging.send(sender, "");
-			return;
-		}
+        }
 
 		trait.describe(sender, args.getInteger(1, 1));
 	}
