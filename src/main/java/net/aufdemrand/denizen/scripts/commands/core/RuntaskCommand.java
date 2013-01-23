@@ -124,7 +124,7 @@ public class RuntaskCommand extends AbstractCommand {
         // Debug output
         dB.echoApproval("Executing '" + getName() + "': "
                 + "Script='" + script + "', "
-                + "Delay='" + (delay > 0 ? delay + "', " : "'None', ")
+                + "Delay='" + (delay > 0 ? delay + "', " : "None', ")
                 + "Player='" + (scriptEntry.getPlayer() != null ? scriptEntry.getPlayer().getName() + "', " : "NULL', ")
                 + "NPC='" + (scriptEntry.getNPC() != null ? scriptEntry.getNPC() + "', " : "NULL', ")
                 + "Queue='" + (instant == false ? queue.toString() + "'" : "INSTANT'"));

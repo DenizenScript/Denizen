@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.command.exception.CommandException;
@@ -30,6 +31,13 @@ public class TriggerTrait extends Trait implements Listener {
     private Map<String, CooldownType> type = new ConcurrentHashMap<String, CooldownType>();
     @Persist(value="radius", collectionType=ConcurrentHashMap.class)
     private Map<String, Integer> radius = new ConcurrentHashMap<String, Integer>();
+
+    public void report() {
+        dB.echoDebug("enabled: " + enabled.entrySet().toString());
+        dB.echoDebug("duration: " + duration.entrySet().toString());
+        dB.echoDebug("type: " + type.entrySet().toString());
+        dB.echoDebug("radius: " + radius.entrySet().toString());
+    }
 
     public TriggerTrait() {
         super("triggers");
@@ -94,9 +102,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public void setLocalRadius(String triggerName, int value) {
-        if (triggerName == null) return;
-        if (radius.containsKey(triggerName.toUpperCase()))
-            radius.put(triggerName.toUpperCase(), value);
+        radius.put(triggerName.toUpperCase(), value);
     }
 
     public int getRadius(String triggerName) {

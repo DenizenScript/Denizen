@@ -554,13 +554,12 @@ public class CommandHandler {
      * DENIZEN TEST, always a new flavor
      */
     @net.citizensnpcs.command.Command(
-            aliases = { "denizen" }, usage = "test",
-            desc = "For testing purposes only, use at your own risk!", modifiers = { "test" },
+            aliases = { "denizen" }, usage = "report",
+            desc = "For testing purposes only, use at your own risk!", modifiers = { "report" },
             min = 1, max = 3, permission = "denizen.basic")
     public void text(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-
-
-
+        TriggerTrait trait = npc.getTrait(TriggerTrait.class);
+        trait.report();
     }
 
 }
