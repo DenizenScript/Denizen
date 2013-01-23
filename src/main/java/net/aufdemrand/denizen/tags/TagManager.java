@@ -75,8 +75,9 @@ public class TagManager {
         // Return argument with replacements
         return arg;
     }
-
-    private static Pattern tagRegex = Pattern.compile("<[\\w\\[\\]: \\.]*>");
+    // Allow word characters (\w), square brackets (\[ and \]), colons (:), periods (.),
+    // vertical bars (|), exclamation points (!) and carets (\\^)
+    private static Pattern tagRegex = Pattern.compile("<[\\w\\[\\]: \\.|!\\^]*>");
 
     private int[] locateTag(String arg) {
         // find tag brackets pattern
