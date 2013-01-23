@@ -68,6 +68,7 @@ public class DenizenNPCRegistry implements Listener {
      *
      */
     public DenizenNPC getDenizen(NPC npc) {
+        if (npc == null) return null;
         if (!denizenNPCs.containsKey(npc))
             registerNPC(npc);
         return denizenNPCs.get(npc);
