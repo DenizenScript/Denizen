@@ -246,15 +246,16 @@ public class FlagManager {
 
                     // Evaluate as String
                     if (val.equalsIgnoreCase(String.valueOf(obj))) {
+                    	
                         value.values.remove(x);
-                        return;
+                        break;
                     }
 
                     // Evaluate as number
                     try { 
                         if (Double.valueOf(val).equals(Double.valueOf((String) obj))) {
                             value.values.remove(x);
-                            return;
+                            break;
                         }
                     } catch (Exception e) { /* Not a valid number, continue. */ } 
 
