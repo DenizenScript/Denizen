@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.npc.traits;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+
+import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
 
@@ -54,6 +56,16 @@ public class NicknameTrait extends Trait implements Listener {
         else return DenizenAPI.getCurrentInstance().tagManager()
                 .tag(null, DenizenAPI.getDenizenNPC(npc), nickname, false);
     }
+	
+	/**
+	 * Gets the current nickname of this NPC and strips out all text colors.
+	 * To get the colored nickname use {@link #getNickname()}.
+	 * 
+	 * @return The uncolored nickname for this NPC
+	 */
+	public String getUncoloredNickname() {
+		return ChatColor.stripColor( getNickname() );
+	}
 
     /**
      * Removes the current nickname from the NPC.
