@@ -240,12 +240,12 @@ public class FlagManager {
             checkExpired();
 
             // No index? Match object and remove it.
-            if (index < 0 && obj != null) {
+            if (index <= 0 && obj != null) {
                 int x = 0;
                 for (String val : value.values) {
 
                     // Evaluate as String
-                    if (val.equalsIgnoreCase((String) obj)) {
+                    if (val.equalsIgnoreCase(String.valueOf(obj))) {
                         value.values.remove(x);
                         return;
                     }
