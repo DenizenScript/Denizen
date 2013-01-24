@@ -53,7 +53,8 @@ public class CommandRegistry implements DenizenRegistry {
 		new ChatCommand().activate().as("CHAT").withOptions("['Message to chat'] (NPCID:#) (TARGETS:#|player_name)", 1);
 		new CooldownCommand().activate().as("COOLDOWN").withOptions("[DURATION:#] (GLOBAL) (PLAYER:player_name) ('SCRIPT:name of script')", 1);
 		new DisengageCommand().activate().as("DISENGAGE").withOptions("(NPCID:#)", 0);
-		new DropCommand().activate().as("DROP").withOptions("[ITEM:item] (QTY:#)", 1);
+		new DropCommand().activate().as("DROP").withOptions("[ITEM:item|EXP] (QTY:#) (LOCATION:location)", 1);
+        new BreakCommand().activate().as("BREAK").withOptions("[QUEUE:queue_type] (...)", 1);
 		new EngageCommand().activate().as("ENGAGE").withOptions("(DURATION:#) (NPCID:#)", 0);
 		new ExecuteCommand().activate().as("EXECUTE").withOptions("[AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']", 2);
 		new FailCommand().activate().as("FAIL").withOptions("(PLAYER:player_name)", 0);
