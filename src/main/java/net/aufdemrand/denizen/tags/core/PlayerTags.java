@@ -189,7 +189,10 @@ public class PlayerTags implements Listener {
     		 	}
     	 	} catch (NoClassDefFoundError e) {
     			dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
-    	 	}	
+    	 	}
+        	
+        } else if (type.equals("IS_OP")) {
+            event.setReplaced(String.valueOf(p.isOp()));
 
         } else if (event.getType().startsWith("EQUIPMENT")) {
             event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
