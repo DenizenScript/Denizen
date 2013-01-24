@@ -1,24 +1,13 @@
 package net.aufdemrand.denizen.scripts.requirements;
 
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.interfaces.DenizenRegistry;
+import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizen.scripts.requirements.core.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.interfaces.DenizenRegistry;
-import net.aufdemrand.denizen.scripts.requirements.core.EnchantedRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.FlaggedRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.HoldingRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.LiquidRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.MoneyRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.OwnerRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.PoweredRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.ScriptRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.SneakingRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.StormRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.SunnyRequirement;
-import net.aufdemrand.denizen.scripts.requirements.core.WorldGuardRegionRequirement;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class RequirementRegistry implements DenizenRegistry {
 
@@ -74,6 +63,7 @@ public class RequirementRegistry implements DenizenRegistry {
         new LiquidRequirement().activate().as("ISLIQUID").withOptions("[LOCATION:x,y,z,world", 1);
         new MoneyRequirement().activate().as("MONEY").withOptions("[QTY:#]", 1);
         new OwnerRequirement().activate().as("OWNER").withOptions("NONE", 0);
+        new OwnerRequirement().activate().as("OP").withOptions("NONE", 0);
         new PoweredRequirement().activate().as("ISPOWERED").withOptions("[LOCATION:x,y,z,world", 1);
         new ScriptRequirement().activate().as("SCRIPT").withOptions("TBD", 0);
         new SneakingRequirement().activate().as("SNEAKING").withOptions("NONE", 0);

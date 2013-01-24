@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -18,8 +19,11 @@ public class ActionHandler {
     }
     
     public void doAction(String actionName, DenizenNPC npc, Player player, String assignment) {
-        // TODO: Remove this debug
-        // dB.echoDebug("ACTION! " + actionName + " " + assignment);
+        dB.echoDebug(ChatColor.YELLOW + "ACTION! "
+                + ChatColor.DARK_GRAY + "NAME='" + ChatColor.AQUA + actionName + ChatColor.DARK_GRAY + "', "
+                + ChatColor.DARK_GRAY + "NPC='" + ChatColor.AQUA + npc.getName() + "/" + npc.getId() + ChatColor.DARK_GRAY + "', "
+                + ChatColor.DARK_GRAY + "ASSIGNMENT='" + ChatColor.AQUA + assignment + ChatColor.DARK_GRAY
+                + ChatColor.DARK_GRAY + (player != null ? ", PLAYER='" + ChatColor.AQUA + player.getName() + ChatColor.DARK_GRAY + "', " : "'"));
 
         // Fetch script from Actions
         List<String> script = denizen.getScriptEngine().getScriptHelper().getStringListIgnoreCase(assignment + ".actions.on " + actionName);
