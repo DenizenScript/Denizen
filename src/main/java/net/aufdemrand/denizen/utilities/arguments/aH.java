@@ -286,6 +286,8 @@ public class aH {
      */
     public static ItemStack getItemFrom(String arg) {
 
+        if (arg == null) return null;
+
         final Pattern[] getItemPtrn = {
                 Pattern.compile("(?:(?:.+?:)|)(\\d+):(\\d+)"),
                 Pattern.compile("(?:(?:.+?:)|)(\\d+)"),
@@ -392,7 +394,9 @@ public class aH {
      *
      */
     public static Location getLocationFrom(String arg) {
-        arg = arg.split(":", 2)[1];
+        if (arg == null) return null;
+        if (arg.split(":").length > 1)
+            arg = arg.split(":", 2)[1];
         String[] num = arg.split(",");
         Location location = null;
         try {

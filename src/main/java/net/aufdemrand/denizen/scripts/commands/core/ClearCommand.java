@@ -34,7 +34,7 @@ public class ClearCommand extends AbstractCommand {
 
         if (queues.isEmpty()) throw new InvalidArgumentsException("Must specify at least one queueType!");
 
-        scriptEntry.addObject("queuetype", queues);
+        scriptEntry.addObject("queues", queues);
     }
 
     @Override

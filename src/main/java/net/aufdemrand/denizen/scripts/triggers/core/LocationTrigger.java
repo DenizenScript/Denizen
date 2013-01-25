@@ -1,27 +1,19 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class LocationTrigger extends AbstractTrigger implements Listener {
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
+public class LocationTrigger extends AbstractTrigger implements Listener {
 
 	//
 	// Used as the key for the locations that should be triggered
@@ -90,7 +82,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		}
 	}
 
-	
+
 	//
 	// Used to store the data about a specific Trigger along with some matching methods
 	//
@@ -141,7 +133,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 	@EventHandler
 	public void checkLocation(PlayerMoveEvent event) {
 		if (event.getFrom().getBlock() == event.getTo().getBlock()) return;
-		Set<NPC> matchingNPCs = checkLocation (event.getPlayer().getLocation());
+		Set<NPC> matchingNPCs = checkLocation(event.getPlayer().getLocation());
 		
 		
 		if (matchingNPCs.size () > 0) {
@@ -193,34 +185,13 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		
 		return matchingNPCs;
 
-		
-		
-		
 	}
 
 
 //				if (!npc.getTrait(TriggerTrait.class).triggerCooldownOnly(this, event.getPlayer())) continue;
 
 
-	@EventHandler
-	public void clickTrigger(NPCRightClickEvent event) {
-		// Check if NPC has triggers.
-		if (!event.getNPC().hasTrait(TriggerTrait.class)) return;
-		// Check if trigger is enabled.
-		if (!event.getNPC().getTrait(TriggerTrait.class).isEnabled(name)) return;
 
-		// If engaged or not cool, calls On Unavailable, if cool, calls On Click
-		// If available (not engaged, and cool) sets cool down and returns true. 
-		if (!event.getNPC().getTrait(TriggerTrait.class).trigger(this, event.getClicker())) return;
-
-		// Get Interact Script for Player/NPC
-		String script = sH.getInteractScript(event.getNPC(), event.getClicker(), this.getClass());
-
-		event.getNPC().getTrait(TriggerTrait.class).getRadius(name);
-		// Parse Click Trigger, if unable to parse call No Click Trigger action
-		if (!parse(denizen.getNPCRegistry().getDenizen(event.getNPC()), event.getClicker(), script))
-			denizen.getNPCRegistry().getDenizen(event.getNPC()).action("no click trigger", event.getClicker());
-	}
  
 	@Override
 	public void onEnable() {

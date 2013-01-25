@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import org.bukkit.ChatColor;
 
 /**
  * <p>Announces a message to the server.</p>
@@ -61,8 +62,8 @@ public class AnnounceCommand extends AbstractCommand {
         String text = (String) scriptEntry.getObject("text");
 
         // Debug output
-        dB.echoApproval("Executing '" + getName() + "': "
-                + "Message='" + text + "'");
+        dB.echoApproval(ChatColor.DARK_GRAY + "Executing '" + ChatColor.YELLOW + getName() + ChatColor.DARK_GRAY + "': "
+                + "Message='" + ChatColor.YELLOW + text + ChatColor.DARK_GRAY + "'");
 
         // Use Bukkit to broadcast the message to everybody in the server.
         denizen.getServer().broadcastMessage(text);

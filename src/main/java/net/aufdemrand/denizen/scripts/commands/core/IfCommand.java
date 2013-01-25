@@ -313,9 +313,17 @@ public class IfCommand extends AbstractCommand {
                 // COMPARABLE IS BOOLEAN
                 //
             }   else if (com.comparable instanceof Boolean) {
-
-                if ((Boolean) com.outcome == (Boolean) com.comparedto) com.outcome = true;
-                else com.outcome = false;
+            	
+            	// Check to make sure comparedto is Boolean
+                if (!(com.comparedto instanceof Boolean)) {
+                    // Not comparing with a Boolean, outcome = false;
+                } else {
+                    // Comparing booleans.. let's do the logic
+                	if ((Boolean) com.comparable.equals((Boolean) com.comparedto))
+                		com.outcome = true;
+                	else
+                		com.outcome = false;
+                }
             }
 
             if (com.logic == Logic.NEGATIVE) com.outcome = !com.outcome;

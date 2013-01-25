@@ -296,21 +296,57 @@ public class CommandHandler {
 	@net.citizensnpcs.command.Command(
 			aliases = { "npc" }, usage = "health --set # (-r)", 
 			desc = "Sets the max health for an NPC.", modifiers = { "health", "he", "hp" },
-			min = 1, max = 3, permission = "npc.health", flags = "r")
+			min = 1, max = 3, permission = "npc.health", flags = "rs")
 	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
 	public void health(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
 		HealthTrait trait = npc.getTrait(HealthTrait.class);
-		if (args.hasValueFlag("set")) {
-			trait.setMaxhealth(args.getFlagInteger("set"));
+
+        boolean showMore = true;
+
+        if (args.hasValueFlag("max")) {
+			trait.setMaxhealth(args.getFlagInteger("max"));
 			trait.setHealth();
-			Messaging.send(sender, ChatColor.GREEN + "Max health set.");
-			return;
-		} else if (args.hasFlag('r')) {
+			Messaging.send(sender, ChatColor.GREEN + npc.getName() + "'s health maximum is now " + trait.getMaxhealth() + ".");
+            showMore = false;
+
+        } if (args.hasValueFlag("set")) {
+                trait.setHealth(args.getFlagInteger("set"));
+
+        } if (args.hasValueFlag("respawndelay")) {
+            trait.setRespawnDelay(args.getFlag("respawndelay"));
+            Messaging.send(sender, ChatColor.GREEN + npc.getName() + "'s respawn delay now " + trait.getRespawnDelay()
+                    + (trait.isRespawnable() ? "." : ", but is not currently auto-respawnable upon death."));
+            showMore = false;
+
+        } if (args.hasValueFlag("respawnlocation")) {
+            trait.setRespawnLocation(args.getFlag("respawnlocation"));
+            Messaging.send(sender, ChatColor.GREEN + npc.getName() + "'s respawn location now " + trait.getRespawnLocationAsString()
+                    + (trait.isRespawnable() ? "." : ", but is not currently auto-respawnable upon death."));
+            showMore = false;
+
+        } if (args.hasFlag('s')) {
+            trait.setRespawnable(!trait.isRespawnable());
+            Messaging.send(sender, ChatColor.GREEN + npc.getName() + (trait.isRespawnable()
+                    ? " will now auto-respawn on death after " + trait.getRespawnDelay() + " seconds."
+                    : " will no longer auto-respawn on death."));
+            showMore = false;
+
+        } if (args.hasFlag('a')) {
+            trait.animateOnDeath(!trait.animatesOnDeath());
+            Messaging.send(sender, ChatColor.GREEN + npc.getName() + (trait.animatesOnDeath()
+                    ? " will now animate on death."
+                    : " will no longer animate on death."));
+            showMore = false;
+
+        } else if (args.hasFlag('r')) {
 			trait.setHealth();
 			Messaging.send(sender, ChatColor.GREEN + npc.getName() + "'s health reset to " + trait.getMaxhealth() + ".");
+            showMore = false;
 		}
-		Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s health is '" + trait.getHealth() + "/" + trait.getMaxhealth() + "'.");
+
+        if (showMore)
+		    Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s health is '" + trait.getHealth() + "/" + trait.getMaxhealth() + "'.");
 	}
 
 

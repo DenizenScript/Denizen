@@ -19,11 +19,14 @@ public class ActionHandler {
     }
     
     public void doAction(String actionName, DenizenNPC npc, Player player, String assignment) {
-        dB.echoDebug(ChatColor.YELLOW + "ACTION! "
-                + ChatColor.DARK_GRAY + "NAME='" + ChatColor.AQUA + actionName + ChatColor.DARK_GRAY + "', "
-                + ChatColor.DARK_GRAY + "NPC='" + ChatColor.AQUA + npc.getName() + "/" + npc.getId() + ChatColor.DARK_GRAY + "', "
-                + ChatColor.DARK_GRAY + "ASSIGNMENT='" + ChatColor.AQUA + assignment + ChatColor.DARK_GRAY
-                + ChatColor.DARK_GRAY + (player != null ? ", PLAYER='" + ChatColor.AQUA + player.getName() + ChatColor.DARK_GRAY + "', " : "'"));
+
+        if (assignment == null) return;
+
+        dB.echoDebug(ChatColor.YELLOW + "+> Action! "
+                + ChatColor.DARK_GRAY + "NAME='" + ChatColor.YELLOW + actionName + ChatColor.DARK_GRAY + "', "
+                + ChatColor.DARK_GRAY + "NPC='" + ChatColor.YELLOW + npc.getName() + "/" + npc.getId() + ChatColor.DARK_GRAY + "', "
+                + ChatColor.DARK_GRAY + "ASSIGNMENT='" + ChatColor.YELLOW + assignment + ChatColor.DARK_GRAY
+                + ChatColor.DARK_GRAY + (player != null ? ", PLAYER='" + ChatColor.YELLOW + player.getName() + ChatColor.DARK_GRAY + "', " : "'"));
 
         // Fetch script from Actions
         List<String> script = denizen.getScriptEngine().getScriptHelper().getStringListIgnoreCase(assignment + ".actions.on " + actionName);
