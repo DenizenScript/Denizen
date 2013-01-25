@@ -58,7 +58,7 @@ public class TakeCommand extends AbstractCommand{
 			}
 			
 			else if (aH.matchesItem(arg)) {
-				takeType = TakeType.ITEMINHAND;
+				takeType = TakeType.ITEM;
 				item = aH.getItemFrom(arg);
 				dB.echoDebug("...taking " + item.getType());
 			}

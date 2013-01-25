@@ -61,7 +61,7 @@ public class CommandRegistry implements DenizenRegistry {
 		new FeedCommand().activate().as("FEED").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
 		new FinishCommand().activate().as("FINISH").withOptions("(PLAYER:player_name)", 0);
 		new FlagCommand().activate().as("FLAG").withOptions("(DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]", 1);
-		new GiveCommand().activate().as("GIVE").withOptions("[MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#)", 1);
+		new GiveCommand().activate().as("GIVE").withOptions("[MONEY|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);
 		new HealCommand().activate().as("HEAL").withOptions("(AMT:#) (TARGET:NPC|PLAYER)", 0);
 		new IfCommand().activate().as("IF").withOptions("(!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
 		new ListenCommand().activate().as("LISTEN").withOptions("[Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation.", 2);
@@ -72,7 +72,7 @@ public class CommandRegistry implements DenizenRegistry {
 		new PlaySoundCommand().activate().as("PLAYSOUND").withOptions("[LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)", 2);
 		new RandomCommand().activate ().as("RANDOM").withOptions("[#]", 1);
 		new SwitchCommand().activate().as("SWITCH").withOptions("[LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
-		new TakeCommand().activate ().as("TAKE").withOptions("[MONEY|ITEMINHAND|#(:#)|MATERIAL_TYPE(:#)] (QTY:#)", 1);
+		new TakeCommand().activate ().as("TAKE").withOptions("[MONEY|ITEMINHAND|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);
 		new TeleportCommand().activate().as("TELEPORT").withOptions("(NPC) [LOCATION:x,y,z,world] (TARGETS:[NPCID:#]|[PLAYER:PlayerName])", 1);
 		new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
         new ZapCommand().activate().as("ZAP").withOptions("[#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})", 0);

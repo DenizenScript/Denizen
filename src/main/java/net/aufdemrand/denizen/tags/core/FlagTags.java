@@ -19,7 +19,7 @@ public class FlagTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    private enum ReplaceType { ASSTRING, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASCSLIST }
+    private enum ReplaceType { LENGTH, SIZE, ASSTRING, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASCSLIST }
 
     /**
      * Replaces FLAG TAGs. Called automatically by the dScript ScriptBuilder and Executer.
@@ -99,6 +99,10 @@ public class FlagTags implements Listener {
         case ASMONEY:
             DecimalFormat d = new DecimalFormat("0.00");
             return String.valueOf(d.format(flag.asDouble()));
+        case LENGTH:
+            return String.valueOf(flag.asString().length());
+        case SIZE:
+        	return String.valueOf(flag.asSize());
         }
         return null;
     }

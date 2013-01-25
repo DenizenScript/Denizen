@@ -479,6 +479,16 @@ public class FlagManager {
             } catch (Exception e) { return ""; } 
         }
         
+        /**
+         * Returns an Integer value of the number of values
+         * contained in a dScript list.
+         *
+         */
+        public int asSize() {
+            adjustIndex();
+            return values.size();
+        }
+        
         
 
         /**
