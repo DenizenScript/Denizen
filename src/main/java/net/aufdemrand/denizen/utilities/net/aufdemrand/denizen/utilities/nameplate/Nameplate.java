@@ -8,4 +8,9 @@ package net.aufdemrand.denizen.utilities.net.aufdemrand.denizen.utilities.namepl
  * To change this template use File | Settings | File Templates.
  */
 public class Nameplate {
+
+    // Any static methods required for changing out nameplates
+
+    // etc.
+
 }

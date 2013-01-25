@@ -1,10 +1,7 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-
-import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
 
@@ -26,62 +23,25 @@ import org.bukkit.event.Listener;
 public class NameplateTrait extends Trait implements Listener {
 
 	@Persist("")
-    private String nickname = null;
+    private String nameplate = null;
 
 	public NameplateTrait() {
-		super("nickname");
+		super("nameplate");
 	}
 
-    /**
-     * Sets the nickname of this NPC. When setting, dScript TAGS
-     * can be used. This included dScript color codes.
-     *
-     * @param nickName the new nickname for this NPC
-     *
-     */
-	public void setNickname(String nickName) {
-		this.nickname = nickName;
-	}
+    @Override
+    public void onSpawn() {
 
-    /**
-     * Gets the current nickname of this NPC. This may include color codes.
-     * Note: To strip color codes, use {@link #getUncoloredNickname()}. If
-     * this NPC does not have a nickname, its NPC name is returned instead.
-     *
-     * @return the nickname for this NPC
-     *
-     */
-	public String getNickname() {
-	    if (nickname.equals("")) return npc.getName();
-        else return DenizenAPI.getCurrentInstance().tagManager()
-                .tag(null, DenizenAPI.getDenizenNPC(npc), nickname, false);
+        // if nameplate != null apply nameplate
+
     }
-	
-	/**
-	 * Gets the current nickname of this NPC and strips out all text colors.
-	 * To get the colored nickname use {@link #getNickname()}.
-	 * 
-	 * @return The uncolored nickname for this NPC
-	 */
-	public String getUncoloredNickname() {
-		return ChatColor.stripColor( getNickname() );
-	}
 
-    /**
-     * Removes the current nickname from the NPC.
-     *
-     */
-	public void removeNickname() {
-	    nickname = null;
-	}
+    public void setNameplate(String string) {
 
-    /**
-     * Checks if the NPC has a nickname set.
-     *
-     * @return true if NPC has a nickname
-     */
-	public boolean hasNickname() {
-	    return (nickname != null) ? true : false;
-	}
+        // nameplate = string;
+
+        // Utilities.Nameplate.setNameplate(...)
+    }
+
 
 }

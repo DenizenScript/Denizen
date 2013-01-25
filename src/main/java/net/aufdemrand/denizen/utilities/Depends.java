@@ -18,6 +18,8 @@ public class Depends {
     public static Economy economy = null;
     public static Permission permissions = null;
     public static Chat chat = null;
+
+    // public static PLib plib = null;
     
     public Depends() {
         setupEconomy();
@@ -25,6 +27,14 @@ public class Depends {
         setupChat();
         setupWorldGuard();
         setupCitizens();
+        setupPLib();
+    }
+
+    private boolean setupPLib() {
+
+        // ...
+
+        return true;
     }
 
     private boolean setupEconomy() {
