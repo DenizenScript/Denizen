@@ -319,23 +319,10 @@ public class IfCommand extends AbstractCommand {
                     // Not comparing with a Boolean, outcome = false;
                 } else {
                     // Comparing booleans.. let's do the logic
-                    switch(com.operator) {
-                        case EQUALS:
-                            if (((Boolean) com.comparable).compareTo((Boolean) com.comparedto) == 0) com.outcome = true;
-                            break;
-                        case ORMORE:
-                            if (((Boolean) com.comparable).compareTo((Boolean) com.comparedto) >= 0) com.outcome = true;
-                            break;
-                        case ORLESS:
-                            if (((Boolean) com.comparable).compareTo((Boolean) com.comparedto) <= 0) com.outcome = true;
-                            break;
-                        case MORE:
-                            if (((Boolean) com.comparable).compareTo((Boolean) com.comparedto) > 0) com.outcome = true;
-                            break;
-                        case LESS:
-                            if (((Boolean) com.comparable).compareTo((Boolean) com.comparedto) < 0) com.outcome = true;
-                            break;
-                    }
+                	if ((Boolean) com.comparable.equals((Boolean) com.comparedto))
+                		com.outcome = true;
+                	else
+                		com.outcome = false;
                 }
             }
 
