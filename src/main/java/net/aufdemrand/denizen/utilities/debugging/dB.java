@@ -97,6 +97,11 @@ public class dB {
 		public static void sendMessage(String string) {
 			if (commandSender == null) commandSender = Bukkit.getServer().getConsoleSender(); 
 
+            // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
+            // than having a bunch of ChatColor.XXXX
+            string = string.replace("<Y>", ChatColor.YELLOW + "").replace("<G>", ChatColor.DARK_GRAY + "")
+                    .replace("<A>", ChatColor.AQUA + "");
+
             // 'Hack-fix' for disallowing multiple 'footers' to print in a row
             if (string.equals(ChatColor.LIGHT_PURPLE + "+---------------------+")) {
                 if (!skipFooter) skipFooter = true;

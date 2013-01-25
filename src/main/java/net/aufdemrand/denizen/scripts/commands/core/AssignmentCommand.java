@@ -68,10 +68,10 @@ public class AssignmentCommand extends AbstractCommand {
         Action action = (Action) scriptEntry.getObject("action");
         String script = (String) scriptEntry.getObject("script");
 
-        dB.echoDebug("Executing '" + getName() + "': "
-                + "Action='" + action.toString() + "', "
-                + (script != null ? "Script='" + script + "', " : "")
-                + "NPC='" + scriptEntry.getNPC() + "'");
+        dB.echoDebug("<G>Executing '<Y>" + getName() + "<G>': "
+                + "Action='<Y>" + action.toString() + "<G>', "
+                + (script != null ? "Script='<Y>" + script + "<G>', " : "")
+                + "NPC='<Y>" + scriptEntry.getNPC() + "<G>'");
 
         if (action == Action.SET)
             scriptEntry.getNPC().getCitizen().getTrait(AssignmentTrait.class)

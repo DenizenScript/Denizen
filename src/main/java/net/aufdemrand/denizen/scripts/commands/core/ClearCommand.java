@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +41,12 @@ public class ClearCommand extends AbstractCommand {
 
         List<ScriptEngine.QueueType> queues = (List<ScriptEngine.QueueType>) scriptEntry.getObject("queues");
 
-        dB.echoApproval(ChatColor.DARK_GRAY + "Executing '" + ChatColor.YELLOW +  getName() + ChatColor.DARK_GRAY + "': "
-                + "Queues=" + ChatColor.YELLOW + queues.toString() + ChatColor.DARK_GRAY + "'"
-                + (scriptEntry.getPlayer() != null ? ", PLAYER='" + ChatColor.YELLOW + scriptEntry.getPlayer().getName()
-                + ChatColor.DARK_GRAY + "'" : "")
-                + (scriptEntry.getNPC() != null ? ", NPC='" + ChatColor.YELLOW + scriptEntry.getNPC().getName()
-                + "/" + scriptEntry.getNPC().getId() + ChatColor.DARK_GRAY + "'" : ""));
+        dB.echoApproval("<G>Executing '<Y>" + getName() + "<G>': "
+                + "Queues=<Y>" + queues.toString() + "<G>'"
+                + (scriptEntry.getPlayer() != null ? ", PLAYER='<Y>" + scriptEntry.getPlayer().getName()
+                + "<G>'" : "")
+                + (scriptEntry.getNPC() != null ? ", NPC='<Y>" + scriptEntry.getNPC().getName()
+                + "/" + scriptEntry.getNPC().getId() + "<G>'" : ""));
 
         List<ScriptEntry> emptyList = new ArrayList<ScriptEntry>();
 
