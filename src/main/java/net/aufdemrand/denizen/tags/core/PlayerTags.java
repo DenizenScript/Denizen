@@ -113,8 +113,28 @@ public class PlayerTags implements Listener {
                         + "', Y '" + p.getLocation().getBlockY()
                         + "', Z '" + p.getLocation().getBlockZ()
                         + "', in world '" + p.getWorld().getName() + "'");
+            else if (subType.equals("X"))
+                event.setReplaced(String.valueOf(p.getLocation().getBlockX()));
+            else if (subType.equals("Y"))
+                event.setReplaced(String.valueOf(p.getLocation().getBlockY()));
+            else if (subType.equals("Z"))
+                event.setReplaced(String.valueOf(p.getLocation().getBlockZ()));
+            else if (subType.equals("WORLD"))
+                event.setReplaced(p.getWorld().getName());
+            else if (subType.equals("BIOME"))
+                event.setReplaced(p.getLocation().getBlock().getBiome().name());
+            else if (subType.equals("BIOME_DISPLAY"))
+            	event.setReplaced(p.getLocation().getBlock().getBiome().name().toLowerCase().replace('_', ' '));
             else if (subType.equals("STANDING_ON"))
                 event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name());
+            else if (subType.equals("STANDING_ON_DISPLAY"))
+            	event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
+            else if (subType.equals("LIGHT"))
+                event.setReplaced(String.valueOf((int) p.getLocation().getBlock().getLightLevel()));
+            else if (subType.equals("LIGHT_BLOCKS"))
+                event.setReplaced(String.valueOf((int) p.getLocation().getBlock().getLightFromBlocks()));
+            else if (subType.equals("LIGHT_SKY"))
+                event.setReplaced(String.valueOf((int) p.getLocation().getBlock().getLightFromSky()));
             else if (subType.equals("WORLD_SPAWN"))
                 event.setReplaced(p.getWorld().getSpawnLocation().getBlockX()
                         + "," + p.getWorld().getSpawnLocation().getBlockY()
@@ -125,8 +145,6 @@ public class PlayerTags implements Listener {
                         + "," + p.getBedSpawnLocation().getBlockY()
                         + "," + p.getBedSpawnLocation().getBlockZ()
                         + "," + p.getWorld().getName());
-            else if (subType.equals("WORLD"))
-                event.setReplaced(p.getWorld().getName());
 
 
         } else if (type.equals("HEALTH")) {
