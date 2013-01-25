@@ -1,22 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.RegisteredServiceProvider;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.util.Messages;
-import net.citizensnpcs.util.Messaging;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.RegisteredServiceProvider;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /* GIVE [MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
 
@@ -114,8 +111,7 @@ public class GiveCommand  extends AbstractCommand {
 					 	}
 				 	} catch (NoClassDefFoundError e) {
 						dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");	
-						Messaging.logTr(Messages.ERROR_LOADING_ECONOMY);
-				 	}				
+				 	}
 				 break;
 
 			case EXP:

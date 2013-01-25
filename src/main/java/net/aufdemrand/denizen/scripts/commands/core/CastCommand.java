@@ -167,14 +167,13 @@ public class CastCommand extends AbstractCommand{
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch!
-        List<LivingEntity> targets = (List<LivingEntity>) scriptEntry.getObject("target");
+        List<LivingEntity> targets = (List<LivingEntity>) scriptEntry.getObject("targets");
         PotionEffect potion = (PotionEffect) scriptEntry.getObject("potion");
 
-        // Debugger
         dB.echoDebug("<G>Executing '<Y>" + getName() + "<G>': "
                 + "Targets='<Y>" + targets.toString() + "<G>', "
                 + "POTION='<Y>" + potion.getType().getName() + "<G>', "
-                + "DURATION='<Y>" + potion.getDuration() / 20 + "<G>', "
+                + "DURATION='<Y>" + (potion.getDuration() / 20) + "<G>', "
                 + "AMPLIFIER='<Y>" + potion.getAmplifier() + "<G>'");
 
         // Apply the PotionEffect to the targets!

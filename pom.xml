@@ -14,7 +14,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<craftbukkit.version>LATEST</craftbukkit.version>
 		<json.version>20090211</json.version>
-		<citizens.version>2.0.6-SNAPSHOT</citizens.version>
+		<citizens.version>2.0.7-SNAPSHOT</citizens.version>
 		<build.number>Unknown</build.number>
 	</properties>
 

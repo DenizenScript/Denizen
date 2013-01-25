@@ -1,16 +1,17 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.io.*;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import net.aufdemrand.denizen.Denizen;
-import net.citizensnpcs.util.Messaging;
+import net.citizensnpcs.api.util.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 public class ScriptRepo {
 

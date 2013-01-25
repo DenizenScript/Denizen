@@ -8,12 +8,13 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.Citizens;
+import net.citizensnpcs.api.command.Command;
+import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.command.Command;
-import net.citizensnpcs.command.CommandContext;
+import net.citizensnpcs.api.util.Messaging;
+import net.citizensnpcs.command.command.Requirements;
 import net.citizensnpcs.command.exception.CommandException;
 import net.citizensnpcs.util.Messages;
-import net.citizensnpcs.util.Messaging;
 import net.citizensnpcs.util.Paginator;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.json.JSONException;
 
 import java.util.Set;
+
 
 public class CommandHandler {
 
@@ -60,18 +62,18 @@ public class CommandHandler {
      * to ensure a safe area around the NPC.</p>
      *
      */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "npc" }, usage = "pushable -t (-r) (--delay #)", desc = "Makes a NPC pushable.",
 			flags = "rt", modifiers = { "pushable", "push" }, min = 1, max = 2, permission = "npc.pushable")
-	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
+	@Requirements(selected = true, ownership = true)
 	public void pushable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(PushableTrait.class)) npc.addTrait(PushableTrait.class);
 		PushableTrait trait = npc.getTrait(PushableTrait.class);
 
 		if (args.hasFlag('r') && !args.hasFlag('t')) {
 			trait.setReturnable(!trait.isReturnable());
-			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + (trait.isReturnable() ? " will " : " will not ") + "return when being pushed" 
-					+ (!trait.isReturnable() || trait.isPushable() ? "." : ", but is currently not pushable."));
+			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + (trait.isReturnable() ? " will " : " will not ") + "return when being pushed"
+                    + (!trait.isReturnable() || trait.isPushable() ? "." : ", but is currently not pushable."));
 			return;
 
 		} else if (args.hasValueFlag("delay") && !args.hasFlag('t')) {
@@ -139,11 +141,11 @@ public class CommandHandler {
      * is called to be used.</p>
      *
      */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "npc" }, usage = "constant --set|remove name --value constant value", 
 			desc = "Views/adds/removes NPC string constants.", flags = "r", modifiers = { "constants", "constant", "cons" },
 			min = 1, max = 3, permission = "npc.constants")
-	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
+	@Requirements(selected = true, ownership = true)
 	public void constants(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
 		ConstantsTrait trait = npc.getTrait(ConstantsTrait.class);
@@ -178,11 +180,11 @@ public class CommandHandler {
 	/*
 	 * ASSIGNMENT
 	 */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "npc" }, usage = "assignment --set assignment_name (-r)", 
 			desc = "Controls the assignment for an NPC.", flags = "r", modifiers = { "assignment", "assign" },
 			min = 1, max = 3, permission = "npc.assign")
-	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
+	@Requirements(selected = true, ownership = true)
 	public void assignment(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(AssignmentTrait.class)) npc.addTrait(AssignmentTrait.class);
 		Player player = null;
@@ -219,11 +221,11 @@ public class CommandHandler {
 	/*
 	 * TRIGGER
 	 */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "npc" }, usage = "trigger [trigger name] [(--cooldown [seconds])|(--radius [radius])|(-t)]",
 			desc = "Controls the various triggers for an NPC.", flags = "t", modifiers = { "trigger", "tr" },
 			min = 1, max = 3, permission = "npc.trigger")
-	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
+	@Requirements(selected = true, ownership = true)
 	public void trigger(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
 		TriggerTrait trait = npc.getTrait(TriggerTrait.class);
@@ -266,11 +268,11 @@ public class CommandHandler {
 	/*
 	 * NICKNAME
 	 */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "npc" }, usage = "nickname [--set nickname]", 
 			desc = "Gives the NPC a nickname, used with a Denizen-compatible Speech Engine.", modifiers = { "nickname", "nick", "ni" },
 			min = 1, max = 3, permission = "npc.nickname")
-	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
+	@Requirements(selected = true, ownership = true)
 	public void nickname(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(NicknameTrait.class)) npc.addTrait(NicknameTrait.class);
 		NicknameTrait trait = npc.getTrait(NicknameTrait.class);
@@ -293,11 +295,11 @@ public class CommandHandler {
 	/*
 	 * HEALTH
 	 */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "npc" }, usage = "health --set # (-r)", 
 			desc = "Sets the max health for an NPC.", modifiers = { "health", "he", "hp" },
 			min = 1, max = 3, permission = "npc.health", flags = "rs")
-	@net.citizensnpcs.command.Requirements(selected = true, ownership = true)
+	@Requirements(selected = true, ownership = true)
 	public void health(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
 		HealthTrait trait = npc.getTrait(HealthTrait.class);
@@ -353,7 +355,7 @@ public class CommandHandler {
 	/*
 	 * DENIZEN DEBUG
 	 */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "denizen" }, usage = "debug", 
 			desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db" },
 			min = 1, max = 3, permission = "denizen.debug", flags = "s")
@@ -371,7 +373,7 @@ public class CommandHandler {
 	/*
 	 * DENIZEN VERSION
 	 */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "denizen" }, usage = "version", 
 			desc = "Shows the currently loaded version of Denizen.", modifiers = { "version"},
 			min = 1, max = 3, permission = "denizen.basic")
@@ -387,7 +389,7 @@ public class CommandHandler {
 	/*
 	 * DENIZEN SAVE
 	 */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "denizen" }, usage = "save", 
 			desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "save" },
 			min = 1, max = 3, permission = "denizen.basic", flags = "s")
@@ -401,7 +403,7 @@ public class CommandHandler {
 	/*
 	 * DENIZEN LISTENER
 	 */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "denizen" }, usage = "listener (--player) --id listener_id --report|cancel|finish", 
 			desc = "Checks/cancels/finishes listeners in progress.", modifiers = { "listener" },
 			min = 1, max = 3, permission = "denizen.basic", flags = "s")
@@ -507,7 +509,7 @@ public class CommandHandler {
 	/*
 	 * DENIZEN SCRIPTS
 	 */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = { "denizen" }, usage = "scripts (--type assignment|task|activity|interact) (--filter string)", 
 			desc = "Lists currently loaded dScripts.", modifiers = { "scripts" },
 			min = 1, max = 4, permission = "denizen.basic")
@@ -547,7 +549,7 @@ public class CommandHandler {
 	/*
 	 * CITIZENS SCRIPT REPO
 	 */
-	@net.citizensnpcs.command.Command(
+	@Command(
 			aliases = {"denizen"}, usage = "repo (info|search|load)",
 			desc = "Repo commands.", modifiers = {"info", "search", "load"},
 			min = 1, permission = "denizen.repo")
@@ -600,7 +602,7 @@ public class CommandHandler {
     /*
      * DENIZEN TEST, always a new flavor
      */
-    @net.citizensnpcs.command.Command(
+    @Command(
             aliases = { "denizen" }, usage = "report",
             desc = "For testing purposes only, use at your own risk!", modifiers = { "report" },
             min = 1, max = 3, permission = "denizen.basic")

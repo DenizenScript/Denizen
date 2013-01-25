@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.command.CommandContext;
 import net.citizensnpcs.trait.LookClose;
 
 /**
@@ -66,6 +65,8 @@ public class LookcloseCommand extends AbstractCommand {
 	
 	String[] realisticArgs = "/npc lookclose -r".split(" ");
 
+    // TODO: Fix this.
+
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		if (npc == null) throw new CommandExecutionException(Messages.ERROR_NO_NPCID);
@@ -74,11 +75,11 @@ public class LookcloseCommand extends AbstractCommand {
 		LookClose trait = npc.getTrait(LookClose.class);
 		trait.lookClose(toggle);
 		if (realistic) {
-		    trait.configure(new CommandContext(realisticArgs));
+		    // trait.configure(new CommandContext(realisticArgs));
 		}
 		if (range != null) {
 		    String[] rangeArgs = ("npc lookclose --range " + range).split(" ");
-		    trait.configure(new CommandContext(rangeArgs));
+		    // trait.configure(new CommandContext(rangeArgs));
 		}
 	}
 	
