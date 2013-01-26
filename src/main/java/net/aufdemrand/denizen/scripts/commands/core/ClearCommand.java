@@ -43,8 +43,8 @@ public class ClearCommand extends AbstractCommand {
 
         dB.echoApproval("<G>Executing '<Y>" + getName() + "<G>': "
                 + "Queues=<Y>" + queues.toString() + "<G>'"
-                + (scriptEntry.getPlayer() != null ? ", PLAYER='<Y>" + scriptEntry.getPlayer().getName()
-                + "<G>'" : "")
+                + (scriptEntry.getPlayer() != null ?
+                ", Player='<Y>" + scriptEntry.getPlayer().getName() + "<G>'" : "")
                 + (scriptEntry.getNPC() != null ? ", NPC='<Y>" + scriptEntry.getNPC().getName()
                 + "/" + scriptEntry.getNPC().getId() + "<G>'" : ""));
 

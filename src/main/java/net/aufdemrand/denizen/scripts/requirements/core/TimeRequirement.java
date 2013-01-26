@@ -16,40 +16,29 @@ public class TimeRequirement extends AbstractRequirement{
 		//nothing to do here
 	}
 
-	TIME time;
-
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		
 		boolean outcome = false;
+		TIME time = null;
 		
-		for (String thisArg : args){
-			
-			if (aH.matchesArg("DAWN, DAY, DUSK, NIGHT", thisArg)) time = TIME.valueOf(thisArg);
-			
+		for (String arg : args){
+			if (aH.matchesArg("DAWN, DAY, DUSK, NIGHT", arg)) time = TIME.valueOf(arg);
 		}
-		/* IM LOST
-			if (!Character.isDigit(theTime.charAt(0))) {
-				if (theTime.equalsIgnoreCase("DAWN")
-						&& theWorld.getTime() > 23000) outcome = true;
-
-				else if (theTime.equalsIgnoreCase("DAY")
-						&& theWorld.getTime() > 0
-						&& theWorld.getTime() < 13500) outcome = true;
-
-				else if (theTime.equalsIgnoreCase("DUSK")
-						&& theWorld.getTime() > 12500
-						&& theWorld.getTime() < 13500) outcome = true;
-
-				else if (theTime.equalsIgnoreCase("NIGHT")
-						&& theWorld.getTime() > 13500) outcome = true;
-			}
-
-			else if (Character.isDigit(theTime.charAt(0))) 
-				if (theWorld.getTime() > Long.valueOf(theTime)
-						&& theWorld.getTime() < Long.valueOf(highTime)) outcome = true;
-		*/
+		
+		long worldTime = context.getNPC().getBukkitEntity().getWorld().getTime();
+		
+		if (time.equals(TIME.DAY) && worldTime >= 0 && worldTime < 12000)
+			outcome = true;
+		else if (time.equals(TIME.DUSK) && worldTime >= 12000 && worldTime < 23800)
+			outcome = true;
+		else if (time.equals(TIME.NIGHT) && worldTime >= 23800 && worldTime < 22200)
+			outcome = true;
+		else if (time.equals(TIME.DAWN) && worldTime >= 22200 && worldTime < 24000)
+			outcome = true;
+		
 		return outcome;
+		
 	}
 
 }

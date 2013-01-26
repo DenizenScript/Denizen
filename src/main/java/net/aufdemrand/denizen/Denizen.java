@@ -18,6 +18,7 @@ import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
+import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -131,7 +132,9 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public void onEnable() {
-    	
+		// Activate dependencies
+		depends.initialize();
+		
         // Startup procedure
         dB.echoDebug(DebugElement.Footer);
         dB.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
@@ -161,6 +164,11 @@ public class Denizen extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ConstantsTrait.class).withName("constants"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NameplateTrait.class).withName("nameplate"));
 
+		if(Depends.protocolManager != null) {
+			new PacketHelper(this);
+			dB.echoApproval("ProtocolLib hooked, traits with custom packages can be used!");
+		}
+		
         // Compile and load Denizen externals
         RuntimeCompiler compiler = new RuntimeCompiler(this);
         compiler.loader();
@@ -199,7 +207,7 @@ public class Denizen extends JavaPlugin {
     @Override
     public void onDisable() {
         // Save locations
-        dLocation.saveLocations();
+        dLocation._saveLocations();
 
         // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
         for (Player player : this.getServer().getOnlinePlayers())
@@ -253,6 +261,8 @@ public class Denizen extends JavaPlugin {
             savesConfigFile = new File(getDataFolder(), "saves.yml");
         }
         savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
+        // Reload dLocations from saves.yml
+        dLocation._recallLocations();
     }
 
     public FileConfiguration getSaves() {
@@ -267,9 +277,11 @@ public class Denizen extends JavaPlugin {
             return;
         }
         try {
+            // Save dLocations to saves.yml
+            dLocation._saveLocations();
             savesConfig.save(savesConfigFile);
         } catch (IOException ex) {
-            Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + savesConfigFile, ex);
+            Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + savesConfigFile, ex);
         }
     }
 

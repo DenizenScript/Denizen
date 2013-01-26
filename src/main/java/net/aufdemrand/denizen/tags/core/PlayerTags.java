@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
@@ -195,19 +196,16 @@ public class PlayerTags implements Listener {
             }
             
         } else if (type.equals("MONEY")) {
-        	try {
-    		 	RegisteredServiceProvider<Economy> provider = Bukkit.getServicesManager().getRegistration (Economy.class);
-    		 	if (provider != null && provider.getProvider() != null) {
-    		 		Economy economy = provider.getProvider();
-    		 		event.setReplaced(String.valueOf(economy.getBalance(p.getName())));
-    		 		if (subType.equals("CURRENCY_SINGULAR"))
-    		 			event.setReplaced(economy.currencyNameSingular());
-    		 		else if (subType.equals("CURRENCY_PLURAL"))
-    		 			event.setReplaced(economy.currencyNamePlural());
-    		 	}
-    	 	} catch (NoClassDefFoundError e) {
-    			dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
-    	 	}
+			if(Depends.economy != null) {
+				Economy economy = Depends.economy;
+				event.setReplaced(String.valueOf(economy.getBalance(p.getName())));
+				if (subType.equals("CURRENCY_SINGULAR"))
+					event.setReplaced(economy.currencyNameSingular());
+				else if (subType.equals("CURRENCY_PLURAL"))
+					event.setReplaced(economy.currencyNamePlural());
+			} else {
+				dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+			}
         	
         } else if (type.equals("IS_OP")) {
             event.setReplaced(String.valueOf(p.isOp()));

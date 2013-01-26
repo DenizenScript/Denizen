@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -99,16 +100,13 @@ public class TakeCommand extends AbstractCommand{
         	break;
         	
         case MONEY:
-        	 try {
-				 	RegisteredServiceProvider<Economy> provider = Bukkit.getServicesManager().getRegistration (Economy.class);
-				 	if (provider != null && provider.getProvider() != null) {
-				 		Economy economy = provider.getProvider();
-						dB.echoDebug ("...taking " + scriptEntry.getObject("quantity") + " money.");
-						economy.withdrawPlayer(scriptEntry.getPlayer().getName(), ((Double) scriptEntry.getObject("quantity")));
-				 	}
-			 	} catch (NoClassDefFoundError e) {
-					dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
-			 	}
+			if(Depends.economy != null) {
+				Economy economy = Depends.economy;
+				dB.echoDebug ("...taking " + scriptEntry.getObject("quantity") + " money.");
+				economy.withdrawPlayer(scriptEntry.getPlayer().getName(), ((Double) scriptEntry.getObject("quantity")));
+			} else {
+				dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+			}
         	break;
 
         case ITEM:

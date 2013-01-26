@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.milkbowl.vault.economy.Economy;
@@ -101,18 +102,15 @@ public class GiveCommand  extends AbstractCommand {
 			switch (giveType) {
 
 			case MONEY:
-				 try {
-					 	RegisteredServiceProvider<Economy> provider = Bukkit.getServicesManager().getRegistration (Economy.class);
-					 	if (provider != null && provider.getProvider() != null) {
-					 		Economy economy = provider.getProvider();
-							double doubleAmount = (double) theAmount;
-							dB.echoDebug ("Giving player " + theAmount + " money.");
-							economy.depositPlayer(player.getName(), doubleAmount);
-					 	}
-				 	} catch (NoClassDefFoundError e) {
-						dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");	
-				 	}
-				 break;
+				if(Depends.economy != null) {
+					Economy economy = Depends.economy;
+					double doubleAmount = (double) theAmount;
+					dB.echoDebug ("Giving player " + theAmount + " money.");
+					economy.depositPlayer(player.getName(), doubleAmount);
+				} else {
+					dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+				}
+				break;
 
 			case EXP:
 				player.giveExp(theAmount);

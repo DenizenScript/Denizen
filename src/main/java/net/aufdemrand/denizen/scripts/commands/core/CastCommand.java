@@ -19,8 +19,7 @@ import java.util.List;
  * <p>'Casts' a Bukkit PotionEffectType on a LivingEntity target.</p>
  *
  * <br><b>dScript Usage:</b><br>
- * <pre>CAST [PotionEffectType] (TARGET:NPC|{PLAYER}|LivingEntity) 
- *     (CASTER:{NPC}|PLAYER|LivingEntity) (DURATION:#) (POWER:#)</pre>
+ * <pre>CAST [PotionEffectType] (TARGET(S):NPC|{PLAYER}|LivingEntity) (DURATION:#) (POWER:#)</pre>
  *
  * <ol><tt>Arguments: [] - Required, () - Optional, {} - Default</ol></tt>
  *
@@ -28,8 +27,9 @@ import java.util.List;
  *         Uses Bukkit's PotionEffectType for specifying the potion effect to use. 
  *         See below for a list of valid PotionEffectTypes.</ol>
  *
- * <ol><tt>(TARGET:NPC|{PLAYER}|ENTITY.entity|NPC.npcid|PLAYER.player_name)</tt><br> 
- *         Optional. Defaults to the attached Player. The recipient of the PotionEffectType. </ol>
+ * <ol><tt>(TARGET(S):NPC|{PLAYER}|ENTITY.entity|NPC.npcid|PLAYER.player_name)</tt><br>
+ *         Optional. Defaults to the attached Player. Can use a dScript list format
+ *         to specify multiple targets. The recipient of the PotionEffectType. </ol>
  *
  * <ol><tt>(DURATION:#{60})</tt><br>
  *         Optional. Number of seconds that the PotionEffectType lasts. If not specified,
@@ -172,9 +172,9 @@ public class CastCommand extends AbstractCommand{
 
         dB.echoDebug("<G>Executing '<Y>" + getName() + "<G>': "
                 + "Targets='<Y>" + targets.toString() + "<G>', "
-                + "POTION='<Y>" + potion.getType().getName() + "<G>', "
-                + "DURATION='<Y>" + (potion.getDuration() / 20) + "<G>', "
-                + "AMPLIFIER='<Y>" + potion.getAmplifier() + "<G>'");
+                + "Potion='<Y>" + potion.getType().getName() + "<G>', "
+                + "Duration='<Y>" + (potion.getDuration() / 20) + "<G>', "
+                + "Amplifier='<Y>" + potion.getAmplifier() + "<G>'");
 
         // Apply the PotionEffect to the targets!
         for (LivingEntity target : targets)

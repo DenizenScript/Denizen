@@ -46,6 +46,8 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
 	
     @Override
 	public AbstractRequirement as(String requirementName) {
+	    this.name = requirementName;
+	    
 	    // Register command with Registry
 		plugin.getRequirementRegistry().register(requirementName, this);
 		onEnable();

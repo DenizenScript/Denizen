@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -106,9 +107,12 @@ public class CooldownCommand extends AbstractCommand {
 		int duration = ((Double) scriptEntry.getObject("duration")).intValue();
 		CooldownType type = (CooldownType) scriptEntry.getObject("type");
 
+        dB.echoDebug("<G>Executing '<Y>" + getName() + "<G>': "
 
+                + "Player='<Y>" + scriptEntry.getPlayer().getName() + "<G>', "
+                + "Duration='<Y>" + duration + "<G>'");
 
-		if (type == CooldownType.PLAYER)
+        if (type == CooldownType.PLAYER)
 		setCooldown(((OfflinePlayer) scriptEntry.getObject("player")).getName(), duration, script, false);
 		// else, a GLOBAL cooldown
 		else setCooldown(null, duration, script, true);
