@@ -27,6 +27,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
         // Set some defaults with information from the scriptEntry
         String name = null;
         String value = null;
+        String player = null;
         double duration = -1;
         Action action = Action.SET_VALUE;
         Type type = Type.PLAYER;
@@ -36,30 +37,40 @@ public class FlagCommand extends AbstractCommand implements Listener {
             if (aH.matchesDuration(arg))
                 duration = aH.getSecondsFrom(arg);
 
-            else if (aH.matchesArg("GLOBAL, NPC, DENIZEN, GLOBAL", arg))
+            else if (aH.matchesArg("NPC, DENIZEN, GLOBAL", arg))
                 type = Type.valueOf(arg.toUpperCase().replace("DENIZEN", "NPC"));
 
             // Determine flagAction and set the flagName/flagValue
             else if (arg.split(":", 3).length > 1) {
-                String[] flagArgs = arg.split(":");
-                name = flagArgs[0].toUpperCase();
-
+            	
+            	String[] flagArgs = arg.split(":");
+            	
                 if (flagArgs.length == 2) {
-                    if (flagArgs[1].contains("+")) {
-                        action = Action.INCREASE;
-                        value = "1";
-                    }   else if (flagArgs[1].contains("-")) {
-                        action = Action.DECREASE;
-                        value = "1";
-                    }   else if (flagArgs[1].contains("!")) {
-                        action = Action.DELETE;
-                    }   else if (flagArgs[1].contains("<-")) {
-                        action = Action.REMOVE;
-                    }   else {
-                        action = Action.SET_VALUE;
-                        value = arg.split(":")[1];
-                    }
+                	
+                	if (flagArgs[0].toUpperCase().contains("PLAYER") && name == null) {
+                		player = flagArgs[1];
+                		dB.echoApproval("Player is: " + player);
+                	}
+                	else {
+                		name = flagArgs[0].toUpperCase();
+                		if (flagArgs[1].contains("+")) {
+                			action = Action.INCREASE;
+                			value = "1";
+                		}   else if (flagArgs[1].contains("-")) {
+                			action = Action.DECREASE;
+                			value = "1";
+                		}   else if (flagArgs[1].contains("!")) {
+                			action = Action.DELETE;
+                		}   else if (flagArgs[1].contains("<-")) {
+                			action = Action.REMOVE;
+                		}   else {
+                			action = Action.SET_VALUE;
+                			value = arg.split(":")[1];
+                		}
+                	}
                 } else if (flagArgs.length == 3) {
+                	
+                	name = flagArgs[0].toUpperCase();
                     if (flagArgs[1].contains("->")) action = Action.INSERT;
                     else if (flagArgs[1].contains("<-")) action = Action.REMOVE;
                     else if (flagArgs[1].contains("+")) action = Action.INCREASE;
@@ -74,9 +85,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             }
         }
 
-        String player = null;
-
-        if (type == Type.PLAYER) {
+        if (type == Type.PLAYER && player == null) {
             if (scriptEntry.getOfflinePlayer() != null)
                 player = scriptEntry.getOfflinePlayer().getName();
             if (player == null && scriptEntry.getPlayer() != null)
