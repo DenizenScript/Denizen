@@ -63,6 +63,7 @@ public class CommandExecuter {
 			List<String> newArgs = new ArrayList<String>(); 
 
 			for (String arg : scriptEntry.getArguments()) {
+                arg = arg.toUpperCase();
 
 				// Fill player/off-line player
 				if (arg.startsWith("PLAYER:")) {
