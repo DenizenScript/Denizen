@@ -207,7 +207,7 @@ public class Denizen extends JavaPlugin {
     @Override
     public void onDisable() {
         // Save locations
-        dLocation.saveLocations();
+        dLocation._saveLocations();
 
         // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
         for (Player player : this.getServer().getOnlinePlayers())
@@ -261,6 +261,8 @@ public class Denizen extends JavaPlugin {
             savesConfigFile = new File(getDataFolder(), "saves.yml");
         }
         savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
+        // Reload dLocations from saves.yml
+        dLocation._recallLocations();
     }
 
     public FileConfiguration getSaves() {
@@ -275,9 +277,11 @@ public class Denizen extends JavaPlugin {
             return;
         }
         try {
+            // Save dLocations to saves.yml
+            dLocation._saveLocations();
             savesConfig.save(savesConfigFile);
         } catch (IOException ex) {
-            Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save config to " + savesConfigFile, ex);
+            Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + savesConfigFile, ex);
         }
     }
 

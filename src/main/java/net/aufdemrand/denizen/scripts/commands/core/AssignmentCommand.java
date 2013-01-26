@@ -10,23 +10,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
- * <p>Announces a message to the server.</p>
- * 
- * <b>dScript Usage:</b><br>
- * <pre>ANNOUNCE ['message to announce']</pre>
- * 
- * <ol><tt>Arguments: [] - Required</ol></tt>
- * 
- * <ol><tt>['message to announce']</tt><br> 
- *         The message to send to the server. This will be seen by all Players.</ol>
- * 
- * 
- * <br><b>Example Usage:</b><br>
- * <ol><tt>
- *  - ANNOUNCE 'Today is Christmas!' <br>
- *  - ANNOUNCE "&#60;PLAYER.NAME> has completed '&#60;FLAG.P:currentQuest>'!" <br>
- *  - ANNOUNCE "&#60;GOLD>$$$ &#60;WHITE>- Make some quick cash at our &#60;RED>MINEA-SINO&#60;WHITE>!" 
- * </ol></tt>
  *
  * @author Jeremy Schroeder
  * 

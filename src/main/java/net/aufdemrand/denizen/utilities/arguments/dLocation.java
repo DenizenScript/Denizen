@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -11,13 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Press
- * Date: 1/25/13
- * Time: 7:31 PM
- * To change this template use File | Settings | File Templates.
- */
 public class dLocation extends Location {
 
     public static Map<String, dLocation> locations = new HashMap<String, dLocation>();
@@ -44,33 +36,45 @@ public class dLocation extends Location {
         return locations.containsKey(id.toLowerCase());
     }
 
-    public static void saveLocations() {
+    /**
+     * Called by Denizen internally on a server shutdown or /denizen save. Should probably
+     * not be called manually.
+     */
+    public static void _saveLocations() {
         List<String> loclist = new ArrayList<String>();
         for (Map.Entry<String, dLocation> entry : locations.entrySet())
-            loclist.add(entry.getValue().asString());
+            loclist.add(entry.getValue().toString());
 
         DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", loclist);
         DenizenAPI.getCurrentInstance().saveSaves();
     }
 
     /**
-     * Gets a dLocation from a string form of id;x;y;z;world
+     * Gets a dLocation Object from a string form of id,x,y,z,world
+     * or (location:)x,y,z,world. If including an Id, this location
+     * will persist and can be recalled at any time.
      *
      * @param string  the string
      * @return  a dLocation, or null if invalid
      *
      */
     public static dLocation valueOf(String string) {
-        String[] split = string.split(";");
+        // Strip prefix (ie. location:...)
+        if (string.split(":").length > 1)
+            string = string.split(":", 2)[1];
+        // Split values
+        String[] split = string.split(",");
+        // If 5 values, contains an id
         if (split.length == 5)
         try {
-            return new dLocation(Bukkit.getWorld(split[3]),
+            return new dLocation(split[0], Bukkit.getWorld(split[4]),
                     Double.valueOf(split[1]),
                     Double.valueOf(split[2]),
                     Double.valueOf(split[3]));
         } catch(Exception e) {
             return null;
         }
+        // If 4 values, standard id-less dScript location format
         else if (split.length == 4) {
             try {
                 return new dLocation(Bukkit.getWorld(split[3]),
@@ -85,16 +89,13 @@ public class dLocation extends Location {
     }
 
     /**
-     * Called on server startup or /denizen reload locations
+     * Called on server startup or /denizen reload locations. Should probably not be called manually.
      */
-    public static void recallLocations() {
+    public static void _recallLocations() {
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
+        locations.clear();
         for (String location : loclist) {
             dLocation loc = valueOf(location);
-            if (loc != null)
-                locations.put(location.split(";")[0], loc);
-            else
-                dB.log("<G>Invalid saved location in saves.yml: '<Y>" + location + "<G>'");
         }
     }
 
@@ -167,8 +168,7 @@ public class dLocation extends Location {
      * @return  a color coded context String of the dLocation
      *
      */
-    @Override
-    public String toString() {
+    public String debug() {
         return (Id != null ? "<G>Location='<A>" + Id + "(<Y>" + getBlockX() + "," + getBlockY()
                 + "," + getBlockZ() + "," + getWorld().getName() + "<A>)<G>'"
                 : "<G>Location='<Y>" + getBlockX() + "," + getBlockY()
@@ -176,15 +176,28 @@ public class dLocation extends Location {
     }
 
     /**
-     * <p>Converts the dLocation into a valid dScript location argument.</p>
+     * <p>Converts the dLocation into a valid dScript location argument, with prefix.</p>
      *
      * <tt>location:x,y,z,world</tt>
      *
      * @return  dScript location argument
      *
      */
-    public String as_dScript() {
-        return "location: " + getBlockX() + "," + getBlockY()
+    public String dScriptArgWithPrefix() {
+        return "location:" + getBlockX() + "," + getBlockY()
+                + "," + getBlockZ() + "," + getWorld().getName();
+    }
+
+    /**
+     * <p>Converts the dLocation into a valid dScript location argument, no prefix.</p>
+     *
+     * <tt>x,y,z,world</tt>
+     *
+     * @return  dScript location argument
+     *
+     */
+    public String dScriptArg() {
+        return getBlockX() + "," + getBlockY()
                 + "," + getBlockZ() + "," + getWorld().getName();
     }
 
@@ -194,10 +207,11 @@ public class dLocation extends Location {
      *
      * @return exact context of the dLocation
      */
-    public String asString() {
+    @Override
+    public String toString() {
         if (Id == null) return null;
-        return Id + ";" + getX() + ";" + getY()
-                + ";" + getZ() + ";" + getWorld().getName();
+        return Id + "," + getX() + "," + getY()
+                + "," + getZ() + "," + getWorld().getName();
     }
 
 }
