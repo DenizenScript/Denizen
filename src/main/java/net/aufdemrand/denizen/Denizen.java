@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.Citizens;
@@ -197,6 +198,8 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Save locations
+        dLocation.saveLocations();
 
         // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
         for (Player player : this.getServer().getOnlinePlayers())

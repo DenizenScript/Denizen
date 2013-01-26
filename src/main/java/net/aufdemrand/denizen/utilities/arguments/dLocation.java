@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,26 @@ public class dLocation extends Location {
     }
 
     /**
-     * Gets a dLocation from a string form of id;world;x;y;z
+     * Checks if there is a saved location with this Id.
+     *
+     * @param id  the Id to check
+     * @return  true if it exists, false if not
+     */
+    public static boolean isSavedLocation(String id) {
+        return locations.containsKey(id.toLowerCase());
+    }
+
+    public static void saveLocations() {
+        List<String> loclist = new ArrayList<String>();
+        for (Map.Entry<String, dLocation> entry : locations.entrySet())
+            loclist.add(entry.getValue().asString());
+
+        DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", loclist);
+        DenizenAPI.getCurrentInstance().saveSaves();
+    }
+
+    /**
+     * Gets a dLocation from a string form of id;x;y;z;world
      *
      * @param string  the string
      * @return  a dLocation, or null if invalid
@@ -149,7 +169,6 @@ public class dLocation extends Location {
      */
     @Override
     public String toString() {
-        if (getLocation() == null) return null;
         return (Id != null ? "<G>Location='<A>" + Id + "(<Y>" + getBlockX() + "," + getBlockY()
                 + "," + getBlockZ() + "," + getWorld().getName() + "<A>)<G>'"
                 : "<G>Location='<Y>" + getBlockX() + "," + getBlockY()
@@ -165,7 +184,6 @@ public class dLocation extends Location {
      *
      */
     public String as_dScript() {
-        if (getLocation() == null) return null;
         return "location: " + getBlockX() + "," + getBlockY()
                 + "," + getBlockZ() + "," + getWorld().getName();
     }
@@ -177,19 +195,9 @@ public class dLocation extends Location {
      * @return exact context of the dLocation
      */
     public String asString() {
-        if (getLocation() == null || Id == null) return null;
+        if (Id == null) return null;
         return Id + ";" + getX() + ";" + getY()
                 + ";" + getZ() + ";" + getWorld().getName();
     }
-
-    /**
-     * Retrieves the Bukkit Location associated.
-     *
-     * @return a Bukkit Location
-     */
-    public Location getLocation() {
-        return getLocation();
-    }
-
 
 }
