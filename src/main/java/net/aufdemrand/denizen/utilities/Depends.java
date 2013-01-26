@@ -8,6 +8,8 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class Depends {
@@ -19,22 +21,23 @@ public class Depends {
     public static Permission permissions = null;
     public static Chat chat = null;
 
-    // public static PLib plib = null;
+    public static ProtocolManager protocolManager = null;
     
-    public Depends() {
+    public void initialize() {
         setupEconomy();
         setupPermissions();
         setupChat();
         setupWorldGuard();
         setupCitizens();
-        setupPLib();
+        setupProtocolManager();
     }
 
-    private boolean setupPLib() {
-
-        // ...
-
-        return true;
+    private boolean setupProtocolManager() {
+		if (Bukkit.getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+           protocolManager = ProtocolLibrary.getProtocolManager();
+        }
+		
+		return protocolManager != null;
     }
 
     private boolean setupEconomy() {

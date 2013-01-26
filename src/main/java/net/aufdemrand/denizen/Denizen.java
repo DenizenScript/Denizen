@@ -18,6 +18,7 @@ import net.aufdemrand.denizen.utilities.RuntimeCompiler;
 import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
+import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -131,7 +132,9 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public void onEnable() {
-    	
+		// Activate dependencies
+		depends.initialize();
+		
         // Startup procedure
         dB.echoDebug(DebugElement.Footer);
         dB.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
@@ -159,8 +162,13 @@ public class Denizen extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NicknameTrait.class).withName("nickname"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(HealthTrait.class).withName("health"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ConstantsTrait.class).withName("constants"));
+		
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NameplateTrait.class).withName("nameplate"));
-
+		if(Depends.protocolManager != null) {
+			new PacketHelper(this);
+			dB.echoApproval("ProtocolLib hooked, traits with custom packages can be used!");
+		}
+		
         // Compile and load Denizen externals
         RuntimeCompiler compiler = new RuntimeCompiler(this);
         compiler.loader();

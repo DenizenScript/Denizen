@@ -32,6 +32,10 @@
 			<id>sk89q-repo</id>
 			<url>http://maven.sk89q.com/repo/</url>
 		</repository>
+		<repository>
+			<id>comphenix-rep</id>
+			<url>http://repo.comphenix.net/content/groups/public</url>
+		</repository>
 	</repositories>
 
 	<!-- Dependencies -->
@@ -88,11 +92,16 @@
 			<version>5.6.6-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-                <dependency>
-                  <groupId>org.json</groupId>
-                  <artifactId>org.json</artifactId>
-                  <version>chargebee-1.0</version>
-                </dependency>
+        <dependency>
+        	<groupId>org.json</groupId>
+        	<artifactId>org.json</artifactId>
+        	<version>chargebee-1.0</version>
+        </dependency>
+        <dependency>
+			<groupId>com.comphenix.protocol</groupId>
+			<artifactId>ProtocolLib</artifactId>
+			<version>2.1.0</version>
+		</dependency>
 	</dependencies>
 
 	<ciManagement>

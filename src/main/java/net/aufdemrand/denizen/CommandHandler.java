@@ -290,6 +290,44 @@ public class CommandHandler {
 			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s nickname is '" + trait.getNickname() + "'.");
 		else Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " does not have a nickname!");
 	}
+	
+	/*
+	 * NAMEPLATE / NAMETAG
+	 */
+	@Command(
+			aliases = { "npc" }, usage = "nameplate [--color color]", 
+			desc = "Sets the namepalte color of the NPC.", modifiers = { "nameplate", "nametag", "np", "nt" },
+			min = 1, max = 3, permission = "npc.nameplate")
+	@Requirements(selected = true, ownership = true)
+	public void nameplate(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+		if (!npc.hasTrait(NameplateTrait.class)) npc.addTrait(NameplateTrait.class);
+		NameplateTrait trait = npc.getTrait(NameplateTrait.class);
+		
+		if (args.hasValueFlag("color")) {
+			String colorString = args.getFlag("color").toUpperCase();
+			ChatColor color = null;
+			
+			try {
+				color = ChatColor.valueOf(colorString);
+			} catch( Exception e)  {}
+			
+			if(color != null) {
+				trait.setColor(color);
+				Messaging.send(sender, ChatColor.GREEN + "Nameplate color set.");
+			} else {
+				Messaging.send(sender, ChatColor.RED + "No color with name '" + colorString + "' found!");
+			}
+			
+			return;
+		} else if( args.hasFlag('r') ) {
+			trait.setColor(null);
+			Messaging.send(sender, ChatColor.GREEN + "Nameplate color reset.");
+		}
+
+		if (trait.hasColor())
+			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s nameplate color is " + trait.getColor() + trait.getColor().name() + ".");
+		else Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " does not have a nameplate color!");
+	}
 
 
 	/*
