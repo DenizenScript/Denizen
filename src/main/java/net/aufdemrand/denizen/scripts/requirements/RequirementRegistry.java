@@ -71,7 +71,7 @@ public class RequirementRegistry implements DenizenRegistry {
         new SneakingRequirement().activate().as("SNEAKING").withOptions("NONE", 0);
         new StormRequirement().activate().as("STORMING").withOptions("NONE", 0);
         new SunnyRequirement().activate().as("SUNNY").withOptions("NONE", 0);
-		new TimeRequirement().activate().as("TIME").withOptions("[DAWN, DAY, DUSK, NIGHT]", 0);
+		new TimeRequirement().activate().as("TIME").withOptions("[DAWN, DAY, DUSK, NIGHT]", 1);
         new WorldGuardRegionRequirement().activate().as("INREGION").withOptions("[NAME:regionname]", 1);
         dB.echoApproval("Loaded core requirements: " + instances.keySet().toString());
     }
