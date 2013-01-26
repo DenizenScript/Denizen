@@ -42,14 +42,26 @@ public class dLocation extends Location {
      */
     public static dLocation valueOf(String string) {
         String[] split = string.split(";");
+        if (split.length == 5)
         try {
-            return new dLocation(split[0].toLowerCase(), Bukkit.getWorld(split[1]),
+            return new dLocation(Bukkit.getWorld(split[3]),
+                    Double.valueOf(split[1]),
                     Double.valueOf(split[2]),
-                    Double.valueOf(split[3]),
-                    Double.valueOf(split[4]));
+                    Double.valueOf(split[3]));
         } catch(Exception e) {
             return null;
         }
+        else if (split.length == 4) {
+            try {
+                return new dLocation(Bukkit.getWorld(split[3]),
+                        Double.valueOf(split[0]),
+                        Double.valueOf(split[1]),
+                        Double.valueOf(split[2]));
+            } catch(Exception e) {
+                return null;
+            }
+        }
+        return null;
     }
 
     /**
@@ -112,6 +124,21 @@ public class dLocation extends Location {
         super(world, x, y, z);
         this.Id = id.toLowerCase();
         locations.put(Id, this);
+    }
+
+    /**
+     * Turns a world and coordinates into a dLocation, which has some helpful methods
+     * for working with dScript. If working with temporary locations, this is
+     * a much better method to use than {@link #dLocation(String, org.bukkit.World, double, double, double)}.
+     *
+     * @param world  the world in which the location resides
+     * @param x  x-coordinate of the location
+     * @param y  y-coordinate of the location
+     * @param z  z-coordinate of the location
+     *
+     */
+    public dLocation(World world, double x, double y, double z) {
+        super(world, x, y, z);
     }
 
     /**

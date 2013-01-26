@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -193,15 +192,13 @@ public class aH {
                 else dB.echoError("Invalid entity! '" + m.group(1) + "' could not be found.");
             }
 
-        } else if (m.matches()) {
-            if (m.group(1).toUpperCase().startsWith("NPC.")) {
+            else if (m.group(1).toUpperCase().startsWith("NPC.")) {
                 LivingEntity returnable = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(m.group(1).split("\\.")[1])).getBukkitEntity();
                 if (returnable != null) return returnable;
                 else dB.echoError("Invalid NPC! '" + m.group(1) + "' could not be found.");
             }
 
-        } else if (m.matches()) {
-            if (m.group(1).toUpperCase().startsWith("PLAYER.")) {
+            else if (m.group(1).toUpperCase().startsWith("PLAYER.")) {
                 LivingEntity returnable = getPlayerFrom(m.group(1).split("\\.")[1]);
                 if (returnable != null) return returnable;
                 else dB.echoError("Invalid Player! '" + m.group(1) + "' could not be found.");
@@ -393,14 +390,14 @@ public class aH {
      * @return a Bukkit Location, or null
      *
      */
-    public static Location getLocationFrom(String arg) {
+    public static dLocation getLocationFrom(String arg) {
         if (arg == null) return null;
         if (arg.split(":").length > 1)
             arg = arg.split(":", 2)[1];
         String[] num = arg.split(",");
-        Location location = null;
+        dLocation location = null;
         try {
-            location = new Location(Bukkit.getWorld(num[3]), Double.valueOf(num[0]), Double.valueOf(num[1]), Double.valueOf(num[2]));
+            location = new dLocation(Bukkit.getWorld(num[3]), Double.valueOf(num[0]), Double.valueOf(num[1]), Double.valueOf(num[2]));
         } catch (Exception e) {
             dB.echoError("Unable to build a location with this information! Provided: '" + arg + "'.");
             return null;
