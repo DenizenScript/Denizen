@@ -141,7 +141,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
         }
 
         // If there are quest listeners, invoke save() for each of them.
-        for (Map.Entry<String, AbstractListener> entry : getListenersFor(player).entrySet()) {
+        for (Map.Entry<String, AbstractListener> entry : getListenersFor((Player) player).entrySet()) {
             dB.log(player.getName() + " has a LISTENER in progress. Saving '" + entry.getKey() + "'.");
             entry.getValue().save();
         }
