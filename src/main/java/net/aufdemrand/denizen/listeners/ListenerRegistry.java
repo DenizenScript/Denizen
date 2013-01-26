@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.listeners.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +17,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -130,26 +130,30 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		}
 	}
 
+    public void deconstructPlayer(OfflinePlayer player ) {
+
+        // Clear previous MemorySection in saves
+        denizen.getSaves().set("Listeners." + player.getName(), null);
+
+        // If no quest listeners in progress, nothing else to do.
+        if (!listeners.containsKey(player.getName())) {
+            return;
+        }
+
+        // If there are quest listeners, invoke save() for each of them.
+        for (Map.Entry<String, AbstractListener> entry : getListenersFor(player).entrySet()) {
+            dB.log(player.getName() + " has a LISTENER in progress. Saving '" + entry.getKey() + "'.");
+            entry.getValue().save();
+        }
+
+        // Remove all listeners from memory for Player
+        listeners.remove(player);
+    }
+
 	@EventHandler
 	public void playerQuit(PlayerQuitEvent event) {
-
-		// Clear previous MemorySection in saves
-		denizen.getSaves().set("Listeners." + event.getPlayer().getName(), null);
-
-		// If no quest listeners in progress, nothing else to do.
-		if (!listeners.containsKey(event.getPlayer().getName())) {
-			return;
-		}
-
-		// If there are quest listeners, invoke save() for each of them.
-		for (Entry<String, AbstractListener> entry : getListenersFor(event.getPlayer()).entrySet()) {
-			dB.log(event.getPlayer().getName() + " has a LISTENER in progress. Saving '" + entry.getKey() + "'.");
-			entry.getValue().save();
-		}
-
-		// Remove all listeners from memory for Player
-		listeners.remove(event.getPlayer());
-	}
+        deconstructPlayer(event.getPlayer());
+    }
 
 	@Override
 	public boolean register(String registrationName, RegistrationableInstance listenerType) {

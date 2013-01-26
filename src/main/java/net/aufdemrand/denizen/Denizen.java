@@ -22,11 +22,13 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -195,6 +197,13 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
+        // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
+        for (Player player : this.getServer().getOnlinePlayers())
+            getListenerRegistry().deconstructPlayer(player);
+        for (OfflinePlayer player : this.getServer().getOfflinePlayers())
+            getListenerRegistry().deconstructPlayer(player);
+
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
