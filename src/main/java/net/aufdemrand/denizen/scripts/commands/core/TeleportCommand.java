@@ -6,10 +6,10 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -72,7 +72,7 @@ public class TeleportCommand extends AbstractCommand {
         //
         // This is the location that the entity/entities are being teleported to.
         //
-        Location teleportLocation = null;
+        dLocation teleportLocation = null;
 
         //
         // Process the arguments.
@@ -135,15 +135,14 @@ public class TeleportCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        Location teleportLocation = (Location) scriptEntry.getObject("location");
+        dLocation teleportLocation = (dLocation) scriptEntry.getObject("location");
         List<LivingEntity> teleportEntities = (List<LivingEntity>) scriptEntry.getObject("entities");
         List<NPC> teleportNPCs = (List<NPC>) scriptEntry.getObject("npcs");
 
         // Debug output
-        dB.echoApproval("Executing '" + getName() + "': "
-                + "Location='" + teleportLocation.getBlockX() + "," + teleportLocation.getBlockY()
-                + "," + teleportLocation.getBlockZ() + "," + teleportLocation.getWorld().getName() + "', "
-                + "Targets='" + teleportEntities.toString() + "/" + teleportNPCs.toString() + "'");
+        dB.echoApproval("<G>Executing '<Y>" + getName() + "<G>': "
+                + teleportLocation + ", "
+                + "Targets=<Y>'" + teleportEntities.toString() + "/" + teleportNPCs.toString() + "<G>'");
 
         for (LivingEntity entity : teleportEntities) {
             entity.teleport(teleportLocation);
