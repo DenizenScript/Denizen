@@ -126,7 +126,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
         String player = (String) scriptEntry.getObject("player");
 
         // Send information to debugger
-        dB.echoApproval("Executing '" + getName() + "': "
+        dB.echoApproval("<G>Executing '<Y>" + getName() + "': "
                 + "Name='" + name + "', "
                 + (index > 0 ? "Index='" + index + "', " : "")
                 + "Type='" + type + "', "
