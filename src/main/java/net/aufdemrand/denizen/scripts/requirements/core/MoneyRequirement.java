@@ -7,9 +7,6 @@ import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.List;
 
@@ -29,8 +26,7 @@ public class MoneyRequirement extends AbstractRequirement{
 		}
 		
 		if(Depends.economy != null) {
-			Economy economy = Depends.economy;
-			balance = economy.getBalance(context.getPlayer().getName());
+			balance = Depends.economy.getBalance(context.getPlayer().getName());
 			dB.echoDebug ("...player balance: " + balance);
 		} else {
 			dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
