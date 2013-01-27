@@ -46,7 +46,6 @@ public class dLocation extends Location {
             loclist.add(entry.getValue().toString());
 
         DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", loclist);
-        DenizenAPI.getCurrentInstance().saveSaves();
     }
 
     /**
