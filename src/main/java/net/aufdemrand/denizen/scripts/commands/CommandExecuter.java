@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ScriptEntryExecuteEvent;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
@@ -58,16 +59,16 @@ public class CommandExecuter {
 			 *     here, instead of requiring each command to take care of the argument.
 			 */
 
-			scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry)); // Replace tags
+			scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry, true)); // Replace tags
 
 			List<String> newArgs = new ArrayList<String>(); 
 
 			for (String arg : scriptEntry.getArguments()) {
 
 				// Fill player/off-line player
-				if (arg.toUpperCase().startsWith("PLAYER:")) {
+				if (aH.matchesValueArg("PLAYER", arg, aH.ArgumentType.String)) {
 					boolean foundNewPlayer = false;
-					dB.echoDebug("...replacing the Player link.");
+					dB.echoDebug("...replacing the linked Player.");
 					for (Player playa : Bukkit.getServer().getOnlinePlayers())
 						if (playa.getName().equalsIgnoreCase(arg.split(":")[1])) {
 							foundNewPlayer = true;
@@ -91,14 +92,14 @@ public class CommandExecuter {
                 }
 
 				// Fill Denizen with NPCID
-				else if (arg.toUpperCase().startsWith("NPCID:")) {
-					dB.echoDebug("...replacing the NPCID link.");
+				else if (aH.matchesValueArg("NPCID", arg, aH.ArgumentType.String)) {
+					dB.echoDebug("...replacing the linked NPCID.");
 					try {
 						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(arg.split(":")[1])) != null)
 							scriptEntry.setNPC(plugin.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(arg.split(":")[1]))));
-						dB.echoDebug("...DenizenNPC set to '%s'.", arg.split(":")[1]);
+						dB.echoDebug("...NPC set to '%s'.", arg.split(":")[1]);
 					} catch (Exception e) {
-						dB.echoError("NPCID specified could not be matched to a Denizen!");
+						dB.echoError("NPCID specified could not be matched to an NPC!");
 						scriptEntry.setNPC(null);
 					}
 				}
@@ -109,6 +110,8 @@ public class CommandExecuter {
 
 			// Add the arguments back to the scriptEntry.
 			scriptEntry.setArguments(newArgs);
+
+            scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry, false));
 
 			// Parse the rest of the arguments for execution. 
 			command.parseArgs(scriptEntry);

@@ -86,12 +86,17 @@ public class TagManager {
     	// no matching brackets pattern, return null
     	else return null;        
     }
-    
+
     public List<String> fillArguments(List<String> args, ScriptEntry scriptEntry) {
+        return fillArguments(args, scriptEntry, false);
+    }
+
+
+    public List<String> fillArguments(List<String> args, ScriptEntry scriptEntry, boolean instant) {
         List<String> filledArgs = new ArrayList<String>();
         if (args != null) {
             for (String argument : args) {
-                filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, false));
+                filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant));
             } 
         }
         return filledArgs;
