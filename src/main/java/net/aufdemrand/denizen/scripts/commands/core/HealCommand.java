@@ -101,13 +101,13 @@ public class HealCommand extends AbstractCommand {
         
         // Target is a Player
         } else {
-           // Set to max food level
-           if (amount == Integer.MAX_VALUE) ((Player) target).setFoodLevel(20);
-           // else, increase food levels
-           else ((Player) target).setFoodLevel(((Player) target).getFoodLevel() + amount);
+            Player player = (Player) target;
+			
+            // Set to max health
+            if (amount == Integer.MAX_VALUE) player.setHealth(player.getMaxHealth());
+            // else, increase health
+            else player.setHealth(player.getHealth() + amount);
         }
-    
-        return;
     }
     
     
