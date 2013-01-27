@@ -65,7 +65,6 @@ public class SwitchCommand extends AbstractCommand {
             if (aH.matchesDuration(arg)) {
                 duration = Integer.valueOf(arg.split(":")[1]);
                 dB.echoDebug(Messages.DEBUG_SET_DURATION, arg);
-                continue;
 
             } else if (aH.matchesValueArg("STATE", arg, ArgumentType.Custom)) {
                 if (aH.getStringFrom(arg).equalsIgnoreCase("ON") || aH.getStringFrom(arg).equalsIgnoreCase("OPEN")) {
@@ -78,19 +77,16 @@ public class SwitchCommand extends AbstractCommand {
                     switchState = SwitchState.TOGGLE;
                     dB.echoDebug("...set STATE: 'TOGGLE'.");
                 } else dB.echoError("Unknown STATE! Valid: ON, OFF, TOGGLE");
-                continue;
 
             } else if (aH.matchesLocation(arg)) {
                 interactLocation = aH.getLocationFrom(arg);
                 if (interactLocation != null) dB.echoError("...switch LOCATION now: '%s'", arg);
-                continue;
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }	
 
         if (interactLocation == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
-        
-        return;
+
     }
 
     @Override
@@ -116,12 +112,10 @@ public class SwitchCommand extends AbstractCommand {
                     else if (sState == SwitchState.ON && ((iLocation.getBlock().getData() & 0x8) > 0))
                         switchBlock(iLocation, SwitchState.OFF);
                     else if (sState == SwitchState.TOGGLE) switchBlock(iLocation, SwitchState.TOGGLE);
-                    return;
                 }
             }, duration * 20));
         }
-        
-        return;
+
     }
     
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
