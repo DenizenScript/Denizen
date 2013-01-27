@@ -6,7 +6,7 @@
 
 	<groupId>net.aufdemrand</groupId>
 	<artifactId>denizen</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <version>0.8-PRERELEASE</version>
     <name>Denizen</name>
 	<description>Scriptable NPCs for Citizens2</description>
