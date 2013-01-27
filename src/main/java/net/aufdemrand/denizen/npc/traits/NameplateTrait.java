@@ -85,7 +85,7 @@ public class NameplateTrait extends Trait implements Listener {
 	}
 
 	public void refreshTag(NPC npc) {
-		if( Depends.protocolManager == null ) return;
+		if( Depends.protocolManager == null || !npc.isSpawned() ) return;
 		
 		int maxDistance = Bukkit.getServer().getViewDistance() * 16;
 		List<Player> viewers = new ArrayList<Player>();
