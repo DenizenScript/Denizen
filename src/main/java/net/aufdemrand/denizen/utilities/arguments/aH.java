@@ -8,6 +8,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -488,10 +489,10 @@ public class aH {
      * @return a Bukkit OfflinePlayer object, or null
      *
      */
-    public static Player getOfflinePlayerFrom(String arg) {
+    public static OfflinePlayer getOfflinePlayerFrom(String arg) {
         if (arg.split(":").length >= 2)
             arg = arg.split(":", 2)[1];
-        for (Player player : Bukkit.getOnlinePlayers())
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers())
             if (player.getName().equalsIgnoreCase(arg)) return player;
         dB.echoError("OfflinePlayer '" + arg + "' is invalid, or has never logged in to this server.");
         return null;

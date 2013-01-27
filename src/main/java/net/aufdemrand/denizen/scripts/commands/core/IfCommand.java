@@ -69,8 +69,8 @@ public class IfCommand extends AbstractCommand {
                     arg = arg.substring(1);
                 }
                 // Replace symbol-operators/bridges with ENUM value for matching
-                arg = arg.replace("==", "EQUALS").replace("<", "LESS").replace(">", "MORE")
-                        .replace(">=", "ORMORE").replace("<=", "ORLESS")
+                arg = arg.replace("==", "EQUALS").replace(">=", "ORMORE").replace("<=", "ORLESS")
+                		.replace("<", "LESS").replace(">", "MORE")
                         .replace("||", "OR").replace("&&", "AND");
                 // Set bridge
                 if (aH.matchesArg("OR", arg) || aH.matchesArg("AND", arg)) {

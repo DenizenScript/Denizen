@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Location extends org.bukkit.Location {
+public class Location extends org.bukkit.Location implements dScriptArgument {
 
     public static Map<String, Location> locations = new HashMap<String, Location>();
 
@@ -33,6 +33,17 @@ public class Location extends org.bukkit.Location {
      */
     public static boolean isSavedLocation(String id) {
         return locations.containsKey(id.toLowerCase());
+    }
+
+    /**
+     * Called on server startup or /denizen reload locations. Should probably not be called manually.
+     */
+    public static void _recallLocations() {
+        List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
+        locations.clear();
+        for (String location : loclist) {
+            Location loc = valueOf(location);
+        }
     }
 
     /**
@@ -86,19 +97,9 @@ public class Location extends org.bukkit.Location {
         return null;
     }
 
-    /**
-     * Called on server startup or /denizen reload locations. Should probably not be called manually.
-     */
-    public static void _recallLocations() {
-        List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
-        locations.clear();
-        for (String location : loclist) {
-            Location loc = valueOf(location);
-        }
-    }
-
 
     private String Id;
+    private String prefix = "Location";
 
     /**
      * Creates a new saved Location. dLocations should only be given an 'Id'
@@ -158,59 +159,41 @@ public class Location extends org.bukkit.Location {
         super(world, x, y, z);
     }
 
-    /**
-     * Converts the Location into a dB friendly format, including standard color codes.
-     *
-     * @return  a color coded context String of the Location
-     *
-     */
-    //@Override
+    @Override
+    public String getDefaultPrefix() {
+        return prefix;
+    }
+
+    @Override
     public String debug() {
-        return (Id != null ? "<G>Location='<A>" + Id + "(<Y>" + getBlockX() + "," + getBlockY()
+        return (Id != null ? "<G>" + prefix + "='<A>" + Id + "(<Y>" + getBlockX() + "," + getBlockY()
                 + "," + getBlockZ() + "," + getWorld().getName() + "<A>)<G>'"
-                : "<G>Location='<Y>" + getBlockX() + "," + getBlockY()
+                : "<G>" + prefix + "='<Y>" + getBlockX() + "," + getBlockY()
                 + "," + getBlockZ() + "," + getWorld().getName() + "<G>'");
     }
 
-    /**
-     * <p>Converts the Location into a valid dScript location argument, with prefix.</p>
-     *
-     * <tt>location:x,y,z,world</tt>
-     *
-     * @return  dScript location argument
-     *
-     */
-    //@Override
-    public String dScriptArgWithPrefix() {
-        return "location:" + getBlockX() + "," + getBlockY()
-                + "," + getBlockZ() + "," + getWorld().getName();
-    }
-
-    /**
-     * <p>Converts the Location into a valid dScript location argument, no prefix.</p>
-     *
-     * <tt>x,y,z,world</tt>
-     *
-     * @return  dScript location argument
-     *
-     */
-    //@Override
+    @Override
     public String dScriptArg() {
         return getBlockX() + "," + getBlockY()
                 + "," + getBlockZ() + "," + getWorld().getName();
     }
 
-    /**
-     * Formats the Location in a way in which it can be 'serialized' and later retrieved with
-     * {@link #valueOf(String)}. The Location must have an Id.
-     *
-     * @return exact context of the Location
-     */
-    //@Override
+    @Override
+    public String dScriptArgValue() {
+        return getDefaultPrefix().toLowerCase() + ":" + dScriptArg();
+    }
+
+    @Override
     public String toString() {
         if (Id == null) return null;
         return Id + "," + getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName();
+    }
+
+    @Override
+    public dScriptArgument setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
     }
 
 }
