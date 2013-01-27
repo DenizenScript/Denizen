@@ -4,9 +4,9 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
-import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -72,7 +72,7 @@ public class TeleportCommand extends AbstractCommand {
         //
         // This is the location that the entity/entities are being teleported to.
         //
-        dLocation teleportLocation = null;
+        Location teleportLocation = null;
 
         //
         // Process the arguments.
@@ -135,7 +135,7 @@ public class TeleportCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dLocation teleportLocation = (dLocation) scriptEntry.getObject("location");
+        Location teleportLocation = (Location) scriptEntry.getObject("location");
         List<LivingEntity> teleportEntities = (List<LivingEntity>) scriptEntry.getObject("entities");
         List<NPC> teleportNPCs = (List<NPC>) scriptEntry.getObject("npcs");
 

@@ -63,10 +63,9 @@ public class CommandExecuter {
 			List<String> newArgs = new ArrayList<String>(); 
 
 			for (String arg : scriptEntry.getArguments()) {
-                arg = arg.toUpperCase();
 
 				// Fill player/off-line player
-				if (arg.startsWith("PLAYER:")) {
+				if (arg.toUpperCase().startsWith("PLAYER:")) {
 					boolean foundNewPlayer = false;
 					dB.echoDebug("...replacing the Player link.");
 					for (Player playa : Bukkit.getServer().getOnlinePlayers())
@@ -92,7 +91,7 @@ public class CommandExecuter {
                 }
 
 				// Fill Denizen with NPCID
-				else if (arg.startsWith("NPCID:")) {
+				else if (arg.toUpperCase().startsWith("NPCID:")) {
 					dB.echoDebug("...replacing the NPCID link.");
 					try {
 						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(arg.split(":")[1])) != null)

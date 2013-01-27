@@ -390,14 +390,14 @@ public class aH {
      * @return a Bukkit Location, or null
      *
      */
-    public static dLocation getLocationFrom(String arg) {
+    public static Location getLocationFrom(String arg) {
         if (arg == null) return null;
         if (arg.split(":").length > 1)
             arg = arg.split(":", 2)[1];
         String[] num = arg.split(",");
-        dLocation location = null;
+        Location location = null;
         try {
-            location = new dLocation(Bukkit.getWorld(num[3]), Double.valueOf(num[0]), Double.valueOf(num[1]), Double.valueOf(num[2]));
+            location = new Location(Bukkit.getWorld(num[3]), Double.valueOf(num[0]), Double.valueOf(num[1]), Double.valueOf(num[2]));
         } catch (Exception e) {
             dB.echoError("Unable to build a location with this information! Provided: '" + arg + "'.");
             return null;
