@@ -81,7 +81,7 @@ public class NicknameTrait extends Trait implements Listener {
      * @return true if NPC has a nickname
      */
 	public boolean hasNickname() {
-	    return (nickname != null) ? true : false;
+	    return (nickname != null);
 	}
 
 }

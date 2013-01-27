@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ActionHandler {
 
-    Denizen denizen;
+    final Denizen denizen;
     
     public ActionHandler(Denizen denizen) {
         this.denizen = denizen;

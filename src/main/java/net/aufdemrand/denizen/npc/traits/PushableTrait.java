@@ -157,7 +157,6 @@ public class PushableTrait extends Trait implements Listener {
     protected void navigateBack() {
         if (npc.getNavigator().isNavigating()) {
             pushed = false;
-            return;
         } else if (pushed) {
             pushed = false; // Avoids NPCCompleteDestination from triggering
             npc.getNavigator().setTarget(returnLocation);

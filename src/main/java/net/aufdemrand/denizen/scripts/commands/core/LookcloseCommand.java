@@ -47,19 +47,16 @@ public class LookcloseCommand extends AbstractCommand {
 			if (aH.matchesArg("REALISTIC", arg)) {
 				realistic = true;
 				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
-				continue;
 
             }   else if (aH.matchesValueArg("RANGE", arg, ArgumentType.Double)) {
                 range = aH.getDoubleFrom(arg);
                 dB.echoDebug(Messages.DEBUG_SET_RANGE, String.valueOf(range));
-                continue;
-				
-			}   else if (aH.matchesToggle(arg)) {
+
+            }   else if (aH.matchesToggle(arg)) {
                 toggle = aH.getBooleanFrom(arg);
                 dB.echoDebug(Messages.DEBUG_TOGGLE, String.valueOf(toggle));
-                continue;
 
-			}	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            }	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 	}
 	

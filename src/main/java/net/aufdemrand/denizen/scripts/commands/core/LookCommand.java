@@ -78,8 +78,7 @@ public class LookCommand extends AbstractCommand {
 			else if (aH.matchesLocation(arg)) {
 				theLocation = aH.getLocationFrom(arg);
 				if (theLocation != null) dB.echoError("...switch location now at bookmark '%s'", arg);
-				continue;
-			}
+            }
 			
 			// If argument is a Direction
 			else {

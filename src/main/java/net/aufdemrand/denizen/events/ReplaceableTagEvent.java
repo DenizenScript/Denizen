@@ -158,7 +158,7 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean hasNameContext() {
-        return nameContext == null ? false : true;
+        return nameContext != null;
     }
 
     public String getType() {
@@ -166,7 +166,7 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean hasType() {
-        return type == null ? false : true;
+        return type != null;
     }
 
     public String getTypeContext() {
@@ -174,7 +174,7 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean hasTypeContext() {
-        return typeContext == null ? false : true;
+        return typeContext != null;
     }
 
     public String getSubType() {
@@ -182,7 +182,7 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean hasSubType() {
-        return subType == null ? false : true;
+        return subType != null;
     }
 
     public String getSubTypeContext() {
@@ -190,7 +190,7 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean hasSubTypeContext() {
-        return subTypeContext == null ? false : true;
+        return subTypeContext != null;
     }
 
     public String getValue() {
@@ -198,7 +198,7 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean hasValue() {
-        return value == null ? false : true;
+        return value != null;
     }
 
     public String getValueContext() {
@@ -206,7 +206,7 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean hasValueContext() {
-        return valueContext == null ? false : true;
+        return valueContext != null;
     }
 
     public String getAlternative() {
@@ -214,7 +214,7 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean hasAlternative() {
-        return alternative == null ? false : true;
+        return alternative != null;
     }
 
     public HandlerList getHandlers() {

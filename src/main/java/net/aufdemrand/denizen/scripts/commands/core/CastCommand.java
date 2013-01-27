@@ -127,7 +127,6 @@ public class CastCommand extends AbstractCommand{
                         targets.add(aH.getLivingEntityFrom(arg));
                     } else  {
                         dB.echoError("Invalid TARGET type or unavailable TARGET object!");
-                        continue;
                     }
                 }
             }

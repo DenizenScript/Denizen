@@ -30,26 +30,22 @@ public class ExecuteCommand extends AbstractCommand {
 				executeType = ExecuteType.AS_PLAYER;
 				target = scriptEntry.getPlayer();
 				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
-				continue;
 
-			}   else if (aH.matchesArg("ASOPPLAYER, ASOP, AS_OP, AS_OP_PLAYER", arg)) {
+            }   else if (aH.matchesArg("ASOPPLAYER, ASOP, AS_OP, AS_OP_PLAYER", arg)) {
 				executeType = ExecuteType.AS_OP;
 				target = scriptEntry.getPlayer();
 				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
-				continue;
 
-			}   else if (aH.matchesArg("ASNPC, AS_NPC", arg)) {
+            }   else if (aH.matchesArg("ASNPC, AS_NPC", arg)) {
 				executeType = ExecuteType.AS_NPC;
 				target = scriptEntry.getNPC().getEntity();
 				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
-				continue;
 
-			}   else if (aH.matchesArg("ASSERVER, AS_SERVER", arg)) {
+            }   else if (aH.matchesArg("ASSERVER, AS_SERVER", arg)) {
 				executeType = ExecuteType.AS_SERVER;
 				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
-				continue;
 
-			}	else {
+            }	else {
 				command = arg;
 				dB.echoDebug(Messages.DEBUG_SET_COMMAND, arg);
 			}
@@ -90,8 +86,7 @@ public class ExecuteCommand extends AbstractCommand {
 			
 		case AS_SERVER:
 			denizen.getServer().dispatchCommand(denizen.getServer().getConsoleSender(), command);
-			return;
-		}		
+        }
 	}
 	
 }

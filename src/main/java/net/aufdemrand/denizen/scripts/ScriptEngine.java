@@ -205,8 +205,7 @@ public class ScriptEngine {
             playerTaskQueue.put(player, scriptCommandList);
             break;
         }
-    
-        return;
+
     }
 
 
@@ -233,8 +232,7 @@ public class ScriptEngine {
             npcQueue.put(npc, scriptCommandList);
             break;
         }
-    
-        return;
+
     }
 
 
@@ -465,7 +463,6 @@ public class ScriptEngine {
         	break;
         }
 
-        return;
     }
 
     
@@ -488,7 +485,6 @@ public class ScriptEngine {
             break;
         }
 
-        return;
     }
 
 }

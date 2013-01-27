@@ -65,7 +65,6 @@ public class FeedCommand extends AbstractCommand {
             if (aH.matchesQuantity(arg) || aH.matchesValueArg("amt", arg, ArgumentType.Integer)) {
                 amount = aH.getIntegerFrom(arg);
                 dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(amount));
-                continue;
 
             } else if (aH.matchesValueArg("target", arg, ArgumentType.String)) {
                 try {
@@ -74,7 +73,6 @@ public class FeedCommand extends AbstractCommand {
                 } catch (Exception e) {
                     dB.echoError("Invalid TARGET! Valid: NPC, PLAYER");
                 }
-                continue;
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -84,8 +82,7 @@ public class FeedCommand extends AbstractCommand {
         else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
         // If TARGET is NPC, set entity.
         else if (targetType == TargetType.NPC) target = scriptEntry.getNPC().getEntity();
-        
-        return;
+
     }
 
     
@@ -108,8 +105,7 @@ public class FeedCommand extends AbstractCommand {
            // else, increase food levels
            else ((Player) target).setFoodLevel(((Player) target).getFoodLevel() + amount);
         }
-    
-        return;
+
     }
     
     

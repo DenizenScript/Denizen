@@ -1,10 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.DenizenNPC;
@@ -15,6 +10,10 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable2;
 import net.citizensnpcs.trait.waypoint.Waypoints;
+import org.bukkit.entity.Player;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Pauses/Resumes a NPC's various parts.
@@ -56,23 +55,21 @@ public class PauseCommand extends AbstractCommand {
 			if (aH.matchesDuration(arg)) {
 				duration = aH.getIntegerFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_DURATION, arg);
-				continue;
 
-			}	else if (aH.matchesArg("WAYPOINTS", arg) || aH.matchesArg("NAVIGATION", arg)
+            }	else if (aH.matchesArg("WAYPOINTS", arg) || aH.matchesArg("NAVIGATION", arg)
 					|| aH.matchesArg("ACTIVITY", arg) || aH.matchesArg("WAYPOINTS", arg)) {
 			    // Could also maybe do for( ... : PauseType.values()) ... not sure which is faster. 
 				pauseType = PauseType.valueOf(arg.toUpperCase());
 				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
-				continue;
 
-			}	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            }	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}	
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-		pause(denizenNPC, pauseType, scriptEntry.getCommand().equalsIgnoreCase("RESUME") ? false : true);
+		pause(denizenNPC, pauseType, !scriptEntry.getCommand().equalsIgnoreCase("RESUME"));
 
 		// If duration...
 		if (duration > 0) {
@@ -108,8 +105,7 @@ public class PauseCommand extends AbstractCommand {
 
 		case NAVIGATION:
 			// TODO: Finish this
-			return;
-		}
+        }
 
 	}
 

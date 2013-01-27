@@ -91,7 +91,6 @@ public class TagManager {
         return fillArguments(args, scriptEntry, false);
     }
 
-
     public List<String> fillArguments(List<String> args, ScriptEntry scriptEntry, boolean instant) {
         List<String> filledArgs = new ArrayList<String>();
         if (args != null) {

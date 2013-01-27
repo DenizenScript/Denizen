@@ -69,8 +69,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 		if (type == null) {
 			dB.echoError("Missing TYPE argument! Valid: BUILD, COLLECT, BREAK");
 			cancel();
-			return;
-		}
+        }
 	}
 
 	@Override

@@ -68,9 +68,8 @@ public class ModifyBlockCommand extends AbstractCommand{
 		    if (aH.matchesLocation(arg)){
 		    	location = aH.getLocationFrom(arg);
 		    	dB.echoDebug("...location set to: " + location);
-		    	continue;
-		    	
-		    }
+
+            }
 			
 			else if (aH.matchesValueArg("MATERIAL, M", arg, ArgumentType.Custom)) {
 				if (aH.matchesValueArg("MATERIAL", arg, ArgumentType.Integer)) material = Material.getMaterial(aH.getIntegerFrom(arg));
@@ -78,30 +77,26 @@ public class ModifyBlockCommand extends AbstractCommand{
 				
 				if (material != null) dB.echoDebug("...material set to " + material);
 				else dB.echoDebug("...material not valid.");
-				continue;
-				
-			}
+
+            }
 			
 			else if (aH.matchesValueArg("RADIUS, R", arg, ArgumentType.Integer)) {
 				radius = aH.getIntegerFrom(arg);
 				dB.echoDebug("...radius set to " + radius);
-				continue;
-				
-			}
+
+            }
 			
 			else if (aH.matchesValueArg("HEIGHT, H", arg, ArgumentType.Integer)) {
 				height = aH.getIntegerFrom(arg);
 				dB.echoDebug("...height set to " + height);
-				continue;
-				
-			}
+
+            }
 			
 			else if (aH.matchesValueArg("DEPTH, D", arg, ArgumentType.Integer)) {
 				depth = aH.getIntegerFrom(arg);
 				dB.echoDebug("...depth set to " + depth);
-				continue;
-				
-			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+
+            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 	}
 

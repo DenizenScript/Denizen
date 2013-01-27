@@ -11,9 +11,9 @@ import java.util.List;
 
 public class ScriptRequirement extends AbstractRequirement{
 
-	private enum ScriptCheck { FINISHED, FAILED, STEP };
-	
-	@Override
+	private enum ScriptCheck { FINISHED, FAILED, STEP }
+
+    @Override
 	public void onEnable() {
 		//nothing to do here
 	}

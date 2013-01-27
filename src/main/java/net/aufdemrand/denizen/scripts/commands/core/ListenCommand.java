@@ -81,29 +81,24 @@ public class ListenCommand extends AbstractCommand {
 			if (aH.matchesArg("CANCEL", arg)) {
 				listenAction = ListenAction.CANCEL;
 				dB.echoDebug("...marked to CANCEL.");
-				continue;
 
-			}   else if (aH.matchesScript(arg)) {
+            }   else if (aH.matchesScript(arg)) {
 				script = aH.getStringFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
-				continue;
 
-			}   else if (aH.matchesArg("FINISH", arg)) {
+            }   else if (aH.matchesArg("FINISH", arg)) {
 				listenAction = ListenAction.FINISH;
 				dB.echoDebug("...marked to FINISH.");
-				continue;
 
-			}   else if (aH.matchesValueArg("ID", arg, ArgumentType.String)) {
+            }   else if (aH.matchesValueArg("ID", arg, ArgumentType.String)) {
 				id = aH.getStringFrom(arg);
 				dB.echoDebug("...ID set: '%s'", id);
-				continue;
 
-			}   else if (denizen.getListenerRegistry().get(arg) != null) {
+            }   else if (denizen.getListenerRegistry().get(arg) != null) {
 				listenerType = arg;
 				dB.echoDebug("...TYPE set: '%s'", listenerType);
-				continue;
 
-			}	else listenerArguments.add(arg);
+            }	else listenerArguments.add(arg);
 		}
 
 		if (id == null) 

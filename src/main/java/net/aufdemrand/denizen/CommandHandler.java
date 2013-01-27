@@ -496,9 +496,8 @@ public class CommandHandler {
 			paginator.addLine("<a>" + quest.getListenerType() + "  <b>" + quest.getListenerId());
 
 		paginator.sendPage(sender, args.getInteger(1, 1));
-		return;
 
-	}
+    }
 
 
 	/*
@@ -540,8 +539,7 @@ public class CommandHandler {
 		Messaging.send(sender, "<b>Example: /denizen reload scripts");
 		Messaging.send(sender, "<f>Use '-a' to reload all parts.");
 		Messaging.send(sender, "");
-		return;
-	}
+    }
 
 
 	/*

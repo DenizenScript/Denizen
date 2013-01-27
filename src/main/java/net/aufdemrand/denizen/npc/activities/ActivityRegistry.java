@@ -1,21 +1,21 @@
 package net.aufdemrand.denizen.npc.activities;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
+import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.activities.core.TaskActivity;
 import net.aufdemrand.denizen.npc.activities.core.WanderActivity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+
 public class ActivityRegistry implements DenizenRegistry {
 
-    public Denizen denizen;
+    public final Denizen denizen;
 
     private Map<String, AbstractActivity> instances = new HashMap<String, AbstractActivity>();
 

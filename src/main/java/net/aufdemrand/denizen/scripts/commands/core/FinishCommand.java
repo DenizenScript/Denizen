@@ -50,9 +50,8 @@ public class FinishCommand extends AbstractCommand {
 			if (aH.matchesScript(arg)) {
 				scriptName = aH.getStringFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
-				continue;
-				
-			}	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+
+            }	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 		
 		if (playerName == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);

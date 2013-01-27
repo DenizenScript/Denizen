@@ -50,12 +50,10 @@ public class EngageCommand extends AbstractCommand {
 			if (aH.matchesInteger(arg) || aH.matchesDuration(arg)) {
 				duration = aH.getIntegerFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_DURATION, arg);
-				continue;
-				
-			} else if (aH.matchesArg("NOW", arg)) {
-			    continue;
-			
-			}	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT);
+
+            } else if (aH.matchesArg("NOW", arg)) {
+
+            }	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT);
 		}	
 
 	}

@@ -169,9 +169,9 @@ public class Utilities {
 	 * @return	The list of NPCs within the max range.
 	 */
 	public static List<NPC> getClosestNPCs (Location location, int maxRange) {
-		List<NPC> closestNPCs = new ArrayList<NPC> ();;
+		List<NPC> closestNPCs = new ArrayList<NPC> ();
 
-		Iterator<NPC>	it = CitizensAPI.getNPCRegistry().iterator();
+        Iterator<NPC>	it = CitizensAPI.getNPCRegistry().iterator();
 		while (it.hasNext ()) {
 			NPC	npc = it.next ();
 			if (npc.isSpawned()			&&

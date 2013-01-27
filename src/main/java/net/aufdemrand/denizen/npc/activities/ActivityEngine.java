@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 
 public class ActivityEngine implements Listener {
 
-	Denizen denizen;
+	final Denizen denizen;
 
 	// TODO: This requires some rewriting before the launch of 0.8.
 	

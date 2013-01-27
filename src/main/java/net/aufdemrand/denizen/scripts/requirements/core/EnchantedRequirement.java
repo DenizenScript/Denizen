@@ -11,9 +11,9 @@ import java.util.List;
 
 public class EnchantedRequirement extends AbstractRequirement{
 
-	private enum CheckType { ITEMINHAND };
+	private enum CheckType { ITEMINHAND }
 
-	@Override
+    @Override
 	public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		
 		boolean outcome = false;

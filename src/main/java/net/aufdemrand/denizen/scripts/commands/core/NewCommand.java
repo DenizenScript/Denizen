@@ -112,25 +112,21 @@ public class NewCommand extends AbstractCommand implements Listener {
 			if (aH.matchesArg("ITEMSTACK, ENTITY, NPC", arg)) {
 				objectType = ObjectType.valueOf(arg.toUpperCase());
 				dB.echoDebug("...set NEW object type: '%s'", arg.toUpperCase());
-				continue;
 
-			}   else if (aH.matchesValueArg("ID", arg, ArgumentType.String)) {
+            }   else if (aH.matchesValueArg("ID", arg, ArgumentType.String)) {
 				id = aH.getStringFrom(arg);
 				dB.echoDebug("...set ID: '%s'", id);
-				continue;
-				
-				// Arguments for ObjectType.ITEMSTACK
+
+                // Arguments for ObjectType.ITEMSTACK
 			} else if (aH.matchesItem(arg)) {
 				item = aH.getItemFrom(arg);
 				dB.echoDebug("...set ITEM: '%s'", aH.getStringFrom(arg));
-				continue;
-				
-			} else if (aH.matchesQuantity(arg)) {
+
+            } else if (aH.matchesQuantity(arg)) {
 				qty = aH.getIntegerFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(qty));
-				continue;
-				
-				// Arguments for ObjectType.ENTITY
+
+                // Arguments for ObjectType.ENTITY
 			//  } else if (aH.matchesEntity(arg)) {
 				
 
@@ -155,16 +151,14 @@ public class NewCommand extends AbstractCommand implements Listener {
 			item.setAmount(qty);
 			// Save objects to the scriptEntry that are required for ItemStack creation
 			scriptEntry.addObject("itemstack", item);
-			return;
-			
-		} else if (objectType == ObjectType.ENTITY) {
+
+        } else if (objectType == ObjectType.ENTITY) {
 			if (entity == null) 
 				throw new InvalidArgumentsException("Must specify a valid ENTITY.");
 			// Save objects to the scriptEntry that are required for Entity creation
 			scriptEntry.addObject("entity", entity);
-			return;
-			
-		} else if (objectType == ObjectType.NPC) {
+
+        } else if (objectType == ObjectType.NPC) {
 			//scriptEntry.addObject(npcType, object)
 
 		}
