@@ -392,17 +392,11 @@ public class aH {
      *
      */
     public static Location getLocationFrom(String arg) {
-        if (arg == null) return null;
-        if (arg.split(":").length > 1)
-            arg = arg.split(":", 2)[1];
-        String[] num = arg.split(",");
-        Location location = null;
-        try {
-            location = new Location(Bukkit.getWorld(num[3]), Double.valueOf(num[0]), Double.valueOf(num[1]), Double.valueOf(num[2]));
-        } catch (Exception e) {
+        // Build location argument from dScript argument
+        Location location = Location.valueOf(arg);
+        // Check if location returned as null
+        if (location == null)
             dB.echoError("Unable to build a location with this information! Provided: '" + arg + "'.");
-            return null;
-        }
         return location;
     }
 
@@ -655,29 +649,6 @@ public class aH {
      *
      */
     public static double getSecondsFrom(String arg) {
-        final Pattern matchesTimePtrn = Pattern.compile("(?:.+:|)(\\d+(?:(|\\.\\d+)))(|t|m|s|h|d)", Pattern.CASE_INSENSITIVE);
-        Matcher m = matchesTimePtrn.matcher(arg);
-        if (m.matches()) {
-            if (m.group().toUpperCase().endsWith("t"))
-                // Matches TICKS, so 1 tick = .05 seconds
-                return (Double.valueOf(m.group(1)) * 0.05);
-
-            else if (m.group().toUpperCase().endsWith("d"))
-                // Matches DAYS, so 1 day = 86400 seconds
-                return (Double.valueOf(m.group(1)) * 86400);
-
-            else if (m.group().toUpperCase().endsWith("m"))
-                // Matches MINUTES, so 1 minute = 60 seconds
-                return (Double.valueOf(m.group(1)) * 60);
-
-            else if (m.group().toUpperCase().endsWith("h"))
-                // Matches HOURS, so 1 hour = 3600 seconds
-                return (Double.valueOf(m.group(1)) * 3600);
-
-            else // seconds
-                return (Double.valueOf(m.group(1)));
-        }
-
         return 0;
     }
 
