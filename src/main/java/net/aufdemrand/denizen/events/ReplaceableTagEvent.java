@@ -93,6 +93,8 @@ public class ReplaceableTagEvent extends Event {
         if (tag.contains(":")) {
             String inQuestion = tag.split(":", 2)[1];
             if (inQuestion.contains("[")) {
+                // TODO: Allow for this: flag.p:Cookies[1].asint
+                // TODO: Right now, you have to do this: flag.p:Cookies.asint[1]
                 // Get index
                 value = inQuestion.split("\\[", 2)[0].trim();
                 valueContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
