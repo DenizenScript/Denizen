@@ -30,6 +30,7 @@ public class TagManager {
 
     public void registerCoreTags() {
         new PlayerTags(denizen);
+        new OfflinePlayerTags(denizen);
         new ColorTags(denizen);
         new FlagTags(denizen);
         new BookmarkTags(denizen);
