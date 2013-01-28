@@ -5,6 +5,8 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
+
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -36,7 +38,7 @@ import org.bukkit.event.HandlerList;
 public class ReplaceableTagEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private Player player;
+    private OfflinePlayer player;
     private dNPC npc;
 
     private boolean instant = false;
@@ -60,7 +62,7 @@ public class ReplaceableTagEvent extends Event {
     private String replaced = null;
 
 
-    public ReplaceableTagEvent(Player player, dNPC npc, String tag) {
+    public ReplaceableTagEvent(OfflinePlayer player, dNPC npc, String tag) {
 
         // TODO: Use REGEX and MATCHER/GROUPS to simplify this code (might be faster?)
 
@@ -76,7 +78,8 @@ public class ReplaceableTagEvent extends Event {
 
         // check if tag has base context
         if (tag.startsWith("[") || tag.startsWith(" [")) {
-            baseContext = tag.split("\\]", 2)[0].split("\\[", 2)[1].trim();
+            baseContext = tag.split("\\]", 2)[0].split("\\[", 2)[1]
+            			  .split("\\.", 2)[1].trim();
             dB.log(baseContext);
             parseContext();
             tag = tag.split("\\]", 2)[1];
@@ -231,7 +234,7 @@ public class ReplaceableTagEvent extends Event {
         return npc;
     }
 
-    public Player getPlayer() {
+    public OfflinePlayer getPlayer() {
         return player;
     }
 
@@ -258,16 +261,20 @@ public class ReplaceableTagEvent extends Event {
 
     private void parseContext() {
         if (baseContext == null || baseContext.length() == 1) return;
-        LivingEntity entity;
-        for (String context : baseContext.split("\\|")) {
-            entity = aH.getLivingEntityFrom(context);
-            if (entity != null) {
-                if (CitizensAPI.getNPCRegistry().isNPC(entity))
-                    npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+        OfflinePlayer offlinePlayer;
 
-                else if (entity instanceof Player) {
-                    player = (Player) entity;
-                }
+        for (String context : baseContext.split("\\|")) {
+        	
+        	dB.echoApproval("The context is: " + context);
+        	offlinePlayer = aH.getOfflinePlayerFrom(context); 
+            if (offlinePlayer != null)
+            	player = aH.getOfflinePlayerFrom(context);
+            else {
+                LivingEntity entity;
+                entity = aH.getLivingEntityFrom(context);
+              
+                if (CitizensAPI.getNPCRegistry().isNPC(entity))
+                	npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
             }
         }
     }
