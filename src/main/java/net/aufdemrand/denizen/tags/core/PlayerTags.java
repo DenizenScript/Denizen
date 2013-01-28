@@ -6,15 +6,12 @@ import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
-import net.milkbowl.vault.economy.Economy;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,14 +194,13 @@ public class PlayerTags implements Listener {
             
         } else if (type.equals("MONEY")) {
 			if(Depends.economy != null) {
-				Economy economy = Depends.economy;
-				event.setReplaced(String.valueOf(economy.getBalance(p.getName())));
+				event.setReplaced(String.valueOf(Depends.economy.getBalance(p.getName())));
 				if (subType.equals("ASINT"))
-					event.setReplaced(String.valueOf((int)economy.getBalance(p.getName())));
+					event.setReplaced(String.valueOf((int)Depends.economy.getBalance(p.getName())));
 				else if (subType.equals("CURRENCY_SINGULAR"))
-					event.setReplaced(economy.currencyNameSingular());
+					event.setReplaced(Depends.economy.currencyNameSingular());
 				else if (subType.equals("CURRENCY_PLURAL"))
-					event.setReplaced(economy.currencyNamePlural());
+					event.setReplaced(Depends.economy.currencyNamePlural());
 			} else {
 				dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
 			}

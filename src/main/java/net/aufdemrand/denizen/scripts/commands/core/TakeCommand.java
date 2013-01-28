@@ -1,8 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -12,7 +10,6 @@ import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.milkbowl.vault.economy.Economy;
 
 /* TAKE [MONEY|ITEMINHAND|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
 
@@ -101,9 +98,9 @@ public class TakeCommand extends AbstractCommand{
         	
         case MONEY:
 			if(Depends.economy != null) {
-				Economy economy = Depends.economy;
-				dB.echoDebug ("...taking " + scriptEntry.getObject("quantity") + " money.");
-				economy.withdrawPlayer(scriptEntry.getPlayer().getName(), ((Double) scriptEntry.getObject("quantity")));
+				double amount = (Double) scriptEntry.getObject("quantity");
+				dB.echoDebug ("...taking " + amount + " money.");
+				Depends.economy.withdrawPlayer(scriptEntry.getPlayer().getName(), amount);
 			} else {
 				dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
 			}

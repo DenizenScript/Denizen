@@ -7,11 +7,8 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -103,10 +100,9 @@ public class GiveCommand  extends AbstractCommand {
 
 			case MONEY:
 				if(Depends.economy != null) {
-					Economy economy = Depends.economy;
 					double doubleAmount = (double) theAmount;
 					dB.echoDebug ("Giving player " + theAmount + " money.");
-					economy.depositPlayer(player.getName(), doubleAmount);
+					Depends.economy.depositPlayer(player.getName(), doubleAmount);
 				} else {
 					dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
 				}
