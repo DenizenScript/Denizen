@@ -199,7 +199,9 @@ public class PlayerTags implements Listener {
 			if(Depends.economy != null) {
 				Economy economy = Depends.economy;
 				event.setReplaced(String.valueOf(economy.getBalance(p.getName())));
-				if (subType.equals("CURRENCY_SINGULAR"))
+				if (subType.equals("ASINT"))
+					event.setReplaced(String.valueOf((int)economy.getBalance(p.getName())));
+				else if (subType.equals("CURRENCY_SINGULAR"))
 					event.setReplaced(economy.currencyNameSingular());
 				else if (subType.equals("CURRENCY_PLURAL"))
 					event.setReplaced(economy.currencyNamePlural());
