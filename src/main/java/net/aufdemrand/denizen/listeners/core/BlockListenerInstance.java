@@ -50,7 +50,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 			}
 			
 			else if (aH.matchesArg("BLOCKS, BLOCK", arg)){
-				blocks = aH.getListFrom(arg);
+				blocks = aH.getListFrom(arg.toUpperCase());
 				dB.echoDebug("...set BLOCK(S): " + Arrays.toString(blocks.toArray()));
 			}
 			
