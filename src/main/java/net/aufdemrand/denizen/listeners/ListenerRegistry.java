@@ -84,7 +84,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		return null;
 	}
 
-	public AbstractListener getListenerFor(Player player, String listenerId) {
+	public AbstractListener getListenerFor(OfflinePlayer player, String listenerId) {
 		if (listeners.containsKey(player.getName())) {
 			Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
 			if (playerListeners.containsKey(listenerId.toLowerCase())) return playerListeners.get(listenerId.toLowerCase());
@@ -92,7 +92,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		return null;
 	}
 
-	public Map<String, AbstractListener> getListenersFor(Player player) {
+	public Map<String, AbstractListener> getListenersFor(OfflinePlayer player) {
 		if (listeners.containsKey(player.getName())) {
 			Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
 			return playerListeners;
@@ -141,7 +141,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
         }
 
         // If there are quest listeners, invoke save() for each of them.
-        for (Map.Entry<String, AbstractListener> entry : getListenersFor((Player) player).entrySet()) {
+        for (Map.Entry<String, AbstractListener> entry : getListenersFor((OfflinePlayer) player).entrySet()) {
             dB.log(player.getName() + " has a LISTENER in progress. Saving '" + entry.getKey() + "'.");
             entry.getValue().save();
         }
