@@ -336,7 +336,7 @@ public class FlagManager {
          * erased before moving on.
          * 
          */
-        private void checkExpired() {
+        public boolean checkExpired() {
             rebuild();
             if (denizen.getSaves().contains(flagPath + "-expiration")) 
                 if (expiration > 1 && expiration < System.currentTimeMillis()) {
@@ -344,7 +344,9 @@ public class FlagManager {
                     denizen.getSaves().set(flagPath, null);
                     rebuild();
                     dB.echoDebug("// A FLAG has expired! " + flagPath);
+                    return true;
                 }
+            return false;
         }
 
         /**

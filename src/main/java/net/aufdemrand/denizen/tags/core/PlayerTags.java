@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,19 +24,19 @@ public class PlayerTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>();
+    public static Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>();
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void addMessage(AsyncPlayerChatEvent event) {
-            List<String> history = new ArrayList<String>();
-            if (playerChatHistory.containsKey(event.getPlayer().getName())) {
-                history = playerChatHistory.get(event.getPlayer().getName());
-            }
+        List<String> history = new ArrayList<String>();
+        if (playerChatHistory.containsKey(event.getPlayer().getName())) {
+            history = playerChatHistory.get(event.getPlayer().getName());
+        }
 
-            if (history.size() > 10) history.remove(9);
-            history.add(0, event.getMessage());
+        if (history.size() > 10) history.remove(9);
+        history.add(0, event.getMessage());
 
-            playerChatHistory.put(event.getPlayer().getName(), history);
+        playerChatHistory.put(event.getPlayer().getName(), history);
     }
 
     @EventHandler
@@ -46,7 +45,7 @@ public class PlayerTags implements Listener {
         // These tags require a player.
         if (!event.matches("PLAYER") || event.getPlayer() == null) return;
 
-        OfflinePlayer p = event.getPlayer();
+        Player p = event.getPlayer();
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
 
@@ -71,118 +70,118 @@ public class PlayerTags implements Listener {
 
         else if (type.equals("ITEM_IN_HAND")) {
             if (subType.equals("QTY"))
-                event.setReplaced(String.valueOf(p.getPlayer().getItemInHand().getAmount()));
+                event.setReplaced(String.valueOf(p.getItemInHand().getAmount()));
             else if (subType.equals("ID"))
-                event.setReplaced(String.valueOf(p.getPlayer().getItemInHand().getTypeId()));
+                event.setReplaced(String.valueOf(p.getItemInHand().getTypeId()));
             else if (subType.equals("DURABILITY"))
-                event.setReplaced(String.valueOf(p.getPlayer().getItemInHand().getDurability()));
+                event.setReplaced(String.valueOf(p.getItemInHand().getDurability()));
             else if (subType.equals("DATA"))
-                event.setReplaced(String.valueOf(p.getPlayer().getItemInHand().getData()));
+                event.setReplaced(String.valueOf(p.getItemInHand().getData()));
             else if (subType.equals("MAX_STACK"))
-                event.setReplaced(String.valueOf(p.getPlayer().getItemInHand().getMaxStackSize()));
+                event.setReplaced(String.valueOf(p.getItemInHand().getMaxStackSize()));
             else if (subType.equals("ENCHANTMENTS"))
-                event.setReplaced(NBTItem.getEnchantments(p.getPlayer().getItemInHand()).asDScriptList());
+                event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptList());
             else if (subType.equals("ENCHANTMENTS_WITH_LEVEL"))
-                event.setReplaced(NBTItem.getEnchantments(p.getPlayer().getItemInHand()).asDScriptListWithLevels());
+                event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels());
             else if (subType.equals("ENCHANTMENTS_WITH_LEVEL_ONLY"))
-                event.setReplaced(NBTItem.getEnchantments(p.getPlayer().getItemInHand()).asDScriptListLevelsOnly());
+                event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly());
             else if (subType.equals("LORE"))
-                event.setReplaced(NBTItem.getLore(p.getPlayer().getItemInHand()).asDScriptList());
+                event.setReplaced(NBTItem.getLore(p.getItemInHand()).asDScriptList());
             else if (subType.equals("DISPLAY"))
-                event.setReplaced(p.getPlayer().getItemInHand().getItemMeta().getDisplayName());
+                event.setReplaced(p.getItemInHand().getItemMeta().getDisplayName());
             else if (subType.equals("MATERIAL"))
-                event.setReplaced(p.getPlayer().getItemInHand().getType().name());
+                event.setReplaced(p.getItemInHand().getType().name());
 
 
         } else if (type.equals("NAME")) {
             event.setReplaced(p.getName());
             if (subType.equals("DISPLAY"))
-                event.setReplaced(p.getPlayer().getDisplayName());
+                event.setReplaced(p.getDisplayName());
             else if (subType.equals("LIST"))
-                event.setReplaced(p.getPlayer().getPlayerListName());
+                event.setReplaced(p.getPlayerListName());
 
 
         } else if (type.equals("LOCATION")) {
-            event.setReplaced(p.getPlayer().getLocation().getBlockX()
-                    + "," + p.getPlayer().getLocation().getBlockY()
-                    + "," + p.getPlayer().getLocation().getBlockZ()
-                    + "," + p.getPlayer().getWorld().getName());
+            event.setReplaced(p.getLocation().getBlockX()
+                    + "," + p.getLocation().getBlockY()
+                    + "," + p.getLocation().getBlockZ()
+                    + "," + p.getWorld().getName());
             if (subType.equals("FORMATTED"))
-                event.setReplaced("X '" + p.getPlayer().getLocation().getBlockX()
-                        + "', Y '" + p.getPlayer().getLocation().getBlockY()
-                        + "', Z '" + p.getPlayer().getLocation().getBlockZ()
-                        + "', in world '" + p.getPlayer().getWorld().getName() + "'");
+                event.setReplaced("X '" + p.getLocation().getBlockX()
+                        + "', Y '" + p.getLocation().getBlockY()
+                        + "', Z '" + p.getLocation().getBlockZ()
+                        + "', in world '" + p.getWorld().getName() + "'");
             else if (subType.equals("X"))
-                event.setReplaced(String.valueOf(p.getPlayer().getLocation().getBlockX()));
+                event.setReplaced(String.valueOf(p.getLocation().getBlockX()));
             else if (subType.equals("Y"))
-                event.setReplaced(String.valueOf(p.getPlayer().getLocation().getBlockY()));
+                event.setReplaced(String.valueOf(p.getLocation().getBlockY()));
             else if (subType.equals("Z"))
-                event.setReplaced(String.valueOf(p.getPlayer().getLocation().getBlockZ()));
+                event.setReplaced(String.valueOf(p.getLocation().getBlockZ()));
             else if (subType.equals("WORLD"))
-                event.setReplaced(p.getPlayer().getWorld().getName());
+                event.setReplaced(p.getWorld().getName());
             else if (subType.equals("BIOME"))
-                event.setReplaced(p.getPlayer().getLocation().getBlock().getBiome().name());
+                event.setReplaced(p.getLocation().getBlock().getBiome().name());
             else if (subType.equals("BIOME_DISPLAY"))
-            	event.setReplaced(p.getPlayer().getLocation().getBlock().getBiome().name().toLowerCase().replace('_', ' '));
+                event.setReplaced(p.getLocation().getBlock().getBiome().name().toLowerCase().replace('_', ' '));
             else if (subType.equals("STANDING_ON"))
-                event.setReplaced(p.getPlayer().getLocation().add(0, -1, 0).getBlock().getType().name());
+                event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name());
             else if (subType.equals("STANDING_ON_DISPLAY"))
-            	event.setReplaced(p.getPlayer().getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
+                event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
             else if (subType.equals("LIGHT"))
-                event.setReplaced(String.valueOf((int) p.getPlayer().getLocation().getBlock().getLightLevel()));
+                event.setReplaced(String.valueOf((int) p.getLocation().getBlock().getLightLevel()));
             else if (subType.equals("LIGHT_BLOCKS"))
-                event.setReplaced(String.valueOf((int) p.getPlayer().getLocation().getBlock().getLightFromBlocks()));
+                event.setReplaced(String.valueOf((int) p.getLocation().getBlock().getLightFromBlocks()));
             else if (subType.equals("LIGHT_SKY"))
-                event.setReplaced(String.valueOf((int) p.getPlayer().getLocation().getBlock().getLightFromSky()));
+                event.setReplaced(String.valueOf((int) p.getLocation().getBlock().getLightFromSky()));
             else if (subType.equals("WORLD_SPAWN"))
-                event.setReplaced(p.getPlayer().getWorld().getSpawnLocation().getBlockX()
-                        + "," + p.getPlayer().getWorld().getSpawnLocation().getBlockY()
-                        + "," + p.getPlayer().getWorld().getSpawnLocation().getBlockZ()
-                        + "," + p.getPlayer().getWorld().getName());
+                event.setReplaced(p.getWorld().getSpawnLocation().getBlockX()
+                        + "," + p.getWorld().getSpawnLocation().getBlockY()
+                        + "," + p.getWorld().getSpawnLocation().getBlockZ()
+                        + "," + p.getWorld().getName());
             else if (subType.equals("BED_SPAWN"))
                 event.setReplaced(p.getBedSpawnLocation().getBlockX()
                         + "," + p.getBedSpawnLocation().getBlockY()
                         + "," + p.getBedSpawnLocation().getBlockZ()
-                        + "," + p.getPlayer().getWorld().getName());
+                        + "," + p.getWorld().getName());
 
 
         } else if (type.equals("HEALTH")) {
-            event.setReplaced(String.valueOf(p.getPlayer().getHealth()));
+            event.setReplaced(String.valueOf(p.getHealth()));
             if (subType.equals("FORMATTED")) {
-                int maxHealth = p.getPlayer().getMaxHealth();
+                int maxHealth = p.getMaxHealth();
                 if (event.getType().split("\\.").length > 2)
                     maxHealth = Integer.valueOf(event.getType().split(".")[2]);
-                if ((float)p.getPlayer().getHealth() / maxHealth < .10)
+                if ((float)p.getHealth() / maxHealth < .10)
                     event.setReplaced("dying");
-                else if ((float) p.getPlayer().getHealth() / maxHealth < .40)
+                else if ((float) p.getHealth() / maxHealth < .40)
                     event.setReplaced("seriously wounded");
-                else if ((float) p.getPlayer().getHealth() / maxHealth < .75)
+                else if ((float) p.getHealth() / maxHealth < .75)
                     event.setReplaced("injured");
-                else if ((float) p.getPlayer().getHealth() / maxHealth < 1)
+                else if ((float) p.getHealth() / maxHealth < 1)
                     event.setReplaced("scraped");
                 else
                     event.setReplaced("healthy");
             } else if (subType.equals("PERCENTAGE")) {
-                int maxHealth = p.getPlayer().getMaxHealth();
+                int maxHealth = p.getMaxHealth();
                 if (event.getType().split("\\.").length > 2)
                     maxHealth = Integer.valueOf(event.getType().split(".")[2]);
-                event.setReplaced(String.valueOf(((float) p.getPlayer().getHealth() / maxHealth) * 100));
+                event.setReplaced(String.valueOf(((float) p.getHealth() / maxHealth) * 100));
             }
 
 
         } else if (type.equals("FOOD_LEVEL")) {
-            event.setReplaced(String.valueOf(p.getPlayer().getFoodLevel()));
+            event.setReplaced(String.valueOf(p.getFoodLevel()));
             if (subType.equals("FORMATTED")) {
                 int maxFood = 20;
                 if (event.getType().split("\\.").length > 2)
                     maxFood = Integer.valueOf(event.getType().split(".")[2]);
-                if ((float)p.getPlayer().getHealth() / maxFood < .10)
+                if ((float)p.getHealth() / maxFood < .10)
                     event.setReplaced("starving");
-                else if ((float) p.getPlayer().getFoodLevel() / maxFood < .40)
+                else if ((float) p.getFoodLevel() / maxFood < .40)
                     event.setReplaced("famished");
-                else if ((float) p.getPlayer().getFoodLevel() / maxFood < .75)
+                else if ((float) p.getFoodLevel() / maxFood < .75)
                     event.setReplaced("hungry");
-                else if ((float) p.getPlayer().getFoodLevel() / maxFood < 1)
+                else if ((float) p.getFoodLevel() / maxFood < 1)
                     event.setReplaced("parched");
                 else
                     event.setReplaced("healthy");
@@ -190,22 +189,22 @@ public class PlayerTags implements Listener {
                 int maxFood = 20;
                 if (event.getType().split("\\.").length > 2)
                     maxFood = Integer.valueOf(event.getType().split(".")[2]);
-                event.setReplaced(String.valueOf(((float) p.getPlayer().getFoodLevel() / maxFood) * 100));
+                event.setReplaced(String.valueOf(((float) p.getFoodLevel() / maxFood) * 100));
             }
-            
+
         } else if (type.equals("MONEY")) {
-			if(Depends.economy != null) {
-				event.setReplaced(String.valueOf(Depends.economy.getBalance(p.getName())));
-				if (subType.equals("ASINT"))
-					event.setReplaced(String.valueOf((int)Depends.economy.getBalance(p.getName())));
-				else if (subType.equals("CURRENCY_SINGULAR"))
-					event.setReplaced(Depends.economy.currencyNameSingular());
-				else if (subType.equals("CURRENCY_PLURAL"))
-					event.setReplaced(Depends.economy.currencyNamePlural());
-			} else {
-				dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
-			}
-        	
+            if(Depends.economy != null) {
+                event.setReplaced(String.valueOf(Depends.economy.getBalance(p.getName())));
+                if (subType.equals("ASINT"))
+                    event.setReplaced(String.valueOf((int)Depends.economy.getBalance(p.getName())));
+                else if (subType.equals("CURRENCY_SINGULAR"))
+                    event.setReplaced(Depends.economy.currencyNameSingular());
+                else if (subType.equals("CURRENCY_PLURAL"))
+                    event.setReplaced(Depends.economy.currencyNamePlural());
+            } else {
+                dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+            }
+
         } else if (type.equals("IS_OP")) {
             event.setReplaced(String.valueOf(p.isOp()));
 
@@ -217,13 +216,13 @@ public class PlayerTags implements Listener {
             event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
 
         } else if (event.getType().startsWith("XP")) {
-            event.setReplaced(String.valueOf(p.getPlayer().getExp() * 100));
+            event.setReplaced(String.valueOf(event.getPlayer().getExp() * 100));
             if (subType.equals("TO_NEXT_LEVEL"))
-                event.setReplaced(String.valueOf(p.getPlayer().getExpToLevel()));
+                event.setReplaced(String.valueOf(p.getExpToLevel()));
             else if (subType.equals("TOTAL"))
-                event.setReplaced(String.valueOf(p.getPlayer().getTotalExperience()));
+                event.setReplaced(String.valueOf(p.getTotalExperience()));
             else if (subType.equals("LEVEL"))
-                event.setReplaced(String.valueOf(p.getPlayer().getLevel()));
+                event.setReplaced(String.valueOf(p.getLevel()));
         }
 
     }
@@ -248,4 +247,3 @@ public class PlayerTags implements Listener {
 //    .replace("<^PLAYER.EXP_TO_NEXT_LEVEL>", String.valueOf(thePlayer.getExpToLevel()))
 //    .replace("<^PLAYER.EXP>", String.valueOf(thePlayer.getTotalExperience()))
 //    .replace("<^PLAYER.FOOD_LEVEL>", String.valueOf(thePlayer.getFoodLevel()));*/
-

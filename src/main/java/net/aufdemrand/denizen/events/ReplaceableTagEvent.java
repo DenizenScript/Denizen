@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
-
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -38,7 +37,8 @@ import org.bukkit.event.HandlerList;
 public class ReplaceableTagEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private OfflinePlayer player;
+    private Player player;
+    private OfflinePlayer offlinePlayer;
     private dNPC npc;
 
     private boolean instant = false;
@@ -62,7 +62,7 @@ public class ReplaceableTagEvent extends Event {
     private String replaced = null;
 
 
-    public ReplaceableTagEvent(OfflinePlayer player, dNPC npc, String tag) {
+    public ReplaceableTagEvent(Player player, dNPC npc, String tag) {
 
         // TODO: Use REGEX and MATCHER/GROUPS to simplify this code (might be faster?)
 
@@ -78,8 +78,7 @@ public class ReplaceableTagEvent extends Event {
 
         // check if tag has base context
         if (tag.startsWith("[") || tag.startsWith(" [")) {
-            baseContext = tag.split("\\]", 2)[0].split("\\[", 2)[1]
-            			  .split("\\.", 2)[1].trim();
+            baseContext = tag.split("\\]", 2)[0].split("\\[", 2)[1].trim();
             dB.log(baseContext);
             parseContext();
             tag = tag.split("\\]", 2)[1];
@@ -131,7 +130,7 @@ public class ReplaceableTagEvent extends Event {
                     typeContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
                 } else
                     type = inQuestion.trim();
-                
+
                 tag = tag.split("\\.")[1];
                 if (tag.contains("[")) {
                     // Get index
@@ -234,7 +233,7 @@ public class ReplaceableTagEvent extends Event {
         return npc;
     }
 
-    public OfflinePlayer getPlayer() {
+    public Player getPlayer() {
         return player;
     }
 
@@ -259,23 +258,33 @@ public class ReplaceableTagEvent extends Event {
         wasReplaced = true;
     }
 
+    public boolean hasOfflinePlayer() {
+        return offlinePlayer != null;
+    }
+
+    public OfflinePlayer getOfflinePlayer() {
+        return offlinePlayer;
+    }
+
     private void parseContext() {
         if (baseContext == null || baseContext.length() == 1) return;
-        OfflinePlayer offlinePlayer;
-
+        LivingEntity entity;
         for (String context : baseContext.split("\\|")) {
-        	
-        	dB.echoApproval("The context is: " + context);
-        	offlinePlayer = aH.getOfflinePlayerFrom(context); 
-            if (offlinePlayer != null)
-            	player = aH.getOfflinePlayerFrom(context);
-            else {
-                LivingEntity entity;
-                entity = aH.getLivingEntityFrom(context);
-              
+            entity = aH.getLivingEntityFrom(context);
+            if (entity != null) {
                 if (CitizensAPI.getNPCRegistry().isNPC(entity))
-                	npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+                    npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+
+                else if (entity instanceof Player) {
+                    player = (Player) entity;
+                }
             }
+            // Else, might be an offlineplayer
+            try {
+                OfflinePlayer offline = aH.getOfflinePlayerFrom(context.split("\\.")[1]);
+                if (offline != null) this.offlinePlayer = offline;
+                this.player = null;
+            } catch (Exception e) { }
         }
     }
 

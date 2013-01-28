@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -90,9 +91,11 @@ public class Item extends ItemStack implements dScriptArgument {
                 // Make sure we're working with a valid base ItemStack
                 if (stack == null) return null;
 
+                ItemMeta meta = stack.getItemMeta();
+
                 // Set Display Name
                 if (itemScript.getContents().contains("DISPLAY NAME"))
-                    stack.getItemMeta().setDisplayName(itemScript.getContents().getString("DISPLAY NAME"));
+                    meta.setDisplayName(itemScript.getContents().getString("DISPLAY NAME"));
 
                 // Set Enchantments
                 if (itemScript.getContents().contains("ENCHANTMENTS")) {
@@ -114,13 +117,15 @@ public class Item extends ItemStack implements dScriptArgument {
                     }
                 }
 
+                // Set Lore
+                if (itemScript.getContents().contains("LORE"))
+                    meta.setLore(itemScript.getContents().getStringList("LORE"));
+
+                stack.setItemMeta(meta);
+
                 // Set Color
                 if (itemScript.getContents().contains("COLOR"))
                     LeatherColorer.colorArmor(stack, itemScript.getContents().getString("COLOR"));
-
-                // Set Lore
-                if (itemScript.getContents().contains("LORE"))
-                    stack.getItemMeta().setLore(itemScript.getContents().getStringList("LORE"));
 
                 stack.setId(itemScript.getName());
                 return stack;

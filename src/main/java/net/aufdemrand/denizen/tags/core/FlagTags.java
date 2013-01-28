@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager.Value;
-import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -76,11 +75,10 @@ public class FlagTags implements Listener {
         } else if (event.getType().toUpperCase().startsWith("P")) {
             // Separate name since subType context may specify a different (or offline) player
             String name = null;
-            if (event.getPlayer() != null) name = event.getPlayer().getName();
-            if (event.hasSubTypeContext()) {
-                if (aH.getOfflinePlayerFrom(event.getSubTypeContext()) != null)
-                name = aH.getOfflinePlayerFrom(event.getSubTypeContext()).getName();
-            }
+            if (event.getPlayer() != null)
+                name = event.getPlayer().getName();
+            if (name == null && event.hasOfflinePlayer())
+                name = event.getOfflinePlayer().getName();
 
             // No name? No flag replaceament!
             if (name == null) return;
