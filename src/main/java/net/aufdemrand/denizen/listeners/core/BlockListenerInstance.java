@@ -84,7 +84,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 	@Override
 	public void onLoad() {
 		type = BlockType.valueOf(((String) get("Type")));
-		blocks = (List<String>) get("Targets");
+		blocks = (List<String>) get("Blocks");
 		quantity = (Integer) get("Quantity");
 		currentBlocks = (Integer) get("Current Blocks");
 	}
@@ -218,7 +218,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 			event.setReplaced(currentBlocks.toString());
 		}
 		
-		else if (event.getValue().equalsIgnoreCase("targets")) {
+		else if (event.getValue().equalsIgnoreCase("blocks")) {
 			String blockList = "";
 			for (String curTar : blocks){
 				blockList = blockList + curTar + ", ";
