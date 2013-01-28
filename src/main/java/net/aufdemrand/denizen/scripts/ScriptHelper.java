@@ -268,6 +268,9 @@ public class ScriptHelper {
 	public String concatenateScripts() {
 		try {
 			File file = new File(denizen.getDataFolder() + File.separator + "scripts");
+			
+			if(!file.exists()) throw new Exception("No script folder found, please create one first!");
+			
 			File[] files = file.listFiles();
 
 			if (files.length > 0) {
