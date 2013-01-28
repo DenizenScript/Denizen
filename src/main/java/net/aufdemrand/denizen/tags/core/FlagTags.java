@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.flags.FlagManager.Value;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
@@ -19,7 +20,7 @@ public class FlagTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    private enum ReplaceType { LENGTH, SIZE, ASSTRING, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASCSLIST }
+    private enum ReplaceType { LENGTH, SIZE, ASSTRING, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASCSLIST, ISEXPIRED }
 
     /**
      * Replaces FLAG TAGs. Called automatically by the dScript ScriptBuilder and Executer.
@@ -60,7 +61,8 @@ public class FlagTags implements Listener {
             if (denizen.flagManager().getGlobalFlag(flagName).get(index).isEmpty()) {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
             } else {
-                event.setReplaced(getReplaceable(denizen.flagManager().getGlobalFlag(flagName).get(index), replaceType));
+                FlagManager.Flag flag = denizen.flagManager().getGlobalFlag(flagName);
+                event.setReplaced(getReplaceable(flag, flag.get(index), replaceType));
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
             }
 
@@ -68,7 +70,8 @@ public class FlagTags implements Listener {
             if (denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index).isEmpty()) {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
             } else {
-                event.setReplaced(getReplaceable(denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index), replaceType));
+                FlagManager.Flag flag = denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName);
+                event.setReplaced(getReplaceable(flag, flag.get(index), replaceType));
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
             }
 
@@ -86,33 +89,35 @@ public class FlagTags implements Listener {
             if (denizen.flagManager().getPlayerFlag(name, flagName).get(index).isEmpty()) {
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
             } else {
-                event.setReplaced(getReplaceable(
-                        denizen.flagManager().getPlayerFlag(name, flagName).get(index), replaceType));
+                FlagManager.Flag flag = denizen.flagManager().getPlayerFlag(name, flagName);
+                event.setReplaced(getReplaceable(flag, flag.get(index), replaceType));
                 dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
 
             }
         }               
     }
 
-    private String getReplaceable(Value flag, ReplaceType replaceType) {
+    private String getReplaceable(FlagManager.Flag flag, Value value, ReplaceType replaceType) {
         switch (replaceType) {
         case ASINT:
-            return String.valueOf(flag.asInteger());
+            return String.valueOf(value.asInteger());
         case ASDOUBLE:
-            return String.valueOf(flag.asDouble());
+            return String.valueOf(value.asDouble());
         case ASSTRING:
-            return flag.asString();
+            return value.asString();
         case ASLIST:
-            return String.valueOf(flag.asList());
+            return String.valueOf(value.asList());
         case ASCSLIST:
-            return String.valueOf(flag.asCommaSeparatedList());
+            return String.valueOf(value.asCommaSeparatedList());
         case ASMONEY:
             DecimalFormat d = new DecimalFormat("0.00");
-            return String.valueOf(d.format(flag.asDouble()));
+            return String.valueOf(d.format(value.asDouble()));
         case LENGTH:
-            return String.valueOf(flag.asString().length());
+            return String.valueOf(value.asString().length());
         case SIZE:
-        	return String.valueOf(flag.asSize());
+        	return String.valueOf(value.asSize());
+        case ISEXPIRED:
+            return String.valueOf(flag.checkExpired());
         }
         return null;
     }
