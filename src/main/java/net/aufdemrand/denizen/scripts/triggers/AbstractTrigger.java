@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.triggers;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
@@ -107,7 +107,7 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 	
 	}
 
-    public boolean parse(DenizenNPC npc, Player player, String script) {
+    public boolean parse(dNPC npc, Player player, String script) {
         if (npc == null || player == null || script == null) return false;
 
         dB.echoDebug(DebugElement.Header, "Parsing " + name + " trigger: " + npc.getName() + "/" + player.getName());

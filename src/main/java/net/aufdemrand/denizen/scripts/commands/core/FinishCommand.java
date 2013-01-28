@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.utilities.arguments.Script;
 import org.bukkit.Bukkit;
 
 import net.aufdemrand.denizen.events.ScriptFinishEvent;
@@ -33,34 +34,51 @@ public class FinishCommand extends AbstractCommand {
 	 * FINISH 'SCRIPT:A different script'
 	 */
 
-	String scriptName;
-	String playerName;
-
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+        // Initialize required fields
+        String player = null;
 
-		// Get some defaults from the ScriptEntry
-		scriptName = scriptEntry.getScript();
-		playerName = null;
-		if (scriptEntry.getPlayer() != null) playerName = scriptEntry.getPlayer().getName();
+        // Get some defaults from the ScriptEntry
+        Script script = scriptEntry.getScript();
 
-		// Parse the arguments
-		for (String arg : scriptEntry.getArguments()) {
+        if (scriptEntry.getPlayer() != null)
+            player = scriptEntry.getPlayer().getName();
+        if (player == null && scriptEntry.getOfflinePlayer() != null)
+            player = scriptEntry.getOfflinePlayer().getName();
 
-			if (aH.matchesScript(arg)) {
-				scriptName = aH.getStringFrom(arg);
-				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
+        // Parse the arguments
+        for (String arg : scriptEntry.getArguments()) {
 
-            }	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-		}
-		
-		if (playerName == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
-		if (scriptName == null) throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
-	}
+            if (aH.matchesScript(arg)) {
+                script = aH.getScriptFrom(arg);
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-		finishScript(playerName, scriptName);		
+            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+        }
+
+        // Check for required args
+        if (player == null)
+            throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
+        if (script == null)
+            throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
+
+        // Stash objects
+        scriptEntry.addObject("script", script);
+        scriptEntry.addObject("player", player);
+    }
+
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+        // Grab objects from scriptEntry
+        String player = (String) scriptEntry.getObject("player");
+        Script script = (Script) scriptEntry.getObject("script");
+
+        // Report to dB
+        dB.report(getName(),
+                aH.debugObj("Player", player)
+                        + script.debug());
+
+		finishScript(player, script.getName());
 	}
 
 	public boolean finishScript(String playerName, String scriptName) {

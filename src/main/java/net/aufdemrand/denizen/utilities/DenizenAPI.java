@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 
@@ -16,15 +16,15 @@ import java.util.Map;
 public class DenizenAPI {
 
     /**
-     * Returns a DenizenNPC object when given a valid NPC. DenizenNPCs have some methods
+     * Returns a dNPC object when given a valid NPC. DenizenNPCs have some methods
      * specific to Denizen functionality as well as easy access to the attached NPC and LivingEntity.
      *
      * @param npc the Citizens NPC
      *
-     * @return a DenizenNPC
+     * @return a dNPC
      *
      */
-	public static DenizenNPC getDenizenNPC(NPC npc) {
+	public static dNPC getDenizenNPC(NPC npc) {
 		return getCurrentInstance().getNPCRegistry().getDenizen(npc);
 	}
 
@@ -32,10 +32,10 @@ public class DenizenAPI {
      * Similar to getting NPCs from Citizens' NPCRegistry, but this will filter out
      * unspawned NPCs
      *
-     * @return map of NPC, DenizenNPC of all spawned NPCs
+     * @return map of NPC, dNPC of all spawned NPCs
      *
      */
-    public static Map<NPC, DenizenNPC> getSpawnedNPCs() {
+    public static Map<NPC, dNPC> getSpawnedNPCs() {
         return getCurrentInstance().getNPCRegistry().getSpawnedNPCs();
     }
 

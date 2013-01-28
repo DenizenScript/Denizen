@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.npc.activities.core;
 
 import java.util.List;
 
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
@@ -12,7 +12,7 @@ import net.citizensnpcs.api.ai.GoalSelector;
 
 public class TaskGoal implements Goal {
 
-    private DenizenNPC npc;
+    private dNPC npc;
     private TaskActivity activity;
     private ScriptEngine scriptEngine;
     private final int delay;
@@ -22,7 +22,7 @@ public class TaskGoal implements Goal {
 
     private int counter = 0;
 
-    public TaskGoal(DenizenNPC npc, int delay, int duration, String scriptName, int repeats, TaskActivity activityInstance) {
+    public TaskGoal(dNPC npc, int delay, int duration, String scriptName, int repeats, TaskActivity activityInstance) {
         this.activity = activityInstance;
         this.scriptEngine = activity.denizen.getScriptEngine();
         this.npc = npc;

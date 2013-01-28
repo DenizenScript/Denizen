@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.activities.AbstractActivity;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
@@ -23,7 +23,7 @@ public class WanderActivity extends AbstractActivity implements Listener {
 
 	private Map<NPC, WanderGoal> wanderMap = new HashMap<NPC, WanderGoal>();
 	
-	public boolean addGoal(DenizenNPC npc, String[] arguments, int priority) {
+	public boolean addGoal(dNPC npc, String[] arguments, int priority) {
 		dB.echoDebug("Adding WANDER Activity.");
 
 		// Defaults
@@ -80,7 +80,7 @@ public class WanderActivity extends AbstractActivity implements Listener {
 		return true;
 	}
 
-	public boolean removeGoal(DenizenNPC npc, boolean verbose) {
+	public boolean removeGoal(dNPC npc, boolean verbose) {
 		if (wanderMap.containsKey(npc.getCitizen())) {
 			npc.getCitizen().getDefaultGoalController().removeGoal(wanderMap.get(npc.getCitizen()));
 			wanderMap.remove(npc.getCitizen());

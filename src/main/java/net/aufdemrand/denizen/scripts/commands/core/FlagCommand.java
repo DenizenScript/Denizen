@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.flags.FlagManager.Flag;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.Listener;
@@ -27,14 +28,14 @@ public class FlagCommand extends AbstractCommand implements Listener {
         // Set some defaults with information from the scriptEntry
         String name = null;
         String value = null;
-        double duration = -1;
+        Duration duration = new Duration(-1d);
         Action action = Action.SET_VALUE;
         Type type = Type.PLAYER;
 
         for (String arg : scriptEntry.getArguments()) {
 
             if (aH.matchesDuration(arg))
-                duration = aH.getSecondsFrom(arg);
+                duration = aH.getDurationFrom(arg);
 
             else if (aH.matchesArg("GLOBAL, NPC, DENIZEN, GLOBAL", arg))
                 type = Type.valueOf(arg.toUpperCase().replace("DENIZEN", "NPC"));
@@ -108,7 +109,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         String name = (String) scriptEntry.getObject("name");
         String value = (String) scriptEntry.getObject("value");
-        Double duration = (Double) scriptEntry.getObject("duration");
+        Duration duration = (Duration) scriptEntry.getObject("duration");
         Action action = (Action) scriptEntry.getObject("action");
         Type type = (Type) scriptEntry.getObject("type");
         int index = -1;
@@ -126,14 +127,14 @@ public class FlagCommand extends AbstractCommand implements Listener {
         String player = (String) scriptEntry.getObject("player");
 
         // Send information to debugger
-        dB.echoApproval("<G>Executing '<Y>" + getName() + "': "
-                + "Name='" + name + "', "
-                + (index > 0 ? "Index='" + index + "', " : "")
-                + "Type='" + type + "', "
-                + "Action/Value='" + action.toString() + "(" + (value != null ? value : "null") + ")'"
-                + (duration > 0 ? "Duration='" + duration + "'" : "")
-                + (type == Type.NPC ? "NPC='" + scriptEntry.getNPC() + "'" : "")
-                + (type == Type.PLAYER ? "Player='" + player + "'" : ""));
+        dB.report(getName(),
+                aH.debugObj("Name", name)
+                        + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
+                        + aH.debugObj("Type", type.toString())
+                        + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value : "null"))
+                        + (duration.getSeconds() > 0 ? duration.debug() : "")
+                        + (type == Type.NPC ? aH.debugObj("NPC", scriptEntry.getNPC().toString()) : "")
+                        + (type == Type.PLAYER ? aH.debugObj("Player", player) : ""));
 
         // Returns existing flag (if existing), or a new flag if not
         switch (type) {
@@ -171,7 +172,9 @@ public class FlagCommand extends AbstractCommand implements Listener {
         }
 
         // Set flag duration
-        if (duration > 0) flag.setExpiration(System.currentTimeMillis() + Double.valueOf(duration * 1000).longValue());
+        if (duration.getSeconds() > 0)
+            flag.setExpiration(System.currentTimeMillis()
+                    + Double.valueOf(duration.getSeconds() * 1000).longValue());
     }
 
     private double math(double currentValue, double value, Action flagAction) {

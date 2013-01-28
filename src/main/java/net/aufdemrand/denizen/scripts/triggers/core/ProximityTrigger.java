@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.events.dScriptReloadEvent;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
@@ -154,21 +154,21 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
                 boolean originalDebugState = dB.debugMode;
                 dB.debugMode = false;
-                DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(npc);
+                dNPC dNPC = denizen.getNPCRegistry().getDenizen(npc);
                 String theScript = null;
 
                 //
                 // Check to make sure the NPC has an assignment. If no assignment, a script doesn't need to be parsed,
                 // but it does still need to trigger for cooldown and action purposes.
                 //
-                if (denizenNPC.hasAssignment()) theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
+                if (dNPC.hasAssignment()) theScript = dNPC.getInteractScript(event.getPlayer(), this.getClass());
 
                 //
                 // Set default ranges with information from the TriggerTrait. This allows per-npc overrides and will
                 // automatically check the config for defaults.
                 //
-                int	entryRadius = denizenNPC.getCitizen ().getTrait (TriggerTrait.class).getRadius (name);
-                int exitRadius = denizenNPC.getCitizen ().getTrait (TriggerTrait.class).getRadius (name);
+                int	entryRadius = dNPC.getCitizen ().getTrait (TriggerTrait.class).getRadius (name);
+                int exitRadius = dNPC.getCitizen ().getTrait (TriggerTrait.class).getRadius (name);
 
                 dB.debugMode = originalDebugState;
 
@@ -219,9 +219,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     exitProximityOf(event.getPlayer(), npc);
                     dB.echoDebug(ChatColor.YELLOW + "FOUND! NPC is in EXITING range: '" + npc.getName() + "'");
                     // Exit Proximity Action
-                    denizenNPC.action("exit proximity", event.getPlayer());
+                    dNPC.action("exit proximity", event.getPlayer());
                     // Parse Interact Script
-                    this.parse(denizenNPC, event.getPlayer(), theScript, false);
+                    this.parse(dNPC, event.getPlayer(), theScript, false);
                 }
                 else if (hasExitedProximityOf(event.getPlayer(), npc)
                     && npc.getBukkitEntity().getLocation().distance(toBlockLocation) <= entryRadius) {
@@ -232,9 +232,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     enterProximityOf(event.getPlayer(), npc);
                     dB.echoDebug(ChatColor.YELLOW + "FOUND! NPC is in ENTERING range: '" + npc.getName() + "'");
                     // Enter Proximity Action
-                    denizenNPC.action("enter proximity", event.getPlayer());
+                    dNPC.action("enter proximity", event.getPlayer());
                     // Parse Interact Script
-                    this.parse(denizenNPC, event.getPlayer(), theScript, true);
+                    this.parse(dNPC, event.getPlayer(), theScript, true);
                 }
 
                 dB.debugMode = originalDebugState;
@@ -253,7 +253,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      *
      * @return true if an interact script has been successfully parsed
      */
-    public boolean parse (DenizenNPC theDenizen, Player thePlayer, String theScriptName, boolean entry) {
+    public boolean parse (dNPC theDenizen, Player thePlayer, String theScriptName, boolean entry) {
         if (theScriptName == null) {
             return false;
         }

@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -61,7 +62,7 @@ public class RuntaskCommand extends AbstractCommand {
         // Initialize necessary fields
         String id = null;
         String script = null;
-        double delay = -1.0d;
+        Duration delay = new Duration(-1d);
         ScriptEngine.QueueType queue;
         boolean instant = false;
 
@@ -77,7 +78,8 @@ public class RuntaskCommand extends AbstractCommand {
                 script = aH.getStringFrom(arg);
 
             } else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
-                delay = aH.getSecondsFrom(arg);
+                delay = aH.getDurationFrom(arg);
+                delay.setPrefix("Delay");
 
             } else if (aH.matchesArg("INSTANT", arg)) {
                 instant = true;
@@ -119,19 +121,19 @@ public class RuntaskCommand extends AbstractCommand {
         String script = (String) scriptEntry.getObject("script");
         ScriptEngine.QueueType queue = (ScriptEngine.QueueType) scriptEntry.getObject("queue");
         Boolean instant = (Boolean) scriptEntry.getObject("instant");
-        Double delay = (Double) scriptEntry.getObject("delay");
+        Duration delay = (Duration) scriptEntry.getObject("delay");
 
         // Debug output
         dB.echoApproval("Executing '" + getName() + "': "
                 + "Script='" + script + "', "
-                + "Delay='" + (delay > 0 ? delay + "', " : "None', ")
+                + delay.debug()
                 + "Player='" + (scriptEntry.getPlayer() != null ? scriptEntry.getPlayer().getName() + "', " : "NULL', ")
                 + "NPC='" + (scriptEntry.getNPC() != null ? scriptEntry.getNPC() + "', " : "NULL', ")
                 + "Queue='" + (instant == false ? queue.toString() + "'" : "INSTANT'"));
 
 
         // Run right now if no delay
-        if (delay <= 0) {
+        if (delay.getSeconds() <= 0) {
 
             if (instant)
                 denizen.getScriptEngine().getScriptBuilder()
@@ -157,7 +159,7 @@ public class RuntaskCommand extends AbstractCommand {
 
         } else { // Delay this command
             String id = ((String) scriptEntry.getObject("id")).toUpperCase();
-            long ldelay = (long) ((Double) scriptEntry.getObject("delay") * 20);
+            long ldelay = (long) (((Duration) scriptEntry.getObject("delay")).getSeconds() * 20);
 
             // Reset delay in scriptEntry so next time it's executed it's not delayed again.
             scriptEntry.addObject("delay", 0d);

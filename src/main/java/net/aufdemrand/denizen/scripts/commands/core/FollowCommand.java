@@ -8,47 +8,42 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
- * Configures the Navigator for this NPC
+ * Instructs the NPC to follow a player.
  *
- * @author Jeremy Schroeder
+ * @author aufdemrand
+ *
  */
-
 public class FollowCommand extends AbstractCommand {
-
-	/*   */
-
-	/* 
-	 * Arguments: [] - Required, () - Optional
-	 * 
-	 */
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-
-
         // Parse Arguments
         for (String arg : scriptEntry.getArguments()) {
-
-            if (aH.matchesArg("STOP", arg)) {
+            if (aH.matchesArg("STOP", arg))
                 scriptEntry.addObject("stop", true);
-            }
 
+            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+        // Get objects
+        Boolean stop = (Boolean) scriptEntry.getObject("stop");
 
-        if (scriptEntry.getObject("stop") != null) scriptEntry.getNPC().getNavigator().cancelNavigation();
+        // Report to dB
+        dB.report(getName(),
+                aH.debugObj("Player", scriptEntry.getPlayer().getName())
+                        + (stop != null ? aH.debugObj("Action", "FOLLOW")
+                        : aH.debugObj("Action", "STOP")));
+
+        if (stop != null)
+            scriptEntry.getNPC().getNavigator()
+                    .cancelNavigation();
         else
-            scriptEntry.getNPC().getNavigator().setTarget(scriptEntry.getPlayer(), false);
-
-        dB.echoApproval("");
+            scriptEntry.getNPC().getNavigator()
+                    .setTarget(scriptEntry.getPlayer(), false);
     }
 
-    @Override
-    public void onEnable() {
-
-    }
 }

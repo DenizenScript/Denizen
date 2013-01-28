@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-
+import net.aufdemrand.denizen.utilities.arguments.Script;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -11,7 +11,7 @@ public class ScriptEntryExecuteEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     private Player player;
-    private String script;
+    private Script script;
     private String commandName;
     private ScriptEntry scriptEntry;
 
@@ -50,7 +50,7 @@ public class ScriptEntryExecuteEvent extends Event implements Cancellable {
     	return scriptEntry;
     }
     
-    public String getScriptName() {
+    public Script getScript() {
         return script;
     }
     

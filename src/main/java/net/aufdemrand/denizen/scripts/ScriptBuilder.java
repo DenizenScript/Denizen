@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -34,11 +34,11 @@ public class ScriptBuilder {
         return buildArgs(null, null, stringArgs);
     }
     
-    public String[] buildArgs(Player player, DenizenNPC npc, String stringArgs) {
+    public String[] buildArgs(Player player, dNPC npc, String stringArgs) {
         return buildArgs(player, npc, stringArgs, true);
     }
     
-    public String[] buildArgs(Player player, DenizenNPC npc, String stringArgs, boolean verbose) {
+    public String[] buildArgs(Player player, dNPC npc, String stringArgs, boolean verbose) {
         if (stringArgs == null) return null;
         List<String> matchList = new ArrayList<String>();
         Matcher regexMatcher = regex.matcher(stringArgs);
@@ -79,19 +79,15 @@ public class ScriptBuilder {
      * Builds ScriptEntry(ies) of items read from a script 
      */
 
-    public List<ScriptEntry> buildScriptEntries(DenizenNPC npc, List<String> script, String scriptName) {
-        return buildScriptEntries(null, npc, script, scriptName, null, null, null);
+    public List<ScriptEntry> buildScriptEntries(dNPC npc, List<String> script, String scriptName) {
+        return buildScriptEntries(null, npc, script, scriptName, null);
     }
 
     public List<ScriptEntry> buildScriptEntries(Player player, List<String> script, String scriptName) {
-        return buildScriptEntries(player, null, script, scriptName, null, null, null);
+        return buildScriptEntries(player, null, script, scriptName, null);
     }
 
-    public List<ScriptEntry> buildScriptEntries(Player player, DenizenNPC npc, List<String> script, String scriptName, String step) {
-        return buildScriptEntries(player, npc, script, scriptName, step, null, null);
-    }
-
-    public List<ScriptEntry> buildScriptEntries(Player player, DenizenNPC npc, List<String> script, String scriptName, String step, String playerText, String formattedText) {
+    public List<ScriptEntry> buildScriptEntries(Player player, dNPC npc, List<String> script, String scriptName, String step) {
         List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
         if (script == null || script.isEmpty()) {
@@ -121,7 +117,7 @@ public class ScriptBuilder {
                 /* Build new script commands */
                 String[] args = buildArgs(player, npc, scriptEntry[1], false);
                 dB.echoDebug("Adding '" + scriptEntry[0] + "'  Args: " + Arrays.toString(args));
-                scriptCommands.add(new ScriptEntry(scriptEntry[0], args, player, npc, scriptName, step, playerText, formattedText));
+                scriptCommands.add(new ScriptEntry(scriptEntry[0], args, player, npc, scriptName, step));
             } catch (Exception e) {
                 if (dB.showStackTraces) e.printStackTrace();
             }
@@ -157,14 +153,14 @@ public class ScriptBuilder {
     }
 
     // For Denizen Activity Queue
-    public void queueScriptEntries(DenizenNPC npc, List<ScriptEntry> scriptEntries, QueueType queueType) {
+    public void queueScriptEntries(dNPC npc, List<ScriptEntry> scriptEntries, QueueType queueType) {
         if (scriptEntries == null || scriptEntries.isEmpty()) {
             dB.echoError("Queueing up script... no entries to queue!");
             dB.echoDebug(DebugElement.Footer);
             return;
         }
 
-        Map<DenizenNPC, List<ScriptEntry>> thisQueue = plugin.getScriptEngine().getDQueue(queueType);
+        Map<dNPC, List<ScriptEntry>> thisQueue = plugin.getScriptEngine().getDQueue(queueType);
         List<ScriptEntry> existingScriptEntries = new ArrayList<ScriptEntry>();
 
         if (thisQueue.containsKey(npc)) {
@@ -209,14 +205,14 @@ public class ScriptBuilder {
      * @param player
      * 		The player whose queue to use.
      * @param npc
-     * 		The DenizenNPC object of which to attach to the scriptEntries.
+     * 		The dNPC object of which to attach to the scriptEntries.
      * @param scriptName
      * 		The name of the task script.
      *
      * @return true if successful
      *
      */
-    public boolean runTaskScript(Player player, DenizenNPC npc, String scriptName) {
+    public boolean runTaskScript(Player player, dNPC npc, String scriptName) {
         // Check to make sure script exists
         if (!aH.matchesScript("script:" + scriptName)) return false;
         try {
@@ -236,14 +232,14 @@ public class ScriptBuilder {
      * build script entries, arguments, and queue to a NPC Queue.
      * 
      * @param npc
-     * 		The DenizenNPC object of which to attach to the scriptEntries.
+     * 		The dNPC object of which to attach to the scriptEntries.
      * @param scriptName
      * 		The name of the task script.
      *
      * @return true if successful
      *
      */
-    public boolean runTaskScript(DenizenNPC npc, String scriptName) {
+    public boolean runTaskScript(dNPC npc, String scriptName) {
         // Check to make sure script exists
         if (!aH.matchesScript("script:" + scriptName)) return false;
         try {
@@ -265,14 +261,14 @@ public class ScriptBuilder {
      * @param player
      * 		The player whose queue to use.
      * @param npc
-     * 		The DenizenNPC object of which to attach to the scriptEntries.
+     * 		The dNPC object of which to attach to the scriptEntries.
      * @param scriptName
      * 		The name of the task script.
      *
      * @return true if successful
      *
      */
-    public boolean runTaskScript(DenizenNPC npc, Player player, String scriptName) {
+    public boolean runTaskScript(dNPC npc, Player player, String scriptName) {
         // Check to make sure script exists
         if (!aH.matchesScript("script:" + scriptName)) return false;
         try {
@@ -297,7 +293,7 @@ public class ScriptBuilder {
      * @return true if successful
      *
      */
-    public boolean runTaskScriptInstantly(Player player, DenizenNPC npc, String scriptName) {
+    public boolean runTaskScriptInstantly(Player player, dNPC npc, String scriptName) {
         // Check to make sure script exists
         if (!aH.matchesScript("script:" + scriptName)) return false;
         try {

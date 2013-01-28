@@ -7,10 +7,19 @@ import java.util.regex.Pattern;
 
 public class Duration implements dScriptArgument {
 
-    final static Pattern matchesTimePtrn = Pattern.compile("(?:.+:|)(\\d+(?:(|\\.\\d+)))(|t|m|s|h|d)", Pattern.CASE_INSENSITIVE);
+    final static Pattern matchesDurationPtrn = Pattern.compile("(?:.+:|)(\\d+(?:(|\\.\\d+)))(|t|m|s|h|d)", Pattern.CASE_INSENSITIVE);
 
+    /**
+     * Gets a Duration Object from a dScript argument. Durations must be a positive
+     * number. Can specify the unit of time by using one of the following: T=ticks, M=minutes,
+     * S=seconds, H=hours, D=days. Not using a unit will imply seconds. Examples: 10s, 50m, 1d, 50.
+     * Can also include a prefix, though it will be ignored. Example: duration:10, time:30m.
+     *
+     * @param string  the dScript argument String
+     * @return  a Script, or null if incorrectly formatted
+     */
     public static Duration valueOf(String string) {
-        Matcher m = matchesTimePtrn.matcher(string);
+        Matcher m = matchesDurationPtrn.matcher(string);
         if (m.matches()) {
             if (m.group().toUpperCase().endsWith("T"))
                 // Matches TICKS, so 1 tick = .05 seconds
@@ -32,7 +41,7 @@ public class Duration implements dScriptArgument {
                 return new Duration(Double.valueOf(m.group(1)));
         }
 
-        return new Duration(0);
+        return null;
     }
 
 
@@ -52,7 +61,7 @@ public class Duration implements dScriptArgument {
     /**
      * Creates a duration object when given number of seconds.
      *
-     * @param seconds
+     * @param seconds  number of seconds
      */
     public Duration(int seconds) {
         this.seconds = seconds;
@@ -62,7 +71,7 @@ public class Duration implements dScriptArgument {
     /**
      * Creates a duration object when given number of Bukkit ticks.
      *
-     * @param ticks
+     * @param ticks  number of ticks
      */
     public Duration (long ticks) {
         this.seconds = ticks / 20;
@@ -76,6 +85,15 @@ public class Duration implements dScriptArgument {
      */
     public long getTicks() {
         return (long) (seconds * 20);
+    }
+
+    /**
+     * Gets the number of ticks of this duration.
+     *
+     * @return  number of ticks
+     */
+    public int getTicksAsInt() {
+        return Ints.checkedCast((long) (seconds * 20));
     }
 
     /**
@@ -106,17 +124,17 @@ public class Duration implements dScriptArgument {
 
     @Override
     public String debug() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "<G>" + prefix + "='<Y>" + seconds + " seconds<G>'  ";
     }
 
     @Override
     public String dScriptArg() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return prefix + ":" + seconds;
     }
 
     @Override
     public String dScriptArgValue() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return String.valueOf(seconds);
     }
 
     @Override

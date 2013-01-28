@@ -12,7 +12,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,61 +23,7 @@ import java.util.regex.Pattern;
  * The dScript Argument Helper will aide you in parsing and formatting arguments from a 
  * dScript argument string (such as those found in a ScriptEntry.getArguments() method).
  *
- * <br><br>TODO: Update following information
- *
- * <br><pre>
- * 	 dScript argument         recommended            recommended
- *   string format            JAVA parse method      JAVA get method       returns       
- *  +------------------------+----------------------+---------------------+-------------+
- *   NPCID:#                  parsed in executer     done in executer      DenizenNPC    
- *   PLAYER:player_name       parsed in executer     done in executer      Player        
- *   TOGGLE:true|false        matchesToggle(arg)     getBooleanFrom(arg)   boolean       
- *   DURATION:#               matchesDuration(arg)   getIntegerFrom(arg)   int            
- *   SCRIPT:script_name       matchesScript(arg)     getStringFrom(arg)    String            
- *   LOCATION:#y#,#,world     matchesLocation(arg)   getLocationFrom(arg)  Location      
- *   QUEUE:Queue_Type         matchesQueueType(arg)  getQueueFrom(arg)     QueueType     
- *   QTY:#                    matchesQuantity(arg)   getQuantityFrom(arg)  int            
- *   ITEM:Material_Type(:#)   matchesItem(arg)       getItemFrom(arg)      ItemStack     
- *   ITEM:#(:#)               matchesItem(arg)       getItemFrom(arg)      ItemStack         
- *   # (Integer)              matchesInteger(arg)    getIntegerFrom(arg)   int           
- *   #.# (Double)             matchesDouble(arg)     getDoubleFrom(arg)    double        
- *   #.## (Float)             matchesFloat(arg)      getFloatFrom(arg)     float         
- *   'NPCs rule!' (String)    matchesString(arg)     getStringFrom(arg)    String        
- *   single_word (Word)       matchesWord(arg)       getStringFrom(arg)    String        
- *   string|string2 (List)    matchesString(arg)     getListFrom(arg)      List<String>  
- *</pre><br>
- *
- * In practice, the standard arguments should be used whenever possible to keep things consistent across the entire 
- * Denizen experience. Should you need to use custom arguments, however, there is support for that as well. After all, while using 
- * standard arguments is nice, you should never reach. Arguments should make as much sense to the user as possible.
- *
- * <br><br><b>
- * Small code examples:
- * </b><ol><code>
- * 0  if (aH.matchesArg("HARD", arg)) <br>
- * 1     hardness = Hardness.HARD; <br>
- *  <br>
- * 0 if (aH.matchesValueArg("HARDNESS", arg, ArgumentType.Word)) <br> 
- * 1     try { hardness = Hardness.valueOf(aH.getStringFrom(arg));} <br>
- * 2     catch (Exception e) { dB.echoError("Invalid HARDNESS!")} <br>
- * </code></ol>
- *
- * <br><br><b>
- * Methods for dealing with Custom Denizen Arguments
- * </b><ol><code>
- * DenizenScript Argument   JAVA Parse Method                                 JAVA Get Method       Returns    
- * +------------------------+-------------------------------------------------+---------------------+---------------------------------
- * CUSTOM_ARGUMENT          matchesArg("CUSTOM_ARGUMENT", arg)                None. No value        boolean     
- * CSTM_ARG:value           MatchesValueArg("CSTM_ARG", arg, ArgumentType)    get____From(arg)      depends on get method
- * </code></ol><br>
- *
- * Note: ArgumentType will filter the type of value to match to. If anything should be excepted as the value, or you plan
- * on parsing the value yourself, use ArgumentType.Custom.<br><br>
- *
- * Valid ArgumentTypes: ArgumentType.String, ArgumentType.Word, ArgumentType.Integer, ArgumentType.Double, ArgumentType.Float,
- * and ArgumentType.Custom
- *
- * @author Jeremy Schroeder
+ * @author aufdemrand
  *
  */
 public class aH {
@@ -87,12 +32,161 @@ public class aH {
         LivingEntity, Item, Boolean, Custom, Double, Float, Integer, String, Word, Location, Script, Duration
     }
 
-    //	Denizen denizen;
+    public static String debugObj(String prefix, String value) {
+        return "<G>" + prefix + "='<Y>" + value + "<G>'  ";
+    }
+
+    public static String debugUniqueObj(String prefix, String id, String value) {
+        return "<G>" + prefix + "='<A>" + id + "<Y>(" + value + ")<G>'  ";
+    }
 
     final static Pattern doublePtrn = Pattern.compile("(?:-|)(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
     final static Pattern floatPtrn = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
     final static Pattern integerPtrn = Pattern.compile("(?:-|)\\d+");
     final static Pattern wordPtrn = Pattern.compile("\\w+");
+
+    /**
+     * <p>Used to determine if a argument string matches a non-valued custom argument.
+     * If a dScript valued argument (such as PLAYER:NAME) is passed, this method
+     * will always return false. Also supports multiple argument names, separated by a
+     * comma (,) character. This method will trim() each name specified.</p>
+     *
+     * <b>Example use of '<tt>aH.matchesArg("NOW, LATER", arg)</tt>':</b>
+     * <ol>
+     * <tt>arg = "NOW"</tt> will return true.<br>
+     * <tt>arg = "NEVER"</tt> will return false.<br>
+     * <tt>arg = "LATER:8PM"</tt> will return false.<br>
+     * <tt>arg = "LATER"</tt> will return true.
+     * </ol>
+     *
+     * @param names the valid argument names to match
+     * @param arg the dScript argument string
+     * @return true if matched, false if not
+     *
+     */
+    public static boolean matchesArg(String names, String arg) {
+        if (names.split(",").length == 1) {
+            if (arg.toUpperCase().equals(names.toUpperCase())) return true;
+        } else {
+            for (String string : names.split(","))
+                if (arg.split(":")[0].equalsIgnoreCase(string.trim())) return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * <p>Used to match a custom argument with a value. In practice, the standard
+     * arguments should be used whenever possible to keep things consistent across
+     * the entire 'dScript experience'. Should you need to use custom arguments,
+     * however, this method provides some support. After all, while using standard
+     * arguments is nice, you should never reach. Arguments should make as much
+     * sense to the user/script writer as possible.</p>
+     *
+     * <b>Small code example:</b>
+     * <ol>
+     * <tt>0 if (aH.matchesValueArg("HARDNESS", arg, ArgumentType.Word))</tt><br>
+     * <tt>1     try { </tt><br>
+     * <tt>2        hardness = Hardness.valueOf(aH.getStringFrom(arg).toUpperCase());</tt><br>
+     * <tt>3     } catch (Exception e) { </tt><br>
+     * <tt>4		dB.echoError("Invalid HARDNESS!") </tt><br>
+     * <tt>5 }</tt><br>
+     * </ol>
+     *
+     * <p>Note: Like {@link #matchesArg(String, String)}, matchesValueArg(String)
+     * supports multiple argument names, separated by a comma (,) character. This method
+     * will trim() each name specified.</p>
+     *
+     * <p>Also requires a specified ArgumentType, which will filter the type of value
+     * to match to. If anything should be excepted as the value, or you plan
+     * on parsing the value yourself, use ArgumentType.Custom, otherwise use an
+     * an appropriate ArgumentType. See: {@link ArgumentType}.</p>
+     *
+     * <b>Example use of '<tt>aH.matchesValueArg("TIME", arg, ArgumentType.Integer)</tt>':</b>
+     * <ol>
+     * <tt>arg = "TIME:60"</tt> will return true.<br>
+     * <tt>arg = "90"</tt> will return false.<br>
+     * <tt>arg = "TIME:8 o'clock"</tt> will return false.<br>
+     * <tt>arg = "TIME:0"</tt> will return true.
+     * </ol>
+     *
+     * @param names the desired name variations of the argument
+     * @param arg the dScript argument string
+     * @param type a valid ArgumentType, used for matching values
+     * @return true if matched, false otherwise
+     *
+     */
+    public static boolean matchesValueArg(String names, String arg, ArgumentType type) {
+        if (arg == null) return false;
+        if (arg.split(":").length == 1) return false;
+
+        if (names.split(",").length == 1) {
+            if (!arg.split(":")[0].equalsIgnoreCase(names)) return false;
+
+        } else {
+            boolean matched = false;
+            for (String string : names.split(","))
+                if (arg.split(":")[0].equalsIgnoreCase(string.trim())) matched = true;
+            if (!matched) return false;
+        }
+
+        arg = arg.split(":", 2)[1];
+        Matcher m;
+
+        switch (type) {
+            case Word:
+                m = wordPtrn.matcher(arg);
+                if (m.matches()) return true;
+                break;
+
+            case Integer:
+                m = integerPtrn.matcher(arg);
+                if (m.matches()) return true;
+                break;
+
+            case Double:
+                m = doublePtrn.matcher(arg);
+                if (m.matches()) return true;
+                break;
+
+            case Float:
+                m = floatPtrn.matcher(arg);
+                if (m.matches()) return true;
+                break;
+
+            case Boolean:
+                if (arg.equalsIgnoreCase("true")) return true;
+                if (arg.equalsIgnoreCase("false")) return false;
+                break;
+
+            case Location:
+                return matchesLocation("location:" + arg);
+
+            case Script:
+                return matchesLocation("script:" + arg);
+
+            case Item:
+                return matchesItem("item:" + arg);
+
+            case LivingEntity:
+                final Pattern matchesEntityPtrn =
+                        Pattern.compile("(?:.+?|):((ENTITY\\.|PLAYER\\.|NPC\\.).+)|(PLAYER|NPC)", Pattern.CASE_INSENSITIVE);
+                m = matchesEntityPtrn.matcher(arg);
+                if (m.matches()) return true;
+                break;
+
+            case Duration:
+                return matchesDuration("duration:" + arg);
+
+            default:
+                return true;
+        }
+
+        dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
+                "prefix is correct, the value is not valid. Check documentation for valid value." +
+                "Perhaps a replaceable Tag has failed to fill in a value?");
+        return false;
+    }
 
     /**
      * <p>Returns a boolean value from a dScript argument string. Also accounts
@@ -282,64 +376,11 @@ public class aH {
      * @return an ItemStack or null
      *
      */
-    public static ItemStack getItemFrom(String arg) {
-
+    public static Item getItemFrom(String arg) {
         if (arg == null) return null;
-
-        final Pattern[] getItemPtrn = {
-                Pattern.compile("(?:(?:.+?:)|)(\\d+):(\\d+)"),
-                Pattern.compile("(?:(?:.+?:)|)(\\d+)"),
-                Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+?):(\\d+)"),
-                Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+)"),
-                Pattern.compile("(?:(?:.+?:)|)itemstack\\.(.+)", Pattern.CASE_INSENSITIVE)
-        };
-
-        Matcher[] m = new Matcher[4];
-
-        // First check for a 'saved' item made with the NEW command.
-        // These are in the 'ITEMSTACK.item_name' format.
-        m[0] = getItemPtrn[4].matcher(arg);
-        if (m[0].matches()) {
-            ItemStack returnable = ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
-                    .getCommandRegistry().get(NewCommand.class).getItem(m[0].group(1));
-            if (returnable != null) return returnable;
-            else dB.echoError("Invalid item! '" + m[0].group(1) + "' could not be found.");
-        }
-
-        // Now check traditional item patterns.
-        m[0] = getItemPtrn[0].matcher(arg);
-        m[1] = getItemPtrn[1].matcher(arg);
-        m[2] = getItemPtrn[2].matcher(arg);
-        m[3] = getItemPtrn[3].matcher(arg);
-        ItemStack stack = null;
-
-        try {
-            // Match 'ItemId:Data'
-            if (m[0].matches()) {
-                stack = new ItemStack(Integer.valueOf(m[0].group(1)));
-                stack.setDurability(Short.valueOf(m[0].group(2)));
-                return stack;
-
-                // Match 'ItemId'
-            } else if (m[1].matches()) {
-                return new ItemStack(Integer.valueOf(m[1].group(1)));
-
-                // Match 'Material:Data'
-            } else if (m[2].matches()) {
-                stack = new ItemStack(Material.valueOf(m[2].group(1).toUpperCase()));
-                stack.setDurability(Short.valueOf(m[2].group(2)));
-                return stack;
-
-                // Match 'Material'
-            } else if (m[3].matches()) {
-                return new ItemStack(Material.valueOf(m[3].group(1).toUpperCase()));
-            }
-
-        } catch (Exception e) {
+        Item stack = Item.valueOf(arg);
+        if (stack == null)
             dB.echoError("Invalid item! Failed to find a matching Bukkit ItemStack.");
-            if (dB.showStackTraces) e.printStackTrace();
-        }
-
         return stack;
     }
 
@@ -398,6 +439,15 @@ public class aH {
         if (location == null)
             dB.echoError("Unable to build a location with this information! Provided: '" + arg + "'.");
         return location;
+    }
+
+    public static Script getScriptFrom(String arg) {
+        // Build location argument from dScript argument
+        Script script = Script.valueOf(arg);
+        // Check if location returned as null
+        if (script == null)
+            dB.echoError("Unable to build a script with this information! Provided: '" + arg + "'.");
+        return script;
     }
 
     /**
@@ -546,32 +596,32 @@ public class aH {
     }
 
     /**
-     * <p>Used to determine if a argument string matches a non-valued custom argument.
-     * If a dScript valued argument (such as PLAYER:NAME) is passed, this method
-     * will always return false. Also supports multiple argument names, separated by a
-     * comma (,) character. This method will trim() each name specified.</p>
+     * <p>Gets a Duration object from the dScript duration value format. Accepts a prefix in the
+     * argument for convenience.</p>
      *
-     * <b>Example use of '<tt>aH.matchesArg("NOW, LATER", arg)</tt>':</b>
+     * <p>Uses the regex pattern <tt>"(?:.+:|)(\\d+(?:(|\\.\\d+)))(|t|m|s|h|d)"</tt>.
+     * Valid units: T=ticks, M=minutes, S=seconds, H=hour, D=day. If not specified,
+     * seconds are assumed.</p>
+     *
+     * <b>Examples:</b>
      * <ol>
-     * <tt>arg = "NOW"</tt> will return true.<br>
-     * <tt>arg = "NEVER"</tt> will return false.<br>
-     * <tt>arg = "LATER:8PM"</tt> will return false.<br>
-     * <tt>arg = "LATER"</tt> will return true.
+     * <tt>'60'</tt> will return '60'.<br>
+     * <tt>'-1'</tt> will return '0'.<br>
+     * <tt>'DURATION:1.5m'</tt> will return '90'.<br>
+     * <tt>'DELAY:derp'</tt> will return null.
      * </ol>
      *
-     * @param names the valid argument names to match
-     * @param arg the dScript argument string
-     * @return true if matched, false if not
+     * @param arg  the dScript argument string
+     * @return  a Duration object, or null
      *
      */
-    public static boolean matchesArg(String names, String arg) {
-        if (names.split(",").length == 1) {
-            if (arg.toUpperCase().equals(names.toUpperCase())) return true;
-        } else {
-            for (String string : names.split(","))
-                if (arg.split(":")[0].equalsIgnoreCase(string.trim())) return true;
-        }
-        return false;
+    public static Duration getDurationFrom(String arg) {
+        // Build location argument from dScript argument
+        Duration duration = Duration.valueOf(arg);
+        // Check if location returned as null
+        if (duration == null)
+            dB.echoError("Unable to build a duration with this information! Provided: '" + arg + "'.");
+        return duration;
     }
 
     /**
@@ -600,9 +650,9 @@ public class aH {
      * is used throughout the core members of Denizen, it is encouraged to use it whenever
      * appropriate.</p>
      *
-     * TODO: Note compatibility with dScript times (using {@link #getSecondsFrom(String)})
+     * TODO: Note compatibility with dScript times (using {@link #getDurationFrom(String)})
      *
-     * <p>When extracting the value from a match, using {@link #getSecondsFrom(String)} is
+     * <p>When extracting the value from a match, using {@link #getDurationFrom(String)} is
      * encouraged.</p>
      *
      * <b>Examples:</b>
@@ -626,30 +676,6 @@ public class aH {
                     "prefix is correct, the value is not valid. 'DURATION' requires a positive integer value. " +
                     "Perhaps a replaceable Tag has failed to fill in a valid value?");
         return false;
-    }
-
-    /**
-     * <p>Gets seconds from the dScript duration value format. Accepts a prefix in the
-     * argument for convenience.</p>
-     *
-     * <p>Uses the regex pattern <tt>"(?:.+:|)(\\d+(?:(|\\.\\d+)))(|t|m|s|h|d)"</tt>.
-     * Valid units: T=ticks, M=minutes, S=seconds, H=hour, D=day. If not specified,
-     * seconds are assumed.</p>
-     *
-     * <b>Examples:</b>
-     * <ol>
-     * <tt>'60'</tt> will return '60'.<br>
-     * <tt>'-1'</tt> will return '0'.<br>
-     * <tt>'DURATION:1.5m'</tt> will return '90'.<br>
-     * <tt>'DELAY:derp'</tt> will return false.
-     * </ol>
-     *
-     * @param arg the dScript argument string
-     * @return true if matched, otherwise false
-     *
-     */
-    public static double getSecondsFrom(String arg) {
-        return 0;
     }
 
     /**
@@ -890,6 +916,7 @@ public class aH {
         return false;
     }
 
+
     /**
      * <p>Used to determine if a dScript argument string is a valid toggle argument. Uses
      * regex to match the string arg provided. In order to return true, the 'toggle:'
@@ -916,120 +943,6 @@ public class aH {
             dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
                     "prefix is correct, the value is not valid. 'TOGGLE' requires a value of TRUE, FALSE, or TOGGLE. " +
                     "Perhaps a replaceable Tag has failed to fill in a valid value?");
-        return false;
-    }
-
-
-    /**
-     * <p>Used to match a custom argument with a value. In practice, the standard
-     * arguments should be used whenever possible to keep things consistent across
-     * the entire Denizen experience. Should you need to use custom arguments,
-     * however, this method provides support. After all, while using standard
-     * arguments is nice, you should never reach. Arguments should make as much
-     * sense to the user/script writer as possible.</p>
-     *
-     * <b>Small code example:</b>
-     * <ol>
-     * <tt>0 if (aH.matchesValueArg("HARDNESS", arg, ArgumentType.Word))</tt><br>
-     * <tt>1     try { </tt><br>
-     * <tt>2        hardness = Hardness.valueOf(aH.getStringFrom(arg));</tt><br>
-     * <tt>3     } catch (Exception e) { </tt><br>
-     * <tt>4		dB.echoError("Invalid HARDNESS!") </tt><br>
-     * <tt>5 }</tt><br>
-     * </ol>
-     *
-     * <p>Note: Like {@link #matchesArg(String, String)}, matchesValueArg(String)
-     * supports multiple argument names, separated by a comma (,) character. This method
-     * will trim() each name specified.</p>
-     *
-     * <p>Also requires a specified ArgumentType, which will filter the type of value
-     * to match to. If anything should be excepted as the value, or you plan
-     * on parsing the value yourself, use ArgumentType.Custom, otherwise use an
-     * an appropriate ArgumentType. See: {@link ArgumentType}.</p>
-     *
-     * <b>Example use of '<tt>aH.matchesValueArg("TIME", arg, ArgumentType.Integer)</tt>':</b>
-     * <ol>
-     * <tt>arg = "TIME:60"</tt> will return true.<br>
-     * <tt>arg = "90"</tt> will return false.<br>
-     * <tt>arg = "TIME:8 o'clock"</tt> will return false.<br>
-     * <tt>arg = "TIME:0"</tt> will return true.
-     * </ol>
-     *
-     * @param names the desired name variations of the argument
-     * @param arg the dScript argument string
-     * @param type a valid ArgumentType, used for matching values
-     * @return true if matched, false otherwise
-     *
-     */
-    public static boolean matchesValueArg(String names, String arg, ArgumentType type) {
-        if (arg == null) return false;
-        if (arg.split(":").length == 1) return false;
-
-        if (names.split(",").length == 1) {
-            if (!arg.split(":")[0].equalsIgnoreCase(names)) return false;
-
-        } else {
-            boolean matched = false;
-            for (String string : names.split(","))
-                if (arg.split(":")[0].equalsIgnoreCase(string.trim())) matched = true;
-            if (!matched) return false;
-        }
-
-        arg = arg.split(":", 2)[1];
-        Matcher m;
-
-        switch (type) {
-            case Word:
-                m = wordPtrn.matcher(arg);
-                if (m.matches()) return true;
-                break;
-
-            case Integer:
-                m = integerPtrn.matcher(arg);
-                if (m.matches()) return true;
-                break;
-
-            case Double:
-                m = doublePtrn.matcher(arg);
-                if (m.matches()) return true;
-                break;
-
-            case Float:
-                m = floatPtrn.matcher(arg);
-                if (m.matches()) return true;
-                break;
-
-            case Boolean:
-                if (arg.equalsIgnoreCase("true")) return true;
-                if (arg.equalsIgnoreCase("false")) return false;
-                break;
-
-            case Location:
-                return matchesLocation("location:" + arg);
-
-            case Script:
-                return matchesLocation("script:" + arg);
-
-            case Item:
-                return matchesItem("item:" + arg);
-
-            case LivingEntity:
-                final Pattern matchesEntityPtrn =
-                        Pattern.compile("(?:.+?|):((ENTITY\\.|PLAYER\\.|NPC\\.).+)|(PLAYER|NPC)", Pattern.CASE_INSENSITIVE);
-                m = matchesEntityPtrn.matcher(arg);
-                if (m.matches()) return true;
-                break;
-
-            case Duration:
-                return matchesDuration("duration:" + arg);
-
-            default:
-                return true;
-        }
-
-        dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
-                "prefix is correct, the value is not valid. Check documentation for valid value." +
-                "Perhaps a replaceable Tag has failed to fill in a value?");
         return false;
     }
 

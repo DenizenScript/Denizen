@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -27,14 +28,16 @@ public class TriggerCommand extends AbstractCommand {
         // Initialize required fields
 	    String trigger = null;
         Toggle toggle = Toggle.TOGGLE;
-        double cooldown = -1;
+        Duration cooldown = new Duration(-1d);
         int radius = -1;
 
 	    // Parse arguments
 		for (String arg : scriptEntry.getArguments()) {
 
-			if (aH.matchesValueArg("COOLDOWN", arg, ArgumentType.Duration))
-				cooldown = aH.getSecondsFrom(arg);
+			if (aH.matchesValueArg("COOLDOWN", arg, ArgumentType.Duration)) {
+				cooldown = aH.getDurationFrom(arg);
+                cooldown.setPrefix("Cooldown");
+            }
 
             else if (aH.matchesValueArg("RADIUS", arg, ArgumentType.Integer))
                 radius = aH.getIntegerFrom(arg);
@@ -68,14 +71,14 @@ public class TriggerCommand extends AbstractCommand {
         Toggle toggle = (Toggle) scriptEntry.getObject("toggle");
         String trigger = (String) scriptEntry.getObject("trigger");
         Integer radius = (Integer) scriptEntry.getObject("radius");
-        Double cooldown = (Double) scriptEntry.getObject("cooldown");
+        Duration cooldown = (Duration) scriptEntry.getObject("cooldown");
         NPC npc = scriptEntry.getNPC().getCitizen();
 
         dB.echoApproval("Executing '" + getName() + "': "
                 + "Trigger='" + trigger + "', "
                 + "Toggle='" + toggle.toString() + "', "
                 + (radius > 0 ? "Radius='" + radius + "', " : "Radius='Unchanged', ")
-                + (cooldown > 0 ? "Cooldown='" + cooldown + "', " : "Cooldown='Unchanged', ")
+                + (cooldown.getSeconds() > 0 ? "Cooldown='" + cooldown.debug() + "', " : "Cooldown='Unchanged', ")
                 + "NPC='" + scriptEntry.getNPC() + "'");
 
         // Add trigger trait
@@ -92,8 +95,8 @@ public class TriggerCommand extends AbstractCommand {
         if (radius > 0)
 		    trait.setLocalRadius(trigger, radius);
 		
-		if (cooldown > 0)
-		    trait.setLocalCooldown(trigger, cooldown);
+		if (cooldown.getSeconds() > 0)
+		    trait.setLocalCooldown(trigger, cooldown.getSeconds());
 	}
 
 }

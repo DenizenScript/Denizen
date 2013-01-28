@@ -70,6 +70,9 @@ public class dB {
 		Header,	Footer, Spacer
 	}
 
+    public static void report(String name, String report) {
+        dB.echoApproval("<G>Executing '<Y>" + name + "<G>': " + report);
+    }
 	
 	/**
 	 * ConsoleSender sends dScript debugging information to the logger

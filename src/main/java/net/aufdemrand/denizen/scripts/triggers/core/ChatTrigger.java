@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
@@ -86,12 +86,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Get the denizen-npc object that is associated to this NPC to get quicker
         // access to some core methods.
         //
-        DenizenNPC denizenNPC = denizen.getNPCRegistry().getDenizen(closestNPC);
+        dNPC dNPC = denizen.getNPCRegistry().getDenizen(closestNPC);
 
         //
         // Denizen should be good to interact with. Let's get the script.
         //
-        String theScript = denizenNPC.getInteractScript(event.getPlayer(), this.getClass());
+        String theScript = dNPC.getInteractScript(event.getPlayer(), this.getClass());
 
         //
         // Parse the script and match Triggers.. if found, cancel the text! The
@@ -101,7 +101,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // metaData.add(new FixedMetadataValue(denizen, event.getMessage()));
         this.playerMessage = event.getMessage ();
 
-        if (this.parse (denizenNPC, event.getPlayer(), theScript)) {
+        if (this.parse (dNPC, event.getPlayer(), theScript)) {
             event.setCancelled(true);
 
         } else {
@@ -126,7 +126,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
      * queue if found matched. Returning FALSE will cancel intervention and allow
      * the PlayerChatEvent to pass through.
      */
-    public boolean parse (DenizenNPC npc, Player player, String scriptName) {
+    public boolean parse (dNPC npc, Player player, String scriptName) {
         Boolean	foundTrigger = false;
         ScriptEngine	sE = denizen.getScriptEngine();
 

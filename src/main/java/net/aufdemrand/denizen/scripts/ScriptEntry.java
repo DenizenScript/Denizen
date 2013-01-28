@@ -1,10 +1,9 @@
 package net.aufdemrand.denizen.scripts;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
-import org.bukkit.Bukkit;
+import net.aufdemrand.denizen.utilities.arguments.Script;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -19,62 +18,51 @@ import java.util.*;
  */
 public class ScriptEntry {
 
-	/* 
-	 * ScriptEntry variables
-	 */
 
-	final private String command; 
-	final private Long queueTime;
-	private Long allowedRunTime;
-	private boolean isInstant = false;
+	final private String command;
+    final private long queueTime;
 
+	private long allowedRunTime;
+	private boolean instant = false;
 	private Player player = null;
 	private OfflinePlayer offlinePlayer = null;
-	private String script = null;
+	private Script script = null;
 	private String step = null;
-	private DenizenNPC npc = null;
+	private dNPC npc = null;
 	private QueueType queueType = null;
 	private List<String> args = null;
-	private Denizen denizen = null;
+
 
 	private Map<String, Object> objects = new HashMap<String, Object>();
 
-	/* 
-	 * ScriptEntry constructors
-	 */
 	
 	public ScriptEntry(String command, String[] arguments) throws ScriptEntryCreationException {
-		this(command, arguments, (Player) null, (DenizenNPC) null, (String) null, (String) null, (String) null, (String) null);
+		this(command, arguments, null, null, null, null);
 	}
 
 	public ScriptEntry(String command, String[] arguments, Player player) throws ScriptEntryCreationException {
-		this(command, arguments, player, (DenizenNPC) null, (String) null, (String) null, (String) null, (String) null);
+		this(command, arguments, player, null, null, null);
 	}
 
 	public ScriptEntry(String command, String[] arguments, Player player, String script) throws ScriptEntryCreationException {
-		this(command, arguments, player, (DenizenNPC) null, script, (String) null, (String) null, (String) null);
+		this(command, arguments, player, null, script, null);
 	}
 
-	public ScriptEntry(String command, String[] arguments, DenizenNPC denizen, String script) throws ScriptEntryCreationException {
-		this(command, arguments, (Player) null, denizen, script, (String) null, (String) null, (String) null);
+	public ScriptEntry(String command, String[] arguments, dNPC denizen, String script) throws ScriptEntryCreationException {
+		this(command, arguments, null, denizen, script, null);
 	}
 
-	public ScriptEntry(String command, String[] arguments, Player player, DenizenNPC denizen, String script, String step) throws ScriptEntryCreationException {
-		this(command, arguments, player, denizen, script, step, (String) null, (String) null);
-	}
+	public ScriptEntry(String command, String[] arguments, Player player, dNPC npc, String script, String step) throws ScriptEntryCreationException {
 
-	public ScriptEntry(String command, String[] arguments, Player player, DenizenNPC npc, String script, String step, String messageRaw, String messageFormatted) throws ScriptEntryCreationException {
+		if (command == null)
+            throw new ScriptEntryCreationException("CommandType cannot be null!");
 
-		if (command == null) throw new ScriptEntryCreationException("CommandType cannot be null!");
-
-		if (denizen == null) denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-
-		// Internal, never null. allowedRunTime can be modified between queue and execution.
+        // Internal, never null. allowedRunTime can be modified between queue and execution.
 		this.queueTime = System.currentTimeMillis();
 		this.allowedRunTime = queueTime;
 
 		if (command.startsWith("^")) {
-			isInstant = true;
+			instant = true;
 			command = command.substring(1);
 		}
 
@@ -86,7 +74,7 @@ public class ScriptEntry {
 		this.npc = npc;
 		this.args = new ArrayList<String>();
 		if (arguments != null) this.args = Arrays.asList(arguments);
-		this.script = script;
+		if (script != null) this.script = new Script(script);
 		this.step = step;
 
 	}
@@ -112,7 +100,7 @@ public class ScriptEntry {
 		return command;
 	}
 
-	public DenizenNPC getNPC() {
+	public dNPC getNPC() {
 		return npc;
 	}
 
@@ -138,9 +126,8 @@ public class ScriptEntry {
 		return player;
 	}
 
-	public String getScript() {
-        if (script == null) return script;
-		else return script.toUpperCase();
+	public Script getScript() {
+        return script;
 	}
 
 	public QueueType getSendingQueue() {
@@ -157,7 +144,7 @@ public class ScriptEntry {
 	}
 
 	public boolean isInstant() {
-		return isInstant;
+		return instant;
 	}
 
 	public ScriptEntry setAllowedRunTime(Long newTime) {
@@ -171,7 +158,7 @@ public class ScriptEntry {
 	}
 
 	public ScriptEntry setInstant(boolean instant) {
-		isInstant = instant;
+		this.instant = instant;
 		return this;
 	}
 
@@ -185,13 +172,13 @@ public class ScriptEntry {
 		return this;
 	}
 	
-	public ScriptEntry setNPC(DenizenNPC denizenNPC) {
-		this.npc = denizenNPC;
+	public ScriptEntry setNPC(dNPC dNPC) {
+		this.npc = dNPC;
 		return this;
 	}
 	
-	public ScriptEntry setScriptName(String scriptName) {
-		this.script = scriptName;
+	public ScriptEntry setScript(String scriptName) {
+		this.script = new Script(scriptName);
 		return this;
 	}
 	

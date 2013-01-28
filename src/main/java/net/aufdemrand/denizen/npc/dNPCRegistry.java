@@ -15,20 +15,20 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Used for keeping track and retrieving DenizenNPC objects which offer some Denizen-specific
+ * Used for keeping track and retrieving dNPC objects which offer some Denizen-specific
  * methods when dealing with NPCs.
  *
  * @author Jeremy Schroeder
  *
  */
-public class DenizenNPCRegistry implements Listener {
+public class dNPCRegistry implements Listener {
 
-    private static Map<NPC, DenizenNPC> denizenNPCs = new ConcurrentHashMap<NPC, DenizenNPC>();
+    private static Map<NPC, dNPC> denizenNPCs = new ConcurrentHashMap<NPC, dNPC>();
 
     private Denizen plugin;
     private ActionHandler actionHandler;
 
-    public DenizenNPCRegistry(Denizen denizen) {
+    public dNPCRegistry(Denizen denizen) {
         plugin = denizen;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         actionHandler = new ActionHandler(plugin);
@@ -53,21 +53,21 @@ public class DenizenNPCRegistry implements Listener {
     private void registerNPC(NPC npc) {
         if (npc == null) return;
         if (!denizenNPCs.containsKey(npc)) {
-            denizenNPCs.put(npc, new DenizenNPC(npc));
+            denizenNPCs.put(npc, new dNPC(npc));
         }
         dB.log("Constructing NPC " + getDenizen(npc).toString());
     }
 
     /**
-     * Returns a DenizenNPC object when given a valid NPC. DenizenNPCs have some methods
+     * Returns a dNPC object when given a valid NPC. DenizenNPCs have some methods
      * specific to Denizen functionality as well as easy access to the attached NPC and LivingEntity.
      *
      * @param npc the Citizens NPC
      *
-     * @return a DenizenNPC
+     * @return a dNPC
      *
      */
-    public DenizenNPC getDenizen(NPC npc) {
+    public dNPC getDenizen(NPC npc) {
         if (npc == null) return null;
         if (!denizenNPCs.containsKey(npc))
             registerNPC(npc);
@@ -78,13 +78,13 @@ public class DenizenNPCRegistry implements Listener {
      * Similar to getting NPCs from Citizens' NPCRegistry, but this will filter out
      * unspawned NPCs
      *
-     * @return map of NPC, DenizenNPC of all spawned NPCs
+     * @return map of NPC, dNPC of all spawned NPCs
      *
      */
-    public Map<NPC, DenizenNPC> getSpawnedNPCs() {
-        Iterator<Map.Entry<NPC, DenizenNPC>> it = denizenNPCs.entrySet().iterator();
+    public Map<NPC, dNPC> getSpawnedNPCs() {
+        Iterator<Map.Entry<NPC, dNPC>> it = denizenNPCs.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<NPC, DenizenNPC> npc = (Map.Entry<NPC, DenizenNPC>)it.next();
+            Map.Entry<NPC, dNPC> npc = (Map.Entry<NPC, dNPC>)it.next();
             try {
                 npc.getKey().getBukkitEntity();
             } catch (NullPointerException e) {

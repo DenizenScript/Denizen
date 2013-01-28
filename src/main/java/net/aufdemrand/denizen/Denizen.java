@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.events.dScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.notables.NotableManager;
-import net.aufdemrand.denizen.npc.DenizenNPCRegistry;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.activities.ActivityEngine;
 import net.aufdemrand.denizen.npc.activities.ActivityRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
@@ -76,7 +76,7 @@ public class Denizen extends JavaPlugin {
     private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
     private ActivityRegistry activityRegistry = new ActivityRegistry(this);
     private ListenerRegistry listenerRegistry = new ListenerRegistry(this);
-    private DenizenNPCRegistry denizenNPCRegistry;
+    private dNPCRegistry dNPCRegistry;
     
     
     public ActivityRegistry getActivityRegistry() {
@@ -87,8 +87,8 @@ public class Denizen extends JavaPlugin {
         return commandRegistry;
     }
 
-    public DenizenNPCRegistry getNPCRegistry() {
-        return denizenNPCRegistry;
+    public dNPCRegistry getNPCRegistry() {
+        return dNPCRegistry;
     }
 
     public ListenerRegistry getListenerRegistry() {
@@ -144,7 +144,7 @@ public class Denizen extends JavaPlugin {
         dB.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
         dB.echoDebug(DebugElement.Footer);
 
-        denizenNPCRegistry = new DenizenNPCRegistry(this);
+        dNPCRegistry = new dNPCRegistry(this);
         
         // Register commandHandler with Citizens2
         commandHandler = new CommandHandler(Depends.citizens);

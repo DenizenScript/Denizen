@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -41,7 +41,7 @@ public class RandomCommand extends AbstractCommand {
 	private	Player player;
 	private	List<ScriptEntry> currentQueue = new ArrayList<ScriptEntry>();
 	private	QueueType sendingQueue;
-	private	DenizenNPC npc;
+	private dNPC npc;
 	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry)

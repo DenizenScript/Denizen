@@ -1,21 +1,21 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import org.bukkit.Bukkit;
-
 import net.aufdemrand.denizen.events.ScriptFailEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import org.bukkit.Bukkit;
 
 /**
  * Sets a Script as 'FAILED'. Scripts can be failed multiple times and Denizen will keep track
  * of the total amount. This can also be checked against with the SCRIPT requirement.
  * 
- * @author Jeremy Schroeder
+ * @author aufdemrand
  */
 
 public class FailCommand extends AbstractCommand {
@@ -33,34 +33,51 @@ public class FailCommand extends AbstractCommand {
 	 * FAIL 'SCRIPT:A different script'
 	 */
 
-	String scriptName;
-	String playerName;
-	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+        // Initialize required fields
+        String player = null;
 
 		// Get some defaults from the ScriptEntry
-		scriptName = scriptEntry.getScript();
-		playerName = null;
-		if (scriptEntry.getPlayer() != null) playerName = scriptEntry.getPlayer().getName();
+		Script script = scriptEntry.getScript();
+
+		if (scriptEntry.getPlayer() != null)
+            player = scriptEntry.getPlayer().getName();
+        if (player == null && scriptEntry.getOfflinePlayer() != null)
+            player = scriptEntry.getOfflinePlayer().getName();
 		
 		// Parse the arguments
 		for (String arg : scriptEntry.getArguments()) {
 
 			if (aH.matchesScript(arg)) {
-				scriptName = aH.getStringFrom(arg);
-				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
+				script = aH.getScriptFrom(arg);
 
-            }	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
-		
-		if (playerName == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
-		if (scriptName == null) throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
+
+        // Check for required args
+		if (player == null)
+            throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
+		if (script == null)
+            throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
+
+        // Stash objects
+        scriptEntry.addObject("script", script);
+        scriptEntry.addObject("player", player);
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-		failScript(playerName, scriptName);		
+		// Grab objects from scriptEntry
+        String player = (String) scriptEntry.getObject("player");
+        Script script = (Script) scriptEntry.getObject("script");
+
+        // Report to dB
+        dB.report(getName(),
+                aH.debugObj("Player", player)
+                        + script.debug());
+
+        failScript(player, script.getName());
 	}
 
 	/**
@@ -99,9 +116,4 @@ public class FailCommand extends AbstractCommand {
 		return denizen.getSaves().getInt("Players." + playerName.toUpperCase() + "." + scriptName.toUpperCase() + "." + "Failed", 0); 
 	}
 
-    @Override
-    public void onEnable() {
-        // TODO Auto-generated method stub
-        
-    }
 }

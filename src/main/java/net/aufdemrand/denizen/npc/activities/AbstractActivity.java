@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.npc.activities;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 
@@ -43,7 +43,7 @@ public abstract class AbstractActivity implements RegistrationableInstance {
         return this;
     }
 
-    abstract public boolean addGoal(DenizenNPC npc, String[] arguments, int priority);
+    abstract public boolean addGoal(dNPC npc, String[] arguments, int priority);
 
     @Override
     public AbstractActivity as(String activityName) {
@@ -78,7 +78,7 @@ public abstract class AbstractActivity implements RegistrationableInstance {
 	
 	}
 
-    abstract public boolean removeGoal(DenizenNPC npc, boolean verbose);
+    abstract public boolean removeGoal(dNPC npc, boolean verbose);
 
 	public AbstractActivity withOptions(String usageHint, int numberOfRequiredArgs) {
         this.activityOptions = new ActivityOptions(usageHint, numberOfRequiredArgs);

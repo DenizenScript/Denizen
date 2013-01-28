@@ -49,7 +49,8 @@ public class AnnounceCommand extends AbstractCommand {
             text = aH.getStringFrom(arg);
 
         // If text is missing, alert the console.
-        if (text == null) throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
+        if (text == null)
+            throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
 
         // Add objects that need to be passed to execute() to the scriptEntry
         scriptEntry.addObject("text", text);
@@ -60,9 +61,9 @@ public class AnnounceCommand extends AbstractCommand {
         // Fetch objects
         String text = (String) scriptEntry.getObject("text");
 
-        // Debug output
-        dB.echoApproval("<G>Executing '<Y>" + getName() + "<G>': "
-                + "Message='<Y>" + text + "<G>'");
+        // Report to dB
+        dB.report(getName(),
+                aH.debugObj("Message", text));
 
         // Use Bukkit to broadcast the message to everybody in the server.
         denizen.getServer().broadcastMessage(text);

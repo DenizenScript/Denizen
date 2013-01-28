@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.events;
 
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -37,7 +37,7 @@ public class ReplaceableTagEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
     private Player player;
-    private DenizenNPC npc;
+    private dNPC npc;
 
     private boolean instant = false;
     private boolean wasReplaced = false;
@@ -60,7 +60,7 @@ public class ReplaceableTagEvent extends Event {
     private String replaced = null;
 
 
-    public ReplaceableTagEvent(Player player, DenizenNPC npc, String tag) {
+    public ReplaceableTagEvent(Player player, dNPC npc, String tag) {
 
         // TODO: Use REGEX and MATCHER/GROUPS to simplify this code (might be faster?)
 
@@ -227,7 +227,7 @@ public class ReplaceableTagEvent extends Event {
         return handlers;
     }
 
-    public DenizenNPC getNPC() {
+    public dNPC getNPC() {
         return npc;
     }
 

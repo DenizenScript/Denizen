@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.npc.actions;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
@@ -18,7 +18,7 @@ public class ActionHandler {
         this.denizen = denizen;
     }
     
-    public void doAction(String actionName, DenizenNPC npc, Player player, String assignment) {
+    public void doAction(String actionName, dNPC npc, Player player, String assignment) {
 
         if (assignment == null) return;
 

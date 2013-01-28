@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -18,7 +18,7 @@ public class NPCTags implements Listener {
     public void npcTags(ReplaceableTagEvent event) {
         if (!event.matches("npc")) return;
 
-        DenizenNPC n = event.getNPC();
+        dNPC n = event.getNPC();
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
 

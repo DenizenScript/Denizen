@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.npc.dNPC;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -49,7 +49,7 @@ public class LookCommand extends AbstractCommand {
 	Direction direction = null;
 	Location theLocation = null;
 	LivingEntity theEntity = null;
-	DenizenNPC theDenizen = null;
+	dNPC theDenizen = null;
 	
 	// private Map<Integer, Integer> taskMap = new ConcurrentHashMap<Integer, Integer>();
 	
@@ -120,10 +120,10 @@ public class LookCommand extends AbstractCommand {
 	}
 
 
-	private void look(LivingEntity theEntity, DenizenNPC theDenizen, Direction lookDir, Integer duration, Location lookLoc) {
+	private void look(LivingEntity theEntity, dNPC theDenizen, Direction lookDir, Integer duration, Location lookLoc) {
 
 		Location restoreLocation = theDenizen.getEntity().getLocation();
-		DenizenNPC restoreDenizen = theDenizen;
+		dNPC restoreDenizen = theDenizen;
 		Boolean restoreLookClose = theDenizen.isLookingClose();
 		String lookWhere = "NOWHERE";
 
@@ -216,9 +216,9 @@ public class LookCommand extends AbstractCommand {
 
 			aH.echoDebug("Setting delayed task: RESET LOOK");
 
-			taskMap.put(theDenizen.getCitizensEntity().getId(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FourItemRunnable<DenizenNPC, Location, Boolean, Float>(restoreDenizen, restoreLocation, restoreLookClose, theDenizen.getLocation().getYaw()) {
+			taskMap.put(theDenizen.getCitizensEntity().getId(), plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FourItemRunnable<dNPC, Location, Boolean, Float>(restoreDenizen, restoreLocation, restoreLookClose, theDenizen.getLocation().getYaw()) {
 				@Override
-				public void run(DenizenNPC denizen, Location location, Boolean lookClose, Float checkYaw) { 
+				public void run(dNPC denizen, Location location, Boolean lookClose, Float checkYaw) {
 					aH.echoDebug(ChatColor.YELLOW + "//DELAYED//" + ChatColor.WHITE + " Running delayed task: RESET LOOK.");
 					denizen.lookClose(lookClose);
 

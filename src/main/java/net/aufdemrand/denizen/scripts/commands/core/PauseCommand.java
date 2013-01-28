@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -35,7 +35,7 @@ public class PauseCommand extends AbstractCommand {
     
 	int duration;
 	PauseType pauseType;
-	DenizenNPC denizenNPC;
+	dNPC dNPC;
 	Player player;
 
 	@Override
@@ -44,9 +44,9 @@ public class PauseCommand extends AbstractCommand {
 		// Set defaults with information from the ScriptEntry
 	    duration = -1;
 	    pauseType = null;
-	    denizenNPC = null;
+	    dNPC = null;
 	    player = null;
-	    if (scriptEntry.getNPC() != null) denizenNPC = scriptEntry.getNPC();
+	    if (scriptEntry.getNPC() != null) dNPC = scriptEntry.getNPC();
 		if (scriptEntry.getPlayer() != null) player = scriptEntry.getPlayer();
 
 		// Parse arguments
@@ -69,19 +69,19 @@ public class PauseCommand extends AbstractCommand {
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-		pause(denizenNPC, pauseType, !scriptEntry.getCommand().equalsIgnoreCase("RESUME"));
+		pause(dNPC, pauseType, !scriptEntry.getCommand().equalsIgnoreCase("RESUME"));
 
 		// If duration...
 		if (duration > 0) {
-			if (durations.containsKey(denizenNPC.getCitizen().getId() + pauseType.name())) {
-				try { denizen.getServer().getScheduler().cancelTask(durations.get(denizenNPC.getCitizen().getId() + pauseType.name())); }
+			if (durations.containsKey(dNPC.getCitizen().getId() + pauseType.name())) {
+				try { denizen.getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name())); }
 				catch (Exception e) { dB.echoError(Messages.ERROR_CANCELLING_DELAYED_TASK); }
 			
 			}	dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "UNPAUSE " + pauseType);
 
-			durations.put(denizenNPC.getId() + pauseType.name(), denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen, 
-					new Runnable2<DenizenNPC, PauseType>(denizenNPC, pauseType) {
-				@Override public void run(DenizenNPC npc, PauseType type) { 
+			durations.put(dNPC.getId() + pauseType.name(), denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
+					new Runnable2<dNPC, PauseType>(dNPC, pauseType) {
+				@Override public void run(dNPC npc, PauseType type) {
 					
 					dB.echoDebug(Messages.DEBUG_RUNNING_DELAYED_TASK, "UNPAUSING " + pauseType);
 					pause(npc, type, false);
@@ -91,7 +91,7 @@ public class PauseCommand extends AbstractCommand {
 		}
 	}
 
-	public void pause(DenizenNPC denizen, PauseType pauseType, boolean pause) {
+	public void pause(dNPC denizen, PauseType pauseType, boolean pause) {
 		switch (pauseType) {
 
 		case WAYPOINTS:

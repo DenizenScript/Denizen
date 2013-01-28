@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.tags;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import org.bukkit.Bukkit;
@@ -38,7 +38,7 @@ public class TagManager {
         new AnchorTags(denizen);
     }
     
-    public String tag(Player player, DenizenNPC npc, String arg, boolean instant) {
+    public String tag(Player player, dNPC npc, String arg, boolean instant) {
         if (arg == null) return null;
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
         if (arg.indexOf('>') == -1 || arg.length() < 3) return arg;
@@ -101,7 +101,7 @@ public class TagManager {
         return filledArgs;
     }
 
-    public List<String> fillArguments(String[] args, Player player, DenizenNPC npc) {
+    public List<String> fillArguments(String[] args, Player player, dNPC npc) {
         List<String> filledArgs = new ArrayList<String>();
         if (args != null) {
             for (String argument : args) {

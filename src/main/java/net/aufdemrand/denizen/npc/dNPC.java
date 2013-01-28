@@ -18,14 +18,14 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-public class DenizenNPC {
+public class dNPC {
 
 	private NPC npc;
     private int npcid;
 	private Denizen plugin;
 	private ScriptHelper sH;
 
-	DenizenNPC(NPC citizensNPC) {
+	dNPC(NPC citizensNPC) {
 		this.npc = citizensNPC;
         this.npcid = citizensNPC.getId();
 		this.plugin = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");

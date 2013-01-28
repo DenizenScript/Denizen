@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
@@ -40,11 +41,11 @@ public class HealthTrait extends Trait implements Listener {
     private Location loc;
 
     public double getAnimationDelay() {
-        return aH.getSecondsFrom(animationDelay);
+        return Duration.valueOf(animationDelay).getSeconds();
     }
 
     public double getRespawnDelay() {
-        return aH.getSecondsFrom(respawnDelay);
+        return (Duration.valueOf(respawnDelay).getSeconds());
     }
 
     public void setRespawnLocation(String string) {
@@ -217,7 +218,7 @@ public class HealthTrait extends Trait implements Listener {
                             npc.despawn(DespawnReason.DEATH);
                             setHealth();
                         }
-                    } , (long) ((aH.getSecondsFrom(animationDelay) * 20)) );
+                    } , (long) ((Duration.valueOf(animationDelay).getSeconds() * 20)) );
 
         } else {
             npc.despawn(DespawnReason.DEATH);
@@ -231,7 +232,7 @@ public class HealthTrait extends Trait implements Listener {
                             if (npc.isSpawned()) return;
                             npc.spawn(loc);
                         }
-                    } , (long) ((aH.getSecondsFrom(respawnDelay) * 20)) );
+                    } , (long) ((Duration.valueOf(respawnDelay).getSeconds() * 20)) );
         }
     }
 

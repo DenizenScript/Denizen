@@ -41,22 +41,31 @@ public class ClearCommand extends AbstractCommand {
 
         List<ScriptEngine.QueueType> queues = (List<ScriptEngine.QueueType>) scriptEntry.getObject("queues");
 
-        dB.echoApproval("<G>Executing '<Y>" + getName() + "<G>': "
-                + "Queues=<Y>" + queues.toString() + "<G>'"
-                + (scriptEntry.getPlayer() != null ?
-                ", Player='<Y>" + scriptEntry.getPlayer().getName() + "<G>'" : "")
-                + (scriptEntry.getNPC() != null ? ", NPC='<Y>" + scriptEntry.getNPC().getName()
-                + "/" + scriptEntry.getNPC().getId() + "<G>'" : ""));
+        dB.report(getName(),
+                aH.debugObj("Queues", queues.toString())
+                        + (scriptEntry.getPlayer() != null && (queues.contains(ScriptEngine.QueueType.PLAYER)
+                        || queues.contains(ScriptEngine.QueueType.PLAYER_TASK)) ?
+                        aH.debugObj("Player", scriptEntry.getPlayer().getName()) : "")
+                        + (scriptEntry.getNPC() != null && queues.contains(ScriptEngine.QueueType.NPC) ?
+                        aH.debugObj("NPC", scriptEntry.getNPC().toString()) : ""));
 
         List<ScriptEntry> emptyList = new ArrayList<ScriptEntry>();
 
         for (ScriptEngine.QueueType queue : queues) {
             if (queue == ScriptEngine.QueueType.PLAYER)
-                denizen.getScriptEngine().replaceQueue(scriptEntry.getPlayer(), emptyList, ScriptEngine.QueueType.PLAYER);
+                denizen.getScriptEngine().replaceQueue(scriptEntry.getPlayer(),
+                        emptyList,
+                        ScriptEngine.QueueType.PLAYER);
+
             else if (queue == ScriptEngine.QueueType.PLAYER_TASK)
-                denizen.getScriptEngine().replaceQueue(scriptEntry.getPlayer(), emptyList, ScriptEngine.QueueType.PLAYER_TASK);
+                denizen.getScriptEngine().replaceQueue(scriptEntry.getPlayer(),
+                        emptyList,
+                        ScriptEngine.QueueType.PLAYER_TASK);
+
             else if (queue == ScriptEngine.QueueType.NPC)
-                denizen.getScriptEngine().replaceQueue(scriptEntry.getNPC(), emptyList, ScriptEngine.QueueType.NPC);
+                denizen.getScriptEngine().replaceQueue(scriptEntry.getNPC(),
+                        emptyList,
+                        ScriptEngine.QueueType.NPC);
         }
     }
 }

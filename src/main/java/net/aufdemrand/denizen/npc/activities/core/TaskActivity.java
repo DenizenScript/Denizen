@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.activities.AbstractActivity;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
@@ -14,9 +14,9 @@ import net.citizensnpcs.api.ai.Goal;
 
 public class TaskActivity extends AbstractActivity {
 
-	private Map<DenizenNPC, List<TaskGoal>> taskMap = new HashMap<DenizenNPC, List<TaskGoal>>();
+	private Map<dNPC, List<TaskGoal>> taskMap = new HashMap<dNPC, List<TaskGoal>>();
 
-	public boolean addGoal(DenizenNPC denizenNPC, String[] arguments, int priority) {
+	public boolean addGoal(dNPC dNPC, String[] arguments, int priority) {
 		
 		dB.echoDebug("Adding TASK Activity.");
 
@@ -49,19 +49,19 @@ public class TaskActivity extends AbstractActivity {
 		}
 		
 		List<TaskGoal> taskGoals = new ArrayList<TaskGoal>();
-		if (taskMap.containsKey(denizenNPC)) 
-			taskGoals = taskMap.get(denizenNPC);
-		taskGoals.add(0, new TaskGoal(denizenNPC, delay, duration, script, repeats, this));
-		taskMap.put(denizenNPC, taskGoals);
-		denizenNPC.getCitizen().getDefaultGoalController().addGoal(taskMap.get(denizenNPC).get(0), priority);
+		if (taskMap.containsKey(dNPC))
+			taskGoals = taskMap.get(dNPC);
+		taskGoals.add(0, new TaskGoal(dNPC, delay, duration, script, repeats, this));
+		taskMap.put(dNPC, taskGoals);
+		dNPC.getCitizen().getDefaultGoalController().addGoal(taskMap.get(dNPC).get(0), priority);
 		return true;
 	}
 
-	public boolean removeGoal(DenizenNPC denizenNPC, boolean verbose) {
-		if (taskMap.containsKey(denizenNPC)) {
-			for (Goal goal : taskMap.get(denizenNPC))
-				denizenNPC.getCitizen().getDefaultGoalController().removeGoal(goal);
-			taskMap.remove(denizenNPC);
+	public boolean removeGoal(dNPC dNPC, boolean verbose) {
+		if (taskMap.containsKey(dNPC)) {
+			for (Goal goal : taskMap.get(dNPC))
+				dNPC.getCitizen().getDefaultGoalController().removeGoal(goal);
+			taskMap.remove(dNPC);
 			if (verbose) dB.log("Removed Task Activity from NPC.");
 			return true;
 		} 

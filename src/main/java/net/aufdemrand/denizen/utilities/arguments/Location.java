@@ -60,11 +60,11 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
 
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
-     * or (location:)x,y,z,world. If including an Id, this location
-     * will persist and can be recalled at any time.
+     * or a dScript argument (location:)x,y,z,world. If including an Id,
+     * this location will persist and can be recalled at any time.
      *
-     * @param string  the string
-     * @return  a Location, or null if invalid
+     * @param string  the string or dScript argument String
+     * @return  a Location, or null if incorrectly formatted
      *
      */
     public static Location valueOf(String string) {
@@ -167,9 +167,9 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
     @Override
     public String debug() {
         return (Id != null ? "<G>" + prefix + "='<A>" + Id + "(<Y>" + getBlockX() + "," + getBlockY()
-                + "," + getBlockZ() + "," + getWorld().getName() + "<A>)<G>'"
+                + "," + getBlockZ() + "," + getWorld().getName() + "<A>)<G>'  "
                 : "<G>" + prefix + "='<Y>" + getBlockX() + "," + getBlockY()
-                + "," + getBlockZ() + "," + getWorld().getName() + "<G>'");
+                + "," + getBlockZ() + "," + getWorld().getName() + "<G>'  ");
     }
 
     @Override

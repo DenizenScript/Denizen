@@ -4,6 +4,8 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
+import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -51,18 +53,16 @@ public class ZapCommand extends AbstractCommand implements Listener{
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 		// Initialize required fields
-        String script = scriptEntry.getScript();
+        Script script = scriptEntry.getScript();
         String step = null;
-        double duration = -1;
+        Duration duration = new Duration(-1d);
 
 		for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesScript(arg)) {
-                script = aH.getStringFrom(arg);
-                dB.echoDebug(Messages.DEBUG_SET_SCRIPT, script);
+                script = aH.getScriptFrom(arg);
 
             } else if (aH.matchesDuration(arg)) {
-                duration = aH.getSecondsFrom(arg);
-                dB.echoDebug(Messages.DEBUG_SET_DURATION, String.valueOf(duration));
+                duration = aH.getDurationFrom(arg);
 
             } else if (aH.matchesValueArg("STEP", arg, aH.ArgumentType.String)
                     || aH.matchesInteger(arg)) {
@@ -84,12 +84,12 @@ public class ZapCommand extends AbstractCommand implements Listener{
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        String script = (String) scriptEntry.getObject("script");
+        Script script = (Script) scriptEntry.getObject("script");
         String step = (String) scriptEntry.getObject("step");
-        double duration = (Double) scriptEntry.getObject("duration");
+        Duration duration = (Duration) scriptEntry.getObject("duration");
 
         // Let's get the current step for reference.
-        String currentStep = denizen.getScriptEngine().getScriptHelper().getCurrentStep(scriptEntry.getPlayer(), script, false);
+        String currentStep = denizen.getScriptEngine().getScriptHelper().getCurrentStep(scriptEntry.getPlayer(), script.getName(), false);
 
         // Special-case for backwards compatibility... ability to use ZAP to count up steps.
         if (step == null) {
@@ -102,13 +102,13 @@ public class ZapCommand extends AbstractCommand implements Listener{
 
         // If the durationsMap already contains an entry for this player/script combination, cancel the task since it's probably not
         // desired to change back anymore if another ZAP for this script is taking place.
-        if (durations.containsKey(scriptEntry.getPlayer().getName() + "," + script.toUpperCase()))
+        if (durations.containsKey(scriptEntry.getPlayer().getName() + "," + script.getName()))
             try {
-                denizen.getServer().getScheduler().cancelTask(durations.get(scriptEntry.getPlayer().getName() + "," + script.toUpperCase()));
+                denizen.getServer().getScheduler().cancelTask(durations.get(scriptEntry.getPlayer().getName() + "," + script.getName()));
             } catch (Exception e) { }
 
         // One last thing... check for duration.
-        if (duration > 0) {
+        if (duration.getSeconds() > 0) {
             // If a DURATION is specified, the currentStep should be remembered and restored after the duration.
             scriptEntry.addObject("step", currentStep);
             // And let's take away the duration that was set to avoid a re-duration inception-ion-ion-ion-ion... ;)
@@ -117,13 +117,13 @@ public class ZapCommand extends AbstractCommand implements Listener{
             // Now let's add a delayed task to set it back after the duration
 
             // Delays are in ticks, so let's multiply our duration (which is in seconds) by 20. 20 ticks per second.
-            long delay = (long) (duration * 20);
+            long delay = (long) (duration.getSeconds() * 20);
 
             // Set delayed task and put id in a map (for cancellations with CANCELTASK [id])
             dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "RESET ZAP for '" + script + "'");
-            durations.put(scriptEntry.getPlayer().getName() + "," + script.toUpperCase(),
+            durations.put(scriptEntry.getPlayer().getName() + "," + script.getName(),
                     denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
-                    new Runnable2<String, ScriptEntry>(script, scriptEntry) {
+                    new Runnable2<String, ScriptEntry>(script.getName(), scriptEntry) {
                         @Override
                         public void run(String script, ScriptEntry scriptEntry) {
                             dB.log(Messages.DEBUG_RUNNING_DELAYED_TASK, "RESET ZAP for '" + script + "'");
@@ -142,7 +142,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
         // FINALLY! ZAP! Change the step in Saves... your step is now ZAPPED!
         // Fun fact: ZAP is named in homage of ZZT-OOPs ZAP command. Google it.
         //
-        denizen.getSaves().set("Players." + scriptEntry.getPlayer().getName() + ".Scripts." + script.toUpperCase() + "." + "Current Step", step);
+        denizen.getSaves().set("Players." + scriptEntry.getPlayer().getName() + ".Scripts." + script.getName().toUpperCase() + "." + "Current Step", step);
     }
 
 }

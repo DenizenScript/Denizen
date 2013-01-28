@@ -1,18 +1,7 @@
 package net.aufdemrand.denizen.listeners.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
-
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.KillListenerType.KillType;
@@ -22,6 +11,15 @@ import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.CitizensAPI;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class KillListenerInstance extends AbstractListener implements Listener {
 
@@ -62,7 +60,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
 
 			} else if (aH.matchesValueArg("TARGETS, TARGET, NAME, NAMES", arg, ArgumentType.Custom)) {
-				targets = aH.getListFrom(arg);
+				targets = aH.getListFrom(arg.toUpperCase());
 				dB.echoDebug("...set TARGETS: " + Arrays.toString(targets.toArray()));
 
 			} else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {

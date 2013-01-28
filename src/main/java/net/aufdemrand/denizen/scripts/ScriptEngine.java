@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.commands.CommandExecuter;
 import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -45,7 +45,7 @@ public class ScriptEngine {
 
     private Map<Player, List<ScriptEntry>>      playerQueue = new ConcurrentHashMap<Player, List<ScriptEntry>>();
     private Map<Player, List<ScriptEntry>>  playerTaskQueue = new ConcurrentHashMap<Player, List<ScriptEntry>>();
-    private Map<DenizenNPC, List<ScriptEntry>>     npcQueue = new ConcurrentHashMap<DenizenNPC, List<ScriptEntry>>();
+    private Map<dNPC, List<ScriptEntry>>     npcQueue = new ConcurrentHashMap<dNPC, List<ScriptEntry>>();
 
 
     /**
@@ -151,7 +151,7 @@ public class ScriptEngine {
                     }
 
         if (!npcQueue.isEmpty()) 	
-            for (Entry<DenizenNPC, List<ScriptEntry>> theEntry : npcQueue.entrySet()) 
+            for (Entry<dNPC, List<ScriptEntry>> theEntry : npcQueue.entrySet())
                 if (!theEntry.getValue().isEmpty()) 
                     if (theEntry.getValue().get(0).getAllowedRunTime() < System.currentTimeMillis()) {
                         boolean instantly;
@@ -220,7 +220,7 @@ public class ScriptEngine {
      *      The queue type to add the entries to.
      * 
      */    
-    public void addToQue(DenizenNPC npc, List<ScriptEntry> scriptEntries, QueueType queueType) {
+    public void addToQue(dNPC npc, List<ScriptEntry> scriptEntries, QueueType queueType) {
         List<ScriptEntry> scriptCommandList;
         switch (queueType) {
         case NPC:
@@ -266,7 +266,7 @@ public class ScriptEngine {
      * @return the specified queue.
      * 
      */
-    public Map<DenizenNPC, List<ScriptEntry>> getDQueue(QueueType queueType) {
+    public Map<dNPC, List<ScriptEntry>> getDQueue(QueueType queueType) {
         switch (queueType) {
         case NPC:
             return npcQueue;
@@ -303,7 +303,7 @@ public class ScriptEngine {
      * @return the NPCs's Queue of ScriptEntries.
      * 
      */
-    public List<ScriptEntry> getDenizenQueue(DenizenNPC npc, QueueType queueType) {
+    public List<ScriptEntry> getDenizenQueue(dNPC npc, QueueType queueType) {
         return getDQueue(queueType).get(npc);
     }
 
@@ -393,7 +393,7 @@ public class ScriptEngine {
      * @return false if the specified queueType doesn't exist.
      * 
      */
-    public boolean injectToQueue(DenizenNPC npc, List<ScriptEntry> scriptEntries, QueueType queueType, int position) {
+    public boolean injectToQueue(dNPC npc, List<ScriptEntry> scriptEntries, QueueType queueType, int position) {
         List<ScriptEntry> scriptCommandList = new ArrayList<ScriptEntry>();
 
         switch (queueType) {
@@ -428,7 +428,7 @@ public class ScriptEngine {
      * @return false if the specified queueType doesn't exist.
      * 
      */
-    public boolean injectToQue(DenizenNPC npc, ScriptEntry scriptEntry, QueueType queueType, int position) {
+    public boolean injectToQue(dNPC npc, ScriptEntry scriptEntry, QueueType queueType, int position) {
         List<ScriptEntry> scriptEntries = new ArrayList<ScriptEntry>();
         scriptEntries.add(scriptEntry);
 
@@ -477,7 +477,7 @@ public class ScriptEngine {
      *      The queue type to replace
      *      
      */
-    public void replaceQueue(DenizenNPC npc, List<ScriptEntry> scriptEntries, QueueType queueType) {
+    public void replaceQueue(dNPC npc, List<ScriptEntry> scriptEntries, QueueType queueType) {
         switch (queueType) {
         case NPC:
             npcQueue.remove(npc); 

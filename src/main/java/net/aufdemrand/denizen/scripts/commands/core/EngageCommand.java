@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * Sets an NPC to ENGAGED in the Denizen Engage List. 
  * When ENGAGEd, a Denizen will not interact with a Player until DISENGAGEd (or timed out).
- * 
+ *
  * @author Jeremy Schroeder
  */
 
@@ -31,95 +32,100 @@ public class EngageCommand extends AbstractCommand {
 	 * (NPCID:#) Changes the Denizen affected to the Citizens2 NPCID specified
 	 */
 
-	int duration;
-	NPC npc;
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+        // Inialize require fields
+        Duration duration = null;
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
-	    duration = 1;
-	    if (scriptEntry.getNPC() == null)
+        // Check for NPC
+        if (scriptEntry.getNPC() == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
-        
-		// Set some defaults based on the scriptEntry
-		npc = scriptEntry.getNPC().getCitizen();
 
-		// Parse arguments
-		for (String arg : scriptEntry.getArguments()) {
-
-			if (aH.matchesInteger(arg) || aH.matchesDuration(arg)) {
-				duration = aH.getIntegerFrom(arg);
-				dB.echoDebug(Messages.DEBUG_SET_DURATION, arg);
+        // Parse arguments
+        for (String arg : scriptEntry.getArguments()) {
+            if (aH.matchesInteger(arg) || aH.matchesDuration(arg)) {
+                duration = aH.getDurationFrom(arg);
 
             } else if (aH.matchesArg("NOW", arg)) {
+                // Catch 'NOW' argument... it's already been parsed.
 
-            }	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT);
-		}	
+            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT);
+        }
 
-	}
+        // If no duration set, assume 15 seconds.
+        if (duration == null)
+            duration = new Duration(15d);
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-
-		if (duration > 0) setEngaged(npc, duration);
-		else setEngaged(npc, true);
-	}
-
-	
-	/* 
-	 * Engaged NPCs cannot interact with Players 
-	 */
-	private Map<NPC, Long> currentlyEngaged = new HashMap<NPC, Long>();
-
-	/**
-	 * Checks if the DenizenNPC is ENGAGED. Engaged NPCs do not respond to
-	 * Player interaction.
-	 * 
-	 * @param npc
-	 * 		the Denizen NPC being checked 
-	 * @return
-	 *  	if the DenizenNPC is currently engaged
-	 */
-	public boolean getEngaged(NPC npc) {
-		if (currentlyEngaged.containsKey(npc)) 
-			if (currentlyEngaged.get(npc) > System.currentTimeMillis())
-				return true;
-		return false;
-	}
-
-	/**
-	 * Sets a DenizenNPC's ENGAGED status. Engaged NPCs do not respond to Player
-	 * interaction. Note: Denizen NPC will automatically disengage after the
-	 * engage_timeout_in_seconds which is set in the Denizen config.yml.
-	 * 
-	 * @param npc
-	 * 		the DenizenNPC affected
-	 * @param engaged
-	 * 		true sets the DenizenNPC engaged, false sets the DenizenNPC as disengaged
-	 */
-	public void setEngaged(NPC npc, boolean engaged) {
-		if (engaged) currentlyEngaged.put(npc, System.currentTimeMillis() 
-				+ Settings.EngageTimeoutInSeconds() * 1000 );
-		if (!engaged) currentlyEngaged.remove(npc);
-	}
-
-	/**
-	 * Sets a DenizenNPC as ENGAGED for a specific amount of seconds. Engaged NPCs do not
-	 * respond to Player interaction. If the NPC is previously engaged, using this will
-	 * over-ride the previously set duration.
-	 * 
-	 * @param npc
-	 * 		the DenizenNPC to set as engaged
-	 * @param duration
-	 * 		the number of seconds to engage the DenizenNPC
-	 */
-	public void setEngaged(NPC npc, Integer duration) {
-		currentlyEngaged.put(npc, System.currentTimeMillis() + duration * 1000 );
-	}
+        // Stash objects
+        scriptEntry.addObject("duration", duration);
+    }
 
     @Override
-    public void onEnable() {
-        // TODO Auto-generated method stub
-        
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+        // Get objects
+        Duration duration = (Duration) scriptEntry.getObject("duration");
+
+        // Report to dB
+        dB.report(getName(),
+                aH.debugObj("NPC", scriptEntry.getNPC().toString())
+                        + duration.debug());
+
+        if (duration.getSecondsAsInt() > 0)
+            setEngaged(scriptEntry.getNPC().getCitizen(), duration.getSecondsAsInt());
+        else
+            setEngaged(scriptEntry.getNPC().getCitizen(), true);
+
     }
- }
+
+    /*
+     * Engaged NPCs cannot interact with Players
+     */
+    private static Map<NPC, Long> currentlyEngaged = new HashMap<NPC, Long>();
+
+    /**
+     * Checks if the dNPC is ENGAGED. Engaged NPCs do not respond to
+     * Player interaction.
+     *
+     * @param npc
+     * 		the Denizen NPC being checked
+     * @return
+     *  	if the dNPC is currently engaged
+     */
+    public static boolean getEngaged(NPC npc) {
+        if (currentlyEngaged.containsKey(npc))
+            if (currentlyEngaged.get(npc) > System.currentTimeMillis())
+                return true;
+        return false;
+    }
+
+    /**
+     * Sets a dNPC's ENGAGED status. Engaged NPCs do not respond to Player
+     * interaction. Note: Denizen NPC will automatically disengage after the
+     * engage_timeout_in_seconds which is set in the Denizen config.yml.
+     *
+     * @param npc
+     * 		the dNPC affected
+     * @param engaged
+     * 		true sets the dNPC engaged, false sets the dNPC as disengaged
+     */
+    public static void setEngaged(NPC npc, boolean engaged) {
+        if (engaged) currentlyEngaged.put(npc, System.currentTimeMillis()
+                + Settings.EngageTimeoutInSeconds() * 1000 );
+        if (!engaged) currentlyEngaged.remove(npc);
+    }
+
+    /**
+     * Sets a dNPC as ENGAGED for a specific amount of seconds. Engaged NPCs do not
+     * respond to Player interaction. If the NPC is previously engaged, using this will
+     * over-ride the previously set duration.
+     *
+     * @param npc
+     * 		the dNPC to set as engaged
+     * @param duration
+     * 		the number of seconds to engage the dNPC
+     */
+    public static void setEngaged(NPC npc, int duration) {
+        currentlyEngaged.put(npc, System.currentTimeMillis() + duration * 1000 );
+    }
+
+}

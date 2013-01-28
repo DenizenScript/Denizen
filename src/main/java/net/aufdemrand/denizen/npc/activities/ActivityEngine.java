@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.npc.activities;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import org.bukkit.event.Listener;
@@ -25,7 +25,7 @@ public class ActivityEngine implements Listener {
 
 //		if (denizen.getNPCRegistry().getSpawnedNPCs().isEmpty()) return;
 //
-//		for (DenizenNPC theDenizen : denizen.getNPCRegistry().getSpawnedNPCs().values()) {
+//		for (dNPC theDenizen : denizen.getNPCRegistry().getSpawnedNPCs().values()) {
 //
 //			// By default, this only sets a new activity if the activity is different than what
 //			// is already set. If 'forceable', it will reset the activity either way.
@@ -62,23 +62,23 @@ public class ActivityEngine implements Listener {
 //		}
 	}
 
-	public void setActivityScript(DenizenNPC denizenNPC, String scriptName) {
+	public void setActivityScript(dNPC dNPC, String scriptName) {
 
-		dB.echoDebug(DebugElement.Header, "Updating activity: " + denizenNPC.getName() + "/" + denizenNPC.getId());
-		denizen.getSaves().set("Denizens." + denizenNPC.getName() + "." + denizenNPC.getId() + ".Active Activity Script", scriptName);
+		dB.echoDebug(DebugElement.Header, "Updating activity: " + dNPC.getName() + "/" + dNPC.getId());
+		denizen.getSaves().set("Denizens." + dNPC.getName() + "." + dNPC.getId() + ".Active Activity Script", scriptName);
 
 		if (!denizen.getScripts().contains(scriptName + ".Activities.List")) {
 			dB.echoError("Tried to load the Activity Script '" + scriptName + ".Activities.List', but it couldn't be found. Perhaps something is spelled wrong, or the script doesn't exist?");
 			return;
 		}
 
-		denizen.getActivityRegistry().removeAllActivities(denizenNPC.getCitizen());
+		denizen.getActivityRegistry().removeAllActivities(dNPC.getCitizen());
 
 		for (String activity : denizen.getScripts().getStringList(scriptName + ".Activities.List")) {
 			String[] arguments = denizen.getScriptEngine().getScriptBuilder().buildArgs(activity.split(" ", 3)[2]);
 			int priority = Integer.parseInt(activity.split(" ", 3)[0]);
 			activity = activity.split(" ", 3)[1];
-			denizen.getActivityRegistry().addActivity(activity, denizenNPC, arguments, priority);
+			denizen.getActivityRegistry().addActivity(activity, dNPC, arguments, priority);
 		}
 
 		dB.echoDebug(DebugElement.Footer);

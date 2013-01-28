@@ -184,11 +184,11 @@ public class Utilities {
 		return closestNPCs;
 	}
 	
-//    public DenizenNPC getClosestDenizen (Player thePlayer, int Range) {
+//    public dNPC getClosestDenizen (Player thePlayer, int Range) {
 //        Double closestDistance = Double.valueOf(String.valueOf(Range));
-//        DenizenNPC closestDenizen = null;
+//        dNPC closestDenizen = null;
 //        if (getDenizens().isEmpty()) return null;
-//        for (DenizenNPC aDenizen : getDenizens().values()) {
+//        for (dNPC aDenizen : getDenizens().values()) {
 //            if (aDenizen.isSpawned()
 //                    && aDenizen.getWorld().equals(thePlayer.getWorld())
 //                    && aDenizen.getLocation().distance(thePlayer.getLocation()) < closestDistance ) {
@@ -199,10 +199,10 @@ public class Utilities {
 //        return closestDenizen;
 //    }
 //
-//    public List<DenizenNPC> getDenizensInRange (Player thePlayer, int theRange) {
-//        List<DenizenNPC> DenizensWithinRange = new ArrayList<DenizenNPC>();
+//    public List<dNPC> getDenizensInRange (Player thePlayer, int theRange) {
+//        List<dNPC> DenizensWithinRange = new ArrayList<dNPC>();
 //        if (denizen.getNPCRegistry().getDenizens().isEmpty()) return DenizensWithinRange;
-//        for (DenizenNPC aDenizenList : denizen.getNPCRegistry().getDenizens().values()) {
+//        for (dNPC aDenizenList : denizen.getNPCRegistry().getDenizens().values()) {
 //            if (aDenizenList.isSpawned()
 //                    && aDenizenList.getWorld().equals(thePlayer.getWorld()) 
 //                    && aDenizenList.getLocation().distance(thePlayer.getLocation()) < theRange)

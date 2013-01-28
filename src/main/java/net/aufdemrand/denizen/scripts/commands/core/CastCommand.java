@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>'Casts' a Bukkit PotionEffectType on a LivingEntity target.</p>
+ * <p>'Casts' a Bukkit PotionEffectType on a LivingEntity target(s).</p>
  *
  * <br><b>dScript Usage:</b><br>
  * <pre>CAST [PotionEffectType] (TARGET(S):NPC|{PLAYER}|LivingEntity) (DURATION:#) (POWER:#)</pre>
@@ -31,7 +32,7 @@ import java.util.List;
  *         Optional. Defaults to the attached Player. Can use a dScript list format
  *         to specify multiple targets. The recipient of the PotionEffectType. </ol>
  *
- * <ol><tt>(DURATION:#{60})</tt><br>
+ * <ol><tt>(DURATION:#{60s})</tt><br>
  *         Optional. Number of seconds that the PotionEffectType lasts. If not specified,
  *         assumed 60 seconds.</ol>
  *
@@ -60,31 +61,7 @@ import java.util.List;
  *  - NARRATE 'You can see through the night!' <br>
  * </ol></tt>
  *
- * <br><b>Valid PotionEffectTypes (as of 12/28/12)</b><br>
- * <ol><tt>
- * BLINDNESS - Blinds an entity. <br>
- * CONFUSION - Warps vision on the client. <br>
- * DAMAGE_RESISTANCE - Decreases damage dealt to an entity. <br>
- * FAST_DIGGING - Increases dig speed. <br>
- * FIRE_RESISTANCE - Stops fire damage. <br>
- * HARM - Hurts an entity. <br>
- * HEAL - Heals an entity. <br>
- * HUNGER - Increases hunger. <br>
- * INCREASE_DAMAGE - Increases damage dealt. <br>
- * INVISIBILITY - Grants invisibility. <br>
- * JUMP - Increases jump height. <br>
- * NIGHT_VISION - Allows an entity to see in the dark. <br>
- * POISON - Deals damage to an entity over time. <br>
- * REGENERATION - Regenerates health. <br>
- * SLOW - Decreases movement speed. <br>
- * SLOW_DIGGING - Decreases dig speed. <br>
- * SPEED - Increases movement speed. <br>
- * WATER_BREATHING - Allows breathing underwater. <br>
- * WEAKNESS - Decreases damage dealt by an entity. <br>
- * WITHER - Deals damage to an entity over time and gives the health to the shooter. <br>
- * </tt></ol>
- *
- * @author Jeremy Schroeder, Mason Adkins
+ * @author aufdemrand, Jeebiss
  *
  */
 public class CastCommand extends AbstractCommand{
@@ -94,8 +71,7 @@ public class CastCommand extends AbstractCommand{
         // Required fields
         PotionEffect potionEffect;
         List<LivingEntity> targets = new ArrayList<LivingEntity>();
-
-        double duration = 60;
+        Duration duration = null;
         int amplifier = 1;
         PotionEffectType potion = null;
 
@@ -103,77 +79,88 @@ public class CastCommand extends AbstractCommand{
         for (String arg : scriptEntry.getArguments()) {
 
             if (aH.matchesDuration(arg))
-                duration = aH.getSecondsFrom(arg);
+                duration = aH.getDurationFrom(arg);
 
             else if (aH.matchesValueArg("POWER", arg, ArgumentType.Integer))
                 amplifier = aH.getIntegerFrom(arg);
 
             else if (aH.matchesValueArg("TARGETS, TARGET", arg, ArgumentType.String)) {
+                // May be multiple targets, so let's treat this as a potential list.
+                // dScript list entries are separated by pipes ('|')
                 for (String t : aH.getListFrom(arg)) {
-
-                    // If a scriptEntry LivingEntity (Player/NPC)
-                    if (aH.getStringFrom(arg).equalsIgnoreCase("PLAYER") && scriptEntry.getPlayer() != null) {
+                    // If specifying the linked PLAYER
+                    if (aH.getStringFrom(t).equalsIgnoreCase("PLAYER") && scriptEntry.getPlayer() != null) {
                         if (scriptEntry.getPlayer() == null)
                             dB.echoError("Cannot add PLAYER as a target! Attached Player is NULL!");
                         else
                             targets.add(scriptEntry.getPlayer());
-                    } else if (aH.getStringFrom(arg).equalsIgnoreCase("NPC") && scriptEntry.getNPC() != null) {
+
+                    // If specifying the linked NPC
+                    } else if (aH.getStringFrom(t).equalsIgnoreCase("NPC") && scriptEntry.getNPC() != null) {
                         if (scriptEntry.getNPC() == null)
                             dB.echoError("Cannot add NPC as a target! Attached NPC is NULL!");
                         else targets.add(scriptEntry.getNPC().getEntity());
 
                     // If a saved LivingEntity
-                    } else if (aH.getLivingEntityFrom(arg) != null) {
-                        targets.add(aH.getLivingEntityFrom(arg));
+                    } else if (aH.getLivingEntityFrom(t) != null) {
+                        targets.add(aH.getLivingEntityFrom(t));
+
+                    // If nothing could be made of the object
                     } else  {
                         dB.echoError("Invalid TARGET type or unavailable TARGET object!");
                     }
                 }
             }
 
+            // Try to match a PotionEffectType (this argument is prefixless, since it's required)
             else if (potion == null) {
-                try {
-                    potion = PotionEffectType.getByName(aH.getStringFrom(arg));
-                } catch (Exception e) {
-                    dB.echoError("Invalid PotionEffectType!");
-                }
-
+                try { potion = PotionEffectType.getByName(aH.getStringFrom(arg)); }
+                catch (Exception e) { dB.echoError("Invalid PotionEffectType!"); }
             }
 
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
+        // Set default duration if not specified
+        if (duration == null) duration = new Duration(60);
+
         // No targets specified, let's use defaults if available
+        // Target Player by default
         if (targets.isEmpty() && scriptEntry.getPlayer() != null)
             targets.add(scriptEntry.getPlayer());
+        // If no Player, target the NPC by default
         if (targets.isEmpty() && scriptEntry.getNPC() != null)
             targets.add(scriptEntry.getNPC().getEntity());
 
         // No potion specified? Problem!
-        if (potion == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PotionType");
+        if (potion == null)
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PotionType");
         // Still no targets? Problem!
-        if (targets.isEmpty()) throw new InvalidArgumentsException("No valid target(s)! Perhaps you specified a non-existing " +
-                "Player or NPCID?");
+        if (targets.isEmpty())
+            throw new InvalidArgumentsException("No valid target(s)! Perhaps you specified a non-existing Player or NPCID?");
 
         // Denizen durations are in seconds, PotionEffect duration is in ticks, so a little bit of math is necessary
-        potionEffect = new PotionEffect(potion, Double.valueOf(duration).intValue() * 20, amplifier);
+        potionEffect = new PotionEffect(potion, duration.getTicksAsInt(), amplifier);
 
         // Save items in the scriptEntry
         scriptEntry.addObject("potion", potionEffect);
         scriptEntry.addObject("targets", targets);
+        scriptEntry.addObject("duration", duration);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        // Fetch!
+        // Fetch objects
         List<LivingEntity> targets = (List<LivingEntity>) scriptEntry.getObject("targets");
         PotionEffect potion = (PotionEffect) scriptEntry.getObject("potion");
+        Duration duration = (Duration) scriptEntry.getObject("duration");
 
-        dB.echoDebug("<G>Executing '<Y>" + getName() + "<G>': "
-                + "Targets='<Y>" + targets.toString() + "<G>', "
-                + "Potion='<Y>" + potion.getType().getName() + "<G>', "
-                + "Duration='<Y>" + (potion.getDuration() / 20) + "<G>', "
-                + "Amplifier='<Y>" + potion.getAmplifier() + "<G>'");
+        // Report to dB
+        dB.report(getName(),
+                aH.debugObj("Target(s)", targets.toString())
+                        + aH.debugObj("Potion", potion.getType().getName())
+                        + aH.debugObj("Amplifier", String.valueOf(potion.getAmplifier()))
+                        + duration.debug());
 
         // Apply the PotionEffect to the targets!
         for (LivingEntity target : targets)
