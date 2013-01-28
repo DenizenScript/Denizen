@@ -23,7 +23,7 @@ public class OfflinePlayerTags implements Listener {
         // TODO: Fill in rest of offline-player compatible tags
 
         // These tags require an offline player.
-        if (!event.matches("PLAYER") || event.hasOfflinePlayer()) return;
+        if (!event.matches("PLAYER") || !event.hasOfflinePlayer()) return;
 
         OfflinePlayer p = event.getOfflinePlayer();
         String type = event.getType() != null ? event.getType().toUpperCase() : "";

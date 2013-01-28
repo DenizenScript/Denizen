@@ -17,7 +17,8 @@ public class Item extends ItemStack implements dScriptArgument {
             Pattern.compile("(?:(?:.+?:)|)(\\d+)"),
             Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+?):(\\d+)"),
             Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+)"),
-            Pattern.compile("(?:(?:.+?:)|)itemstack\\.(.+)", Pattern.CASE_INSENSITIVE)
+            Pattern.compile("(?:(?:.+?:)|)itemstack\\.(.+)", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("(?:(?:.+?:)|)(.+)"),
     };
 
     /**
@@ -56,12 +57,10 @@ public class Item extends ItemStack implements dScriptArgument {
     }
 
     /**
-     * Gets a Location Object from a string form of id,x,y,z,world
-     * or a dScript argument (location:)x,y,z,world. If including an Id,
-     * this location will persist and can be recalled at any time.
+     * Gets a Item Object from a string form.
      *
      * @param string  the string or dScript argument String
-     * @return  a Location, or null if incorrectly formatted
+     * @return  an Item, or null if incorrectly formatted
      *
      */
     public static Item valueOf(String string) {
@@ -71,19 +70,49 @@ public class Item extends ItemStack implements dScriptArgument {
         Matcher[] m = new Matcher[4];
         Item stack = null;
 
+        // Check if a saved item instance from NEW
         m[0] = getItemPtrn[4].matcher(string);
         if (m[0].matches()) {
-            Script itemScript = Script.valueOf(m[0].group(1));
-            if (itemScript != null) {
+            // TODO:
+        }
 
-                // Make sure this is an 'ITEM'-type script
-                if (!itemScript.getType().equalsIgnoreCase("ITEM")) {
-                    dB.echoError("The script specified for use in building" +
-                            " an Item is an invalid type! Must be type 'ITEM', " +
-                            " found type '%s'.", itemScript.getType().toUpperCase());
-                    return null;
-                }
+        // Check traditional item patterns.
+        m[0] = getItemPtrn[0].matcher(string);
+        m[1] = getItemPtrn[1].matcher(string);
+        m[2] = getItemPtrn[2].matcher(string);
+        m[3] = getItemPtrn[3].matcher(string);
 
+        try {
+            // Match 'ItemId:Data'
+            if (m[0].matches()) {
+                stack = new Item(Integer.valueOf(m[0].group(1)));
+                stack.setDurability(Short.valueOf(m[0].group(2)));
+                return stack.setId(stack.getType().name());
+
+                // Match 'ItemId'
+            } else if (m[1].matches()) {
+                return new Item(Integer.valueOf(m[1].group(1))).setId(stack.getType().name());
+
+                // Match 'Material:Data'
+            } else if (m[2].matches()) {
+                stack = new Item(Material.valueOf(m[2].group(1).toUpperCase()));
+                stack.setDurability(Short.valueOf(m[2].group(2)));
+                return stack.setId(stack.getType().name());
+
+                // Match 'Material'
+            } else if (m[3].matches()) {
+                return new Item(Material.valueOf(m[3].group(1).toUpperCase())).setId(stack.getType().name());
+            }
+
+        } catch (Exception e) {
+            // Not a bukkit item
+        }
+
+        // Check custom item script
+        m[0] = getItemPtrn[5].matcher(string);
+        if (m[3].matches()) {
+            Script itemScript = Script.valueOf(m[3].group(1));
+            if (itemScript != null && itemScript.getType().equalsIgnoreCase("ITEM")) {
                 // Check validity of material
                 if (itemScript.getContents().contains("MATERIAL"))
                     stack = Item.valueOf(itemScript.getContents().getString("MATERIAL"));
@@ -96,6 +125,12 @@ public class Item extends ItemStack implements dScriptArgument {
                 // Set Display Name
                 if (itemScript.getContents().contains("DISPLAY NAME"))
                     meta.setDisplayName(itemScript.getContents().getString("DISPLAY NAME"));
+
+                // Set Lore
+                if (itemScript.getContents().contains("LORE"))
+                    meta.setLore(itemScript.getContents().getStringList("LORE"));
+
+                stack.setItemMeta(meta);
 
                 // Set Enchantments
                 if (itemScript.getContents().contains("ENCHANTMENTS")) {
@@ -117,12 +152,6 @@ public class Item extends ItemStack implements dScriptArgument {
                     }
                 }
 
-                // Set Lore
-                if (itemScript.getContents().contains("LORE"))
-                    meta.setLore(itemScript.getContents().getStringList("LORE"));
-
-                stack.setItemMeta(meta);
-
                 // Set Color
                 if (itemScript.getContents().contains("COLOR"))
                     LeatherColorer.colorArmor(stack, itemScript.getContents().getString("COLOR"));
@@ -130,42 +159,9 @@ public class Item extends ItemStack implements dScriptArgument {
                 stack.setId(itemScript.getName());
                 return stack;
             }
-
-            return null;
         }
 
-        // Check traditional item patterns.
-        m[0] = getItemPtrn[0].matcher(string);
-        m[1] = getItemPtrn[1].matcher(string);
-        m[2] = getItemPtrn[2].matcher(string);
-        m[3] = getItemPtrn[3].matcher(string);
-
-        try {
-            // Match 'ItemId:Data'
-            if (m[0].matches()) {
-                stack = new Item(Integer.valueOf(m[0].group(1)));
-                stack.setDurability(Short.valueOf(m[0].group(2)));
-                return stack;
-
-                // Match 'ItemId'
-            } else if (m[1].matches()) {
-                return new Item(Integer.valueOf(m[1].group(1)));
-
-                // Match 'Material:Data'
-            } else if (m[2].matches()) {
-                stack = new Item(Material.valueOf(m[2].group(1).toUpperCase()));
-                stack.setDurability(Short.valueOf(m[2].group(2)));
-                return stack;
-
-                // Match 'Material'
-            } else if (m[3].matches()) {
-                return new Item(Material.valueOf(m[3].group(1).toUpperCase()));
-            }
-
-        } catch (Exception e) {
-            dB.echoError("Invalid item! Failed to find a matching Bukkit ItemStack.");
-            if (dB.showStackTraces) e.printStackTrace();
-        }
+        dB.echoError("Invalid item! Failed to find a matching Item type.");
 
         return stack;
     }
@@ -189,8 +185,9 @@ public class Item extends ItemStack implements dScriptArgument {
         super(type, qty);
     }
 
-    protected void setId(String id) {
+    protected Item setId(String id) {
         this.id = id;
+        return this;
     }
 
     @Override
