@@ -29,6 +29,9 @@ public class NPCTags implements Listener {
                     event.setReplaced(n.getCitizen().getTrait(NicknameTrait.class).getNickname());
             }
 
+        } else if (type.equals("ID")) {
+            event.setReplaced(String.valueOf(event.getNPC().getId()));
+
         } else if (type.equals("LOCATION")) {
             Location loc = n.getLocation();
             event.setReplaced(loc.getBlockX()
