@@ -20,8 +20,10 @@ public class ColorTags implements Listener {
         for (ChatColor color : ChatColor.values()) 
         {
             if (i > 22) break;
-            if (event.matches(color.name()) || event.matches("&" + i))
+            if (event.matches(color.name()))
                 event.setReplaced(color.toString());
+            else if (event.matches("&" + i))
+                event.setReplaced(ChatColor.getByChar(code[i]) + "");
         }
     }
     
