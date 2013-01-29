@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
@@ -21,8 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TriggerTrait extends Trait implements Listener {
 
-    private Denizen denizen;
-
     @Persist(value="enabled", collectionType=ConcurrentHashMap.class)
     private Map<String, Boolean> enabled = new ConcurrentHashMap<String, Boolean>();
     @Persist(value="duration", collectionType=ConcurrentHashMap.class)
@@ -41,14 +38,12 @@ public class TriggerTrait extends Trait implements Listener {
 
     public TriggerTrait() {
         super("triggers");
+    }
 
-        // Locate the Denizen Instance
-        if (denizen == null) denizen = DenizenAPI.getCurrentInstance();
-
-        // Populate new triggers
-        for (String triggerName : denizen.getTriggerRegistry().list().keySet())
+    public void onSpawn() {
+        for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet())
             if (!enabled.containsKey(triggerName))
-                enabled.put(triggerName, denizen.getTriggerRegistry().get(triggerName).getOptions().ENABLED_BY_DEFAULT);
+                enabled.put(triggerName, DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().ENABLED_BY_DEFAULT);
     }
 
     /**
@@ -65,7 +60,7 @@ public class TriggerTrait extends Trait implements Listener {
             }
         else return triggerName + " trigger not found!";
     }
-    
+
     public String toggleTrigger(String triggerName) {
         if (enabled.containsKey(triggerName.toUpperCase()))
             if (enabled.get(triggerName.toUpperCase())) {
@@ -92,13 +87,13 @@ public class TriggerTrait extends Trait implements Listener {
     public double getCooldownDuration(String triggerName) {
         if (duration.containsKey(triggerName.toUpperCase()))
             return duration.get(triggerName.toUpperCase());
-        else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN;
+        else return DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN;
     }
-    
+
     public CooldownType getCooldownType(String triggerName) {
         if (type.containsKey(triggerName.toUpperCase()))
             return type.get(triggerName.toUpperCase());
-        else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN_TYPE;
+        else return DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN_TYPE;
     }
 
     public void setLocalRadius(String triggerName, int value) {
@@ -108,7 +103,7 @@ public class TriggerTrait extends Trait implements Listener {
     public int getRadius(String triggerName) {
         if (radius.containsKey(triggerName.toUpperCase()))
             return radius.get(triggerName.toUpperCase());
-        else return denizen.getTriggerRegistry().get(triggerName).getOptions().DEFAULT_RADIUS;
+        else return DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().DEFAULT_RADIUS;
     }
 
     public void describe(CommandSender sender, int page) throws CommandException {
@@ -128,30 +123,30 @@ public class TriggerTrait extends Trait implements Listener {
 
     public boolean triggerCooldownOnly(AbstractTrigger triggerClass, Player player) {
         // Check cool down, return false if not yet met
-        if (!denizen.getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))
+        if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))
                 return false;
         // Check engaged
-        if (denizen.getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
+        if (DenizenAPI.getCurrentInstance().getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
             return false;
         }
         // Set cool down
-        denizen.getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()), getCooldownType(triggerClass.getName()));
+        DenizenAPI.getCurrentInstance().getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()), getCooldownType(triggerClass.getName()));
         return true;
     }
     
     public boolean trigger(AbstractTrigger triggerClass, Player player) {
         // Check cool down, return false if not yet met
-        if (!denizen.getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))
+        if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))
                 return false;
         // Check engaged
-        if (denizen.getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
+        if (DenizenAPI.getCurrentInstance().getCommandRegistry().get(EngageCommand.class).getEngaged(npc)) {
             // On Unavailable Action
-            denizen.getNPCRegistry().getDenizen(npc).action("unavailable", player);
+            DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action("unavailable", player);
             return false;
         }
         // Set cool down, On [TriggerName] Action
-        denizen.getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()), getCooldownType(triggerClass.getName()));
-        denizen.getNPCRegistry().getDenizen(npc).action(triggerClass.getName(), player);
+        DenizenAPI.getCurrentInstance().getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()), getCooldownType(triggerClass.getName()));
+        DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action(triggerClass.getName(), player);
         return true;
     }
 
