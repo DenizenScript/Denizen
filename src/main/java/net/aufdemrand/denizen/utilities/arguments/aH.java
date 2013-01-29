@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -755,35 +754,7 @@ public class aH {
      *
      */
     public static boolean matchesItem(String arg) {
-
-        final Pattern[] matchesItemPtrn = {
-                Pattern.compile("item:\\d+:\\d+", Pattern.CASE_INSENSITIVE),
-                Pattern.compile("item:\\d+", Pattern.CASE_INSENSITIVE),
-                Pattern.compile("item:(.+)", Pattern.CASE_INSENSITIVE),
-                Pattern.compile("item:itemstack\\..+", Pattern.CASE_INSENSITIVE)
-        };
-
-        Matcher m;
-        m = matchesItemPtrn[3].matcher(arg);
-        if (m.matches()) return true;
-
-        m = matchesItemPtrn[0].matcher(arg);
-        if (m.matches()) return true;
-
-        m = matchesItemPtrn[1].matcher(arg);
-        if (m.matches()) return true;
-
-        m = matchesItemPtrn[2].matcher(arg);
-        if (m.matches()) {
-            for (Material mat : Material.values())
-                if (mat.toString().equalsIgnoreCase(m.group(1)))
-                    return true;
-        }
-        // Check for valid prefix, warn about value.
-        if (arg.toUpperCase().startsWith("ITEM:"))
-            dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
-                    "prefix is correct, the value is not valid. Perhaps a replaceable Tag has failed " +
-                    "to fill in a valid item, or you've specified an invalid Material?");
+        if (arg.toUpperCase().startsWith("ITEM:")) return true;
         return false;
     }
 

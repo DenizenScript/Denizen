@@ -91,7 +91,9 @@ public class Item extends ItemStack implements dScriptArgument {
 
                 // Match 'ItemId'
             } else if (m[1].matches()) {
-                return new Item(Integer.valueOf(m[1].group(1))).setId(stack.getType().name());
+                stack = new Item(Integer.valueOf(m[1].group(1)));
+                stack.setId(stack.getType().name());
+                return stack;
 
                 // Match 'Material:Data'
             } else if (m[2].matches()) {
@@ -101,16 +103,18 @@ public class Item extends ItemStack implements dScriptArgument {
 
                 // Match 'Material'
             } else if (m[3].matches()) {
-                return new Item(Material.valueOf(m[3].group(1).toUpperCase())).setId(stack.getType().name());
+                stack = new Item(Material.valueOf(m[3].group(1).toUpperCase()));
+                stack.setId(stack.getType().name());
+                return stack;
             }
 
         } catch (Exception e) {
-            // Not a bukkit item
+
         }
 
         // Check custom item script
         m[0] = getItemPtrn[5].matcher(string);
-        if (m[3].matches()) {
+        if (m[0].matches()) {
             Script itemScript = Script.valueOf(m[3].group(1));
             if (itemScript != null && itemScript.getType().equalsIgnoreCase("ITEM")) {
                 // Check validity of material

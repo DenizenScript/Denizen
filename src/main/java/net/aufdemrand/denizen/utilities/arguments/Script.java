@@ -17,6 +17,7 @@ public class Script implements dScriptArgument {
      * @return  a Script, or null if incorrectly formatted
      */
     public static Script valueOf(String string) {
+
         Matcher m = matchesScriptPtrn.matcher(string);
         if (m.matches()) {
             Script script = new Script(m.group(1));
