@@ -84,7 +84,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		return null;
 	}
 
-	public AbstractListener getListenerFor(OfflinePlayer player, String listenerId) {
+	public AbstractListener getListenerFor(Player player, String listenerId) {
 		if (listeners.containsKey(player.getName())) {
 			Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
 			if (playerListeners.containsKey(listenerId.toLowerCase())) return playerListeners.get(listenerId.toLowerCase());

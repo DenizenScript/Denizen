@@ -1,10 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.entity.Player;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.listeners.AbstractListener;
@@ -14,6 +9,9 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Initiates/finishes/cancels a 'quest listener'.
@@ -56,23 +54,16 @@ public class ListenCommand extends AbstractCommand {
 
 	private enum ListenAction { NEW, CANCEL, FINISH }
 
-	Player player;
-	AbstractListener listener;
-	String id;
-	ListenAction listenAction;
-	String listenerType;
-	List<String> listenerArguments;
-	String script;
-
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-		listenAction = ListenAction.NEW;
-		id = null;
-		listenerType = null;
+        AbstractListener listener;
+        String id = null;
+        ListenAction listenAction = ListenAction.NEW;
+        String listenerType = null;
+        List<String> listenerArguments;
 
 		// Set some defaults based on the scriptEntry
-		player = scriptEntry.getPlayer();
 		listenerArguments = new ArrayList<String>();
 
 		// Parse Arguments
@@ -83,7 +74,7 @@ public class ListenCommand extends AbstractCommand {
 				dB.echoDebug("...marked to CANCEL.");
 
             }   else if (aH.matchesScript(arg)) {
-				script = aH.getStringFrom(arg);
+				scriptEntry.setScript(aH.getStringFrom(arg));
 				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
 
             }   else if (aH.matchesArg("FINISH", arg)) {
@@ -101,34 +92,53 @@ public class ListenCommand extends AbstractCommand {
             }	else listenerArguments.add(arg);
 		}
 
-		if (id == null) 
-			if (player == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
+		if (id == null) id = scriptEntry.getScript().getName();
+		if (scriptEntry.getPlayer() == null && !(listenAction == ListenAction.CANCEL && scriptEntry.getOfflinePlayer() != null))
+            throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
+
+        scriptEntry.addObject("action", listenAction);
+        scriptEntry.addObject("type", listenerType);
+        scriptEntry.addObject("args", listenerArguments);
+        scriptEntry.addObject("id", id);
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-		switch (listenAction) {
+		ListenAction listenAction = (ListenAction) scriptEntry.getObject("action");
+        String listenerType = (String) scriptEntry.getObject("type");
+        List<String> listenerArguments = (List<String>) scriptEntry.getObject("args");
+        String id = (String) scriptEntry.getObject("id");
+
+        switch (listenAction) {
 
 		case NEW:
 			try { 
-				denizen.getListenerRegistry().get(listenerType).createInstance(player, id)
-				.build(player, id, listenerType, listenerArguments, script);
-			} catch (Exception e) { 
+				denizen.getListenerRegistry().get(listenerType).createInstance(scriptEntry.getPlayer(), id)
+				.build(scriptEntry.getPlayer(),
+                        id,
+                        listenerType,
+                        listenerArguments,
+                        scriptEntry.getScript().getName());
+
+            } catch (Exception e) {
 				dB.echoDebug("Cancelled creation of NEW listener!");
-				try { denizen.getListenerRegistry().getListenerFor(player, id).cancel(); }
+				try { denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id).cancel(); }
 				catch (Exception ex) { }
 			}
 			break;
 
 		case FINISH:
-			if (denizen.getListenerRegistry().getListenerFor(player, id) != null)
-				denizen.getListenerRegistry().getListenerFor(player, id).finish();
+			if (denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id) != null)
+				denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id).finish();
 			break;
 
 		case CANCEL:
-			if (denizen.getListenerRegistry().getListenerFor(player, id) != null)
-				denizen.getListenerRegistry().getListenerFor(player, id).cancel();
+            if (scriptEntry.getPlayer() != null) {
+			if (denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id) != null)
+				denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id).cancel();
 			break;
+            }
+            else denizen.getSaves().set("Listeners." + scriptEntry.getOfflinePlayer().getName() + "." + id, null);
 		}
 	}
 
