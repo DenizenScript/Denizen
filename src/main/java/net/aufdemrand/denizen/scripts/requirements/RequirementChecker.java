@@ -65,7 +65,7 @@ public class RequirementChecker {
 			}
 
 			// Check requirement with RequirementRegistry
-			if (plugin.getRequirementRegistry().list().containsKey(reqEntry.split(" ")[0])) {
+			if (plugin.getRequirementRegistry().list().containsKey(reqEntry.split(" ")[0].toUpperCase())) {
 
 				AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqEntry.split(" ")[0]);
 				String[] arguments = null;
