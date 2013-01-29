@@ -62,12 +62,15 @@ public class ReplaceableTagEvent extends Event {
     private String replaced = null;
 
 
-    public ReplaceableTagEvent(Player player, dNPC npc, String tag) {
+    public ReplaceableTagEvent(OfflinePlayer player, dNPC npc, String tag) {
 
         // TODO: Use REGEX and MATCHER/GROUPS to simplify this code (might be faster?)
 
+        if (player instanceof Player)
+            this.player = (Player) player;
+        else this.offlinePlayer = player;
+
         this.replaced = tag;
-        this.player = player;
         this.npc = npc;
 
         // check if tag is 'instant'
