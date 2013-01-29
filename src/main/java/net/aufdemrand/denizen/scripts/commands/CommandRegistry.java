@@ -70,6 +70,8 @@ public class CommandRegistry implements DenizenRegistry {
 
         new WaitCommand().activate().as("WAIT").withOptions("wait (duration:#{5s}) (queue:queue_type) (player:player_name{attached}) (npcid:#{attached})", 0);
 
+        new StrikeCommand().activate().as("STRIKE").withOptions("strike (no_damage) [location:x,y,z,world]", 1);
+
         new DisengageCommand().activate().as("DISENGAGE").withOptions("(NPCID:#)", 0);
 
         new DropCommand().activate().as("DROP").withOptions("[ITEM:item|EXP] (QTY:#) (LOCATION:location)", 1);
