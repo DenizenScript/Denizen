@@ -442,8 +442,13 @@ public class IfCommand extends AbstractCommand {
                 ((Object[]) scriptEntry.getObject("outcome-command-args")).length, String[].class);
         try {
             denizen.getScriptEngine().getScriptExecuter().execute(
-                    new ScriptEntry(outcomeCommand, outcomeArgs, scriptEntry.getPlayer(),
-                            scriptEntry.getNPC(), scriptEntry.getScript().getName(), scriptEntry.getStep()));
+                    new ScriptEntry(outcomeCommand,
+                            outcomeArgs,
+                            scriptEntry.getPlayer(),
+                            scriptEntry.getNPC(),
+                            scriptEntry.getScript().getName(),
+                            scriptEntry.getStep())
+                            .addObject("reqId", scriptEntry.getObject("reqId")));
         } catch (ScriptEntryCreationException e) {
             dB.echoError("There has been a problem running the Command. Check syntax.");
             if (dB.showStackTraces) {
@@ -470,8 +475,12 @@ public class IfCommand extends AbstractCommand {
 
         try {
             denizen.getScriptEngine().getScriptExecuter().execute(
-                    new ScriptEntry(elseCommand, elseArgs, scriptEntry.getPlayer(),
-                            scriptEntry.getNPC(), scriptEntry.getScript().getName(), scriptEntry.getStep()));
+                    new ScriptEntry(elseCommand,
+                            elseArgs,
+                            scriptEntry.getPlayer(),
+                            scriptEntry.getNPC(),
+                            scriptEntry.getScript().getName(),
+                            scriptEntry.getStep()).addObject("reqId", scriptEntry.getObject("reqId")));
         } catch (ScriptEntryCreationException e) {
             dB.echoError("There has been a problem running the ELSE Command. Check syntax.");
             if (dB.showStackTraces) {

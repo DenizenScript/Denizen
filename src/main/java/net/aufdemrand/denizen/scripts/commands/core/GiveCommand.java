@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Depends;
+import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
@@ -34,7 +35,7 @@ public class GiveCommand  extends AbstractCommand {
 	Player player;
 	GiveType giveType;
 	int theAmount;
-	ItemStack theItem;
+	Item theItem;
 
 	@Override
 	public void onEnable() {
