@@ -27,7 +27,7 @@ public class ScriptBuilder {
     }
 
     /* 
-     * Builds and argument array, recognizing items in quotes as a single item 
+     * Builds an arguments array, recognizing items in quotes as a single item
      */
 
     public String[] buildArgs(String stringArgs) { 
