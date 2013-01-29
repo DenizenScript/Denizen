@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -90,11 +91,11 @@ public class FailCommand extends AbstractCommand {
 	 */
 	public void failScript(String playerName, String scriptName) {
 		scriptName = scriptName.toUpperCase();
-		int fails = denizen.getSaves().getInt("Players." + playerName.toUpperCase() + "." + scriptName + "." + "Failed", 0);
+		int fails = denizen.getSaves().getInt("Players." + playerName + "." + scriptName + "." + "Failed", 0);
 
 		// Increase fails by one and set.
 		fails++;
-		denizen.getSaves().set("Players." + playerName.toUpperCase() + "." + scriptName + "." + "Failed", fails);
+		denizen.getSaves().set("Players." + playerName + "." + scriptName + "." + "Failed", fails);
 		denizen.saveSaves();
 		
 		// Call ScriptFailEvent
@@ -112,8 +113,8 @@ public class FailCommand extends AbstractCommand {
 	 * @return
 	 * 		number of times the Player has failed the specified script
 	 */
-	public int getScriptFails(String playerName, String scriptName) {
-		return denizen.getSaves().getInt("Players." + playerName.toUpperCase() + "." + scriptName.toUpperCase() + "." + "Failed", 0); 
+	public static int getScriptFails(String playerName, String scriptName) {
+		return DenizenAPI.getCurrentInstance().getSaves().getInt("Players." + playerName + "." + scriptName.toUpperCase() + "." + "Failed", 0);
 	}
 
 }

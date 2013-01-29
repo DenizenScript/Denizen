@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
+import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
+import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -69,7 +71,7 @@ public class ScriptRequirement extends AbstractRequirement{
 
 			case FINISHED:
 
-				Integer finishes = plugin.getSaves().getInt("Players." + context.getPlayer().getName() + "." + checkScript + "." + "Completed", 0);
+				Integer finishes = FinishCommand.getScriptCompletes(context.getPlayer().getName(), checkScript);
 
 				if (outcome == true) dB.echoDebug("...number of finishes is '%s'", finishes.toString());
 
@@ -89,7 +91,7 @@ public class ScriptRequirement extends AbstractRequirement{
 
 			case FAILED:
 
-				Integer fails = plugin.getSaves().getInt("Players." + context.getPlayer().getName() + "." + checkScript + "." + "Failed", 0);
+				Integer fails = FailCommand.getScriptFails(context.getPlayer().getName(), checkScript);
 
 				if (outcome == true) dB.echoDebug("...number of fails is '%s'", fails.toString());
 

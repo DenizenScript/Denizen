@@ -1,16 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.utilities.arguments.Script;
-import org.bukkit.Bukkit;
-
 import net.aufdemrand.denizen.events.ScriptFinishEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import org.bukkit.Bukkit;
 
 /**
  * Sets a Script as 'FINISHED'. Scripts can be finished multiple times and Denizen will keep track
@@ -83,11 +83,11 @@ public class FinishCommand extends AbstractCommand {
 
 	public boolean finishScript(String playerName, String scriptName) {
 		scriptName = scriptName.toUpperCase();
-		int finishes = denizen.getSaves().getInt("Players." + playerName.toUpperCase() + "." + scriptName + "." + "Completed", 0);
+		int finishes = denizen.getSaves().getInt("Players." + playerName + "." + scriptName + "." + "Completed", 0);
 
 		// Increase finishes by one and save.
 		finishes++;
-		denizen.getSaves().set("Players." + playerName.toUpperCase() + "." + scriptName + "." + "Completed", finishes);
+		denizen.getSaves().set("Players." + playerName + "." + scriptName + "." + "Completed", finishes);
 		denizen.saveSaves();
 
 		// Call ScriptFinishEvent
@@ -97,15 +97,9 @@ public class FinishCommand extends AbstractCommand {
 		return true;
 	}
 
-	public int getScriptCompletes(String playerName, String scriptName) {
-		return denizen.getSaves().getInt("Players." + playerName.toUpperCase() + "." + scriptName.toUpperCase() + "." + "Failed", 0);	
+	public static int getScriptCompletes(String playerName, String scriptName) {
+		return DenizenAPI.getCurrentInstance().getSaves().getInt("Players." + playerName + "." + scriptName.toUpperCase() + "." + "Completed", 0);
 	}
-
-    @Override
-    public void onEnable() {
-        // TODO Auto-generated method stub
-        
-    }
 
 }
 
