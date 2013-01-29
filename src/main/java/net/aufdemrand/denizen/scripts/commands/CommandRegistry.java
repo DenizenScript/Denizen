@@ -77,7 +77,9 @@ public class CommandRegistry implements DenizenRegistry {
 		new TriggerCommand().activate().as("TRIGGER").withOptions("[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
         new ZapCommand().activate().as("ZAP").withOptions("[#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})", 0);
         new FollowCommand().activate().as("FOLLOW").withOptions("(STOP)", 0);
+        new AttackCommand().activate().as("ATTACK").withOptions("(STOP)", 0);
         new AssignmentCommand().activate().as("ASSIGNMENT").withOptions("[{SET}|REMOVE] (SCRIPT:assignment_script)", 1);
+        new DetermineCommand().activate().as("DETERMINE").withOptions("[TRUE|FALSE]", 1);
 		dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
 	}
 

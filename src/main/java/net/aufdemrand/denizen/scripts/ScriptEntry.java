@@ -84,6 +84,7 @@ public class ScriptEntry {
 	 */
 
 	public ScriptEntry addObject(String key, Object object) {
+        if (object == null) return this;
 		objects.put(key.toUpperCase(), object);
 		return this;
 	}
