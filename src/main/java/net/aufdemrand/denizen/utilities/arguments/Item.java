@@ -115,7 +115,7 @@ public class Item extends ItemStack implements dScriptArgument {
         // Check custom item script
         m[0] = getItemPtrn[5].matcher(string);
         if (m[0].matches()) {
-            Script itemScript = Script.valueOf(m[3].group(1));
+            Script itemScript = Script.valueOf(m[0].group(1));
             if (itemScript != null && itemScript.getType().equalsIgnoreCase("ITEM")) {
                 // Check validity of material
                 if (itemScript.getContents().contains("MATERIAL"))
