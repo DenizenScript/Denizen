@@ -63,10 +63,12 @@ public class CommandRegistry implements DenizenRegistry {
                         "(target(s):npc|player|npc.#|player.player_name|entity_name)", 1);
 
         new ChatCommand().activate()
-                .as("CHAT").withOptions("chat ['message to chat'] (npcid:#) (target(s):npc.#|player.player_name{player})", 1);
+                .as("CHAT").withOptions("chat ['message to chat'] (npcid:#) (target(s):npc.#|player.player_name{attached player})", 1);
 
         new CooldownCommand().activate().as("COOLDOWN").withOptions("cooldown (duration:#{60s}) (global|{player:player_name})" +
                 " (script:script_name{)", 1);
+
+        new WaitCommand().activate().as("WAIT").withOptions("wait (duration:#{5s}) (queue:queue_type) (player:player_name{attached}) (npcid:#{attached})", 0);
 
         new DisengageCommand().activate().as("DISENGAGE").withOptions("(NPCID:#)", 0);
 
