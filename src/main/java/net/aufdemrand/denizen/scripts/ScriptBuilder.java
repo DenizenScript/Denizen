@@ -44,11 +44,11 @@ public class ScriptBuilder {
         Matcher regexMatcher = regex.matcher(stringArgs);
         while (regexMatcher.find()) {
             if (regexMatcher.group(1) != null) 
-                matchList.add(plugin.tagManager().tag(player, npc, regexMatcher.group(1), true));
+                matchList.add(regexMatcher.group(1));
             else if (regexMatcher.group(2) != null) 
-                matchList.add(plugin.tagManager().tag(player, npc, regexMatcher.group(2), true));
+                matchList.add(regexMatcher.group(2));
             else
-                matchList.add(plugin.tagManager().tag(player, npc, regexMatcher.group(), true));
+                matchList.add(regexMatcher.group());
         }
         if (verbose) dB.echoDebug(ChatColor.GRAY + "Args: " + Arrays.toString(matchList.toArray()));
 
