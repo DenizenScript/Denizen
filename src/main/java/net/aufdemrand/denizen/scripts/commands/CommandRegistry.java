@@ -46,9 +46,12 @@ public class CommandRegistry implements DenizenRegistry {
 
 	@Override
 	public void registerCoreMembers() {
-		// Load and activate core commands
-        new AnnounceCommand().activate().as("ANNOUNCE")
-                .withOptions("announce ['Text to announce']", 1);
+
+        String announceHint = "announce ['announcement text']";
+        new AnnounceCommand().activate().as("ANNOUNCE").withOptions(announceHint, 1);
+
+        String vulnerableHint = "vulnerable (toggle:{true}|false|toggle)";
+        new VulnerableCommand().activate().as("VULNERABLE").withOptions(vulnerableHint, 0);
 
         new ScribeCommand().activate().as("SCRIBE")
                 .withOptions("scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) " +
