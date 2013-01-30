@@ -93,18 +93,27 @@ public class ShootCommand extends AbstractCommand {
     	        
         						Vector v1 = entity.getLocation().toVector().clone();
         						Vector v2 = location.toVector().clone();
-        						Vector v3 = v2.clone().subtract(v1).normalize().multiply(3);
+        						Vector v3 = v2.clone().subtract(v1).normalize();
         						entity.setVelocity(v3);
                 
-        						dB.echoApproval("Running task for time " + getRuns() + " of " + getId());
+        						dB.echoApproval("Current run: " + getRuns());
+        						dB.echoApproval("Vector 1: " + v1.toString());
+        						dB.echoApproval("Vector 2: " + v2.toString());
+        						dB.echoApproval("Vector 1 floored: " + v1.getBlockX() + " " + v1.getBlockY() + " " + v1.getBlockZ());
+        						dB.echoApproval("Vector 2 floored: " + v2.getBlockX() + " " + v2.getBlockY() + " " + v2.getBlockZ());
+        						dB.echoApproval("Vector 3: " + v3.toString());
+        						dB.echoApproval("Vector 3 floored: " + v3.getBlockX() + " " + v3.getBlockY() + " " + v3.getBlockZ());
         						addRuns();
         						
-        						if (getRuns() > 10)
+        						if (getRuns() > 40)
+        							Bukkit.getScheduler().cancelTask(getId());
+        						else if (Math.abs(v2.getBlockX() - v1.getBlockX()) < 2 && Math.abs(v2.getBlockY() - v1.getBlockY()) < 2
+        								&& Math.abs(v2.getBlockZ() - v1.getBlockZ()) < 2)
         							Bukkit.getScheduler().cancelTask(getId());
         					}
         				};
         				
-        task.setId(Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, task, 10, 10));
+        task.setId(Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, task, 2, 2));
         	
         }
     
