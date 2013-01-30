@@ -28,7 +28,7 @@ public class ScriptRequirement extends AbstractRequirement{
 
         for (String thisArg : args) {
 
-            if (aH.matchesValueArg("FINISHED, FAILED, STEP", thisArg, ArgumentType.Custom))
+            if (aH.matchesArg("FINISHED, FAILED", thisArg))
                 try {
                     type = Type.valueOf(aH.getStringFrom(thisArg).toUpperCase());
                 } catch (Exception e) {
@@ -38,10 +38,8 @@ public class ScriptRequirement extends AbstractRequirement{
             else if (aH.matchesScript(thisArg))
                 checkScript = aH.getStringFrom(thisArg);
 
-
             else if (aH.matchesValueArg("STEP", thisArg, ArgumentType.String))
                 step = aH.getStringFrom(thisArg).toUpperCase();
-
 
             else if (aH.matchesQuantity(thisArg))
                 quantity = aH.getIntegerFrom(thisArg);
