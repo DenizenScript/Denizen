@@ -13,123 +13,75 @@ import java.util.List;
 
 public class ScriptRequirement extends AbstractRequirement{
 
-	private enum ScriptCheck { FINISHED, FAILED, STEP }
-
-    @Override
-	public void onEnable() {
-		//nothing to do here
-	}
+    private enum Type { FINISHED, FAILED, STEP }
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 
-		boolean outcome = false;
+        boolean outcome = false;
 
-		ScriptCheck scriptCheck = null;
-		Integer step = null;
-		Integer quantity = 1;
-		boolean exactly = false;
-		String checkScript = null;
+        Type type = null;
+        String step = null;
+        int quantity = 1;
+        boolean exactly = false;
+        String checkScript = null;
 
-		for (String thisArg : args) {
+        for (String thisArg : args) {
 
-			if (aH.matchesValueArg("FINISHED", thisArg, ArgumentType.Custom)
-					|| aH.matchesValueArg("FAILED", thisArg, ArgumentType.Custom)
-					|| aH.matchesValueArg("STEP", thisArg, ArgumentType.Custom)) {
+            if (aH.matchesValueArg("FINISHED, FAILED, STEP", thisArg, ArgumentType.Custom))
+                try {
+                    type = Type.valueOf(aH.getStringFrom(thisArg).toUpperCase());
+                } catch (Exception e) {
+                    dB.echoError("Invalid check type. Valid: FINISHED, FAILED, STEP.");
+                }
 
-				scriptCheck = ScriptCheck.valueOf(aH.getStringFrom(thisArg));
-				dB.echoDebug("...checking '%s'.", aH.getStringFrom(thisArg));
-			}
+            else if (aH.matchesScript(thisArg))
+                checkScript = aH.getStringFrom(thisArg);
 
-			else if (aH.matchesScript(thisArg)) {
-				checkScript = aH.getStringFrom(thisArg);
-				dB.echoDebug("...script to check is '%s'.", checkScript);
-			}
 
-			else if (thisArg.toUpperCase().matches("(?:STEP)(:)(\\d+)")) {
-				step = aH.getIntegerFrom(thisArg);
-				dB.echoDebug("...step to check is '%s'.", step.toString());
-			}
+            else if (aH.matchesValueArg("STEP", thisArg, ArgumentType.String))
+                step = aH.getStringFrom(thisArg).toUpperCase();
 
-			else if (aH.matchesQuantity(thisArg)) {
-				quantity = aH.getIntegerFrom(thisArg);
-				dB.echoDebug("...quantity to check for is '%s'.", quantity.toString());
-			}
 
-			else if (aH.matchesValueArg("EXACTLY", thisArg, ArgumentType.Integer)) {
-				//im pretty confident this was missing from the original requirement
-				exactly = true;
-				quantity = aH.getIntegerFrom(thisArg);
-				dB.echoDebug("...will check for EXACT quantity.");
-			}
+            else if (aH.matchesQuantity(thisArg))
+                quantity = aH.getIntegerFrom(thisArg);
 
-			else dB.echoError("Could not match argument '%s'!", thisArg);
-		}
 
-		if (scriptCheck != null) {
-			switch (scriptCheck) {
+            else if (aH.matchesArg("EXACTLY", thisArg))
+                //im pretty confident this was missing from the original requirement
+                exactly = true;
 
-			case FINISHED:
+            else dB.echoError("Could not match argument '%s'!", thisArg);
+        }
 
-				Integer finishes = FinishCommand.getScriptCompletes(context.getPlayer().getName(), checkScript);
+        if (type != null && checkScript != null) {
 
-				if (outcome == true) dB.echoDebug("...number of finishes is '%s'", finishes.toString());
+            switch (type) {
 
-				if (quantity == null && finishes > 0) {
-					outcome = true;
-					break;
-				} else {
-					if (exactly) {
-					// check for exact number
-						if (quantity == finishes) outcome = true;
-						break;
-					} else {
-						if (finishes >= quantity) outcome = true;
-					}
-				}
-				break;
+                case FINISHED:
+                    int finishes = FinishCommand.getScriptCompletes(context.getPlayer().getName(), checkScript);
+                    if (exactly) {
+                        if (quantity == finishes) outcome = true;
+                    } else {
+                        if (finishes >= quantity) outcome = true;
+                    }
+                    break;
 
-			case FAILED:
+                case FAILED:
+                    int fails = FailCommand.getScriptFails(context.getPlayer().getName(), checkScript);
+                    if (exactly) {
+                        if (quantity == fails) outcome = true;
+                    } else {
+                        if (fails >= quantity) outcome = true;
+                    }
+                    break;
 
-				Integer fails = FailCommand.getScriptFails(context.getPlayer().getName(), checkScript);
+                case STEP:
+                    // TODO: reimplement
+                    break;
+            }
+        }
 
-				if (outcome == true) dB.echoDebug("...number of fails is '%s'", fails.toString());
-
-				if (quantity == null && fails > 0) {
-					outcome = true;
-					break;
-				} else {
-					if (exactly) {
-					// check for exact number
-						if (quantity == fails) outcome = true;
-						break;
-					} else {
-						if (fails >= quantity) outcome = true;
-					}
-				}
-				break;
-
-			case STEP:
-
-				Integer currentStep = plugin.getSaves().getInt("Players." + context.getPlayer().getName() + "." + checkScript + "." + "Current Step", 0);
-
-				if (outcome == true) dB.echoDebug("...current step is '%s'", currentStep.toString());
-
-				if (step == null && currentStep > 0) {
-					outcome = true;
-					break;
-				} else {
-					if (exactly) {
-					// check for exact number
-						if (step == currentStep) outcome = true;
-						break;
-					} else {
-						if (currentStep >= step) outcome = true;
-					}
-				}
-				break;
-			}
-		}
-		return outcome;
-	}
+        return outcome;
+    }
 }
