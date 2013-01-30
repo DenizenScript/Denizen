@@ -91,7 +91,9 @@ public class ScriptHelper {
 			} catch (Exception e) {
 				// Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!
 				dB.echoError(ChatColor.RED + "'" + assignment + "' has a bad requirement, skipping.");
-			}
+                if (!dB.showStackTraces) dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
+                else e.printStackTrace();
+            }
 			
 			dB.echoDebug(DebugElement.Spacer);
 		}

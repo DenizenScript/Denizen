@@ -36,7 +36,7 @@ public class ScriptRequirement extends AbstractRequirement{
                 }
 
             else if (aH.matchesScript(thisArg))
-                checkScript = aH.getStringFrom(thisArg);
+                checkScript = aH.getStringFrom(thisArg).toUpperCase();
 
             else if (aH.matchesValueArg("STEP", thisArg, ArgumentType.String))
                 step = aH.getStringFrom(thisArg).toUpperCase();

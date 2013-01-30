@@ -64,10 +64,12 @@ public class RequirementChecker {
 				reqEntry = reqEntry.substring(1);
 			}
 
+            dB.log(reqEntry);
+
 			// Check requirement with RequirementRegistry
 			if (plugin.getRequirementRegistry().list().containsKey(reqEntry.split(" ")[0].toUpperCase())) {
 
-				AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqEntry.split(" ")[0]);
+				AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqEntry.split(" ")[0].toUpperCase());
 				String[] arguments = null;
 				if (reqEntry.split(" ").length > 1)	{
 					arguments = plugin.getScriptEngine().getScriptBuilder().buildArgs(reqEntry.split(" ", 2)[1]);
