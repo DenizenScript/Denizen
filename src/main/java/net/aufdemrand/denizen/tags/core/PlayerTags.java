@@ -208,6 +208,22 @@ public class PlayerTags implements Listener {
         } else if (type.equals("IS_OP")) {
             event.setReplaced(String.valueOf(p.isOp()));
 
+        } else if (type.equals("IS_BANNED")) {
+            event.setReplaced(String.valueOf(p.isBanned()));
+
+        } else if (type.equals("TIME")) {
+            event.setReplaced(String.valueOf(p.getPlayerTime()));
+            if (subType.equals("WORLD"))
+                event.setReplaced(String.valueOf(p.getWorld().getTime()));
+            
+        } else if (type.equals("WEATHER")) {
+        	if (p.getWorld().hasStorm())
+        		event.setReplaced("storming");
+        	else
+        		if (p.getPlayerTime() > 13500)
+        		event.setReplaced("clear");
+        		else event.setReplaced("sunny");
+            
         } else if (event.getType().startsWith("EQUIPMENT")) {
             event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
 
