@@ -113,7 +113,7 @@ public class CommandRegistry implements DenizenRegistry {
 
         new RandomCommand().activate ().as("RANDOM").withOptions("[#]", 1);
 
-        new ShootCommand().activate().as("SHOOT").withOptions("[ENTITY:entity] (QTY:#) (LOCATION:location)", 1);
+        new ShootCommand().activate().as("SHOOT").withOptions("[ENTITY:entity] (RIDE) (LOCATION:location)", 1);
         
         new SwitchCommand().activate().as("SWITCH").withOptions("[LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
 

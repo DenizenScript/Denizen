@@ -39,6 +39,7 @@ public class ShootCommand extends AbstractCommand {
         EntityType entityType = null;
         Integer qty = null;
         Location location = null;
+        Boolean ride = false;
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
@@ -55,6 +56,9 @@ public class ShootCommand extends AbstractCommand {
 
             } else if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
+               
+            } else if (aH.matchesArg("RIDE, MOUNT", arg)) {
+                ride = true;
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -65,6 +69,7 @@ public class ShootCommand extends AbstractCommand {
         scriptEntry.addObject("location", location);
         scriptEntry.addObject("entityType", entityType);
         scriptEntry.addObject("qty", qty);
+        scriptEntry.addObject("ride", ride);
     }
     
     @Override
@@ -73,6 +78,7 @@ public class ShootCommand extends AbstractCommand {
         Location location = (Location) scriptEntry.getObject("location");
         Integer qty = (Integer) scriptEntry.getObject("qty");
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
+        Boolean ride = (Boolean) scriptEntry.getObject("ride");
         
         //Vector direction = scriptEntry.getNPC().getEyeLocation().getDirection().multiply(2.5);
 
@@ -83,7 +89,13 @@ public class ShootCommand extends AbstractCommand {
         
         Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
     			scriptEntry.getNPC().getEyeLocation(), entityType);
-        long ldelay = (long) 20;
+        
+        //long ldelay = (long) 20;
+        
+        if (ride == true)
+        {
+        	entity.setPassenger(scriptEntry.getPlayer());
+        }
         
         Runnable3 task = new Runnable3<ScriptEntry, Entity, Location>
         				(scriptEntry, entity, location)
@@ -91,25 +103,37 @@ public class ShootCommand extends AbstractCommand {
         					@Override
         					public void run(ScriptEntry scriptEntry, Entity entity, Location location) {
     	        
-        						Vector v1 = entity.getLocation().toVector().clone();
-        						Vector v2 = location.toVector().clone();
-        						Vector v3 = v2.clone().subtract(v1).normalize();
-        						entity.setVelocity(v3);
-                
-        						dB.echoApproval("Current run: " + getRuns());
-        						dB.echoApproval("Vector 1: " + v1.toString());
-        						dB.echoApproval("Vector 2: " + v2.toString());
-        						dB.echoApproval("Vector 1 floored: " + v1.getBlockX() + " " + v1.getBlockY() + " " + v1.getBlockZ());
-        						dB.echoApproval("Vector 2 floored: " + v2.getBlockX() + " " + v2.getBlockY() + " " + v2.getBlockZ());
-        						dB.echoApproval("Vector 3: " + v3.toString());
-        						dB.echoApproval("Vector 3 floored: " + v3.getBlockX() + " " + v3.getBlockY() + " " + v3.getBlockZ());
-        						addRuns();
+        						if (getRuns() < 40)
+        						{
+        							dB.echoDebug(entity.getType().name() + " is flying");
         						
-        						if (getRuns() > 40)
+        							Vector v1 = entity.getLocation().toVector().clone();
+        							Vector v2 = location.toVector().clone();
+        							Vector v3 = v2.clone().subtract(v1).normalize();
+        							entity.setVelocity(v3);
+                
+        							//dB.echoError("Current run: " + getRuns() + " of " + getId());
+        							//dB.echoApproval("Vector 1: " + v1.toString());
+        							//dB.echoApproval("Vector 2: " + v2.toString());
+        							//dB.echoApproval("Vector 1 floored: " + v1.getBlockX() + " " + v1.getBlockY() + " " + v1.getBlockZ());
+        							//dB.echoApproval("Vector 2 floored: " + v2.getBlockX() + " " + v2.getBlockY() + " " + v2.getBlockZ());
+        							//dB.echoApproval("Vector 3: " + v3.toString());
+        							//dB.echoApproval("Vector 3 floored: " + v3.getBlockX() + " " + v3.getBlockY() + " " + v3.getBlockZ());
+        							//dB.echoApproval("Location 1: " + entity.getLocation().toString());
+        							addRuns();
+        						
+        							if (Math.abs(v2.getBlockX() - v1.getBlockX()) < 2 && Math.abs(v2.getBlockY() - v1.getBlockY()) < 2
+        									&& Math.abs(v2.getBlockZ() - v1.getBlockZ()) < 2)
+        							{
+        								Bukkit.getScheduler().cancelTask(getId());
+        								clearRuns();
+        							}
+        						}
+        						else
+        						{
         							Bukkit.getScheduler().cancelTask(getId());
-        						else if (Math.abs(v2.getBlockX() - v1.getBlockX()) < 2 && Math.abs(v2.getBlockY() - v1.getBlockY()) < 2
-        								&& Math.abs(v2.getBlockZ() - v1.getBlockZ()) < 2)
-        							Bukkit.getScheduler().cancelTask(getId());
+        							clearRuns();
+        						}
         					}
         				};
         				

@@ -13,6 +13,9 @@ public abstract class Runnable3<A, B, C> implements Runnable {
 	public void addRuns()
 	{ this.timesRun++;  }
 	
+	public void clearRuns()
+	{ this.timesRun = 0;  }
+	
 	public int getId()
 	{ return id; }
 	

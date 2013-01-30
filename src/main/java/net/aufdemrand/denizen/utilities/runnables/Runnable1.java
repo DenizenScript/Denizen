@@ -12,7 +12,10 @@ public abstract class Runnable1<A> implements Runnable {
 	
 	public void addRuns()
 	{ this.timesRun++;  }
-	
+
+	public void clearRuns()
+	{ this.timesRun = 0;  }
+
 	public int getId()
 	{ return id; }
 	
