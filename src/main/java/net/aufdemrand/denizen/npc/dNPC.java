@@ -83,6 +83,10 @@ public class dNPC {
 	public Location getLocation() {
 		return getCitizen().getBukkitEntity().getLocation();
 	}
+	
+	public Location getEyeLocation() {
+		return getCitizen().getBukkitEntity().getEyeLocation();
+	}
 
 	public World getWorld() {
 		return getCitizen().getBukkitEntity().getWorld();

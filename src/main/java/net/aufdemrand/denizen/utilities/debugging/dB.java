@@ -166,6 +166,7 @@ public class dB {
 		DEBUG_SET_COMMAND("...set COMMAND: '%s'"),
 		DEBUG_SET_FLAG_ACTION("...set FLAG ACTION: '%s'"),
 		DEBUG_SET_FLAG_TYPE("...set FLAG TYPE: '%s'"), 
+		ERROR_INVALID_ENTITY("Invalid entity!"),  
 		ERROR_INVALID_ITEM("Invalid item!"), 
 		ERROR_PLAYER_NPCS_ONLY("NPC must be Human (Player)!"), 
 		DEBUG_SET_STEP("...set STEP: '%s'"), 

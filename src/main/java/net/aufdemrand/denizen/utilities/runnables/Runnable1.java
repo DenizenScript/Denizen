@@ -1,7 +1,27 @@
 package net.aufdemrand.denizen.utilities.runnables;
 
+import org.bukkit.Bukkit;
+
 public abstract class Runnable1<A> implements Runnable {
-	 
+
+	private static int id;
+	private int timesRun;
+	
+	public int getRuns()
+	{ return timesRun; }
+	
+	public void addRuns()
+	{ this.timesRun++;  }
+	
+	public int getId()
+	{ return id; }
+	
+	public void setId(int id)
+	{ this.id = id; }
+	
+	protected void cancel()
+	{ Bukkit.getScheduler().cancelTask(id); }
+
     private A a;
    
     public Runnable1(A a) {
