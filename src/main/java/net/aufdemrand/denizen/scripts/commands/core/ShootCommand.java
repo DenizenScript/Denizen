@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable3;
+import net.aufdemrand.denizen.utilities.Utilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
@@ -62,6 +63,9 @@ public class ShootCommand extends AbstractCommand {
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
+        
+
+    	dB.echoApproval("Finished argument parsing!");
 
         if (entityType == null) throw new InvalidArgumentsException(Messages.ERROR_INVALID_ENTITY);
 
@@ -75,6 +79,8 @@ public class ShootCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
+    	dB.echoApproval("Reached execute part!");
+    	
         Location location = (Location) scriptEntry.getObject("location");
         Integer qty = (Integer) scriptEntry.getObject("qty");
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
@@ -90,6 +96,8 @@ public class ShootCommand extends AbstractCommand {
         Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
     			scriptEntry.getNPC().getEyeLocation(), entityType);
         
+      //scriptEntry.getPlayer().getLocation().setYaw(Math.abs(Utilities.getYaw(v2)));
+                
         //long ldelay = (long) 20;
         
         if (ride == true)
@@ -105,11 +113,12 @@ public class ShootCommand extends AbstractCommand {
     	        
         						if (getRuns() < 40)
         						{
-        							dB.echoDebug(entity.getType().name() + " is flying");
+        							dB.echoDebug(entity.getType().name() + " is flying in task " + getId());
         						
         							Vector v1 = entity.getLocation().toVector().clone();
         							Vector v2 = location.toVector().clone();
-        							Vector v3 = v2.clone().subtract(v1).normalize();
+        							Vector v3 = v2.clone().subtract(v1).normalize().multiply(2);
+        							
         							entity.setVelocity(v3);
                 
         							//dB.echoError("Current run: " + getRuns() + " of " + getId());
@@ -127,12 +136,14 @@ public class ShootCommand extends AbstractCommand {
         							{
         								Bukkit.getScheduler().cancelTask(getId());
         								clearRuns();
+            							dB.echoApproval("Finished task for " + entity.getType().name());
         							}
         						}
         						else
         						{
         							Bukkit.getScheduler().cancelTask(getId());
         							clearRuns();
+        							dB.echoApproval("Finished task for " + entity.getType().name());
         						}
         					}
         				};

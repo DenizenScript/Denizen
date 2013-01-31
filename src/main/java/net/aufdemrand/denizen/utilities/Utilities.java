@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-
+import org.bukkit.util.Vector;
 import java.util.*;
 
 /**
@@ -131,6 +131,32 @@ public class Utilities {
 
 		return playerInv;
 	}
+	
+	/*
+	 * This utility returns a yaw value from a vector 
+	 *
+	 * @param  vector  the Vector on which math is done.
+	 * @return  returns a float value
+	 */
+	
+    public static float getYaw(Vector motion) {
+        double dx = motion.getX();
+        double dz = motion.getZ();
+        double yaw = 0;
+        // Set yaw
+        if (dx != 0) {
+            // Set yaw start value based on dx
+            if (dx < 0) {
+                yaw = 1.5 * Math.PI;
+            } else {
+                yaw = 0.5 * Math.PI;
+            }
+            yaw -= Math.atan(dz / dx);
+        } else if (dz < 0) {
+            yaw = Math.PI;
+        }
+        return (float) (-yaw * 180 / Math.PI - 90);
+    }
 	
 	/**
 	 * This is a Utility method for finding the closest NPC to a particular
