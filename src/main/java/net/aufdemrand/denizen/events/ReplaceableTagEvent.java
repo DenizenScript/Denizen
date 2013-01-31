@@ -96,7 +96,9 @@ public class ReplaceableTagEvent extends Event {
 
         // check if tag has an alternative text
         if (tag.contains("||")) {
+            try {
             alternative = tag.split("\\|\\|")[1].trim();
+            } catch (Exception e) {   }
             tag = tag.split("\\|\\|", 2)[0];
         }
 
