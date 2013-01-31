@@ -54,6 +54,7 @@ public class dB {
 	
 	public static boolean debugMode = true;
 	public static boolean showStackTraces = true;
+    public static boolean showScriptBuilder = false;
 
 	/**
 	 * Can be used with echoDebug(...) to output a header, footer, 

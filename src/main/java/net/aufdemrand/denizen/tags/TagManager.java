@@ -38,9 +38,14 @@ public class TagManager {
         new ConstantTags(denizen);
         new NPCTags(denizen);
         new AnchorTags(denizen);
+        new ContextTags(denizen);
     }
 
     public String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant) {
+        return tag(player, npc, arg, instant, null);
+    }
+
+    public String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
         if (arg == null) return null;
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
         if (arg.indexOf('>') == -1 || arg.length() < 3) return arg;
@@ -57,7 +62,7 @@ public class TagManager {
             ReplaceableTagEvent event;
             if (positions == null) break;
             else {
-                event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]));
+                event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]), scriptEntry);
                 if (event.isInstant() != instant) {
                     changeBack = true;
                     // Not the right type of tag, change out brackets so it doesn't get parsed again
@@ -98,9 +103,9 @@ public class TagManager {
         if (args != null) {
             for (String argument : args) {
                 if (scriptEntry.getPlayer() == null && scriptEntry.getOfflinePlayer() != null)
-                    filledArgs.add(tag(scriptEntry.getOfflinePlayer(), scriptEntry.getNPC(), argument, instant));
+                    filledArgs.add(tag(scriptEntry.getOfflinePlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
                 else
-                    filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant));
+                    filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
             }
         }
         return filledArgs;

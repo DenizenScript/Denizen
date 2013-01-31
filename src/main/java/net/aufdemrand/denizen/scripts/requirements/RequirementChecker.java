@@ -64,8 +64,6 @@ public class RequirementChecker {
 				reqEntry = reqEntry.substring(1);
 			}
 
-            dB.log(reqEntry);
-
 			// Check requirement with RequirementRegistry
 			if (plugin.getRequirementRegistry().list().containsKey(reqEntry.split(" ")[0].toUpperCase())) {
 

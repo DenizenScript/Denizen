@@ -85,8 +85,7 @@ public class CommandExecuter {
 							}
 					}
 					if (foundNewPlayer) {
-						dB.echoDebug("Found an offline player with this name!");
-						dB.echoDebug("   Saving offlinePlayer object.");
+						dB.echoDebug("Found an offline player.. linking.");
 					}
 					else { dB.echoError("Could not find a valid player!"); scriptEntry.setPlayer(null); }
                 }

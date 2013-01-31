@@ -5,13 +5,18 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
+import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable2;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -54,17 +59,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Jeremy Schroeder
  *
  */
-public class RuntaskCommand extends AbstractCommand {
+public class RuntaskCommand extends AbstractCommand implements Listener {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
         String id = null;
-        String script = null;
+        Script script = null;
+        Map<String, String> context = null;
         Duration delay = new Duration(-1d);
         ScriptEngine.QueueType queue;
-        boolean instant = false;
+        boolean instant = true;
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
@@ -75,20 +81,44 @@ public class RuntaskCommand extends AbstractCommand {
         // Iterate through Arguments to extract needed information
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesScript(arg)) {
-                script = aH.getStringFrom(arg);
+                script = aH.getScriptFrom(arg);
 
             } else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
                 delay = aH.getDurationFrom(arg);
                 delay.setPrefix("Delay");
 
-            } else if (aH.matchesArg("INSTANT", arg)) {
+            } else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
                 instant = true;
 
             } else if (aH.matchesQueueType(arg)) {
+                instant = false;
                 queue = aH.getQueueFrom(arg);
+
+            } else if (aH.matchesArg("QUEUE", arg)) {
+                instant = false;
+                if (scriptEntry.getPlayer() != null)
+                    queue = ScriptEngine.QueueType.PLAYER_TASK;
+                else if (scriptEntry.getNPC() != null)
+                    queue = ScriptEngine.QueueType.NPC;
+
+            } else if (aH.matchesValueArg("CONTEXT", arg, aH.ArgumentType.Custom)) {
+                context = new HashMap<String, String>();
+                List<String> contexts = aH.getListFrom(arg);
+                for (String ctxt : contexts) {
+                    String[] sctxt = ctxt.split(",", 2);
+                    if (sctxt.length > 1)
+                        context.put(sctxt[0].trim().toUpperCase(), sctxt[1].trim());
+                    else context.put(sctxt[0].trim().toUpperCase(), "true");
+                }
 
             } else if (aH.matchesValueArg("ID", arg, aH.ArgumentType.Word)) {
                 id = aH.getStringFrom(arg);
+
+            } else if (DenizenAPI.getCurrentInstance()
+                    .getScripts().contains(aH.getStringFrom(arg).toUpperCase() + ".TYPE")) {
+                script = aH.getScriptFrom(arg);
+                if (!script.getType().equalsIgnoreCase("TASK"))
+                    script = null;
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -102,7 +132,7 @@ public class RuntaskCommand extends AbstractCommand {
         if (script == null) throw new InvalidArgumentsException("Must define a script to be run!");
 
         // Set an ID if not specified (we'll use the name of the script)
-        if (id == null) id = script;
+        if (id == null) id = script.getName();
 
         // Put important objects inside the scriptEntry to be sent to execute()
         scriptEntry.addObject("id", id);
@@ -110,6 +140,7 @@ public class RuntaskCommand extends AbstractCommand {
         scriptEntry.addObject("delay", delay);
         scriptEntry.addObject("script", script);
         scriptEntry.addObject("instant", instant);
+        scriptEntry.addObject("context", context);
     }
 
     // For keeping track of delays
@@ -118,14 +149,15 @@ public class RuntaskCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        String script = (String) scriptEntry.getObject("script");
+        Map<String, String> context = (HashMap<String, String>) scriptEntry.getObject("context");
+        Script script = (Script) scriptEntry.getObject("script");
         ScriptEngine.QueueType queue = (ScriptEngine.QueueType) scriptEntry.getObject("queue");
         Boolean instant = (Boolean) scriptEntry.getObject("instant");
         Duration delay = (Duration) scriptEntry.getObject("delay");
 
         // Debug output
         dB.echoApproval("Executing '" + getName() + "': "
-                + "Script='" + script + "', "
+                + script.debug()
                 + delay.debug()
                 + "Player='" + (scriptEntry.getPlayer() != null ? scriptEntry.getPlayer().getName() + "', " : "NULL', ")
                 + "NPC='" + (scriptEntry.getNPC() != null ? scriptEntry.getNPC() + "', " : "NULL', ")
@@ -137,19 +169,19 @@ public class RuntaskCommand extends AbstractCommand {
 
             if (instant)
                 denizen.getScriptEngine().getScriptBuilder()
-                        .runTaskScriptInstantly(scriptEntry.getPlayer(), scriptEntry.getNPC(), script);
+                        .runTaskScriptInstantly(scriptEntry.getPlayer(), scriptEntry.getNPC(), script.getName(), context);
 
             else switch (queue) {
 
                 case PLAYER:
                 case PLAYER_TASK:
                     denizen.getScriptEngine().getScriptBuilder()
-                            .runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), script);
+                            .runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), script.getName());
                     break;
 
                 case NPC:
                     denizen.getScriptEngine().getScriptBuilder()
-                            .runTaskScript(scriptEntry.getNPC(), scriptEntry.getPlayer(), script);
+                            .runTaskScript(scriptEntry.getNPC(), scriptEntry.getPlayer(), script.getName());
                     break;
             }
 
@@ -167,7 +199,7 @@ public class RuntaskCommand extends AbstractCommand {
             // Set delayed task and put id in a map (for cancellations with CANCELTASK [id])
             dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "Run TASK SCRIPT '" + script + "'");
             delays.put(id, denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
-                            new Runnable2<String, ScriptEntry>(script, scriptEntry) {
+                            new Runnable2<String, ScriptEntry>(script.getName(), scriptEntry) {
                                 @Override
                                 public void run(String script, ScriptEntry scriptEntry) {
                                         dB.log(Messages.DEBUG_RUNNING_DELAYED_TASK, "Run TASK SCRIPT '" + script + "'");

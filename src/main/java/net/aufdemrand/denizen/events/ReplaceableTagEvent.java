@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
@@ -61,8 +61,16 @@ public class ReplaceableTagEvent extends Event {
     private String alternative = null;
     private String replaced = null;
 
+    private ScriptEntry scriptEntry = null;
 
     public ReplaceableTagEvent(OfflinePlayer player, dNPC npc, String tag) {
+        this(player, npc, tag, null);
+    }
+
+    public ReplaceableTagEvent(OfflinePlayer player, dNPC npc, String tag, ScriptEntry scriptEntry) {
+
+        // Add ScriptEntry if available
+        this.scriptEntry = scriptEntry;
 
         // TODO: Use REGEX and MATCHER/GROUPS to simplify this code (might be faster?)
 
@@ -82,7 +90,6 @@ public class ReplaceableTagEvent extends Event {
         // check if tag has base context
         if (tag.startsWith("[") || tag.startsWith(" [")) {
             baseContext = tag.split("\\]", 2)[0].split("\\[", 2)[1].trim();
-            dB.log(baseContext);
             parseContext();
             tag = tag.split("\\]", 2)[1];
         }
@@ -90,7 +97,6 @@ public class ReplaceableTagEvent extends Event {
         // check if tag has an alternative text
         if (tag.contains("||")) {
             alternative = tag.split("\\|\\|")[1].trim();
-            dB.log(alternative);
             tag = tag.split("\\|\\|", 2)[0];
         }
 
@@ -289,6 +295,14 @@ public class ReplaceableTagEvent extends Event {
                 this.player = null;
             } catch (Exception e) { }
         }
+    }
+
+    public boolean hasScriptEntryAttached() {
+        return scriptEntry != null;
+    }
+
+    public ScriptEntry getScriptEntry() {
+        return scriptEntry;
     }
 
     @Override

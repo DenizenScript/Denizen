@@ -10,10 +10,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,6 +92,7 @@ public class ScriptBuilder {
             return null;
         }
 
+        if (dB.showScriptBuilder)
         dB.echoDebug("Building script entries:");
 
         for (String thisItem : script) {
@@ -116,6 +114,7 @@ public class ScriptBuilder {
             try {
                 /* Build new script commands */
                 String[] args = buildArgs(player, npc, scriptEntry[1], false);
+                if (dB.showScriptBuilder)
                 dB.echoDebug("Adding '" + scriptEntry[0] + "'  Args: " + Arrays.toString(args));
                 scriptCommands.add(new ScriptEntry(scriptEntry[0], args, player, npc, scriptName, step));
             } catch (Exception e) {
@@ -294,6 +293,12 @@ public class ScriptBuilder {
      *
      */
     public boolean runTaskScriptInstantly(Player player, dNPC npc, String scriptName) {
+        return runTaskScriptInstantly(player, npc, scriptName, null);
+    }
+
+    private static Map<String, Map<String, String>> taskContext = new HashMap<String, Map<String, String>>();
+
+    public boolean runTaskScriptInstantly(Player player, dNPC npc, String scriptName, Map<String, String> context) {
         // Check to make sure script exists
         if (!aH.matchesScript("script:" + scriptName)) return false;
         try {
@@ -305,9 +310,18 @@ public class ScriptBuilder {
         // Build script entries
         List<ScriptEntry> scriptEntries = plugin.getScriptEngine().getScriptBuilder().buildScriptEntries(player, npc, script, scriptName, null);
 
+        Map<String, Object> inherited = null;
+
         // Execute scriptEntries
-        for (ScriptEntry scriptEntry : scriptEntries)
+        for (ScriptEntry scriptEntry : scriptEntries) {
+            scriptEntry.addObject("INHERITED-CONTEXT", context);
+            if (inherited != null)
+                for (Map.Entry<String, Object> entry : inherited.entrySet())
+                    scriptEntry.addObject(entry.getKey()
+                            + (entry.getKey().endsWith("-INHERITED") ? "" : "-INHERITED"), entry.getValue());
             plugin.getScriptEngine().getScriptExecuter().execute(scriptEntry);
+            inherited = scriptEntry.getObjects();
+        }
 
         } catch (Exception e) {
             if (dB.showStackTraces) e.printStackTrace();
