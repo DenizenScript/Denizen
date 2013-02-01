@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.aufdemrand.denizen.utilities.Depends;
 import net.citizensnpcs.api.npc.NPC;
@@ -12,7 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -30,9 +31,10 @@ import org.bukkit.event.Listener;
  * including the color codes!</b></p>
  */
 public class NameplateTrait extends Trait implements Listener {
-
-	@Persist("")
-	private ChatColor color = null;
+	private final static String DEFAULT_KEY = "_default_";
+	
+	@Persist
+	private Map<String, ChatColor> colors = new HashMap<String, ChatColor>();
 
 	public NameplateTrait() {
 		super("nameplate");
@@ -46,10 +48,13 @@ public class NameplateTrait extends Trait implements Listener {
     }
 
     public void setColor(ChatColor color) {
-		this.color = color;
-		
-        refreshTag( getNPC() );
+		this.setColor(color, DEFAULT_KEY);
     }
+	
+	public void setColor(ChatColor color, String player) {
+		this.colors.put(player, color);
+		refreshTag( getNPC() );
+	}
 	
 	/**
 	 * Returns the {@link ChatColor} prefixed to the nameplate
@@ -57,7 +62,19 @@ public class NameplateTrait extends Trait implements Listener {
 	 * @return The stored {@link ChatColor}
 	 */
 	public ChatColor getColor() {
-		return color;
+		return colors.get(DEFAULT_KEY);
+	}
+	
+	/**
+	 * Returns the {@link ChatColor} prefixed to the nameplate for a specific
+	 * player.
+	 * 
+	 * @param The player name
+	 * @return The stored {@link ChatColor} for the specific player
+	 */
+	public ChatColor getColor(String player) {
+		if(!colors.containsKey(player)) return getColor();
+		else return colors.get(player);
 	}
 	
 	
@@ -71,14 +88,36 @@ public class NameplateTrait extends Trait implements Listener {
 	}
 	
 	/**
+	 * Returns true if a color has been set for this player
+	 * 
+	 * @param The player name to check
+	 * @return True if set, otherwise false
+	 */
+	public boolean hasColor(String player) {
+		return getColor(player) != null;
+	}
+	
+	/**
 	 * Retrieve the trimmed nameplate including the set color (max. 16 chars).
 	 * 
 	 * @return The trimmed nameplate including color
 	 */
 	public String getTrimmedTag() {
+		return getTrimmedTag(DEFAULT_KEY);
+	}
+	
+	/**
+	 * Retrieve the trimmed nameplate including the set color (max. 16 chars) for
+	 * the specific player.
+	 * 
+	 * @param The player name
+	 * @return The trimmed nameplate including color
+	 */
+	public String getTrimmedTag(String player) {
 		String tag = getNPC().getName();
+		ChatColor c = getColor(player);
 		
-		if(color != null) tag = getColor() + tag;
+		if(c != null) tag = c + tag;
 		if(tag.length() > 16) tag = tag.substring(0, 16);
 	
 		return tag;

@@ -160,6 +160,9 @@ public class CommandRegistry implements DenizenRegistry {
 
         String determineHint = "[TRUE|FALSE]";
         new DetermineCommand().activate().as("DETERMINE").withOptions(determineHint, 1);
+		
+		String nameplateHint = "[COLOR] (PLAYER)";
+		new NameplateCommand().activate().as("NAMEPLATE").withOptions(nameplateHint, 1);
 
         dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
 	}
