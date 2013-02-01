@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.aufdemrand.denizen.utilities.Depends;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.util.DataKey;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,7 +34,6 @@ import org.bukkit.event.Listener;
 public class NameplateTrait extends Trait implements Listener {
 	private final static String DEFAULT_KEY = "_default_";
 	
-	@Persist
 	private Map<String, ChatColor> colors = new HashMap<String, ChatColor>();
 
 	public NameplateTrait() {
@@ -160,6 +160,26 @@ public class NameplateTrait extends Trait implements Listener {
 		}
 		
 		return players;
+	}
+	
+	@Override
+	public void load(DataKey key) {
+		for(DataKey k : key.getSubKeys()) {
+			ChatColor c = null;
+			
+			try {
+				c = ChatColor.valueOf(key.getString(k.name()));
+			} catch( Exception e) {}
+			
+			colors.put(k.name(), c );
+		}
+	}
+	
+	@Override
+	public void save(DataKey key) {
+		for(Entry<String, ChatColor> entry: colors.entrySet()) {
+			key.setString(entry.getKey(), entry.getValue().name());
+		}
 	}
 	
 }
