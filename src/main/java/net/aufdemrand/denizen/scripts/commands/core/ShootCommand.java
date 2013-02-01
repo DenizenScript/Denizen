@@ -13,11 +13,13 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable3;
 import net.aufdemrand.denizen.utilities.Utilities;
 
+import org.bukkit.craftbukkit.v1_4_R1.help.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -64,9 +66,6 @@ public class ShootCommand extends AbstractCommand {
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
         
-
-    	dB.echoApproval("Finished argument parsing!");
-
         if (entityType == null) throw new InvalidArgumentsException(Messages.ERROR_INVALID_ENTITY);
 
         // Stash objects
@@ -79,7 +78,6 @@ public class ShootCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
-    	dB.echoApproval("Reached execute part!");
     	
         Location location = (Location) scriptEntry.getObject("location");
         Integer qty = (Integer) scriptEntry.getObject("qty");
@@ -94,7 +92,7 @@ public class ShootCommand extends AbstractCommand {
         else qty = 1;
         
         Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
-    			scriptEntry.getNPC().getEyeLocation(), entityType);
+        		Utilities.lookAt(scriptEntry.getNPC().getEyeLocation(), location), entityType);
         
         entity.teleport(Utilities.lookAt(entity.getLocation(), location));
         
@@ -103,16 +101,23 @@ public class ShootCommand extends AbstractCommand {
         	entity.setPassenger(scriptEntry.getPlayer());
         }
         
+        if (entity instanceof Projectile)
+		{
+			dB.echoApproval("Is instance of projectile!");
+		}
+        
+        //entity.setFireTicks(500);
+        
         Runnable3 task = new Runnable3<ScriptEntry, Entity, Location>
         				(scriptEntry, entity, location)
         				{
         					@Override
         					public void run(ScriptEntry scriptEntry, Entity entity, Location location) {
-    	        
+    	        				
         						if (getRuns() < 40)
         						{
-        							dB.echoDebug(entity.getType().name() + " is flying in task " + getId());
-        						
+        							dB.echoDebug(entity.getType().name() + " flying time " + getRuns() + " in task " + getId());
+        							
         							Vector v1 = entity.getLocation().toVector().clone();
         							Vector v2 = location.toVector().clone();
         							Vector v3 = v2.clone().subtract(v1).normalize().multiply(2);
@@ -132,22 +137,23 @@ public class ShootCommand extends AbstractCommand {
         							if (Math.abs(v2.getBlockX() - v1.getBlockX()) < 2 && Math.abs(v2.getBlockY() - v1.getBlockY()) < 2
         									&& Math.abs(v2.getBlockZ() - v1.getBlockZ()) < 2)
         							{
-        								Bukkit.getScheduler().cancelTask(getId());
+        								this.cancel();
         								clearRuns();
             							dB.echoApproval("Finished task for " + entity.getType().name());
         							}
         						}
         						else
         						{
-        							Bukkit.getScheduler().cancelTask(getId());
+        							this.cancel();
         							clearRuns();
         							dB.echoApproval("Finished task for " + entity.getType().name());
         						}
         					}
         				};
-        				
+        
         task.setId(Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, task, 2, 2));
-        	
+        dB.echoApproval("Scheduled task with ID: " + task.getId());
+        
         }
     
 

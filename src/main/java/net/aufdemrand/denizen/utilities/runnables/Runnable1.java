@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 
 public abstract class Runnable1<A> implements Runnable {
 
-	private static int id;
+	private int id;
 	private int timesRun;
 	
 	public int getRuns()
