@@ -133,29 +133,49 @@ public class Utilities {
 	}
 	
 	/*
-	 * This utility returns a yaw value from a vector 
-	 *
-	 * @param  vector  the Vector on which math is done.
-	 * @return  returns a float value
+	 * This utility changes a location so that its yaw and pitch
+	 * are facing another location.
+	 * 
+	 * Thanks to bergerkiller.
+	 * 
+	 * @param  loc  the Location whose yaw and pitch you want to change
+	 * @param lookat  the Location which the first Location's yaw and pitch should be facing
+	 * @return  returns a Location value
 	 */
 	
-    public static float getYaw(Vector motion) {
-        double dx = motion.getX();
-        double dz = motion.getZ();
-        double yaw = 0;
+    public static Location lookAt(Location loc, Location lookat) {
+        //Clone the loc to prevent applied changes to the input loc
+        loc = loc.clone();
+
+        // Values of change in distance (make it relative)
+        double dx = lookat.getX() - loc.getX();
+        double dy = lookat.getY() - loc.getY();
+        double dz = lookat.getZ() - loc.getZ();
+
         // Set yaw
         if (dx != 0) {
             // Set yaw start value based on dx
             if (dx < 0) {
-                yaw = 1.5 * Math.PI;
+                loc.setYaw((float) (1.5 * Math.PI));
             } else {
-                yaw = 0.5 * Math.PI;
+                loc.setYaw((float) (0.5 * Math.PI));
             }
-            yaw -= Math.atan(dz / dx);
+            loc.setYaw((float) loc.getYaw() - (float) Math.atan(dz / dx));
         } else if (dz < 0) {
-            yaw = Math.PI;
+            loc.setYaw((float) Math.PI);
         }
-        return (float) (-yaw * 180 / Math.PI - 90);
+
+        // Get the distance from dx/dz
+        double dxz = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
+
+        // Set pitch
+        loc.setPitch((float) -Math.atan(dy / dxz));
+
+        // Set values, convert to degrees (invert the yaw since Bukkit uses a different yaw dimension format)
+        loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI);
+        loc.setPitch(loc.getPitch() * 180f / (float) Math.PI);
+
+        return loc;
     }
 	
 	/**

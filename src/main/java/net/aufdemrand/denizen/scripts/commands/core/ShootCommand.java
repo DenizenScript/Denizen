@@ -96,9 +96,7 @@ public class ShootCommand extends AbstractCommand {
         Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
     			scriptEntry.getNPC().getEyeLocation(), entityType);
         
-      //scriptEntry.getPlayer().getLocation().setYaw(Math.abs(Utilities.getYaw(v2)));
-                
-        //long ldelay = (long) 20;
+        entity.teleport(Utilities.lookAt(entity.getLocation(), location));
         
         if (ride == true)
         {
