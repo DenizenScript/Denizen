@@ -33,9 +33,11 @@ public class PoweredRequirement extends AbstractRequirement{
 			else dB.echoError("Could not match argument '%s'!", thisArg);
 		}
 
-		if (blockToCheck.isBlockPowered()) outcome = true;
-		else if (blockToCheck.isBlockIndirectlyPowered()) outcome = true;
-
+		if(blockToCheck != null) {
+			if (blockToCheck.isBlockPowered()) outcome = true;
+			else if (blockToCheck.isBlockIndirectlyPowered()) outcome = true;
+		}
+		
 		if (outcome == true) dB.echoDebug("...block is powered!");
 		else dB.echoDebug("...block is not powered!");
 
