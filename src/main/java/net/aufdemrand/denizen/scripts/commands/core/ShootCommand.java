@@ -97,11 +97,15 @@ public class ShootCommand extends AbstractCommand {
             qty = 1;
         else qty = 1;
         
-        Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
-        		Utilities.lookAt(scriptEntry.getNPC().getEyeLocation().add(0, 1, 0), location), entityType);
+        Utilities.faceLocation(scriptEntry.getNPC().getCitizen().getBukkitEntity(), location);
         
-        //scriptEntry.getNPC().teleport(Utilities.lookAt(scriptEntry.getNPC().getLocation(), location));
-        entity.teleport(Utilities.lookAt(entity.getLocation(), location));
+        Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
+        				scriptEntry.getNPC().getEyeLocation().add(
+        				scriptEntry.getNPC().getEyeLocation().getDirection())
+        				.subtract(0, -0.8, 0),
+        				entityType);
+        
+        Utilities.faceLocation(entity, location);
         
         if (ride == true)
         {

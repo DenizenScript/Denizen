@@ -131,8 +131,4 @@ public class dNPC {
 	        plugin.getNPCRegistry().getActionHandler().doAction(actionName, this, player, getAssignment());
 	}
 
-	public void teleport(Location location) {
-		getCitizen().getBukkitEntity().teleport(location);
-	}
-
 }

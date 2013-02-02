@@ -264,7 +264,7 @@ public class aH {
         if (m.matches()) {
             // Match against valid EntityTypes using Bukkit enum
             for (EntityType validEntity : EntityType.values())
-                if (m.group(1).equalsIgnoreCase(validEntity.getName()))
+                if (m.group(1).equalsIgnoreCase(validEntity.name()))
                     return validEntity;
         }
         // No match
@@ -702,7 +702,7 @@ public class aH {
         if (m.matches()) {
             // Check against valid EntityTypes using Bukkit's EntityType enum
             for (EntityType validEntity : EntityType.values())
-                if (m.group(1).equalsIgnoreCase(validEntity.getName()))
+                if (m.group(1).equalsIgnoreCase(validEntity.name()))
                     return true;
         }
         // Check for valid prefix, warn about value.

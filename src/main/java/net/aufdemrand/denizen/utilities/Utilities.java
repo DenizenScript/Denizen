@@ -2,12 +2,15 @@ package net.aufdemrand.denizen.utilities;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-import org.bukkit.util.Vector;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
+import net.minecraft.server.v1_4_R1.EntityLiving;
 import java.util.*;
 
 /**
@@ -136,52 +139,58 @@ public class Utilities {
 
 		return playerInv;
 	}
-	
+		
 	/*
-	 * This utility changes a location so that its yaw and pitch
-	 * are facing another location.
+	 * This utility changes an entity's yaw and pitch to make it face
+	 * a location.
 	 * 
-	 * Thanks to bergerkiller.
+	 * Thanks to fullwall for it.
 	 * 
-	 * @param  loc  the Location whose yaw and pitch you want to change
-	 * @param lookat  the Location which the first Location's yaw and pitch should be facing
-	 * @return  returns a Location value
+	 * @param  from  the Entity whose yaw and pitch you want to change
+	 * @param at  the Location it should be looking at
 	 */
 	
-    public static Location lookAt(Location loc, Location lookat) {
-        //Clone the loc to prevent applied changes to the input loc
-        loc = loc.clone();
+	public static void faceLocation(Entity from, Location at) {
+		if (from.getWorld() != at.getWorld())
+			return;
+		Location loc = from.getLocation();
 
-        // Values of change in distance (make it relative)
-        double dx = lookat.getX() - loc.getX();
-        double dy = lookat.getY() - loc.getY();
-        double dz = lookat.getZ() - loc.getZ();
+		double xDiff = at.getX() - loc.getX();
+		double yDiff = at.getY() - loc.getY();
+		double zDiff = at.getZ() - loc.getZ();
 
-        // Set yaw
-        if (dx != 0) {
-            // Set yaw start value based on dx
-            if (dx < 0) {
-                loc.setYaw((float) (1.5 * Math.PI));
-            } else {
-                loc.setYaw((float) (0.5 * Math.PI));
-            }
-            loc.setYaw((float) loc.getYaw() - (float) Math.atan(dz / dx));
-        } else if (dz < 0) {
-            loc.setYaw((float) Math.PI);
-        }
+		double distanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+		double distanceY = Math.sqrt(distanceXZ * distanceXZ + yDiff * yDiff);
 
-        // Get the distance from dx/dz
-        double dxz = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
+		double yaw = (Math.acos(xDiff / distanceXZ) * 180 / Math.PI);
+		double pitch = (Math.acos(yDiff / distanceY) * 180 / Math.PI) - 90;
+		if (zDiff < 0.0) {
+			yaw = yaw + (Math.abs(180 - yaw) * 2);
+		}
+		
+		if (from instanceof LivingEntity)
+		{
+			EntityLiving handle = ((CraftLivingEntity) from).getHandle();
+			handle.yaw = (float) yaw - 90;
+			handle.pitch = (float) pitch;
+			handle.az = handle.yaw;
+		}
+	}
 
-        // Set pitch
-        loc.setPitch((float) -Math.atan(dy / dxz));
-
-        // Set values, convert to degrees (invert the yaw since Bukkit uses a different yaw dimension format)
-        loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI);
-        loc.setPitch(loc.getPitch() * 180f / (float) Math.PI);
-
-        return loc;
-    }
+	/*
+	 * This utility changes an entity's yaw and pitch to make it face
+	 * another entity.
+	 * 
+	 * Thanks to fullwall for it.
+	 * 
+	 * @param  from  the Entity whose yaw and pitch you want to change
+	 * @param at  the Entity it should be looking at
+	 */
+	
+	public static void faceEntity(Entity from, Entity at) {
+		
+		faceLocation(from, at.getLocation());
+	}
 	
 	/**
 	 * This is a Utility method for finding the closest NPC to a particular
