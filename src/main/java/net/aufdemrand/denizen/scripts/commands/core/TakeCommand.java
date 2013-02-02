@@ -69,6 +69,7 @@ public class TakeCommand extends AbstractCommand{
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(ScriptEntry scriptEntry)
 			throws CommandExecutionException {

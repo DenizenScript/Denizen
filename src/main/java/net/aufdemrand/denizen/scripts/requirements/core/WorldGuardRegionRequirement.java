@@ -1,17 +1,12 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Location;
-import org.bukkit.World;
 
 import java.util.List;
 
