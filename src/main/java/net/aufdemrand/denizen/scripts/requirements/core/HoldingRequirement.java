@@ -36,7 +36,7 @@ public class HoldingRequirement extends AbstractRequirement{
 			}
 		} 
 		
-		if (quantity > 1){
+		if (itemToCheck != null && quantity > 1){
 			itemToCheck.setAmount(quantity);
 		}
 		

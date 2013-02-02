@@ -158,6 +158,10 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
     public Location(World world, double x, double y, double z) {
         super(world, x, y, z);
     }
+    
+    public Location(World world, double x, double y, double z, float yaw, float pitch) {
+        super(world, x, y, z, yaw, pitch);
+    }
 
     @Override
     public String getDefaultPrefix() {

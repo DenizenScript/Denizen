@@ -6,20 +6,16 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.BlockListenerType.BlockType;
-import net.aufdemrand.denizen.utilities.Depends;
+import net.aufdemrand.denizen.utilities.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -30,7 +26,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 	BlockType type;
 	List<String> blocks = new ArrayList<String>();
 	Integer quantity = 1;
-	String argRegion = null;
+	String region = null;
 
 	Integer currentBlocks = 0;
 	
@@ -55,7 +51,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 			}
 			
 			else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
-					argRegion = aH.getStringFrom(arg);
+					region = aH.getStringFrom(arg);
 					dB.echoDebug("...set REGION.");
 			}
 		}
@@ -78,6 +74,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 		store("Blocks", this.blocks);
 		store("Quantity", this.quantity);
 		store("Current Blocks", this.currentBlocks);
+		store("Region", region);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -87,6 +84,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 		blocks = (List<String>) get("Blocks");
 		quantity = (Integer) get("Quantity");
 		currentBlocks = (Integer) get("Current Blocks");
+		region = (String) get("Region");
 	}
 
 	@Override
@@ -123,26 +121,16 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 			finish();
 		}
 	}
-	
-	public boolean inRegion(Player thePlayer) {
-		if (Depends.worldGuard == null) return false;
-		boolean inRegion = false;
-		ApplicableRegionSet currentRegions = Depends.worldGuard.getRegionManager(thePlayer.getWorld()).getApplicableRegions(thePlayer.getLocation());
-		for(ProtectedRegion thisRegion: currentRegions){
-			dB.echoDebug("...checking current player region: " + thisRegion.getId());
-			if (thisRegion.getId().contains(argRegion)) {
-				inRegion = true;
-				dB.echoDebug("...matched region");
-			} 
-		}
-		return inRegion;
-	}
 
 	List<Location> blocksBroken = new ArrayList<Location>();
 	@EventHandler
 	public void listenBreak(BlockBreakEvent event) {
 		if (type == BlockType.BREAK) {
 			if (event.getPlayer() == player) {
+				
+				if (region != null) 
+					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+				
 				if (blocks.contains(event.getBlock().getType().toString())
 						|| blocks.contains(String.valueOf(event.getBlock().getTypeId()))) {
 
@@ -164,6 +152,10 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 	public void listenCollect(PlayerPickupItemEvent event) {
 		if (type == BlockType.COLLECT) {
 			if (event.getPlayer() == player) {
+				
+				if (region != null) 
+					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+				
 				if (blocks.contains(event.getItem().getItemStack().getType().toString())
 						|| blocks.contains(String.valueOf(event.getItem().getItemStack().getTypeId()))) {
 
@@ -185,6 +177,10 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 	public void listenPlace(BlockPlaceEvent event) {
 		if (type == BlockType.BUILD) {
 			if (event.getPlayer() == player) {
+				
+				if (region != null) 
+					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+				
 				if (blocks.contains(event.getBlock().getType().toString())
 						|| blocks.contains(String.valueOf(event.getBlock().getTypeId()))) {
 					
@@ -207,7 +203,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 		if (!event.getType().equalsIgnoreCase(listenerId)) return;
 		
 		if (event.getValue().equalsIgnoreCase("region")) {
-			event.setReplaced(argRegion);
+			event.setReplaced(region);
 		}
 		
 		else if (event.getValue().equalsIgnoreCase("quantity")) {

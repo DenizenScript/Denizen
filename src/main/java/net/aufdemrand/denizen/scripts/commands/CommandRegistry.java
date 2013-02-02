@@ -74,92 +74,95 @@ public class CommandRegistry implements DenizenRegistry {
         String strikeHint = "strike (no_damage) [location:x,y,z,world]";
         new StrikeCommand().activate().as("STRIKE").withOptions(strikeHint, 1);
         
-        String disengageHint = "(NPCID:#)";
+        String disengageHint = "disengage (NPCID:#)";
         new DisengageCommand().activate().as("DISENGAGE").withOptions(disengageHint, 0);
         
-        String dropHint = "[ITEM:item|EXP] (QTY:#) (LOCATION:location)";
+        String dropHint = "drop [ITEM:item|EXP] (QTY:#) (LOCATION:location)";
         new DropCommand().activate().as("DROP").withOptions(dropHint, 1);
 
-        String clearHint = "[QUEUE:queue_type] (...)";
+        String clearHint = "clear [QUEUE:queue_type] (...)";
         new ClearCommand().activate().as("CLEAR").withOptions(clearHint, 1);
 
-        String engageHint = "(DURATION:#) (NPCID:#)";
+        String engageHint = "engage (DURATION:#) (NPCID:#)";
         new EngageCommand().activate().as("ENGAGE").withOptions(engageHint, 0);
         
-        String executeHint = "[AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']";
+        String executeHint = "execute [AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']";
         new ExecuteCommand().activate().as("EXECUTE").withOptions(executeHint, 2);
 
-        String failHint = "(PLAYER:player_name)";
+        String failHint = "fail (PLAYER:player_name)";
         new FailCommand().activate().as("FAIL").withOptions(failHint, 0);
 
-        String feedHint = "(AMT:#) (TARGET:NPC|PLAYER)";
+        String feedHint = "feed (AMT:#) (TARGET:NPC|PLAYER)";
         new FeedCommand().activate().as("FEED").withOptions(feedHint, 0);
 
-        String finishHint = "(PLAYER:player_name)";
+        String finishHint = "finish (PLAYER:player_name)";
         new FinishCommand().activate().as("FINISH").withOptions(finishHint, 0);
 
-        String flagHint = "(DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]";
+        String flagHint = "flag (DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]";
         new FlagCommand().activate().as("FLAG").withOptions(flagHint, 1);
 
-        String giveHint = "[MONEY|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)";
+        String giveHint = "give [MONEY|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)";
         new GiveCommand().activate().as("GIVE").withOptions(giveHint, 1);
 
-        String healHint = "(AMT:#) (TARGET:NPC|PLAYER)";
+        String healHint = "heal (AMT:#) (TARGET:NPC|PLAYER)";
         new HealCommand().activate().as("HEAL").withOptions(healHint, 0);
 
-        String ifHint = "(!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.";
+        String ifHint = "if (!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.";
         new IfCommand().activate().as("IF").withOptions(ifHint, 2);
 
-        String listenHint = "[Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation.";
+        String listenHint = "listen [Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation.";
         new ListenCommand().activate().as("LISTEN").withOptions(listenHint, 2);
 
-        String lookcloseHint = "[TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)";
+        String lookcloseHint = "lookclose [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)";
         new LookcloseCommand().activate().as("LOOKCLOSE").withOptions(lookcloseHint, 1);
 
-        String newHint = "ITEMSTACK [ITEM:item] (QTY:qty)";
+        String newHint = "new ITEMSTACK [ITEM:item] (QTY:qty)";
         new NewCommand().activate().as("NEW").withOptions(newHint, 2);
 
-        String modifyBlockHint = "[LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)";
+        String modifyBlockHint = "modifyblock [LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)";
         new ModifyBlockCommand().activate().as("MODIFYBLOCK").withOptions(modifyBlockHint, 2);
 
-        String narrateHint = "(PLAYER:player_name) ['Text to narrate']";
+        String narrateHint = "narrate (PLAYER:player_name) ['Text to narrate']";
         new NarrateCommand().activate().as("NARRATE").withOptions(narrateHint, 1);
 
-        String playSoundHint = "[LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)";
+        String playSoundHint = "playsound [LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)";
         new PlaySoundCommand().activate().as("PLAYSOUND").withOptions(playSoundHint, 2);
 
-        String randomHint = "[#]";
+        String randomHint = "random [#]";
         new RandomCommand().activate ().as("RANDOM").withOptions(randomHint, 1);
 
-        String shootHint = "[ENTITY:entity] (RIDE) (LOCATION:location)";
+        String shootHint = "shoot [ENTITY:entity] (RIDE) (BURNING) (LOCATION:location)";
         new ShootCommand().activate().as("SHOOT").withOptions(shootHint, 1);
 
-        String switchHint = "[LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)";
+        String switchHint = "switch [LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)";
         new SwitchCommand().activate().as("SWITCH").withOptions(switchHint, 1);
 
-        String takeHint = "[MONEY|ITEMINHAND|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)";
+        String takeHint = "take [MONEY|ITEMINHAND|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)";
         new TakeCommand().activate ().as("TAKE").withOptions(takeHint, 1);
 
-        String teleportHint = "(NPC) [LOCATION:x,y,z,world] (TARGETS:[NPC.#]|[PLAYER.PlayerName])";
+        String teleportHint = "teleport (NPC) [LOCATION:x,y,z,world] (TARGETS:[NPC.#]|[PLAYER.PlayerName])";
         new TeleportCommand().activate().as("TELEPORT").withOptions(teleportHint, 1);
 
-        String triggerHint = "[NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]";
+        String triggerHint = "trigger [NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]";
         new TriggerCommand().activate().as("TRIGGER").withOptions(triggerHint, 2);
 
-        String zapHint = "[#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})";
+        String zapHint = "zap [#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})";
         new ZapCommand().activate().as("ZAP").withOptions(zapHint, 0);
 
-        String followHint = "(STOP)";
+        String followHint = "follow (STOP)";
         new FollowCommand().activate().as("FOLLOW").withOptions(followHint, 0);
 
-        String attackHint = "(STOP)";
+        String attackHint = "attack (STOP)";
         new AttackCommand().activate().as("ATTACK").withOptions(attackHint, 0);
 
-        String assignmentHint = "[{SET}|REMOVE] (SCRIPT:assignment_script)";
+        String assignmentHint = "assignment [{SET}|REMOVE] (SCRIPT:assignment_script)";
         new AssignmentCommand().activate().as("ASSIGNMENT").withOptions(assignmentHint, 1);
 
-        String determineHint = "[TRUE|FALSE]";
+        String determineHint = "determine [TRUE|FALSE]";
         new DetermineCommand().activate().as("DETERMINE").withOptions(determineHint, 1);
+		
+		String nameplateHint = "nameplate [COLOR] (PLAYER)";
+		new NameplateCommand().activate().as("NAMEPLATE").withOptions(nameplateHint, 1);
 
         dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
 	}

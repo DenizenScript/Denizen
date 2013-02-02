@@ -37,7 +37,7 @@ public class LiquidRequirement extends AbstractRequirement{
 			else dB.echoError("Could not match argument '%s'!", thisArg);
 		}
 
-		if (blockToCheck.isLiquid()) outcome = true;
+		if (blockToCheck != null && blockToCheck.isLiquid()) outcome = true;
 
 		if (outcome == true) dB.echoDebug("...block is liquid!");
 		else dB.echoDebug("...block is not liquid!");

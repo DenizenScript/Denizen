@@ -1,15 +1,12 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.utilities.Depends;
+import net.aufdemrand.denizen.utilities.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Location;
-import org.bukkit.World;
 
 import java.util.List;
 
@@ -39,45 +36,36 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		
-		//initialize variables
-		boolean outcome = false;
-		boolean inRegion = false;
-		World theWorld = context.getPlayer().getWorld();
-		Location playerLocation = context.getPlayer().getLocation();
+		/*
+		 * Instalize variables
+		 */
+		String region = null;
+		Boolean outcome = false;
 		
+		/*
+		 * If there are no arguments, throw an exception.
+		 */
 		if (args == null)
 			throw new RequirementCheckException("Must provide a NAME:regionname!");
 		
-		//parse the args
-		for (String thisArg : args) {
-
-			if (thisArg.contains("NAME:")) {
-				
-				dB.echoDebug("...checking if player is in region!");
-				String argRegion = aH.getStringFrom(thisArg);
-				dB.echoDebug("...region to check: " + argRegion);
-				ApplicableRegionSet currentRegions = Depends.worldGuard.getRegionManager(theWorld).getApplicableRegions(playerLocation);
-				
-				//checks all regions player is currently in
-				for(ProtectedRegion thisRegion: currentRegions){
-					dB.echoDebug("...checking current player region: " + thisRegion.getId());
-					if (thisRegion.getId().contains(argRegion)) {
-						inRegion = true;
-						dB.echoDebug("...matched region");
-					} 
-					if (inRegion == true) {
-						//leave loop, region found
-						break;
-					}
-				}
-			}
-
-			else dB.echoError("Could not match argument '%s'!", thisArg);
+		/*
+		 * Parse through the given arguments
+		 */
+		for (String arg : args) {
+			if (aH.matchesValueArg("NAME, N", arg, ArgumentType.String)) {
+				region = aH.getStringFrom(arg);
+				dB.echoDebug("...region set as: " + region);
+			} else throw new RequirementCheckException("Invalid argument specified!");
 		}
 		
-		if (inRegion) outcome = true;
+		/*
+		 * Check if player is in the given region.
+		 */
+		outcome = WorldGuardUtilities.checkPlayerWGRegion(context.getPlayer(), region);
 		
-		//check the outcome
+		/*
+		 * Display proper debug output
+		 */
 		if (outcome == true) dB.echoDebug("...player in region!");
 		else dB.echoDebug("...player is not in region!");
 

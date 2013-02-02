@@ -2,12 +2,15 @@ package net.aufdemrand.denizen.utilities;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
-import org.bukkit.util.Vector;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
+import net.minecraft.server.v1_4_R1.EntityLiving;
 import java.util.*;
 
 /**
@@ -77,7 +80,9 @@ public class Utilities {
 	}
 	
 	/*
-	 * Gets a Map of a player's inventory with a bukkit Material and Integer amount for each item. Unlike bukkit's build in getInventory, this will add up the total number of each Material. 
+	 * Gets a Map of a player's inventory with a bukkit Material and Integer amount 
+	 * for each item. Unlike bukkit's build in getInventory, this will add up the 
+	 * total number of each Material. 
 	 *
 	 * @param  thePlayer  the Player whose inventory is being checked.
 	 * @return  returns a Map<Material, Integer>.
@@ -104,7 +109,10 @@ public class Utilities {
 	}
 
 	/*
-	 * Alternate usage that gets a Map of a player's inventory with a String representation of itemID:data and Integer amount for each item. Unlike bukkit's build in getInventory, this will add up the total number of each itemID. 
+	 * Alternate usage that gets a Map of a player's inventory with a 
+	 * String representation of itemID:data and Integer amount for each 
+	 * item. Unlike bukkit's build in getInventory, this will add up 
+	 * the total number of each itemID. 
 	 *
 	 * @param  thePlayer  the Player whose inventory is being checked.
 	 * @return  returns a Map<String, Integer>.
@@ -131,32 +139,58 @@ public class Utilities {
 
 		return playerInv;
 	}
-	
+		
 	/*
-	 * This utility returns a yaw value from a vector 
-	 *
-	 * @param  vector  the Vector on which math is done.
-	 * @return  returns a float value
+	 * This utility changes an entity's yaw and pitch to make it face
+	 * a location.
+	 * 
+	 * Thanks to fullwall for it.
+	 * 
+	 * @param  from  the Entity whose yaw and pitch you want to change
+	 * @param at  the Location it should be looking at
 	 */
 	
-    public static float getYaw(Vector motion) {
-        double dx = motion.getX();
-        double dz = motion.getZ();
-        double yaw = 0;
-        // Set yaw
-        if (dx != 0) {
-            // Set yaw start value based on dx
-            if (dx < 0) {
-                yaw = 1.5 * Math.PI;
-            } else {
-                yaw = 0.5 * Math.PI;
-            }
-            yaw -= Math.atan(dz / dx);
-        } else if (dz < 0) {
-            yaw = Math.PI;
-        }
-        return (float) (-yaw * 180 / Math.PI - 90);
-    }
+	public static void faceLocation(Entity from, Location at) {
+		if (from.getWorld() != at.getWorld())
+			return;
+		Location loc = from.getLocation();
+
+		double xDiff = at.getX() - loc.getX();
+		double yDiff = at.getY() - loc.getY();
+		double zDiff = at.getZ() - loc.getZ();
+
+		double distanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+		double distanceY = Math.sqrt(distanceXZ * distanceXZ + yDiff * yDiff);
+
+		double yaw = (Math.acos(xDiff / distanceXZ) * 180 / Math.PI);
+		double pitch = (Math.acos(yDiff / distanceY) * 180 / Math.PI) - 90;
+		if (zDiff < 0.0) {
+			yaw = yaw + (Math.abs(180 - yaw) * 2);
+		}
+		
+		if (from instanceof LivingEntity)
+		{
+			EntityLiving handle = ((CraftLivingEntity) from).getHandle();
+			handle.yaw = (float) yaw - 90;
+			handle.pitch = (float) pitch;
+			handle.az = handle.yaw;
+		}
+	}
+
+	/*
+	 * This utility changes an entity's yaw and pitch to make it face
+	 * another entity.
+	 * 
+	 * Thanks to fullwall for it.
+	 * 
+	 * @param  from  the Entity whose yaw and pitch you want to change
+	 * @param at  the Entity it should be looking at
+	 */
+	
+	public static void faceEntity(Entity from, Entity at) {
+		
+		faceLocation(from, at.getLocation());
+	}
 	
 	/**
 	 * This is a Utility method for finding the closest NPC to a particular
