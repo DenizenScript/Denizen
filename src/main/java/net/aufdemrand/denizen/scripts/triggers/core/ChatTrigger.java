@@ -127,6 +127,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
      * the PlayerChatEvent to pass through.
      */
     public boolean parse (dNPC npc, Player player, String scriptName) {
+
+        if (scriptName == null) return false;
+
         Boolean	foundTrigger = false;
         ScriptEngine	sE = denizen.getScriptEngine();
 

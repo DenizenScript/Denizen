@@ -202,6 +202,8 @@ public class ScriptHelper {
 	public String getCurrentStep(Player player, String scriptName, Boolean verbose) {
 		String current = "DEFAULT";
 
+        if (scriptName == null) return "";
+
 		if (denizen.getSaves().getString("Players." + player.getName() + ".Scripts." + scriptName.toUpperCase() + "." + "Current Step") != null) {
 			current =  denizen.getSaves().getString("Players." + player.getName() + ".Scripts." + scriptName.toUpperCase() + "." + "Current Step");
 			if (verbose) dB.echoDebug("Getting current step... found '" + current + "'");

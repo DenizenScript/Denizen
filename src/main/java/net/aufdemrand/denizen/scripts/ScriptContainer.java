@@ -1,11 +1,25 @@
 package net.aufdemrand.denizen.scripts;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Press
- * Date: 2/1/13
- * Time: 8:02 AM
- * To change this template use File | Settings | File Templates.
- */
-public class ScriptContainer {
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemorySection;
+
+public class ScriptContainer extends MemorySection {
+
+
+
+    public ScriptContainer(String scriptContainerName) {
+        super(DenizenAPI.getCurrentInstance().getScripts(), scriptContainerName);
+        if (getType() == null) throw new IllegalStateException("Could not locate Script.");
+    }
+
+    public ScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
+        super(configurationSection, scriptContainerName);
+        if (getType() == null) throw new IllegalStateException("Could not locate Script.");
+    }
+
+    public String getType() {
+        return getString("TYPE");
+    }
+
 }

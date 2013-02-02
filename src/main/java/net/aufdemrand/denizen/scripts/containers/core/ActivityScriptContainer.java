@@ -12,4 +12,5 @@ public class ActivityScriptContainer extends ScriptContainer {
     public ActivityScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
+
 }
