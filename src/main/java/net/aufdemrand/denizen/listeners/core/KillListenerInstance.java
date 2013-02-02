@@ -1,16 +1,17 @@
 package net.aufdemrand.denizen.listeners.core;
 
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.KillListenerType.KillType;
 import net.aufdemrand.denizen.utilities.Depends;
+import net.aufdemrand.denizen.utilities.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
 import net.citizensnpcs.api.CitizensAPI;
+
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -94,6 +95,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		targets = (List<String>) get("Targets");
 		quantity = (Integer) get("Quantity");
 		currentKills = (Integer) get("Current Kills");
+		region = (String) get("Region");
 
 		// At this point, constructed() is called.
 	}
@@ -107,6 +109,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		store("Targets", this.targets);
 		store("Quantity", this.quantity);
 		store("Current Kills", this.currentKills);
+		store("Region", region);
 
 		// At this point, deconstructed() is called.
 	}
@@ -155,7 +158,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
 		// If REGION argument specified, check. If not in region, don't count kill!
 		if (region != null) 
-			if (!inRegion(player)) return;
+			if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
 
 		// Check type!
 		if (type == KillType.ENTITY) {
@@ -201,21 +204,6 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		if (currentKills >= quantity) {
 			finish();
 		}
-	}
-
-
-	public boolean inRegion(Player thePlayer) {
-		if (Depends.worldGuard == null) return false;
-		boolean inRegion = false;
-		ApplicableRegionSet currentRegions = Depends.worldGuard.getRegionManager(thePlayer.getWorld()).getApplicableRegions(thePlayer.getLocation());
-		for(ProtectedRegion thisRegion: currentRegions){
-			dB.echoDebug("...checking current player region: " + thisRegion.getId());
-			if (thisRegion.getId().contains(region)) {
-				inRegion = true;
-				dB.echoDebug("...matched region");
-			} 
-		}
-		return inRegion;
 	}
 	
 	@EventHandler

@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemListenerType.ItemType;
+import net.aufdemrand.denizen.utilities.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -26,19 +27,15 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemListenerInstance extends AbstractListener implements Listener {
 
-	ItemType type;
+	ItemType type = null;
 	List<String> items = new ArrayList<String>();
-	int quantity;
-	int currentItems;
-	Server server;
+	int quantity = 0;
+	int currentItems = 0;
+	Server server = Bukkit.getServer();;
+	String region = null;
 	
 	@Override
 	public void onBuild(List<String> args) {
-		type = null;
-		quantity = 0;
-		currentItems = 0;
-		server = Bukkit.getServer();
-		
 		for (String arg : args) {
 			if (aH.matchesValueArg ("TYPE", arg, ArgumentType.Custom)) {
 				try { 
@@ -58,7 +55,10 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 						items.add(thisItem);
 					} else dB.echoError("..." + thisItem + " is not a craftable item");
 				dB.echoDebug("...set ITEMS.: " + Arrays.toString(items.toArray()));
-			}			
+			} else if (aH.matchesValueArg("REGION", arg, ArgumentType.String)) {
+				region = aH.getStringFrom(arg);
+				dB.echoDebug("...region set: " + region);
+			}
 		}
 		
 		if (items.isEmpty()) {
@@ -77,6 +77,10 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	public void listenCraft(CraftItemEvent event) {
 		if (type == ItemType.CRAFT) {
 			if (event.getWhoClicked() == player) {
+				
+				if (region != null) 
+					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+				
 				if (items.contains(event.getCurrentItem().getType().toString()) 
 						|| items.contains(String.valueOf(event.getCurrentItem().getTypeId()))) {
 					if (itemsCrafted.contains(event.getCurrentItem().getTypeId()))
@@ -95,6 +99,10 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	@EventHandler
 	public void listenSmelt(FurnaceSmeltEvent event) {
 		if (type == ItemType.SMELT) {
+
+			if (region != null) 
+				if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+			
 			InventoryClickEvent e = (InventoryClickEvent) player;
 			if (event.getBlock() == e.getCurrentItem()) {
 				if (items.contains(event.getBlock().getType().toString()) 
@@ -116,6 +124,10 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	public void listenFish(PlayerFishEvent event) {
 		if (type == ItemType.FISH) {
 			if (event.getPlayer() == player) {
+
+				if (region != null) 
+					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+				
 				if (items.contains(event.getCaught().getType().toString())) {
 					if (itemsFished.contains(event.getCaught().getType()))
 						return;
@@ -136,6 +148,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			store("Items", this.items);
 			store("Quantity Needed", this.quantity);
 			store("Quantity Done", this.currentItems);
+			store("Region", region);
 		} catch (Exception e) {
 			dB.echoError("Unable to save ITEM listener for '%s'!", player.getName());
 		}
@@ -149,6 +162,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			items = (List<String>) (get("Items"));
 			quantity = (Integer) get("Quantity Needed");
 			currentItems = (Integer) get("Quantity Done");
+			region = (String) get("Region");
 		} catch (Exception e) { 
 			dB.echoError("Unable to load ITEM listener for '%s'!", player.getName());
 			cancel();

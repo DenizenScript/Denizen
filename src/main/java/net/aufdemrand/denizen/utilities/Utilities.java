@@ -77,7 +77,9 @@ public class Utilities {
 	}
 	
 	/*
-	 * Gets a Map of a player's inventory with a bukkit Material and Integer amount for each item. Unlike bukkit's build in getInventory, this will add up the total number of each Material. 
+	 * Gets a Map of a player's inventory with a bukkit Material and Integer amount 
+	 * for each item. Unlike bukkit's build in getInventory, this will add up the 
+	 * total number of each Material. 
 	 *
 	 * @param  thePlayer  the Player whose inventory is being checked.
 	 * @return  returns a Map<Material, Integer>.
@@ -104,7 +106,10 @@ public class Utilities {
 	}
 
 	/*
-	 * Alternate usage that gets a Map of a player's inventory with a String representation of itemID:data and Integer amount for each item. Unlike bukkit's build in getInventory, this will add up the total number of each itemID. 
+	 * Alternate usage that gets a Map of a player's inventory with a 
+	 * String representation of itemID:data and Integer amount for each 
+	 * item. Unlike bukkit's build in getInventory, this will add up 
+	 * the total number of each itemID. 
 	 *
 	 * @param  thePlayer  the Player whose inventory is being checked.
 	 * @return  returns a Map<String, Integer>.
