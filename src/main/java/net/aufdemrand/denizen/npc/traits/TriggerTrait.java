@@ -38,6 +38,9 @@ public class TriggerTrait extends Trait implements Listener {
 
     public TriggerTrait() {
         super("triggers");
+        for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet())
+            if (!enabled.containsKey(triggerName))
+                enabled.put(triggerName, DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().ENABLED_BY_DEFAULT);
     }
 
     public void onSpawn() {
