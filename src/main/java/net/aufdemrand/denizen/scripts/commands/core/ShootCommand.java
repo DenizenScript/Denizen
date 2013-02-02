@@ -43,6 +43,7 @@ public class ShootCommand extends AbstractCommand {
         Integer qty = null;
         Location location = null;
         Boolean ride = false;
+        Boolean burning = false;
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
@@ -62,6 +63,9 @@ public class ShootCommand extends AbstractCommand {
                
             } else if (aH.matchesArg("RIDE, MOUNT", arg)) {
                 ride = true;
+                
+            } else if (aH.matchesArg("BURNING", arg)) {
+                burning = true;
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -73,6 +77,7 @@ public class ShootCommand extends AbstractCommand {
         scriptEntry.addObject("entityType", entityType);
         scriptEntry.addObject("qty", qty);
         scriptEntry.addObject("ride", ride);
+        scriptEntry.addObject("burning", burning);
     }
     
     @Override
@@ -83,6 +88,7 @@ public class ShootCommand extends AbstractCommand {
         Integer qty = (Integer) scriptEntry.getObject("qty");
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
         Boolean ride = (Boolean) scriptEntry.getObject("ride");
+        Boolean burning = (Boolean) scriptEntry.getObject("burning");
         
         //Vector direction = scriptEntry.getNPC().getEyeLocation().getDirection().multiply(2.5);
 
@@ -92,8 +98,9 @@ public class ShootCommand extends AbstractCommand {
         else qty = 1;
         
         Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
-        		Utilities.lookAt(scriptEntry.getNPC().getEyeLocation(), location), entityType);
+        		Utilities.lookAt(scriptEntry.getNPC().getEyeLocation().add(0, 1, 0), location), entityType);
         
+        //scriptEntry.getNPC().teleport(Utilities.lookAt(scriptEntry.getNPC().getLocation(), location));
         entity.teleport(Utilities.lookAt(entity.getLocation(), location));
         
         if (ride == true)
@@ -101,12 +108,15 @@ public class ShootCommand extends AbstractCommand {
         	entity.setPassenger(scriptEntry.getPlayer());
         }
         
+        if (burning == true)
+        {
+        	entity.setFireTicks(500);
+        }
+        
         if (entity instanceof Projectile)
 		{
-			dB.echoApproval("Is instance of projectile!");
+			((Projectile) entity).setShooter(scriptEntry.getNPC().getCitizen().getBukkitEntity());
 		}
-        
-        //entity.setFireTicks(500);
         
         Runnable3 task = new Runnable3<ScriptEntry, Entity, Location>
         				(scriptEntry, entity, location)
@@ -114,7 +124,7 @@ public class ShootCommand extends AbstractCommand {
         					@Override
         					public void run(ScriptEntry scriptEntry, Entity entity, Location location) {
     	        				
-        						if (getRuns() < 40)
+        						if (getRuns() < 40 && entity.isValid())
         						{
         							dB.echoDebug(entity.getType().name() + " flying time " + getRuns() + " in task " + getId());
         							
