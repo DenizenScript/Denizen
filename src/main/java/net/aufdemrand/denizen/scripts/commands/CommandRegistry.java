@@ -114,7 +114,7 @@ public class CommandRegistry implements DenizenRegistry {
         new ListenCommand().activate().as("LISTEN").withOptions(listenHint, 2);
         
         String lookHint = "look [LOCATION:x,y,z,world]";
-        new LookCommand().activate().as(lookHint).withOptions(lookHint, 1);
+        new LookCommand().activate().as("LOOK").withOptions(lookHint, 1);
         
         String lookcloseHint = "lookclose [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)";
         new LookcloseCommand().activate().as("LOOKCLOSE").withOptions(lookcloseHint, 1);
