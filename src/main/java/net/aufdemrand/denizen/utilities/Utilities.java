@@ -1,7 +1,10 @@
 package net.aufdemrand.denizen.utilities;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.Location;
@@ -9,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
 import net.minecraft.server.v1_4_R1.EntityLiving;
 import java.util.*;
@@ -168,13 +172,40 @@ public class Utilities {
 			yaw = yaw + (Math.abs(180 - yaw) * 2);
 		}
 		
+		yaw = yaw - 90;
+		
+		// Normalize Minecraft's weird yaw values
+		if (yaw < 1)
+			yaw = yaw + 360;
+		else if (yaw > 360)
+			yaw = yaw - 360;
+		
 		if (from instanceof LivingEntity)
 		{
 			EntityLiving handle = ((CraftLivingEntity) from).getHandle();
-			handle.yaw = (float) yaw - 90;
+			handle.yaw = (float) yaw;
 			handle.pitch = (float) pitch;
 			handle.az = handle.yaw;
 		}
+		
+		// Special case for arrows, because an arrow's face is its
+		// fletching, not its arrow head
+		else if (from instanceof Arrow)
+		{
+			dB.echoApproval("Got this far!");
+			net.minecraft.server.v1_4_R1.Entity handle = ((CraftEntity) from).getHandle();
+			yaw =  360 - yaw;
+			handle.yaw = (float) yaw;
+			handle.pitch = (float) pitch + 20;
+		}
+		
+		else
+		{
+			net.minecraft.server.v1_4_R1.Entity handle = ((CraftEntity) from).getHandle();
+			handle.yaw = (float) yaw;
+			handle.pitch = (float) pitch;
+		}
+
 	}
 
 	/*
