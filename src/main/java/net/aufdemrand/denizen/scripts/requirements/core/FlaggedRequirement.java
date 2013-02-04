@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.flags.FlagManager.Flag;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class FlaggedRequirement extends AbstractRequirement {
 
@@ -27,7 +28,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 	    boolean outcome = false;
         String name = null;
         String value = "true";
-        String index = null;
+        String index = "";
 		Type type = Type.PLAYER;
 		
 		for(String arg: args) {
@@ -42,8 +43,8 @@ public class FlaggedRequirement extends AbstractRequirement {
                 
                 if (flagArgs[0].contains("["))
                 {
-                	value = flagArgs[0].split("\\[", 2)[0].trim();
-                	index = flagArgs[0].split("\\[", 2)[0].split("\\]", 2)[0].trim();
+                	name = flagArgs[0].split("\\[", 2)[0].trim();
+                	index = flagArgs[0].split("\\[", 2)[1].split("\\]", 2)[0].trim();
                 }
                 else
                 {
@@ -57,7 +58,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 
 		FlagManager flagMng = DenizenAPI.getCurrentInstance().flagManager();
 		Flag flag = null;
-        String player = context.getPlayer().toString();
+        String player = context.getPlayer().getName();
 		
         switch (type) {
         case NPC:
@@ -70,11 +71,21 @@ public class FlaggedRequirement extends AbstractRequirement {
             flag = flagMng.getGlobalFlag(name);
             break;
         }
-		
-        if (index == null && flag.getLast().asString().equalsIgnoreCase(value))
-        	outcome = true;
-        else if (flag.get(Integer.parseInt(index)).asString().equalsIgnoreCase(value))
-        	outcome = true;
+        
+        if (index.length() == 0)
+        {
+        	if (flag.getLast().asString().equalsIgnoreCase(value))
+        		outcome = true;
+        	else
+        		dB.echoDebug("... does not match '%s'.", flag.getLast().asString());
+        }
+        else if (index.matches("\\d+"))
+        {
+        	if (flag.get(Integer.parseInt(index)).asString().equalsIgnoreCase(value))
+        		outcome = true;
+        	else
+        		dB.echoDebug("... does not match '%s'.", flag.get(Integer.parseInt(index)).asString());
+        }
 		
     	return outcome;
 	}

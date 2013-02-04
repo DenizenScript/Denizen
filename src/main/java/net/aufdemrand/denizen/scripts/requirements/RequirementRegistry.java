@@ -58,7 +58,7 @@ public class RequirementRegistry implements DenizenRegistry {
 	@Override
     public void registerCoreMembers() {
         registerCoreMember(EnchantedRequirement.class, "ENCHANTED", "enchanted (ITEMINHAND)", 1);
-        registerCoreMember(FlaggedRequirement.class, "FLAGGED", "flagged T.B.D.", 0);
+        registerCoreMember(FlaggedRequirement.class, "FLAGGED", "(-)flagged [PLAYER|NPC|GLOBAL] [NAME([#])](:VALUE)", 0);
         registerCoreMember(HoldingRequirement.class, "HOLDING", "holding [ITEMNAME]", 1);
         registerCoreMember(InGroupRequirement.class, "INGROUP", "ingroup [GROUP]", 1);
         registerCoreMember(ItemRequirement.class, "ITEM", "item [ITEM] (QTY:#)", 1);
