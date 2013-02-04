@@ -71,9 +71,9 @@ public class FlaggedRequirement extends AbstractRequirement {
             break;
         }
 		
-        if (index == null && flag.getLast().asString() == value)
+        if (index == null && flag.getLast().asString().equalsIgnoreCase(value))
         	outcome = true;
-        else if (flag.get(Integer.parseInt(index)).asString() == value)
+        else if (flag.get(Integer.parseInt(index)).asString().equalsIgnoreCase(value))
         	outcome = true;
 		
     	return outcome;
