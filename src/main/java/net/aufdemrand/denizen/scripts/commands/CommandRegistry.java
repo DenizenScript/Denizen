@@ -46,17 +46,26 @@ public class CommandRegistry implements DenizenRegistry {
 
 	@Override
 	public void registerCoreMembers() {
-        registerCoreMember(AnnounceCommand.class, "ANNOUNCE", "announce ['announcement text']", 1);
-        registerCoreMember(AttackCommand.class, "ATTACK", "attack (STOP)", 0);
-        registerCoreMember(AssignmentCommand.class, "ASSIGNMENT", "assignment [{SET}|REMOVE] (SCRIPT:assignment_script)", 1);
-		
-        registerCoreMember(CastCommand.class, "CAST",
-            "cast [potion_effect_type] (duration:#{60s}) (power:#{1}) (target(s):npc|player|npc.#|player.player_name|entity_name)", 1);
-        registerCoreMember(ChatCommand.class, "CHAT",
-            "chat ['message to chat'] (npcid:#) (target(s):npc.#|player.player_name{attached player})", 1);
-        registerCoreMember(ClearCommand.class, "CLEAR", "clear [QUEUE:queue_type] (...)", 1);
-        registerCoreMember(CooldownCommand.class, "COOLDOWN",
-            "cooldown (duration:#{60s}) (global|{player:player_name}) (script:script_name{)", 1);
+        registerCoreMember(AnnounceCommand.class, 
+        		"ANNOUNCE", "announce ['announcement text']", 1);
+        
+        registerCoreMember(AttackCommand.class, 
+        		"ATTACK", "attack (STOP)", 0);
+        
+        registerCoreMember(AssignmentCommand.class, 
+        		"ASSIGNMENT", "assignment [{SET}|REMOVE] (SCRIPT:assignment_script)", 1);
+        
+        registerCoreMember(CastCommand.class, 
+        		"CAST", "cast [potion_effect_type] (duration:#{60s}) (power:#{1}) (target(s):npc|player|npc.#|player.player_name|entity_name)", 1);
+        
+        registerCoreMember(ChatCommand.class, 
+        		"CHAT", "chat ['message to chat'] (npcid:#) (target(s):npc.#|player.player_name{attached player})", 1);
+        
+        registerCoreMember(ClearCommand.class, 
+        		"CLEAR", "clear [QUEUE:queue_type] (...)", 1);
+        
+        registerCoreMember(CooldownCommand.class, 
+        		"COOLDOWN", "cooldown (duration:#{60s}) (global|{player:player_name}) (script:script_name{)", 1);
 		
         registerCoreMember(DetermineCommand.class, "DETERMINE", "determine [TRUE|FALSE]", 1);
         registerCoreMember(DisengageCommand.class, "DISENGAGE", "disengage (NPCID:#)", 0);
