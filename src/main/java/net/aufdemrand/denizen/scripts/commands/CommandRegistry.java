@@ -134,7 +134,7 @@ public class CommandRegistry implements DenizenRegistry {
         String randomHint = "random [#]";
         new RandomCommand().activate ().as("RANDOM").withOptions(randomHint, 1);
 
-        String shootHint = "shoot [ENTITY:entity] (RIDE) (BURNING) (LOCATION:location)";
+        String shootHint = "shoot [ENTITY:entity] (RIDE) (BURN) (EXPLODE) (LOCATION:location)";
         new ShootCommand().activate().as("SHOOT").withOptions(shootHint, 1);
 
         String switchHint = "switch [LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)";

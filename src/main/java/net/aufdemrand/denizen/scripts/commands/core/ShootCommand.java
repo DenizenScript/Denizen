@@ -35,6 +35,7 @@ public class ShootCommand extends AbstractCommand {
         Location location = null;
         Boolean ride = false;
         Boolean burn = false;
+        Boolean explode = false;
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
@@ -58,6 +59,10 @@ public class ShootCommand extends AbstractCommand {
             } else if (aH.matchesArg("BURN, BURNING", arg)) {
                 burn = true;
                 dB.echoDebug("...will burn.");
+               
+            } else if (aH.matchesArg("EXPLODE, EXPLODING", arg)) {
+                explode = true;
+                dB.echoDebug("...will explode.");
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -69,6 +74,7 @@ public class ShootCommand extends AbstractCommand {
         scriptEntry.addObject("entityType", entityType);
         scriptEntry.addObject("ride", ride);
         scriptEntry.addObject("burn", burn);
+        scriptEntry.addObject("explode", explode);
     }
     
     @Override
@@ -133,14 +139,18 @@ public class ShootCommand extends AbstractCommand {
         				if (Math.abs(v2.getBlockX() - v1.getBlockX()) < 2 && Math.abs(v2.getBlockY() - v1.getBlockY()) < 2
         				&& Math.abs(v2.getBlockZ() - v1.getBlockZ()) < 2)
         				{
-        					this.cancel();
-        					clearRuns();
+        					setRuns(40);
         				}
         			}
         			else
         			{
         				this.cancel();
         				clearRuns();
+
+        				if ((Boolean) scriptEntry.getObject("explode"))
+        				{
+        					entity.getWorld().createExplosion(entity.getLocation(), 4);
+        				}
         			}
         		}
        		};
