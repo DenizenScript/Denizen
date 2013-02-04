@@ -57,24 +57,59 @@ public class RequirementRegistry implements DenizenRegistry {
 
 	@Override
     public void registerCoreMembers() {
-        registerCoreMember(EnchantedRequirement.class, "ENCHANTED", "enchanted (ITEMINHAND)", 1);
-        registerCoreMember(FlaggedRequirement.class, "FLAGGED", "(-)flagged [PLAYER|NPC|GLOBAL] [NAME([#])](:VALUE)", 0);
-        registerCoreMember(HoldingRequirement.class, "HOLDING", "holding [ITEMNAME]", 1);
-        registerCoreMember(InGroupRequirement.class, "INGROUP", "ingroup [GROUP]", 1);
-        registerCoreMember(ItemRequirement.class, "ITEM", "item [ITEM] (QTY:#)", 1);
-        registerCoreMember(LiquidRequirement.class, "ISLIQUID", "isliquid [LOCATION:x,y,z,world]", 1);
-        registerCoreMember(MoneyRequirement.class, "MONEY", "money [QTY:#]", 1);
-        registerCoreMember(OpRequirement.class, "OP", "op (no args)", 0);
-        registerCoreMember(OwnerRequirement.class, "OWNER", "owner (no args)", 0);
-        registerCoreMember(PermissionRequirement.class, "PERMISSION", "permission [PERMISSION]", 1);
-        registerCoreMember(PoweredRequirement.class, "ISPOWERED", "ispowered [LOCATION:x,y,z,world]", 1);
-        registerCoreMember(ProcedureRequirement.class, "PROCEDURE", "procedure [SCRIPT:procedure_script]", 1);
-        registerCoreMember(ScriptRequirement.class, "SCRIPT", "script T.B.D.", 0);
-        registerCoreMember(SneakingRequirement.class, "SNEAKING", "sneaking (no args)", 0);
-        registerCoreMember(StormRequirement.class, "STORMING", "storm (no args)", 0);
-        registerCoreMember(SunnyRequirement.class, "SUNNY", "sunny (no args)", 0);
-        registerCoreMember(TimeRequirement.class, "TIME", "time [DAWN, DAY, DUSK, NIGHT]", 1);
-        registerCoreMember(WorldGuardRegionRequirement.class, "INREGION", "inregion [NAME:regionname]", 1);
+        registerCoreMember(EnchantedRequirement.class, 
+        		"ENCHANTED", "enchanted (ITEMINHAND)", 1);
+        
+        registerCoreMember(FlaggedRequirement.class, 
+        		"FLAGGED", "(-)flagged [PLAYER|NPC|GLOBAL] [NAME([#])](:VALUE)", 0);
+        
+        registerCoreMember(HoldingRequirement.class, 
+        		"HOLDING", "holding [ITEMNAME]", 1);
+        
+        registerCoreMember(InGroupRequirement.class, 
+        		"INGROUP", "ingroup [GROUP]", 1);
+        
+        registerCoreMember(ItemRequirement.class, 
+        		"ITEM", "item [ITEM] (QTY:#)", 1);
+        
+        registerCoreMember(LiquidRequirement.class, 
+        		"ISLIQUID", "isliquid [LOCATION:x,y,z,world]", 1);
+        
+        registerCoreMember(MoneyRequirement.class, 
+        		"MONEY", "money [QTY:#]", 1);
+        
+        registerCoreMember(OpRequirement.class, 
+        		"OP", "op (no args)", 0);
+        
+        registerCoreMember(OwnerRequirement.class, 
+        		"OWNER", "owner (no args)", 0);
+        
+        registerCoreMember(PermissionRequirement.class, 
+        		"PERMISSION", "permission [PERMISSION]", 1);
+        
+        registerCoreMember(PoweredRequirement.class, 
+        		"ISPOWERED", "ispowered [LOCATION:x,y,z,world]", 1);
+        
+        registerCoreMember(ProcedureRequirement.class, 
+        		"PROCEDURE", "procedure [SCRIPT:procedure_script]", 1);
+        
+        registerCoreMember(ScriptRequirement.class, 
+        		"SCRIPT", "script T.B.D.", 0);
+        
+        registerCoreMember(SneakingRequirement.class, 
+        		"SNEAKING", "sneaking (no args)", 0);
+        
+        registerCoreMember(StormRequirement.class, 
+        		"STORMING", "storm (no args)", 0);
+        
+        registerCoreMember(SunnyRequirement.class, 
+        		"SUNNY", "sunny (no args)", 0);
+        
+        registerCoreMember(TimeRequirement.class, 
+        		"TIME", "time [DAWN, DAY, DUSK, NIGHT]", 1);
+        
+        registerCoreMember(WorldGuardRegionRequirement.class, 
+        		"INREGION", "inregion [NAME:regionname]", 1);
 
         dB.echoApproval("Loaded core requirements: " + instances.keySet().toString());
     }

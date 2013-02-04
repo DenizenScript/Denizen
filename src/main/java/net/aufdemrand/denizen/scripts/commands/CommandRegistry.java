@@ -67,60 +67,104 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(CooldownCommand.class, 
         		"COOLDOWN", "cooldown (duration:#{60s}) (global|{player:player_name}) (script:script_name{)", 1);
 		
-        registerCoreMember(DetermineCommand.class, "DETERMINE", "determine [TRUE|FALSE]", 1);
-        registerCoreMember(DisengageCommand.class, "DISENGAGE", "disengage (NPCID:#)", 0);
-        registerCoreMember(DropCommand.class, "DROP", "drop [ITEM:item|EXP] (QTY:#) (LOCATION:location)", 1);
+        registerCoreMember(DetermineCommand.class, 
+        		"DETERMINE", "determine [TRUE|FALSE]", 1);
+        
+        registerCoreMember(DisengageCommand.class, 
+        		"DISENGAGE", "disengage (NPCID:#)", 0);
+        
+        registerCoreMember(DropCommand.class, 
+        		"DROP", "drop [ITEM:item|EXP] (QTY:#) (LOCATION:location)", 1);
 		
-        registerCoreMember(EngageCommand.class, "ENGAGE", "engage (DURATION:#) (NPCID:#)", 0);
-        registerCoreMember(ExecuteCommand.class, "EXECUTE", "execute [AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']", 2);
+        registerCoreMember(EngageCommand.class, 
+        		"ENGAGE", "engage (DURATION:#) (NPCID:#)", 0);
+        
+        registerCoreMember(ExecuteCommand.class, 
+        		"EXECUTE", "execute [AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']", 2);
 		
-        registerCoreMember(FailCommand.class, "FAIL", "fail (PLAYER:player_name)", 0);
-        registerCoreMember(FeedCommand.class, "FEED", "feed (AMT:#) (TARGET:NPC|PLAYER)", 0);
-        registerCoreMember(FinishCommand.class, "FINISH", "finish (PLAYER:player_name)", 0);
-        registerCoreMember(FlagCommand.class, "FLAG", "flag (DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]", 1);
-        registerCoreMember(FollowCommand.class, "FOLLOW", "follow (STOP)", 0);
+        registerCoreMember(FailCommand.class, 
+        		"FAIL", "fail (PLAYER:player_name)", 0);
+        
+        registerCoreMember(FeedCommand.class, 
+        		"FEED", "feed (AMT:#) (TARGET:NPC|PLAYER)", 0);
+        
+        registerCoreMember(FinishCommand.class, 
+        		"FINISH", "finish (PLAYER:player_name)", 0);
+        
+        registerCoreMember(FlagCommand.class, 
+        		"FLAG", "flag (DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]", 1);
+        
+        registerCoreMember(FollowCommand.class, 
+        		"FOLLOW", "follow (STOP)", 0);
 		
-        registerCoreMember(GiveCommand.class, "GIVE", "give [MONEY|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);
+        registerCoreMember(GiveCommand.class, 
+        		"GIVE", "give [MONEY|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);
 		
-        registerCoreMember(HealCommand.class, "HEAL", "heal (AMT:#) (TARGET:NPC|PLAYER)", 0);
+        registerCoreMember(HealCommand.class, 
+        		"HEAL", "heal (AMT:#) (TARGET:NPC|PLAYER)", 0);
 		
-        registerCoreMember(IfCommand.class, "IF",
-            "if (!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
+        registerCoreMember(IfCommand.class, 
+        		"IF", "if (!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
 		
-        registerCoreMember(ListenCommand.class, "LISTEN",
-            "listen [Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation.", 2);
-        registerCoreMember(LookCommand.class, "LOOK", "look [LOCATION:x,y,z,world]", 1);
-        registerCoreMember(LookcloseCommand.class, "LOOKCLOSE", "lookclose [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)", 1);
+        registerCoreMember(ListenCommand.class, 
+        		"LISTEN", "listen [Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation.", 2);
+        
+        registerCoreMember(LookCommand.class, 
+        		"LOOK", "look [LOCATION:x,y,z,world]", 1);
+        
+        registerCoreMember(LookcloseCommand.class, 
+        		"LOOKCLOSE", "lookclose [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)", 1);
 		
-        registerCoreMember(ModifyBlockCommand.class, "MODIFYBLOCK",
-            "modifyblock [LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)", 2);
+        registerCoreMember(ModifyBlockCommand.class, 
+        		"MODIFYBLOCK", "modifyblock [LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)", 2);
 		
-        registerCoreMember(NameplateCommand.class, "NAMEPLATE", "nameplate [COLOR] (PLAYER)", 1);
-        registerCoreMember(NarrateCommand.class, "NARRATE", "narrate (PLAYER:player_name) ['Text to narrate']", 1);
-        registerCoreMember(NewCommand.class, "NEW", "new ITEMSTACK [ITEM:item] (QTY:qty)", 2);
+        registerCoreMember(NameplateCommand.class, 
+        		"NAMEPLATE", "nameplate [COLOR] (PLAYER)", 1);
+        
+        registerCoreMember(NarrateCommand.class, 
+        		"NARRATE", "narrate (PLAYER:player_name) ['Text to narrate']", 1);
+        
+        registerCoreMember(NewCommand.class, 
+        		"NEW", "new ITEMSTACK [ITEM:item] (QTY:qty)", 2);
 		
-        registerCoreMember(PlaySoundCommand.class, "PLAYSOUND", "playsound [LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)", 2);
+        registerCoreMember(PlaySoundCommand.class, 
+        		"PLAYSOUND", "playsound [LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)", 2);
 		
-        registerCoreMember(RandomCommand.class, "RANDOM", "random [#]", 1);
-        registerCoreMember(RuntaskCommand.class, "RUNTASK",
-            "runtask (id:id_name{script_name}) [script:script_name] (instant|queue:queue_type{player_task}) (delay:#{0})", 1);
+        registerCoreMember(RandomCommand.class, 
+        		"RANDOM", "random [#]", 1);
+        
+        registerCoreMember(RuntaskCommand.class, 
+        		"RUNTASK", "runtask (id:id_name{script_name}) [script:script_name] (instant|queue:queue_type{player_task}) (delay:#{0})", 1);
 		
-        registerCoreMember(ScribeCommand.class, "SCRIBE",
-            "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
-        registerCoreMember(ShootCommand.class, "SHOOT", "shoot [ENTITY:entity] (RIDE) (BURN) (EXPLODE) (FIREWORKS) (LOCATION:location)", 1);
-        registerCoreMember(StrikeCommand.class, "STRIKE", "strike (no_damage) [location:x,y,z,world]", 1);
-        registerCoreMember(SwitchCommand.class, "SWITCH", "switch [LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
+        registerCoreMember(ScribeCommand.class, 
+        		"SCRIBE", "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
+        
+        registerCoreMember(ShootCommand.class, 
+        		"SHOOT", "shoot [ENTITY:entity] (RIDE) (BURN) (EXPLODE) (FIREWORKS) (LOCATION:location)", 1);
+        
+        registerCoreMember(StrikeCommand.class, 
+        		"STRIKE", "strike (no_damage) [location:x,y,z,world]", 1);
+        
+        registerCoreMember(SwitchCommand.class, 
+        		"SWITCH", "switch [LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
 		
-        registerCoreMember(TakeCommand.class, "TAKE", "take [MONEY|ITEMINHAND|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);
-        registerCoreMember(TeleportCommand.class, "TELEPORT", "teleport (NPC) [LOCATION:x,y,z,world] (TARGETS:[NPC.#]|[PLAYER.PlayerName])", 1);
-        registerCoreMember(TriggerCommand.class, "TRIGGER", "trigger [NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
+        registerCoreMember(TakeCommand.class, 
+        		"TAKE", "take [MONEY|ITEMINHAND|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);
+        
+        registerCoreMember(TeleportCommand.class, 
+        		"TELEPORT", "teleport (NPC) [LOCATION:x,y,z,world] (TARGETS:[NPC.#]|[PLAYER.PlayerName])", 1);
+        
+        registerCoreMember(TriggerCommand.class, 
+        		"TRIGGER", "trigger [NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
 		
-        registerCoreMember(VulnerableCommand.class, "VULNERABLE", "vulnerable (toggle:{true}|false|toggle)", 0);
+        registerCoreMember(VulnerableCommand.class, 
+        		"VULNERABLE", "vulnerable (toggle:{true}|false|toggle)", 0);
 		
-        registerCoreMember(WaitCommand.class, "WAIT",
-            "wait (duration:#{5s}) (queue:queue_type) (player:player_name{attached}) (npcid:#{attached})", 0);
+        registerCoreMember(WaitCommand.class, 
+        		"WAIT", "wait (duration:#{5s}) (queue:queue_type) (player:player_name{attached}) (npcid:#{attached})", 0);
 
-        registerCoreMember(ZapCommand.class, "ZAP", "zap [#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})", 0);
+        registerCoreMember(ZapCommand.class, 
+        		"ZAP", "zap [#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})", 0);
 
         dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
 	}
