@@ -3,72 +3,78 @@ package net.aufdemrand.denizen.scripts.requirements.core;
 import java.util.List;
 
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
+
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.flags.FlagManager.Flag;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-
-import net.citizensnpcs.api.npc.NPC;
-
-import org.bukkit.entity.Player;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 
 public class FlaggedRequirement extends AbstractRequirement {
 
-	/* FLAGGED [TYPE:FLAG_NAME]
-	 * Example: FLAGGED PLAYER:heHazCookiez
+	/* FLAGGED TYPE FLAG:value
+	 * Example: FLAGGED PLAYER Cookies:3
 	 * 
 	 * Arguments: [] - Required, () - Optional
 	 */
     
-    private enum FlagType { GLOBAL, NPC, PLAYER }
+    private enum Type { GLOBAL, NPC, PLAYER }
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 
 	    boolean outcome = false;
-		
-		FlagType type = null;
-		String flag = "";
+        String name = null;
+        String value = "true";
+        String index = null;
+		Type type = Type.PLAYER;
 		
 		for(String arg: args) {
-			String[] flagList = arg.split(":");
 			
-			if(flagList.length < 2) continue;
+			if (aH.matchesArg("GLOBAL, NPC, DENIZEN, GLOBAL", arg))
+				type = Type.valueOf(arg.toUpperCase().replace("DENIZEN", "NPC"));
 			
-			String typeName = flagList[0].toUpperCase();
+            else if (arg.split(":", 2).length > 1)
+            {
+                String[] flagArgs = arg.split(":");
+                value = flagArgs[1].toUpperCase();
+                
+                if (flagArgs[0].contains("["))
+                {
+                	value = flagArgs[0].split("\\[", 2)[0].trim();
+                	index = flagArgs[0].split("\\[", 2)[0].split("\\]", 2)[0].trim();
+                }
+                else
+                {
+                	name = flagArgs[0].toUpperCase();
+                }
+            }
 			
-			if(typeName.startsWith("P")) // PLAYER flag
-				type = FlagType.PLAYER;
-			else if(typeName.startsWith("N")) // NPC flag
-				type = FlagType.NPC;
-			else if(typeName.startsWith("G")) // GLOBAL flag
-				type = FlagType.GLOBAL;
-			
-			flag = arg.substring(typeName.length() + 1, arg.length());
+            else
+            	name = arg.toUpperCase();
 		}
 
 		FlagManager flagMng = DenizenAPI.getCurrentInstance().flagManager();
+		Flag flag = null;
+        String player = context.getPlayer().toString();
 		
-		switch(type) {
-			case PLAYER:
-				Player player = context.getPlayer();
-				
-				if(player != null)
-					outcome = flagMng.getPlayerFlag(player.getName(), flag).size() > 0;
-				
-				break;
-				
-			case NPC:
-				NPC npc = context.getNPC();
-				
-				if(npc != null)
-					outcome = flagMng.getNPCFlag(npc.getId(), flag).size() > 0;
-					
-				break;
-				
-			case GLOBAL:
-				outcome = flagMng.getGlobalFlag(flag).size() > 0;
-		}
+        switch (type) {
+        case NPC:
+            flag = flagMng.getNPCFlag(context.getNPC().getId(), name);
+            break;
+        case PLAYER:
+            flag = flagMng.getPlayerFlag(player, name);
+            break;
+        case GLOBAL:
+            flag = flagMng.getGlobalFlag(name);
+            break;
+        }
+		
+        if (index == null && flag.getLast().asString() == value)
+        	outcome = true;
+        else if (flag.get(Integer.parseInt(index)).asString() == value)
+        	outcome = true;
 		
     	return outcome;
 	}
