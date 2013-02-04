@@ -12,9 +12,14 @@ import net.aufdemrand.denizen.utilities.runnables.Runnable3;
 import net.aufdemrand.denizen.utilities.Utilities;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Projectile;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
 /**
@@ -36,6 +41,7 @@ public class ShootCommand extends AbstractCommand {
         Boolean ride = false;
         Boolean burn = false;
         Boolean explode = false;
+        Boolean fireworks = false;
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
@@ -63,6 +69,10 @@ public class ShootCommand extends AbstractCommand {
             } else if (aH.matchesArg("EXPLODE, EXPLODING", arg)) {
                 explode = true;
                 dB.echoDebug("...will explode.");
+                
+            } else if (aH.matchesArg("FIREWORKS", arg)) {
+                fireworks = true;
+                dB.echoDebug("...will launch fireworks.");
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -75,6 +85,7 @@ public class ShootCommand extends AbstractCommand {
         scriptEntry.addObject("ride", ride);
         scriptEntry.addObject("burn", burn);
         scriptEntry.addObject("explode", explode);
+        scriptEntry.addObject("fireworks", fireworks);
     }
     
     @Override
@@ -128,7 +139,7 @@ public class ShootCommand extends AbstractCommand {
         			if (getRuns() < 40 && entity.isValid())
         			{
         				//dB.echoDebug(entity.getType().name() + " flying time " + getRuns() + " in task " + getId());
-        							
+
         				Vector v1 = entity.getLocation().toVector().clone();
         				Vector v2 = location.toVector().clone();
         				Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
@@ -147,10 +158,19 @@ public class ShootCommand extends AbstractCommand {
         				this.cancel();
         				clearRuns();
 
+        				if ((Boolean) scriptEntry.getObject("fireworks"))
+        				{
+        					Firework firework = entity.getWorld().spawn(entity.getLocation(), Firework.class);
+        			        FireworkMeta fireworkMeta = (FireworkMeta) firework.getFireworkMeta();
+        			        fireworkMeta.addEffects(FireworkEffect.builder().withColor(Color.YELLOW).with(Type.STAR).build());
+        			        fireworkMeta.setPower(2);
+        			        firework.setFireworkMeta(fireworkMeta);
+        				}
         				if ((Boolean) scriptEntry.getObject("explode"))
         				{
         					entity.getWorld().createExplosion(entity.getLocation(), 4);
         				}
+        				
         			}
         		}
        		};
