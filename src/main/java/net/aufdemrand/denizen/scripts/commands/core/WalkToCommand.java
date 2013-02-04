@@ -54,9 +54,11 @@ public class WalkToCommand extends AbstractCommand {
 				continue;
 				
 			} else if (aH.matchesArg("RETURN", arg)) {
-				location = returns.get(scriptEntry.getNPC());
-				returning = true;
-				dB.echoDebug("...arg.returning to previous location");
+				if (returns.containsKey(scriptEntry.getNPC())) {
+					location = returns.get(scriptEntry.getNPC());
+					returning = true;
+					dB.echoDebug("...arg.returning to previous location");
+				} else dB.echoDebug("...no return location stored!");
 				continue;
 				
 			} else if (aH.matchesValueArg("SPEED, S", arg, ArgumentType.Float)) {
@@ -65,7 +67,9 @@ public class WalkToCommand extends AbstractCommand {
 					dB.echoDebug("... speed set: " + speed);
 				} catch (Exception e) {
 					dB.echoDebug("... Invalid Speed!");
-				}	
+				}
+				continue;
+				
 			} else throw new InvalidArgumentsException ("Invalid argument specified!");
 			
 		}

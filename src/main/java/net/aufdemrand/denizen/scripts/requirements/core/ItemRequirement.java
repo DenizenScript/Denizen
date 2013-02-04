@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ItemRequirement extends AbstractRequirement {
 	
-	Integer quantity = 0;
+	Integer quantity = 1;
 	ItemStack item = null;
 	
 	@Override
@@ -29,10 +29,15 @@ public class ItemRequirement extends AbstractRequirement {
 				dB.echoDebug("...ITEM set");
 				continue;
 				
+			} else if (aH.matchesItem("item:" + arg)) {
+				item = aH.getItemFrom("item:" + arg);
+				dB.echoDebug("...ITEM set");
+				continue;
+				
 			} else throw new RequirementCheckException ("Invalid argument specified!");
 		}
 		
-		if (context.getPlayer().getInventory().contains(item)) {
+		if (context.getPlayer().getInventory().containsAtLeast(item, quantity)) {
 			dB.echoDebug("...player has item");
 			return true;
 		} else {

@@ -75,7 +75,7 @@ public class RequirementRegistry implements DenizenRegistry {
         String liquidHint = "(-)islquid [LOCATION:x,y,z,world]";
         new LiquidRequirement().activate().as("ISLIQUID").withOptions(liquidHint, 1);
 		
-        String itemHint = "(-)item [ITEM:item] (QTY:#)";
+        String itemHint = "(-)item [ITEM] (QTY:#)";
         new ItemRequirement().activate().as("ITEM").withOptions(itemHint, 1);
         
         String moneyHint = "(-)money [QTY:#]";
