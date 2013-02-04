@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.trait.Owner;
 import net.minecraft.server.v1_4_R1.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -78,6 +79,10 @@ public class dNPC {
 
 	public boolean isSpawned() {
 		return getCitizen().isSpawned();
+	}
+	
+	public String getOwner() {
+		return getCitizen().getTrait(Owner.class).getOwner();
 	}
 
 	public Location getLocation() {
