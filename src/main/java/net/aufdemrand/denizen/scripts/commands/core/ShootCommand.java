@@ -131,7 +131,7 @@ public class ShootCommand extends AbstractCommand {
         							
         							Vector v1 = entity.getLocation().toVector().clone();
         							Vector v2 = location.toVector().clone();
-        							Vector v3 = v2.clone().subtract(v1).normalize().multiply(1);
+        							Vector v3 = v2.clone().subtract(v1).normalize().multiply(2);
         							
         							entity.setVelocity(v3);
         							addRuns();
@@ -151,7 +151,7 @@ public class ShootCommand extends AbstractCommand {
         					}
         				};
         
-        task.setId(Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, task, 2, 2));        
+        task.setId(Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, task, 0, 2));        
         }
     
 

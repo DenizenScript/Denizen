@@ -192,7 +192,6 @@ public class Utilities {
 		// fletching, not its arrow head
 		else if (from instanceof Arrow)
 		{
-			dB.echoApproval("Got this far!");
 			net.minecraft.server.v1_4_R1.Entity handle = ((CraftEntity) from).getHandle();
 			yaw =  360 - yaw;
 			handle.yaw = (float) yaw;
