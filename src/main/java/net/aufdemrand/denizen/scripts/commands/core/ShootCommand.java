@@ -34,7 +34,7 @@ public class ShootCommand extends AbstractCommand {
         Integer qty = null;
         Location location = null;
         Boolean ride = false;
-        Boolean burning = false;
+        Boolean burn = false;
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
@@ -45,18 +45,19 @@ public class ShootCommand extends AbstractCommand {
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesEntityType(arg)) {
                 entityType = aH.getEntityFrom(arg);
-
-            } else if (aH.matchesQuantity(arg)) {
-                qty = aH.getIntegerFrom(arg);
+                dB.echoDebug("...entity set to '%s'.", arg);
 
             } else if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
+                dB.echoDebug("...location set to '%s'.", arg);
 
             } else if (aH.matchesArg("RIDE, MOUNT", arg)) {
                 ride = true;
+                dB.echoDebug("...will be mounted.");
                 
-            } else if (aH.matchesArg("BURNING", arg)) {
-                burning = true;
+            } else if (aH.matchesArg("BURN, BURNING", arg)) {
+                burn = true;
+                dB.echoDebug("...will burn.");
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -66,9 +67,8 @@ public class ShootCommand extends AbstractCommand {
         // Stash objects
         scriptEntry.addObject("location", location);
         scriptEntry.addObject("entityType", entityType);
-        scriptEntry.addObject("qty", qty);
         scriptEntry.addObject("ride", ride);
-        scriptEntry.addObject("burning", burning);
+        scriptEntry.addObject("burn", burn);
     }
     
     @Override
@@ -76,15 +76,9 @@ public class ShootCommand extends AbstractCommand {
         // Get objects
     	
         Location location = (Location) scriptEntry.getObject("location");
-        Integer qty = (Integer) scriptEntry.getObject("qty");
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
         Boolean ride = (Boolean) scriptEntry.getObject("ride");
-        Boolean burning = (Boolean) scriptEntry.getObject("burning");
-
-        // Set quantity if not specified
-        if (qty != null && entityType != null)
-            qty = 1;
-        else qty = 1;
+        Boolean burn = (Boolean) scriptEntry.getObject("burn");
         
         if (location == null)
         {
@@ -109,7 +103,7 @@ public class ShootCommand extends AbstractCommand {
         	entity.setPassenger(scriptEntry.getPlayer());
         }
         
-        if (burning == true)
+        if (burn == true)
         {
         	entity.setFireTicks(500);
         }
@@ -121,38 +115,38 @@ public class ShootCommand extends AbstractCommand {
         
         Runnable3 task = new Runnable3<ScriptEntry, Entity, Location>
         				(scriptEntry, entity, location)
-        				{
-        					@Override
-        					public void run(ScriptEntry scriptEntry, Entity entity, Location location) {
+        	{
+        		@Override
+        		public void run(ScriptEntry scriptEntry, Entity entity, Location location) {
     	        				
-        						if (getRuns() < 40 && entity.isValid())
-        						{
-        							//dB.echoDebug(entity.getType().name() + " flying time " + getRuns() + " in task " + getId());
+        			if (getRuns() < 40 && entity.isValid())
+        			{
+        				//dB.echoDebug(entity.getType().name() + " flying time " + getRuns() + " in task " + getId());
         							
-        							Vector v1 = entity.getLocation().toVector().clone();
-        							Vector v2 = location.toVector().clone();
-        							Vector v3 = v2.clone().subtract(v1).normalize().multiply(2);
+        				Vector v1 = entity.getLocation().toVector().clone();
+        				Vector v2 = location.toVector().clone();
+        				Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
         							
-        							entity.setVelocity(v3);
-        							addRuns();
+        				entity.setVelocity(v3);
+        				addRuns();
         						
-        							if (Math.abs(v2.getBlockX() - v1.getBlockX()) < 2 && Math.abs(v2.getBlockY() - v1.getBlockY()) < 2
-        									&& Math.abs(v2.getBlockZ() - v1.getBlockZ()) < 2)
-        							{
-        								this.cancel();
-        								clearRuns();
-        							}
-        						}
-        						else
-        						{
-        							this.cancel();
-        							clearRuns();
-        						}
-        					}
-        				};
+        				if (Math.abs(v2.getBlockX() - v1.getBlockX()) < 2 && Math.abs(v2.getBlockY() - v1.getBlockY()) < 2
+        				&& Math.abs(v2.getBlockZ() - v1.getBlockZ()) < 2)
+        				{
+        					this.cancel();
+        					clearRuns();
+        				}
+        			}
+        			else
+        			{
+        				this.cancel();
+        				clearRuns();
+        			}
+        		}
+       		};
         
         task.setId(Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, task, 0, 2));        
-        }
+    }
     
 
 }

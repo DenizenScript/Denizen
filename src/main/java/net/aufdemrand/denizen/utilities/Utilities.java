@@ -171,37 +171,18 @@ public class Utilities {
 		if (zDiff < 0.0) {
 			yaw = yaw + (Math.abs(180 - yaw) * 2);
 		}
-		
-		yaw = yaw - 90;
-		
-		// Normalize Minecraft's weird yaw values
-		if (yaw < 1)
-			yaw = yaw + 360;
-		else if (yaw > 360)
-			yaw = yaw - 360;
-		
+				
 		if (from instanceof LivingEntity)
 		{
 			EntityLiving handle = ((CraftLivingEntity) from).getHandle();
-			handle.yaw = (float) yaw;
+			handle.yaw = (float) yaw - 90;
 			handle.pitch = (float) pitch;
 			handle.az = handle.yaw;
 		}
-		
-		// Special case for arrows, because an arrow's face is its
-		// fletching, not its arrow head
-		else if (from instanceof Arrow)
-		{
-			net.minecraft.server.v1_4_R1.Entity handle = ((CraftEntity) from).getHandle();
-			yaw =  360 - yaw;
-			handle.yaw = (float) yaw;
-			handle.pitch = (float) pitch + 20;
-		}
-		
 		else
 		{
 			net.minecraft.server.v1_4_R1.Entity handle = ((CraftEntity) from).getHandle();
-			handle.yaw = (float) yaw;
+			handle.yaw = (float) yaw - 90;
 			handle.pitch = (float) pitch;
 		}
 
