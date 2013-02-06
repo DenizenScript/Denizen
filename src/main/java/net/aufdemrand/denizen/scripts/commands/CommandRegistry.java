@@ -57,7 +57,10 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(CastCommand.class, 
         		"CAST", "cast [potion_effect_type] (duration:#{60s}) (power:#{1}) (target(s):npc|player|npc.#|player.player_name|entity_name)", 1);
-        
+
+        registerCoreMember(ChairCommand.class, 
+        		"Chair", "chair (sit|stand) [location:x,y,z,world]", 1);
+
         registerCoreMember(ChatCommand.class, 
         		"CHAT", "chat ['message to chat'] (npcid:#) (target(s):npc.#|player.player_name{attached player})", 1);
         
