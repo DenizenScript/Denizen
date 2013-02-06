@@ -1,24 +1,15 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import org.bukkit.entity.LivingEntity;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class Entity extends ItemStack implements dScriptArgument {
+public class Entity implements dScriptArgument {
 
-    final static Pattern[] getItemPtrn = {
-            Pattern.compile("(?:(?:.+?:)|)(\\d+):(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+?):(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+)"),
-            Pattern.compile("(?:(?:.+?:)|)itemstack\\.(.+)", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("(?:(?:.+?:)|)(.+)"),
-    };
+    public static Map<String, Entity> entities = new HashMap<String, Entity>();
 
     /**
      * Gets a saved location based on an Id.
@@ -26,9 +17,15 @@ public class Entity extends ItemStack implements dScriptArgument {
      * @param id  the Id key of the location
      * @return  the Location associated
      */
-    public static Entity getSavedItem(String id) {
-        // TODO:
-        return null;
+    public static Entity getSavedEntity(String id) {
+        if (entities.containsKey(id.toUpperCase()))
+                return entities.get(id.toUpperCase());
+        else return null;
+    }
+
+    public static void saveEntity(Entity entity) {
+        if (entity.id == null) return;
+        entities.put(entity.id.toUpperCase(), entity);
     }
 
     /**
@@ -37,24 +34,25 @@ public class Entity extends ItemStack implements dScriptArgument {
      * @param id  the Id to check
      * @return  true if it exists, false if not
      */
-    public static boolean isSavedItem(String id) {
-        // TODO:
-        return false;
+    public static boolean isSavedEntity(String id) {
+        return entities.containsKey(id.toUpperCase());
     }
 
     /**
      * Called on server startup or /denizen reload locations. Should probably not be called manually.
      */
-    public static void _recallItems() {
-        // TODO:
+    public static void _recallEntities() {
+        List<Map<?, ?>> entitylist = DenizenAPI.getCurrentInstance().getSaves().getMapList("dScript.Entities");
+        entities.clear();
+        // TODO: Figure out de-serialization of this.
     }
 
     /**
      * Called by Denizen internally on a server shutdown or /denizen save. Should probably
      * not be called manually.
      */
-    public static void _saveItems() {
-        // TODO:
+    public static void _saveEntities() {
+        // TODO: Figure out serialization
     }
 
     /**
@@ -66,82 +64,39 @@ public class Entity extends ItemStack implements dScriptArgument {
      */
     public static Entity valueOf(String string) {
 
-        if (string == null) return null;
+        // Create entity!
 
-        Matcher[] m = new Matcher[4];
-        Entity stack = null;
+        return null;
+    }
 
-        // Check if a saved item instance from NEW
-        m[0] = getItemPtrn[4].matcher(string);
-        if (m[0].matches()) {
-            // TODO: Finish NEW command.
+    private String id = null;
+    private String prefix = "Entity";
+
+    LivingEntity entity;
+
+    public Entity(LivingEntity entity) {
+        this.entity = entity;
+    }
+
+    public Entity(String id, LivingEntity entity) {
+        this.entity = entity;
+        this.id = id;
+        saveEntity(this);
+    }
+
+    public void identifyAs(String id) {
+        if (this.id == null) {
+            this.id = id;
+            saveEntity(this);
         }
-
-        // Check traditional item patterns.
-        m[0] = getItemPtrn[0].matcher(string);
-        m[1] = getItemPtrn[1].matcher(string);
-        m[2] = getItemPtrn[2].matcher(string);
-        m[3] = getItemPtrn[3].matcher(string);
-
-        try {
-            // Match 'ItemId:Data'
-            if (m[0].matches()) {
-                stack = new Entity(Integer.valueOf(m[0].group(1)));
-                stack.setDurability(Short.valueOf(m[0].group(2)));
-                return stack.setId(stack.getType().name());
-
-                // Match 'ItemId'
-            } else if (m[1].matches()) {
-                stack = new Entity(Integer.valueOf(m[1].group(1)));
-                stack.setId(stack.getType().name());
-                return stack;
-
-                // Match 'Material:Data'
-            } else if (m[2].matches()) {
-                stack = new Entity(Material.valueOf(m[2].group(1).toUpperCase()));
-                stack.setDurability(Short.valueOf(m[2].group(2)));
-                return stack.setId(stack.getType().name());
-
-                // Match 'Material'
-            } else if (m[3].matches()) {
-                stack = new Entity(Material.valueOf(m[3].group(1).toUpperCase()));
-                stack.setId(stack.getType().name());
-                return stack;
-            }
-
-        } catch (Exception e) {
-            // Don't report error yet, the item may identified in a custom item script.
-        }
-
-        // Check custom item script
-        m[0] = getItemPtrn[5].matcher(string);
-        if (m[0].matches()) {
-            // Get item from script
-            return ScriptRegistry.getScriptContainerAs(m[0].group(1), ItemScriptContainer.class).getItemFrom();
-        }
-
-        // No match.
-        dB.echoError("Invalid item! Failed to find a matching Item type.");
-        return stack;
     }
 
-    private String id;
-    private String prefix = "Item";
-
-    public Entity(Material material) {
-        super(material);
+    public LivingEntity getBukkitEntity() {
+        return entity;
     }
 
-    public Entity(int itemId) {
-        super(itemId);
-    }
-
-    public Entity(Material material, int qty) {
-        super(material, qty);
-    }
-
-    public Entity(int type, int qty) {
-        super(type, qty);
+    public boolean isAlive() {
+        return entity != null;
     }
 
     public Entity setId(String id) {
@@ -171,7 +126,7 @@ public class Entity extends ItemStack implements dScriptArgument {
 
     @Override
     public String toString() {
-        return serialize().toString();
+        return entity.getUniqueId().toString();
     }
 
     @Override

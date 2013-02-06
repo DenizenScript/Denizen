@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.npc.dNPC;
-import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -18,70 +18,54 @@ import java.util.*;
  */
 public class ScriptEntry {
 
-
+    // The name of the command that will be executed
 	final private String command;
-    final private long queueTime;
 
-	private long allowedRunTime;
+    // The queuetime and allowed-run-time can dictate whether it's okay
+    // for this command to run in the queue.
+    private long creationTime;
+    private long queueTime;
+    private long runTime;
+    private long holdTime;
+
 	private boolean instant = false;
-	private Player player = null;
-	private OfflinePlayer offlinePlayer = null;
-	private Script script = null;
-	private String step = null;
-	private dNPC npc = null;
-	private QueueType queueType = null;
-	private List<String> args = null;
 
+    private Player player = null;
+    private OfflinePlayer offlinePlayer = null;
+	private dNPC npc = null;
+
+    private Script script = null;
+
+	private String queueId = null;
+	private List<String> args = null;
 
 	private Map<String, Object> objects = new HashMap<String, Object>();
 
-	
-	public ScriptEntry(String command, String[] arguments) throws ScriptEntryCreationException {
-		this(command, arguments, null, null, null, null);
-	}
+    public ScriptEntry(String command, String[] arguments, ScriptContainer script) throws ScriptEntryCreationException {
 
-	public ScriptEntry(String command, String[] arguments, Player player) throws ScriptEntryCreationException {
-		this(command, arguments, player, null, null, null);
-	}
-
-	public ScriptEntry(String command, String[] arguments, Player player, String script) throws ScriptEntryCreationException {
-		this(command, arguments, player, null, script, null);
-	}
-
-	public ScriptEntry(String command, String[] arguments, dNPC denizen, String script) throws ScriptEntryCreationException {
-		this(command, arguments, null, denizen, script, null);
-	}
-
-	public ScriptEntry(String command, String[] arguments, Player player, dNPC npc, String script, String step) throws ScriptEntryCreationException {
-
-		if (command == null)
+        // Must never be null
+        if (command == null)
             throw new ScriptEntryCreationException("CommandType cannot be null!");
 
-        // Internal, never null. allowedRunTime can be modified between queue and execution.
-		this.queueTime = System.currentTimeMillis();
-		this.allowedRunTime = queueTime;
+        this.command = command.toUpperCase();
+        this.script = script.getAsScriptArg();
 
+        // Internal, never null. runTime/holdTime can be adjusted mid-execution
+		this.creationTime = System.currentTimeMillis();
+        this.queueTime = creationTime;
+		this.runTime = creationTime;
+        this.holdTime = creationTime;
+
+        // Check if this is an 'instant' command.
 		if (command.startsWith("^")) {
 			instant = true;
 			command = command.substring(1);
 		}
 
-		// Must never be null
-		this.command = command.toUpperCase();
-
-		// May be null
-		this.player = player;
-		this.npc = npc;
 		this.args = new ArrayList<String>();
-		if (arguments != null) this.args = Arrays.asList(arguments);
-		if (script != null) this.script = new Script(script);
-		this.step = step;
-
+		if (arguments != null)
+            this.args = Arrays.asList(arguments);
 	}
-
-	/* 
-	 * ScriptEntry methods
-	 */
 
 	public ScriptEntry addObject(String key, Object object) {
         if (object == null) return this;
@@ -89,15 +73,19 @@ public class ScriptEntry {
 		return this;
 	}
 
-	public Long getAllowedRunTime() {
-		return allowedRunTime;
+	public long getRunTime() {
+		return runTime;
 	}
+
+    public long getHoldTime() {
+        return holdTime;
+    }
 
 	public List<String> getArguments() {
 		return args;
 	}
 
-	public String getCommand() {
+	public String getCommandName() {
 		return command;
 	}
 
@@ -105,7 +93,20 @@ public class ScriptEntry {
 		return npc;
 	}
 
-	public Map<String, Object> getObjects() {
+    public OfflinePlayer getOfflinePlayer() {
+        return offlinePlayer;
+    }
+
+    public ScriptEntry setOfflinePlayer(OfflinePlayer offlinePlayer) {
+        this.offlinePlayer = offlinePlayer;
+        return this;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Map<String, Object> getObjects() {
 		return objects;
 	}
 	
@@ -119,25 +120,12 @@ public class ScriptEntry {
         return objects.containsKey(key.toUpperCase());
     }
 
-	public OfflinePlayer getOfflinePlayer() {
-		return offlinePlayer;
-	}
-	
-	public Player getPlayer() {
-		return player;
-	}
-
 	public Script getScript() {
         return script;
 	}
 
-	public QueueType getSendingQueue() {
-		return queueType;
-	}
-
-	public String getStep() {
-        if (step == null) return null;
-		else return step.toUpperCase();
+	public String getResidingQueue() {
+		return queueId;
 	}
 
 	public Long getQueueTime() {
@@ -148,8 +136,8 @@ public class ScriptEntry {
 		return instant;
 	}
 
-	public ScriptEntry setAllowedRunTime(Long newTime) {
-		allowedRunTime = newTime;
+	public ScriptEntry setRunTime(Long newTime) {
+		runTime = newTime;
 		return this;
 	}
 	
@@ -163,11 +151,6 @@ public class ScriptEntry {
 		return this;
 	}
 
-	public ScriptEntry setOfflinePlayer(OfflinePlayer player) {
-		this.offlinePlayer = player;
-		return this;
-	}
-	
 	public ScriptEntry setPlayer(Player player) {
 		this.player = player;
 		return this;
@@ -179,17 +162,12 @@ public class ScriptEntry {
 	}
 	
 	public ScriptEntry setScript(String scriptName) {
-		this.script = new Script(scriptName);
+		this.script = Script.valueOf(scriptName);
 		return this;
 	}
-	
-	public ScriptEntry setStep(String step) {
-		this.step = step;
-		return this;
-	}
-	
-	public void setSendingQueue(QueueType queue) {
-		queueType = queue;
+
+	public void setSendingQueue(ScriptQueue scriptQueue) {
+		queueId = scriptQueue.id;
 	}
 	
 }

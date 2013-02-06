@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
@@ -68,39 +70,33 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
         String id = null;
         Script script = null;
         Map<String, String> context = null;
-        Duration delay = new Duration(-1d);
-        ScriptEngine.QueueType queue;
-        boolean instant = true;
-
-        // Set some defaults
-        if (scriptEntry.getPlayer() != null)
-            queue = ScriptEngine.QueueType.PLAYER_TASK;
-        else
-            queue = ScriptEngine.QueueType.NPC;
+        Duration delay = new Duration(0);
+        int speed = Settings.InteractDelayInTicks();
+        ScriptQueue queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
 
         // Iterate through Arguments to extract needed information
         for (String arg : scriptEntry.getArguments()) {
+
+                // Specify scriptContainer to use
             if (aH.matchesScript(arg)) {
                 script = aH.getScriptFrom(arg);
 
+                // Delay the start of the queue
             } else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
                 delay = aH.getDurationFrom(arg);
                 delay.setPrefix("Delay");
 
-            } else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
-                instant = true;
-
-            } else if (aH.matchesQueueType(arg)) {
-                instant = false;
+                // Use a specific queue
+            } else if (aH.matchesQueue(arg)) {
                 queue = aH.getQueueFrom(arg);
 
             } else if (aH.matchesArg("QUEUE", arg)) {
-                instant = false;
-                if (scriptEntry.getPlayer() != null)
-                    queue = ScriptEngine.QueueType.PLAYER_TASK;
-                else if (scriptEntry.getNPC() != null)
-                    queue = ScriptEngine.QueueType.NPC;
+                // Deprecated, no longer needed. All tasks are now queued, even if they are 'instant'.
 
+            } else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
+                // Deprecated, no longer needed. Instead, use SPEED, or specify speed in the task script.
+
+                // Specify context
             } else if (aH.matchesValueArg("CONTEXT", arg, aH.ArgumentType.Custom)) {
                 context = new HashMap<String, String>();
                 List<String> contexts = aH.getListFrom(arg);
@@ -112,10 +108,10 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
                 }
 
             } else if (aH.matchesValueArg("ID", arg, aH.ArgumentType.Word)) {
-                id = aH.getStringFrom(arg);
+                // Deprecated, no longer needed. You can name the queue instead.
 
-            } else if (DenizenAPI.getCurrentInstance()
-                    .getScripts().contains(aH.getStringFrom(arg).toUpperCase() + ".TYPE")) {
+                // Specify SCRIPT name without SCRIPT: prefix
+            } else if (ScriptRegistry.containsScript(aH.getStringFrom(arg))) {
                 script = aH.getScriptFrom(arg);
                 if (!script.getType().equalsIgnoreCase("TASK"))
                     script = null;

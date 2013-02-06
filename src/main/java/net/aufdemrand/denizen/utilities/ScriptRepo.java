@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.citizensnpcs.api.util.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -72,7 +73,7 @@ public class ScriptRepo {
 					bw.write(yaml);
 					bw.close();
 					Messaging.send(cs, "Downloaded script from repo. Reloading scripts...");
-					plugin.reloadScripts();
+					ScriptHelper.reloadScripts();
 					Messaging.send(cs, "Reloaded scripts!");
 				} catch (IOException e) {
 					Messaging.send(cs, "Looks like something went wrong while writing the file. Check console for details.");

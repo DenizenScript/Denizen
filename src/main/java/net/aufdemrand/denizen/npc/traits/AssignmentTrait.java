@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.notables.Notable;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.exception.NPCLoadException;
@@ -73,9 +74,9 @@ public class AssignmentTrait extends Trait {
      * @return assignment script name, null if not set or assignment is invalid
      *
      */
-    public String getAssignment() {
+    public AssignmentScriptContainer getAssignment() {
         if (hasAssignment())
-            return assignment;
+            return ScriptRegistry.getScriptContainerAs(assignment, AssignmentScriptContainer.class);
         else return null;
     }
 
@@ -103,16 +104,15 @@ public class AssignmentTrait extends Trait {
 
     private boolean checkAssignment(String assignment) {
         if (assignment == null || assignment.equals("")) return false;
-        if (DenizenAPI.getCurrentInstance().getScriptEngine().getScriptHelper().getStringIgnoreCase(
-                assignment + ".TYPE") != null && DenizenAPI.getCurrentInstance().getScriptEngine()
-                .getScriptHelper().getStringIgnoreCase(assignment + ".TYPE").equalsIgnoreCase("ASSIGNMENT"))
-            return true;
-
+        if (getAssignment() != null) return true;
         else return false;
     }
 
     public void describe(CommandSender sender, int page) throws CommandException {
-        ScriptHelper sH = DenizenAPI.getCurrentInstance().getScriptEngine().getScriptHelper();
+
+        AssignmentScriptContainer assignmentScript = ScriptRegistry
+                .getScriptContainerAs(assignment, AssignmentScriptContainer.class);
+
         Paginator paginator = new Paginator().header("Assignment");
         paginator.addLine("<e>Current assignment: " + (hasAssignment() ? this.assignment : "None.") + "");
         paginator.addLine("");
@@ -126,9 +126,9 @@ public class AssignmentTrait extends Trait {
         boolean entriesPresent = false;
         paginator.addLine(ChatColor.GRAY + "Interact Scripts:");
         paginator.addLine("<e>Key: <a>Priority  <b>Name");
-        if (!sH.getStringListIgnoreCase(assignment + ".INTERACT SCRIPTS").isEmpty()) {
+        if (assignmentScript.contains("INTERACT SCRIPTS")) {
             entriesPresent = true;
-            for (String scriptEntry : sH.getStringListIgnoreCase(assignment + ".INTERACT SCRIPTS"))
+            for (String scriptEntry : assignmentScript.getStringList("INTERACT SCRIPTS"))
                 paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
         } if (!entriesPresent) paginator.addLine("<c>No Interact Scripts assigned.");
         paginator.addLine("");
@@ -143,9 +143,9 @@ public class AssignmentTrait extends Trait {
         entriesPresent = false;
         paginator.addLine(ChatColor.GRAY + "Scheduled Scripts:");
         paginator.addLine("<e>Key: <a>Time  <b>Name");
-        if (!sH.getStringListIgnoreCase(assignment + ".SCHEDULED ACTIVITIES").isEmpty()) {
+        if (assignmentScript.contains("SCHEDULED ACTIVITIES")) {
             entriesPresent = true;
-            for (String scriptEntry : sH.getStringListIgnoreCase(assignment + ".SCHEDULED ACTIVITIES"))
+            for (String scriptEntry : assignmentScript.getStringList("SCHEDULED ACTIVITIES"))
                 paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
         } if (!entriesPresent) paginator.addLine("<c>No scheduled scripts activities.");
         paginator.addLine("");
@@ -164,12 +164,10 @@ public class AssignmentTrait extends Trait {
         entriesPresent = false;
         paginator.addLine(ChatColor.GRAY + "Actions:");
         paginator.addLine("<e>Key: <a>Action name  <b>Script Size");
-        if (DenizenAPI.getCurrentInstance().getScripts()
-                .contains(assignment.toUpperCase() + ".Actions")) entriesPresent = true;
+        if (assignmentScript.contains("ACTIONS")) entriesPresent = true;
         if (entriesPresent)
-            for (String action : DenizenAPI.getCurrentInstance().getScripts()
-                    .getConfigurationSection(assignment.toUpperCase() + ".ACTIONS").getKeys(false))
-                paginator.addLine("<a>" + action + " <b>" + sH.getStringListIgnoreCase(assignment + ".ACTIONS." + action).size());
+            for (String action : assignmentScript.getConfigurationSection("ACTIONS").getKeys(false))
+                paginator.addLine("<a>" + action + " <b>" + assignmentScript.getStringList("ACTIONS." + action).size());
         else paginator.addLine("<c>No actions defined in the assignment.");
         paginator.addLine("");
 

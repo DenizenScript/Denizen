@@ -1,7 +1,10 @@
 package net.aufdemrand.denizen.utilities;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.Location;
@@ -9,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
 import net.minecraft.server.v1_4_R1.EntityLiving;
 import java.util.*;
@@ -167,7 +171,7 @@ public class Utilities {
 		if (zDiff < 0.0) {
 			yaw = yaw + (Math.abs(180 - yaw) * 2);
 		}
-		
+				
 		if (from instanceof LivingEntity)
 		{
 			EntityLiving handle = ((CraftLivingEntity) from).getHandle();
@@ -175,6 +179,13 @@ public class Utilities {
 			handle.pitch = (float) pitch;
 			handle.az = handle.yaw;
 		}
+		else
+		{
+			net.minecraft.server.v1_4_R1.Entity handle = ((CraftEntity) from).getHandle();
+			handle.yaw = (float) yaw - 90;
+			handle.pitch = (float) pitch;
+		}
+
 	}
 
 	/*

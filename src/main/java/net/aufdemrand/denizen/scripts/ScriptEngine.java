@@ -7,29 +7,34 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.Iterator;
 
-public class Engine {
+public class ScriptEngine {
 
     final private Denizen denizen;
 
     final private RequirementChecker requirementChecker;
     final private CommandExecuter commandExecuter;
 
-    public Engine(Denizen denizenPlugin) {
+    public ScriptEngine(Denizen denizenPlugin) {
         denizen  = denizenPlugin;
         // Create Denizen Executer and RequirementChecker
         commandExecuter = new CommandExecuter(denizen);
         requirementChecker = new RequirementChecker(denizen);
     }
 
-    public void revolve(Queue queue) {
-        Iterator<ScriptEntry> scriptEntries = queue.scriptEntries.iterator();
+    public void revolve(ScriptQueue scriptQueue) {
+        Iterator<ScriptEntry> scriptEntries = scriptQueue.scriptEntries.iterator();
         while (scriptEntries.hasNext()) {
             // Find next ScriptEntry
             ScriptEntry scriptEntry = scriptEntries.next();
-            // Check run time
+            // Check if last entry is still holding up the queue
+            if (scriptQueue.getLastEntryExecuted() != null
+                    && scriptQueue.getLastEntryExecuted().getHoldTime() > System.currentTimeMillis()) {
+                break;
+            }
+            // Check allowed run-time of next ScriptEntry
             if (scriptEntry.getRunTime() < System.currentTimeMillis()) {
                 // Mark script entry with Queue that is sending it to the executer
-                scriptEntry.setSendingQueue(queue);
+                scriptEntry.setSendingQueue(scriptQueue);
                 // Execute the scriptEntry
                 try {
                     getScriptExecuter().execute(scriptEntry);
@@ -40,11 +45,11 @@ public class Engine {
                     else e.printStackTrace();
                 }
                 // Set as last entry exectured
-                queue.setLastEntryExecuted(scriptEntry);
+                scriptQueue.setLastEntryExecuted(scriptEntry);
                 // Remove from execution list
                 scriptEntries.remove();
-                if (scriptEntry.isInstant() || queue.delay > 0) continue;
-                // If entry isn't instant, end the revolution and wait for another
+                if (scriptEntry.isInstant() || scriptQueue.delay > 0) continue;
+                    // If entry isn't instant, end the revolution and wait for another
                 else break;
             }
         }

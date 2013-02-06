@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class RequirementCheckException extends Exception {
 
-	private static final long serialVersionUID = 3159123423457792068L;
+	private static final long serialVersionUID = 3159123423217792068L;
 
 	public RequirementCheckException(String msg) {
 		super(msg);

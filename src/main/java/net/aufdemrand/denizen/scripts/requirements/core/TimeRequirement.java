@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TimeRequirement extends AbstractRequirement{
 	
-	private enum TIME {DAWN, DAY, DUSK, NIGHT }
+	private enum Time {DAWN, DAY, DUSK, NIGHT }
 	
 	@Override
 	public void onEnable() {
@@ -20,25 +20,24 @@ public class TimeRequirement extends AbstractRequirement{
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		
 		boolean outcome = false;
-		TIME time = null;
+		Time time = null;
 		
 		for (String arg : args){
-			if (aH.matchesArg("DAWN, DAY, DUSK, NIGHT", arg)) time = TIME.valueOf(arg);
+			if (aH.matchesArg("DAWN, DAY, DUSK, NIGHT", arg)) time = Time.valueOf(arg.toUpperCase());
 		}
 		
-		long worldTime = context.getNPC().getBukkitEntity().getWorld().getTime();
+		long worldTime = context.getNPC().getEntity().getWorld().getTime();
 		
-		if (time.equals(TIME.DAY) && worldTime >= 0 && worldTime < 12000)
+		if (time.equals(Time.DAY) && worldTime >= 0 && worldTime < 12000)
 			outcome = true;
-		else if (time.equals(TIME.DUSK) && worldTime >= 12000 && worldTime < 23800)
+		else if (time.equals(Time.DUSK) && worldTime >= 12000 && worldTime < 23800)
 			outcome = true;
-		else if (time.equals(TIME.NIGHT) && worldTime >= 23800 && worldTime < 22200)
+		else if (time.equals(Time.NIGHT) && worldTime >= 23800 && worldTime < 22200)
 			outcome = true;
-		else if (time.equals(TIME.DAWN) && worldTime >= 22200 && worldTime < 24000)
+		else if (time.equals(Time.DAWN) && worldTime >= 22200 && worldTime < 24000)
 			outcome = true;
 		
 		return outcome;
-		
 	}
 
 }

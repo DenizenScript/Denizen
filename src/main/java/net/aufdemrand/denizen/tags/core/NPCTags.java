@@ -31,6 +31,9 @@ public class NPCTags implements Listener {
 
         } else if (type.equals("ID")) {
             event.setReplaced(String.valueOf(event.getNPC().getId()));
+        
+        } else if (type.equals("OWNER")) {
+            event.setReplaced(String.valueOf(event.getNPC().getOwner()));
 
         } else if (type.equals("LOCATION")) {
             Location loc = n.getLocation();

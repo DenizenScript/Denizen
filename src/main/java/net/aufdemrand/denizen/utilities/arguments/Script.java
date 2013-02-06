@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,7 +12,7 @@ public class Script implements dScriptArgument {
     final public static Pattern matchesScriptPtrn = Pattern.compile("(?:.+:|)(.+)", Pattern.CASE_INSENSITIVE);
 
     /**
-     * Gets a Script Object from a dScript argument.
+     * Gets a Script Argument Object from a dScript argument.
      *
      * @param string  the dScript argument String
      * @return  a Script, or null if incorrectly formatted
@@ -27,8 +28,8 @@ public class Script implements dScriptArgument {
         return null;
     }
 
+    private ScriptContainer container;
     private String prefix = "Script";
-    private String type = null;
     private String name = null;
     private boolean valid = false;
 
@@ -40,16 +41,15 @@ public class Script implements dScriptArgument {
     public Script (String scriptName) {
         // Required for tests
         if (DenizenAPI.getCurrentInstance() == null) return;
-
-        if (DenizenAPI.getCurrentInstance().getScripts().contains(scriptName.toUpperCase() + ".TYPE")) {
+        if (ScriptRegistry.getScriptContainer(scriptName) != null) {
+            container = ScriptRegistry.getScriptContainer(scriptName);
             name = scriptName.toUpperCase();
-            type = DenizenAPI.getCurrentInstance().getScripts().getString(scriptName.toUpperCase() + ".TYPE");
             valid = true;
         }
     }
 
     /**
-     * Confirms that the script references a valid name and type in current loaded Scripts.
+     * Confirms that the script references a valid name and type in current loaded ScriptsContainers.
      *
      * @return  true if the script is valid, false if the script was not found, or the type is missing
      */
@@ -58,16 +58,16 @@ public class Script implements dScriptArgument {
     }
 
     /**
-     * Gets the type of the script, as defined by the TYPE: key.
+     * Gets the type of the ScriptContainer, as defined by the TYPE: key.
      *
-     * @return  the type of the script
+     * @return  the type of the Script Container
      */
     public String getType() {
-        return type;
+        return (container != null ? container.getType() : "invalid");
     }
 
     /**
-     * Gets the name of the script.
+     * Gets the name of the ScriptContainer.
      *
      * @return  script name
      */
@@ -76,12 +76,12 @@ public class Script implements dScriptArgument {
     }
 
     /**
-     * Gets the contents of the script.
+     * Gets the contents of the scriptContainer.
      *
      * @return  ConfigurationSection of the script contents
      */
-    public ConfigurationSection getContents() {
-        return DenizenAPI.getCurrentInstance().getScripts().getConfigurationSection(name);
+    public ScriptContainer getContainer() {
+        return container;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class Script implements dScriptArgument {
 
     @Override
     public String debug() {
-        return "<G>" + prefix + "='<A>" + name + "<Y>(" + type + ")<G>'  ";
+        return "<G>" + prefix + "='<A>" + name + "<Y>(" + getType() + ")<G>'  ";
     }
 
     @Override
@@ -109,4 +109,5 @@ public class Script implements dScriptArgument {
         this.prefix = prefix;
         return this;
     }
+
 }

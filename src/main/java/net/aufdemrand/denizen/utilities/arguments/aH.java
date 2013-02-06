@@ -1,12 +1,14 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -562,15 +564,10 @@ public class aH {
      * @return a QueueType, or null
      *
      */
-    public static QueueType getQueueFrom(String arg) {
-        try {
-            if (arg.split(":").length >= 2)
-                return QueueType.valueOf(arg.split(":")[1].toUpperCase());
-            else return QueueType.valueOf(arg.toUpperCase());
-        } catch (Exception e) {
-            dB.echoError("Invalid Queuetype!");
-        }
-        return null;
+    public static ScriptQueue getQueueFrom(String arg) {
+        if (arg.split(":").length >= 2)
+            return ScriptQueue._getQueue(arg.split(":")[1].toUpperCase());
+        else return ScriptQueue._getQueue(arg.toUpperCase());
     }
 
     /**
@@ -704,6 +701,9 @@ public class aH {
             for (EntityType validEntity : EntityType.values())
                 if (m.group(1).equalsIgnoreCase(validEntity.name()))
                     return true;
+            for (EntityType validEntity : EntityType.values())
+                if (m.group(1).equalsIgnoreCase(validEntity.name()))
+                    return true;
         }
         // Check for valid prefix, warn about value.
         if (arg.toUpperCase().startsWith("entity:"))
@@ -755,6 +755,7 @@ public class aH {
      */
     public static boolean matchesItem(String arg) {
         if (arg.toUpperCase().startsWith("ITEM:")) return true;
+        // TODO: Other matches____ do some actual checks. Should this?
         return false;
     }
 
@@ -840,14 +841,17 @@ public class aH {
      * @return true if matched, otherwise false
      *
      */
-    public static boolean matchesQueueType(String arg) {
-        final Pattern matchesQueuePtrn = Pattern.compile("queue:(?:(?:player)|(?:player_task)|(?:npc))", Pattern.CASE_INSENSITIVE);
+    public static boolean matchesQueue(String arg) {
+        final Pattern matchesQueuePtrn = Pattern.compile("queue:(.+)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesQueuePtrn.matcher(arg);
-        if (m.matches()) return true;
-        else if (arg.toUpperCase().startsWith("queue:"))
-            dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
-                    "prefix is correct, the value is not valid. 'QUEUE' requires a valid QueueType. " +
-                    "Perhaps a replaceable Tag has failed to fill in a valid value?");
+        if (m.matches())
+            if (ScriptQueue._queueExists(m.group(1)))
+                return true;
+            // Don't warn if this is a list format...
+            else if (!m.group(1).contains("|"))
+                dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
+                        "prefix is correct, the value is not valid. 'QUEUE' requires a valid QueueType. " +
+                        "Perhaps a replaceable Tag has failed to fill in a valid value?");
         return false;
     }
 
@@ -871,12 +875,10 @@ public class aH {
      */
     public static boolean matchesScript(String arg) {
         final Pattern matchesScriptPtrn = Pattern.compile("script:(.+)", Pattern.CASE_INSENSITIVE);
+
         Matcher m = matchesScriptPtrn.matcher(arg);
-        // Check if script exists by looking for  Script Name:
-        //                                          Type: ...
         if (m.matches()) {
-            if (((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
-                    .getScripts().contains(arg.split(":")[1].toUpperCase() + ".TYPE"))
+            if (ScriptRegistry.containsScript(m.group(1)))
                 return true;
             else {
                 dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. This " +
@@ -916,5 +918,37 @@ public class aH {
                     "Perhaps a replaceable Tag has failed to fill in a valid value?");
         return false;
     }
+
+
+    final private static Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
+
+    /**
+     * Builds an arguments array, recognizing items in quotes as a single item
+     *
+     * @param stringArgs  the line of arguments that need split
+     * @return  an array of arguments
+     *
+     */
+    public static String[] buildArgs(String stringArgs) {
+        if (stringArgs == null) return null;
+        List<String> matchList = new ArrayList<String>();
+        Matcher regexMatcher = regex.matcher(stringArgs);
+        while (regexMatcher.find()) {
+            if (regexMatcher.group(1) != null)
+                matchList.add(regexMatcher.group(1));
+            else if (regexMatcher.group(2) != null)
+                matchList.add(regexMatcher.group(2));
+            else
+                matchList.add(regexMatcher.group());
+        }
+
+        if (dB.showScriptBuilder)
+            dB.echoDebug(ChatColor.GRAY + "Args: " + Arrays.toString(matchList.toArray()));
+
+        String[] split = new String[matchList.size()];
+        matchList.toArray(split);
+        return split;
+    }
+
 
 }

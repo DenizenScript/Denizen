@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.npc;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
@@ -10,8 +11,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -23,7 +26,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class dNPCRegistry implements Listener {
 
-    private static Map<NPC, dNPC> denizenNPCs = new ConcurrentHashMap<NPC, dNPC>();
+    private static Map<Integer, dNPC> denizenNPCs = new ConcurrentHashMap<Integer, dNPC>();
+
+    public static dNPCRegistry getCurrentInstance() {
+        return DenizenAPI.getCurrentInstance().getNPCRegistry();
+    }
 
     private Denizen plugin;
     private ActionHandler actionHandler;
@@ -44,16 +51,16 @@ public class dNPCRegistry implements Listener {
         return actionHandler;
     }
 
-    private boolean isDenizenNPC (NPC npc) {
+    private boolean _isRegistered (NPC npc) {
         if (denizenNPCs.containsKey(npc))
             return true ;
         else return false;
     }
 
-    private void registerNPC(NPC npc) {
+    private void _registerNPC(NPC npc) {
         if (npc == null) return;
         if (!denizenNPCs.containsKey(npc)) {
-            denizenNPCs.put(npc, new dNPC(npc));
+            denizenNPCs.put(npc.getId(), new dNPC(npc));
         }
         dB.log("Constructing NPC " + getDenizen(npc).toString());
     }
@@ -70,7 +77,7 @@ public class dNPCRegistry implements Listener {
     public dNPC getDenizen(NPC npc) {
         if (npc == null) return null;
         if (!denizenNPCs.containsKey(npc))
-            registerNPC(npc);
+            _registerNPC(npc);
         return denizenNPCs.get(npc);
     }
 
@@ -81,18 +88,17 @@ public class dNPCRegistry implements Listener {
      * @return map of NPC, dNPC of all spawned NPCs
      *
      */
-    public Map<NPC, dNPC> getSpawnedNPCs() {
-        Iterator<Map.Entry<NPC, dNPC>> it = denizenNPCs.entrySet().iterator();
+    public Set<dNPC> getSpawnedNPCs() {
+        Iterator<Map.Entry<Integer, dNPC>> it = denizenNPCs.entrySet().iterator();
+        Set<dNPC> npcs = new HashSet<dNPC>();
         while (it.hasNext()) {
-            Map.Entry<NPC, dNPC> npc = (Map.Entry<NPC, dNPC>)it.next();
-            try {
-                npc.getKey().getBukkitEntity();
-            } catch (NullPointerException e) {
-                denizenNPCs.remove(npc.getKey());
-                dB.log(ChatColor.RED + "Removed NPC from DenizenRegistry. " + ChatColor.WHITE + "The bukkit entity has been removed.");
-            }
+            Map.Entry<Integer, dNPC> npc = it.next();
+            if (npc.getValue().getEntity() == null)
+                dB.log(ChatColor.RED + "Removed NPC from DenizenRegistry. "
+                        + ChatColor.WHITE + "The bukkit entity has been removed.");
+            else npcs.add(npc.getValue());
         }
-        return denizenNPCs;
+        return npcs;
     }
 
     /**
@@ -101,9 +107,9 @@ public class dNPCRegistry implements Listener {
      * @param event NPCSpawnEvent
      *
      */
-    @EventHandler 
+    @EventHandler
     public void onSpawn(NPCSpawnEvent event) {
-        registerNPC(event.getNPC());
+        _registerNPC(event.getNPC());
         // On Spawn action
         plugin.getNPCRegistry().getDenizen(event.getNPC()).action("spawn", null);
     }
@@ -117,9 +123,10 @@ public class dNPCRegistry implements Listener {
     @EventHandler
     public void onRemove(NPCRemoveEvent event) {
         plugin.getNPCRegistry().getDenizen(event.getNPC()).action("remove", null);
-        if (isDenizenNPC(event.getNPC()))
+        if (_isRegistered(event.getNPC()))
             denizenNPCs.remove(event.getNPC());
         dB.log(ChatColor.RED + "Deconstructing Denizen NPC " + event.getNPC().getName() + "/" + event.getNPC().getId());
     }
+
 
 }

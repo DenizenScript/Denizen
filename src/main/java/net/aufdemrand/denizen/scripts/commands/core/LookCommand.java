@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -47,7 +48,7 @@ public class LookCommand extends AbstractCommand {
 
 	Integer duration = null;
 	Direction direction = null;
-	Location theLocation = null;
+	Location location = null;
 	LivingEntity theEntity = null;
 	dNPC theDenizen = null;
 	
@@ -65,19 +66,13 @@ public class LookCommand extends AbstractCommand {
 			if (aH.matchesDuration(arg)) {
 				duration = aH.getIntegerFrom(arg);
 				dB.echoDebug("...look duration set to '%s'.", arg);
+				continue;
 			}
 			
-			// If argument is a NPCID: modifier
-//			else if (aH.matchesNPCID(thisArg)) {
-//				theDenizen = aH.getNPCIDModifier(thisArg);
-//				if (theDenizen != null)
-//					dB.echoDebug("...affecting '%s'.", arg);
-//			}
-			
-			// If argument is a BOOKMARK modifier
+			// If argument is a LOCATION modifier
 			else if (aH.matchesLocation(arg)) {
-				theLocation = aH.getLocationFrom(arg);
-				if (theLocation != null) dB.echoError("...switch location now at bookmark '%s'", arg);
+				location = aH.getLocationFrom(arg);
+				dB.echoDebug("...location set");
             }
 			
 			// If argument is a Direction
@@ -94,7 +89,21 @@ public class LookCommand extends AbstractCommand {
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-
+		/*
+		 * This is only a temporary fix. Someone requested 
+		 * the ability to look at a specfic location. Feel
+		 * free to erase anything to accomodate the proper
+		 * implementation of this command.
+		 *                                         - Jeebs
+		 */
+		
+		if (location != null) {
+			/*
+			 * Ideally this turns lookclose off first,
+			 * however I couldnt figure our how D:
+			 */
+			Utilities.faceLocation(theDenizen.getCitizen().getBukkitEntity(), location);
+		}
 	}
 
 

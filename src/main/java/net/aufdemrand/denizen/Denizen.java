@@ -1,14 +1,15 @@
 package net.aufdemrand.denizen;
 
-import net.aufdemrand.denizen.events.dScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.notables.NotableManager;
-import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.activities.ActivityEngine;
 import net.aufdemrand.denizen.npc.activities.ActivityRegistry;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
@@ -27,7 +28,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 public class Denizen extends JavaPlugin {
 
-    public static String versionTag = "0.8.5 pre-release";
+    public static String versionTag = "0.8.6 pre-release";
     
     private CommandHandler commandHandler;
     
@@ -55,6 +55,7 @@ public class Denizen extends JavaPlugin {
      * Denizen Engines
      */
 
+    // private ScriptEngine scriptEngine = new ScriptEngine(this);
     private ScriptEngine scriptEngine = new ScriptEngine(this);
     private ActivityEngine activityEngine = new ActivityEngine(this);
 
@@ -144,15 +145,19 @@ public class Denizen extends JavaPlugin {
         dB.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
         dB.echoDebug(DebugElement.Footer);
 
+        // Create the dNPC Registry
         dNPCRegistry = new dNPCRegistry(this);
         
         // Register commandHandler with Citizens2
         commandHandler = new CommandHandler(Depends.citizens);
 
+        // Register script-container types
+        ScriptRegistry._registerCoreTypes();
+
         // Populate config.yml if it doesn't yet exist.
         saveDefaultConfig(); 
         reloadConfig();
-        reloadScripts();
+        ScriptHelper.reloadScripts();
         reloadSaves();
 
         // Register traits
@@ -164,6 +169,7 @@ public class Denizen extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ConstantsTrait.class).withName("constants"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NameplateTrait.class).withName("nameplate"));
 
+        // Create instance of PacketHelper if ProtocolLib has been hooked
 		if(Depends.protocolManager != null) {
 			new PacketHelper(this);
 			dB.echoApproval("ProtocolLib hooked, traits with custom packages can be used!");
@@ -183,18 +189,9 @@ public class Denizen extends JavaPlugin {
         // Load Notables into memory (for the Location Triggers to reference)
         notableManager().loadNotables();
         tagManager().registerCoreTags();
+
+        // Register CommandHandler with Citizens
         Depends.citizens.registerCommandClass(CommandHandler.class);
-
-        // Start the scriptEngine.. VROOM VROOM!
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override public void run() { getScriptEngine().run(); }
-        }, Settings.InteractDelayInTicks(), Settings.InteractDelayInTicks());
-
-        // Start the activityEngine
-        getServer().getPluginManager().registerEvents(getActivityEngine(), this);
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override public void run() { getActivityEngine().scheduler(false); }
-        }, 1, 600);
 
         dB.echoDebug(DebugElement.Footer);
     }
@@ -219,34 +216,6 @@ public class Denizen extends JavaPlugin {
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
         saveSaves();
-    }
-
-
-    /*
-     * Reloads and retrieves information from the Denizen/scripts.yml.
-     */
-
-    private YamlConfiguration scriptConfig = null;
-
-    public void reloadScripts() {
-        String concatenated = scriptEngine.getScriptHelper().concatenateScripts();
-        scriptConfig = new YamlConfiguration();
-
-        try { 
-        	scriptConfig.loadFromString(concatenated);
-        	Bukkit.getServer().getPluginManager().callEvent(new dScriptReloadEvent());
-        	
-        } catch (InvalidConfigurationException e) {
-            getLogger().log(Level.SEVERE, "Error loading scripts to memory!");
-            e.printStackTrace();
-        }
-    }
-
-    public FileConfiguration getScripts() {
-        if (scriptConfig == null) {
-            reloadScripts();
-        }
-        return scriptConfig;
     }
 
     /*

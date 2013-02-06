@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.events.ListenerFinishEvent;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.listeners.core.*;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -61,7 +62,13 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 	}
 
 	public void finish(Player player, String listenerId, String finishScript, AbstractListener instance) {
-		if (finishScript != null) 
+		if (finishScript != null)
+            try {
+                ScriptRegistry.getScriptContainerAs()
+            } catch (Exception e) {
+                // Hrm, not a valid task script?
+            }
+
 			denizen.getScriptEngine().getScriptBuilder().runTaskScript(player, finishScript);
 		// Remove listener instance from the player
 		removeListenerFor(player, listenerId);

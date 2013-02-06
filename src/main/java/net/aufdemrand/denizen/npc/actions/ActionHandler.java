@@ -3,9 +3,11 @@ package net.aufdemrand.denizen.npc.actions;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -13,34 +15,32 @@ import java.util.List;
 public class ActionHandler {
 
     final Denizen denizen;
-    
+
     public ActionHandler(Denizen denizen) {
         this.denizen = denizen;
     }
-    
-    public void doAction(String actionName, dNPC npc, Player player, String assignment) {
 
-        if (assignment == null) return;
+    public boolean doAction(String actionName, dNPC npc, Player player, AssignmentScriptContainer assignment) {
 
-        dB.echoDebug(ChatColor.YELLOW + "+> Action! "
-                + ChatColor.DARK_GRAY + "NAME='" + ChatColor.YELLOW + actionName + ChatColor.DARK_GRAY + "', "
-                + ChatColor.DARK_GRAY + "NPC='" + ChatColor.YELLOW + npc.getName() + "/" + npc.getId() + ChatColor.DARK_GRAY + "', "
-                + ChatColor.DARK_GRAY + "ASSIGNMENT='" + ChatColor.YELLOW + assignment + ChatColor.DARK_GRAY
-                + ChatColor.DARK_GRAY + (player != null ? ", PLAYER='" + ChatColor.YELLOW + player.getName() + ChatColor.DARK_GRAY + "', " : "'"));
+        if (assignment == null) return false;
+
+        dB.report("Action!",
+                aH.debugObj("Name", actionName)
+                        + aH.debugObj("NPC", npc.toString())
+                        + assignment.getAsScriptArg().debug()
+                        + (player != null ? aH.debugObj("Player", player.getName()) : ""));
 
         // Fetch script from Actions
-        List<String> script = denizen.getScriptEngine().getScriptHelper().getStringListIgnoreCase(assignment + ".actions.on " + actionName);
-        if (script.isEmpty()) return;
-        
-        dB.echoDebug(DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
-        
-        // Build script entries
-        List<ScriptEntry> scriptEntries = denizen.getScriptEngine().getScriptBuilder().buildScriptEntries(player, npc, script, null, null);
+        List<ScriptEntry> script = assignment.getEntries(player, npc, "actions.on " + actionName);
+        if (script.isEmpty()) return false;
 
-        // Execute scriptEntries
-        for (ScriptEntry scriptEntry : scriptEntries)
-           denizen.getScriptEngine().getScriptExecuter().execute(scriptEntry);
-        
+        dB.echoDebug(DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
+
+        ScriptQueue queue = ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(script);
+        queue.start();
+        if (queue.getContext().equalsIgnoreCase("cancelled")) return true;
+
+        return false;
     }
-    
+
 }

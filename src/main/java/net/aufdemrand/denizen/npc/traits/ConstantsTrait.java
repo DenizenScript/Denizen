@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.events.dScriptReloadEvent;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -138,7 +139,7 @@ public class ConstantsTrait extends Trait {
         // Check to make sure NPC has an assignment
         if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()) {
             // Check to make sure assignment hasn't changed.. if it has, the assignmentConstants map will be rebuilt
-            if (assignment != null && assignment.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment()))
+            if (assignment != null && assignment.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment().getName()))
                 return assignmentConstants;
             else return rebuildAssignmentConstants();
         }
@@ -151,11 +152,16 @@ public class ConstantsTrait extends Trait {
             assignmentConstants.clear();
             return assignmentConstants;
         }
-        assignment = npc.getTrait(AssignmentTrait.class).getAssignment();
+
+        assignment = npc.getTrait(AssignmentTrait.class).getAssignment().getName();
         assignmentConstants.clear();
-        if (DenizenAPI.getCurrentInstance().getScripts().contains(assignment.toUpperCase() + ".DEFAULT CONSTANTS"))
-            for (String constant : DenizenAPI.getCurrentInstance().getScripts().getConfigurationSection(assignment.toUpperCase() + ".DEFAULT CONSTANTS").getKeys(false))
-                assignmentConstants.put(constant.toLowerCase(), DenizenAPI.getCurrentInstance().getScripts().getString(assignment.toUpperCase() + ".DEFAULT CONSTANTS." + constant.toUpperCase(), ""));
+
+        if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS"))
+            for (String constant : ScriptRegistry.getScriptContainer(assignment).getConfigurationSection("DEFAULT CONSTANTS").getKeys(false))
+                assignmentConstants.put(constant.toLowerCase(),
+                        ScriptRegistry.getScriptContainer(assignment)
+                                .getString("DEFAULT CONSTANTS." + constant.toUpperCase(), ""));
+
         return assignmentConstants;
     }
 

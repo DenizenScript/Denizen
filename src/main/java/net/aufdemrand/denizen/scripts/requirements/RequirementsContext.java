@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.requirements;
 
-import net.citizensnpcs.api.npc.NPC;
+import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -22,13 +23,13 @@ public class RequirementsContext {
     private Map<String, Object> objects = new HashMap<String, Object>();
 
     protected Player player = null;
-    protected NPC npc = null;
-    protected String scriptName;
+    protected dNPC npc = null;
+    protected ScriptContainer container;
 
-    public RequirementsContext(RequirementsMode mode, List<String> list, String scriptName) {
+    public RequirementsContext(RequirementsMode mode, List<String> list, ScriptContainer scriptContainer) {
         this.mode = mode;
         this.list = list;
-        this.scriptName = scriptName;
+        this.container = scriptContainer;
     }
 
     public RequirementsContext attachPlayer(Player player) {
@@ -36,12 +37,12 @@ public class RequirementsContext {
         return this;
     }
 
-    public RequirementsContext attachNPC(NPC npc) {
+    public RequirementsContext attachNPC(dNPC npc) {
         this.npc = npc;
         return this;
     }
 
-    public NPC getNPC() {
+    public dNPC getNPC() {
         return npc;
     }
 
@@ -49,8 +50,8 @@ public class RequirementsContext {
         return player;
     }
 
-    public String getScript() {
-        return scriptName;
+    public ScriptContainer getScriptContainer() {
+        return container;
     }
 
     public RequirementsContext addObject(String key, Object obj) {

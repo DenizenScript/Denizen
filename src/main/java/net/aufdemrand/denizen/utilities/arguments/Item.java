@@ -1,25 +1,15 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Item extends ItemStack implements dScriptArgument {
-
-    final static Pattern[] getItemPtrn = {
-            Pattern.compile("(?:(?:.+?:)|)(\\d+):(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+?):(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+)"),
-            Pattern.compile("(?:(?:.+?:)|)itemstack\\.(.+)", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("(?:(?:.+?:)|)(.+)"),
-    };
 
     /**
      * Gets a saved location based on an Id.
@@ -28,16 +18,20 @@ public class Item extends ItemStack implements dScriptArgument {
      * @return  the Location associated
      */
     public static Item getSavedItem(String id) {
+        // TODO: Test to see if this is even possible. Keeping track of ACTUAL item instances may
+        // be more difficult than entities.
         return null;
     }
 
     /**
-     * Checks if there is a saved location with this Id.
+     * Checks if there is a saved item with this Id.
      *
      * @param id  the Id to check
      * @return  true if it exists, false if not
      */
     public static boolean isSavedItem(String id) {
+        // TODO: Test to see if this is even possible. Keeping track of ACTUAL item instances may
+        // be more difficult than entities.
         return false;
     }
 
@@ -45,7 +39,8 @@ public class Item extends ItemStack implements dScriptArgument {
      * Called on server startup or /denizen reload locations. Should probably not be called manually.
      */
     public static void _recallItems() {
-
+        // TODO: Test to see if this is even possible. Keeping track of ACTUAL item instances may
+        // be more difficult than entities.
     }
 
     /**
@@ -53,8 +48,21 @@ public class Item extends ItemStack implements dScriptArgument {
      * not be called manually.
      */
     public static void _saveItems() {
-
+        // TODO: Test to see if this is even possible. Keeping track of ACTUAL item instances may
+        // be more difficult than entities.
     }
+
+    // Patterns used in valueOf...
+    // TODO: Make prettier.. maybe an array of Patterns isn't even necessary anymore.
+    // Maybe seperate them out instead?
+    final static Pattern[] getItemPtrn = {
+            Pattern.compile("(?:(?:.+?:)|)(\\d+):(\\d+)"),
+            Pattern.compile("(?:(?:.+?:)|)(\\d+)"),
+            Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+?):(\\d+)"),
+            Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+)"),
+            Pattern.compile("(?:(?:.+?:)|)itemstack\\.(.+)", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("(?:(?:.+?:)|)(.+)"),
+    };
 
     /**
      * Gets a Item Object from a string form.
@@ -73,7 +81,7 @@ public class Item extends ItemStack implements dScriptArgument {
         // Check if a saved item instance from NEW
         m[0] = getItemPtrn[4].matcher(string);
         if (m[0].matches()) {
-            // TODO:
+            // TODO: Finish NEW command.
         }
 
         // Check traditional item patterns.
@@ -109,64 +117,18 @@ public class Item extends ItemStack implements dScriptArgument {
             }
 
         } catch (Exception e) {
-
+            // Don't report error yet, the item may identified in a custom item script.
         }
 
         // Check custom item script
         m[0] = getItemPtrn[5].matcher(string);
         if (m[0].matches()) {
-            Script itemScript = Script.valueOf(m[0].group(1));
-            if (itemScript != null && itemScript.getType().equalsIgnoreCase("ITEM")) {
-                // Check validity of material
-                if (itemScript.getContents().contains("MATERIAL"))
-                    stack = Item.valueOf(itemScript.getContents().getString("MATERIAL"));
-
-                // Make sure we're working with a valid base ItemStack
-                if (stack == null) return null;
-
-                ItemMeta meta = stack.getItemMeta();
-
-                // Set Display Name
-                if (itemScript.getContents().contains("DISPLAY NAME"))
-                    meta.setDisplayName(itemScript.getContents().getString("DISPLAY NAME"));
-
-                // Set Lore
-                if (itemScript.getContents().contains("LORE"))
-                    meta.setLore(itemScript.getContents().getStringList("LORE"));
-
-                stack.setItemMeta(meta);
-
-                // Set Enchantments
-                if (itemScript.getContents().contains("ENCHANTMENTS")) {
-                    for (String enchantment : itemScript.getContents().getStringList("ENCHANTMENTS")) {
-                        try {
-                            // Build enchantment context
-                            int level = 1;
-                            if (enchantment.split(":").length > 1) {
-                                level = Integer.valueOf(enchantment.split(":")[1]);
-                                enchantment = enchantment.split(":")[0];
-                            }
-                            // Add enchantment
-                            Enchantment ench = Enchantment.getByName(enchantment.toUpperCase());
-                            stack.addEnchantment(ench, level);
-                        } catch (Exception e) {
-                            // Invalid enchantment information, let's try the next entry
-                            continue;
-                        }
-                    }
-                }
-
-                // Set Color
-                if (itemScript.getContents().contains("COLOR"))
-                    LeatherColorer.colorArmor(stack, itemScript.getContents().getString("COLOR"));
-
-                stack.setId(itemScript.getName());
-                return stack;
-            }
+            // Get item from script
+            return ScriptRegistry.getScriptContainerAs(m[0].group(1), ItemScriptContainer.class).getItemFrom();
         }
 
+        // No match.
         dB.echoError("Invalid item! Failed to find a matching Item type.");
-
         return stack;
     }
 
@@ -189,8 +151,8 @@ public class Item extends ItemStack implements dScriptArgument {
         super(type, qty);
     }
 
-    protected Item setId(String id) {
-        this.id = id;
+    public Item setId(String id) {
+        this.id = id.toUpperCase();
         return this;
     }
 

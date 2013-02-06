@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.trait.Owner;
 import net.minecraft.server.v1_4_R1.EntityLiving;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
@@ -100,6 +101,10 @@ public class dNPC {
 
     public boolean isVulnerable() {
         return true;
+    }
+
+    public String getOwner() {
+        return getCitizen().getTrait(Owner.class).getOwner();
     }
 
     public AssignmentTrait getAssignmentTrait() {

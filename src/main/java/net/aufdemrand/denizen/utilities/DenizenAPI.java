@@ -2,10 +2,13 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.scripts.Engine;
+import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.Map;
+import java.util.Collection;
 
 /**
  * Provides some static methods for working with Denizen and Denizen-enabled NPCs
@@ -35,7 +38,7 @@ public class DenizenAPI {
      * @return map of NPC, dNPC of all spawned NPCs
      *
      */
-    public static Map<NPC, dNPC> getSpawnedNPCs() {
+    public static Collection<dNPC> getSpawnedNPCs() {
         return getCurrentInstance().getNPCRegistry().getSpawnedNPCs();
     }
 
@@ -46,6 +49,18 @@ public class DenizenAPI {
      */
     public static Denizen getCurrentInstance() {
         return (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+    }
+
+    public static CommandRegistry commandRegistry() {
+        return getCurrentInstance().getCommandRegistry();
+    }
+
+    public static Engine scriptEngine() {
+        return getCurrentInstance().getScriptEngine();
+    }
+
+    public static FileConfiguration getSaves() {
+        return getCurrentInstance().getSaves();
     }
 
 

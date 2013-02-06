@@ -69,7 +69,7 @@ public class PauseCommand extends AbstractCommand {
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-		pause(dNPC, pauseType, !scriptEntry.getCommand().equalsIgnoreCase("RESUME"));
+		pause(dNPC, pauseType, !scriptEntry.getCommandName().equalsIgnoreCase("RESUME"));
 
 		// If duration...
 		if (duration > 0) {

@@ -16,6 +16,11 @@ public class ScriptQueue implements Listener {
 
     protected static int totalQueues = 0;
 
+    @Override
+    public String toString() {
+        return "ScriptQueue(" + id + ")";
+    }
+
     public static String _getStats() {
         return "Total number of queues created: '"
                 + totalQueues
@@ -23,8 +28,8 @@ public class ScriptQueue implements Listener {
                 + _queues.size() +  "'.";
     }
 
-    public static int _getNextId() {
-        return totalQueues + 1;
+    public static String _getNextId() {
+        return String.valueOf(totalQueues + 1);
     }
 
     public static Map<String, ScriptQueue> _queues = new ConcurrentHashMap<String, ScriptQueue>();
@@ -84,6 +89,8 @@ public class ScriptQueue implements Listener {
     // If this number is larger than getCurrentTimeMillis, the queues will delay execution
     protected long delay = 0;
 
+    protected String context = null;
+
     protected ScriptEntry lastEntryExecuted = null;
 
     public void setLastEntryExecuted(ScriptEntry entry) {
@@ -92,6 +99,10 @@ public class ScriptQueue implements Listener {
 
     public ScriptEntry getLastEntryExecuted() {
         return lastEntryExecuted;
+    }
+
+    public void clear() {
+        scriptEntries.clear();
     }
 
     protected boolean paused = false;
@@ -136,7 +147,7 @@ public class ScriptQueue implements Listener {
         revolve();
     }
 
-    public void revolve() {
+    private void revolve() {
         // Check timeout
         if (timeout == 0) stop();
         if (scriptEntries.isEmpty() && timeout > 0) timeout--;
@@ -164,6 +175,33 @@ public class ScriptQueue implements Listener {
         return this;
     }
 
+    public boolean removeEntry(int position) {
+        if (scriptEntries.size() < position) return false;
+        scriptEntries.remove(position);
+        return true;
+    }
 
+    public ScriptEntry getEntry(int position) {
+        if (scriptEntries.size() < position) return null;
+        return scriptEntries.get(position);
+    }
 
+    public ScriptQueue injectEntry(ScriptEntry entry, int position) {
+        if (position > scriptEntries.size() || position < 0) position = 1;
+        if (scriptEntries.size() == 0) position = 0;
+        scriptEntries.add(position, entry);
+        return this;
+    }
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public int getQueueSize() {
+        return scriptEntries.size();
+    }
 }

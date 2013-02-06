@@ -1,11 +1,8 @@
 package net.aufdemrand.denizen.npc.activities.core;
 
-import java.util.List;
-
 import net.aufdemrand.denizen.npc.dNPC;
-import net.aufdemrand.denizen.scripts.ScriptEngine;
-import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.citizensnpcs.api.ai.Goal;
 import net.citizensnpcs.api.ai.GoalSelector;
 
@@ -14,7 +11,6 @@ public class TaskGoal implements Goal {
 
     private dNPC npc;
     private TaskActivity activity;
-    private ScriptEngine scriptEngine;
     private final int delay;
     private final int duration;
     private final int repeats;
@@ -24,7 +20,6 @@ public class TaskGoal implements Goal {
 
     public TaskGoal(dNPC npc, int delay, int duration, String scriptName, int repeats, TaskActivity activityInstance) {
         this.activity = activityInstance;
-        this.scriptEngine = activity.denizen.getScriptEngine();
         this.npc = npc;
         this.delay = delay;
         this.duration = duration;
@@ -48,8 +43,8 @@ public class TaskGoal implements Goal {
 
             } else {
                 dur = System.currentTimeMillis() + (this.duration * 1000);
-                List<String> theScript = scriptEngine.getScriptHelper().getScriptContents(scriptName + ScriptHelper.scriptKey);
-                scriptEngine.getScriptBuilder().queueScriptEntries(npc, scriptEngine.getScriptBuilder().buildScriptEntries(npc, theScript, scriptName), QueueType.NPC);	
+                TaskScriptContainer taskScript = ScriptRegistry.getScriptContainerAs(scriptName, TaskScriptContainer.class);
+                taskScript.runTaskScript(null, npc, null);
             }
     }
 

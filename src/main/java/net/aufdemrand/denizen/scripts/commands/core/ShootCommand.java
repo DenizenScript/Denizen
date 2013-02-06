@@ -2,10 +2,8 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -13,17 +11,15 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable3;
 import net.aufdemrand.denizen.utilities.Utilities;
 
-import org.bukkit.craftbukkit.v1_4_R1.help.*;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Arrow;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Snowball;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
 /**
@@ -43,7 +39,9 @@ public class ShootCommand extends AbstractCommand {
         Integer qty = null;
         Location location = null;
         Boolean ride = false;
-        Boolean burning = false;
+        Boolean burn = false;
+        Boolean explode = false;
+        Boolean fireworks = false;
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
@@ -54,18 +52,31 @@ public class ShootCommand extends AbstractCommand {
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesEntityType(arg)) {
                 entityType = aH.getEntityFrom(arg);
-
-            } else if (aH.matchesQuantity(arg)) {
-                qty = aH.getIntegerFrom(arg);
+                dB.echoDebug("...entity set to '%s'.", arg);
 
             } else if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
-               
+                dB.echoDebug("...location set to '%s'.", arg);
+                
+            } else if (aH.matchesScript(arg)) {
+				scriptEntry.setScript(aH.getStringFrom(arg));
+				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
+
             } else if (aH.matchesArg("RIDE, MOUNT", arg)) {
                 ride = true;
+                dB.echoDebug("...will be mounted.");
                 
-            } else if (aH.matchesArg("BURNING", arg)) {
-                burning = true;
+            } else if (aH.matchesArg("BURN, BURNING", arg)) {
+                burn = true;
+                dB.echoDebug("...will burn.");
+               
+            } else if (aH.matchesArg("EXPLODE, EXPLODING", arg)) {
+                explode = true;
+                dB.echoDebug("...will explode.");
+                
+            } else if (aH.matchesArg("FIREWORKS", arg)) {
+                fireworks = true;
+                dB.echoDebug("...will launch fireworks.");
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -75,9 +86,10 @@ public class ShootCommand extends AbstractCommand {
         // Stash objects
         scriptEntry.addObject("location", location);
         scriptEntry.addObject("entityType", entityType);
-        scriptEntry.addObject("qty", qty);
         scriptEntry.addObject("ride", ride);
-        scriptEntry.addObject("burning", burning);
+        scriptEntry.addObject("burn", burn);
+        scriptEntry.addObject("explode", explode);
+        scriptEntry.addObject("fireworks", fireworks);
     }
     
     @Override
@@ -85,24 +97,24 @@ public class ShootCommand extends AbstractCommand {
         // Get objects
     	
         Location location = (Location) scriptEntry.getObject("location");
-        Integer qty = (Integer) scriptEntry.getObject("qty");
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
         Boolean ride = (Boolean) scriptEntry.getObject("ride");
-        Boolean burning = (Boolean) scriptEntry.getObject("burning");
+        Boolean burn = (Boolean) scriptEntry.getObject("burn");
         
-        //Vector direction = scriptEntry.getNPC().getEyeLocation().getDirection().multiply(2.5);
+        if (location == null)
+        {
+        	location = (Location) scriptEntry.getNPC().getEyeLocation().getDirection().
+        				multiply(4).toLocation(scriptEntry.getNPC().getWorld());
+        }
+        else
+        {
+        	Utilities.faceLocation(scriptEntry.getNPC().getCitizen().getBukkitEntity(), location);
+        }
 
-        // Set quantity if not specified
-        if (qty != null && entityType != null)
-            qty = 1;
-        else qty = 1;
-        
-        Utilities.faceLocation(scriptEntry.getNPC().getCitizen().getBukkitEntity(), location);
-        
         Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
         				scriptEntry.getNPC().getEyeLocation().add(
         				scriptEntry.getNPC().getEyeLocation().getDirection())
-        				.subtract(0, -0.8, 0),
+        				.subtract(0, 0.4, 0),
         				entityType);
         
         Utilities.faceLocation(entity, location);
@@ -112,7 +124,7 @@ public class ShootCommand extends AbstractCommand {
         	entity.setPassenger(scriptEntry.getPlayer());
         }
         
-        if (burning == true)
+        if (burn == true)
         {
         	entity.setFireTicks(500);
         }
@@ -124,51 +136,55 @@ public class ShootCommand extends AbstractCommand {
         
         Runnable3 task = new Runnable3<ScriptEntry, Entity, Location>
         				(scriptEntry, entity, location)
-        				{
-        					@Override
-        					public void run(ScriptEntry scriptEntry, Entity entity, Location location) {
+        	{
+        		@Override
+        		public void run(ScriptEntry scriptEntry, Entity entity, Location location) {
     	        				
-        						if (getRuns() < 40 && entity.isValid())
-        						{
-        							dB.echoDebug(entity.getType().name() + " flying time " + getRuns() + " in task " + getId());
+        			if (getRuns() < 40 && entity.isValid())
+        			{
+        				//dB.echoDebug(entity.getType().name() + " flying time " + getRuns() + " in task " + getId());
+
+        				Vector v1 = entity.getLocation().toVector().clone();
+        				Vector v2 = location.toVector().clone();
+        				Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
         							
-        							Vector v1 = entity.getLocation().toVector().clone();
-        							Vector v2 = location.toVector().clone();
-        							Vector v3 = v2.clone().subtract(v1).normalize().multiply(2);
-        							
-        							entity.setVelocity(v3);
-                
-        							//dB.echoError("Current run: " + getRuns() + " of " + getId());
-        							//dB.echoApproval("Vector 1: " + v1.toString());
-        							//dB.echoApproval("Vector 2: " + v2.toString());
-        							//dB.echoApproval("Vector 1 floored: " + v1.getBlockX() + " " + v1.getBlockY() + " " + v1.getBlockZ());
-        							//dB.echoApproval("Vector 2 floored: " + v2.getBlockX() + " " + v2.getBlockY() + " " + v2.getBlockZ());
-        							//dB.echoApproval("Vector 3: " + v3.toString());
-        							//dB.echoApproval("Vector 3 floored: " + v3.getBlockX() + " " + v3.getBlockY() + " " + v3.getBlockZ());
-        							//dB.echoApproval("Location 1: " + entity.getLocation().toString());
-        							addRuns();
+        				entity.setVelocity(v3);
+        				addRuns();
         						
-        							if (Math.abs(v2.getBlockX() - v1.getBlockX()) < 2 && Math.abs(v2.getBlockY() - v1.getBlockY()) < 2
-        									&& Math.abs(v2.getBlockZ() - v1.getBlockZ()) < 2)
-        							{
-        								this.cancel();
-        								clearRuns();
-            							dB.echoApproval("Finished task for " + entity.getType().name());
-        							}
-        						}
-        						else
-        						{
-        							this.cancel();
-        							clearRuns();
-        							dB.echoApproval("Finished task for " + entity.getType().name());
-        						}
-        					}
-        				};
+        				if (Math.abs(v2.getBlockX() - v1.getBlockX()) < 2 && Math.abs(v2.getBlockY() - v1.getBlockY()) < 2
+        				&& Math.abs(v2.getBlockZ() - v1.getBlockZ()) < 2)
+        				{
+        					setRuns(40);
+        				}
+        			}
+        			else
+        			{
+        				this.cancel();
+        				clearRuns();
+        				
+        				if (scriptEntry.getScript() != null)
+        				{
+        					denizen.getScriptEngine().getScriptBuilder().runTaskScript(scriptEntry.getPlayer(), scriptEntry.getScript().getName());
+        				}
+        				if ((Boolean) scriptEntry.getObject("fireworks"))
+        				{
+        					Firework firework = entity.getWorld().spawn(entity.getLocation(), Firework.class);
+        			        FireworkMeta fireworkMeta = (FireworkMeta) firework.getFireworkMeta();
+        			        fireworkMeta.addEffects(FireworkEffect.builder().withColor(Color.YELLOW).with(Type.STAR).build());
+        			        fireworkMeta.setPower(2);
+        			        firework.setFireworkMeta(fireworkMeta);
+        				}
+        				if ((Boolean) scriptEntry.getObject("explode"))
+        				{
+        					entity.getWorld().createExplosion(entity.getLocation(), 4);
+        				}
+        				
+        			}
+        		}
+       		};
         
-        task.setId(Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, task, 2, 2));
-        dB.echoApproval("Scheduled task with ID: " + task.getId());
-        
-        }
+        task.setId(Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, task, 0, 2));        
+    }
     
 
 }

@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-import net.aufdemrand.denizen.utilities.DenizenPlayer;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
@@ -131,7 +130,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (scriptName == null) return false;
 
         Boolean	foundTrigger = false;
-        ScriptEngine	sE = denizen.getScriptEngine();
+        ScriptEngine sE = denizen.getScriptEngine();
 
         dB.echoDebug(dB.DebugElement.Header, "Parsing " + name + " trigger: " + npc.getName() + "/" + player.getName());
 

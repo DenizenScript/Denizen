@@ -2,17 +2,13 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.dNPC;
-import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -37,71 +33,65 @@ import java.util.Random;
  */
 
 public class RandomCommand extends AbstractCommand {
-	private	Integer numberOfEntries = null;
-	private	Player player;
-	private	List<ScriptEntry> currentQueue = new ArrayList<ScriptEntry>();
-	private	QueueType sendingQueue;
-	private dNPC npc;
+
 	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry)
 			throws InvalidArgumentsException {
-		
-		sendingQueue = scriptEntry.getSendingQueue();
-		this.npc = scriptEntry.getNPC();
-		
-		if (scriptEntry.getPlayer() != null) {
-			this.player = scriptEntry.getPlayer();
-		}
+
+        int possibilities = 1;
+        ScriptQueue queue;
+
+		queue = ScriptQueue._getQueue(scriptEntry.getResidingQueue());
 		
 		for (String arg : scriptEntry.getArguments()) {
 			//
 			// Make sure the random number is an integer.
 			//
 			if (aH.matchesInteger(arg)) {
-				this.numberOfEntries = aH.getIntegerFrom(arg);
-				dB.echoDebug("...will randomly select from the next %s entries.", arg);
+				possibilities = aH.getIntegerFrom(arg);
 			} else {
 				throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 			}
 		}	
 
-		if (this.numberOfEntries == null) {
-			throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
+		if (possibilities <= 1) {
+			throw new InvalidArgumentsException("Must randomly select more than one item.");
 		}
 
-		currentQueue = (this.player != null) ?
-			denizen.getScriptEngine().getPlayerQueue(player, sendingQueue) :
-			denizen.getScriptEngine().getDenizenQueue(npc, sendingQueue);
-
-		if (currentQueue.size() < this.numberOfEntries) {
+		if (queue.getQueueSize() < possibilities) {
 			throw new InvalidArgumentsException("Invalid Size! RANDOM [#] must not be larger than the script!");
 		}
+
+        scriptEntry.addObject("possibilities", possibilities);
+        scriptEntry.addObject("queue", queue);
 		
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+
+        Integer possibilities = (Integer) scriptEntry.getObject("possibilities");
+        ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
+
 		Random random = new Random();
-		int selected = random.nextInt(this.numberOfEntries);
-		ScriptEntry sEtoKeep = null;
+		int selected = random.nextInt(possibilities);
+		ScriptEntry keeping = null;
 		
 		dB.echoDebug("...random number generator selected '%s'", String.valueOf(selected + 1));
 		
-		for (int x = 0; x < this.numberOfEntries; x++) {
+		for (int x = 0; x < possibilities; x++) {
 			if (x != selected) {
-				dB.echoDebug("...removing '%s'", currentQueue.get(0).getCommand());
-				currentQueue.remove(0);
+				dB.echoDebug("...removing '%s'", queue.getEntry(0).getCommandName());
+				queue.removeEntry(0);
 			} else {
-				dB.echoDebug("...selected '%s'", currentQueue.get(0).getCommand() + ": " + currentQueue.get(0).getArguments());
-				sEtoKeep = currentQueue.get(0);
-				currentQueue.remove(0);
+				dB.echoDebug("...selected '%s'", queue.getEntry(0).getCommandName() + ": "
+                        + queue.getEntry(0).getArguments());
+				keeping = queue.getEntry(0);
+				queue.removeEntry(0);
 			}
 		}
 		
-		currentQueue.add(0, sEtoKeep);
-		if (player != null) denizen.getScriptEngine().replaceQueue(player, currentQueue, sendingQueue);
-		else denizen.getScriptEngine().replaceQueue(npc, currentQueue, sendingQueue);
-		
+		queue.injectEntry(keeping, 0);
 	}
 }

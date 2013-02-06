@@ -10,11 +10,14 @@ public abstract class Runnable4<A, B, C, D> implements Runnable {
 	public int getRuns()
 	{ return timesRun; }
 	
+	public void setRuns(int runs)
+	{ this.timesRun = runs; }
+	
 	public void addRuns()
-	{ this.timesRun++;  }
+	{ this.timesRun++; }
 	
 	public void clearRuns()
-	{ this.timesRun = 0;  }
+	{ this.timesRun = 0; }
 	
 	public int getId()
 	{ return id; }

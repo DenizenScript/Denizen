@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.requirements;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
@@ -41,7 +42,7 @@ public class RequirementChecker {
         //
         // Actual requirements that need checking, alert the debugger
         //
-        dB.echoDebug(ChatColor.YELLOW + "CHECK! Now checking '%s'", context.scriptName);
+        dB.echoDebug(ChatColor.YELLOW + "CHECK! Now checking '%s'", context.container.getName());
         dB.echoDebug("Requirement mode: '%s'", context.mode.getMode().toString());
 
         // Set up checks for requirement mode 'FIRST AND ANY #'
@@ -70,7 +71,7 @@ public class RequirementChecker {
 				AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqEntry.split(" ")[0].toUpperCase());
 				String[] arguments = null;
 				if (reqEntry.split(" ").length > 1)	{
-					arguments = plugin.getScriptEngine().getScriptBuilder().buildArgs(reqEntry.split(" ", 2)[1]);
+					arguments = aH.buildArgs(reqEntry.split(" ", 2)[1]);
 				}
 
 				// Replace tags

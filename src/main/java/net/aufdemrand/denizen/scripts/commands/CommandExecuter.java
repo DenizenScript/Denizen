@@ -29,19 +29,19 @@ public class CommandExecuter {
 	 */
 
 	public boolean execute(ScriptEntry scriptEntry) {
-		if (plugin.getCommandRegistry().get(scriptEntry.getCommand()) == null) {
-			dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommand());
-			dB.echoError(scriptEntry.getCommand() + " is an invalid dScript command! Are you sure the command loaded?");
+		if (plugin.getCommandRegistry().get(scriptEntry.getCommandName()) == null) {
+			dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName());
+			dB.echoError(scriptEntry.getCommandName() + " is an invalid dScript command! Are you sure the command loaded?");
 			dB.echoDebug(DebugElement.Footer);
 			return false;
 		}
 
 		// Get the command instance ready for the execution of the scriptEntry
-		AbstractCommand command = plugin.getCommandRegistry().get(scriptEntry.getCommand());
+		AbstractCommand command = plugin.getCommandRegistry().get(scriptEntry.getCommandName());
 
 		// Debugger information
-		if (scriptEntry.getPlayer() != null) dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommand() + "/" + scriptEntry.getPlayer().getName());
-		else dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommand() + "/" + scriptEntry.getNPC().getName());
+		if (scriptEntry.getPlayer() != null) dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName() + "/" + scriptEntry.getPlayer().getName());
+		else dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName() + "/" + scriptEntry.getNPC().getName());
 
 		// Don't execute() if problems arise in parseArgs()
 		boolean keepGoing = true;
@@ -134,7 +134,7 @@ public class CommandExecuter {
 			if (keepGoing)
 			try {
 				// Fire event for last minute cancellation/alterations
-				ScriptEntryExecuteEvent event = new ScriptEntryExecuteEvent(scriptEntry.getPlayer(), scriptEntry);
+				ScriptEntryExecuteEvent event = new ScriptEntryExecuteEvent(scriptEntry);
 				Bukkit.getServer().getPluginManager().callEvent(event);
 
 				// If event is altered, update the scriptEntry.
