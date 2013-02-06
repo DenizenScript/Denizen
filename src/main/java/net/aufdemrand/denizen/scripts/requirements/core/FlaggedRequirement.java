@@ -1,16 +1,14 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.List;
-
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
+import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-
-import net.citizensnpcs.api.npc.NPC;
-
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class FlaggedRequirement extends AbstractRequirement {
 
@@ -59,7 +57,7 @@ public class FlaggedRequirement extends AbstractRequirement {
 				break;
 				
 			case NPC:
-				NPC npc = context.getNPC();
+				dNPC npc = context.getNPC();
 				
 				if(npc != null)
 					outcome = flagMng.getNPCFlag(npc.getId(), flag).size() > 0;
