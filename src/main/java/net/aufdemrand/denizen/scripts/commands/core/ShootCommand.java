@@ -57,6 +57,10 @@ public class ShootCommand extends AbstractCommand {
             } else if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
                 dB.echoDebug("...location set to '%s'.", arg);
+                
+            } else if (aH.matchesScript(arg)) {
+				scriptEntry.setScript(aH.getStringFrom(arg));
+				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
 
             } else if (aH.matchesArg("RIDE, MOUNT", arg)) {
                 ride = true;
@@ -157,7 +161,11 @@ public class ShootCommand extends AbstractCommand {
         			{
         				this.cancel();
         				clearRuns();
-
+        				
+        				if (scriptEntry.getScript() != null)
+        				{
+        					denizen.getScriptEngine().getScriptBuilder().runTaskScript(scriptEntry.getPlayer(), scriptEntry.getScript().getName());
+        				}
         				if ((Boolean) scriptEntry.getObject("fireworks"))
         				{
         					Firework firework = entity.getWorld().spawn(entity.getLocation(), Firework.class);
