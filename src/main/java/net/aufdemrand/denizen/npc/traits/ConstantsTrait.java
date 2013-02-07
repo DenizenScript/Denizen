@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.events.dScriptReloadEvent;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import net.citizensnpcs.command.exception.CommandException;
+import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Paginator;
 import org.bukkit.command.CommandSender;
