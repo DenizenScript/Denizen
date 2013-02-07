@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.commands.core.*;
+import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.HashMap;
@@ -58,9 +59,12 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(CastCommand.class, 
         		"CAST", "cast [potion_effect_type] (duration:#{60s}) (power:#{1}) (target(s):npc|player|npc.#|player.player_name|entity_name)", 1);
 
+        if (Depends.protocolManager != null)
+        {
         registerCoreMember(ChairCommand.class, 
         		"Chair", "chair (sit|stand) [location:x,y,z,world]", 1);
-
+        }
+        
         registerCoreMember(ChatCommand.class, 
         		"CHAT", "chat ['message to chat'] (npcid:#) (target(s):npc.#|player.player_name{attached player})", 1);
         
