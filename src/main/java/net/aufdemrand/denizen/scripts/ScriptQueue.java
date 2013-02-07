@@ -29,7 +29,7 @@ public class ScriptQueue implements Listener {
     }
 
     public static String _getNextId() {
-        return String.valueOf(totalQueues + 1);
+        return String.valueOf(totalQueues + 1 + "_" String);
     }
 
     public static Map<String, ScriptQueue> _queues = new ConcurrentHashMap<String, ScriptQueue>();

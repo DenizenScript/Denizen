@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.dNPC;
-import net.aufdemrand.denizen.scripts.Engine;
+import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -51,15 +51,15 @@ public class DenizenAPI {
         return (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
     }
 
-    public static CommandRegistry commandRegistry() {
+    public static CommandRegistry _commandRegistry() {
         return getCurrentInstance().getCommandRegistry();
     }
 
-    public static Engine scriptEngine() {
+    public static ScriptEngine _scriptEngine() {
         return getCurrentInstance().getScriptEngine();
     }
 
-    public static FileConfiguration getSaves() {
+    public static FileConfiguration _saves() {
         return getCurrentInstance().getSaves();
     }
 

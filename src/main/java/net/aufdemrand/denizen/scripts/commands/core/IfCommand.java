@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -441,14 +442,9 @@ public class IfCommand extends AbstractCommand {
         String[] outcomeArgs = Arrays.copyOf((Object[]) scriptEntry.getObject("outcome-command-args"),
                 ((Object[]) scriptEntry.getObject("outcome-command-args")).length, String[].class);
         try {
-            denizen.getScriptEngine().getScriptExecuter().execute(
-                    new ScriptEntry(outcomeCommand,
-                            outcomeArgs,
-                            scriptEntry.getPlayer(),
-                            scriptEntry.getNPC(),
-                            scriptEntry.getScript().getName(),
-                            scriptEntry.getStep())
-                            .addObject("reqId", scriptEntry.getObject("reqId")));
+            ScriptEntry entry = new ScriptEntry(outcomeCommand, outcomeArgs,
+                    scriptEntry.getScript().getContainer()).addObject("reqId", scriptEntry.getObject("reqId"));
+            ScriptQueue._getQueue(scriptEntry.getResidingQueue()).injectEntry(scriptEntry, 1);
         } catch (ScriptEntryCreationException e) {
             dB.echoError("There has been a problem running the Command. Check syntax.");
             if (dB.showStackTraces) {
@@ -474,13 +470,9 @@ public class IfCommand extends AbstractCommand {
         if (elseCommand == null) return;
 
         try {
-            denizen.getScriptEngine().getScriptExecuter().execute(
-                    new ScriptEntry(elseCommand,
-                            elseArgs,
-                            scriptEntry.getPlayer(),
-                            scriptEntry.getNPC(),
-                            scriptEntry.getScript().getName(),
-                            scriptEntry.getStep()).addObject("reqId", scriptEntry.getObject("reqId")));
+            ScriptEntry entry = new ScriptEntry(elseCommand, elseArgs,
+                    scriptEntry.getScript().getContainer()).addObject("reqId", scriptEntry.getObject("reqId"));
+            ScriptQueue._getQueue(scriptEntry.getResidingQueue()).injectEntry(scriptEntry, 1);
         } catch (ScriptEntryCreationException e) {
             dB.echoError("There has been a problem running the ELSE Command. Check syntax.");
             if (dB.showStackTraces) {

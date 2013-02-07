@@ -4,9 +4,10 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizen.scripts.ScriptBuilder;
-import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
@@ -62,9 +63,6 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     }
 
     public Denizen denizen;
-    protected ScriptHelper sH;
-
-    protected ScriptBuilder sB;
     protected String name;
 
     public TriggerOptions triggerOptions = new TriggerOptions();
@@ -72,9 +70,6 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     @Override
     public AbstractTrigger activate() {
         denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-        // Reference Helper Classes
-        sH = denizen.getScriptEngine().getScriptHelper();
-        sB = denizen.getScriptEngine().getScriptBuilder();		
         return this;
     }
 
@@ -107,21 +102,19 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 	
 	}
 
-    public boolean parse(dNPC npc, Player player, String script) {
+    public boolean parse(dNPC npc, Player player, InteractScriptContainer script, String id) {
         if (npc == null || player == null || script == null) return false;
 
         dB.echoDebug(DebugElement.Header, "Parsing " + name + " trigger: " + npc.getName() + "/" + player.getName());
 
-        String theStep = sH.getCurrentStep(player, script);
+        List<ScriptEntry> entries = script.getEntriesForTrigger(player, npc,
+                InteractScriptHelper.getCurrentStep(player, script.getName()),
+                this.getClass(),
+                id);
 
-        // Gets entries from the script
-        List<String> theScript = sH.getScriptContents(sH.getTriggerScriptPath(script, theStep, name) + sH.scriptKey);
+        if (entries.isEmpty())
 
-        if (theScript.isEmpty()) return false;
-
-        // Build scriptEntries from the script and queue them up
-        sB.queueScriptEntries(player, sB.buildScriptEntries(player, npc, theScript, script, theStep), QueueType.PLAYER);
-
+        ScriptQueue._getQueue(ScriptQueue._getNextId()).addEntries(entries).start();
         return true;
     }
 
@@ -150,11 +143,11 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 		Iterator<NPC>	it = CitizensAPI.getNPCRegistry().iterator();
 		while (it.hasNext ()) {
 			NPC	npc = it.next ();
-			if (npc.isSpawned()			&&
-					npc.getBukkitEntity().getLocation().getWorld().equals(location.getWorld())	&&
-					npc.getBukkitEntity().getLocation().distance(location) < maxRange						&&
-					npc.hasTrait(TriggerTrait.class)																						&&
-					npc.getTrait(TriggerTrait.class).isEnabled(name)) {
+			if (npc.isSpawned()
+					&& npc.getBukkitEntity().getLocation().getWorld().equals(location.getWorld())
+					&& npc.getBukkitEntity().getLocation().distance(location) < maxRange
+					&& npc.hasTrait(TriggerTrait.class)
+					&& npc.getTrait(TriggerTrait.class).isEnabled(name)) {
 				closestNPCs.add (npc);
 			}
 		}

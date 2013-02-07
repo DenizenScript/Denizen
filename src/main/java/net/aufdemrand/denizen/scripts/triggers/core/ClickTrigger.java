@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.event.EventHandler;
@@ -20,7 +21,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         if (!event.getNPC().getTrait(TriggerTrait.class).trigger(this, event.getClicker())) return;
 
         // Get Interact Script for Player/NPC
-        String script = sH.getInteractScript(event.getNPC(), event.getClicker(), this.getClass());
+        InteractScriptContainer script = sH.getInteractScript(event.getNPC(), event.getClicker(), this.getClass());
 
         // Parse Click Trigger, if unable to parse call No Click Trigger action
         if (!parse(denizen.getNPCRegistry().getDenizen(event.getNPC()), event.getClicker(), script))

@@ -77,7 +77,7 @@ public class RequirementChecker {
 				// Replace tags
 				List<String> argumentList = new ArrayList<String>();
 				if (arguments != null) {
-				    argumentList = plugin.tagManager().fillArguments(arguments, context.player, plugin.getNPCRegistry().getDenizen(context.npc));
+				    argumentList = plugin.tagManager().fillArguments(arguments, context.player, context.npc);
 				}
 
 				try {

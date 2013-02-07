@@ -2,6 +2,9 @@ package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptRepo;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -513,7 +516,7 @@ public class CommandHandler {
 		if (args.hasFlag('a')) {
 			denizen.reloadSaves();
 			denizen.reloadConfig();
-			denizen.reloadScripts();
+			ScriptHelper.reloadScripts();
 			Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml, Denizen/config.yml, and Denizen/scripts/... reloaded from disk to memory.");
 			return;
 		}
@@ -528,7 +531,7 @@ public class CommandHandler {
 				Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
 				return;
 			} else if (args.getString(1).equalsIgnoreCase("scripts")) {
-				denizen.reloadScripts();
+                ScriptHelper.reloadScripts();
 				Messaging.send(sender, ChatColor.GREEN + "Denizen/scripts/... reloaded from disk to memory.");
 				return;
 			}
@@ -555,27 +558,26 @@ public class CommandHandler {
 		String type = null;   if (args.hasValueFlag("type"))   type = args.getFlag("type");
 		String filter = null; if (args.hasValueFlag("filter")) filter = args.getFlag("filter");
 		// Get script names from the scripts.yml in memory
-		Set<String> scripts = denizen.getScripts().getKeys(false);
+		Set<String> scripts = ScriptRegistry._getScriptNames();
 		// New Paginator to display script names
 		Paginator paginator = new Paginator().header("Scripts");
 		paginator.addLine("<e>Key: <a>Type  <b>Name");
 		// Add scripts to Paginator
 		for (String script : scripts) {
-			if (denizen.getScripts().contains(script + ".TYPE")) {
-				// If a --type has been specified... 
+            ScriptContainer scriptContainer = ScriptRegistry.getScriptContainer(script);
+				// If a --type has been specified...
 				if (type != null) {
-					if (denizen.getScripts().getString(script + ".TYPE").equalsIgnoreCase(type))
+					if (scriptContainer.getType().equalsIgnoreCase(type))
 						if (filter != null) { 
 							if (script.contains(filter.toUpperCase()))
-								paginator.addLine("<a>" + denizen.getScripts().getString(script + ".TYPE").toUpperCase().substring(0, 4) + "  <b>" + script);
+								paginator.addLine("<a>" + scriptContainer.getType().substring(0, 4) + "  <b>" + script);
 						}
-						else paginator.addLine("<a>" + denizen.getScripts().getString(script + ".TYPE").toUpperCase().substring(0, 4) + "  <b>" + script);
+						else paginator.addLine("<a>" + scriptContainer.getType().substring(0, 4) + "  <b>" + script);
 					// If a --filter has been specified...
 				} else if (filter != null) { 
 					if (script.contains(filter.toUpperCase()))
-						paginator.addLine("<a>" + denizen.getScripts().getString(script + ".TYPE").toUpperCase().substring(0, 4) + "  <b>" + script);
-				} else paginator.addLine("<a>" + denizen.getScripts().getString(script + ".TYPE").toUpperCase().substring(0, 4) + "  <b>" + script);
-			}
+						paginator.addLine("<a>" + scriptContainer.getType().substring(0, 4) + "  <b>" + script);
+				} else paginator.addLine("<a>" + scriptContainer.getType().substring(0, 4) + "  <b>" + script);
 		}
 		// Send the contents of the Paginator to the Player (or Console)
 		if (!paginator.sendPage(sender, args.getInteger(1, 1)))

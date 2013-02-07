@@ -5,6 +5,8 @@ import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Location;
@@ -64,9 +66,8 @@ public class dNPC {
         return getCitizen().getName();
     }
 
-    public String getInteractScript(Player thePlayer, Class<? extends AbstractTrigger> triggerType) {
-        // TODO: Use new script engine
-        return DenizenAPI.getCurrentInstance().getScriptEngine().getScriptHelper().getInteractScript(getCitizen(), thePlayer, triggerType);
+    public InteractScriptContainer getInteractScript(Player player, Class<? extends AbstractTrigger> triggerType) {
+        return InteractScriptHelper.getInteractScript(this, player, triggerType);
     }
 
     public Location getLocation() {
@@ -131,9 +132,6 @@ public class dNPC {
         return getCitizen().getTrait(TriggerTrait.class);
     }
 
-
-
-
     public void action(String actionName, Player player) {
         if (getCitizen().hasTrait(AssignmentTrait.class))
             DenizenAPI.getCurrentInstance().getNPCRegistry()
@@ -173,7 +171,7 @@ public class dNPC {
 
     @Deprecated
     public boolean isInteracting() {
-        if (!DenizenAPI.commandRegistry().get(EngageCommand.class).getEngaged(getCitizen())) return true;
+        if (!DenizenAPI._commandRegistry().get(EngageCommand.class).getEngaged(getCitizen())) return true;
         else return false;
     }
 

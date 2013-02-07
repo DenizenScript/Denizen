@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -89,7 +90,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
         // Let's get the current step for reference.
-        String currentStep = denizen.getScriptEngine().getScriptHelper().getCurrentStep(scriptEntry.getPlayer(), script.getName(), false);
+        String currentStep = InteractScriptHelper.getCurrentStep(scriptEntry.getPlayer(), script.getName(), false);
 
         // Special-case for backwards compatibility... ability to use ZAP to count up steps.
         if (step == null) {

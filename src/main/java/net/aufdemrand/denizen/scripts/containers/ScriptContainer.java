@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.containers;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -69,5 +70,8 @@ public class ScriptContainer extends MemorySection {
         return list;
     }
 
+    public boolean checkCooldown(Player player) {
+        return DenizenAPI._commandRegistry().get(CooldownCommand.class).checkCooldown(player.getName(), name);
+    }
 
 }

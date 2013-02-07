@@ -20,6 +20,10 @@ public class ScriptRegistry {
         scriptContainerTypes.put(typeName.toUpperCase(), scriptContainerClass);
     }
 
+    public static Set<String> _getScriptNames() {
+        return scriptContainers.keySet();
+    }
+
     public static void _registerCoreTypes() {
         _registerType("interact", InteractScriptContainer.class);
         _registerType("book", BookScriptContainer.class);

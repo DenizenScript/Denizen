@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.Script;
@@ -67,11 +68,10 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
-        String id = null;
         Script script = null;
         Map<String, String> context = null;
         Duration delay = new Duration(0);
-        int speed = Settings.InteractDelayInTicks();
+        Duration speed = new Duration((long) Settings.InteractDelayInTicks());
         ScriptQueue queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
 
         // Iterate through Arguments to extract needed information
@@ -89,6 +89,9 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
                 // Use a specific queue
             } else if (aH.matchesQueue(arg)) {
                 queue = aH.getQueueFrom(arg);
+
+            } else if (aH.matchesValueArg("SPEED", arg, aH.ArgumentType.Duration)) {
+                speed = aH.getDurationFrom(arg);
 
             } else if (aH.matchesArg("QUEUE", arg)) {
                 // Deprecated, no longer needed. All tasks are now queued, even if they are 'instant'.
@@ -119,23 +122,13 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
-        // Check for necessary information post-argument validation
-        if ((queue == ScriptEngine.QueueType.PLAYER || queue == ScriptEngine.QueueType.PLAYER_TASK)
-                && scriptEntry.getPlayer() == null)
-            throw new InvalidArgumentsException("Player cannot be null when using a 'Player' Queue.");
-        if (queue == ScriptEngine.QueueType.NPC && scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException("NPC cannot be null when using a 'NPC' Queue.");
         if (script == null) throw new InvalidArgumentsException("Must define a script to be run!");
 
-        // Set an ID if not specified (we'll use the name of the script)
-        if (id == null) id = script.getName();
-
         // Put important objects inside the scriptEntry to be sent to execute()
-        scriptEntry.addObject("id", id);
+        scriptEntry.addObject("speed", speed);
         scriptEntry.addObject("queue", queue);
         scriptEntry.addObject("delay", delay);
         scriptEntry.addObject("script", script);
-        scriptEntry.addObject("instant", instant);
         scriptEntry.addObject("context", context);
     }
 
@@ -147,8 +140,8 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
 
         Map<String, String> context = (HashMap<String, String>) scriptEntry.getObject("context");
         Script script = (Script) scriptEntry.getObject("script");
-        ScriptEngine.QueueType queue = (ScriptEngine.QueueType) scriptEntry.getObject("queue");
-        Boolean instant = (Boolean) scriptEntry.getObject("instant");
+        ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
+        Duration speed = (Duration) scriptEntry.getObject("speed");
         Duration delay = (Duration) scriptEntry.getObject("delay");
 
         // Debug output
@@ -157,8 +150,14 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
                 + delay.debug()
                 + "Player='" + (scriptEntry.getPlayer() != null ? scriptEntry.getPlayer().getName() + "', " : "NULL', ")
                 + "NPC='" + (scriptEntry.getNPC() != null ? scriptEntry.getNPC() + "', " : "NULL', ")
-                + "Queue='" + (instant == false ? queue.toString() + "'" : "INSTANT'"));
+                + "Queue='" + queue.toString());
 
+        if (delay.getSeconds() <= 0)
+
+        ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScript(ScriptQueue._getNextId(), scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
+
+        else
+            ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScriptWithDelay(ScriptQueue._getNextId(), scriptEntry.getPlayer(), scriptEntry.getNPC(), context, delay);
 
         // Run right now if no delay
         if (delay.getSeconds() <= 0) {
