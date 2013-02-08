@@ -91,6 +91,16 @@ public class LocationTags implements Listener {
         		event.setReplaced(String.valueOf((int) fromLocation.getBlock().getLightLevel()));
         }
         
+        else if (type.equals("TIME"))
+        {   
+            if (subType.equals("PERIOD"))
+            	if (fromLocation.getWorld().getTime() < 13500 ||
+            		fromLocation.getWorld().getTime() > 23000) 
+            		event.setReplaced("day");
+            	else if (fromLocation.getWorld().getTime() > 13500)
+            		event.setReplaced("night");
+        }
+        
         else if (type.equals("WORLD"))
         {            
         	event.setReplaced(fromLocation.getWorld().getName());

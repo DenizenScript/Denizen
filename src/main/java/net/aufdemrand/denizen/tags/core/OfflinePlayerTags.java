@@ -38,6 +38,9 @@ public class OfflinePlayerTags implements Listener {
         else if (type.equals("IS_BANNED"))
             event.setReplaced(String.valueOf(p.isBanned()));
         
+        else if (type.equals("IS_ONLINE"))
+            event.setReplaced(String.valueOf(p.isOnline()));
+        
         else if (type.equals("CHAT_HISTORY")) {
             if (event.hasTypeContext()) {
                 if (aH.matchesInteger(event.getTypeContext())) {
