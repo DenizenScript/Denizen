@@ -55,22 +55,28 @@ public class LocationTags implements Listener {
         
         else if (type.equals("DIRECTION"))
         {
-            event.setReplaced(Utilities.getCardinal(Utilities.getYaw
-            				 (toLocation.toVector().subtract
-            				 (fromLocation.toVector()).normalize())));            
+        	if (fromLocation != null && toLocation != null)
+        	{
+        		event.setReplaced(Utilities.getCardinal(Utilities.getYaw
+            				 	 (toLocation.toVector().subtract
+            				 	 (fromLocation.toVector()).normalize())));
+        	}
         }
         
         else if (type.equals("DISTANCE"))
         {
-        	if (subType.equals("VERTICAL"))
-        		event.setReplaced(String.valueOf(Math.abs(
-        				fromLocation.getY() - toLocation.getY())));
-        	else if (subType.equals("HORIZONTAL"))
-        		event.setReplaced(String.valueOf(Math.sqrt(
-        				Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
-        				Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
-        	else	
-        		event.setReplaced(String.valueOf(fromLocation.distance(toLocation)));
+        	if (fromLocation != null && toLocation != null)
+        	{
+        		if (subType.equals("VERTICAL"))
+        			event.setReplaced(String.valueOf(Math.abs(
+        				  fromLocation.getY() - toLocation.getY())));
+        		else if (subType.equals("HORIZONTAL"))
+        			event.setReplaced(String.valueOf(Math.sqrt(
+        				  Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
+        				  Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
+        		else	
+        			event.setReplaced(String.valueOf(fromLocation.distance(toLocation)));
+        	}
         }
         
         else if (type.equals("FORMATTED"))
