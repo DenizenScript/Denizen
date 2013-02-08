@@ -57,13 +57,20 @@ public class LocationTags implements Listener {
         {
             event.setReplaced(Utilities.getCardinal(Utilities.getYaw
             				 (toLocation.toVector().subtract
-            				 (fromLocation.toVector()).normalize())));
-            
+            				 (fromLocation.toVector()).normalize())));            
         }
         
         else if (type.equals("DISTANCE"))
         {
-        	event.setReplaced(String.valueOf(fromLocation.distance(toLocation)));
+        	if (subType.equals("VERTICAL"))
+        		event.setReplaced(String.valueOf(Math.abs(
+        				fromLocation.getY() - toLocation.getY())));
+        	else if (subType.equals("HORIZONTAL"))
+        		event.setReplaced(String.valueOf(Math.sqrt(
+        				Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
+        				Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
+        	else	
+        		event.setReplaced(String.valueOf(fromLocation.distance(toLocation)));
         }
         
         else if (type.equals("FORMATTED"))

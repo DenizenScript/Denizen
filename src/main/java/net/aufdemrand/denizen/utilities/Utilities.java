@@ -204,10 +204,10 @@ public class Utilities {
 	
 	/**
 	 * This utility normalizes Mincraft's yaws (which can be negative or
-	 * can exceed 360) and turns them into proper yaw values that only go from
+	 * can exceed 360) by turning them into proper yaw values that only go from
 	 * 0 to 359.
 	 * 
-	 * @param  yaaw  The original yaw.
+	 * @param  yaw  The original yaw.
 	 * @return  The normalized yaw.
 	 */
 	
