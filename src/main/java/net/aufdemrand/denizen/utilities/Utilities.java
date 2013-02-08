@@ -1,10 +1,8 @@
 package net.aufdemrand.denizen.utilities;
 
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.Location;
@@ -12,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.util.Vector;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
 import net.minecraft.server.v1_4_R1.EntityLiving;
@@ -20,7 +19,7 @@ import java.util.*;
 /**
  * This class has utility methods for various tasks.
  * 
- * @author aufdemrand, dbixler, AgentK
+ * @author aufdemrand, dbixler, davidcernat, AgentK
  */
 public class Utilities {
 
@@ -144,14 +143,14 @@ public class Utilities {
 		return playerInv;
 	}
 		
-	/*
+	/**
 	 * This utility changes an entity's yaw and pitch to make it face
 	 * a location.
 	 * 
 	 * Thanks to fullwall for it.
 	 * 
-	 * @param  from  the Entity whose yaw and pitch you want to change
-	 * @param at  the Location it should be looking at
+	 * @param  from  The Entity whose yaw and pitch you want to change.
+	 * @param at  The Location it should be looking at.
 	 */
 	
 	public static void faceLocation(Entity from, Location at) {
@@ -188,20 +187,142 @@ public class Utilities {
 
 	}
 
-	/*
+	/**
 	 * This utility changes an entity's yaw and pitch to make it face
 	 * another entity.
 	 * 
 	 * Thanks to fullwall for it.
 	 * 
-	 * @param  from  the Entity whose yaw and pitch you want to change
-	 * @param at  the Entity it should be looking at
+	 * @param  from  The Entity whose yaw and pitch you want to change.
+	 * @param at  The Entity it should be looking at.
 	 */
 	
 	public static void faceEntity(Entity from, Entity at) {
 		
 		faceLocation(from, at.getLocation());
 	}
+	
+	/**
+	 * This utility normalizes Mincraft's yaws (which can be negative or
+	 * can exceed 360) and turns them into proper yaw values that only go from
+	 * 0 to 359.
+	 * 
+	 * @param  yaaw  The original yaw.
+	 * @return  The normalized yaw.
+	 */
+	
+	public static double normalizeYaw(double yaw)
+	{
+    	yaw = (yaw - 90) % 360;
+    	if (yaw < 0)
+            yaw += 360.0;
+    	return yaw;
+	}
+	
+	/**
+	 * This utility checks if an Entity is facing a Location.
+	 * 
+	 * @param  from  The Entity we check.
+	 * @param at  The Location we want to know if it is looking at.
+	 * @return  Returns a boolean.
+	 */
+	
+	public static boolean isFacingLocation(Entity from, Location at) {
+		
+		double currentYaw;
+		
+		if (from instanceof Player) // need to subtract 90 from player yaws
+			currentYaw = normalizeYaw(from.getLocation().getYaw() - 90);
+		else
+			currentYaw = normalizeYaw(from.getLocation().getYaw());
+		
+		double requiredYaw = normalizeYaw(getYaw(at.toVector().subtract(
+							 from.getLocation().toVector()).normalize()));
+		
+		if (Math.abs(requiredYaw - currentYaw) < 45 ||
+			Math.abs(requiredYaw + 360 - currentYaw) < 45 ||
+			Math.abs(currentYaw + 360 - requiredYaw) < 45)
+			return true;
+    	
+		return false;
+	}
+	
+	/**
+	 * This utility checks if an Entity is facing another Entity.
+	 * 
+	 * @param  from  The Entity we check.
+	 * @param at  The Entity we want to know if it is looking at.
+	 * @return  Returns a boolean.
+	 */
+	
+	public static boolean isFacingEntity(Entity from, Entity at) {
+		
+		return isFacingLocation(from, at.getLocation());
+	}
+
+    /**
+     * Converts a vector to a yaw.
+     * 
+     * Thanks to bergerkiller
+     * 
+     * @param  vector  The vector you want to get a yaw from.
+     * @return  The yaw.
+     */
+    
+    public static float getYaw(Vector vector) {
+        double dx = vector.getX();
+        double dz = vector.getZ();
+        double yaw = 0;
+        // Set yaw
+        if (dx != 0) {
+            // Set yaw start value based on dx
+            if (dx < 0) {
+                yaw = 1.5 * Math.PI;
+            } else {
+                yaw = 0.5 * Math.PI;
+            }
+            yaw -= Math.atan(dz / dx);
+        } else if (dz < 0) {
+            yaw = Math.PI;
+        }
+        return (float) (-yaw * 180 / Math.PI - 90);
+    }
+    
+    /**
+     * Converts a yaw to a cardinal direction name.
+     * 
+     * Thanks to sk89qs
+     * 
+     * @param  yaw  The yaw you want to get a cardinal direction from.
+     * @return  The name of the cardinal direction as a String.
+     */
+    
+    public static String getCardinal(double yaw) {
+    
+    	yaw = normalizeYaw(yaw);
+    	
+        if (0 <= yaw && yaw < 22.5) {
+            return "north";
+        } else if (22.5 <= yaw && yaw < 67.5) {
+            return "northeast";
+        } else if (67.5 <= yaw && yaw < 112.5) {
+            return "east";
+        } else if (112.5 <= yaw && yaw < 157.5) {
+            return "southeast";
+        } else if (157.5 <= yaw && yaw < 202.5) {
+            return "south";
+        } else if (202.5 <= yaw && yaw < 247.5) {
+            return "southwest";
+        } else if (247.5 <= yaw && yaw < 292.5) {
+            return "west";
+        } else if (292.5 <= yaw && yaw < 337.5) {
+            return "northwest";
+        } else if (337.5 <= yaw && yaw < 360.0) {
+            return "north";
+        } else {
+            return null;
+        }
+    }
 	
 	/**
 	 * This is a Utility method for finding the closest NPC to a particular
@@ -213,6 +334,7 @@ public class Utilities {
 	 * @return	The closest NPC to the location, or null if no NPC was found
 	 * 					within the range specified.
 	 */
+
 	public static NPC getClosestNPC (Location location, int range) {
 		NPC			closestNPC = null;
 		Double	closestDistance = Double.valueOf(range);
