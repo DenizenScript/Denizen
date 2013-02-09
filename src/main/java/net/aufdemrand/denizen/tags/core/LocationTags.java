@@ -62,20 +62,33 @@ public class LocationTags implements Listener {
             				 	 (fromLocation.toVector()).normalize())));
         	}
         }
-        
+
         else if (type.equals("DISTANCE"))
         {
         	if (fromLocation != null && toLocation != null)
         	{
-        		if (subType.equals("VERTICAL"))
-        			event.setReplaced(String.valueOf(Math.abs(
-        				  fromLocation.getY() - toLocation.getY())));
-        		else if (subType.equals("HORIZONTAL"))
-        			event.setReplaced(String.valueOf(Math.sqrt(
-        				  Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
-        				  Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
-        		else	
+        		if (fromLocation.getWorld().getName() == toLocation.getWorld().getName())
+        		{
+        			if (subType.equals("VERTICAL"))
+        				event.setReplaced(String.valueOf(Math.abs(
+        						fromLocation.getY() - toLocation.getY())));
+        			else if (subType.equals("HORIZONTAL"))
+        				event.setReplaced(String.valueOf(Math.sqrt(
+        						Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
+        						Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
+        			else 
         			event.setReplaced(String.valueOf(fromLocation.distance(toLocation)));
+        		}
+        		else // if the locations' worlds are different, use these subtypes
+        		{
+        			if (subType.equals("VERTICAL_MULTIWORLD"))
+        				event.setReplaced(String.valueOf(Math.abs(
+        						fromLocation.getY() - toLocation.getY())));
+        			else if (subType.equals("HORIZONTAL_MULTIWORLD"))
+        				event.setReplaced(String.valueOf(Math.sqrt(
+        						Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
+        						Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
+        		}
         	}
         }
         
