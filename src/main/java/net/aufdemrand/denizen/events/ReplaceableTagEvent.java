@@ -289,6 +289,7 @@ public class ReplaceableTagEvent extends Event {
 
                 else if (entity instanceof Player) {
                     player = (Player) entity;
+                    break;
                 }
             }
             // Else, might be an offlineplayer
