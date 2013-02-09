@@ -69,7 +69,7 @@ public class OfflinePlayerTags implements Listener {
             		event.setReplaced(p.getBedSpawnLocation().getBlockX()
             				+ "," + p.getBedSpawnLocation().getBlockY()
             				+ "," + p.getBedSpawnLocation().getBlockZ()
-            				+ "," + p.getBedSpawnLocation().getWorld());
+            				+ "," + p.getBedSpawnLocation().getWorld().getName());
             	}
 
         } else if (type.equals("MONEY")) {
