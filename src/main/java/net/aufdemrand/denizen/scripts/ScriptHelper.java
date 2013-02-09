@@ -27,14 +27,13 @@ public class ScriptHelper {
 
         try {
             _yamlScripts.loadFromString(concatenated);
-            Bukkit.getServer().getPluginManager().callEvent(new dScriptReloadEvent());
-
         } catch (InvalidConfigurationException e) {
             dB.echoError("Could not load scripts!");
             e.printStackTrace();
         }
 
         ScriptRegistry._buildCoreYamlScriptContainers(getScripts());
+        Bukkit.getServer().getPluginManager().callEvent(new dScriptReloadEvent());
     }
 
     private static FileConfiguration getScripts() {

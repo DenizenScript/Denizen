@@ -5,10 +5,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -29,7 +26,7 @@ public class ScriptQueue implements Listener {
     }
 
     public static String _getNextId() {
-        return String.valueOf(totalQueues + 1 + "_" String);
+        return UUID.randomUUID().toString();
     }
 
     public static Map<String, ScriptQueue> _queues = new ConcurrentHashMap<String, ScriptQueue>();

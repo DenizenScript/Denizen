@@ -142,10 +142,10 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 	
 			// Probe NPCs for context to compare with LocationContext (scriptName/stepName)
 			for (NPC npc : matchingNPCs) {
-				String interactScript = sH.getInteractScript(npc, event.getPlayer(), this.getClass());
-				if (interactScript == null) continue;
-				String step = denizen.getScriptEngine().getScriptHelper().getCurrentStep(event.getPlayer(), interactScript, false);
-				interactContext.add(new InteractContext(npc, interactScript, step));
+				//String interactScript = sH.getInteractScript(npc, event.getPlayer(), this.getClass());
+				//if (interactScript == null) continue;
+				//String step = denizen.getScriptEngine().getScriptHelper().getCurrentStep(event.getPlayer(), interactScript, false);
+				//interactContext.add(new InteractContext(npc, interactScript, step));
 			}
 	
 			for (InteractContext ics : interactContext) {

@@ -14,7 +14,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.command.exception.CommandException;
+import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 
 /**

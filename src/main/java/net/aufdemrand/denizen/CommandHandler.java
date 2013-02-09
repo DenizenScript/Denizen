@@ -13,10 +13,10 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
+import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.util.Messaging;
 import net.citizensnpcs.command.command.Requirements;
-import net.citizensnpcs.command.exception.CommandException;
 import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Paginator;
 import org.bukkit.ChatColor;
@@ -568,13 +568,13 @@ public class CommandHandler {
 				// If a --type has been specified...
 				if (type != null) {
 					if (scriptContainer.getType().equalsIgnoreCase(type))
-						if (filter != null) { 
+						if (filter != null) {
 							if (script.contains(filter.toUpperCase()))
 								paginator.addLine("<a>" + scriptContainer.getType().substring(0, 4) + "  <b>" + script);
 						}
 						else paginator.addLine("<a>" + scriptContainer.getType().substring(0, 4) + "  <b>" + script);
 					// If a --filter has been specified...
-				} else if (filter != null) { 
+				} else if (filter != null) {
 					if (script.contains(filter.toUpperCase()))
 						paginator.addLine("<a>" + scriptContainer.getType().substring(0, 4) + "  <b>" + script);
 				} else paginator.addLine("<a>" + scriptContainer.getType().substring(0, 4) + "  <b>" + script);

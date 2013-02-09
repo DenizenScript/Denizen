@@ -1,49 +1,56 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import java.util.Map;
+
 public class DamageTrigger extends AbstractTrigger implements Listener {
 
     @EventHandler
     public void damageTrigger(EntityDamageByEntityEvent event) {
-        // Get player
+
         Player player = null;
         if (event.getDamager() instanceof Player) player = (Player) event.getDamager();
         else if (event.getDamager() instanceof Projectile
                 && ((Projectile) event.getDamager()).getShooter() instanceof Player)
             player = (Player) ((Projectile)event.getDamager()).getShooter();
 
-        // Get NPC
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity()) && player != null) {
-            NPC npc = CitizensAPI.getNPCRegistry().getNPC(event.getEntity());
+            dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
 
-            // Check if NPC has triggers.
-            if (!npc.hasTrait(TriggerTrait.class)) return;
-            
-            // Check if trigger is enabled.
-            if (!npc.getTrait(TriggerTrait.class).isEnabled(name)) return;
+            if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
+            if (!npc.getTriggerTrait().isEnabled(name)) return;
+            if (!npc.getTriggerTrait().trigger(this, player)) return;
 
-            // If engaged or not cool, calls On Unavailable, if cool, calls On Click
-            // If available (not engaged, and cool) sets cool down and returns true. 
-            if (!npc.getTrait(TriggerTrait.class).trigger(this, player)) return;
+            InteractScriptContainer script = InteractScriptHelper
+                    .getInteractScript(npc, player, getClass());
 
-            // Get Interact Script for Player/NPC
-            String script = sH.getInteractScript(npc, player, this.getClass());
+            String id = null;
+            Map<String, String> idMap = script.getIdMapFor(this.getClass(), player);
+            if (!idMap.isEmpty())
+                // Iterate through the different id entries in the step's click trigger
+                for (Map.Entry<String, String> entry : idMap.entrySet())
+                    // Check if the item specified in the specified id's 'trigger:' key
+                    // matches the item that the player is holding.
+                    if (Item.valueOf(entry.getValue()).matches(player.getItemInHand())
+                            && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
+                            player, npc, entry.getKey()))
+                        id = entry.getKey();
 
-            // Parse Damage Trigger, if unable to parse call No Damange Trigger action
-            if (!parse(denizen.getNPCRegistry().getDenizen(npc), player, script))
-                denizen.getNPCRegistry().getDenizen(npc).action("no damage trigger", player);
-        }
+            if (!parse(npc, player, script, id))
+                npc.action("no damage trigger", player);        }
     }
 
     @Override

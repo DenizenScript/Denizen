@@ -8,13 +8,11 @@ import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.aufdemrand.denizen.utilities.runnables.Runnable2;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
@@ -77,7 +75,7 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
         // Iterate through Arguments to extract needed information
         for (String arg : scriptEntry.getArguments()) {
 
-                // Specify scriptContainer to use
+            // Specify scriptContainer to use
             if (aH.matchesScript(arg)) {
                 script = aH.getScriptFrom(arg);
 
@@ -148,65 +146,14 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
         dB.echoApproval("Executing '" + getName() + "': "
                 + script.debug()
                 + delay.debug()
-                + "Player='" + (scriptEntry.getPlayer() != null ? scriptEntry.getPlayer().getName() + "', " : "NULL', ")
-                + "NPC='" + (scriptEntry.getNPC() != null ? scriptEntry.getNPC() + "', " : "NULL', ")
                 + "Queue='" + queue.toString());
 
         if (delay.getSeconds() <= 0)
-
-        ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScript(ScriptQueue._getNextId(), scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
+            ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScript(ScriptQueue._getNextId(), scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
 
         else
             ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScriptWithDelay(ScriptQueue._getNextId(), scriptEntry.getPlayer(), scriptEntry.getNPC(), context, delay);
 
-        // Run right now if no delay
-        if (delay.getSeconds() <= 0) {
-
-            if (instant)
-                denizen.getScriptEngine().getScriptBuilder()
-                        .runTaskScriptInstantly(scriptEntry.getPlayer(), scriptEntry.getNPC(), script.getName(), context);
-
-            else switch (queue) {
-
-                case PLAYER:
-                case PLAYER_TASK:
-                    denizen.getScriptEngine().getScriptBuilder()
-                            .runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), script.getName());
-                    break;
-
-                case NPC:
-                    denizen.getScriptEngine().getScriptBuilder()
-                            .runTaskScript(scriptEntry.getNPC(), scriptEntry.getPlayer(), script.getName());
-                    break;
-            }
-
-            // Remove from delays if this was initially delayed
-            if (delays.containsKey(((String) scriptEntry.getObject("id")).toUpperCase()))
-                delays.remove(((String) scriptEntry.getObject("id")).toUpperCase());
-
-        } else { // Delay this command
-            String id = ((String) scriptEntry.getObject("id")).toUpperCase();
-            long ldelay = (long) (((Duration) scriptEntry.getObject("delay")).getSeconds() * 20);
-
-            // Reset delay in scriptEntry so next time it's executed it's not delayed again.
-            scriptEntry.addObject("delay", new Duration(0));
-
-            // Set delayed task and put id in a map (for cancellations with CANCELTASK [id])
-            dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "Run TASK SCRIPT '" + script + "'");
-            delays.put(id, denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
-                            new Runnable2<String, ScriptEntry>(script.getName(), scriptEntry) {
-                                @Override
-                                public void run(String script, ScriptEntry scriptEntry) {
-                                        dB.log(Messages.DEBUG_RUNNING_DELAYED_TASK, "Run TASK SCRIPT '" + script + "'");
-                                    try {
-                                        execute(scriptEntry);
-                                    } catch (CommandExecutionException e) {
-                                        dB.echoError("Could not run delayed task!");
-                                        if (dB.showStackTraces) e.printStackTrace();
-                                    }
-                                }
-                            }, ldelay));
-        }
     }
 
     /**

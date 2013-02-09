@@ -1,31 +1,95 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import java.util.Map;
 
 public class ClickTrigger extends AbstractTrigger implements Listener {
     
     @EventHandler
     public void clickTrigger(NPCRightClickEvent event) {
-        // Check if NPC has triggers.
+
+        //
+        // The next 3 'if's are generally recommended for any trigger:
+        //
+
+        // Check if NPC has triggers.. no use going any further if this NPC doesn't have
+        // ANY triggers enabled!
         if (!event.getNPC().hasTrait(TriggerTrait.class)) return;
-        // Check if trigger is enabled.
-        if (!event.getNPC().getTrait(TriggerTrait.class).isEnabled(name)) return;
 
-        // If engaged or not cool, calls On Unavailable, if cool, calls On Click
-        // If available (not engaged, and cool) sets cool down and returns true. 
-        if (!event.getNPC().getTrait(TriggerTrait.class).trigger(this, event.getClicker())) return;
+        // The rest of the methods beyond this point require a dNPC object, which can easily be
+        // obtained if a valid NPC object is available:
+        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
-        // Get Interact Script for Player/NPC
-        InteractScriptContainer script = sH.getInteractScript(event.getNPC(), event.getClicker(), this.getClass());
+        // Now, check if the 'click trigger' specifically is enabled. 'name' is inherited from the
+        // super AbstractTrigger and contains the name of the trigger that was use in registration.
+        if (!npc.getTriggerTrait().isEnabled(name)) return;
 
-        // Parse Click Trigger, if unable to parse call No Click Trigger action
-        if (!parse(denizen.getNPCRegistry().getDenizen(event.getNPC()), event.getClicker(), script))
-            denizen.getNPCRegistry().getDenizen(event.getNPC()).action("no click trigger", event.getClicker());
+        // Check availability based on the NPC's ENGAGED status and the trigger's COOLDOWN that is
+        // provided (and adjustable) by the TriggerTrait. Just use .trigger(...)!
+        // If unavailable (engaged or not cool), .trigger calls 'On Unavailable' action and returns false.
+        // If available (not engaged, and cool), .trigger sets cool down and returns true.
+        if (!npc.getTriggerTrait().trigger(this, event.getClicker())) return;
+
+        // Note: In some cases, the automatic actions that .trigger offers may not be
+        // desired. In this case, it's recommended to at least use .triggerCooldownOnly which
+        // only handles cooling down the trigger with the triggertrait if the 'available' criteria
+        // is met. This handles the built-in cooldown that TriggerTrait
+
+        // We'll get the player too, since it makes reading the next few methods a bit easier:
+        Player player = event.getClicker();
+
+        // Okay, now we need to know which interact script will be selected for the Player/NPC
+        // based on requirements/npc's assignment script. To get that information, use:
+        // InteractScriptHelper.getInteractScript(dNPC, Player, Trigger Class)
+        // .getInteractScript will check the Assignment for possible scripts, and automatically
+        // check requirements for each of them.
+        InteractScriptContainer script = npc.getInteractScript(player, getClass());
+
+        // In an Interact Script, Triggers can have multiple scripts to choose from depending on
+        // some kind of 'criteria'. For the 'Click Trigger', that criteria is the item the Player
+        // has in hand. Let's get the possible criteria to see which 'Click Trigger script', if any,
+        // should trigger. For example:
+        //
+        // Script Name:
+        //   type: interact
+        //   steps:
+        //     current step:
+        //       click trigger:
+
+        String id = null;
+        Map<String, String> idMap = script.getIdMapFor(this.getClass(), player);
+        if (!idMap.isEmpty())
+            // Iterate through the different id entries in the step's click trigger
+            for (Map.Entry<String, String> entry : idMap.entrySet())
+                // Check if the item specified in the specified id's 'trigger:' key
+                // matches the item that the player is holding.
+                if (Item.valueOf(entry.getValue()).matches(player.getItemInHand())
+                        && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
+                        player, npc, entry.getKey()))
+                    id = entry.getKey();
+
+        // If id is still null after this, it's assumed that the trigger's 'base script' will be used.
+        // parse() will accept a null id if this is the case.
+
+
+        // Click trigger is pretty straight forward, so there's not really a whole lot left to do
+        // except call the parse() method which will queue up and execute the appropriate script
+        // based on the Player/NPCs interact script.
+        // Parses the trigger. Requires if parse returns false there probably is no trigger
+        // script specified in the interact script that was selected, in which case
+        // we'll call the action 'on no click trigger'.
+        if (!parse(npc, player, script, id))
+            npc.action("no click trigger", player);
     }
 
     @Override

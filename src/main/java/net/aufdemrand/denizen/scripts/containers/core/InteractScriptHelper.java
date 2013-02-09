@@ -14,12 +14,22 @@ import java.util.List;
 
 public class InteractScriptHelper {
 
-    /*
-     * Gets the InteractScript from a NPC Denizen for a Player and returns the appropriate ScriptContainer. Returns null if no script found.
+    /**
+     * Gets the InteractScript from a NPC Denizen for a Player and returns the appropriate ScriptContainer.
+     * Returns null if no script found.
+     *
+     * @param npc  the NPC involved
+     * @param player  the Player involved
+     * @param trigger  the class of the trigger being used
+     *
+     * @return  the highest priority InteractScriptContainer that meets requirements, if any.
+     *
      */
-    public static InteractScriptContainer getInteractScript(dNPC npc, Player player, Class<? extends AbstractTrigger> trigger) {
-
-        if (npc == null || player == null) return null;
+    public static InteractScriptContainer getInteractScript(dNPC npc, Player player,
+                                                            Class<? extends AbstractTrigger> trigger) {
+        // If no trigger, npc or player specified, return null.
+        // These objects are required to progress any further.
+        if (npc == null || player == null || trigger == null) return null;
 
         // Find the assignmentScriptContainer currently assigned to the NPC
         AssignmentScriptContainer assignmentScript = npc.getAssignmentTrait().getAssignment();
@@ -40,10 +50,10 @@ public class InteractScriptHelper {
         // Get scripts that meet requirements and add them to interactableScripts.
         //
 
-        // Initialize list of interactable scripts
+        // Initialize list of interactable scripts as PriorityPair objects which help with sorting
         List<PriorityPair> interactableScripts = new ArrayList<PriorityPair>();
 
-        // Iterate through all entries to check each
+        // Iterate through all entries to check requirements for each
         for (String entry : assignedScripts) {
             // Entries should be uppercase for this process
             entry = entry.toUpperCase();
@@ -96,7 +106,12 @@ public class InteractScriptHelper {
             }
 
             dB.echoDebug(dB.DebugElement.Spacer);
+            // Next entry!
         }
+
+        //
+        // Sort scripts that met requirements and check which one has the highest priority
+        //
 
         // If list has only one entry, this is it!
         if (interactableScripts.size() == 1) {
@@ -113,7 +128,7 @@ public class InteractScriptHelper {
             return null;
         }
 
-        // If we have more than 2 script, let's sort the list from lowest to highest scoring script.
+        // If we have more than 2 matches, let's sort the list from lowest to highest scoring script.
         else Collections.sort(interactableScripts);
 
         // Let's find which script to return since there are multiple.
@@ -153,63 +168,35 @@ public class InteractScriptHelper {
         return null;
     }
 
+
     /**
      * Returns the current step for a Player and specified script. If no current step is found, the default
      * step is used, 'Default', unless another default (used by ending the step-name with a '*') is specified
-     * in the script.
+     * in the script. For the sake of compatibility from v0.76, '1' can also be used.
      *
      * @param player the Player to check
-     * @param scriptName the name of the script to check
+     * @param scriptName the name of the interact script container to check
      *
      * @return the current, or default, step name
      *
      */
     public static String getCurrentStep(Player player, String scriptName) {
-        return getCurrentStep(player, scriptName, true);
-    }
-
-    /**
-     * Returns the current step for a Player and specified script. If no current step is found, the default
-     * step is used, 'Default', unless another default (used by ending the step-name with a '*') is specified
-     * in the script.
-     *
-     * @param player the Player to check
-     * @param scriptName the name of the script to check
-     * @param verbose whether debugging information should be shown
-     *
-     * @return the current, or default, step name
-     *
-     */
-    public static String getCurrentStep(Player player, String scriptName, Boolean verbose) {
-        String currentStep = "DEFAULT";
-
-        if (scriptName == null) return "";
-
-        if (DenizenAPI._saves()
-                .getString("Players." + player.getName()
+        if (scriptName == null) return null;
+        // Probe 'saves.yml' for the current step
+        if (DenizenAPI._saves().getString("Players." + player.getName()
                         + "." + "Scripts." + scriptName.toUpperCase()
-                        + "." + "Current Step") != null) {
-
-            currentStep =  DenizenAPI._saves()
-                    .getString("Players." + player.getName()
+                        + "." + "Current Step") != null)
+            return DenizenAPI._saves().getString("Players." + player.getName()
                             + "." + "Scripts." + scriptName.toUpperCase()
                             + "." + "Current Step");
-
-            if (verbose) dB.echoDebug("Getting current step... found '" + currentStep + "'");
-
-            return currentStep;
-        }
-
-        // No saved step found, let's look for defaults (dScript default steps end in *)
-        currentStep = ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName();
-
-        if (verbose) dB.echoDebug("Getting current step... not found, assuming '" + currentStep + "'");
-        return currentStep;
+        // No saved step found, so we'll just use the default
+        return ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName();
     }
 
+
     /**
-     * Used internally when comparing interact script assignment priorities to
-     * help out with sorting.
+     * Used with the getInteractScript method. Overrides Java's compareTo to allow comparisons of
+     * possible interact scripts' priorities.
      *
      */
     private static class PriorityPair implements Comparable<PriorityPair> {
@@ -229,7 +216,7 @@ public class InteractScriptHelper {
         public String getName() {
             return name;
         }
-
     }
+
 }
 

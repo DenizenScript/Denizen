@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 
@@ -28,20 +27,14 @@ public class ProcedureRequirement extends AbstractRequirement{
         }
 
         // Build script entries
-        List<ScriptEntry> scriptEntries = plugin.getScriptEngine().getScriptBuilder()
-                .buildScriptEntries(
-                        context.getPlayer(),
-                        DenizenAPI.getDenizenNPC(context.getNPC()),
-                        script.getContents().getStringList("SCRIPT"),
-                        script.getName(),
-                        null);
+        List<ScriptEntry> entries = script.getContainer().getBaseEntries(context.getPlayer(), context.getNPC());
 
-        if (scriptEntries.isEmpty()) return outcome;
+        if (entries.isEmpty()) return outcome;
 
         long id = DetermineCommand.getNewId();
 
         // Execute scriptEntries
-        for (ScriptEntry scriptEntry : scriptEntries) {
+        for (ScriptEntry scriptEntry : entries) {
             scriptEntry.addObject("reqId", id);
             plugin.getScriptEngine().getScriptExecuter().execute(scriptEntry);
             if (DetermineCommand.outcomes.containsKey(id)) {

@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.utilities.arguments;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -137,23 +138,48 @@ public class Item extends ItemStack implements dScriptArgument {
 
     public Item(Material material) {
         super(material);
+        setId(getType().name());
     }
 
     public Item(int itemId) {
         super(itemId);
+        setId(getType().name());
     }
 
     public Item(Material material, int qty) {
         super(material, qty);
+        setId(getType().name());
     }
 
     public Item(int type, int qty) {
         super(type, qty);
+        setId(getType().name());
+    }
+
+    public Item(ItemStack item) {
+        super(item);
+        setId(getType().name());
     }
 
     public Item setId(String id) {
-        this.id = id.toUpperCase();
+        if (NBTItem.hasCustomNBT(this, "denizen-item-id"))
+            this.id = NBTItem.getCustomNBT(this, "denizen-custom-item-id");
+        else {
+            this.id = id.toUpperCase();
+            NBTItem.addCustomNBT(this, "denizen-item-id", id);
+        }
         return this;
+    }
+
+    public boolean matches(ItemStack item) {
+        return matches(new Item(item));
+    }
+
+    public boolean matches(Item item) {
+        // Check IDs
+        if (!id.equalsIgnoreCase(item.id))
+            return false;
+        return true;
     }
 
     @Override
@@ -186,5 +212,8 @@ public class Item extends ItemStack implements dScriptArgument {
         this.prefix = prefix;
         return this;
     }
+
+
+
 
 }

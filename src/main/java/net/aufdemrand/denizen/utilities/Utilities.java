@@ -1,21 +1,17 @@
 package net.aufdemrand.denizen.utilities;
 
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
+import net.aufdemrand.denizen.npc.dNPC;
+import net.minecraft.server.v1_4_R1.EntityLiving;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
-import net.minecraft.server.v1_4_R1.EntityLiving;
-import java.util.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * This class has utility methods for various tasks.
@@ -82,67 +78,7 @@ public class Utilities {
 
 		return "Denizen version: " + getVersionNumber();
 	}
-	
-	/*
-	 * Gets a Map of a player's inventory with a bukkit Material and Integer amount 
-	 * for each item. Unlike bukkit's build in getInventory, this will add up the 
-	 * total number of each Material. 
-	 *
-	 * @param  thePlayer  the Player whose inventory is being checked.
-	 * @return  returns a Map<Material, Integer>.
-	 */
 
-	public Map<Material, Integer> getInventoryMap(Player thePlayer) {
-		Map<Material, Integer> playerInv = new HashMap<Material, Integer>();
-		ItemStack[] getContentsArray = thePlayer.getInventory().getContents();
-		List<ItemStack> getContents = Arrays.asList(getContentsArray);
-
-		for (int x=0; x < getContents.size(); x++) {
-			if (getContents.get(x) != null) {
-
-				if (playerInv.containsKey(getContents.get(x).getType())) {
-					int t = playerInv.get(getContents.get(x).getType());
-					t = t + getContents.get(x).getAmount(); playerInv.put(getContents.get(x).getType(), t);
-				}
-
-				else playerInv.put(getContents.get(x).getType(), getContents.get(x).getAmount());
-			}
-		}
-
-		return playerInv;
-	}
-
-	/*
-	 * Alternate usage that gets a Map of a player's inventory with a 
-	 * String representation of itemID:data and Integer amount for each 
-	 * item. Unlike bukkit's build in getInventory, this will add up 
-	 * the total number of each itemID. 
-	 *
-	 * @param  thePlayer  the Player whose inventory is being checked.
-	 * @return  returns a Map<String, Integer>.
-	 */
-
-	public Map<String, Integer> getInventoryIdMap(Player thePlayer) {
-
-		Map<String, Integer> playerInv = new HashMap<String, Integer>();
-		ItemStack[] getContentsArray = thePlayer.getInventory().getContents();
-		List<ItemStack> getContents = Arrays.asList(getContentsArray);
-
-		for (int x=0; x < getContents.size(); x++) {
-			if (getContents.get(x) != null) {
-				MaterialData specificItem = getContents.get(x).getData();
-				String friendlyItem = specificItem.getItemTypeId() + ":" + specificItem.getData();
-
-				if (playerInv.containsKey(friendlyItem)) {
-					int t = playerInv.get(friendlyItem);
-					t = t + getContents.get(x).getAmount(); playerInv.put(friendlyItem, t);
-				}
-				else playerInv.put(friendlyItem, getContents.get(x).getAmount());
-			}
-		}
-
-		return playerInv;
-	}
 		
 	/*
 	 * This utility changes an entity's yaw and pitch to make it face
@@ -188,7 +124,8 @@ public class Utilities {
 
 	}
 
-	/*
+
+	/**
 	 * This utility changes an entity's yaw and pitch to make it face
 	 * another entity.
 	 * 
@@ -199,10 +136,10 @@ public class Utilities {
 	 */
 	
 	public static void faceEntity(Entity from, Entity at) {
-		
 		faceLocation(from, at.getLocation());
 	}
-	
+
+
 	/**
 	 * This is a Utility method for finding the closest NPC to a particular
 	 * location.
@@ -213,21 +150,18 @@ public class Utilities {
 	 * @return	The closest NPC to the location, or null if no NPC was found
 	 * 					within the range specified.
 	 */
-	public static NPC getClosestNPC (Location location, int range) {
-		NPC			closestNPC = null;
+	public static dNPC getClosestNPC (Location location, int range) {
+		dNPC closestNPC = null;
 		Double	closestDistance = Double.valueOf(range);
-
-		Iterator<NPC>	it = CitizensAPI.getNPCRegistry().iterator();
+		Iterator<dNPC>	it = DenizenAPI.getSpawnedNPCs().iterator();
 		while (it.hasNext ()) {
-			NPC	npc = it.next ();
-			if (npc.isSpawned()			&&
-					npc.getBukkitEntity().getLocation().getWorld().equals(location.getWorld())	&&
-					npc.getBukkitEntity().getLocation().distance(location) < closestDistance) {
+			dNPC	npc = it.next ();
+			if (npc.getLocation().getWorld().equals(location.getWorld())
+				&& npc.getLocation().distance(location) < closestDistance) {
 				closestNPC = npc;
-				closestDistance = npc.getBukkitEntity().getLocation().distance(location);
+				closestDistance = npc.getLocation().distance(location);
 			}
 		}
-		
 		return closestNPC;
 	}
 
@@ -239,67 +173,19 @@ public class Utilities {
 	 * 
 	 * @return	The list of NPCs within the max range.
 	 */
-	public static List<NPC> getClosestNPCs (Location location, int maxRange) {
-		List<NPC> closestNPCs = new ArrayList<NPC> ();
-
-        Iterator<NPC>	it = CitizensAPI.getNPCRegistry().iterator();
+	public static Set<dNPC> getClosestNPCs (Location location, int maxRange) {
+		Set<dNPC> closestNPCs = new HashSet<dNPC> ();
+        Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
 		while (it.hasNext ()) {
-			NPC	npc = it.next ();
-			if (npc.isSpawned()			&&
-					npc.getBukkitEntity().getLocation().getWorld().equals(location.getWorld())	&&
-					npc.getBukkitEntity().getLocation().distance(location) < maxRange) {
+			dNPC npc = it.next ();
+			if (npc.getLocation().getWorld().equals(location.getWorld())
+				&& npc.getLocation().distance(location) < maxRange) {
 				closestNPCs.add (npc);
 			}
 		}
-		
 		return closestNPCs;
 	}
-	
-//    public dNPC getClosestDenizen (Player thePlayer, int Range) {
-//        Double closestDistance = Double.valueOf(String.valueOf(Range));
-//        dNPC closestDenizen = null;
-//        if (getDenizens().isEmpty()) return null;
-//        for (dNPC aDenizen : getDenizens().values()) {
-//            if (aDenizen.isSpawned()
-//                    && aDenizen.getWorld().equals(thePlayer.getWorld())
-//                    && aDenizen.getLocation().distance(thePlayer.getLocation()) < closestDistance ) {
-//                closestDenizen = aDenizen; 
-//                closestDistance = aDenizen.getLocation().distance(thePlayer.getLocation());
-//            }
-//        }
-//        return closestDenizen;
-//    }
-//
-//    public List<dNPC> getDenizensInRange (Player thePlayer, int theRange) {
-//        List<dNPC> DenizensWithinRange = new ArrayList<dNPC>();
-//        if (denizen.getNPCRegistry().getDenizens().isEmpty()) return DenizensWithinRange;
-//        for (dNPC aDenizenList : denizen.getNPCRegistry().getDenizens().values()) {
-//            if (aDenizenList.isSpawned()
-//                    && aDenizenList.getWorld().equals(thePlayer.getWorld()) 
-//                    && aDenizenList.getLocation().distance(thePlayer.getLocation()) < theRange)
-//                DenizensWithinRange.add(aDenizenList);
-//        }
-//        return DenizensWithinRange;
-//    }
-//
-//    public List<Player> getPlayersInRange (LivingEntity theEntity, int theRange) {
-//        List<Player> PlayersWithinRange = new ArrayList<Player>();
-//        Player[] DenizenPlayers = Bukkit.getServer().getOnlinePlayers();
-//        for (Player aPlayer : DenizenPlayers) {
-//            if (aPlayer.isOnline() 
-//                    && aPlayer.getWorld().equals(theEntity.getWorld()) 
-//                    && aPlayer.getLocation().distance(theEntity.getLocation()) < theRange)
-//                PlayersWithinRange.add(aPlayer);
-//        }
-//        return PlayersWithinRange;
-//    }
-//
-//    public List<Player> getPlayersInRange (LivingEntity theEntity, int theRange, Player excludePlayer) {
-//        List<Player> PlayersWithinRange = getPlayersInRange(theEntity, theRange);
-//        if (excludePlayer != null) PlayersWithinRange.remove(excludePlayer);
-//        return PlayersWithinRange;
-//    }
-//
+
 //    /**
 //     * Checks entity's location against a Location (with leeway). Should be faster than
 //     * bukkit's built in Location.distance(Location) since there's no sqrt math.

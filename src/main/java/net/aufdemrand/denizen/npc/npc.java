@@ -22,11 +22,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-public class dNPC {
+public class npc {
 
     private int npcid;
 
-    dNPC(NPC citizensNPC) {
+    npc(NPC citizensNPC) {
         this.npcid = citizensNPC.getId();
     }
 
@@ -68,14 +68,6 @@ public class dNPC {
 
     public InteractScriptContainer getInteractScript(Player player, Class<? extends AbstractTrigger> triggerType) {
         return InteractScriptHelper.getInteractScript(this, player, triggerType);
-    }
-
-    public InteractScriptContainer getInteractScriptQuietly(Player player, Class<? extends AbstractTrigger> triggerType) {
-        boolean db = dB.debugMode;
-        dB.debugMode = false;
-        InteractScriptContainer script = InteractScriptHelper.getInteractScript(this, player, triggerType);
-        dB.debugMode = db;
-        return script;
     }
 
     public Location getLocation() {
