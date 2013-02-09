@@ -64,10 +64,13 @@ public class OfflinePlayerTags implements Listener {
 
         } else if (type.equals("LOCATION")) {
             if (subType.equals("BED_SPAWN"))
-                event.setReplaced(p.getBedSpawnLocation().getBlockX()
-                        + "," + p.getBedSpawnLocation().getBlockY()
-                        + "," + p.getBedSpawnLocation().getBlockZ()
-                        + "," + p.getBedSpawnLocation().getWorld());
+            	if (p.getBedSpawnLocation() != null)
+            	{
+            		event.setReplaced(p.getBedSpawnLocation().getBlockX()
+            				+ "," + p.getBedSpawnLocation().getBlockY()
+            				+ "," + p.getBedSpawnLocation().getBlockZ()
+            				+ "," + p.getBedSpawnLocation().getWorld());
+            	}
 
         } else if (type.equals("MONEY")) {
             if(Depends.economy != null) {
