@@ -79,7 +79,10 @@ public class LocationTags implements Listener {
         			else 
         			event.setReplaced(String.valueOf(fromLocation.distance(toLocation)));
         		}
-        		else // if the locations' worlds are different, use these subtypes
+        		// If the locations' worlds are different, use the subtypes below.
+        		// One example of a script that uses such a multiworld subtype is the
+        		// Assassination Handler.
+        		else
         		{
         			if (subType.equals("VERTICAL_MULTIWORLD"))
         				event.setReplaced(String.valueOf(Math.abs(
