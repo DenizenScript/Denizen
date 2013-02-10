@@ -38,6 +38,7 @@ public class ShootCommand extends AbstractCommand {
         EntityType entityType = null;
         Integer qty = null;
         Location location = null;
+        ScriptEntry newScript = null;
         Boolean ride = false;
         Boolean burn = false;
         Boolean explode = false;
@@ -59,7 +60,7 @@ public class ShootCommand extends AbstractCommand {
                 dB.echoDebug("...location set to '%s'.", arg);
                 
             } else if (aH.matchesScript(arg)) {
-				scriptEntry.setScript(aH.getStringFrom(arg));
+				newScript.setScript(aH.getStringFrom(arg));
 				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
 
             } else if (aH.matchesArg("RIDE, MOUNT", arg)) {
@@ -85,6 +86,7 @@ public class ShootCommand extends AbstractCommand {
 
         // Stash objects
         scriptEntry.addObject("location", location);
+        scriptEntry.addObject("script", newScript);
         scriptEntry.addObject("entityType", entityType);
         scriptEntry.addObject("ride", ride);
         scriptEntry.addObject("burn", burn);
@@ -162,9 +164,10 @@ public class ShootCommand extends AbstractCommand {
         				this.cancel();
         				clearRuns();
         				
-        				if (scriptEntry.getScript() != null)
+        				if (scriptEntry.getObject("newScript") != null)
         				{
-        					denizen.getScriptEngine().getScriptBuilder().runTaskScript(scriptEntry.getPlayer(), scriptEntry.getScript().getName());
+        					denizen.getScriptEngine().getScriptBuilder().runTaskScript(scriptEntry.getPlayer(),
+        							((ScriptEntry) scriptEntry.getObject("script")).getScript().getName());
         				}
         				if ((Boolean) scriptEntry.getObject("fireworks"))
         				{
