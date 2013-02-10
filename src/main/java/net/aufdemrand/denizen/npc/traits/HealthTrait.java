@@ -14,7 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 public class HealthTrait extends Trait implements Listener {
 
@@ -182,7 +184,7 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onDeath(EntityDamageByEntityEvent event) {
+    public void onDeath(EntityDamageEvent event) {
         // Check if the event pertains to this NPC
         if (event.getEntity() != npc.getBukkitEntity() || dying) return;
 
@@ -191,17 +193,36 @@ public class HealthTrait extends Trait implements Listener {
             return;
 
         dying = true;
+        
+        // Check if the entity has been killed by another entity
+        if (event instanceof EntityDamageByEntityEvent)
+        {
 
-        // It is... is killer a Player?
-        if (event.getDamager() instanceof Player) {
-            // Yep.. pass player to the action
-            DenizenAPI.getDenizenNPC(npc).action("death", (Player) event.getDamager());
-            DenizenAPI.getDenizenNPC(npc).action("death by player", (Player) event.getDamager());
-        }   else {
-            // Nope.. killed by entity
-            DenizenAPI.getDenizenNPC(npc).action("death", null);
-            DenizenAPI.getDenizenNPC(npc).action("death by monster", null);
-            DenizenAPI.getDenizenNPC(npc).action("death by " + event.getDamager().getType().toString(), null);
+        	// If it has, is the killer a Player?
+        	if (((EntityDamageByEntityEvent) event).getDamager() instanceof Player) {
+        		// Yep.. pass player to the action
+        		DenizenAPI.getDenizenNPC(npc).action("death",
+        				(Player) ((EntityDamageByEntityEvent) event).getDamager());
+        		DenizenAPI.getDenizenNPC(npc).action("death by entity",
+        				(Player) ((EntityDamageByEntityEvent) event).getDamager());
+        		DenizenAPI.getDenizenNPC(npc).action("death by player",
+        				(Player) ((EntityDamageByEntityEvent) event).getDamager());
+        	}   else {
+        		// Nope.. killed by a non-Player entity
+        		DenizenAPI.getDenizenNPC(npc).action("death", null);
+        		DenizenAPI.getDenizenNPC(npc).action("death by entity", null);
+        		DenizenAPI.getDenizenNPC(npc).action("death by monster", null);
+        		DenizenAPI.getDenizenNPC(npc).action("death by " +
+        				((EntityDamageByEntityEvent) event).getDamager().getType().toString(), null);
+        	}
+        }
+        // If not, check if the entity has been killed by a block
+        else if (event instanceof EntityDamageByBlockEvent)
+        {
+        	DenizenAPI.getDenizenNPC(npc).action("death", null);
+        	DenizenAPI.getDenizenNPC(npc).action("death by block", null);
+        	//DenizenAPI.getDenizenNPC(npc).action("death by " +
+    		//		((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
         }
 
         loc = aH.getLocationFrom(DenizenAPI.getCurrentInstance().tagManager()
