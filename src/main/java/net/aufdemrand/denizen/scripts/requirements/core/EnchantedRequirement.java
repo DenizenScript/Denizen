@@ -19,9 +19,8 @@ public class EnchantedRequirement extends AbstractRequirement{
 		boolean outcome = false;
 		CheckType checkType = null;
 
-//	    HOW DO YOU WANT TO HANDLE NO ARGS IN REQUIREMENTS?
-//		if (arguments == null)
-//			throw new RequirementMissingException("Must provide arguments!");
+		if(args.size() < 1)
+			throw new RequirementCheckException("Must provide arguments!");
 
 		/* Get arguments */
 

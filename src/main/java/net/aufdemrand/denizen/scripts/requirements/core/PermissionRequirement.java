@@ -10,16 +10,11 @@ import net.aufdemrand.denizen.utilities.Depends;
 
 public class PermissionRequirement extends AbstractRequirement{
 
-	@Override
-	public void onEnable() {
-		// nothing to do here
-	}
-
     @Override
-    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
-		boolean outcome = false;
-		
+    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {		
 		if(context.getPlayer() != null) {
+			boolean outcome = false;
+			
 			if(Depends.permissions != null) {
 				for(String permission: args) {
 					if(Depends.permissions.has(context.getPlayer(), permission)) {
@@ -38,6 +33,6 @@ public class PermissionRequirement extends AbstractRequirement{
 			dB.echoDebug("...no permission plugin found, assume as TRUE!");
 		}
 		
-		return outcome;
+		return true;
 	}
 }

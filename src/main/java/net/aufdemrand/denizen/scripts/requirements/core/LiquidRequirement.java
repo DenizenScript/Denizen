@@ -21,8 +21,8 @@ public class LiquidRequirement extends AbstractRequirement{
 		boolean outcome = false;
 		Block blockToCheck = null;
 
-//		if (args == null)
-//			throw new RequirementMissingException("Must provide a BOOKMARK:block of the block to be checked!");
+		if(args.size() < 1)
+			throw new RequirementCheckException("Must provide a BOOKMARK:block of the block to be checked!");
 
 		/* Get arguments */
 

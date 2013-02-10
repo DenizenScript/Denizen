@@ -8,23 +8,9 @@ import java.util.List;
 
 public class SunnyRequirement extends AbstractRequirement {
 
-	@Override
-	public void onEnable() {
-		// nothing to do here
-	}
-
-
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
-        boolean outcome = false;
-
-		/*
-		 * (-)SUNNY
-		 */
-		
-		if (!context.getPlayer().getWorld().hasStorm()) outcome = true;
-		
-		return outcome;
+        return !context.getPlayer().getWorld().hasStorm();
 	}
 
 }

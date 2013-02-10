@@ -9,11 +9,6 @@ import java.util.List;
 
 public class OpRequirement extends AbstractRequirement{
 
-	@Override
-	public void onEnable() {
-		// nothing to do here
-	}
-
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 

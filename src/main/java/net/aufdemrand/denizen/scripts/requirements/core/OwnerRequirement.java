@@ -10,11 +10,6 @@ import java.util.List;
 
 public class OwnerRequirement extends AbstractRequirement{
 
-	@Override
-	public void onEnable() {
-		// nothing to do here
-	}
-
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 

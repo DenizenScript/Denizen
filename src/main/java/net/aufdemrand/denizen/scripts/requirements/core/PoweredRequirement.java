@@ -11,11 +11,6 @@ import java.util.List;
 
 public class PoweredRequirement extends AbstractRequirement{
 
-	@Override
-	public void onEnable() {
-		//nothing to do here
-	}
-
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		boolean outcome = false;
