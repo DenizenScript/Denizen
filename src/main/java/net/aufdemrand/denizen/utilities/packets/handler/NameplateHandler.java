@@ -42,7 +42,9 @@ public class NameplateHandler extends PacketAdapter {
 			for(NPC npc : npcRegistry) {
 				if( !npc.hasTrait(NameplateTrait.class) ) continue;
 
-				if(npc.getBukkitEntity().equals(watched)) {
+				Entity npcEntity = npc.getBukkitEntity();
+		
+				if(npcEntity != null && npcEntity.equals(watched)) {
 					NameplateTrait trait = npc.getTrait(NameplateTrait.class);
 					
 					text.write(0, trait.getTrimmedTag(observer.getName()));

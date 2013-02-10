@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -139,9 +140,11 @@ public class NameplateTrait extends Trait implements Listener {
 	}
 	
 	private void refreshTag(NPC npc, List<Player> players) {
-		try {
-			Depends.protocolManager.updateEntity(npc.getBukkitEntity(), players);
-		} catch (Exception e) {}
+		Entity npcEntity = npc.getBukkitEntity();
+		
+		if(npcEntity != null) {
+			Depends.protocolManager.updateEntity(npcEntity, players);
+		}
 	}
 	
 	private List<Player> getPlayersInRadius( NPC npc, int distance ) {
