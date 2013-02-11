@@ -11,11 +11,7 @@ public class TimeRequirement extends AbstractRequirement{
 	
 	private enum Time {DAWN, DAY, DUSK, NIGHT }
 	
-	@Override
-	public void onEnable() {
-		//nothing to do here
-	}
-
+	
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 		

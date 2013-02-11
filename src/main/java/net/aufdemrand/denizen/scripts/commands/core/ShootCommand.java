@@ -3,15 +3,16 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable3;
-import net.aufdemrand.denizen.utilities.Utilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -39,6 +40,7 @@ public class ShootCommand extends AbstractCommand {
         EntityType entityType = null;
         Integer qty = null;
         Location location = null;
+        Script newScript = null;
         Boolean ride = false;
         Boolean burn = false;
         Boolean explode = false;
@@ -60,7 +62,7 @@ public class ShootCommand extends AbstractCommand {
                 dB.echoDebug("...location set to '%s'.", arg);
                 
             } else if (aH.matchesScript(arg)) {
-				scriptEntry.setScript(aH.getStringFrom(arg));
+				newScript = aH.getScriptFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
 
             } else if (aH.matchesArg("RIDE, MOUNT", arg)) {
@@ -86,6 +88,7 @@ public class ShootCommand extends AbstractCommand {
 
         // Stash objects
         scriptEntry.addObject("location", location);
+        scriptEntry.addObject("script", newScript);
         scriptEntry.addObject("entityType", entityType);
         scriptEntry.addObject("ride", ride);
         scriptEntry.addObject("burn", burn);
@@ -163,9 +166,10 @@ public class ShootCommand extends AbstractCommand {
         				this.cancel();
         				clearRuns();
         				
-        				if (scriptEntry.getScript() != null)
+        				if (scriptEntry.getObject("newScript") != null)
         				{
-        					((TaskScriptContainer) scriptEntry.getScript().getContainer())
+                            ((Script) scriptEntry.getObject("newScript")).getContainer()
+                                    .getAsContainerType(TaskScriptContainer.class)
                                     .runTaskScript(scriptEntry.getPlayer(),
                                             scriptEntry.getNPC(),
                                             null);
@@ -189,6 +193,5 @@ public class ShootCommand extends AbstractCommand {
         
         task.setId(Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, task, 0, 2));        
     }
-    
 
 }

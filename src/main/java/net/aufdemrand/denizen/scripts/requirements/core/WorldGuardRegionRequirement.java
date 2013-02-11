@@ -18,11 +18,6 @@ import java.util.List;
 
 public class WorldGuardRegionRequirement extends AbstractRequirement {
 
-	@Override
-	public void onEnable() {
-		// nothing to do here
-	}
-	
 	/* INREGION [NAME:regionname]
 
 	/* Arguments: [] - Required, () - Optional 
@@ -45,7 +40,7 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
 		/*
 		 * If there are no arguments, throw an exception.
 		 */
-		if (args == null)
+		if (args == null || args.size() < 1)
 			throw new RequirementCheckException("Must provide a NAME:regionname!");
 		
 		/*
