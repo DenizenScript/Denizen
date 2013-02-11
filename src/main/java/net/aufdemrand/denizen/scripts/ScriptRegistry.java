@@ -13,7 +13,7 @@ import java.util.Set;
 public class ScriptRegistry {
 
     // Currently loaded 'script-containers'
-    private static Map<String, ScriptContainer> scriptContainers = new HashMap<String, ScriptContainer>();
+    private static Map<String, Object> scriptContainers = new HashMap<String, Object>();
     private static Map<String, Class<? extends ScriptContainer>> scriptContainerTypes = new HashMap<String, Class<? extends ScriptContainer>>();
 
     public static void _registerType(String typeName, Class<? extends ScriptContainer> scriptContainerClass) {
@@ -48,15 +48,17 @@ public class ScriptRegistry {
                 String type = yamlScripts.getString(scriptName + ".TYPE");
                 // Check that types is a registered type
                 if (!scriptContainerTypes.containsKey(type.toUpperCase())) {
-                    dB.log("<G>Trying to load an invalid script. '<T>" + scriptName + "<Y>(" + type + ")'<G> is an unknown type.");
+                    dB.log("<G>Trying to load an invalid script. '<A>" + scriptName + "<Y>(" + type + ")'<G> is an unknown type.");
                     continue;
                 }
                 // Instantize a new scriptContainer of specified type.
                 Class typeClass = scriptContainerTypes.get(type.toUpperCase());
                 try {
-                    ScriptContainer scriptContainer = (ScriptContainer) typeClass.getConstructor(typeClass).newInstance(scriptName);
-                    scriptContainers.put(scriptName,scriptContainer);
-                } catch (Exception e) { }
+                    scriptContainers.put(scriptName, typeClass.getConstructor(ConfigurationSection.class, String.class)
+                            .newInstance(ScriptHelper._gs().getConfigurationSection(scriptName), scriptName));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
     }
 
@@ -75,7 +77,7 @@ public class ScriptRegistry {
 
     public static ScriptContainer getScriptContainer(String name) {
         if (scriptContainers.containsKey(name.toUpperCase()))
-            return scriptContainers.get(name.toUpperCase());
+            return (ScriptContainer) scriptContainers.get(name.toUpperCase());
 
         else return null;
     }

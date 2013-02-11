@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 public class Denizen extends JavaPlugin {
 
-    public static String versionTag = "0.8.6 pre-release";
+    public static String versionTag = "0.8.8 pre-release";
     
     private CommandHandler commandHandler;
     

@@ -19,7 +19,7 @@ import java.util.*;
 public class ScriptEntry {
 
     // The name of the command that will be executed
-	final private String command;
+	private String command;
 
     // The queuetime and allowed-run-time can dictate whether it's okay
     // for this command to run in the queue.
@@ -59,7 +59,7 @@ public class ScriptEntry {
         // Check if this is an 'instant' command.
 		if (command.startsWith("^")) {
 			instant = true;
-			command = command.substring(1);
+			this.command = command.substring(1);
 		}
 
 		this.args = new ArrayList<String>();

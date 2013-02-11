@@ -101,6 +101,10 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 	
 	}
 
+    public boolean parse(dNPC npc, Player player, InteractScriptContainer script) {
+        return parse(npc, player, script, null);
+    }
+
     public boolean parse(dNPC npc, Player player, InteractScriptContainer script, String id) {
         if (npc == null || player == null || script == null) return false;
 
@@ -108,9 +112,12 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
         List<ScriptEntry> entries = script.getEntriesFor(this.getClass(), player, npc, id);
 
-        if (entries.isEmpty())
-
+        if (entries.isEmpty()) {
+            dB.echoDebug(DebugElement.Footer);
+            return false;
+        }
         ScriptQueue._getQueue(ScriptQueue._getNextId()).addEntries(entries).start();
+        dB.echoDebug(DebugElement.Footer);
         return true;
     }
 

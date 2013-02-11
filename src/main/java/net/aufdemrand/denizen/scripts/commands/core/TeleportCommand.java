@@ -149,6 +149,7 @@ public class TeleportCommand extends AbstractCommand {
         }
 
         for (NPC npc : teleportNPCs) {
+        	npc.spawn(teleportLocation);
             npc.getBukkitEntity().teleport(teleportLocation, PlayerTeleportEvent.TeleportCause.COMMAND);
         }
     }

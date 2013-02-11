@@ -52,7 +52,7 @@ public class NicknameTrait extends Trait implements Listener {
      *
      */
 	public String getNickname() {
-	    if (nickname.equals("")) return npc.getName();
+	    if (nickname == null || nickname.equals("")) return npc.getName();
         else return DenizenAPI.getCurrentInstance().tagManager()
                 .tag(null, DenizenAPI.getDenizenNPC(npc), nickname, false);
     }

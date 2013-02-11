@@ -38,9 +38,6 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
     @Override
 	public AbstractRequirement activate() {
 		plugin = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		// Reference Helper Classes
-		sH = plugin.getScriptEngine().getScriptHelper();
-		sB = plugin.getScriptEngine().getScriptBuilder();
 		return this;
 	}
 	

@@ -441,10 +441,13 @@ public class IfCommand extends AbstractCommand {
         String outcomeCommand = ((String) scriptEntry.getObject("outcome-command")).toUpperCase();
         String[] outcomeArgs = Arrays.copyOf((Object[]) scriptEntry.getObject("outcome-command-args"),
                 ((Object[]) scriptEntry.getObject("outcome-command-args")).length, String[].class);
-        try {
-            ScriptEntry entry = new ScriptEntry(outcomeCommand, outcomeArgs,
-                    scriptEntry.getScript().getContainer()).addObject("reqId", scriptEntry.getObject("reqId"));
-            ScriptQueue._getQueue(scriptEntry.getResidingQueue()).injectEntry(scriptEntry, 1);
+
+        try { ScriptEntry entry = new ScriptEntry(outcomeCommand, outcomeArgs,
+                    scriptEntry.getScript().getContainer())
+                    .setPlayer(scriptEntry.getPlayer())
+                    .setNPC(scriptEntry.getNPC())
+                    .addObject("reqId", scriptEntry.getObject("reqId"));
+            ScriptQueue._getQueue(scriptEntry.getResidingQueue()).injectEntry(entry, 0);
         } catch (ScriptEntryCreationException e) {
             dB.echoError("There has been a problem running the Command. Check syntax.");
             if (dB.showStackTraces) {
@@ -469,10 +472,12 @@ public class IfCommand extends AbstractCommand {
                     ((Object[]) scriptEntry.getObject("else-command-args")).length, String[].class);
         if (elseCommand == null) return;
 
-        try {
-            ScriptEntry entry = new ScriptEntry(elseCommand, elseArgs,
-                    scriptEntry.getScript().getContainer()).addObject("reqId", scriptEntry.getObject("reqId"));
-            ScriptQueue._getQueue(scriptEntry.getResidingQueue()).injectEntry(scriptEntry, 1);
+        try { ScriptEntry entry = new ScriptEntry(elseCommand, elseArgs,
+                    scriptEntry.getScript().getContainer())
+                    .setPlayer(scriptEntry.getPlayer())
+                    .setNPC(scriptEntry.getNPC())
+                    .addObject("reqId", scriptEntry.getObject("reqId"));
+            ScriptQueue._getQueue(scriptEntry.getResidingQueue()).injectEntry(entry, 0);
         } catch (ScriptEntryCreationException e) {
             dB.echoError("There has been a problem running the ELSE Command. Check syntax.");
             if (dB.showStackTraces) {

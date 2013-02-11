@@ -90,7 +90,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
         // Let's get the current step for reference.
-        String currentStep = InteractScriptHelper.getCurrentStep(scriptEntry.getPlayer(), script.getName(), false);
+        String currentStep = InteractScriptHelper.getCurrentStep(scriptEntry.getPlayer(), script.getName());
 
         // Special-case for backwards compatibility... ability to use ZAP to count up steps.
         if (step == null) {

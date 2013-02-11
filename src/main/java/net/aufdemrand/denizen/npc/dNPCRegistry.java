@@ -53,13 +53,13 @@ public class dNPCRegistry implements Listener {
 
     private boolean _isRegistered (NPC npc) {
         if (denizenNPCs.containsKey(npc))
-            return true ;
+            return true;
         else return false;
     }
 
     private void _registerNPC(NPC npc) {
         if (npc == null) return;
-        if (!denizenNPCs.containsKey(npc)) {
+        if (!denizenNPCs.containsKey(npc.getId())) {
             denizenNPCs.put(npc.getId(), new dNPC(npc));
         }
         dB.log("Constructing NPC " + getDenizen(npc).toString());
@@ -76,9 +76,9 @@ public class dNPCRegistry implements Listener {
      */
     public dNPC getDenizen(NPC npc) {
         if (npc == null) return null;
-        if (!denizenNPCs.containsKey(npc))
+        if (!denizenNPCs.containsKey(npc.getId()))
             _registerNPC(npc);
-        return denizenNPCs.get(npc);
+        return denizenNPCs.get(npc.getId());
     }
 
     /**

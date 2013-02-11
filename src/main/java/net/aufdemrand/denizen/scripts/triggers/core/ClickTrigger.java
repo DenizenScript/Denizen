@@ -65,7 +65,6 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         //   steps:
         //     current step:
         //       click trigger:
-
         String id = null;
         Map<String, String> idMap = script.getIdMapFor(this.getClass(), player);
         if (!idMap.isEmpty())
@@ -80,7 +79,6 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
         // If id is still null after this, it's assumed that the trigger's 'base script' will be used.
         // parse() will accept a null id if this is the case.
-
 
         // Click trigger is pretty straight forward, so there's not really a whole lot left to do
         // except call the parse() method which will queue up and execute the appropriate script

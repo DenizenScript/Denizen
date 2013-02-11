@@ -48,8 +48,9 @@ public class TaskScriptContainer extends ScriptContainer {
     public ScriptQueue runTaskScript(String queueId, Player player, dNPC npc, Map<String, String> context) {
         ScriptQueue queue = ScriptQueue._getQueue(queueId);
         List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
+        if (context != null)
         for (Map.Entry<String, String> entry : context.entrySet()) {
-
+            // TODO: Add context back
         }
         queue.addEntries(listOfEntries);
         if (isInstant()) queue.setSpeed(0);
@@ -62,8 +63,9 @@ public class TaskScriptContainer extends ScriptContainer {
     public ScriptQueue runTaskScriptWithDelay(String queueId, Player player, dNPC npc, Map<String, String> context, Duration delay) {
         ScriptQueue queue = ScriptQueue._getQueue(queueId);
         List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
+        if (context != null)
         for (Map.Entry<String, String> entry : context.entrySet()) {
-
+            // TODO: Add context back
         }
         queue.addEntries(listOfEntries);
         if (isInstant()) queue.setSpeed(0);

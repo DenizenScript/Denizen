@@ -53,7 +53,7 @@ public class AssignmentTrait extends Trait {
      *
      */
     public boolean setAssignment(String assignment, Player player) {
-        if (checkAssignment(assignment)) {
+        if (ScriptRegistry.containsScript(assignment)) {
             this.assignment = assignment.toUpperCase();
             // Add Constants/Trigger trait if not already added to the NPC.
             if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
@@ -75,7 +75,7 @@ public class AssignmentTrait extends Trait {
      *
      */
     public AssignmentScriptContainer getAssignment() {
-        if (hasAssignment())
+        if (hasAssignment() && ScriptRegistry.containsScript(assignment))
             return ScriptRegistry.getScriptContainerAs(assignment, AssignmentScriptContainer.class);
         else return null;
     }
@@ -87,7 +87,9 @@ public class AssignmentTrait extends Trait {
      *
      */
     public boolean hasAssignment() {
-        return checkAssignment(assignment);
+        if (assignment == null || assignment.equals("")) return false;
+        if (ScriptRegistry.containsScript(assignment)) return true;
+        else return false;
     }
 
     /**
@@ -100,12 +102,6 @@ public class AssignmentTrait extends Trait {
     public void removeAssignment (Player player) {
         assignment = "";
         DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action("remove assignment", player);
-    }
-
-    private boolean checkAssignment(String assignment) {
-        if (assignment == null || assignment.equals("")) return false;
-        if (getAssignment() != null) return true;
-        else return false;
     }
 
     public void describe(CommandSender sender, int page) throws CommandException {

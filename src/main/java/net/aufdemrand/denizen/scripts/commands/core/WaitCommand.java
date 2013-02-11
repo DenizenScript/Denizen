@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
  * Instructs the NPC to follow a player.
@@ -21,7 +22,7 @@ public class WaitCommand extends AbstractCommand {
 
         // Initialize required fields
         ScriptQueue queue = ScriptQueue._getQueue(scriptEntry.getResidingQueue());
-        Duration delay = new Duration(5d);
+        Duration delay = new Duration(3);
 
         // Iterate through arguments
         for (String arg : scriptEntry.getArguments()) {
@@ -49,6 +50,7 @@ public class WaitCommand extends AbstractCommand {
         // TODO: dBugger output
 
         // Tell the queue to delay
+        dB.echoDebug("Delaying " + (long) (delay.getSeconds() * 1000) + "ms");
         queue.delayUntil(System.currentTimeMillis() + (long) (delay.getSeconds() * 1000));
     }
 

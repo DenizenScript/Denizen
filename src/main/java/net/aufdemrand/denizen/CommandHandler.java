@@ -16,7 +16,7 @@ import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.util.Messaging;
-import net.citizensnpcs.command.command.Requirements;
+import net.citizensnpcs.api.command.Requirements;
 import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Paginator;
 import org.bukkit.ChatColor;
@@ -197,7 +197,7 @@ public class CommandHandler {
 		if (args.hasValueFlag("set")) {
 			if (trait.setAssignment(args.getFlag("set").replace("\"", ""), player))
 				if (trait.hasAssignment())
-                Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment is now: '" + trait.getAssignment() + "'.");
+                Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment is now: '" + trait.getAssignment().getName() + "'.");
                 else Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment was not able to be set.");
 			else Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
 			return;

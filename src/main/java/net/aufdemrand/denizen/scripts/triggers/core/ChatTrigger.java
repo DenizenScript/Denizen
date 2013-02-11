@@ -12,7 +12,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ChatTrigger extends AbstractTrigger implements Listener {
+
+    final static Pattern triggerPattern = Pattern.compile("\\/([^/]*)\\/");
 
     @Override
     public void onEnable() {
@@ -39,19 +45,22 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // reduce accidental chats with NPCs.
         if (Settings.CheckLineOfSightWhenChatting())
             if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return;
-        // if (Settings.ChatOnlyWhenLookingAtNPC())
-        // TODO: Add davidcernats util method for checking POV
+        if (Settings.ChatOnlyWhenLookingAtNPC())
+            if (!Utilities.isFacingEntity(event.getPlayer(), npc.getEntity())) return;
 
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
         // If available (not engaged, and cool) sets cool down and returns true.
         if (!npc.getTriggerTrait().trigger(this, event.getPlayer())) {
+            // If the NPC is not interactable, Settings may allow the chat to filter
+            // through. Check the Settings if this is enabled.
             if (Settings.ChatGloballyIfNotInteractable()) {
                 dB.echoDebug (ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
                         + "The NPC is currently cooling down or engaged.");
                 return;
             } else {
                 event.setCancelled(true);
-                // DenizenPlayer.chat(event.getPlayer(), closestNPC, event.getMessage());
+                dB.echoDebug(event.getPlayer().getName() + " says to "
+                        + npc.getNicknameTrait().getNickname() + ", " + event.getMessage());
             }
         }
 
@@ -60,24 +69,56 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // Parse the script and match Triggers.. if found, cancel the text! The
         // parser will take care of everything else.
-        //         Pattern	triggerPattern = Pattern.compile("\\/([^/]*)\\/");
-
-        String matchedId = null; //getMatchId(npc, event.getPlayer(), script, event.getMessage());
+        String id = null;
+        String replacementText = null;
+        boolean matched = false;
+        Map<String, String> idMap = script.getIdMapFor(this.getClass(), event.getPlayer());
+        if (!idMap.isEmpty())
+            // Iterate through the different id entries in the step's chat trigger
+            for (Map.Entry<String, String> entry : idMap.entrySet()) {
+                // Check if the chat trigger specified in the specified id's 'trigger:' key
+                // matches the text the player has said
+                Matcher matcher = triggerPattern.matcher(entry.getValue());
+                while (matcher.find ()) {
+                    String keyWord = matcher.group();
+                    // Check if the trigger is REGEX
+                    if(isKeywordRegex(keyWord)) {
+                        Pattern	pattern = Pattern.compile(keyWord.substring(6));
+                        Matcher m = pattern.matcher(event.getMessage());
+                        if (m.find()) {
+                            // Trigger is REGEX, and it matches.
+                            id = entry.getKey();
+                            replacementText = entry.getValue().replace("/" + keyWord + "/", m.group());
+                            matched = true;
+                        }
+                    } else {
+                        // Trigger matches
+                        id = entry.getKey();
+                        replacementText = entry.getValue().replace("/", "");
+                        matched = true;
+                    }
+                }
+                if (matched) break;
+            }
 
         // If there was a match, the id of the match should have been returned.
-        if (matchedId != null)
-            parse(npc, event.getPlayer(), script, matchedId);
+        if (id != null) {
+            dB.echoDebug(event.getPlayer().getName() + " says to "
+                    + npc.getNicknameTrait().getNickname() + ", " + replacementText);
+            parse(npc, event.getPlayer(), script, id);
 
-        else {
+        } else {
 
             if (!Settings.ChatGloballyIfFailedChatTriggers ()) {
                 event.setCancelled(true);
-                // DenizenPlayer.chat(event.getPlayer(), closestNPC, event.getMessage());
+                dB.echoDebug(event.getPlayer().getName() + " says to "
+                        + npc.getNicknameTrait().getNickname() + ", " + replacementText);
                 return;
             }
 
             // No matching chat triggers, and the config.yml says we should just
             // ignore the interaction...
+
         }
     }
 

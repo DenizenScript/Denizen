@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.npc.NPC;
@@ -17,9 +16,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChairCommand extends AbstractCommand implements Listener {
@@ -27,7 +28,7 @@ public class ChairCommand extends AbstractCommand implements Listener {
 	enum ChairAction { SIT, STAND }
 	
 	public ConcurrentHashMap<NPC, Block> chairRegistry = new ConcurrentHashMap<NPC, Block>();
-	
+
 	@Override
 	public void onEnable() {
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
@@ -44,8 +45,8 @@ public class ChairCommand extends AbstractCommand implements Listener {
 			if (aH.matchesLocation(arg)) {
 				chairBlock = aH.getLocationFrom(arg).getBlock();
 				dB.echoDebug("...sit location set");
-			} else if (aH.matchesValueArg("SIT, STAND", arg, ArgumentType.Custom)) {
-				chairAction = ChairAction.valueOf(aH.getStringFrom(arg));
+			} else if (aH.matchesArg("SIT, STAND", arg)) {
+				chairAction = ChairAction.valueOf(aH.getStringFrom(arg).toUpperCase());
 				dB.echoDebug("...npc will " + chairAction.name());
 			} else throw new InvalidArgumentsException ("Invalid argument specified!");
 		}
@@ -59,7 +60,7 @@ public class ChairCommand extends AbstractCommand implements Listener {
 			throws CommandExecutionException {
 		
 		Block chairBlock = (Block) scriptEntry.getObject("chairBlock");
-		ChairAction chairAction = ChairAction.valueOf((String) scriptEntry.getObject("chairAction"));
+		ChairAction chairAction = ChairAction.valueOf(((String) scriptEntry.getObject("chairAction")).toUpperCase());
 		NPC npc = scriptEntry.getNPC().getCitizen();
 		
 		switch (chairAction) {
@@ -78,9 +79,10 @@ public class ChairCommand extends AbstractCommand implements Listener {
 				 * Teleport NPC to the chair and
 				 * make him sit. Good NPC!				
 				 */
-				npc.getBukkitEntity().teleport(chairBlock.getLocation(), TeleportCause.PLUGIN);
-				makeSit(npc, chairBlock);
-				dB.echoError("...NPC sits!");
+				npc.getBukkitEntity().teleport(chairBlock.getLocation().add(0.5, 0, 0.5), TeleportCause.PLUGIN);
+				
+				makeSitAllPlayers(npc, chairBlock);
+				dB.echoDebug("...NPC sits!");
 				
 				break;
 				
@@ -91,7 +93,7 @@ public class ChairCommand extends AbstractCommand implements Listener {
 				}
 				
 				makeStand(npc);
-				dB.echoError("...NPC stands!");
+				dB.echoDebug("...NPC stands!");
 				break;
 		}
 	}
@@ -100,18 +102,18 @@ public class ChairCommand extends AbstractCommand implements Listener {
 	 * Sends packet via ProtocolLib to all online
 	 * players so they can see the NPC as sitting.
 	 */
-	public void makeSit(NPC npc, Block block) {
+	public void makeSitAllPlayers(NPC npc, Block block) {
 		try {
-			PacketContainer entitymeta = ProtocolLibrary.getProtocolManager().createPacket(40);
-			entitymeta.getSpecificModifier(int.class).write(0, npc.getBukkitEntity().getEntityId());
+			PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(40);
+			packet.getSpecificModifier(int.class).write(0, npc.getBukkitEntity().getEntityId());
 			WrappedDataWatcher watcher = new WrappedDataWatcher();
 			watcher.setObject(0, (byte) 4);
-			entitymeta.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
+			packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
 			
 			for (Player player : denizen.getServer().getOnlinePlayers()) {
                 if (npc.getBukkitEntity().getWorld().equals(player.getWorld())) {
                     try {
-                        ProtocolLibrary.getProtocolManager().sendServerPacket(player, entitymeta);
+                        ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
                     } catch (InvocationTargetException e) { 
                     	dB.echoError("...error sending packet to player: " + player.getName()); 
                     }
@@ -126,21 +128,46 @@ public class ChairCommand extends AbstractCommand implements Listener {
 	}
 	
 	/*
+	 * Sends the sit packet to a specific player.
+	 */
+	public void makeSitSpecificPlayer(NPC npc, Player player) {
+		try {
+			PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(40);
+			packet.getSpecificModifier(int.class).write(0, npc.getBukkitEntity().getEntityId());
+			WrappedDataWatcher watcher = new WrappedDataWatcher();
+			watcher.setObject(0, (byte) 4);
+			packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
+			
+            if (npc.getBukkitEntity().getWorld().equals(player.getWorld())) {
+                try {
+                    ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+                } catch (InvocationTargetException e) { 
+                	dB.echoError("...error sending packet to player: " + player.getName()); 
+                }
+            }
+            
+			
+		} catch (Error e) {
+			dB.echoError("ProtocolLib required for SIT command!!");
+		}
+	}
+	
+	/*
 	 * Sends packet via ProtocolLib to all online
 	 * players so they can see the NPC as standing.
 	 */
 	public void makeStand(NPC npc) {
 		try {
-			PacketContainer entitymeta = ProtocolLibrary.getProtocolManager().createPacket(40);
-	        entitymeta.getSpecificModifier(int.class).write(0, npc.getBukkitEntity().getEntityId());
+			PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(40);
+			packet.getSpecificModifier(int.class).write(0, npc.getBukkitEntity().getEntityId());
 	        WrappedDataWatcher watcher = new WrappedDataWatcher();
 	        watcher.setObject(0, (byte) 0);
-	        entitymeta.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
+	        packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
 	
 	        for (Player player : denizen.getServer().getOnlinePlayers()) {
 	            if (npc.getBukkitEntity().getWorld().equals(player.getWorld())) {
 	                try {
-	                    ProtocolLibrary.getProtocolManager().sendServerPacket(player, entitymeta);
+	                    ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
 	                } catch (InvocationTargetException e) {
 	                	dB.echoError("...error sending packet to player: " + player.getName()); 
 	                }
@@ -190,5 +217,20 @@ public class ChairCommand extends AbstractCommand implements Listener {
 			event.setCancelled(true);
 			dB.echoDebug("..." + event.getPlayer().getName() + " tried to break an NPCs chair!");
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerLoginEvent(PlayerJoinEvent event) {
+		Set<NPC> npcs = chairRegistry.keySet();
+		
+		/*
+		 * Send packets for all currently sitting NPCs
+		 * to all new players who join.
+		 */
+		for (NPC npc : npcs) {
+			makeSitSpecificPlayer(npc, event.getPlayer());
+		}
+		
+		dB.echoDebug("..." + event.getPlayer().getName() + " joined, sending sit packets.");
 	}
 }

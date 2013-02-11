@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -164,7 +165,10 @@ public class ShootCommand extends AbstractCommand {
         				
         				if (scriptEntry.getScript() != null)
         				{
-        					denizen.getScriptEngine().getScriptBuilder().runTaskScript(scriptEntry.getPlayer(), scriptEntry.getScript().getName());
+        					((TaskScriptContainer) scriptEntry.getScript().getContainer())
+                                    .runTaskScript(scriptEntry.getPlayer(),
+                                            scriptEntry.getNPC(),
+                                            null);
         				}
         				if ((Boolean) scriptEntry.getObject("fireworks"))
         				{

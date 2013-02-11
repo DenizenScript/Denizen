@@ -5,10 +5,6 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public class ActivityScriptContainer extends ScriptContainer {
 
-    public ActivityScriptContainer(String scriptContainerName) {
-        super(scriptContainerName);
-    }
-
     public ActivityScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }

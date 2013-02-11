@@ -40,8 +40,9 @@ public class CommandExecuter {
 		AbstractCommand command = plugin.getCommandRegistry().get(scriptEntry.getCommandName());
 
 		// Debugger information
-		if (scriptEntry.getPlayer() != null) dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName() + "/" + scriptEntry.getPlayer().getName());
-		else dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName() + "/" + scriptEntry.getNPC().getName());
+		if (scriptEntry.getPlayer() != null)
+            dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName() + "/" + scriptEntry.getPlayer().getName());
+		else dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/" + scriptEntry.getNPC().getName() : ""));
 
 		// Don't execute() if problems arise in parseArgs()
 		boolean keepGoing = true;

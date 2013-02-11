@@ -5,8 +5,6 @@ import net.aufdemrand.denizen.scripts.commands.CommandExecuter;
 import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import java.util.Iterator;
-
 public class ScriptEngine {
 
     final private Denizen denizen;
@@ -22,10 +20,10 @@ public class ScriptEngine {
     }
 
     public void revolve(ScriptQueue scriptQueue) {
-        Iterator<ScriptEntry> scriptEntries = scriptQueue.scriptEntries.iterator();
-        while (scriptEntries.hasNext()) {
+        ScriptEntry scriptEntry = scriptQueue.getNext();
+        while (scriptEntry != null) {
             // Find next ScriptEntry
-            ScriptEntry scriptEntry = scriptEntries.next();
+            scriptEntry.setSendingQueue(scriptQueue);
             // Check if last entry is still holding up the queue
             if (scriptQueue.getLastEntryExecuted() != null
                     && scriptQueue.getLastEntryExecuted().getHoldTime() > System.currentTimeMillis()) {
@@ -46,14 +44,18 @@ public class ScriptEngine {
                 }
                 // Set as last entry exectured
                 scriptQueue.setLastEntryExecuted(scriptEntry);
-                // Remove from execution list
-                scriptEntries.remove();
-                if (scriptEntry.isInstant() || scriptQueue.delay > 0) continue;
-                    // If entry isn't instant, end the revolution and wait for another
-                else break;
+
+                if (scriptEntry.isInstant() || scriptQueue.ticks == 0) {
+                    // Remove from execution list
+                    scriptEntry = scriptQueue.getNext();
+                }
+                // If entry isn't instant, end the revolution and wait for another
+                else
+                    break;
             }
         }
     }
+
 
     /**
      * Gets the currently loaded instance of the RequirementChecker

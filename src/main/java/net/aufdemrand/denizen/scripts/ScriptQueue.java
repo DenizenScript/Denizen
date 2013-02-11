@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
@@ -71,8 +72,7 @@ public class ScriptQueue implements Listener {
 
 
 
-    protected String id;
-    protected int timeout = 10;
+    public String id;
 
     // Keep track of Bukit's Scheduler taskId for the engine, for when it times out.
     protected int taskId;
@@ -81,7 +81,7 @@ public class ScriptQueue implements Listener {
     protected int ticks;
 
     // List of ScriptEntries in the queue
-    protected List<ScriptEntry> scriptEntries = new ArrayList<ScriptEntry>();
+    List<ScriptEntry> scriptEntries = new ArrayList<ScriptEntry>();
 
     // If this number is larger than getCurrentTimeMillis, the queues will delay execution
     protected long delay = 0;
@@ -133,35 +133,50 @@ public class ScriptQueue implements Listener {
     }
 
     public void start() {
+        dB.log("Starting " + id + "...");
+        // If not an instant queue, set a bukkit repeating task with the speed
         if (ticks > 0)
             taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
-                        @Override
-                        public void run() {
-                        // Turn the engine
-                        revolve();
-                        }
-                    }, ticks, ticks);
+                @Override
+                public void run() {
+                    // Turn the engine
+                    revolve();
+                }
+            }, ticks, ticks);
+        // If instant, AND delayed,
+        if (ticks == 0 && delay > System.currentTimeMillis())
+
         revolve();
     }
 
     private void revolve() {
-        // Check timeout
-        if (timeout == 0) stop();
-        if (scriptEntries.isEmpty() && timeout > 0) timeout--;
-        // Check if this Queue is able to revolve:
+        // If entries queued up are empty, desconstruct the queue.
+        if (scriptEntries.isEmpty()) stop();
+        // Check if this Queue is able to revolve, which involves 2 criteria:
         // 1) Isn't paused
         if (paused) return;
         // 2) Isn't delayed/waiting
-        if (delay > System.currentTimeMillis()) return;
-
+        if (delay > System.currentTimeMillis()) {
+            // Check if this is an 'instant queue'. If it is, and it's delayed,
+            // we need to schedule it to be called again so it isn't forgotten about.
+            if (ticks == 0)
+            return;
+        }
+        // Criteria met for a sucessful 'revolution' of this queue...
         DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
     }
 
-    public ScriptQueue addEntries(List<ScriptEntry> entries) {
-        for (ScriptEntry entry : entries) {
-            entry.setSendingQueue(this);
-            this.scriptEntries.add(entry);
+    public ScriptEntry getNext() {
+        if (!scriptEntries.isEmpty()) {
+            ScriptEntry entry = scriptEntries.get(0);
+            scriptEntries.remove(0);
+            return entry;
         }
+        else return null;
+    }
+
+    public ScriptQueue addEntries(List<ScriptEntry> entries) {
+        scriptEntries.addAll(entries);
         return this;
     }
 
@@ -170,6 +185,7 @@ public class ScriptQueue implements Listener {
         if (scriptEntries.size() == 0) position = 0;
         scriptEntries.addAll(position, entries);
         return this;
+
     }
 
     public boolean removeEntry(int position) {

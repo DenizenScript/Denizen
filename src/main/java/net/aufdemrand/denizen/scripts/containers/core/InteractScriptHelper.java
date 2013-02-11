@@ -183,9 +183,9 @@ public class InteractScriptHelper {
     public static String getCurrentStep(Player player, String scriptName) {
         if (scriptName == null) return null;
         // Probe 'saves.yml' for the current step
-        if (DenizenAPI._saves().getString("Players." + player.getName()
+        if (DenizenAPI._saves().contains("Players." + player.getName()
                         + "." + "Scripts." + scriptName.toUpperCase()
-                        + "." + "Current Step") != null)
+                        + "." + "Current Step"))
             return DenizenAPI._saves().getString("Players." + player.getName()
                             + "." + "Scripts." + scriptName.toUpperCase()
                             + "." + "Current Step");

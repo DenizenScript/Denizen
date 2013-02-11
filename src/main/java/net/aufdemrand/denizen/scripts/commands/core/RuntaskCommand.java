@@ -125,7 +125,7 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
         // Put important objects inside the scriptEntry to be sent to execute()
         scriptEntry.addObject("speed", speed);
         scriptEntry.addObject("queue", queue);
-        scriptEntry.addObject("delay", delay);
+        scriptEntry.addObject("delay", delay.setPrefix("Delay"));
         scriptEntry.addObject("script", script);
         scriptEntry.addObject("context", context);
     }
@@ -149,10 +149,10 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
                 + "Queue='" + queue.toString());
 
         if (delay.getSeconds() <= 0)
-            ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScript(ScriptQueue._getNextId(), scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
+            ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScript(queue.id, scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
 
         else
-            ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScriptWithDelay(ScriptQueue._getNextId(), scriptEntry.getPlayer(), scriptEntry.getNPC(), context, delay);
+            ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScriptWithDelay(queue.id, scriptEntry.getPlayer(), scriptEntry.getNPC(), context, delay);
 
     }
 

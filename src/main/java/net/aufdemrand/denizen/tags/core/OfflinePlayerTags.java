@@ -38,6 +38,9 @@ public class OfflinePlayerTags implements Listener {
         else if (type.equals("IS_BANNED"))
             event.setReplaced(String.valueOf(p.isBanned()));
         
+        else if (type.equals("IS_ONLINE"))
+            event.setReplaced(String.valueOf(p.isOnline()));
+        
         else if (type.equals("CHAT_HISTORY")) {
             if (event.hasTypeContext()) {
                 if (aH.matchesInteger(event.getTypeContext())) {
@@ -61,10 +64,13 @@ public class OfflinePlayerTags implements Listener {
 
         } else if (type.equals("LOCATION")) {
             if (subType.equals("BED_SPAWN"))
-                event.setReplaced(p.getBedSpawnLocation().getBlockX()
-                        + "," + p.getBedSpawnLocation().getBlockY()
-                        + "," + p.getBedSpawnLocation().getBlockZ()
-                        + "," + p.getBedSpawnLocation().getWorld());
+            	if (p.getBedSpawnLocation() != null)
+            	{
+            		event.setReplaced(p.getBedSpawnLocation().getBlockX()
+            				+ "," + p.getBedSpawnLocation().getBlockY()
+            				+ "," + p.getBedSpawnLocation().getBlockZ()
+            				+ "," + p.getBedSpawnLocation().getWorld().getName());
+            	}
 
         } else if (type.equals("MONEY")) {
             if(Depends.economy != null) {

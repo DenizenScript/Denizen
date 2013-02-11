@@ -38,7 +38,9 @@ public class ActionHandler {
 
         ScriptQueue queue = ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(script);
         queue.start();
-        if (queue.getContext().equalsIgnoreCase("cancelled")) return true;
+
+        if (queue.getContext() != null
+                && queue.getContext().equalsIgnoreCase("cancelled")) return true;
 
         return false;
     }

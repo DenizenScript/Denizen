@@ -36,6 +36,10 @@ public class ScriptHelper {
         Bukkit.getServer().getPluginManager().callEvent(new dScriptReloadEvent());
     }
 
+    public static FileConfiguration _gs() {
+        return getScripts();
+    }
+
     private static FileConfiguration getScripts() {
         if (_yamlScripts == null) {
             reloadScripts();
