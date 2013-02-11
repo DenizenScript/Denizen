@@ -156,7 +156,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 flag.set(Double.toString(math(currentValue, Double.valueOf(value), action)), index);
                 break;
             case SET_BOOLEAN:
-                flag.set(true, index);
+                flag.set("true", index);
                 break;
             case SET_VALUE:
                 flag.set(value, index);
