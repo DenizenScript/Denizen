@@ -445,7 +445,7 @@ public class IfCommand extends AbstractCommand {
         try { ScriptEntry entry = new ScriptEntry(outcomeCommand, outcomeArgs,
                     scriptEntry.getScript().getContainer())
                     .setPlayer(scriptEntry.getPlayer())
-                    .setNPC(scriptEntry.getNPC())
+                    .setNPC(scriptEntry.getNPC()).setInstant(true)
                     .addObject("reqId", scriptEntry.getObject("reqId"));
             ScriptQueue._getQueue(scriptEntry.getResidingQueue()).injectEntry(entry, 0);
         } catch (ScriptEntryCreationException e) {
@@ -475,7 +475,7 @@ public class IfCommand extends AbstractCommand {
         try { ScriptEntry entry = new ScriptEntry(elseCommand, elseArgs,
                     scriptEntry.getScript().getContainer())
                     .setPlayer(scriptEntry.getPlayer())
-                    .setNPC(scriptEntry.getNPC())
+                    .setNPC(scriptEntry.getNPC()).setInstant(true)
                     .addObject("reqId", scriptEntry.getObject("reqId"));
             ScriptQueue._getQueue(scriptEntry.getResidingQueue()).injectEntry(entry, 0);
         } catch (ScriptEntryCreationException e) {

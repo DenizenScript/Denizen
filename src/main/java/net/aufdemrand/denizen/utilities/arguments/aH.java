@@ -845,13 +845,8 @@ public class aH {
         final Pattern matchesQueuePtrn = Pattern.compile("queue:(.+)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesQueuePtrn.matcher(arg);
         if (m.matches())
-            if (ScriptQueue._queueExists(m.group(1)))
                 return true;
             // Don't warn if this is a list format...
-            else if (!m.group(1).contains("|"))
-                dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
-                        "prefix is correct, the value is not valid. 'QUEUE' requires a valid QueueType. " +
-                        "Perhaps a replaceable Tag has failed to fill in a valid value?");
         return false;
     }
 
