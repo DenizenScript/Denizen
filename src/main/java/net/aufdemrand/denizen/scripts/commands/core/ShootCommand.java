@@ -1,11 +1,13 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -165,13 +167,12 @@ public class ShootCommand extends AbstractCommand {
         				this.cancel();
         				clearRuns();
         				
-        				if (scriptEntry.getObject("newScript") != null)
+        				if (scriptEntry.getObject("script") != null)
         				{
-                            ((Script) scriptEntry.getObject("newScript")).getContainer()
-                                    .getAsContainerType(TaskScriptContainer.class)
-                                    .runTaskScript(scriptEntry.getPlayer(),
-                                            scriptEntry.getNPC(),
-                                            null);
+                            ((TaskScriptContainer) ((Script) scriptEntry.getObject("script")).
+                            		getContainer()).setSpeed(new Duration((long)
+                            		Settings.InteractDelayInTicks())).runTaskScript(
+                            		scriptEntry.getPlayer(), scriptEntry.getNPC(), null);
         				}
         				if ((Boolean) scriptEntry.getObject("fireworks"))
         				{
