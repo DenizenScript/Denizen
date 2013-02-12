@@ -185,12 +185,21 @@ public class InteractScriptHelper {
         // Probe 'saves.yml' for the current step
         if (DenizenAPI._saves().contains("Players." + player.getName()
                         + "." + "Scripts." + scriptName.toUpperCase()
-                        + "." + "Current Step"))
+                        + "." + "Current Step")) {
+            // TODO: Remove debug
+            // dB.echoDebug("<Y>+> " + ChatColor.WHITE + "Current step for " + player.getName() + "/" + scriptName + " is " +
+            //         DenizenAPI._saves().getString("Players." + player.getName()
+            //                 + "." + "Scripts." + scriptName.toUpperCase()
+            //                 + "." + "Current Step"));
             return DenizenAPI._saves().getString("Players." + player.getName()
                             + "." + "Scripts." + scriptName.toUpperCase()
-                            + "." + "Current Step");
+                            + "." + "Current Step").toUpperCase();
+        }
         // No saved step found, so we'll just use the default
-        return ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName();
+        // TODO: Remove debug
+        // dB.echoDebug("<Y>+> " + ChatColor.WHITE + "Current step for " + player.getName() + "/" + scriptName + " is " +
+        //      ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName());
+        return ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName().toUpperCase();
     }
 
 
