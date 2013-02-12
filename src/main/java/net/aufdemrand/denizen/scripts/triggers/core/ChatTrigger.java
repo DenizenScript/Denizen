@@ -70,8 +70,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Parse the script and match Triggers.. if found, cancel the text! The
         // parser will take care of everything else.
         String id = null;
-        String keyWord = null;
         boolean matched = false;
+        String replacementText = null;
+        String regexId = null;
+        String regexMessage = null;
         Map<String, String> idMap = script.getIdMapFor(this.getClass(), event.getPlayer());
 
         if (!idMap.isEmpty())
@@ -81,31 +83,40 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 // matches the text the player has said
                 Matcher matcher = triggerPattern.matcher(entry.getValue());
                 while (matcher.find ()) {
-                    keyWord = matcher.group().replace("/", "");
+                	if (!script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
+                			 event.getPlayer(), npc, entry.getKey())) continue;
+                    String keyword = matcher.group().replace("/", "");
                     // Check if the trigger is REGEX
-                    if(isKeywordRegex(keyWord)) {
-                        Pattern	pattern = Pattern.compile(keyWord.substring(6));
+                    if(isKeywordRegex(keyword)) {
+                        Pattern	pattern = Pattern.compile(keyword.substring(6));
                         Matcher m = pattern.matcher(event.getMessage());
                         if (m.find()) {
-                            // Trigger is REGEX, and it matches.
-                            id = entry.getKey();
-                            matched = true;
+                            // REGEX matches are left for last, so save it in case non-REGEX
+                        	// matches don't exist
+                            regexId = entry.getKey();
+                            regexMessage = entry.getValue().replace("/" + keyword + "/", m.group());
                         }
                     }
-                    else if (event.getMessage().toUpperCase().contains(keyWord.toUpperCase()))
+                    else if (event.getMessage().toUpperCase().contains(keyword.toUpperCase()))
                     {
                         // Trigger matches
                         id = entry.getKey();
+                        replacementText = keyword;
                         matched = true;
                     }
                 }
                 if (matched) break;
             }
-
+        if (matched == false && regexId != null)
+        {
+        	id = regexId;
+            replacementText = regexMessage;
+        }
+        
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
             dB.echoDebug(event.getPlayer().getName() + " says to "
-                    + npc.getNicknameTrait().getNickname() + ", " + keyWord);
+                    + npc.getNicknameTrait().getNickname() + ", " + replacementText);
             parse(npc, event.getPlayer(), script, id);
 
         } else {
@@ -113,7 +124,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             if (!Settings.ChatGloballyIfFailedChatTriggers ()) {
                 event.setCancelled(true);
                 dB.echoDebug(event.getPlayer().getName() + " says to "
-                        + npc.getNicknameTrait().getNickname() + ", " + keyWord);
+                        + npc.getNicknameTrait().getNickname() + ", " + replacementText);
                 return;
             }
 
