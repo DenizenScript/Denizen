@@ -199,12 +199,17 @@ public class Utilities {
      * This utility checks if an Entity is facing a Location.
      *
      * @param  from  The Entity we check.
-     * @param at  The Location we want to know if it is looking at.
+     * @param  at  The Location we want to know if it is looking at.
+     * @param  degreeLimit  How many degrees can be between the direction the
+     * 						Entity is facing and the direction we check if it
+     * 						is facing.
      *
      * @return  Returns a boolean.
      */
-    public static boolean isFacingLocation(Entity from, Location at) {
-        double currentYaw;
+    public static boolean isFacingLocation(Entity from, Location at, float degreeLimit) {
+        
+    	double currentYaw;
+    	
         if (from instanceof Player) // need to subtract 90 from player yaws
             currentYaw = normalizeYaw(from.getLocation().getYaw() - 90);
         else
@@ -213,9 +218,9 @@ public class Utilities {
         double requiredYaw = normalizeYaw(getYaw(at.toVector().subtract(
                 from.getLocation().toVector()).normalize()));
 
-        if (Math.abs(requiredYaw - currentYaw) < 45 ||
-                Math.abs(requiredYaw + 360 - currentYaw) < 45 ||
-                Math.abs(currentYaw + 360 - requiredYaw) < 45)
+        if (Math.abs(requiredYaw - currentYaw) < degreeLimit ||
+                Math.abs(requiredYaw + 360 - currentYaw) < degreeLimit ||
+                Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit)
             return true;
 
         return false;
@@ -227,12 +232,15 @@ public class Utilities {
      *
      * @param  from  The Entity we check.
      * @param at  The Entity we want to know if it is looking at.
+     * @param  degreeLimit  How many degrees can be between the direction the
+     * 						Entity is facing and the direction we check if it
+     * 						is facing.
      *
      * @return  Returns a boolean.
      */
-    public static boolean isFacingEntity(Entity from, Entity at) {
+    public static boolean isFacingEntity(Entity from, Entity at, float degreeLimit) {
 
-        return isFacingLocation(from, at.getLocation());
+        return isFacingLocation(from, at.getLocation(), degreeLimit);
     }
 
 

@@ -46,7 +46,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (Settings.CheckLineOfSightWhenChatting())
             if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return;
         if (Settings.ChatOnlyWhenLookingAtNPC())
-            if (!Utilities.isFacingEntity(event.getPlayer(), npc.getEntity())) return;
+            if (!Utilities.isFacingEntity(event.getPlayer(), npc.getEntity(), 45)) return;
 
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
         // If available (not engaged, and cool) sets cool down and returns true.
