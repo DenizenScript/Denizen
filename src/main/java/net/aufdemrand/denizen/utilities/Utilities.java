@@ -48,19 +48,29 @@ public class Utilities {
      *
      */
     public static void talkToNPC(String message, Player player, dNPC npc, int range) {
+        // Get formats from Settings, and fill in <TEXT>
         String talkFormat = Settings.PlayerChatToNpcFormat()
                 .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
         String bystanderFormat = Settings.PlayerChatToNpcToBystandersFormat()
                 .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
 
+        // Fill in tags
+        talkFormat = DenizenAPI.getCurrentInstance().tagManager()
+                .tag(player, npc, talkFormat, false);
+        bystanderFormat = DenizenAPI.getCurrentInstance().tagManager()
+                .tag(player, npc, bystanderFormat, false);
+
+        // Send message to player
         player.sendMessage(talkFormat);
 
+        // Send message to bystanders
         for (Player target : Bukkit.getOnlinePlayers()) {
             if (target != player)
                 if (target.getLocation().distance(player.getLocation()) <= range)
                     target.sendMessage(bystanderFormat);
         }
     }
+
 
     public static int lastIndexOfUCL(String str) {
         for(int i=str.length()-1; i>=0; i--) {
