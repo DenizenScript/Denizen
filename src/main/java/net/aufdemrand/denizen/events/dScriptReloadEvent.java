@@ -12,11 +12,7 @@ import org.bukkit.event.HandlerList;
 public class dScriptReloadEvent extends Event {
     
     private static final HandlerList handlers = new HandlerList();
- 
-    public dScriptReloadEvent() {
-    	// Nothing to do here.
-    }
-    
+
     public HandlerList getHandlers() {
         return handlers;
     }

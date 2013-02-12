@@ -32,6 +32,7 @@ public class ScriptRegistry {
         _registerType("task", TaskScriptContainer.class);
         _registerType("activity", ActivityScriptContainer.class);
         _registerType("assignment", AssignmentScriptContainer.class);
+        _registerType("procedure", ProcedureScriptContainer.class);
     }
 
     public static boolean containsScript(String id) {

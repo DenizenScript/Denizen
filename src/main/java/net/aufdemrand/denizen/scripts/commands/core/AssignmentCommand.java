@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  *
- * @author aufdemrand
+ * @author Jeremy Schroeder
  *
  */
 public class AssignmentCommand extends AbstractCommand {

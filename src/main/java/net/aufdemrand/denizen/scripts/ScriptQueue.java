@@ -143,10 +143,7 @@ public class ScriptQueue implements Listener {
                     revolve();
                 }
             }, ticks, ticks);
-        // If instant, AND delayed,
-        if (ticks == 0 && delay > System.currentTimeMillis())
-
-        revolve();
+        else revolve();
     }
 
     private void revolve() {
@@ -160,6 +157,14 @@ public class ScriptQueue implements Listener {
             // Check if this is an 'instant queue'. If it is, and it's delayed,
             // we need to schedule it to be called again so it isn't forgotten about.
             if (ticks == 0)
+                Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                // revolve
+                                revolve();
+                            }
+                        }, Settings.InteractDelayInTicks());
             return;
         }
         // Criteria met for a sucessful 'revolution' of this queue...
