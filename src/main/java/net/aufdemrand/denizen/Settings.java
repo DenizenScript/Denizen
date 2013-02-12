@@ -135,4 +135,14 @@ public class Settings {
                 .getBoolean("chat_globally_if_not_interactable", false);
     }
 
+    public static String PlayerChatToNpcFormat() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getString("player_chat_to_npc_format", "You -> <npc.nickname>: <text>");
+    }
+
+    public static String PlayerChatToNpcToBystandersFormat() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getString("player_chat_to_npc_to_bystanders_format", "<player.name> -> <npc.nickname>: <text>");
+    }
+
 }

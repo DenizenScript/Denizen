@@ -62,7 +62,7 @@ public class dNPCRegistry implements Listener {
         if (!denizenNPCs.containsKey(npc.getId())) {
             denizenNPCs.put(npc.getId(), new dNPC(npc));
         }
-        dB.log("Constructing NPC " + getDenizen(npc).toString());
+        // dB.log("Constructing NPC " + getDenizen(npc).toString());
     }
 
     /**
@@ -93,9 +93,10 @@ public class dNPCRegistry implements Listener {
         Set<dNPC> npcs = new HashSet<dNPC>();
         while (it.hasNext()) {
             Map.Entry<Integer, dNPC> npc = it.next();
-            if (npc.getValue().getEntity() == null)
-                dB.log(ChatColor.RED + "Removed NPC from DenizenRegistry. "
-                        + ChatColor.WHITE + "The bukkit entity has been removed.");
+            if (npc.getValue().getCitizen() == null) {
+                dB.log(ChatColor.RED + "Removed NPC from DenizenRegistry.");
+                try { denizenNPCs.remove(npc.getKey()); } catch (Exception e) { dB.echoDebug("Report this error to aufdemrand! Err: posconcurrency1"); }
+            }
             else npcs.add(npc.getValue());
         }
         return npcs;

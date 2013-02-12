@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.utilities;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.minecraft.server.v1_4_R1.EntityLiving;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
@@ -37,6 +39,28 @@ public class Utilities {
         return output;
     }
 
+    /**
+     *
+     *
+     * @param player  the player doing the talking
+     * @param npc  the npc being talked to
+     * @param range  the range, in blocks, that 'bystanders' will hear he chat
+     *
+     */
+    public static void talkToNPC(String message, Player player, dNPC npc, int range) {
+        String talkFormat = Settings.PlayerChatToNpcFormat()
+                .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
+        String bystanderFormat = Settings.PlayerChatToNpcToBystandersFormat()
+                .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
+
+        player.sendMessage(talkFormat);
+
+        for (Player target : Bukkit.getOnlinePlayers()) {
+            if (target != player)
+                if (target.getLocation().distance(player.getLocation()) <= range)
+                    target.sendMessage(bystanderFormat);
+        }
+    }
 
     public static int lastIndexOfUCL(String str) {
         for(int i=str.length()-1; i>=0; i--) {
