@@ -59,8 +59,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 return;
             } else {
                 event.setCancelled(true);
-                dB.echoDebug(event.getPlayer().getName() + " says to "
-                        + npc.getNicknameTrait().getNickname() + ", " + event.getMessage());
+                Utilities.talkToNPC(event.getMessage(), event.getPlayer(), npc, Settings.PlayerChatToNpcBystandersRange());
             }
         }
 
@@ -115,8 +114,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
-            dB.echoDebug(event.getPlayer().getName() + " says to "
-                    + npc.getNicknameTrait().getNickname() + ", " + replacementText);
+            event.setCancelled(true);
+            Utilities.talkToNPC(replacementText, event.getPlayer(), npc, Settings.PlayerChatToNpcBystandersRange());
             parse(npc, event.getPlayer(), script, id);
 
         } else {
