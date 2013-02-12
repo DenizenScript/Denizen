@@ -59,7 +59,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 return;
             } else {
                 event.setCancelled(true);
-                Utilities.talkToNPC(event.getMessage(), event.getPlayer(), npc, Settings.PlayerChatToNpcBystandersRange());
             }
         }
 
@@ -100,7 +99,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                     {
                         // Trigger matches
                         id = entry.getKey();
-                        replacementText = keyword;
+                        replacementText = entry.getValue().replace("/", "");
                         matched = true;
                     }
                 }
