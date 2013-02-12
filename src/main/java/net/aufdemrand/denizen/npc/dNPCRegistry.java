@@ -97,7 +97,8 @@ public class dNPCRegistry implements Listener {
                 dB.log(ChatColor.RED + "Removed NPC from DenizenRegistry.");
                 try { denizenNPCs.remove(npc.getKey()); } catch (Exception e) { dB.echoDebug("Report this error to aufdemrand! Err: posconcurrency1"); }
             }
-            else npcs.add(npc.getValue());
+            else if (npc.getValue().isSpawned())
+                npcs.add(npc.getValue());
         }
         return npcs;
     }
