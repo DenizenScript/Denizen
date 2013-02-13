@@ -19,7 +19,7 @@ public class TaskScriptContainer extends ScriptContainer {
     }
 
     public Duration getSpeed() {
-        Duration speed = Duration.valueOf(getString("SPEED"));
+        Duration speed = Duration.valueOf(getString("SPEED").replace("INSTANT", String.valueOf(0)));
         if (speed == null) speed = new Duration(Double.valueOf(Settings.InteractDelayInTicks() / 20));
         return speed;
     }
