@@ -40,6 +40,7 @@ public class TagManager {
         new AnchorTags(denizen);
         new ContextTags(denizen);
         new LocationTags(denizen);
+        new SpecialCharacterTags(denizen);
     }
 
     public String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant) {
