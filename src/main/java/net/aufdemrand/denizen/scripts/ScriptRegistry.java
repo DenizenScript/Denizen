@@ -39,6 +39,19 @@ public class ScriptRegistry {
         return scriptContainers.containsKey(id.toUpperCase());
     }
 
+    public static boolean containsScript(String id, Class scriptContainerType) {
+        if (!scriptContainers.containsKey(id.toUpperCase())) return false;
+        ScriptContainer script = (ScriptContainer) scriptContainers.get(id.toUpperCase());
+        String type = null;
+        for (Map.Entry<String, Class<? extends ScriptContainer>> entry : scriptContainerTypes.entrySet()) {
+            if (entry.getValue() == scriptContainerType)
+                type = entry.getKey();
+        }
+        if (type == null) return false;
+        if (script.getType().equalsIgnoreCase(type)) return true;
+        else return false;
+    }
+
     public static void _buildCoreYamlScriptContainers(FileConfiguration yamlScripts) {
         // Get a set of key names in concantenated Denizen Scripts
         Set<String> scripts = yamlScripts.getKeys(false);

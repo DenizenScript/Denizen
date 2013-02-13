@@ -67,13 +67,7 @@ public class GiveCommand  extends AbstractCommand {
 				this.giveType = GiveType.MONEY;
 				dB.echoDebug ("...giving MONEY.");
 			} 
-			
-			else if (aH.matchesArg("HEROESEXP", thisArg)
-					|| aH.matchesArg("HEROES_EXP", thisArg)) {
-				this.giveType = GiveType.HEROESEXP;
-				dB.echoDebug("...giving Heroes Quest EXP.");
-			} 
-			
+
 			else if (aH.matchesArg("XP", thisArg)
 					|| aH.matchesArg("EXP", thisArg)) {
 				this.giveType = GiveType.EXP;
