@@ -101,8 +101,9 @@ public class PlayerTags implements Listener {
             		String itemName = p.getItemInHand().getType().name().toLowerCase().replace('_', ' ');
             		int itemQty = p.getItemInHand().getAmount();
             		
-            		if (itemName == "air" || itemName == "ice"
-            			|| itemName == "dirt")
+            		if (itemName == "air")
+                		event.setReplaced("nothing");
+            		else if (itemName == "ice" || itemName == "dirt")
             			event.setReplaced(itemName);
             		else if (itemQty > 1)
             		{

@@ -22,9 +22,10 @@ public class LocationTags implements Listener {
 
         String nameContext = event.getNameContext() != null ? event.getNameContext().toUpperCase() : "";
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
+        String typeContext = event.getTypeContext() != null ? event.getTypeContext().toUpperCase() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
         String specifier = event.getSpecifier() != null ? event.getSpecifier().toUpperCase() : "";
-        String typeContext = event.getTypeContext() != null ? event.getTypeContext().toUpperCase() : "";
+        
         Location fromLocation = null;
         Location toLocation = null;
         
@@ -61,21 +62,29 @@ public class LocationTags implements Listener {
         	if (fromLocation != null && toLocation != null)
         	{
         		if (subType.equals("VERTICAL"))
+        		{
         			if (fromLocation.getWorld().getName() == toLocation.getWorld().getName()
         				|| specifier.equals("MULTIWORLD"))
+        			{
         				// Only calculate distance between locations on different worlds
         				// if the MULTIWORLD specifier is used
         				event.setReplaced(String.valueOf(Math.abs(
         						fromLocation.getY() - toLocation.getY())));
+        			}
+        		}
         		else if (subType.equals("HORIZONTAL"))
+        		{
         			if (fromLocation.getWorld().getName() == toLocation.getWorld().getName()
         				|| specifier.equals("MULTIWORLD"))
+        			{
         				// Only calculate distance between locations on different worlds
         				// if the MULTIWORLD specifier is used
         				event.setReplaced(String.valueOf(Math.sqrt(
         						Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
         						Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
-        		else 
+        			}
+        		}
+        		else
         			event.setReplaced(String.valueOf(fromLocation.distance(toLocation)));
         	}
         }
