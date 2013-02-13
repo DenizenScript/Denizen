@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
@@ -122,18 +120,18 @@ public class Item extends ItemStack implements dScriptArgument {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            // Just a catch, might be an item script...
         }
 
         // Check custom item script
         m[0] = getItemPtrn[5].matcher(string);
-        if (m[0].matches() && ScriptRegistry.containsScript(m[0].group(1), InteractScriptContainer.class)) {
+        if (m[0].matches() && ScriptRegistry.containsScript(m[0].group(1), ItemScriptContainer.class)) {
             // Get item from script
             return ScriptRegistry.getScriptContainerAs(m[0].group(1), ItemScriptContainer.class).getItemFrom();
         }
 
         // No match.
-        dB.echoError("Invalid item! Failed to find a matching Item type.");
+        // dB.echoError("Invalid item! Failed to find a matching Item type.");
         return stack;
     }
 
