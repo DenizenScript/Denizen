@@ -96,32 +96,33 @@ public class PlayerTags implements Listener {
             	{
             		// Turn "1 iron sword" into "an iron sword"
             		// "2 iron swords" into "iron swords"
-            		// "1 shears" into "a pair of shears"
+            		// "1 emerald" into "an emerald"
             		// etc.
             		String itemName = p.getItemInHand().getType().name().toLowerCase().replace('_', ' ');
             		int itemQty = p.getItemInHand().getAmount();
             		
-            		if (itemName == "air")
+            		if (itemName.equals("air"))
+            		{
                 		event.setReplaced("nothing");
-            		else if (itemName == "ice" || itemName == "dirt")
+            		}
+            		else if (itemName.equals("ice") || itemName.equals("dirt"))
+            		{
             			event.setReplaced(itemName);
+            		}
             		else if (itemQty > 1)
             		{
-            			if (itemName == "cactus")
+            			if (itemName.equals("cactus"))
             				event.setReplaced("cactuses");
             			else if (itemName.endsWith("y"))
-            				// lily -> lilies
-            				event.setReplaced(itemName.substring(0, itemName.length() - 1) + "ies");
+            				event.setReplaced(itemName.substring(0, itemName.length() - 1) + "ies"); // lily -> lilies
             			else if (itemName.endsWith("s"))
-            				// shears -> shears
-            				event.setReplaced(itemName);
+            				event.setReplaced(itemName); // shears -> shears
             			else
-            				// iron sword -> iron swords
-            				event.setReplaced(itemName + "s");
+            				event.setReplaced(itemName + "s"); // iron sword -> iron swords
             		}
             		else
             		{
-            			if (itemName == "cactus")
+            			if (itemName.equals("cactus"))
             				event.setReplaced("a cactus");
             			else if (itemName.endsWith("s"))
             				event.setReplaced(itemName);
@@ -130,11 +131,9 @@ public class PlayerTags implements Listener {
             					 itemName.startsWith("i") ||
             					 itemName.startsWith("o") ||
             					 itemName.startsWith("u"))
-            				// emerald -> an emerald
-            				event.setReplaced("an " + itemName);
+            				event.setReplaced("an " + itemName); // emerald -> an emerald
             			else
-            				// diamond -> a diamond
-            				event.setReplaced("a " + itemName);
+            				event.setReplaced("a " + itemName); // diamond -> a diamond
             		}
             	}
             	else
