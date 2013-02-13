@@ -6,8 +6,11 @@ import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -119,7 +122,7 @@ public class Item extends ItemStack implements dScriptArgument {
             }
 
         } catch (Exception e) {
-            // Don't report error yet, the item may identified in a custom item script.
+            e.printStackTrace();
         }
 
         // Check custom item script
@@ -160,6 +163,30 @@ public class Item extends ItemStack implements dScriptArgument {
     public Item(ItemStack item) {
         super(item);
         setId(getType().name());
+    }
+
+    public ItemStack toCraftBukkit() {
+        if (!((ItemStack) this instanceof CraftItemStack)) {
+            try {
+                // Use reflection to grant access to CraftItemStack constructer
+                // which is not public
+                Constructor<CraftItemStack> con = CraftItemStack.class
+                        .getDeclaredConstructor(org.bukkit.inventory.ItemStack.class);
+                con.setAccessible(true);
+                return con.newInstance((ItemStack) this);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (InstantiationException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+        return null;
     }
 
     public Item setId(String id) {
