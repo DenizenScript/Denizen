@@ -23,31 +23,24 @@ public class LocationTags implements Listener {
         String nameContext = event.getNameContext() != null ? event.getNameContext().toUpperCase() : "";
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
+        String specifier = event.getSpecifier() != null ? event.getSpecifier().toUpperCase() : "";
         String typeContext = event.getTypeContext() != null ? event.getTypeContext().toUpperCase() : "";
         Location fromLocation = null;
         Location toLocation = null;
         
         if (aH.matchesLocation("location:" + nameContext))
-        {
         	fromLocation = aH.getLocationFrom("location:" + nameContext);
-        }
         else if (event.getPlayer() != null)
-        {
         	fromLocation = new Location(event.getPlayer().getLocation());
-        }
         else
-        {
         	fromLocation = new Location (event.getNPC().getLocation());
-        }
         
         if (aH.matchesLocation("location:" + typeContext))
-        {
         	toLocation = aH.getLocationFrom("location:" + typeContext);
-        }
         
         if (type.equals("BIOME"))
-        {            
-            if (subType.equals("DISPLAY"))
+        {
+            if (subType.equals("FORMATTED"))
                 event.setReplaced(fromLocation.getBlock().getBiome().name().toLowerCase().replace('_', ' '));
             else
                 event.setReplaced(fromLocation.getBlock().getBiome().name());
@@ -67,41 +60,31 @@ public class LocationTags implements Listener {
         {
         	if (fromLocation != null && toLocation != null)
         	{
-        		if (fromLocation.getWorld().getName() == toLocation.getWorld().getName())
-        		{
-        			if (subType.equals("VERTICAL"))
+        		if (subType.equals("VERTICAL"))
+        			if (fromLocation.getWorld().getName() == toLocation.getWorld().getName()
+        				|| specifier.equals("MULTIWORLD"))
+        				// Only calculate distance between locations on different worlds
+        				// if the MULTIWORLD specifier is used
         				event.setReplaced(String.valueOf(Math.abs(
         						fromLocation.getY() - toLocation.getY())));
-        			else if (subType.equals("HORIZONTAL"))
+        		else if (subType.equals("HORIZONTAL"))
+        			if (fromLocation.getWorld().getName() == toLocation.getWorld().getName()
+        				|| specifier.equals("MULTIWORLD"))
+        				// Only calculate distance between locations on different worlds
+        				// if the MULTIWORLD specifier is used
         				event.setReplaced(String.valueOf(Math.sqrt(
         						Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
         						Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
-        			else 
+        		else 
         			event.setReplaced(String.valueOf(fromLocation.distance(toLocation)));
-        		}
-        		// If the locations' worlds are different, use the subtypes below.
-        		// One example of a script that uses such a multiworld subtype is the
-        		// Assassination Handler.
-        		else
-        		{
-        			if (subType.equals("VERTICAL_MULTIWORLD"))
-        				event.setReplaced(String.valueOf(Math.abs(
-        						fromLocation.getY() - toLocation.getY())));
-        			else if (subType.equals("HORIZONTAL_MULTIWORLD"))
-        				event.setReplaced(String.valueOf(Math.sqrt(
-        						Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
-        						Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
-        		}
         	}
         }
         
-        else if (type.equals("FORMATTED"))
-        {            
+        else if (type.equals("FORMATTED"))       
             event.setReplaced("X '" + fromLocation.getBlockX()
                     + "', Y '" + fromLocation.getBlockY()
                     + "', Z '" + fromLocation.getBlockZ()
                     + "', in world '" + fromLocation.getWorld().getName() + "'");
-        }
         
         else if (type.equals("LIGHT"))
         {
@@ -123,25 +106,17 @@ public class LocationTags implements Listener {
             		event.setReplaced("night");
         }
         
-        else if (type.equals("WORLD"))
-        {            
+        else if (type.equals("WORLD"))      
         	event.setReplaced(fromLocation.getWorld().getName());
-        }
         
-        else if (type.equals("X"))
-        {            
+        else if (type.equals("X"))         
         	event.setReplaced(String.valueOf(fromLocation.getBlockX()));
-        }
         
-        else if (type.equals("Y"))
-        {            
+        else if (type.equals("Y"))         
         	event.setReplaced(String.valueOf(fromLocation.getBlockY()));
-        }
         
-        else if (type.equals("Z"))
-        {            
+        else if (type.equals("Z"))          
         	event.setReplaced(String.valueOf(fromLocation.getBlockZ()));
-        }
 
     }
 

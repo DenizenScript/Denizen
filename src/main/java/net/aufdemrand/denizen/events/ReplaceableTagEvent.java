@@ -55,6 +55,9 @@ public class ReplaceableTagEvent extends Event {
     private String subType = null;
     private String subTypeContext = null;
 
+    private String specifier = null;
+    private String specifierContext = null;
+    
     private String value = null;
     private String valueContext = null;
 
@@ -117,7 +120,7 @@ public class ReplaceableTagEvent extends Event {
             tag = tag.split(":", 2)[0];
         }
 
-        // Get tag name/type/subtype and index
+        // Get tag name/type/subtype/specifier and index
         if (tag.contains(".")) {
 
             // Get name
@@ -133,7 +136,7 @@ public class ReplaceableTagEvent extends Event {
 
             // Get type
             if (tag.contains(".")) {
-                // Subtype with type, must split
+                // Type with subType, must split
                 inQuestion = tag.split("\\.", 2)[0];
                 if (inQuestion.contains("[")) {
                     // Get index
@@ -142,14 +145,38 @@ public class ReplaceableTagEvent extends Event {
                 } else
                     type = inQuestion.trim();
                 
-                tag = tag.split("\\.")[1];
+                // Put subType into tag
+                tag = tag.split("\\.", 2)[1];
                 
-                if (tag.contains("[")) {
-                    // Get index
-                    subType = tag.split("\\[", 2)[0].trim();
-                    subTypeContext = tag.split("\\[", 2)[1].split("\\]", 2)[0].trim();
-                } else
-                    subType = tag.trim();
+                // Get subtype
+                if (tag.contains(".")) {
+                    // subType with specifier, must split
+                    inQuestion = tag.split("\\.", 2)[0];
+                    if (inQuestion.contains("[")) {
+                        // Get index
+                        subType = inQuestion.split("\\[", 2)[0].trim();
+                        subTypeContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
+                    } else
+                        subType = inQuestion.trim();
+                    
+                    // Put specifier into tag
+                    tag = tag.split("\\.", 2)[1];
+                    
+                    if (tag.contains("[")) {
+                		// Get index
+                		specifier = tag.split("\\[", 2)[0].trim();
+                		specifierContext = tag.split("\\[", 2)[1].split("\\]", 2)[0].trim();
+                	} else
+                		specifier = tag.trim();
+                
+                } else { 
+                	if (tag.contains("[")) {
+                		// Get index
+                		subType = tag.split("\\[", 2)[0].trim();
+                		subTypeContext = tag.split("\\[", 2)[1].split("\\]", 2)[0].trim();
+                	} else
+                		subType = tag.trim();
+                }
 
                 // No subtype, just get type, and possible context
             } else {
@@ -207,6 +234,22 @@ public class ReplaceableTagEvent extends Event {
 
     public boolean hasSubTypeContext() {
         return subTypeContext != null;
+    }
+    
+    public String getSpecifier() {
+        return specifier;
+    }
+
+    public boolean hasSpecifier() {
+        return specifier != null;
+    }
+
+    public String getSpecifierContext() {
+        return specifierContext;
+    }
+
+    public boolean hasSpecifierContext() {
+        return specifierContext != null;
     }
 
     public String getValue() {
@@ -317,6 +360,7 @@ public class ReplaceableTagEvent extends Event {
                 + "NAME=" + (nameContext != null ? name + "(" + nameContext + "), " : name + ", ")
                 + (type != null ? (typeContext != null ? "TYPE=" + type + "(" + typeContext + "), " : "TYPE=" + type + ", ") : "" )
                 + (subType != null ? (subTypeContext != null ? "SUBTYPE=" + subType + "(" + subTypeContext + "), " : "SUBTYPE=" + subType + ", ") : "")
+                + (specifier != null ? (specifierContext != null ? "SPECIFIER=" + specifier + "(" + specifierContext + "), " : "SPECIFIER=" + specifier + ", ") : "")
                 + (value != null ? (valueContext != null ? "VALUE=" + value + "(" + valueContext + "), " : "VALUE=" + value + ", ") : "")
                 + (alternative != null ? "ALTERNATIVE=" + alternative + ", " : "");
     }

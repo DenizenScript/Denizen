@@ -48,6 +48,7 @@ public class PlayerTags implements Listener {
         Player p = event.getPlayer();
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
+        String specifier = event.getSpecifier() != null ? event.getSpecifier().toUpperCase() : "";
 
         if (type.equals("CHAT_HISTORY")) {
             if (event.hasTypeContext()) {
@@ -69,7 +70,7 @@ public class PlayerTags implements Listener {
         }
 
         else if (type.equals("ITEM_IN_HAND")) {
-            if (subType.equals("QTY"))
+			if (subType.equals("QTY"))
                 event.setReplaced(String.valueOf(p.getItemInHand().getAmount()));
             else if (subType.equals("ID"))
                 event.setReplaced(String.valueOf(p.getItemInHand().getTypeId()));
@@ -88,9 +89,55 @@ public class PlayerTags implements Listener {
             else if (subType.equals("LORE"))
                 event.setReplaced(NBTItem.getLore(p.getItemInHand()).asDScriptList());
             else if (subType.equals("DISPLAY"))
-                event.setReplaced(p.getItemInHand().getItemMeta().getDisplayName());
+            	// This is the name set when using an anvil
+            	event.setReplaced(p.getItemInHand().getItemMeta().getDisplayName());
             else if (subType.equals("MATERIAL"))
-                event.setReplaced(p.getItemInHand().getType().name());
+            	if (specifier.equals("FORMATTED"))
+            	{
+            		// Turn "1 iron sword" into "an iron sword"
+            		// "2 iron swords" into "iron swords"
+            		// "1 shears" into "a pair of shears"
+            		// etc.
+            		String itemName = p.getItemInHand().getType().name().toLowerCase().replace('_', ' ');
+            		int itemQty = p.getItemInHand().getAmount();
+            		
+            		if (itemName == "air" || itemName == "ice"
+            			|| itemName == "dirt")
+            			event.setReplaced(itemName);
+            		else if (itemQty > 1)
+            		{
+            			if (itemName == "cactus")
+            				event.setReplaced("cactuses");
+            			else if (itemName.endsWith("y"))
+            				// lily -> lilies
+            				event.setReplaced(itemName.substring(0, itemName.length() - 1) + "ies");
+            			else if (itemName.endsWith("s"))
+            				// shears -> shears
+            				event.setReplaced(itemName);
+            			else
+            				// iron sword -> iron swords
+            				event.setReplaced(itemName + "s");
+            		}
+            		else
+            		{
+            			if (itemName == "cactus")
+            				event.setReplaced("a cactus");
+            			else if (itemName.endsWith("s"))
+            				event.setReplaced(itemName);
+            			else if (itemName.startsWith("a") ||
+            					 itemName.startsWith("e") ||
+            					 itemName.startsWith("i") ||
+            					 itemName.startsWith("o") ||
+            					 itemName.startsWith("u"))
+            				// emerald -> an emerald
+            				event.setReplaced("an " + itemName);
+            			else
+            				// diamond -> a diamond
+            				event.setReplaced("a " + itemName);
+            		}
+            	}
+            	else
+            		event.setReplaced(p.getItemInHand().getType().name());
 
 
         } else if (type.equals("NAME")) {
@@ -120,9 +167,10 @@ public class PlayerTags implements Listener {
             else if (subType.equals("WORLD"))
                 event.setReplaced(p.getWorld().getName());
             else if (subType.equals("STANDING_ON"))
-                event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name());
-            else if (subType.equals("STANDING_ON_DISPLAY"))
-                event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
+            	if (specifier.equals("FORMATTED"))
+            		event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
+            	else
+            		event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name());
             else if (subType.equals("WORLD_SPAWN"))
                 event.setReplaced(p.getWorld().getSpawnLocation().getBlockX()
                         + "," + p.getWorld().getSpawnLocation().getBlockY()
@@ -187,10 +235,11 @@ public class PlayerTags implements Listener {
                 event.setReplaced(String.valueOf(Depends.economy.getBalance(p.getName())));
                 if (subType.equals("ASINT"))
                     event.setReplaced(String.valueOf((int)Depends.economy.getBalance(p.getName())));
-                else if (subType.equals("CURRENCY_SINGULAR"))
-                    event.setReplaced(Depends.economy.currencyNameSingular());
-                else if (subType.equals("CURRENCY_PLURAL"))
-                    event.setReplaced(Depends.economy.currencyNamePlural());
+                else if (subType.equals("CURRENCY"))
+                	if (specifier.equals("SINGULAR"))
+                		event.setReplaced(Depends.economy.currencyNameSingular());
+                	else if (specifier.equals("PLURAL"))
+                		event.setReplaced(Depends.economy.currencyNamePlural());
             } else {
                 dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
             }
