@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -30,7 +31,7 @@ public class InteractScriptContainer extends ScriptContainer {
                 steps.add(step);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError("Could not find any STEPS in " + getName() + "! Is the type on this script correct?");
         }
     }
 
