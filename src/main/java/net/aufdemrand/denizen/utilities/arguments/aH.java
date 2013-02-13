@@ -544,21 +544,9 @@ public class aH {
     }
 
     /**
-     * <p>Returns a QueueType from a dScript argument string. For convenience, this method
+     * <p>Returns a Queue from a dScript argument string. For convenience, this method
      * can accept the name of the argument. This method is useful for commands which
      * directly affect the script queues.</p>
-     *
-     * <p>Valid {@link QueueType}s are 'NPC', 'PLAYER' and 'PLAYER_TASK'. Returns null if
-     * the provided argument doesn't match any of these.</p>
-     *
-     * <p>Provides a line of dB output if returning null.</p>
-     *
-     * <b>Examples:</b>
-     * <ol>
-     * <tt>'QUEUE:NPC'</tt> will return 'QueueType.NPC'.
-     * <tt>'PLAYER_TASK'</tt> will return 'QueueType.PLAYER_TASK'.
-     * <tt>'aufdemrand'</tt> will return 'null'.<br>
-     * </ol>
      *
      * @param arg the dScript argument string
      * @return a QueueType, or null
@@ -823,18 +811,17 @@ public class aH {
     /**
      * <p>Used to determine if a dScript argument string is a valid queuetype argument. Uses
      * regex to match the string arg provided. In order to return true, the 'queue:' or
-     * 'queuetype:' prefix must be present along with a valid {@link QueueType}. Since this
-     * argument is used throughout the core members of Denizen, it is encouraged to use it
-     * whenever appropriate.</p>
+     * prefix must be present. Since this argument is used throughout the core
+     * members of Denizen, it is encouraged to use it whenever appropriate.</p>
      *
      * <p>When extracting the value from a match, using {@link #getQueueFrom(String)} is
-     * encouraged. Valid QueueTypes are PLAYER, NPC, and PLAYER_TASK.</p>
+     * encouraged.</p>
      *
      * <b>Examples:</b>
      * <ol>
      * <tt>'QUEUE:PLAYER'</tt> will return true.<br>
      * <tt>'QUEUETYPE:NPC'</tt> will return true.<br>
-     * <tt>'QUEUE:NONE'</tt> will return false.<br>
+     * <tt>'BLECH:NONE'</tt> will return false.<br>
      * </ol>
      *
      * @param arg the dScript argument string
@@ -846,7 +833,6 @@ public class aH {
         Matcher m = matchesQueuePtrn.matcher(arg);
         if (m.matches())
                 return true;
-            // Don't warn if this is a list format...
         return false;
     }
 

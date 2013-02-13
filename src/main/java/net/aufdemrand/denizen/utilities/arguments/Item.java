@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
@@ -123,7 +124,7 @@ public class Item extends ItemStack implements dScriptArgument {
 
         // Check custom item script
         m[0] = getItemPtrn[5].matcher(string);
-        if (m[0].matches()) {
+        if (m[0].matches() && ScriptRegistry.containsScript(m[0].group(1), InteractScriptContainer.class)) {
             // Get item from script
             return ScriptRegistry.getScriptContainerAs(m[0].group(1), ItemScriptContainer.class).getItemFrom();
         }

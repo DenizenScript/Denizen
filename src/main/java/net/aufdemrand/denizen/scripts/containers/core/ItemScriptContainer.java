@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.arguments.Item;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -73,7 +74,10 @@ public class ItemScriptContainer extends ScriptContainer {
             stack.setId(getName());
 
         } catch (Exception e) {
-        // Couldn't make item, return null...
+            dB.echoError("Woah! An exception has been called with this item script!");
+            if (!dB.showStackTraces)
+                dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
+            else e.printStackTrace();
             stack = null;
         }
 
