@@ -13,13 +13,10 @@ import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Runs a task script.
@@ -60,7 +57,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Jeremy Schroeder
  *
  */
-public class RuntaskCommand extends AbstractCommand implements Listener {
+public class RuntaskCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -70,7 +67,7 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
         Map<String, String> context = null;
         Duration delay = new Duration(0);
         Duration speed = new Duration((long) Settings.InteractDelayInTicks());
-        ScriptQueue queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
+        ScriptQueue queue = ScriptQueue._getQueue(scriptEntry.getResidingQueue());
 
         // Iterate through Arguments to extract needed information
         for (String arg : scriptEntry.getArguments()) {
@@ -123,15 +120,12 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
         if (script == null) throw new InvalidArgumentsException("Must define a script to be run!");
 
         // Put important objects inside the scriptEntry to be sent to execute()
-        scriptEntry.addObject("speed", speed);
-        scriptEntry.addObject("queue", queue);
-        scriptEntry.addObject("delay", delay.setPrefix("Delay"));
-        scriptEntry.addObject("script", script);
-        scriptEntry.addObject("context", context);
+        scriptEntry.addObject("speed", speed.setPrefix("Speed"))
+                .addObject("queue", queue)
+                .addObject("delay", delay.setPrefix("Delay"))
+                .addObject("script", script)
+                .addObject("context", context);
     }
-
-    // For keeping track of delays
-    private static Map<String, Integer> delays = new ConcurrentHashMap<String, Integer>();
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
@@ -146,6 +140,7 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
         dB.echoApproval("Executing '" + getName() + "': "
                 + script.debug()
                 + delay.debug()
+                + speed.debug()
                 + "Queue='" + queue.toString());
 
         if (delay.getSeconds() <= 0)
@@ -156,33 +151,6 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
             ((TaskScriptContainer) script.getContainer()).setSpeed(speed)
                     .runTaskScriptWithDelay(queue.id, scriptEntry.getPlayer(), scriptEntry.getNPC(), context, delay);
 
-    }
-
-    /**
-     * Cancels a delayed task script by 'id'. If no 'id' was specified when delaying, it's likely
-     * the name of the script. 'id' is Case in-sensitive.
-     *
-     * @param id the 'id' of the task script to cancel
-     *
-     * @return true if the id was found and cancelled
-     *
-     */
-    public static boolean cancelTask(String id) {
-        if (delays.containsKey(id.toUpperCase())) {
-            try {
-                Bukkit.getServer().getScheduler().cancelTask(delays.get(id.toUpperCase()));
-            } catch (Exception e) {
-                dB.echoError("Could not cancel task!");
-                if (dB.showStackTraces) e.printStackTrace();
-            }
-            // No need to track this any longer
-            delays.remove(id.toUpperCase());
-
-            return true;
-        }
-
-        // Hrmmm... no 'id' with that name!
-        return false;
     }
 
 }
