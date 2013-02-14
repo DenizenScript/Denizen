@@ -95,7 +95,7 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
                 // Deprecated, no longer needed. All tasks are now queued, even if they are 'instant'.
 
             } else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
-                // Deprecated, no longer needed. Instead, use SPEED, or specify speed in the task script.
+                speed = new Duration(0);
 
                 // Specify context
             } else if (aH.matchesValueArg("CONTEXT", arg, aH.ArgumentType.Custom)) {
@@ -149,10 +149,12 @@ public class RuntaskCommand extends AbstractCommand implements Listener {
                 + "Queue='" + queue.toString());
 
         if (delay.getSeconds() <= 0)
-            ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScript(queue.id, scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
+            ((TaskScriptContainer) script.getContainer()).setSpeed(speed)
+                    .runTaskScript(queue.id, scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
 
         else
-            ((TaskScriptContainer) script.getContainer()).setSpeed(speed).runTaskScriptWithDelay(queue.id, scriptEntry.getPlayer(), scriptEntry.getNPC(), context, delay);
+            ((TaskScriptContainer) script.getContainer()).setSpeed(speed)
+                    .runTaskScriptWithDelay(queue.id, scriptEntry.getPlayer(), scriptEntry.getNPC(), context, delay);
 
     }
 

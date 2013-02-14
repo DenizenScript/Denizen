@@ -19,7 +19,7 @@ public class TaskScriptContainer extends ScriptContainer {
     }
 
     public Duration getSpeed() {
-        Duration speed = Duration.valueOf(getString("SPEED", "0"));
+        Duration speed = Duration.valueOf(getString("SPEED", null));
         if (speed == null) speed = new Duration(Double.valueOf(Settings.InteractDelayInTicks() / 20));
         return speed;
     }
@@ -35,10 +35,13 @@ public class TaskScriptContainer extends ScriptContainer {
     }
 
     public boolean isInstant() {
-        if (getSpeed().getSeconds() <= 0
-                || getString("SPEED").equalsIgnoreCase("INSTANT"))
-            return true;
-        else return false;
+        if (getSpeed() != null) {
+            if (getSpeed().getSeconds() <= 0
+                    || getString("SPEED").equalsIgnoreCase("INSTANT"))
+                return true;
+        }
+
+        return false;
     }
 
     public ScriptQueue runTaskScript(Player player, dNPC npc, Map<String, String> context) {
@@ -49,12 +52,12 @@ public class TaskScriptContainer extends ScriptContainer {
         ScriptQueue queue = ScriptQueue._getQueue(queueId);
         List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
         if (context != null)
-        for (Map.Entry<String, String> entry : context.entrySet()) {
-            // TODO: Add context back
-        }
+            for (Map.Entry<String, String> entry : context.entrySet()) {
+                // TODO: Add context back
+            }
         queue.addEntries(listOfEntries);
         if (isInstant()) queue.setSpeed(0);
-        else
+        else if (getSpeed() != null)
             queue.setSpeed(getSpeed().getTicksAsInt());
         queue.start();
         return queue;
@@ -64,12 +67,12 @@ public class TaskScriptContainer extends ScriptContainer {
         ScriptQueue queue = ScriptQueue._getQueue(queueId);
         List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
         if (context != null)
-        for (Map.Entry<String, String> entry : context.entrySet()) {
-            // TODO: Add context back
-        }
+            for (Map.Entry<String, String> entry : context.entrySet()) {
+                // TODO: Add context back
+            }
         queue.addEntries(listOfEntries);
         if (isInstant()) queue.setSpeed(0);
-        else
+        else if (getSpeed() != null)
             queue.setSpeed(getSpeed().getTicksAsInt());
         queue.delayUntil(System.currentTimeMillis() + (long) (delay.getSeconds() * 1000));
         queue.start();
