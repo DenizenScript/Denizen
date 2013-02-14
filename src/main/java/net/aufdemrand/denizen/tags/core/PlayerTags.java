@@ -6,7 +6,8 @@ import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
-
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -70,7 +71,7 @@ public class PlayerTags implements Listener {
         }
 
         else if (type.equals("ITEM_IN_HAND")) {
-			if (subType.equals("QTY"))
+            if (subType.equals("QTY"))
                 event.setReplaced(String.valueOf(p.getItemInHand().getAmount()));
             else if (subType.equals("ID"))
                 event.setReplaced(String.valueOf(p.getItemInHand().getTypeId()));
@@ -89,55 +90,55 @@ public class PlayerTags implements Listener {
             else if (subType.equals("LORE"))
                 event.setReplaced(NBTItem.getLore(p.getItemInHand()).asDScriptList());
             else if (subType.equals("DISPLAY"))
-            	// This is the name set when using an anvil
-            	event.setReplaced(p.getItemInHand().getItemMeta().getDisplayName());
+                // This is the name set when using an anvil
+                event.setReplaced(p.getItemInHand().getItemMeta().getDisplayName());
             else if (subType.equals("MATERIAL"))
-            	if (specifier.equals("FORMATTED"))
-            	{
-            		// Turn "1 iron sword" into "an iron sword"
-            		// "2 iron swords" into "iron swords"
-            		// "1 emerald" into "an emerald"
-            		// etc.
-            		String itemName = p.getItemInHand().getType().name().toLowerCase().replace('_', ' ');
-            		int itemQty = p.getItemInHand().getAmount();
-            		
-            		if (itemName.equals("air"))
-            		{
-                		event.setReplaced("nothing");
-            		}
-            		else if (itemName.equals("ice") || itemName.equals("dirt"))
-            		{
-            			event.setReplaced(itemName);
-            		}
-            		else if (itemQty > 1)
-            		{
-            			if (itemName.equals("cactus"))
-            				event.setReplaced("cactuses");
-            			else if (itemName.endsWith("y"))
-            				event.setReplaced(itemName.substring(0, itemName.length() - 1) + "ies"); // lily -> lilies
-            			else if (itemName.endsWith("s"))
-            				event.setReplaced(itemName); // shears -> shears
-            			else
-            				event.setReplaced(itemName + "s"); // iron sword -> iron swords
-            		}
-            		else
-            		{
-            			if (itemName.equals("cactus"))
-            				event.setReplaced("a cactus");
-            			else if (itemName.endsWith("s"))
-            				event.setReplaced(itemName);
-            			else if (itemName.startsWith("a") ||
-            					 itemName.startsWith("e") ||
-            					 itemName.startsWith("i") ||
-            					 itemName.startsWith("o") ||
-            					 itemName.startsWith("u"))
-            				event.setReplaced("an " + itemName); // emerald -> an emerald
-            			else
-            				event.setReplaced("a " + itemName); // diamond -> a diamond
-            		}
-            	}
-            	else
-            		event.setReplaced(p.getItemInHand().getType().name());
+                if (specifier.equals("FORMATTED"))
+                {
+                    // Turn "1 iron sword" into "an iron sword"
+                    // "2 iron swords" into "iron swords"
+                    // "1 emerald" into "an emerald"
+                    // etc.
+                    String itemName = p.getItemInHand().getType().name().toLowerCase().replace('_', ' ');
+                    int itemQty = p.getItemInHand().getAmount();
+
+                    if (itemName.equals("air"))
+                    {
+                        event.setReplaced("nothing");
+                    }
+                    else if (itemName.equals("ice") || itemName.equals("dirt"))
+                    {
+                        event.setReplaced(itemName);
+                    }
+                    else if (itemQty > 1)
+                    {
+                        if (itemName.equals("cactus"))
+                            event.setReplaced("cactuses");
+                        else if (itemName.endsWith("y"))
+                            event.setReplaced(itemName.substring(0, itemName.length() - 1) + "ies"); // lily -> lilies
+                        else if (itemName.endsWith("s"))
+                            event.setReplaced(itemName); // shears -> shears
+                        else
+                            event.setReplaced(itemName + "s"); // iron sword -> iron swords
+                    }
+                    else
+                    {
+                        if (itemName.equals("cactus"))
+                            event.setReplaced("a cactus");
+                        else if (itemName.endsWith("s"))
+                            event.setReplaced(itemName);
+                        else if (itemName.startsWith("a") ||
+                                itemName.startsWith("e") ||
+                                itemName.startsWith("i") ||
+                                itemName.startsWith("o") ||
+                                itemName.startsWith("u"))
+                            event.setReplaced("an " + itemName); // emerald -> an emerald
+                        else
+                            event.setReplaced("a " + itemName); // diamond -> a diamond
+                    }
+                }
+                else
+                    event.setReplaced(p.getItemInHand().getType().name());
 
 
         } else if (type.equals("NAME")) {
@@ -167,10 +168,10 @@ public class PlayerTags implements Listener {
             else if (subType.equals("WORLD"))
                 event.setReplaced(p.getWorld().getName());
             else if (subType.equals("STANDING_ON"))
-            	if (specifier.equals("FORMATTED"))
-            		event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
-            	else
-            		event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name());
+                if (specifier.equals("FORMATTED"))
+                    event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
+                else
+                    event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name());
             else if (subType.equals("WORLD_SPAWN"))
                 event.setReplaced(p.getWorld().getSpawnLocation().getBlockX()
                         + "," + p.getWorld().getSpawnLocation().getBlockY()
@@ -236,10 +237,10 @@ public class PlayerTags implements Listener {
                 if (subType.equals("ASINT"))
                     event.setReplaced(String.valueOf((int)Depends.economy.getBalance(p.getName())));
                 else if (subType.equals("CURRENCY"))
-                	if (specifier.equals("SINGULAR"))
-                		event.setReplaced(Depends.economy.currencyNameSingular());
-                	else if (specifier.equals("PLURAL"))
-                		event.setReplaced(Depends.economy.currencyNamePlural());
+                    if (specifier.equals("SINGULAR"))
+                        event.setReplaced(Depends.economy.currencyNameSingular());
+                    else if (specifier.equals("PLURAL"))
+                        event.setReplaced(Depends.economy.currencyNamePlural());
             } else {
                 dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
             }
@@ -252,23 +253,23 @@ public class PlayerTags implements Listener {
 
         } else if (type.equals("IS_ONLINE")) {
             event.setReplaced(String.valueOf(p.isOnline()));
-            
+
         } else if (type.equals("TIME")) {
             event.setReplaced(String.valueOf(p.getPlayerTime()));
             if (subType.equals("PERIOD"))
-            	if (p.getPlayerTime() < 13500 || p.getPlayerTime() > 23000) 
-            		event.setReplaced("day");
-            	else if (p.getPlayerTime() > 13500)
-            		event.setReplaced("night");
-            
+                if (p.getPlayerTime() < 13500 || p.getPlayerTime() > 23000)
+                    event.setReplaced("day");
+                else if (p.getPlayerTime() > 13500)
+                    event.setReplaced("night");
+
         } else if (type.equals("WEATHER")) {
-        	if (p.getWorld().hasStorm())
-        		event.setReplaced("storming");
-        	else
-        		if (p.getPlayerTime() > 13500)
-        		event.setReplaced("clear");
-        		else event.setReplaced("sunny");
-            
+            if (p.getWorld().hasStorm())
+                event.setReplaced("storming");
+            else
+            if (p.getPlayerTime() > 13500)
+                event.setReplaced("clear");
+            else event.setReplaced("sunny");
+
         } else if (event.getType().startsWith("EQUIPMENT")) {
             event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
 
@@ -284,9 +285,47 @@ public class PlayerTags implements Listener {
                 event.setReplaced(String.valueOf(p.getTotalExperience()));
             else if (subType.equals("LEVEL"))
                 event.setReplaced(String.valueOf(p.getLevel()));
-        }
 
+        } else if (subType.equals("ONLINE_PLAYERS")) {
+            StringBuilder players = new StringBuilder();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                players.append(player.getName());
+                players.append("|");
+            }
+            event.setReplaced(players.toString().substring(0, players.length() - 1));
+
+        } else if (subType.equals("OFFLINE_PLAYERS")) {
+            StringBuilder players = new StringBuilder();
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                players.append(player.getName());
+                players.append("|");
+            }
+            event.setReplaced(players.toString().substring(0, players.length() - 1));
+
+        } else if (subType.equals("ONLINE_OPS")) {
+            StringBuilder players = new StringBuilder();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.isOp()) {
+                    players.append(player.getName());
+                    players.append("|");
+                }
+            }
+            event.setReplaced(players.toString().substring(0, players.length() - 1));
+
+        } else if (subType.equals("OFFLINE_OPS")) {
+            StringBuilder players = new StringBuilder();
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                if (player.isOp()) {
+                    players.append(player.getName());
+                    players.append("|");
+                }
+            }
+        }
+        event.setReplaced(players.toString().substring(0, players.length() - 1));
     }
+
+
+}
 }
 
 
