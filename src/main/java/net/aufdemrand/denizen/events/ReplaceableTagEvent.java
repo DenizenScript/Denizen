@@ -102,7 +102,7 @@ public class ReplaceableTagEvent extends Event {
         
         if (basecontextMatcher.find())
         {
-        	tag = tag.substring(basecontextMatcher.end() + 1);
+        	tag = tag.substring(basecontextMatcher.end()).trim();
         	baseContext = basecontextMatcher.group().replace("[", "")
 					   	  .replace("]", "");
         	parseContext();
@@ -117,7 +117,7 @@ public class ReplaceableTagEvent extends Event {
         
         if (alternativeMatcher.find())
         {
-        	tag = tag.substring(0, alternativeMatcher.start()); // remove found alternative from tag
+        	tag = tag.substring(0, alternativeMatcher.start()).trim(); // remove found alternative from tag
         	alternative = alternativeMatcher.group()
         				  .substring(2).trim(); // get rid of the || at the alternative's start
         				  						// and any trailing spaces
