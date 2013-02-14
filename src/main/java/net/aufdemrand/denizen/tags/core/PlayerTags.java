@@ -44,12 +44,56 @@ public class PlayerTags implements Listener {
     public void playerTags(ReplaceableTagEvent event) {
 
         // These tags require a player.
-        if (!event.matches("PLAYER") || event.getPlayer() == null) return;
+        if (!event.matches("PLAYER")) return;
 
         Player p = event.getPlayer();
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
         String specifier = event.getSpecifier() != null ? event.getSpecifier().toUpperCase() : "";
+
+        if (type.equals("ONLINE_PLAYERS")) {
+            StringBuilder players = new StringBuilder();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                players.append(player.getName());
+                players.append("|");
+            }
+            event.setReplaced(players.toString().substring(0, players.length() - 1));
+            return;
+
+        } else if (type.equals("OFFLINE_PLAYERS")) {
+            StringBuilder players = new StringBuilder();
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                players.append(player.getName());
+                players.append("|");
+            }
+            event.setReplaced(players.toString().substring(0, players.length() - 1));
+            return;
+
+        } else if (type.equals("ONLINE_OPS")) {
+            StringBuilder players = new StringBuilder();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.isOp()) {
+                    players.append(player.getName());
+                    players.append("|");
+                }
+            }
+            event.setReplaced(players.toString().substring(0, players.length() - 1));
+            return;
+
+        } else if (type.equals("OFFLINE_OPS")) {
+            StringBuilder players = new StringBuilder();
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                if (player.isOp()) {
+                    players.append(player.getName());
+                    players.append("|");
+                }
+            }
+
+            event.setReplaced(players.toString().substring(0, players.length() - 1));
+            return;
+        }
+
+        if (event.getPlayer() == null) return;
 
         if (type.equals("CHAT_HISTORY")) {
             if (event.hasTypeContext()) {
@@ -270,14 +314,16 @@ public class PlayerTags implements Listener {
                 event.setReplaced("clear");
             else event.setReplaced("sunny");
 
-        } else if (event.getType().startsWith("EQUIPMENT")) {
+
+        } else if (type.equals("EQUIPMENT")) {
             event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
 
 
-        } else if (event.getType().startsWith("INVENTORY")) {
+        } else if (type.equals("INVENTORY")) {
             event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
 
-        } else if (event.getType().startsWith("XP")) {
+
+        } else if (type.equals("XP")) {
             event.setReplaced(String.valueOf(event.getPlayer().getExp() * 100));
             if (subType.equals("TO_NEXT_LEVEL"))
                 event.setReplaced(String.valueOf(p.getExpToLevel()));
@@ -286,45 +332,9 @@ public class PlayerTags implements Listener {
             else if (subType.equals("LEVEL"))
                 event.setReplaced(String.valueOf(p.getLevel()));
 
-        } else if (subType.equals("ONLINE_PLAYERS")) {
-            StringBuilder players = new StringBuilder();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                players.append(player.getName());
-                players.append("|");
-            }
-            event.setReplaced(players.toString().substring(0, players.length() - 1));
-
-        } else if (subType.equals("OFFLINE_PLAYERS")) {
-            StringBuilder players = new StringBuilder();
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                players.append(player.getName());
-                players.append("|");
-            }
-            event.setReplaced(players.toString().substring(0, players.length() - 1));
-
-        } else if (subType.equals("ONLINE_OPS")) {
-            StringBuilder players = new StringBuilder();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.isOp()) {
-                    players.append(player.getName());
-                    players.append("|");
-                }
-            }
-            event.setReplaced(players.toString().substring(0, players.length() - 1));
-
-        } else if (subType.equals("OFFLINE_OPS")) {
-            StringBuilder players = new StringBuilder();
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                if (player.isOp()) {
-                    players.append(player.getName());
-                    players.append("|");
-                }
-            }
-
-            event.setReplaced(players.toString().substring(0, players.length() - 1));
         }
-    }
 
+    }
 
 }
 
