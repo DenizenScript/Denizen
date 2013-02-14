@@ -1,9 +1,13 @@
 package net.aufdemrand.denizen.events;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
@@ -75,8 +79,6 @@ public class ReplaceableTagEvent extends Event {
         // Add ScriptEntry if available
         this.scriptEntry = scriptEntry;
 
-        // TODO: Use REGEX and MATCHER/GROUPS to simplify this code (might be faster?)
-
         if (player instanceof Player)
             this.player = (Player) player;
         else this.offlinePlayer = player;
@@ -85,111 +87,105 @@ public class ReplaceableTagEvent extends Event {
         this.npc = npc;
 
         // check if tag is 'instant'
-        if (tag.startsWith("!") || tag.startsWith("^")) {
+        if (tag.startsWith("!") || tag.startsWith("^"))
+        {
             instant = true;
             tag = tag.substring(1);
         }
-
-        // check if tag has base context
-        if (tag.startsWith("[") || tag.startsWith(" [")) {
-            baseContext = tag.split("\\]", 2)[0].split("\\[", 2)[1].trim();
-            parseContext();
-            tag = tag.split("\\]", 2)[1];
+        
+        // Base context pattern that matches initial brackets in tag
+        Pattern basecontextRegex = Pattern.compile("^( )?\\[.*?\\]");
+        
+        // Get base context
+        
+        Matcher basecontextMatcher = basecontextRegex.matcher(tag);
+        
+        if (basecontextMatcher.find())
+        {
+        	tag = tag.substring(basecontextMatcher.end() + 1);
+        	baseContext = basecontextMatcher.group().replace("[", "")
+					   	  .replace("]", "");
+        	parseContext();
         }
-
-        // check if tag has an alternative text
-        if (tag.contains("||")) {
-            try {
-            alternative = tag.split("\\|\\|")[1].trim();
-            } catch (Exception e) {   }
-            tag = tag.split("\\|\\|", 2)[0];
+        
+        // Alternative text pattern that matches everything after ||
+        Pattern alternativeRegex = Pattern.compile("\\|\\|.*");
+        
+        // Get alternative text
+        
+        Matcher alternativeMatcher = alternativeRegex.matcher(tag);
+        
+        if (alternativeMatcher.find())
+        {
+        	tag = tag.substring(0, alternativeMatcher.start()); // remove found alternative from tag
+        	alternative = alternativeMatcher.group()
+        				  .substring(2).trim(); // get rid of the || at the alternative's start
+        				  						// and any trailing spaces
         }
+        
+        // Bracket pattern that matches brackets
+        Pattern bracketRegex = Pattern.compile("\\[.*?\\]");
+        Matcher bracketMatcher = null;
+        
+        // Value pattern that matches everthing after :
+        Pattern valueRegex = Pattern.compile(":.*");
 
-        // Get value and context
-        if (tag.contains(":")) {
-            String inQuestion = tag.split(":", 2)[1];
-            if (inQuestion.contains("[")) {
-                // TODO: Allow for this: flag.p:Cookies[1].asint
-                // TODO: Right now, you have to do this: flag.p:Cookies.asint[1]
-                // Get index
-                value = inQuestion.split("\\[", 2)[0].trim();
-                valueContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
-            } else
-                value = inQuestion.trim();
-
-            tag = tag.split(":", 2)[0];
+        // Get value
+        Matcher valueMatcher = valueRegex.matcher(tag);
+        
+        if (valueMatcher.find())
+        {
+        	tag = tag.substring(0, valueMatcher.start()); // remove found value from tag
+        	
+        	value = valueMatcher.group().substring(1); // get rid of the : at the value's start
+        	bracketMatcher = bracketRegex.matcher(value);
+        	
+        	if (bracketMatcher.find())
+        	{
+        		valueContext = bracketMatcher.group().replace("[", "")
+        					   .replace("]", "");
+        		value = value.substring(0, bracketMatcher.start()) +
+        				value.substring(bracketMatcher.end());
+        	}
         }
-
-        // Get tag name/type/subtype/specifier and index
-        if (tag.contains(".")) {
-
-            // Get name
-            String inQuestion = tag.split("\\.", 2)[0];
-            if (inQuestion.contains("[")) {
-                // Get index
-                name = inQuestion.split("\\[", 2)[0].trim();
-                nameContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
-            } else
-                name = inQuestion.trim();
-
-            tag = tag.split("\\.", 2)[1];
-
-            // Get type
-            if (tag.contains(".")) {
-                // Type with subType, must split
-                inQuestion = tag.split("\\.", 2)[0];
-                if (inQuestion.contains("[")) {
-                    // Get index
-                    type = inQuestion.split("\\[", 2)[0].trim();
-                    typeContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
-                } else
-                    type = inQuestion.trim();
-                
-                // Put subType into tag
-                tag = tag.split("\\.", 2)[1];
-                
-                // Get subtype
-                if (tag.contains(".")) {
-                    // subType with specifier, must split
-                    inQuestion = tag.split("\\.", 2)[0];
-                    if (inQuestion.contains("[")) {
-                        // Get index
-                        subType = inQuestion.split("\\[", 2)[0].trim();
-                        subTypeContext = inQuestion.split("\\[", 2)[1].split("\\]", 2)[0].trim();
-                    } else
-                        subType = inQuestion.trim();
-                    
-                    // Put specifier into tag
-                    tag = tag.split("\\.", 2)[1];
-                    
-                    if (tag.contains("[")) {
-                		// Get index
-                		specifier = tag.split("\\[", 2)[0].trim();
-                		specifierContext = tag.split("\\[", 2)[1].split("\\]", 2)[0].trim();
-                	} else
-                		specifier = tag.trim();
-                
-                } else { 
-                	if (tag.contains("[")) {
-                		// Get index
-                		subType = tag.split("\\[", 2)[0].trim();
-                		subTypeContext = tag.split("\\[", 2)[1].split("\\]", 2)[0].trim();
-                	} else
-                		subType = tag.trim();
-                }
-
-                // No subtype, just get type, and possible context
-            } else {
-                if (tag.contains("[")) {
-                    // Get index
-                    type = tag.split("\\[", 2)[0].trim();
-                    typeContext = tag.split("\\[", 2)[1].split("\\]", 2)[0].trim();
-                } else
-                    type = tag.trim();
-            }
-
-        } else name = tag;
-
+        
+        // Component pattern that matches groups of characters that are not
+        // [] or . and that optionally contain [] and a . at the end
+        Pattern componentRegex = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?");
+        
+        // Get name, type, subType and specifier, and all their contexts
+        String[] components = new String[4];
+        String[] contexts = new String[4];
+        String tagPart = null;
+        int n = 0;
+        
+        Matcher componentMatcher = componentRegex.matcher(tag);
+        
+        while (componentMatcher.find() && n < 4)
+        {
+        	tagPart = componentMatcher.group();
+        	bracketMatcher = bracketRegex.matcher(tagPart);
+        	
+        	if (bracketMatcher.find())
+        	{
+        		components[n] = tagPart.substring(0, bracketMatcher.start());
+        		contexts[n] = bracketMatcher.group().replace("[", "")
+        					  .replace("]", "");
+        	}
+        	else
+        		components[n] = tagPart.replace(".", "");
+        	
+        	n++;
+        }
+        	
+        	name = components[0];
+        	nameContext = contexts[0];
+        	type = components[1];
+        	typeContext = contexts[1];
+        	subType = components[2];
+        	subTypeContext = contexts[2];
+        	specifier = components[3];
+        	specifierContext = contexts[3];
     }
 
     public String getName() {
