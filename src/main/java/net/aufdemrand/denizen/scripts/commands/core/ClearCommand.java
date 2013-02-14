@@ -24,14 +24,19 @@ public class ClearCommand extends AbstractCommand {
 
         List<ScriptQueue> queues = new ArrayList<ScriptQueue>();
 
+        // Use current queue if none specified.
+        queues.add(ScriptQueue._getQueue(scriptEntry.getResidingQueue()));
+
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesQueue(arg))
-                for (String queueName : aH.getListFrom(arg))
+                for (String queueName : aH.getListFrom(arg)) {
+                    queues.clear();
                     try {
                         queues.add(aH.getQueueFrom(queueName));
                     } catch (Exception e) {
                     // must be null, don't add
                     }
+                }
 
             else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
