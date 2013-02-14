@@ -7,6 +7,8 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 /**
  * <p>Announces a message to the server.</p>
@@ -32,11 +34,14 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  */
 public class AnnounceCommand extends AbstractCommand {
 
+    enum AnnounceType { ALL, TO_OPS }
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize fields
         String text = null;
+        AnnounceType announceType = AnnounceType.ALL;
 
         // Users tend to forget quotes sometimes on commands like this, so
         // let's check if there are more argument than usual.
@@ -46,7 +51,12 @@ public class AnnounceCommand extends AbstractCommand {
         // Should only be one argument, since PlAYER: and NPCID: are handled
         // internally. Let's get that argument and set it as the text.
         for (String arg : scriptEntry.getArguments())
-            text = aH.getStringFrom(arg);
+
+            if (aH.matchesArg("TO_OPS", arg)) {
+                announceType = AnnounceType.TO_OPS;
+            }
+
+            else text = aH.getStringFrom(arg);
 
         // If text is missing, alert the console.
         if (text == null)
@@ -60,13 +70,21 @@ public class AnnounceCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
         String text = (String) scriptEntry.getObject("text");
+        AnnounceType type = (AnnounceType) scriptEntry.getObject("type");
 
         // Report to dB
         dB.report(getName(),
-                aH.debugObj("Message", text));
+                aH.debugObj("Message", text)
+                        + aH.debugObj("Type", type.name()));
 
         // Use Bukkit to broadcast the message to everybody in the server.
-        denizen.getServer().broadcastMessage(text);
+        if (type == AnnounceType.ALL)
+            denizen.getServer().broadcastMessage(text);
+        else if (type == AnnounceType.TO_OPS)
+            for (Player player : Bukkit.getOnlinePlayers())
+                if (player.isOp()) player.sendMessage(text);
     }
 
 }
+
+

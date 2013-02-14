@@ -39,6 +39,9 @@ public class DetermineCommand extends AbstractCommand {
         Long uniqueId = (Long) scriptEntry.getObject("reqId");
         if (uniqueId == null) return;
         outcomes.put(uniqueId, outcome);
+
+
+        scriptEntry.getResidingQueue();
     }
 
 }

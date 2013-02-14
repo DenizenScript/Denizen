@@ -51,6 +51,7 @@ public class ChatCommand extends AbstractCommand {
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        // Create empty speech context
 		SpeechContext context = new SpeechContext("");    	
 		boolean noTargets = false;
 		
@@ -64,6 +65,8 @@ public class ChatCommand extends AbstractCommand {
 					dB.echoDebug("Removed TARGET(s).");
 					noTargets = true;
 				}
+
+                // Iterate through targets, make sure target is LivingEntity
 				for (String target : aH.getListFrom(arg)) {
 					if (aH.getLivingEntityFrom(target) != null) {
 						context.addRecipient(aH.getLivingEntityFrom(target));

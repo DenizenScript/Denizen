@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Clears queue(s)
+ * Clears queue(s).
  *
  * @author aufdemrand
  */
@@ -44,13 +44,14 @@ public class ClearCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
+        // Fetch queues from the scriptEntry
         List<ScriptQueue> queues = (List<ScriptQueue>) scriptEntry.getObject("queues");
 
+        // Report to dBugger
         dB.report(getName(),
                 aH.debugObj("Queues", queues.toString()));
 
-        List<ScriptEntry> emptyList = new ArrayList<ScriptEntry>();
-
+        // clear() each queue
         for (ScriptQueue queue : queues)
             queue.clear();
     }

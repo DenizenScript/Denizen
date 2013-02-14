@@ -19,6 +19,13 @@ public class ScriptQueue implements Listener {
         return "ScriptQueue(" + id + ")";
     }
 
+
+    /**
+     * Returns the number of queues created in the current instance
+     * as well as the number of currently active queues.
+     *
+     * @return stats
+     */
     public static String _getStats() {
         return "Total number of queues created: '"
                 + totalQueues
@@ -26,16 +33,42 @@ public class ScriptQueue implements Listener {
                 + _queues.size() +  "'.";
     }
 
+
+    /**
+     * Gets a random UUID for use in creating a 'nameless' queue.
+     *
+     * @return String value of a random UUID
+     */
     public static String _getNextId() {
         return UUID.randomUUID().toString();
     }
 
+    // Contains all currently active queues, keyed by a String id.
     public static Map<String, ScriptQueue> _queues = new ConcurrentHashMap<String, ScriptQueue>();
 
+
+    /**
+     * Returns a collection of all active queues.
+     *
+     * @return a collection of ScriptQueues
+     */
     public static Collection<ScriptQueue> _getQueues() {
         return _queues.values();
     }
 
+
+    /**
+     * <p>Gets a ScriptQueue instance. If a queue already exists with the
+     * given id, it will return that instance as opposed to creating a
+     * new one. IDs are case insensitive.  If having an easy-to-recall
+     * ID is not necessary, use the static method _getNextId() which
+     * will return a random UUID.</p>
+     *
+     * <p>New ScriptQueues will need further information before they
+     * can start(), including </p>
+     * @param id  unique id of the queue
+     * @return
+     */
     public static ScriptQueue _getQueue(String id) {
         // Get id if not specified.
         if (id == null) id = String.valueOf(_getNextId());
@@ -50,6 +83,8 @@ public class ScriptQueue implements Listener {
         // Return the queue
         return scriptQueue;
     }
+
+
 
     public static ScriptQueue _getInstantQueue(String id) {
         // Get id if not specified.
@@ -70,14 +105,14 @@ public class ScriptQueue implements Listener {
     }
 
 
-
-
+    // Name of the queue -- this identifies the ScriptQueue when using _getQueue
+    // or a dScript Queue:xxx argument, whereas xxx = id
     public String id;
 
     // Keep track of Bukit's Scheduler taskId for the engine, for when it times out.
     protected int taskId;
 
-    // This is the speed of the engine, the # of ticks between each revolution.
+    //The speed of the engine, the # of ticks between each revolution.
     protected int ticks;
 
     // List of ScriptEntries in the queue
@@ -86,7 +121,9 @@ public class ScriptQueue implements Listener {
     // If this number is larger than getCurrentTimeMillis, the queues will delay execution
     protected long delay = 0;
 
-    protected String context = null;
+    // ScriptQueues can have a bit of context, keyed by a String Id. All that can be accessed by either getContext()
+    // or a dScript replaceable tag <context.id>
+    protected Map<String, String> context = new ConcurrentHashMap<String, String>();
 
     protected ScriptEntry lastEntryExecuted = null;
 
@@ -211,13 +248,13 @@ public class ScriptQueue implements Listener {
         return this;
     }
 
-    public String getContext() {
-        return context;
-    }
+//    public String getContext() {
+  //      return context;
+    //}
 
-    public void setContext(String context) {
-        this.context = context;
-    }
+   // public void setContext(String context) {
+     //   this.context = context;
+    //}
 
     public int getQueueSize() {
         return scriptEntries.size();
