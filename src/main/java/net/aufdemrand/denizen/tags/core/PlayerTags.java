@@ -320,12 +320,12 @@ public class PlayerTags implements Listener {
                     players.append("|");
                 }
             }
+
+            event.setReplaced(players.toString().substring(0, players.length() - 1));
         }
-        event.setReplaced(players.toString().substring(0, players.length() - 1));
     }
 
 
-}
 }
 
 
