@@ -43,6 +43,10 @@ public class LocationTags implements Listener {
         {
             if (subType.equals("FORMATTED"))
                 event.setReplaced(fromLocation.getBlock().getBiome().name().toLowerCase().replace('_', ' '));
+            else if (subType.equals("HUMIDITY"))
+            	event.setReplaced(String.valueOf(fromLocation.getBlock().getHumidity()));
+            else if (subType.equals("TEMPERATURE"))
+            	event.setReplaced(String.valueOf(fromLocation.getBlock().getTemperature()));
             else
                 event.setReplaced(fromLocation.getBlock().getBiome().name());
         }
@@ -95,6 +99,11 @@ public class LocationTags implements Listener {
                     + "', Z '" + fromLocation.getBlockZ()
                     + "', in world '" + fromLocation.getWorld().getName() + "'");
         
+        else if (type.equals("IS_LIQUID"))
+        {
+        	event.setReplaced(String.valueOf(fromLocation.getBlock().isLiquid()));
+        }
+        
         else if (type.equals("LIGHT"))
         {
         	if (subType.equals("BLOCKS"))
@@ -103,6 +112,11 @@ public class LocationTags implements Listener {
         		event.setReplaced(String.valueOf((int) fromLocation.getBlock().getLightFromSky()));
         	else
         		event.setReplaced(String.valueOf((int) fromLocation.getBlock().getLightLevel()));
+        }
+        
+        else if (type.equals("POWER"))
+        {
+        	event.setReplaced(String.valueOf((int) fromLocation.getBlock().getBlockPower()));
         }
         
         else if (type.equals("TIME"))
