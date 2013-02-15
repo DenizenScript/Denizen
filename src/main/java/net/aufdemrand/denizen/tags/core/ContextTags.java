@@ -33,7 +33,12 @@ public class ContextTags implements Listener {
         } else if (type.equalsIgnoreCase("OBJECT")) {
             if (entry.hasObject(subType))
                 event.setReplaced(entry.getObject(subType).toString());
+
+        } else if (type.equalsIgnoreCase("SCRIPT")) {
+            if (subType.equalsIgnoreCase("QUEUE"))
+                event.setReplaced(entry.getResidingQueue());
         }
+
     }
 
     @EventHandler
