@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,17 +73,19 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         String replacementText = null;
         String regexId = null;
         String regexMessage = null;
-        Map<String, String> idMap = script.getIdMapFor(this.getClass(), event.getPlayer());
+        Map<String, String> idMap = new HashMap<String, String>();
+        if (script != null)
+            idMap = script.getIdMapFor(this.getClass(), event.getPlayer());
 
-        if (!idMap.isEmpty())
+        if (!idMap.isEmpty()) {
             // Iterate through the different id entries in the step's chat trigger
             for (Map.Entry<String, String> entry : idMap.entrySet()) {
                 // Check if the chat trigger specified in the specified id's 'trigger:' key
                 // matches the text the player has said
                 Matcher matcher = triggerPattern.matcher(entry.getValue());
                 while (matcher.find ()) {
-                	if (!script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
-                			 event.getPlayer(), npc, entry.getKey())) continue;
+                    if (!script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
+                            event.getPlayer(), npc, entry.getKey())) continue;
                     String keyword = matcher.group().replace("/", "");
                     // Check if the trigger is REGEX
                     if(isKeywordRegex(keyword)) {
@@ -90,7 +93,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         Matcher m = pattern.matcher(event.getMessage());
                         if (m.find()) {
                             // REGEX matches are left for last, so save it in case non-REGEX
-                        	// matches don't exist
+                            // matches don't exist
                             regexId = entry.getKey();
                             regexMessage = entry.getValue().replace("/" + keyword + "/", m.group());
                         }
@@ -105,12 +108,13 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 }
                 if (matched) break;
             }
-        if (matched == false && regexId != null)
-        {
-        	id = regexId;
+        }
+
+        if (matched == false && regexId != null) {
+            id = regexId;
             replacementText = regexMessage;
         }
-        
+
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
             event.setCancelled(true);

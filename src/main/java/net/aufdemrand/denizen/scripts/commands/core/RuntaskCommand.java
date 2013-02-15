@@ -66,7 +66,7 @@ public class RuntaskCommand extends AbstractCommand {
         Script script = null;
         Map<String, String> context = null;
         Duration delay = new Duration(0);
-        Duration speed = new Duration(Settings.InteractDelayInTicks() / 20);
+        Duration speed = new Duration(((double) Settings.InteractDelayInTicks() / 20));
         ScriptQueue queue = ScriptQueue._getQueue(scriptEntry.getResidingQueue());
 
         // Iterate through Arguments to extract needed information
