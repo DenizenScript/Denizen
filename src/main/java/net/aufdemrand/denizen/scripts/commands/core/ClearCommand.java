@@ -28,7 +28,7 @@ public class ClearCommand extends AbstractCommand {
         queues.add(ScriptQueue._getQueue(scriptEntry.getResidingQueue()));
 
         for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesQueue(arg))
+            if (aH.matchesQueue(arg)) {
                 queues.clear();
                 for (String queueName : aH.getListFrom(arg)) {
                     try {
@@ -37,6 +37,7 @@ public class ClearCommand extends AbstractCommand {
                     // must be null, don't add
                     }
                 }
+            }
 
             else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
