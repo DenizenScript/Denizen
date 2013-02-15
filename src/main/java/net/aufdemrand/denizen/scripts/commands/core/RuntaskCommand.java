@@ -98,11 +98,10 @@ public class RuntaskCommand extends AbstractCommand {
             } else if (aH.matchesValueArg("CONTEXT", arg, aH.ArgumentType.Custom)) {
                 context = new HashMap<String, String>();
                 List<String> contexts = aH.getListFrom(arg);
+                int x = 1;
                 for (String ctxt : contexts) {
-                    String[] sctxt = ctxt.split(",", 2);
-                    if (sctxt.length > 1)
-                        context.put(sctxt[0].trim().toUpperCase(), sctxt[1].trim());
-                    else context.put(sctxt[0].trim().toUpperCase(), "true");
+                    context.put(String.valueOf(x), ctxt.trim());
+                    x++;
                 }
 
             } else if (aH.matchesValueArg("ID", arg, aH.ArgumentType.Word)) {

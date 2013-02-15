@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
@@ -9,6 +10,8 @@ import net.aufdemrand.denizen.utilities.arguments.Duration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,9 +55,7 @@ public class TaskScriptContainer extends ScriptContainer {
         ScriptQueue queue = ScriptQueue._getQueue(queueId);
         List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
         if (context != null)
-            for (Map.Entry<String, String> entry : context.entrySet()) {
-                // TODO: Add context back
-            }
+            ScriptBuilder.addObjectToEntries(listOfEntries, "context", context);
         queue.addEntries(listOfEntries);
         if (isInstant()) queue.setSpeed(0);
         else if (getSpeed() != null)
@@ -63,13 +64,26 @@ public class TaskScriptContainer extends ScriptContainer {
         return queue;
     }
 
+    public Map<String, Integer> getContextMap() {
+        if (contains("CONTEXT")) {
+            Map<String, Integer> context = new HashMap<String, Integer>();
+            int x = 1;
+            for (String name : getString("CONTEXT").split("\\|")) {
+                context.put(name.toUpperCase(), x);
+                x++;
+            }
+
+            return context;
+        }
+
+        return Collections.emptyMap();
+    }
+
     public ScriptQueue runTaskScriptWithDelay(String queueId, Player player, dNPC npc, Map<String, String> context, Duration delay) {
         ScriptQueue queue = ScriptQueue._getQueue(queueId);
         List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
         if (context != null)
-            for (Map.Entry<String, String> entry : context.entrySet()) {
-                // TODO: Add context back
-            }
+            ScriptBuilder.addObjectToEntries(listOfEntries, "context", context);
         queue.addEntries(listOfEntries);
         if (isInstant()) queue.setSpeed(0);
         else if (getSpeed() != null)
