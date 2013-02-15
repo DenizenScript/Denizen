@@ -170,7 +170,7 @@ public class ScriptQueue implements Listener {
     }
 
     public void start() {
-        dB.log("Starting " + id + "...");
+        dB.log("Starting " + id + "... (Speed=" + ticks + "tpr)");
         // If not an instant queue, set a bukkit repeating task with the speed
         if (ticks > 0)
             taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
