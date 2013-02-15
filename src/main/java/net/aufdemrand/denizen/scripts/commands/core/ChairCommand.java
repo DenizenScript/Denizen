@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -21,6 +22,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -178,7 +181,7 @@ public class ChairCommand extends AbstractCommand implements Listener {
             if (npc.getEntity().getWorld().equals(player.getWorld())) {
                 try {
                     ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
-                } catch (InvocationTargetException e) {
+                } catch (Exception e) {
                     dB.echoError("...error sending packet to player: " + player.getName());
                 }
             }
@@ -268,7 +271,14 @@ public class ChairCommand extends AbstractCommand implements Listener {
      */
     @EventHandler
     public void onPlayerLoginEvent(PlayerJoinEvent event) {
-        for (dNPC npc : DenizenAPI.getSpawnedNPCs())
+        Set<dNPC> npcs = new HashSet<dNPC>();
+        for (Integer intgr : chairRegistry.keySet()) {
+            npcs.add(DenizenAPI.getDenizenNPC(
+                    CitizensAPI.getNPCRegistry().getById(intgr)
+            ));
+        }
+
+        for (dNPC npc : npcs)
             makeSitSpecificPlayer(npc, event.getPlayer());
         // dB.echoDebug("..." + event.getPlayer().getName() + " joined, sending sit packets.");
     }
