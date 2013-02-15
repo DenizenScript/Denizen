@@ -69,7 +69,23 @@ public class ReplaceableTagEvent extends Event {
     private String replaced = null;
 
     private ScriptEntry scriptEntry = null;
+    
+    // Base context pattern that matches initial brackets in tag
+    Pattern basecontextRegex = Pattern.compile("^( )?\\[.*?\\]");
+    
+    // Alternative text pattern that matches everything after ||
+    Pattern alternativeRegex = Pattern.compile("\\|\\|.*");
+    
+    // Bracket pattern that matches brackets
+    Pattern bracketRegex = Pattern.compile("\\[.*?\\]");
+    
+    // Value pattern that matches everthing after :
+    Pattern valueRegex = Pattern.compile(":.*");
 
+    // Component pattern that matches groups of characters that are not
+    // [] or . and that optionally contain [] and a . at the end
+    Pattern componentRegex = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?");
+    
     public ReplaceableTagEvent(OfflinePlayer player, dNPC npc, String tag) {
         this(player, npc, tag, null);
     }
@@ -93,11 +109,7 @@ public class ReplaceableTagEvent extends Event {
             tag = tag.substring(1);
         }
         
-        // Base context pattern that matches initial brackets in tag
-        Pattern basecontextRegex = Pattern.compile("^( )?\\[.*?\\]");
-        
         // Get base context
-        
         Matcher basecontextMatcher = basecontextRegex.matcher(tag);
         
         if (basecontextMatcher.find())
@@ -108,11 +120,7 @@ public class ReplaceableTagEvent extends Event {
         	parseContext();
         }
         
-        // Alternative text pattern that matches everything after ||
-        Pattern alternativeRegex = Pattern.compile("\\|\\|.*");
-        
         // Get alternative text
-        
         Matcher alternativeMatcher = alternativeRegex.matcher(tag);
         
         if (alternativeMatcher.find())
@@ -122,15 +130,9 @@ public class ReplaceableTagEvent extends Event {
         				  .substring(2).trim(); // get rid of the || at the alternative's start
         				  						// and any trailing spaces
         }
-        
-        // Bracket pattern that matches brackets
-        Pattern bracketRegex = Pattern.compile("\\[.*?\\]");
-        Matcher bracketMatcher = null;
-        
-        // Value pattern that matches everthing after :
-        Pattern valueRegex = Pattern.compile(":.*");
 
         // Get value
+        Matcher bracketMatcher = null;    
         Matcher valueMatcher = valueRegex.matcher(tag);
         
         if (valueMatcher.find())
@@ -148,10 +150,6 @@ public class ReplaceableTagEvent extends Event {
         				value.substring(bracketMatcher.end());
         	}
         }
-        
-        // Component pattern that matches groups of characters that are not
-        // [] or . and that optionally contain [] and a . at the end
-        Pattern componentRegex = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?");
         
         // Get name, type, subType and specifier, and all their contexts
         String[] components = new String[4];
