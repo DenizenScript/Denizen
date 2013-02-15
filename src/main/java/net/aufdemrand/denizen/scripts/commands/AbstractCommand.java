@@ -109,7 +109,7 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 	 * and should be handled accordingly if required by this Command.
 	 * 
 	 * @param scriptEntry
-	 * 		The {@link ScriptEntry} which contains run-time information which may
+	 * 		The {@link ScriptEntry}, which contains run-time context that may
 	 * 		be utilized by this Command.
 	 * @throws InvalidArgumentsException
 	 * 		Will halt execution of this Command and hint usage to the console to avoid

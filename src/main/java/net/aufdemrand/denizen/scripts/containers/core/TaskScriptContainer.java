@@ -30,7 +30,7 @@ public class TaskScriptContainer extends ScriptContainer {
     }
 
     public TaskScriptContainer setSpeed(Duration speed) {
-        set("SPEED", speed.dScriptArgValue());
+        set("SPEED", speed.getSeconds());
         return this;
     }
 
