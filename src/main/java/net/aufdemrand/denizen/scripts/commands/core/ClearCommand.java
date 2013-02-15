@@ -29,8 +29,8 @@ public class ClearCommand extends AbstractCommand {
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesQueue(arg))
+                queues.clear();
                 for (String queueName : aH.getListFrom(arg)) {
-                    queues.clear();
                     try {
                         queues.add(aH.getQueueFrom(queueName));
                     } catch (Exception e) {
