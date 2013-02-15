@@ -48,13 +48,13 @@ public class CommandRegistry implements DenizenRegistry {
 	@Override
 	public void registerCoreMembers() {
         registerCoreMember(AnnounceCommand.class, 
-        		"ANNOUNCE", "announce ['announcement text']", 1);
+        		"ANNOUNCE", "announce (to_ops) ['announcement text']", 1);
         
         registerCoreMember(AttackCommand.class, 
-        		"ATTACK", "attack (STOP)", 0);
+        		"ATTACK", "attack (stop)", 0);
         
         registerCoreMember(AssignmentCommand.class, 
-        		"ASSIGNMENT", "assignment [{SET}|REMOVE] (SCRIPT:assignment_script)", 1);
+        		"ASSIGNMENT", "assignment [{set}|remove] (script:assignment_script)", 1);
         
         registerCoreMember(CastCommand.class, 
         		"CAST", "cast [potion_effect_type] (duration:#{60s}) (power:#{1}) (target(s):npc|player|npc.#|player.player_name|entity_name)", 1);
@@ -78,7 +78,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"DISENGAGE", "disengage (NPCID:#)", 0);
         
         registerCoreMember(DropCommand.class, 
-        		"DROP", "drop [ITEM:item|EXP] (QTY:#) (LOCATION:location)", 1);
+        		"DROP", "drop [item:#(:#)|item:material(:#)|xp] (qty:#{1}) (location:x,y,z,world)", 1);
 		
         registerCoreMember(EngageCommand.class, 
         		"ENGAGE", "engage (DURATION:#) (NPCID:#)", 0);
@@ -99,7 +99,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"FLAG", "flag (DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]", 1);
         
         registerCoreMember(FollowCommand.class, 
-        		"FOLLOW", "follow (STOP)", 0);
+        		"FOLLOW", "follow (stop)", 0);
 		
         registerCoreMember(GiveCommand.class, 
         		"GIVE", "give [MONEY|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);
@@ -114,7 +114,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"LISTEN", "listen [Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation.", 2);
         
         registerCoreMember(LookCommand.class, 
-        		"LOOK", "look [LOCATION:x,y,z,world]", 1);
+        		"LOOK", "look [location:x,y,z,world]", 1);
         
         registerCoreMember(LookcloseCommand.class, 
         		"LOOKCLOSE", "lookclose [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)", 1);
@@ -144,7 +144,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"SCRIBE", "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
         
         registerCoreMember(ShootCommand.class, 
-        		"SHOOT", "shoot [ENTITY:entity] (RIDE) (BURN) (EXPLODE) (FIREWORKS) (LOCATION:location) (SCRIPT:script)", 1);
+        		"SHOOT", "shoot [entity:name] (ride) (burn) (explode) (location:x,y,z,world) (script:name)", 1);
         
         registerCoreMember(StrikeCommand.class, 
         		"STRIKE", "strike (no_damage) [location:x,y,z,world]", 1);
