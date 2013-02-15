@@ -14,7 +14,7 @@ import org.bukkit.event.Listener;
 import java.util.Map;
 
 public class ClickTrigger extends AbstractTrigger implements Listener {
-    
+
     @EventHandler
     public void clickTrigger(NPCRightClickEvent event) {
 
@@ -66,16 +66,18 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         //     current step:
         //       click trigger:
         String id = null;
-        Map<String, String> idMap = script.getIdMapFor(this.getClass(), player);
-        if (!idMap.isEmpty())
-            // Iterate through the different id entries in the step's click trigger
-            for (Map.Entry<String, String> entry : idMap.entrySet())
-                // Check if the item specified in the specified id's 'trigger:' key
-                // matches the item that the player is holding.
-                if (Item.valueOf(entry.getValue()).matches(player.getItemInHand())
-                        && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
-                        player, npc, entry.getKey()))
-                    id = entry.getKey();
+        if (script != null) {
+            Map<String, String> idMap = script.getIdMapFor(this.getClass(), player);
+            if (!idMap.isEmpty())
+                // Iterate through the different id entries in the step's click trigger
+                for (Map.Entry<String, String> entry : idMap.entrySet())
+                    // Check if the item specified in the specified id's 'trigger:' key
+                    // matches the item that the player is holding.
+                    if (Item.valueOf(entry.getValue()).matches(player.getItemInHand())
+                            && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
+                            player, npc, entry.getKey()))
+                        id = entry.getKey();
+        }
 
         // If id is still null after this, it's assumed that the trigger's 'base script' will be used.
         // parse() will accept a null id if this is the case.
