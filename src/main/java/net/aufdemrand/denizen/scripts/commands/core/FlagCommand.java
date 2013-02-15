@@ -46,27 +46,27 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 name = flagArgs[0].toUpperCase();
 
                 if (flagArgs.length == 2) {
-                    if (flagArgs[1].contains("+")) {
+                    if (flagArgs[1].startsWith("+")) {
                         action = Action.INCREASE;
                         value = "1";
-                    }   else if (flagArgs[1].contains("-")) {
+                    }   else if (flagArgs[1].startsWith("-")) {
                         action = Action.DECREASE;
                         value = "1";
-                    }   else if (flagArgs[1].contains("!")) {
+                    }   else if (flagArgs[1].startsWith("!")) {
                         action = Action.DELETE;
-                    }   else if (flagArgs[1].contains("<-")) {
+                    }   else if (flagArgs[1].startsWith("<-")) {
                         action = Action.REMOVE;
                     }   else {
                         action = Action.SET_VALUE;
                         value = arg.split(":")[1];
                     }
                 } else if (flagArgs.length == 3) {
-                    if (flagArgs[1].contains("->")) action = Action.INSERT;
-                    else if (flagArgs[1].contains("<-")) action = Action.REMOVE;
-                    else if (flagArgs[1].contains("+")) action = Action.INCREASE;
-                    else if (flagArgs[1].contains("-")) action = Action.DECREASE;
-                    else if (flagArgs[1].contains("*")) action = Action.MULTIPLY;
-                    else if (flagArgs[1].contains("/")) action = Action.DIVIDE;
+                    if (flagArgs[1].startsWith("->")) action = Action.INSERT;
+                    else if (flagArgs[1].startsWith("<-")) action = Action.REMOVE;
+                    else if (flagArgs[1].startsWith("+")) action = Action.INCREASE;
+                    else if (flagArgs[1].startsWith("-")) action = Action.DECREASE;
+                    else if (flagArgs[1].startsWith("*")) action = Action.MULTIPLY;
+                    else if (flagArgs[1].startsWith("/")) action = Action.DIVIDE;
                     value = flagArgs[2];
                 }
             } else {
