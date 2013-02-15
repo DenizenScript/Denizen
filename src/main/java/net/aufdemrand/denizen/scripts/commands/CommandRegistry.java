@@ -48,7 +48,7 @@ public class CommandRegistry implements DenizenRegistry {
 	@Override
 	public void registerCoreMembers() {
         registerCoreMember(AnnounceCommand.class, 
-        		"ANNOUNCE", "announce (to_ops) ['announcement text']", 1);
+        		"ANNOUNCE", "announce [\"announcement text\"] (to_ops)", 1);
         
         registerCoreMember(AttackCommand.class, 
         		"ATTACK", "attack (stop)", 0);
@@ -63,37 +63,37 @@ public class CommandRegistry implements DenizenRegistry {
         		"CHAIR", "chair (sit|stand) [location:x,y,z,world]", 1);
         
         registerCoreMember(ChatCommand.class, 
-        		"CHAT", "chat ['message to chat'] (npcid:#) (target(s):npc.#|player.player_name{attached player})", 1);
+        		"CHAT", "chat [\"chat text\"] (npcid:#) (target(s):npc.#|player.name{attached player})", 1);
         
         registerCoreMember(ClearCommand.class, 
-        		"CLEAR", "clear [QUEUE:queue_type] (...)", 1);
+        		"CLEAR", "clear (queue:name) (...)", 1);
         
         registerCoreMember(CooldownCommand.class, 
-        		"COOLDOWN", "cooldown (duration:#{60s}) (global|{player:player_name}) (script:script_name{)", 1);
+        		"COOLDOWN", "cooldown (duration:#{60s}) (global|player:name{attached player}) (script:name)", 1);
 		
         registerCoreMember(DetermineCommand.class, 
-        		"DETERMINE", "determine [TRUE|FALSE]", 1);
+        		"DETERMINE", "determine [true|false]", 1);
         
         registerCoreMember(DisengageCommand.class, 
-        		"DISENGAGE", "disengage (NPCID:#)", 0);
+        		"DISENGAGE", "disengage (npcid:#)", 0);
         
         registerCoreMember(DropCommand.class, 
         		"DROP", "drop [item:#(:#)|item:material(:#)|xp] (qty:#{1}) (location:x,y,z,world)", 1);
 		
         registerCoreMember(EngageCommand.class, 
-        		"ENGAGE", "engage (DURATION:#) (NPCID:#)", 0);
+        		"ENGAGE", "engage (duration:#) (npcid:#)", 0);
         
         registerCoreMember(ExecuteCommand.class, 
-        		"EXECUTE", "execute [AS_PLAYER|AS_SERVER|AS_NPC|AS_OP] ['Bukkit Command']", 2);
+        		"EXECUTE", "execute [as_player|as_op|as_npc|as_server] [\"Bukkit command\"]", 2);
 		
         registerCoreMember(FailCommand.class, 
-        		"FAIL", "fail (PLAYER:player_name)", 0);
+        		"FAIL", "fail (player:name)", 0);
         
         registerCoreMember(FeedCommand.class, 
-        		"FEED", "feed (AMT:#) (TARGET:NPC|PLAYER)", 0);
+        		"FEED", "feed (amt:#) (target:npc|{player})", 0);
         
         registerCoreMember(FinishCommand.class, 
-        		"FINISH", "finish (PLAYER:player_name)", 0);
+        		"FINISH", "finish (player:name)", 0);
         
         registerCoreMember(FlagCommand.class, 
         		"FLAG", "flag (DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]", 1);
@@ -126,7 +126,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"NAMEPLATE", "nameplate [COLOR] (PLAYER)", 1);
         
         registerCoreMember(NarrateCommand.class, 
-        		"NARRATE", "narrate (PLAYER:player_name) ['Text to narrate']", 1);
+        		"NARRATE", "narrate [\"narration text\"] (player:name)", 1);
         
         registerCoreMember(NewCommand.class, 
         		"NEW", "new ITEMSTACK [ITEM:item] (QTY:qty)", 2);
