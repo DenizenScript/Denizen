@@ -71,10 +71,8 @@ public class TaskScriptContainer extends ScriptContainer {
                 context.put(name.toUpperCase(), x);
                 x++;
             }
-
             return context;
         }
-
         return Collections.emptyMap();
     }
 
