@@ -12,10 +12,10 @@ public class PermissionRequirement extends AbstractRequirement{
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {		
-		if(context.getPlayer() != null) {
-			boolean outcome = false;
-			
+		if(context.getPlayer() != null) {			
 			if(Depends.permissions != null) {
+				boolean outcome = true;
+				
 				for(String permission: args) {
 					if(Depends.permissions.has(context.getPlayer(), permission)) {
 						dB.echoDebug("...player has permission: " + permission);
