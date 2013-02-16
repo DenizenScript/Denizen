@@ -68,7 +68,7 @@ public class RequirementChecker {
 			// Check requirement with RequirementRegistry
 			if (plugin.getRequirementRegistry().list().containsKey(reqEntry.split(" ")[0].toUpperCase())) {
 
-				AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqEntry.split(" ")[0].toUpperCase());
+				AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqEntry.split(" ")[0]);
 				String[] arguments = null;
 				if (reqEntry.split(" ").length > 1)	{
 					arguments = aH.buildArgs(reqEntry.split(" ", 2)[1]);
@@ -83,9 +83,10 @@ public class RequirementChecker {
 				try {
 					// Check if # of required args are met
 					int	numArguments = arguments == null ? 0 : arguments.length;
-					if ((numArguments == 0 && requirement.requirementOptions.REQUIRED_ARGS > 0) ||
-							 numArguments < requirement.requirementOptions.REQUIRED_ARGS) {
-						throw new RequirementCheckException("");
+					int neededArguments = requirement.requirementOptions.REQUIRED_ARGS;
+					if ((numArguments == 0 && neededArguments > 0) ||
+							 numArguments < neededArguments) {
+						throw new RequirementCheckException("Not enough arguments (" + numArguments + " / " + neededArguments + ")");
 					}
 
 					// Check the Requirement
@@ -107,7 +108,8 @@ public class RequirementChecker {
 
 				} catch (Throwable e) {
 					if (e instanceof RequirementCheckException) {
-						dB.echoError("Woah! Invalid arguments were specified!");
+						String msg = e.getMessage().isEmpty() || e == null ? "No Error message defined!" : e.getMessage();
+						dB.echoError("Woah! Invalid arguments were specified: " + msg);
 						dB.echoError("Usage: " + requirement.getUsageHint());
 					} else {
 						dB.echoError("Woah! An exception has been called for Requirement '" + requirement.getName() + "'!");
