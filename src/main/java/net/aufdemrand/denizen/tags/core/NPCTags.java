@@ -3,10 +3,18 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
-import org.bukkit.Location;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
+import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
+import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class NPCTags implements Listener {
 
@@ -63,7 +71,9 @@ public class NPCTags implements Listener {
                         + "," + n.getWorld().getName());
             else if (subType.equals("WORLD"))
                 event.setReplaced(n.getWorld().getName());
-
+            else if (subType.equals("PREVIOUS_LOCATION"))
+                if (previousLocations.containsKey(event.getNPC().getId()))
+                    event.setReplaced(previousLocations.get(event.getNPC().getId()).dScriptArgValue());
 
         } else if (type.equals("NAVIGATOR")) {
             if (subType.equals("ISNAVIGATING"))
@@ -73,15 +83,37 @@ public class NPCTags implements Listener {
             else if (subType.equals("AVOID_WATER"))
                 event.setReplaced(Boolean.toString(n.getNavigator().getLocalParameters().avoidWater()));
             else if (subType.equals("TARGET_LOCATION")) {
-                Location loc = n.getNavigator().getTargetAsLocation();
-                if (loc != null)
-                    event.setReplaced(loc.getBlockX()
-                            + "," + loc.getBlockY()
-                            + "," + loc.getBlockZ()
-                            + "," + n.getWorld().getName());
+                Location loc = new Location(n.getNavigator().getTargetAsLocation());
+                if (loc != null) event.setReplaced(loc.dScriptArgValue());
             }
         }
+
+
     }
 
+    private Map<Integer, Location> previousLocations = new HashMap<Integer, Location>();
+
+    @EventHandler
+    public void navComplete(NavigationCompleteEvent event) {
+        if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
+        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        npc.action("complete navigation", null);
+    }
+
+    @EventHandler
+    public void navBegin(NavigationBeginEvent event) {
+        if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
+        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        npc.action("begin navigation", null);
+        previousLocations.put(event.getNPC().getId(), npc.getLocation());
+    }
+
+    @EventHandler
+    public void navCancel(NavigationCancelEvent event) {
+        if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
+        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
+        npc.action("cancel navigation", null);
+        npc.action("cancel navigation due to " + event.getCancelReason().toString(), null);
+    }
 
 }
