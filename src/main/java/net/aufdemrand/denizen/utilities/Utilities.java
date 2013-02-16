@@ -66,7 +66,8 @@ public class Utilities {
         // Send message to bystanders
         for (Player target : Bukkit.getOnlinePlayers()) {
             if (target != player)
-                if (target.getLocation().distance(player.getLocation()) <= range)
+                if (target.getWorld().equals(player.getWorld())
+                        && target.getLocation().distance(player.getLocation()) <= range)
                     target.sendMessage(bystanderFormat);
         }
     }
