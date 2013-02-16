@@ -68,6 +68,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
      *
      */
     public static Location valueOf(String string) {
+        if (string == null) return null;
         // Strip prefix (ie. location:...)
         if (string.split(":").length > 1)
             string = string.split(":", 2)[1];
