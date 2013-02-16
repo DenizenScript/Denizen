@@ -64,7 +64,7 @@ public class RequirementRegistry implements DenizenRegistry {
         		"FLAGGED", "(-)flagged [PLAYER|NPC|GLOBAL] [NAME([#])](:VALUE)", 0);
         
         registerCoreMember(HoldingRequirement.class, 
-        		"HOLDING", "holding [ITEMNAME]", 1);
+        		"HOLDING", "holding [ITEMNAME] [QTY:#] [EXACT]", 1);
         
         registerCoreMember(InGroupRequirement.class, 
         		"INGROUP", "ingroup [GROUP]", 1);
