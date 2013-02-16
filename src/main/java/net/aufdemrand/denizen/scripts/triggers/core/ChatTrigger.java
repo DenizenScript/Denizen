@@ -30,7 +30,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     public void chatTrigger(AsyncPlayerChatEvent event) {
 
         // Check if there is an NPC within range of a player to chat to.
-        dNPC npc = Utilities.getClosestNPC(event.getPlayer().getLocation(), 2);
+        dNPC npc = Utilities.getClosestNPC(event.getPlayer().getLocation(), 25);
 
         // No NPC? Nothing else to do here.
         if (npc == null) return;
@@ -39,6 +39,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // just return.
         if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
         if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) return;
+
+        // Check range
+        if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(event.getPlayer().getLocation()))
+            return;
 
         // The Denizen config can require some other criteria for a successful chat-with-npc.
         // Should we check 'line of sight'? Players cannot talk to NPCs through walls
