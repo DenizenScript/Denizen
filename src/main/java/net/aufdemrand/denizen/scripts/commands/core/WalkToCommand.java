@@ -1,81 +1,39 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.Location;
-import org.bukkit.util.Vector;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.command.exception.CommandException;
-import net.citizensnpcs.trait.waypoint.Waypoints;
+import net.aufdemrand.denizen.utilities.arguments.Location;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Your command! 
  * This class is a template for a Command in Denizen.
  * 
- * @author You!
+ * @author Jeremy Schroeder (aufdemrand)
  */
-
-            
 public class WalkToCommand extends AbstractCommand {
-
-	/* WALKTO [BOOKMARK:locationbookmark]|(PLAYER)'  */
-
-	/* 
-	 * Arguments: [] - Required, () - Optional 
-	 *   
-	 * Example Usage:
-	 * 
-	 */
 	
 	private Map<dNPC, Location> returns = new  HashMap<dNPC, Location>();
 	
 	@Override
-	public void parseArgs(ScriptEntry scriptEntry)
-			throws InvalidArgumentsException {
-		
+	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+
+
+        //
 		Location location = null;
-		Boolean returning = false;
-		Float speed = Float.valueOf(0);
-		
-		
+		float speed = 0f;
+
 		for (String arg : scriptEntry.getArguments()) {
-			if (aH.matchesLocation(arg)) {
-				location = aH.getLocationFrom(arg);
-				dB.echoDebug("...set location");
-				continue;
-				
-			} else if (aH.matchesArg("RETURN", arg)) {
-				if (returns.containsKey(scriptEntry.getNPC())) {
-					location = returns.get(scriptEntry.getNPC());
-					returning = true;
-					dB.echoDebug("...arg.returning to previous location");
-				} else dB.echoDebug("...no return location stored!");
-				continue;
-				
-			} else if (aH.matchesValueArg("SPEED, S", arg, ArgumentType.Float)) {
-				try {
-					speed = Float.valueOf(aH.getFloatFrom(arg));	
-					dB.echoDebug("... speed set: " + speed);
-				} catch (Exception e) {
-					dB.echoDebug("... Invalid Speed!");
-				}
-				continue;
-				
-			} else throw new InvalidArgumentsException ("Invalid argument specified!");
-			
+
 		}
 		
 		scriptEntry.addObject("location", location);
-		scriptEntry.addObject("returning", returning);
 		scriptEntry.addObject("speed", speed);
 		
 	}
