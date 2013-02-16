@@ -85,7 +85,6 @@ public class ScriptQueue implements Listener {
     }
 
 
-
     public static ScriptQueue _getInstantQueue(String id) {
         // Get id if not specified.
         if (id == null) id = String.valueOf(_getNextId());
@@ -99,6 +98,7 @@ public class ScriptQueue implements Listener {
         }
         return scriptQueue;
     }
+
 
     public static boolean _queueExists(String id) {
         return _queues.containsKey(id.toUpperCase());
@@ -127,19 +127,24 @@ public class ScriptQueue implements Listener {
 
     protected ScriptEntry lastEntryExecuted = null;
 
+
     public void setLastEntryExecuted(ScriptEntry entry) {
         lastEntryExecuted = entry;
     }
+
 
     public ScriptEntry getLastEntryExecuted() {
         return lastEntryExecuted;
     }
 
+
     public void clear() {
         scriptEntries.clear();
     }
 
+
     protected boolean paused = false;
+
 
     protected ScriptQueue(String id, int ticks) {
         this.id = id.toUpperCase();
@@ -147,6 +152,7 @@ public class ScriptQueue implements Listener {
         totalQueues++;
         this.ticks = ticks;
     }
+
 
     public void setPaused(boolean paused) {
         this.paused = paused;
@@ -156,21 +162,35 @@ public class ScriptQueue implements Listener {
         return paused;
     }
 
+
     public void setSpeed(int ticks) {
         this.ticks = ticks;
     }
+
 
     public void delayUntil(long delay) {
         this.delay = delay;
     }
 
+
     public void stop() {
-        Bukkit.getServer().getScheduler().cancelTask(taskId);
         _queues.remove(id);
+        dB.echoDebug("Stopping " + id + "...");
+        Bukkit.getServer().getScheduler().cancelTask(taskId);
     }
 
+
+    private boolean isStarted = false;
+
+
     public void start() {
+        // If already started, no need to restart.
+        if (isStarted) return;
+
+        // Start the queue
         dB.log("Starting " + id + "... (Speed=" + ticks + "tpr)");
+        isStarted = true;
+
         // If not an instant queue, set a bukkit repeating task with the speed
         if (ticks > 0)
             taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
@@ -180,8 +200,10 @@ public class ScriptQueue implements Listener {
                     revolve();
                 }
             }, ticks, ticks);
+
         else revolve();
     }
+
 
     private void revolve() {
         // If entries queued up are empty, desconstruct the queue.
@@ -208,6 +230,7 @@ public class ScriptQueue implements Listener {
         DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
     }
 
+
     public ScriptEntry getNext() {
         if (!scriptEntries.isEmpty()) {
             ScriptEntry entry = scriptEntries.get(0);
@@ -217,10 +240,12 @@ public class ScriptQueue implements Listener {
         else return null;
     }
 
+
     public ScriptQueue addEntries(List<ScriptEntry> entries) {
         scriptEntries.addAll(entries);
         return this;
     }
+
 
     public ScriptQueue injectEntries(List<ScriptEntry> entries, int position) {
         if (position > scriptEntries.size() || position < 0) position = 1;
@@ -230,16 +255,19 @@ public class ScriptQueue implements Listener {
 
     }
 
+
     public boolean removeEntry(int position) {
         if (scriptEntries.size() < position) return false;
         scriptEntries.remove(position);
         return true;
     }
 
+
     public ScriptEntry getEntry(int position) {
         if (scriptEntries.size() < position) return null;
         return scriptEntries.get(position);
     }
+
 
     public ScriptQueue injectEntry(ScriptEntry entry, int position) {
         if (position > scriptEntries.size() || position < 0) position = 1;
@@ -248,15 +276,9 @@ public class ScriptQueue implements Listener {
         return this;
     }
 
-//    public String getContext() {
-  //      return context;
-    //}
-
-   // public void setContext(String context) {
-     //   this.context = context;
-    //}
 
     public int getQueueSize() {
         return scriptEntries.size();
     }
+
 }
