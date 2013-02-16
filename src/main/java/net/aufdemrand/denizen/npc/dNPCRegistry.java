@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.npc.NPC;
@@ -114,6 +115,11 @@ public class dNPCRegistry implements Listener {
         _registerNPC(event.getNPC());
         // On Spawn action
         plugin.getNPCRegistry().getDenizen(event.getNPC()).action("spawn", null);
+    }
+
+    @EventHandler
+    public void despawn(NPCDespawnEvent event) {
+        plugin.getNPCRegistry().getDenizen(event.getNPC()).action("despawn", null);
     }
 
     /**
