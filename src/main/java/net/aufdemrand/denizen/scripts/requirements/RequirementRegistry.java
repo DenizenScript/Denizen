@@ -39,7 +39,7 @@ public class RequirementRegistry implements DenizenRegistry {
 
     @Override
     public AbstractRequirement get(String requirementName) {
-        if (instances.containsKey(requirementName.toUpperCase())) return instances.get(requirementName);
+        if (instances.containsKey(requirementName.toUpperCase())) return instances.get(requirementName.toUpperCase());
         else return null;
     }
 
