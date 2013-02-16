@@ -64,6 +64,7 @@ public class AnnounceCommand extends AbstractCommand {
 
         // Add objects that need to be passed to execute() to the scriptEntry
         scriptEntry.addObject("text", text);
+        scriptEntry.addObject("type", announceType);
     }
 
     @Override
