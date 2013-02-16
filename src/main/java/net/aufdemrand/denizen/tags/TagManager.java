@@ -32,7 +32,6 @@ public class TagManager {
     public void registerCoreTags() {
         new PlayerTags(denizen);
         new OfflinePlayerTags(denizen);
-        new ColorTags(denizen);
         new FlagTags(denizen);
         new BookmarkTags(denizen);
         new ConstantTags(denizen);
@@ -41,6 +40,7 @@ public class TagManager {
         new ContextTags(denizen);
         new LocationTags(denizen);
         new SpecialCharacterTags(denizen);
+        new TextTags(denizen);
     }
 
     public String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant) {

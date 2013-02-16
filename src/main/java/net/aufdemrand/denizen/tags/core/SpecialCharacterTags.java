@@ -12,7 +12,7 @@ public class SpecialCharacterTags implements Listener {
     }
 
    @EventHandler
-    public void colorTags(ReplaceableTagEvent event) {
+    public void specialCharacterTags(ReplaceableTagEvent event) {
     if (!event.getName().startsWith("&")) return;
 
        if (event.getName().equalsIgnoreCase("&cm"))
