@@ -2,13 +2,11 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.Location;
-
-import java.util.HashMap;
-import java.util.Map;
+import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
  * Your command! 
@@ -18,33 +16,45 @@ import java.util.Map;
  */
 public class WalkToCommand extends AbstractCommand {
 	
-	private Map<dNPC, Location> returns = new  HashMap<dNPC, Location>();
-	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 
 
-        //
+        // Initialize required fields
 		Location location = null;
-		float speed = 0f;
+		float speed = -1f;
 
 		for (String arg : scriptEntry.getArguments()) {
 
+            if (aH.matchesLocation(arg))
+                location = aH.getLocationFrom(arg);
+
+            else if (aH.matchesValueArg("SPEED", arg, aH.ArgumentType.Double))
+                speed = (float) aH.getDoubleFrom(arg);
+
+            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 		
-		scriptEntry.addObject("location", location);
-		scriptEntry.addObject("speed", speed);
-		
+		scriptEntry.addObject("location", location)
+		    .addObject("speed", speed);
 	}
 
 	@Override
-	public void execute(ScriptEntry scriptEntry)
-			throws CommandExecutionException {
-		// TODO Auto-generated method stub
-		
+	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+
+        Location location = (Location) scriptEntry.getObject("location");
+        Float speed = (Float) scriptEntry.getObject("speed");
+
+        if (speed > 0)
+            scriptEntry.getNPC().getNavigator().getLocalParameters().speedModifier(speed);
+
+        scriptEntry.getNPC().getNavigator().setTarget(location);
+
 	}
-	
+
+
+
 	/*
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
@@ -59,7 +69,7 @@ public class WalkToCommand extends AbstractCommand {
 				walkLocation = returns.get(theEntry.getDenizen());
 				returning = true;
 			}
-			else
+			lse
 			{
 				aH.echoDebug("Return location not found for " + theEntry.getDenizen().getName());
 				return false;

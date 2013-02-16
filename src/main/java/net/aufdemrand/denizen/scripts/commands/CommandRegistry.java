@@ -167,6 +167,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(WaitCommand.class, 
         		"WAIT", "wait (duration:#{5s}) (queue:queue_type) (player:player_name{attached}) (npcid:#{attached})", 0);
 
+        registerCoreMember(WalkToCommand.class,
+                "WALKTO", "walkto [location:x,y,z,world] (speed:#)", 1);
+
         registerCoreMember(ZapCommand.class, 
         		"ZAP", "zap [#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})", 0);
 
