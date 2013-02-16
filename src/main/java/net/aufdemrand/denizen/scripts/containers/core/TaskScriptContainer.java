@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -22,8 +23,18 @@ public class TaskScriptContainer extends ScriptContainer {
     }
 
     public Duration getSpeed() {
-        Duration speed = Duration.valueOf(getString("SPEED", null));
-        if (speed == null) speed = new Duration(((double) Settings.InteractDelayInTicks() / 20));
+    	Duration speed = null;
+    	
+    	if (getString("SPEED", null) != null)
+    	{
+    		if (getString("SPEED", null).toUpperCase() == "INSTANT")
+    			speed = Duration.valueOf("0");
+    		else
+    			speed = Duration.valueOf(getString("SPEED", null));
+    	}
+    	else
+    		speed = new Duration(((double) Settings.InteractDelayInTicks() / 20));
+        
         return speed;
     }
 
@@ -37,16 +48,6 @@ public class TaskScriptContainer extends ScriptContainer {
         return this;
     }
 
-    public boolean isInstant() {
-        if (getSpeed() != null) {
-            if (getSpeed().getSeconds() <= 0
-                    || getString("SPEED").equalsIgnoreCase("INSTANT"))
-                return true;
-        }
-
-        return false;
-    }
-
     public ScriptQueue runTaskScript(Player player, dNPC npc, Map<String, String> context) {
         return runTaskScript(ScriptQueue._getNextId(), player, npc, context);
     }
@@ -57,9 +58,7 @@ public class TaskScriptContainer extends ScriptContainer {
         if (context != null)
             ScriptBuilder.addObjectToEntries(listOfEntries, "context", context);
         queue.addEntries(listOfEntries);
-        if (isInstant()) queue.setSpeed(0);
-        else if (getSpeed() != null)
-            queue.setSpeed(getSpeed().getTicksAsInt());
+        queue.setSpeed(getSpeed().getTicksAsInt());
         queue.start();
         return queue;
     }
@@ -85,9 +84,7 @@ public class TaskScriptContainer extends ScriptContainer {
         if (context != null)
             ScriptBuilder.addObjectToEntries(listOfEntries, "context", context);
         queue.addEntries(listOfEntries);
-        if (isInstant()) queue.setSpeed(0);
-        else if (getSpeed() != null)
-            queue.setSpeed(getSpeed().getTicksAsInt());
+        queue.setSpeed(getSpeed().getTicksAsInt());
         queue.delayUntil(System.currentTimeMillis() + (long) (delay.getSeconds() * 1000));
         queue.start();
         return queue;
