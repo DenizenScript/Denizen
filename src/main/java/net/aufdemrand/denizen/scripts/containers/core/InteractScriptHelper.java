@@ -34,6 +34,8 @@ public class InteractScriptHelper {
         // Find the assignmentScriptContainer currently assigned to the NPC
         AssignmentScriptContainer assignmentScript = npc.getAssignmentTrait().getAssignment();
 
+        if (assignmentScript == null) return null;
+
         // Get list of interact scripts from the assignment script.
         // Note: this list includes the # priorities that prefix the script names.
         List<String> assignedScripts = new ArrayList<String>();
