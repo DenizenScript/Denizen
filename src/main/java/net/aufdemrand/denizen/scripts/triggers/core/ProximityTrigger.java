@@ -76,7 +76,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     // If a Player is further than this distance from an NPC, less
     // logic is run in checking.
     //
-    private static int maxProximityDistance = 25;
+    private static int maxProximityDistance = 50;
 
     /**
      * <p> This is the trigger that fires when any player moves in the entire
