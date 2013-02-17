@@ -46,10 +46,10 @@ public class WalkToCommand extends AbstractCommand {
         Location location = (Location) scriptEntry.getObject("location");
         Float speed = (Float) scriptEntry.getObject("speed");
 
+        scriptEntry.getNPC().getNavigator().setTarget(location);
+        
         if (speed > 0)
             scriptEntry.getNPC().getNavigator().getLocalParameters().speedModifier(speed);
-
-        scriptEntry.getNPC().getNavigator().setTarget(location);
 
 	}
 

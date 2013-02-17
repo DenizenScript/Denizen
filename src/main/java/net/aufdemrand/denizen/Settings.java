@@ -139,6 +139,11 @@ public class Settings {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getString("player_chat_to_npc_format", "You -> <npc.name.nickname>: <text>");
     }
+    
+    public static int PlayerChatToNpcRange() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getInt("player_chat_to_npc_range", 3);
+    }
 
     public static String PlayerChatToNpcToBystandersFormat() {
         return DenizenAPI.getCurrentInstance().getConfig()

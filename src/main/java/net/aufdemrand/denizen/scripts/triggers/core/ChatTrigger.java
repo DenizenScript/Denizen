@@ -40,6 +40,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
         if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) return;
 
+        // If the chat radius is not set, use default radius from settings
+        if (npc.getTriggerTrait().getRadius(name) == -1)
+        		npc.getTriggerTrait().setLocalRadius(name, (Settings.PlayerChatToNpcRange()));
+        
         // Check range
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(event.getPlayer().getLocation()))
             return;
