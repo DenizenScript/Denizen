@@ -15,7 +15,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,14 +94,8 @@ public class RuntaskCommand extends AbstractCommand {
                 speed = new Duration(0);
 
                 // Specify context
-            } else if (aH.matchesValueArg("CONTEXT", arg, aH.ArgumentType.Custom)) {
-                context = new HashMap<String, String>();
-                List<String> contexts = aH.getListFrom(arg);
-                int x = 1;
-                for (String ctxt : contexts) {
-                    context.put(String.valueOf(x), ctxt.trim());
-                    x++;
-                }
+            } else if (aH.matchesContext(arg)) {
+                context = aH.getContextFrom(arg);
 
             } else if (aH.matchesValueArg("ID", arg, aH.ArgumentType.Word)) {
                 // Deprecated, no longer needed. You can name the queue instead.

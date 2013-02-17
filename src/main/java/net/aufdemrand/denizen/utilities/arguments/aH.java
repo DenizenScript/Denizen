@@ -14,9 +14,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -747,6 +745,24 @@ public class aH {
         return false;
     }
 
+    public static boolean matchesContext(String arg) {
+        if (arg.toUpperCase().startsWith("CONTEXT:")) return true;
+        // TODO: Other matches____ do some actual checks. Should this?
+        return false;
+    }
+
+    public static Map<String, String> getContextFrom(String arg) {
+        Map<String, String> context = new HashMap<String, String>();
+        List<String> contexts = aH.getListFrom(arg);
+        int x = 1;
+        for (String ctxt : contexts) {
+            context.put(String.valueOf(x), ctxt.trim());
+            x++;
+        }
+        return context;
+    }
+
+
     /**
      * <p>Used to determine if a dScript argument string is a valid location. Uses regex
      * to match the string arg provided. In order to return true, the 'location:' prefix
@@ -832,7 +848,7 @@ public class aH {
         final Pattern matchesQueuePtrn = Pattern.compile("queue:(.+)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesQueuePtrn.matcher(arg);
         if (m.matches())
-                return true;
+            return true;
         return false;
     }
 
