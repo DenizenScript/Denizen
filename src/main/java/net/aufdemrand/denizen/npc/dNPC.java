@@ -141,13 +141,16 @@ public class dNPC {
     }
 
     public void action(String actionName, Player player) {
-        if (getCitizen().hasTrait(AssignmentTrait.class))
-            DenizenAPI.getCurrentInstance().getNPCRegistry()
+    	if (getCitizen() != null)
+    	{
+    		if (getCitizen().hasTrait(AssignmentTrait.class))
+    			DenizenAPI.getCurrentInstance().getNPCRegistry()
                     .getActionHandler().doAction(
                     actionName,
                     this,
                     player,
                     getAssignmentTrait().getAssignment());
+    	}
     }
 
 
