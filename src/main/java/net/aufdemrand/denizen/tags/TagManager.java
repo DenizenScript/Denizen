@@ -41,6 +41,7 @@ public class TagManager {
         new LocationTags(denizen);
         new SpecialCharacterTags(denizen);
         new TextTags(denizen);
+        new ForeignCharacterTags(denizen);
     }
 
     public String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant) {
