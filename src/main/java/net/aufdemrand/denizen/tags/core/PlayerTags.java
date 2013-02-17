@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +50,10 @@ public class PlayerTags implements Listener {
         Player p = event.getPlayer();
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
-        String specifier = event.getSpecifier() != null ? event.getSpecifier().toUpperCase() : "";
-
+        String subTypeContext = event.getSubTypeContext() != null ? event.getSubTypeContext().toUpperCase() : "";
+        String specifier = event.getSpecifier() != null ? event.getSpecifier().toUpperCase() : "";  
+        String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext().toUpperCase() : "";
+        
         if (type.equals("ONLINE_PLAYERS")) {
             StringBuilder players = new StringBuilder();
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -320,8 +323,19 @@ public class PlayerTags implements Listener {
 
 
         } else if (type.equals("INVENTORY")) {
-            event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
-
+        	if (subType.equals("CONTAINS") && (aH.matchesItem("item:" + subTypeContext)))
+        	{
+        		ItemStack item = aH.getItemFrom("item:" + subTypeContext);
+        		
+        		if (specifier.equals("QTY") && (aH.matchesQuantity("qty:" + specifierContext)))
+        		{
+        			int qty = aH.getIntegerFrom(subTypeContext);
+        			
+        			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, qty)));
+        		}
+        		else
+        			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, 1)));
+        	}
 
         } else if (type.equals("XP")) {
             event.setReplaced(String.valueOf(event.getPlayer().getExp() * 100));
