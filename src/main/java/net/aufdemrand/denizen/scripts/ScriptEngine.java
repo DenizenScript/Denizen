@@ -20,6 +20,11 @@ public class ScriptEngine {
     }
 
     public void revolve(ScriptQueue scriptQueue) {
+        // Check last ScriptEntry to see if it should be waited for
+        if (scriptQueue.getLastEntryExecuted() != null
+                && scriptQueue.getLastEntryExecuted().shouldWaitFor())
+            if (!scriptQueue.getLastEntryExecuted().isDone()) return;
+
         ScriptEntry scriptEntry = scriptQueue.getNext();
         while (scriptEntry != null) {
             // Find next ScriptEntry

@@ -29,6 +29,8 @@ public class ScriptEntry {
     private long holdTime;
 
 	private boolean instant = false;
+    private boolean waitfor = false;
+    private boolean done = false;
 
     private Player player = null;
     private OfflinePlayer offlinePlayer = null;
@@ -60,7 +62,10 @@ public class ScriptEntry {
 		if (command.startsWith("^")) {
 			instant = true;
 			this.command = command.substring(1);
-		}
+		} else if (command.startsWith("~")) {
+            waitfor = true;
+            this.command = command.substring(1);
+        }
 
 		this.args = new ArrayList<String>();
 		if (arguments != null)
@@ -95,6 +100,10 @@ public class ScriptEntry {
 
     public OfflinePlayer getOfflinePlayer() {
         return offlinePlayer;
+    }
+
+    public void setFinished(boolean finished) {
+        done = finished;
     }
 
     public ScriptEntry setOfflinePlayer(OfflinePlayer offlinePlayer) {
@@ -135,6 +144,14 @@ public class ScriptEntry {
 	public boolean isInstant() {
 		return instant;
 	}
+
+    public boolean shouldWaitFor() {
+        return waitfor;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
 
 	public ScriptEntry setRunTime(Long newTime) {
 		runTime = newTime;
