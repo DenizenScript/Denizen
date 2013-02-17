@@ -1,24 +1,22 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-
-import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Builds new objects for use with in scripts.
@@ -33,7 +31,7 @@ public class NewCommand extends AbstractCommand implements Listener {
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
-	private Map<String, ItemStack> itemStacks = new ConcurrentHashMap<String, ItemStack>();
+	private Map<String, Item> itemStacks = new ConcurrentHashMap<String, Item>();
 	private Map<String, LivingEntity> entities = new ConcurrentHashMap<String, LivingEntity>();
 	private Map<String, Integer> npcs = new ConcurrentHashMap<String, Integer>();
 	
@@ -99,7 +97,7 @@ public class NewCommand extends AbstractCommand implements Listener {
 		String id = null;
 		
 		// Fields required for ITEMSTACK
-		ItemStack item = null;
+		Item item = null;
 		int qty = 1;
 		// Fields required for ENTITY
 		LivingEntity entity = null;
@@ -174,11 +172,6 @@ public class NewCommand extends AbstractCommand implements Listener {
 		}
 		
 		
-	}
-
-	@EventHandler
-	public void replaceableItemStacks(ReplaceableTagEvent e) {
-		//
 	}
 
 }
