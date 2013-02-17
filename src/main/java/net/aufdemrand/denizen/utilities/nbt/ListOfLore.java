@@ -19,7 +19,7 @@ public class ListOfLore extends ArrayList<String> {
 		if (this.isEmpty()) return dScriptList;
 		for (String lore : this)
 			dScriptList = dScriptList + lore + "|";
-		return dScriptList.substring(1, dScriptList.length() - 1);
+		return dScriptList.substring(0, dScriptList.length() - 1);
 	}
 
 	
