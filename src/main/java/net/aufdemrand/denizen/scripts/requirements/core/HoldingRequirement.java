@@ -36,8 +36,8 @@ public class HoldingRequirement extends AbstractRequirement{
 			itemToCheck.setAmount(quantity);
 		}
 		
-		if (exact) outcome = context.getPlayer().getItemInHand().isSimilar(itemToCheck);
-		else outcome = context.getPlayer().getItemInHand().equals(itemToCheck);
+		if (exact) outcome = context.getPlayer().getItemInHand().equals(itemToCheck);
+		else outcome = context.getPlayer().getItemInHand().isSimilar(itemToCheck);
 		
 		if(outcome) dB.echoDebug("...player is holding item");
 		
