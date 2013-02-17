@@ -46,14 +46,14 @@ public class NameplateCommand extends AbstractCommand {
 			List<String> args = scriptEntry.getArguments();
 			
 			for(String arg : args) {
-				if(aH.matchesArg("COLOR, color, Color", arg)) {
+				if(aH.matchesValueArg("COLOR", arg.toUpperCase(), ArgumentType.String)) {
 					try {
 						color = ChatColor.valueOf(aH.getStringFrom(arg).toUpperCase());
 						dB.echoDebug("...COLOR set: '%s'", arg);
 					} catch( Exception e)  {
 						dB.echoDebug("...COLOR could not be set: '%s' is an invalid color!", arg);
 					}
-				} else if(aH.matchesArg("PLAYER, player, Player", arg)) {
+				} else if(aH.matchesValueArg("PLAYER", arg.toUpperCase(), ArgumentType.String)) {
 					playerName = aH.getStringFrom(arg);
 					dB.echoDebug("...PLAYER set: '%s'", arg);
 				}
