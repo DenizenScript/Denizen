@@ -329,7 +329,7 @@ public class PlayerTags implements Listener {
         		
         		if (specifier.equals("QTY") && (aH.matchesQuantity("qty:" + specifierContext)))
         		{
-        			int qty = aH.getIntegerFrom(subTypeContext);
+        			int qty = aH.getIntegerFrom(specifierContext);
         			
         			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, qty)));
         		}
