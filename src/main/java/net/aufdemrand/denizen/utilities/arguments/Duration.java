@@ -19,6 +19,8 @@ public class Duration implements dScriptArgument {
      * @return  a Script, or null if incorrectly formatted
      */
     public static Duration valueOf(String string) {
+        if (string == null) return null;
+
         Matcher m = matchesDurationPtrn.matcher(string);
         if (m.matches()) {
             if (m.group().toUpperCase().endsWith("T"))
