@@ -31,6 +31,7 @@ public class TagManager {
 
     public void registerCoreTags() {
         new PlayerTags(denizen);
+        new UtilTags(denizen);
         new OfflinePlayerTags(denizen);
         new FlagTags(denizen);
         new BookmarkTags(denizen);
