@@ -79,8 +79,8 @@ public class ReplaceableTagEvent extends Event {
     // Bracket pattern that matches brackets
     Pattern bracketRegex = Pattern.compile("\\[.*?\\]");
     
-    // Value pattern that matches everthing after :
-    Pattern valueRegex = Pattern.compile(":.*");
+    // Value pattern that matches everything after the last : found
+    Pattern valueRegex = Pattern.compile(":.*?$");
 
     // Component pattern that matches groups of characters that are not
     // [] or . and that optionally contain [] and a . at the end

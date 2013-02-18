@@ -18,7 +18,7 @@ Proximity Trigger Default Range in Blocks: 10
 Location Trigger Default Cooldown in Seconds: 5.0
 Location Trigger Default Range in Blocks: 2
 
-Chat Default Cooldown in Seconds: 2.0
+Chat Trigger Default Cooldown in Seconds: 2.0
 Chat Trigger Default Range in Blocks: 3
 
 # Whether the Click Trigger can be activated with a left click
