@@ -17,7 +17,7 @@
     list: [op]
 
   steps:
-    'execute':
+    'execute*':
 
       chat trigger:
         'get script':

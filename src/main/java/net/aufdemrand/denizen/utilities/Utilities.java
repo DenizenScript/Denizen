@@ -49,9 +49,9 @@ public class Utilities {
      */
     public static void talkToNPC(String message, Player player, dNPC npc, int range) {
         // Get formats from Settings, and fill in <TEXT>
-        String talkFormat = Settings.PlayerChatToNpcFormat()
+        String talkFormat = Settings.ChatToNpcFormat()
                 .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
-        String bystanderFormat = Settings.PlayerChatToNpcToBystandersFormat()
+        String bystanderFormat = Settings.ChatToNpcBystandersFormat()
                 .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
 
         // Fill in tags

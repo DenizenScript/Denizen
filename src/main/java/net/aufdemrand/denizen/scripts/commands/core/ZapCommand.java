@@ -19,20 +19,20 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * <p>Changes a Player's current step for a script. Reminder: ZAP does NOT trigger anything. It merely
  * tells Denizen's ScriptEngine which step should be used WHEN interacting.</p>
- * 
+ *
  * <b>dScript Usage:</b><br>
  * <pre>ZAP [#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})</pre>
- * 
+ *
  * <ol><tt>Arguments: [] - Required () - Optional  {} - Default</ol></tt>
- * 
+ *
  * <ol><tt>[#|STEP:step_name]</tt><br>
  *         The name of the step that should be enabled. If using numbered steps, an plain integer will
  *         suffice.</ol>
- * 
+ *
  * <ol><tt>(SCRIPT:script_name{current_script})</tt><br>
  *         Specifies which script should be affected. If not specified, the current interact script will
  *         be used.</ol>
- *         
+ *
  * <ol><tt>(DURATION:#{0})</tt><br>
  *         Optional. If not specified, no duration is used. If specified, after the duration period,
  *         Denizen will automatically reset the step to the original step. Note: If another ZAP command
@@ -44,21 +44,21 @@ import java.util.concurrent.ConcurrentHashMap;
  *  - ZAP SCRIPT:OtherScript 6<br>
  *  - ZAP 'STEP:Just for a minute' DURATION:1m<br>
  * </ol></tt>
- * 
+ *
  * @author Jeremy Schroeder
  */
 
 public class ZapCommand extends AbstractCommand implements Listener{
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-		// Initialize required fields
+        // Initialize required fields
         Script script = scriptEntry.getScript();
         String step = null;
         Duration duration = new Duration(-1d);
 
-		for (String arg : scriptEntry.getArguments()) {
+        for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesScript(arg)) {
                 script = aH.getScriptFrom(arg);
 
@@ -70,20 +70,20 @@ public class ZapCommand extends AbstractCommand implements Listener{
                 step = aH.getStringFrom(arg);
                 dB.echoDebug(Messages.DEBUG_SET_STEP, step);
 
-			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-		}
+            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+        }
 
         // Add objects to scriptEntry to use in execute()
-        scriptEntry.addObject("script", script);
-		scriptEntry.addObject("step", step);
-        scriptEntry.addObject("duration", duration);
-	}
+        scriptEntry.addObject("script", script)
+                .addObject("step", step)
+                .addObject("duration", duration);
+    }
 
     //"PlayerName,ScriptName", TaskID
     private static Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>();
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Script script = (Script) scriptEntry.getObject("script");
         String step = (String) scriptEntry.getObject("step");
@@ -113,7 +113,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
             // If a DURATION is specified, the currentStep should be remembered and restored after the duration.
             scriptEntry.addObject("step", currentStep);
             // And let's take away the duration that was set to avoid a re-duration inception-ion-ion-ion-ion... ;)
-            scriptEntry.addObject("duration", -1d);
+            scriptEntry.addObject("duration", new Duration(-1d));
 
             // Now let's add a delayed task to set it back after the duration
 
@@ -124,19 +124,19 @@ public class ZapCommand extends AbstractCommand implements Listener{
             dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "RESET ZAP for '" + script + "'");
             durations.put(scriptEntry.getPlayer().getName() + "," + script.getName(),
                     denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
-                    new Runnable2<String, ScriptEntry>(script.getName(), scriptEntry) {
-                        @Override
-                        public void run(String script, ScriptEntry scriptEntry) {
-                            dB.log(Messages.DEBUG_RUNNING_DELAYED_TASK, "RESET ZAP for '" + script + "'");
-                            try {
-                                durations.remove(scriptEntry.getPlayer().getName() + "," + script.toUpperCase());
-                                execute(scriptEntry);
-                            } catch (CommandExecutionException e) {
-                                dB.echoError("Could not run delayed task!");
-                                if (dB.showStackTraces) e.printStackTrace();
-                            }
-                        }
-                    }, delay));
+                            new Runnable2<String, ScriptEntry>(script.getName(), scriptEntry) {
+                                @Override
+                                public void run(String script, ScriptEntry scriptEntry) {
+                                    dB.log(Messages.DEBUG_RUNNING_DELAYED_TASK, "RESET ZAP for '" + script + "'");
+                                    try {
+                                        durations.remove(scriptEntry.getPlayer().getName() + "," + script.toUpperCase());
+                                        execute(scriptEntry);
+                                    } catch (CommandExecutionException e) {
+                                        dB.echoError("Could not run delayed task!");
+                                        if (dB.showStackTraces) e.printStackTrace();
+                                    }
+                                }
+                            }, delay));
         }
 
         //

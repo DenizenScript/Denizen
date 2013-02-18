@@ -43,7 +43,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // If the chat radius is not set, use default radius from settings
         if (npc.getTriggerTrait().getRadius(name) == -1)
-            npc.getTriggerTrait().setLocalRadius(name, (Settings.PlayerChatToNpcRange()));
+            npc.getTriggerTrait().setLocalRadius(name, (Settings.TriggerDefaultRangeInBlocks(name)));
 
         // Check range
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(event.getPlayer().getLocation()))
@@ -53,7 +53,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Should we check 'line of sight'? Players cannot talk to NPCs through walls
         // if enabled. Should the Player chat only when looking at the NPC? This may
         // reduce accidental chats with NPCs.
-        if (Settings.CheckLineOfSightWhenChatting())
+        if (Settings.ChatOnlyWhenHavingLineOfSightToNPC())
             if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return;
         if (Settings.ChatOnlyWhenLookingAtNPC())
             if (!Utilities.isFacingEntity(event.getPlayer(), npc.getEntity(), 45)) return;
@@ -144,7 +144,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
             event.setCancelled(true);
-            Utilities.talkToNPC(replacementText, event.getPlayer(), npc, Settings.PlayerChatToNpcBystandersRange());
+            Utilities.talkToNPC(replacementText, event.getPlayer(), npc, Settings.ChatToNpcBystandersRange());
             parse(npc, event.getPlayer(), script, id);
 
         } else {
