@@ -122,9 +122,9 @@ public class TeleportCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Missing TARGETS argument. Nothing to teleport.");
 
         // Store objects in ScriptEntry for use in execute()
-        scriptEntry.addObject("location", teleportLocation);
-        scriptEntry.addObject("entities", teleportEntities);
-        scriptEntry.addObject("npcs", teleportNPCs);
+        scriptEntry.addObject("location", teleportLocation)
+                .addObject("entities", teleportEntities)
+                .addObject("npcs", teleportNPCs);
     }
 
     /**
@@ -141,7 +141,7 @@ public class TeleportCommand extends AbstractCommand {
 
         // Debug output
         dB.echoApproval("<G>Executing '<Y>" + getName() + "<G>': "
-                + teleportLocation + ", "
+                + teleportLocation.debug() + ", "
                 + "Targets=<Y>'" + teleportEntities.toString() + "/" + teleportNPCs.toString() + "<G>'");
 
         for (LivingEntity entity : teleportEntities) {
@@ -149,7 +149,7 @@ public class TeleportCommand extends AbstractCommand {
         }
 
         for (NPC npc : teleportNPCs) {
-        	npc.spawn(teleportLocation);
+            npc.spawn(teleportLocation);
             npc.getBukkitEntity().teleport(teleportLocation, PlayerTeleportEvent.TeleportCause.COMMAND);
         }
     }
