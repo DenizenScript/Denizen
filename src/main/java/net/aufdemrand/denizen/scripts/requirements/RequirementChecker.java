@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,9 +34,8 @@ public class RequirementChecker {
         // Requirement node "NONE"? No requirements in the LIST? No need to
         // continue, return true.
         //
-        if (context.mode.getMode() == RequirementsMode.Mode.NONE || context.list.isEmpty()) {
+        if (context.mode.getMode() == RequirementsMode.Mode.NONE || context.list.isEmpty())
             return true;
-        }
 
         //
         // Actual requirements that need checking, alert the debugger
@@ -66,43 +64,43 @@ public class RequirementChecker {
             }
 
             //
+            // Replace tags and build arguments
+            //
+            List<String> argumentList
+                    = plugin.tagManager().fillArguments(aH.buildArgs(reqEntry), context.player, context.npc);
+
+            //
             // Evaluate the requirement
             //
-            if (reqEntry.split(" ")[0].equalsIgnoreCase("true")) {
-                if (!negativeRequirement) {
-                    dB.echoApproval("...requirement met!");
-                    numberMet++;
-                } else
-                    dB.echoApproval("...requirement not met!");
+            if (argumentList.get(0).equalsIgnoreCase("valueof")) {
+                if (argumentList.get(1).equalsIgnoreCase("true")) {
+                    if (!negativeRequirement) {
+                        dB.echoApproval("...requirement met!");
+                        numberMet++;
+                    } else
+                        dB.echoApproval("...requirement not met!");
 
-            } else if (reqEntry.split(" ")[0].equalsIgnoreCase("false")) {
-                if (!negativeRequirement)
-                    dB.echoApproval("...requirement not met!");
+                } else {
+                    if (!negativeRequirement)
+                        dB.echoApproval("...requirement not met!");
 
-                else {
-                    dB.echoApproval("...requirement met!");// Not met!
-                    numberMet++;
+                    else {
+                        dB.echoApproval("...requirement met!");// Not met!
+                        numberMet++;
+                    }
                 }
-
             } else
                 // Check requirement with RequirementRegistry
-                if (plugin.getRequirementRegistry().list().containsKey(reqEntry.split(" ")[0].toUpperCase())) {
+                if (plugin.getRequirementRegistry().list().containsKey(argumentList.get(0).toUpperCase())) {
 
-                    AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqEntry.split(" ")[0]);
-                    String[] arguments = null;
-                    if (reqEntry.split(" ").length > 1)	{
-                        arguments = aH.buildArgs(reqEntry.split(" ", 2)[1]);
-                    }
+                    AbstractRequirement requirement = plugin.getRequirementRegistry().get(argumentList.get(0));
 
-                    // Replace tags
-                    List<String> argumentList = new ArrayList<String>();
-                    if (arguments != null) {
-                        argumentList = plugin.tagManager().fillArguments(arguments, context.player, context.npc);
-                    }
+                    // Remove command name from arguments
+                    argumentList.remove(0);
 
                     try {
                         // Check if # of required args are met
-                        int	numArguments = arguments == null ? 0 : arguments.length;
+                        int	numArguments = argumentList.isEmpty() ? 0 : argumentList.size();
                         int neededArguments = requirement.requirementOptions.REQUIRED_ARGS;
                         if ((numArguments == 0 && neededArguments > 0) ||
                                 numArguments < neededArguments) {

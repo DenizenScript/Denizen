@@ -66,6 +66,8 @@ public class ScriptHelper {
                 YamlConfiguration yaml;
                 yaml = YamlConfiguration.loadConfiguration(new File("src/main/resources/util.dscript"));
                 sb.append(yaml.saveToString() + "\r\n");
+                yaml = YamlConfiguration.loadConfiguration(new File("src/main/resources/genies.dscript"));
+                sb.append(yaml.saveToString() + "\r\n");
 
                 for (File f : files){
                     String fileName = f.getName();

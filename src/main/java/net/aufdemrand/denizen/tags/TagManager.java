@@ -36,6 +36,7 @@ public class TagManager {
         new FlagTags(denizen);
         new BookmarkTags(denizen);
         new ConstantTags(denizen);
+        new ProcedureScriptTag(denizen);
         new NPCTags(denizen);
         new AnchorTags(denizen);
         new ContextTags(denizen);

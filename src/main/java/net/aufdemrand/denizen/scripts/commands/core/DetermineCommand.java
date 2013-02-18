@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DetermineCommand extends AbstractCommand {
 
-    public static Map<Long, Boolean> outcomes = new ConcurrentHashMap<Long, Boolean>();
+    public static Map<Long, String> outcomes = new ConcurrentHashMap<Long, String>();
 
     public static long uniqueId = 0;
 
@@ -27,21 +28,24 @@ public class DetermineCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        Boolean outcome = false;
+        String outcome = "false";
+
         for (String arg : scriptEntry.getArguments())
-            outcome = aH.getBooleanFrom(arg);
+            outcome = aH.getStringFrom(arg);
         scriptEntry.addObject("outcome", outcome);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        Boolean outcome = (Boolean) scriptEntry.getObject("outcome");
+        String outcome = (String) scriptEntry.getObject("outcome");
+
         Long uniqueId = (Long) scriptEntry.getObject("reqId");
         if (uniqueId == null) return;
+
         outcomes.put(uniqueId, outcome);
 
-
-        scriptEntry.getResidingQueue();
+        // Stop the queue by clearing the remainder of it.
+        ScriptQueue._getQueue(scriptEntry.getResidingQueue()).clear();
     }
 
 }
