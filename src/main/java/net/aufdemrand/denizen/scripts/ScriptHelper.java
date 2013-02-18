@@ -64,8 +64,10 @@ public class ScriptHelper {
                 StringBuilder sb = new StringBuilder();
 
                 YamlConfiguration yaml;
+                dB.echoDebug("Processing 'util.dscript'... ");
                 yaml = YamlConfiguration.loadConfiguration(new File("src/main/resources/util.dscript"));
                 sb.append(yaml.saveToString() + "\r\n");
+                dB.echoDebug("Processing 'genies.dscript'... ");
                 yaml = YamlConfiguration.loadConfiguration(new File("src/main/resources/genies.dscript"));
                 sb.append(yaml.saveToString() + "\r\n");
 

@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -42,8 +43,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // If the chat radius is not set, use default radius from settings
         if (npc.getTriggerTrait().getRadius(name) == -1)
-        		npc.getTriggerTrait().setLocalRadius(name, (Settings.PlayerChatToNpcRange()));
-        
+            npc.getTriggerTrait().setLocalRadius(name, (Settings.PlayerChatToNpcRange()));
+
         // Check range
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(event.getPlayer().getLocation()))
             return;
@@ -73,6 +74,23 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // Denizen should be good to interact with. Let's get the script.
         InteractScriptContainer script = npc.getInteractScript(event.getPlayer(), this.getClass());
+
+        // Check if the NPC has Chat Triggers for this step.
+        if (!script.containsTriggerInStep(
+                InteractScriptHelper.getCurrentStep(event.getPlayer(),
+                        script.getName()), this.getClass())) {
+
+            // No chat trigger for this step.. do we chat globally, or to the NPC?
+            if (!Settings.ChatGloballyIfNoChatTriggers()) {
+                event.setCancelled(true);
+                dB.echoDebug(event.getPlayer().getName() + " says to "
+                        + npc.getNicknameTrait().getNickname() + ", " + event.getMessage());
+                return;
+            }
+
+            else return;
+        }
+
 
         // Parse the script and match Triggers.. if found, cancel the text! The
         // parser will take care of everything else.
