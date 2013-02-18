@@ -65,10 +65,10 @@ public class ScriptHelper {
 
                 YamlConfiguration yaml;
                 dB.echoDebug("Processing 'util.dscript'... ");
-                yaml = YamlConfiguration.loadConfiguration(new File("src/main/resources/util.dscript"));
+                yaml = YamlConfiguration.loadConfiguration(DenizenAPI.getCurrentInstance().getResource("util.dscript"));
                 sb.append(yaml.saveToString() + "\r\n");
                 dB.echoDebug("Processing 'genies.dscript'... ");
-                yaml = YamlConfiguration.loadConfiguration(new File("src/main/resources/genies.dscript"));
+                yaml = YamlConfiguration.loadConfiguration(DenizenAPI.getCurrentInstance().getResource("genies.dscript"));
                 sb.append(yaml.saveToString() + "\r\n");
 
                 for (File f : files){

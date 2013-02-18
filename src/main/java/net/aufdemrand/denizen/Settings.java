@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class Settings {
 
@@ -18,7 +17,7 @@ public class Settings {
 		return (long) (DenizenAPI.getCurrentInstance().getConfig()
                 .getDouble(triggerName.substring(0, 1).toUpperCase() +
                 			triggerName.substring(1).toLowerCase() +
-                			" Trigger Default Cooldown in Seconds", 5) * 1000);
+                			" Trigger Default Cooldown in Seconds", 5));
 	}
 	
 	/* 
