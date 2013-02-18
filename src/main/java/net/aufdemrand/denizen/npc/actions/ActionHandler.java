@@ -24,8 +24,8 @@ public class ActionHandler {
 
         if (assignment == null) return false;
 
-        dB.report("Action!",
-                aH.debugObj("Name", actionName)
+        dB.report("Action",
+                aH.debugObj("Type", "On " + actionName)
                         + aH.debugObj("NPC", npc.toString())
                         + assignment.getAsScriptArg().debug()
                         + (player != null ? aH.debugObj("Player", player.getName()) : ""));

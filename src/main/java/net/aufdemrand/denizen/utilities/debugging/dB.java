@@ -72,7 +72,7 @@ public class dB {
 	}
 
     public static void report(String name, String report) {
-        dB.echoApproval("<G>Executing '<Y>" + name + "<G>': " + report);
+        dB.echoDebug("<Y>+> <G>Executing '<Y>" + name + "<G>': " + report);
     }
 	
 	/**
