@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
@@ -59,15 +60,19 @@ public class ChairCommand extends AbstractCommand implements Listener {
                     if (npc == null)
                         chairRegistry.remove(entry.getKey());
                     // Check location
-                    if (!Utilities.checkLocation(npc.getBukkitEntity(), entry.getValue().getLocation(), 1))
+                    dB.log("NPC location: " + new Location(npc.getBukkitEntity().getLocation()).dScriptArgValue());
+                    dB.log("Chair location: " + new Location(entry.getValue().getLocation()).dScriptArgValue());
+                    if (!Utilities.checkLocation(npc.getBukkitEntity(), entry.getValue().getLocation(), 1)) {
+                        dB.log("Making stand...");
                         makeStand(DenizenAPI.getDenizenNPC(npc));
-                    else
+                    } else {
+                        dB.log("Making sit...");
                         makeSitAllPlayers(DenizenAPI.getDenizenNPC(npc));
-
-                    dB.echoDebug("task done");
+                    }
+                    dB.log("Iterated NPC " + entry.getKey() + "...");
                 }
+                dB.log("Task running..");
             }
-
         }, 40L, 100L);
     }
 
