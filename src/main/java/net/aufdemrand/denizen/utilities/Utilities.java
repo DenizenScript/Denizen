@@ -343,26 +343,29 @@ public class Utilities {
     }
 
 
-//    /**
-//     * Checks entity's location against a Location (with leeway). Should be faster than
-//     * bukkit's built in Location.distance(Location) since there's no sqrt math.
-//     * 
-//     * Thanks chainsol :)
-//     */
-//
-//    public boolean checkLocation(LivingEntity entity, Location theLocation, int theLeeway) {
-//
-//        if (!entity.getWorld().getName().equals(theLocation.getWorld().getName()))
-//            return false;
-//
-//        if (Math.abs(entity.getLocation().getBlockX() - theLocation.getBlockX()) 
-//                > theLeeway) return false;
-//        if (Math.abs(entity.getLocation().getBlockY() - theLocation.getBlockY()) 
-//                > theLeeway) return false;
-//        if (Math.abs(entity.getLocation().getBlockZ() - theLocation.getBlockZ()) 
-//                > theLeeway) return false;
-//
-//        return true;
-//    }
+    /**
+     * Checks entity's location against a Location (with leeway). Should be faster than
+     * bukkit's built in Location.distance(Location) since there's no sqrt math.
+     *
+     * Thanks chainsol :)
+     *
+     * @return true if within the specified location, false otherwise.
+     */
+    public static boolean checkLocation(LivingEntity entity, Location theLocation, int theLeeway) {
+
+        if (!entity.getWorld().getName().equals(theLocation.getWorld().getName()))
+            return false;
+
+        Location entityLocation = entity.getLocation();
+
+        if (Math.abs(entityLocation.getBlockX() - theLocation.getBlockX())
+                > theLeeway) return false;
+        if (Math.abs(entityLocation.getBlockY() - theLocation.getBlockY())
+                > theLeeway) return false;
+        if (Math.abs(entityLocation.getBlockZ() - theLocation.getBlockZ())
+                > theLeeway) return false;
+
+        return true;
+    }
 
 }

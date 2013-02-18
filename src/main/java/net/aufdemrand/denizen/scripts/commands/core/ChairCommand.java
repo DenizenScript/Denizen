@@ -9,11 +9,12 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
-
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +25,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,32 +42,33 @@ public class ChairCommand extends AbstractCommand implements Listener {
      * Keeps track of sitting NPCs. References NPCID as the key (to avoid a lingering NPC instance
      * of the NPC is removed while sitting, etc.), and the Block that is being used as a Chair.
      */
-    public ConcurrentHashMap<Integer, Block> chairRegistry = new ConcurrentHashMap<Integer, Block>();
+    public static ConcurrentHashMap<Integer, Block> chairRegistry = new ConcurrentHashMap<Integer, Block>();
 
     @Override
     public void onEnable() {
         // Register with Bukkit's Event Registry
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
-        denizen.getServer().getScheduler().scheduleSyncRepeatingTask(denizen, new Runnable() {
 
-		@Override
-		public void run() {
-			for ( int id : chairRegistry.keySet()) {
-					  
-				dNPC npc = denizen.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(id));
-						  
-				if (npc == null) chairRegistry.remove(id);
-						  
-				if (npc.getLocation().distance(chairRegistry.get(id).getLocation()) >= 1) makeStand(npc);
-						  
-				makeSitAllPlayers(npc);
-						  
-				dB.echoDebug("task done");
-				  
-			  }
-		  }
-		
-		}, 40L, 100L);
+        denizen.getServer().getScheduler().scheduleSyncRepeatingTask(denizen, new Runnable() {
+            @Override
+            public void run() {
+                // Iterate through sitting NPCs
+                for (Map.Entry<Integer, Block> entry : chairRegistry.entrySet()) {
+                    // Get a valid dNPC object
+                    NPC npc = CitizensAPI.getNPCRegistry().getById(entry.getKey());
+                    if (npc == null)
+                        chairRegistry.remove(entry.getKey());
+                    // Check location
+                    if (!Utilities.checkLocation(npc.getBukkitEntity(), entry.getValue().getLocation(), 1))
+                        makeStand(DenizenAPI.getDenizenNPC(npc));
+                    else
+                        makeSitAllPlayers(DenizenAPI.getDenizenNPC(npc));
+
+                    dB.echoDebug("task done");
+                }
+            }
+
+        }, 40L, 100L);
     }
 
 
@@ -128,7 +131,7 @@ public class ChairCommand extends AbstractCommand implements Listener {
                     dB.echoError("...NPC is already sitting!");
                     return;
                 }
-				
+
                 if (isChair(chairBlock)) {
                     dB.echoError("...location is already being sat on!");
                     return;
@@ -157,7 +160,7 @@ public class ChairCommand extends AbstractCommand implements Listener {
                 // dB.echoDebug("...NPC stands!");
                 break;
         }
-        
+
     }
 
 
