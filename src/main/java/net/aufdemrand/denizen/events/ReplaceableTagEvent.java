@@ -80,7 +80,9 @@ public class ReplaceableTagEvent extends Event {
     Pattern bracketRegex = Pattern.compile("\\[.*?\\]");
     
     // Value pattern that matches everything after the last : found
-    Pattern valueRegex = Pattern.compile(":.*?$");
+    // that isn't followed by ] without being followed by [ first,
+    // and is therefore not between brackets
+    Pattern valueRegex = Pattern.compile(":[^\\]]+(\\[([^\\[])+)?$");
 
     // Component pattern that matches groups of characters that are not
     // [] or . and that optionally contain [] and a . at the end
