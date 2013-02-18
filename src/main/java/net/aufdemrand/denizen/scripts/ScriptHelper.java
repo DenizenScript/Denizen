@@ -63,6 +63,10 @@ public class ScriptHelper {
             if (files.length > 0) {
                 StringBuilder sb = new StringBuilder();
 
+                YamlConfiguration yaml;
+                yaml = YamlConfiguration.loadConfiguration(new File("src/main/resources/util.dscript"));
+                sb.append(yaml.saveToString() + "\r\n");
+
                 for (File f : files){
                     String fileName = f.getName();
                     if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")
@@ -72,7 +76,7 @@ public class ScriptHelper {
                         dB.echoDebug("Processing '" + fileName + "'... ");
 
                         try {
-                            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(f);
+                            yaml = YamlConfiguration.loadConfiguration(f);
                             if (yaml != null)
                                 sb.append(yaml.saveToString() + "\r\n");
                             else dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. See console for YAML errors.");
