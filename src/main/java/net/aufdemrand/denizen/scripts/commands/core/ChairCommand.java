@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.dNPC;
@@ -16,19 +17,17 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.npc.NPC;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 
 /**
  * Provides the necessary methods and logic for NPCs to sit on blocks.
@@ -49,6 +48,16 @@ public class ChairCommand extends AbstractCommand implements Listener {
     public void onEnable() {
         // Register with Bukkit's Event Registry
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        
+        for (String id : DenizenAPI.getCurrentInstance().getSaves()
+                .getConfigurationSection("dScript.Chair Registry").getKeys(false))
+                    try {
+                        chairRegistry.put(Integer.valueOf(id),
+                                Location.valueOf(DenizenAPI.getCurrentInstance().getSaves()
+                        .getString("dScript.Chair Registry." + id)).getBlock());
+                    } catch (Exception e) {
+                        dB.log("Encountered an invalid entry in the Chair Registry.. skipping.");
+                    }
 
         denizen.getServer().getScheduler().scheduleSyncRepeatingTask(denizen, new Runnable() {
             @Override
@@ -60,20 +69,33 @@ public class ChairCommand extends AbstractCommand implements Listener {
                     if (npc == null)
                         chairRegistry.remove(entry.getKey());
                     // Check location
-                    dB.log("NPC location: " + new Location(npc.getBukkitEntity().getLocation()).dScriptArgValue());
-                    dB.log("Chair location: " + new Location(entry.getValue().getLocation()).dScriptArgValue());
+                    //dB.log("NPC location: " + new Location(npc.getBukkitEntity().getLocation()).dScriptArgValue());
+                    //dB.log("Chair location: " + new Location(entry.getValue().getLocation()).dScriptArgValue());
                     if (!Utilities.checkLocation(npc.getBukkitEntity(), entry.getValue().getLocation(), 1)) {
-                        dB.log("Making stand...");
+                        //dB.log("Making stand...");
                         makeStand(DenizenAPI.getDenizenNPC(npc));
                     } else {
-                        dB.log("Making sit...");
+                        //dB.log("Making sit...");
                         makeSitAllPlayers(DenizenAPI.getDenizenNPC(npc));
                     }
-                    dB.log("Iterated NPC " + entry.getKey() + "...");
+                    //dB.log("Iterated NPC " + entry.getKey() + "...");
                 }
-                dB.log("Task running..");
+                //dB.log("Task running..");
             }
-        }, 40L, 100L);
+        }, 40L, 0L);
+    }
+    
+    @Override
+    public void onDisable() {
+        // Clear registry
+        DenizenAPI.getCurrentInstance().getSaves()
+                .set("dScript.Chair Registry", null);
+        // Save registry
+        for (Map.Entry<Integer, Block> entry : chairRegistry.entrySet()) {
+             DenizenAPI.getCurrentInstance().getSaves()
+                     .set("dScript.Chair Registry." + entry.getKey(), 
+                             new Location(entry.getValue().getLocation()).dScriptArgValue());
+        }
     }
 
 
@@ -247,7 +269,7 @@ public class ChairCommand extends AbstractCommand implements Listener {
             dB.echoError("ProtocolLib required for SIT command!!");
         }
 
-        chairRegistry.remove(npc);
+        chairRegistry.remove(npc.getCitizen().getId());
     }
 
 
@@ -293,24 +315,4 @@ public class ChairCommand extends AbstractCommand implements Listener {
             dB.echoDebug("..." + event.getPlayer().getName() + " tried to break an NPCs chair!");
         }
     }
-
-    /**
-     * Send packets for all currently sitting NPCs
-     * to all new players who join.
-     *
-     */
-    @EventHandler
-    public void onPlayerLoginEvent(PlayerJoinEvent event) {
-        Set<dNPC> npcs = new HashSet<dNPC>();
-        for (Integer intgr : chairRegistry.keySet()) {
-            npcs.add(DenizenAPI.getDenizenNPC(
-                    CitizensAPI.getNPCRegistry().getById(intgr)
-            ));
-        }
-
-        for (dNPC npc : npcs)
-            makeSitSpecificPlayer(npc, event.getPlayer());
-        // dB.echoDebug("..." + event.getPlayer().getName() + " joined, sending sit packets.");
-    }
-
 }
