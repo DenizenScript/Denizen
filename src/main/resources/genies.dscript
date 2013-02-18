@@ -1,0 +1,43 @@
+"Diagnostics Genie":
+  type: assignment
+
+  interact scripts:
+  - 10 diagnostics executer
+
+  actions:
+    on assignment:
+    - trigger name:chat toggle:true
+    - trigger name:click toggle:true
+
+
+"diagnostics executer":
+  type: interact
+  requirements:
+    mode: all
+    list: [op]
+
+  steps:
+    'execute':
+
+      chat trigger:
+        'get script':
+          trigger: /REGEX:.+/
+          script:
+          - chat "Attempting to run '<player.chat_history>' in 2 seconds..."
+          - wait 2
+          - runtask 'test_pck <player.chat_history>'
+
+
+'test_pck test announce':
+  type: task
+  script:
+  - announce 'This is a test.'
+  - announce '<&sq>This<&sq>, is only a test.'
+  - announce to_ops 'You are an op, so you probably already know this is a test!'
+  - announce 'Currently online ops: <player.online_ops>'
+
+
+
+
+
+

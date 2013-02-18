@@ -39,6 +39,7 @@ public class ActionHandler {
         ScriptQueue queue = ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(script);
         queue.start();
 
+        // TODO: Read queue context to see if the event behind action should be cancelled.
         // if (queue.getContext() != null
         //    && queue.getContext().equalsIgnoreCase("cancelled")) return true;
 
