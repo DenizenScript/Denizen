@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,6 +46,26 @@ public class ChairCommand extends AbstractCommand implements Listener {
     public void onEnable() {
         // Register with Bukkit's Event Registry
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        denizen.getServer().getScheduler().scheduleSyncRepeatingTask(denizen, new Runnable() {
+
+		@Override
+		public void run() {
+			for ( int id : chairRegistry.keySet()) {
+					  
+				dNPC npc = denizen.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(id));
+						  
+				if (npc == null) chairRegistry.remove(id);
+						  
+				if (npc.getLocation().distance(chairRegistry.get(id).getLocation()) >= 1) makeStand(npc);
+						  
+				makeSitAllPlayers(npc);
+						  
+				dB.echoDebug("task done");
+				  
+			  }
+		  }
+		
+		}, 40L, 100L);
     }
 
 
@@ -103,23 +124,25 @@ public class ChairCommand extends AbstractCommand implements Listener {
 
         switch (chairAction) {
             case SIT:
-                if (isChair(chairBlock)) {
-                    dB.echoError("...location is already being sat on!");
-                    return;
-                }
-
                 if (isSitting(npc)) {
                     dB.echoError("...NPC is already sitting!");
                     return;
                 }
 				
+                if (isChair(chairBlock)) {
+                    dB.echoError("...location is already being sat on!");
+                    return;
+                }
+
 				/*
 				 * Teleport NPC to the chair and
 				 * make him sit. Good NPC!				
 				 */
                 npc.getEntity().teleport(chairBlock.getLocation().add(0.5, 0, 0.5), TeleportCause.PLUGIN);
-                makeSitAllPlayers(npc, chairBlock);
+                makeSitAllPlayers(npc);
                 npc.action("sit", scriptEntry.getPlayer());
+
+                chairRegistry.put(npc.getId(), chairBlock);
                 // dB.echoDebug("...NPC sits!");
                 break;
 
@@ -134,6 +157,7 @@ public class ChairCommand extends AbstractCommand implements Listener {
                 // dB.echoDebug("...NPC stands!");
                 break;
         }
+        
     }
 
 
@@ -141,7 +165,7 @@ public class ChairCommand extends AbstractCommand implements Listener {
      * Sends packet via ProtocolLib to all online
      * players so they can see the NPC as sitting.
      */
-    public void makeSitAllPlayers(dNPC npc, Block block) {
+    public void makeSitAllPlayers(dNPC npc) {
         try {
             PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(40);
             packet.getSpecificModifier(int.class).write(0, npc.getEntity().getEntityId());
@@ -162,8 +186,6 @@ public class ChairCommand extends AbstractCommand implements Listener {
         } catch (Error e) {
             dB.echoError("ProtocolLib required for SIT command!!");
         }
-
-        chairRegistry.put(npc.getId(), block);
     }
 
 
