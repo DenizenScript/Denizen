@@ -43,7 +43,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // If the chat radius is not set, use default radius from settings
         if (npc.getTriggerTrait().getRadius(name) == -1)
-            npc.getTriggerTrait().setLocalRadius(name, (Settings.TriggerRangeInBlocks(name)));
+            npc.getTriggerTrait().setLocalRadius(name, (Settings.TriggerDefaultRangeInBlocks(name)));
 
         // Check range
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(event.getPlayer().getLocation()))

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class Settings {
 
@@ -13,10 +14,11 @@ public class Settings {
      
 	 */
 	
-	public static long DefaultCooldown(String triggerName) {
+	public static long TriggerDefaultCooldown(String triggerName) {
 		return (long) (DenizenAPI.getCurrentInstance().getConfig()
-                .getDouble(triggerName
-                        + " Trigger Default Cooldown in Seconds", 5) * 1000);
+                .getDouble(triggerName.substring(0, 1).toUpperCase() +
+                			triggerName.substring(1).toLowerCase() +
+                			" Trigger Default Cooldown in Seconds", 5) * 1000);
 	}
 	
 	/* 
@@ -85,9 +87,11 @@ public class Settings {
 
 	 */
 
-	public static int TriggerRangeInBlocks(String triggerName) {
+	public static int TriggerDefaultRangeInBlocks(String triggerName) {
 		return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt(triggerName + " Trigger Default Range in Blocks", -1);
+                .getInt(triggerName.substring(0, 1).toUpperCase() +
+                		triggerName.substring(1).toLowerCase() +
+                		" Trigger Default Range in Blocks", -1);
 	}
 
 

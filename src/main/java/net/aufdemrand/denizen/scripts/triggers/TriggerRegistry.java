@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.triggers;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.triggers.core.ChatTrigger;
@@ -95,10 +96,10 @@ public class TriggerRegistry implements DenizenRegistry {
 
     @Override
     public void registerCoreMembers() {
-        new ClickTrigger().activate().as("Click").withOptions(true, 2.0, CooldownType.PLAYER);
-        new DamageTrigger().activate().as("Damage").withOptions(false, 0.5, CooldownType.NPC);
-        new ChatTrigger().activate().as("Chat").withOptions(true, 2.0, 3, CooldownType.PLAYER);
-        new ProximityTrigger().activate ().as("Proximity").withOptions(false, 5.0, 5, CooldownType.PLAYER);
+        new ClickTrigger().activate().as("Click").withOptions(true, Settings.TriggerDefaultCooldown("Click"), CooldownType.PLAYER);
+        new DamageTrigger().activate().as("Damage").withOptions(false, Settings.TriggerDefaultCooldown("Damage"), CooldownType.NPC);
+        new ChatTrigger().activate().as("Chat").withOptions(true, Settings.TriggerDefaultCooldown("Chat"), Settings.TriggerDefaultRangeInBlocks("Chat"), CooldownType.PLAYER);
+        new ProximityTrigger().activate ().as("Proximity").withOptions(false, Settings.TriggerDefaultCooldown("Proximity"), Settings.TriggerDefaultRangeInBlocks("Proximity"), CooldownType.PLAYER);
         dB.echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 
