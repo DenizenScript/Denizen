@@ -75,17 +75,17 @@ public class RequirementChecker {
             if (argumentList.get(0).equalsIgnoreCase("valueof")) {
                 if (argumentList.get(1).equalsIgnoreCase("true")) {
                     if (!negativeRequirement) {
-                        dB.echoApproval("...requirement met!");
+                        dB.echoApproval("Checking 'VALUEOF " + argumentList.get(1) + "... requirement met!");
                         numberMet++;
                     } else
-                        dB.echoApproval("...requirement not met!");
+                        dB.echoApproval("Checking '-VALUEOF " + argumentList.get(1) + "...requirement not met!");
 
                 } else {
                     if (!negativeRequirement)
-                        dB.echoApproval("...requirement not met!");
+                        dB.echoApproval("Checking 'VALUEOF " + argumentList.get(1) + "...requirement not met!");
 
                     else {
-                        dB.echoApproval("...requirement met!");// Not met!
+                        dB.echoApproval("Checking '-VALUEOF " + argumentList.get(1) + "...requirement met!");// Not met!
                         numberMet++;
                     }
                 }

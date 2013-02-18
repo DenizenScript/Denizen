@@ -22,10 +22,10 @@ public class ProcedureScriptTag implements Listener {
    @EventHandler
     public void utilTags(ReplaceableTagEvent event) {
     if (!event.matches("PROC")) return;
-       if (event.getType() == null) return;
+       if (event.getValue() == null) return;
 
        // Get the script from the type argument
-       Script script = aH.getScriptFrom(event.getType());
+       Script script = aH.getScriptFrom(event.getValue());
 
        // Build script entries
        List<ScriptEntry> entries = script.getContainer().getBaseEntries(event.getPlayer(), event.getNPC());
