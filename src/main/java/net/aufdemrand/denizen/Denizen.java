@@ -44,6 +44,8 @@ public class Denizen extends JavaPlugin {
 
     public static String versionTag = "0.8.8 pre-release";
     
+    private boolean startedSuccessful = false;
+    
     private CommandHandler commandHandler;
     
     public CommandHandler getCommandHandler() {
@@ -136,6 +138,12 @@ public class Denizen extends JavaPlugin {
 		// Activate dependencies
 		depends.initialize();
 		
+		if(!Depends.citizens.isEnabled()) {
+			dB.echoError("Citizens does not seem to be activated! Deactivating Denizen!");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		} else startedSuccessful = true;
+		
         // Startup procedure
         dB.echoDebug(DebugElement.Footer);
         dB.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
@@ -172,7 +180,7 @@ public class Denizen extends JavaPlugin {
         // Create instance of PacketHelper if ProtocolLib has been hooked
 		if(Depends.protocolManager != null) {
 			new PacketHelper(this);
-			dB.echoApproval("ProtocolLib hooked, traits with custom packages can be used!");
+			dB.echoApproval("ProtocolLib hooked, traits and commands with custom packages can be used!");
 		}
 		
         // Compile and load Denizen externals
@@ -203,6 +211,8 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public void onDisable() {
+		if(!startedSuccessful) return;
+		
         // Save locations
         Location._saveLocations();
 
