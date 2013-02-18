@@ -11,16 +11,16 @@ import java.util.List;
 
 /**
  * This class implements requirement checking for scripts.
- * 
+ *
  * @author aufdemrand
  */
 public class RequirementChecker {
 
-	private Denizen plugin;
+    private Denizen plugin;
 
-	public RequirementChecker(Denizen denizen) {
-		plugin = denizen;
-	}
+    public RequirementChecker(Denizen denizen) {
+        plugin = denizen;
+    }
 
     /**
      * Checks a RequirementsContext with Requirements from the RequirementsRegistry.
@@ -46,106 +46,126 @@ public class RequirementChecker {
         dB.echoDebug("Requirement mode: '%s'", context.mode.getMode().toString());
 
         // Set up checks for requirement mode 'FIRST AND ANY #'
-		boolean firstReqMet = false;
-		boolean firstReqChecked = false;
+        boolean firstReqMet = false;
+        boolean firstReqChecked = false;
 
         // Counter for keeping track of met requirements
         int numberMet = 0;
 
-		// Check all requirements
-		for (String reqEntry : context.list) {
-			boolean negativeRequirement = false;
+        // Check all requirements
+        for (String reqEntry : context.list) {
+            boolean negativeRequirement = false;
 
-			//
-			// Check if this is a Negative Requirement.  Negative requirements start
-			// with a... negative sign :)
-			//
-			if (reqEntry.startsWith("-")) {
-				negativeRequirement = true; 
-				reqEntry = reqEntry.substring(1);
-			}
+            //
+            // Check if this is a Negative Requirement.  Negative requirements start
+            // with a... negative sign :)
+            //
+            if (reqEntry.startsWith("-")) {
+                negativeRequirement = true;
+                reqEntry = reqEntry.substring(1);
+            }
 
-			// Check requirement with RequirementRegistry
-			if (plugin.getRequirementRegistry().list().containsKey(reqEntry.split(" ")[0].toUpperCase())) {
+            //
+            // Evaluate the requirement
+            //
+            if (reqEntry.split(" ")[0].equalsIgnoreCase("true")) {
+                if (!negativeRequirement) {
+                    dB.echoApproval("...requirement met!");
+                    numberMet++;
+                } else
+                    dB.echoApproval("...requirement not met!");
 
-				AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqEntry.split(" ")[0]);
-				String[] arguments = null;
-				if (reqEntry.split(" ").length > 1)	{
-					arguments = aH.buildArgs(reqEntry.split(" ", 2)[1]);
-				}
+            } else if (reqEntry.split(" ")[0].equalsIgnoreCase("false")) {
+                if (!negativeRequirement)
+                    dB.echoApproval("...requirement not met!");
 
-				// Replace tags
-				List<String> argumentList = new ArrayList<String>();
-				if (arguments != null) {
-				    argumentList = plugin.tagManager().fillArguments(arguments, context.player, context.npc);
-				}
+                else {
+                    dB.echoApproval("...requirement met!");// Not met!
+                    numberMet++;
+                }
 
-				try {
-					// Check if # of required args are met
-					int	numArguments = arguments == null ? 0 : arguments.length;
-					int neededArguments = requirement.requirementOptions.REQUIRED_ARGS;
-					if ((numArguments == 0 && neededArguments > 0) ||
-							 numArguments < neededArguments) {
-						throw new RequirementCheckException("Not enough arguments (" + numArguments + " / " + neededArguments + ")");
-					}
+            } else
+                // Check requirement with RequirementRegistry
+                if (plugin.getRequirementRegistry().list().containsKey(reqEntry.split(" ")[0].toUpperCase())) {
 
-					// Check the Requirement
-					if (requirement.check(context, argumentList) != negativeRequirement) {
-						// Check first requirement for mode 'FIRST AND ANY #'
-						if (!firstReqChecked) {
-							firstReqMet = true;
-							firstReqChecked = true;
-						}
-						numberMet++;
-						dB.echoApproval("Checking Requirement '" + requirement.getName() + "'" + " ...requirement met!");
-					} else {
-						if (!firstReqChecked) {
-							firstReqMet = false;
-							firstReqChecked = true;
-						}
-						dB.echoApproval("Checking Requirement '" + requirement.getName() + "'" + " ...requirement not met!");
-					}
+                    AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqEntry.split(" ")[0]);
+                    String[] arguments = null;
+                    if (reqEntry.split(" ").length > 1)	{
+                        arguments = aH.buildArgs(reqEntry.split(" ", 2)[1]);
+                    }
 
-				} catch (Throwable e) {
-					if (e instanceof RequirementCheckException) {
-						String msg = e.getMessage().isEmpty() || e == null ? "No Error message defined!" : e.getMessage();
-						dB.echoError("Woah! Invalid arguments were specified: " + msg);
-						dB.echoError("Usage: " + requirement.getUsageHint());
-					} else {
-						dB.echoError("Woah! An exception has been called " + (requirement != null ? "for Requirement '" + requirement.getName() + "'" : "") + "!");
-						if (!dB.showStackTraces) dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
-						else e.printStackTrace(); 
-					}
-				}
-			}
+                    // Replace tags
+                    List<String> argumentList = new ArrayList<String>();
+                    if (arguments != null) {
+                        argumentList = plugin.tagManager().fillArguments(arguments, context.player, context.npc);
+                    }
 
-			// If the requirement is not registered with the Requirement Registry
-			else {
-				dB.echoError("Requirement '" + reqEntry.split(" ")[0] + "' not found! Check that the requirement is installed!");
-			}
-		}
+                    try {
+                        // Check if # of required args are met
+                        int	numArguments = arguments == null ? 0 : arguments.length;
+                        int neededArguments = requirement.requirementOptions.REQUIRED_ARGS;
+                        if ((numArguments == 0 && neededArguments > 0) ||
+                                numArguments < neededArguments) {
+                            throw new RequirementCheckException("Not enough arguments (" + numArguments + " / " + neededArguments + ")");
+                        }
+
+                        // Check the Requirement
+                        if (requirement.check(context, argumentList) != negativeRequirement) {
+                            // Check first requirement for mode 'FIRST AND ANY #'
+                            if (!firstReqChecked) {
+                                firstReqMet = true;
+                                firstReqChecked = true;
+                            }
+                            numberMet++;
+                            dB.echoApproval("Checking Requirement '" + requirement.getName() + "'" + " ...requirement met!");
+                        } else {
+                            if (!firstReqChecked) {
+                                firstReqMet = false;
+                                firstReqChecked = true;
+                            }
+                            dB.echoApproval("Checking Requirement '" + requirement.getName() + "'" + " ...requirement not met!");
+                        }
+
+                    } catch (Throwable e) {
+                        if (e instanceof RequirementCheckException) {
+                            String msg = e.getMessage().isEmpty() || e == null ? "No Error message defined!" : e.getMessage();
+                            dB.echoError("Woah! Invalid arguments were specified: " + msg);
+                            dB.echoError("Usage: " + requirement.getUsageHint());
+                        } else {
+                            dB.echoError("Woah! An exception has been called " + (requirement != null ? "for Requirement '" + requirement.getName() + "'" : "") + "!");
+                            if (!dB.showStackTraces) dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
+                            else e.printStackTrace();
+                        }
+                    }
+                }
+
+                // If the requirement is not registered with the Requirement Registry
+                else {
+                    dB.echoError("Requirement '" + reqEntry.split(" ")[0] + "' not found! Check that the requirement is installed!");
+                }
+        }
 
         // Check numberMet with mode-type
 
-		// ALL mode
-		if (context.mode.getMode() == RequirementsMode.Mode.ALL && numberMet == context.list.size()) return true;
+        // ALL mode
+        if (context.mode.getMode() == RequirementsMode.Mode.ALL && numberMet == context.list.size()) return true;
 
-		// ANY # mode
-		else if (context.mode.getMode() == RequirementsMode.Mode.ANY_NUM) {
-				if (numberMet >= context.mode.modeInt) return true;
-				else return false;
-		}
+            // ANY # mode
+        else if (context.mode.getMode() == RequirementsMode.Mode.ANY_NUM) {
+            if (numberMet >= context.mode.modeInt) return true;
+            else return false;
+        }
 
-		// FIRST AND ANY # mode
-		else if (context.mode.getMode() == RequirementsMode.Mode.FIRST_AND_ANY_NUM) {
-			if (firstReqMet) {
-				if (numberMet > context.mode.modeInt) return true;
-				else return false;
-			} else return false;
-		}
+        // FIRST AND ANY # mode
+        else if (context.mode.getMode() == RequirementsMode.Mode.FIRST_AND_ANY_NUM) {
+            if (firstReqMet) {
+                if (numberMet > context.mode.modeInt) return true;
+                else return false;
+            } else return false;
+        }
 
-		// Nothing met, return FALSE
-		return false;
-	}
+        // Nothing met, return FALSE
+        return false;
+    }
 
 }
