@@ -221,7 +221,10 @@ public class Denizen extends JavaPlugin {
             getListenerRegistry().deconstructPlayer(player);
         for (OfflinePlayer player : this.getServer().getOfflinePlayers())
             getListenerRegistry().deconstructPlayer(player);
-
+        
+        //Disable core members
+        getCommandRegistry().disableCoreMembers();
+        
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);

@@ -36,7 +36,7 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
  */
 public class ChairCommand extends AbstractCommand implements Listener {
 
-    private enum ChairAction { SIT, STAND }
+    private enum ChairAction { SIT, STAND, TOGGLE }
 
     /**
      * Keeps track of sitting NPCs. References NPCID as the key (to avoid a lingering NPC instance
@@ -49,16 +49,19 @@ public class ChairCommand extends AbstractCommand implements Listener {
         // Register with Bukkit's Event Registry
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
         
-        for (String id : DenizenAPI.getCurrentInstance().getSaves()
-                .getConfigurationSection("dScript.Chair Registry").getKeys(false))
-                    try {
-                        chairRegistry.put(Integer.valueOf(id),
-                                Location.valueOf(DenizenAPI.getCurrentInstance().getSaves()
-                        .getString("dScript.Chair Registry." + id)).getBlock());
-                    } catch (Exception e) {
-                        dB.log("Encountered an invalid entry in the Chair Registry.. skipping.");
-                    }
-
+        if (DenizenAPI.getCurrentInstance().getSaves().getConfigurationSection("dScript.Chair Registry") != null){
+        	dB.log("...loading ChairRegistry");
+        	for (String id : DenizenAPI.getCurrentInstance().getSaves()
+	                .getConfigurationSection("dScript.Chair Registry").getKeys(false))
+	                    try {
+	                        chairRegistry.put(Integer.valueOf(id),
+	                                Location.valueOf(DenizenAPI.getCurrentInstance().getSaves()
+	                        .getString("dScript.Chair Registry." + id)).getBlock());
+	                    } catch (Exception e) {
+	                        dB.log("Encountered an invalid entry in the Chair Registry.. skipping.");
+	                    }
+         } else dB.log("skipped loading ChairRegistry");
+        
         denizen.getServer().getScheduler().scheduleSyncRepeatingTask(denizen, new Runnable() {
             @Override
             public void run() {
@@ -69,28 +72,24 @@ public class ChairCommand extends AbstractCommand implements Listener {
                     if (npc == null)
                         chairRegistry.remove(entry.getKey());
                     // Check location
-                    //dB.log("NPC location: " + new Location(npc.getBukkitEntity().getLocation()).dScriptArgValue());
-                    //dB.log("Chair location: " + new Location(entry.getValue().getLocation()).dScriptArgValue());
                     if (!Utilities.checkLocation(npc.getBukkitEntity(), entry.getValue().getLocation(), 1)) {
-                        //dB.log("Making stand...");
                         makeStand(DenizenAPI.getDenizenNPC(npc));
                     } else {
-                        //dB.log("Making sit...");
                         makeSitAllPlayers(DenizenAPI.getDenizenNPC(npc));
                     }
-                    //dB.log("Iterated NPC " + entry.getKey() + "...");
                 }
-                //dB.log("Task running..");
             }
-        }, 40L, 0L);
+        }, 40L, 40L);
     }
     
     @Override
     public void onDisable() {
         // Clear registry
+    	dB.log("clearing old registry");
         DenizenAPI.getCurrentInstance().getSaves()
                 .set("dScript.Chair Registry", null);
         // Save registry
+        dB.log("saving chairregistry");
         for (Map.Entry<Integer, Block> entry : chairRegistry.entrySet()) {
              DenizenAPI.getCurrentInstance().getSaves()
                      .set("dScript.Chair Registry." + entry.getKey(), 
@@ -113,18 +112,16 @@ public class ChairCommand extends AbstractCommand implements Listener {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         // Initiate required fields
         Block chairBlock = null;
-        ChairAction chairAction = ChairAction.SIT;
+        ChairAction chairAction = null;
 
         // Iterate through arguments
         for (String arg : scriptEntry.getArguments()) {
 
             if (aH.matchesLocation(arg))
                 chairBlock = aH.getLocationFrom(arg).getBlock();
-                // dB.echoDebug("...sit location set");
 
             else if (aH.matchesArg("SIT, STAND", arg))
                 chairAction = ChairAction.valueOf(aH.getStringFrom(arg).toUpperCase());
-                // dB.echoDebug("...npc will " + chairAction.name());
 
             else throw new InvalidArgumentsException (dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -153,39 +150,56 @@ public class ChairCommand extends AbstractCommand implements Listener {
         dNPC npc = scriptEntry.getNPC();
 
         switch (chairAction) {
-            case SIT:
-                if (isSitting(npc)) {
-                    dB.echoError("...NPC is already sitting!");
-                    return;
-                }
+        case SIT:
+            if (isSitting(npc)) {
+                dB.echoError("...NPC is already sitting!");
+                return;
+            }
 
-                if (isChair(chairBlock)) {
-                    dB.echoError("...location is already being sat on!");
-                    return;
-                }
+            if (isChair(chairBlock)) {
+                dB.echoError("...location is already being sat on!");
+                return;
+            }
 
-				/*
-				 * Teleport NPC to the chair and
-				 * make him sit. Good NPC!				
-				 */
-                npc.getEntity().teleport(chairBlock.getLocation().add(0.5, 0, 0.5), TeleportCause.PLUGIN);
-                makeSitAllPlayers(npc);
-                npc.action("sit", scriptEntry.getPlayer());
+			/*
+			 * Teleport NPC to the chair and
+			 * make him sit. Good NPC!				
+			 */
+            npc.getEntity().teleport(chairBlock.getLocation().add(0.5, 0, 0.5), TeleportCause.PLUGIN);
+            chairBlock.getLocation().setYaw(yawSet(chairBlock));
+            makeSitAllPlayers(npc);
+            npc.action("sit", scriptEntry.getPlayer());
 
-                chairRegistry.put(npc.getId(), chairBlock);
-                // dB.echoDebug("...NPC sits!");
-                break;
+            chairRegistry.put(npc.getId(), chairBlock);
+            // dB.echoDebug("...NPC sits!");
+            break;
 
-            case STAND:
-                if (!isSitting(npc)) {
-                    dB.echoError("...NPC is already standing!");
-                    return;
-                }
+        case STAND:
+            if (!isSitting(npc)) {
+                dB.echoError("...NPC is already standing!");
+                return;
+            }
 
-                makeStand(npc);
-                npc.action("stand", scriptEntry.getPlayer());
-                // dB.echoDebug("...NPC stands!");
-                break;
+            makeStand(npc);
+            npc.action("stand", scriptEntry.getPlayer());
+            break;
+            
+		case TOGGLE:
+			if (chairBlock == null) {
+				makeStand(npc);
+	            npc.action("stand", scriptEntry.getPlayer());
+				dB.echoDebug("...no chair specified, making NPC stand.");
+			} else {
+				dB.echoDebug("...having NPC sit at specified chair");
+				npc.getEntity().teleport(chairBlock.getLocation().add(0.5, 0, 0.5), TeleportCause.PLUGIN);
+	            chairBlock.getLocation().setYaw(yawSet(chairBlock));
+	            makeSitAllPlayers(npc);
+	            npc.action("sit", scriptEntry.getPlayer());
+			}
+			break;
+			
+		default:
+			break;
         }
 
     }
@@ -315,4 +329,18 @@ public class ChairCommand extends AbstractCommand implements Listener {
             dB.echoDebug("..." + event.getPlayer().getName() + " tried to break an NPCs chair!");
         }
     }
+    
+    private float yawSet(Block chair) {
+    	
+		if(chair.getData() == (byte)0)
+			return 90;
+		if(chair.getData() == (byte)1)
+			return -90;
+		if(chair.getData() == (byte)2)
+			return 180;
+		if(chair.getData() == (byte)3)
+			return 0;
+		return 0;
+	
+	}
 }

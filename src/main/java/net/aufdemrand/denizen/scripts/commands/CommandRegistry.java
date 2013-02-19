@@ -189,7 +189,7 @@ public class CommandRegistry implements DenizenRegistry {
 	public void disableCoreMembers() {
 		for (RegistrationableInstance member : instances.values())
 			try { 
-				member.onDisable(); 
+				member.onDisable();
 			} catch (Exception e) {
 				dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
 				if (dB.showStackTraces) e.printStackTrace();
