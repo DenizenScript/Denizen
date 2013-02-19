@@ -319,7 +319,16 @@ public class PlayerTags implements Listener {
 
 
         } else if (type.equals("EQUIPMENT")) {
-            event.setReplaced(String.valueOf(event.getNPC().getEntity().getHealth()));
+        	if (subType.equals("BOOTS"))
+        		event.setReplaced(p.getInventory().getBoots().getType().name());
+        	else if (subType.equals("CHESTPLATE"))
+        		event.setReplaced(p.getInventory().getChestplate().getType().name());
+        	else if (subType.equals("HELMET"))
+        		event.setReplaced(p.getInventory().getHelmet().getType().name());
+        	else if (subType.equals("LEGGINGS"))
+        		event.setReplaced(p.getInventory().getLeggings().getType().name());
+        	if (specifier.equals("FORMATTED"))
+        		event.setReplaced(event.getReplaced().toLowerCase().replace('_', ' '));
 
 
         } else if (type.equals("INVENTORY")) {
