@@ -45,11 +45,11 @@ Chat Only When Looking at NPC: true
 
 # Whether chatting with an NPC without matching a chat trigger
 # will make the text appear in the global chat
-Chat Globally If Failed Chat Triggers: true
+Chat Globally If Failed Chat Triggers: false
 # Whether chatting with an NPC that does not have a chat trigger
 # will make the text appear in the global chat
-Chat Globally If No Chat Triggers: true
+Chat Globally If No Chat Triggers: false
 # Whether chatting with an NPC that isn't interactable will
 # make the text appear in the global chat 
-Chat Globally If Not Interactable: true
+Chat Globally If Not Interactable: false
 

@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -62,11 +61,11 @@ public class RuntaskCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
-        Script script = null;
         Map<String, String> context = null;
-        Duration delay = new Duration(0);
-        Duration speed = new Duration(((double) Settings.InteractDelayInTicks() / 20));
-        ScriptQueue queue = ScriptQueue._getQueue(scriptEntry.getResidingQueue());
+        Script script = null;
+        Duration delay = null;
+        Duration speed = null;
+        ScriptQueue queue = null;
 
         // Iterate through Arguments to extract needed information
         for (String arg : scriptEntry.getArguments()) {
@@ -75,33 +74,34 @@ public class RuntaskCommand extends AbstractCommand {
             if (aH.matchesScript(arg)) {
                 script = aH.getScriptFrom(arg);
 
-                // Delay the start of the queue
-            } else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
+            }   // Delay the start of the queue
+            else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
                 delay = aH.getDurationFrom(arg);
                 delay.setPrefix("Delay");
 
-                // Use a specific queue
-            } else if (aH.matchesQueue(arg)) {
+            }   // Use a specific queue
+            else if (aH.matchesQueue(arg)) {
                 queue = aH.getQueueFrom(arg);
 
-            } else if (aH.matchesValueArg("SPEED", arg, aH.ArgumentType.Duration)) {
+            }   // Get the speed from a valid duration object
+            else if (aH.matchesValueArg("SPEED", arg, aH.ArgumentType.Duration)) {
                 speed = aH.getDurationFrom(arg);
 
-            } else if (aH.matchesArg("QUEUE", arg)) {
-                // Deprecated, no longer needed. All tasks are now queued, even if they are 'instant'.
+            }   // Method is deprecated, but included to avoid errors being thrown.
+            else if (aH.matchesArg("QUEUE", arg)) {
+                // Deprecated, no longer needed.
+                // All tasks are now queued, even if they are 'instant'.
 
-            } else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
+            }   // Set the speed to 0, indicating that it is instant
+            else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
                 speed = new Duration(0);
 
-                // Specify context
-            } else if (aH.matchesContext(arg)) {
+            }   // Build context map if specified
+            else if (aH.matchesContext(arg)) {
                 context = aH.getContextFrom(arg);
 
-            } else if (aH.matchesValueArg("ID", arg, aH.ArgumentType.Word)) {
-                // Deprecated, no longer needed. You can name the queue instead.
-
-                // Specify SCRIPT name without SCRIPT: prefix
-            } else if (ScriptRegistry.containsScript(aH.getStringFrom(arg))) {
+            }   // Specify a script name without the 'script:' prefix
+            else if (ScriptRegistry.containsScript(aH.getStringFrom(arg))) {
                 script = aH.getScriptFrom(arg);
                 if (!script.getType().equalsIgnoreCase("TASK"))
                     script = null;
@@ -109,14 +109,36 @@ public class RuntaskCommand extends AbstractCommand {
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
+        // Must specify at least a valid script to run...
         if (script == null) throw new InvalidArgumentsException("Must define a script to be run!");
+
+        // If no queue specified, assume the residing queue
+        if (queue == null)
+            queue = ScriptQueue._getQueue(scriptEntry.getResidingQueue());
+
+        // if residing queue speed is 0, and script to be run isn't, make new queue!
+        if ((queue.getSpeed().getTicksAsInt() == 0)
+                && (((TaskScriptContainer) script.getContainer()).getSpeed().getTicksAsInt() > 0)) {
+            queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
+        }
+
+        // if residing queue is more than 0, and the script to be run IS 0, make a new queue!
+        if ((queue.getSpeed().getTicksAsInt() > 0)
+                && (((TaskScriptContainer) script.getContainer()).getSpeed().getTicksAsInt() == 0)) {
+            queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
+        }
+
+        if (speed == null)
+            speed = ((TaskScriptContainer) script.getContainer()).getSpeed();
 
         // Put important objects inside the scriptEntry to be sent to execute()
         scriptEntry.addObject("speed", speed.setPrefix("Speed"))
                 .addObject("queue", queue)
-                .addObject("delay", delay.setPrefix("Delay"))
+                .addObject("delay", (delay != null ? delay.setPrefix("Delay") : null))
                 .addObject("script", script)
                 .addObject("context", context);
+
+        dB.log(queue == null ? "yes" : "no");
     }
 
     @Override
@@ -129,13 +151,14 @@ public class RuntaskCommand extends AbstractCommand {
         Duration delay = (Duration) scriptEntry.getObject("delay");
 
         // Debug output
-        dB.echoApproval("Executing '" + getName() + "': "
-                + script.debug()
-                + delay.debug()
+        dB.report(this.getName(),
+                script.debug()
+                + (delay != null ? delay.debug() : "")
                 + speed.debug()
-                + "Queue='" + queue.toString());
+                + aH.debugObj("Queue", queue.id)
+                + (context != null ? aH.debugObj("Context", context.toString()) : ""));
 
-        if (delay.getSeconds() <= 0)
+        if (delay == null)
             ((TaskScriptContainer) script.getContainer()).setSpeed(speed)
                     .runTaskScript(queue.id, scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
 

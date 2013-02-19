@@ -34,7 +34,8 @@
   - announce 'This is a test.'
   - announce '<&sq>This<&sq>, is only a test.'
   - announce to_ops 'You are an op, so you probably already know this is a test!'
-  - announce 'Currently online ops: <player.online_ops>'
+  - announce 'Currently online ops<&co> <player.online_ops>'
+
 
 
 

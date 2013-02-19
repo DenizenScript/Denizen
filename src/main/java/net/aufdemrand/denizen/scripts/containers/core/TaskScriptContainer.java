@@ -23,24 +23,17 @@ public class TaskScriptContainer extends ScriptContainer {
     }
 
     public Duration getSpeed() {
-    	Duration speed = null;
-    	
-    	if (getString("SPEED", null) != null)
-    	{
-    		if (getString("SPEED", null).toUpperCase() == "INSTANT")
-    			speed = Duration.valueOf("0");
+    	Duration speed;
+    	if (contains("SPEED")) {
+    		if (getString("SPEED", "0").toUpperCase().equals("INSTANT"))
+    			speed = Duration.valueOf("0t");
     		else
-    			speed = Duration.valueOf(getString("SPEED", null));
-    	}
-    	else
+    			speed = Duration.valueOf(getString("SPEED", "0t"));
+
+    	} else
     		speed = new Duration(((double) Settings.InteractDelayInTicks() / 20));
         
         return speed;
-    }
-
-    public TaskScriptContainer setInstant() {
-        set("SPEED", "INSTANT");
-        return this;
     }
 
     public TaskScriptContainer setSpeed(Duration speed) {

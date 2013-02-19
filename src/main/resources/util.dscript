@@ -3,8 +3,9 @@
 # ---- sample snippet of a script CALLING the loop
 # You can call this script to test out the GL (Generic Looper)
 # by using the command '- runtask "GL sample snippet"'
-"GL Sample snippet":
+"test_pck test generic looper":
   type: task
+  speed: 1
 
   script:
   - flag global example_loop_flag:->:aufdemrand
@@ -13,7 +14,7 @@
   - flag global example_loop_flag:->:davidcernat
   - flag global example_loop_flag:->:fullwall
   - flag global example_loop_flag:->:Mastaba
-  - runtask 'generic looper' 'context:g|example_loop_flag|player announcement script|playername'
+  - runtask 'generic looper' 'context:g|example_loop_flag|test_pck player announcement script|playername' queue:new
   - flag global example_loop_flag:!
 
 
@@ -21,7 +22,7 @@
 # each iteration.
 # The item from the iteration will be stored in a global flag
 # with the name of the value set in the iterate_value_name context
-'player announcement script':
+'test_pck player announcement script':
   type: task
   script:
   - announce '<flag.g:playername> has been ITERATED!'
@@ -48,28 +49,23 @@
 # ------------------------------------
 "generic looper":
   type: task
+  speed: 0
   context: flag_name|flag_type|task_action|iterate_value_name
 
   script:
   - if '<flag.g:gls_initialized_<entry.script.name>_<player.name||<npc.id>>||false>' == false
     runtask 'gls_initialize me'
-      'context:size, <flag.<context.flag_type>:<context.flag_name>.size||0>|
-      id, <entry.script.name>'
+      'context:<flag.<context.flag_type>:<context.flag_name>.size||0>|<entry.script.name>'
 
   - if '<flag.g:gls_size_<entry.script.name>_<player.name||<npc.id>>>' >= '<flag.g:gls_iterator_<entry.script.name>_<player.name||<npc.id>>>'
     runtask 'gls_execute'
-      'context:task_action, <context.task_action>|
-      iterate_value_name, <context.iterate_value_name>|
-      id, <entry.script.name>|
-      flag_type, <context.flag_type>|
-      flag_name, <context.flag_name>'
-    else runtask gls_breakdown
-      'context:id, <entry.script.name>|
-      iterate_value_name, <context.iterate_value_name>'
+      'context:<context.task_action>|<context.iterate_value_name>|<entry.script.name>|<context.flag_type>|<context.flag_name>'
+    else runtask gls_breakdown 'context:<entry.script.name>|<context.iterate_value_name>'
 
 
 "gls_initialize me":
   type: task
+  speed: 0
   context: size|id
 
   script:
@@ -80,21 +76,19 @@
 
 "gls_execute":
   type: task
+  speed: 0
   context: flag_name, flag_type, task_action, iterate_value_name, id
 
   script:
   - flag global '<context.iterate_value_name>:<flag.<context.flag_type>:<context.flag_name>[<flag.g:gls_iterator_<context.id>_<player.name||<npc.id>>.asint||>]>'
   - flag global 'gls_iterator_<context.id>_<player.name||<npc.id>>:+:1'
   - runtask '<context.task_action>'
-  - runtask 'generic looper' 
-    'context:flag_name, <context.flag_name>|
-    flag_type, <context.flag_type>|
-    task_action, <context.task_action>|
-    iterate_value_name, <context.iterate_value_name>'
+  - runtask 'generic looper' 'context:<context.flag_name>|<context.flag_type>|<context.task_action>|<context.iterate_value_name>'
 
 
 "gls_breakdown":
   type: task
+  speed: 0
   context: id, iterate_value_name
 
   script:

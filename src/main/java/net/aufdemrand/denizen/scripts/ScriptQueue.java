@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -132,6 +133,9 @@ public class ScriptQueue implements Listener {
         lastEntryExecuted = entry;
     }
 
+    public Duration getSpeed() {
+        return Duration.valueOf(ticks + "t");
+    }
 
     public ScriptEntry getLastEntryExecuted() {
         return lastEntryExecuted;
