@@ -86,20 +86,25 @@ public class InteractScriptHelper {
             try {
                 InteractScriptContainer interactScript = ScriptRegistry.getScriptContainerAs(name, InteractScriptContainer.class);
 
-                // Check requirements of the script
-                if (interactScript.checkBaseRequirements(player, npc)) {
-                    dB.echoApproval("'" + entry + "' meets requirements.");
+                if(interactScript != null) {
+                    // Check requirements of the script
+                    if (interactScript.checkBaseRequirements(player, npc)) {
+                        dB.echoApproval("'" + entry + "' meets requirements.");
 
-                    // Meets requirements, but we need to check cool down, too.
-                    if (interactScript.checkCooldown(player))
-                        interactableScripts.add(new PriorityPair(priority, entry.split(" ", 2)[1]));
-                    else
-                        dB.echoDebug(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
+                        // Meets requirements, but we need to check cool down, too.
+                        if (interactScript.checkCooldown(player))
+                            interactableScripts.add(new PriorityPair(priority, entry.split(" ", 2)[1]));
+                        else
+                            dB.echoDebug(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
 
-                } else
-                    // Does not meet requirements, alert the console!
-                    dB.echoDebug("'" + entry + "' does not meet requirements.");
-
+                    } else {
+                        // Does not meet requirements, alert the console!
+                        dB.echoDebug("'" + entry + "' does not meet requirements.");
+                    }
+                } else {
+                    // Alert the console
+                    dB.echoDebug("'" + entry + "' validated to null, no (valid) script entry found (Should never happen)!");
+                }
             } catch (Exception e) {
                 // Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!
                 dB.echoError(ChatColor.RED + "'" + entry + "' has a bad requirement, skipping.");
