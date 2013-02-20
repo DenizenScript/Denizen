@@ -22,8 +22,9 @@ public class TextTags implements Listener {
             if (i > 22) break;
             if (event.matches(color.name()))
                 event.setReplaced(color.toString());
-            else if (event.matches(code[i] + i))
+            else if (event.matches("&" + code[i]))
                 event.setReplaced(ChatColor.getByChar(code[i]) + "");
+            i++;
         }
     }
     
