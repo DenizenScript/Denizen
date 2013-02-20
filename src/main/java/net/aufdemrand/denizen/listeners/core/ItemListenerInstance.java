@@ -6,11 +6,11 @@ import java.util.List;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemListenerType.ItemType;
-import net.aufdemrand.denizen.utilities.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

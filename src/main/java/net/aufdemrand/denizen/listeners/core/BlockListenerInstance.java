@@ -15,11 +15,11 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.BlockListenerType.BlockType;
-import net.aufdemrand.denizen.utilities.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 public class BlockListenerInstance extends AbstractListener implements Listener {
 

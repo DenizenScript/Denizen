@@ -3,10 +3,10 @@ package net.aufdemrand.denizen.scripts.requirements.core;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.utilities.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 import java.util.List;
 
