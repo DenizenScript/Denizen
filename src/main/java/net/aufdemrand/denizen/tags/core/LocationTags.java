@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,7 +66,11 @@ public class LocationTags implements Listener {
         {
         	if (fromLocation != null && toLocation != null)
         	{
-        		if (subType.equals("VERTICAL"))
+        		if (subType.equals("ASINT"))
+        		{
+        			event.setReplaced(String.valueOf((int)fromLocation.distance(toLocation)));
+        		}
+        		else if (subType.equals("VERTICAL"))
         		{
         			if (fromLocation.getWorld().getName() == toLocation.getWorld().getName()
         				|| specifier.equals("MULTIWORLD"))

@@ -313,7 +313,7 @@ public class PlayerTags implements Listener {
                     maxFood = Integer.valueOf(event.getType().split(".")[2]);
                 event.setReplaced(String.valueOf(((float) p.getFoodLevel() / maxFood) * 100));
             }
-
+            
         } else if (type.equals("MONEY")) {
             if(Depends.economy != null) {
                 event.setReplaced(String.valueOf(Depends.economy.getBalance(p.getName())));
@@ -356,6 +356,9 @@ public class PlayerTags implements Listener {
             } else {
                 dB.echoError("mcMMO not loaded! Have you installed the mcMMO plugin?");
             }
+            
+        } else if (type.equals("GAMEMODE")) {
+            event.setReplaced(String.valueOf(p.getGameMode().name()));
 
         } else if (type.equals("IS_OP")) {
             event.setReplaced(String.valueOf(p.isOp()));
@@ -365,6 +368,12 @@ public class PlayerTags implements Listener {
 
         } else if (type.equals("IS_ONLINE")) {
             event.setReplaced(String.valueOf(p.isOnline()));
+        
+        } else if (type.equals("IS_FLYING")) {
+            event.setReplaced(String.valueOf(p.isFlying()));
+            
+        } else if (type.equals("IS_SNEAKING")) {
+            event.setReplaced(String.valueOf(p.isSneaking()));
 
         } else if (type.equals("TIME")) {
             event.setReplaced(String.valueOf(p.getPlayerTime()));
