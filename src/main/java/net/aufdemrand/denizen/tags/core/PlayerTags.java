@@ -295,8 +295,7 @@ public class PlayerTags implements Listener {
         } else if (type.equals("MCMMO")) {
             if(Depends.mcmmo != null) {
                 if (subType.equals("LEVEL")) {
-            	    event.setReplaced(String.valueOf(MCMMOUtilities.getPlayerProfileFrom(p.getName()).getSkillLevel(
-            	            MCMMOUtilities.getSkillTypeFrom(subTypeContext))));
+            	    event.setReplaced(String.valueOf(MCMMOUtilities.getPlayerSkillLevel(p.getName(), subTypeContext)));
                 }
             } else {
                 dB.echoError("mcMMO not loaded! Have you installed the mcMMO plugin?");
