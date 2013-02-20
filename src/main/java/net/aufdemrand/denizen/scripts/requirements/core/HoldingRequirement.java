@@ -27,12 +27,12 @@ public class HoldingRequirement extends AbstractRequirement{
 				exact = true;
 				dB.echoDebug("...exact item match set to TRUE");
 			} else {
-				itemToCheck = aH.getItemFrom(thisArg);
+				itemToCheck = new ItemStack(aH.getItemFrom(thisArg));
 				dB.echoDebug("...item set to: " + itemToCheck);
 			}
 		} 
 		
-		if (itemToCheck != null && quantity > 1) {
+		if (itemToCheck != null) {
 			itemToCheck.setAmount(quantity);
 		}
 		
