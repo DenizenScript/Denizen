@@ -50,6 +50,7 @@ public class PlayerTags implements Listener {
 
         Player p = event.getPlayer();
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
+        String typeContext = event.getTypeContext() != null ? event.getTypeContext().toUpperCase() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
         String subTypeContext = event.getSubTypeContext() != null ? event.getSubTypeContext().toUpperCase() : "";
         String specifier = event.getSpecifier() != null ? event.getSpecifier().toUpperCase() : "";  
@@ -321,11 +322,32 @@ public class PlayerTags implements Listener {
                 else if (subType.equals("CURRENCY"))
                     if (specifier.equals("SINGULAR"))
                         event.setReplaced(Depends.economy.currencyNameSingular());
-                    else if (specifier.equals("PLURAL"))
+                    else
                         event.setReplaced(Depends.economy.currencyNamePlural());
             } else {
                 dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
             }
+            
+        } else if (type.equals("PERMISSION")) {
+            if(Depends.permissions != null)
+            {
+                event.setReplaced(String.valueOf(Depends.permissions.has(p, typeContext)));
+            }
+            else
+            {
+                dB.echoError("Cannot check permission! No permissions loaded!");
+            }
+            
+        } else if (type.equals("GROUP")) {
+            if(Depends.permissions != null)
+            {
+                event.setReplaced(String.valueOf(Depends.permissions.playerInGroup(p, typeContext)));
+            }
+            else
+            {
+                dB.echoError("Cannot check group! No permissions loaded!");
+            }    
+            
         } else if (type.equals("MCMMO")) {
             if(Depends.mcmmo != null) {
                 if (subType.equals("LEVEL")) {
