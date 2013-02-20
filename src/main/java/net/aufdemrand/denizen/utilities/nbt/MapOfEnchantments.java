@@ -20,7 +20,7 @@ public class MapOfEnchantments extends HashMap<Enchantment, Integer> {
 		if (this.isEmpty()) return dScriptList;
 		for (Enchantment enchantment : this.keySet())
 			dScriptList = dScriptList + enchantment.getName() + "|";
-		return dScriptList.substring(1, dScriptList.length() - 1);
+		return dScriptList.substring(0, dScriptList.length() - 1);
 	}
 	
 	public String asDScriptListWithLevels() {
@@ -28,7 +28,7 @@ public class MapOfEnchantments extends HashMap<Enchantment, Integer> {
 		if (this.isEmpty()) return dScriptList;
 		for (Entry<Enchantment, Integer> enchantment : this.entrySet())
 			dScriptList = dScriptList + enchantment.getKey().getName() + "|" + enchantment.getValue() + "|";
-		return dScriptList.substring(1, dScriptList.length() - 1);
+		return dScriptList.substring(0, dScriptList.length() - 1);
 	}
 	
 	public String asDScriptListLevelsOnly() {
@@ -36,7 +36,7 @@ public class MapOfEnchantments extends HashMap<Enchantment, Integer> {
 		if (this.isEmpty()) return dScriptList;
 		for (Integer enchantment : this.values())
 			dScriptList = dScriptList + enchantment + "|";
-		return dScriptList.substring(1, dScriptList.length() - 1);
+		return dScriptList.substring(0, dScriptList.length() - 1);
 		
 	}
 

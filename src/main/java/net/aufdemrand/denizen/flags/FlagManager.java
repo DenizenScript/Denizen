@@ -172,7 +172,6 @@ public class FlagManager {
         public void clear() {
             denizen.getSaves().set(flagPath, null);
             denizen.getSaves().set(flagPath + "-expiration", null);
-            denizen.saveSaves();
             rebuild();
         }
 
@@ -302,7 +301,6 @@ public class FlagManager {
          */
         public void setEntireValue(Object obj) {
             denizen.getSaves().set(flagPath, obj);
-            denizen.saveSaves();
             rebuild();
         }
 
@@ -340,7 +338,6 @@ public class FlagManager {
         public void save() {
             denizen.getSaves().set(flagPath, value.values);
             denizen.getSaves().set(flagPath + "-expiration", expiration);
-            denizen.saveSaves();
         }
 
         /**
