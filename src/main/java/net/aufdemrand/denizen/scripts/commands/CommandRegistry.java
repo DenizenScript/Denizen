@@ -4,8 +4,8 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.commands.core.*;
-import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 
 import java.util.HashMap;
 import java.util.Map;
