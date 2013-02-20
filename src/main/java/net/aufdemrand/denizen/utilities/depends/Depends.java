@@ -90,8 +90,8 @@ public class Depends {
         if (Bukkit.getServer().getPluginManager().getPlugin("mcMMO") == null) {
             return false;
         }
-    	mcmmo = (mcMMO) Bukkit.getServer().getPluginManager().getPlugin("mcMMO");
-    	return mcmmo != null;
+        mcmmo = (mcMMO) Bukkit.getServer().getPluginManager().getPlugin("mcMMO");
+        return mcmmo != null;
     }
 	
     private boolean setupCitizens() {
