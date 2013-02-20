@@ -38,7 +38,7 @@ public class UtilTags implements Listener {
     				   
     				   if (min > max) // in case the first number is larger than the second, reverse them
     				   {
-    					   int store = max;
+    					   int store = min;
     					   min = max;
     					   max = store;
     				   }

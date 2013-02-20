@@ -55,48 +55,82 @@ public class PlayerTags implements Listener {
         String specifier = event.getSpecifier() != null ? event.getSpecifier().toUpperCase() : "";  
         String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext().toUpperCase() : "";
         
-        if (type.equals("ONLINE_PLAYERS")) {
-            StringBuilder players = new StringBuilder();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                players.append(player.getName());
-                players.append("|");
-            }
-            event.setReplaced(players.toString().substring(0, players.length() - 1));
-            return;
-
-        } else if (type.equals("OFFLINE_PLAYERS")) {
-            StringBuilder players = new StringBuilder();
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                players.append(player.getName());
-                players.append("|");
-            }
-            event.setReplaced(players.toString().substring(0, players.length() - 1));
-            return;
-
-        } else if (type.equals("ONLINE_OPS")) {
-            StringBuilder players = new StringBuilder();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.isOp()) {
-                    players.append(player.getName());
+        if (type.equals("LIST"))
+        {
+        	StringBuilder players = new StringBuilder();
+        	
+        	if (subType.equals("ONLINE"))
+        	{
+        		if (specifier.equals("OPS"))
+        		{
+        			for (Player player : Bukkit.getOnlinePlayers())
+                    {
+                        if (player.isOp())
+                        {
+                            players.append(player.getName());
+                            players.append("|");
+                        }
+                    }
+        		}
+        		else
+                {   
+                    for (Player player : Bukkit.getOnlinePlayers())
+                    {
+                        players.append(player.getName());
+                        players.append("|");
+                    }
+                }
+        	}
+        	
+        	else if (subType.equals("OFFLINE"))
+        	{
+        		// Bukkit's idea of OfflinePlayers includes online players as well,
+        		// so get the list of online players and check against it
+        		StringBuilder onlinePlayers = new StringBuilder();
+        		
+        		for (Player player : Bukkit.getOnlinePlayers())
+                {
+                    onlinePlayers.append(player.getName());
+                    onlinePlayers.append("|");
+                }
+        		
+        		if (specifier.equals("OPS"))
+        		{	
+        			for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+        			{
+                        if (player.isOp() && !onlinePlayers.toString().contains(player.getName()))
+                        {
+                            players.append(player.getName());
+                            players.append("|");
+                        }
+                    }
+        		}
+        		else
+        		{
+        			for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+                    {        				
+        				if (!onlinePlayers.toString().contains(player.getName()))
+        				{	
+        					players.append(player.getName());
+                        	players.append("|");
+        				}
+                    }
+        		}
+        			
+        	}
+        	else // Get both online and offline players
+        	{
+        		for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+                {        				
+    				players.append(player.getName());
                     players.append("|");
                 }
-            }
-            event.setReplaced(players.toString().substring(0, players.length() - 1));
-            return;
-
-        } else if (type.equals("OFFLINE_OPS")) {
-            StringBuilder players = new StringBuilder();
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                if (player.isOp()) {
-                    players.append(player.getName());
-                    players.append("|");
-                }
-            }
-
-            event.setReplaced(players.toString().substring(0, players.length() - 1));
-            return;
+        	}
+        
+        	event.setReplaced(players.toString().substring(0, players.length() - 1));
+        	return;
         }
-
+        
         if (event.getPlayer() == null) return;
 
         if (type.equals("CHAT_HISTORY")) {
