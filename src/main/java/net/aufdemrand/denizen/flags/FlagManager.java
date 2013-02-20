@@ -340,7 +340,6 @@ public class FlagManager {
         public void save() {
             denizen.getSaves().set(flagPath, value.values);
             denizen.getSaves().set(flagPath + "-expiration", expiration);
-            denizen.saveSaves();
         }
 
         /**
