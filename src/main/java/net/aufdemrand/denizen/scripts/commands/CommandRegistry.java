@@ -87,13 +87,13 @@ public class CommandRegistry implements DenizenRegistry {
         		"EXECUTE", "execute [as_player|as_op|as_npc|as_server] [\"Bukkit command\"]", 2);
 		
         registerCoreMember(FailCommand.class, 
-        		"FAIL", "fail (player:name)", 0);
+        		"FAIL", "fail (script:script_name{attached script}) (player:player_name)", 0);
         
         registerCoreMember(FeedCommand.class, 
         		"FEED", "feed (amt:#) (target:npc|{player})", 0);
         
         registerCoreMember(FinishCommand.class, 
-        		"FINISH", "finish (player:name)", 0);
+        		"FINISH", "finish (script:script_name{attached script}) (player:player_name)", 0);
         
         registerCoreMember(FlagCommand.class, 
         		"FLAG", "flag (DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]", 1);
