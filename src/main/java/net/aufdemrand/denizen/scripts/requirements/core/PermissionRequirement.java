@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.Depends;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 
 public class PermissionRequirement extends AbstractRequirement{
 

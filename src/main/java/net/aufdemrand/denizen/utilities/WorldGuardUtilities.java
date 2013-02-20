@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 
 import org.bukkit.entity.Player;
 

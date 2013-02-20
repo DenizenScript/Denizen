@@ -2,9 +2,10 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.utilities.Depends;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.depends.MCMMOUtilities;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -290,6 +291,15 @@ public class PlayerTags implements Listener {
                         event.setReplaced(Depends.economy.currencyNamePlural());
             } else {
                 dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+            }
+        } else if (type.equals("MCMMO")) {
+            if(Depends.mcmmo != null) {
+            	if (subType.equals("LEVEL")) {
+            	    event.setReplaced(String.valueOf(MCMMOUtilities.getPlayerProfileFrom(p.getName()).getSkillLevel(
+            	    		MCMMOUtilities.getSkillTypeFrom(subTypeContext))));
+                }
+            } else {
+                dB.echoError("mcMMO not loaded! Have you installed the mcMMO plugin?");
             }
 
         } else if (type.equals("IS_OP")) {

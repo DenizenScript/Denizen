@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.utilities.Depends;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.packets.handler.NameplateHandler;
 
 public class PacketHelper {
