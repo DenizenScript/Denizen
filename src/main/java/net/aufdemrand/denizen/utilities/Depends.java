@@ -10,11 +10,13 @@ import net.milkbowl.vault.permission.Permission;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.gmail.nossr50.mcMMO;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class Depends {
 
 	public static WorldGuardPlugin worldGuard = null;
+	public static mcMMO mmo = null;
 	public static Citizens citizens = null;
 	
     public static Economy economy = null;
@@ -28,6 +30,7 @@ public class Depends {
         setupPermissions();
         setupChat();
         setupWorldGuard();
+        setupMMO();
         setupCitizens();
         setupProtocolManager();
     }
@@ -81,6 +84,14 @@ public class Depends {
         }
     	worldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
     	return worldGuard != null;
+    }
+    
+    private boolean setupMMO() {
+        if (Bukkit.getServer().getPluginManager().getPlugin("mcMMO") == null) {
+            return false;
+        }
+    	mmo = (mcMMO) Bukkit.getServer().getPluginManager().getPlugin("mcMMO");
+    	return mmo != null;
     }
 	
     private boolean setupCitizens() {

@@ -15,6 +15,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.nossr50.datatypes.PlayerProfile;
+import com.gmail.nossr50.skills.utilities.SkillType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -290,6 +293,26 @@ public class PlayerTags implements Listener {
                         event.setReplaced(Depends.economy.currencyNamePlural());
             } else {
                 dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+            }
+
+        // Basic functionality for checking player's mcMMO skill levels
+        // Seemed safest to add them as a separate player tag than in XP
+        // Possible improvements: More precise specifiers, total mcMMO levels, ability info
+        } else if (type.equals("MMO")) {
+            if(Depends.mmo != null) {
+            	if (subType.equals("LEVEL")) {
+            	    PlayerProfile profile = Depends.mmo.getPlayerProfile(p.getName());
+            	    if(profile != null) {
+            	    	SkillType skill = aH.getSkillTypeFrom(subTypeContext);
+            		    if(skill != null)
+            		        event.setReplaced(String.valueOf(profile.getSkillLevel(skill)));
+            		} else {
+                        dB.echoError("Could not find " + p.getName() + "'s mcMMO data!");
+            	    }
+     
+                }
+            } else {
+                dB.echoError("McMMO not loaded! Have you installed the mcMMO plugin?");
             }
 
         } else if (type.equals("IS_OP")) {

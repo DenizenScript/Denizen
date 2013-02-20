@@ -14,6 +14,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import com.gmail.nossr50.skills.utilities.SkillType;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -605,6 +607,28 @@ public class aH {
             dB.echoError("Unable to build a duration with this information! Provided: '" + arg + "'.");
         return duration;
     }
+    
+    /**
+     * <p>Returns an mcMMO SkillType.
+     *
+     * <p>Accounts for the format <tt>Skill:Name</tt>.</p>
+     *
+     * <p>Provides a line of dB output if returning null.</p>
+     *
+     * @param arg the argument to check
+     * @return a SkillType or null
+     *
+     */
+    public static SkillType getSkillTypeFrom(String arg) {
+        if (arg == null) return null;
+        SkillType skill = null;
+        try {
+            skill = SkillType.valueOf(arg);
+        } catch(IllegalArgumentException e) {
+            dB.echoError("Invalid skill! Failed to find a matching mcMMO SkillType.");
+        }
+        return skill;
+    }
 
     /**
      * <p>Used to determine if a dScript argument string is a valid double format. Uses
@@ -915,7 +939,6 @@ public class aH {
                     "Perhaps a replaceable Tag has failed to fill in a valid value?");
         return false;
     }
-
 
     final private static Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
 

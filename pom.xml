@@ -34,6 +34,10 @@
 			<url>http://maven.sk89q.com/repo/</url>
 		</repository>
 		<repository>
+			<id>mcmmo-repo</id>
+			<url>http://repo.mcmmo.info/</url>
+		</repository>
+		<repository>
 			<id>comphenix-rep</id>
 			<url>http://repo.comphenix.net/content/groups/public</url>
 		</repository>
@@ -91,6 +95,12 @@
 			<groupId>com.sk89q</groupId>
 			<artifactId>worldguard</artifactId>
 			<version>5.6.6-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.gmail.nossr50.mcMMO</groupId>
+			<artifactId>mcMMO</artifactId>
+			<version>1.4.00-dev4</version>
 			<scope>provided</scope>
 		</dependency>
         <dependency>
