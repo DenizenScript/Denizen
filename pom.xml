@@ -22,6 +22,10 @@
 	<!-- Repositories -->
 	<repositories>
 		<repository>
+			<id>mcMMO-repo</id>
+			<url>http://repo.mcmmo.info/</url>
+		</repository>
+		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
 		</repository>
@@ -34,11 +38,7 @@
 			<url>http://maven.sk89q.com/repo/</url>
 		</repository>
 		<repository>
-			<id>mcmmo-repo</id>
-			<url>http://repo.mcmmo.info/</url>
-		</repository>
-		<repository>
-			<id>comphenix-rep</id>
+			<id>comphenix-repo</id>
 			<url>http://repo.comphenix.net/content/groups/public</url>
 		</repository>
 	</repositories>
@@ -99,7 +99,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.gmail.nossr50.mcMMO</groupId>
-			<artifactId>mcmmo</artifactId>
+			<artifactId>mcMMO</artifactId>
 			<version>1.4.00-dev4</version>
 			<scope>provided</scope>
 		</dependency>

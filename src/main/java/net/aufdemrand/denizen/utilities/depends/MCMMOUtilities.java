@@ -7,10 +7,19 @@ import com.gmail.nossr50.skills.utilities.SkillType;
 
 public class MCMMOUtilities {
 
+	public static String getPlayerSkillLevel(String player, String skill) {
+		try {
+			return String.valueOf(getPlayerProfileFrom(player).getSkillLevel(getSkillTypeFrom(skill)));
+		} catch(NullPointerException e) {
+			// debug should have already caught this
+		}
+		return null;
+	}
+	
     public static PlayerProfile getPlayerProfileFrom(String arg) {
         PlayerProfile profile = Depends.mcmmo.getPlayerProfile(arg);
         if(profile == null)
-            dB.echoDebug("Could not find mcMMO data for " + arg + "!");
+            dB.echoError("Could not find mcMMO data for " + arg + "!");
         return profile;
     }
 	
@@ -18,7 +27,7 @@ public class MCMMOUtilities {
         SkillType skill = null;
         try {
 		    skill = SkillType.getSkill(arg);
-	    } catch(IllegalArgumentException e) {
+	    } catch(Exception e) {
             dB.echoError("McMMO skill " + arg + " not recognized!");
         }
         return skill;
