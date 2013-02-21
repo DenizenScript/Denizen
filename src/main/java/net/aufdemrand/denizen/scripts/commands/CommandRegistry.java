@@ -87,16 +87,16 @@ public class CommandRegistry implements DenizenRegistry {
         		"EXECUTE", "execute [as_player|as_op|as_npc|as_server] [\"Bukkit command\"]", 2);
 		
         registerCoreMember(FailCommand.class, 
-        		"FAIL", "fail (script:script_name{attached script}) (player:player_name)", 0);
+        		"FAIL", "fail (script:name{attached script}) (player:player_name)", 0);
         
         registerCoreMember(FeedCommand.class, 
         		"FEED", "feed (amt:#) (target:npc|{player})", 0);
         
         registerCoreMember(FinishCommand.class, 
-        		"FINISH", "finish (script:script_name{attached script}) (player:player_name)", 0);
+        		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
         
         registerCoreMember(FlagCommand.class, 
-        		"FLAG", "flag (DENIZEN|PLAYER|GLOBAL) [[NAME([#])]:[VALUE]|[NAME]:[FLAG_ACTION]:(VALUE)]", 1);
+        		"FLAG", "flag ({player}|npc|global) [[name([#])](:action)[:value]", 1);
         
         registerCoreMember(FollowCommand.class, 
         		"FOLLOW", "follow (stop)", 0);
@@ -105,7 +105,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"GIVE", "give [MONEY|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);
 		
         registerCoreMember(HealCommand.class, 
-        		"HEAL", "heal (AMT:#) (TARGET:NPC|PLAYER)", 0);
+        		"HEAL", "heal (amt:#) (target:npc|{player})", 0);
 		
         registerCoreMember(IfCommand.class, 
         		"IF", "if (!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
@@ -150,7 +150,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"STRIKE", "strike (no_damage) [location:x,y,z,world]", 1);
         
         registerCoreMember(SwitchCommand.class, 
-        		"SWITCH", "switch [LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#)", 1);
+        		"SWITCH", "switch [location:x,y,z,world] (state:[{toggle}|on|off]) (duration:#)", 1);
 		
         registerCoreMember(TakeCommand.class, 
         		"TAKE", "take [MONEY|ITEMINHAND|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);

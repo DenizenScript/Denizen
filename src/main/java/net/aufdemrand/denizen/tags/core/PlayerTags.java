@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
+import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -407,6 +409,27 @@ public class PlayerTags implements Listener {
         	if (specifier.equals("FORMATTED"))
         		event.setReplaced(event.getReplaced().toLowerCase().replace('_', ' '));
 
+        } else if (type.equals("SCRIPT")) {
+            
+        	if (aH.matchesScript("script:" + typeContext))
+            {
+        		int times = 0;
+        		
+        		if (subType.equals("FINISHED"))
+        		{
+        			times = FinishCommand.getScriptCompletes(p.getName(), aH.getStringFrom(typeContext).toUpperCase()); 
+        		}
+        		else if (subType.equals("FAILED"))
+        		{
+        			times = FailCommand.getScriptFails(p.getName(), aH.getStringFrom(typeContext).toUpperCase());
+        		}
+            		
+            	if (times > 0)
+            		event.setReplaced("true");
+            	else
+            		event.setReplaced("false");
+            }
+        
 
         } else if (type.equals("INVENTORY")) {
         	if (subType.equals("CONTAINS") && (aH.matchesItem("item:" + subTypeContext)))
