@@ -36,12 +36,18 @@ public class NPCTags implements Listener {
                 if (n.getCitizen().hasTrait(NicknameTrait.class))
                     event.setReplaced(n.getCitizen().getTrait(NicknameTrait.class).getNickname());
             }
+            
+        } else if (type.equals("TYPE")) {
+        	if (subType.equals("FORMATTED"))
+        		event.setReplaced(String.valueOf(n.getEntityType().name().toLowerCase().replace('_', ' ')));
+        	else
+        		event.setReplaced(String.valueOf(n.getEntityType().name()));
 
         } else if (type.equals("ID")) {
-            event.setReplaced(String.valueOf(event.getNPC().getId()));
+            event.setReplaced(String.valueOf(n.getId()));
         
         } else if (type.equals("OWNER")) {
-            event.setReplaced(String.valueOf(event.getNPC().getOwner()));
+            event.setReplaced(String.valueOf(n.getOwner()));
 
         } else if (type.equals("LOCATION")) {
             Location loc = n.getLocation();
@@ -72,8 +78,8 @@ public class NPCTags implements Listener {
             else if (subType.equals("WORLD"))
                 event.setReplaced(n.getWorld().getName());
             else if (subType.equals("PREVIOUS_LOCATION"))
-                if (previousLocations.containsKey(event.getNPC().getId()))
-                    event.setReplaced(previousLocations.get(event.getNPC().getId()).dScriptArgValue());
+                if (previousLocations.containsKey(n.getId()))
+                    event.setReplaced(previousLocations.get(n.getId()).dScriptArgValue());
 
         } else if (type.equals("NAVIGATOR")) {
             if (subType.equals("ISNAVIGATING"))

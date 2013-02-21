@@ -358,7 +358,10 @@ public class PlayerTags implements Listener {
             }
             
         } else if (type.equals("GAMEMODE")) {
-            event.setReplaced(String.valueOf(p.getGameMode().name()));
+        	if (subType.equals("ID"))
+        		event.setReplaced(String.valueOf(p.getGameMode().getValue()));
+        	else
+        		event.setReplaced(String.valueOf(p.getGameMode().name()));
 
         } else if (type.equals("IS_OP")) {
             event.setReplaced(String.valueOf(p.isOp()));
