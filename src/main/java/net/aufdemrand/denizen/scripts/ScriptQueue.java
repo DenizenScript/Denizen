@@ -204,34 +204,40 @@ public class ScriptQueue implements Listener {
                     revolve();
                 }
             }, ticks, ticks);
-
-        else revolve();
+        // If the ticks are 0, this is an 'instant queue'
+        else
+        {
+        	// If it's delayed, schedule it for later
+        	if (delay > System.currentTimeMillis())
+        	{
+        		Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+        			new Runnable() {
+                            @Override
+                            public void run() {
+                                // revolve
+                            	while (isStarted) revolve();
+                            }
+                        }, delay);
+        	}
+        	else while (isStarted) revolve();
+        }
     }
 
 
     private void revolve() {
-        // If entries queued up are empty, desconstruct the queue.
-        if (scriptEntries.isEmpty()) stop();
-        // Check if this Queue is able to revolve, which involves 2 criteria:
-        // 1) Isn't paused
-        if (paused) return;
-        // 2) Isn't delayed/waiting
-        if (delay > System.currentTimeMillis()) {
-            // Check if this is an 'instant queue'. If it is, and it's delayed,
-            // we need to schedule it to be called again so it isn't forgotten about.
-            if (ticks == 0)
-                Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                // revolve
-                                revolve();
-                            }
-                        }, Settings.InteractDelayInTicks());
-            return;
+        // If entries queued up are empty, deconstruct the queue.
+        if (scriptEntries.isEmpty())
+        {
+        	stop();
+        	isStarted = false;
+        	return;
         }
-        // Criteria met for a sucessful 'revolution' of this queue...
+        // Check if this Queue isn't paused
+        if (paused) return;
+        
+        // Criteria met for a successful 'revolution' of this queue...
         DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
+        
     }
 
 
