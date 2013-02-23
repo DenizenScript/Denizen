@@ -120,7 +120,10 @@ public class ScriptQueue implements Listener {
     List<ScriptEntry> scriptEntries = new ArrayList<ScriptEntry>();
 
     // If this number is larger than getCurrentTimeMillis, the queues will delay execution
-    protected long delay = 0;
+    protected long delayTime = 0;
+    
+    // The delay in ticks
+    protected long delayTicks = 0;
 
     // ScriptQueues can have a bit of context, keyed by a String Id. All that can be accessed by either getContext()
     // or a dScript replaceable tag <context.id>
@@ -171,9 +174,14 @@ public class ScriptQueue implements Listener {
         this.ticks = ticks;
     }
 
+    
+    public void delayFor(long delayTicks) {
+        this.delayTicks = delayTicks;
+    }
+    
 
-    public void delayUntil(long delay) {
-        this.delay = delay;
+    public void delayUntil(long delayTime) {
+        this.delayTime = delayTime;
     }
 
 
@@ -208,7 +216,7 @@ public class ScriptQueue implements Listener {
         else
         {
         	// If it's delayed, schedule it for later
-        	if (delay > System.currentTimeMillis())
+        	if (delayTime > System.currentTimeMillis())
         	{
         		Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
         			new Runnable() {
@@ -217,7 +225,7 @@ public class ScriptQueue implements Listener {
                                 // revolve
                             	while (isStarted) revolve();
                             }
-                        }, delay);
+                        }, delayTicks + 1);
         	}
         	else while (isStarted) revolve();
         }
@@ -234,10 +242,11 @@ public class ScriptQueue implements Listener {
         }
         // Check if this Queue isn't paused
         if (paused) return;
+        // If it's delayed, schedule it for later
+        if (delayTime > System.currentTimeMillis()) return;
         
         // Criteria met for a successful 'revolution' of this queue...
-        DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
-        
+        DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);   
     }
 
 

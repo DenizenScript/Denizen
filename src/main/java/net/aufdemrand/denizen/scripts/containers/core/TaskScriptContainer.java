@@ -76,6 +76,7 @@ public class TaskScriptContainer extends ScriptContainer {
             ScriptBuilder.addObjectToEntries(listOfEntries, "context", context);
         queue.addEntries(listOfEntries);
         queue.setSpeed(getSpeed().getTicksAsInt());
+        queue.delayFor(delay.getTicks());
         queue.delayUntil(System.currentTimeMillis() + (long) (delay.getSeconds() * 1000));
         queue.start();
         return queue;
