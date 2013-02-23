@@ -37,6 +37,13 @@ public class NPCTags implements Listener {
                     event.setReplaced(n.getCitizen().getTrait(NicknameTrait.class).getNickname());
             }
             
+        } else if (type.equals("HEALTH")) {
+        	
+        	if (subType.equals("MAX"))
+        		event.setReplaced(String.valueOf(n.getHealthTrait().getMaxhealth()));
+        	else
+        		event.setReplaced(String.valueOf(n.getHealthTrait().getHealth()));
+            
         } else if (type.equals("TYPE")) {
         	if (subType.equals("FORMATTED"))
         		event.setReplaced(String.valueOf(n.getEntityType().name().toLowerCase().replace('_', ' ')));
