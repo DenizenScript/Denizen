@@ -65,7 +65,7 @@ public class ContextTags implements Listener {
             // Build IDs
             Map<String, Integer> id = script.getContextMap();
             if (context.containsKey( String.valueOf(id.get(type.toUpperCase())))) {
-                event.setReplaced(context.get(type.toUpperCase()));
+            	event.setReplaced(context.get(String.valueOf(id.get(type.toUpperCase()))));
             }
         }
     }

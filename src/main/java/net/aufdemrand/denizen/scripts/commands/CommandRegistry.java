@@ -57,7 +57,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"ASSIGNMENT", "assignment [{set}|remove] (script:assignment_script)", 1);
         
         registerCoreMember(CastCommand.class, 
-        		"CAST", "cast [potion_effect_type] (duration:#{60s}) (power:#{1}) (target(s):npc|player|npc.#|player.player_name|entity_name)", 1);
+        		"CAST", "cast [effect] (duration:#{60s}) (power:#{1}) (target(s):npc|player|npc.#|player.player_name|entity_name)", 1);
 
         if (Depends.protocolManager != null) registerCoreMember(ChairCommand.class,
         		"CHAIR", "chair (sit|stand) [location:x,y,z,world]", 1);
@@ -72,7 +72,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"COOLDOWN", "cooldown (duration:#{60s}) (global|player:name{attached player}) (script:name)", 1);
 		
         registerCoreMember(DetermineCommand.class, 
-        		"DETERMINE", "determine [true|false]", 1);
+        		"DETERMINE", "determine [\"value\"]", 1);
         
         registerCoreMember(DisengageCommand.class, 
         		"DISENGAGE", "disengage (npcid:#)", 0);
@@ -96,13 +96,13 @@ public class CommandRegistry implements DenizenRegistry {
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
         
         registerCoreMember(FlagCommand.class, 
-        		"FLAG", "flag ({player}|npc|global) [[name([#])](:action)[:value]", 1);
+        		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value]", 1);
         
         registerCoreMember(FollowCommand.class, 
         		"FOLLOW", "follow (stop)", 0);
 		
         registerCoreMember(GiveCommand.class, 
-        		"GIVE", "give [MONEY|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);
+        		"GIVE", "give [money|item:#(:#)|item:material(:#)] (qty:#)", 1);
 		
         registerCoreMember(HealCommand.class, 
         		"HEAL", "heal (amt:#) (target:npc|{player})", 0);
@@ -129,10 +129,10 @@ public class CommandRegistry implements DenizenRegistry {
         		"NARRATE", "narrate [\"narration text\"] (player:name)", 1);
         
         registerCoreMember(NewCommand.class, 
-        		"NEW", "new ITEMSTACK [ITEM:item] (QTY:qty)", 2);
+        		"NEW", "new itemstack [item:material] (qty:#)", 2);
 		
         registerCoreMember(PlaySoundCommand.class, 
-        		"PLAYSOUND", "playsound [LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)", 2);
+        		"PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
 		
         registerCoreMember(RandomCommand.class, 
         		"RANDOM", "random [#]", 1);
@@ -153,10 +153,10 @@ public class CommandRegistry implements DenizenRegistry {
         		"SWITCH", "switch [location:x,y,z,world] (state:[{toggle}|on|off]) (duration:#)", 1);
 		
         registerCoreMember(TakeCommand.class, 
-        		"TAKE", "take [MONEY|ITEMINHAND|ITEM:#(:#)|ITEM:MATERIAL_TYPE(:#)] (QTY:#)", 1);
+        		"TAKE", "take [money|iteminhand|item:#(:#)|item:material(:#)] (qty:#)", 1);
         
         registerCoreMember(TeleportCommand.class, 
-        		"TELEPORT", "teleport (NPC) [LOCATION:x,y,z,world] (TARGETS:[NPC.#]|[PLAYER.PlayerName])", 1);
+        		"TELEPORT", "teleport (npc) [location:x,y,z,world] (target(s):[npc.#]|[player.name])", 1);
         
         registerCoreMember(TriggerCommand.class, 
         		"TRIGGER", "trigger [NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
