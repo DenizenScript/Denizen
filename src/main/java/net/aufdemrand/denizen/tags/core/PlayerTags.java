@@ -445,6 +445,19 @@ public class PlayerTags implements Listener {
         		else
         			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, 1)));
         	}
+        	else if (subType.equals("STACKS"))
+        	{
+        		int qty = 0;
+        		
+        		for (ItemStack itemstack : event.getPlayer().getInventory().getContents())
+        		{	
+        			if (itemstack != null)
+        				qty++;
+        		}
+        		
+        		event.setReplaced(String.valueOf(qty));
+        	}
+        		
 
         } else if (type.equals("XP")) {
             event.setReplaced(String.valueOf(event.getPlayer().getExp() * 100));

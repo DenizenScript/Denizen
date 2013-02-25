@@ -24,7 +24,7 @@ public class ProcedureScriptTag implements Listener {
     if (!event.matches("PROC")) return;
        if (event.getValue() == null) return;
 
-       // Get the script from the type argument
+       // Get the script's name from the tag's value
        Script script = aH.getScriptFrom(event.getValue());
 
        // Build script entries
