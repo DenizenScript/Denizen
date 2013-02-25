@@ -451,7 +451,15 @@ public class PlayerTags implements Listener {
         		
         		for (ItemStack itemstack : event.getPlayer().getInventory().getContents())
         		{	
+        			// If ItemStacks are empty here, they are null
         			if (itemstack != null)
+        				qty++;
+        		}
+        		
+        		for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
+        		{	
+        			// If ItemStacks are empty here, they are AIR
+        			if (itemstack.getType().name() != "AIR")
         				qty++;
         		}
         		
