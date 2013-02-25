@@ -75,7 +75,7 @@ public class GiveCommand  extends AbstractCommand {
 				dB.echoDebug ("...giving EXP.");
 			} 
 			
-			else if (aH.matchesItem(thisArg)) {
+			else if (aH.matchesItem(thisArg) || aH.matchesItem("item:" + thisArg)) {
 				theItem = aH.getItemFrom (thisArg);
 				this.giveType = GiveType.ITEM;
 				if (theItem != null) {

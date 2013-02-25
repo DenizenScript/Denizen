@@ -55,7 +55,7 @@ public class TakeCommand extends AbstractCommand{
 				dB.echoDebug ("...set quantity to " + quantity);
 			}
 			
-			else if (aH.matchesItem(arg)) {
+			else if (aH.matchesItem(arg) || aH.matchesItem("item:" + arg)) {
 				takeType = TakeType.ITEM;
 				item = aH.getItemFrom(arg);
 				dB.echoDebug("...taking " + item.getType());
