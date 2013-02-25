@@ -740,14 +740,16 @@ public class aH {
      *
      */
     public static boolean matchesItem(String arg) {
-        if (arg.toUpperCase().startsWith("ITEM:")) return true;
-        // TODO: Other matches____ do some actual checks. Should this?
+        if (arg.toUpperCase().startsWith("ITEM:"))
+        	if (arg.length() > 5)
+        		return true;
+        // TODO: Other matches____ do some actual checks.
         return false;
     }
 
     public static boolean matchesContext(String arg) {
         if (arg.toUpperCase().startsWith("CONTEXT:")) return true;
-        // TODO: Other matches____ do some actual checks. Should this?
+        // TODO: Other matches____ do some actual checks.
         return false;
     }
 

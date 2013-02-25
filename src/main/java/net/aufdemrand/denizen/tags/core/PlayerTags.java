@@ -445,6 +445,51 @@ public class PlayerTags implements Listener {
         		else
         			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, 1)));
         	}
+        	else if (subType.equals("QTY"))
+        	{
+        		int qty = 0;
+        		
+        		if (aH.matchesItem("item:" + subTypeContext))
+        		{	
+        			ItemStack item = new ItemStack(aH.getItemFrom("item:" + subTypeContext));
+        			
+        			for (ItemStack itemstack : event.getPlayer().getInventory().getContents())
+            		{	
+            			// If ItemStacks are empty here, they are null
+            			if (itemstack != null)
+            			{
+            				if (itemstack.isSimilar(item))
+            					qty = qty + itemstack.getAmount();
+            			}
+            		}
+        			for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
+            		{	
+            			// If ItemStacks are empty here, they are AIR
+            			if (itemstack.getType().name() != "AIR")
+            			{
+            				if (itemstack.isSimilar(item))
+            					qty = qty + itemstack.getAmount();
+            			}
+            		}
+        		}
+        		else // Add up the amounts of all itemstacks
+        		{
+        			for (ItemStack itemstack : event.getPlayer().getInventory().getContents())
+            		{	
+            			// If ItemStacks are empty here, they are null
+            			if (itemstack != null)
+            				qty = qty + itemstack.getAmount();
+            		}
+        			for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
+            		{	
+            			// If ItemStacks are empty here, they are AIR
+            			if (itemstack.getType().name() != "AIR")
+            				qty = qty + itemstack.getAmount();
+            		}
+        		}
+        		
+        		event.setReplaced(String.valueOf(qty));
+        	}
         	else if (subType.equals("STACKS"))
         	{
         		int qty = 0;
