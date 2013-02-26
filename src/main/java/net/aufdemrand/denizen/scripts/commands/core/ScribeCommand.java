@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -106,9 +107,10 @@ public class ScribeCommand extends AbstractCommand implements Listener{
         Player player = scriptEntry.getPlayer();
         String scriptName = null;
         Location location = null;
+        dNPC npc = scriptEntry.getNPC();
 
-        if (scriptEntry.getNPC() != null)
-            location = scriptEntry.getNPC().getLocation();
+        if (npc != null)
+            location = npc.getLocation();
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesArg("DROP, GIVE, EQUIP", arg))
@@ -143,6 +145,7 @@ public class ScribeCommand extends AbstractCommand implements Listener{
         scriptEntry.addObject("script", scriptName);
         scriptEntry.addObject("player", player);
         scriptEntry.addObject("location", location);
+        scriptEntry.addObject("npc", npc);
     }
 
     @SuppressWarnings("deprecation")
@@ -155,8 +158,13 @@ public class ScribeCommand extends AbstractCommand implements Listener{
         String scriptName = (String) scriptEntry.getObject("script");
         Player player = (Player) scriptEntry.getObject("player");
         Location location = (Location) scriptEntry.getObject("location");
+        dNPC npc = (dNPC) scriptEntry.getObject("npc");
 
         BookScriptContainer bookScript = ScriptRegistry.getScriptContainerAs(scriptName, BookScriptContainer.class);
+        
+        if (player != null) bookScript.setPlayer(player);
+        if (npc != null) bookScript.setNPC(npc);
+        
         book = bookScript.writeBookTo(book);
 
         // Post-write action? Can be NONE.
