@@ -50,7 +50,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			} 
 			
 			else if (aH.matchesValueArg("ITEMS, ITEM", arg, ArgumentType.Custom)) {
-				for (String thisItem : aH.getListFrom(arg))
+				for (String thisItem : aH.getListFrom(arg.toUpperCase()))
 					if (server.getRecipesFor(new ItemStack(Material.matchMaterial(thisItem))) != null) {
 						items.add(thisItem);
 					} else dB.echoError("..." + thisItem + " is not a craftable item");
@@ -83,10 +83,8 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 				
 				if (items.contains(event.getCurrentItem().getType().toString()) 
 						|| items.contains(String.valueOf(event.getCurrentItem().getTypeId()))) {
-					if (itemsCrafted.contains(event.getCurrentItem().getTypeId()))
-						return;
-					else itemsCrafted.add(event.getCurrentItem().getTypeId());
-
+				
+					itemsCrafted.add(event.getCurrentItem().getTypeId());
 					currentItems++;
 					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " crafted a " + event.getCurrentItem().getType().toString() + ".");
 					check();
@@ -107,10 +105,8 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			if (event.getBlock() == e.getCurrentItem()) {
 				if (items.contains(event.getBlock().getType().toString()) 
 						|| items.contains(String.valueOf(event.getBlock().getTypeId()))) {
-					if (itemsSmelted.contains(event.getBlock().getTypeId()))
-						return;
-					else itemsSmelted.add(event.getBlock().getTypeId());
 
+					itemsSmelted.add(event.getBlock().getTypeId());
 					currentItems++;
 					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " smelted a " + event.getBlock().getType().toString() + ".");
 					check();
@@ -129,10 +125,8 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
 				
 				if (items.contains(event.getCaught().getType().toString())) {
-					if (itemsFished.contains(event.getCaught().getType()))
-						return;
-					else itemsFished.add(event.getCaught().getType());
-
+					
+					itemsFished.add(event.getCaught().getType());
 					currentItems++;
 					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " fished a " + event.getCaught().getType().toString() + ".");
 					check();
