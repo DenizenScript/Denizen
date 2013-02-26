@@ -20,7 +20,7 @@ import java.util.Set;
 /**
  * This class has utility methods for various tasks.
  *
- * @author aufdemrand, dbixler, AgentK
+ * @author aufdemrand, dbixler, David Cernat, AgentK
  */
 public class Utilities {
 

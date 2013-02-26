@@ -34,7 +34,7 @@ import org.bukkit.event.HandlerList;
  * <NPC.NAME:NICKNAME>
  * <^FLAG.D:FRIENDS(None.)>
  *
- * @author Jeremy Schroeder
+ * @author Jeremy Schroeder, David Cernat
  *
  */
 
