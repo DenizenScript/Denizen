@@ -89,7 +89,7 @@ public class NPCTags implements Listener {
                     event.setReplaced(previousLocations.get(n.getId()).dScriptArgValue());
 
         } else if (type.equals("NAVIGATOR")) {
-            if (subType.equals("ISNAVIGATING"))
+            if (subType.equals("IS_NAVIGATING"))
                 event.setReplaced(Boolean.toString(n.getNavigator().isNavigating()));
             else if (subType.equals("SPEED"))
                 event.setReplaced(String.valueOf(n.getNavigator().getLocalParameters().speedModifier()));
@@ -98,9 +98,13 @@ public class NPCTags implements Listener {
             else if (subType.equals("TARGET_LOCATION")) {
                 Location loc = new Location(n.getNavigator().getTargetAsLocation());
                 if (loc != null) event.setReplaced(loc.dScriptArgValue());
+            } else if (subType.equals("IS_FIGHTING")) {
+                event.setReplaced(String.valueOf(event.getNPC().getNavigator().getEntityTarget().isAggressive()));
+            } else if (subType.equals("TARGET_TYPE")) {
+                event.setReplaced(event.getNPC().getNavigator().getTargetType().toString());
             }
-        }
 
+        }
 
     }
 
