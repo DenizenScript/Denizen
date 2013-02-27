@@ -1,16 +1,25 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemScriptContainer extends ScriptContainer {
-
+	
+	dNPC npc = null;
+	Player player = null;
+	
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
@@ -20,8 +29,11 @@ public class ItemScriptContainer extends ScriptContainer {
         Item stack = null;
         try {
             // Check validity of material
-            if (contains("MATERIAL"))
-                stack = Item.valueOf(getString("MATERIAL"));
+            if (contains("MATERIAL")){
+            	String material = DenizenAPI.getCurrentInstance().tagManager()
+                        .tag(player, npc, getString("MATERIAL"), false);
+                stack = Item.valueOf(material);
+            }
 
             // Make sure we're working with a valid base ItemStack
             if (stack == null) return null;
@@ -29,13 +41,24 @@ public class ItemScriptContainer extends ScriptContainer {
             ItemMeta meta = stack.getItemMeta();
 
             // Set Display Name
-            if (contains("DISPLAY NAME"))
-                meta.setDisplayName(getString("DISPLAY NAME"));
+            if (contains("DISPLAY NAME")){
+            	String displayName = DenizenAPI.getCurrentInstance().tagManager()
+                        .tag(player, npc, getString("DISPLAY NAME"), false);
+            	meta.setDisplayName(displayName);
+            }
+                
 
             // Set Lore
-            if (contains("LORE"))
-                meta.setLore(getStringList("LORE"));
-
+            if (contains("LORE")) {
+            	List<String> taggedLore = new ArrayList<String>();
+            	for (String l : getStringList("LORE")){
+            		 l = DenizenAPI.getCurrentInstance().tagManager()
+                            .tag(player, npc, l, false);
+            		 taggedLore.add(l);
+            	}
+                meta.setLore(taggedLore);
+            }
+            	
             stack.setItemMeta(meta);
 
             // Set Enchantments
@@ -46,7 +69,8 @@ public class ItemScriptContainer extends ScriptContainer {
                         int level = 1;
                         if (enchantment.split(":").length > 1) {
                             level = Integer.valueOf(enchantment.split(":")[1]);
-                            enchantment = enchantment.split(":")[0];
+                            enchantment = DenizenAPI.getCurrentInstance().tagManager()
+                                    .tag(player, npc, enchantment.split(":")[0], false);
                         }
                         // Add enchantment
                         Enchantment ench = Enchantment.getByName(enchantment.toUpperCase());
@@ -82,6 +106,14 @@ public class ItemScriptContainer extends ScriptContainer {
         }
 
         return stack;
+    }
+    
+    public void setNPC(dNPC npc) {
+    	this.npc = npc;
+    }
+    
+    public void setPlayer(Player player) {
+    	this.player = player;
     }
 
 }
