@@ -25,7 +25,7 @@ public class ClearCommand extends AbstractCommand {
         List<ScriptQueue> queues = new ArrayList<ScriptQueue>();
 
         // Use current queue if none specified.
-        queues.add(ScriptQueue._getQueue(scriptEntry.getResidingQueue()));
+        queues.add(scriptEntry.getResidingQueue());
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesQueue(arg)) {

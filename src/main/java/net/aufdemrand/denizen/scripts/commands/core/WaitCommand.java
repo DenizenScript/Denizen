@@ -21,7 +21,7 @@ public class WaitCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize required fields
-        ScriptQueue queue = ScriptQueue._getQueue(scriptEntry.getResidingQueue());
+        ScriptQueue queue = scriptEntry.getResidingQueue();
         Duration delay = new Duration(3);
 
         // Iterate through arguments

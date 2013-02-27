@@ -447,7 +447,7 @@ public class IfCommand extends AbstractCommand {
                     .setPlayer(scriptEntry.getPlayer())
                     .setNPC(scriptEntry.getNPC()).setInstant(true)
                     .addObject("reqId", scriptEntry.getObject("reqId"));
-            ScriptQueue._getQueue(scriptEntry.getResidingQueue()).injectEntry(entry, 0);
+            scriptEntry.getResidingQueue().injectEntry(entry, 0);
         } catch (ScriptEntryCreationException e) {
             dB.echoError("There has been a problem running the Command. Check syntax.");
             if (dB.showStackTraces) {
@@ -477,7 +477,7 @@ public class IfCommand extends AbstractCommand {
                     .setPlayer(scriptEntry.getPlayer())
                     .setNPC(scriptEntry.getNPC()).setInstant(true)
                     .addObject("reqId", scriptEntry.getObject("reqId"));
-            ScriptQueue._getQueue(scriptEntry.getResidingQueue()).injectEntry(entry, 0);
+            scriptEntry.getResidingQueue().injectEntry(entry, 0);
         } catch (ScriptEntryCreationException e) {
             dB.echoError("There has been a problem running the ELSE Command. Check syntax.");
             if (dB.showStackTraces) {

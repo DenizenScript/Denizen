@@ -42,7 +42,7 @@ public class RandomCommand extends AbstractCommand {
         int possibilities = 1;
         ScriptQueue queue;
 
-		queue = ScriptQueue._getQueue(scriptEntry.getResidingQueue());
+		queue = scriptEntry.getResidingQueue();
 		
 		for (String arg : scriptEntry.getArguments()) {
 			//

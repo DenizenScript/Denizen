@@ -45,7 +45,7 @@ public class DetermineCommand extends AbstractCommand {
         outcomes.put(uniqueId, outcome);
 
         // Stop the queue by clearing the remainder of it.
-        ScriptQueue._getQueue(scriptEntry.getResidingQueue()).clear();
+        scriptEntry.getResidingQueue().clear();
     }
 
 }
