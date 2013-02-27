@@ -1,4 +1,5 @@
 package net.aufdemrand.denizen;
+
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 
 public class Settings {

@@ -1,7 +1,15 @@
 package net.aufdemrand.denizen;
 
+import java.util.Set;
+
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
+import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
+import net.aufdemrand.denizen.npc.traits.HealthTrait;
+import net.aufdemrand.denizen.npc.traits.NameplateTrait;
+import net.aufdemrand.denizen.npc.traits.NicknameTrait;
+import net.aufdemrand.denizen.npc.traits.PushableTrait;
+import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
@@ -13,18 +21,17 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.command.Command;
 import net.citizensnpcs.api.command.CommandContext;
+import net.citizensnpcs.api.command.Requirements;
 import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.util.Messaging;
-import net.citizensnpcs.api.command.Requirements;
 import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Paginator;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.json.JSONException;
-
-import java.util.Set;
 
 
 public class CommandHandler {

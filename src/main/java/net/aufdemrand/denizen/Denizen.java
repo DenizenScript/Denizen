@@ -1,12 +1,23 @@
 package net.aufdemrand.denizen;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.notables.NotableManager;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.activities.ActivityEngine;
 import net.aufdemrand.denizen.npc.activities.ActivityRegistry;
-import net.aufdemrand.denizen.npc.dNPCRegistry;
-import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
+import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
+import net.aufdemrand.denizen.npc.traits.HealthTrait;
+import net.aufdemrand.denizen.npc.traits.NameplateTrait;
+import net.aufdemrand.denizen.npc.traits.NicknameTrait;
+import net.aufdemrand.denizen.npc.traits.PushableTrait;
+import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -23,6 +34,7 @@ import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -33,11 +45,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class Denizen extends JavaPlugin {
