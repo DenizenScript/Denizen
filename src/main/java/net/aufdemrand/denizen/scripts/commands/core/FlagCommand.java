@@ -19,7 +19,7 @@ import org.bukkit.event.Listener;
 
 public class FlagCommand extends AbstractCommand implements Listener {
 
-    public enum Action { SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY, DIVIDE, INSERT, REMOVE, DELETE }
+    public enum Action { SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY, DIVIDE, INSERT, REMOVE, SPLIT, DELETE }
     public enum Type   { GLOBAL, NPC, PLAYER }
 
     @Override
@@ -63,6 +63,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 } else if (flagArgs.length == 3) {
                     if (flagArgs[1].startsWith("->")) action = Action.INSERT;
                     else if (flagArgs[1].startsWith("<-")) action = Action.REMOVE;
+                    else if (flagArgs[1].startsWith("|")) action = Action.SPLIT;
                     else if (flagArgs[1].startsWith("+")) action = Action.INCREASE;
                     else if (flagArgs[1].startsWith("-")) action = Action.DECREASE;
                     else if (flagArgs[1].startsWith("*")) action = Action.MULTIPLY;
@@ -166,6 +167,9 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 break;
             case REMOVE:
                 flag.remove(value, index);
+                break;
+            case SPLIT:
+                flag.split(value);
                 break;
             case DELETE:
                 flag.clear();
