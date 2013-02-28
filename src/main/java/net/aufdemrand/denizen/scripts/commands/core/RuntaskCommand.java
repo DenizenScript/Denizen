@@ -114,7 +114,7 @@ public class RuntaskCommand extends AbstractCommand {
 
         // If no queue specified, assume the residing queue
         if (queue == null)
-            queue = ScriptQueue._getQueue(scriptEntry.getResidingQueue());
+            queue = scriptEntry.getResidingQueue();
 
         // if residing queue speed is 0, and script to be run isn't, make new queue!
         if ((queue.getSpeed().getTicksAsInt() == 0)

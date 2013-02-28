@@ -126,7 +126,8 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         return this;
     }
 
-	public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown, int defaultRadius, CooldownType defaultCooldownType) {
+	public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown,
+                                       int defaultRadius, CooldownType defaultCooldownType) {
         this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultRadius, defaultCooldownType);
         return this;
     }

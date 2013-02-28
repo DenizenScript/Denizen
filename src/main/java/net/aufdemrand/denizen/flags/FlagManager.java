@@ -241,6 +241,30 @@ public class FlagManager {
             rebuild();
             return size();
         }
+        
+        /**
+         * Splits a dScript list into values that are then added to the flag. 
+         * Returns the index of the last value added to the flag.
+         *
+         */
+        public int split(Object obj) {
+        	
+            checkExpired();
+        	
+            String[] split = ((String) obj).split("\\|"); // the pipe character | needs to be escaped
+        	
+            if (split.length > 0)
+            {
+            	for (String val : split)
+            	{
+            		value.values.add(val);
+            	}
+                save();
+                rebuild();
+            }
+
+            return size();
+        }
 
         /**
          * Removes a value from the Flag's current values. The first value that matches
@@ -548,7 +572,7 @@ public class FlagManager {
                     // If a List<Object>
                 else if (arg.contains("|")) {
                     List<String> toList = new ArrayList<String>();
-                    for (String string : arg.split("|"))
+                    for (String string : arg.split("\\|")) // the pipe character | needs to be escaped
                         toList.add(string);
                     return toList;
                 }

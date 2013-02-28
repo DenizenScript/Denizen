@@ -39,7 +39,7 @@ public class ContextTags implements Listener {
 
         } else if (type.equalsIgnoreCase("SCRIPT")) {
             if (subType.equalsIgnoreCase("QUEUE"))
-                event.setReplaced(entry.getResidingQueue());
+                event.setReplaced(entry.getResidingQueue().id);
         }
 
     }

@@ -38,7 +38,7 @@ public class ScriptEntry {
 
     private Script script = null;
 
-	private String queueId = null;
+	private ScriptQueue queue = null;
 	private List<String> args = null;
 
 	private Map<String, Object> objects = new HashMap<String, Object>();
@@ -133,8 +133,8 @@ public class ScriptEntry {
         return script;
 	}
 
-	public String getResidingQueue() {
-		return queueId;
+	public ScriptQueue getResidingQueue() {
+		return queue;
 	}
 
 	public Long getQueueTime() {
@@ -184,7 +184,7 @@ public class ScriptEntry {
 	}
 
 	public void setSendingQueue(ScriptQueue scriptQueue) {
-		queueId = scriptQueue.id;
+		queue = scriptQueue;
 	}
 	
 }
