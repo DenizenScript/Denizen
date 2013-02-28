@@ -111,7 +111,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"IF", "if (!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
 		
         registerCoreMember(ListenCommand.class, 
-        		"LISTEN", "listen [Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation.", 2);
+        		"LISTEN", "listen [Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation - http://bit.ly/XJlKwm", 2);
         
         registerCoreMember(LookCommand.class, 
         		"LOOK", "look [location:x,y,z,world]", 1);
