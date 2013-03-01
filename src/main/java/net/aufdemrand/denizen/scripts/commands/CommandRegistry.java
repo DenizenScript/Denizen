@@ -1,14 +1,57 @@
 package net.aufdemrand.denizen.scripts.commands;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.scripts.commands.core.*;
+import net.aufdemrand.denizen.scripts.commands.core.AnnounceCommand;
+import net.aufdemrand.denizen.scripts.commands.core.AssignmentCommand;
+import net.aufdemrand.denizen.scripts.commands.core.AttackCommand;
+import net.aufdemrand.denizen.scripts.commands.core.CastCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ChatCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ClearCommand;
+import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
+import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizen.scripts.commands.core.DisengageCommand;
+import net.aufdemrand.denizen.scripts.commands.core.DropCommand;
+import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ExecuteCommand;
+import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
+import net.aufdemrand.denizen.scripts.commands.core.FeedCommand;
+import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
+import net.aufdemrand.denizen.scripts.commands.core.FishCommand;
+import net.aufdemrand.denizen.scripts.commands.core.FlagCommand;
+import net.aufdemrand.denizen.scripts.commands.core.FollowCommand;
+import net.aufdemrand.denizen.scripts.commands.core.GiveCommand;
+import net.aufdemrand.denizen.scripts.commands.core.HealCommand;
+import net.aufdemrand.denizen.scripts.commands.core.IfCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ListenCommand;
+import net.aufdemrand.denizen.scripts.commands.core.LookCommand;
+import net.aufdemrand.denizen.scripts.commands.core.LookcloseCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ModifyBlockCommand;
+import net.aufdemrand.denizen.scripts.commands.core.NameplateCommand;
+import net.aufdemrand.denizen.scripts.commands.core.NarrateCommand;
+import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
+import net.aufdemrand.denizen.scripts.commands.core.PlaySoundCommand;
+import net.aufdemrand.denizen.scripts.commands.core.RandomCommand;
+import net.aufdemrand.denizen.scripts.commands.core.RuntaskCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ScribeCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ShootCommand;
+import net.aufdemrand.denizen.scripts.commands.core.SitCommand;
+import net.aufdemrand.denizen.scripts.commands.core.StandCommand;
+import net.aufdemrand.denizen.scripts.commands.core.StrikeCommand;
+import net.aufdemrand.denizen.scripts.commands.core.SwitchCommand;
+import net.aufdemrand.denizen.scripts.commands.core.TakeCommand;
+import net.aufdemrand.denizen.scripts.commands.core.TeleportCommand;
+import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
+import net.aufdemrand.denizen.scripts.commands.core.VulnerableCommand;
+import net.aufdemrand.denizen.scripts.commands.core.WaitCommand;
+import net.aufdemrand.denizen.scripts.commands.core.WalkToCommand;
+import net.aufdemrand.denizen.scripts.commands.core.ZapCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class CommandRegistry implements DenizenRegistry {
 
@@ -58,9 +101,6 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(CastCommand.class, 
         		"CAST", "cast [effect] (duration:#{60s}) (power:#{1}) (target(s):npc|player|npc.#|player.player_name|entity_name)", 1);
-
-        if (Depends.protocolManager != null) registerCoreMember(ChairCommand.class,
-        		"CHAIR", "chair (sit|stand) [location:x,y,z,world]", 1);
         
         registerCoreMember(ChatCommand.class, 
         		"CHAT", "chat [\"chat text\"] (npcid:#) (target(s):npc.#|player.name{attached player})", 1);
@@ -94,7 +134,10 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(FinishCommand.class, 
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
-        
+
+        registerCoreMember(FishCommand.class, 
+        		"FISH", "dont bother...", 0);
+
         registerCoreMember(FlagCommand.class, 
         		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value]", 1);
         
@@ -148,6 +191,9 @@ public class CommandRegistry implements DenizenRegistry {
 
         registerCoreMember(SitCommand.class, 
         		"SIT", "sit (location:x,y,z,world)", 0);
+
+        registerCoreMember(StandCommand.class, 
+        		"STAND", "stand", 0);
         
         registerCoreMember(StrikeCommand.class, 
         		"STRIKE", "strike (no_damage) [location:x,y,z,world]", 1);
