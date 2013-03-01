@@ -21,7 +21,6 @@ import net.aufdemrand.denizen.scripts.commands.core.ExecuteCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FeedCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FishCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FlagCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FollowCommand;
 import net.aufdemrand.denizen.scripts.commands.core.GiveCommand;
@@ -135,8 +134,8 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(FinishCommand.class, 
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
 
-        registerCoreMember(FishCommand.class, 
-        		"FISH", "dont bother...", 0);
+        // registerCoreMember(FishCommand.class, 
+        // 		"FISH", "dont bother...", 0);
 
         registerCoreMember(FlagCommand.class, 
         		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value]", 1);
