@@ -142,9 +142,12 @@ public class CommandRegistry implements DenizenRegistry {
 		
         registerCoreMember(ScribeCommand.class, 
         		"SCRIBE", "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
-        
+
         registerCoreMember(ShootCommand.class, 
         		"SHOOT", "shoot [entity:name] (ride) (burn) (explode) (location:x,y,z,world) (script:name)", 1);
+
+        registerCoreMember(SitCommand.class, 
+        		"SIT", "sit (location:x,y,z,world)", 0);
         
         registerCoreMember(StrikeCommand.class, 
         		"STRIKE", "strike (no_damage) [location:x,y,z,world]", 1);

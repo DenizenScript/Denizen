@@ -39,16 +39,24 @@ public class SittingTrait extends Trait implements Listener  {
 		
 		if (npc == null) {
 			sitting = false;
+			dB.log("...npc is null");
+			return;
+		}
+		if (!sitting) {
+			return;
+		}
+		if (location == null) {
+			dB.log("...location is null");
 			return;
 		}
 		
-		if (!sitting) return;
-		
 		if (!Utilities.checkLocation(npc.getBukkitEntity(), location, 1)) {
-           sendStandPacket();
-           sitting = false;
+			dB.log("...npc moved, making stand");
+			sendStandPacket();
+			sitting = false;
         } else {
-           sendSitPacket();
+        	dB.log("...resending sit packet");
+        	sendSitPacket();
         }
 	}
 	
@@ -78,7 +86,7 @@ public class SittingTrait extends Trait implements Listener  {
             }
 
         } catch (Error e) {
-            dB.echoError("ProtocolLib required for SIT command!!");
+            dB.echoError("ProtocolLib required to sit!!");
         }
 	}
 	
@@ -107,15 +115,17 @@ public class SittingTrait extends Trait implements Listener  {
                 }
             }
         } catch (Error e) {
-            dB.echoError("ProtocolLib required for SIT command!!");
+            dB.echoError("ProtocolLib required to stand!!");
         }
+		dB.log("...stand packet sent");
 	}
 	/**
 	 * Makes the NPC sit
 	 */
 	public void sit() {
 		
-		if (sitting = true) {
+		if (sitting == true) {
+			dB.log("...npc is sitting");
 			return;
 		}
 		
@@ -134,7 +144,8 @@ public class SittingTrait extends Trait implements Listener  {
 	 */
 	public void sit(Location location) {
 		
-		if (sitting = true) {
+		if (sitting == true) {
+			dB.log("...npc is sitting");
 			return;
 		}
 		
@@ -142,7 +153,7 @@ public class SittingTrait extends Trait implements Listener  {
 		 * Teleport NPC to the location before
 		 * sending the sit packet to the clients.
 		 */
-		npc.getBukkitEntity().teleport(location);
+		npc.getBukkitEntity().teleport(location.add(0.5, 0, 0.5));
 		
 		sendSitPacket();
 
@@ -155,7 +166,7 @@ public class SittingTrait extends Trait implements Listener  {
 	 */
 	public void stand() {
 		
-		if (sitting = false) {
+		if (sitting == false) {
 			return;
 		}
 		
@@ -208,7 +219,7 @@ public class SittingTrait extends Trait implements Listener  {
         }
     }
 	
-	protected SittingTrait() {
+	public SittingTrait() {
 		super("sitting");
 	}
 
