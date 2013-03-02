@@ -67,7 +67,7 @@ public class RequirementRegistry implements DenizenRegistry {
         		"HOLDING", "holding [ITEMNAME] [QTY:#] [EXACT]", 1);
         
         registerCoreMember(InGroupRequirement.class, 
-        		"INGROUP", "ingroup [GROUP]", 1);
+        		"INGROUP", "ingroup (global) [group]", 1);
         
         registerCoreMember(ItemRequirement.class, 
         		"ITEM", "item [ITEM] (QTY:#)", 1);
@@ -85,7 +85,7 @@ public class RequirementRegistry implements DenizenRegistry {
         		"OWNER", "owner (no args)", 0);
         
         registerCoreMember(PermissionRequirement.class, 
-        		"PERMISSION", "permission [PERMISSION]", 1);
+        		"PERMISSION", "permission (global) [permission]", 1);
         
         registerCoreMember(PoweredRequirement.class, 
         		"ISPOWERED", "ispowered [LOCATION:x,y,z,world]", 1);
