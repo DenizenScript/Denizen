@@ -10,7 +10,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
