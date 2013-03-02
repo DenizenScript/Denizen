@@ -146,7 +146,7 @@ public class Denizen extends JavaPlugin {
 		// Activate dependencies
 		depends.initialize();
 		
-		if(!Depends.citizens.isEnabled()) {
+		if(Depends.citizens == null || !Depends.citizens.isEnabled()) {
 			dB.echoError("Citizens does not seem to be activated! Deactivating Denizen!");
 			getServer().getPluginManager().disablePlugin(this);
 			return;

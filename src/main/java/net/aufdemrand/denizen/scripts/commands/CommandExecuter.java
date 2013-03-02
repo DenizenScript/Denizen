@@ -65,21 +65,22 @@ public class CommandExecuter {
 			List<String> newArgs = new ArrayList<String>(); 
 
 			for (String arg : scriptEntry.getArguments()) {
-
+                String[] split = arg.split(":");
+                
 				// Fill player/off-line player
 				if (aH.matchesValueArg("PLAYER", arg, aH.ArgumentType.String)) {
 					boolean foundNewPlayer = false;
 					dB.echoDebug("...replacing the linked Player.");
 					for (Player playa : Bukkit.getServer().getOnlinePlayers())
-						if (playa.getName().equalsIgnoreCase(arg.split(":")[1])) {
+						if (playa.getName().equalsIgnoreCase(split[1])) {
 							foundNewPlayer = true;
 							scriptEntry.setPlayer(playa);
 						}
-					if (foundNewPlayer) dB.echoDebug("...player set to '%s'.", arg.split(":")[1]);
+					if (foundNewPlayer) dB.echoDebug("...player set to '%s'.", split[1]);
 					else {
 						dB.echoDebug("This player is not online! Searching for offline player...");
 						for (OfflinePlayer playa : Bukkit.getServer().getOfflinePlayers())
-							if (playa.getName().equalsIgnoreCase(arg.split(":")[1])) {
+							if (playa.getName().equalsIgnoreCase(split[1])) {
 								scriptEntry.setPlayer(null);
 								scriptEntry.setOfflinePlayer(playa);
 								foundNewPlayer = true;
@@ -95,9 +96,9 @@ public class CommandExecuter {
 				else if (aH.matchesValueArg("NPCID", arg, aH.ArgumentType.String)) {
 					dB.echoDebug("...replacing the linked NPCID.");
 					try {
-						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(arg.split(":")[1])) != null)
-							scriptEntry.setNPC(plugin.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(arg.split(":")[1]))));
-						dB.echoDebug("...NPC set to '%s'.", arg.split(":")[1]);
+						if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(split[1])) != null)
+							scriptEntry.setNPC(plugin.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(split[1]))));
+						dB.echoDebug("...NPC set to '%s'.", split[1]);
 					} catch (Exception e) {
 						dB.echoError("NPCID specified could not be matched to an NPC!");
 						scriptEntry.setNPC(null);
