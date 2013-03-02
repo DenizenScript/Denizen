@@ -8,7 +8,9 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FlagManager {
@@ -394,6 +396,36 @@ public class FlagManager {
                 }
             return false;
         }
+        
+        /**
+         * Returns the time left before the flag will expire. Minutes are only shown
+         * if there is less than a day left, and seconds are only shown if there are
+         * less than 10 minutes left.
+         *
+         */
+        public String expirationTime() {
+            rebuild();
+            
+            long seconds = (expiration - System.currentTimeMillis()) / 1000;
+            
+            long days = seconds / 86400;
+            long hours = (seconds - days * 86400) / 3600;
+            long minutes = (seconds - days * 86400 - hours * 3600) / 60;
+            seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
+            
+            String timeString = "";
+            
+            if (days > 0)
+            	timeString = String.valueOf(days) + "d ";
+            if (hours > 0)
+            	timeString = timeString + String.valueOf(hours) + "h ";
+            if (minutes > 0 && days == 0)
+            	timeString = timeString + String.valueOf(minutes) + "m ";
+            if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
+            	timeString = timeString + String.valueOf(seconds) + "s";
+
+            return timeString.trim();
+        }
 
         /**
          * Rebuilds the flag object with data from the saves.yml (in Memory)
@@ -417,7 +449,7 @@ public class FlagManager {
          * Determines if the flag is empty.
          *
          */
-        public boolean isEmptry() {
+        public boolean isEmpty() {
             return value.isEmpty();
         }
     }
