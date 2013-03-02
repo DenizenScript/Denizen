@@ -72,7 +72,10 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(DisengageCommand.class, 
         		"DISENGAGE", "disengage (npcid:#)", 0);
-        
+
+        registerCoreMember(DisplayItemCommand.class,
+                "DISPLAYITEM", "displayitem [item_name|remove] [location:x,y,z,world] (duration:#)", 2);
+
         registerCoreMember(DropCommand.class, 
         		"DROP", "drop [item:#(:#)|item:material(:#)|xp] (qty:#{1}) (location:x,y,z,world)", 1);
 		

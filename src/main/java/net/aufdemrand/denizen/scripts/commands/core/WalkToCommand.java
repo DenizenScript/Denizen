@@ -19,8 +19,6 @@ public class WalkToCommand extends AbstractCommand {
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-
-
         // Initialize required fields
 		Location location = null;
 		float speed = -1f;
