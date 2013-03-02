@@ -75,7 +75,7 @@ public class ScriptHelper {
                 sb.append(yaml.saveToString() + "\r\n");
 
                 for (File f : files){
-                    String fileName = f.getName();
+                    String fileName = f.getAbsolutePath().substring(file.getAbsolutePath().length());
                     dB.echoDebug("Processing '" + fileName + "'... ");
 
                     try {
