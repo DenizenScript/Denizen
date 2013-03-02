@@ -6,6 +6,7 @@ import java.util.List;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -30,8 +31,7 @@ public class ItemScriptContainer extends ScriptContainer {
         try {
             // Check validity of material
             if (contains("MATERIAL")){
-            	String material = DenizenAPI.getCurrentInstance().tagManager()
-                        .tag(player, npc, getString("MATERIAL"), false);
+            	String material = TagManager.tag(player, npc, getString("MATERIAL"));
                 stack = Item.valueOf(material);
             }
 
@@ -42,8 +42,7 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Set Display Name
             if (contains("DISPLAY NAME")){
-            	String displayName = DenizenAPI.getCurrentInstance().tagManager()
-                        .tag(player, npc, getString("DISPLAY NAME"), false);
+            	String displayName = TagManager.tag(player, npc, getString("DISPLAY NAME"));
             	meta.setDisplayName(displayName);
             }
                 
@@ -52,8 +51,7 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("LORE")) {
             	List<String> taggedLore = new ArrayList<String>();
             	for (String l : getStringList("LORE")){
-            		 l = DenizenAPI.getCurrentInstance().tagManager()
-                            .tag(player, npc, l, false);
+            		 l = TagManager.tag(player, npc, l);
             		 taggedLore.add(l);
             	}
                 meta.setLore(taggedLore);
@@ -69,8 +67,7 @@ public class ItemScriptContainer extends ScriptContainer {
                         int level = 1;
                         if (enchantment.split(":").length > 1) {
                             level = Integer.valueOf(enchantment.split(":")[1]);
-                            enchantment = DenizenAPI.getCurrentInstance().tagManager()
-                                    .tag(player, npc, enchantment.split(":")[0], false);
+                            enchantment = TagManager.tag(player, npc, enchantment.split(":")[0]);
                         }
                         // Add enchantment
                         Enchantment ench = Enchantment.getByName(enchantment.toUpperCase());

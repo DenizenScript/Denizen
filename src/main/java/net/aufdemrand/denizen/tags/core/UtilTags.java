@@ -27,17 +27,14 @@ public class UtilTags implements Listener {
     String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext().toUpperCase() : "";
 
        if (type.equalsIgnoreCase("RANDOM"))
-    	   if (subType.equalsIgnoreCase("INT"))
-    	   {
-    		   if (specifier.equalsIgnoreCase("TO"))
-    		   {
-    			   if (aH.matchesInteger(subTypeContext) && aH.matchesInteger(specifierContext))
-    			   {
+    	   if (subType.equalsIgnoreCase("INT")) {
+    		   if (specifier.equalsIgnoreCase("TO")) {
+    			   if (aH.matchesInteger(subTypeContext) && aH.matchesInteger(specifierContext)) {
     				   int min = aH.getIntegerFrom(subTypeContext);
     				   int max = aH.getIntegerFrom(specifierContext);
-    				   
-    				   if (min > max) // in case the first number is larger than the second, reverse them
-    				   {
+
+                       // in case the first number is larger than the second, reverse them
+    				   if (min > max) {
     					   int store = min;
     					   min = max;
     					   max = store;
@@ -48,6 +45,7 @@ public class UtilTags implements Listener {
     			   }
     		   }
     	   }
+
     	   else if (subType.equalsIgnoreCase("UUID"))
     		   event.setReplaced(UUID.randomUUID().toString());
 

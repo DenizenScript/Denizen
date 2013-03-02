@@ -62,10 +62,10 @@ public class RuntaskCommand extends AbstractCommand {
 
         // Initialize necessary fields
         Map<String, String> context = null;
+        Boolean instant = false;
         Script script = null;
         Duration delay = null;
-        Duration speed = null;
-        ScriptQueue queue = null;
+        ScriptQueue queue = scriptEntry.getResidingQueue();
 
         // Iterate through Arguments to extract needed information
         for (String arg : scriptEntry.getArguments()) {
@@ -77,24 +77,27 @@ public class RuntaskCommand extends AbstractCommand {
             }   // Delay the start of the queue
             else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
                 delay = aH.getDurationFrom(arg);
-                delay.setPrefix("Delay");
 
             }   // Use a specific queue
             else if (aH.matchesQueue(arg)) {
                 queue = aH.getQueueFrom(arg);
 
-            }   // Get the speed from a valid duration object
+            }   // TODO: Remove this argument for version 1.0
             else if (aH.matchesValueArg("SPEED", arg, aH.ArgumentType.Duration)) {
-                speed = aH.getDurationFrom(arg);
+                dB.log("SPEED argument has been removed from RUNTASK! Instead, specify " +
+                        "a speed on the task script itself, or use the 'QUEUE SET_SPEED:#' command " +
+                        "inside the task script. This warning will be removed in version 1.0 " +
+                        "and this argument deprecated.");
 
-            }   // Method is deprecated, but included to avoid errors being thrown.
+            }   // Gets a new, randomly named queue
             else if (aH.matchesArg("QUEUE", arg)) {
-                // Deprecated, no longer needed.
-                // All tasks are now queued, even if they are 'instant'.
+                queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
+                instant = false;
 
-            }   // Set the speed to 0, indicating that it is instant
+            }   // Run the script instantly.
             else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
-                speed = new Duration(0);
+                queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
+                instant = true;
 
             }   // Build context map if specified
             else if (aH.matchesContext(arg)) {
@@ -110,35 +113,18 @@ public class RuntaskCommand extends AbstractCommand {
         }
 
         // Must specify at least a valid script to run...
-        if (script == null) throw new InvalidArgumentsException("Must define a script to be run!");
-
-        // If no queue specified, assume the residing queue
-        if (queue == null)
-            queue = scriptEntry.getResidingQueue();
-
-        // if residing queue speed is 0, and script to be run isn't, make new queue!
-        if ((queue.getSpeed().getTicksAsInt() == 0)
-                && (((TaskScriptContainer) script.getContainer()).getSpeed().getTicksAsInt() > 0)) {
-            queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
-        }
-
-        // if residing queue is more than 0, and the script to be run IS 0, make a new queue!
-        if ((queue.getSpeed().getTicksAsInt() > 0)
-                && (((TaskScriptContainer) script.getContainer()).getSpeed().getTicksAsInt() == 0)) {
-            queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
-        }
-
-        if (speed == null)
-            speed = ((TaskScriptContainer) script.getContainer()).getSpeed();
+        if (script == null)
+            throw new InvalidArgumentsException("Must define a SCRIPT to be run.");
+        // If not queue, and delayed, throw an exception... this cannot happen.
+        if (queue == scriptEntry.getResidingQueue() && delay != null)
+            throw new InvalidArgumentsException("Cannot delay an INJECTED task script! Use 'QUEUE'.");
 
         // Put important objects inside the scriptEntry to be sent to execute()
-        scriptEntry.addObject("speed", speed.setPrefix("Speed"))
+        scriptEntry.addObject("instant", instant)
                 .addObject("queue", queue)
                 .addObject("delay", (delay != null ? delay.setPrefix("Delay") : null))
                 .addObject("script", script)
                 .addObject("context", context);
-
-        dB.log(queue == null ? "yes" : "no");
     }
 
     @Override
@@ -147,25 +133,82 @@ public class RuntaskCommand extends AbstractCommand {
         Map<String, String> context = (HashMap<String, String>) scriptEntry.getObject("context");
         Script script = (Script) scriptEntry.getObject("script");
         ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
-        Duration speed = (Duration) scriptEntry.getObject("speed");
+        Boolean instant = (Boolean) scriptEntry.getObject("instant");
         Duration delay = (Duration) scriptEntry.getObject("delay");
 
         // Debug output
         dB.report(this.getName(),
                 script.debug()
-                + (delay != null ? delay.debug() : "")
-                + speed.debug()
-                + aH.debugObj("Queue", queue.id)
-                + (context != null ? aH.debugObj("Context", context.toString()) : ""));
+                        + (delay != null ? delay.debug() : "")
+                        + aH.debugObj("Instant", instant.toString())
+                        + aH.debugObj("Queue", queue.id)
+                        + (instant == false ? aH.debugObj("Speed", queue.getSpeed().dScriptArgValue()) : "" )
+                        + (context != null ? aH.debugObj("Context", context.toString()) : "")
+                        + (scriptEntry.getPlayer() != null
+                        ? aH.debugObj("Player", scriptEntry.getPlayer().getName()) : "")
+                        + (scriptEntry.getNPC() != null
+                        ? aH.debugObj("NPC", scriptEntry.getNPC().toString()) : ""));
 
-        if (delay == null)
-            ((TaskScriptContainer) script.getContainer()).setSpeed(speed)
-                    .runTaskScript(queue.id, scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
+        if (instant) {
+            // Instant, but no delay
+            if (delay == null)
 
-        else
-            ((TaskScriptContainer) script.getContainer()).setSpeed(speed)
-                    .runTaskScriptWithDelay(queue.id, scriptEntry.getPlayer(), scriptEntry.getNPC(), context, delay);
+                if (scriptEntry.getResidingQueue() != queue)
+                    // Instant, no delay, new queue
+                    ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
+                            .runTaskScript(queue.id,
+                                    scriptEntry.getPlayer(),
+                                    scriptEntry.getNPC(),
+                                    context);
 
+                else
+                    // Instant, no delay, injection into current queue
+                    ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
+                            .injectTaskScript(queue.id,
+                                    scriptEntry.getPlayer(),
+                                    scriptEntry.getNPC(),
+                                    context);
+
+
+            else
+                // Instant, has delay, new queue
+                ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
+                        .runTaskScriptWithDelay(queue.id,
+                                scriptEntry.getPlayer(),
+                                scriptEntry.getNPC(),
+                                context,
+                                delay);
+
+        } else {
+
+            if (delay == null)
+
+                // Not instant, no delay, new queue
+                if (scriptEntry.getResidingQueue() != queue)
+                    ((TaskScriptContainer) script.getContainer())
+                            .runTaskScript(queue.id,
+                                    scriptEntry.getPlayer(),
+                                    scriptEntry.getNPC(),
+                                    context);
+
+                else
+                    // Not instant, no delay, injection into current queue
+                    ((TaskScriptContainer) script.getContainer())
+                            .injectTaskScript(queue.id,
+                                    scriptEntry.getPlayer(),
+                                    scriptEntry.getNPC(),
+                                    context);
+
+
+            else
+                // Not instant, delayed, new queue
+                ((TaskScriptContainer) script.getContainer())
+                        .runTaskScriptWithDelay(queue.id,
+                                scriptEntry.getPlayer(),
+                                scriptEntry.getNPC(),
+                                context,
+                                delay);
+        }
     }
 
 }

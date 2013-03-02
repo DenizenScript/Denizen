@@ -46,11 +46,15 @@ public class TagManager {
         new ForeignCharacterTags(denizen);
     }
 
-    public String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant) {
+    public static String tag(OfflinePlayer player, dNPC npc, String arg) {
+        return tag(player, npc, arg, false, null);
+    }
+
+    public static String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant) {
         return tag(player, npc, arg, instant, null);
     }
 
-    public String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
+    public static String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
         if (arg == null) return null;
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
         if (arg.indexOf('>') == -1 || arg.length() < 3) return arg;
@@ -90,7 +94,7 @@ public class TagManager {
     // Match all < > brackets that don't contain < > inside them
     private static Pattern tagRegex = Pattern.compile("<([^<>]+)>");
 
-    private int[] locateTag(String arg) {
+    private static int[] locateTag(String arg) {
         // find tag brackets pattern
         Matcher tagMatcher = tagRegex.matcher(arg);
         if (tagMatcher.find())
@@ -99,11 +103,11 @@ public class TagManager {
         else return null;
     }
 
-    public List<String> fillArguments(List<String> args, ScriptEntry scriptEntry) {
+    public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry) {
         return fillArguments(args, scriptEntry, false);
     }
 
-    public List<String> fillArguments(List<String> args, ScriptEntry scriptEntry, boolean instant) {
+    public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry, boolean instant) {
         List<String> filledArgs = new ArrayList<String>();
         if (args != null) {
             for (String argument : args) {
@@ -116,7 +120,7 @@ public class TagManager {
         return filledArgs;
     }
 
-    public List<String> fillArguments(String[] args, Player player, dNPC npc) {
+    public static List<String> fillArguments(String[] args, Player player, dNPC npc) {
         List<String> filledArgs = new ArrayList<String>();
         if (args != null) {
             for (String argument : args) {

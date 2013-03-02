@@ -82,5 +82,16 @@ public class TaskScriptContainer extends ScriptContainer {
         return queue;
     }
 
+    public ScriptQueue injectTaskScript(String queueId, Player player, dNPC npc, Map<String, String> context) {
+        ScriptQueue queue = ScriptQueue._getQueue(queueId);
+        List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
+        if (context != null)
+            ScriptBuilder.addObjectToEntries(listOfEntries, "context", context);
+        queue.injectEntries(listOfEntries, 0);
+        queue.setSpeed(getSpeed().getTicksAsInt());
+        queue.start();
+        return queue;
+    }
+
 
 }

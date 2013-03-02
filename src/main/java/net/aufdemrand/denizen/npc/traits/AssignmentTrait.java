@@ -75,7 +75,7 @@ public class AssignmentTrait extends Trait {
      *
      */
     public AssignmentScriptContainer getAssignment() {
-        if (hasAssignment() && ScriptRegistry.containsScript(assignment))
+        if (hasAssignment() && ScriptRegistry.containsScript(assignment, AssignmentScriptContainer.class))
             return ScriptRegistry.getScriptContainerAs(assignment, AssignmentScriptContainer.class);
         else return null;
     }
