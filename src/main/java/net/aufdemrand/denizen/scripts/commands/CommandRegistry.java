@@ -92,7 +92,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
 
         registerCoreMember(FlagCommand.class, 
-        		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value]", 1);
+        		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value] (duration:#)", 1);
         
         registerCoreMember(FollowCommand.class, 
         		"FOLLOW", "follow (stop)", 0);
@@ -130,10 +130,12 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(PlaySoundCommand.class, 
         		"PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
 		
+        registerCoreMember(QueueCommand.class,
+                "QUEUE", "queue (queue:id{residing_queue}) [clear|pause|resume|delay:#]", 1);
+        
         registerCoreMember(RandomCommand.class, 
         		"RANDOM", "random [#]", 1);
         
-
         registerCoreMember(RuntaskCommand.class,
         		"RUNTASK", "runtask [script_name] (instantly) (queue|queue:queue_name) (delay:#)", 1);
 		
@@ -172,9 +174,6 @@ public class CommandRegistry implements DenizenRegistry {
 
         registerCoreMember(WalkToCommand.class,
                 "WALKTO", "walkto [location:x,y,z,world] (speed:#)", 1);
-
-        registerCoreMember(QueueCommand.class,
-                "QUEUE", "queue (queue:id{residing_queue}) [clear|pause|resume|delay:#]", 1);
 
         registerCoreMember(ZapCommand.class, 
         		"ZAP", "zap [#|step:step_name] (script:script_name{current_script}) (duration:#)", 0);
