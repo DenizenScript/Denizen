@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
 import java.util.List;
+import net.aufdemrand.denizen.tags.TagManager;
 
 /**
  * This class implements requirement checking for scripts.
@@ -66,34 +67,35 @@ public class RequirementChecker {
             //
             // Replace tags and build arguments
             //
-            List<String> argumentList
-                    = plugin.tagManager().fillArguments(aH.buildArgs(reqEntry), context.player, context.npc);
-
+            List<String> argumentList = TagManager.fillArguments(aH.buildArgs(reqEntry), context.player, context.npc);
+            String reqString = argumentList.get(0).toUpperCase();
+            
             //
             // Evaluate the requirement
             //
-            if (argumentList.get(0).equalsIgnoreCase("valueof")) {
-                if (argumentList.get(1).equalsIgnoreCase("true")) {
+            if (reqString.equalsIgnoreCase("valueof")) {
+                String arg = argumentList.get(1);
+                
+                if (arg.equalsIgnoreCase("true")) {
                     if (!negativeRequirement) {
-                        dB.echoApproval("Checking 'VALUEOF " + argumentList.get(1) + "... requirement met!");
+                        dB.echoApproval("Checking 'VALUEOF " + arg + "... requirement met!");
                         numberMet++;
                     } else
-                        dB.echoApproval("Checking '-VALUEOF " + argumentList.get(1) + "...requirement not met!");
+                        dB.echoApproval("Checking '-VALUEOF " + arg + "...requirement not met!");
 
                 } else {
                     if (!negativeRequirement)
-                        dB.echoApproval("Checking 'VALUEOF " + argumentList.get(1) + "...requirement not met!");
+                        dB.echoApproval("Checking 'VALUEOF " + arg + "...requirement not met!");
 
                     else {
-                        dB.echoApproval("Checking '-VALUEOF " + argumentList.get(1) + "...requirement met!");// Not met!
+                        dB.echoApproval("Checking '-VALUEOF " + arg + "...requirement met!");// Not met!
                         numberMet++;
                     }
                 }
             } else
                 // Check requirement with RequirementRegistry
-                if (plugin.getRequirementRegistry().list().containsKey(argumentList.get(0).toUpperCase())) {
-
-                    AbstractRequirement requirement = plugin.getRequirementRegistry().get(argumentList.get(0));
+                if (plugin.getRequirementRegistry().list().containsKey(reqString)) {
+                    AbstractRequirement requirement = plugin.getRequirementRegistry().get(reqString);
 
                     // Remove command name from arguments
                     argumentList.remove(0);
