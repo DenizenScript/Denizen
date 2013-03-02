@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.utilities.depends.MCMMOUtilities;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -333,7 +334,10 @@ public class PlayerTags implements Listener {
         } else if (type.equals("PERMISSION")) {
             if(Depends.permissions != null)
             {
-                event.setReplaced(String.valueOf(Depends.permissions.has(p, typeContext)));
+            	if (subType.equals("GLOBAL"))
+            		event.setReplaced(String.valueOf(Depends.permissions.has((World) null, p.getName(), typeContext)));
+            	else
+            		event.setReplaced(String.valueOf(Depends.permissions.has(p, typeContext)));
             }
             else
             {
@@ -343,7 +347,10 @@ public class PlayerTags implements Listener {
         } else if (type.equals("GROUP")) {
             if(Depends.permissions != null)
             {
-                event.setReplaced(String.valueOf(Depends.permissions.playerInGroup(p, typeContext)));
+            	if (subType.equals("GLOBAL"))
+            		event.setReplaced(String.valueOf(Depends.permissions.playerInGroup((World) null, p.getName(), typeContext)));
+            	else
+            		event.setReplaced(String.valueOf(Depends.permissions.playerInGroup(p, typeContext)));
             }
             else
             {
