@@ -7,7 +7,7 @@
 	<groupId>net.aufdemrand</groupId>
 	<artifactId>denizen</artifactId>
     <packaging>jar</packaging>
-    <version>0.8-PRERELEASE</version>
+    <version>0.88-PRERELEASE</version>
     <name>Denizen</name>
 	<description>Scriptable NPCs for Citizens2</description>
 
@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
-			<version>1.2.16</version>
+			<version>1.2.24</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
