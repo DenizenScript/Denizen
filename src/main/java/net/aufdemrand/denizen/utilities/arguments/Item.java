@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
@@ -75,7 +77,7 @@ public class Item extends ItemStack implements dScriptArgument {
      */
     public static Item valueOf(String string) {
 
-        if (string == null) return null;
+       if (string == null) return null;
 
         Matcher[] m = new Matcher[4];
         Item stack = null;
