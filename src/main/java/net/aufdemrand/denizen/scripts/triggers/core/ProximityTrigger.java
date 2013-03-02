@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * <p>The Proximity Trigger is used to execute a script when a player moves
  * within a certain radius of a location.  If the radius are not specified,
- * then the default for both entry and exit is 5 blocks.</p>
+ * then the default for entry, exit, and move is 5 blocks.</p>
  *
  * Example Interact Script Usage:<br/>
  * This script will execute a script when the player walks within 5 blocks of
@@ -43,6 +43,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * &nbsp;&nbsp;Exit:<br/>
  * &nbsp;&nbsp;&nbsp;&nbsp;Script:<br/>
  * &nbsp;&nbsp;&nbsp;&nbsp;- CHAT "Thanks for visiting <PLAYER.NAME>"<br/>
+ * &nbsp;&nbsp;Move:<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;Script:<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;- CHAT "Stop pacing <PLAYER.NAME>!"<br/>
  * </tt>
  * </ol>
  *
@@ -58,6 +61,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * <br/>
  * Actions:<br/>
  * &nbsp;&nbsp;On Exit Proximity:<br/>
+ * &nbsp;&nbsp;- ...<br/>
+ * &nbsp;&nbsp;On Move Proximity:<br/>
  * &nbsp;&nbsp;- ...<br/>
  * </tt>
  * </ol>
@@ -93,8 +98,8 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * <li>Is the NPC in the same World as the player</li>
      * </ol>
      *
-     * If the NPC passes all of these criteria, there are two events that can
-     * occur (one or the other):
+     * If the NPC passes all of these criteria, there are three events that can
+     * occur (only one of them):
      *
      * <ol>
      * <li>If the player was outside of the NPC's radius, and moved inside the
@@ -102,6 +107,8 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * script.</li>
      * <li>If the player was INSIDE of the NPC's radius, and moved OUTSIDE the
      * radius, and there's an EXIT SCRIPT, then execute that exit script.
+     * <li>If the player was INSIDE of the NPC's radius, and moved WITHIN the
+     * radius, and there's an MOVE SCRIPT, then execute that move script.
      * </ol>
      *
      * @param event	The player's move event (which includes their location).
@@ -164,6 +171,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 //
                 int	entryRadius = npc.getTriggerTrait().getRadius(name);
                 int exitRadius = npc.getTriggerTrait().getRadius(name);
+                int moveRadius = npc.getTriggerTrait().getRadius(name);
 
 
                 //
@@ -181,6 +189,12 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                             entryRadius = Integer.valueOf(script.getTriggerOptionFor(getClass(), player, null, "EXIT RADIUS"));
                     } catch (NumberFormatException nfe) {
                         dB.echoDebug("Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
+                    }
+                    try {
+                        if (script.hasTriggerOptionFor(getClass(), player, null, "MOVE RADIUS"))
+                            entryRadius = Integer.valueOf(script.getTriggerOptionFor(getClass(), player, null, "MOVE RADIUS"));
+                    } catch (NumberFormatException nfe) {
+                        dB.echoDebug("Move Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
                     }
                 }
 
@@ -202,6 +216,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 //
                 // If the user entered the range and were not previously within the
                 // range, then execute the "Entry" script.
+                //
+                // If the user was previously within the range and moved, then execute
+                // the "Move" script.
                 //
                 if (!hasExitedProximityOf(event.getPlayer(), npc)
                     && (playerChangedWorlds || npc.getLocation().distance(toBlockLocation) >= exitRadius)) {
@@ -226,6 +243,16 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     npc.action("enter proximity", event.getPlayer());
                     // Parse Interact Script
                     parse(npc, player, script, "ENTRY");
+                }
+                else if (!hasExitedProximityOf(event.getPlayer(), npc)
+                    && npc.getLocation().distance(toBlockLocation) <= moveRadius) {
+                    // Cooldown
+                    if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
+                        continue;
+                   // Move Proximity Action
+                   npc.action("move proximity", event.getPlayer());
+                   // Parse Interact Script
+                   parse(npc, player, script, "MOVE");
                 }
             }
         }
