@@ -50,7 +50,6 @@ import net.aufdemrand.denizen.scripts.commands.core.WaitCommand;
 import net.aufdemrand.denizen.scripts.commands.core.WalkToCommand;
 import net.aufdemrand.denizen.scripts.commands.core.ZapCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
 
 public class CommandRegistry implements DenizenRegistry {
 
@@ -133,9 +132,6 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(FinishCommand.class, 
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
-
-        // registerCoreMember(FishCommand.class, 
-        // 		"FISH", "dont bother...", 0);
 
         registerCoreMember(FlagCommand.class, 
         		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value]", 1);

@@ -2,15 +2,15 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.SittingTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.citizensnpcs.api.npc.NPC;
 
-import org.bukkit.Location;
 
 public class SitCommand extends AbstractCommand {
 	
@@ -22,7 +22,6 @@ public class SitCommand extends AbstractCommand {
 		for (String arg : scriptEntry.getArguments()) {
 			if (aH.matchesLocation(arg)) {
 				location = aH.getLocationFrom(arg);
-				dB.echoDebug("...location set.");
 			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 		
@@ -34,26 +33,24 @@ public class SitCommand extends AbstractCommand {
 	public void execute(ScriptEntry scriptEntry)
 			throws CommandExecutionException {
 		Location location = (Location) scriptEntry.getObject("location");
-		dNPC npc = scriptEntry.getNPC();
-		
-		if (!npc.getCitizen().hasTrait(SittingTrait.class)) {
-			npc.getCitizen().addTrait(SittingTrait.class);
+		NPC npc = scriptEntry.getNPC().getCitizen();
+		SittingTrait trait = npc.getTrait(SittingTrait.class);
+				
+		if (!npc.hasTrait(SittingTrait.class)) {
+			npc.addTrait(SittingTrait.class);
 			dB.echoDebug("...added sitting trait");
 		}
 		
-		if (npc.getCitizen().getTrait(SittingTrait.class).isSitting()) {
+		if (trait.isSitting()) {
 			dB.echoError("...NPC is already sitting");
 			return;
 		}
 		
 		if (location != null) {
-			npc.getCitizen().getTrait(SittingTrait.class).sit(location);
+			trait.sit(location);
 		} else {
-			npc.getCitizen().getTrait(SittingTrait.class).sit();
+			trait.sit();
 		}
-		
-		
-		
 	}
 
 }

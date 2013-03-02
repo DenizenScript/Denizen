@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.minecraft.server.v1_4_R1.EntityHuman;
@@ -20,17 +18,18 @@ public class SittingTrait extends Trait implements Listener  {
     private boolean sitting = false;
 	
 	@Persist("chair location")
-	private Location location = null;
+	private Location chairLocation = null;
 	
 	EntityHuman eh = null;
 	
 	@Override
 	public void run() {
-		if (eh == null || location == null) return;
+		if (eh == null || chairLocation == null) return;
 		
-		if (!Utilities.checkLocation(npc.getBukkitEntity(), location, 1)) {
-            stand();
-        }
+		//if (npc.getBukkitEntity().getPassenger() == null && sitting) eh.mount(eh);
+			
+		if (!Utilities.checkLocation(npc.getBukkitEntity(), chairLocation, 1)) stand();
+            
 	}
 	
 	@Override
@@ -48,10 +47,9 @@ public class SittingTrait extends Trait implements Listener  {
 		}
 		
 		eh.mount(eh);
-		dB.log("...sit() called");
 		
 		sitting = true;
-		location = npc.getBukkitEntity().getLocation();
+		chairLocation = npc.getBukkitEntity().getLocation();
 		return;
 	}
 	
@@ -62,7 +60,6 @@ public class SittingTrait extends Trait implements Listener  {
 	 */
 	public void sit(Location location) {
 		if (sitting == true) {
-			dB.log("...npc is sitting");
 			return;
 		}
 		
@@ -70,14 +67,14 @@ public class SittingTrait extends Trait implements Listener  {
 		 * Teleport NPC to the location before
 		 * sending the sit packet to the clients.
 		 */
-		npc.getBukkitEntity().teleport(location.add(0.5, 0, 0.5));
+		//npc.getBukkitEntity().teleport(location.add(0.5, 0, 0.5));
+		eh.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 		dB.echoDebug("...NPC moved to chair");
 		
 		eh.mount(eh);
-		dB.log("...sit(Location location) called");
-
+		
 		sitting = true;
-		this.location = location;
+		chairLocation = location;
 	}
 	
 	/**
@@ -89,9 +86,8 @@ public class SittingTrait extends Trait implements Listener  {
 		}
 		
 		eh.mount(null);
-		dB.log("...stand() called");
 		
-		location = null;
+		chairLocation = null;
 		sitting = false;
 	}
 	
@@ -111,7 +107,7 @@ public class SittingTrait extends Trait implements Listener  {
 	 * @return Location
 	 */
 	public Location getChair() {
-		return location;
+		return chairLocation;
 	}
 	
     
@@ -122,8 +118,8 @@ public class SittingTrait extends Trait implements Listener  {
      */
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-    	if (location == null) return;
-        if (event.getBlock().getLocation().equals(location)) {
+    	if (chairLocation == null) return;
+        if (event.getBlock().getLocation().equals(chairLocation)) {
             event.setCancelled(true);
         }
     }

@@ -8,12 +8,14 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.citizensnpcs.api.npc.NPC;
 
 public class StandCommand extends AbstractCommand{
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry)
 			throws InvalidArgumentsException {
+		//stand should have no additional arguments
 		for (String arg: scriptEntry.getArguments())
 			throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		
@@ -23,22 +25,22 @@ public class StandCommand extends AbstractCommand{
 	public void execute(ScriptEntry scriptEntry)
 			throws CommandExecutionException {
 		
-		dNPC npc = scriptEntry.getNPC();
+		NPC npc = scriptEntry.getNPC().getCitizen();
+		SittingTrait trait = npc.getTrait(SittingTrait.class);
 		
-		if (!npc.getCitizen().hasTrait(SittingTrait.class)){
-			npc.getCitizen().addTrait(SittingTrait.class);
+		if (!npc.hasTrait(SittingTrait.class)){
+			npc.addTrait(SittingTrait.class);
 			dB.echoDebug("...added sitting trait");
 		}
-			
 		
-		if (!npc.getCitizen().getTrait(SittingTrait.class).isSitting()) {
+		if (!trait.isSitting()) {
 			dB.echoError("...NPC is already standing, removing trait");
-			npc.getCitizen().removeTrait(SittingTrait.class);
+			npc.removeTrait(SittingTrait.class);
 			return;
 		}
 		
-		npc.getCitizen().getTrait(SittingTrait.class).stand();
-		npc.getCitizen().removeTrait(SittingTrait.class);
+		trait.stand();
+		npc.removeTrait(SittingTrait.class);
 		
 	}
 

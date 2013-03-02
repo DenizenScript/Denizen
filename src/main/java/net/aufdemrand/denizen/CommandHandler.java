@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NameplateTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.npc.traits.PushableTrait;
+import net.aufdemrand.denizen.npc.traits.SittingTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -338,6 +339,64 @@ public class CommandHandler {
 			Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s nameplate color is " + trait.getColor() + trait.getColor().name() + ".");
 		else Messaging.send(sender, ChatColor.YELLOW + npc.getName() + " does not have a nameplate color!");
 	}
+	
+	/*
+	 * Sit
+	 */
+	@Command(
+			aliases = { "npc" }, usage = "sit", 
+			desc = "Makes the NPC sit.", modifiers = { "sit" },
+			min = 1, max = 3, permission = "npc.sit")
+	@Requirements(selected = true, ownership = true)
+	public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+		if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
+		SittingTrait trait = npc.getTrait(SittingTrait.class);
+		
+		if (trait.isSitting()) {
+			Messaging.send(sender, ChatColor.RED + npc.getName() + " is already sitting!");
+			return;
+		}
+		
+		if (args.hasValueFlag("location")) {
+			String[] argsArray = args.getFlag("location").split(",");
+			if (argsArray.length != 4) {
+				Messaging.send(sender, ChatColor.RED + "Usage: /npc sit --location x,y,z,world");
+				return;
+			}
+			
+			trait.sit(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
+			return;
+		} else if (args.hasValueFlag("anchor")) {			
+			trait.sit(aH.getLocationFrom(DenizenAPI.getCurrentInstance().tagManager().tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
+			return;
+		} else {
+			trait.sit();
+			return;
+		}
+
+	}
+	
+	/*
+	 * Stand
+	 */
+	@Command(
+			aliases = { "npc" }, usage = "stand", 
+			desc = "Makes the NPC stand.", modifiers = { "stand" },
+			min = 1, max = 3, permission = "npc.stand")
+	@Requirements(selected = true, ownership = true)
+	public void standing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+		if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
+		SittingTrait trait = npc.getTrait(SittingTrait.class);
+			
+		if (!trait.isSitting()) {
+			npc.removeTrait(SittingTrait.class);
+		    Messaging.send(sender, ChatColor.RED + npc.getName() + " is already standing!");
+			return;
+		}
+		
+		trait.stand();
+		npc.removeTrait(SittingTrait.class);
+	}
 
 
 	/*
@@ -346,7 +405,7 @@ public class CommandHandler {
 	@Command(
 			aliases = { "npc" }, usage = "health --set # (-r)", 
 			desc = "Sets the max health for an NPC.", modifiers = { "health", "he", "hp" },
-			min = 1, max = 3, permission = "npc.health", flags = "rs")
+			min = 1, max = 3, permission = "npc.health")
 	@Requirements(selected = true, ownership = true)
 	public void health(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 		if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
