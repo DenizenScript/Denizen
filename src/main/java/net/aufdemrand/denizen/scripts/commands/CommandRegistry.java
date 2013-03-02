@@ -6,49 +6,7 @@ import java.util.Map;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.scripts.commands.core.AnnounceCommand;
-import net.aufdemrand.denizen.scripts.commands.core.AssignmentCommand;
-import net.aufdemrand.denizen.scripts.commands.core.AttackCommand;
-import net.aufdemrand.denizen.scripts.commands.core.CastCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ChatCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ClearCommand;
-import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
-import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
-import net.aufdemrand.denizen.scripts.commands.core.DisengageCommand;
-import net.aufdemrand.denizen.scripts.commands.core.DropCommand;
-import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ExecuteCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FeedCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FlagCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FollowCommand;
-import net.aufdemrand.denizen.scripts.commands.core.GiveCommand;
-import net.aufdemrand.denizen.scripts.commands.core.HealCommand;
-import net.aufdemrand.denizen.scripts.commands.core.IfCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ListenCommand;
-import net.aufdemrand.denizen.scripts.commands.core.LookCommand;
-import net.aufdemrand.denizen.scripts.commands.core.LookcloseCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ModifyBlockCommand;
-import net.aufdemrand.denizen.scripts.commands.core.NameplateCommand;
-import net.aufdemrand.denizen.scripts.commands.core.NarrateCommand;
-import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
-import net.aufdemrand.denizen.scripts.commands.core.PlaySoundCommand;
-import net.aufdemrand.denizen.scripts.commands.core.RandomCommand;
-import net.aufdemrand.denizen.scripts.commands.core.RuntaskCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ScribeCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ShootCommand;
-import net.aufdemrand.denizen.scripts.commands.core.SitCommand;
-import net.aufdemrand.denizen.scripts.commands.core.StandCommand;
-import net.aufdemrand.denizen.scripts.commands.core.StrikeCommand;
-import net.aufdemrand.denizen.scripts.commands.core.SwitchCommand;
-import net.aufdemrand.denizen.scripts.commands.core.TakeCommand;
-import net.aufdemrand.denizen.scripts.commands.core.TeleportCommand;
-import net.aufdemrand.denizen.scripts.commands.core.TriggerCommand;
-import net.aufdemrand.denizen.scripts.commands.core.VulnerableCommand;
-import net.aufdemrand.denizen.scripts.commands.core.WaitCommand;
-import net.aufdemrand.denizen.scripts.commands.core.WalkToCommand;
-import net.aufdemrand.denizen.scripts.commands.core.ZapCommand;
+import net.aufdemrand.denizen.scripts.commands.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class CommandRegistry implements DenizenRegistry {
@@ -146,22 +104,22 @@ public class CommandRegistry implements DenizenRegistry {
         		"HEAL", "heal (amt:#) (target:npc|{player})", 0);
 		
         registerCoreMember(IfCommand.class, 
-        		"IF", "if (!)[COMPARABLE] (OPERATOR) (COMPARED_TO) (BRIDGE) (...) [COMMAND] (ELSE) (COMMAND) // see documentation.", 2);
+        		"IF", "if [comparable] (!)(operator) (compared_to) (bridge) (...) [command] (else) (command)  +--> see documentation.", 2);
 		
         registerCoreMember(ListenCommand.class, 
-        		"LISTEN", "listen [Listener_Type] [ID:ListenerID] [Listener Arguments] // see documentation - http://bit.ly/XJlKwm", 2);
+        		"LISTEN", "listen [listener_type] [id:listener_id] (...)  +--> see documentation - http://bit.ly/XJlKwm", 2);
         
         registerCoreMember(LookCommand.class, 
         		"LOOK", "look [location:x,y,z,world]", 1);
         
         registerCoreMember(LookcloseCommand.class, 
-        		"LOOKCLOSE", "lookclose [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)", 1);
+        		"LOOKCLOSE", "lookclose [toggle:true|false]", 1);
 		
         registerCoreMember(ModifyBlockCommand.class, 
-        		"MODIFYBLOCK", "modifyblock [LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##)", 2);
+        		"MODIFYBLOCK", "modifyblock [location:x,y,z,world] [material:data] (radius:#) (height:#) (depth:#)", 2);
 		
         registerCoreMember(NameplateCommand.class, 
-        		"NAMEPLATE", "nameplate [COLOR] (PLAYER)", 1);
+        		"NAMEPLATE", "nameplate [chat_color] (target:player_name)", 1);
         
         registerCoreMember(NarrateCommand.class, 
         		"NARRATE", "narrate [\"narration text\"] (player:name)", 1);
@@ -175,8 +133,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(RandomCommand.class, 
         		"RANDOM", "random [#]", 1);
         
-        registerCoreMember(RuntaskCommand.class, 
-        		"RUNTASK", "runtask (id:id_name{script_name}) [script:script_name] (instant|queue:queue_type{player_task}) (delay:#{0})", 1);
+
+        registerCoreMember(RuntaskCommand.class,
+        		"RUNTASK", "runtask [script_name] (instantly) (queue|queue:queue_name) (delay:#)", 1);
 		
         registerCoreMember(ScribeCommand.class, 
         		"SCRIBE", "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
@@ -203,7 +162,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"TELEPORT", "teleport (npc) [location:x,y,z,world] (target(s):[npc.#]|[player.name])", 1);
         
         registerCoreMember(TriggerCommand.class, 
-        		"TRIGGER", "trigger [NAME:Trigger_Name] [(TOGGLE:TRUE|FALSE)|(COOLDOWN:#.#)|(RADIUS:#)]", 2);
+        		"TRIGGER", "trigger [name:trigger_name] [(toggle:true|false)|(cooldown:#.#)|(radius:#)]", 2);
 		
         registerCoreMember(VulnerableCommand.class, 
         		"VULNERABLE", "vulnerable (toggle:{true}|false|toggle)", 0);
@@ -214,8 +173,11 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(WalkToCommand.class,
                 "WALKTO", "walkto [location:x,y,z,world] (speed:#)", 1);
 
+        registerCoreMember(QueueCommand.class,
+                "QUEUE", "queue (queue:id{residing_queue}) [clear|pause|resume|delay:#]", 1);
+
         registerCoreMember(ZapCommand.class, 
-        		"ZAP", "zap [#|STEP:step_name] (SCRIPT:script_name{current_script}) (DURATION:#{0})", 0);
+        		"ZAP", "zap [#|step:step_name] (script:script_name{current_script}) (duration:#)", 0);
 
         dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
 	}

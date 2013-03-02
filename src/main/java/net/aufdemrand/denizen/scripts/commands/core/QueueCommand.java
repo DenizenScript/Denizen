@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -13,50 +13,77 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class QueueCommand extends AbstractCommand {
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    private enum Action { CLEAR, SET, DELAY, PAUSE, RESUME }
+
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         ScriptQueue queue = scriptEntry.getResidingQueue();
-        Location location = null;
-        Boolean damage = true;
+        Action action = null;
+        Duration delay = null;
 
         // Iterate through arguments
-		for (String arg : scriptEntry.getArguments()){
-			if (aH.matchesLocation(arg))
-                location = aH.getLocationFrom(arg);
+        for (String arg : scriptEntry.getArguments()){
+            if (aH.matchesQueue(arg))
+                queue = aH.getQueueFrom(arg);
 
-			else if (aH.matchesArg("NO_DAMAGE, NODAMAGE", arg))
-                damage = false;
+            else if (aH.matchesArg("CLEAR, SET, PAUSE, RESUME", arg))
+                action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
+
+            else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
+                action = Action.DELAY;
+                delay = aH.getDurationFrom(arg);
+            }
 
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-		}
+        }
 
         // Check required args
-		if (location == null)
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+        if (action == null)
+            throw new InvalidArgumentsException("Must specify an action. Valid: CLEAR, SET, DELAY, PAUSE, RESUME");
+
+        if (action == Action.DELAY && delay == null)
+            throw new InvalidArgumentsException("Must specify a delay.");
 
         // Stash args in ScriptEntry for use in execute()
-        scriptEntry.addObject("location", location);
-        scriptEntry.addObject("damage", damage);
-	}
+        scriptEntry.addObject("queue", queue)
+                .addObject("action", action)
+                .addObject("delay", delay);
+    }
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // Extract objects from ScriptEntry
-        Location location = (Location) scriptEntry.getObject("location");
-        Boolean damage = (Boolean) scriptEntry.getObject("damage");
+        ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
+        Action action = (Action) scriptEntry.getObject("action");
+        Duration delay = (Duration) scriptEntry.getObject("duration");
 
         // Debugger
-        dB.report(getName(),
-                location.debug()
-                + aH.debugObj("Damageable", String.valueOf(damage)));
+        dB.report(getName(), queue.toString()
+                + aH.debugObj("Action", action.toString())
+                + (action != null && action == Action.DELAY ? delay.debug() : ""));
 
-        // Play the sound
-        if (damage)
-            location.getWorld().strikeLightning(location);
-        else
-            location.getWorld().strikeLightningEffect(location);
-	}
+        switch (action) {
+
+            case CLEAR:
+                queue.clear();
+                return;
+
+            case PAUSE:
+                queue.setPaused(true);
+                return;
+
+            case RESUME:
+                queue.setPaused(false);
+                return;
+
+            case DELAY:
+                queue.delayFor(delay.getTicks());
+                return;
+
+        }
+
+    }
 
 }
+
