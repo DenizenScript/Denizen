@@ -17,10 +17,17 @@ import java.util.List;
  * @author aufdemrand
  */
 
+@Deprecated
 public class ClearCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+        // TODO: Remove this command in 1.0
+        dB.log("The CLEAR command has been deprecated. While it will still function normally "
+                + "for the time being, it is likely that it will be removed in the 1.0 release. It has "
+                + "instead been replaced by a wider scope command named QUEUE. To replicate "
+                + "the functionality of this command with QUEUE, use: queue clear queue_name(|addl_queue)");
 
         List<ScriptQueue> queues = new ArrayList<ScriptQueue>();
 
@@ -34,7 +41,7 @@ public class ClearCommand extends AbstractCommand {
                     try {
                         queues.add(aH.getQueueFrom(queueName));
                     } catch (Exception e) {
-                    // must be null, don't add
+                        // must be null, don't add
                     }
                 }
             }

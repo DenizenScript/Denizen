@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
+ * TODO: Document usage
  *
  * @author Jeremy Schroeder
  *
@@ -44,7 +45,7 @@ public class AssignmentCommand extends AbstractCommand {
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
-        // If 'SET'ting and no 'script', throw an error.
+        // If 'SET'ting with no 'script' throws an error.
         if (action == Action.SET && script == null)
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "SCRIPT");
         // If no NPC attached, throw an error
@@ -52,8 +53,8 @@ public class AssignmentCommand extends AbstractCommand {
             throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
 
         // Add objects that need to be passed to execute() to the scriptEntry
-        scriptEntry.addObject("script", script);
-        scriptEntry.addObject("action", action);
+        scriptEntry.addObject("script", script)
+                .addObject("action", action);
     }
 
     @Override
@@ -66,14 +67,15 @@ public class AssignmentCommand extends AbstractCommand {
         dB.report(getName(),
                 aH.debugObj("Action", action.toString())
                         + (script != null ? script.debug() : "")
-                        + aH.debugObj("NPC", scriptEntry.getNPC().getName() + "/" + scriptEntry.getNPC().getId()));
+                        + aH.debugObj("NPC", scriptEntry.getNPC().toString()));
 
         // Perform desired action
         if (action == Action.SET)
             scriptEntry.getNPC().getCitizen().getTrait(AssignmentTrait.class)
                     .setAssignment(script.getName(), scriptEntry.getPlayer());
 
-        else if (action == Action.REMOVE)
+        else
+        if (action == Action.REMOVE)
             scriptEntry.getNPC().getCitizen().getTrait(AssignmentTrait.class)
                     .removeAssignment(scriptEntry.getPlayer());
     }

@@ -10,6 +10,9 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class QueueCommand extends AbstractCommand {
 
@@ -22,10 +25,23 @@ public class QueueCommand extends AbstractCommand {
         Action action = null;
         Duration delay = null;
 
-        // Iterate through arguments
-        for (String arg : scriptEntry.getArguments()){
-            if (aH.matchesQueue(arg))
-                queue = aH.getQueueFrom(arg);
+        List<ScriptQueue> queues = new ArrayList<ScriptQueue>();
+
+        // Use current queue if none specified.
+        queues.add(scriptEntry.getResidingQueue());
+
+        for (String arg : scriptEntry.getArguments()) {
+
+            if (aH.matchesQueue(arg)) {
+                queues.clear();
+                for (String queueName : aH.getListFrom(arg)) {
+                    try {
+                        queues.add(aH.getQueueFrom(queueName));
+                    } catch (Exception e) {
+                        // must be null, don't add
+                    }
+                }
+            }
 
             else if (aH.matchesArg("CLEAR, SET, PAUSE, RESUME", arg))
                 action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
@@ -35,7 +51,18 @@ public class QueueCommand extends AbstractCommand {
                 delay = aH.getDurationFrom(arg);
             }
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            // queue: argument should be optional in this command
+            else {
+                queues.clear();
+                for (String queueName : aH.getListFrom(arg)) {
+                    try {
+                        queues.add(aH.getQueueFrom(queueName));
+                    } catch (Exception e) {
+                        // must be null, don't add
+                    }
+                }
+
+            }
         }
 
         // Check required args
@@ -54,31 +81,35 @@ public class QueueCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
+        List<ScriptQueue> queues = (List<ScriptQueue>) scriptEntry.getObject("queues");
         Action action = (Action) scriptEntry.getObject("action");
         Duration delay = (Duration) scriptEntry.getObject("duration");
 
         // Debugger
-        dB.report(getName(), queue.toString()
+        dB.report(getName(), aH.debugObj("Queues", queues.toString())
                 + aH.debugObj("Action", action.toString())
                 + (action != null && action == Action.DELAY ? delay.debug() : ""));
 
         switch (action) {
 
             case CLEAR:
-                queue.clear();
+                for (ScriptQueue queue : queues)
+                    queue.clear();
                 return;
 
             case PAUSE:
-                queue.setPaused(true);
+                for (ScriptQueue queue : queues)
+                    queue.setPaused(true);
                 return;
 
             case RESUME:
-                queue.setPaused(false);
+                for (ScriptQueue queue : queues)
+                    queue.setPaused(false);
                 return;
 
             case DELAY:
-                queue.delayFor(delay.getTicks());
+                for (ScriptQueue queue : queues)
+                    queue.delayFor(delay.getTicks());
                 return;
 
         }

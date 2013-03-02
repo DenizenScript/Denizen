@@ -43,6 +43,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
         locations.clear();
         for (String location : loclist) {
             Location loc = valueOf(location);
+            // TODO: Finish this
         }
     }
 
@@ -53,7 +54,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
     public static void _saveLocations() {
         List<String> loclist = new ArrayList<String>();
         for (Map.Entry<String, Location> entry : locations.entrySet())
-            loclist.add(entry.getValue().toString());
+            loclist.add(entry.getValue().asString());
 
         DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", loclist);
     }
@@ -188,8 +189,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
         return getDefaultPrefix().toLowerCase() + ":" + dScriptArg();
     }
 
-    @Override
-    public String toString() {
+    public String asString() {
         if (Id == null) return null;
         return Id + "," + getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName();

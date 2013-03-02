@@ -17,7 +17,7 @@ public class ScriptQueue implements Listener {
 
     @Override
     public String toString() {
-        return "ScriptQueue(" + id + ")";
+        return id;
     }
 
 
