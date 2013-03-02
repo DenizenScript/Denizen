@@ -1,98 +1,66 @@
-# GENERIC LOOPER CODE SNIPPIT for Denizen 0.8.4+
-
-# ---- sample snippet of a script CALLING the loop
-# You can call this script to test out the GL (Generic Looper)
-# by using the command '- runtask "GL sample snippet"'
-"test_pck test generic looper":
-  type: task
-  speed: 1
-
-  script:
-  - flag global example_loop_flag:->:aufdemrand
-  - flag global example_loop_flag:->:Jeebiss
-  - flag global example_loop_flag:->:DrBix
-  - flag global example_loop_flag:->:davidcernat
-  - flag global example_loop_flag:->:fullwall
-  - flag global example_loop_flag:->:Mastaba
-  - runtask 'generic looper' 'context:g|example_loop_flag|test_pck player announcement script|playername' queue:new
-  - flag global example_loop_flag:!
-
-
-# Below is the example script that will be executed for
-# each iteration.
-# The item from the iteration will be stored in a global flag
-# with the name of the value set in the iterate_value_name context
-'test_pck player announcement script':
-  type: task
-  script:
-  - announce '<flag.g:playername> has been ITERATED!'
-
-
-
-# ------------------------------------
-# GENERIC LOOPER, by aufdemrand :)
+# Whenever you want to get all the values of a flag and loop through them
+# in a task of your choice, you can easily do it using the Generic Loop
+# task included in Denizen.
 #
-# For use, it requires some context:
-# flag_name - the name of the flag to iterate through
-# flag_type - the type of the flag, should be either P, G or N
-# task_action - the name of the task script to execute
-# iterate_value_name - the name of the global flag that will hold
-#    each iterated value
+# Simply use the following command:
+# - runtask "script:Generic Loop" "context:Your Task|Your Flag's name|Your Flag's type"
 #
-# To specify context, use the context argument. See the example provided.
+# And add speed:0 (or any speed you like) and context:value to your task,
+# right under type:task.
 #
-# Upon each iteration, GL (GENERIC LOOPER) will set a global flag
-# global flag with the name specified (iterate_value_name) which 
-# will contain the currently iterated flag value.
+# Then you're all set. The Generic Loop will run your task once for every
+# value inside the flag. Use the <context.value> tag in your task to get
+# the current value sent to the task.
 #
-# STOP! This shouldn't need to be changed, it's generic.
-# ------------------------------------
-"generic looper":
-  type: task
-  speed: 0
-  context: flag_name|flag_type|task_action|iterate_value_name
+# To see a quick example of how it works, give the "Generic Looper"
+# assignment to an NPC and click on it. It will announce all the values
+# from the player flag Cookies.
 
-  script:
-  - if '<flag.g:gls_initialized_<entry.script.name>_<player.name||<npc.id>>||false>' == false
-    runtask 'gls_initialize me'
-      'context:<flag.<context.flag_type>:<context.flag_name>.size||0>|<entry.script.name>'
+"Generic Looper":
+    type: assignment
 
-  - if '<flag.g:gls_size_<entry.script.name>_<player.name||<npc.id>>>' >= '<flag.g:gls_iterator_<entry.script.name>_<player.name||<npc.id>>>'
-    runtask 'gls_execute'
-      'context:<context.task_action>|<context.iterate_value_name>|<entry.script.name>|<context.flag_type>|<context.flag_name>'
-    else runtask gls_breakdown 'context:<entry.script.name>|<context.iterate_value_name>'
+    interact scripts:
+    - 10 Generic Loop Interact Example
 
+"Generic Loop Interact Example":
+    type: interact
+  
+    steps:
+        1:
+            click trigger:
+                script:
+                - flag player "Cookies:->:crunchy"
+                - flag player "Cookies:->:munchy"
+                - flag player "Cookies:->:yummy"
+                - runtask "script:Generic Loop" "context:Generic Loop Example Task|Cookies|player"
+                - flag player "Cookies:!"
 
-"gls_initialize me":
-  type: task
-  speed: 0
-  context: size|id
+"Generic Loop Example Task":
+    type: task
+    speed: 0
+    context: value
 
-  script:
-  - flag global 'gls_initialized_<context.id>_<player.name||<npc.id>>:true'
-  - flag global 'gls_iterator_<context.id>_<player.name||<npc.id>>:1'
-  - flag global 'gls_size_<context.id>_<player.name||<npc.id>>:<context.size>'
+    script:
+    - announce "Got flag value of <context.value>"
 
+"Generic Loop":
+    type: task
+    speed: 0
+    context: task|flag|type
 
-"gls_execute":
-  type: task
-  speed: 0
-  context: flag_name, flag_type, task_action, iterate_value_name, id
+    script:
+    - runtask "script:Generic Loop Process" "context:<context.task>|<context.flag>|<context.type>|<util.random.uuid>"
 
-  script:
-  - flag global '<context.iterate_value_name>:<flag.<context.flag_type>:<context.flag_name>[<flag.g:gls_iterator_<context.id>_<player.name||<npc.id>>.asint||>]>'
-  - flag global 'gls_iterator_<context.id>_<player.name||<npc.id>>:+:1'
-  - runtask '<context.task_action>'
-  - runtask 'generic looper' 'context:<context.flag_name>|<context.flag_type>|<context.task_action>|<context.iterate_value_name>'
+"Generic Loop Process":
+    type: task
+    speed: 0
+    context: task|flag|type|id
 
-
-"gls_breakdown":
-  type: task
-  speed: 0
-  context: id, iterate_value_name
-
-  script:
-  - flag global 'gls_initialized_<context.id>_<player.name||<npc.id>>:!'
-  - flag global 'gls_iterator_<context.id>_<player.name||<npc.id>>:!'
-  - flag global 'gls_size_<context.id>_<player.name||<npc.id>>:!'
-  - flag global '<context.iterate_value_name>:!'
+    script:
+    - ^if "<flag.g:Iterator <context.id>.size || 0>" == 0
+      flag global "Iterator <context.id>:|:<flag.<context.type>:<context.flag>.aslist>"
+    - ^runtask "script:<context.task>" "context:<flag.g:Iterator <context.id>[1]>"
+    - ^flag global "Iterator <context.id>:<-:<flag.g:Iterator <context.id>[1]>"
+    - ^if "<flag.g:Iterator <context.id>.size || 0>" > 0
+      runtask "script:Generic Loop Process" "context:<context.task>|<context.flag>|<context.type>|<context.id>"
+      else flag global "Iterator <context.id>:!"
