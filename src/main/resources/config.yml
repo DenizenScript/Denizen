@@ -53,3 +53,6 @@ Chat Globally If No Chat Triggers: false
 # make the text appear in the global chat 
 Chat Globally If Not Interactable: false
 
+# Whether scripts should also be detected when they are placed
+# inside subfolders of the scripts folder
+Load Scripts in Subfolders: true

@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.utilities;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.minecraft.server.v1_4_R1.EntityLiving;
@@ -14,6 +17,7 @@ import org.bukkit.util.Vector;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -366,6 +370,46 @@ public class Utilities {
                 > theLeeway) return false;
 
         return true;
+    }
+    
+    protected static FilenameFilter scriptsFilter;
+    
+    static {
+        scriptsFilter = new FilenameFilter() {
+            public boolean accept(File file, String fileName) {
+                if(fileName.startsWith(".")) return false;
+                
+                String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+                return ext.equalsIgnoreCase("YML") || ext.equalsIgnoreCase("DSCRIPT");
+            }
+        };
+    }
+    
+    /**
+     * Lists all files in the given directory.
+     * 
+     * @param dir The directory to search in
+     * @param filter The filename filter to apply
+     * @param recursive If true subfolders will also get checked
+     * @return A {@link File} collection
+     */
+    public static List<File> listDScriptFiles(File dir, boolean recursive) {
+        List<File> files = new ArrayList<File>();
+        File[] entries = dir.listFiles();
+        
+        for (File file : entries) {            
+            // Add file
+            if (scriptsFilter == null || scriptsFilter.accept(dir, file.getName())) {
+                files.add(file);
+            }
+            
+            // Add subdirectories
+            if (recursive && file.isDirectory()) {
+                files.addAll(listDScriptFiles(file, recursive));
+            }
+        }
+        
+        return files;
     }
 
 }

@@ -10,8 +10,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.utilities.Utilities;
 
 public class ScriptHelper {
 
@@ -58,9 +62,9 @@ public class ScriptHelper {
             }
 
             // Get files
-            File[] files = file.listFiles();
+            List<File> files = Utilities.listDScriptFiles(file, Settings.LoadScriptsInSubfolders());
 
-            if (files.length > 0) {
+            if (files.size() > 0) {
                 StringBuilder sb = new StringBuilder();
 
                 YamlConfiguration yaml;
@@ -73,26 +77,21 @@ public class ScriptHelper {
 
                 for (File f : files){
                     String fileName = f.getName();
-                    if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")
-                            || fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("DSCRIPT")
-                            || fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YAML")
-                            && !fileName.startsWith(".")) {
-                        dB.echoDebug("Processing '" + fileName + "'... ");
+                    dB.echoDebug("Processing '" + fileName + "'... ");
 
-                        try {
-                            yaml = YamlConfiguration.loadConfiguration(f);
-                            if (yaml != null)
-                                sb.append(yaml.saveToString() + "\r\n");
-                            else dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. See console for YAML errors.");
+                    try {
+                        yaml = YamlConfiguration.loadConfiguration(f);
+                        if (yaml != null)
+                            sb.append(yaml.saveToString() + "\r\n");
+                        else dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. See console for YAML errors.");
 
-                        } catch (RuntimeException e) {
-                            dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "!");
-                            if (dB.showStackTraces) {
-                                dB.echoDebug("STACKTRACE follows:");
-                                e.printStackTrace();
-                            }
-                            else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
+                    } catch (RuntimeException e) {
+                        dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "!");
+                        if (dB.showStackTraces) {
+                            dB.echoDebug("STACKTRACE follows:");
+                            e.printStackTrace();
                         }
+                        else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
                     }
                 }
 

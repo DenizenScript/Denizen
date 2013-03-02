@@ -146,5 +146,10 @@ public class Settings {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Chat Globally If Not Interactable", true);
     }
+    
+    public static boolean LoadScriptsInSubfolders() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Load Scripts in Subfolders", true);
+    }
 
 }
