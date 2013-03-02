@@ -7,7 +7,7 @@
 	<groupId>net.aufdemrand</groupId>
 	<artifactId>denizen</artifactId>
     <packaging>jar</packaging>
-    <version>0.88-PRERELEASE</version>
+    <version>0.8.8-PRERELEASE</version>
     <name>Denizen</name>
 	<description>Scriptable NPCs for Citizens2</description>
 
@@ -24,6 +24,10 @@
 		<repository>
 			<id>mcMMO-repo</id>
 			<url>http://repo.mcmmo.info/</url>
+		</repository>
+		<repository>
+			<id>vault-repo</id>
+			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
 		</repository>
 		<repository>
 			<id>bukkit-repo</id>
@@ -55,8 +59,7 @@
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>Vault</artifactId>
-			<version>1.2.24</version>
-			<type>jar</type>
+			<version>1.2.24-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
