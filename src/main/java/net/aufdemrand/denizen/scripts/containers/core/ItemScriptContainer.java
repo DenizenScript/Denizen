@@ -25,7 +25,11 @@ public class ItemScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
-    public Item getItemFrom() {
+ //   public Item getItemFrom() {
+ //       return getItemFrom(null, null);
+ //   }
+
+    public Item getItemFrom(Player player, dNPC npc) {
         // Try to use this script to make an item.
         Item stack = null;
         try {
@@ -45,7 +49,6 @@ public class ItemScriptContainer extends ScriptContainer {
             	String displayName = TagManager.tag(player, npc, getString("DISPLAY NAME"));
             	meta.setDisplayName(displayName);
             }
-                
 
             // Set Lore
             if (contains("LORE")) {
@@ -88,7 +91,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 BookScriptContainer book = ScriptRegistry
                         .getScriptContainerAs(getString("BOOK"), BookScriptContainer.class);
 
-                stack = book.writeBookTo(stack);
+                stack = book.writeBookTo(stack, player, npc);
             }
 
             // Set Id of the stack
