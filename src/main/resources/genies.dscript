@@ -2,15 +2,14 @@
   type: assignment
 
   interact scripts:
-  - 10 diagnostics executer
+  - 10 _test_package diagnostics executer
 
   actions:
     on assignment:
     - trigger name:chat toggle:true
     - trigger name:click toggle:true
 
-
-"diagnostics executer":
+_test_package diagnostics executer:
   type: interact
   requirements:
     mode: all
@@ -20,15 +19,15 @@
     'execute*':
 
       chat trigger:
-        'get script':
+        'get test script':
           trigger: /REGEX:.+/
           script:
-          - chat "Attempting to run '<player.chat_history>' in 2 seconds..."
+          - chat "Attempting to '<player.chat_history>' in 2 seconds..."
           - wait 2
-          - runtask 'test_pck <player.chat_history>'
+          - runtask '_test_package <player.chat_history>'
 
 
-'test_pck test announce':
+_test_package test announce:
   type: task
   script:
   - announce 'This is a test.'
@@ -38,6 +37,41 @@
 
 
 
+
+# Whenever you want to get all the values of a flag and loop through them
+# in a task of your choice, you can easily do it using the Generic Loop
+# task included in Denizen.
+#
+# Simply use the following command:
+# - runtask "script:Generic Loop" "context:Your Task|Your Flag's name|Your Flag's type"
+#
+# And add speed:0 (or any speed you like) and context:value to your task,
+# right under type:task.
+#
+# Then you're all set. The Generic Loop will run your task once for every
+# value inside the flag. Use the <context.value> tag in your task to get
+# the current value sent to the task.
+#
+# To see a quick example of how it works, give the "Generic Looper"
+# assignment to an NPC and click on it. It will announce all the values
+# from the player flag Cookies.
+
+_test_package test generic looper:
+  type: task
+  script:
+  - flag player "Cookies:->:crunchy"
+  - flag player "Cookies:->:munchy"
+  - flag player "Cookies:->:yummy"
+  - runtask '_util_gl' "context:_depend Generic Loop Example Task|Cookies|player"
+  - flag player "Cookies:!"
+
+_depend Generic Loop Example Task:
+    type: task
+    speed: 0
+    context: value
+
+    script:
+    - announce "Got flag value of <context.value>"
 
 
 
