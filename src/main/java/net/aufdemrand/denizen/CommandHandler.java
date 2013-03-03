@@ -10,10 +10,12 @@ import net.aufdemrand.denizen.npc.traits.NameplateTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.npc.traits.PushableTrait;
 import net.aufdemrand.denizen.npc.traits.SittingTrait;
+import net.aufdemrand.denizen.npc.traits.SleepingTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptRepo;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -344,7 +346,7 @@ public class CommandHandler {
 	 * Sit
 	 */
 	@Command(
-			aliases = { "npc" }, usage = "sit", 
+			aliases = { "npc" }, usage = "sit (--location x,y,z,world) (--anchor anchor_name)", 
 			desc = "Makes the NPC sit.", modifiers = { "sit" },
 			min = 1, max = 3, permission = "npc.sit")
 	@Requirements(selected = true, ownership = true)
@@ -367,7 +369,8 @@ public class CommandHandler {
 			trait.sit(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
 			return;
 		} else if (args.hasValueFlag("anchor")) {			
-			trait.sit(aH.getLocationFrom(DenizenAPI.getCurrentInstance().tagManager().tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
+			DenizenAPI.getCurrentInstance().tagManager();
+			trait.sit(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
 			return;
 		} else {
 			trait.sit();
@@ -398,6 +401,64 @@ public class CommandHandler {
 		npc.removeTrait(SittingTrait.class);
 	}
 
+	
+	/*
+	 * Sleep
+	 */
+	@Command(
+			aliases = { "npc" }, usage = "sleep (--location x,y,z,world) (--anchor anchor_name)", 
+			desc = "Makes the NPC sleep.", modifiers = { "sleep" },
+			min = 1, max = 3, permission = "npc.sleep")
+	@Requirements(selected = true, ownership = true)
+	public void sleeping(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+		if (!npc.hasTrait(SleepingTrait.class)) npc.addTrait(SleepingTrait.class);
+		SleepingTrait trait = npc.getTrait(SleepingTrait.class);
+		
+		if (trait.isSleeping()) {
+			Messaging.send(sender, ChatColor.RED + npc.getName() + " is already sleeping!");
+			return;
+		}
+		
+		if (args.hasValueFlag("location")) {
+			String[] argsArray = args.getFlag("location").split(",");
+			if (argsArray.length != 4) {
+				Messaging.send(sender, ChatColor.RED + "Usage: /npc sit --location x,y,z,world");
+				return;
+			}
+			trait.toSleep(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
+			return;
+		} else if (args.hasValueFlag("anchor")) {			
+			DenizenAPI.getCurrentInstance().tagManager();
+			trait.toSleep(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
+			return;
+		} else {
+			trait.toSleep();
+			return;
+		}
+
+	}
+	
+	/*
+	 * Wakeup
+	 */
+	@Command(
+			aliases = { "npc" }, usage = "wakeup", 
+			desc = "Makes the NPC wake up.", modifiers = { "wakeup" },
+			min = 1, max = 3, permission = "npc.wakeup")
+	@Requirements(selected = true, ownership = true)
+	public void wakingup(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+		if (!npc.hasTrait(SleepingTrait.class)) npc.addTrait(SleepingTrait.class);
+		SleepingTrait trait = npc.getTrait(SleepingTrait.class);
+			
+		if (!trait.isSleeping()) {
+			npc.removeTrait(SleepingTrait.class);
+		    Messaging.send(sender, ChatColor.RED + npc.getName() + " is already awake!");
+			return;
+		}
+		
+		trait.wakeUp();
+		npc.removeTrait(SleepingTrait.class);
+	}
 
 	/*
 	 * HEALTH
