@@ -2,24 +2,22 @@ package net.aufdemrand.denizen.utilities;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
+import java.util.*;
+
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.minecraft.server.v1_4_R1.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * This class has utility methods for various tasks.
@@ -28,6 +26,25 @@ import java.util.Set;
  */
 public class Utilities {
 
+    public static Location getWalkableLocationNear(Location location, int range) {
+        Location returnable;
+        Random range_random  = new Random();
+
+        int selected_x = range_random.nextInt(range * 2);
+        int selected_z = range_random.nextInt(range * 2);
+        returnable = location.add(selected_x - range, 1, selected_z - range);
+
+        if (!isWalkable(returnable)) return getWalkableLocationNear(location, range);
+        else return returnable;
+    }
+
+    public static boolean isWalkable(Location location) {
+        if ((location.getBlock().getType() == Material.AIR
+                || location.getBlock().getType() == Material.GRASS)
+                && (location.add(0, 1, 0).getBlock().getType() == Material.AIR))
+            return true;
+        else return false;
+    }
 
     public static String arrayToString(String[] input, String glue){
         String output="";
@@ -246,9 +263,9 @@ public class Utilities {
      * @return  Returns a boolean.
      */
     public static boolean isFacingLocation(Entity from, Location at, float degreeLimit) {
-        
-    	double currentYaw;
-    	
+
+        double currentYaw;
+
         if (from instanceof Player) // need to subtract 90 from player yaws
             currentYaw = normalizeYaw(from.getLocation().getYaw() - 90);
         else
@@ -371,23 +388,23 @@ public class Utilities {
 
         return true;
     }
-    
+
     protected static FilenameFilter scriptsFilter;
-    
+
     static {
         scriptsFilter = new FilenameFilter() {
             public boolean accept(File file, String fileName) {
                 if(fileName.startsWith(".")) return false;
-                
+
                 String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
                 return ext.equalsIgnoreCase("YML") || ext.equalsIgnoreCase("DSCRIPT");
             }
         };
     }
-    
+
     /**
      * Lists all files in the given directory.
-     * 
+     *
      * @param dir The directory to search in
      * @param filter The filename filter to apply
      * @param recursive If true subfolders will also get checked
@@ -396,19 +413,19 @@ public class Utilities {
     public static List<File> listDScriptFiles(File dir, boolean recursive) {
         List<File> files = new ArrayList<File>();
         File[] entries = dir.listFiles();
-        
-        for (File file : entries) {            
+
+        for (File file : entries) {
             // Add file
             if (scriptsFilter == null || scriptsFilter.accept(dir, file.getName())) {
                 files.add(file);
             }
-            
+
             // Add subdirectories
             if (recursive && file.isDirectory()) {
                 files.addAll(listDScriptFiles(file, recursive));
             }
         }
-        
+
         return files;
     }
 

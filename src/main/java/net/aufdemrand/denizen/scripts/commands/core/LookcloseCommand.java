@@ -58,25 +58,30 @@ public class LookcloseCommand extends AbstractCommand {
 
             }	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
+
+        if (scriptEntry.getNPC() == null)
+            throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+
+
+        scriptEntry.addObject("realistic", realistic)
+                .addObject("range", range)
+                .addObject("toggle", toggle);
 	}
 	
-	String[] realisticArgs = "/npc lookclose -r".split(" ");
-
-    // TODO: Fix this.
-
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-		if (npc == null) throw new CommandExecutionException(Messages.ERROR_NO_NPCID);
-		
+
+
+
 		// Get the instance of the trait that belongs to the target NPC
 		LookClose trait = npc.getTrait(LookClose.class);
 		trait.lookClose(toggle);
 		if (realistic) {
-		    // trait.configure(new CommandContext(realisticArgs));
+		    trait.setRealisticLooking(true);
 		}
+
 		if (range != null) {
-		    String[] rangeArgs = ("npc lookclose --range " + range).split(" ");
-		    // trait.configure(new CommandContext(rangeArgs));
+		    trait.setRange(range.intValue());
 		}
 	}
 	
