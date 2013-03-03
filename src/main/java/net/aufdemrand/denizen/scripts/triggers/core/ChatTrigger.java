@@ -157,8 +157,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
             if (!Settings.ChatGloballyIfFailedChatTriggers ()) {
                 event.setCancelled(true);
-                dB.echoDebug(event.getPlayer().getName() + " says to "
-                        + npc.getNicknameTrait().getNickname() + ", " + replacementText);
+                Utilities.talkToNPC(event.getMessage(), event.getPlayer(), npc, Settings.ChatToNpcBystandersRange());
                 return;
             }
 
