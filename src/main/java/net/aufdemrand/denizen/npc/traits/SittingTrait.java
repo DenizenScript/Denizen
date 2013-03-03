@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.minecraft.server.v1_4_R1.EntityHuman;
+import net.minecraft.server.v1_4_R1.EntityPlayer;
 
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
@@ -46,7 +47,14 @@ public class SittingTrait extends Trait implements Listener  {
 			return;
 		}
 		
-		eh.mount(eh);
+		((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x04));
+		//dataWatcher.watch(0, Byte.valueOf((byte) 0x04));
+		//Packet40EntityMetadata packet = new Packet40EntityMetadata(npc.getBukkitEntity().getEntityId(), dataWatcher, true);
+		//for(Player p : DenizenAPI.getCurrentInstance().getServer().getOnlinePlayers())
+		//	((CraftPlayer)p).getHandle().playerConnection.sendPacket(packet);
+		
+		//((CraftPlayer) npc.getBukkitEntity()).getHandle().playerConnection.sendPacket(packet);
+		//eh.mount(eh);
 		
 		sitting = true;
 		chairLocation = npc.getBukkitEntity().getLocation();
@@ -68,10 +76,16 @@ public class SittingTrait extends Trait implements Listener  {
 		 * sending the sit packet to the clients.
 		 */
 		//npc.getBukkitEntity().teleport(location.add(0.5, 0, 0.5));
-		eh.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+		eh.getBukkitEntity().teleport(location);
 		dB.echoDebug("...NPC moved to chair");
 		
-		eh.mount(eh);
+		((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x04));
+		
+		//Packet40EntityMetadata packet = new Packet40EntityMetadata(npc.getBukkitEntity().getEntityId(), ((EntityPlayer) npc.getBukkitEntity()).getDataWatcher(), true);
+		//Collection<Packet> collection = new ArrayList<Packet>(Arrays.asList(packet));
+		//NMS.sendPacketsNearby(npc.getBukkitEntity().getLocation(), collection, 1);
+		
+		//eh.mount(eh);
 		
 		sitting = true;
 		chairLocation = location;
@@ -85,7 +99,9 @@ public class SittingTrait extends Trait implements Listener  {
 			return;
 		}
 		
-		eh.mount(null);
+		((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x00));
+		
+		//eh.mount(null);
 		
 		chairLocation = null;
 		sitting = false;
