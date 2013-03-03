@@ -441,18 +441,52 @@ public class PlayerTags implements Listener {
         
 
         } else if (type.equals("INVENTORY")) {
-        	if (subType.equals("CONTAINS") && (aH.matchesItem("item:" + subTypeContext)))
+        	if (subType.equals("CONTAINS"))
         	{
-        		ItemStack item = aH.getItemFrom("item:" + subTypeContext);
-        		
-        		if (specifier.equals("QTY") && (aH.matchesQuantity("qty:" + specifierContext)))
+        		if (specifier.equals("DISPLAY"))
         		{
-        			int qty = aH.getIntegerFrom(specifierContext);
+        			// Check if an item with this display name (set on an anvil)
+        			// exists in this player's inventory
         			
-        			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, qty)));
+        			for (ItemStack itemstack : event.getPlayer().getInventory().getContents())
+            		{
+        				if (itemstack != null && itemstack.getItemMeta().getDisplayName() != null)
+        				{
+        					if (itemstack.getItemMeta().getDisplayName().equalsIgnoreCase(specifierContext))
+        					{
+        						event.setReplaced("true");
+        						return;
+        					}
+        				}
+            		}
+        			
+        			for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
+        			{
+        				if (itemstack.getType().name() != "AIR" && itemstack.getItemMeta().getDisplayName() != null)
+        				{
+        					if (itemstack.getItemMeta().getDisplayName().equalsIgnoreCase(specifierContext))
+        					{
+        						event.setReplaced("true");
+        						return;
+        					}
+        				}
+        			}
+        			
+        			event.setReplaced("false");
         		}
-        		else
-        			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, 1)));
+        		else if (aH.matchesItem("item:" + subTypeContext))
+        		{
+        			ItemStack item = aH.getItemFrom("item:" + subTypeContext);
+            		
+            		if (specifier.equals("QTY") && (aH.matchesQuantity("qty:" + specifierContext)))
+            		{
+            			int qty = aH.getIntegerFrom(specifierContext);
+            			
+            			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, qty)));
+            		}
+            		else
+            			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, 1)));
+        		}        		
         	}
         	else if (subType.equals("QTY"))
         	{
@@ -463,7 +497,7 @@ public class PlayerTags implements Listener {
         			ItemStack item = new ItemStack(aH.getItemFrom("item:" + subTypeContext));
         			
         			for (ItemStack itemstack : event.getPlayer().getInventory().getContents())
-            		{	
+            		{
             			// If ItemStacks are empty here, they are null
             			if (itemstack != null)
             			{
