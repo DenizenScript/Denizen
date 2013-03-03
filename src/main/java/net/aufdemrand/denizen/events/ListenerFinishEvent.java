@@ -5,7 +5,7 @@ import org.bukkit.event.HandlerList;
 
 
 /**
- *
+ * An event that fires on a Player finishing a Listener.
  *
  * @author Jeremy Schroeder
  *

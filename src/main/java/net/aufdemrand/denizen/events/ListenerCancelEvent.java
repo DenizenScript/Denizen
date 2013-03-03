@@ -5,7 +5,7 @@ import org.bukkit.event.HandlerList;
 
 
 /**
- *
+ * Triggers when a Denizen Listener is cancelled.
  *
  * @author Jeremy Schroeder
  *
