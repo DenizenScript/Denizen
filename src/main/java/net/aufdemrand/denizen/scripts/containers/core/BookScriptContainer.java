@@ -21,20 +21,12 @@ public class BookScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
-    public Item getBookFrom() {
+    public Item getBookFrom(Player player, dNPC npc) {
         Item stack = new Item(Material.BOOK);
-        return writeBookTo(stack);
-    }
-    
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-    
-    public void setNPC(dNPC npc) {
-        this.npc = npc;
+        return writeBookTo(stack, player, npc);
     }
 
-    public Item writeBookTo(Item book) {
+    public Item writeBookTo(Item book, Player player, dNPC npc) {
         // Get current ItemMeta from the book
         BookMeta bookInfo = (BookMeta) book.getItemMeta();
         

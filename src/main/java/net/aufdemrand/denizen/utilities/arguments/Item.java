@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
@@ -7,6 +8,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
@@ -75,7 +77,12 @@ public class Item extends ItemStack implements dScriptArgument {
      * @return  an Item, or null if incorrectly formatted
      *
      */
+
     public static Item valueOf(String string) {
+        return valueOf(string, null, null);
+    }
+
+    public static Item valueOf(String string, Player player, dNPC npc) {
 
        if (string == null) return null;
 
@@ -128,7 +135,7 @@ public class Item extends ItemStack implements dScriptArgument {
         m[0] = getItemPtrn[5].matcher(string);
         if (m[0].matches() && ScriptRegistry.containsScript(m[0].group(1), ItemScriptContainer.class)) {
             // Get item from script
-            return ScriptRegistry.getScriptContainerAs(m[0].group(1), ItemScriptContainer.class).getItemFrom();
+            return ScriptRegistry.getScriptContainerAs(m[0].group(1), ItemScriptContainer.class).getItemFrom(player, npc);
         }
 
         // No match.

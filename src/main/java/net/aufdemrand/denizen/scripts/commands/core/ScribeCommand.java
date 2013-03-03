@@ -162,10 +162,7 @@ public class ScribeCommand extends AbstractCommand implements Listener{
 
         BookScriptContainer bookScript = ScriptRegistry.getScriptContainerAs(scriptName, BookScriptContainer.class);
         
-        if (player != null) bookScript.setPlayer(player);
-        if (npc != null) bookScript.setNPC(npc);
-        
-        book = bookScript.writeBookTo(book);
+        book = bookScript.writeBookTo(book, player, npc);
 
         // Post-write action? Can be NONE.
         switch (action) {
