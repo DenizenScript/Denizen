@@ -51,6 +51,9 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(AttackCommand.class, 
         		"ATTACK", "attack (stop)", 0);
+
+        registerCoreMember(AnchorCommand.class,
+                "ANCHOR", "anchor [id:name] [assume|add|remove|walkto|walknear] (range:#)", 2);
         
         registerCoreMember(AssignmentCommand.class, 
         		"ASSIGNMENT", "assignment [{set}|remove] (script:assignment_script)", 1);
@@ -129,6 +132,9 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(NewCommand.class, 
         		"NEW", "new itemstack [item:material] (qty:#)", 2);
+
+        registerCoreMember(PoseCommand.class,
+                "POSE", "pose [id:name]", 1);
 		
         registerCoreMember(PlaySoundCommand.class, 
         		"PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
