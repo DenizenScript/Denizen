@@ -187,7 +187,7 @@ public class ScriptQueue implements Listener {
 
     public void stop() {
         _queues.remove(id);
-        dB.echoDebug("Stopping " + id + "...");
+        dB.echoDebug("Completing queue " + id + "...");
         Bukkit.getServer().getScheduler().cancelTask(taskId);
     }
 
