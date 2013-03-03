@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.event.Listener;
 
 /**
  * Your command! 
@@ -14,7 +15,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
  * 
  * @author Jeremy Schroeder (aufdemrand)
  */
-public class WalkToCommand extends AbstractCommand {
+public class WalkToCommand extends AbstractCommand implements Listener {
 	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
