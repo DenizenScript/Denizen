@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -41,13 +42,18 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
         if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) return;
 
-        // If the chat radius is not set, use default radius from settings
-        if (npc.getTriggerTrait().getRadius(name) == -1)
-            npc.getTriggerTrait().setLocalRadius(name, (Settings.TriggerDefaultRangeInBlocks(name)));
-
         // Check range
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(event.getPlayer().getLocation()))
             return;
+
+        // Debugger
+        dB.report(name, aH.debugObj("Player", event.getPlayer().getName())
+                + aH.debugObj("NPC", npc.toString())
+                + aH.debugObj("Radius(Max)", npc.getLocation().distance(event.getPlayer().getLocation())
+                + "(" + npc.getTriggerTrait().getRadius(name) + ")")
+                + aH.debugObj("Trigger text", event.getMessage())
+                + aH.debugObj("LOS", String.valueOf(npc.getEntity().hasLineOfSight(event.getPlayer())))
+                + aH.debugObj("Facing", String.valueOf(Utilities.isFacingEntity(event.getPlayer(), npc.getEntity(), 45))));
 
         // The Denizen config can require some other criteria for a successful chat-with-npc.
         // Should we check 'line of sight'? Players cannot talk to NPCs through walls
@@ -60,7 +66,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
         // If available (not engaged, and cool) sets cool down and returns true.
-        if (!npc.getTriggerTrait().trigger(this, event.getPlayer())) {
+         if (!npc.getTriggerTrait().trigger(this, event.getPlayer())) {
             // If the NPC is not interactable, Settings may allow the chat to filter
             // through. Check the Settings if this is enabled.
             if (Settings.ChatGloballyIfNotInteractable()) {

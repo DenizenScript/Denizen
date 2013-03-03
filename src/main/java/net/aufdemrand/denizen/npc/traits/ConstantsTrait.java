@@ -153,8 +153,10 @@ public class ConstantsTrait extends Trait {
             return assignmentConstants;
         }
 
-        assignment = npc.getTrait(AssignmentTrait.class).getAssignment().getName();
-        assignmentConstants.clear();
+        if (npc.getTrait(AssignmentTrait.class).getAssignment() != null) {
+            assignment = npc.getTrait(AssignmentTrait.class).getAssignment().getName();
+            assignmentConstants.clear();
+        } else return assignmentConstants;
 
         if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS"))
             for (String constant : ScriptRegistry.getScriptContainer(assignment).getConfigurationSection("DEFAULT CONSTANTS").getKeys(false))

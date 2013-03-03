@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 
 
 /**
- *
+ * An event that pertains to a Denizen Listener.
  *
  * @author Jeremy Schroeder
  *

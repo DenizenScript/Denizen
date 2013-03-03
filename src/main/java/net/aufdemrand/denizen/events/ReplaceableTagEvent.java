@@ -18,10 +18,10 @@ import org.bukkit.event.HandlerList;
 /**
  * Bukkit event that fires on the finding of a dScript replaced tag called
  * from argument creation (if a QUICKTAG '^') and upon execution. Replaceable
- *  tags are enclosed in '< >'s.
+ * tags are enclosed in '< >'s.
  *
  * Tag Structure:
- * <^NAME.TYPE:VALUE[INDEX](FALLBACK VALUE)>
+ * <^NAME[CONTEXT].TYPE[CONTEXT].SUBTYPE[CONTEXT].SPECIFIER[CONTEXT]:VALUE || FALLBACK VALUE>
  *
  * ^ - Optional. Specifies a QUICKTAG which is wasReplaced upon creation of arguments.
  *   Used in buildArgs(). If not used, replacement is done in Executer's execute() 
@@ -30,9 +30,9 @@ import org.bukkit.event.HandlerList;
  *
  * Examples:
  * <PLAYER.NAME>
- * <PLAYER.ITEM_IN_HAND:LORE[1](None.)>
- * <NPC.NAME:NICKNAME>
- * <^FLAG.D:FRIENDS(None.)>
+ * <PLAYER.ITEM_IN_HAND.LORE[1] || None.>
+ * <NPC.NAME.NICKNAME>
+ * <^FLAG.D:FRIENDS>
  *
  * @author Jeremy Schroeder, David Cernat
  *
