@@ -40,7 +40,7 @@ public class CommandHandler {
         this.plugin = plugin;
     }
 
-
+    
     /**
      * <p>Controls a NPCs Pushable Trait. When a NPC is 'pushable', the NPC
      * will move out of the way when colliding with another LivingEntity.</p>
@@ -444,7 +444,7 @@ public class CommandHandler {
     @Command(
             aliases = { "npc" }, usage = "wakeup",
             desc = "Makes the NPC wake up.", modifiers = { "wakeup" },
-            min = 1, max = 3, permission = "npc.wakeup")
+            min = 1, max = 3, permission = "npc.sleep")
     @Requirements(selected = true, ownership = true)
     public void wakingup(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(SleepingTrait.class)) npc.addTrait(SleepingTrait.class);
@@ -460,6 +460,64 @@ public class CommandHandler {
         npc.removeTrait(SleepingTrait.class);
     }
 
+    /*
+	 * Fish
+	 */
+    @Command(
+            aliases = { "npc" }, usage = "fish (--location x,y,z,world) (--anchor anchor_name)",
+            desc = "Makes the NPC fish, casting at the given location.", modifiers = { "fish" },
+            min = 1, max = 3, permission = "npc.fish")
+    @Requirements(selected = true, ownership = true)
+    public void startFishing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        if (!npc.hasTrait(FishingTrait.class)) npc.addTrait(FishingTrait.class);
+        FishingTrait trait = npc.getTrait(FishingTrait.class);
+
+        if (trait.isFishing()) {
+            Messaging.send(sender, ChatColor.RED + npc.getName() + " is already fishing!");
+            return;
+        }
+
+        if (args.hasValueFlag("location")) {
+            String[] argsArray = args.getFlag("location").split(",");
+            if (argsArray.length != 4) {
+                Messaging.send(sender, ChatColor.RED + "Usage: /npc sit --location x,y,z,world");
+                return;
+            }
+            trait.startFishing(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
+            return;
+        } else if (args.hasValueFlag("anchor")) {
+            DenizenAPI.getCurrentInstance().tagManager();
+            trait.startFishing(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
+            return;
+        } else {
+            trait.startFishing();
+            return;
+        }
+
+    }
+
+    /*
+     * Stopfishing
+     */
+    @Command(
+            aliases = { "npc" }, usage = "stopfishing",
+            desc = "Makes the NPC stop fishing.", modifiers = { "stopfishing" },
+            min = 1, max = 3, permission = "npc.fish")
+    @Requirements(selected = true, ownership = true)
+    public void stopFishing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        if (!npc.hasTrait(FishingTrait.class)) npc.addTrait(FishingTrait.class);
+        FishingTrait trait = npc.getTrait(FishingTrait.class);
+
+        if (!trait.isFishing()) {
+            npc.removeTrait(FishingTrait.class);
+            Messaging.send(sender, ChatColor.RED + npc.getName() + " isnt fishing!");
+            return;
+        }
+
+        trait.stopFishing();
+        npc.removeTrait(FishingTrait.class);
+    }
+    
     /*
      * HEALTH
      */
