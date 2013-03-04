@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -8,10 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Location extends org.bukkit.Location implements dScriptArgument {
 
-    public static Map<String, Location> locations = new HashMap<String, Location>();
+    public static Map<String, Location> locations = new ConcurrentHashMap<String, Location>();
 
     /**
      * Gets a saved location based on an Id.
@@ -23,6 +26,15 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
         if (locations.containsKey(id.toLowerCase()))
             return locations.get(id.toLowerCase());
         else return null;
+    }
+
+    public static String isSavedLocation(org.bukkit.Location location) {
+        for (Map.Entry<String, Location> entry : locations.entrySet()) {
+            if (Utilities.checkLocation(entry.getValue(), location, 1)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     /**
@@ -115,6 +127,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
         super(location.getWorld(), location.getX(), location.getY(), location.getZ());
         this.Id = id.toLowerCase();
         locations.put(Id, this);
+        dB.echoDebug(locations.toString());
     }
 
     /**

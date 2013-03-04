@@ -389,6 +389,31 @@ public class Utilities {
         return true;
     }
 
+    /**
+     * Checks entity's location against a Location (with leeway). Should be faster than
+     * bukkit's built in Location.distance(Location) since there's no sqrt math.
+     *
+     * Thanks chainsol :)
+     *
+     * @return true if within the specified location, false otherwise.
+     */
+    public static boolean checkLocation(Location baseLocation, Location theLocation, int theLeeway) {
+
+        if (!baseLocation.getWorld().getName().equals(theLocation.getWorld().getName()))
+            return false;
+
+        Location entityLocation = baseLocation;
+
+        if (Math.abs(entityLocation.getBlockX() - theLocation.getBlockX())
+                > theLeeway) return false;
+        if (Math.abs(entityLocation.getBlockY() - theLocation.getBlockY())
+                > theLeeway) return false;
+        if (Math.abs(entityLocation.getBlockZ() - theLocation.getBlockZ())
+                > theLeeway) return false;
+
+        return true;
+    }
+
     protected static FilenameFilter scriptsFilter;
 
     static {

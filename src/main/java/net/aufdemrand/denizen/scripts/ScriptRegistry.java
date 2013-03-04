@@ -30,9 +30,9 @@ public class ScriptRegistry {
         _registerType("item", ItemScriptContainer.class);
         _registerType("entity", EntityScriptContainer.class);
         _registerType("task", TaskScriptContainer.class);
-        _registerType("activity", ActivityScriptContainer.class);
         _registerType("assignment", AssignmentScriptContainer.class);
         _registerType("procedure", ProcedureScriptContainer.class);
+        _registerType("world", WorldScriptContainer.class);
     }
 
     public static boolean containsScript(String id) {
