@@ -480,7 +480,7 @@ public class CommandHandler {
         if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
-                Messaging.send(sender, ChatColor.RED + "Usage: /npc sit --location x,y,z,world");
+                Messaging.send(sender, ChatColor.RED + "Usage: /npc fish --location x,y,z,world");
                 return;
             }
             trait.startFishing(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
