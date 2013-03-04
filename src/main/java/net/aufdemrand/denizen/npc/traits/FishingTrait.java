@@ -17,6 +17,9 @@ import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -124,7 +127,7 @@ public class FishingTrait extends Trait {
 
 	    if(chance > 65) {
 	        
-	        fish = fishingSpot.getWorld().dropItem(fishingSpot, (new ItemStack(Material.RAW_FISH)));
+	        Entity fish = fishingSpot.getWorld().dropItem(fishingSpot, (new ItemStack(Material.RAW_FISH)));
 	        Vector v1 = fish.getLocation().toVector();
 	        Vector v2 = npc.getBukkitEntity().getLocation().add(0,14,0).toVector();
 	        Vector v3 = v2.subtract(v1).normalize().multiply(0.975);
@@ -142,21 +145,16 @@ public class FishingTrait extends Trait {
 	 * @param location
 	 */
 	public void startFishing(Location location) {
-		dB.log("...adding hook to world");
 		nmsworld.addEntity(fishHook);
 		
-		dB.log("...setting up vectors");
 		Vector v1 = fishHook.getBukkitEntity().getLocation().toVector();
 		Vector v2 = location.toVector();
 		Vector v3 = v2.subtract(v1).normalize().multiply(1.5);
 		
-		dB.log("...set npc as shooting");
 		((Projectile) fishHook.getBukkitEntity()).setShooter(npc.getBukkitEntity());
         PlayerAnimation.ARM_SWING.play((Player) npc.getBukkitEntity());
-		dB.log("...set hook velocity");
 		fishHook.getBukkitEntity().setVelocity(v3);
 		
-        dB.log("..." + npc.getName() + " should be fishing!");
 		fishing = true;
 		fishingLocation = location;
 		fishingSpot = fishingLocation.clone();
@@ -194,6 +192,13 @@ public class FishingTrait extends Trait {
 	 */
 	public Location getFishingLocation() {
 		return fishingLocation;
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH)
+	public void blockFishPickup(PlayerPickupItemEvent event){
+		if(event.getItem().getEntityId() == fish.getEntityId()){
+			event.setCancelled(true);
+		}
 	}
 	
 	public FishingTrait() {
