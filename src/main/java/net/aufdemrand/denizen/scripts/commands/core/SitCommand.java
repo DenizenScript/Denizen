@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import org.bukkit.entity.EntityType;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.SittingTrait;
@@ -35,6 +37,11 @@ public class SitCommand extends AbstractCommand {
 		Location location = (Location) scriptEntry.getObject("location");
 		NPC npc = scriptEntry.getNPC().getCitizen();
 		SittingTrait trait = npc.getTrait(SittingTrait.class);
+		
+		if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+			dB.echoError("...only Player type NPCs can sit!");
+			return;
+		}
 				
 		if (!npc.hasTrait(SittingTrait.class)) {
 			npc.addTrait(SittingTrait.class);
