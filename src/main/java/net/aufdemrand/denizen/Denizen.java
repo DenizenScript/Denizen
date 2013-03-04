@@ -12,11 +12,13 @@ import net.aufdemrand.denizen.npc.activities.ActivityEngine;
 import net.aufdemrand.denizen.npc.activities.ActivityRegistry;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
+import net.aufdemrand.denizen.npc.traits.FishingTrait;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NameplateTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.npc.traits.PushableTrait;
 import net.aufdemrand.denizen.npc.traits.SittingTrait;
+import net.aufdemrand.denizen.npc.traits.SleepingTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
@@ -183,6 +185,8 @@ public class Denizen extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ConstantsTrait.class).withName("constants"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(NameplateTrait.class).withName("nameplate"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SittingTrait.class).withName("sitting"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(FishingTrait.class).withName("fishing"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SleepingTrait.class).withName("sleeping"));
 
         // Create instance of PacketHelper if ProtocolLib has been hooked
 		if(Depends.protocolManager != null) {
