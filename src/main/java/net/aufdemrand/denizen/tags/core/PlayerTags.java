@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -153,6 +154,22 @@ public class PlayerTags implements Listener {
                 if (playerChatHistory.containsKey(event.getPlayer().getName())) {
                     event.setReplaced(playerChatHistory.get(event.getPlayer().getName()).get(0));
                 }
+            }
+        }
+        
+        else if (type.equals("CLOSEST"))
+        {
+        	int range = 100;
+        	
+        	if (aH.matchesInteger(typeContext))
+        		range = aH.getIntegerFrom(typeContext);
+        	
+            if (subType.equals("NPC"))
+            {
+            	if (specifier.equals("NAME"))
+            		event.setReplaced(String.valueOf(Utilities.getClosestNPC(p.getLocation(), range).getId()));
+            	else
+            		event.setReplaced(String.valueOf(Utilities.getClosestNPC(p.getLocation(), range).getName()));
             }
         }
 
