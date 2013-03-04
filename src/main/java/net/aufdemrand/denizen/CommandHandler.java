@@ -27,6 +27,7 @@ import net.citizensnpcs.util.Paginator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.json.JSONException;
 
@@ -345,7 +346,12 @@ public class CommandHandler {
             min = 1, max = 3, permission = "npc.sit")
     @Requirements(selected = true, ownership = true)
     public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
+    	if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+			Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sit!");
+			return;
+		}
+		
+    	if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
         SittingTrait trait = npc.getTrait(SittingTrait.class);
 
         if (trait.isSitting()) {
