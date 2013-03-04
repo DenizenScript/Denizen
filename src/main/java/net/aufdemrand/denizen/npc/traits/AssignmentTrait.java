@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import net.aufdemrand.denizen.notables.Notable;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -144,16 +143,6 @@ public class AssignmentTrait extends Trait {
             for (String scriptEntry : assignmentScript.getStringList("SCHEDULED ACTIVITIES"))
                 paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
         } if (!entriesPresent) paginator.addLine("<c>No scheduled scripts activities.");
-        paginator.addLine("");
-
-        // Linked Notable Locations/Blocks
-        entriesPresent = false;
-        paginator.addLine(ChatColor.GRAY + "Linked Notable Locations:");
-        paginator.addLine("<e>Key: <a>Name  <b>World  <c>Location");
-        if (!DenizenAPI.getCurrentInstance().notableManager().getNotables().isEmpty()) entriesPresent = true;
-        for (Notable notable : DenizenAPI.getCurrentInstance().notableManager().getNotables())
-            if (notable.hasLink(npc.getId())) paginator.addLine(notable.describe());
-        if (!entriesPresent) paginator.addLine("<c>No notable locations linked to this NPC.");
         paginator.addLine("");
 
         // Actions

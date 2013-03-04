@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
-import net.aufdemrand.denizen.notables.NotableManager;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.activities.ActivityEngine;
 import net.aufdemrand.denizen.npc.activities.ActivityRegistry;
@@ -23,6 +22,7 @@ import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -119,7 +119,6 @@ public class Denizen extends JavaPlugin {
      * Denizen Managers
      */
     
-    private NotableManager notableManager = new NotableManager(this);
     private FlagManager flagManager = new FlagManager(this);
     private TagManager tagManager = new TagManager(this);
 
@@ -129,10 +128,6 @@ public class Denizen extends JavaPlugin {
 
     public TagManager tagManager() {
         return tagManager;
-    }
-
-    public NotableManager notableManager() {
-        return notableManager;
     }
 
     public Depends depends = new Depends();
@@ -176,6 +171,9 @@ public class Denizen extends JavaPlugin {
         ScriptHelper.reloadScripts();
         reloadSaves();
 
+        // Create the command script handler for listener
+        new WorldScriptHelper();
+
         // Register traits
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(PushableTrait.class).withName("pushable"));
@@ -202,9 +200,6 @@ public class Denizen extends JavaPlugin {
         getActivityRegistry().registerCoreMembers();
         getRequirementRegistry().registerCoreMembers();
         getListenerRegistry().registerCoreMembers();
-        
-        // Load Notables into memory (for the Location Triggers to reference)
-        notableManager().loadNotables();
         tagManager().registerCoreTags();
 
         // Register CommandHandler with Citizens

@@ -29,23 +29,31 @@ public class DetermineCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         String outcome = "false";
+        Boolean passively = false;
 
         for (String arg : scriptEntry.getArguments())
+
+        if (aH.matchesArg("PASSIVELY", arg))
+            passively = true;
+        else
             outcome = aH.getStringFrom(arg);
-        scriptEntry.addObject("outcome", outcome);
+        scriptEntry.addObject("outcome", outcome)
+            .addObject("passively", passively);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         String outcome = (String) scriptEntry.getObject("outcome");
+        Boolean passively = (Boolean) scriptEntry.getObject("passively");
 
         Long uniqueId = (Long) scriptEntry.getObject("reqId");
         if (uniqueId == null) return;
 
         outcomes.put(uniqueId, outcome);
 
-        // Stop the queue by clearing the remainder of it.
-        scriptEntry.getResidingQueue().clear();
+        if (!passively)
+            // Stop the queue by clearing the remainder of it.
+            scriptEntry.getResidingQueue().clear();
     }
 
 }
