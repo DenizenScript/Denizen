@@ -24,8 +24,7 @@ public class EnchantCommand extends AbstractCommand {
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-		for (String arg : scriptEntry.getArguments()) {
-		}
+		
 	}
 
 	@Override

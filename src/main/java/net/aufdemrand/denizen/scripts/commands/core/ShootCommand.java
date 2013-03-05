@@ -39,7 +39,7 @@ public class ShootCommand extends AbstractCommand {
 
         // Initialize necessary fields
         EntityType entityType = null;
-        Integer qty = null;
+        //Integer qty = null;
         Location location = null;
         Script newScript = null;
         Boolean ride = false;
@@ -97,7 +97,8 @@ public class ShootCommand extends AbstractCommand {
         scriptEntry.addObject("fireworks", fireworks);
     }
     
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
     	

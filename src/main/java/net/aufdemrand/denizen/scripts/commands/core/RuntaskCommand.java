@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -12,9 +15,6 @@ import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Runs a task script.
@@ -127,7 +127,8 @@ public class RuntaskCommand extends AbstractCommand {
                 .addObject("context", context);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Map<String, String> context = (HashMap<String, String>) scriptEntry.getObject("context");

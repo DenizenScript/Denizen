@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.npc.traits;
 
 import java.util.ArrayList;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -65,7 +66,6 @@ public class FishingTrait extends Trait {
 		eh = ((CraftPlayer) npc.getBukkitEntity()).getHandle();
 		nmsworld = ((CraftWorld) npc.getBukkitEntity().getWorld()).getHandle();
         fishHook = new EntityFishingHook(nmsworld, eh);
-        fishingSpot = fishingLocation.clone();
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class FishingTrait extends Trait {
 	public void startFishing() {
 		fishing = true;
 		fishingLocation = npc.getBukkitEntity().getLocation();
-		fishingSpot = fishingLocation.clone();
+		//fishingSpot = fishingLocation.clone();
 		return;
 	}
 	
@@ -104,6 +104,7 @@ public class FishingTrait extends Trait {
 	}
 	
 	private void cast() {
+		DenizenAPI.getDenizenNPC(npc).action("cast fishing rod", null);
 	    findAvailable();
         fishHook = new EntityFishingHook(nmsworld, eh);
         nmsworld.addEntity(fishHook);
@@ -123,6 +124,8 @@ public class FishingTrait extends Trait {
 	
 	private void reel() {
 	    
+		DenizenAPI.getDenizenNPC(npc).action("reel in fishing rod", null);
+		
 	    int chance = (int)(Math.random()*100);
 
 	    if(chance > 65) {
@@ -145,6 +148,8 @@ public class FishingTrait extends Trait {
 	 * @param location
 	 */
 	public void startFishing(Location location) {
+		DenizenAPI.getDenizenNPC(npc).action("start fishing", null);
+
 		nmsworld.addEntity(fishHook);
 		
 		Vector v1 = fishHook.getBukkitEntity().getLocation().toVector();
@@ -165,6 +170,9 @@ public class FishingTrait extends Trait {
 	 * Makes the stop fishing.
 	 */
 	public void stopFishing() {
+		
+		DenizenAPI.getDenizenNPC(npc).action("stop fishing", null);
+
         PlayerAnimation.ARM_SWING.play((Player) npc.getBukkitEntity());
 
 		dB.log("...removing fish hook.");
@@ -192,13 +200,6 @@ public class FishingTrait extends Trait {
 	 */
 	public Location getFishingLocation() {
 		return fishingLocation;
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void blockFishPickup(PlayerPickupItemEvent event){
-		if(event.getItem().getEntityId() == fish.getEntityId()){
-			event.setCancelled(true);
-		}
 	}
 	
 	public FishingTrait() {

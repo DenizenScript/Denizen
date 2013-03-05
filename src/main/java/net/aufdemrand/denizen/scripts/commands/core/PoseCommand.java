@@ -5,13 +5,9 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.Poses;
-import net.citizensnpcs.util.Util;
 
 /**
  *
@@ -48,7 +44,8 @@ public class PoseCommand extends AbstractCommand {
                 .addObject("id", id);
     }
 
-    @Override
+    @SuppressWarnings("incomplete-switch")
+	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
         Action action = (Action) scriptEntry.getObject("action");

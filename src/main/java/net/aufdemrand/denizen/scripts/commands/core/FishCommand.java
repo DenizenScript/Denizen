@@ -1,0 +1,64 @@
+package net.aufdemrand.denizen.scripts.commands.core;
+
+import net.aufdemrand.denizen.exceptions.CommandExecutionException;
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.npc.traits.FishingTrait;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.citizensnpcs.api.npc.NPC;
+
+import org.bukkit.Location;
+
+public class FishCommand extends AbstractCommand {
+	
+	@Override
+	public void parseArgs(ScriptEntry scriptEntry)
+			throws InvalidArgumentsException {
+		Location location = null;
+		Boolean stopping = false;
+		
+		for (String arg : scriptEntry.getArguments()) {
+			if (aH.matchesLocation(arg)) {
+				location = aH.getLocationFrom(arg);
+				dB.echoDebug("...location set");
+				continue;
+			} else if (aH.matchesArg("STOP", arg)) {
+				stopping = true;
+				dB.echoDebug("...stopping");
+				continue;
+			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+		}
+		
+		scriptEntry.addObject("location", location);
+		scriptEntry.addObject("stopping", stopping);
+	}
+
+	@Override
+	public void execute(ScriptEntry scriptEntry)
+			throws CommandExecutionException {
+		Boolean stopping = (Boolean) scriptEntry.getObject("stopping");
+		NPC npc = scriptEntry.getNPC().getCitizen();
+		FishingTrait trait = new FishingTrait();
+		
+		if (!npc.hasTrait(FishingTrait.class)) 
+			npc.addTrait(FishingTrait.class);
+		
+		if (stopping) {
+			trait.stopFishing();
+			return;
+		}
+		
+		Location location = (Location) scriptEntry.getObject("location");
+		if (location == null) {
+			dB.echoError("...no location specified!");
+			return;
+		}
+		
+		trait.startFishing(location);
+		return;
+		
+	}
+}

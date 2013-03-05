@@ -132,7 +132,8 @@ public class TeleportCommand extends AbstractCommand {
      *
      * @param	scriptEntry the ScriptEntry
      */
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Location teleportLocation = (Location) scriptEntry.getObject("location");

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.npc.traits;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
@@ -40,6 +41,8 @@ public class SittingTrait extends Trait implements Listener  {
 	 * Makes the NPC sit
 	 */
 	public void sit() {
+		DenizenAPI.getDenizenNPC(npc).action("sit", null);
+
 		if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
 			return;
 		}
@@ -57,6 +60,8 @@ public class SittingTrait extends Trait implements Listener  {
 	 * @param location
 	 */
 	public void sit(Location location) {
+		DenizenAPI.getDenizenNPC(npc).action("sit", null);
+
 		if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
 			return;
 		}
@@ -78,6 +83,8 @@ public class SittingTrait extends Trait implements Listener  {
 	 * Makes the NPC stand
 	 */
 	public void stand() {
+		DenizenAPI.getDenizenNPC(npc).action("stand", null);
+
 		
 		((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x00));
 		

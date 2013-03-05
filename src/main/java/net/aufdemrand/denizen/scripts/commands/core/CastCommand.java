@@ -148,7 +148,8 @@ public class CastCommand extends AbstractCommand{
         scriptEntry.addObject("duration", duration);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
         List<LivingEntity> targets = (List<LivingEntity>) scriptEntry.getObject("targets");

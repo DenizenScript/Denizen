@@ -89,6 +89,7 @@ public class NewCommand extends AbstractCommand implements Listener {
 	 */
 	private enum ObjectType { ITEMSTACK, ENTITY, NPC }
 
+	@SuppressWarnings("unused")
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -102,8 +103,8 @@ public class NewCommand extends AbstractCommand implements Listener {
 		// Fields required for ENTITY
 		LivingEntity entity = null;
 		// Fields required for NPC
-		String npcName = null;
-		String npcType = null;
+		//String npcName = null;
+		//String npcType = null;
 
 		for (String arg : scriptEntry.getArguments()) {
 

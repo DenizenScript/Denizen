@@ -1,19 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
-import org.bukkit.ChatColor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.bukkit.ChatColor;
 
 /**
  * Core dScript IF command.
@@ -124,7 +124,8 @@ public class IfCommand extends AbstractCommand {
         scriptEntry.addObject("else-command-args", elseArgs.toArray());
     }
 
-    @Override
+    @SuppressWarnings({ "unchecked", "incomplete-switch" })
+	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Grab comparables from the ScriptEntry

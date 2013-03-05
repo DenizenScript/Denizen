@@ -54,7 +54,8 @@ public class ClearCommand extends AbstractCommand {
         scriptEntry.addObject("queues", queues);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Fetch queues from the scriptEntry
