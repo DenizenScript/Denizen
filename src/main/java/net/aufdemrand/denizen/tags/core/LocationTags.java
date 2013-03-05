@@ -147,14 +147,13 @@ public class LocationTags implements Listener {
         	event.setReplaced(String.valueOf(fromLocation.getBlockZ()));
 
         else if (type.equals("BLOCK")) {
-            if (subType.equalsIgnoreCase("BELOW")) {
+            if (subType.equals("BELOW")) {
                 fromLocation = new Location(fromLocation.add(0, -1, 0));
             }
 
             if (subType.equals("MATERIAL") || specifier.equals("MATERIAL")) {
                 event.setReplaced(fromLocation.getBlock().getType().toString());
             }
-
         }
     }
 
