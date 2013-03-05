@@ -12,6 +12,8 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -39,7 +41,7 @@ public class WorldScriptHelper implements Listener {
         for (WorldScriptContainer script : world_scripts.values()) {
 
             if (script == null) continue;
-            // if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) return false;
+            if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
 
             dB.report("Event",
                     aH.debugObj("Type", "On " + eventName)
@@ -67,6 +69,7 @@ public class WorldScriptHelper implements Listener {
 
             if (DetermineCommand.outcomes.containsKey(id)
                     && DetermineCommand.outcomes.get(id).equalsIgnoreCase("CANCELLED")) {
+                dB.echoDebug("Cancel it!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 cancelled = true;
             }
         }
@@ -78,8 +81,10 @@ public class WorldScriptHelper implements Listener {
     public void commandEvent(PlayerCommandPreprocessEvent event) {
         Map<String, String> context = new HashMap<String, String>();
         context.put("args", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
-        if (doEvent(event.getMessage().split(" ")[0].replace("/", "") + " command", null, event.getPlayer(), context))
+        if (doEvent(event.getMessage().split(" ")[0].replace("/", "") + " command", null, event.getPlayer(), context)) {
             event.setCancelled(true);
+            dB.log("OKAY!!!!!!!!!!!!!");
+        }
     }
 
 
@@ -101,12 +106,45 @@ public class WorldScriptHelper implements Listener {
 
 
     @EventHandler
-    public void somethingElse(PlayerMoveEvent event) {
+    public void walkOnLocationEvent(PlayerMoveEvent event) {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
         String name = Location.isSavedLocation(event.getPlayer().getLocation());
         if (name != null)
             doEvent("walked over " + name, null, event.getPlayer(), null);
+    }
+
+    public void serverStartEvent() {
+        // Start the 'timeEvent'
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        timeEvent();
+                    }
+                }, 250, 250);
+
+        // Fire the 'Server Start' event
+        doEvent("server start", null, null, null);
+    }
+
+    private Map<String, Integer> current_time = new HashMap<String, Integer>();
+
+    public void timeEvent() {
+
+        for (World world : Bukkit.getWorlds()) {
+            int hour = Double.valueOf(world.getTime() / 1000).intValue();
+            hour = hour + 6;
+            // Get the hour
+            if (hour >= 24) hour = hour - 24;
+
+            if (!current_time.containsKey(world.getName())
+                    || current_time.get(world.getName()) != hour) {
+                doEvent(hour + ":00 in " + world.getName(), null, null, null);
+                current_time.put(world.getName(), hour);
+            }
+        }
+
     }
 
 

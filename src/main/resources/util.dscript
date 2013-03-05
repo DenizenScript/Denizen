@@ -1,4 +1,28 @@
-# GENERIC LOOPER
+# /dTime Command
+
+_util_dtime_command:
+    type: world
+
+    events:
+        on dtime command:
+        - if !<player.is_op> queue clear
+        - flag 'ddtc_time:<context.args>'
+        - if <flag.p:ddtc_time> > 24
+          queue clear
+          else narrate 'Changing time to <flag.p:ddtc_time>:00.'
+        - if <flag.p:ddtc_time> == 24
+          execute as_op 'time set 6000'
+        - flag ddtc_time:-:6
+        - if <flag.p:ddtc_time> >= 0
+          execute as_op 'time set <flag.p:ddtc_time.asint>000'
+        - flag ddtc_time:+:12
+        - if <flag.p:ddtc_time> < 12
+          execute as_op 'time set <flag.p:ddtc_time.asint>000'
+        - flag ddtc_time:!
+        - determine cancelled
+
+
+# Generic Looper (GL)
 
 "_util_generic_loop":
     type: task
