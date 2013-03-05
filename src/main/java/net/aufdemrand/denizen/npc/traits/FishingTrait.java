@@ -129,7 +129,8 @@ public class FishingTrait extends Trait {
 	    int chance = (int)(Math.random()*100);
 
 	    if(chance > 65) {
-	        
+			DenizenAPI.getDenizenNPC(npc).action("catch fish", null);
+
 	        Entity fish = fishingSpot.getWorld().dropItem(fishingSpot, (new ItemStack(Material.RAW_FISH)));
 	        Vector v1 = fish.getLocation().toVector();
 	        Vector v2 = npc.getBukkitEntity().getLocation().add(0,14,0).toVector();
