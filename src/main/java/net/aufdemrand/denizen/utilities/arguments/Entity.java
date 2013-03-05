@@ -115,13 +115,12 @@ public class Entity implements dScriptArgument {
     }
 
     @Override
-    public String dScriptArg() {
+    public String as_dScriptArg() {
         return null;
     }
 
-    @Override
     public String dScriptArgValue() {
-        return getDefaultPrefix().toLowerCase() + ":" + dScriptArg();
+        return getDefaultPrefix().toLowerCase() + ":" + as_dScriptArg();
     }
 
     @Override
@@ -133,6 +132,11 @@ public class Entity implements dScriptArgument {
     public dScriptArgument setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
+    }
+
+    @Override
+    public String getAttribute(String attribute) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }

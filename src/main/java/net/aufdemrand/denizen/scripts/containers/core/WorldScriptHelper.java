@@ -17,9 +17,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -86,13 +84,30 @@ public class WorldScriptHelper implements Listener {
 
 
     @EventHandler
+    public void loginEvent(PlayerLoginEvent event) {
+        Map<String, String> context = new HashMap<String, String>();
+        context.put("ip", event.getHostname());
+
+        doEvent("player login", null, event.getPlayer(), context);
+    }
+
+    @EventHandler
+    public void loginEvent(PlayerQuitEvent event) {
+        Map<String, String> context = new HashMap<String, String>();
+        context.put("ip", event.getQuitMessage());
+
+        doEvent("player quit", null, event.getPlayer(), context);
+    }
+
+
+    @EventHandler
     public void somethingElse(PlayerMoveEvent event) {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
         String name = Location.isSavedLocation(event.getPlayer().getLocation());
         if (name != null)
             doEvent("walked over " + name, null, event.getPlayer(), null);
-
     }
+
 
 }

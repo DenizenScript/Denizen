@@ -134,11 +134,10 @@ public class Duration implements dScriptArgument {
     }
 
     @Override
-    public String dScriptArg() {
+    public String as_dScriptArg() {
         return prefix + ":" + seconds;
     }
 
-    @Override
     public String dScriptArgValue() {
         return String.valueOf(seconds);
     }
@@ -148,4 +147,29 @@ public class Duration implements dScriptArgument {
         this.prefix = prefix;
         return this;
     }
+
+    @Override
+    public String getAttribute(String attribute) {
+
+        if (attribute == null) return as_dScriptArg();
+
+        // Desensitize the attribute for comparison
+        attribute = attribute.toLowerCase();
+
+        if (attribute.startsWith("in_seconds.asint")) {
+            return String.valueOf(Double.valueOf(seconds).intValue());
+        }
+
+        // We're still working with JRE6, so no String 'switches'.
+        if (attribute.startsWith("in_seconds")) {
+            return String.valueOf(seconds);
+        }
+
+
+
+
+
+        return as_dScriptArg();
+    }
+
 }

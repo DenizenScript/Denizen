@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
+import net.aufdemrand.denizen.utilities.arguments.dScriptArgument;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -11,13 +12,42 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class ScriptQueue implements Listener {
+public class ScriptQueue implements Listener, dScriptArgument {
 
     protected static int totalQueues = 0;
 
     @Override
+    public String getDefaultPrefix() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String debug() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String as_dScriptArg() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String dScriptArgValue() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public String toString() {
         return id;
+    }
+
+    @Override
+    public dScriptArgument setPrefix(String prefix) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getAttribute(String attribute) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 

@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -270,6 +271,12 @@ public class PlayerTags implements Listener {
                 event.setReplaced(String.valueOf(p.getLocation().getBlockZ()));
             else if (subType.equals("WORLD"))
                 event.setReplaced(p.getWorld().getName());
+            else if (subType.equals("CURSOR_ON")) {
+                int range = 50;
+                if (aH.matchesInteger(subTypeContext))
+                    range = aH.getIntegerFrom(subTypeContext);
+                event.setReplaced(new Location(p.getTargetBlock(null, range).getLocation()).dScriptArgValue());
+            }
             else if (subType.equals("STANDING_ON"))
                 if (specifier.equals("FORMATTED"))
                     event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));

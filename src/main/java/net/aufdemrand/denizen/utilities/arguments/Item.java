@@ -219,13 +219,12 @@ public class Item extends ItemStack implements dScriptArgument {
     }
 
     @Override
-    public String dScriptArg() {
-        return null;
+    public String as_dScriptArg() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public String dScriptArgValue() {
-        return getDefaultPrefix().toLowerCase() + ":" + dScriptArg();
+        return getDefaultPrefix().toLowerCase() + ":" + as_dScriptArg();
     }
 
     @Override
@@ -239,7 +238,10 @@ public class Item extends ItemStack implements dScriptArgument {
         return this;
     }
 
-
+    @Override
+    public String getAttribute(String attribute) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
 
 }

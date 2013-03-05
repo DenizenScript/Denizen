@@ -50,7 +50,7 @@ public class DisplayItemCommand extends AbstractCommand {
             else if (aH.getItemFrom(arg) != null)
                 item = aH.getItemFrom(arg);
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT);
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
         // Check required args

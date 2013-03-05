@@ -29,15 +29,7 @@ public interface dScriptArgument {
      *
      * @return
      */
-    public String dScriptArg();
-
-    /**
-     * Gets the dScript argument's value. This is a valid dScript representation
-     * of the argument minus the indicated prefix.
-     *
-     * @return  dScript argument value
-     */
-    public String dScriptArgValue();
+    public String as_dScriptArg();
 
     /**
      * Gets an ugly, but exact, string representation of this dScriptArgument.
@@ -55,5 +47,13 @@ public interface dScriptArgument {
      * @return  the dScriptArgument
      */
     public dScriptArgument setPrefix(String prefix);
+
+    /**
+     * Gets a string-friendly specific attribute of
+     *
+     * @param attribute  the name of the attribute
+     * @return  a string attribute
+     */
+    public String getAttribute(String attribute);
 
 }

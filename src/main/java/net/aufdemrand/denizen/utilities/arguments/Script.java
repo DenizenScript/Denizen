@@ -95,11 +95,10 @@ public class Script implements dScriptArgument {
     }
 
     @Override
-    public String dScriptArg() {
+    public String as_dScriptArg() {
         return prefix + ":" + name;
     }
 
-    @Override
     public String dScriptArgValue() {
         return name;
     }
@@ -108,6 +107,11 @@ public class Script implements dScriptArgument {
     public dScriptArgument setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
+    }
+
+    @Override
+    public String getAttribute(String attribute) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }

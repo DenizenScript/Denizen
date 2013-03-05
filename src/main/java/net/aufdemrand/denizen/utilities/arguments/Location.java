@@ -192,14 +192,13 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
     }
 
     @Override
-    public String dScriptArg() {
+    public String as_dScriptArg() {
         return getBlockX() + "," + getBlockY()
                 + "," + getBlockZ() + "," + getWorld().getName();
     }
 
-    @Override
     public String dScriptArgValue() {
-        return getDefaultPrefix().toLowerCase() + ":" + dScriptArg();
+        return getDefaultPrefix().toLowerCase() + ":" + as_dScriptArg();
     }
 
     public String asString() {
@@ -212,6 +211,11 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
     public dScriptArgument setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
+    }
+
+    @Override
+    public String getAttribute(String attribute) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }
