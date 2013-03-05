@@ -342,7 +342,7 @@ public class CommandHandler {
      */
     @Command(
             aliases = { "npc" }, usage = "sit (--location x,y,z,world) (--anchor anchor_name) (-c)",
-            desc = "Makes the NPC sit.", modifiers = { "sit" },
+            desc = "Makes the NPC sit.", flags = "c", modifiers = { "sit" },
             min = 1, max = 3, permission = "npc.sit")
     @Requirements(selected = true, ownership = true)
     public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
@@ -465,7 +465,7 @@ public class CommandHandler {
 	 */
     @Command(
             aliases = { "npc" }, usage = "fish (--location x,y,z,world) (--anchor anchor_name) (-c)",
-            desc = "Makes the NPC fish, casting at the given location.", modifiers = { "fish" },
+            desc = "Makes the NPC fish, casting at the given location.", flags = "c", modifiers = { "fish" },
             min = 1, max = 3, permission = "npc.fish")
     @Requirements(selected = true, ownership = true)
     public void startFishing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
