@@ -51,7 +51,7 @@ public class WaitCommand extends AbstractCommand {
 
         // Tell the queue to delay
         dB.echoDebug("Delaying " + delay.dScriptArgValue());
-        queue.delayUntil(System.currentTimeMillis() + (delay.getTicks() * 20 * 1000));
+        queue.delayUntil(System.currentTimeMillis() + delay.getMillis());
     }
 
 }

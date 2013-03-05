@@ -98,6 +98,10 @@ public class Duration implements dScriptArgument {
         return Ints.checkedCast((long) (seconds * 20));
     }
 
+    public long getMillis() {
+        return (long) (seconds * 1000);
+    }
+
     /**
      * Gets the number of seconds of this duration.
      *
