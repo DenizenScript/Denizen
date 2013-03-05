@@ -65,7 +65,6 @@ public class FishingTrait extends Trait {
 		eh = ((CraftPlayer) npc.getBukkitEntity()).getHandle();
 		nmsworld = ((CraftWorld) npc.getBukkitEntity().getWorld()).getHandle();
         fishHook = new EntityFishingHook(nmsworld, eh);
-        fishingSpot = fishingLocation.clone();
 	}
 	
 	/**
