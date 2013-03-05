@@ -175,6 +175,8 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		new BlockListenerType().activate().as("BLOCK").withClass(BlockListenerInstance.class);
 		new ItemListenerType().activate().as("ITEM").withClass(ItemListenerInstance.class);
 		new KillListenerType().activate().as("KILL").withClass(KillListenerInstance.class);
+		new ItemDropListenerType().activate().as("ITEMDROP").withClass(ItemDropListenerInstance.class);
+		new TravelListenerType().activate().as("TRAVEL").withClass(TravelListenerInstance.class);
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
