@@ -79,7 +79,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void commandEvent(PlayerCommandPreprocessEvent event) {
         Map<String, String> context = new HashMap<String, String>();
-        context.put("arg", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
+        context.put("args", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
         if (doEvent(event.getMessage().split(" ")[0].replace("/", "") + " command", null, event.getPlayer(), context))
             event.setCancelled(true);
     }

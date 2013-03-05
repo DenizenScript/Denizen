@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -62,14 +63,20 @@ public class ContextTags implements Listener {
     public void getContext(ReplaceableTagEvent event) {
         if (!event.matches("CONTEXT") || event.getScriptEntry() == null) return;
 
-        // getContext requires a Task Script!
+        String type = event.getType();
+
+        // First check for entry object context
+        if (event.getScriptEntry().hasObject(type)) {
+            event.setReplaced(event.getScriptEntry().getObject(type).toString());
+        }
+
+        // Next, try to replace with task-script-defined context
         if (!ScriptRegistry.containsScript(event.getScriptEntry().getScript().getName(), TaskScriptContainer.class))
             return;
 
         TaskScriptContainer script = ScriptRegistry.getScriptContainerAs(
                 event.getScriptEntry().getScript().getName(), TaskScriptContainer.class);
 
-        String type = event.getType();
         ScriptEntry entry = event.getScriptEntry();
 
         if (entry.hasObject("CONTEXT")) {
