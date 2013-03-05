@@ -341,7 +341,7 @@ public class CommandHandler {
      * Sit
      */
     @Command(
-            aliases = { "npc" }, usage = "sit (--location x,y,z,world) (--anchor anchor_name)",
+            aliases = { "npc" }, usage = "sit (--location x,y,z,world) (--anchor anchor_name) (-c)",
             desc = "Makes the NPC sit.", modifiers = { "sit" },
             min = 1, max = 3, permission = "npc.sit")
     @Requirements(selected = true, ownership = true)
@@ -358,14 +358,14 @@ public class CommandHandler {
             Messaging.send(sender, ChatColor.RED + npc.getName() + " is already sitting!");
             return;
         }
-
-        if (args.hasValueFlag("location")) {
+        if (args.hasFlag('c')) {
+        	trait.sit(args.getSenderTargetBlockLocation());
+        } else if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
                 Messaging.send(sender, ChatColor.RED + "Usage: /npc sit --location x,y,z,world");
                 return;
             }
-
             trait.sit(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
             return;
         } else if (args.hasValueFlag("anchor")) {
@@ -464,7 +464,7 @@ public class CommandHandler {
 	 * Fish
 	 */
     @Command(
-            aliases = { "npc" }, usage = "fish (--location x,y,z,world) (--anchor anchor_name)",
+            aliases = { "npc" }, usage = "fish (--location x,y,z,world) (--anchor anchor_name) (-c)",
             desc = "Makes the NPC fish, casting at the given location.", modifiers = { "fish" },
             min = 1, max = 3, permission = "npc.fish")
     @Requirements(selected = true, ownership = true)
@@ -476,8 +476,9 @@ public class CommandHandler {
             Messaging.send(sender, ChatColor.RED + npc.getName() + " is already fishing!");
             return;
         }
-
-        if (args.hasValueFlag("location")) {
+        if (args.hasFlag('c')) {
+        	trait.startFishing(args.getSenderTargetBlockLocation());
+        } else if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
                 Messaging.send(sender, ChatColor.RED + "Usage: /npc fish --location x,y,z,world");
