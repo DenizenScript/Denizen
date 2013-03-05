@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
+import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -111,7 +112,12 @@ public class Script implements dScriptArgument {
 
     @Override
     public String getAttribute(String attribute) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
 
+        if (attribute == null) return as_dScriptArg();
+
+        // Desensitize the attribute for comparison
+        attribute = attribute.toLowerCase();
+
+        return null;
+    }
 }

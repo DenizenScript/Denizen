@@ -69,7 +69,6 @@ public class WorldScriptHelper implements Listener {
 
             if (DetermineCommand.outcomes.containsKey(id)
                     && DetermineCommand.outcomes.get(id).equalsIgnoreCase("CANCELLED")) {
-                dB.echoDebug("Cancel it!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 cancelled = true;
             }
         }

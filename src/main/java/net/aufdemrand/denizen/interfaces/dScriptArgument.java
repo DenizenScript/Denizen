@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.interfaces;
 
 public interface dScriptArgument {
 
@@ -49,7 +49,7 @@ public interface dScriptArgument {
     public dScriptArgument setPrefix(String prefix);
 
     /**
-     * Gets a string-friendly specific attribute of
+     * Gets a string-friendly specific attribute of this object.
      *
      * @param attribute  the name of the attribute
      * @return  a string attribute

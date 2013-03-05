@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import com.google.common.primitives.Ints;
+import net.aufdemrand.denizen.interfaces.dScriptArgument;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -156,20 +157,30 @@ public class Duration implements dScriptArgument {
         // Desensitize the attribute for comparison
         attribute = attribute.toLowerCase();
 
-        if (attribute.startsWith("in_seconds.asint")) {
+        if (attribute.startsWith(".in_seconds.asint"))
             return String.valueOf(Double.valueOf(seconds).intValue());
+
+        if (attribute.startsWith(".in_seconds"))
+            return String.valueOf(Double.valueOf(seconds));
+
+        if (attribute.startsWith(".in_ticks"))
+            return String.valueOf(getTicksAsInt());
+
+        if (attribute.startsWith(".value")) {
+            if (seconds % 43200 == 0)
+                return seconds / 86400 + "d";
+
+            else if (seconds % 1800 == 0)
+                return seconds / 3600 + "h";
+
+            else if (seconds % 30 == 0)
+                return seconds / 60 + "m";
+
+            else return seconds + "s";
         }
 
-        // We're still working with JRE6, so no String 'switches'.
-        if (attribute.startsWith("in_seconds")) {
-            return String.valueOf(seconds);
-        }
-
-
-
-
-
-        return as_dScriptArg();
+        return null;
     }
+
 
 }

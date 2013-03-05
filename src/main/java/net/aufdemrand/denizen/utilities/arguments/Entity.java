@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
+import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import org.bukkit.entity.LivingEntity;
 

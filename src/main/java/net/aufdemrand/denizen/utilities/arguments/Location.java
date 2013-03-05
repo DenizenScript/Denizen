@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
+import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -7,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
