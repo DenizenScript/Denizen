@@ -93,9 +93,12 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(FeedCommand.class, 
         		"FEED", "feed (amt:#) (target:npc|{player})", 0);
-        
+
         registerCoreMember(FinishCommand.class, 
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
+
+        registerCoreMember(FinishCommand.class, 
+        		"FISH", "fish (stop) (location:x,y,z,world)", 1);
 
         registerCoreMember(FlagCommand.class, 
         		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value] (duration:#)", 1);
@@ -144,7 +147,7 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(RandomCommand.class, 
         		"RANDOM", "random [#]", 1);
-        
+
         registerCoreMember(RuntaskCommand.class,
         		"RUNTASK", "runtask [script_name] (instantly) (queue|queue:queue_name) (delay:#)", 1);
 		

@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -8,10 +11,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class QueueCommand extends AbstractCommand {
@@ -78,7 +77,8 @@ public class QueueCommand extends AbstractCommand {
                 .addObject("delay", delay);
     }
 
-    @Override
+    @SuppressWarnings({ "incomplete-switch", "unchecked" })
+	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         List<ScriptQueue> queues = (List<ScriptQueue>) scriptEntry.getObject("queues");

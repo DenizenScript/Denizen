@@ -1,17 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Initiates/finishes/cancels a 'quest listener'.
@@ -57,7 +56,6 @@ public class ListenCommand extends AbstractCommand {
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        AbstractListener listener;
         String id = null;
         ListenAction listenAction = ListenAction.NEW;
         String listenerType = null;
@@ -102,6 +100,7 @@ public class ListenCommand extends AbstractCommand {
         scriptEntry.addObject("id", id);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		ListenAction listenAction = (ListenAction) scriptEntry.getObject("action");

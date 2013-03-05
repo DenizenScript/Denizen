@@ -1,14 +1,13 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
