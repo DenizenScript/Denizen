@@ -1,10 +1,9 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
+import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
@@ -16,6 +15,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Item extends ItemStack implements dScriptArgument {
+
+    /////////////////////
+    //   STATIC METHODS
+    /////////////////
+
 
     /**
      * Gets a saved location based on an Id.
@@ -143,6 +147,12 @@ public class Item extends ItemStack implements dScriptArgument {
         return stack;
     }
 
+
+    /////////////////////
+    //   INSTANCE METHODS
+    /////////////////
+
+
     private String id;
     private String prefix = "Item";
 
@@ -208,6 +218,12 @@ public class Item extends ItemStack implements dScriptArgument {
         return true;
     }
 
+
+    //////////////////////////////
+    //  DSCRIPT ARGUMENT METHODS
+    /////////////////////////
+
+
     @Override
     public String getDefaultPrefix() {
         return prefix;
@@ -215,12 +231,12 @@ public class Item extends ItemStack implements dScriptArgument {
 
     @Override
     public String debug() {
-        return null;
+        return "<G>" + prefix + "='<Y>" + id + " seconds<G>'  ";
     }
 
     @Override
     public String as_dScriptArg() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return prefix + ":" + id;
     }
 
     public String dScriptArgValue() {
@@ -240,7 +256,12 @@ public class Item extends ItemStack implements dScriptArgument {
 
     @Override
     public String getAttribute(String attribute) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+
+
+
+
+        return null;
     }
 
 
