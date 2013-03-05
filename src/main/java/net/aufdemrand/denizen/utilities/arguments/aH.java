@@ -650,8 +650,7 @@ public class aH {
      *
      */
     public static boolean matchesDuration(String arg) {
-        final Pattern matchesDurationPtrn = Pattern.compile("duration:\\d+(?:\\.\\d+)?(t|m|s|h|d)?", Pattern.CASE_INSENSITIVE);
-        Matcher m = matchesDurationPtrn.matcher(arg);
+        Matcher m = Duration.matchesDurationPtrn.matcher(arg);
         if (m.matches()) return true;
         else if (arg.toUpperCase().startsWith("DURATION:"))
             dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
