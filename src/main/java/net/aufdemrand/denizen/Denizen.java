@@ -174,7 +174,7 @@ public class Denizen extends JavaPlugin {
         reloadSaves();
 
         // Create the command script handler for listener
-        new WorldScriptHelper();
+        WorldScriptHelper ws_helper = new WorldScriptHelper();
 
         // Register traits
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
@@ -210,6 +210,8 @@ public class Denizen extends JavaPlugin {
         Depends.citizens.registerCommandClass(CommandHandler.class);
 
         dB.echoDebug(DebugElement.Footer);
+
+        ws_helper.serverStartEvent();
     }
 
 
