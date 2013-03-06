@@ -5,7 +5,9 @@ import org.bukkit.entity.Player;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -28,36 +30,55 @@ public class NarrateCommand extends AbstractCommand {
      * Arguments: [] - Required, () - Optional 
      * ['Text to announce'] sets the text.
      * (PLAYER:player_name)
+     * (FORMAT:format)
      * 
      * Example Usage:
      * NARRATE 'Hello, world!'
      * NARRATE PLAYER:<NPC.OWNER> 'ALERT! Intruder! intruder! <PLAYER.NAME> has infiltrated your base!'
      */
 
-
-    String text = null;
-    Player player = null;
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+        String text = null;
+        FormatScriptContainer format = null;
 
-        player = scriptEntry.getPlayer();
-        
         if (scriptEntry.getArguments().size() > 3) 
             throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
 
         for (String arg : scriptEntry.getArguments()) {
+            if (aH.matchesValueArg("FORMAT", arg, aH.ArgumentType.String)) {
+                String formatStr = aH.getStringFrom(arg);
+                format = ScriptRegistry.getScriptContainerAs(formatStr, FormatScriptContainer.class);
+                
+                if(format != null) dB.echoDebug("... format set to: " + formatStr);
+                else dB.echoError("... could not find format for: " + formatStr);
+                
+            } else {
                 text = aH.getStringFrom(arg);
-                dB.echoDebug(Messages.DEBUG_SET_TEXT, aH.getStringFrom(arg));
             }
+        }
         
-        if (player == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
+        if (scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
         if (text == null) throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
+
+        scriptEntry.addObject("text", text)
+            .addObject("format", format);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        player.sendMessage(text);
+        // Get objects
+        Player player = scriptEntry.getPlayer();
+        String text = (String) scriptEntry.getObject("text");
+        FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
+
+        // Report to dB
+        dB.report(getName(),
+                aH.debugObj("Player", scriptEntry.getPlayer().getName())
+                        + (format != null ? aH.debugObj("Format", format.getName()) : "")
+                        + aH.debugObj("Text", text));
+
+        player.sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);
     }
 
 }

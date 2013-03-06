@@ -1,21 +1,16 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import net.aufdemrand.denizen.npc.actions.ActionHandler;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -56,9 +51,11 @@ public class WorldScriptHelper implements Listener {
 
             dB.echoDebug(dB.DebugElement.Header, "Building event 'On " + eventName.toUpperCase() + "' for " + script.getName());
 
-            if (context != null)
-                for (Map.Entry<String, String> entry : context.entrySet())
+            if (context != null) {
+                for (Map.Entry<String, String> entry : context.entrySet()) {
                     ScriptBuilder.addObjectToEntries(entries, entry.getKey(), entry.getValue());
+                }
+            }
 
             // Create new ID -- this is what we will look for when determining an outcome
             long id = DetermineCommand.getNewId();
