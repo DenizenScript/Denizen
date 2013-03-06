@@ -58,25 +58,25 @@ public class RequirementRegistry implements DenizenRegistry {
 	@Override
     public void registerCoreMembers() {
         registerCoreMember(EnchantedRequirement.class, 
-        		"ENCHANTED", "enchanted (ITEMINHAND)", 1);
+        		"ENCHANTED", "enchanted (iteminhand)", 1);
         
         registerCoreMember(FlaggedRequirement.class, 
-        		"FLAGGED", "(-)flagged [PLAYER|NPC|GLOBAL] [NAME([#])](:VALUE)", 0);
+        		"FLAGGED", "(-)flagged [player|npc|global] [name([#])](:value)", 0);
         
         registerCoreMember(HoldingRequirement.class, 
-        		"HOLDING", "holding [ITEMNAME] [QTY:#] [EXACT]", 1);
+        		"HOLDING", "holding [item] [qty:#] [exact]", 1);
         
         registerCoreMember(InGroupRequirement.class, 
         		"INGROUP", "ingroup (global) [group]", 1);
         
         registerCoreMember(ItemRequirement.class, 
-        		"ITEM", "item [ITEM] (QTY:#)", 1);
+        		"ITEM", "item [item] (qty:#)", 1);
         
         registerCoreMember(LiquidRequirement.class, 
-        		"ISLIQUID", "isliquid [LOCATION:x,y,z,world]", 1);
+        		"ISLIQUID", "isliquid [location:x,y,z,world]", 1);
         
         registerCoreMember(MoneyRequirement.class, 
-        		"MONEY", "money [QTY:#]", 1);
+        		"MONEY", "money [qty:#]", 1);
         
         registerCoreMember(OpRequirement.class, 
         		"OP", "op (no args)", 0);
@@ -88,13 +88,13 @@ public class RequirementRegistry implements DenizenRegistry {
         		"PERMISSION", "permission (global) [permission]", 1);
         
         registerCoreMember(PoweredRequirement.class, 
-        		"ISPOWERED", "ispowered [LOCATION:x,y,z,world]", 1);
+        		"ISPOWERED", "ispowered [location:x,y,z,world]", 1);
         
         registerCoreMember(ProcedureRequirement.class, 
-        		"PROCEDURE", "procedure [SCRIPT:procedure_script]", 1);
+        		"PROCEDURE", "procedure [script:procedure_script]", 1);
         
         registerCoreMember(ScriptRequirement.class, 
-        		"SCRIPT", "script T.B.D.", 0);
+        		"SCRIPT", "script [finished|failed] [script:name]", 0);
         
         registerCoreMember(SneakingRequirement.class, 
         		"SNEAKING", "sneaking (no args)", 0);
@@ -106,10 +106,10 @@ public class RequirementRegistry implements DenizenRegistry {
         		"SUNNY", "sunny (no args)", 0);
         
         registerCoreMember(TimeRequirement.class, 
-        		"TIME", "time [DAWN, DAY, DUSK, NIGHT]", 1);
+        		"TIME", "time [dawn, day, dush, night]", 1);
         
         registerCoreMember(WorldGuardRegionRequirement.class, 
-        		"INREGION", "inregion [NAME:regionname]", 1);
+        		"INREGION", "inregion [name:regionname]", 1);
 
         dB.echoApproval("Loaded core requirements: " + instances.keySet().toString());
     }
