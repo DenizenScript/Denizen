@@ -405,7 +405,7 @@ public class aH {
      * @return a List<String> of the string, split by the '|' character
      *
      */
-    public static List<String> getListFrom(String arg) {
+    public static java.util.List<String> getListFrom(String arg) {
         if (arg == null || arg.equals("")) return new ArrayList<String>();
         if (arg.split(":").length >= 2)
             return Arrays.asList(arg.split(":", 2)[1].split("\\|"));
@@ -755,7 +755,7 @@ public class aH {
 
     public static Map<String, String> getContextFrom(String arg) {
         Map<String, String> context = new HashMap<String, String>();
-        List<String> contexts = aH.getListFrom(arg);
+        java.util.List<String> contexts = aH.getListFrom(arg);
         int x = 1;
         for (String ctxt : contexts) {
             context.put(String.valueOf(x), ctxt.trim());
@@ -782,7 +782,7 @@ public class aH {
      *
      */
     public static boolean matchesLocation(String arg) {
-        final Pattern locationPattern = Pattern.compile("location:(?:-|)\\d+,(?:-|)\\d+,(?:-|)\\d+,\\w+", Pattern.CASE_INSENSITIVE);
+        final Pattern locationPattern = Pattern.compile("location:(?:-|)(?:\\d+|\\d+\\.\\d+),(?:-|)(?:\\d+|\\d+\\.\\d+),(?:-|)(?:\\d+|\\d+\\.\\d+),\\w+", Pattern.CASE_INSENSITIVE);
         Matcher m = locationPattern.matcher(arg);
         if (m.matches())
             return true;
@@ -930,7 +930,7 @@ public class aH {
      */
     public static String[] buildArgs(String stringArgs) {
         if (stringArgs == null) return null;
-        List<String> matchList = new ArrayList<String>();
+        java.util.List<String> matchList = new ArrayList<String>();
         Matcher regexMatcher = regex.matcher(stringArgs);
         while (regexMatcher.find()) {
             if (regexMatcher.group(1) != null)
