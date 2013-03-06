@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.minecraft.server.v1_4_R1.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,6 +18,8 @@ import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 /**
@@ -131,17 +134,84 @@ public class Utilities {
         }
         return props.getProperty("version");
     }
+    
+    
+    /**
+     * Counts the quantity of all items in an inventory.
+     * 
+     * @param  inventory  the inventory to count it in
+     */
+    
+    public static int countItems(Inventory inventory)
+    {
+    	int qty = 0;
+    	
+    	for (ItemStack invStack : inventory)
+		{
+			// If ItemStacks are empty here, they are null
+			if (invStack != null)
+			{
+				qty = qty + invStack.getAmount();
+			}
+		}
+    	
+    	return qty;
+    }
+
+    
+    /**
+     * Counts the quantity of items of a specific type in an inventory.
+     * 
+     * @param  item  the item as an itemstack
+     * @param  inventory  the inventory to count it in
+     */
+    
+    public static int countItems(ItemStack item, Inventory inventory)
+    {
+    	int qty = 0;
+    	
+    	for (ItemStack invStack : inventory)
+		{
+			// If ItemStacks are empty here, they are null
+			if (invStack != null)
+			{
+				if (invStack.isSimilar(item))
+					qty = qty + invStack.getAmount();
+			}
+		}
+    	
+    	return qty;
+    }
+    
+    
+    /**
+     * Counts the quantity of items of a specific type in an inventory.
+     * 
+     * @param  item  the item's material or ID as a string
+     * @param  inventory  the inventory to count it in
+     */
+    
+    public static int countItems(String item, Inventory inventory)
+    {
+    	if (aH.matchesItem("item:" + item))
+    	{
+    		ItemStack itemstack = new ItemStack(aH.getItemFrom("item:" + item));
+    		return countItems(itemstack, inventory);
+    	}
+    	
+    	return 0;
+    }
 
 
-    /*
-     * This utility changes an entity's yaw and pitch to make it face
-     * a location.
+    /**
+     * Changes an entity's yaw and pitch to make it face a location.
      *
-     * Thanks to fullwall for it.
+     * Thanks to fullwall.
      *
      * @param  from  the Entity whose yaw and pitch you want to change
      * @param at  the Location it should be looking at
      */
+    
     public static void faceLocation(Entity from, Location at) {
         if (from.getWorld() != at.getWorld()) return;
         Location loc = from.getLocation();
@@ -174,22 +244,21 @@ public class Utilities {
 
 
     /**
-     * This utility changes an entity's yaw and pitch to make it face
-     * another entity.
+     * Changes an entity's yaw and pitch to make it face another entity.
      *
-     * Thanks to fullwall for it.
+     * Thanks to fullwall.
      *
      * @param entity  the Entity whose yaw and pitch you want to change
      * @param target  the Entity it should be looking at
      */
+    
     public static void faceEntity(Entity entity, Entity target) {
         faceLocation(entity, target.getLocation());
     }
 
 
     /**
-     * This is a Utility method for finding the closest NPC to a particular
-     * location.
+     * Finds the closest NPC to a particular location.
      *
      * @param location	The location to find the closest NPC to.
      * @param range	The maximum range to look for the NPC.
@@ -197,6 +266,7 @@ public class Utilities {
      * @return	The closest NPC to the location, or null if no NPC was found
      * 					within the range specified.
      */
+    
     public static dNPC getClosestNPC (Location location, int range) {
         dNPC closestNPC = null;
         Double	closestDistance = Double.valueOf(range);
@@ -221,6 +291,7 @@ public class Utilities {
      *
      * @return	The list of NPCs within the max range.
      */
+    
     public static Set<dNPC> getClosestNPCs (Location location, int maxRange) {
         Set<dNPC> closestNPCs = new HashSet<dNPC> ();
         Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
@@ -236,14 +307,14 @@ public class Utilities {
 
 
     /**
-     * This utility normalizes Mincraft's yaws (which can be negative or
-     * can exceed 360) by turning them into proper yaw values that only go from
-     * 0 to 359.
+     * Normalizes Mincraft's yaws (which can be negative or can exceed 360)
+     * by turning them into proper yaw values that only go from 0 to 359.
      *
      * @param  yaw  The original yaw.
      *
      * @return  The normalized yaw.
      */
+    
     public static double normalizeYaw(double yaw) {
         yaw = (yaw - 90) % 360;
         if (yaw < 0) yaw += 360.0;
@@ -252,7 +323,7 @@ public class Utilities {
 
 
     /**
-     * This utility checks if an Entity is facing a Location.
+     * Checks if an Entity is facing a Location.
      *
      * @param  from  The Entity we check.
      * @param  at  The Location we want to know if it is looking at.
@@ -262,6 +333,7 @@ public class Utilities {
      *
      * @return  Returns a boolean.
      */
+    
     public static boolean isFacingLocation(Entity from, Location at, float degreeLimit) {
 
         double currentYaw;
@@ -284,7 +356,7 @@ public class Utilities {
 
 
     /**
-     * This utility checks if an Entity is facing another Entity.
+     * Checks if an Entity is facing another Entity.
      *
      * @param  from  The Entity we check.
      * @param at  The Entity we want to know if it is looking at.
@@ -294,6 +366,7 @@ public class Utilities {
      *
      * @return  Returns a boolean.
      */
+    
     public static boolean isFacingEntity(Entity from, Entity at, float degreeLimit) {
 
         return isFacingLocation(from, at.getLocation(), degreeLimit);
@@ -303,12 +376,13 @@ public class Utilities {
     /**
      * Converts a vector to a yaw.
      *
-     * Thanks to bergerkiller
+     * Thanks to bergerkiller.
      *
      * @param  vector  The vector you want to get a yaw from.
      *
      * @return  The yaw.
      */
+    
     public static float getYaw(Vector vector) {
         double dx = vector.getX();
         double dz = vector.getZ();
@@ -338,6 +412,7 @@ public class Utilities {
      *
      * @return  The name of the cardinal direction as a String.
      */
+    
     public static String getCardinal(double yaw) {
         yaw = normalizeYaw(yaw);
         // Compare yaws, return closest direction.
@@ -372,6 +447,7 @@ public class Utilities {
      *
      * @return true if within the specified location, false otherwise.
      */
+    
     public static boolean checkLocation(LivingEntity entity, Location theLocation, int theLeeway) {
 
         if (!entity.getWorld().getName().equals(theLocation.getWorld().getName()))
@@ -397,6 +473,7 @@ public class Utilities {
      *
      * @return true if within the specified location, false otherwise.
      */
+    
     public static boolean checkLocation(Location baseLocation, Location theLocation, int theLeeway) {
 
         if (!baseLocation.getWorld().getName().equals(theLocation.getWorld().getName()))
@@ -435,6 +512,7 @@ public class Utilities {
      * @param recursive If true subfolders will also get checked
      * @return A {@link File} collection
      */
+    
     public static List<File> listDScriptFiles(File dir, boolean recursive) {
         List<File> files = new ArrayList<File>();
         File[] entries = dir.listFiles();

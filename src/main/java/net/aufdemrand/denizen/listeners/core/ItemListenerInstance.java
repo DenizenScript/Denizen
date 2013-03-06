@@ -6,11 +6,14 @@ import java.util.List;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemListenerType.ItemType;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
+import net.aufdemrand.denizen.utilities.runnables.Runnable2;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -47,7 +50,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			else if (aH.matchesQuantity(arg)) {
 				this.quantity = aH.getIntegerFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
-			} 
+			}
 			
 			else if (aH.matchesValueArg("ITEMS, ITEM", arg, ArgumentType.Custom)) {
 				for (String thisItem : aH.getListFrom(arg.toUpperCase()))
@@ -72,7 +75,6 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 		}
 	}
 
-	List<Integer> itemsCrafted = new ArrayList<Integer>();
 	@EventHandler
 	public void listenCraft(CraftItemEvent event) {
 		if (type == ItemType.CRAFT) {
@@ -84,10 +86,46 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 				if (items.contains(event.getCurrentItem().getType().toString()) 
 						|| items.contains(String.valueOf(event.getCurrentItem().getTypeId()))) {
 				
-					itemsCrafted.add(event.getCurrentItem().getTypeId());
-					currentItems++;
-					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " crafted a " + event.getCurrentItem().getType().toString() + ".");
-					check();
+					// Save the item stack that results from one crafting
+					ItemStack item = new ItemStack(event.getCurrentItem());
+					
+					// Save the quantity of items of this type that the player had
+					// before the crafting took place
+					int initialQty = Utilities.countItems(item, player.getInventory());
+										
+					// Run a task 1 tick later, after the crafting has occurred, and
+					// see how many items of this type the player has then in the
+					// inventory, in case shift-click was used
+					
+					Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+		        			new Runnable2<ItemStack, Integer>(item, initialQty) {
+		                            @Override
+		                            public void run(ItemStack item, Integer initialQty) {
+		                            	int newQty = Utilities.countItems(item, player.getInventory());
+		                            	int difference = newQty - initialQty;
+		                            	
+		                            	// If the difference is 0 and the player's cursor item
+		                            	// is not null, that means crafting succeeded but
+		                            	// shift-click was not used, so we use the default
+		                            	// quantity for crafting this item
+		                            	
+		                            	if (difference == 0 && player.getItemOnCursor().getType().toString() != "AIR")
+		                            	{
+		                            		difference = item.getAmount();
+		                            	}
+		                            	
+		                            	// If anything was crafted, increase the number of items
+		                            	// crafted and check the listener
+		                            	if (difference > 0)
+		                            	{
+		                            		currentItems = currentItems + difference;
+		                            		dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " crafted "
+		                            				 + difference + " of " + item.getType().toString() + ".");
+		                            		check();
+		                            	}
+		                            	
+		                            }
+		                        }, 1);
 				}
 			}
 		}
