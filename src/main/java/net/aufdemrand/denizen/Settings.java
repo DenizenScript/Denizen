@@ -14,6 +14,21 @@ public class Settings {
      
 	 */
 	
+	public static boolean ShowDebug() {
+		return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Show Debug", true);
+	}
+	
+	/*
+	
+	# Default time in seconds of cooldown set to Denizens when a trigger is triggered.
+	# Not all triggers may use this, it is optional!
+	#
+    # Format: [Name] Trigger Default Cooldown in Seconds: #.#
+    # For example: Click Trigger Default Cooldown in Seconds: 2.0
+     
+	 */
+	
 	public static long TriggerDefaultCooldown(String triggerName) {
 		return (long) (DenizenAPI.getCurrentInstance().getConfig()
                 .getDouble(triggerName.substring(0, 1).toUpperCase() +

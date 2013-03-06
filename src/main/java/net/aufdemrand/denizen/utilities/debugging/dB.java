@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
+import net.aufdemrand.denizen.Settings;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -52,7 +54,7 @@ public class dB {
 
 	static ConsoleSender cs = new ConsoleSender();
 	
-	public static boolean debugMode = true;
+	public static boolean debugMode = Settings.ShowDebug();
 	public static boolean showStackTraces = true;
     public static boolean showScriptBuilder = false;
 

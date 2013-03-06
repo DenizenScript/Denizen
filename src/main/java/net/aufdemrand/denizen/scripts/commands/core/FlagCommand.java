@@ -50,6 +50,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
                         action = Action.INCREASE;
                         value = "1";
                     }   else if (flagArgs[1].equals("-")) {
+                    	// Using equals instead of startsWith because
+                    	// people need to be able to set values like "-2"
                         action = Action.DECREASE;
                         value = "1";
                     }   else if (flagArgs[1].startsWith("!")) {

@@ -1,3 +1,7 @@
+# Whether Denizen debug information should be shown in the server
+# console or not.
+Show Debug: true
+
 # The default number of ticks between commands in interact scripts
 # Recommended values are between 5 and 15
 Interact Delay in Ticks: 7

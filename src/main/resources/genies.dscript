@@ -52,7 +52,7 @@ _test_package test announce:
 # value inside the flag. Use the <context.value> tag in your task to get
 # the current value sent to the task.
 #
-# To see a quick example of how it works, give the "Generic Looper"
+# To see a quick example of how it works, give the "_test_package test generic looper"
 # assignment to an NPC and click on it. It will announce all the values
 # from the player flag Cookies.
 
