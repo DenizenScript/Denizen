@@ -200,11 +200,16 @@ public class CommandHandler {
         AssignmentTrait trait = npc.getTrait(AssignmentTrait.class);
 
         if (args.hasValueFlag("set")) {
-            if (trait.setAssignment(args.getFlag("set").replace("\"", ""), player))
+        	String script = args.getFlag("set").replace("\"", "");
+        	
+            if (trait.setAssignment(script, player))
                 if (trait.hasAssignment())
                     Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment is now: '" + trait.getAssignment().getName() + "'.");
                 else Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment was not able to be set.");
-            else Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
+            else if (ScriptRegistry.containsScript(script))
+            	Messaging.send(sender, ChatColor.RED + "A script with that name exists, but it is not an assignment script!");
+            else
+            	Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
             return;
 
         } else if (args.hasFlag('r')) {

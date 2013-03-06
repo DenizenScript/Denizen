@@ -52,7 +52,7 @@ public class AssignmentTrait extends Trait {
      *
      */
     public boolean setAssignment(String assignment, Player player) {
-        if (ScriptRegistry.containsScript(assignment)) {
+        if (ScriptRegistry.containsScript(assignment, AssignmentScriptContainer.class)) {
             this.assignment = assignment.toUpperCase();
             // Add Constants/Trigger trait if not already added to the NPC.
             if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
