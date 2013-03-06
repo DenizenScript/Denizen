@@ -46,10 +46,10 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 name = flagArgs[0].toUpperCase();
 
                 if (flagArgs.length == 2) {
-                    if (flagArgs[1].startsWith("+")) {
+                    if (flagArgs[1].equals("+")) {
                         action = Action.INCREASE;
                         value = "1";
-                    }   else if (flagArgs[1].startsWith("-")) {
+                    }   else if (flagArgs[1].equals("-")) {
                         action = Action.DECREASE;
                         value = "1";
                     }   else if (flagArgs[1].startsWith("!")) {

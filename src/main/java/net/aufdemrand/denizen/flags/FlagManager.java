@@ -503,7 +503,7 @@ public class FlagManager {
         public double asDouble() {
             adjustIndex();
             try {
-                return Double.valueOf(values.get(index)).intValue();
+                return Double.valueOf(values.get(index));
             } catch (Exception e) { return 0; }
         }
 
