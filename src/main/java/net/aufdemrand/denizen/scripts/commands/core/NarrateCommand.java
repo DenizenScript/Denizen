@@ -46,8 +46,13 @@ public class NarrateCommand extends AbstractCommand {
             throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
 
         for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesValueArg("FORMAT", arg, aH.ArgumentType.Script)) {
-                ScriptRegistry.getScriptContainerAs(aH.getStringFrom(arg), FormatScriptContainer.class);
+            if (aH.matchesValueArg("FORMAT", arg, aH.ArgumentType.String)) {
+                String formatStr = aH.getStringFrom(arg);
+                format = ScriptRegistry.getScriptContainerAs(formatStr, FormatScriptContainer.class);
+                
+                if(format != null) dB.echoDebug("... format set to: " + formatStr);
+                else dB.echoError("... could not find format for: " + formatStr);
+                
             } else {
                 text = aH.getStringFrom(arg);
             }
