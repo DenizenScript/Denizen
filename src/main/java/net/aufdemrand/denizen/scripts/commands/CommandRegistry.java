@@ -131,7 +131,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"NAMEPLATE", "nameplate [chat_color] (target:player_name)", 1);
         
         registerCoreMember(NarrateCommand.class, 
-        		"NARRATE", "narrate [\"narration text\"] (player:name)", 1);
+        		"NARRATE", "narrate [\"narration text\"] (player:name) (format:format)", 1);
         
         registerCoreMember(NewCommand.class, 
         		"NEW", "new itemstack [item:material] (qty:#)", 2);
