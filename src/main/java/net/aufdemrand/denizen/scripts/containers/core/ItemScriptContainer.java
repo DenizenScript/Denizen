@@ -73,7 +73,7 @@ public class ItemScriptContainer extends ScriptContainer {
                         }
                         // Add enchantment
                         Enchantment ench = Enchantment.getByName(enchantment.toUpperCase());
-                        stack.addEnchantment(ench, level);
+                        stack.addUnsafeEnchantment(ench, level);
                     } catch (Exception e) {
                         // Invalid enchantment information, let's try the next entry
                         continue;

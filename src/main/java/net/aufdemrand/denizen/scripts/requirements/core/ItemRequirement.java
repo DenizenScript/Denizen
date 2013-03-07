@@ -2,18 +2,21 @@ package net.aufdemrand.denizen.scripts.requirements.core;
 
 import java.util.List;
 
-import org.bukkit.inventory.ItemStack;
-
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import org.bukkit.inventory.ItemStack;
+
 public class ItemRequirement extends AbstractRequirement {
 	
 	Integer quantity = 1;
 	ItemStack item = null;
+	ItemScriptContainer itemContainer = null;
 	
 	@Override
 	public boolean check(RequirementsContext context, List<String> args)
@@ -25,10 +28,15 @@ public class ItemRequirement extends AbstractRequirement {
 				continue;
 				
 			} else if (aH.matchesItem(arg)) {
-				item = aH.getItemFrom(arg);
-				dB.echoDebug("...ITEM set");
-				continue;
-				
+				if (ScriptRegistry.getScriptContainerAs(aH.getStringFrom(arg), ItemScriptContainer.class) != null) {
+					item = ScriptRegistry.getScriptContainerAs(aH.getStringFrom(arg), ItemScriptContainer.class).getItemFrom(context.getPlayer(), context.getNPC());
+					dB.echoDebug("...ITEM set from script");
+					continue;
+				} else {
+					item = aH.getItemFrom(arg);
+					dB.echoDebug("...ITEM set");
+					continue;
+				}
 			} else if (aH.matchesItem("item:" + arg)) {
 				item = aH.getItemFrom("item:" + arg);
 				dB.echoDebug("...ITEM set");
