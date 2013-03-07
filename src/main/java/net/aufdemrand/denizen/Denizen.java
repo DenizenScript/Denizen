@@ -51,7 +51,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Denizen extends JavaPlugin {
-	public final static String configVersion = "0.8.8";
+    public final static String configVersion = "0.8.8";
     public static String versionTag = "0.8.8 pre-release";
     
     private boolean startedSuccessful = false;
@@ -171,13 +171,13 @@ public class Denizen extends JavaPlugin {
         saveDefaultConfig(); 
         reloadConfig();
 		
-		// Warn if configuration is outdated / too new
-		if(!getConfig().isSet("version") || !getConfig().getString("version", "0").equalsIgnoreCase(configVersion)) {
-			dB.echoError("Your configuration version does not match with the internal version.");
-			dB.echoError("Some things might not work, unless you generate a new one!");
-			dB.echoError("This is easily done by deleteing the current config.yml file in the Denizen folder.");
-		}
-		
+        // Warn if configuration is outdated / too new
+        if (!getConfig().isSet("version") || !getConfig().getString("version", "0").equalsIgnoreCase(configVersion)) {
+            dB.echoError("Your configuration version does not match with the internal version.");
+            dB.echoError("Some things might not work, unless you generate a new one!");
+            dB.echoError("This is easily done by deleteing the current config.yml file in the Denizen folder.");
+        }
+        
         ScriptHelper.reloadScripts();
         reloadSaves();
 
