@@ -14,9 +14,6 @@ import java.util.List;
 
 public class BookScriptContainer extends ScriptContainer {
 	
-	Player player = null;
-	dNPC npc = null;
-
     public BookScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }

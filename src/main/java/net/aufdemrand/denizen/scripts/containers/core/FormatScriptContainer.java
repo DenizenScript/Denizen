@@ -1,18 +1,22 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 public class FormatScriptContainer extends ScriptContainer {
-    
+	
     public FormatScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
     
-    public String getFormat() {
-        return getContents().getString("FORMAT", "<text>");
+    public String getFormat(Player player, dNPC npc) {
+    	String format = getContents().getString("FORMAT", "<text>");
+    	format = TagManager.tag(player, npc, format, false);
+        return format;
     }
     
     public void setFormat(String format) {
@@ -21,9 +25,7 @@ public class FormatScriptContainer extends ScriptContainer {
     
     public String getFormattedText(ScriptEntry entry) {
         String text = (String) entry.getObject("text");
-        String tagText = TagManager.tag(entry.getOfflinePlayer(), entry.getNPC(), text, true, entry);
-        
-        return getFormat().replace("<text>", tagText);
+        return getFormat(entry.getPlayer(), entry.getNPC()).replace("<text>", text);
     }
     
 }
