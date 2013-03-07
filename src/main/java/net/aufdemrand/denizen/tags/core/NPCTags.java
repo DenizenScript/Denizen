@@ -27,7 +27,7 @@ public class NPCTags implements Listener {
         if (!event.matches("npc")) return;
 
         dNPC n = event.getNPC();
-        if (n == null) return; // to avoid NPE in scripts with no NPC attached
+        if (n == null) return; // to avoid exceptions in scripts with no NPC attached
         
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";

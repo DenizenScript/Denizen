@@ -287,7 +287,7 @@ public class PlayerTags implements Listener {
                         + "," + p.getWorld().getSpawnLocation().getBlockY()
                         + "," + p.getWorld().getSpawnLocation().getBlockZ()
                         + "," + p.getWorld().getName());
-            else if (subType.equals("BED_SPAWN"))
+            else if (subType.equals("BED_SPAWN") && p.getBedSpawnLocation() != null)
                 event.setReplaced(p.getBedSpawnLocation().getBlockX()
                         + "," + p.getBedSpawnLocation().getBlockY()
                         + "," + p.getBedSpawnLocation().getBlockZ()
