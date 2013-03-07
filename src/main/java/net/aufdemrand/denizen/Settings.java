@@ -6,11 +6,7 @@ public class Settings {
 
 	/*
 	
-	# Default time in seconds of cooldown set to Denizens when a trigger is triggered.
-	# Not all triggers may use this, it is optional!
-	#
-    # Format: [Name] Trigger Default Cooldown in Seconds: #.#
-    # For example: Click Trigger Default Cooldown in Seconds: 2.0
+	# Whether Denizen should display debug in the console
      
 	 */
 	
