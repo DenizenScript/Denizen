@@ -175,6 +175,14 @@ public class IfCommand extends AbstractCommand {
                             else if (((String) com.comparedto).equalsIgnoreCase("integer")) {
                                 if (aH.matchesInteger(comparable)) com.outcome = true;
                             }
+                            else if (((String) com.comparedto).equalsIgnoreCase("even integer")) {
+                                if (aH.matchesInteger(comparable) && (aH.getIntegerFrom(comparable) % 2) == 0)
+                                	com.outcome = true;
+                            }
+                            else if (((String) com.comparedto).equalsIgnoreCase("odd integer")) {
+                            	if (aH.matchesInteger(comparable) && (aH.getIntegerFrom(comparable) % 2) == 1)
+                                	com.outcome = true;
+                            }
                             else if (((String) com.comparedto).equalsIgnoreCase("duration")) {
                                 if (aH.matchesDuration("duration:" + comparable)) com.outcome = true;
                             }

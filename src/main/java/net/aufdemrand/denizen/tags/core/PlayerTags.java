@@ -186,11 +186,19 @@ public class PlayerTags implements Listener {
             else if (subType.equals("MAX_STACK"))
                 event.setReplaced(String.valueOf(p.getItemInHand().getMaxStackSize()));
             else if (subType.equals("ENCHANTMENTS"))
-                event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptList());
-            else if (subType.equals("ENCHANTMENTS_WITH_LEVEL"))
-                event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels());
-            else if (subType.equals("ENCHANTMENTS_WITH_LEVEL_ONLY"))
-                event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly());
+            {
+            	String enchantments = null;
+            	
+            	if (specifier.equals("LEVELS"))
+            		enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels();
+            	else if (specifier.equals("LEVELS_ONLY"))
+            		enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly();
+            	else
+            		enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptList();
+            	
+            	if (enchantments != null && enchantments.length() > 0)
+            		event.setReplaced(enchantments);
+            }
             else if (subType.equals("LORE"))
                 event.setReplaced(NBTItem.getLore(p.getItemInHand()).asDScriptList());
             else if (subType.equals("DISPLAY"))
