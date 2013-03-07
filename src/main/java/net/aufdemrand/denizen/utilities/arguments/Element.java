@@ -88,8 +88,8 @@ public class Element implements dScriptArgument {
         }
 
         if (attribute.startsWith(".asboolean"))
-            return Boolean.valueOf(element).toString();
-
+            return new Element(Boolean.valueOf(element).toString())
+                    .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith(".substring")) {
             int beginning_index = Integer.valueOf(attribute.getContext(1).split("\\|")[0]) - 1;

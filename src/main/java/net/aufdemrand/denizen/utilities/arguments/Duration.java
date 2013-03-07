@@ -207,7 +207,8 @@ public class Duration implements dScriptArgument {
                         .getAttribute(attribute.fulfill(1));
         }
 
-        return new Element(as_dScriptArg()).getAttribute(attribute);
+        return new Element(dScriptArgValue())
+                .getAttribute(attribute);
     }
 
 

@@ -101,7 +101,7 @@ public class List extends ArrayList<String> implements dScriptArgument {
 
         if (attribute.startsWith(".get")) {
             int index = attribute.getIntContext(1);
-            if (index > size()) return null;
+            if (index > size() || index == 0) return null;
             String item = get(index - 1);
             return new Element(item).getAttribute(attribute.fulfill(1));
         }

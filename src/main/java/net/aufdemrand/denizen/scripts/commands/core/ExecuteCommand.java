@@ -14,41 +14,30 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class ExecuteCommand extends AbstractCommand {
 
-	enum ExecuteType { AS_SERVER, AS_NPC, AS_PLAYER, AS_OP }
+	enum Type { AS_SERVER, AS_NPC, AS_PLAYER, AS_OP }
 
-	String command = null;
-	ExecuteType executeType = null;
-	LivingEntity target = null;
-	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-		
-		// Parse arguments
+
+        String command = null;
+        Type executeType = null;
+
+        // Parse arguments
 		for (String arg : scriptEntry.getArguments()) {
 
-			if (aH.matchesArg("ASPLAYER, AS_PLAYER", arg)) {
-				executeType = ExecuteType.AS_PLAYER;
-				target = scriptEntry.getPlayer();
-				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
+			if (aH.matchesArg("ASPLAYER, AS_PLAYER", arg))
+				executeType = Type.AS_PLAYER;
 
-            }   else if (aH.matchesArg("ASOPPLAYER, ASOP, AS_OP, AS_OP_PLAYER", arg)) {
-				executeType = ExecuteType.AS_OP;
-				target = scriptEntry.getPlayer();
-				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
+            else if (aH.matchesArg("ASOPPLAYER, ASOP, AS_OP, AS_OP_PLAYER", arg))
+				executeType = Type.AS_OP;
 
-            }   else if (aH.matchesArg("ASNPC, AS_NPC", arg)) {
-				executeType = ExecuteType.AS_NPC;
-				target = scriptEntry.getNPC().getEntity();
-				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
+            else if (aH.matchesArg("ASNPC, AS_NPC", arg))
+				executeType = Type.AS_NPC;
 
-            }   else if (aH.matchesArg("ASSERVER, AS_SERVER", arg)) {
-				executeType = ExecuteType.AS_SERVER;
-				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
+            else if (aH.matchesArg("ASSERVER, AS_SERVER", arg))
+				executeType = Type.AS_SERVER;
 
-            }	else {
-				command = arg;
-				dB.echoDebug(Messages.DEBUG_SET_COMMAND, arg);
-			}
+            else command = arg;
 		}	
 
 		if (executeType == null)
@@ -57,31 +46,42 @@ public class ExecuteCommand extends AbstractCommand {
 		if (command == null)
 			throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "COMMAND_TEXT");
 
+        scriptEntry.addObject("command", command)
+                .addObject("type", executeType);
+
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-		switch (executeType) {
+        String command = (String) scriptEntry.getObject("command");
+        Type type = (Type) scriptEntry.getObject("type");
+
+        // Report to dB
+        dB.report(getName(),
+                aH.debugObj("Type", type.toString())
+                        + aH.debugObj("Command", command));
+
+		switch (type) {
 
 		case AS_PLAYER:
-			((Player) target).performCommand(command);
+			scriptEntry.getPlayer().performCommand(command);
 			return;
 			
 		case AS_OP:
 			boolean isOp = false;
-			if (((Player) target).isOp()) isOp = true;
-			if (!isOp) ((Player) target).setOp(true);
-			((Player) target).performCommand(command);
-			if (!isOp) ((Player) target).setOp(false);
+			if (scriptEntry.getPlayer().isOp()) isOp = true;
+			if (!isOp) scriptEntry.getPlayer().setOp(true);
+            scriptEntry.getPlayer().performCommand(command);
+			if (!isOp) scriptEntry.getPlayer().setOp(false);
 			return;
 			
 		case AS_NPC:
-			if (target.getType() != EntityType.PLAYER) 
+			if (scriptEntry.getNPC().getEntity().getType() != EntityType.PLAYER)
 				throw new CommandExecutionException("Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
-			((Player) target).setOp(true);
-			((Player) target).performCommand(command);
-			((Player) target).setOp(false);
+			((Player) scriptEntry.getNPC().getEntity()).setOp(true);
+			((Player) scriptEntry.getNPC().getEntity()).performCommand(command);
+			((Player) scriptEntry.getNPC().getEntity()).setOp(false);
 			return;
 			
 		case AS_SERVER:
