@@ -1,7 +1,7 @@
 # The current configuration version. DO NOT CHANGE THIS VALUE!!!
 # Denizen will check against the latest internal version and warn you if your
 # configuration file is outdated!
-version: 0.88
+version: 0.8.8
 
 # Whether Denizen debug information should be shown in the server
 # console or not.
