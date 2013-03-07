@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
@@ -88,7 +89,7 @@ public class Item extends ItemStack implements dScriptArgument {
 
     public static Item valueOf(String string, Player player, dNPC npc) {
 
-       if (string == null) return null;
+        if (string == null) return null;
 
         Matcher[] m = new Matcher[4];
         Item stack = null;
@@ -255,14 +256,79 @@ public class Item extends ItemStack implements dScriptArgument {
     }
 
     @Override
-    public String getAttribute(String attribute) {
+    public String getAttribute(Attribute attribute) {
 
+        if (attribute == null) return null;
 
+        // Desensitize the attribute for comparison
+        String id = this.id.toLowerCase();
 
+        if (attribute.startsWith(".qty"))
+            return String.valueOf(getAmount());
 
+        if (attribute.startsWith(".id"))
+            return id;
+
+        if (attribute.startsWith(".typeid"))
+            return String.valueOf(getTypeId());
+
+        if (attribute.startsWith(".max_stack"))
+            return String.valueOf(getMaxStackSize());
+
+        if (attribute.startsWith(".data"))
+            return String.valueOf(getData().getData());
+
+        if (attribute.startsWith(".durability"))
+            return String.valueOf(getDurability());
+
+        if (attribute.startsWith(".material.formatted")) {
+
+            if (id.equals("air"))
+                return "nothing";
+
+            if (id.equals("ice") || id.equals("dirt"))
+                return id;
+
+            if (getAmount() > 1) {
+                if (id.equals("cactus"))
+                    return "cactuses";
+                if (id.endsWith("y"))
+                    return id.substring(0, id.length() - 1) + "ies";  // ex: lily -> lilies
+                if (id.endsWith("s"))
+                    return id;  // ex: shears -> shears
+                // else
+                return id + "s"; // iron sword -> iron swords
+
+            }   else {
+                if (id.equals("cactus")) return "a cactus";
+                if (id.endsWith("s")) return id;
+                if (id.startsWith("a") || id.startsWith("e") || id.startsWith("i")
+                        || id.startsWith("o") || id.startsWith("u"))
+                    return "an " + id;  // ex: emerald -> an emerald
+                // else
+                return "a " + id; // ex: diamond -> a diamond
+            }
+
+        }
+
+        if (attribute.startsWith(".material"))
+            return getType().toString();
+
+        if (attribute.startsWith(".display"))
+            if (hasItemMeta() && getItemMeta().hasDisplayName())
+                return getItemMeta().getDisplayName();
+
+        if (attribute.startsWith(".enchantments")) {
+
+        }
+
+        if (attribute.startsWith(".lore")) {
+            if (hasItemMeta() && getItemMeta().hasLore())
+                return new List(getItemMeta().getLore()).getAttribute(attribute.fulfill(1));
+            else return new List("Empty List", "").getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }
-
 
 }

@@ -12,44 +12,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class ScriptQueue implements Listener, dScriptArgument {
+public class ScriptQueue implements Listener {
 
     protected static int totalQueues = 0;
-
-    @Override
-    public String getDefaultPrefix() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String debug() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String as_dScriptArg() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public String dScriptArgValue() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String toString() {
-        return id;
-    }
-
-    @Override
-    public dScriptArgument setPrefix(String prefix) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String getAttribute(String attribute) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
 
     /**
      * Returns the number of queues created in the current instance

@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -214,7 +215,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
     }
 
     @Override
-    public String getAttribute(String attribute) {
+    public String getAttribute(Attribute attribute) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

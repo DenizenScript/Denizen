@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.interfaces;
 
+import net.aufdemrand.denizen.tags.Attribute;
+
 public interface dScriptArgument {
 
     /**
@@ -54,6 +56,6 @@ public interface dScriptArgument {
      * @param attribute  the name of the attribute
      * @return  a string attribute
      */
-    public String getAttribute(String attribute);
+    public String getAttribute(Attribute attribute);
 
 }

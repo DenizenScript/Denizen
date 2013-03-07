@@ -1,11 +1,14 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
+import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Element extends ArrayList<String> implements dScriptArgument {
+public class Element implements dScriptArgument {
 
     /**
      *
@@ -27,17 +30,17 @@ public class Element extends ArrayList<String> implements dScriptArgument {
     }
 
     private String prefix;
+    private String element;
 
-    public Element(String prefix, String items) {
-        if (prefix == null) this.prefix = "list";
-        else this.prefix = prefix;
-        addAll(Arrays.asList(items.split("\\|")));
+    public Element(String string) {
+        this.prefix = element;
+        this.element = string;
     }
 
-    public Element(String prefix, java.util.List<String> items) {
-        if (prefix == null) this.prefix = "list";
+    public Element(String prefix, String string) {
+        if (prefix == null) this.prefix = "element";
         else this.prefix = prefix;
-        addAll(items);
+        this.element = string;
     }
 
     @Override
@@ -47,18 +50,12 @@ public class Element extends ArrayList<String> implements dScriptArgument {
 
     @Override
     public String debug() {
-        return (prefix + "='<A>" + this.toString() + "<G>'  ");
+        return (prefix + "='<A>" + element + "<G>'  ");
     }
 
     @Override
     public String as_dScriptArg() {
-        if (isEmpty()) return null;
-        StringBuilder dScriptArg = new StringBuilder();
-        dScriptArg.append(prefix + ":");
-        for (String item : this)
-            dScriptArg.append(item + "|");
-
-        return dScriptArg.toString().substring(0, dScriptArg.length() - 1);
+        return prefix + ":" + element;
     }
 
     @Override
@@ -68,41 +65,40 @@ public class Element extends ArrayList<String> implements dScriptArgument {
     }
 
     @Override
-    public String getAttribute(String attribute) {
+    public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return null;
 
-        // Desensitize the attribute for comparison
-        attribute = attribute.toLowerCase();
+        if (attribute.startsWith(".asint"))
+            try { return new Element(String.valueOf(Integer.valueOf(element)))
+                    .getAttribute(attribute.fulfill(1)); }
+            catch (NumberFormatException e) { dB.echoError("'" + element + "' is not a valid Integer."); }
 
-        if (attribute.startsWith(".aslist")) {
-            StringBuilder dScriptArg = new StringBuilder();
-            for (String item : this)
-                dScriptArg.append(item + "|");
-            return dScriptArg.toString().substring(0, dScriptArg.length() - 1);
+        if (attribute.startsWith(".asdouble"))
+            try { return new Element(String.valueOf(Double.valueOf(element)))
+                    .getAttribute(attribute.fulfill(1)); }
+            catch (NumberFormatException e) { dB.echoError("'" + element + "' is not a valid Double."); }
+
+        if (attribute.startsWith(".asmoney")) {
+            try {
+                DecimalFormat d = new DecimalFormat("0.00");
+            return new Element(String.valueOf(d.format(Double.valueOf(element))))
+                    .getAttribute(attribute.fulfill(1)); }
+            catch (NumberFormatException e) { dB.echoError("'" + element + "' is not a valid Money format."); }
         }
 
-        if (attribute.startsWith(".ascslist")) {
-            StringBuilder dScriptArg = new StringBuilder();
-            for (String item : this)
-                dScriptArg.append(item + ", ");
-            return dScriptArg.toString().substring(0, dScriptArg.length() - 2);
+        if (attribute.startsWith(".asboolean"))
+            return Boolean.valueOf(element).toString();
+
+
+        if (attribute.startsWith(".substring")) {
+            int beginning_index = Integer.valueOf(attribute.getContext(1).split("\\|")[0]) - 1;
+            int ending_index = Integer.valueOf(attribute.getContext(1).split("\\|")[1]) - 1;
+            return new Element(String.valueOf(element.substring(beginning_index, ending_index)))
+                    .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith(".get[")) {
-            int index = Integer.valueOf(attribute.split("\\[")[1].split("\\]")[0]);
-            if (index > size()) return null;
-
-            String item = get(index - 1);
-
-            attribute = "." + attribute.split("\\.", 2)[1];
-
-
-
-        }
-
-
-        return null;
+        return element;
     }
 
 }

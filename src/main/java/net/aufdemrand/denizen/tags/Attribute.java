@@ -15,7 +15,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Calls a bukkit event for replaceable tags.
  *
  * @author Jeremy Schroeder
  *
@@ -23,110 +22,49 @@ import java.util.regex.Pattern;
 
 public class Attribute {
 
-    public Denizen denizen;
+    String attribute;
 
-    public Attribute(Denizen denizen) {
-        this.denizen = denizen;
+    public Attribute(String attribute) {
+        this.attribute = attribute.toLowerCase();
     }
 
-    public void registerCoreTags() {
-        new PlayerTags(denizen);
-        new UtilTags(denizen);
-        new OfflinePlayerTags(denizen);
-        new FlagTags(denizen);
-        new BookmarkTags(denizen);
-        new ConstantTags(denizen);
-        new ProcedureScriptTag(denizen);
-        new NPCTags(denizen);
-        new AnchorTags(denizen);
-        new ContextTags(denizen);
-        new LocationTags(denizen);
-        new SpecialCharacterTags(denizen);
-        new TextTags(denizen);
-        new ForeignCharacterTags(denizen);
+    public boolean startsWith(String string) {
+        string = string.toLowerCase();
+        if (attribute.startsWith(string)) return true;
+        return false;
     }
 
-    public static String tag(OfflinePlayer player, dNPC npc, String arg) {
-        return tag(player, npc, arg, false, null);
+    public Attribute fulfill(int attributes) {
+        if (attribute.split("\\.").length >= attributes)
+            attribute = "";
+        else attribute = attribute.split("\\.", attributes + 1)[attributes];
+        return this;
     }
 
-    public static String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant) {
-        return tag(player, npc, arg, instant, null);
+    public boolean hasContext(int attribute) {
+        if (getAttribute(attribute).contains("[")) return true;
+        return false;
     }
 
-    public static String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
-        if (arg == null) return null;
-        // confirm there are/is a replaceable TAG(s), if not, return the arg.
-        if (arg.indexOf('>') == -1 || arg.length() < 3) return arg;
-
-        // Find location of the first tag
-        int[] positions = locateTag(arg);
-        if (positions == null) return arg;
-
-        boolean changeBack = false;
-        int failsafe = 0;
-        do {
-            // Just in case, do-loops make me nervous, but does implement a limit of 25 tags per argument.
-            failsafe++;
-            ReplaceableTagEvent event;
-            if (positions == null) break;
-            else {
-                event = new ReplaceableTagEvent(player, npc, arg.substring(positions[0] + 1, positions[1]), scriptEntry);
-                if (event.isInstant() != instant) {
-                    changeBack = true;
-                    // Not the right type of tag, change out brackets so it doesn't get parsed again
-                    arg = arg.substring(0, positions[0]) + "{" + event.getReplaced() + "}" + arg.substring(positions[1] + 1, arg.length());
-                } else {
-                    // Call Event
-                    Bukkit.getServer().getPluginManager().callEvent(event);
-                    if (!event.replaced() && event.getAlternative() != null) event.setReplaced(event.getAlternative());
-                    arg = arg.substring(0, positions[0]) + event.getReplaced() + arg.substring(positions[1] + 1, arg.length());
-                }
-            }
-            // Find new TAG
-            positions = locateTag(arg);
-        } while (positions != null || failsafe < 25);
-        // Change brackets back
-        if (changeBack) arg = arg.replace("{", "<").replace("}", ">");
-        // Return argument with replacements
-        return arg;
-    }
-    // Match all < > brackets that don't contain < > inside them
-    private static Pattern tagRegex = Pattern.compile("<([^<>]+)>");
-
-    private static int[] locateTag(String arg) {
-        // find tag brackets pattern
-        Matcher tagMatcher = tagRegex.matcher(arg);
-        if (tagMatcher.find())
-            return new int[]{tagMatcher.start(), tagMatcher.end() - 1};
-            // no matching brackets pattern, return null
-        else return null;
+    public String getContext(int attribute) {
+        if (hasContext(attribute))
+            return getAttribute(attribute).split("\\[", 2)[1].replace("]", "");
+        return null;
     }
 
-    public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry) {
-        return fillArguments(args, scriptEntry, false);
+    public int getIntContext(int attribute) {
+        try {
+        if (hasContext(attribute))
+            return Integer.valueOf(getAttribute(attribute).split("\\[", 2)[1].replace("]", ""));
+        } catch (Exception e) { }
+
+        return 0;
     }
 
-    public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry, boolean instant) {
-        List<String> filledArgs = new ArrayList<String>();
-        if (args != null) {
-            for (String argument : args) {
-                if (scriptEntry.getPlayer() == null && scriptEntry.getOfflinePlayer() != null)
-                    filledArgs.add(tag(scriptEntry.getOfflinePlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
-                else
-                    filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
-            }
-        }
-        return filledArgs;
+    private String getAttribute(int num) {
+        int size = attribute.split("\\.").length;
+        if (num > size) return "";
+        else return attribute.split("\\.")[num - 1];
     }
 
-    public static List<String> fillArguments(String[] args, Player player, dNPC npc) {
-        List<String> filledArgs = new ArrayList<String>();
-        if (args != null) {
-            for (String argument : args) {
-                filledArgs.add(tag(player, npc, argument, false));
-            }
-        }
-        return filledArgs;
-    }
 }

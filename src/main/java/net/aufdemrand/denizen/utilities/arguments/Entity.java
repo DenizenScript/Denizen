@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import org.bukkit.entity.LivingEntity;
 
@@ -136,7 +137,7 @@ public class Entity implements dScriptArgument {
     }
 
     @Override
-    public String getAttribute(String attribute) {
+    public String getAttribute(Attribute attribute) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
