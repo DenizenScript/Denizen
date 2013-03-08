@@ -14,6 +14,9 @@ import net.citizensnpcs.util.Paginator;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class AssignmentTrait extends Trait {
 
@@ -158,6 +161,24 @@ public class AssignmentTrait extends Trait {
 
         if (!paginator.sendPage(sender, page))
             throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
+    }
+    
+    // Listen for this NPC's attacks on entities
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onAttack(EntityDamageByEntityEvent event) {
+        
+    	if (event.getDamager() != npc.getBukkitEntity()) return;
+    	
+    	Player player = null;
+    	
+    	// Check if the entity attacked by this NPC is a player
+    	if (event.getEntity() instanceof Player)
+    		player = (Player) event.getEntity();
+    	
+		DenizenAPI.getDenizenNPC(npc).action("each attack", player);
+    	
+    	DenizenAPI.getDenizenNPC(npc).action("each attack on "
+    			+ event.getEntityType().toString(), player);    	
     }
 
 }
