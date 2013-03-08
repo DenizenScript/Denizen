@@ -124,6 +124,8 @@ public class NPCTags implements Listener {
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("begin navigation", null);
+        if (event.getNPC().getNavigator().getEntityTarget().isAggressive())
+        	npc.action("attack", null);
         previousLocations.put(event.getNPC().getId(), npc.getLocation());
     }
 
