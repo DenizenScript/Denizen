@@ -74,71 +74,30 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			cancel();
 		}
 	}
-
-	@EventHandler
-	public void listenCraft(CraftItemEvent event) {
-		if (type == ItemType.CRAFT) {
-			if (event.getWhoClicked() == player) {
-				
-				if (region != null) 
-					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
-				
-				if (items.contains(event.getCurrentItem().getType().toString()) 
-						|| items.contains(String.valueOf(event.getCurrentItem().getTypeId()))) {
-				
-					// Save the item stack that results from one crafting
-					ItemStack item = new ItemStack(event.getCurrentItem());
-					
-					// Save the quantity of items of this type that the player had
-					// before the crafting took place
-					int initialQty = Utilities.countItems(item, player.getInventory());
-										
-					// Run a task 1 tick later, after the crafting has occurred, and
-					// see how many items of this type the player has then in the
-					// inventory, in case shift-click was used
-					
-					Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-		        			new Runnable2<ItemStack, Integer>(item, initialQty) {
-		                            @Override
-		                            public void run(ItemStack item, Integer initialQty) {
-		                            	int newQty = Utilities.countItems(item, player.getInventory());
-		                            	int difference = newQty - initialQty;
-		                            	
-		                            	// If the difference is 0 and the player's cursor item
-		                            	// is not null, that means crafting succeeded but
-		                            	// shift-click was not used, so we use the default
-		                            	// quantity for crafting this item
-		                            	
-		                            	if (difference == 0 && player.getItemOnCursor().getType().toString() != "AIR")
-		                            	{
-		                            		difference = item.getAmount();
-		                            	}
-		                            	
-		                            	// If anything was crafted, increase the number of items
-		                            	// crafted and check the listener
-		                            	if (difference > 0)
-		                            	{
-		                            		currentItems = currentItems + difference;
-		                            		dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " crafted "
-		                            				 + difference + " of " + item.getType().toString() + ".");
-		                            		check();
-		                            	}
-		                            	
-		                            }
-		                        }, 1);
-				}
-			}
-		}
+	
+	public void increment(String object, int amount)
+	{
+		currentItems = currentItems + amount;
+		dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " " +
+		type.toString().toLowerCase() + "ed " + amount + " " + object + ".");
+		check();
 	}
 
 	@EventHandler
-	public void listenSmelt(InventoryClickEvent event)
+	public void listenItem(InventoryClickEvent event)
 	{
+		// Proceed if the slot clicked is a RESULT slot and the player is the right one
 		if (event.getSlotType().toString() == "RESULT"
 			&& event.getWhoClicked() == player)
-		{			
-			if (event.getInventory().getType().toString() == "FURNACE"
-				&& type == ItemType.SMELT)
+		{	
+			// Put the type of this inventory in a string and check if it matches the
+			// listener's type
+			String inventoryType = event.getInventory().getType().toString();
+			if (
+				   (type == ItemType.CRAFT && (inventoryType == "CRAFTING" || inventoryType == "WORKBENCH"))
+				|| (type == ItemType.SMELT && inventoryType == "FURNACE")
+			   )
+				
 			{
 				if (region != null)
 					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
@@ -156,43 +115,36 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 					// see how many items of this type the player has then in the
 					// inventory
 					Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-		        			new Runnable2<ItemStack, Integer>(item, initialQty) {
-		                            @Override
-		                            public void run(ItemStack item, Integer initialQty) {
-		                            	int newQty = Utilities.countItems(item, player.getInventory());
-		                            	int difference = newQty - initialQty;
+		        	new Runnable2<ItemStack, Integer>(item, initialQty)
+		        	{
+						@Override
+		                public void run(ItemStack item, Integer initialQty)
+						{
+							int newQty = Utilities.countItems(item, player.getInventory());
+							int difference = newQty - initialQty;
 		                            	
-		                            	// If anything was crafted (i.e. if shift click was
-		                            	// used with the player's inventory not being full),
-		                            	// increase the number of current items and check
-		                            	// the listener
-		                            	if (difference > 0)
-		                            	{
-		                            		currentItems = currentItems + difference;
-		                            		dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " crafted "
-		                            				 + difference + " of " + item.getType().toString() + ".");
-		                            		check();
-		                            	}
+							// If anything was crafted (i.e. if shift click was
+							// used with the player's inventory not being full),
+							// increase the number of current items
+							if (difference > 0)
+							{
+								increment(item.getType().toString(), difference);
+							}
 		                            	
-		                            }
-		                        }, 1);
-					
+		                }
+		            }, 1);
 				}
 				else
 				{
 					// If shift click was not used, simply increase the current items
 					// by the quantity of the item in the result slot
-					currentItems = currentItems + item.getAmount();
-					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " smelted "
-           				 + item.getAmount() + " of " + item.getType().toString() + ".");
-					check();
+					increment(item.getType().toString(), item.getAmount());
 				}
 				
 			}
 		}
 	}
 
-	List<EntityType> itemsFished = new ArrayList<EntityType>();
 	@EventHandler
 	public void listenFish(PlayerFishEvent event) {
 		if (type == ItemType.FISH) {
@@ -203,7 +155,6 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 				
 				if (items.contains(event.getCaught().getType().toString())) {
 					
-					itemsFished.add(event.getCaught().getType());
 					currentItems++;
 					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " fished a " + event.getCaught().getType().toString() + ".");
 					check();
