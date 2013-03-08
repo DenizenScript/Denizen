@@ -531,7 +531,7 @@ public class FlagManager {
             String returnList = "";
 
             for (String string : values)
-                returnList = returnList + string + ",";
+                returnList = returnList + string + ", ";
 
             return returnList.substring(0, returnList.length() - 1);
         }

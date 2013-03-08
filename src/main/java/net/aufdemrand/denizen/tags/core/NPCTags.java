@@ -126,20 +126,23 @@ public class NPCTags implements Listener {
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("begin navigation", null);
-        if (event.getNPC().getNavigator().getEntityTarget().isAggressive())
+        if (event.getNPC().getNavigator().getTargetType().toString() == "ENTITY")
         {
-        	Player player = null;
+        	if (event.getNPC().getNavigator().getEntityTarget().isAggressive())
+        	{
+        		Player player = null;
         	
-        	// Check if the entity attacked by this NPC is a player
-        	if (event.getNPC().getNavigator().getEntityTarget().getTarget() instanceof Player)
-        		player = (Player) event.getNPC().getNavigator().getEntityTarget().getTarget();
+        		// Check if the entity attacked by this NPC is a player
+        		if (event.getNPC().getNavigator().getEntityTarget().getTarget() instanceof Player)
+        			player = (Player) event.getNPC().getNavigator().getEntityTarget().getTarget();
         		
-        	npc.action("attack", player);
+        		npc.action("attack", player);
         	
-        	npc.action("attack on "
-        			+ event.getNPC().getNavigator().getEntityTarget().getTarget().getType().toString(), player);  
+        		npc.action("attack on "
+        				+ event.getNPC().getNavigator().getEntityTarget().getTarget().getType().toString(), player);  
+        	}
+        	previousLocations.put(event.getNPC().getId(), npc.getLocation());
         }
-        previousLocations.put(event.getNPC().getId(), npc.getLocation());
     }
 
     @EventHandler
