@@ -22,8 +22,6 @@ import org.bukkit.Server;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
@@ -123,7 +121,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 							int newQty = Utilities.countItems(item, player.getInventory());
 							int difference = newQty - initialQty;
 		                            	
-							// If anything was crafted (i.e. if shift click was
+							// If any items were obtained (i.e. if shift click was
 							// used with the player's inventory not being full),
 							// increase the number of current items
 							if (difference > 0)
@@ -146,18 +144,19 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	}
 
 	@EventHandler
-	public void listenFish(PlayerFishEvent event) {
-		if (type == ItemType.FISH) {
-			if (event.getPlayer() == player) {
+	public void listenFish(PlayerFishEvent event)
+	{
+		if (type == ItemType.FISH)
+		{
+			if (event.getPlayer() == player)
+			{
 
 				if (region != null) 
 					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
 				
-				if (items.contains(event.getCaught().getType().toString())) {
-					
-					currentItems++;
-					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " fished a " + event.getCaught().getType().toString() + ".");
-					check();
+				if (event.getState().toString() == "CAUGHT_FISH")
+				{
+					increment("FISH", 1);
 				}
 			}
 		}
@@ -198,8 +197,6 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 	public void check() {
 		if (currentItems >= quantity) {
-			CraftItemEvent.getHandlerList().unregister(this);
-			FurnaceSmeltEvent.getHandlerList().unregister(this);
 			InventoryClickEvent.getHandlerList().unregister(this);
 			PlayerFishEvent.getHandlerList().unregister(this);
 			finish();
@@ -225,8 +222,6 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 	@Override
 	public void deconstructed() {
-		CraftItemEvent.getHandlerList().unregister(this);
-		FurnaceSmeltEvent.getHandlerList().unregister(this);
 		InventoryClickEvent.getHandlerList().unregister(this);
 	}
 
