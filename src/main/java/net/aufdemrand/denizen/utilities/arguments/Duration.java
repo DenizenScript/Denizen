@@ -157,43 +157,43 @@ public class Duration implements dScriptArgument {
 
         if (attribute == null) return null;
 
-        if (attribute.startsWith(".in_seconds"))
+        if (attribute.startsWith("in_seconds"))
             return new Element(String.valueOf(seconds))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".in_hours"))
+        if (attribute.startsWith("in_hours"))
             return new Element(String.valueOf(seconds / 1800))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".in_minutes"))
+        if (attribute.startsWith("in_minutes"))
             return new Element(String.valueOf(seconds / 60))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".in_ticks"))
+        if (attribute.startsWith("in_ticks"))
             return new Element(String.valueOf(getTicksAsInt()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".prefix"))
+        if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".debug.log")) {
+        if (attribute.startsWith("debug.log")) {
             dB.log(debug());
             return new Element(Boolean.TRUE.toString())
                     .getAttribute(attribute.fulfill(2));
         }
 
-        if (attribute.startsWith(".debug.no_color")) {
+        if (attribute.startsWith("debug.no_color")) {
             return new Element(ChatColor.stripColor(debug()))
                     .getAttribute(attribute.fulfill(2));
         }
 
-        if (attribute.startsWith(".debug")) {
+        if (attribute.startsWith("debug")) {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith(".value")) {
+        if (attribute.startsWith("value")) {
             if (seconds % 43200 == 0)
                 return new Element(seconds / 86400 + "d")
                         .getAttribute(attribute.fulfill(1));

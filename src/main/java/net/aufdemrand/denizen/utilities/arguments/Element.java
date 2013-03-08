@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.utilities.arguments;
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.ChatColor;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -69,17 +70,17 @@ public class Element implements dScriptArgument {
 
         if (attribute == null) return null;
 
-        if (attribute.startsWith(".asint"))
+        if (attribute.startsWith("asint"))
             try { return new Element(String.valueOf(Integer.valueOf(element)))
                     .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) { dB.echoError("'" + element + "' is not a valid Integer."); }
 
-        if (attribute.startsWith(".asdouble"))
+        if (attribute.startsWith("asdouble"))
             try { return new Element(String.valueOf(Double.valueOf(element)))
                     .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) { dB.echoError("'" + element + "' is not a valid Double."); }
 
-        if (attribute.startsWith(".asmoney")) {
+        if (attribute.startsWith("asmoney")) {
             try {
                 DecimalFormat d = new DecimalFormat("0.00");
             return new Element(String.valueOf(d.format(Double.valueOf(element))))
@@ -87,14 +88,34 @@ public class Element implements dScriptArgument {
             catch (NumberFormatException e) { dB.echoError("'" + element + "' is not a valid Money format."); }
         }
 
-        if (attribute.startsWith(".asboolean"))
+        if (attribute.startsWith("asboolean"))
             return new Element(Boolean.valueOf(element).toString())
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".substring")) {
+        if (attribute.startsWith("substring")) {
             int beginning_index = Integer.valueOf(attribute.getContext(1).split("\\|")[0]) - 1;
             int ending_index = Integer.valueOf(attribute.getContext(1).split("\\|")[1]) - 1;
             return new Element(String.valueOf(element.substring(beginning_index, ending_index)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("prefix"))
+            return new Element(prefix)
+                    .getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("debug.log")) {
+            dB.log(debug());
+            return new Element(Boolean.TRUE.toString())
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("debug.no_color")) {
+            return new Element(ChatColor.stripColor(debug()))
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("debug")) {
+            return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
 

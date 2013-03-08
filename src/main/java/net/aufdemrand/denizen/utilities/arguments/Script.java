@@ -113,10 +113,9 @@ public class Script implements dScriptArgument {
 
     @Override
     public String getAttribute(Attribute attribute) {
-
         if (attribute == null) return as_dScriptArg();
-
-
         return null;
     }
+
+
 }

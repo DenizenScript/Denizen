@@ -5,7 +5,9 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -222,31 +224,31 @@ public class Item extends ItemStack implements dScriptArgument {
         // Desensitize the attribute for comparison
         String id = this.id.toLowerCase();
 
-        if (attribute.startsWith(".qty"))
+        if (attribute.startsWith("qty"))
             return new Element(String.valueOf(getAmount()))
                 .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".id"))
+        if (attribute.startsWith("id"))
             return new Element(id)
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".typeid"))
+        if (attribute.startsWith("typeid"))
             return new Element(String.valueOf(getTypeId()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".max_stack"))
+        if (attribute.startsWith("max_stack"))
             return new Element(String.valueOf(getMaxStackSize()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".data"))
+        if (attribute.startsWith("data"))
             return new Element(String.valueOf(getData().getData()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".durability"))
+        if (attribute.startsWith("durability"))
             return new Element(String.valueOf(getDurability()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".material.formatted")) {
+        if (attribute.startsWith("material.formatted")) {
 
             if (id.equals("air"))
                 return new Element("nothing")
@@ -283,23 +285,43 @@ public class Item extends ItemStack implements dScriptArgument {
             }
         }
 
-        if (attribute.startsWith(".material"))
+        if (attribute.startsWith("material"))
             return new Element(getType().toString())
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".display"))
+        if (attribute.startsWith("display"))
             if (hasItemMeta() && getItemMeta().hasDisplayName())
                 return new Element(getItemMeta().getDisplayName())
                         .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".enchantments")) {
+        if (attribute.startsWith("enchantments")) {
 
         }
 
-        if (attribute.startsWith(".lore")) {
+        if (attribute.startsWith("lore")) {
             if (hasItemMeta() && getItemMeta().hasLore())
                 return new List(getItemMeta().getLore()).getAttribute(attribute.fulfill(1));
             else return new List("Empty List", "").getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("prefix"))
+            return new Element(prefix)
+                    .getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("debug.log")) {
+            dB.log(debug());
+            return new Element(Boolean.TRUE.toString())
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("debug.no_color")) {
+            return new Element(ChatColor.stripColor(debug()))
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("debug")) {
+            return new Element(debug())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         return new Element(dScriptArgValue()).getAttribute(attribute.fulfill(1));

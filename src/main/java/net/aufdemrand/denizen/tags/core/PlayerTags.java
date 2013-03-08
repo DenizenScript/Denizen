@@ -191,8 +191,8 @@ public class PlayerTags implements Listener {
                 event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels());
             else if (subType.equals("ENCHANTMENTS_WITH_LEVEL_ONLY"))
                 event.setReplaced(NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly());
-            else if (subType.equals("LORE"))
-                event.setReplaced(NBTItem.getLore(p.getItemInHand()).asDScriptList());
+            // else if (subType.equals("LORE"))
+                // event.setReplaced(NBTItem.getLore(p.getItemInHand()).asDScriptList());
             else if (subType.equals("DISPLAY"))
                 // This is the name set when using an anvil
                 event.setReplaced(p.getItemInHand().getItemMeta().getDisplayName());
@@ -578,8 +578,8 @@ public class PlayerTags implements Listener {
                 event.setReplaced(String.valueOf(p.getLevel()));
 
         }
-
     }
+
 
 }
 

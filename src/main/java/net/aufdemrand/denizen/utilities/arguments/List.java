@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 
 import javax.persistence.Id;
@@ -89,9 +90,7 @@ public class List extends ArrayList<String> implements dScriptArgument {
 
         if (attribute == null) return null;
 
-        // Desensitize the attribute for comparison
-
-        if (attribute.startsWith(".ascslist")) {
+        if (attribute.startsWith("ascslist")) {
             StringBuilder dScriptArg = new StringBuilder();
             for (String item : this)
                 dScriptArg.append(item + ", ");
@@ -99,11 +98,33 @@ public class List extends ArrayList<String> implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith(".get")) {
+        if (attribute.startsWith("get")) {
             int index = attribute.getIntContext(1);
-            if (index > size() || index == 0) return null;
-            String item = get(index - 1);
+            if (index > size()) return null;
+            String item;
+            if (index > 0) item = get(index - 1);
+            else item = get(0);
             return new Element(item).getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("prefix"))
+            return new Element(prefix)
+                    .getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("debug.log")) {
+            dB.log(debug());
+            return new Element(Boolean.TRUE.toString())
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("debug.no_color")) {
+            return new Element(ChatColor.stripColor(debug()))
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("debug")) {
+            return new Element(debug())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         return new Element(dScriptArgValue()).getAttribute(attribute);
