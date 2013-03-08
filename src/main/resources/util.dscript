@@ -24,7 +24,7 @@ _util_dtime_command:
 
 # Generic Looper (GL)
 
-"_util_generic_loop":
+"loop through":
     type: task
     speed: 0
     context: task|flag|type

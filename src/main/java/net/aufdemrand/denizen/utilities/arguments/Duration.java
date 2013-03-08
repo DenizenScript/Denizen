@@ -2,6 +2,9 @@ package net.aufdemrand.denizen.utilities.arguments;
 
 import com.google.common.primitives.Ints;
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
+import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.ChatColor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -126,12 +129,12 @@ public class Duration implements dScriptArgument {
 
     @Override
     public String getDefaultPrefix() {
-       return prefix;
+        return prefix;
     }
 
     @Override
     public String debug() {
-        return "<G>" + prefix + "='<Y>" + seconds + " seconds<G>'  ";
+        return ChatColor.DARK_GRAY +  prefix + "='" + ChatColor.YELLOW + seconds + " seconds" + ChatColor.DARK_GRAY + "'  ";
     }
 
     @Override
@@ -150,36 +153,62 @@ public class Duration implements dScriptArgument {
     }
 
     @Override
-    public String getAttribute(String attribute) {
+    public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return as_dScriptArg();
+        if (attribute == null) return null;
 
-        // Desensitize the attribute for comparison
-        attribute = attribute.toLowerCase();
+        if (attribute.startsWith("in_seconds"))
+            return new Element(String.valueOf(seconds))
+                    .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".in_seconds.asint"))
-            return String.valueOf(Double.valueOf(seconds).intValue());
+        if (attribute.startsWith("in_hours"))
+            return new Element(String.valueOf(seconds / 1800))
+                    .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".in_seconds"))
-            return String.valueOf(Double.valueOf(seconds));
+        if (attribute.startsWith("in_minutes"))
+            return new Element(String.valueOf(seconds / 60))
+                    .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".in_ticks"))
-            return String.valueOf(getTicksAsInt());
+        if (attribute.startsWith("in_ticks"))
+            return new Element(String.valueOf(getTicksAsInt()))
+                    .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith(".value")) {
-            if (seconds % 43200 == 0)
-                return seconds / 86400 + "d";
+        if (attribute.startsWith("prefix"))
+            return new Element(prefix)
+                    .getAttribute(attribute.fulfill(1));
 
-            else if (seconds % 1800 == 0)
-                return seconds / 3600 + "h";
-
-            else if (seconds % 30 == 0)
-                return seconds / 60 + "m";
-
-            else return seconds + "s";
+        if (attribute.startsWith("debug.log")) {
+            dB.log(debug());
+            return new Element(Boolean.TRUE.toString())
+                    .getAttribute(attribute.fulfill(2));
         }
 
-        return null;
+        if (attribute.startsWith("debug.no_color")) {
+            return new Element(ChatColor.stripColor(debug()))
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("debug")) {
+            return new Element(debug())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("value")) {
+            if (seconds % 43200 == 0)
+                return new Element(seconds / 86400 + "d")
+                        .getAttribute(attribute.fulfill(1));
+            else if (seconds % 1800 == 0)
+                return new Element(seconds / 3600 + "h")
+                        .getAttribute(attribute.fulfill(1));
+            else if (seconds % 30 == 0)
+                return new Element(seconds / 60 + "m")
+                        .getAttribute(attribute.fulfill(1));
+            else return new Element(seconds + "s")
+                        .getAttribute(attribute.fulfill(1));
+        }
+
+        return new Element(dScriptArgValue())
+                .getAttribute(attribute);
     }
 
 

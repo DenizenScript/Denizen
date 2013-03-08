@@ -13,10 +13,6 @@ public class NBTItem {
         return new MapOfEnchantments(item);
     }
 
-    public static ListOfLore getLore(ItemStack item) {
-        return new ListOfLore(item);
-    }
-
     /*
      * Some static methods for dealing with Minecraft NBT data, which is used to store
      * custom NBT.

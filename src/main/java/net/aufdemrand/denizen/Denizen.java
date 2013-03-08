@@ -51,7 +51,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Denizen extends JavaPlugin {
-
+    public final static String configVersion = "0.8.8";
     public static String versionTag = "0.8.8 pre-release";
     
     private boolean startedSuccessful = false;
@@ -170,6 +170,14 @@ public class Denizen extends JavaPlugin {
         // Populate config.yml if it doesn't yet exist.
         saveDefaultConfig(); 
         reloadConfig();
+		
+        // Warn if configuration is outdated / too new
+        if (!getConfig().isSet("Version") || !getConfig().getString("Version", "0").equalsIgnoreCase(configVersion)) {
+            dB.echoError("Your Denizen config file is from a different version.");
+            dB.echoError("Some settings will not be available unless you generate a new config file.");
+            dB.echoError("This is easily done by deleting the current config.yml file in the Denizen folder.");
+        }
+        
         ScriptHelper.reloadScripts();
         reloadSaves();
 
