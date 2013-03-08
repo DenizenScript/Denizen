@@ -10,6 +10,8 @@ import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
+
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -125,7 +127,18 @@ public class NPCTags implements Listener {
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("begin navigation", null);
         if (event.getNPC().getNavigator().getEntityTarget().isAggressive())
-        	npc.action("attack", null);
+        {
+        	Player player = null;
+        	
+        	// Check if the entity attacked by this NPC is a player
+        	if (event.getNPC().getNavigator().getEntityTarget().getTarget() instanceof Player)
+        		player = (Player) event.getNPC().getNavigator().getEntityTarget().getTarget();
+        		
+        	npc.action("attack", player);
+        	
+        	npc.action("attack on "
+        			+ event.getNPC().getNavigator().getEntityTarget().getTarget().getType().toString(), player);  
+        }
         previousLocations.put(event.getNPC().getId(), npc.getLocation());
     }
 
