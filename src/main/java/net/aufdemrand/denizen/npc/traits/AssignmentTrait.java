@@ -13,6 +13,7 @@ import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Paginator;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -178,7 +179,20 @@ public class AssignmentTrait extends Trait {
 		DenizenAPI.getDenizenNPC(npc).action("each attack", player);
     	
     	DenizenAPI.getDenizenNPC(npc).action("each attack on "
-    			+ event.getEntityType().toString(), player);    	
+    			+ event.getEntityType().toString(), player);
+    	
+    	if (event.getEntity() instanceof LivingEntity)
+    	{
+    		if (((LivingEntity) event.getEntity()).getHealth()
+    			- event.getDamage() <= 0)
+    		{
+        		DenizenAPI.getDenizenNPC(npc).action("kill", player);
+            	
+            	DenizenAPI.getDenizenNPC(npc).action("kill of "
+            			+ event.getEntityType().toString(), player);
+    		}
+    	}
+
     }
 
 }
