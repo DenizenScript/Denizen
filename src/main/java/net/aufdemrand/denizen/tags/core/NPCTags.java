@@ -11,6 +11,7 @@ import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -128,18 +129,23 @@ public class NPCTags implements Listener {
         npc.action("begin navigation", null);
         if (event.getNPC().getNavigator().getTargetType().toString() == "ENTITY")
         {
-        	if (event.getNPC().getNavigator().getEntityTarget().isAggressive())
+        	LivingEntity entity = event.getNPC().getNavigator().getEntityTarget().getTarget();
+        	
+        	// If the NPC has an entity target, is aggressive towards it
+        	// and that entity is not dead, trigger "on attack" command
+        	if (event.getNPC().getNavigator().getEntityTarget().isAggressive()
+        		&& entity.isDead() == false)
         	{
         		Player player = null;
         	
         		// Check if the entity attacked by this NPC is a player
-        		if (event.getNPC().getNavigator().getEntityTarget().getTarget() instanceof Player)
-        			player = (Player) event.getNPC().getNavigator().getEntityTarget().getTarget();
+        		if (entity instanceof Player)
+        			player = (Player) entity;
         		
         		npc.action("attack", player);
         	
         		npc.action("attack on "
-        				+ event.getNPC().getNavigator().getEntityTarget().getTarget().getType().toString(), player);  
+        				+ entity.getType().toString(), player);  
         	}
         	previousLocations.put(event.getNPC().getId(), npc.getLocation());
         }
