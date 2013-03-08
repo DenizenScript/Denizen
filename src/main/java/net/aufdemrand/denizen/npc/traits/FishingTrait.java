@@ -81,7 +81,6 @@ public class FishingTrait extends Trait {
         DenizenAPI.getDenizenNPC(npc).action("start fishing", null);
         fishingLocation = location.clone();
         cast();
-        dB.log("... " + npc.getName() + " should be fishing!");
         fishing = true;
     }
     
@@ -91,7 +90,6 @@ public class FishingTrait extends Trait {
     public void stopFishing() {
         DenizenAPI.getDenizenNPC(npc).action("stop fishing", null);
 
-        dB.log("...removing fish hook.");
         reel();
         
         fishingLocation = null;
