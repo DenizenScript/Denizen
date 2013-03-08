@@ -186,15 +186,15 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     }
                     try {
                         if (script.hasTriggerOptionFor(getClass(), player, null, "EXIT RADIUS"))
-                            entryRadius = Integer.valueOf(script.getTriggerOptionFor(getClass(), player, null, "EXIT RADIUS"));
+                            exitRadius = Integer.valueOf(script.getTriggerOptionFor(getClass(), player, null, "EXIT RADIUS"));
                     } catch (NumberFormatException nfe) {
                         dB.echoDebug("Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
                     }
                     try {
                         if (script.hasTriggerOptionFor(getClass(), player, null, "MOVE RADIUS"))
-                            entryRadius = Integer.valueOf(script.getTriggerOptionFor(getClass(), player, null, "MOVE RADIUS"));
+                            moveRadius = Integer.valueOf(script.getTriggerOptionFor(getClass(), player, null, "MOVE RADIUS"));
                     } catch (NumberFormatException nfe) {
-                        dB.echoDebug("Move Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
+                        dB.echoDebug("Move Radius was not an integer.  Assuming " + moveRadius + " as the radius.");
                     }
                 }
 
