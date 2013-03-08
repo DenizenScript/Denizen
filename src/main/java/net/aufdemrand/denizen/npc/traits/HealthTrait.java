@@ -10,7 +10,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -185,6 +188,8 @@ public class HealthTrait extends Trait implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(EntityDamageEvent event) {
+    	// Don't use NPCDamageEvent because it doesn't work well
+    	
         // Check if the event pertains to this NPC
         if (event.getEntity() != npc.getBukkitEntity() || dying) return;
 
@@ -194,36 +199,50 @@ public class HealthTrait extends Trait implements Listener {
 
         dying = true;
         
+    	Player player = null;
+    	String deathCause = event.getCause().toString().toLowerCase().replace('_', ' ');
+    	
         // Check if the entity has been killed by another entity
         if (event instanceof EntityDamageByEntityEvent)
         {
-
-        	// If it has, is the killer a Player?
-        	if (((EntityDamageByEntityEvent) event).getDamager() instanceof Player) {
-        		// Yep.. pass player to the action
-        		DenizenAPI.getDenizenNPC(npc).action("death",
-        				(Player) ((EntityDamageByEntityEvent) event).getDamager());
-        		DenizenAPI.getDenizenNPC(npc).action("death by entity",
-        				(Player) ((EntityDamageByEntityEvent) event).getDamager());
-        		DenizenAPI.getDenizenNPC(npc).action("death by player",
-        				(Player) ((EntityDamageByEntityEvent) event).getDamager());
-        	}   else {
-        		// Nope.. killed by a non-Player entity
-        		DenizenAPI.getDenizenNPC(npc).action("death", null);
-        		DenizenAPI.getDenizenNPC(npc).action("death by entity", null);
-        		DenizenAPI.getDenizenNPC(npc).action("death by monster", null);
+        	Entity killerEntity = ((EntityDamageByEntityEvent) event).getDamager();
+        	
+        	// Check if the damager was a player and, if so, attach
+        	// that player to the action's ScriptEntry
+        	if (killerEntity instanceof Player)
+        		player = (Player) killerEntity;
+        	
+        	// If the damager was a projectile, take its shooter into
+        	// account as well
+        	else if (killerEntity instanceof Projectile)
+        	{
+        		LivingEntity shooter = ((Projectile) killerEntity).getShooter();
+        		
+        		if (shooter instanceof Player)
+        			player = (Player) shooter;
+        		
         		DenizenAPI.getDenizenNPC(npc).action("death by " +
-        				((EntityDamageByEntityEvent) event).getDamager().getType().toString(), null);
+        	        	shooter.getType().toString(), player);
         	}
+        	
+        	DenizenAPI.getDenizenNPC(npc).action("death by entity", player);
+        	DenizenAPI.getDenizenNPC(npc).action("death by " +
+        	killerEntity.getType().toString(), player);
         }
         // If not, check if the entity has been killed by a block
         else if (event instanceof EntityDamageByBlockEvent)
         {
-        	DenizenAPI.getDenizenNPC(npc).action("death", null);
         	DenizenAPI.getDenizenNPC(npc).action("death by block", null);
+        	
+        	// The line of code below should work, but a Bukkit bug makes the damager
+        	// return null. Uncomment it once the bug is f
+        	
         	//DenizenAPI.getDenizenNPC(npc).action("death by " +
     		//		((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
         }
+        
+        DenizenAPI.getDenizenNPC(npc).action("death", player);
+        DenizenAPI.getDenizenNPC(npc).action("death by " + deathCause, player);
 
         loc = aH.getLocationFrom(DenizenAPI.getCurrentInstance().tagManager()
                 .tag(null, DenizenAPI.getDenizenNPC(npc), respawnLocation, false));
