@@ -131,24 +131,63 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 		}
 	}
 
-	List<Integer> itemsSmelted = new ArrayList<Integer>();
 	@EventHandler
-	public void listenSmelt(FurnaceSmeltEvent event) {
-		if (type == ItemType.SMELT) {
-
-			if (region != null) 
-				if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
-			
-			InventoryClickEvent e = (InventoryClickEvent) player;
-			if (event.getBlock() == e.getCurrentItem()) {
-				if (items.contains(event.getBlock().getType().toString()) 
-						|| items.contains(String.valueOf(event.getBlock().getTypeId()))) {
-
-					itemsSmelted.add(event.getBlock().getTypeId());
-					currentItems++;
-					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " smelted a " + event.getBlock().getType().toString() + ".");
+	public void listenSmelt(InventoryClickEvent event)
+	{
+		if (event.getSlotType().toString() == "RESULT"
+			&& event.getWhoClicked() == player)
+		{			
+			if (event.getInventory().getType().toString() == "FURNACE"
+				&& type == ItemType.SMELT)
+			{
+				if (region != null)
+					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+				
+				// Get the item in the result slot as an ItemStack
+				ItemStack item = new ItemStack(event.getCurrentItem());
+				
+				if (event.isShiftClick())
+				{
+					// Save the quantity of items of this type that the player had
+					// before the event took place
+					int initialQty = Utilities.countItems(item, player.getInventory());
+					
+					// Run a task 1 tick later, after the event has occurred, and
+					// see how many items of this type the player has then in the
+					// inventory
+					Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+		        			new Runnable2<ItemStack, Integer>(item, initialQty) {
+		                            @Override
+		                            public void run(ItemStack item, Integer initialQty) {
+		                            	int newQty = Utilities.countItems(item, player.getInventory());
+		                            	int difference = newQty - initialQty;
+		                            	
+		                            	// If anything was crafted (i.e. if shift click was
+		                            	// used with the player's inventory not being full),
+		                            	// increase the number of current items and check
+		                            	// the listener
+		                            	if (difference > 0)
+		                            	{
+		                            		currentItems = currentItems + difference;
+		                            		dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " crafted "
+		                            				 + difference + " of " + item.getType().toString() + ".");
+		                            		check();
+		                            	}
+		                            	
+		                            }
+		                        }, 1);
+					
+				}
+				else
+				{
+					// If shift click was not used, simply increase the current items
+					// by the quantity of the item in the result slot
+					currentItems = currentItems + item.getAmount();
+					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " smelted "
+           				 + item.getAmount() + " of " + item.getType().toString() + ".");
 					check();
 				}
+				
 			}
 		}
 	}
