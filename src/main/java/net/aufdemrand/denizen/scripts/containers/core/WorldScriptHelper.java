@@ -185,10 +185,7 @@ public class WorldScriptHelper implements Listener {
             if (doEvent("player interacts with block", null, event.getPlayer(), context))
                 event.setCancelled(true);
         }
-
-        }
-
-
     }
+
 
 }
