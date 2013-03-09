@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;

@@ -167,13 +167,15 @@ public class AssignmentTrait extends Trait {
     
     // Listen for this NPC's attacks on entities
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onAttack(EntityDamageByEntityEvent event) {
+    public void onAttack(EntityDamageByEntityEvent event)
+    {
         
     	// Check if the damager is this NPC
     	if (event.getDamager() != npc.getBukkitEntity())
     	{
     		// If the damager is not this NPC, the damager could still
-    		// be a projectile shot by this NPC
+    		// be a projectile shot by this NPC, in which case we want
+    		// to continue
     		if (event.getDamager() instanceof Projectile)
     		{
     			if (((Projectile) event.getDamager()).getShooter() != npc.getBukkitEntity())

@@ -147,6 +147,9 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(RandomCommand.class, 
         		"RANDOM", "random [#]", 1);
+        
+        registerCoreMember(RemoveCommand.class, 
+        		"REMOVE", "remove (npcid:#)", 0);
 
         registerCoreMember(RuntaskCommand.class,
         		"RUNTASK", "runtask [script_name] (instantly) (queue|queue:queue_name) (delay:#)", 1);
