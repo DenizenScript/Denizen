@@ -1,7 +1,19 @@
 # The current configuration version. You should not change this
 # value. Denizen will check against the latest internal version
 # and warn you if your configuration file is outdated.
-Version: 0.8.8
+Version: 2013-03-09
+
+# Whether the Health trait, which lets NPCs take damage and
+# activates their "on death" action, should be enabled on them 
+# by default
+Health Trait Enabled by Default: false
+
+# Whether NPCs with the Health trait should respawn
+Health Trait Respawn Enabled: true
+
+# How long it should take for a dead NPC with the Health trait
+# to respawn by default
+Health Trait Respawn Delay: 10s
 
 # Whether Denizen debug information should be shown in the server
 # console or not.
@@ -57,7 +69,7 @@ Chat Only When Looking at NPC: true
 Chat Globally If Failed Chat Triggers: false
 # Whether chatting with an NPC that does not have a chat trigger
 # will make the text appear in the global chat
-Chat Globally If No Chat Triggers: false
+Chat Globally If No Chat Triggers: true
 # Whether chatting with an NPC that isn't interactable will
 # make the text appear in the global chat 
 Chat Globally If Not Interactable: false

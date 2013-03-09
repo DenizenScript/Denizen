@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.npc.traits;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -35,9 +36,9 @@ public class HealthTrait extends Trait implements Listener {
     private String animationDelay = "3s";
 
     @Persist("respawnondeath")
-    private boolean respawn = true;
+    private boolean respawn = Settings.HealthTraitRespawnEnabled();
     @Persist("respawndelayinseconds")
-    private String respawnDelay = "10s";
+    private String respawnDelay = Settings.HealthTraitRespawnDelay();;
     @Persist("respawnlocation")
     private String respawnLocation = "<npc.location>";
 

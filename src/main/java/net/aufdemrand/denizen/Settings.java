@@ -17,6 +17,39 @@ public class Settings {
 	
 	/*
 	
+	# Whether the Health trait should be enabled by default
+     
+	 */
+	
+	public static boolean HealthTraitEnabledByDefault() {
+		return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Health Trait Enabled by Default", false);
+	}
+	
+	/*
+	
+	# Whether NPCs with the Health trait should respawn after being killed
+    
+	 */
+	
+	public static boolean HealthTraitRespawnEnabled() {
+		return DenizenAPI.getCurrentInstance().getConfig()
+               .getBoolean("Health Trait Respawn Enabled", true);
+	}
+	
+	/*
+	
+	# Whether NPCs with the Health trait should respawn after being killed
+    
+	 */
+	
+	public static String HealthTraitRespawnDelay() {
+		return DenizenAPI.getCurrentInstance().getConfig()
+               .getString("Health Trait Respawn Delay", "10s");
+	}
+	
+	/*
+	
 	# Default time in seconds of cooldown set to Denizens when a trigger is triggered.
 	# Not all triggers may use this, it is optional!
 	#
