@@ -164,6 +164,7 @@ public class WorldScriptHelper implements Listener {
         else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
             Map<String, String> context = new HashMap<String, String>();
 
+            context.put("location clicked", new Location(event.getClickedBlock().getLocation()).dScriptArgValue());
             if (event.getItem() != null ) {
                 context.put("item_in_hand", new Item(event.getItem()).dScriptArgValue());
 
@@ -175,6 +176,18 @@ public class WorldScriptHelper implements Listener {
             if (doEvent("player hits block", null, event.getPlayer(), context))
                 event.setCancelled(true);
         }
+
+        else if (event.getAction() == Action.PHYSICAL) {
+            Map<String, String> context = new HashMap<String, String>();
+
+            context.put("interact location", new Location(event.getClickedBlock().getLocation()).dScriptArgValue());
+
+            if (doEvent("player interacts with block", null, event.getPlayer(), context))
+                event.setCancelled(true);
+        }
+
+        }
+
 
     }
 
