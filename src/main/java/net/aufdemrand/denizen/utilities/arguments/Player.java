@@ -106,7 +106,7 @@ public class Player implements dScriptArgument {
             return new Element(String.valueOf(getOfflinePlayer().getFirstPlayed()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("first_played"))
+        if (attribute.startsWith("last_played"))
             return new Element(String.valueOf(getOfflinePlayer().getLastPlayed()))
                     .getAttribute(attribute.fulfill(1));
 

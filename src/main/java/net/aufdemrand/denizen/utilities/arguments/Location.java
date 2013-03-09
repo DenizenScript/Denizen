@@ -216,7 +216,10 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+
+
+        return dScriptArgValue();
     }
 
 }

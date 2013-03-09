@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -14,6 +15,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
 
 import java.util.HashMap;
@@ -79,7 +81,6 @@ public class WorldScriptHelper implements Listener {
         context.put("args", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
         if (doEvent(event.getMessage().split(" ")[0].replace("/", "") + " command", null, event.getPlayer(), context)) {
             event.setCancelled(true);
-            dB.log("OKAY!!!!!!!!!!!!!");
         }
     }
 
@@ -95,7 +96,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void loginEvent(PlayerQuitEvent event) {
         Map<String, String> context = new HashMap<String, String>();
-        context.put("ip", event.getQuitMessage());
+        context.put("message", event.getQuitMessage());
 
         doEvent("player quit", null, event.getPlayer(), context);
     }
@@ -140,8 +141,41 @@ public class WorldScriptHelper implements Listener {
                 current_time.put(world.getName(), hour);
             }
         }
-
     }
 
+    @EventHandler
+    public void playerInteract(PlayerInteractEvent event) {
+
+        if (event.getAction() == Action.LEFT_CLICK_AIR) {
+            Map<String, String> context = new HashMap<String, String>();
+
+            if (event.getItem() != null ) {
+                context.put("item_in_hand", new Item(event.getItem()).dScriptArgValue());
+
+                if (doEvent("player swings " + new Item(event.getItem()).dScriptArgValue() + " in air", null, event.getPlayer(), context))
+                    event.setCancelled(true);
+                if (doEvent("player swings item in air", null, event.getPlayer(), context))
+                    event.setCancelled(true);
+            }
+            if (doEvent("player swings arm in air", null, event.getPlayer(), context))
+                event.setCancelled(true);
+        }
+
+        else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+            Map<String, String> context = new HashMap<String, String>();
+
+            if (event.getItem() != null ) {
+                context.put("item_in_hand", new Item(event.getItem()).dScriptArgValue());
+
+                if (doEvent("player hits block with " + new Item(event.getItem()).dScriptArgValue(), null, event.getPlayer(), context))
+                    event.setCancelled(true);
+                if (doEvent("player hits block with item", null, event.getPlayer(), context))
+                    event.setCancelled(true);
+            }
+            if (doEvent("player hits block", null, event.getPlayer(), context))
+                event.setCancelled(true);
+        }
+
+    }
 
 }
