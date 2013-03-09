@@ -15,6 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -168,7 +169,18 @@ public class AssignmentTrait extends Trait {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAttack(EntityDamageByEntityEvent event) {
         
-    	if (event.getDamager() != npc.getBukkitEntity()) return;
+    	// Check if the damager is this NPC
+    	if (event.getDamager() != npc.getBukkitEntity())
+    	{
+    		// If the damager is not this NPC, the damager could still
+    		// be a projectile shot by this NPC
+    		if (event.getDamager() instanceof Projectile)
+    		{
+    			if (((Projectile) event.getDamager()).getShooter() != npc.getBukkitEntity())
+    				return;
+    		}
+    		else return;
+    	}
     	
     	Player player = null;
     	

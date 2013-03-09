@@ -232,10 +232,10 @@ public class HealthTrait extends Trait implements Listener {
         // If not, check if the entity has been killed by a block
         else if (event instanceof EntityDamageByBlockEvent)
         {
-        	DenizenAPI.getDenizenNPC(npc).action("death by block", null);
+        	DenizenAPI.getDenizenNPC(npc).action("death by block", player);
         	
         	// The line of code below should work, but a Bukkit bug makes the damager
-        	// return null. Uncomment it once the bug is f
+        	// return null. Uncomment it once the bug is fixed.
         	
         	//DenizenAPI.getDenizenNPC(npc).action("death by " +
     		//		((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
