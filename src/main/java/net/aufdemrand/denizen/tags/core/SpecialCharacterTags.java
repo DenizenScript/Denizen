@@ -15,7 +15,10 @@ public class SpecialCharacterTags implements Listener {
     public void specialCharacterTags(ReplaceableTagEvent event) {
     if (!event.getName().startsWith("&")) return;
 
-       if (event.getName().equalsIgnoreCase("&cm"))
+       if (event.getName().equalsIgnoreCase("&nl"))
+    		event.setReplaced("\n");
+    
+       else if (event.getName().equalsIgnoreCase("&cm"))
            event.setReplaced(",");
 
        else if (event.getName().equalsIgnoreCase("&ss"))

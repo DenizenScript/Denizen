@@ -80,7 +80,7 @@ public class LeatherColorer {
             return "216:127:51";
         if(str.toUpperCase().equals("WHITE"))
             return "255:255:255";
-        return null;
+        return str;
     }
 
 }
