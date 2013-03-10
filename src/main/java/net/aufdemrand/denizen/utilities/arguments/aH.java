@@ -39,9 +39,9 @@ public class aH {
         return "<G>" + prefix + "='<A>" + id + "<Y>(" + value + ")<G>'  ";
     }
 
-    final static Pattern doublePtrn = Pattern.compile("(?:-|)(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
+    final static Pattern doublePtrn = Pattern.compile("(-)?(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
     final static Pattern floatPtrn = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
-    final static Pattern integerPtrn = Pattern.compile("(?:-|)\\d+");
+    final static Pattern integerPtrn = Pattern.compile("(-)?\\d+");
     final static Pattern wordPtrn = Pattern.compile("\\w+");
 
     /**
@@ -651,7 +651,7 @@ public class aH {
      *
      */
     public static boolean matchesDuration(String arg) {
-        final Pattern matchesDurationPtrn = Pattern.compile("(?:duration:)(\\d+|\\.\\d+|\\d+\\.\\d+)(|t|m|s|h|d)", Pattern.CASE_INSENSITIVE);
+        final Pattern matchesDurationPtrn = Pattern.compile("(duration:)?(\\d+|\\.\\d+|\\d+\\.\\d+)(|t|m|s|h|d)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesDurationPtrn.matcher(arg);
         if (m.matches()) return true;
         else if (arg.toUpperCase().startsWith("DURATION:"))
@@ -783,7 +783,7 @@ public class aH {
      *
      */
     public static boolean matchesLocation(String arg) {
-        final Pattern locationPattern = Pattern.compile("location:(?:-|)(?:\\d+|\\d+\\.\\d+),(?:-|)(?:\\d+|\\d+\\.\\d+),(?:-|)(?:\\d+|\\d+\\.\\d+),\\w+", Pattern.CASE_INSENSITIVE);
+        final Pattern locationPattern = Pattern.compile("location:((-)?\\d+(\\.\\d+)?,){3}\\w+", Pattern.CASE_INSENSITIVE);
         Matcher m = locationPattern.matcher(arg);
         if (m.matches())
             return true;
@@ -817,7 +817,7 @@ public class aH {
      *
      */
     public static boolean matchesQuantity(String arg) {
-        final Pattern matchesQuantityPtrn = Pattern.compile("qty:(?:-|)\\d+", Pattern.CASE_INSENSITIVE);
+        final Pattern matchesQuantityPtrn = Pattern.compile("qty:(-)?\\d+", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesQuantityPtrn.matcher(arg);
         if (m.matches()) return true;
         else if (arg.toUpperCase().startsWith("qty:"))
