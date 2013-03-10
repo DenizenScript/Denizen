@@ -91,7 +91,7 @@ public class TeleportCommand extends AbstractCommand {
             else if (aH.matchesLocation(arg))
                 teleportLocation = aH.getLocationFrom(arg);
 
-            else if (aH.matchesValueArg("TARGETS", arg, ArgumentType.Custom)) {
+            else if (aH.matchesValueArg("TARGETS, TARGET", arg, ArgumentType.Custom)) {
                 teleportPlayer = false;
                 for (String target : aH.getListFrom(arg)) {
                     if (CitizensAPI.getNPCRegistry().getNPC(aH.getLivingEntityFrom(target)) != null) {
