@@ -245,6 +245,11 @@ public class HealthTrait extends Trait implements Listener {
         DenizenAPI.getDenizenNPC(npc).action("death", player);
         DenizenAPI.getDenizenNPC(npc).action("death by " + deathCause, player);
 
+        // One of the actions above may have removed the NPC, so check if the
+        // NPC's entity still exists before proceeding
+        if (npc.getBukkitEntity() == null)
+        	return;
+        
         loc = aH.getLocationFrom(DenizenAPI.getCurrentInstance().tagManager()
                 .tag(null, DenizenAPI.getDenizenNPC(npc), respawnLocation, false));
         if (loc == null) loc = npc.getBukkitEntity().getLocation();

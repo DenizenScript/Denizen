@@ -286,7 +286,8 @@ public class aH {
                 else dB.echoError("Invalid entity! '" + m.group(1) + "' could not be found.");
             }
 
-            else if (m.group(1).toUpperCase().startsWith("NPC.")) {
+            else if (m.group(1).toUpperCase().startsWith("NPC.") ||
+            		 m.group(1).toUpperCase().startsWith("NPCID.")) {
                 LivingEntity returnable = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(m.group(1).split("\\.")[1])).getBukkitEntity();
                 if (returnable != null) return returnable;
                 else dB.echoError("Invalid NPC! '" + m.group(1) + "' could not be found.");

@@ -173,9 +173,9 @@ public class Denizen extends JavaPlugin {
 		
         // Warn if configuration is outdated / too new
         if (!getConfig().isSet("Version") || !getConfig().getString("Version", "0").equalsIgnoreCase(configVersion)) {
-            dB.echoError("Your Denizen config file is from a different version.");
-            dB.echoError("Some settings will not be available unless you generate a new config file.");
-            dB.echoError("This is easily done by deleting the current config.yml file in the Denizen folder.");
+            dB.echoError("Your Denizen config file is from a different version. " +
+            			 "Some settings will not be available unless you generate a new one. " +
+            			 "This is easily done by deleting the current config.yml file in the Denizen folder.");
         }
         
         ScriptHelper.reloadScripts();
