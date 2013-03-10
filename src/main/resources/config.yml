@@ -19,6 +19,7 @@ Traits:
 
 Triggers:
   Chat:
+    Enabled: true
     Cooldown: 2s
     Range: 3
     Overhearing Range: 4
@@ -33,14 +34,18 @@ Triggers:
       If Triggers Failed: false
       If NPC Uninteractable: true
   Click:
+    Enabled: true
     Cooldown: 2s
     Allows Left Click: false
   Damage:
+    Enabled: false
     Cooldown: 0.5s
   Location:
+    Enabled: false
     Cooldown: 5s
     Range: 2
   Proximity:
+    Enabled: false
     Cooldown: 1s
     Range: 10
 

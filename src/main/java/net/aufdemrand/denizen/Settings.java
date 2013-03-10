@@ -67,13 +67,24 @@ public class Settings {
 	
 	/*
 	
-	# Whether NPCs with the Health trait should respawn after being killed
+	# How long it should take for NPCs with the Health trait to respawn
     
 	*/
 	
 	public static String HealthTraitRespawnDelay() {
 		return DenizenAPI.getCurrentInstance().getConfig()
                .getString("Traits.Health.Respawn.Delay", "10s");
+	}
+	
+	/*
+	
+	# Whether a certain trigger is enabled by default or not
+     
+	*/
+	
+	public static boolean TriggerEnabled(String triggerName) {
+		return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Triggers." + triggerName + ".Enabled", true);
 	}
 	
 	/*
@@ -166,7 +177,7 @@ public class Settings {
 
     # Prerequisites for triggering a Chat Trigger
 
-    */    
+    */
 
     public static boolean ChatMustSeeNPC() {
         return DenizenAPI.getCurrentInstance().getConfig()
@@ -183,7 +194,7 @@ public class Settings {
     # Circumstances under which a player's Chat Trigger input should
     # appear in the global chat
 
-    */  
+    */
     
     public static boolean ChatGloballyIfFailedChatTriggers() {
         return DenizenAPI.getCurrentInstance().getConfig()
