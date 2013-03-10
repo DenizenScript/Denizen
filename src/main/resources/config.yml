@@ -1,79 +1,55 @@
-# The current configuration version. You should not change this
-# value. Denizen will check against the latest internal version
-# and warn you if your configuration file is outdated.
-Version: 2013-03-09
+# Whether debug information about Denizen should appear in the
+# server console
 
-# Whether the Health trait, which lets NPCs take damage and
-# activates their "on death" action, should be enabled on them 
-# by default
-Health Trait Enabled by Default: false
+Debug:
+  Show: true
 
-# Whether NPCs with the Health trait should respawn
-Health Trait Respawn Enabled: true
+# The default options for new Denizens
 
-# How long it should take for a dead NPC with the Health trait
-# to respawn by default
-Health Trait Respawn Delay: 10s
+Scripts:
+  Queue Speed: 0.5s
+  Load Scripts in Subfolders: true
 
-# Whether Denizen debug information should be shown in the server
-# console or not.
-Show Debug: true
+Traits:
+  Health:
+    Enabled: false
+    Respawn:
+      Enabled: true
+      Delay: 10s
 
-# The default number of ticks between commands in interact scripts
-# Recommended values are between 5 and 15
-Interact Delay in Ticks: 7
+Triggers:
+  Chat:
+    Cooldown: 2s
+    Range: 3
+    Overhearing Range: 4
+    Prerequisites:
+      Must Be Able to See NPC: true
+      Must Be Looking in Direction of NPC: true
+    Formats:
+      Player to NPC: "You -> <npc.name.nickname>: <text>"
+      Player to NPC Overheard: "<player.name> -> <npc.name.nickname>: <text>"
+    Appears Globally:
+      If Triggers Missing: true
+      If Triggers Failed: false
+      If NPC Uninteractable: true
+  Click:
+    Cooldown: 2s
+    Allows Left Click: false
+  Damage:
+    Cooldown: 0.5s
+  Location:
+    Cooldown: 5s
+    Range: 2
+  Proximity:
+    Cooldown: 1s
+    Range: 10
 
-# The number of seconds it takes for an NPC on which the Engage
-# command has been used to automatically Disengage
-Engage Timeout in Seconds: 150
+Commands:
+  Engage:
+    Timeout: 150s
 
-# Default values for triggers
+# The version of this configuration file, used to check if your
+# configuration file is outdated or too new
 
-Click Trigger Default Cooldown in Seconds: 2.0
-
-Damage Trigger Default Cooldown in Seconds: 0.5
-
-Proximity Trigger Default Cooldown in Seconds: 1.0
-Proximity Trigger Default Range in Blocks: 10
-
-Location Trigger Default Cooldown in Seconds: 5.0
-Location Trigger Default Range in Blocks: 2
-
-Chat Trigger Default Cooldown in Seconds: 2.0
-Chat Trigger Default Range in Blocks: 3
-
-# Whether the Click Trigger can be activated with a left click
-# when the Damage Trigger of the NPC is disabled
-Click Trigger Allows Left Click: false
-
-# The format in which a message from a player to an NPC appears
-# to the player
-Chat to NPC Format: "You -> <npc.name.nickname>: <text>"
-
-# The format in which a message from a player to an NPC appears
-# to bystander players
-Chat to NPC Bystanders Format: "<player.name> -> <npc.name.nickname>: <text>"
-# The distance from which a message from a player to an NPC
-# appears to bystander players
-Chat to NPC Bystanders Range: 4
-
-# Whether a player can chat with an NPC only when there are no
-# blocks between them
-Chat Only When Having Line of Sight to NPC: true
-# Whether a player can chat with an NPC only when looking in
-# the NPC's direction
-Chat Only When Looking at NPC: true
-
-# Whether chatting with an NPC without matching a chat trigger
-# will make the text appear in the global chat
-Chat Globally If Failed Chat Triggers: false
-# Whether chatting with an NPC that does not have a chat trigger
-# will make the text appear in the global chat
-Chat Globally If No Chat Triggers: true
-# Whether chatting with an NPC that isn't interactable will
-# make the text appear in the global chat 
-Chat Globally If Not Interactable: false
-
-# Whether scripts should also be detected when they are placed
-# inside subfolders of the scripts folder
-Load Scripts in Subfolders: true
+Config:
+  Version: 1

@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
@@ -31,31 +32,31 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     public class TriggerOptions { 
         public boolean ENABLED_BY_DEFAULT = true; 
         public double DEFAULT_COOLDOWN = -1;
-        public int DEFAULT_RADIUS = -1;
+        public double DEFAULT_RADIUS = -1;
         public CooldownType DEFAULT_COOLDOWN_TYPE = CooldownType.NPC;
 
         public TriggerOptions() { }
         
-        public TriggerOptions(boolean enabledByDefault, double defaultCooldown) {
+        public TriggerOptions(boolean enabledByDefault, String defaultCooldown) {
             this.ENABLED_BY_DEFAULT = enabledByDefault;
-            this.DEFAULT_COOLDOWN = defaultCooldown;
+            this.DEFAULT_COOLDOWN = Duration.valueOf(defaultCooldown).getSeconds();
         }
         
-        public TriggerOptions(boolean enabledByDefault, double defaultCooldown, CooldownType defaultCooldownType) {
+        public TriggerOptions(boolean enabledByDefault, String defaultCooldown, CooldownType defaultCooldownType) {
             this.ENABLED_BY_DEFAULT = enabledByDefault;
-            this.DEFAULT_COOLDOWN = defaultCooldown;
+            this.DEFAULT_COOLDOWN = Duration.valueOf(defaultCooldown).getSeconds();
             this.DEFAULT_COOLDOWN_TYPE = defaultCooldownType;
         }
         
-        public TriggerOptions(boolean enabledByDefault, double defaultCooldown, int defaultRadius) {
+        public TriggerOptions(boolean enabledByDefault, String defaultCooldown, double defaultRadius) {
             this.ENABLED_BY_DEFAULT = enabledByDefault;
-            this.DEFAULT_COOLDOWN = defaultCooldown;
+            this.DEFAULT_COOLDOWN = Duration.valueOf(defaultCooldown).getSeconds();
             this.DEFAULT_RADIUS = defaultRadius;
         }
         
-        public TriggerOptions(boolean enabledByDefault, double defaultCooldown, int defaultRadius, CooldownType defaultCooldownType) {
+        public TriggerOptions(boolean enabledByDefault, String defaultCooldown, double defaultRadius, CooldownType defaultCooldownType) {
             this.ENABLED_BY_DEFAULT = enabledByDefault;
-            this.DEFAULT_COOLDOWN = defaultCooldown;
+            this.DEFAULT_COOLDOWN = Duration.valueOf(defaultCooldown).getSeconds();
             this.DEFAULT_RADIUS = defaultRadius;
             this.DEFAULT_COOLDOWN_TYPE = defaultCooldownType;
         }
@@ -121,13 +122,13 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         return true;
     }
 
-    public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown, CooldownType defaultCooldownType) {
+    public AbstractTrigger withOptions(boolean enabledByDefault, String defaultCooldown, CooldownType defaultCooldownType) {
         this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultCooldownType);
         return this;
     }
 
-	public AbstractTrigger withOptions(boolean enabledByDefault, double defaultCooldown,
-                                       int defaultRadius, CooldownType defaultCooldownType) {
+	public AbstractTrigger withOptions(boolean enabledByDefault, String defaultCooldown,
+                                       double defaultRadius, CooldownType defaultCooldownType) {
         this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultRadius, defaultCooldownType);
         return this;
     }

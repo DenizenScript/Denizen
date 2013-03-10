@@ -103,7 +103,7 @@ public class TriggerTrait extends Trait implements Listener {
         radius.put(triggerName.toUpperCase(), value);
     }
 
-    public int getRadius(String triggerName) {
+    public double getRadius(String triggerName) {
         if (radius.containsKey(triggerName.toUpperCase()))
             return radius.get(triggerName.toUpperCase());
         else return DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().DEFAULT_RADIUS;

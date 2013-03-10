@@ -59,9 +59,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Should we check 'line of sight'? Players cannot talk to NPCs through walls
         // if enabled. Should the Player chat only when looking at the NPC? This may
         // reduce accidental chats with NPCs.
-        if (Settings.ChatOnlyWhenHavingLineOfSightToNPC())
+        if (Settings.ChatMustSeeNPC())
             if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return;
-        if (Settings.ChatOnlyWhenLookingAtNPC())
+        if (Settings.ChatMustLookAtNPC())
             if (!Utilities.isFacingEntity(event.getPlayer(), npc.getEntity(), 45)) return;
 
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
@@ -69,7 +69,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
          if (!npc.getTriggerTrait().trigger(this, event.getPlayer())) {
             // If the NPC is not interactable, Settings may allow the chat to filter
             // through. Check the Settings if this is enabled.
-            if (Settings.ChatGloballyIfNotInteractable()) {
+            if (Settings.ChatGloballyIfUninteractable()) {
                 dB.echoDebug (ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
                         + "The NPC is currently cooling down or engaged.");
                 return;
@@ -150,14 +150,14 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
             event.setCancelled(true);
-            Utilities.talkToNPC(replacementText, event.getPlayer(), npc, Settings.ChatToNpcBystandersRange());
+            Utilities.talkToNPC(replacementText, event.getPlayer(), npc, Settings.ChatToNpcOverhearingRange());
             parse(npc, event.getPlayer(), script, id);
 
         } else {
 
             if (!Settings.ChatGloballyIfFailedChatTriggers ()) {
                 event.setCancelled(true);
-                Utilities.talkToNPC(event.getMessage(), event.getPlayer(), npc, Settings.ChatToNpcBystandersRange());
+                Utilities.talkToNPC(event.getMessage(), event.getPlayer(), npc, Settings.ChatToNpcOverhearingRange());
                 return;
             }
 

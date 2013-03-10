@@ -169,9 +169,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 // Set default ranges with information from the TriggerTrait. This allows per-npc overrides and will
                 // automatically check the config for defaults.
                 //
-                int	entryRadius = npc.getTriggerTrait().getRadius(name);
-                int exitRadius = npc.getTriggerTrait().getRadius(name);
-                int moveRadius = npc.getTriggerTrait().getRadius(name);
+                double entryRadius = npc.getTriggerTrait().getRadius(name);
+                double exitRadius = npc.getTriggerTrait().getRadius(name);
+                double moveRadius = npc.getTriggerTrait().getRadius(name);
 
 
                 //

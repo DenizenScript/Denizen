@@ -74,7 +74,8 @@ public class ScriptQueue implements Listener {
             scriptQueue = _queues.get(id.toUpperCase());
             // If not, create a new one.
         else {
-            scriptQueue = new ScriptQueue(id, Settings.InteractDelayInTicks());
+            scriptQueue = new ScriptQueue(id,
+            		Duration.valueOf(Settings.ScriptQueueSpeed()).getTicksAsInt());
         }
         // Return the queue
         return scriptQueue;

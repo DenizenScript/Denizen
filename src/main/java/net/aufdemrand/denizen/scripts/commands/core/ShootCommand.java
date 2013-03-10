@@ -171,9 +171,9 @@ public class ShootCommand extends AbstractCommand {
         				if (scriptEntry.getObject("script") != null)
         				{
                             ((TaskScriptContainer) ((Script) scriptEntry.getObject("script")).
-                            		getContainer()).setSpeed(new Duration((long)
-                            		Settings.InteractDelayInTicks())).runTaskScript(
-                            		scriptEntry.getPlayer(), scriptEntry.getNPC(), null);
+                            		getContainer()).setSpeed(new Duration(
+                            		Duration.valueOf(Settings.ScriptQueueSpeed()).getSeconds()))
+                            		.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), null);
         				}
         				if ((Boolean) scriptEntry.getObject("fireworks"))
         				{

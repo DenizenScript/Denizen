@@ -71,11 +71,11 @@ public class Utilities {
      * @param range  the range, in blocks, that 'bystanders' will hear he chat
      *
      */
-    public static void talkToNPC(String message, Player player, dNPC npc, int range) {
+    public static void talkToNPC(String message, Player player, dNPC npc, double range) {
         // Get formats from Settings, and fill in <TEXT>
         String talkFormat = Settings.ChatToNpcFormat()
                 .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
-        String bystanderFormat = Settings.ChatToNpcBystandersFormat()
+        String bystanderFormat = Settings.ChatToNpcOverheardFormat()
                 .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
 
         // Fill in tags
