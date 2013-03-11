@@ -4,11 +4,11 @@
 Debug:
   Show: true
 
-# The default options for new Denizens
-
 Scripts:
   Queue Speed: 0.5s
   Load Scripts in Subfolders: true
+
+# The default options for new Denizens
 
 Traits:
   Health:

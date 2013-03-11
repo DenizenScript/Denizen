@@ -137,7 +137,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"NEW", "new itemstack [item:material] (qty:#)", 2);
 
         registerCoreMember(PoseCommand.class,
-                "POSE", "pose [id:name]", 1);
+                "POSE", "pose (player) [id:name]", 1);
 		
         registerCoreMember(PlaySoundCommand.class, 
         		"PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);

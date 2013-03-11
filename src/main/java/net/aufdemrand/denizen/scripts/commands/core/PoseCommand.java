@@ -1,12 +1,17 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.trait.Poses;
 
 /**
@@ -20,12 +25,14 @@ import net.citizensnpcs.trait.Poses;
  */
 public class PoseCommand extends AbstractCommand {
 
+    private enum TargetType { NPC, PLAYER }
     private enum Action { ADD, REMOVE, ASSUME}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         Action action = Action.ASSUME;
+        TargetType targetType = TargetType.NPC;
         String id = null;
 
         // Parse Arguments
@@ -35,13 +42,20 @@ public class PoseCommand extends AbstractCommand {
 
             } else if (aH.matchesValueArg("ID", arg, aH.ArgumentType.String)) {
                 id = aH.getStringFrom(arg);
+            
+            } else if (aH.matchesArg("PLAYER", arg)) {
+                targetType = TargetType.PLAYER;
+                    dB.echoDebug("Setting pose on PLAYER!");
 
             } else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT);
 
         }
 
+        // If TARGET is NPC/PLAYER and no NPC/PLAYER available, throw exception.
+        if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
+        else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
         scriptEntry.addObject("action", action)
-                .addObject("id", id);
+                .addObject("id", id).addObject("target", targetType);
     }
 
     @SuppressWarnings("incomplete-switch")
@@ -50,19 +64,33 @@ public class PoseCommand extends AbstractCommand {
         // Get objects
         Action action = (Action) scriptEntry.getObject("action");
         String id = (String) scriptEntry.getObject("id");
+        TargetType target = (TargetType) scriptEntry.getObject("target");
 
         // Report to dB
         dB.report(getName(),
-                aH.debugObj("NPC", scriptEntry.getNPC().toString())
+                aH.debugObj(target.toString(), scriptEntry.getNPC().toString())
                         + aH.debugObj("Action", action.toString())
                         + aH.debugObj("Id", id));
-
+        
         dNPC npc = scriptEntry.getNPC();
 
         switch (action) {
 
             case ASSUME:
-                npc.getCitizen().getTrait(Poses.class).assumePose(id);
+            	
+            	if (target.name() == "NPC")
+            		npc.getCitizen().getTrait(Poses.class).assumePose(id);
+            	else
+            	{
+            		Player player = scriptEntry.getPlayer();
+            		Location location = player.getLocation();
+            		location.setYaw(npc.getCitizen().getTrait(Poses.class).getAnchor(id).getYaw());
+            		location.setPitch(npc.getCitizen().getTrait(Poses.class).getAnchor(id).getPitch());
+            		
+            		// The only way to change a player's yaw and pitch in Bukkit
+            		// is to use teleport on him/her
+            		player.teleport(location);
+            	}
                 return;
         }
 

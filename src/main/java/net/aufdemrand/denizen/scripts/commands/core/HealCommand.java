@@ -43,7 +43,7 @@ public class HealCommand extends AbstractCommand {
      *
      */
 
-    private enum TargetType { NPC, PLAYER } 
+    private enum TargetType { NPC, PLAYER }
 
     private int amount;
     private LivingEntity target;
@@ -68,7 +68,7 @@ public class HealCommand extends AbstractCommand {
 
             }   else if (aH.matchesValueArg("target", arg, ArgumentType.String)) {
                 try {
-                    targetType = TargetType.valueOf(aH.getStringFrom(arg));
+                    targetType = TargetType.valueOf(aH.getStringFrom(arg).toUpperCase());
                     dB.echoDebug("TARGET to HEAL: " + targetType.name());
                 } catch (Exception e) { dB.echoError("Invalid TARGET! Valid: NPC, PLAYER"); }
 
