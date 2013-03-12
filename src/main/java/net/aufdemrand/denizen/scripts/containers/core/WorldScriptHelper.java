@@ -157,6 +157,7 @@ public class WorldScriptHelper implements Listener {
                 if (doEvent("player swings item in air", null, event.getPlayer(), context))
                     event.setCancelled(true);
             }
+
             if (doEvent("player swings arm in air", null, event.getPlayer(), context))
                 event.setCancelled(true);
         }
