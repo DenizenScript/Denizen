@@ -31,7 +31,7 @@ public class HealthTrait extends Trait implements Listener {
     private int currenthealth = 20;
 
     @Persist("animatedeath")
-    private boolean animatedeath = true;
+    private boolean animatedeath = Settings.HealthTraitAnimatedDeathEnabled();
     @Persist("animatedeathdelayinseconds")
     private String animationDelay = "3s";
 

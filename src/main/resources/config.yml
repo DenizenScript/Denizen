@@ -16,6 +16,8 @@ Traits:
     Respawn:
       Enabled: true
       Delay: 10s
+    Animated Death:
+      Enabled: true
 
 Triggers:
   Chat:
@@ -57,4 +59,4 @@ Commands:
 # configuration file is outdated or too new
 
 Config:
-  Version: 1
+  Version: 2

@@ -67,6 +67,17 @@ public class Settings {
 	
 	/*
 	
+	# Whether NPCs with the Health trait should have a death animation
+    
+	*/
+	
+	public static boolean HealthTraitAnimatedDeathEnabled() {
+		return DenizenAPI.getCurrentInstance().getConfig()
+               .getBoolean("Traits.Health.Animated Death.Enabled", true);
+	}
+	
+	/*
+	
 	# How long it should take for NPCs with the Health trait to respawn
     
 	*/

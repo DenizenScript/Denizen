@@ -90,7 +90,9 @@ public class TakeCommand extends AbstractCommand{
 					scriptEntry.getPlayer().setItemInHand(newHandItem);
 				} else {
 					// amount is less than what's in hand, need to make a new itemstack of what's left...
-					newHandItem = new ItemStack(scriptEntry.getPlayer().getItemInHand().getType(), inHandAmt - theAmount, scriptEntry.getPlayer().getItemInHand().getData().getData());
+					newHandItem = new ItemStack(scriptEntry.getPlayer().getItemInHand().getType(),
+							inHandAmt - theAmount, scriptEntry.getPlayer().getItemInHand().getData().getData());
+					newHandItem.setItemMeta(scriptEntry.getPlayer().getItemInHand().getItemMeta());
 					scriptEntry.getPlayer().setItemInHand(newHandItem);
 					scriptEntry.getPlayer().updateInventory();
 				}
