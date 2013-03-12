@@ -262,21 +262,21 @@ public class PlayerTags implements Listener {
 
 
         } else if (type.equalsIgnoreCase("LOCATION")) {
-            event.setReplaced(p.getLocation().getBlockX()
-                    + "," + p.getLocation().getBlockY()
-                    + "," + p.getLocation().getBlockZ()
+            event.setReplaced(p.getLocation().getX()
+                    + "," + p.getLocation().getY()
+                    + "," + p.getLocation().getZ()
                     + "," + p.getWorld().getName());
             if (subType.equalsIgnoreCase("FORMATTED"))
-                event.setReplaced("X '" + p.getLocation().getBlockX()
-                        + "', Y '" + p.getLocation().getBlockY()
-                        + "', Z '" + p.getLocation().getBlockZ()
+                event.setReplaced("X '" + p.getLocation().getX()
+                        + "', Y '" + p.getLocation().getY()
+                        + "', Z '" + p.getLocation().getZ()
                         + "', in world '" + p.getWorld().getName() + "'");
             else if (subType.equalsIgnoreCase("X"))
-                event.setReplaced(String.valueOf(p.getLocation().getBlockX()));
+                event.setReplaced(String.valueOf(p.getLocation().getX()));
             else if (subType.equalsIgnoreCase("Y"))
-                event.setReplaced(String.valueOf(p.getLocation().getBlockY()));
+                event.setReplaced(String.valueOf(p.getLocation().getY()));
             else if (subType.equalsIgnoreCase("Z"))
-                event.setReplaced(String.valueOf(p.getLocation().getBlockZ()));
+                event.setReplaced(String.valueOf(p.getLocation().getZ()));
             else if (subType.equalsIgnoreCase("WORLD"))
                 event.setReplaced(p.getWorld().getName());
             else if (subType.equalsIgnoreCase("CURSOR_ON")) {
@@ -291,14 +291,14 @@ public class PlayerTags implements Listener {
                 else
                     event.setReplaced(p.getLocation().add(0, -1, 0).getBlock().getType().name());
             else if (subType.equalsIgnoreCase("WORLD_SPAWN"))
-                event.setReplaced(p.getWorld().getSpawnLocation().getBlockX()
-                        + "," + p.getWorld().getSpawnLocation().getBlockY()
-                        + "," + p.getWorld().getSpawnLocation().getBlockZ()
+                event.setReplaced(p.getWorld().getSpawnLocation().getX()
+                        + "," + p.getWorld().getSpawnLocation().getY()
+                        + "," + p.getWorld().getSpawnLocation().getZ()
                         + "," + p.getWorld().getName());
             else if (subType.equalsIgnoreCase("BED_SPAWN") && p.getBedSpawnLocation() != null)
-                event.setReplaced(p.getBedSpawnLocation().getBlockX()
-                        + "," + p.getBedSpawnLocation().getBlockY()
-                        + "," + p.getBedSpawnLocation().getBlockZ()
+                event.setReplaced(p.getBedSpawnLocation().getX()
+                        + "," + p.getBedSpawnLocation().getY()
+                        + "," + p.getBedSpawnLocation().getZ()
                         + "," + p.getWorld().getName());
 
 

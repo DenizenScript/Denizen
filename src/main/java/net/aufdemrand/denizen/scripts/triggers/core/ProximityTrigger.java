@@ -269,9 +269,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     private boolean isCloseEnough(Player player, dNPC npc) {
         Location pLoc = player.getLocation();
         Location nLoc = npc.getLocation();
-        if (Math.abs(pLoc.getBlockX() - nLoc.getBlockX()) > maxProximityDistance) return false;
-        if (Math.abs(pLoc.getBlockY() - nLoc.getBlockY()) > maxProximityDistance) return false;
-        if (Math.abs(pLoc.getBlockZ() - nLoc.getBlockZ()) > maxProximityDistance) return false;
+        if (Math.abs(pLoc.getX() - nLoc.getX()) > maxProximityDistance) return false;
+        if (Math.abs(pLoc.getY() - nLoc.getY()) > maxProximityDistance) return false;
+        if (Math.abs(pLoc.getZ() - nLoc.getZ()) > maxProximityDistance) return false;
         return true;
     }
 

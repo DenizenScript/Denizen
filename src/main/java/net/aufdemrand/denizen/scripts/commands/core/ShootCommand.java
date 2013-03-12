@@ -157,8 +157,8 @@ public class ShootCommand extends AbstractCommand {
         				entity.setVelocity(v3);
         				addRuns();
         						
-        				if (Math.abs(v2.getBlockX() - v1.getBlockX()) < 2 && Math.abs(v2.getBlockY() - v1.getBlockY()) < 2
-        				&& Math.abs(v2.getBlockZ() - v1.getBlockZ()) < 2)
+        				if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
+        				&& Math.abs(v2.getZ() - v1.getZ()) < 2)
         				{
         					setRuns(40);
         				}

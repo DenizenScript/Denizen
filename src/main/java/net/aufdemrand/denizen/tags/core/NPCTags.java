@@ -63,29 +63,29 @@ public class NPCTags implements Listener {
 
         } else if (type.equals("LOCATION")) {
             Location loc = n.getLocation();
-            event.setReplaced(loc.getBlockX()
-                    + "," + loc.getBlockY()
-                    + "," + loc.getBlockZ()
+            event.setReplaced(loc.getX()
+                    + "," + loc.getY()
+                    + "," + loc.getZ()
                     + "," + n.getWorld().getName());
             if (subType.equals("FORMATTED"))
-                event.setReplaced("X '" + loc.getBlockX()
-                        + "', Y '" + loc.getBlockY()
-                        + "', Z '" + loc.getBlockZ()
+                event.setReplaced("X '" + loc.getX()
+                        + "', Y '" + loc.getY()
+                        + "', Z '" + loc.getZ()
                         + "', in world '" + n.getWorld().getName() + "'");
             else if (subType.equals("X"))
-                event.setReplaced(String.valueOf(n.getLocation().getBlockX()));
+                event.setReplaced(String.valueOf(n.getLocation().getX()));
             else if (subType.equals("Y"))
-                event.setReplaced(String.valueOf(n.getLocation().getBlockY()));
+                event.setReplaced(String.valueOf(n.getLocation().getY()));
             else if (subType.equals("Z"))
-                event.setReplaced(String.valueOf(n.getLocation().getBlockZ()));
+                event.setReplaced(String.valueOf(n.getLocation().getZ()));
             else if (subType.equals("STANDING_ON"))
                 event.setReplaced(loc.add(0, -1, 0).getBlock().getType().name());
             else if (subType.equals("STANDING_ON_DISPLAY"))
             	event.setReplaced(n.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
             else if (subType.equals("WORLD_SPAWN"))
-                event.setReplaced(n.getWorld().getSpawnLocation().getBlockX()
-                        + "," + n.getWorld().getSpawnLocation().getBlockY()
-                        + "," + n.getWorld().getSpawnLocation().getBlockZ()
+                event.setReplaced(n.getWorld().getSpawnLocation().getX()
+                        + "," + n.getWorld().getSpawnLocation().getY()
+                        + "," + n.getWorld().getSpawnLocation().getZ()
                         + "," + n.getWorld().getName());
             else if (subType.equals("WORLD"))
                 event.setReplaced(n.getWorld().getName());

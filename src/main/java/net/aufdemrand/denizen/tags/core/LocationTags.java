@@ -99,9 +99,9 @@ public class LocationTags implements Listener {
         }
         
         else if (type.equals("FORMATTED"))       
-            event.setReplaced("X '" + fromLocation.getBlockX()
-                    + "', Y '" + fromLocation.getBlockY()
-                    + "', Z '" + fromLocation.getBlockZ()
+            event.setReplaced("X '" + fromLocation.getX()
+                    + "', Y '" + fromLocation.getY()
+                    + "', Z '" + fromLocation.getZ()
                     + "', in world '" + fromLocation.getWorld().getName() + "'");
         
         else if (type.equals("IS_LIQUID"))
@@ -138,13 +138,13 @@ public class LocationTags implements Listener {
         	event.setReplaced(fromLocation.getWorld().getName());
         
         else if (type.equals("X"))         
-        	event.setReplaced(String.valueOf(fromLocation.getBlockX()));
+        	event.setReplaced(String.valueOf(fromLocation.getX()));
         
         else if (type.equals("Y"))         
-        	event.setReplaced(String.valueOf(fromLocation.getBlockY()));
+        	event.setReplaced(String.valueOf(fromLocation.getY()));
         
         else if (type.equals("Z"))          
-        	event.setReplaced(String.valueOf(fromLocation.getBlockZ()));
+        	event.setReplaced(String.valueOf(fromLocation.getZ()));
 
         else if (type.equals("BLOCK")) {
             if (subType.equals("BELOW")) {

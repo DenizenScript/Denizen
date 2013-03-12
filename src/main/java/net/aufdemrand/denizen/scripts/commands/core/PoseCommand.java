@@ -54,25 +54,25 @@ public class PoseCommand extends AbstractCommand {
         // If TARGET is NPC/PLAYER and no NPC/PLAYER available, throw exception.
         if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
         else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
-        scriptEntry.addObject("action", action)
-                .addObject("id", id).addObject("target", targetType);
+        scriptEntry.addObject("target", targetType)
+        		.addObject("action", action).addObject("id", id);
     }
 
     @SuppressWarnings("incomplete-switch")
 	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
+
+        TargetType target = (TargetType) scriptEntry.getObject("target");
+        dNPC npc = scriptEntry.getNPC();
         Action action = (Action) scriptEntry.getObject("action");
         String id = (String) scriptEntry.getObject("id");
-        TargetType target = (TargetType) scriptEntry.getObject("target");
 
         // Report to dB
         dB.report(getName(),
-                aH.debugObj(target.toString(), scriptEntry.getNPC().toString())
+                aH.debugObj(target.toString(), npc.toString())
                         + aH.debugObj("Action", action.toString())
                         + aH.debugObj("Id", id));
-        
-        dNPC npc = scriptEntry.getNPC();
 
         switch (action) {
 

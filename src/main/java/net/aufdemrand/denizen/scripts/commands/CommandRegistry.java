@@ -119,7 +119,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"LISTEN", "listen [listener_type] [id:listener_id] (...)  +--> see documentation - http://bit.ly/XJlKwm", 2);
         
         registerCoreMember(LookCommand.class, 
-        		"LOOK", "look [location:x,y,z,world]", 1);
+        		"LOOK", "look (player) [location:x,y,z,world]", 1);
         
         registerCoreMember(LookcloseCommand.class, 
         		"LOOKCLOSE", "lookclose [toggle:true|false]", 1);

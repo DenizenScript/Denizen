@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.npc.dNPC;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -11,25 +12,22 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.citizensnpcs.trait.LookClose;
+import net.citizensnpcs.trait.Poses;
+import net.citizensnpcs.util.Util;
 
 /**
- * Controls Denizen's heads.
+ * Controls Denizens' heads.
  * 
  * @author Jeremy Schroeder
  *
  */
 
-enum Direction { UP, DOWN, LEFT, RIGHT, NORTH, SOUTH, EAST, WEST, BACK, AT, CLOSE, AWAY }
-
 public class LookCommand extends AbstractCommand {
 
 	// TODO: Finish
-	
-	@Override
-	public void onEnable() {
-		//nothing to do here
-	}
-	
+		
 	/* LOOK [[DIRECTION]|[BOOKMARK]:'LOCATION BOOKMARK'|[CLOSE|AWAY]]*/
 
 	/* Arguments: [] - Required, () - Optional 
@@ -44,23 +42,19 @@ public class LookCommand extends AbstractCommand {
 	 * (DURATION:#) Reverts to the previous head position after # amount of seconds.
 	 */
 
-	// Initialize variables
+    private enum TargetType { NPC, PLAYER }
+    private enum Direction { UP, DOWN, LEFT, RIGHT, NORTH, SOUTH, EAST, WEST, BACK, AT, CLOSE, AWAY }
 
-	Integer duration = null;
-	Direction direction = null;
-	Location location = null;
-	LivingEntity theEntity = null;
-	dNPC theDenizen = null;
-	
-	// private Map<Integer, Integer> taskMap = new ConcurrentHashMap<Integer, Integer>();
-	
-	
 	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+		
+	    TargetType targetType = TargetType.NPC;
+		Integer duration = null;
+		Direction direction = null;
+		Location location = null;
+		
 		for (String arg : scriptEntry.getArguments()) {
-			
-			theDenizen = scriptEntry.getNPC();
 			
 			// If argument is a duration
 			if (aH.matchesDuration(arg)) {
@@ -68,6 +62,11 @@ public class LookCommand extends AbstractCommand {
 				dB.echoDebug("...look duration set to '%s'.", arg);
 				continue;
 			}
+			
+        	else if (aH.matchesArg("PLAYER", arg)) {
+        		targetType = TargetType.PLAYER;
+                dB.echoDebug("... will affect the player!");
+        	}
 			
 			// If argument is a LOCATION modifier
 			else if (aH.matchesLocation(arg)) {
@@ -84,26 +83,40 @@ public class LookCommand extends AbstractCommand {
 					}
 				}
 			}
-		}		
+		}
+		
+        // If TARGET is NPC/PLAYER and no NPC/PLAYER available, throw exception.
+        if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
+        else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+        scriptEntry.addObject("target", targetType)
+        		.addObject("location", location);
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-		/*
-		 * This is only a temporary fix. Someone requested 
-		 * the ability to look at a specfic location. Feel
-		 * free to erase anything to accomodate the proper
-		 * implementation of this command.
-		 *                                         - Jeebs
-		 */
 		
-		if (location != null) {
-			/*
-			 * Ideally this turns lookclose off first,
-			 * however I couldnt figure our how D:
-			 */
-			Utilities.faceLocation(theDenizen.getCitizen().getBukkitEntity(), location);
-		}
+        TargetType target = (TargetType) scriptEntry.getObject("target");
+        Location location = (Location) scriptEntry.getObject("location");
+        LivingEntity entity = null;
+		
+    	if (target.name() == "NPC")
+    	{
+    		entity = scriptEntry.getNPC().getCitizen().getBukkitEntity();
+    		
+    		// Turn off the NPC's lookclose
+    		scriptEntry.getNPC().getCitizen().getTrait(LookClose.class).lookClose(false);
+    	}
+    	else
+    	{
+    		entity = scriptEntry.getPlayer();
+    	}
+
+    	if (location != null)
+    	{
+    		Utilities.faceLocation(entity, location);
+    	}
+    	
+        
 	}
 
 
@@ -243,33 +256,6 @@ public class LookCommand extends AbstractCommand {
 
 	}
 
-
-
-	// Thanks fullwall
-
-	private void faceEntity(Entity from, Entity at) {
-		if (from.getWorld() != at.getWorld())
-			return;
-		Location loc = from.getLocation();
-
-		double xDiff = at.getLocation().getX() - loc.getX();
-		double yDiff = at.getLocation().getY() - loc.getY();
-		double zDiff = at.getLocation().getZ() - loc.getZ();
-
-		double distanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
-		double distanceY = Math.sqrt(distanceXZ * distanceXZ + yDiff * yDiff);
-
-		double yaw = (Math.acos(xDiff / distanceXZ) * 180 / Math.PI);
-		double pitch = (Math.acos(yDiff / distanceY) * 180 / Math.PI) - 90;
-		if (zDiff < 0.0) {
-			yaw = yaw + (Math.abs(180 - yaw) * 2);
-		}
-
-		EntityLiving handle = ((CraftLivingEntity) from).getHandle();
-		handle.yaw = (float) yaw - 90;
-		handle.pitch = (float) pitch;
-		handle.az = handle.yaw;
-	}
 */
 }
 

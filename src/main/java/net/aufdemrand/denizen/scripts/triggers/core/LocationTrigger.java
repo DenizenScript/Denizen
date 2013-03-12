@@ -20,22 +20,22 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 	// 
 	private class Trigger {
 
-		private int x;
-		private int y;
-		private int z;
+		private double x;
+		private double y;
+		private double z;
 		private String world;
 		
 		public Trigger(Location location) {
-			x = location.getBlockX();
-			y = location.getBlockY();
-			z = location.getBlockZ();
+			x = location.getX();
+			y = location.getY();
+			z = location.getZ();
 			world = location.getWorld().getName();
 		}
 
 		public boolean matches(Location location) {
-			if (Math.abs(location.getBlockX() - x) > maximumLocationDistanceSetting()) return false;
-			if (Math.abs(location.getBlockY() - y) > maximumLocationDistanceSetting()) return false;
-			if (Math.abs(location.getBlockZ() - z) > maximumLocationDistanceSetting()) return false;
+			if (Math.abs(location.getX() - x) > maximumLocationDistanceSetting()) return false;
+			if (Math.abs(location.getY() - y) > maximumLocationDistanceSetting()) return false;
+			if (Math.abs(location.getZ() - z) > maximumLocationDistanceSetting()) return false;
 			if (!location.getWorld().getName().equals(world)) return false;
 			return true;
 		}

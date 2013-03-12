@@ -186,16 +186,16 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
 
     @Override
     public String debug() {
-        return (Id != null ? "<G>" + prefix + "='<A>" + Id + "(<Y>" + getBlockX() + "," + getBlockY()
-                + "," + getBlockZ() + "," + getWorld().getName() + "<A>)<G>'  "
-                : "<G>" + prefix + "='<Y>" + getBlockX() + "," + getBlockY()
-                + "," + getBlockZ() + "," + getWorld().getName() + "<G>'  ");
+        return (Id != null ? "<G>" + prefix + "='<A>" + Id + "(<Y>" + getX() + "," + getY()
+                + "," + getZ() + "," + getWorld().getName() + "<A>)<G>'  "
+                : "<G>" + prefix + "='<Y>" + getX() + "," + getY()
+                + "," + getZ() + "," + getWorld().getName() + "<G>'  ");
     }
 
     @Override
     public String as_dScriptArg() {
-        return getBlockX() + "," + getBlockY()
-                + "," + getBlockZ() + "," + getWorld().getName();
+        return getX() + "," + getY()
+                + "," + getZ() + "," + getWorld().getName();
     }
 
     public String dScriptArgValue() {

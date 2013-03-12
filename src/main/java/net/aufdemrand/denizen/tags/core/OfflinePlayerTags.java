@@ -67,9 +67,9 @@ public class OfflinePlayerTags implements Listener {
             if (subType.equals("BED_SPAWN"))
             	if (p.getBedSpawnLocation() != null)
             	{
-            		event.setReplaced(p.getBedSpawnLocation().getBlockX()
-            				+ "," + p.getBedSpawnLocation().getBlockY()
-            				+ "," + p.getBedSpawnLocation().getBlockZ()
+            		event.setReplaced(p.getBedSpawnLocation().getX()
+            				+ "," + p.getBedSpawnLocation().getY()
+            				+ "," + p.getBedSpawnLocation().getZ()
             				+ "," + p.getBedSpawnLocation().getWorld().getName());
             	}
 

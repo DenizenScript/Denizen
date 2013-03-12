@@ -9,10 +9,13 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.trait.Poses;
 import net.minecraft.server.v1_4_R1.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
@@ -201,15 +204,73 @@ public class Utilities {
     	
     	return 0;
     }
+    
 
+    /**
+     * Rotates an entity.
+     *
+     * @param player The Entity you want to rotate.
+     * @param yaw The new yaw of the entity.
+     * @param pitch The new pitch of the entity.
+     */
+    
+    public static void rotate(Entity entity, float yaw, float pitch)
+    {
+    	// If this entity is a real player instead of a player type NPC,
+    	// it will appear to be online
+    	
+        if (entity instanceof Player && ((Player) entity).isOnline())
+        {
+    		Location location = entity.getLocation();
+    		location.setYaw(yaw);
+    		location.setPitch(pitch);
+    		
+    		// The only way to change a player's yaw and pitch in Bukkit
+    		// is to use teleport on him/her
+    		
+    		entity.teleport(location);
+    		return;
+        }
+        
+        if (entity instanceof LivingEntity)
+        {
+            EntityLiving handle = ((CraftLivingEntity) entity).getHandle();
+            handle.yaw = (float) yaw;
+            handle.pitch = (float) pitch;
+            handle.az = handle.yaw; // The head's yaw
+            
+            if (!(entity instanceof Player))
+            {
+            	// Obfuscated variable used in head turning. If not set to
+            	// be equal to the yaw, non-Player entities will not rotate.
+            	// But do not use on Player entities, because it will break
+            	// their rotation.
+            	//
+            	// In case it ever gets renamed, this EntityLiving line is
+            	// the one with it:
+            	//
+            	// float f5 = MathHelper.g(this.yaw - this.ax);
+            
+            	handle.ax = handle.yaw;
+            }
+        }
+
+        else
+        {
+            net.minecraft.server.v1_4_R1.Entity handle = ((CraftEntity) entity).getHandle();
+            handle.yaw = (float) yaw;
+            handle.pitch = (float) pitch;
+        }
+    }
+    
 
     /**
      * Changes an entity's yaw and pitch to make it face a location.
      *
      * Thanks to fullwall.
      *
-     * @param  from  the Entity whose yaw and pitch you want to change
-     * @param at  the Location it should be looking at
+     * @param from The Entity whose yaw and pitch you want to change.
+     * @param at The Location it should be looking at.
      */
     
     public static void faceLocation(Entity from, Location at) {
@@ -223,23 +284,13 @@ public class Utilities {
         double distanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
         double distanceY = Math.sqrt(distanceXZ * distanceXZ + yDiff * yDiff);
 
-        double yaw = (Math.acos(xDiff / distanceXZ) * 180 / Math.PI);
-        double pitch = (Math.acos(yDiff / distanceY) * 180 / Math.PI) - 90;
+        double yaw = Math.toDegrees(Math.acos(xDiff / distanceXZ));
+        double pitch = Math.toDegrees(Math.acos(yDiff / distanceY)) - 90;
         if (zDiff < 0.0) {
             yaw = yaw + (Math.abs(180 - yaw) * 2);
         }
 
-        if (from instanceof LivingEntity) {
-            EntityLiving handle = ((CraftLivingEntity) from).getHandle();
-            handle.yaw = (float) yaw - 90;
-            handle.pitch = (float) pitch;
-            handle.az = handle.yaw;
-        } else {
-            net.minecraft.server.v1_4_R1.Entity handle = ((CraftEntity) from).getHandle();
-            handle.yaw = (float) yaw - 90;
-            handle.pitch = (float) pitch;
-        }
-
+        rotate(from, (float) yaw - 90, (float) pitch);
     }
 
 
@@ -248,8 +299,8 @@ public class Utilities {
      *
      * Thanks to fullwall.
      *
-     * @param entity  the Entity whose yaw and pitch you want to change
-     * @param target  the Entity it should be looking at
+     * @param entity The Entity whose yaw and pitch you want to change.
+     * @param target The Entity it should be looking at.
      */
     
     public static void faceEntity(Entity entity, Entity target) {
@@ -358,11 +409,11 @@ public class Utilities {
     /**
      * Checks if an Entity is facing another Entity.
      *
-     * @param  from  The Entity we check.
-     * @param at  The Entity we want to know if it is looking at.
-     * @param  degreeLimit  How many degrees can be between the direction the
-     * 						Entity is facing and the direction we check if it
-     * 						is facing.
+     * @param from The Entity we check.
+     * @param at The Entity we want to know if it is looking at.
+     * @param degreeLimit How many degrees can be between the direction the
+     * 					  Entity is facing and the direction we check if it
+     * 					  is facing.
      *
      * @return  Returns a boolean.
      */
@@ -455,11 +506,11 @@ public class Utilities {
 
         Location entityLocation = entity.getLocation();
 
-        if (Math.abs(entityLocation.getBlockX() - theLocation.getBlockX())
+        if (Math.abs(entityLocation.getX() - theLocation.getX())
                 > theLeeway) return false;
-        if (Math.abs(entityLocation.getBlockY() - theLocation.getBlockY())
+        if (Math.abs(entityLocation.getY() - theLocation.getY())
                 > theLeeway) return false;
-        if (Math.abs(entityLocation.getBlockZ() - theLocation.getBlockZ())
+        if (Math.abs(entityLocation.getZ() - theLocation.getZ())
                 > theLeeway) return false;
 
         return true;
@@ -481,11 +532,11 @@ public class Utilities {
 
         Location entityLocation = baseLocation;
 
-        if (Math.abs(entityLocation.getBlockX() - theLocation.getBlockX())
+        if (Math.abs(entityLocation.getX() - theLocation.getX())
                 > theLeeway) return false;
-        if (Math.abs(entityLocation.getBlockY() - theLocation.getBlockY())
+        if (Math.abs(entityLocation.getY() - theLocation.getY())
                 > theLeeway) return false;
-        if (Math.abs(entityLocation.getBlockZ() - theLocation.getBlockZ())
+        if (Math.abs(entityLocation.getZ() - theLocation.getZ())
                 > theLeeway) return false;
 
         return true;

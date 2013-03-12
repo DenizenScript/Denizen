@@ -84,8 +84,8 @@ public class PlaySoundCommand extends AbstractCommand {
 
         // Debugger
         dB.echoApproval("Executing '" + getName() + "': "
-                + "Location='" + location.getBlockX() + "," + location.getBlockY()
-                + "," + location.getBlockZ() + "," + location.getWorld().getName() + "', "
+                + "Location='" + location.getX() + "," + location.getY()
+                + "," + location.getZ() + "," + location.getWorld().getName() + "', "
                 + "Sound='" + sound.toString() + ", "
                 + "Volume/Pitch='" + volume + "/" + pitch + "'");
 
