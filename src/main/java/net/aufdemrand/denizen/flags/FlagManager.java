@@ -551,6 +551,22 @@ public class FlagManager {
 
             return returnList.substring(0, returnList.length() - 1);
         }
+        
+        /**
+         * Returns a String value of the entirety of the values
+         * contained as a dScript list, with a prefix added to
+         * to each value. If the value doesn't exist, "" is returned.
+         *
+         */
+        public String asList(String prefix) {
+            adjustIndex();
+            String returnList = "";
+
+            for (String string : values)
+                returnList = returnList + prefix + string + "|";
+
+            return returnList.substring(0, returnList.length() - 1);
+        }
 
         /**
          * Returns a String value of the value in the specified index. If
