@@ -3,7 +3,9 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -42,6 +44,7 @@ public class AnnounceCommand extends AbstractCommand {
         // Initialize fields
         String text = null;
         AnnounceType announceType = AnnounceType.ALL;
+        FormatScriptContainer format = null;
 
         // Users tend to forget quotes sometimes on commands like this, so
         // let's check if there are more argument than usual.
@@ -50,14 +53,20 @@ public class AnnounceCommand extends AbstractCommand {
 
         // Should only be one argument, since PlAYER: and NPCID: are handled
         // internally. Let's get that argument and set it as the text.
-        for (String arg : scriptEntry.getArguments())
-
+        for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesArg("TO_OPS", arg)) {
                 announceType = AnnounceType.TO_OPS;
-            }
+            } else if (aH.matchesArg("FORMAT", arg)) {
+				String formatStr = aH.getStringFrom(arg);
+                format = ScriptRegistry.getScriptContainerAs(formatStr, FormatScriptContainer.class);
+                
+                if(format != null) dB.echoDebug("... format set to: " + formatStr);
+                else dB.echoError("... could not find format for: " + formatStr);
+			}
 
             else text = aH.getStringFrom(arg);
-
+        }
+		
         // If text is missing, alert the console.
         if (text == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
@@ -65,6 +74,7 @@ public class AnnounceCommand extends AbstractCommand {
         // Add objects that need to be passed to execute() to the scriptEntry
         scriptEntry.addObject("text", text);
         scriptEntry.addObject("type", announceType);
+        scriptEntry.addObject("format", format);
     }
 
     @Override
@@ -72,18 +82,24 @@ public class AnnounceCommand extends AbstractCommand {
         // Fetch objects
         String text = (String) scriptEntry.getObject("text");
         AnnounceType type = (AnnounceType) scriptEntry.getObject("type");
+        FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
 
         // Report to dB
         dB.report(getName(),
                 aH.debugObj("Message", text)
+                        + (format != null ? aH.debugObj("Format", format.getName()) : "")
                         + aH.debugObj("Type", type.name()));
 
+        String message = format != null ? format.getFormattedText(scriptEntry) : text;
+
         // Use Bukkit to broadcast the message to everybody in the server.
-        if (type == AnnounceType.ALL)
-            denizen.getServer().broadcastMessage(text);
-        else if (type == AnnounceType.TO_OPS)
-            for (Player player : Bukkit.getOnlinePlayers())
-                if (player.isOp()) player.sendMessage(text);
+        if (type == AnnounceType.ALL) {
+            denizen.getServer().broadcastMessage(message);
+        } else if (type == AnnounceType.TO_OPS) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.isOp()) player.sendMessage(message);
+            }
+        }
     }
 
 }
