@@ -64,12 +64,14 @@ public class ItemScriptContainer extends ScriptContainer {
             // Set Enchantments
             if (contains("ENCHANTMENTS")) {
                 for (String enchantment : getStringList("ENCHANTMENTS")) {
-                    try {
+                    
+                	enchantment = TagManager.tag(player, npc, enchantment);
+                	try {
                         // Build enchantment context
                         int level = 1;
                         if (enchantment.split(":").length > 1) {
                             level = Integer.valueOf(enchantment.split(":")[1]);
-                            enchantment = TagManager.tag(player, npc, enchantment.split(":")[0]);
+                            enchantment = enchantment.split(":")[0];
                         }
                         // Add enchantment
                         Enchantment ench = Enchantment.getByName(enchantment.toUpperCase());
@@ -83,8 +85,11 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Set Color
             if (contains("COLOR"))
-                LeatherColorer.colorArmor(stack, getString("COLOR"));
-
+            {
+            	String color = TagManager.tag(player, npc, getString("COLOR"));
+                LeatherColorer.colorArmor(stack, color);
+            }
+                
             // Set Book
             if (contains("BOOK")) {
                 BookScriptContainer book = ScriptRegistry

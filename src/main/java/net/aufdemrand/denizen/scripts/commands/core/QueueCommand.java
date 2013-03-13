@@ -31,18 +31,7 @@ public class QueueCommand extends AbstractCommand {
 
         for (String arg : scriptEntry.getArguments()) {
 
-            if (aH.matchesQueue(arg)) {
-                queues.clear();
-                for (String queueName : aH.getListFrom(arg)) {
-                    try {
-                        queues.add(aH.getQueueFrom(queueName));
-                    } catch (Exception e) {
-                        // must be null, don't add
-                    }
-                }
-            }
-
-            else if (aH.matchesArg("CLEAR, SET, PAUSE, RESUME", arg))
+            if (aH.matchesArg("CLEAR, SET, PAUSE, RESUME", arg))
                 action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
 
             else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
