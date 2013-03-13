@@ -22,10 +22,6 @@
 	<!-- Repositories -->
 	<repositories>
 		<repository>
-			<id>mcMMO-repo</id>
-			<url>http://repo.mcmmo.info/</url>
-		</repository>
-		<repository>
 			<id>vault-repo</id>
 			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
 		</repository>
@@ -98,12 +94,6 @@
 			<groupId>com.sk89q</groupId>
 			<artifactId>worldguard</artifactId>
 			<version>5.6.6-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.gmail.nossr50.mcMMO</groupId>
-			<artifactId>mcMMO</artifactId>
-			<version>1.4.00-dev4</version>
 			<scope>provided</scope>
 		</dependency>
         <dependency>

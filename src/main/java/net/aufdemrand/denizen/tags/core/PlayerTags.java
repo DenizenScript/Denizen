@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.depends.MCMMOUtilities;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -388,15 +387,6 @@ public class PlayerTags implements Listener {
             {
                 dB.echoError("Cannot check group! No permissions loaded!");
             }    
-            
-        } else if (type.equalsIgnoreCase("MCMMO")) {
-            if(Depends.mcmmo != null) {
-                if (subType.equalsIgnoreCase("LEVEL")) {
-            	    event.setReplaced(String.valueOf(MCMMOUtilities.getPlayerSkillLevel(p.getName(), subTypeContext)));
-                }
-            } else {
-                dB.echoError("mcMMO not loaded! Have you installed the mcMMO plugin?");
-            }
             
         } else if (type.equalsIgnoreCase("GAMEMODE")) {
         	if (subType.equalsIgnoreCase("ID"))
