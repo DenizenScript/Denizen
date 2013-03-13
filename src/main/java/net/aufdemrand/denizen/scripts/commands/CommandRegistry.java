@@ -88,8 +88,8 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(ExecuteCommand.class, 
         		"EXECUTE", "execute [as_player|as_op|as_npc|as_server] [\"Bukkit command\"]", 2);
 
-        registerCoreMember(ExecuteCommand.class,
-                "EXPERIENCE", "experience [{set}|give|take] [#]", 2);
+        registerCoreMember(ExperienceCommand.class,
+                "EXPERIENCE", "experience [{set}|give|take] (level) [#] (player:player_name)", 2);
 
         registerCoreMember(FailCommand.class, 
         		"FAIL", "fail (script:name{attached script}) (player:player_name)", 0);

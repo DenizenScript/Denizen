@@ -1,18 +1,15 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import org.bukkit.entity.Player;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.traits.HungerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 /**
  * Feeds a (Player) entity.
@@ -49,20 +46,28 @@ public class ExperienceCommand extends AbstractCommand {
 
         int amount = 0;
         Type type = Type.SET;
+        boolean level = false;
+        Player player = scriptEntry.getPlayer();
         for (String arg : scriptEntry.getArguments()) {
 
             if (aH.matchesQuantity(arg) || aH.matchesInteger(arg)) {
                 amount = aH.getIntegerFrom(arg);
             }
-
+            
+            else if(aH.matchesValueArg("PLAYER", arg, ArgumentType.String))
+                player = aH.getPlayerFrom(arg);
             else if (aH.matchesArg("SET, GIVE, TAKE", arg))
                 type = Type.valueOf(arg.toUpperCase());
+            else if(aH.matchesArg("LEVEL", arg))
+                level = true;
 
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
-        scriptEntry.addObject("quantity", amount)
-                .addObject("type", type);
+        scriptEntry.addObject("player", player.getName())
+                .addObject("quantity", amount)
+                .addObject("type", type)
+                .addObject("level", level);
 
     }
 
@@ -72,24 +77,34 @@ public class ExperienceCommand extends AbstractCommand {
 
         Type type = (Type) scriptEntry.getObject("type");
         Integer quantity = (Integer) scriptEntry.getObject("quantity");
+        Boolean level = (Boolean) scriptEntry.getObject("level");
+        Player player = (Player) scriptEntry.getObject("player");
 
         dB.report(name, aH.debugObj("Type", type.toString())
             + aH.debugObj("Quantity", quantity.toString())
-            + aH.debugObj("Player", scriptEntry.getPlayer().getName()));
+            + aH.debugObj("Player", player.getName())
+            + aH.debugObj("Level", level.toString()));
 
         switch (type) {
             case SET:
-                scriptEntry.getPlayer().setTotalExperience(0);
+                if(level)
+                    player.setLevel(quantity);
+                else
+                    player.setTotalExperience(quantity);
                 break;
 
             case GIVE:
-                scriptEntry.getPlayer()
-                        .setTotalExperience(scriptEntry.getPlayer().getTotalExperience() + quantity);
+                if(level)
+                    player.setLevel(player.getLevel() + quantity);
+                else
+                    player.setTotalExperience(player.getTotalExperience() + quantity);
                 break;
 
             case TAKE:
-                scriptEntry.getPlayer()
-                        .setTotalExperience(scriptEntry.getPlayer().getTotalExperience() - quantity);
+                if(level)
+                    player.setLevel(player.getLevel() - quantity);
+                else
+                    player.setTotalExperience(player.getTotalExperience() - quantity);
                 break;
         }
 
