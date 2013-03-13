@@ -5,8 +5,11 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.citizensnpcs.api.event.DespawnReason;
+import net.citizensnpcs.api.event.NPCDeathEvent;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+import net.minecraft.server.v1_4_R1.EntityHuman;
+
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -21,6 +24,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 public class HealthTrait extends Trait implements Listener {
 
@@ -43,6 +47,7 @@ public class HealthTrait extends Trait implements Listener {
     private String respawnLocation = "<npc.location>";
 
     // internal
+	private Player player = null;
     private boolean dying = false;
     private Location loc;
 
@@ -186,7 +191,25 @@ public class HealthTrait extends Trait implements Listener {
             ((CraftLivingEntity) npc.getBukkitEntity()).getHandle().setHealth(health);
         currenthealth = health;
     }
-
+    
+    public void die()
+    {
+    	// Set the player as the killer of the NPC, for listeners
+    	if (player != null)
+    		((CraftLivingEntity) npc.getBukkitEntity())
+    			.getHandle().killer = (EntityHuman) ((CraftLivingEntity) ((Entity) player)).getHandle();
+    	
+    	setHealth();
+    	EntityDeathEvent entityDeath = new EntityDeathEvent(npc.getBukkitEntity(), null);
+    	NPCDeathEvent npcDeath = new NPCDeathEvent(npc, entityDeath);
+    	
+        DenizenAPI.getCurrentInstance().getServer()
+			.getPluginManager().callEvent(npcDeath);
+        DenizenAPI.getCurrentInstance().getServer()
+			.getPluginManager().callEvent(entityDeath);
+        npc.despawn(DespawnReason.DEATH);
+    }
+    
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(EntityDamageEvent event) {
     	// Don't use NPCDamageEvent because it doesn't work well
@@ -200,7 +223,6 @@ public class HealthTrait extends Trait implements Listener {
 
         dying = true;
         
-    	Player player = null;
     	String deathCause = event.getCause().toString().toLowerCase().replace('_', ' ');
     	
         // Check if the entity has been killed by another entity
@@ -229,6 +251,7 @@ public class HealthTrait extends Trait implements Listener {
         	DenizenAPI.getDenizenNPC(npc).action("death by entity", player);
         	DenizenAPI.getDenizenNPC(npc).action("death by " +
         	killerEntity.getType().toString(), player);
+        	
         }
         // If not, check if the entity has been killed by a block
         else if (event instanceof EntityDamageByBlockEvent)
@@ -249,11 +272,11 @@ public class HealthTrait extends Trait implements Listener {
         // NPC's entity still exists before proceeding
         if (npc.getBukkitEntity() == null)
         	return;
-        
+
         loc = aH.getLocationFrom(DenizenAPI.getCurrentInstance().tagManager()
                 .tag(null, DenizenAPI.getDenizenNPC(npc), respawnLocation, false));
         if (loc == null) loc = npc.getBukkitEntity().getLocation();
-
+        
         if (animatedeath) {
             setHealth();
             npc.getBukkitEntity().playEffect(EntityEffect.DEATH);
@@ -261,14 +284,12 @@ public class HealthTrait extends Trait implements Listener {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                         public void run() {
-                            npc.despawn(DespawnReason.DEATH);
-                            setHealth();
+                        	die();
                         }
                     } , (long) ((Duration.valueOf(animationDelay).getSeconds() * 20)) );
 
         } else {
-            npc.despawn(DespawnReason.DEATH);
-            setHealth();
+        	die();
         }
 
         if (respawn) {
