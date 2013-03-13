@@ -197,9 +197,10 @@ public class HealthTrait extends Trait implements Listener {
     	// Set the player as the killer of the NPC, for listeners
     	if (player != null)
     		((CraftLivingEntity) npc.getBukkitEntity())
-    			.getHandle().killer = (EntityHuman) ((CraftLivingEntity) ((Entity) player)).getHandle();
+    			.getHandle().killer = (EntityHuman) ((CraftLivingEntity) player).getHandle();
     	
     	setHealth();
+        
     	EntityDeathEvent entityDeath = new EntityDeathEvent(npc.getBukkitEntity(), null);
     	NPCDeathEvent npcDeath = new NPCDeathEvent(npc, entityDeath);
     	
@@ -207,6 +208,7 @@ public class HealthTrait extends Trait implements Listener {
 			.getPluginManager().callEvent(npcDeath);
         DenizenAPI.getCurrentInstance().getServer()
 			.getPluginManager().callEvent(entityDeath);
+        
         npc.despawn(DespawnReason.DEATH);
     }
     
@@ -222,6 +224,7 @@ public class HealthTrait extends Trait implements Listener {
             return;
 
         dying = true;
+        player = null;
         
     	String deathCause = event.getCause().toString().toLowerCase().replace('_', ' ');
     	
