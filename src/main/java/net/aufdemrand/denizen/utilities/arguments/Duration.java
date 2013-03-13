@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class Duration implements dScriptArgument {
 
-    final static Pattern matchesDurationPtrn = Pattern.compile("(?:.+:|)(\\d+|\\.\\d+|\\d+\\.\\d+)(t|m|s|h|d|)", Pattern.CASE_INSENSITIVE);
+    final static Pattern matchesDurationPtrn = Pattern.compile("(?:.+:|)(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)", Pattern.CASE_INSENSITIVE);
 
     /**
      * Gets a Duration Object from a dScript argument. Durations must be a positive
