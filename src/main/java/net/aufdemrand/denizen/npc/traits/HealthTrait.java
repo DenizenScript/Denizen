@@ -304,6 +304,7 @@ public class HealthTrait extends Trait implements Listener {
                         }
                     } , (long) ((Duration.valueOf(respawnDelay).getSeconds() * 20)) );
         }
+
     }
 
 }

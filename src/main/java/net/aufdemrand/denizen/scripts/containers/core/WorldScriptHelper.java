@@ -10,12 +10,17 @@ import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 
 import java.util.HashMap;
@@ -186,7 +191,62 @@ public class WorldScriptHelper implements Listener {
             if (doEvent("player interacts with block", null, event.getPlayer(), context))
                 event.setCancelled(true);
         }
+
     }
+
+
+
+    @EventHandler
+    public void playerHit(EntityDamageEvent event) {
+
+        if (event.getEntity() instanceof Player
+                && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+            Map<String, String> context = new HashMap<String, String>();
+            context.put("cause", event.getCause().toString());
+            if (doEvent("player damaged", null, (Player) event.getEntity(), context))
+                event.setCancelled(true);
+            if (doEvent("player damaged by " + event.getCause().toString(), null, (Player) event.getEntity(), context))
+                event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void playerHitByEntity(EntityDamageByEntityEvent event) {
+
+        if (event.getEntity() instanceof Player
+                && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+            Map<String, String> context = new HashMap<String, String>();
+            context.put("cause", event.getCause().toString());
+            context.put("damaging entity", event.getDamager().getType().toString());
+            if (doEvent("player damaged by entity", null, (Player) event.getEntity(), context))
+                event.setCancelled(true);
+
+            if (event.getDamager() instanceof Player) {
+                context.put("damager", ((Player) event.getDamager()).getName());
+                if (doEvent("player damaged by player", null, (Player) event.getEntity(), context))
+                    event.setCancelled(true);
+            } else {
+                if (doEvent("player damaged by " + event.getDamager().getType().toString(), null, (Player) event.getEntity(), context))
+                    event.setCancelled(true);
+            }
+
+        }
+    }
+
+    @EventHandler
+    public void playerEat(EntityRegainHealthEvent event) {
+
+        if (event.getEntity() instanceof  Player
+                && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+            Map<String, String> context = new HashMap<String, String>();
+            context.put("reason", event.getRegainReason().toString());
+
+            if (doEvent("player regains health", null, (Player) event.getEntity(), context))
+                event.setCancelled(true);
+        }
+
+    }
+
 
 
 }
