@@ -24,13 +24,14 @@ public class TimeRequirement extends AbstractRequirement{
 		
 		long worldTime = context.getNPC().getEntity().getWorld().getTime();
 		
-		if (time.equals(Time.DAY) && worldTime >= 0 && worldTime < 12000)
+
+		if (time.equals(Time.DAY) && (worldTime <= 12500))
 			outcome = true;
-		else if (time.equals(Time.DUSK) && worldTime >= 12000 && worldTime < 23800)
+		else if (time.equals(Time.NIGHT) && (worldTime >= 13500 && worldTime <= 23000))
 			outcome = true;
-		else if (time.equals(Time.NIGHT) && worldTime >= 23800 && worldTime < 22200)
+		else if (time.equals(Time.DAWN) && (worldTime >= 23000))
 			outcome = true;
-		else if (time.equals(Time.DAWN) && worldTime >= 22200 && worldTime < 24000)
+		else if (time.equals(Time.DUSK) && worldTime >= 12500 && worldTime <= 13500)
 			outcome = true;
 		
 		return outcome;

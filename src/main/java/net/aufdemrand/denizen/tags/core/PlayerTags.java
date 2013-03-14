@@ -412,10 +412,16 @@ public class PlayerTags implements Listener {
         } else if (type.equalsIgnoreCase("TIME")) {
             event.setReplaced(String.valueOf(p.getPlayerTime()));
             if (subType.equalsIgnoreCase("PERIOD"))
-                if (p.getPlayerTime() < 13500 || p.getPlayerTime() > 23000)
+            {
+                if (p.getPlayerTime() >= 23000)
+                    event.setReplaced("dawn");
+                else if (p.getPlayerTime() >= 13500)
+            		event.setReplaced("night");
+                else if (p.getPlayerTime() >= 12500)
+                    event.setReplaced("dusk");
+                else
                     event.setReplaced("day");
-                else if (p.getPlayerTime() > 13500)
-                    event.setReplaced("night");
+            }
 
         } else if (type.equalsIgnoreCase("WEATHER")) {
             if (p.getWorld().hasStorm())
