@@ -213,11 +213,11 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerHitByEntity(EntityDamageByEntityEvent event) {
  
-         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity()
+         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
              && event.getDamager() instanceof Player) {
             Map<String, String> context = new HashMap<String, String>();
             context.put("cause", event.getCause().toString());
-            if (doEvent("player damages npc", CitizensAPI.getNPCRegistry.getNPC(event.getEntity(), 
+            if (doEvent("player damages npc", CitizensAPI.getNPCRegistry.getNPC(event.getEntity()), 
                             (Player) event.getEntity(), context))
                 event.setCancelled(true);
 
