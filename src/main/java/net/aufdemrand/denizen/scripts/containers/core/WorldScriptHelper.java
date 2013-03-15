@@ -220,7 +220,7 @@ public class WorldScriptHelper implements Listener {
 
             if (doEvent("player damages npc",
                     DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity())),
-                    (Player) event.getEntity(),
+                    (Player) event.getDamager(),
                     context))
                 event.setCancelled(true);
 
