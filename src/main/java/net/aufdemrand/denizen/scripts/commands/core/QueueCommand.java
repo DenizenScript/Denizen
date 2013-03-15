@@ -20,7 +20,6 @@ public class QueueCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        ScriptQueue queue = scriptEntry.getResidingQueue();
         Action action = null;
         Duration delay = null;
 
@@ -64,7 +63,7 @@ public class QueueCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a delay.");
 
         // Stash args in ScriptEntry for use in execute()
-        scriptEntry.addObject("queue", queue)
+        scriptEntry.addObject("queue", queues)
                 .addObject("action", action)
                 .addObject("delay", delay);
     }
