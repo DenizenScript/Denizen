@@ -217,6 +217,7 @@ public class WorldScriptHelper implements Listener {
                 && event.getDamager() instanceof Player) {
             Map<String, String> context = new HashMap<String, String>();
             context.put("cause", event.getCause().toString());
+
             if (doEvent("player damages npc",
                     DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity())),
                     (Player) event.getEntity(),

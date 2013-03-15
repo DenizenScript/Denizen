@@ -26,7 +26,7 @@ public class dNPC {
 
     private int npcid;
 
-    dNPC(NPC citizensNPC) {
+    public dNPC(NPC citizensNPC) {
         this.npcid = citizensNPC.getId();
     }
 
