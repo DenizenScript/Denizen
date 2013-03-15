@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
 import net.aufdemrand.denizen.utilities.arguments.Item;
-import net.minecraft.server.v1_4_R1.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_4_R1.inventory.CraftItemStack;
+import net.minecraft.server.v1_5_R1.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_5_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
@@ -20,7 +20,7 @@ public class NBTItem {
 
     public static boolean hasCustomNBT(Item item, String key) {
         NBTTagCompound tag;
-        net.minecraft.server.v1_4_R1.ItemStack cis =  getItemStackHandle(item);
+        net.minecraft.server.v1_5_R1.ItemStack cis =  getItemStackHandle(item);
         if (!cis.hasTag()) return false;
         tag = cis.getTag();
         // if this item has the NBTData for 'owner', there is an engraving.
@@ -28,7 +28,7 @@ public class NBTItem {
     }
 
     public static String getCustomNBT(Item item, String key) {
-        net.minecraft.server.v1_4_R1.ItemStack cis =  getItemStackHandle(item);
+        net.minecraft.server.v1_5_R1.ItemStack cis =  getItemStackHandle(item);
         NBTTagCompound tag;
         if (!cis.hasTag())
             cis.setTag(new NBTTagCompound());
@@ -39,7 +39,7 @@ public class NBTItem {
     }
 
     public static void removeCustomNBT(Item item, String key) {
-        net.minecraft.server.v1_4_R1.ItemStack cis =  getItemStackHandle(item);
+        net.minecraft.server.v1_5_R1.ItemStack cis =  getItemStackHandle(item);
         NBTTagCompound tag;
         if (!cis.hasTag())
             cis.setTag(new NBTTagCompound());
@@ -49,7 +49,7 @@ public class NBTItem {
     }
 
     public static void addCustomNBT(Item item, String key, String value) {
-        net.minecraft.server.v1_4_R1.ItemStack cis = getItemStackHandle(item);
+        net.minecraft.server.v1_5_R1.ItemStack cis = getItemStackHandle(item);
         NBTTagCompound tag = null;
         // Do stuff with tag
         if (!cis.hasTag())
@@ -58,7 +58,7 @@ public class NBTItem {
         tag.setString(key, value);
     }
 
-    public static net.minecraft.server.v1_4_R1.ItemStack getItemStackHandle(Item item) {
+    public static net.minecraft.server.v1_5_R1.ItemStack getItemStackHandle(Item item) {
         Field f = null;
         try {
             // Use reflection to grant access to CraftItemStack field 'handle'
@@ -70,10 +70,10 @@ public class NBTItem {
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
-        net.minecraft.server.v1_4_R1.ItemStack is = null;
+        net.minecraft.server.v1_5_R1.ItemStack is = null;
         try {
             // Use reflection to get handle
-            is = (net.minecraft.server.v1_4_R1.ItemStack) f.get(item.toCraftBukkit());
+            is = (net.minecraft.server.v1_5_R1.ItemStack) f.get(item.toCraftBukkit());
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

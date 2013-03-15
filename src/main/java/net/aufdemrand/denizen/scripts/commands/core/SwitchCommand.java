@@ -9,10 +9,10 @@ import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable2;
-import net.minecraft.server.v1_4_R1.Block;
+import net.minecraft.server.v1_5_R1.Block;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_5_R1.CraftWorld;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
