@@ -218,12 +218,15 @@ public class WorldScriptHelper implements Listener {
             Map<String, String> context = new HashMap<String, String>();
             context.put("cause", event.getCause().toString());
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             if (doEvent("player damages npc",
                     DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity())),
                     (Player) event.getEntity(),
                     context))
 =======
+=======
+>>>>>>> 401d6c71deb87159f4d94e6004d275ef65b762ba
             if (doEvent("player damages npc", new dNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity())), 
                             (Player) event.getEntity(), context))
 >>>>>>> 401d6c71deb87159f4d94e6004d275ef65b762ba
