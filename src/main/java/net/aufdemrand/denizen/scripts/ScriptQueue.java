@@ -75,7 +75,7 @@ public class ScriptQueue implements Listener {
             // If not, create a new one.
         else {
             scriptQueue = new ScriptQueue(id,
-            		Duration.valueOf(Settings.ScriptQueueSpeed()).getTicksAsInt());
+                    Duration.valueOf(Settings.ScriptQueueSpeed()).getTicksAsInt());
         }
         // Return the queue
         return scriptQueue;
@@ -117,7 +117,7 @@ public class ScriptQueue implements Listener {
 
     // If this number is larger than getCurrentTimeMillis, the queues will delay execution
     protected long delayTime = 0;
-    
+
     // The delay in ticks
     protected long delayTicks = 0;
 
@@ -170,25 +170,30 @@ public class ScriptQueue implements Listener {
         this.ticks = ticks;
     }
 
-    
+
     public void delayFor(long delayTicks) {
         this.delayTicks = delayTicks;
     }
-    
+
 
     public void delayUntil(long delayTime) {
         this.delayTime = delayTime;
     }
 
+    boolean is_stopping = false;
 
     public void stop() {
-        _queues.remove(id);
-        dB.echoDebug("Completing queue " + id + "...");
-        Bukkit.getServer().getScheduler().cancelTask(taskId);
-        List<ScriptEntry> entries = lastEntryExecuted.getScript()
-                .getContainer().getEntries(lastEntryExecuted.getPlayer(), lastEntryExecuted.getNPC(), "on queue end");
-        if (!entries.isEmpty())
-            ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(entries).start();
+        if (!is_stopping) {
+            is_stopping = true;
+            List<ScriptEntry> entries = lastEntryExecuted.getScript()
+                    .getContainer().getEntries(lastEntryExecuted.getPlayer(), lastEntryExecuted.getNPC(), "on queue end");
+            if (!entries.isEmpty())
+                scriptEntries.addAll(entries);
+        } else {
+            _queues.remove(id);
+            dB.echoDebug("Completing queue " + id + "...");
+            Bukkit.getServer().getScheduler().cancelTask(taskId);
+        }
     }
 
 
@@ -212,22 +217,22 @@ public class ScriptQueue implements Listener {
                     revolve();
                 }
             }, ticks, ticks);
-        // If the ticks are 0, this is an 'instant queue'
+            // If the ticks are 0, this is an 'instant queue'
         else
         {
-        	// If it's delayed, schedule it for later
-        	if (delayTime > System.currentTimeMillis())
-        	{
-        		Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-        			new Runnable() {
+            // If it's delayed, schedule it for later
+            if (delayTime > System.currentTimeMillis())
+            {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+                        new Runnable() {
                             @Override
                             public void run() {
                                 // revolve
-                            	while (isStarted) revolve();
+                                while (isStarted) revolve();
                             }
                         }, delayTicks + 1);
-        	}
-        	else while (isStarted) revolve();
+            }
+            else while (isStarted) revolve();
         }
     }
 
@@ -236,17 +241,17 @@ public class ScriptQueue implements Listener {
         // If entries queued up are empty, deconstruct the queue.
         if (scriptEntries.isEmpty())
         {
-        	stop();
-        	isStarted = false;
-        	return;
+            stop();
+            isStarted = false;
+            return;
         }
         // Check if this Queue isn't paused
         if (paused) return;
         // If it's delayed, schedule it for later
         if (delayTime > System.currentTimeMillis()) return;
-        
+
         // Criteria met for a successful 'revolution' of this queue...
-        DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);   
+        DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
     }
 
 
