@@ -185,6 +185,10 @@ public class ScriptQueue implements Listener {
         _queues.remove(id);
         dB.echoDebug("Completing queue " + id + "...");
         Bukkit.getServer().getScheduler().cancelTask(taskId);
+        List<ScriptEntry> entries = lastEntryExecuted.getScript()
+                .getContainer().getEntries(lastEntryExecuted.getPlayer(), lastEntryExecuted.getNPC(), "on queue end");
+        if (!entries.isEmpty())
+            ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(entries).start();
     }
 
 
