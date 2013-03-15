@@ -67,7 +67,12 @@ public class NPCTags implements Listener {
                     + "," + loc.getY()
                     + "," + loc.getZ()
                     + "," + n.getWorld().getName());
-            if (subType.equals("FORMATTED"))
+            if (subType.equals("BLOCK"))
+                event.setReplaced(loc.getBlockX()
+                        + "," + loc.getBlockY()
+                        + "," + loc.getBlockZ()
+                        + "," + n.getWorld().getName());
+            else if (subType.equals("FORMATTED"))
                 event.setReplaced("X '" + loc.getX()
                         + "', Y '" + loc.getY()
                         + "', Z '" + loc.getZ()
