@@ -53,6 +53,9 @@ public class QueueCommand extends AbstractCommand {
             }
         }
 
+        // If no queues have been added, assume 'residing queue'
+        if (queues.isEmpty()) queues.add(scriptEntry.getResidingQueue());
+
         // Check required args
         if (action == null)
             throw new InvalidArgumentsException("Must specify an action. Valid: CLEAR, SET, DELAY, PAUSE, RESUME");
