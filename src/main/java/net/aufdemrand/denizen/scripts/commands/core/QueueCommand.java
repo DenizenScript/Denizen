@@ -63,7 +63,7 @@ public class QueueCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a delay.");
 
         // Stash args in ScriptEntry for use in execute()
-        scriptEntry.addObject("queue", queues)
+        scriptEntry.addObject("queues", queues)
                 .addObject("action", action)
                 .addObject("delay", delay);
     }
