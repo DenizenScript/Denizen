@@ -252,6 +252,11 @@ public class ScriptQueue implements Listener {
 
         // Criteria met for a successful 'revolution' of this queue...
         DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
+        if (scriptEntries.isEmpty())
+        {
+            stop();
+            isStarted = false;
+        }
     }
 
 
