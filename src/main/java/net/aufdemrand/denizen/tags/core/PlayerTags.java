@@ -265,7 +265,12 @@ public class PlayerTags implements Listener {
                     + "," + p.getLocation().getY()
                     + "," + p.getLocation().getZ()
                     + "," + p.getWorld().getName());
-            if (subType.equalsIgnoreCase("FORMATTED"))
+            if (subType.equalsIgnoreCase("BLOCK"))
+                event.setReplaced(p.getLocation().getBlockX()
+                        + "," + p.getLocation().getBlockY()
+                        + "," + p.getLocation().getBlockZ()
+                        + "," + p.getWorld().getName());
+            else if (subType.equalsIgnoreCase("FORMATTED"))
                 event.setReplaced("X '" + p.getLocation().getX()
                         + "', Y '" + p.getLocation().getY()
                         + "', Z '" + p.getLocation().getZ()

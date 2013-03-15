@@ -52,6 +52,19 @@ public class LocationTags implements Listener {
                 event.setReplaced(fromLocation.getBlock().getBiome().name());
         }
         
+        else if (type.equals("BLOCK"))
+        {
+            if (subType.equals("BELOW"))
+            {
+                fromLocation = new Location(fromLocation.add(0, -1, 0));
+            }
+
+            else if (subType.equals("MATERIAL") || specifier.equals("MATERIAL"))
+            {
+                event.setReplaced(fromLocation.getBlock().getType().toString());
+            }
+        }
+        
         else if (type.equals("DIRECTION"))
         {
         	if (fromLocation != null && toLocation != null)
@@ -146,17 +159,6 @@ public class LocationTags implements Listener {
         else if (type.equals("Z"))          
         	event.setReplaced(String.valueOf(fromLocation.getZ()));
 
-        else if (type.equals("BLOCK")) {
-            if (subType.equals("BELOW")) {
-                fromLocation = new Location(fromLocation.add(0, -1, 0));
-            }
-
-            if (subType.equals("MATERIAL") || specifier.equals("MATERIAL")) {
-                event.setReplaced(fromLocation.getBlock().getType().toString());
-            }
-        }
     }
-
-
 
 }
