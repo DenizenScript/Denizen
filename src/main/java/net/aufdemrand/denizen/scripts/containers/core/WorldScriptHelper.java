@@ -224,7 +224,9 @@ public class WorldScriptHelper implements Listener {
                     context))
                 event.setCancelled(true);
 
-        } else if (event.getEntity() instanceof Player) {
+        }
+
+        if (event.getEntity() instanceof Player) {
             Map<String, String> context = new HashMap<String, String>();
             context.put("cause", event.getCause().toString());
             context.put("damaging entity", event.getDamager().getType().toString());
