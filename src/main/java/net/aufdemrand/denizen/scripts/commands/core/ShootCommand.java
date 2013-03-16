@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.runnables.Runnable3;
@@ -44,7 +45,7 @@ public class ShootCommand extends AbstractCommand {
         Script newScript = null;
         Boolean ride = false;
         Boolean burn = false;
-        Boolean explode = false;
+        double explosion = -1;
         Boolean fireworks = false;
 
         // Set some defaults
@@ -66,19 +67,19 @@ public class ShootCommand extends AbstractCommand {
 				newScript = aH.getScriptFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
 
-            } else if (aH.matchesArg("RIDE, MOUNT", arg)) {
+            } else if (aH.matchesArg("ride, mount", arg)) {
                 ride = true;
                 dB.echoDebug("...will be mounted.");
                 
-            } else if (aH.matchesArg("BURN, BURNING", arg)) {
+            } else if (aH.matchesArg("burn, burning", arg)) {
                 burn = true;
                 dB.echoDebug("...will burn.");
                
-            } else if (aH.matchesArg("EXPLODE, EXPLODING", arg)) {
-                explode = true;
-                dB.echoDebug("...will explode.");
+            } else if (aH.matchesValueArg("explosion", arg, ArgumentType.Double)) {
+            	explosion = aH.getDoubleFrom(arg);
+                dB.echoDebug("...will have an explosion radius of " + explosion);
                 
-            } else if (aH.matchesArg("FIREWORKS", arg)) {
+            } else if (aH.matchesArg("fireworks", arg)) {
                 fireworks = true;
                 dB.echoDebug("...will launch fireworks.");
 
@@ -93,7 +94,7 @@ public class ShootCommand extends AbstractCommand {
         scriptEntry.addObject("entityType", entityType);
         scriptEntry.addObject("ride", ride);
         scriptEntry.addObject("burn", burn);
-        scriptEntry.addObject("explode", explode);
+        scriptEntry.addObject("explosion", explosion);
         scriptEntry.addObject("fireworks", fireworks);
     }
     
@@ -183,9 +184,10 @@ public class ShootCommand extends AbstractCommand {
         			        fireworkMeta.setPower(2);
         			        firework.setFireworkMeta(fireworkMeta);
         				}
-        				if ((Boolean) scriptEntry.getObject("explode"))
+        				if ((Float) scriptEntry.getObject("explosion") > 0)
         				{
-        					entity.getWorld().createExplosion(entity.getLocation(), 4);
+        					entity.getWorld().createExplosion(entity.getLocation(),
+        							(Float) scriptEntry.getObject("explosion"));
         				}
         				
         			}
