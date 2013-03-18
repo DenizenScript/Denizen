@@ -20,7 +20,7 @@ public class FlagTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    private enum ReplaceType { LENGTH, SIZE, ASSTRING, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASPLAYERLIST, ASCSLIST, ISEXPIRED, EXPIRATION }
+    private enum ReplaceType { LENGTH, SIZE, ASSTRING, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASPLAYERLIST, ASNPCLIST, ASCSLIST, ISEXPIRED, EXPIRATION }
 
     /**
      * Replaces FLAG TAGs. Called automatically by the dScript ScriptBuilder and Executer.
@@ -113,6 +113,8 @@ public class FlagTags implements Listener {
             return String.valueOf(value.asList());
         case ASPLAYERLIST:
             return String.valueOf(value.asList("player."));
+        case ASNPCLIST:
+            return String.valueOf(value.asList("npc."));
         case ASCSLIST:
             return String.valueOf(value.asCommaSeparatedList());
         case ASMONEY:
