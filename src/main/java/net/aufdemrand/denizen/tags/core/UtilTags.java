@@ -63,9 +63,9 @@ public class UtilTags implements Listener {
             } catch (NumberFormatException e) { }
 
             if (to > item_to_trim.length())
-                to = item_to_trim.length();
+                to = item_to_trim.length()+1;
 
-            event.setReplaced(item_to_trim.substring(from - 1, to));
+            event.setReplaced(item_to_trim.substring(from - 1, to - 1));
         }
     }
 
