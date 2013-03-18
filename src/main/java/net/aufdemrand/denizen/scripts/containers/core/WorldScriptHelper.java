@@ -105,7 +105,14 @@ public class WorldScriptHelper implements Listener {
 
         doEvent("player quit", null, event.getPlayer(), context);
     }
+    
+    @EventHandler
+    public void joinEvent(PlayerJoinEvent event) {
+        Map<String, String> context = new HashMap<String, String>();
+        context.put("message", event.getJoinMessage());
 
+        doEvent("player join", null, event.getPlayer(), context);
+    }
 
     @EventHandler
     public void walkOnLocationEvent(PlayerMoveEvent event) {
