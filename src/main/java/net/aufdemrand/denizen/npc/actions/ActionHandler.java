@@ -24,6 +24,8 @@ public class ActionHandler {
 
         if (assignment == null) return false;
 
+        if (assignment.contains("actions.on " + actionName)getEntries(player, npc, "actions.on " + actionName);)
+
         dB.report("Action",
                 aH.debugObj("Type", "On " + actionName)
                         + aH.debugObj("NPC", npc.toString())
