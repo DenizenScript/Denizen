@@ -69,7 +69,10 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(CooldownCommand.class, 
         		"COOLDOWN", "cooldown (duration:#{60s}) (global|player:name{attached player}) (script:name)", 1);
-		
+
+        registerCoreMember(CooldownCommand.class,
+                "COPYBLOCK", "copyblock [location:x,y,z,world] [to:x,y,z,world]", 1);
+
         registerCoreMember(DetermineCommand.class, 
         		"DETERMINE", "determine [\"value\"]", 1);
         
