@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.AbstractNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -36,7 +37,7 @@ public class CommandExecuter {
 			return false;
 		}
 
-		// Get the command instance ready for the execution of the scriptEntry
+        // Get the command instance ready for the execution of the scriptEntry
 		AbstractCommand command = plugin.getCommandRegistry().get(scriptEntry.getCommandName());
 
 		// Debugger information

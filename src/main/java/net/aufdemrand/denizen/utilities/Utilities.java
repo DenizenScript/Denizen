@@ -9,8 +9,6 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.trait.Poses;
 import net.minecraft.server.v1_5_R1.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -237,8 +235,10 @@ public class Utilities {
             EntityLiving handle = ((CraftLivingEntity) entity).getHandle();
             handle.yaw = (float) yaw;
             handle.pitch = (float) pitch;
-            handle.az = handle.yaw; // The head's yaw
-            
+            // !--- START NMS OBFUSCATED
+            handle.aA = handle.yaw; // The head's yaw
+            // !--- END NMS OBFUSCATED
+
             if (!(entity instanceof Player))
             {
             	// Obfuscated variable used in head turning. If not set to
@@ -559,7 +559,6 @@ public class Utilities {
      * Lists all files in the given directory.
      *
      * @param dir The directory to search in
-     * @param filter The filename filter to apply
      * @param recursive If true subfolders will also get checked
      * @return A {@link File} collection
      */
