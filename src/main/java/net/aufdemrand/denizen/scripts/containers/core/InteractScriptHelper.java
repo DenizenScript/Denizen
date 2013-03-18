@@ -86,7 +86,7 @@ public class InteractScriptHelper {
             try {
                 InteractScriptContainer interactScript = ScriptRegistry.getScriptContainerAs(name, InteractScriptContainer.class);
 
-                if(interactScript != null) {
+                if (interactScript != null) {
                     // Check requirements of the script
                     if (interactScript.checkBaseRequirements(player, npc)) {
                         dB.echoApproval("'" + entry + "' meets requirements.");
@@ -101,9 +101,10 @@ public class InteractScriptHelper {
                         // Does not meet requirements, alert the console!
                         dB.echoDebug("'" + entry + "' does not meet requirements.");
                     }
+
                 } else {
                     // Alert the console
-                    dB.echoDebug("'" + entry + "' validated to null, no (valid) script entry found (Should never happen)!");
+                    dB.echoDebug("'" + entry + "' is not a valid Interact Script. Is there a duplicate script by this name?");
                 }
             } catch (Exception e) {
                 // Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!
