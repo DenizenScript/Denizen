@@ -114,6 +114,9 @@ public class CommandRegistry implements DenizenRegistry {
 		
         registerCoreMember(GiveCommand.class, 
         		"GIVE", "give [money|item:#(:#)|item:material(:#)] (qty:#)", 1);
+        
+        registerCoreMember(GiveCommand.class, 
+                "GROUP", "group [add|remove]  [group] (player:player_name) (world:world_name)", 2);
 		
         registerCoreMember(HealCommand.class, 
         		"HEAL", "heal (amt:#) (target:npc|{player})", 0);
@@ -141,12 +144,15 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(NewCommand.class, 
         		"NEW", "new itemstack [item:material] (qty:#)", 2);
+        
+        registerCoreMember(PlaySoundCommand.class, 
+                "PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
+        
+        registerCoreMember(GiveCommand.class, 
+                "PERMISSION", "permission [add|remove] [permission] (player:player_name) (group:group_name) (world:world_name)", 2);
 
         registerCoreMember(PoseCommand.class,
                 "POSE", "pose (player) [id:name]", 1);
-		
-        registerCoreMember(PlaySoundCommand.class, 
-        		"PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
 		
         registerCoreMember(QueueCommand.class,
                 "QUEUE", "queue (queue:id{residing_queue}) [clear|pause|resume|delay:#]", 1);
