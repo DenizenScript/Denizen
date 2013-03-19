@@ -26,7 +26,7 @@ public class UtilTags implements Listener {
         String specifier = event.getSpecifier() != null ? event.getSpecifier() : "";
         String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext().toUpperCase() : "";
 
-        if (type.equalsIgnoreCase("RANDOM"))
+        if (type.equalsIgnoreCase("RANDOM")) {
             if (subType.equalsIgnoreCase("INT")) {
                 if (specifier.equalsIgnoreCase("TO")) {
                     if (aH.matchesInteger(subTypeContext) && aH.matchesInteger(specifierContext)) {
@@ -48,8 +48,9 @@ public class UtilTags implements Listener {
 
             else if (subType.equalsIgnoreCase("UUID"))
                 event.setReplaced(UUID.randomUUID().toString());
+        }
 
-        if (type.equalsIgnoreCase("TRIM")) {
+        else if (type.equalsIgnoreCase("TRIM")) {
             String item_to_trim = event.getTypeContext();
             int from = 1;
             try {
@@ -67,6 +68,24 @@ public class UtilTags implements Listener {
 
             event.setReplaced(item_to_trim.substring(from - 1, to - 1));
         }
+
+        else if (type.equalsIgnoreCase("REPLACE")) {
+            String item_to_replace = event.getTypeContext();
+            String replace = event.getSubTypeContext();
+            String replacement = event.getSpecifierContext();
+            event.setReplaced(item_to_replace.replace(replace, replacement));
+        }
+
+        else if (type.equalsIgnoreCase("UPPERCASE")) {
+            String item_to_uppercase = event.getTypeContext();
+            event.setReplaced(item_to_uppercase.toUpperCase());
+        }
+
+        else if (type.equalsIgnoreCase("LOWERCASE")) {
+            String item_to_uppercase = event.getTypeContext();
+            event.setReplaced(item_to_uppercase.toLowerCase());
+        }
+
     }
 
 }
