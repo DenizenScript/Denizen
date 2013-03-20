@@ -58,7 +58,6 @@ public class PermissionCommand extends AbstractCommand {
         // Report to dB
         dB.report(getName(),
                 aH.debugObj("Action", action.toString())
-                        + aH.debugObj("Action", action.toString())
                         + aH.debugObj("Player", player.getName())
                         + aH.debugObj("Permission", permission)
                         + aH.debugObj("Group", group)

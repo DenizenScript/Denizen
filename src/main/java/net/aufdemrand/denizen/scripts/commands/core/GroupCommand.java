@@ -51,7 +51,6 @@ public class GroupCommand extends AbstractCommand {
         // Report to dB
         dB.report(getName(),
                 aH.debugObj("Action", action.toString())
-                        + aH.debugObj("Action", action.toString())
                         + aH.debugObj("Player", player.getName())
                         + aH.debugObj("Group", group)
                         + aH.debugObj("World", world));
