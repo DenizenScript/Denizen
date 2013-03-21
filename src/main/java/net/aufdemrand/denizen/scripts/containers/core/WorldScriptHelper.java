@@ -41,6 +41,8 @@ public class WorldScriptHelper implements Listener {
 
     public String doEvent(String eventName, dNPC npc, Player player, Map<String, String> context) {
 
+        String determination = "none";
+
         for (WorldScriptContainer script : world_scripts.values()) {
 
             if (script == null) continue;
@@ -73,10 +75,10 @@ public class WorldScriptHelper implements Listener {
             ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(entries).start();
 
             if (DetermineCommand.hasOutcome(id))
-                return DetermineCommand.getOutcome(id);
+                determination =  DetermineCommand.getOutcome(id);
         }
 
-        return null;
+        return determination;
     }
 
 
