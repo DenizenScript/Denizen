@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -184,6 +185,10 @@ public class PlayerTags implements Listener {
                 event.setReplaced(String.valueOf(p.getItemInHand().getData()));
             else if (subType.equalsIgnoreCase("MAX_STACK"))
                 event.setReplaced(String.valueOf(p.getItemInHand().getMaxStackSize()));
+            else if (subType.equalsIgnoreCase("OWNER")) {
+                if (NBTItem.hasCustomNBT(p.getItemInHand(), "owner"))
+                    event.setReplaced(NBTItem.getCustomNBT(p.getItemInHand(), "owner"));
+            }
             else if (subType.equalsIgnoreCase("ENCHANTMENTS"))
             {
             	String enchantments = null;
