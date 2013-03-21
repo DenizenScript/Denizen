@@ -4,13 +4,13 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.trait.Trait;
-import net.minecraft.server.v1_5_R1.DataWatcher;
-import net.minecraft.server.v1_5_R1.EntityLiving;
+import net.minecraft.server.v1_5_R2.DataWatcher;
+import net.minecraft.server.v1_5_R2.EntityLiving;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_5_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftLivingEntity;
 
 public class ParticlesTrait extends Trait {
 	
@@ -69,7 +69,7 @@ public class ParticlesTrait extends Trait {
 		case POTION:
 			/*
             if (!el.effects.isEmpty()) {
-                c = net.minecraft.server.v1_5_R1.PotionBrewer.a(el.effects.values());
+                c = net.minecraft.server.v1_5_R2.PotionBrewer.a(el.effects.values());
             }
             dw.watch(8, Integer.valueOf(c));
             */
