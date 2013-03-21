@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -26,6 +27,11 @@ public class ProcedureScriptTag implements Listener {
 
        // Get the script's name from the tag's value
        Script script = aH.getScriptFrom(event.getValue());
+
+       if (script == null) {
+           dB.echoError("Tried to call a procedure script, but couldn't find a match!");
+           return;
+       }
 
        // Build script entries
        List<ScriptEntry> entries = script.getContainer().getBaseEntries(event.getPlayer(), event.getNPC());

@@ -44,27 +44,27 @@ public class ScriptContainer {
     }
 
     public boolean contains(String path) {
-        return contents.contains(path);
+        return contents.contains(path.toUpperCase());
     }
 
     public String getString(String path) {
-        return contents.getString(path);
+        return contents.getString(path.toUpperCase());
     }
 
     public String getString(String path, String def) {
-        return contents.getString(path, def);
+        return contents.getString(path.toUpperCase(), def);
     }
 
     public List<String> getStringList(String path) {
-        return contents.getStringList(path);
+        return contents.getStringList(path.toUpperCase());
     }
 
     public ConfigurationSection getConfigurationSection(String path) {
-        return contents.getConfigurationSection(path);
+        return contents.getConfigurationSection(path.toUpperCase());
     }
 
     public void set(String path, Object object) {
-        contents.set(path, object);
+        contents.set(path.toUpperCase(), object);
     }
 
     public String getName() {

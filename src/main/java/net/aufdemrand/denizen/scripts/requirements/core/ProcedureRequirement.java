@@ -16,7 +16,6 @@ public class ProcedureRequirement extends AbstractRequirement{
         // Deprecated
          dB.log("This command is deprecated! Use instead: valueof <proc:name_of_procedure_script>");
 
-
         return false;
 	}
 }
