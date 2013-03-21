@@ -16,13 +16,24 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
  */
 public class DetermineCommand extends AbstractCommand {
 
-    public static Map<Long, String> outcomes = new ConcurrentHashMap<Long, String>();
+    private static Map<Long, String> outcomes = new ConcurrentHashMap<Long, String>();
 
     public static long uniqueId = 0;
 
     public static long getNewId() {
         uniqueId++;
         return uniqueId;
+    }
+
+    public static boolean hasOutcome(long id) {
+        if (outcomes.containsKey(id)) return true;
+        return false;
+    }
+
+    public static String getOutcome(long id) {
+        String outcome = outcomes.get(id);
+        outcomes.remove(id);
+        return outcome;
     }
 
     @Override

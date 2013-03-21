@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.arguments.Location;
@@ -23,6 +24,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +39,16 @@ public class WorldScriptHelper implements Listener {
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
-    public boolean doEvent(String eventName, dNPC npc, Player player, Map<String, String> context) {
+    public String doEvent(String eventName, dNPC npc, Player player, Map<String, String> context) {
 
-        boolean cancelled = false;
         for (WorldScriptContainer script : world_scripts.values()) {
 
             if (script == null) continue;
             if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
+
+            // Fetch script from Event
+            List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
+            if (entries.isEmpty()) continue;
 
             dB.report("Event",
                     aH.debugObj("Type", "On " + eventName)
@@ -51,10 +56,6 @@ public class WorldScriptHelper implements Listener {
                             + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
                             + (player != null ? aH.debugObj("Player", player.getName()) : "")
                             + (context != null ? aH.debugObj("Context", context.toString()) : ""));
-
-            // Fetch script from Event
-            List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
-            if (entries.isEmpty()) continue;
 
             dB.echoDebug(dB.DebugElement.Header, "Building event 'On " + eventName.toUpperCase() + "' for " + script.getName());
 
@@ -71,31 +72,51 @@ public class WorldScriptHelper implements Listener {
             ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
             ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(entries).start();
 
-            if (DetermineCommand.outcomes.containsKey(id)
-                    && DetermineCommand.outcomes.get(id).equalsIgnoreCase("CANCELLED")) {
-                cancelled = true;
-            }
+            if (DetermineCommand.hasOutcome(id))
+                return DetermineCommand.getOutcome(id);
         }
-        return cancelled;
+
+        return null;
     }
 
 
     @EventHandler
     public void commandEvent(PlayerCommandPreprocessEvent event) {
         Map<String, String> context = new HashMap<String, String>();
-        context.put("args", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
-        if (doEvent(event.getMessage().split(" ")[0].replace("/", "") + " command", null, event.getPlayer(), context)) {
+
+        // Well, this is ugly :(
+        // Fill tags in any arguments
+        net.aufdemrand.denizen.utilities.arguments.List args = new net.aufdemrand.denizen.utilities.arguments
+                .List(Arrays.asList(aH.buildArgs(TagManager.tag(event.getPlayer(), null,
+                (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : "")))));
+
+        String command = event.getMessage().split(" ")[0].replace("/", "").toUpperCase();
+
+        // Fill context
+        context.put("args", args.dScriptArgValue());
+        context.put("command", command);
+        context.put("raw_args", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
+
+        // Run any event scripts and get the determination.
+        String determination = doEvent(command + " command", null, event.getPlayer(), context);
+
+        // If a script has determined fulfilled, cancel this event so the player doesn't
+        // receive the default 'Invalid command' gibberish from bukkit.
+        if (determination.equals("FULFILLED") || determination.equals("CANCELLED"))
             event.setCancelled(true);
-        }
     }
 
 
     @EventHandler
     public void loginEvent(PlayerLoginEvent event) {
         Map<String, String> context = new HashMap<String, String>();
-        context.put("ip", event.getHostname());
+        context.put("hostname", event.getHostname());
 
-        doEvent("player login", null, event.getPlayer(), context);
+        String determination = doEvent("player login", null, event.getPlayer(), context);
+
+        // Handle determine kicked
+        if (determination.toUpperCase().startsWith("KICKED"))
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, aH.getStringFrom(determination));
     }
 
     @EventHandler
@@ -103,15 +124,24 @@ public class WorldScriptHelper implements Listener {
         Map<String, String> context = new HashMap<String, String>();
         context.put("message", event.getQuitMessage());
 
-        doEvent("player quit", null, event.getPlayer(), context);
+        String determination = doEvent("player quit", null, event.getPlayer(), context);
+
+        // Handle determine message
+        if (determination.toUpperCase().startsWith("MESSAGE"))
+            event.setQuitMessage(aH.getStringFrom(determination));
+
     }
-    
+
     @EventHandler
     public void joinEvent(PlayerJoinEvent event) {
         Map<String, String> context = new HashMap<String, String>();
         context.put("message", event.getJoinMessage());
 
-        doEvent("player join", null, event.getPlayer(), context);
+        String determination = doEvent("player join", null, event.getPlayer(), context);
+
+        // Handle message
+        if (determination.toUpperCase().startsWith("MESSAGE"))
+            event.setJoinMessage(aH.getStringFrom(determination));
     }
 
     @EventHandler
@@ -119,8 +149,14 @@ public class WorldScriptHelper implements Listener {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
         String name = Location.isSavedLocation(event.getPlayer().getLocation());
-        if (name != null)
-            doEvent("walked over " + name, null, event.getPlayer(), null);
+
+        if (name != null) {
+            String determination = doEvent("walked over " + name, null, event.getPlayer(), null);
+
+            if (determination.toUpperCase().startsWith("FROZEN"))
+                event.setCancelled(true);
+        }
+
     }
 
     public void serverStartEvent() {
@@ -140,7 +176,6 @@ public class WorldScriptHelper implements Listener {
     private Map<String, Integer> current_time = new HashMap<String, Integer>();
 
     public void timeEvent() {
-
         for (World world : Bukkit.getWorlds()) {
             int hour = Double.valueOf(world.getTime() / 1000).intValue();
             hour = hour + 6;
@@ -158,19 +193,25 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
 
+        String determination;
+
         if (event.getAction() == Action.LEFT_CLICK_AIR) {
             Map<String, String> context = new HashMap<String, String>();
 
             if (event.getItem() != null ) {
                 context.put("item_in_hand", new Item(event.getItem()).dScriptArgValue());
 
-                if (doEvent("player swings " + new Item(event.getItem()).dScriptArgValue() + " in air", null, event.getPlayer(), context))
+                determination = doEvent("player swings " + new Item(event.getItem()).dScriptArgValue() + " in air", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
-                if (doEvent("player swings item in air", null, event.getPlayer(), context))
+
+                determination = doEvent("player swings item in air", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
             }
 
-            if (doEvent("player swings arm in air", null, event.getPlayer(), context))
+            determination = doEvent("player swings arm in air", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
         }
 
@@ -181,12 +222,18 @@ public class WorldScriptHelper implements Listener {
             if (event.getItem() != null ) {
                 context.put("item_in_hand", new Item(event.getItem()).dScriptArgValue());
 
-                if (doEvent("player hits block with " + new Item(event.getItem()).dScriptArgValue(), null, event.getPlayer(), context))
+                determination = doEvent("player hits block with " + new Item(event.getItem()).dScriptArgValue(), null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
-                if (doEvent("player hits block with item", null, event.getPlayer(), context))
+
+                determination = doEvent("player hits block with item", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
             }
-            if (doEvent("player hits block", null, event.getPlayer(), context))
+
+            determination = doEvent("player hits block", null, event.getPlayer(), context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
         }
 
@@ -194,8 +241,8 @@ public class WorldScriptHelper implements Listener {
             Map<String, String> context = new HashMap<String, String>();
 
             context.put("interact location", new Location(event.getClickedBlock().getLocation()).dScriptArgValue());
-
-            if (doEvent("player interacts with block", null, event.getPlayer(), context))
+            determination = doEvent("player interacts with block", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
         }
 
@@ -210,48 +257,81 @@ public class WorldScriptHelper implements Listener {
                 && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             Map<String, String> context = new HashMap<String, String>();
             context.put("cause", event.getCause().toString());
-            if (doEvent("player damaged", null, (Player) event.getEntity(), context))
+
+            String determination;
+
+            determination = doEvent("player damaged", null, (Player) event.getEntity(), context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
-            if (doEvent("player damaged by " + event.getCause().toString(), null, (Player) event.getEntity(), context))
+            if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Integer))
+                event.setDamage(aH.getIntegerFrom(determination));
+
+            determination = doEvent("player damaged by " + event.getCause().toString(), null, (Player) event.getEntity(), context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
+            if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Integer))
+                event.setDamage(aH.getIntegerFrom(determination));
         }
     }
 
     @EventHandler
     public void playerHitByEntity(EntityDamageByEntityEvent event) {
 
+        String determination;
+
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())
                 && event.getDamager() instanceof Player) {
             Map<String, String> context = new HashMap<String, String>();
             context.put("cause", event.getCause().toString());
 
-            if (doEvent("player damages npc",
+            determination = doEvent("player damages npc",
                     DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity())),
                     (Player) event.getDamager(),
-                    context))
+                    context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
-
+            if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Integer))
+                event.setDamage(aH.getIntegerFrom(determination));
         }
 
         if (event.getEntity() instanceof Player) {
             Map<String, String> context = new HashMap<String, String>();
             context.put("cause", event.getCause().toString());
             context.put("damaging entity", event.getDamager().getType().toString());
-            if (doEvent("player damaged by entity", null, (Player) event.getEntity(), context))
+
+            determination = doEvent("player damaged by entity", null, (Player) event.getEntity(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
+            if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Integer))
+                event.setDamage(aH.getIntegerFrom(determination));
 
             if (CitizensAPI.getNPCRegistry().isNPC(event.getDamager())) {
                 context.put("damager", String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getDamager()).getId()));
-                if (doEvent("player damaged by npc", null, (Player) event.getEntity(), context))
+
+                determination = doEvent("player damaged by npc", null, (Player) event.getEntity(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
+                if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Integer))
+                    event.setDamage(aH.getIntegerFrom(determination));
 
             } else if (event.getDamager() instanceof Player) {
                 context.put("damager", ((Player) event.getDamager()).getName());
-                if (doEvent("player damaged by player", null, (Player) event.getEntity(), context))
+                determination = doEvent("player damaged by player", null, (Player) event.getEntity(), context);
+
+                if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
+                if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Integer))
+                    event.setDamage(aH.getIntegerFrom(determination));
+
             } else {
-                if (doEvent("player damaged by " + event.getDamager().getType().toString(), null, (Player) event.getEntity(), context))
+                determination = doEvent("player damaged by " + event.getDamager().getType().toString(), null, (Player) event.getEntity(), context);
+
+                if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
+                if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Integer))
+                    event.setDamage(aH.getIntegerFrom(determination));
             }
 
         }
@@ -266,7 +346,12 @@ public class WorldScriptHelper implements Listener {
             Map<String, String> context = new HashMap<String, String>();
             context.put("reason", event.getRegainReason().toString());
 
-            if (doEvent("player regains health", null, (Player) event.getEntity(), context))
+            String determination = doEvent("player regains health", null, (Player) event.getEntity(), context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+            if (aH.matchesValueArg("AMOUNT", determination, aH.ArgumentType.Integer))
+                event.setAmount(aH.getIntegerFrom(determination));
                 event.setCancelled(true);
         }
 

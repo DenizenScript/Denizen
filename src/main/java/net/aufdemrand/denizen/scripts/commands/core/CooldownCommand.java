@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -129,8 +130,6 @@ public class CooldownCommand extends AbstractCommand {
 
     }
 
-    private FileConfiguration saves = null;
-
     /**
      * Checks if a script is cooled-down for a Player. If a cool-down is currently in progress,
      * its requirements will fail and it will not trigger. If the script is being cooled down
@@ -144,33 +143,29 @@ public class CooldownCommand extends AbstractCommand {
      * 		if the script is cool for the Player
      *
      */
-    public boolean checkCooldown(String playerName, String scriptName) {
+    public static boolean checkCooldown(String playerName, String scriptName) {
         // I hate case-sensitivity. The positive here outweighs the negative.
         playerName = playerName.toUpperCase();
         scriptName = scriptName.toUpperCase();
 
-        if (saves == null) saves = denizen.getSaves();
-
         // Check current entry GLOBALLY, reset it if necessary
-        if (saves.contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
-            if (System.currentTimeMillis() < saves.getLong("Global.Scripts." + scriptName + ".Cooldown Time"))
+        if (DenizenAPI._saves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
+            if (System.currentTimeMillis() < DenizenAPI._saves().getLong("Global.Scripts." + scriptName + ".Cooldown Time"))
                 return false;
             else {
-                saves.set("Global.Scripts." + scriptName + ".Cooldown Time", null);
-                denizen.saveSaves();
+                DenizenAPI._saves().set("Global.Scripts." + scriptName + ".Cooldown Time", null);
             }
         }
 
         // Now check for player-specific cooldowns
 
         // If no entry for the script, return true
-        if (!saves.contains("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))
+        if (!DenizenAPI._saves().contains("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))
             return true;
 
         // If there is an entry, check against the time
-        if (System.currentTimeMillis() >= saves.getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))	{
-            saves.set("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time", null);
-            denizen.saveSaves();
+        if (System.currentTimeMillis() >= DenizenAPI._saves().getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))	{
+            DenizenAPI._saves().set("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time", null);
             return true;
         }
 
@@ -189,22 +184,18 @@ public class CooldownCommand extends AbstractCommand {
      * @param global
      * 		whether the script should be cooled down globally
      */
-    public void setCooldown(String playerName, int duration, String scriptName, boolean global) {
+    public static void setCooldown(String playerName, int duration, String scriptName, boolean global) {
         // I hate case-sensitivity. The positive here outweighs the negative.
         if (playerName != null) playerName = playerName.toUpperCase();
         scriptName = scriptName.toUpperCase();
 
-        if (saves == null) saves = denizen.getSaves();
-
         // Set global cooldown
         if (global) {
-            saves.set("Global.Scripts." + scriptName + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
-            denizen.saveSaves();
+            DenizenAPI._saves().set("Global.Scripts." + scriptName + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
 
             // or set Player cooldown
         }   else {
-            saves.set("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
-            denizen.saveSaves();
+            DenizenAPI._saves().set("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
         }
     }
 

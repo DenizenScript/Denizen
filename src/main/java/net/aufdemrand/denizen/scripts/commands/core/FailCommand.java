@@ -81,6 +81,11 @@ public class FailCommand extends AbstractCommand {
         failScript(player, script.getName());
 	}
 
+    public static void resetFails(String playerName, String scriptName) {
+        scriptName = scriptName.toUpperCase();
+        DenizenAPI._saves().set("Players." + playerName + "." + scriptName + "." + "Failed", null);
+    }
+
 	/**
 	 * Increases a scripts 'failed' counter for a specified Player. 
 	 * 
@@ -89,15 +94,14 @@ public class FailCommand extends AbstractCommand {
 	 * @param scriptName
 	 * 		name of the Script
 	 */
-	public void failScript(String playerName, String scriptName) {
+	public static void failScript(String playerName, String scriptName) {
 		scriptName = scriptName.toUpperCase();
-		int fails = denizen.getSaves().getInt("Players." + playerName + "." + scriptName + "." + "Failed", 0);
+		int fails = DenizenAPI._saves().getInt("Players." + playerName + "." + scriptName + "." + "Failed", 0);
 
 		// Increase fails by one and set.
 		fails++;
-		denizen.getSaves().set("Players." + playerName + "." + scriptName + "." + "Failed", fails);
-		denizen.saveSaves();
-		
+        DenizenAPI._saves().set("Players." + playerName + "." + scriptName + "." + "Failed", fails);
+
 		// Call ScriptFailEvent
 		ScriptFailEvent event = new ScriptFailEvent(playerName, scriptName, fails);
 		Bukkit.getServer().getPluginManager().callEvent(event);

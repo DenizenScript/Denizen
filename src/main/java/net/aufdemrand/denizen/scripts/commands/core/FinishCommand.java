@@ -81,14 +81,18 @@ public class FinishCommand extends AbstractCommand {
 		finishScript(player, script.getName());
 	}
 
-	public boolean finishScript(String playerName, String scriptName) {
+    public static void resetFinishes(String playerName, String scriptName) {
+        scriptName = scriptName.toUpperCase();
+        DenizenAPI._saves().set("Players." + playerName + "." + scriptName + "." + "Completed", null);
+    }
+
+	public static boolean finishScript(String playerName, String scriptName) {
 		scriptName = scriptName.toUpperCase();
-		int finishes = denizen.getSaves().getInt("Players." + playerName + "." + scriptName + "." + "Completed", 0);
+		int finishes = DenizenAPI._saves().getInt("Players." + playerName + "." + scriptName + "." + "Completed", 0);
 
 		// Increase finishes by one and save.
 		finishes++;
-		denizen.getSaves().set("Players." + playerName + "." + scriptName + "." + "Completed", finishes);
-		denizen.saveSaves();
+        DenizenAPI._saves().set("Players." + playerName + "." + scriptName + "." + "Completed", finishes);
 
 		// Call ScriptFinishEvent
 		ScriptFinishEvent event = new ScriptFinishEvent(playerName, scriptName, finishes);

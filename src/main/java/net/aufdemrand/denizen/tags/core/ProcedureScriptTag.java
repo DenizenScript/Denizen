@@ -47,8 +47,8 @@ public class ProcedureScriptTag implements Listener {
 
        ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(entries).start();
 
-       if (DetermineCommand.outcomes.containsKey(id)) {
-           event.setReplaced(DetermineCommand.outcomes.get(id));
+       if (DetermineCommand.hasOutcome(id)) {
+           event.setReplaced(DetermineCommand.getOutcome(id));
        }
 
 
