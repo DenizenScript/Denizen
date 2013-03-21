@@ -73,6 +73,7 @@ public class List extends ArrayList<String> implements dScriptArgument {
     }
 
     public String dScriptArgValue() {
+        if (isEmpty()) return "";
         StringBuilder dScriptArg = new StringBuilder();
         for (String item : this)
             dScriptArg.append(item + "|");
@@ -91,7 +92,7 @@ public class List extends ArrayList<String> implements dScriptArgument {
         if (attribute == null) return null;
 
         if (attribute.startsWith("ascslist")) {
-            StringBuilder dScriptArg = new StringBuilder();
+            StringBuilder dScriptArg = new StringBuilder(); 
             for (String item : this)
                 dScriptArg.append(item + ", ");
             return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
