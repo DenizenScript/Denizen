@@ -405,7 +405,6 @@ public class CommandHandler {
         npc.removeTrait(SittingTrait.class);
     }
 
-
     /*
 	 * Sleep
 	 */
@@ -557,6 +556,32 @@ public class CommandHandler {
         
     }
     
+    /*
+     * Sneak
+     */
+    @Command(
+            aliases = { "npc" }, usage = "sneak",
+            desc = "Makes the NPC crouch.", flags = "", modifiers = { "sneak, coruch" },
+            min = 1, max = 3, permission = "npc.sneak")
+    @Requirements(selected = true, ownership = true)
+    public void sneaking(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+    	if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+			Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sneak!");
+			return;
+		}
+		
+    	if (!npc.hasTrait(SneakingTrait.class)) npc.addTrait(SneakingTrait.class);
+        SneakingTrait trait = npc.getTrait(SneakingTrait.class);
+
+        if (trait.isSneaking()) {
+            Messaging.send(sender, ChatColor.RED + npc.getName() + " is already sneaking!");
+            return;
+        } else {
+            trait.sneak();
+            return;
+        }
+
+    }
 
     /*
      * HEALTH
