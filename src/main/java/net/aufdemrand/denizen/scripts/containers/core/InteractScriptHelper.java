@@ -168,6 +168,7 @@ public class InteractScriptHelper {
             else {
                 dB.echoDebug("...script is good!");
                 dB.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
+                dB.echoDebug("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
                 dB.echoDebug(dB.DebugElement.Footer);
                 return interactScript;
             }
