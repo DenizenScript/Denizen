@@ -24,7 +24,7 @@ public class NBTItem {
         net.minecraft.server.v1_5_R2.ItemStack cis =  getItemStackHandle(item);
         if (!cis.hasTag()) return false;
         tag = cis.getTag();
-        dB.echoDebug(tag.toString());
+        // dB.echoDebug(tag.toString());
         // if this item has the NBTData for 'owner', there is an engraving.
         return tag.hasKey(key);
     }
@@ -65,7 +65,7 @@ public class NBTItem {
         net.minecraft.server.v1_5_R2.ItemStack cis =  getItemStackHandle(item);
         if (!cis.hasTag()) return false;
         tag = cis.getTag();
-        dB.echoDebug(tag.toString());
+        // dB.echoDebug(tag.toString());
         // if this item has the NBTData for 'owner', there is an engraving.
         return tag.hasKey(key);
     }

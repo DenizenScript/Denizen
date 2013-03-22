@@ -12,7 +12,7 @@ public class Settings {
 	
 	public static boolean ShowDebug() {
 		return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Debug.Show", true);
+                .getBoolean("Debug.Show", false);
 	}
 	
 	/*
