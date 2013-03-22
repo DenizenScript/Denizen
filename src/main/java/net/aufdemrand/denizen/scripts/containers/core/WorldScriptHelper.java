@@ -153,7 +153,10 @@ public class WorldScriptHelper implements Listener {
         String name = Location.isSavedLocation(event.getPlayer().getLocation());
 
         if (name != null) {
-            String determination = doEvent("walked over " + name, null, event.getPlayer(), null);
+            Map<String, String> context = new HashMap<String, String>();
+            context.put("notable_name", name);
+
+            String determination = doEvent("walked over " + name, null, event.getPlayer(), context);
 
             if (determination.toUpperCase().startsWith("FROZEN"))
                 event.setCancelled(true);
@@ -354,7 +357,7 @@ public class WorldScriptHelper implements Listener {
                 event.setCancelled(true);
             if (aH.matchesValueArg("AMOUNT", determination, aH.ArgumentType.Integer))
                 event.setAmount(aH.getIntegerFrom(determination));
-                event.setCancelled(true);
+
         }
 
     }
