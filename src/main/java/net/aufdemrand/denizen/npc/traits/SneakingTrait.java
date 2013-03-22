@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.minecraft.server.v1_5_R2.EntityHuman;
@@ -42,7 +43,7 @@ public class SneakingTrait extends Trait implements Listener  {
 	/**
 	 * Makes the NPC stand
 	 */
-	public void stand() {
+	public void stand() {		
 		DenizenAPI.getDenizenNPC(npc).action("stand", null);
 		
 		((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x00));

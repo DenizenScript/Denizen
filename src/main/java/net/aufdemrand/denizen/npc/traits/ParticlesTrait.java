@@ -8,13 +8,16 @@ import net.minecraft.server.v1_5_R2.DataWatcher;
 import net.minecraft.server.v1_5_R2.EntityLiving;
 
 import org.bukkit.Effect;
+import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_5_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_5_R2.entity.CraftLivingEntity;
+import org.bukkit.entity.Wolf;
 
 public class ParticlesTrait extends Trait {
 	
-	public enum EffectType { NONE, SMOKE, FLAME, ENDER, POTBREAK, POTION }
+	public enum EffectType { NONE, SMOKE, FLAME, ENDER, POTBREAK, HEART, POTION }
 	
 	//DataWatcher dw;
 	//EntityLiving el;
@@ -27,7 +30,7 @@ public class ParticlesTrait extends Trait {
 	int wait = 10;
 	int counter = 0;
 	//int c = 0;
-	//int tempcounter = 0;
+	int tempcounter = 0;
 	
 	@Override
 	public void run() {
@@ -35,6 +38,9 @@ public class ParticlesTrait extends Trait {
 			return;
 		}
 		
+		if (tempcounter > 20) {
+			dB.log("current effect: " + effectType.name());
+		}
 		counter++;
 		
 		switch (effectType) {
@@ -73,6 +79,14 @@ public class ParticlesTrait extends Trait {
             }
             dw.watch(8, Integer.valueOf(c));
             */
+			break;
+		case HEART:
+			if (counter > wait) {
+				dB.log("...playing heart effect");
+				playHeartEffect();
+				counter = 0;
+			}
+			break;
 		}
 		
 		
@@ -102,6 +116,19 @@ public class ParticlesTrait extends Trait {
 	public void playPotionBreakEffect() {
 		Location location = npc.getBukkitEntity().getLocation();
 		world.playEffect(location, Effect.POTION_BREAK, 0);
+	}
+	
+	public void playHeartEffect() {
+		Location location = npc.getBukkitEntity().getLocation();
+		Wolf tempWolf = (Wolf) world.spawn(location, Wolf.class);
+		tempWolf.playEffect(EntityEffect.WOLF_HEARTS);
+		tempWolf.remove();
+		
+		//((CraftWorld) world).getHandle().a(
+		//		"heart", 
+		//		location.getBlockX(),
+		//		location.getBlockY(), 
+		//		location.getBlockZ());
 	}
 	
 	public void playSmokeEffect() {

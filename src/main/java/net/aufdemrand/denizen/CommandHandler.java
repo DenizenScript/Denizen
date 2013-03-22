@@ -392,17 +392,29 @@ public class CommandHandler {
             min = 1, max = 3, permission = "npc.stand")
     @Requirements(selected = true, ownership = true)
     public void standing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
-        SittingTrait trait = npc.getTrait(SittingTrait.class);
-
-        if (!trait.isSitting()) {
+        
+    	if (npc.hasTrait(SittingTrait.class)) {
+    		SittingTrait trait = npc.getTrait(SittingTrait.class);
+    		if (!trait.isSitting()) {
+                npc.removeTrait(SittingTrait.class);
+                Messaging.send(sender, ChatColor.RED + npc.getName() + " is already standing!");
+                return;
+            }
+    		trait.stand();
             npc.removeTrait(SittingTrait.class);
-            Messaging.send(sender, ChatColor.RED + npc.getName() + " is already standing!");
-            return;
-        }
+    	} else if (npc.hasTrait(SneakingTrait.class)) {
+    		SneakingTrait trait = npc.getTrait(SneakingTrait.class);
+    		if (!trait.isSneaking()) {
+                npc.removeTrait(SittingTrait.class);
+                Messaging.send(sender, ChatColor.RED + npc.getName() + " is already standing!");
+                return;
+            }
+    		trait.stand();
+            npc.removeTrait(SneakingTrait.class);
+    	}
+        
 
-        trait.stand();
-        npc.removeTrait(SittingTrait.class);
+        
     }
 
     /*
@@ -550,6 +562,8 @@ public class CommandHandler {
         		trait.setEffect("POTBREAK");
         	} else if (name.equalsIgnoreCase("potion")) {
         		trait.setEffect("POTION");
+        	} else if (name.equalsIgnoreCase("heart")) {
+        		trait.setEffect("HEART");
         	} else Messaging.send(sender, ChatColor.RED + "Not a valid effect name!");
         	
         } else Messaging.send(sender, ChatColor.RED + "Please specify an effect name!");
@@ -561,7 +575,7 @@ public class CommandHandler {
      */
     @Command(
             aliases = { "npc" }, usage = "sneak",
-            desc = "Makes the NPC crouch.", flags = "", modifiers = { "sneak, coruch" },
+            desc = "Makes the NPC crouch.", flags = "", modifiers = { "sneak", "crouch" },
             min = 1, max = 3, permission = "npc.sneak")
     @Requirements(selected = true, ownership = true)
     public void sneaking(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
