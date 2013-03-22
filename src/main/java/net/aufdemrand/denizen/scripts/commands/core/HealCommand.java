@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -16,17 +17,12 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 
 /**
- * Feeds a (Player) entity.
- * 
+ * Heals a Player or NPC.
+ *
  * @author Jeremy Schroeder, Mason Adkins
  */
 
 public class HealCommand extends AbstractCommand {
-
-    @Override
-    public void onEnable() {
-        // nothing to do here
-    }
 
     /* HEAL (AMT:#) (TARGET:NPC|PLAYER) */
 
@@ -45,68 +41,70 @@ public class HealCommand extends AbstractCommand {
 
     private enum TargetType { NPC, PLAYER }
 
-    private int amount;
-    private LivingEntity target;
-    private TargetType targetType;
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Must reset ALL private variables, else information left over from last time
-        // might be used.
-        targetType = TargetType.PLAYER;
-        amount = Integer.MAX_VALUE;
-        // Set target to Player by default, if available
-        if (scriptEntry.getPlayer() != null) target = (LivingEntity) scriptEntry.getPlayer();
-        else target = null;
-        
+        TargetType targetType = TargetType.PLAYER;
+        Integer amount = Integer.MAX_VALUE;
+
         for (String arg : scriptEntry.getArguments()) {
 
-            if (aH.matchesQuantity(arg) || aH.matchesValueArg("amt", arg, ArgumentType.Integer)) {
+            if (aH.matchesQuantity(arg) || aH.matchesInteger(arg)
+                    || aH.matchesValueArg("amt", arg, ArgumentType.Integer))
                 amount = aH.getIntegerFrom(arg);
-                dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(amount));
 
-            }   else if (aH.matchesValueArg("target", arg, ArgumentType.String)) {
+            else if (aH.matchesValueArg("target", arg, ArgumentType.String)) {
                 try {
                     targetType = TargetType.valueOf(aH.getStringFrom(arg).toUpperCase());
-                    dB.echoDebug("TARGET to HEAL: " + targetType.name());
                 } catch (Exception e) { dB.echoError("Invalid TARGET! Valid: NPC, PLAYER"); }
 
             }   else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
         // If TARGET is NPC/PLAYER and no NPC/PLAYER available, throw exception.
-        if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
-        else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
-        // If TARGET is NPC, set entity.
-        else if (targetType == TargetType.NPC) target = scriptEntry.getNPC().getEntity();
+        if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null)
+            throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
 
+        else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null)
+            throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+
+        scriptEntry.addObject("target", targetType)
+                .addObject("amount", amount);
     }
 
-    
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // Target is a NPC
-        if (CitizensAPI.getNPCRegistry().isNPC(target)) {
-            NPC npc = CitizensAPI.getNPCRegistry().getNPC(target);
-            if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
-            // Set health to max
-            if (amount == Integer.MAX_VALUE) npc.getTrait(HealthTrait.class).setHealth(npc.getTrait(HealthTrait.class).getMaxhealth());
-            // else, set Health
-            else npc.getTrait(HealthTrait.class).heal(amount);
-        
-        // Target is a Player
-        } else {
-            Player player = (Player) target;
-			
-            // Set to max health
-            if (amount == Integer.MAX_VALUE) player.setHealth(player.getMaxHealth());
-            // else, increase health
-            else player.setHealth(player.getHealth() + amount);
+        TargetType target = (TargetType) scriptEntry.getObject("target");
+        Integer amount = (Integer) scriptEntry.getObject("amount");
+
+        dB.report(getName(),
+                aH.debugObj("Target", (target == TargetType.PLAYER ? scriptEntry.getPlayer().getName()
+                        : scriptEntry.getNPC().getName()))
+                        + aH.debugObj("Amount", (amount == Integer.MAX_VALUE ? "Full"
+                        : String.valueOf(amount))));
+
+        switch (target) {
+
+            case NPC:
+                NPC npc = scriptEntry.getNPC().getCitizen();
+                if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
+                // Set health to max
+                if (amount == Integer.MAX_VALUE)
+                    npc.getTrait(HealthTrait.class).setHealth(npc.getTrait(HealthTrait.class).getMaxhealth());
+                    // else, set Health
+                else npc.getTrait(HealthTrait.class).heal(amount);
+                return;
+
+            case PLAYER:
+                Player player = scriptEntry.getPlayer();
+                // Set to max health
+                if (amount == Integer.MAX_VALUE) player.setHealth(player.getMaxHealth());
+                    // else, increase health
+                else ((CraftLivingEntity) player).getHandle().setHealth(player.getHealth() + amount);
+                return;
         }
 
     }
-    
-    
 }
