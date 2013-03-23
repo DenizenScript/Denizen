@@ -69,6 +69,8 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
             else
                 chunkDelays.put(chunk, (long) -1);
             dB.echoDebug("...added chunk "+chunk.getX() + ", "+ chunk.getZ() + " with a " + length.getSeconds() + "delay");
+            if(!chunk.isLoaded())
+                chunk.load();
         case REMOVE:
             if(chunkDelays.containsKey(chunk)) {
                 chunkDelays.remove(chunk);
