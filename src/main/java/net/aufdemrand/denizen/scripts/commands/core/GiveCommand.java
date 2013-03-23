@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -37,6 +38,7 @@ public class GiveCommand  extends AbstractCommand {
 	GiveType giveType;
 	int theAmount;
 	Item theItem;
+	boolean engrave;
 
 	@Override
 	public void onEnable() {
@@ -49,13 +51,14 @@ public class GiveCommand  extends AbstractCommand {
 		/* Initialize variables */ 
 	
 		if (scriptEntry.getArguments () == null) {
-			throw new InvalidArgumentsException ("...Usage: GIVE [MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#)");
+			throw new InvalidArgumentsException ("...Usage: GIVE [MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) (ENGRAVE)");
 		}
 		
 		player = scriptEntry.getPlayer();
 		giveType = null;
 		theAmount = 1;
 		theItem = null;
+		engrave = false;
 	
 		/* Match arguments to expected variables */
 		for (String thisArg : scriptEntry.getArguments()) {
@@ -74,6 +77,12 @@ public class GiveCommand  extends AbstractCommand {
 				this.giveType = GiveType.EXP;
 				dB.echoDebug ("...giving EXP.");
 			} 
+			
+            else if (aH.matchesArg("ENGRAVE", thisArg)) {
+                this.engrave = true;
+                dB.echoDebug ("...item will be engraved.");
+            } 
+            			
 			
 			else if (aH.matchesItem(thisArg) || aH.matchesItem("item:" + thisArg)) {
 				theItem = aH.getItemFrom (thisArg);
@@ -111,8 +120,13 @@ public class GiveCommand  extends AbstractCommand {
 
 			case ITEM:
 				theItem.setAmount(theAmount);
+                if(engrave) {
+                    dB.echoDebug("...engraving " + theItem + " to the player");
+                    NBTItem.addCustomNBT(theItem, "owner", player.getName());
+                }
 				dB.echoDebug("..giving player " + theAmount + " of " + theItem);
 				HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(theItem);
+
 
 				if (!leftovers.isEmpty()) {
 					dB.echoDebug ("...Player did not have enough space in their inventory, the rest of the items have been placed on the floor.");
