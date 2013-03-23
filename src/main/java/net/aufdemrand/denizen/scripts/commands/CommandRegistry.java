@@ -210,6 +210,9 @@ public class CommandRegistry implements DenizenRegistry {
 
         registerCoreMember(WalkToCommand.class,
                 "WALKTO", "walkto [location:x,y,z,world] (speed:#)", 1);
+    
+        registerCoreMember(WorldCommand.class,
+                "WORLD", "world [type:weather|time] (player:player.name) [action:sub_action]", 1);
 
         registerCoreMember(ZapCommand.class, 
         		"ZAP", "zap [#|step:step_name] (script:script_name{current_script}) (duration:#)", 0);
