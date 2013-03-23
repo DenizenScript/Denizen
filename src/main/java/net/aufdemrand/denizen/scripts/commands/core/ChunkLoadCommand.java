@@ -9,9 +9,9 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.citizensnpcs.api.event.NPCDespawnEvent;
 
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
@@ -34,17 +34,18 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         Chunk chunk = null;
-        Duration length = new Duration(-1);
+        Duration length = new Duration(0);
         Action action = Action.ADD;
         
         for (String arg : scriptEntry.getArguments()) {
             if(aH.matchesArg("ADD, REMOVE, REMOVEALL", arg)) {
                 action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
-            } else if (aH.matchesValueArg("LOCATION", arg, ArgumentType.String)) {
+            } else if (aH.matchesLocation(arg)) {
                 chunk = aH.getLocationFrom(arg).getChunk();
 
-            } else if(aH.matchesInteger(arg) || aH.matchesDouble(arg) || aH.matchesDuration(arg))
+            } else if(aH.matchesInteger(arg) || aH.matchesDouble(arg) || aH.matchesDuration(arg)) {
                 length = Duration.valueOf(arg);
+            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
         
         if (chunk == null) throw new InvalidArgumentsException(Messages.DEBUG_SET_LOCATION);
@@ -64,13 +65,14 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         
         switch (action) {
         case ADD:
-            if(length.getSeconds() != -1)
-                chunkDelays.put(chunk, System.currentTimeMillis() + length.getMillis());
+            if(length.getSeconds() != 0)
+                chunkDelays.put(chunk.getX()+", "+chunk.getZ(), System.currentTimeMillis() + length.getMillis());
             else
-                chunkDelays.put(chunk, (long) -1);
+                chunkDelays.put(chunk.getX()+", "+chunk.getZ(), (long) 0);
             dB.echoDebug("...added chunk "+chunk.getX() + ", "+ chunk.getZ() + " with a " + length.getSeconds() + "delay");
             if(!chunk.isLoaded())
                 chunk.load();
+            break;
         case REMOVE:
             if(chunkDelays.containsKey(chunk)) {
                 chunkDelays.remove(chunk);
@@ -84,25 +86,40 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         }
         
         // Report to dB
-        dB.report(getName(), aH.debugObj("action", action.toString())
+        dB.report(getName(), aH.debugObj("Action", action.toString())
                         + aH.debugObj("Chunk", chunk.toString())
                         + aH.debugObj("Length", length.toString()));
 
     }
     
     // Map of chunks with delays
-    Map<Chunk, Long> chunkDelays = new HashMap<Chunk, Long>();
+    Map<String, Long> chunkDelays = new HashMap<String, Long>();
     
     @EventHandler
     public void stopUnload(ChunkUnloadEvent e) {
-        if(chunkDelays.containsKey(e.getChunk())) {
-            if(chunkDelays.get(e.getChunk()) == -1) {
+        if(chunkDelays.containsKey(e.getChunk().getX()+ ", "+e.getChunk().getZ())) {
+            if(chunkDelays.get(e.getChunk().getX()+ ", "+e.getChunk().getZ()) == 0) {
                 e.setCancelled(true);
                 return;
-            } else if(System.currentTimeMillis() < chunkDelays.get(e.getChunk())) {
+            } else if(System.currentTimeMillis() < chunkDelays.get(e.getChunk().getX()+ ", "+e.getChunk().getZ())) {
                 e.setCancelled(true);
                 return;
-            } else chunkDelays.remove(e.getChunk());
+            } else chunkDelays.remove(e.getChunk().getX()+ ", "+e.getChunk().getZ());
+        }
+        return;
+    }
+    
+    @EventHandler
+    public void stopDespawn(NPCDespawnEvent e) {
+        Chunk chnk = e.getNPC().getBukkitEntity().getLocation().getChunk();
+        if(chunkDelays.containsKey(chnk.getX() + ", "+chnk.getZ())) {
+            if(chunkDelays.get(chnk.getX() + ", "+chnk.getZ()) == 0) {
+                e.setCancelled(true);
+                return;
+            } else if(System.currentTimeMillis() < chunkDelays.get(chnk.getX() + ", "+chnk.getZ())) {
+                e.setCancelled(true);
+                return;
+            } else chunkDelays.remove(chnk.getX() + ", "+chnk.getZ());
         }
         return;
     }

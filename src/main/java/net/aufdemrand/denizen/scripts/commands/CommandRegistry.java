@@ -64,7 +64,7 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(ChatCommand.class, 
         		"CHAT", "chat [\"chat text\"] (npcid:#) (target(s):npc.#|player.name{attached player})", 1);
         
-        registerCoreMember(CooldownCommand.class,
+        registerCoreMember(ChunkLoadCommand.class,
                 "CHUNKLOAD", "chunkload ({add}|remove|removeall) [location:x,y,z,world] (duration:{-1s})", 1);
         
         registerCoreMember(ClearCommand.class, 
@@ -73,7 +73,7 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(CooldownCommand.class, 
         		"COOLDOWN", "cooldown (duration:#{60s}) (global|player:name{attached player}) (script:name)", 1);
 
-        registerCoreMember(CooldownCommand.class,
+        registerCoreMember(CopyBlockCommand.class,
                 "COPYBLOCK", "copyblock [location:x,y,z,world] [to:x,y,z,world]", 1);
 
         registerCoreMember(DetermineCommand.class, 
@@ -109,7 +109,7 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(FinishCommand.class, 
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
 
-        registerCoreMember(FinishCommand.class, 
+        registerCoreMember(FishCommand.class, 
         		"FISH", "fish (stop) (location:x,y,z,world)", 1);
 
         registerCoreMember(FlagCommand.class, 
