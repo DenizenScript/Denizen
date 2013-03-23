@@ -538,16 +538,16 @@ public class CommandHandler {
      * Effect
      */
     @Command(
-            aliases = { "npc" }, usage = "effect --name effect_name",
+            aliases = { "npc" }, usage = "effect --play effect_name",
             desc = "Sets the NPC particle effect.", modifiers = { "effect" },
             min = 1, max = 3, permission = "npc.effect")
     @Requirements(selected = true, ownership = true)
     public void playEffect(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
-        ParticlesTrait trait = npc.getTrait(ParticlesTrait.class); 
+            ParticlesTrait trait = npc.getTrait(ParticlesTrait.class); 
     	
-    	if (args.hasValueFlag("name")) {
-    		String name = args.getFlag("name");
+    	if (args.hasValueFlag("play")) {
+    		String name = args.getFlag("play");
         	if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
         	
         	if (name.equalsIgnoreCase("none")) {
