@@ -64,6 +64,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(ChatCommand.class, 
         		"CHAT", "chat [\"chat text\"] (npcid:#) (target(s):npc.#|player.name{attached player})", 1);
         
+        registerCoreMember(CooldownCommand.class,
+                "CHUNKLOAD", "chunkload ({add}|remove|removeall) [location:x,y,z,world] (duration:{-1s})", 1);
+        
         registerCoreMember(ClearCommand.class, 
         		"CLEAR", "clear (queue:name) (...)", 1);
         
@@ -116,7 +119,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"FOLLOW", "follow (stop)", 0);
 		
         registerCoreMember(GiveCommand.class, 
-        		"GIVE", "give [money|item:#(:#)|item:material(:#)] (qty:#)", 1);
+        		"GIVE", "give [money|item:#(:#)|item:material(:#)] (qty:#) (engrave)", 1);
         
         registerCoreMember(GroupCommand.class, 
                 "GROUP", "group [add|remove]  [group] (player:player_name) (world:world_name)", 2);
