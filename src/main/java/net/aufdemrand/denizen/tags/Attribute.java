@@ -34,6 +34,12 @@ public class Attribute {
         return false;
     }
 
+    public boolean startsWith(String string, int attribute) {
+        string = string.toLowerCase();
+        if (this.attribute.split("\\.")[attribute - 1].startsWith(string)) return true;
+        return false;
+    }
+
     public Attribute fulfill(int attributes) {
         if (attribute.split("\\.").length >= attributes)
             attribute = "";

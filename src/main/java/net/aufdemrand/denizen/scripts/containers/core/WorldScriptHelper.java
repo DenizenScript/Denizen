@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.arguments.Location;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
@@ -21,7 +22,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 
 import java.util.Arrays;
@@ -88,8 +88,7 @@ public class WorldScriptHelper implements Listener {
 
         // Well, this is ugly :(
         // Fill tags in any arguments
-        net.aufdemrand.denizen.utilities.arguments.List args = new net.aufdemrand.denizen.utilities.arguments
-                .List(Arrays.asList(aH.buildArgs(TagManager.tag(event.getPlayer(), null,
+        dList args = new dList(Arrays.asList(aH.buildArgs(TagManager.tag(event.getPlayer(), null,
                 (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : "")))));
 
         String command = event.getMessage().split(" ")[0].replace("/", "").toUpperCase();
@@ -350,6 +349,7 @@ public class WorldScriptHelper implements Listener {
                 && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             Map<String, String> context = new HashMap<String, String>();
             context.put("reason", event.getRegainReason().toString());
+            context.put("amount", String.valueOf(event.getAmount()));
 
             String determination = doEvent("player regains health", null, (Player) event.getEntity(), context);
 

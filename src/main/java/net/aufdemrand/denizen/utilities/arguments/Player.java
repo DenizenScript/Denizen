@@ -10,15 +10,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
-import java.text.DecimalFormat;
-import java.util.*;
-
 public class Player implements dScriptArgument {
 
     /**
      *
      * @param string  the string or dScript argument String
-     * @return  a dScript List
+     * @return  a dScript dList
      *
      */
     public static Player valueOf(String string) {
@@ -126,7 +123,7 @@ public class Player implements dScriptArgument {
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("chat_history"))
-            return new List(PlayerTags.playerChatHistory.get(player))
+            return new dList(PlayerTags.playerChatHistory.get(player))
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("location.bed_spawn"))

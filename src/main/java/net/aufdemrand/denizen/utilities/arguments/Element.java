@@ -14,7 +14,7 @@ public class Element implements dScriptArgument {
     /**
      *
      * @param string  the string or dScript argument String
-     * @return  a dScript List
+     * @return  a dScript dList
      *
      */
     public static Element valueOf(String string) {
@@ -117,6 +117,17 @@ public class Element implements dScriptArgument {
         if (attribute.startsWith("debug")) {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("split") && attribute.startsWith("limit", 2)) {
+            String split_string = (attribute.hasContext(1) ? attribute.getContext(1) : " ");
+            Integer limit = (attribute.hasContext(2) ? attribute.getIntContext(2) : 1);
+            return new dList(Arrays.asList(element.split(split_string, limit))).getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("split")) {
+            String split_string = (attribute.hasContext(1) ? attribute.getContext(1) : " ");
+            return new dList(Arrays.asList(element.split(split_string))).getAttribute(attribute.fulfill(1));
         }
 
         return element;

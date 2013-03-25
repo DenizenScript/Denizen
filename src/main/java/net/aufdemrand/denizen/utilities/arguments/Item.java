@@ -300,8 +300,8 @@ public class Item extends ItemStack implements dScriptArgument {
 
         if (attribute.startsWith("lore")) {
             if (hasItemMeta() && getItemMeta().hasLore())
-                return new List(getItemMeta().getLore()).getAttribute(attribute.fulfill(1));
-            else return new List("Empty List", "").getAttribute(attribute.fulfill(1));
+                return new dList(getItemMeta().getLore()).getAttribute(attribute.fulfill(1));
+            else return new dList("Empty dList", "").getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("prefix"))

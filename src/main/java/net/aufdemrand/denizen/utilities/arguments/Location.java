@@ -218,6 +218,130 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
     public String getAttribute(Attribute attribute) {
 
 
+        if (attribute == null) return null;
+
+        if (attribute.startsWith("biome.formatted"))
+            return new Element(getBlock().getBiome().name().toLowerCase().replace('_', ' '))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("biome.humidity"))
+            return new Element(String.valueOf(getBlock().getHumidity()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("biome.temperature"))
+            return new Element(String.valueOf(getBlock().getTemperature()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("biome"))
+            return new Element(String.valueOf(getBlock().getBiome().name()))
+                    .getAttribute(attribute.fulfill(1));
+
+//        else if (type.equals("BLOCK"))
+//        {
+//            if (subType.equals("BELOW"))
+//            {
+//                fromLocation = new Location(fromLocation.add(0, -1, 0));
+//            }
+//
+//            else if (subType.equals("MATERIAL") || specifier.equals("MATERIAL"))
+//            {
+//                event.setReplaced(fromLocation.getBlock().getType().toString());
+//            }
+//        }
+//
+//        else if (type.equals("DIRECTION"))
+//        {
+//            if (fromLocation != null && toLocation != null)
+//            {
+//                event.setReplaced(Utilities.getCardinal(Utilities.getYaw
+//                        (toLocation.toVector().subtract
+//                                (fromLocation.toVector()).normalize())));
+//            }
+//        }
+//
+//        else if (type.equals("DISTANCE"))
+//        {
+//            if (fromLocation != null && toLocation != null)
+//            {
+//                if (subType.equals("ASINT"))
+//                {
+//                    event.setReplaced(String.valueOf((int)fromLocation.distance(toLocation)));
+//                }
+//                else if (subType.equals("VERTICAL"))
+//                {
+//                    if (fromLocation.getWorld().getName() == toLocation.getWorld().getName()
+//                            || specifier.equals("MULTIWORLD"))
+//                    {
+//                        // Only calculate distance between locations on different worlds
+//                        // if the MULTIWORLD specifier is used
+//                        event.setReplaced(String.valueOf(Math.abs(
+//                                fromLocation.getY() - toLocation.getY())));
+//                    }
+//                }
+//                else if (subType.equals("HORIZONTAL"))
+//                {
+//                    if (fromLocation.getWorld().getName() == toLocation.getWorld().getName()
+//                            || specifier.equals("MULTIWORLD"))
+//                    {
+//                        // Only calculate distance between locations on different worlds
+//                        // if the MULTIWORLD specifier is used
+//                        event.setReplaced(String.valueOf(Math.sqrt(
+//                                Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
+//                                        Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
+//                    }
+//                }
+//                else
+//                    event.setReplaced(String.valueOf(fromLocation.distance(toLocation)));
+//            }
+//        }
+//
+//        else if (type.equals("FORMATTED"))
+//            event.setReplaced("X '" + fromLocation.getX()
+//                    + "', Y '" + fromLocation.getY()
+//                    + "', Z '" + fromLocation.getZ()
+//                    + "', in world '" + fromLocation.getWorld().getName() + "'");
+//
+//        else if (type.equals("IS_LIQUID"))
+//        {
+//            event.setReplaced(String.valueOf(fromLocation.getBlock().isLiquid()));
+//        }
+//
+//        else if (type.equals("LIGHT"))
+//        {
+//            if (subType.equals("BLOCKS"))
+//                event.setReplaced(String.valueOf((int) fromLocation.getBlock().getLightFromBlocks()));
+//            else if (subType.equals("SKY"))
+//                event.setReplaced(String.valueOf((int) fromLocation.getBlock().getLightFromSky()));
+//            else
+//                event.setReplaced(String.valueOf((int) fromLocation.getBlock().getLightLevel()));
+//        }
+//
+//        else if (type.equals("POWER"))
+//        {
+//            event.setReplaced(String.valueOf((int) fromLocation.getBlock().getBlockPower()));
+//        }
+//
+//        else if (type.equals("TIME"))
+//        {
+//            if (subType.equals("PERIOD"))
+//                if (fromLocation.getWorld().getTime() < 13500 ||
+//                        fromLocation.getWorld().getTime() > 23000)
+//                    event.setReplaced("day");
+//                else if (fromLocation.getWorld().getTime() > 13500)
+//                    event.setReplaced("night");
+//        }
+//
+//        else if (type.equals("WORLD"))
+//            event.setReplaced(fromLocation.getWorld().getName());
+//
+//        else if (type.equals("X"))
+//            event.setReplaced(String.valueOf(fromLocation.getX()));
+//
+//        else if (type.equals("Y"))
+//            event.setReplaced(String.valueOf(fromLocation.getY()));
+//
+//        else if (type.equals("Z"))
+//            event.setReplaced(String.valueOf(fromLocation.getZ()));
 
         return dScriptArgValue();
     }

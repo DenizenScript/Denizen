@@ -2,23 +2,15 @@ package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 
-import javax.persistence.Id;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class List extends ArrayList<String> implements dScriptArgument {
+public class dList extends ArrayList<String> implements dScriptArgument {
 
-    public static List valueOf(String string) {
+    public static dList valueOf(String string) {
         if (string == null) return null;
 
         String prefix = null;
@@ -28,24 +20,24 @@ public class List extends ArrayList<String> implements dScriptArgument {
             string = string.split(":", 2)[1];
         }
 
-        return new List(prefix, string);
+        return new dList(prefix, string);
     }
 
     private String prefix;
 
-    public List(String prefix, String items) {
+    public dList(String prefix, String items) {
         if (prefix == null) this.prefix = "list";
         else this.prefix = prefix;
         addAll(Arrays.asList(items.split("\\|")));
     }
 
-    public List(String prefix, java.util.List<String> items) {
+    public dList(String prefix, java.util.List<String> items) {
         if (prefix == null) this.prefix = "list";
         else this.prefix = prefix;
         addAll(items);
     }
 
-    public List(java.util.List<String> items) {
+    public dList(java.util.List<String> items) {
         this.prefix = "list";
         addAll(items);
     }

@@ -5,9 +5,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.arguments.Item;
-import net.aufdemrand.denizen.utilities.arguments.Location;
-import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
@@ -58,18 +56,18 @@ public class PlayerTags implements Listener {
         String typeContext = event.getTypeContext() != null ? event.getTypeContext() : "";
         String subType = event.getSubType() != null ? event.getSubType() : "";
         String subTypeContext = event.getSubTypeContext() != null ? event.getSubTypeContext() : "";
-        String specifier = event.getSpecifier() != null ? event.getSpecifier() : "";  
+        String specifier = event.getSpecifier() != null ? event.getSpecifier() : "";
         String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext() : "";
-        
+
         if (type.equalsIgnoreCase("LIST"))
         {
-        	StringBuilder players = new StringBuilder();
-        	
-        	if (subType.equalsIgnoreCase("ONLINE"))
-        	{
-        		if (specifier.equalsIgnoreCase("OPS"))
-        		{
-        			for (Player player : Bukkit.getOnlinePlayers())
+            StringBuilder players = new StringBuilder();
+
+            if (subType.equalsIgnoreCase("ONLINE"))
+            {
+                if (specifier.equalsIgnoreCase("OPS"))
+                {
+                    for (Player player : Bukkit.getOnlinePlayers())
                     {
                         if (player.isOp())
                         {
@@ -77,66 +75,66 @@ public class PlayerTags implements Listener {
                             players.append("|");
                         }
                     }
-        		}
-        		else
-                {   
+                }
+                else
+                {
                     for (Player player : Bukkit.getOnlinePlayers())
                     {
                         players.append(player.getName());
                         players.append("|");
                     }
                 }
-        	}
-        	
-        	else if (subType.equalsIgnoreCase("OFFLINE"))
-        	{
-        		// Bukkit's idea of OfflinePlayers includes online players as well,
-        		// so get the list of online players and check against it
-        		StringBuilder onlinePlayers = new StringBuilder();
-        		
-        		for (Player player : Bukkit.getOnlinePlayers())
+            }
+
+            else if (subType.equalsIgnoreCase("OFFLINE"))
+            {
+                // Bukkit's idea of OfflinePlayers includes online players as well,
+                // so get the list of online players and check against it
+                StringBuilder onlinePlayers = new StringBuilder();
+
+                for (Player player : Bukkit.getOnlinePlayers())
                 {
                     onlinePlayers.append(player.getName());
                     onlinePlayers.append("|");
                 }
-        		
-        		if (specifier.equalsIgnoreCase("OPS"))
-        		{	
-        			for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-        			{
+
+                if (specifier.equalsIgnoreCase("OPS"))
+                {
+                    for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+                    {
                         if (player.isOp() && !onlinePlayers.toString().contains(player.getName()))
                         {
                             players.append(player.getName());
                             players.append("|");
                         }
                     }
-        		}
-        		else
-        		{
-        			for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-                    {        				
-        				if (!onlinePlayers.toString().contains(player.getName()))
-        				{	
-        					players.append(player.getName());
-                        	players.append("|");
-        				}
+                }
+                else
+                {
+                    for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+                    {
+                        if (!onlinePlayers.toString().contains(player.getName()))
+                        {
+                            players.append(player.getName());
+                            players.append("|");
+                        }
                     }
-        		}
-        			
-        	}
-        	else // Get both online and offline players
-        	{
-        		for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-                {        				
-    				players.append(player.getName());
+                }
+
+            }
+            else // Get both online and offline players
+            {
+                for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+                {
+                    players.append(player.getName());
                     players.append("|");
                 }
-        	}
-        
-        	event.setReplaced(players.toString().substring(0, players.length() - 1));
-        	return;
+            }
+
+            event.setReplaced(players.toString().substring(0, players.length() - 1));
+            return;
         }
-        
+
         if (event.getPlayer() == null) return;
 
         if (type.equalsIgnoreCase("CHAT_HISTORY")) {
@@ -157,20 +155,20 @@ public class PlayerTags implements Listener {
                 }
             }
         }
-        
+
         else if (type.equalsIgnoreCase("CLOSEST"))
         {
-        	int range = 100;
-        	
-        	if (aH.matchesInteger(typeContext))
-        		range = aH.getIntegerFrom(typeContext);
-        	
+            int range = 100;
+
+            if (aH.matchesInteger(typeContext))
+                range = aH.getIntegerFrom(typeContext);
+
             if (subType.equalsIgnoreCase("NPC"))
             {
-            	if (specifier.equalsIgnoreCase("NAME"))
-            		event.setReplaced(String.valueOf(Utilities.getClosestNPC(p.getLocation(), range).getId()));
-            	else
-            		event.setReplaced(String.valueOf(Utilities.getClosestNPC(p.getLocation(), range).getName()));
+                if (specifier.equalsIgnoreCase("NAME"))
+                    event.setReplaced(String.valueOf(Utilities.getClosestNPC(p.getLocation(), range).getId()));
+                else
+                    event.setReplaced(String.valueOf(Utilities.getClosestNPC(p.getLocation(), range).getName()));
             }
         }
 
@@ -191,20 +189,25 @@ public class PlayerTags implements Listener {
             }
             else if (subType.equalsIgnoreCase("ENCHANTMENTS"))
             {
-            	String enchantments = null;
-            	
-            	if (specifier.equalsIgnoreCase("LEVELS"))
-            		enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels();
-            	else if (specifier.equalsIgnoreCase("LEVELS_ONLY"))
-            		enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly();
-            	else
-            		enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptList();
-            	
-            	if (enchantments != null && enchantments.length() > 0)
-            		event.setReplaced(enchantments);
+                String enchantments = null;
+
+                if (specifier.equalsIgnoreCase("LEVELS"))
+                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels();
+                else if (specifier.equalsIgnoreCase("LEVELS_ONLY"))
+                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly();
+                else
+                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptList();
+
+                if (enchantments != null && enchantments.length() > 0)
+                    event.setReplaced(enchantments);
             }
-            // else if (subType.equalsIgnoreCase("LORE"))
-            //   event.setReplaced(NBTItem.getLore(p.getItemInHand()).asDScriptList());
+            else if (subType.equalsIgnoreCase("LORE")) {
+                if (p.getItemInHand().hasItemMeta()) {
+                    if (p.getItemInHand().getItemMeta().hasLore()) {
+                        event.setReplaced(new dList(p.getItemInHand().getItemMeta().getLore()).dScriptArgValue());
+                    }
+                }
+            }
             else if (subType.equalsIgnoreCase("DISPLAY"))
                 // This is the name set when using an anvil
                 event.setReplaced(p.getItemInHand().getItemMeta().getDisplayName());
@@ -357,7 +360,7 @@ public class PlayerTags implements Listener {
                     maxFood = Integer.valueOf(event.getType().split(".")[2]);
                 event.setReplaced(String.valueOf(((float) p.getFoodLevel() / maxFood) * 100));
             }
-            
+
         } else if (type.equalsIgnoreCase("MONEY")) {
             if(Depends.economy != null) {
                 event.setReplaced(String.valueOf(Depends.economy.getBalance(p.getName())));
@@ -371,38 +374,38 @@ public class PlayerTags implements Listener {
             } else {
                 dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
             }
-            
+
         } else if (type.equalsIgnoreCase("PERMISSION")) {
             if(Depends.permissions != null)
             {
-            	if (subType.equalsIgnoreCase("GLOBAL"))
-            		event.setReplaced(String.valueOf(Depends.permissions.has((World) null, p.getName(), typeContext)));
-            	else
-            		event.setReplaced(String.valueOf(Depends.permissions.has(p, typeContext)));
+                if (subType.equalsIgnoreCase("GLOBAL"))
+                    event.setReplaced(String.valueOf(Depends.permissions.has((World) null, p.getName(), typeContext)));
+                else
+                    event.setReplaced(String.valueOf(Depends.permissions.has(p, typeContext)));
             }
             else
             {
                 dB.echoError("Cannot check permission! No permissions loaded!");
             }
-            
+
         } else if (type.equalsIgnoreCase("GROUP")) {
             if(Depends.permissions != null)
             {
-            	if (subType.equalsIgnoreCase("GLOBAL"))
-            		event.setReplaced(String.valueOf(Depends.permissions.playerInGroup((World) null, p.getName(), typeContext)));
-            	else
-            		event.setReplaced(String.valueOf(Depends.permissions.playerInGroup(p, typeContext)));
+                if (subType.equalsIgnoreCase("GLOBAL"))
+                    event.setReplaced(String.valueOf(Depends.permissions.playerInGroup((World) null, p.getName(), typeContext)));
+                else
+                    event.setReplaced(String.valueOf(Depends.permissions.playerInGroup(p, typeContext)));
             }
             else
             {
                 dB.echoError("Cannot check group! No permissions loaded!");
-            }    
-            
+            }
+
         } else if (type.equalsIgnoreCase("GAMEMODE")) {
-        	if (subType.equalsIgnoreCase("ID"))
-        		event.setReplaced(String.valueOf(p.getGameMode().getValue()));
-        	else
-        		event.setReplaced(String.valueOf(p.getGameMode().name()));
+            if (subType.equalsIgnoreCase("ID"))
+                event.setReplaced(String.valueOf(p.getGameMode().getValue()));
+            else
+                event.setReplaced(String.valueOf(p.getGameMode().name()));
 
         } else if (type.equalsIgnoreCase("IS_OP")) {
             event.setReplaced(String.valueOf(p.isOp()));
@@ -412,10 +415,10 @@ public class PlayerTags implements Listener {
 
         } else if (type.equalsIgnoreCase("IS_ONLINE")) {
             event.setReplaced(String.valueOf(p.isOnline()));
-        
+
         } else if (type.equalsIgnoreCase("IS_FLYING")) {
             event.setReplaced(String.valueOf(p.isFlying()));
-            
+
         } else if (type.equalsIgnoreCase("IS_SNEAKING")) {
             event.setReplaced(String.valueOf(p.isSneaking()));
 
@@ -426,7 +429,7 @@ public class PlayerTags implements Listener {
                 if (p.getPlayerTime() >= 23000)
                     event.setReplaced("dawn");
                 else if (p.getPlayerTime() >= 13500)
-            		event.setReplaced("night");
+                    event.setReplaced("night");
                 else if (p.getPlayerTime() >= 12500)
                     event.setReplaced("dusk");
                 else
@@ -443,144 +446,144 @@ public class PlayerTags implements Listener {
 
 
         } else if (type.equalsIgnoreCase("EQUIPMENT")) {
-        	if (subType.equalsIgnoreCase("BOOTS") && p.getInventory().getBoots() != null)
-        		event.setReplaced(p.getInventory().getBoots().getType().name());
-        	else if (subType.equalsIgnoreCase("CHESTPLATE") && p.getInventory().getChestplate() != null)
-        		event.setReplaced(p.getInventory().getChestplate().getType().name());
-        	else if (subType.equalsIgnoreCase("HELMET") && p.getInventory().getHelmet() != null)
-        		event.setReplaced(p.getInventory().getHelmet().getType().name());
-        	else if (subType.equalsIgnoreCase("LEGGINGS") && p.getInventory().getLeggings() != null)
-        		event.setReplaced(p.getInventory().getLeggings().getType().name());
-        	else
-        		event.setReplaced("NOTHING");
-        	if (specifier.equalsIgnoreCase("FORMATTED"))
-        		event.setReplaced(event.getReplaced().toLowerCase().replace('_', ' '));
+            if (subType.equalsIgnoreCase("BOOTS") && p.getInventory().getBoots() != null)
+                event.setReplaced(p.getInventory().getBoots().getType().name());
+            else if (subType.equalsIgnoreCase("CHESTPLATE") && p.getInventory().getChestplate() != null)
+                event.setReplaced(p.getInventory().getChestplate().getType().name());
+            else if (subType.equalsIgnoreCase("HELMET") && p.getInventory().getHelmet() != null)
+                event.setReplaced(p.getInventory().getHelmet().getType().name());
+            else if (subType.equalsIgnoreCase("LEGGINGS") && p.getInventory().getLeggings() != null)
+                event.setReplaced(p.getInventory().getLeggings().getType().name());
+            else
+                event.setReplaced("NOTHING");
+            if (specifier.equalsIgnoreCase("FORMATTED"))
+                event.setReplaced(event.getReplaced().toLowerCase().replace('_', ' '));
 
         } else if (type.equalsIgnoreCase("SCRIPT")) {
-            
-        	if (aH.matchesScript("script:" + typeContext))
+
+            if (aH.matchesScript("script:" + typeContext))
             {
-        		int times = 0;
-        		
-        		if (subType.equalsIgnoreCase("FINISHED"))
-        		{
-        			times = FinishCommand.getScriptCompletes(p.getName(), aH.getStringFrom(typeContext).toUpperCase()); 
-        		}
-        		else if (subType.equalsIgnoreCase("FAILED"))
-        		{
-        			times = FailCommand.getScriptFails(p.getName(), aH.getStringFrom(typeContext).toUpperCase());
-        		}
-            		
-            	if (times > 0)
-            		event.setReplaced("true");
-            	else
-            		event.setReplaced("false");
+                int times = 0;
+
+                if (subType.equalsIgnoreCase("FINISHED"))
+                {
+                    times = FinishCommand.getScriptCompletes(p.getName(), aH.getStringFrom(typeContext).toUpperCase());
+                }
+                else if (subType.equalsIgnoreCase("FAILED"))
+                {
+                    times = FailCommand.getScriptFails(p.getName(), aH.getStringFrom(typeContext).toUpperCase());
+                }
+
+                if (times > 0)
+                    event.setReplaced("true");
+                else
+                    event.setReplaced("false");
             }
-        
+
 
         } else if (type.equalsIgnoreCase("INVENTORY")) {
-        	if (subType.equalsIgnoreCase("CONTAINS"))
-        	{
-        		if (specifier.equalsIgnoreCase("DISPLAY"))
-        		{
-        			// Check if an item with this display name (set on an anvil)
-        			// exists in this player's inventory
-        			
-        			for (ItemStack itemstack : event.getPlayer().getInventory().getContents())
-            		{
-        				if (itemstack != null && itemstack.getItemMeta().getDisplayName() != null)
-        				{
-        					if (itemstack.getItemMeta().getDisplayName().equalsIgnoreCase(specifierContext))
-        					{
-        						event.setReplaced("true");
-        						return;
-        					}
-        				}
-            		}
-        			
-        			for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
-        			{
-        				if (itemstack.getType().name() != "AIR" && itemstack.getItemMeta().getDisplayName() != null)
-        				{
-        					if (itemstack.getItemMeta().getDisplayName().equalsIgnoreCase(specifierContext))
-        					{
-        						event.setReplaced("true");
-        						return;
-        					}
-        				}
-        			}
-        			
-        			event.setReplaced("false");
-        		}
-        		else if (aH.matchesItem("item:" + subTypeContext))
-        		{
-        			ItemStack item = aH.getItemFrom("item:" + subTypeContext);
-            		
-            		if (specifier.equalsIgnoreCase("QTY") && (aH.matchesQuantity("qty:" + specifierContext)))
-            		{
-            			int qty = aH.getIntegerFrom(specifierContext);
-            			
-            			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, qty)));
-            		}
-            		else
-            			event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, 1)));
-        		}        		
-        	}
-        	else if (subType.equalsIgnoreCase("QTY"))
-        	{
-        		int qty = 0;
-        		
-        		if (aH.matchesItem("item:" + subTypeContext))
-        		{	
-        			ItemStack item = new ItemStack(aH.getItemFrom("item:" + subTypeContext));
-        			
-        			qty = Utilities.countItems(item, event.getPlayer().getInventory());
-        			
-        			for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
-            		{	
-            			// If ItemStacks are empty here, they are AIR
-            			if (itemstack.getType().name() != "AIR")
-            			{
-            				if (itemstack.isSimilar(item))
-            					qty = qty + itemstack.getAmount();
-            			}
-            		}
-        		}
-        		else // Add up the quantities of all itemstacks
-        		{
-        			qty = Utilities.countItems(event.getPlayer().getInventory());
-        			
-        			for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
-            		{	
-            			// If ItemStacks are empty here, they are AIR
-            			if (itemstack.getType().name() != "AIR")
-            				qty = qty + itemstack.getAmount();
-            		}
-        		}
-        		
-        		event.setReplaced(String.valueOf(qty));
-        	}
-        	else if (subType.equalsIgnoreCase("STACKS"))
-        	{
-        		int qty = 0;
-        		
-        		for (ItemStack itemstack : event.getPlayer().getInventory().getContents())
-        		{	
-        			// If ItemStacks are empty here, they are null
-        			if (itemstack != null)
-        				qty++;
-        		}
-        		
-        		for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
-        		{	
-        			// If ItemStacks are empty here, they are AIR
-        			if (itemstack.getType().name() != "AIR")
-        				qty++;
-        		}
-        		
-        		event.setReplaced(String.valueOf(qty));
-        	}
-        		
+            if (subType.equalsIgnoreCase("CONTAINS"))
+            {
+                if (specifier.equalsIgnoreCase("DISPLAY"))
+                {
+                    // Check if an item with this display name (set on an anvil)
+                    // exists in this player's inventory
+
+                    for (ItemStack itemstack : event.getPlayer().getInventory().getContents())
+                    {
+                        if (itemstack != null && itemstack.getItemMeta().getDisplayName() != null)
+                        {
+                            if (itemstack.getItemMeta().getDisplayName().equalsIgnoreCase(specifierContext))
+                            {
+                                event.setReplaced("true");
+                                return;
+                            }
+                        }
+                    }
+
+                    for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
+                    {
+                        if (itemstack.getType().name() != "AIR" && itemstack.getItemMeta().getDisplayName() != null)
+                        {
+                            if (itemstack.getItemMeta().getDisplayName().equalsIgnoreCase(specifierContext))
+                            {
+                                event.setReplaced("true");
+                                return;
+                            }
+                        }
+                    }
+
+                    event.setReplaced("false");
+                }
+                else if (aH.matchesItem("item:" + subTypeContext))
+                {
+                    ItemStack item = aH.getItemFrom("item:" + subTypeContext);
+
+                    if (specifier.equalsIgnoreCase("QTY") && (aH.matchesQuantity("qty:" + specifierContext)))
+                    {
+                        int qty = aH.getIntegerFrom(specifierContext);
+
+                        event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, qty)));
+                    }
+                    else
+                        event.setReplaced(String.valueOf(event.getPlayer().getInventory().containsAtLeast(item, 1)));
+                }
+            }
+            else if (subType.equalsIgnoreCase("QTY"))
+            {
+                int qty = 0;
+
+                if (aH.matchesItem("item:" + subTypeContext))
+                {
+                    ItemStack item = new ItemStack(aH.getItemFrom("item:" + subTypeContext));
+
+                    qty = Utilities.countItems(item, event.getPlayer().getInventory());
+
+                    for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
+                    {
+                        // If ItemStacks are empty here, they are AIR
+                        if (itemstack.getType().name() != "AIR")
+                        {
+                            if (itemstack.isSimilar(item))
+                                qty = qty + itemstack.getAmount();
+                        }
+                    }
+                }
+                else // Add up the quantities of all itemstacks
+                {
+                    qty = Utilities.countItems(event.getPlayer().getInventory());
+
+                    for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
+                    {
+                        // If ItemStacks are empty here, they are AIR
+                        if (itemstack.getType().name() != "AIR")
+                            qty = qty + itemstack.getAmount();
+                    }
+                }
+
+                event.setReplaced(String.valueOf(qty));
+            }
+            else if (subType.equalsIgnoreCase("STACKS"))
+            {
+                int qty = 0;
+
+                for (ItemStack itemstack : event.getPlayer().getInventory().getContents())
+                {
+                    // If ItemStacks are empty here, they are null
+                    if (itemstack != null)
+                        qty++;
+                }
+
+                for (ItemStack itemstack : event.getPlayer().getInventory().getArmorContents())
+                {
+                    // If ItemStacks are empty here, they are AIR
+                    if (itemstack.getType().name() != "AIR")
+                        qty++;
+                }
+
+                event.setReplaced(String.valueOf(qty));
+            }
+
 
         } else if (type.equalsIgnoreCase("XP")) {
             event.setReplaced(String.valueOf(event.getPlayer().getExp() * 100));
