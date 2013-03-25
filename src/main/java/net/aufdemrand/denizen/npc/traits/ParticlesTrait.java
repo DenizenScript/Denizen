@@ -83,14 +83,14 @@ public class ParticlesTrait extends Trait {
 			break;
 		case HEART:
 			if (counter > wait) {
-				dB.log("...playing heart effect");
+				//dB.log("...playing heart effect");
 				playHeartEffect();
 				counter = 0;
 			}
 			break;
 		case EXPLOSION:
 			if (counter > wait) {
-				dB.log("...playing explosion effect");
+				//dB.log("...playing explosion effect");
 				playExplosionEffect();
 				counter = 0;
 			}
