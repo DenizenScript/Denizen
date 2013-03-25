@@ -99,7 +99,7 @@ public class WorldScriptHelper implements Listener {
         context.put("raw_args", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
 
         // Run any event scripts and get the determination.
-        String determination = doEvent(command + " command", null, event.getPlayer(), context);
+        String determination = doEvent(command + " command", null, event.getPlayer(), context).toUpperCase();
 
         // If a script has determined fulfilled, cancel this event so the player doesn't
         // receive the default 'Invalid command' gibberish from bukkit.
@@ -113,7 +113,7 @@ public class WorldScriptHelper implements Listener {
         Map<String, String> context = new HashMap<String, String>();
         context.put("hostname", event.getHostname());
 
-        String determination = doEvent("player login", null, event.getPlayer(), context);
+        String determination = doEvent("player login", null, event.getPlayer(), context).toUpperCase();
 
         // Handle determine kicked
         if (determination.toUpperCase().startsWith("KICKED"))
@@ -125,7 +125,7 @@ public class WorldScriptHelper implements Listener {
         Map<String, String> context = new HashMap<String, String>();
         context.put("message", event.getQuitMessage());
 
-        String determination = doEvent("player quit", null, event.getPlayer(), context);
+        String determination = doEvent("player quit", null, event.getPlayer(), context).toUpperCase();
 
         // Handle determine message
         if (determination.toUpperCase().startsWith("MESSAGE"))
