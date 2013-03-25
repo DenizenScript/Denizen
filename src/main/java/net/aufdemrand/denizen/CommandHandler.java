@@ -564,6 +564,8 @@ public class CommandHandler {
         		trait.setEffect("POTION");
         	} else if (name.equalsIgnoreCase("heart")) {
         		trait.setEffect("HEART");
+        	} else if (name.equalsIgnoreCase("explosion")) {
+        		trait.setEffect("EXPLOSION");
         	} else Messaging.send(sender, ChatColor.RED + "Not a valid effect name!");
         	
         } else Messaging.send(sender, ChatColor.RED + "Please specify an effect name!");
