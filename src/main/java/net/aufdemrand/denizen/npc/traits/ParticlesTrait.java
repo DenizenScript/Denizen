@@ -13,11 +13,12 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_5_R2.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftWolf;
 import org.bukkit.entity.Wolf;
 
 public class ParticlesTrait extends Trait {
 	
-	public enum EffectType { NONE, SMOKE, FLAME, ENDER, POTBREAK, HEART, POTION }
+	public enum EffectType { NONE, SMOKE, FLAME, ENDER, POTBREAK, HEART, POTION, EXPLOSION }
 	
 	//DataWatcher dw;
 	//EntityLiving el;
@@ -87,6 +88,13 @@ public class ParticlesTrait extends Trait {
 				counter = 0;
 			}
 			break;
+		case EXPLOSION:
+			if (counter > wait) {
+				dB.log("...playing explosion effect");
+				playExplosionEffect();
+				counter = 0;
+			}
+			break;
 		}
 		
 		
@@ -121,14 +129,9 @@ public class ParticlesTrait extends Trait {
 	public void playHeartEffect() {
 		Location location = npc.getBukkitEntity().getLocation();
 		Wolf tempWolf = (Wolf) world.spawn(location, Wolf.class);
+		((CraftWolf)tempWolf).getHandle().setInvisible(true);
 		tempWolf.playEffect(EntityEffect.WOLF_HEARTS);
 		tempWolf.remove();
-		
-		//((CraftWorld) world).getHandle().a(
-		//		"heart", 
-		//		location.getBlockX(),
-		//		location.getBlockY(), 
-		//		location.getBlockZ());
 	}
 	
 	public void playSmokeEffect() {
@@ -144,6 +147,11 @@ public class ParticlesTrait extends Trait {
 		world.playEffect(location, Effect.SMOKE, 8);
 	}
 
+	public void playExplosionEffect() {
+		Location location = npc.getBukkitEntity().getLocation();
+		world.createExplosion(location, 0);
+	}
+	
 	public void setEffect(String effectType) {
 		this.effectType = EffectType.valueOf(effectType.toUpperCase());
 	}
