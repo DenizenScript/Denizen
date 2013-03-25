@@ -65,7 +65,7 @@ public class PermissionCommand extends AbstractCommand {
 
         switch (action) {
         case ADD:
-            if(group != null) {
+            if(group != null && !group.equals("null")) {
                 if(Depends.permissions.groupHas(world, group, permission)) {
                     dB.echoDebug("Group " + group + " already has permission " + permission);
                 } else Depends.permissions.groupAdd(world, group, permission);
@@ -76,7 +76,7 @@ public class PermissionCommand extends AbstractCommand {
             }
             return;
         case REMOVE: 
-            if(group != null) {
+            if(group != null&& !group.equals("null")) {
                 if(!Depends.permissions.groupHas(world, group, permission)) {
                     dB.echoDebug("Group " + group + " does not have access to permission " + permission);
                 } else Depends.permissions.groupRemove(world, group, permission);
