@@ -28,8 +28,6 @@ public class PermissionCommand extends AbstractCommand {
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesArg("ADD, REMOVE", arg)) {
                 action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
-            } else if (aH.matchesValueArg("PLAYER", arg, ArgumentType.String)) {
-                player = aH.getPlayerFrom(arg);
             } else if (aH.matchesValueArg("GROUP", arg, ArgumentType.String)) {
                 group = aH.getStringFrom(arg);
             } else if (aH.matchesValueArg("WORLD", arg, ArgumentType.String)) {
@@ -54,6 +52,11 @@ public class PermissionCommand extends AbstractCommand {
         String permission = String.valueOf(scriptEntry.getObject("permission"));
         String group = String.valueOf(scriptEntry.getObject("group"));
         String world = String.valueOf(scriptEntry.getObject("world"));
+        
+        if(group.equals("null"))
+            group = null;
+        if(world.equals("null"))
+            world = null;
 
         // Report to dB
         dB.report(getName(),
@@ -65,7 +68,7 @@ public class PermissionCommand extends AbstractCommand {
 
         switch (action) {
         case ADD:
-            if(group != null && !group.equals("null")) {
+            if(group != null) {
                 if(Depends.permissions.groupHas(world, group, permission)) {
                     dB.echoDebug("Group " + group + " already has permission " + permission);
                 } else Depends.permissions.groupAdd(world, group, permission);
@@ -76,7 +79,7 @@ public class PermissionCommand extends AbstractCommand {
             }
             return;
         case REMOVE: 
-            if(group != null&& !group.equals("null")) {
+            if(group != null) {
                 if(!Depends.permissions.groupHas(world, group, permission)) {
                     dB.echoDebug("Group " + group + " does not have access to permission " + permission);
                 } else Depends.permissions.groupRemove(world, group, permission);
