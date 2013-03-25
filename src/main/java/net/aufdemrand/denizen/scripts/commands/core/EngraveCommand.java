@@ -48,8 +48,6 @@ public class EngraveCommand extends AbstractCommand implements Listener {
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesArg("ADD, REMOVE, REMOVEALL", arg)) {
                 action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
-            } else if (aH.matchesValueArg("TARGET", arg, ArgumentType.String)) {
-                target = aH.getStringFrom(arg);
             } else if (aH.matchesItem(arg)) {
                 item = aH.getItemFrom(arg);
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
