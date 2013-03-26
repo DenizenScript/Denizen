@@ -22,6 +22,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 
 import java.util.Arrays;
@@ -360,6 +361,19 @@ public class WorldScriptHelper implements Listener {
 
         }
 
+    }
+
+
+    @EventHandler
+    public void playerDeath(PlayerDeathEvent event) {
+        Map<String, String> context = new HashMap<String, String>();
+        context.put("message", event.getDeathMessage());
+
+        String determination = doEvent("player death", null, event.getEntity(), context);
+
+        // Handle message
+        if (determination.toUpperCase().startsWith("MESSAGE"))
+            event.setDeathMessage(aH.getStringFrom(determination));
     }
 
 
