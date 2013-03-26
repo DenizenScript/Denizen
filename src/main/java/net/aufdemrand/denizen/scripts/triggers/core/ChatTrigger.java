@@ -131,6 +131,15 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             regexMessage = entry.getValue().replace("/" + keyword + "/", m.group());
                         }
                     }
+                    else if (isKeywordStrict(keyword)) {
+                        if (event.getMessage().toUpperCase().equalsIgnoreCase(keyword.toUpperCase()))
+                        {
+                            // Trigger matches
+                            id = entry.getKey();
+                            replacementText = entry.getValue().replace("/", "");
+                            matched = true;
+                        }
+                    }
                     else if (event.getMessage().toUpperCase().contains(keyword.toUpperCase()))
                     {
                         // Trigger matches
@@ -172,5 +181,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         return keyWord.toUpperCase().startsWith("REGEX:");
     }
 
+    private Boolean isKeywordStrict (String keyWord) {
+        return keyWord.toUpperCase().startsWith("STRICT:");
+    }
 
 }

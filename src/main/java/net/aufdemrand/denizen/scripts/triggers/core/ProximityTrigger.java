@@ -246,9 +246,11 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 }
                 else if (!hasExitedProximityOf(event.getPlayer(), npc)
                     && npc.getLocation().distance(toBlockLocation) <= moveRadius) {
-                    // Cooldown
-                    if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
-                        continue;
+                    // TODO: Remove this? Constantly cooling down on move may make
+                    // future entry/exit proximities 'lag' behind.  Temporarily removing
+                    // cooldown on 'move proximity'.
+                    // if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
+                    //     continue;
                    // Move Proximity Action
                    npc.action("move proximity", event.getPlayer());
                    // Parse Interact Script
