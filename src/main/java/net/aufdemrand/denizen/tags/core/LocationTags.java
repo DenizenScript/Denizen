@@ -63,6 +63,11 @@ public class LocationTags implements Listener {
             {
                 event.setReplaced(fromLocation.getBlock().getType().toString());
             }
+
+            else if (subType.equals("DATA") || specifier.equals("DATA"))
+            {
+                event.setReplaced(String.valueOf(fromLocation.getBlock().getData()));
+            }
         }
         
         else if (type.equals("DIRECTION"))
