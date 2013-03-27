@@ -98,9 +98,18 @@ public class WorldScriptHelper implements Listener {
         context.put("args", args.dScriptArgValue());
         context.put("command", command);
         context.put("raw_args", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
+        String determination;
 
         // Run any event scripts and get the determination.
-        String determination = doEvent(command + " command", null, event.getPlayer(), context).toUpperCase();
+        determination = doEvent(command + " command", null, event.getPlayer(), context).toUpperCase();
+
+        // If a script has determined fulfilled, cancel this event so the player doesn't
+        // receive the default 'Invalid command' gibberish from bukkit.
+        if (determination.equals("FULFILLED") || determination.equals("CANCELLED"))
+            event.setCancelled(true);
+
+        // Run any event scripts and get the determination.
+        determination = doEvent("command", null, event.getPlayer(), context).toUpperCase();
 
         // If a script has determined fulfilled, cancel this event so the player doesn't
         // receive the default 'Invalid command' gibberish from bukkit.
