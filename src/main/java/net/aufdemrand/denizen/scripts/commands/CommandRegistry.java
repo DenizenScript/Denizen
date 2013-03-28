@@ -146,7 +146,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"MODIFYBLOCK", "modifyblock [location:x,y,z,world] [material:data] (radius:#) (height:#) (depth:#)", 2);
 		
         registerCoreMember(NameplateCommand.class, 
-        		"NAMEPLATE", "nameplate [chat_color] (target:player_name)", 1);
+        		"NAMEPLATE", "nameplate [set:text|chat_color] (target:player_name)", 1);
         
         registerCoreMember(NarrateCommand.class, 
         		"NARRATE", "narrate [\"narration text\"] (player:name) (format:format)", 1);

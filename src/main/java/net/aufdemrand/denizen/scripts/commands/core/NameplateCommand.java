@@ -15,10 +15,11 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 /**
  * Modifies the nameplate of the given NPC
- * 
+ *
  * @author spaceemotion
  */
 public class NameplateCommand extends AbstractCommand {
@@ -34,54 +35,68 @@ public class NameplateCommand extends AbstractCommand {
 	 * (PLAYER) The player to apply the change to (can be per-player!).
 	 * 
 	 */
-	
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-		dNPC npc = scriptEntry.getNPC();
-		
-		if(npc.getCitizen().hasTrait(NameplateTrait.class)) {
-			ChatColor color = null;
-			String playerName = null;
-			
-			List<String> args = scriptEntry.getArguments();
-			
-			for(String arg : args) {
-				if(aH.matchesValueArg("COLOR", arg, ArgumentType.String)) {
-					String cString = aH.getStringFrom(arg).toUpperCase();
-					
-					try {
-						color = ChatColor.valueOf(cString.toUpperCase());
-						dB.echoDebug("...COLOR set: '%s'", cString);
-					} catch( Exception e)  {
-						dB.echoDebug("...COLOR could not be set: '%s' is an invalid color!", cString);
-					}
-				} else if(aH.matchesValueArg("PLAYER", arg, ArgumentType.String)) {
-					playerName = aH.getStringFrom(arg);
-					dB.echoDebug("...PLAYER set: '%s'", arg);
-				}
-			}
-			
-			scriptEntry.addObject("color", color);
-			scriptEntry.addObject("player", playerName);
-		}
-	}
-	
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-		dNPC npc = scriptEntry.getNPC();
-		
-		ChatColor color = (ChatColor) scriptEntry.getObject("color");
-		
-		if(color != null && npc.getCitizen().hasTrait(NameplateTrait.class)) {
-			NameplateTrait trait = npc.getCitizen().getTrait(NameplateTrait.class);	
-			String playerName = (String) scriptEntry.getObject("player");
-			
-			if(playerName != null) {
-				trait.setColor(color, playerName);
-			} else {
-				trait.setColor(color);
-			}
-		}
-	}
-	
+
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+        ChatColor color = null;
+        boolean player = false;
+        String text = null;
+
+        List<String> args = scriptEntry.getArguments();
+
+        for(String arg : args) {
+            if(aH.matchesValueArg("COLOR", arg, ArgumentType.String))
+                try { color = ChatColor.valueOf(aH.getStringFrom(arg).toUpperCase()); } catch( Exception e)  {
+                    dB.echoDebug("...COLOR could not be set: '%s' is an invalid color!", aH.getStringFrom(arg)); }
+
+            else if(aH.matchesValueArg("TARGET", arg, ArgumentType.Word)) {
+                player = true;
+                scriptEntry.setPlayer(aH.getPlayerFrom(arg));
+            }
+
+            else if (aH.matchesValueArg("SET", arg, ArgumentType.Custom))
+                text = aH.getStringFrom(arg);
+        }
+
+        scriptEntry.addObject("color", color)
+                .addObject("player", player)
+                .addObject("text", text);
+    }
+
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+
+        Boolean player = (Boolean) scriptEntry.getObject("player");
+        ChatColor color = (ChatColor) scriptEntry.getObject("color");
+        String text = (String) scriptEntry.getObject("text");
+
+
+
+
+        if (text != null) {
+            if (text.equalsIgnoreCase("none")) {
+                scriptEntry.getNPC().getEntity().setCustomNameVisible(false);
+                dB.echoDebug("none");
+            } else {
+                scriptEntry.getNPC().getEntity().setCustomNameVisible(true);
+                scriptEntry.getNPC().getEntity().setCustomName(text);
+                dB.echoDebug(text);
+            }
+
+            if (scriptEntry.getNPC().getEntity() instanceof Player)
+                ((Player) scriptEntry.getNPC().getEntity()).setDisplayName(text);
+        }
+
+        if(color != null) {
+            if (!scriptEntry.getNPC().getCitizen().hasTrait(NameplateTrait.class))
+                scriptEntry.getNPC().getCitizen().addTrait(NameplateTrait.class);
+            NameplateTrait trait = scriptEntry.getNPC().getCitizen().getTrait(NameplateTrait.class);
+
+            if (player) trait.setColor(color, scriptEntry.getPlayer().getName());
+            else trait.setColor(color);
+        }
+
+    }
+
 }

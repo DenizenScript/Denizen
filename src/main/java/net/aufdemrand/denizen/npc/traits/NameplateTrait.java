@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 
@@ -34,8 +37,12 @@ import org.bukkit.event.Listener;
  */
 public class NameplateTrait extends Trait implements Listener {
 	private final static String DEFAULT_KEY = "_default_";
-	
-	private Map<String, ChatColor> colors = new HashMap<String, ChatColor>();
+
+    @Persist("text")
+    private String text = null;
+
+    @Persist(value="colors", collectionType=ConcurrentHashMap.class)
+	private Map<String, ChatColor> colors = new ConcurrentHashMap<String, ChatColor>();
 
 	public NameplateTrait() {
 		super("nameplate");
@@ -43,9 +50,27 @@ public class NameplateTrait extends Trait implements Listener {
 
     @Override
     public void onSpawn() {
+
+        if(text != null) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            npc.getBukkitEntity().setCustomNameVisible(true);
+                            npc.getBukkitEntity().setCustomName(text);
+                        }
+                    }, 2);
+        }
+
 		if(getColor() != null ) {
 			refreshTag( getNPC() );
 		}
+    }
+
+    @Override
+    public void onDespawn() {
+        if (npc.getBukkitEntity().getCustomName() != null)
+            text = npc.getBukkitEntity().getCustomName();
     }
 
     public void setColor(ChatColor color) {
@@ -70,7 +95,7 @@ public class NameplateTrait extends Trait implements Listener {
 	 * Returns the {@link ChatColor} prefixed to the nameplate for a specific
 	 * player.
 	 * 
-	 * @param The player name
+	 * @param player The player name
 	 * @return The stored {@link ChatColor} for the specific player
 	 */
 	public ChatColor getColor(String player) {
@@ -91,7 +116,7 @@ public class NameplateTrait extends Trait implements Listener {
 	/**
 	 * Returns true if a color has been set for this player
 	 * 
-	 * @param The player name to check
+	 * @param player The player name to check
 	 * @return True if set, otherwise false
 	 */
 	public boolean hasColor(String player) {
@@ -111,7 +136,7 @@ public class NameplateTrait extends Trait implements Listener {
 	 * Retrieve the trimmed nameplate including the set color (max. 16 chars) for
 	 * the specific player.
 	 * 
-	 * @param The player name
+	 * @param player The player name
 	 * @return The trimmed nameplate including color
 	 */
 	public String getTrimmedTag(String player) {
@@ -165,24 +190,25 @@ public class NameplateTrait extends Trait implements Listener {
 		return players;
 	}
 	
-	@Override
-	public void load(DataKey key) {
-		for(DataKey k : key.getSubKeys()) {
-			ChatColor c = null;
-			
-			try {
-				c = ChatColor.valueOf(key.getString(k.name()));
-			} catch( Exception e) {}
-			
-			colors.put(k.name(), c );
-		}
-	}
-	
-	@Override
-	public void save(DataKey key) {
-		for(Entry<String, ChatColor> entry: colors.entrySet()) {
-			key.setString(entry.getKey(), entry.getValue().name());
-		}
-	}
+//	@Override
+//	public void load(DataKey key) {
+//		for(DataKey k : key.getSubKeys()) {
+//			ChatColor c = null;
+//
+//			try {
+//				c = ChatColor.valueOf(key.getString(k.name()));
+//			} catch( Exception e) {}
+//
+//			colors.put(k.name(), c );
+//		}
+//	}
+//
+//	@Override
+//	public void save(DataKey key) {
+//		for(Entry<String, ChatColor> entry: colors.entrySet()) {
+//			key.setString(entry.getKey(), entry.getValue().name());
+//		}
+//	}
+
 	
 }
