@@ -283,7 +283,7 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        if (aH.matchesValueArg("MESSAGE", determination, aH.ArgumentType.Integer))
+        if (aH.matchesValueArg("MESSAGE", determination, aH.ArgumentType.String))
             event.setMessage(aH.getStringFrom(determination));
     }
 
