@@ -54,24 +54,19 @@ public class EquipCommand extends AbstractCommand{
 		
 		switch (equipType) {
 		case BOOTS:
-			trait.set(4, item);
-			dB.echoDebug("..." + item.getType() + " equipped to BOOTS");
+			trait.set(4, item.getItemStack());
 			break;
 		case CHEST:
-			trait.set(2, item);
-			dB.echoDebug("..." + item.getType() + " equipped to CHEST");
+			trait.set(2, item.getItemStack());
 			break;
 		case HAND:
-			trait.set(0, item);
-			dB.echoDebug("..." + item.getType() + " equipped to HAND");
+			trait.set(0, item.getItemStack());
 			break;
 		case HEAD:
-			trait.set(1, item);
-			dB.echoDebug("..." + item.getType() + " equipped to HEAD");
+			trait.set(1, item.getItemStack());
 			break;
 		case LEGS:
-			trait.set(3, item);
-			dB.echoDebug("..." + item.getType() + " equipped to LEGS");
+			trait.set(3, item.getItemStack());
 			break;
 		}
 		

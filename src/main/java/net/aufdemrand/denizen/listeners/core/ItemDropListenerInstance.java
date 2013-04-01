@@ -62,7 +62,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 				} catch (Exception e) { dB.echoDebug("...type " + type.name() + " is not valid."); }
 				
 			} else if (aH.matchesItem(arg)) {
-				item = aH.getItemFrom(arg);
+				item = aH.getItemFrom(arg).getItemStack();
 				dB.echoDebug("...item set to: " + item);
 				continue;
 				

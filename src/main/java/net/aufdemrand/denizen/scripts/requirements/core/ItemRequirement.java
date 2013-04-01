@@ -29,16 +29,16 @@ public class ItemRequirement extends AbstractRequirement {
 				
 			} else if (aH.matchesItem(arg)) {
 				if (ScriptRegistry.getScriptContainerAs(aH.getStringFrom(arg), ItemScriptContainer.class) != null) {
-					item = ScriptRegistry.getScriptContainerAs(aH.getStringFrom(arg), ItemScriptContainer.class).getItemFrom(context.getPlayer(), context.getNPC());
+					item = ScriptRegistry.getScriptContainerAs(aH.getStringFrom(arg), ItemScriptContainer.class).getItemFrom(context.getPlayer(), context.getNPC()).getItemStack();
 					dB.echoDebug("...ITEM set from script");
 					continue;
 				} else {
-					item = aH.getItemFrom(arg);
+					item = aH.getItemFrom(arg).getItemStack();
 					dB.echoDebug("...ITEM set");
 					continue;
 				}
 			} else if (aH.matchesItem("item:" + arg)) {
-				item = aH.getItemFrom("item:" + arg);
+				item = aH.getItemFrom("item:" + arg).getItemStack();
 				dB.echoDebug("...ITEM set");
 				continue;
 				

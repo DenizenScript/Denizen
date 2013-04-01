@@ -47,7 +47,7 @@ public class NewCommand extends AbstractCommand implements Listener {
 	 * 
 	 */
 	public ItemStack getItem(String id) {
-		if (itemStacks.containsKey(id.toUpperCase())) return itemStacks.get(id.toUpperCase());
+		if (itemStacks.containsKey(id.toUpperCase())) return itemStacks.get(id.toUpperCase()).getItemStack();
 		else return null;
 	}
 
@@ -147,7 +147,7 @@ public class NewCommand extends AbstractCommand implements Listener {
 			if (item == null) 
 				throw new InvalidArgumentsException("Must specify a valid ITEM.");
 			// Set quantity on the ItemStack
-			item.setAmount(qty);
+			item.getItemStack().setAmount(qty);
 			// Save objects to the scriptEntry that are required for ItemStack creation
 			scriptEntry.addObject("itemstack", item);
 

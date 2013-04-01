@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.requirements.core;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
+import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.inventory.ItemStack;
@@ -17,30 +18,29 @@ public class HoldingRequirement extends AbstractRequirement{
 		
 		boolean exact = false;
 		int quantity = 1;
-		ItemStack itemToCheck = null;
+		Item itemToCheck = null;
 		
 		for (String thisArg : args) {
-			if (aH.matchesQuantity(thisArg)){
+			if (aH.matchesQuantity(thisArg))
 				quantity = aH.getIntegerFrom(thisArg);
-				dB.echoDebug("...quantity set to: " + quantity);
-			} else if(aH.matchesArg("EXACT, EXACTLY, EQUALS", thisArg)) {
+
+			else if(aH.matchesArg("EXACT, EXACTLY, EQUALS", thisArg)) {
 				exact = true;
-				dB.echoDebug("...exact item match set to TRUE");
-			} else {
-				itemToCheck = new ItemStack(aH.getItemFrom(thisArg));
-				dB.echoDebug("...item set to: " + itemToCheck);
 			}
-		} 
-		
-		if (itemToCheck != null) {
-			itemToCheck.setAmount(quantity);
+
+            else itemToCheck = aH.getItemFrom(thisArg);
 		}
 		
-		if (exact) outcome = context.getPlayer().getItemInHand().equals(itemToCheck);
-		else outcome = context.getPlayer().getItemInHand().isSimilar(itemToCheck);
+		if (itemToCheck != null)
+			itemToCheck.getItemStack().setAmount(quantity);
+
+		if (exact)
+            outcome = context.getPlayer().getItemInHand().equals(itemToCheck);
+		else
+            outcome = context.getPlayer().getItemInHand().isSimilar(itemToCheck.getItemStack());
 		
-		if(outcome) dB.echoDebug("...player is holding item");
-		
+		dB.report("Outcome", (outcome) ? (exact) ? "Player is holding exact item" : "Player is holding item" : "");
+
 		return outcome;
 	}
 }

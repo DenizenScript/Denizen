@@ -25,7 +25,7 @@ public class BookScriptContainer extends ScriptContainer {
 
     public Item writeBookTo(Item book, Player player, dNPC npc) {
         // Get current ItemMeta from the book
-        BookMeta bookInfo = (BookMeta) book.getItemMeta();
+        BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
         
         
 
@@ -53,7 +53,7 @@ public class BookScriptContainer extends ScriptContainer {
             }
         }
 
-        book.setItemMeta(bookInfo);
+        book.getItemStack().setItemMeta(bookInfo);
         return book;
     }
 

@@ -126,7 +126,7 @@ public class ScribeCommand extends AbstractCommand implements Listener{
 
             else if (aH.matchesItem(arg)) {
                 book = aH.getItemFrom(arg);
-                if (book.getType() == Material.BOOK || book.getType() == Material.WRITTEN_BOOK) {
+                if (book.getItemStack().getType() == Material.BOOK || book.getItemStack().getType() == Material.WRITTEN_BOOK) {
                     savedItem = true;
                 } else {
                     book = null;
@@ -167,15 +167,15 @@ public class ScribeCommand extends AbstractCommand implements Listener{
         // Post-write action? Can be NONE.
         switch (action) {
             case DROP:
-                dropBook(location, book);
+                dropBook(location, book.getItemStack());
                 break;
 
             case GIVE:
-                giveBook(player, book);
+                giveBook(player, book.getItemStack());
                 break;
 
             case EQUIP:
-                equipBook(player, book);
+                equipBook(player, book.getItemStack());
                 break;
 
             case NONE:

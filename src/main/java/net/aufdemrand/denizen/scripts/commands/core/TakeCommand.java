@@ -32,44 +32,34 @@ public class TakeCommand extends AbstractCommand{
 	private enum TakeType { MONEY, ITEMINHAND, ITEM }
 
 	@Override
-	public void parseArgs(ScriptEntry scriptEntry)
-			throws InvalidArgumentsException {
+	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 		
 		TakeType takeType = null;
 		double quantity = 1;
 		ItemStack item = null;
 		
 		for (String arg : scriptEntry.getArguments()) {
-			if (aH.matchesArg("MONEY, COINS", arg)) {
+			if (aH.matchesArg("MONEY, COINS", arg))
 				takeType = TakeType.MONEY;
-				dB.echoDebug("...taking MONEY");
-			} 
-			
-			else if (aH.matchesArg("ITEMINHAND", arg)) {
+
+			else if (aH.matchesArg("ITEMINHAND", arg))
 				takeType = TakeType.ITEMINHAND;
-				dB.echoDebug("...taking ITEMINHAND");
-			}
-			
-			else if (aH.matchesQuantity(arg)) {
+
+			else if (aH.matchesQuantity(arg))
 				quantity = aH.getDoubleFrom(arg);
-				dB.echoDebug ("...set quantity to " + quantity);
-			}
-			
-			else if (aH.matchesItem(arg) || aH.matchesItem("item:" + arg)) {
+
+			else if (aH.matchesItem(arg) || aH.matchesItem("item:" + arg))
 				takeType = TakeType.ITEM;
-				item = aH.getItemFrom(arg);
-				dB.echoDebug("...taking " + item.getType());
-			}
 			
 			else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-			
+
+        }
 			scriptEntry.addObject("item", item);
 			scriptEntry.addObject("takeType", takeType);
 			scriptEntry.addObject("quantity", quantity);
-		}
-	}
 
-	@SuppressWarnings("deprecation")
+    }
+
 	@Override
 	public void execute(ScriptEntry scriptEntry)
 			throws CommandExecutionException {

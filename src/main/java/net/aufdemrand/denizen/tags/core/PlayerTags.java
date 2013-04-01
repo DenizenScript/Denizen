@@ -517,7 +517,7 @@ public class PlayerTags implements Listener {
                 }
                 else if (aH.matchesItem("item:" + subTypeContext))
                 {
-                    ItemStack item = aH.getItemFrom("item:" + subTypeContext);
+                    ItemStack item = aH.getItemFrom("item:" + subTypeContext).getItemStack();
 
                     if (specifier.equalsIgnoreCase("QTY") && (aH.matchesQuantity("qty:" + specifierContext)))
                     {
@@ -535,7 +535,7 @@ public class PlayerTags implements Listener {
 
                 if (aH.matchesItem("item:" + subTypeContext))
                 {
-                    ItemStack item = new ItemStack(aH.getItemFrom("item:" + subTypeContext));
+                    ItemStack item = new ItemStack(aH.getItemFrom("item:" + subTypeContext).getItemStack());
 
                     qty = Utilities.countItems(item, event.getPlayer().getInventory());
 

@@ -35,9 +35,9 @@ public class LeatherColorer {
 
         // Try to apply the color
         try{
-            meta = (LeatherArmorMeta) item.getItemMeta();
+            meta = (LeatherArmorMeta) item.getItemStack().getItemMeta();
             meta.setColor(Color.fromRGB(red, green, blue));
-            item.setItemMeta(meta);
+            item.getItemStack().setItemMeta(meta);
         } catch(Exception e) {
             dB.echoError("Unable to color '" + item.dScriptArgValue() + "'.");
         }

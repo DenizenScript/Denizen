@@ -48,7 +48,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                         String entry_value = TagManager.tag(player, npc, entry.getValue());
                         // Check if the item specified in the specified id's 'trigger:' key
                         // matches the item that the player is holding.
-                        if (Item.valueOf(entry_value).matches(player.getItemInHand())
+                        if (Item.valueOf(entry_value).comparesTo(player.getItemInHand()) >= 0
                                 && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
                                 player, npc, entry.getKey()))
                             id = entry.getKey();

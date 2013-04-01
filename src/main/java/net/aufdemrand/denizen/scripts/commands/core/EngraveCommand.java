@@ -49,7 +49,7 @@ public class EngraveCommand extends AbstractCommand implements Listener {
             if (aH.matchesArg("ADD, REMOVE, REMOVEALL", arg)) {
                 action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
             } else if (aH.matchesItem(arg)) {
-                item = aH.getItemFrom(arg);
+                item = aH.getItemFrom(arg).getItemStack();
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
         

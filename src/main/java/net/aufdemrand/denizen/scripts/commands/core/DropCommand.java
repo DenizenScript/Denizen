@@ -71,7 +71,7 @@ public class DropCommand extends AbstractCommand {
 
         // Set quantity if not specified
         if (qty != null && item != null)
-            item.setAmount(qty);
+            item.getItemStack().setAmount(qty);
         else qty = 1;
 
         // Report to dB
@@ -84,7 +84,7 @@ public class DropCommand extends AbstractCommand {
             ((ExperienceOrb) location.getWorld().spawnEntity(location, EntityType.EXPERIENCE_ORB))
                     .setExperience(qty);
         else
-            location.getWorld().dropItemNaturally(location, item);
+            location.getWorld().dropItemNaturally(location, item.getItemStack());
 
     }
 

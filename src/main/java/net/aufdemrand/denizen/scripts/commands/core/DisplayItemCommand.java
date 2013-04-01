@@ -92,10 +92,9 @@ public class DisplayItemCommand extends AbstractCommand {
             }
 
             // Remember the item entity
-            displayed.put(location.dScriptArgValue(), location.getWorld().dropItem(location, item));
+            displayed.put(location.dScriptArgValue(), location.getBlock().getLocation().getWorld().dropItem(location, item.getItemStack()));
             displayed.get(location.dScriptArgValue()).setPickupDelay(Integer.MAX_VALUE);
             displayed.get(location.dScriptArgValue()).setTicksLived(ticks);
-
         }
 
         // Remove the item

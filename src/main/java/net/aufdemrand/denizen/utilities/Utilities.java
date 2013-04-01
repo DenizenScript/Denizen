@@ -196,7 +196,7 @@ public class Utilities {
     {
     	if (aH.matchesItem("item:" + item))
     	{
-    		ItemStack itemstack = new ItemStack(aH.getItemFrom("item:" + item));
+    		ItemStack itemstack = new ItemStack(aH.getItemFrom("item:" + item).getItemStack());
     		return countItems(itemstack, inventory);
     	}
     	
@@ -207,7 +207,7 @@ public class Utilities {
     /**
      * Rotates an entity.
      *
-     * @param player The Entity you want to rotate.
+     * @param entity The Entity you want to rotate.
      * @param yaw The new yaw of the entity.
      * @param pitch The new pitch of the entity.
      */

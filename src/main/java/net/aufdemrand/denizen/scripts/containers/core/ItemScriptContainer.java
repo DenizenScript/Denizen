@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.arguments.Item;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
+import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -24,9 +25,9 @@ public class ItemScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
- //   public Item getItemFrom() {
- //       return getItemFrom(null, null);
- //   }
+   public Item getItemFrom() {
+       return getItemFrom(null, null);
+   }
 
     public Item getItemFrom(Player player, dNPC npc) {
         // Try to use this script to make an item.
@@ -41,7 +42,7 @@ public class ItemScriptContainer extends ScriptContainer {
             // Make sure we're working with a valid base ItemStack
             if (stack == null) return null;
 
-            ItemMeta meta = stack.getItemMeta();
+            ItemMeta meta = stack.getItemStack().getItemMeta();
 
             // Set Display Name
             if (contains("DISPLAY NAME")){
@@ -59,7 +60,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 meta.setLore(taggedLore);
             }
             	
-            stack.setItemMeta(meta);
+            stack.getItemStack().setItemMeta(meta);
 
             // Set Enchantments
             if (contains("ENCHANTMENTS")) {
@@ -75,9 +76,9 @@ public class ItemScriptContainer extends ScriptContainer {
                         }
                         // Add enchantment
                         Enchantment ench = Enchantment.getByName(enchantment.toUpperCase());
-                        stack.addUnsafeEnchantment(ench, level);
+                        stack.getItemStack().addEnchantment(ench, level);
                     } catch (Exception e) {
-                        // Invalid enchantment information, let's try the next entry
+                        dB.echoError("While constructing '" + getName() + "', there has been a problem. '" + enchantment + "' is an invalid Enchantment!");
                         continue;
                     }
                 }
@@ -99,7 +100,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
 
             // Set Id of the stack
-            stack.setId(getName());
+            stack.setItemStack(NBTItem.addCustomNBT(stack.getItemStack(), "denizen-script-id", getName()));
 
         } catch (Exception e) {
             dB.echoError("Woah! An exception has been called with this item script!");

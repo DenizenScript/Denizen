@@ -119,13 +119,13 @@ public class GiveCommand  extends AbstractCommand {
 				break;
 
 			case ITEM:
-				theItem.setAmount(theAmount);
+				theItem.getItemStack().setAmount(theAmount);
                 if(engrave) {
                     dB.echoDebug("...engraving " + theItem + " to the player");
-                    NBTItem.addCustomNBT(theItem, "owner", player.getName());
+                    NBTItem.addCustomNBT(theItem.getItemStack(), "owner", player.getName());
                 }
 				dB.echoDebug("..giving player " + theAmount + " of " + theItem);
-				HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(theItem);
+				HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(theItem.getItemStack());
 
 
 				if (!leftovers.isEmpty()) {
