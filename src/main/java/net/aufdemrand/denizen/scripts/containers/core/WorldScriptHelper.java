@@ -166,8 +166,13 @@ public class WorldScriptHelper implements Listener {
             Map<String, String> context = new HashMap<String, String>();
             context.put("notable_name", name);
 
-            String determination = doEvent("walked over " + name, null, event.getPlayer(), context);
+            String determination;
 
+            determination = doEvent("walked over " + name, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("FROZEN"))
+                event.setCancelled(true);
+
+            determination = doEvent("walked over notable location", null, event.getPlayer(), context);
             if (determination.toUpperCase().startsWith("FROZEN"))
                 event.setCancelled(true);
         }
