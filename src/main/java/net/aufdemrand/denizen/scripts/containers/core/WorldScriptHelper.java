@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -181,7 +182,7 @@ public class WorldScriptHelper implements Listener {
                     public void run() {
                         timeEvent();
                     }
-                }, 250, 250);
+                }, Settings.WorldScriptTimeEventResolution().getTicks(), Settings.WorldScriptTimeEventResolution().getTicks());
 
         // Fire the 'Server Start' event
         doEvent("server start", null, null, null);
@@ -198,7 +199,11 @@ public class WorldScriptHelper implements Listener {
 
             if (!current_time.containsKey(world.getName())
                     || current_time.get(world.getName()) != hour) {
-                doEvent(hour + ":00 in " + world.getName(), null, null, null);
+                Map<String, String> context = new HashMap<String, String>();
+                context.put("time", String.valueOf(hour));
+                context.put("world", world.getName());
+                doEvent("time change in " + world.getName(), null, null, context);
+                doEvent(hour + ":00 in " + world.getName(), null, null, context);
                 current_time.put(world.getName(), hour);
             }
         }

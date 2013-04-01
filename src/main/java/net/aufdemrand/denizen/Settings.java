@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.arguments.Duration;
 
 public class Settings {
 
@@ -220,6 +221,12 @@ public class Settings {
     public static boolean ChatGloballyIfUninteractable() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Triggers.Chat.Appears Globally.If NPC Uninteractable", true);
+    }
+
+    public static Duration WorldScriptTimeEventResolution() {
+        return Duration.valueOf(DenizenAPI.getCurrentInstance().getConfig()
+                .getString("Events.On time resolution", "250t"));
+
     }
 
 }
