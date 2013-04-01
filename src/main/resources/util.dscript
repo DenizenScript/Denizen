@@ -11,12 +11,12 @@ _util_dtime_command:
           queue clear
           else narrate 'Changing time to <flag.p:ddtc_time>:00.'
         - if <flag.p:ddtc_time> == 24
-          execute as_op 'time set 6000'
+          execute as_op 'time set 18000'
         - flag ddtc_time:-:6
         - if <flag.p:ddtc_time> >= 0
           execute as_op 'time set <flag.p:ddtc_time.asint>000'
-        - flag ddtc_time:+:12
-        - if <flag.p:ddtc_time> < 12
+        - flag ddtc_time:+:24
+        - if <flag.p:ddtc_time> > 18
           execute as_op 'time set <flag.p:ddtc_time.asint>000'
         - flag ddtc_time:!
         - determine cancelled
