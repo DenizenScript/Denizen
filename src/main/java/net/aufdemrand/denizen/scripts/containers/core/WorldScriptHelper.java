@@ -18,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -272,7 +273,19 @@ public class WorldScriptHelper implements Listener {
 
     }
 
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerChat(AsyncPlayerChatEvent event) {
 
+        Map<String, String> context = new HashMap<String, String>();
+        context.put("message", event.getMessage());
+
+        String determination = doEvent("player chats", null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        if (aH.matchesValueArg("MESSAGE", determination, aH.ArgumentType.Integer))
+            event.setMessage(aH.getStringFrom(determination));
+    }
 
     @EventHandler
     public void playerHit(EntityDamageEvent event) {
