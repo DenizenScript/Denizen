@@ -46,19 +46,19 @@ public class WorldScriptHelper implements Listener {
 
         for (WorldScriptContainer script : world_scripts.values()) {
 
-            dB.report("Event",
-                    aH.debugObj("Type", "On " + eventName)
-                            + script.getAsScriptArg().debug()
-                            + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
-                            + (player != null ? aH.debugObj("Player", player.getName()) : "")
-                            + (context != null ? aH.debugObj("Context", context.toString()) : ""));
-
             if (script == null) continue;
             if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
 
             // Fetch script from Event
             List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
             if (entries.isEmpty()) continue;
+
+            dB.report("Event",
+                    aH.debugObj("Type", "On " + eventName)
+                            + script.getAsScriptArg().debug()
+                            + (npc != null ? aH.debugObj("NPC", npc.toString()) : "")
+                            + (player != null ? aH.debugObj("Player", player.getName()) : "")
+                            + (context != null ? aH.debugObj("Context", context.toString()) : ""));
 
             dB.echoDebug(dB.DebugElement.Header, "Building event 'On " + eventName.toUpperCase() + "' for " + script.getName());
 
