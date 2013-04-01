@@ -210,7 +210,7 @@ public class ScriptQueue implements Listener {
         if (isStarted) return;
 
         // Start the queue
-        dB.log("Starting queue " + id + "... (Speed=" + ticks + "tpr)");
+        dB.echoDebug("Starting queue " + id + ". (Speed=" + ticks + "tpr)");
         isStarted = true;
 
         // If not an instant queue, set a bukkit repeating task with the speed

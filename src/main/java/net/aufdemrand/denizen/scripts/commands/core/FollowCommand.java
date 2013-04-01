@@ -23,6 +23,9 @@ public class FollowCommand extends AbstractCommand {
             if (aH.matchesArg("STOP", arg))
                 scriptEntry.addObject("stop", true);
 
+            if (aH.matchesValueArg("LEAD", arg, aH.ArgumentType.Double))
+                scriptEntry.addObject("lead", aH.getDoubleFrom(arg));
+
             else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
     }
@@ -31,12 +34,17 @@ public class FollowCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
         Boolean stop = (Boolean) scriptEntry.getObject("stop");
+        Double lead = (Double) scriptEntry.getObject("lead");
 
         // Report to dB
         dB.report(getName(),
                 aH.debugObj("Player", scriptEntry.getPlayer().getName())
                         + (stop == null ? aH.debugObj("Action", "FOLLOW")
-                        : aH.debugObj("Action", "STOP")));
+                        : aH.debugObj("Action", "STOP"))
+                        + (lead != null ? aH.debugObj("Lead", lead.toString()) : "" ));
+
+        if (lead != null)
+            scriptEntry.getNPC().getNavigator().getLocalParameters().distanceMargin(lead);
 
         if (stop != null)
             scriptEntry.getNPC().getNavigator()
@@ -44,6 +52,7 @@ public class FollowCommand extends AbstractCommand {
         else
             scriptEntry.getNPC().getNavigator()
                     .setTarget(scriptEntry.getPlayer(), false);
+
     }
 
 }
