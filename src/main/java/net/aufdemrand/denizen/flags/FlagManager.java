@@ -140,7 +140,7 @@ public class FlagManager {
                 if (val.equalsIgnoreCase(stringValue)) return true;
                 try {
                     if (Double.valueOf(val).equals(Double.valueOf(stringValue))) return true;
-                } catch (Exception e) { /* Not a valid number, continue. */ }
+                } catch (NumberFormatException e) { /* Not a valid number, continue. */ }
             }
 
             return false;

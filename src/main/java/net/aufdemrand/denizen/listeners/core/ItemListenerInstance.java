@@ -100,22 +100,22 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
 				
 				// Get the item in the result slot as an ItemStack
-				ItemStack item = new ItemStack(event.getCurrentItem());
+				final ItemStack item = new ItemStack(event.getCurrentItem());
 				
 				if (event.isShiftClick())
 				{
 					// Save the quantity of items of this type that the player had
 					// before the event took place
-					int initialQty = Utilities.countItems(item, player.getInventory());
+					final int initialQty = Utilities.countItems(item, player.getInventory());
 					
 					// Run a task 1 tick later, after the event has occurred, and
 					// see how many items of this type the player has then in the
 					// inventory
 					Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-		        	new Runnable2<ItemStack, Integer>(item, initialQty)
+		        	new Runnable()
 		        	{
 						@Override
-		                public void run(ItemStack item, Integer initialQty)
+		                public void run()
 						{
 							int newQty = Utilities.countItems(item, player.getInventory());
 							int difference = newQty - initialQty;

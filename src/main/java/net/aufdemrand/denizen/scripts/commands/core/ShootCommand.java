@@ -24,6 +24,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 /**
@@ -98,27 +99,26 @@ public class ShootCommand extends AbstractCommand {
         scriptEntry.addObject("fireworks", fireworks);
     }
     
-    @SuppressWarnings("rawtypes")
 	@Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
     	
-        Location location = (Location) scriptEntry.getObject("location");
+        final Location location = scriptEntry.hasObject("location") ? (Location) scriptEntry.getObject("location") : (Location) scriptEntry.getNPC().getEyeLocation().getDirection().
+                multiply(4).toLocation(scriptEntry.getNPC().getWorld());
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
         Boolean ride = (Boolean) scriptEntry.getObject("ride");
         Boolean burn = (Boolean) scriptEntry.getObject("burn");
         
         if (location == null)
         {
-        	location = (Location) scriptEntry.getNPC().getEyeLocation().getDirection().
-        				multiply(4).toLocation(scriptEntry.getNPC().getWorld());
+        	
         }
         else
         {
         	Utilities.faceLocation(scriptEntry.getNPC().getCitizen().getBukkitEntity(), location);
         }
 
-        Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
+        final Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
         				scriptEntry.getNPC().getEyeLocation().add(
         				scriptEntry.getNPC().getEyeLocation().getDirection())
         				.subtract(0, 0.4, 0),
@@ -141,13 +141,13 @@ public class ShootCommand extends AbstractCommand {
 			((Projectile) entity).setShooter(scriptEntry.getNPC().getCitizen().getBukkitEntity());
 		}
         
-        Runnable3 task = new Runnable3<ScriptEntry, Entity, Location>
-        				(scriptEntry, entity, location)
+        BukkitRunnable task = new BukkitRunnable()
         	{
+                int runs = 0;
         		@Override
-        		public void run(ScriptEntry scriptEntry, Entity entity, Location location) {
+        		public void run() {
     	        				
-        			if (getRuns() < 40 && entity.isValid())
+        			if (runs < 40 && entity.isValid())
         			{
         				//dB.echoDebug(entity.getType().name() + " flying time " + getRuns() + " in task " + getId());
 
@@ -156,18 +156,18 @@ public class ShootCommand extends AbstractCommand {
         				Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
         							
         				entity.setVelocity(v3);
-        				addRuns();
+        				runs++;
         						
         				if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
         				&& Math.abs(v2.getZ() - v1.getZ()) < 2)
         				{
-        					setRuns(40);
+        					runs = 40;
         				}
         			}
         			else
         			{
         				this.cancel();
-        				clearRuns();
+        				runs = 0;
         				
         				if (scriptEntry.getObject("script") != null)
         				{
@@ -194,7 +194,7 @@ public class ShootCommand extends AbstractCommand {
         		}
        		};
         
-        task.setId(Bukkit.getScheduler().scheduleSyncRepeatingTask(denizen, task, 0, 2));        
+       	task.runTaskTimer(denizen, 0, 2);     
     }
 
 }

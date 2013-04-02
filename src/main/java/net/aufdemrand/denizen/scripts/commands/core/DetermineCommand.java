@@ -16,7 +16,7 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
  */
 public class DetermineCommand extends AbstractCommand {
 
-    private static Map<Long, String> outcomes = new ConcurrentHashMap<Long, String>();
+    private static Map<Long, String> outcomes = new ConcurrentHashMap<Long, String>(8, 0.9f, 1);
 
     public static long uniqueId = 0;
 

@@ -48,12 +48,13 @@ public class TaskActivity extends AbstractActivity {
 			return false;
 		}
 		
-		List<TaskGoal> taskGoals = new ArrayList<TaskGoal>();
-		if (taskMap.containsKey(dNPC))
-			taskGoals = taskMap.get(dNPC);
+		List<TaskGoal> taskGoals = taskMap.get(dNPC);
+		if (taskGoals == null) {
+			taskGoals = new ArrayList<TaskGoal>();
+			taskMap.put(dNPC, taskGoals);
+		}
 		taskGoals.add(0, new TaskGoal(dNPC, delay, duration, script, repeats, this));
-		taskMap.put(dNPC, taskGoals);
-		dNPC.getCitizen().getDefaultGoalController().addGoal(taskMap.get(dNPC).get(0), priority);
+		dNPC.getCitizen().getDefaultGoalController().addGoal(taskGoals.get(0), priority);
 		return true;
 	}
 

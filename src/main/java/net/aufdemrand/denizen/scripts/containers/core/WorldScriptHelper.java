@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class WorldScriptHelper implements Listener {
 
-    public static Map<String, WorldScriptContainer> world_scripts = new ConcurrentHashMap<String, WorldScriptContainer>();
+    public static Map<String, WorldScriptContainer> world_scripts = new ConcurrentHashMap<String, WorldScriptContainer>(8, 0.9f, 1);
 
     public WorldScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()

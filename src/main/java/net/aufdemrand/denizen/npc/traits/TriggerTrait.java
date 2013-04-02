@@ -21,13 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TriggerTrait extends Trait implements Listener {
 
     @Persist(value="enabled", collectionType=ConcurrentHashMap.class)
-    private Map<String, Boolean> enabled = new ConcurrentHashMap<String, Boolean>();
+    private Map<String, Boolean> enabled = new ConcurrentHashMap<String, Boolean>(8, 0.9f, 1);
     @Persist(value="duration", collectionType=ConcurrentHashMap.class)
-    private Map<String, Double> duration = new ConcurrentHashMap<String, Double>();
+    private Map<String, Double> duration = new ConcurrentHashMap<String, Double>(8, 0.9f, 1);
     @Persist(value="cooldowntype", collectionType=ConcurrentHashMap.class)
-    private Map<String, CooldownType> type = new ConcurrentHashMap<String, CooldownType>();
+    private Map<String, CooldownType> type = new ConcurrentHashMap<String, CooldownType>(8, 0.9f, 1);
     @Persist(value="radius", collectionType=ConcurrentHashMap.class)
-    private Map<String, Integer> radius = new ConcurrentHashMap<String, Integer>();
+    private Map<String, Integer> radius = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
 
     public void report() {
         dB.echoDebug("enabled: " + enabled.entrySet().toString());

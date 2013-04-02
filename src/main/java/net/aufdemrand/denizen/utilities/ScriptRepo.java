@@ -68,8 +68,9 @@ public class ScriptRepo {
 			Denizen plugin = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 			File file = new File(plugin.getDataFolder().getAbsolutePath()+File.separator+"scripts"+File.separator+data.getString("name")+".dscript");
 			if(!file.exists()){
+			    BufferedWriter bw = null;
 				try {
-					BufferedWriter bw = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
+					bw = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
 					bw.write(yaml);
 					bw.close();
 					Messaging.send(cs, "Downloaded script from repo. Reloading scripts...");
@@ -78,6 +79,14 @@ public class ScriptRepo {
 				} catch (IOException e) {
 					Messaging.send(cs, "Looks like something went wrong while writing the file. Check console for details.");
 					e.printStackTrace();
+				} finally {
+				    if (bw != null) {
+                        try {
+                            bw.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+				    }
 				}
 			}else{
 				Messaging.send(cs, "A script by that name appears to already exist!");

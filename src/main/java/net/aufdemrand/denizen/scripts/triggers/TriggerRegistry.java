@@ -28,9 +28,9 @@ public class TriggerRegistry implements DenizenRegistry {
     private Map<String, AbstractTrigger> instances = new HashMap<String, AbstractTrigger>();
     private Map<Class<? extends AbstractTrigger>, String> classes = new HashMap<Class<? extends AbstractTrigger>, String>();
 
-    Map<Integer, Map<String, Long>> npcCooldown = new ConcurrentHashMap<Integer, Map<String,Long>>();
+    Map<Integer, Map<String, Long>> npcCooldown = new ConcurrentHashMap<Integer, Map<String,Long>>(8, 0.9f, 1);
 
-    Map<String, Map<String, Long>> playerCooldown = new ConcurrentHashMap<String, Map<String,Long>>();
+    Map<String, Map<String, Long>> playerCooldown = new ConcurrentHashMap<String, Map<String,Long>>(8, 0.9f, 1);
 
     public TriggerRegistry(Denizen denizen) {
         this.denizen = denizen;

@@ -80,7 +80,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
     }
 
     //"PlayerName,ScriptName", TaskID
-    private static Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>();
+    private static Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {

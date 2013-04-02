@@ -42,8 +42,14 @@ public class aH {
     final static Pattern doublePtrn = Pattern.compile("(-)?(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
     final static Pattern floatPtrn = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
     final static Pattern integerPtrn = Pattern.compile("(-)?\\d+");
+    final static Pattern locationPattern = Pattern.compile("location:((-)?\\d+(\\.\\d+)?,){3}\\w+", Pattern.CASE_INSENSITIVE);
     final static Pattern wordPtrn = Pattern.compile("\\w+");
-
+    final static Pattern matchesDurationPtrn = Pattern.compile("duration:(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)", Pattern.CASE_INSENSITIVE);
+    final static Pattern matchesEntityPtrn =
+            Pattern.compile("(?:.+?|):((ENTITY\\.|PLAYER\\.|NPC\\.).+)|(PLAYER|NPC)", Pattern.CASE_INSENSITIVE);
+    final static Pattern matchesQuantityPtrn = Pattern.compile("qty:(-)?\\d+", Pattern.CASE_INSENSITIVE);
+    final static Pattern matchesQueuePtrn = Pattern.compile("queue:(.+)", Pattern.CASE_INSENSITIVE);
+    
     /**
      * <p>Used to determine if a argument string matches a non-valued custom argument.
      * If a dScript valued argument (such as PLAYER:NAME) is passed, this method
@@ -64,10 +70,11 @@ public class aH {
      *
      */
     public static boolean matchesArg(String names, String arg) {
-        if (names.split(",").length == 1) {
+        String[] parts = names.split(",");
+        if (parts.length == 1) {
             if (arg.toUpperCase().equals(names.toUpperCase())) return true;
         } else {
-            for (String string : names.split(","))
+            for (String string : parts)
                 if (arg.split(":")[0].equalsIgnoreCase(string.trim())) return true;
         }
         return false;
@@ -117,40 +124,35 @@ public class aH {
      */
     public static boolean matchesValueArg(String names, String arg, ArgumentType type) {
         if (arg == null) return false;
-        if (arg.split(":").length == 1) return false;
+        int firstColonIndex = arg.indexOf(':');
+        if (firstColonIndex==-1) return false;
 
-        if (names.split(",").length == 1) {
-            if (!arg.split(":")[0].equalsIgnoreCase(names)) return false;
-
+        String[] commaParts = names.split(",");
+        if (commaParts.length == 1) {
+            if (!arg.substring(0,firstColonIndex).equalsIgnoreCase(names)) return false;
         } else {
             boolean matched = false;
-            for (String string : names.split(","))
-                if (arg.split(":")[0].equalsIgnoreCase(string.trim())) matched = true;
+            for (String string : commaParts)
+                if (arg.substring(0,firstColonIndex).equalsIgnoreCase(string.trim())) matched = true;
             if (!matched) return false;
         }
 
         arg = arg.split(":", 2)[1];
-        Matcher m;
-
         switch (type) {
             case Word:
-                m = wordPtrn.matcher(arg);
-                if (m.matches()) return true;
+                if (wordPtrn.matcher(arg).matches()) return true;
                 break;
 
             case Integer:
-                m = integerPtrn.matcher(arg);
-                if (m.matches()) return true;
+                if (integerPtrn.matcher(arg).matches()) return true;
                 break;
 
             case Double:
-                m = doublePtrn.matcher(arg);
-                if (m.matches()) return true;
+                if (doublePtrn.matcher(arg).matches()) return true;
                 break;
 
             case Float:
-                m = floatPtrn.matcher(arg);
-                if (m.matches()) return true;
+                if (floatPtrn.matcher(arg).matches()) return true;
                 break;
 
             case Boolean:
@@ -168,10 +170,7 @@ public class aH {
                 return matchesItem("item:" + arg);
 
             case LivingEntity:
-                final Pattern matchesEntityPtrn =
-                        Pattern.compile("(?:.+?|):((ENTITY\\.|PLAYER\\.|NPC\\.).+)|(PLAYER|NPC)", Pattern.CASE_INSENSITIVE);
-                m = matchesEntityPtrn.matcher(arg);
-                if (m.matches()) return true;
+                if (matchesEntityPtrn.matcher(arg).matches()) return true;
                 break;
 
             case Duration:
@@ -205,9 +204,7 @@ public class aH {
      *
      */
     public static boolean getBooleanFrom(String arg) {
-        if (arg.split(":").length >= 2)
-            return Boolean.valueOf(arg.split(":", 2)[1]);
-        else return Boolean.valueOf(arg);
+        return Boolean.valueOf(getValuePart(arg));
     }
 
     /**
@@ -230,11 +227,9 @@ public class aH {
      */
     public static double getDoubleFrom(String arg) {
         try {
-            if (arg.split(":").length >= 2)
-                return Double.valueOf(arg.split(":", 2)[1]);
-            else return Double.valueOf(arg);
-        } catch (Exception e) {
-            return 0.00;
+            return Double.valueOf(getValuePart(arg));
+        } catch (NumberFormatException e) {
+            return 0D;
         }
     }
 
@@ -259,7 +254,6 @@ public class aH {
      *
      */
     public static EntityType getEntityFrom(String arg) {
-        final Pattern matchesEntityPtrn = Pattern.compile("(?:(?:.+?:)|)(.+)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesEntityPtrn.matcher(arg);
         if (m.matches()) {
             // Match against valid EntityTypes using Bukkit enum
@@ -276,27 +270,28 @@ public class aH {
      *
      */
     public static LivingEntity getLivingEntityFrom(String arg) {
-        final Pattern matchesEntityPtrn = Pattern.compile("(?:(?:.+?:)|)(.+)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesEntityPtrn.matcher(arg);
         if (m.matches()) {
-            if (m.group(1).toUpperCase().startsWith("ENTITY.")) {
+            String entityGroup = m.group(1);
+            String entityGroupUpper =entityGroup.toUpperCase();
+            if (entityGroupUpper.startsWith("ENTITY.")) {
                 LivingEntity returnable = ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
-                        .getCommandRegistry().get(NewCommand.class).getEntity(m.group(1).split("\\.")[1]);
+                        .getCommandRegistry().get(NewCommand.class).getEntity(entityGroup.split("\\.")[1]);
                 if (returnable != null) return returnable;
-                else dB.echoError("Invalid entity! '" + m.group(1) + "' could not be found.");
+                else dB.echoError("Invalid entity! '" + entityGroup + "' could not be found.");
             }
 
-            else if (m.group(1).toUpperCase().startsWith("NPC.") ||
-            		 m.group(1).toUpperCase().startsWith("NPCID.")) {
-                LivingEntity returnable = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(m.group(1).split("\\.")[1])).getBukkitEntity();
+            else if (entityGroupUpper.startsWith("NPC.") ||
+            		entityGroupUpper.startsWith("NPCID.")) {
+                LivingEntity returnable = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(entityGroup.split("\\.")[1])).getBukkitEntity();
                 if (returnable != null) return returnable;
-                else dB.echoError("Invalid NPC! '" + m.group(1) + "' could not be found.");
+                else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found.");
             }
 
-            else if (m.group(1).toUpperCase().startsWith("PLAYER.")) {
-                LivingEntity returnable = getPlayerFrom(m.group(1).split("\\.")[1]);
+            else if (entityGroupUpper.startsWith("PLAYER.")) {
+                LivingEntity returnable = getPlayerFrom(entityGroup.split("\\.")[1]);
                 if (returnable != null) return returnable;
-                else dB.echoError("Invalid Player! '" + m.group(1) + "' could not be found.");
+                else dB.echoError("Invalid Player! '" + entityGroup + "' could not be found.");
             }
         }
 
@@ -315,10 +310,8 @@ public class aH {
      */
     public static float getFloatFrom(String arg) {
         try {
-            if (arg.split(":").length >= 2)
-                return Float.valueOf(arg.split(":", 2)[1]);
-            else return Float.valueOf(arg);
-        } catch (Exception e) {
+            return Float.valueOf(getValuePart(arg));
+        } catch (NumberFormatException e) {
             return 0f;
         }
     }
@@ -343,10 +336,8 @@ public class aH {
      */
     public static int getIntegerFrom(String arg) {
         try {
-            if (arg.split(":").length >= 2)
-                return Integer.valueOf(arg.split(":", 2)[1]);
-            else return Integer.valueOf(arg);
-        } catch (Exception e) {
+             return Integer.valueOf(getValuePart(arg));
+        } catch (NumberFormatException e) {
             return 0;
         }
     }
@@ -377,7 +368,6 @@ public class aH {
      *
      */
     public static Item getItemFrom(String arg) {
-        if (arg == null) return null;
         Item stack = Item.valueOf(arg);
         if (stack == null)
             dB.echoError("Invalid item! Failed to find a matching Bukkit ItemStack.");
@@ -407,10 +397,8 @@ public class aH {
      *
      */
     public static java.util.List<String> getListFrom(String arg) {
-        if (arg == null || arg.equals("")) return new ArrayList<String>();
-        if (arg.split(":").length >= 2)
-            return Arrays.asList(arg.split(":", 2)[1].split("\\|"));
-        else return Arrays.asList(arg.split("\\|"));
+        if (arg == null || arg.equals("")) return Collections.emptyList();
+        else return Arrays.asList(getValuePart(arg).split("\\|"));
     }
 
     /**
@@ -470,8 +458,7 @@ public class aH {
      * @return a Bukkit Player object, or null
      */
     public static Player getPlayerFrom(String arg) {
-        if (arg.split(":").length >= 2)
-            arg = arg.split(":", 2)[1];
+        arg = getValuePart(arg);
         // Remove prefix if using PLAYER.playername format
         if (arg.toUpperCase().contains("PLAYER."))
             arg = arg.toUpperCase().replace("PLAYER.", "");
@@ -499,10 +486,9 @@ public class aH {
      * @return a Citizens NPC object, or null
      */
     public static NPC getNPCFrom(String arg) {
-        if (arg.split(":").length >= 2)
-            arg = arg.split(":", 2)[1];
+        arg = getValuePart(arg);
         for (NPC npc : CitizensAPI.getNPCRegistry())
-            if (npc.getId() == Integer.valueOf(arg).intValue()) return npc;
+            if (npc.getId() == Integer.parseInt(arg)) return npc;
         dB.echoError("NPC '" + arg + "' is invalid, or has been removed.");
         return null;
     }
@@ -534,8 +520,7 @@ public class aH {
      *
      */
     public static OfflinePlayer getOfflinePlayerFrom(String arg) {
-        if (arg.split(":").length >= 2)
-            arg = arg.split(":", 2)[1];
+       arg = getValuePart(arg);
         for (OfflinePlayer player : Bukkit.getOfflinePlayers())
             if (player.getName().equalsIgnoreCase(arg)) return player;
         dB.echoError("OfflinePlayer '" + arg + "' is invalid, or has never logged in to this server.");
@@ -552,9 +537,7 @@ public class aH {
      *
      */
     public static ScriptQueue getQueueFrom(String arg) {
-        if (arg.split(":").length >= 2)
-            return ScriptQueue._getQueue(arg.split(":")[1].toUpperCase());
-        else return ScriptQueue._getQueue(arg.toUpperCase());
+        return ScriptQueue._getQueue(getValuePart(arg).toUpperCase());
     }
 
     /**
@@ -578,6 +561,11 @@ public class aH {
         else return arg;
     }
 
+    private static String getValuePart(String arg) {
+        String[] parts = arg.split(":", 2);
+        return parts.length >=2 ? parts[1] : arg;
+    }
+    
     /**
      * <p>Gets a Duration object from the dScript duration value format. Accepts a prefix in the
      * argument for convenience.</p>
@@ -622,8 +610,7 @@ public class aH {
      *
      */
     public static boolean matchesDouble(String arg) {
-        Matcher m = doublePtrn.matcher(arg);
-        return m.matches();
+        return doublePtrn.matcher(arg).matches();
     }
 
     /**
@@ -651,7 +638,6 @@ public class aH {
      *
      */
     public static boolean matchesDuration(String arg) {
-        final Pattern matchesDurationPtrn = Pattern.compile("duration:(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesDurationPtrn.matcher(arg);
         if (m.matches()) return true;
         else if (arg.toUpperCase().startsWith("DURATION:"))
@@ -684,12 +670,10 @@ public class aH {
         final Pattern matchesEntityPtrn = Pattern.compile("entity:(.+)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesEntityPtrn.matcher(arg);
         if (m.matches()) {
+            String group = m.group(1).toUpperCase();
             // Check against valid EntityTypes using Bukkit's EntityType enum
             for (EntityType validEntity : EntityType.values())
-                if (m.group(1).equalsIgnoreCase(validEntity.name()))
-                    return true;
-            for (EntityType validEntity : EntityType.values())
-                if (m.group(1).equalsIgnoreCase(validEntity.name()))
+                if (group.equals(validEntity.name()))
                     return true;
         }
         // Check for valid prefix, warn about value.
@@ -716,8 +700,7 @@ public class aH {
      *
      */
     public static boolean matchesInteger(String arg) {
-        Matcher m = integerPtrn.matcher(arg);
-        return m.matches();
+        return integerPtrn.matcher(arg).matches();
     }
 
     /**
@@ -741,8 +724,7 @@ public class aH {
      *
      */
     public static boolean matchesItem(String arg) {
-        if (arg.toUpperCase().startsWith("ITEM:"))
-        	if (arg.length() > 5)
+        if (arg.length() > 5 && arg.toUpperCase().startsWith("ITEM:"))
         		return true;
         // TODO: Other matches____ do some actual checks.
         return false;
@@ -756,9 +738,8 @@ public class aH {
 
     public static Map<String, String> getContextFrom(String arg) {
         Map<String, String> context = new HashMap<String, String>();
-        java.util.List<String> contexts = aH.getListFrom(arg);
         int x = 1;
-        for (String ctxt : contexts) {
+        for (String ctxt : aH.getListFrom(arg)) {
             context.put(String.valueOf(x), ctxt.trim());
             x++;
         }
@@ -783,7 +764,6 @@ public class aH {
      *
      */
     public static boolean matchesLocation(String arg) {
-        final Pattern locationPattern = Pattern.compile("location:((-)?\\d+(\\.\\d+)?,){3}\\w+", Pattern.CASE_INSENSITIVE);
         Matcher m = locationPattern.matcher(arg);
         if (m.matches())
             return true;
@@ -817,7 +797,6 @@ public class aH {
      *
      */
     public static boolean matchesQuantity(String arg) {
-        final Pattern matchesQuantityPtrn = Pattern.compile("qty:(-)?\\d+", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesQuantityPtrn.matcher(arg);
         if (m.matches()) return true;
         else if (arg.toUpperCase().startsWith("qty:"))
@@ -848,7 +827,6 @@ public class aH {
      *
      */
     public static boolean matchesQueue(String arg) {
-        final Pattern matchesQueuePtrn = Pattern.compile("queue:(.+)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesQueuePtrn.matcher(arg);
         if (m.matches())
             return true;
@@ -874,8 +852,6 @@ public class aH {
      *
      */
     public static boolean matchesScript(String arg) {
-        final Pattern matchesScriptPtrn = Pattern.compile("script:(.+)", Pattern.CASE_INSENSITIVE);
-
         Matcher m = matchesScriptPtrn.matcher(arg);
         if (m.matches()) {
             if (ScriptRegistry.containsScript(m.group(1)))
@@ -909,7 +885,6 @@ public class aH {
      *
      */
     public static boolean matchesToggle(String arg) {
-        final Pattern matchesTogglePtrn = Pattern.compile("toggle:(?:(?:true)|(?:false)|(?:toggle))", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesTogglePtrn.matcher(arg);
         if (m.matches()) return true;
         else if (arg.toUpperCase().startsWith("toggle:"))
@@ -921,7 +896,9 @@ public class aH {
 
 
     final private static Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
-
+    final static Pattern matchesTogglePtrn = Pattern.compile("toggle:(?:(?:true)|(?:false)|(?:toggle))", Pattern.CASE_INSENSITIVE);
+    final static Pattern matchesScriptPtrn = Pattern.compile("script:(.+)", Pattern.CASE_INSENSITIVE);
+    
     /**
      * Builds an arguments array, recognizing items in quotes as a single item
      *
@@ -945,10 +922,6 @@ public class aH {
         if (dB.showScriptBuilder)
             dB.echoDebug(ChatColor.GRAY + "Args: " + Arrays.toString(matchList.toArray()));
 
-        String[] split = new String[matchList.size()];
-        matchList.toArray(split);
-        return split;
+        return matchList.toArray(new String[matchList.size()]);
     }
-
-
 }

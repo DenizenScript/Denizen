@@ -320,14 +320,15 @@ public class Utilities {
     
     public static dNPC getClosestNPC (Location location, int range) {
         dNPC closestNPC = null;
-        Double	closestDistance = Double.valueOf(range);
+        double closestDistance = Math.pow(range, 2);
         Iterator<dNPC>	it = DenizenAPI.getSpawnedNPCs().iterator();
-        while (it.hasNext ()) {
-            dNPC	npc = it.next ();
-            if (npc.getLocation().getWorld().equals(location.getWorld())
-                    && npc.getLocation().distance(location) < closestDistance) {
+        while (it.hasNext()) {
+            dNPC npc = it.next();
+            Location loc = npc.getLocation();
+            if (loc.getWorld().equals(location.getWorld())
+                    && loc.distanceSquared(location) < closestDistance) {
                 closestNPC = npc;
-                closestDistance = npc.getLocation().distance(location);
+                closestDistance = npc.getLocation().distanceSquared(location);
             }
         }
         return closestNPC;
@@ -344,13 +345,14 @@ public class Utilities {
      */
     
     public static Set<dNPC> getClosestNPCs (Location location, int maxRange) {
+        maxRange = (int) Math.pow(maxRange, 2);
         Set<dNPC> closestNPCs = new HashSet<dNPC> ();
         Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
         while (it.hasNext ()) {
             dNPC npc = it.next ();
-            if (npc.getLocation().getWorld().equals(location.getWorld())
-                    && npc.getLocation().distance(location) < maxRange) {
-                closestNPCs.add (npc);
+            Location loc = npc.getLocation();
+            if (loc.getWorld().equals(location.getWorld()) && loc.distanceSquared(location) < maxRange) {
+                closestNPCs.add(npc);
             }
         }
         return closestNPCs;
@@ -500,8 +502,7 @@ public class Utilities {
      */
     
     public static boolean checkLocation(LivingEntity entity, Location theLocation, int theLeeway) {
-
-        if (!entity.getWorld().getName().equals(theLocation.getWorld().getName()))
+        if (entity.getWorld() != theLocation.getWorld())
             return false;
 
         Location entityLocation = entity.getLocation();

@@ -23,7 +23,7 @@ public class TextTags implements Listener {
             if (event.matches(color.name()))
                 event.setReplaced(color.toString());
             else if (event.matches("&" + code[i]))
-                event.setReplaced(ChatColor.getByChar(code[i]) + "");
+                event.setReplaced(ChatColor.getByChar(code[i]).toString());
             i++;
         }
     }

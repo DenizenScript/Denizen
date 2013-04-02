@@ -66,17 +66,14 @@ public class WanderGoal implements Goal {
 		// If not already navigating.. let's find a new block to navigate to.
 		dNPC.getNavigator().getDefaultParameters().speedModifier(speed);
 		wanderLocation = wA.getNewLocation(X, Y, Z, world, radius, depth);
-
-		Location checkLocation = new Location(wanderLocation.getWorld(), wanderLocation.getX(), wanderLocation.getY() + 2, wanderLocation.getZ());
-
-		if (checkLocation.getBlock().getType() != Material.AIR) { 
+		if (wanderLocation.getWorld().getBlockAt(wanderLocation.getBlockX(), wanderLocation.getBlockY() + 2, wanderLocation.getBlockZ()).getType() != Material.AIR) { 
 			wanderLocation = wA.getNewLocation(X, Y, Z, world, radius, depth);
 			goalSelecter.finish();
 			return;
 		}
 
 		if (!materials.isEmpty()) {
-			Boolean move = false;
+			boolean move = false;
 			for (Material acceptableMaterial : materials)
 				if (wanderLocation.getBlock().getType() == acceptableMaterial) move = true;
 			if (materialIds.contains(Integer.valueOf(wanderLocation.getBlock().getTypeId()))) move = true;

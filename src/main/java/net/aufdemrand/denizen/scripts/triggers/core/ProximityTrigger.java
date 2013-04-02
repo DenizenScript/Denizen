@@ -146,7 +146,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 // unless the Player hasn't yet triggered an Exit Proximity after Entering
                 //
                 if (!npc.isSpawned() ||
-                        (!npc.getLocation().getWorld().equals(event.getPlayer().getWorld())
+                        (!npc.getWorld().equals(event.getPlayer().getWorld())
                         && hasExitedProximityOf(event.getPlayer(), npc))) continue;
 
                 //
@@ -220,8 +220,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 // If the user was previously within the range and moved, then execute
                 // the "Move" script.
                 //
-                if (!hasExitedProximityOf(event.getPlayer(), npc)
-                    && (playerChangedWorlds || npc.getLocation().distance(toBlockLocation) >= exitRadius)) {
+                boolean exitedProximity = hasExitedProximityOf(event.getPlayer(), npc);
+                double distance = npcLocation.distance(toBlockLocation);
+                if (!exitedProximity
+                    && (playerChangedWorlds || distance >= exitRadius)) {
                     if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
                         continue;
                     // Remember that NPC has exited proximity.
@@ -232,8 +234,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     // Parse Interact Script
                     parse(npc, player, script, "EXIT");
                 }
-                else if (hasExitedProximityOf(event.getPlayer(), npc)
-                    && npc.getLocation().distance(toBlockLocation) <= entryRadius) {
+                else if (exitedProximity && distance <= entryRadius) {
                     // Cooldown
                     if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
                         continue;
@@ -244,8 +245,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     // Parse Interact Script
                     parse(npc, player, script, "ENTRY");
                 }
-                else if (!hasExitedProximityOf(event.getPlayer(), npc)
-                    && npc.getLocation().distance(toBlockLocation) <= moveRadius) {
+                else if (!exitedProximity && distance <= moveRadius) {
                     // TODO: Remove this? Constantly cooling down on move may make
                     // future entry/exit proximities 'lag' behind.  Temporarily removing
                     // cooldown on 'move proximity'.
@@ -296,16 +296,17 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
         }
     }
 
-    private static Map<Player, Set<Integer>> proximityTracker = new ConcurrentHashMap<Player, Set<Integer>>();
+    private static Map<Player, Set<Integer>> proximityTracker = new ConcurrentHashMap<Player, Set<Integer>>(8, 0.9f, 1);
 
     //
     // Ensures that a Player who has entered proximity of an NPC also fires Exit Proximity.
     //
     private boolean hasExitedProximityOf(Player player, dNPC npc) {
         // If Player hasn't entered proximity, it's not in the Map. Return true, must be exited.
-        if (!proximityTracker.containsKey(player)) return true;
+        Set<Integer> existing = proximityTracker.get(player);
+        if (existing == null) return true;
         // If Player has no entry for this NPC, return true.
-        if (!proximityTracker.get(player).contains(npc.getId())) return true;
+        if (!existing.contains(npc.getId())) return true;
         // Entry is present, NPC has not yet triggered exit proximity.
         return false;
     }
@@ -318,11 +319,12 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param npc the NPC
      */
     private void enterProximityOf(Player player, dNPC npc) {
-        Set<Integer> npcs = new HashSet<Integer>();
-        if (proximityTracker.containsKey(player))
-            npcs = proximityTracker.get(player);
+        Set<Integer> npcs = proximityTracker.get(player);
+        if (npcs == null) {
+            npcs = new HashSet<Integer>();
+            proximityTracker.put(player, npcs);
+        }
         npcs.add(npc.getId());
-        proximityTracker.put(player, npcs);
     }
 
     /**
@@ -333,12 +335,12 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param npc the NPC
      */
     private void exitProximityOf(Player player, dNPC npc) {
-        Set<Integer> npcs = new HashSet<Integer>();
-        if (proximityTracker.containsKey(player))
-            npcs = proximityTracker.get(player);
-        if (npcs.contains(npc.getId()))
-            npcs.remove(npc.getId());
-        proximityTracker.put(player, npcs);
+        Set<Integer> npcs = proximityTracker.get(player);
+        if (npcs == null) {
+            npcs = new HashSet<Integer>();
+            proximityTracker.put(player, npcs);
+        }
+        npcs.remove(npc.getId());
     }
 
 }

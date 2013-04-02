@@ -47,7 +47,7 @@ public class SwitchCommand extends AbstractCommand {
 
     private enum SwitchState { ON, OFF, TOGGLE } 
 
-    private Map<Location, Integer> taskMap = new ConcurrentHashMap<Location, Integer>();
+    private Map<Location, Integer> taskMap = new ConcurrentHashMap<Location, Integer>(8, 0.9f, 1);
 
     SwitchState switchState;
     Location interactLocation;

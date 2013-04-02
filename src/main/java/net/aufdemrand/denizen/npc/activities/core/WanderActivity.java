@@ -81,9 +81,9 @@ public class WanderActivity extends AbstractActivity implements Listener {
 	}
 
 	public boolean removeGoal(dNPC npc, boolean verbose) {
-		if (wanderMap.containsKey(npc.getCitizen())) {
-			npc.getCitizen().getDefaultGoalController().removeGoal(wanderMap.get(npc.getCitizen()));
-			wanderMap.remove(npc.getCitizen());
+	    WanderGoal goal = wanderMap.remove(npc.getCitizen());
+		if (goal != null) {
+			npc.getCitizen().getDefaultGoalController().removeGoal(goal);
 			if (verbose) dB.echoDebug("Removed Wander Activities from NPC.");
 			return true;
 		} 

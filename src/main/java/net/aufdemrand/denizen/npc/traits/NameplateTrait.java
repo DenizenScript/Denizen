@@ -42,7 +42,7 @@ public class NameplateTrait extends Trait implements Listener {
     private String text = null;
 
     @Persist(value="colors", collectionType=ConcurrentHashMap.class)
-	private Map<String, ChatColor> colors = new ConcurrentHashMap<String, ChatColor>();
+	private Map<String, ChatColor> colors = new ConcurrentHashMap<String, ChatColor>(8, 0.9f, 1);
 
 	public NameplateTrait() {
 		super("nameplate");

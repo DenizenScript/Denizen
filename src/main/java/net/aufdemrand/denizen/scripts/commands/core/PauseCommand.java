@@ -30,7 +30,7 @@ public class PauseCommand extends AbstractCommand {
 	 * 
 	 */
 
-	private Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>();
+	private Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
     enum PauseType { ACTIVITY, WAYPOINTS, NAVIGATION }
     
 	int duration;

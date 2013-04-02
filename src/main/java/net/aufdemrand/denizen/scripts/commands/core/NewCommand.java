@@ -31,9 +31,9 @@ public class NewCommand extends AbstractCommand implements Listener {
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
-	private Map<String, Item> itemStacks = new ConcurrentHashMap<String, Item>();
-	private Map<String, LivingEntity> entities = new ConcurrentHashMap<String, LivingEntity>();
-	private Map<String, Integer> npcs = new ConcurrentHashMap<String, Integer>();
+	private Map<String, Item> itemStacks = new ConcurrentHashMap<String, Item>(8, 0.9f, 1);
+	private Map<String, LivingEntity> entities = new ConcurrentHashMap<String, LivingEntity>(8, 0.9f, 1);
+	private Map<String, Integer> npcs = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
 	
 	/**
 	 * Gets a currently saved ItemStack, created with Denizen's NEW command, given a

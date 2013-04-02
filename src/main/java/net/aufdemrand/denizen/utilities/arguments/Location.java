@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Location extends org.bukkit.Location implements dScriptArgument {
 
-    public static Map<String, Location> locations = new ConcurrentHashMap<String, Location>();
+    public static Map<String, Location> locations = new ConcurrentHashMap<String, Location>(8, 0.9f, 1);
 
     /**
      * Gets a saved location based on an Id.
@@ -24,9 +24,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
      * @return  the Location associated
      */
     public static Location getSavedLocation(String id) {
-        if (locations.containsKey(id.toLowerCase()))
-            return locations.get(id.toLowerCase());
-        else return null;
+        return locations.get(id.toLowerCase());
     }
 
     public static String isSavedLocation(org.bukkit.Location location) {

@@ -24,8 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ListenerRegistry implements DenizenRegistry, Listener {
 
-	private Map<String, Map<String, AbstractListener>> listeners = new ConcurrentHashMap<String, Map<String, AbstractListener>>();
-	private Map<String, AbstractListenerType> types = new ConcurrentHashMap<String, AbstractListenerType>();
+	private Map<String, Map<String, AbstractListener>> listeners = new ConcurrentHashMap<String, Map<String, AbstractListener>>(8, 0.9f, 1);
+	private Map<String, AbstractListenerType> types = new ConcurrentHashMap<String, AbstractListenerType>(8, 0.9f, 1);
 
 	private Denizen denizen;
 

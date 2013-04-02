@@ -30,13 +30,13 @@ public class PlayerTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    public static Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>();
+    public static Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>(8, 0.9f, 2);
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void addMessage(AsyncPlayerChatEvent event) {
-        List<String> history = new ArrayList<String>();
-        if (playerChatHistory.containsKey(event.getPlayer().getName())) {
-            history = playerChatHistory.get(event.getPlayer().getName());
+        List<String> history = playerChatHistory.get(event.getPlayer().getName());
+        if (history == null) {
+            history = new ArrayList<String>();
         }
 
         if (history.size() > 10) history.remove(9);

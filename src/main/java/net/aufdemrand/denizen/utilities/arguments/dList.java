@@ -15,9 +15,10 @@ public class dList extends ArrayList<String> implements dScriptArgument {
 
         String prefix = null;
         // Strip prefix (ie. targets:...)
-        if (string.split(":").length > 1) {
-            prefix = string.split(":", 2)[0];
-            string = string.split(":", 2)[1];
+        String[] parts = string.split(":", 2);
+        if (parts.length > 1) {
+            prefix = parts[0];
+            string = parts[1];
         }
 
         return new dList(prefix, string);

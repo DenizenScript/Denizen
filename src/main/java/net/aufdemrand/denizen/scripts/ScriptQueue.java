@@ -40,7 +40,7 @@ public class ScriptQueue implements Listener {
     }
 
     // Contains all currently active queues, keyed by a String id.
-    public static Map<String, ScriptQueue> _queues = new ConcurrentHashMap<String, ScriptQueue>();
+    public static Map<String, ScriptQueue> _queues = new ConcurrentHashMap<String, ScriptQueue>(8, 0.9f, 1);
 
 
     /**
@@ -123,7 +123,7 @@ public class ScriptQueue implements Listener {
 
     // ScriptQueues can have a bit of context, keyed by a String Id. All that can be accessed by either getContext()
     // or a dScript replaceable tag <context.id>
-    protected Map<String, String> context = new ConcurrentHashMap<String, String>();
+    protected Map<String, String> context = new ConcurrentHashMap<String, String>(8, 0.9f, 1);
 
     protected ScriptEntry lastEntryExecuted = null;
 

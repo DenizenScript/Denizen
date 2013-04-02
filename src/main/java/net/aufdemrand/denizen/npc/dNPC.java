@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 public class dNPC {
 
     private int npcid;
+    private final org.bukkit.Location locationCache = new org.bukkit.Location(null, 0, 0, 0);
 
     public dNPC(NPC citizensNPC) {
         this.npcid = citizensNPC.getId();
@@ -80,7 +81,7 @@ public class dNPC {
 
     public Location getLocation() {
         if (isSpawned()) return
-                new Location(getCitizen().getBukkitEntity().getLocation());
+                new Location(getCitizen().getBukkitEntity().getLocation(locationCache));
         else return null;
     }
 

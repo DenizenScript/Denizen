@@ -41,10 +41,9 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 		}
 		
 		public int getDistance(Player player) {
-			// TODO: get distance
-			return 0;
+		    Location loc = player.getLocation();
+			return (int) Math.sqrt(Math.pow(loc.getX() - x, 2) + Math.pow(loc.getY() - y, 2) + Math.pow(loc.getZ() - z, 2));
 		}
-
 	}
 
 
@@ -102,7 +101,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
 	//
 	// Stores all the Location Trigger points with context
 	//
-	private Map<Trigger, LocationContext> locationTriggers = new ConcurrentHashMap<Trigger, LocationContext>();
+	private Map<Trigger, LocationContext> locationTriggers = new ConcurrentHashMap<Trigger, LocationContext>(8, 0.9f, 1);
 
 	
 	//
