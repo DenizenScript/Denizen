@@ -32,6 +32,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     @EventHandler
     public void chatTrigger(AsyncPlayerChatEvent event) {
 
+        if (event.isCancelled()) return;
+
         // Check if there is an NPC within range of a player to chat to.
         dNPC npc = Utilities.getClosestNPC(event.getPlayer().getLocation(), 25);
 

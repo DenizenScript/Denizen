@@ -129,6 +129,9 @@ public class CommandRegistry implements DenizenRegistry {
 		
         registerCoreMember(HealCommand.class, 
         		"HEAL", "heal (amt:#) (target:npc|{player})", 0);
+
+        registerCoreMember(HealthCommand.class,
+                "HEALTH", "health (toggle:true|false|toggle) (set_max:#)", 1);
 		
         registerCoreMember(IfCommand.class, 
         		"IF", "if [comparable] (!)(operator) (compared_to) (bridge) (...) [command] (else) (command)  +--> see documentation.", 2);

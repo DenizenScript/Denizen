@@ -46,7 +46,8 @@ public class DetermineCommand extends AbstractCommand {
         if (aH.matchesArg("PASSIVELY", arg))
             passively = true;
         else
-            outcome = aH.getStringFrom(arg);
+            outcome = arg;
+
         scriptEntry.addObject("outcome", outcome)
             .addObject("passively", passively);
     }

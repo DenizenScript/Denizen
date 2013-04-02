@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -17,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -165,8 +167,13 @@ public class WorldScriptHelper implements Listener {
             Map<String, String> context = new HashMap<String, String>();
             context.put("notable_name", name);
 
-            String determination = doEvent("walked over " + name, null, event.getPlayer(), context);
+            String determination;
 
+            determination = doEvent("walked over " + name, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("FROZEN"))
+                event.setCancelled(true);
+
+            determination = doEvent("walked over notable location", null, event.getPlayer(), context);
             if (determination.toUpperCase().startsWith("FROZEN"))
                 event.setCancelled(true);
         }
@@ -181,7 +188,7 @@ public class WorldScriptHelper implements Listener {
                     public void run() {
                         timeEvent();
                     }
-                }, 250, 250);
+                }, Settings.WorldScriptTimeEventResolution().getTicks(), Settings.WorldScriptTimeEventResolution().getTicks());
 
         // Fire the 'Server Start' event
         doEvent("server start", null, null, null);
@@ -198,7 +205,11 @@ public class WorldScriptHelper implements Listener {
 
             if (!current_time.containsKey(world.getName())
                     || current_time.get(world.getName()) != hour) {
-                doEvent(hour + ":00 in " + world.getName(), null, null, null);
+                Map<String, String> context = new HashMap<String, String>();
+                context.put("time", String.valueOf(hour));
+                context.put("world", world.getName());
+                doEvent("time change in " + world.getName(), null, null, context);
+                doEvent(hour + ":00 in " + world.getName(), null, null, context);
                 current_time.put(world.getName(), hour);
             }
         }
@@ -262,7 +273,22 @@ public class WorldScriptHelper implements Listener {
 
     }
 
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerChat(AsyncPlayerChatEvent event) {
 
+        Map<String, String> context = new HashMap<String, String>();
+        context.put("message", event.getMessage());
+
+        String determination = doEvent("player chats", null, event.getPlayer(), context);
+
+        dB.echoDebug(determination);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        if (determination.toUpperCase().startsWith("MESSAGE"))
+            event.setMessage(aH.getStringFrom(determination));
+
+    }
 
     @EventHandler
     public void playerHit(EntityDamageEvent event) {

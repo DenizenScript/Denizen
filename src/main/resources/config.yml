@@ -55,6 +55,9 @@ Commands:
   Engage:
     Timeout: 150s
 
+Events:
+  On time resolution: 250t
+
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 
