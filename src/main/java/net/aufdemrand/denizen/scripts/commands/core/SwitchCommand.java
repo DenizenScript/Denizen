@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.aufdemrand.denizen.utilities.runnables.Runnable2;
 import net.minecraft.server.v1_5_R2.Block;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -103,15 +102,15 @@ public class SwitchCommand extends AbstractCommand {
             dB.echoDebug(Messages.DEBUG_RUNNING_DELAYED_TASK, "SWITCH");
             // Store new delayed task ID, for checking against, then schedule new delayed task.
             taskMap.put(interactLocation, denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen, 
-                    new Runnable2<Location, SwitchState>(interactLocation, switchState) {
-                @Override public void run(Location iLocation, SwitchState sState) { 
+                    new Runnable() {
+                @Override public void run() { 
                     // Check to see if the state of the block is what is expected. If switched during 
                     // the duration, the switchback is cancelled.
-                    if (sState == SwitchState.OFF && !((iLocation.getBlock().getData() & 0x8) > 0))
-                        switchBlock(iLocation, SwitchState.ON);
-                    else if (sState == SwitchState.ON && ((iLocation.getBlock().getData() & 0x8) > 0))
-                        switchBlock(iLocation, SwitchState.OFF);
-                    else if (sState == SwitchState.TOGGLE) switchBlock(iLocation, SwitchState.TOGGLE);
+                    if (switchState == SwitchState.OFF && !((interactLocation.getBlock().getData() & 0x8) > 0))
+                        switchBlock(interactLocation, SwitchState.ON);
+                    else if (switchState == SwitchState.ON && ((interactLocation.getBlock().getData() & 0x8) > 0))
+                        switchBlock(interactLocation, SwitchState.OFF);
+                    else if (switchState == SwitchState.TOGGLE) switchBlock(interactLocation, SwitchState.TOGGLE);
                 }
             }, duration * 20));
         }

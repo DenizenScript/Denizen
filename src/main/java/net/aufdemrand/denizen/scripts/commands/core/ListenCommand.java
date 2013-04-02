@@ -117,8 +117,7 @@ public class ListenCommand extends AbstractCommand {
                         id,
                         listenerType,
                         listenerArguments,
-                        scriptEntry.getScript().getName(),
-                        scriptEntry.getNPC());
+                        scriptEntry.getScript().getName());
 
             } catch (Exception e) {
 				dB.echoDebug("Cancelled creation of NEW listener!");

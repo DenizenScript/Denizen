@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.aufdemrand.denizen.utilities.runnables.Runnable2;
 import org.bukkit.event.Listener;
 
 import java.util.Map;
@@ -83,9 +82,9 @@ public class ZapCommand extends AbstractCommand implements Listener{
     private static Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        Script script = (Script) scriptEntry.getObject("script");
+        final Script script = (Script) scriptEntry.getObject("script");
         String step = (String) scriptEntry.getObject("step");
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
@@ -124,12 +123,12 @@ public class ZapCommand extends AbstractCommand implements Listener{
             dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "RESET ZAP for '" + script + "'");
             durations.put(scriptEntry.getPlayer().getName() + "," + script.getName(),
                     denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
-                            new Runnable2<String, ScriptEntry>(script.getName(), scriptEntry) {
+                            new Runnable() {
                                 @Override
-                                public void run(String script, ScriptEntry scriptEntry) {
-                                    dB.log(Messages.DEBUG_RUNNING_DELAYED_TASK, "RESET ZAP for '" + script + "'");
+                                public void run() {
+                                    dB.log(Messages.DEBUG_RUNNING_DELAYED_TASK, "RESET ZAP for '" + script.getName() + "'");
                                     try {
-                                        durations.remove(scriptEntry.getPlayer().getName() + "," + script.toUpperCase());
+                                        durations.remove(scriptEntry.getPlayer().getName() + "," + script.getName().toUpperCase());
                                         execute(scriptEntry);
                                     } catch (CommandExecutionException e) {
                                         dB.echoError("Could not run delayed task!");

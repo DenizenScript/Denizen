@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.listeners.core;
 
 import java.util.List;
 
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;

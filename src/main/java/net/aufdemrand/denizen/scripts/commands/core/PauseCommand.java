@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.aufdemrand.denizen.utilities.runnables.Runnable2;
 import net.citizensnpcs.trait.waypoint.Waypoints;
 import org.bukkit.entity.Player;
 
@@ -80,11 +79,10 @@ public class PauseCommand extends AbstractCommand {
 			}	dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "UNPAUSE " + pauseType);
 
 			durations.put(dNPC.getId() + pauseType.name(), denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
-					new Runnable2<dNPC, PauseType>(dNPC, pauseType) {
-				@Override public void run(dNPC npc, PauseType type) {
-					
+					new Runnable() {
+				@Override public void run() {
 					dB.echoDebug(Messages.DEBUG_RUNNING_DELAYED_TASK, "UNPAUSING " + pauseType);
-					pause(npc, type, false);
+					pause(dNPC, pauseType, false);
 
 				}
 			}, duration * 20));
