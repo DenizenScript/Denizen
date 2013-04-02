@@ -33,6 +33,8 @@ public class FlagTags implements Listener {
     public void flagTag(ReplaceableTagEvent event) {
         if (!event.matches("FLAG")) return;
 
+        if (!event.hasValue()) return;
+
         // Replace <FLAG...> TAGs.
         String flagName = event.getValue().split(":").length > 1
                 ? event.getValue().split(":")[0].toUpperCase() : event.getValue().toUpperCase();
