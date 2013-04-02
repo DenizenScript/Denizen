@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
-import net.aufdemrand.denizen.utilities.arguments.Item;
+import net.aufdemrand.denizen.utilities.arguments.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
@@ -25,18 +25,18 @@ public class ItemScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
-   public Item getItemFrom() {
+   public dItem getItemFrom() {
        return getItemFrom(null, null);
    }
 
-    public Item getItemFrom(Player player, dNPC npc) {
+    public dItem getItemFrom(Player player, dNPC npc) {
         // Try to use this script to make an item.
-        Item stack = null;
+        dItem stack = null;
         try {
             // Check validity of material
             if (contains("MATERIAL")){
             	String material = TagManager.tag(player, npc, getString("MATERIAL"));
-                stack = Item.valueOf(material);
+                stack = dItem.valueOf(material);
             }
 
             // Make sure we're working with a valid base ItemStack

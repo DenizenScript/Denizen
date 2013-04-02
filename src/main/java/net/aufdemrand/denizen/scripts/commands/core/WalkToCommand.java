@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.Listener;
@@ -21,7 +21,7 @@ public class WalkToCommand extends AbstractCommand implements Listener {
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize required fields
-		Location location = null;
+		dLocation location = null;
 		float speed = -1f;
 
 		for (String arg : scriptEntry.getArguments()) {
@@ -42,7 +42,7 @@ public class WalkToCommand extends AbstractCommand implements Listener {
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        Location location = (Location) scriptEntry.getObject("location");
+        dLocation location = (dLocation) scriptEntry.getObject("location");
         Float speed = (Float) scriptEntry.getObject("speed");
 
         scriptEntry.getNPC().getNavigator().setTarget(location);

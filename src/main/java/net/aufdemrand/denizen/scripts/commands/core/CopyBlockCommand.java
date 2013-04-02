@@ -4,15 +4,11 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
 /**
@@ -27,8 +23,8 @@ public class CopyBlockCommand extends AbstractCommand{
     @Override
 	public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
 
-        Location copy_location = null;
-        Location destination = null;
+        dLocation copy_location = null;
+        dLocation destination = null;
         boolean remove_original = false;
 
 		for (String arg : scriptEntry.getArguments()) {			
@@ -56,8 +52,8 @@ public class CopyBlockCommand extends AbstractCommand{
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		
-		Location copy_location = (Location) scriptEntry.getObject("copy_location");
-        Location destination = (Location) scriptEntry.getObject("destination");
+		dLocation copy_location = (dLocation) scriptEntry.getObject("copy_location");
+        dLocation destination = (dLocation) scriptEntry.getObject("destination");
         Boolean remove_original = (Boolean) scriptEntry.getObject("remove_original");
 
         Block source = copy_location.getBlock();

@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
@@ -62,7 +62,7 @@ public class NPCTags implements Listener {
             event.setReplaced(String.valueOf(n.getOwner()));
 
         } else if (type.equals("LOCATION")) {
-            Location loc = n.getLocation();
+            dLocation loc = n.getLocation();
             event.setReplaced(loc.getX()
                     + "," + loc.getY()
                     + "," + loc.getZ()
@@ -106,7 +106,7 @@ public class NPCTags implements Listener {
             else if (subType.equals("AVOID_WATER"))
                 event.setReplaced(Boolean.toString(n.getNavigator().getLocalParameters().avoidWater()));
             else if (subType.equals("TARGET_LOCATION")) {
-                Location loc = new Location(n.getNavigator().getTargetAsLocation());
+                dLocation loc = new dLocation(n.getNavigator().getTargetAsLocation());
                 if (loc != null) event.setReplaced(loc.dScriptArgValue());
             } else if (subType.equals("IS_FIGHTING")) {
                 event.setReplaced(String.valueOf(event.getNPC().getNavigator().getEntityTarget().isAggressive()));
@@ -118,7 +118,7 @@ public class NPCTags implements Listener {
 
     }
 
-    private Map<Integer, Location> previousLocations = new HashMap<Integer, Location>();
+    private Map<Integer, dLocation> previousLocations = new HashMap<Integer, dLocation>();
 
     @EventHandler
     public void navComplete(NavigationCompleteEvent event) {

@@ -4,23 +4,20 @@ import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
-import net.aufdemrand.denizen.scripts.requirements.core.EnchantedRequirement;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Item implements dScriptArgument {
+public class dItem implements dScriptArgument {
 
     /////////////////////
     //   STATIC METHODS
@@ -47,16 +44,16 @@ public class Item implements dScriptArgument {
      *
      */
 
-    public static Item valueOf(String string) {
+    public static dItem valueOf(String string) {
         return valueOf(string, null, null);
     }
 
-    public static Item valueOf(String string, Player player, dNPC npc) {
+    public static dItem valueOf(String string, Player player, dNPC npc) {
 
         if (string == null) return null;
 
         Matcher[] m = new Matcher[4];
-        Item stack = null;
+        dItem stack = null;
 
         // Check if a saved item instance from NEW
         m[0] = getItemPtrn[4].matcher(string);
@@ -73,24 +70,24 @@ public class Item implements dScriptArgument {
         try {
             // Match 'ItemId:Data'
             if (m[0].matches()) {
-                stack = new Item(Integer.valueOf(m[0].group(1)));
+                stack = new dItem(Integer.valueOf(m[0].group(1)));
                 stack.setDurability(Short.valueOf(m[0].group(2)));
                 return stack;
 
                 // Match 'ItemId'
             } else if (m[1].matches()) {
-                stack = new Item(Integer.valueOf(m[1].group(1)));
+                stack = new dItem(Integer.valueOf(m[1].group(1)));
                 return stack;
 
                 // Match 'Material:Data'
             } else if (m[2].matches()) {
-                stack = new Item(Material.valueOf(m[2].group(1).toUpperCase()));
+                stack = new dItem(Material.valueOf(m[2].group(1).toUpperCase()));
                 stack.setDurability(Short.valueOf(m[2].group(2)));
                 return stack;
 
                 // Match 'Material'
             } else if (m[3].matches()) {
-                stack = new Item(Material.valueOf(m[3].group(1).toUpperCase()));
+                stack = new dItem(Material.valueOf(m[3].group(1).toUpperCase()));
                 return stack;
             }
 
@@ -122,27 +119,27 @@ public class Item implements dScriptArgument {
     private ItemStack item;
     private String prefix = "Item";
 
-    public Item(Material material) {
+    public dItem(Material material) {
         item = new ItemStack(material);
     }
 
-    public Item(int itemId) {
+    public dItem(int itemId) {
         item = new ItemStack(itemId);
     }
 
-    public Item(Material material, int qty) {
+    public dItem(Material material, int qty) {
         item = new ItemStack(material, qty);
     }
 
-    public Item(int type, int qty) {
+    public dItem(int type, int qty) {
         item = new ItemStack(type, qty);
     }
 
-    public Item(ItemStack item) {
+    public dItem(ItemStack item) {
         this.item = item;
     }
 
-    public int comparesTo(Item item) {
+    public int comparesTo(dItem item) {
         return comparesTo(item.getItemStack());
     }
 

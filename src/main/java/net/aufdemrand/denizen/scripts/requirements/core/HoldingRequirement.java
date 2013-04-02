@@ -3,10 +3,9 @@ package net.aufdemrand.denizen.scripts.requirements.core;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.utilities.arguments.Item;
+import net.aufdemrand.denizen.utilities.arguments.dItem;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class HoldingRequirement extends AbstractRequirement{
 		
 		boolean exact = false;
 		int quantity = 1;
-		Item itemToCheck = null;
+		dItem itemToCheck = null;
 		
 		for (String thisArg : args) {
 			if (aH.matchesQuantity(thisArg))

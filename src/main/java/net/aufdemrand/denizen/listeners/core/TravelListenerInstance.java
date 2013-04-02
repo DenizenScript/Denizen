@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.listeners.core;
 
 import java.util.List;
 
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -44,7 +44,7 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 	public	static	final	String	RADIUS_ARG = "RADIUS, R";
 	
 	private	NPC target;
-	private Location endPoint;
+	private dLocation endPoint;
 	private Integer blocksWalked = 0;
 	private Integer distance = null;
 	private Integer radius = 2;
@@ -123,7 +123,7 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 		type = TravelType.valueOf((String) get("Type"));
 		distance = (Integer) get("Distance");
 		blocksWalked = (Integer) get("Blocks Walked");
-		endPoint = (Location) get("End Location");
+		endPoint = (dLocation) get("End Location");
 	}
 
 	@Override

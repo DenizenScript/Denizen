@@ -20,7 +20,7 @@ import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -230,7 +230,7 @@ public class Denizen extends JavaPlugin {
 		if(!startedSuccessful) return;
 		
         // Save locations
-        Location._saveLocations();
+        dLocation._saveLocations();
 
         // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
         for (Player player : this.getServer().getOnlinePlayers())
@@ -260,7 +260,7 @@ public class Denizen extends JavaPlugin {
         }
         savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
         // Reload dLocations from saves.yml
-        Location._recallLocations();
+        dLocation._recallLocations();
     }
 
     public FileConfiguration getSaves() {
@@ -276,7 +276,7 @@ public class Denizen extends JavaPlugin {
         }
         try {
             // Save dLocations to saves.yml
-            Location._saveLocations();
+            dLocation._saveLocations();
             savesConfig.save(savesConfigFile);
         } catch (IOException ex) {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + savesConfigFile, ex);

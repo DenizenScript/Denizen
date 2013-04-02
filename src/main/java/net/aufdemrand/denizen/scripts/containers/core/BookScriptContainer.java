@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.Item;
+import net.aufdemrand.denizen.utilities.arguments.dItem;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,12 +18,12 @@ public class BookScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
-    public Item getBookFrom(Player player, dNPC npc) {
-        Item stack = new Item(Material.BOOK);
+    public dItem getBookFrom(Player player, dNPC npc) {
+        dItem stack = new dItem(Material.BOOK);
         return writeBookTo(stack, player, npc);
     }
 
-    public Item writeBookTo(Item book, Player player, dNPC npc) {
+    public dItem writeBookTo(dItem book, Player player, dNPC npc) {
         // Get current ItemMeta from the book
         BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
         

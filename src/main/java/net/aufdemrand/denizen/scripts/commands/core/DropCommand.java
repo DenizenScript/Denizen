@@ -4,8 +4,8 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.Item;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dItem;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -24,16 +24,16 @@ public class DropCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
-        Item item = null;
+        dItem item = null;
         Integer qty = null;
-        Location location = null;
+        dLocation location = null;
         Boolean exp = false;
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
-            location = new Location(scriptEntry.getPlayer().getLocation());
+            location = new dLocation(scriptEntry.getPlayer().getLocation());
         if (location == null && scriptEntry.getNPC() != null)
-            location = new Location(scriptEntry.getNPC().getLocation());
+            location = new dLocation(scriptEntry.getNPC().getLocation());
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesItem(arg)) {
@@ -64,10 +64,10 @@ public class DropCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
-        Location location = (Location) scriptEntry.getObject("location");
+        dLocation location = (dLocation) scriptEntry.getObject("location");
         Integer qty = (Integer) scriptEntry.getObject("qty");
         Boolean exp = (Boolean) scriptEntry.getObject("exp");
-        Item item = (Item) scriptEntry.getObject("item");
+        dItem item = (dItem) scriptEntry.getObject("item");
 
         // Set quantity if not specified
         if (qty != null && item != null)

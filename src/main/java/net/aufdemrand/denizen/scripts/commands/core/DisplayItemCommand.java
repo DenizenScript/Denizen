@@ -8,8 +8,8 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
-import net.aufdemrand.denizen.utilities.arguments.Item;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dItem;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -28,10 +28,10 @@ public class DisplayItemCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        Item item = null;
+        dItem item = null;
         Action action = Action.PLACE;
         Duration duration = null;
-        Location location = null;
+        dLocation location = null;
 
         // Make sure NPC is available
         for (String arg : scriptEntry.getArguments()) {
@@ -69,9 +69,9 @@ public class DisplayItemCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Get objects from ScriptEntry
-        Item item = (Item) scriptEntry.getObject("item");
+        dItem item = (dItem) scriptEntry.getObject("item");
         Duration duration = (Duration) scriptEntry.getObject("duration");
-        Location location = (Location) scriptEntry.getObject("location");
+        dLocation location = (dLocation) scriptEntry.getObject("location");
         Action action = (Action) scriptEntry.getObject("action");
 
         // Report to dB

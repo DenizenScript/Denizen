@@ -67,7 +67,6 @@ public class ScoreboardCommand extends AbstractCommand {
             } else  {
                 id = aH.getStringFrom(arg);
             }
-
         }
 
         scriptEntry.addObject("action", action)

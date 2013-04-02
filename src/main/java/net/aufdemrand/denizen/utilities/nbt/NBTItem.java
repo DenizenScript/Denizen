@@ -1,12 +1,8 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
-import net.aufdemrand.denizen.utilities.arguments.Item;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_5_R2.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
-
-import java.lang.reflect.Field;
 
 public class NBTItem {
 

@@ -4,13 +4,12 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.Item;
+import net.aufdemrand.denizen.utilities.arguments.dItem;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -41,7 +40,7 @@ public class GiveCommand  extends AbstractCommand {
 
         GiveType type = null;
         int amt = 1;
-        Item item = null;
+        dItem item = null;
         boolean engrave = false;
 
 		/* Match arguments to expected variables */
@@ -85,7 +84,7 @@ public class GiveCommand  extends AbstractCommand {
 
         GiveType type = (GiveType) scriptEntry.getObject("type");
         Integer amt = (Integer) scriptEntry.getObject("amt");
-        Item item = (Item) scriptEntry.getObject("item");
+        dItem item = (dItem) scriptEntry.getObject("item");
         Boolean engrave = (Boolean) scriptEntry.getObject("engrave");
 
         dB.report(getName(),

@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -16,7 +16,7 @@ public class StrikeCommand extends AbstractCommand {
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize fields
-        Location location = null;
+        dLocation location = null;
         Boolean damage = true;
 
         // Iterate through arguments
@@ -43,7 +43,7 @@ public class StrikeCommand extends AbstractCommand {
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Extract objects from ScriptEntry
-        Location location = (Location) scriptEntry.getObject("location");
+        dLocation location = (dLocation) scriptEntry.getObject("location");
         Boolean damage = (Boolean) scriptEntry.getObject("damage");
 
         // Debugger

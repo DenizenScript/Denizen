@@ -367,8 +367,8 @@ public class aH {
      * @return an ItemStack or null
      *
      */
-    public static Item getItemFrom(String arg) {
-        Item stack = Item.valueOf(arg);
+    public static dItem getItemFrom(String arg) {
+        dItem stack = dItem.valueOf(arg);
         if (stack == null)
             dB.echoError("Invalid item! Failed to find a matching Bukkit ItemStack.");
         return stack;
@@ -420,9 +420,9 @@ public class aH {
      * @return a Bukkit Location, or null
      *
      */
-    public static Location getLocationFrom(String arg) {
+    public static dLocation getLocationFrom(String arg) {
         // Build location argument from dScript argument
-        Location location = Location.valueOf(arg);
+        dLocation location = dLocation.valueOf(arg);
         // Check if location returned as null
         if (location == null)
             dB.echoError("Unable to build a location with this information! Provided: '" + arg + "'.");

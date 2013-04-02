@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Entity implements dScriptArgument {
+public class dEntity implements dScriptArgument {
 
-    public static Map<String, Entity> entities = new HashMap<String, Entity>();
+    public static Map<String, dEntity> entities = new HashMap<String, dEntity>();
 
     /**
      * Gets a saved location based on an Id.
@@ -21,13 +21,13 @@ public class Entity implements dScriptArgument {
      * @param id  the Id key of the location
      * @return  the Location associated
      */
-    public static Entity getSavedEntity(String id) {
+    public static dEntity getSavedEntity(String id) {
         if (entities.containsKey(id.toUpperCase()))
                 return entities.get(id.toUpperCase());
         else return null;
     }
 
-    public static void saveEntity(Entity entity) {
+    public static void saveEntity(dEntity entity) {
         if (entity.id == null) return;
         entities.put(entity.id.toUpperCase(), entity);
     }
@@ -66,7 +66,7 @@ public class Entity implements dScriptArgument {
      * @return  an Item, or null if incorrectly formatted
      *
      */
-    public static Entity valueOf(String string) {
+    public static dEntity valueOf(String string) {
 
         // Create entity!
 
@@ -78,11 +78,11 @@ public class Entity implements dScriptArgument {
 
     private LivingEntity entity;
 
-    public Entity(LivingEntity entity) {
+    public dEntity(LivingEntity entity) {
         this.entity = entity;
     }
 
-    public Entity(String id, LivingEntity entity) {
+    public dEntity(String id, LivingEntity entity) {
         this.entity = entity;
         this.id = id;
         saveEntity(this);
@@ -103,7 +103,7 @@ public class Entity implements dScriptArgument {
         return entity != null;
     }
 
-    public Entity setId(String id) {
+    public dEntity setId(String id) {
         this.id = id.toUpperCase();
         return this;
     }
@@ -156,16 +156,16 @@ public class Entity implements dScriptArgument {
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
             if (range < 1) range = 50;
-            return new Location(entity.getTargetBlock(null, range).getLocation())
+            return new dLocation(entity.getTargetBlock(null, range).getLocation())
                     .getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.startsWith("location.standing_on"))
-            return new Location(entity.getLocation().add(0, -1, 0))
+            return new dLocation(entity.getLocation().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("location"))
-            return new Location(entity.getLocation())
+            return new dLocation(entity.getLocation())
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("health.formatted")) {
@@ -201,7 +201,7 @@ public class Entity implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("killer"))
-            return new Player(entity.getKiller())
+            return new dPlayer(entity.getKiller())
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("last_damage_cause"))

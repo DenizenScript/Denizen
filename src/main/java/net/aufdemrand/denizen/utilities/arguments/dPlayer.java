@@ -10,7 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
-public class Player implements dScriptArgument {
+public class dPlayer implements dScriptArgument {
 
     /**
      *
@@ -18,7 +18,7 @@ public class Player implements dScriptArgument {
      * @return  a dScript dList
      *
      */
-    public static Player valueOf(String string) {
+    public static dPlayer valueOf(String string) {
         if (string == null) return null;
 
         String prefix = null;
@@ -29,7 +29,7 @@ public class Player implements dScriptArgument {
         }
 
         for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-            if (player.getName().equalsIgnoreCase(string)) return new Player(prefix, player);
+            if (player.getName().equalsIgnoreCase(string)) return new dPlayer(prefix, player);
 
         dB.echoError("Player '" + string + "' is invalid, or has never logged in to this server.");
         return null;
@@ -51,11 +51,11 @@ public class Player implements dScriptArgument {
     private String prefix;
     String player;
 
-    public Player(OfflinePlayer player) {
+    public dPlayer(OfflinePlayer player) {
         this(null, player);
     }
 
-    public Player(String prefix, OfflinePlayer player) {
+    public dPlayer(String prefix, OfflinePlayer player) {
         if (prefix == null) this.prefix = "Player";
         else this.prefix = prefix;
         this.player = player.getName();
@@ -127,7 +127,7 @@ public class Player implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("location.bed_spawn"))
-            return new Location(getOfflinePlayer().getBedSpawnLocation())
+            return new dLocation(getOfflinePlayer().getBedSpawnLocation())
                     .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("money")) {
@@ -172,7 +172,7 @@ public class Player implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("item_in_hand"))
-            return new Item(getPlayerEntity().getItemInHand())
+            return new dItem(getPlayerEntity().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("name.display"))
@@ -189,20 +189,20 @@ public class Player implements dScriptArgument {
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
             if (range < 1) range = 50;
-            return new Location(getPlayerEntity().getTargetBlock(null, range).getLocation())
+            return new dLocation(getPlayerEntity().getTargetBlock(null, range).getLocation())
                     .getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.startsWith("location.standing_on"))
-            return new Location(getPlayerEntity().getLocation().add(0, -1, 0))
+            return new dLocation(getPlayerEntity().getLocation().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("location.compass_target"))
-            return new Location(getPlayerEntity().getCompassTarget())
+            return new dLocation(getPlayerEntity().getCompassTarget())
                     .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("location"))
-            return new Location(getPlayerEntity().getLocation())
+            return new dLocation(getPlayerEntity().getLocation())
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("health.formatted")) {
@@ -322,11 +322,11 @@ public class Player implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("item_on_cursor"))
-            return new Item(getPlayerEntity().getItemOnCursor())
+            return new dItem(getPlayerEntity().getItemOnCursor())
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("killer"))
-            return new Player(getPlayerEntity().getKiller())
+            return new dPlayer(getPlayerEntity().getKiller())
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("last_damage_cause"))

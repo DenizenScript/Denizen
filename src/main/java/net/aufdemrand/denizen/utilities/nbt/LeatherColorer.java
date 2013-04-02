@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
-import net.aufdemrand.denizen.utilities.arguments.Item;
+import net.aufdemrand.denizen.utilities.arguments.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Color;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -9,7 +9,7 @@ public class LeatherColorer {
 
     // Thanks GnomeffinWay in #denizen-dev
 
-    public static void colorArmor(Item item, String colorArg) {
+    public static void colorArmor(dItem item, String colorArg) {
 
         if (item == null) return;
 

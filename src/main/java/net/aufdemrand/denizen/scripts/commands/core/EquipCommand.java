@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.Item;
+import net.aufdemrand.denizen.utilities.arguments.dItem;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -19,7 +19,7 @@ public class EquipCommand extends AbstractCommand{
 			throws InvalidArgumentsException {
 		
 		EquipType equipType = EquipType.HAND;
-		Item item = null;
+		dItem item = null;
 		
 		for (String arg : scriptEntry.getArguments()) {
 			if (aH.matchesItem(arg)) {
@@ -46,7 +46,7 @@ public class EquipCommand extends AbstractCommand{
 			throws CommandExecutionException {
 		
 		EquipType equipType = (EquipType) scriptEntry.getObject("equipType");
-		Item item = (Item) scriptEntry.getObject("item");
+		dItem item = (dItem) scriptEntry.getObject("item");
 		NPC npc = scriptEntry.getNPC().getCitizen();
 		
 		if (!npc.hasTrait(Equipment.class)) npc.addTrait(Equipment.class);

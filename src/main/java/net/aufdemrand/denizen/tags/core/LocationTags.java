@@ -3,9 +3,8 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.depends.Depends;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,15 +26,15 @@ public class LocationTags implements Listener {
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
         String specifier = event.getSpecifier() != null ? event.getSpecifier().toUpperCase() : "";
         
-        Location fromLocation = null;
-        Location toLocation = null;
+        dLocation fromLocation = null;
+        dLocation toLocation = null;
         
         if (aH.matchesLocation("location:" + nameContext))
         	fromLocation = aH.getLocationFrom("location:" + nameContext);
         else if (event.getPlayer() != null)
-        	fromLocation = new Location(event.getPlayer().getLocation());
+        	fromLocation = new dLocation(event.getPlayer().getLocation());
         else
-        	fromLocation = new Location (event.getNPC().getLocation());
+        	fromLocation = new dLocation(event.getNPC().getLocation());
         
         if (aH.matchesLocation("location:" + typeContext))
         	toLocation = aH.getLocationFrom("location:" + typeContext);
@@ -56,7 +55,7 @@ public class LocationTags implements Listener {
         {
             if (subType.equals("BELOW"))
             {
-                fromLocation = new Location(fromLocation.add(0, -1, 0));
+                fromLocation = new dLocation(fromLocation.add(0, -1, 0));
             }
 
             else if (subType.equals("MATERIAL") || specifier.equals("MATERIAL"))

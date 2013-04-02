@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
@@ -79,15 +79,15 @@ public class dNPC {
         return script;
     }
 
-    public Location getLocation() {
+    public dLocation getLocation() {
         if (isSpawned()) return
-                new Location(getCitizen().getBukkitEntity().getLocation(locationCache));
+                new dLocation(getCitizen().getBukkitEntity().getLocation(locationCache));
         else return null;
     }
 
-    public Location getEyeLocation() {
+    public dLocation getEyeLocation() {
         if (isSpawned()) return
-                new Location(getCitizen().getBukkitEntity().getEyeLocation());
+                new dLocation(getCitizen().getBukkitEntity().getEyeLocation());
         else return null;
     }
 

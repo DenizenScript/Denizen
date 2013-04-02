@@ -8,7 +8,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
-import net.aufdemrand.denizen.utilities.arguments.Item;
+import net.aufdemrand.denizen.utilities.arguments.dItem;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -103,7 +103,7 @@ public class ScribeCommand extends AbstractCommand implements Listener{
         boolean savedItem = false; // Used in determining if a 'saved ItemStack' is being used
         BookAction action = BookAction.NONE;
 
-        Item book = null;
+        dItem book = null;
         Player player = scriptEntry.getPlayer();
         String scriptName = null;
         Location location = null;
@@ -137,7 +137,7 @@ public class ScribeCommand extends AbstractCommand implements Listener{
 
         if (action == BookAction.NONE && !savedItem) action = BookAction.GIVE;
         if (scriptName == null) throw new InvalidArgumentsException("Missing SCRIPT argument!");
-        if (book == null) book = new Item(387);
+        if (book == null) book = new dItem(387);
 
         // Save objects to ScriptEntry for usage in execute
         scriptEntry.addObject("action", action);
@@ -154,7 +154,7 @@ public class ScribeCommand extends AbstractCommand implements Listener{
 
         // Retrieve objects from ScriptEntry
         BookAction action = (BookAction) scriptEntry.getObject("action");
-        Item book = (Item) scriptEntry.getObject("book");
+        dItem book = (dItem) scriptEntry.getObject("book");
         String scriptName = (String) scriptEntry.getObject("script");
         Player player = (Player) scriptEntry.getObject("player");
         Location location = (Location) scriptEntry.getObject("location");

@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Location extends org.bukkit.Location implements dScriptArgument {
+public class dLocation extends org.bukkit.Location implements dScriptArgument {
 
-    public static Map<String, Location> locations = new ConcurrentHashMap<String, Location>(8, 0.9f, 1);
+    public static Map<String, dLocation> locations = new ConcurrentHashMap<String, dLocation>(8, 0.9f, 1);
 
     /**
      * Gets a saved location based on an Id.
@@ -23,12 +23,12 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
      * @param id  the Id key of the location
      * @return  the Location associated
      */
-    public static Location getSavedLocation(String id) {
+    public static dLocation getSavedLocation(String id) {
         return locations.get(id.toLowerCase());
     }
 
     public static String isSavedLocation(org.bukkit.Location location) {
-        for (Map.Entry<String, Location> entry : locations.entrySet()) {
+        for (Map.Entry<String, dLocation> entry : locations.entrySet()) {
             if (Utilities.checkLocation(entry.getValue(), location, 1)) {
                 return entry.getKey();
             }
@@ -53,7 +53,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
         locations.clear();
         for (String location : loclist) {
-            Location loc = valueOf(location);
+            dLocation loc = valueOf(location);
             // TODO: Finish this
         }
     }
@@ -64,7 +64,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
      */
     public static void _saveLocations() {
         List<String> loclist = new ArrayList<String>();
-        for (Map.Entry<String, Location> entry : locations.entrySet())
+        for (Map.Entry<String, dLocation> entry : locations.entrySet())
             loclist.add(entry.getValue().asString());
 
         DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", loclist);
@@ -79,7 +79,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
      * @return  a Location, or null if incorrectly formatted
      *
      */
-    public static Location valueOf(String string) {
+    public static dLocation valueOf(String string) {
         if (string == null) return null;
         // Strip prefix (ie. location:...)
         if (string.split(":").length > 1)
@@ -89,7 +89,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
         // If 5 values, contains an id
         if (split.length == 5)
         try {
-            return new Location(split[0], Bukkit.getWorld(split[4]),
+            return new dLocation(split[0], Bukkit.getWorld(split[4]),
                     Double.valueOf(split[1]),
                     Double.valueOf(split[2]),
                     Double.valueOf(split[3]));
@@ -99,7 +99,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
         // If 4 values, standard id-less dScript location format
         else if (split.length == 4) {
             try {
-                return new Location(Bukkit.getWorld(split[3]),
+                return new dLocation(Bukkit.getWorld(split[3]),
                         Double.valueOf(split[0]),
                         Double.valueOf(split[1]),
                         Double.valueOf(split[2]));
@@ -122,7 +122,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
      * @param id saved Id of the Location
      * @param location the Bukkit Location to reference
      */
-    public Location(String id, org.bukkit.Location location) {
+    public dLocation(String id, org.bukkit.Location location) {
         super(location.getWorld(), location.getX(), location.getY(), location.getZ());
         this.Id = id.toLowerCase();
         locations.put(Id, this);
@@ -132,11 +132,11 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
     /**
      * Turns a Bukkit Location into a Location, which has some helpful methods
      * for working with dScript. If working with temporary locations, this is
-     * a much better method to use than {@link #Location(String, org.bukkit.Location)}.
+     * a much better method to use than {@link #dLocation(String, org.bukkit.Location)}.
      *
      * @param location the Bukkit Location to reference
      */
-    public Location(org.bukkit.Location location) {
+    public dLocation(org.bukkit.Location location) {
         super(location.getWorld(), location.getX(), location.getY(), location.getZ());
     }
 
@@ -152,7 +152,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
      * @param z  the z-coordinate of the location
      *
      */
-    public Location(String id, World world, double x, double y, double z) {
+    public dLocation(String id, World world, double x, double y, double z) {
         super(world, x, y, z);
         this.Id = id.toLowerCase();
         locations.put(Id, this);
@@ -161,7 +161,7 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
     /**
      * Turns a world and coordinates into a Location, which has some helpful methods
      * for working with dScript. If working with temporary locations, this is
-     * a much better method to use than {@link #Location(String, org.bukkit.World, double, double, double)}.
+     * a much better method to use than {@link #dLocation(String, org.bukkit.World, double, double, double)}.
      *
      * @param world  the world in which the location resides
      * @param x  x-coordinate of the location
@@ -169,11 +169,11 @@ public class Location extends org.bukkit.Location implements dScriptArgument {
      * @param z  z-coordinate of the location
      *
      */
-    public Location(World world, double x, double y, double z) {
+    public dLocation(World world, double x, double y, double z) {
         super(world, x, y, z);
     }
     
-    public Location(World world, double x, double y, double z, float yaw, float pitch) {
+    public dLocation(World world, double x, double y, double z, float yaw, float pitch) {
         super(world, x, y, z, yaw, pitch);
     }
 

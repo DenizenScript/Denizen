@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.trait.Anchors;
@@ -28,7 +28,7 @@ public class AnchorCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         Action action = Action.ADD;
-        Location location = null;
+        dLocation location = null;
         String id = null;
         Integer range = null;
 
@@ -61,7 +61,7 @@ public class AnchorCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
         Action action = (Action) scriptEntry.getObject("action");
-        Location location = (Location) scriptEntry.getObject("location");
+        dLocation location = (dLocation) scriptEntry.getObject("location");
         Integer range = (Integer) scriptEntry.getObject("range");
         String id = (String) scriptEntry.getObject("id");
 

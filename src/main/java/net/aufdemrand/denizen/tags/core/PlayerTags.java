@@ -295,7 +295,7 @@ public class PlayerTags implements Listener {
                 int range = 50;
                 if (aH.matchesInteger(subTypeContext))
                     range = aH.getIntegerFrom(subTypeContext);
-                event.setReplaced(new Location(p.getTargetBlock(null, range).getLocation()).dScriptArgValue());
+                event.setReplaced(new dLocation(p.getTargetBlock(null, range).getLocation()).dScriptArgValue());
             }
             else if (subType.equalsIgnoreCase("STANDING_ON"))
                 if (specifier.equalsIgnoreCase("FORMATTED"))

@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.Item;
+import net.aufdemrand.denizen.utilities.arguments.dItem;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -31,7 +31,7 @@ public class NewCommand extends AbstractCommand implements Listener {
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
-	private Map<String, Item> itemStacks = new ConcurrentHashMap<String, Item>(8, 0.9f, 1);
+	private Map<String, dItem> itemStacks = new ConcurrentHashMap<String, dItem>(8, 0.9f, 1);
 	private Map<String, LivingEntity> entities = new ConcurrentHashMap<String, LivingEntity>(8, 0.9f, 1);
 	private Map<String, Integer> npcs = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
 	
@@ -98,7 +98,7 @@ public class NewCommand extends AbstractCommand implements Listener {
 		String id = null;
 		
 		// Fields required for ITEMSTACK
-		Item item = null;
+		dItem item = null;
 		int qty = 1;
 		// Fields required for ENTITY
 		LivingEntity entity = null;

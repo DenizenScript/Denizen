@@ -8,13 +8,12 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
-import net.aufdemrand.denizen.utilities.arguments.Location;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
@@ -41,7 +40,7 @@ public class ShootCommand extends AbstractCommand {
         // Initialize necessary fields
         EntityType entityType = null;
         //Integer qty = null;
-        Location location = null;
+        dLocation location = null;
         Script newScript = null;
         Boolean ride = false;
         Boolean burn = false;
@@ -50,9 +49,9 @@ public class ShootCommand extends AbstractCommand {
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
-            location = new Location(scriptEntry.getPlayer().getLocation());
+            location = new dLocation(scriptEntry.getPlayer().getLocation());
         if (location == null && scriptEntry.getNPC() != null)
-            location = new Location(scriptEntry.getNPC().getLocation());
+            location = new dLocation(scriptEntry.getNPC().getLocation());
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesEntityType(arg)) {
@@ -102,7 +101,7 @@ public class ShootCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
     	
-        final Location location = scriptEntry.hasObject("location") ? (Location) scriptEntry.getObject("location") : (Location) scriptEntry.getNPC().getEyeLocation().getDirection().
+        final dLocation location = scriptEntry.hasObject("location") ? (dLocation) scriptEntry.getObject("location") : (dLocation) scriptEntry.getNPC().getEyeLocation().getDirection().
                 multiply(4).toLocation(scriptEntry.getNPC().getWorld());
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
         Boolean ride = (Boolean) scriptEntry.getObject("ride");
