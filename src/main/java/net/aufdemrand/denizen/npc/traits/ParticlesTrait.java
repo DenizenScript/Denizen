@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.npc.traits;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.minecraft.server.v1_5_R2.DataWatcher;
 import net.minecraft.server.v1_5_R2.EntityLiving;
@@ -26,9 +27,12 @@ public class ParticlesTrait extends Trait {
 	Denizen denizen = DenizenAPI.getCurrentInstance();
 	World world;
 	
+	@Persist("effect type")
 	EffectType effectType = EffectType.NONE;
 	
+	@Persist("particle delay")
 	int wait = 10;
+	
 	int counter = 0;
 	//int c = 0;
 	int tempcounter = 0;
