@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -36,7 +37,7 @@ import org.bukkit.entity.Player;
  */
 public class AnnounceCommand extends AbstractCommand {
 
-    enum AnnounceType { ALL, TO_OPS }
+    enum AnnounceType { ALL, TO_OPS, TO_FLAGGED }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -45,6 +46,7 @@ public class AnnounceCommand extends AbstractCommand {
         String text = null;
         AnnounceType announceType = AnnounceType.ALL;
         FormatScriptContainer format = null;
+        String flag = null;
 
         // Users tend to forget quotes sometimes on commands like this, so
         // let's check if there are more argument than usual.
@@ -56,25 +58,31 @@ public class AnnounceCommand extends AbstractCommand {
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesArg("TO_OPS", arg)) {
                 announceType = AnnounceType.TO_OPS;
+
             } else if (aH.matchesArg("FORMAT", arg)) {
-				String formatStr = aH.getStringFrom(arg);
+                String formatStr = aH.getStringFrom(arg);
                 format = ScriptRegistry.getScriptContainerAs(formatStr, FormatScriptContainer.class);
-                
-                if(format != null) dB.echoDebug("... format set to: " + formatStr);
-                else dB.echoError("... could not find format for: " + formatStr);
-			}
+
+                if(format == null) dB.echoError("Invalid format: " + formatStr);
+
+            } else if (aH.matchesValueArg("TO_FLAGGED", arg, aH.ArgumentType.Custom)) {
+                flag = aH.getStringFrom(arg);
+                announceType = AnnounceType.TO_FLAGGED;
+            }
 
             else text = aH.getStringFrom(arg);
         }
-		
+
         // If text is missing, alert the console.
         if (text == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
 
         // Add objects that need to be passed to execute() to the scriptEntry
-        scriptEntry.addObject("text", text);
-        scriptEntry.addObject("type", announceType);
-        scriptEntry.addObject("format", format);
+        scriptEntry.addObject("text", text)
+                .addObject("type", announceType)
+                .addObject("format", format)
+                .addObject("flag", flag);
+
     }
 
     @Override
@@ -83,21 +91,32 @@ public class AnnounceCommand extends AbstractCommand {
         String text = (String) scriptEntry.getObject("text");
         AnnounceType type = (AnnounceType) scriptEntry.getObject("type");
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
+        String flag = (String) scriptEntry.getObject("flag");
 
         // Report to dB
         dB.report(getName(),
                 aH.debugObj("Message", text)
                         + (format != null ? aH.debugObj("Format", format.getName()) : "")
-                        + aH.debugObj("Type", type.name()));
+                        + aH.debugObj("Type", type.name())
+                        + (flag != null? aH.debugObj("Flag_Name", flag) : ""));
 
         String message = format != null ? format.getFormattedText(scriptEntry) : text;
 
         // Use Bukkit to broadcast the message to everybody in the server.
         if (type == AnnounceType.ALL) {
             denizen.getServer().broadcastMessage(message);
-        } else if (type == AnnounceType.TO_OPS) {
+        }
+
+        else if (type == AnnounceType.TO_OPS) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.isOp()) player.sendMessage(message);
+            }
+        }
+
+        else if (type == AnnounceType.TO_FLAGGED) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (FlagManager.playerHasFlag(player, flag))
+                    player.sendMessage(message);
             }
         }
     }
