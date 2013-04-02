@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.aufdemrand.denizen.npc.dNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -19,17 +20,19 @@ public abstract class AbstractListener {
 	public String listenerId;
 	protected Player player;
 	protected String scriptName;
+    protected dNPC npc;
 	protected Map<String, Object> saveable = new HashMap<String, Object>();
 
 	public AbstractListener() {
 		this.denizen = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 	}
 
-	public void build(Player player, String listenerId, String listenerType, List<String> args, String finishScript) {
+	public void build(Player player, String listenerId, String listenerType, List<String> args, String finishScript, dNPC npc) {
 		this.player = player;
 		this.listenerId = listenerId;
 		this.listenerType = listenerType;
 		this.scriptName = finishScript;
+        this.npc = npc;
 		onBuild(args);
 		save();
 		constructed();
@@ -37,7 +40,7 @@ public abstract class AbstractListener {
 
 	public void cancel() {
 		onCancel();
-		denizen.getListenerRegistry().cancel(player, listenerId, this);
+		denizen.getListenerRegistry().cancel(player,listenerId, this);
 		deconstructed();
 	}
 	
@@ -47,7 +50,7 @@ public abstract class AbstractListener {
 
 	public void finish() {
 		onFinish();
-		denizen.getListenerRegistry().finish(player, listenerId, scriptName, this);
+		denizen.getListenerRegistry().finish(player, npc, listenerId, scriptName, this);
 		deconstructed();
 	}
 
@@ -71,11 +74,12 @@ public abstract class AbstractListener {
 		return listenerType != null ? listenerType : "";
 	}
 
-	public void load(Player player, String listenerId, String listenerType) {
+	public void load(Player player, dNPC npc, String listenerId, String listenerType) {
 		this.player = player;
 		this.listenerId = listenerId;
 		this.listenerType = listenerType;
 		this.scriptName = (String) get("Finish Script");
+        this.npc = npc;
 		try { onLoad(); } catch (Exception e) {
 			dB.echoError("Problem loading saved listener '" + listenerId + "' for " + player.getName() + "!");
 		}
@@ -144,6 +148,7 @@ public abstract class AbstractListener {
 	public void save() {
 		denizen.getSaves().set("Listeners." + player.getName() + "." + listenerId + ".Listener Type", listenerType);
 		denizen.getSaves().set("Listeners." + player.getName() + "." + listenerId + ".Finish Script", scriptName);
+        denizen.getSaves().set("Listeners." + player.getName() + "." + listenerId + ".Linked NPCID", npc.getId());
 		onSave();
 		try {
 			if (!saveable.isEmpty())
