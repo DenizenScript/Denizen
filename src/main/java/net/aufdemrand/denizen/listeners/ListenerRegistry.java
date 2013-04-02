@@ -6,9 +6,12 @@ import net.aufdemrand.denizen.events.ListenerFinishEvent;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.listeners.core.*;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -24,8 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ListenerRegistry implements DenizenRegistry, Listener {
 
-	private Map<String, Map<String, AbstractListener>> listeners = new ConcurrentHashMap<String, Map<String, AbstractListener>>(8, 0.9f, 1);
-	private Map<String, AbstractListenerType> types = new ConcurrentHashMap<String, AbstractListenerType>(8, 0.9f, 1);
+	private Map<String, Map<String, AbstractListener>> listeners = new ConcurrentHashMap<String, Map<String, AbstractListener>>();
+	private Map<String, AbstractListenerType> types = new ConcurrentHashMap<String, AbstractListenerType>();
 
 	private Denizen denizen;
 
@@ -49,25 +52,25 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 
 	@Override
 	public void disableCoreMembers() {
-		// Note: This runs a onDisable() for each AbstractListenerType, NOT each 
+		// Note: This runs a onDisable() for each AbstractListenerType, NOT each
 		// AbstractListener, which should be fine considering in-progress
 		// AbstractListeners deconstruct automatically based on PlayerLogoutEvent
 		// which is also run on a server disable or restart.
 		for (RegistrationableInstance member : types.values())
-			try { 
-				member.onDisable(); 
+			try {
+				member.onDisable();
 			} catch (Exception e) {
 				dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
 				if (dB.showStackTraces) e.printStackTrace();
 			}
 	}
 
-	public void finish(Player player, String listenerId, String finishScript, AbstractListener instance) {
+	public void finish(Player player, dNPC npc, String listenerId, String finishScript, AbstractListener instance) {
 		if (finishScript != null)
             try {
                 // TODO: Add context to this
                 ScriptRegistry.getScriptContainerAs(finishScript, TaskScriptContainer.class)
-                        .runTaskScript(player, null, null);
+                        .runTaskScript(player, npc, null);
             } catch (Exception e) {
                 // Hrm, not a valid task script?
             }
@@ -130,9 +133,10 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 			// People tend to worry when they see long-ass stacktraces.. let's catch them.
 			try {
 				String type = denizen.getSaves().getString(path + listenerId + ".Listener Type");
-				if (get(type) == null) return;
+                dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getById(denizen.getSaves().getInt(path + listenerId + ".Linked NPCID")));
+                if (get(type) == null) return;
 				dB.log(event.getPlayer().getName() + " has a LISTENER in progress. Loading '" + listenerId + "'.");
-				get(type).createInstance(event.getPlayer(), listenerId).load(event.getPlayer(), listenerId, type);
+				get(type).createInstance(event.getPlayer(), listenerId).load(event.getPlayer(), npc, listenerId, type);
 			} catch (Exception e) {
 				dB.log(event.getPlayer() + " has a saved listener named '" + listenerId + "' that may be corrupt. Skipping for now, but perhaps check the contents of your saves.yml for problems?");
 			}
