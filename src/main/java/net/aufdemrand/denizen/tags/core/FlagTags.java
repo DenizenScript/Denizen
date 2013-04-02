@@ -87,7 +87,6 @@ public class FlagTags implements Listener {
             if (name == null) return;
 
             if (denizen.flagManager().getPlayerFlag(name, flagName).get(index).isEmpty()) {
-                
             	if (replaceType.toString() == "ISEXPIRED")
             		event.setReplaced("true");
             	else

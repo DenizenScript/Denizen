@@ -12,10 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Scoreboard {
-    Scoreboard(String name, int priority, ScoreboardAPI plugin) {
+    Scoreboard(String name, int priority) {
         this.name = name;
         this.priority = priority;
-        this.plugin = plugin;
     }
 
     public enum Type {
@@ -102,7 +101,7 @@ public class Scoreboard {
         if (show) {
             if (!players.contains(p)) {
                 players.add(p);
-                plugin.updateForPlayer(p);
+                ScoreboardAPI.getInstance().updateForPlayer(p);
             }
         } else {
             if (players.remove(p)) {
@@ -111,7 +110,7 @@ public class Scoreboard {
                 pack.b = "";
                 pack.c = 1;
                 ((CraftPlayer) p).getHandle().playerConnection.sendPacket(pack);
-                plugin.updateForPlayer(p);
+                ScoreboardAPI.getInstance().updateForPlayer(p);
             }
         }
     }
@@ -181,12 +180,12 @@ public class Scoreboard {
 
     private boolean isUnique(Player p) {
         int myPos = 0;
-        for (int i = 0; i < plugin.getScoreboards().size(); i++) {
-            if (plugin.getScoreboards().get(i) == this) {
+        for (int i = 0; i < ScoreboardAPI.getInstance().getScoreboards().size(); i++) {
+            if (ScoreboardAPI.getInstance().getScoreboards().get(i) == this) {
                 myPos = i;
                 break;
             }
-            Scoreboard s = plugin.getScoreboards().get(i);
+            Scoreboard s = ScoreboardAPI.getInstance().getScoreboards().get(i);
             if (s != this && s.hasPlayerAdded(p) && s.getType() == type && (s.getPriority() > priority || (i > myPos && s.getPriority() == priority))) {
                 return false;
             }
@@ -206,5 +205,4 @@ public class Scoreboard {
 
     private int priority = 10;
 
-    private ScoreboardAPI plugin;
 }

@@ -70,7 +70,12 @@ public class IfCommand extends AbstractCommand {
                 // Set logic (Optional, default is REGULAR)
                 if (arg.startsWith("!")) {
                     comparables.get(index).logic = Logic.NEGATIVE;
-                    arg = arg.substring(1);
+                    if (arg.equals("!"))
+                        continue;
+                    if (arg.equals("!="))
+                        arg = "==";
+                    else
+                        arg = arg.substring(1);
                 }
                 // Replace symbol-operators/bridges with ENUM value for matching
                 arg = arg.replace("==", "EQUALS").replace(">=", "ORMORE").replace("<=", "ORLESS")

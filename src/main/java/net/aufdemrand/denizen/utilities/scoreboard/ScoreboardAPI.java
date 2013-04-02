@@ -11,17 +11,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class ScoreboardAPI {
 	
-	//Global Definitions:
-	public static String PREFIX_COLOR = ChatColor.AQUA + "";
-	public static String CONFIG_NAME = "config.yml";
-	public static boolean ENABLE_METRICS = false;
-	//End
-
-    public static ScoreboardAPI api_instance;
+    public static ScoreboardAPI api_instance = null;
 
     public static List<Scoreboard> scoreboards = new LinkedList<Scoreboard>();
 
-    public static List<Scoreboard> getScoreboards() {
+    public List<Scoreboard> getScoreboards() {
         return scoreboards;
     }
 
@@ -37,7 +31,7 @@ public class ScoreboardAPI {
                 return null;
             }
         }
-        Scoreboard s = new Scoreboard(name, priority, this);
+        Scoreboard s = new Scoreboard(name, priority);
         scoreboards.add(s);
         return s;
     }
