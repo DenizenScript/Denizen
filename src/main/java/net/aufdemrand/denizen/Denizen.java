@@ -25,6 +25,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
+import net.aufdemrand.denizen.utilities.scoreboard.ScoreboardAPI;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -215,8 +216,10 @@ public class Denizen extends JavaPlugin {
         dB.echoDebug(DebugElement.Footer);
 
         ws_helper.serverStartEvent();
-    }
 
+        // Initialize ScoreboardAPI
+        ScoreboardAPI.api_instance = new ScoreboardAPI();
+    }
 
     /*
      * Unloads Denizen on shutdown of the craftbukkit server.

@@ -180,6 +180,9 @@ public class CommandRegistry implements DenizenRegistry {
 
         registerCoreMember(RuntaskCommand.class,
         		"RUNTASK", "runtask [script_name] (instantly) (queue|queue:queue_name) (delay:#)", 1);
+
+        registerCoreMember(ScoreboardCommand.class,
+                "SCOREBOARD", "", 1);
 		
         registerCoreMember(ScribeCommand.class, 
         		"SCRIBE", "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
