@@ -218,7 +218,7 @@ public class Denizen extends JavaPlugin {
         ws_helper.serverStartEvent();
 
         // Initialize ScoreboardAPI
-        ScoreboardAPI.api_instance = new ScoreboardAPI();
+        new ScoreboardAPI();
     }
 
     /*

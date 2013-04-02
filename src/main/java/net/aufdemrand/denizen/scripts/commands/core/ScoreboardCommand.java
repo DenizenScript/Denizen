@@ -109,6 +109,9 @@ public class ScoreboardCommand extends AbstractCommand {
                 break;
 
             case SET:
+                dB.echoDebug(id);
+                dB.echoDebug(value);
+                dB.echoDebug(num.toString());
                 ScoreboardAPI.getInstance().getScoreboard(id).setItem(value, num);
                 break;
 

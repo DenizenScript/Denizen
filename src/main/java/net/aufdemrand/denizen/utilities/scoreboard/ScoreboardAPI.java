@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.scoreboard;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class ScoreboardAPI {
 	
     public static ScoreboardAPI api_instance = null;
 
-    public static List<Scoreboard> scoreboards = new LinkedList<Scoreboard>();
+    public static List<Scoreboard> scoreboards = new ArrayList<Scoreboard>();
 
     public List<Scoreboard> getScoreboards() {
         return scoreboards;
@@ -22,7 +23,7 @@ public class ScoreboardAPI {
 	Format format = new Format(this);
 
     public static ScoreboardAPI getInstance() {
-        return ScoreboardAPI.api_instance;
+        return api_instance;
     }
 
     public Scoreboard createScoreboard(String name, int priority) {
@@ -34,6 +35,10 @@ public class ScoreboardAPI {
         Scoreboard s = new Scoreboard(name, priority);
         scoreboards.add(s);
         return s;
+    }
+
+    public ScoreboardAPI() {
+        api_instance = this;
     }
 
     public Scoreboard getScoreboard(String name) {

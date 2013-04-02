@@ -70,7 +70,7 @@ public class IfCommand extends AbstractCommand {
                 // Set logic (Optional, default is REGULAR)
                 if (arg.startsWith("!")) {
                     comparables.get(index).logic = Logic.NEGATIVE;
-                    if (arg.equals("!"))
+                    if ( arg.length() == 1)
                         continue;
                     if (arg.equals("!="))
                         arg = "==";

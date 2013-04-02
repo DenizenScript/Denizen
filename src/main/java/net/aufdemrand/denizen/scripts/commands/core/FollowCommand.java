@@ -23,7 +23,7 @@ public class FollowCommand extends AbstractCommand {
             if (aH.matchesArg("STOP", arg))
                 scriptEntry.addObject("stop", true);
 
-            if (aH.matchesValueArg("LEAD", arg, aH.ArgumentType.Double))
+            else if (aH.matchesValueArg("LEAD", arg, aH.ArgumentType.Double))
                 scriptEntry.addObject("lead", aH.getDoubleFrom(arg));
 
             else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
