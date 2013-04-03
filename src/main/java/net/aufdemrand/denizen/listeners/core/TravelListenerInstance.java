@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.listeners.core;
 
 import java.util.List;
 
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -165,12 +166,14 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 			}
 		} else if (type == TravelType.TOLOCATION) {
 			if (!player.getLocation().getWorld().equals(endPoint.getWorld())) return;
-			if (player.getLocation().distance(endPoint) <= radius) {
+			//if (player.getLocation().distance(endPoint) <= radius) {
+			if (Utilities.checkLocation(player, endPoint, radius)) {
 				dB.echoDebug("...player reached location");
 				finish();
 			}
 		} else if (type == TravelType.TONPC) {
-			if (player.getLocation().distance(target.getBukkitEntity().getLocation()) <= radius) {
+			//if (player.getLocation().distance(target.getBukkitEntity().getLocation()) <= radius) {
+			if (Utilities.checkLocation(player, target.getBukkitEntity().getLocation(), radius)) {
 				dB.echoDebug("...player reached NPC");
 				finish();
 			}
