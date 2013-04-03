@@ -43,6 +43,10 @@ public class ParticlesTrait extends Trait {
 			return;
 		}
 		
+		if (effectType == null) {
+			effectType = EffectType.NONE;
+		}
+		
 		if (tempcounter > 20) {
 			dB.log("current effect: " + effectType.name());
 		}
