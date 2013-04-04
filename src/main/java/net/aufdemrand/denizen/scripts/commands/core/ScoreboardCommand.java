@@ -9,11 +9,16 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.aufdemrand.denizen.utilities.scoreboard.Scoreboard;
-import net.aufdemrand.denizen.utilities.scoreboard.ScoreboardAPI;
 import net.citizensnpcs.trait.Poses;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -26,31 +31,28 @@ import org.bukkit.entity.Player;
  */
 public class ScoreboardCommand extends AbstractCommand {
 
-    enum Action { CREATE, DESTROY, SET, REMOVE, SHOW, HIDE }
+    enum Action { SET, REMOVE, SHOW, HIDE }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         Action action = null;
-        String value = null;
+        String name = null;
         String id = null;
         Integer priority = null;
         String show = null;
-        Integer num = null;
+        String value = null;
 
         // Parse Arguments
         for (String arg : scriptEntry.getArguments()) {
 
             if (aH.matchesValueArg("SET", arg, ArgumentType.Custom)) {
                 action = Action.SET;
-                value = aH.getStringFrom(arg);
+                name = aH.getStringFrom(arg);
 
             } else if (aH.matchesValueArg("REMOVE", arg, ArgumentType.Custom)) {
                 action = Action.REMOVE;
-                value = aH.getStringFrom(arg);
-
-            } else if (aH.matchesArg("CREATE, DESTROY", arg)) {
-                action = Action.valueOf(arg.toUpperCase());
+                name = aH.getStringFrom(arg);
 
             } else if (aH.matchesValueArg("PRIORITY", arg, ArgumentType.Integer)) {
                 priority = aH.getIntegerFrom(arg);
@@ -61,8 +63,8 @@ public class ScoreboardCommand extends AbstractCommand {
             } else if (aH.matchesArg("HIDE", arg)) {
                 action = Action.HIDE;
 
-            } else if (aH.matchesValueArg("VALUE", arg, ArgumentType.Integer)) {
-                num = aH.getIntegerFrom(arg);
+            } else if (aH.matchesValueArg("VALUE", arg, ArgumentType.String)) {
+                value = aH.getStringFrom(arg);
 
             } else  {
                 id = aH.getStringFrom(arg);
@@ -71,59 +73,62 @@ public class ScoreboardCommand extends AbstractCommand {
 
         scriptEntry.addObject("action", action)
                 .addObject("value", value)
-                .addObject("num", num)
+                .addObject("name", name)
                 .addObject("id", id)
                 .addObject("priority", priority)
                 .addObject("show", show);
     }
 
+    private Map<String, Scoreboard> scoreboards = new ConcurrentHashMap<String, Scoreboard>();
 
-	@Override
+    private Scoreboard getScoreboard(String id) {
+        for (String scoreboard_id : scoreboards.keySet())
+            if (scoreboard_id.equalsIgnoreCase(id)) return scoreboards.get(scoreboard_id);
+        scoreboards.put(id, Bukkit.getScoreboardManager().getNewScoreboard());
+        getScoreboard(id).registerNewTeam(id);
+        return null;
+    }
+
+    private void removeScoreboard(String id) {
+        for (String scoreboard_id : scoreboards.keySet())
+            if (scoreboard_id.equalsIgnoreCase(id)) scoreboards.remove(scoreboard_id);
+        return;
+    }
+
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
 
         Action action = (Action) scriptEntry.getObject("action");
+        String name = (String) scriptEntry.getObject("name");
         String value = (String) scriptEntry.getObject("value");
-        Integer num = (Integer) scriptEntry.getObject("num");
         Integer priority = (Integer) scriptEntry.getObject("priority");
         String id = (String) scriptEntry.getObject("id");
 
         // Report to dB
         dB.report(getName(),
                 aH.debugObj("Action", action.toString())
-                        + aH.debugObj("Id", id)
-                        + aH.debugObj("Exists?", ScoreboardAPI.getInstance().getScoreboard(id) != null ? "Yes" : "No"));
+                        + aH.debugObj("Id", id));
 
 
         switch (action) {
 
-            case CREATE:
-                ScoreboardAPI.getInstance().createScoreboard(id, priority);
-                ScoreboardAPI.getInstance().getScoreboard(id).setScoreboardName(id);
-                ScoreboardAPI.getInstance().getScoreboard(id).setType(Scoreboard.Type.SIDEBAR);
-                break;
-
-            case DESTROY:
-                ScoreboardAPI.getInstance().getScoreboard(id).stopShowingAllPlayers();
-                break;
-
             case SET:
-                dB.echoDebug(id);
-                dB.echoDebug(value);
-                dB.echoDebug(num.toString());
-                ScoreboardAPI.getInstance().getScoreboard(id).setItem(value, num);
+                Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+                scoreboard.registerNewObjective(id, id);
+                scoreboard.getObjective(id).setDisplaySlot(DisplaySlot.BELOW_NAME);
+                scoreboard.getObjective(id).setDisplayName("display name");
+                scoreboard.registerNewTeam(scriptEntry.getNPC().getName());
+                scoreboard.getTeam(scriptEntry.getNPC().getName()).addPlayer(((Player) scriptEntry.getNPC().getEntity()));
                 break;
 
             case REMOVE:
-                ScoreboardAPI.getInstance().getScoreboard(id).removeItem(value);
                 break;
 
             case SHOW:
-                ScoreboardAPI.getInstance().getScoreboard(id).showToPlayer(scriptEntry.getPlayer());
                 break;
 
             case HIDE:
-                ScoreboardAPI.getInstance().getScoreboard(id).showToPlayer(scriptEntry.getPlayer(), false);
                 break;
         }
 

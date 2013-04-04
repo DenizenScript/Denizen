@@ -342,6 +342,10 @@ public class dItem implements dScriptArgument {
             return new Element(String.valueOf(getItemStack().getDurability()))
                     .getAttribute(attribute.fulfill(1));
 
+        if (attribute.startsWith("repariable"))
+            return new Element(String.valueOf(isRepairable()))
+                    .getAttribute(attribute.fulfill(1));
+
         if (attribute.startsWith("material.formatted")) {
 
             if (id.equals("air"))

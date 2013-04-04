@@ -25,7 +25,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
-import net.aufdemrand.denizen.utilities.scoreboard.ScoreboardAPI;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -191,6 +190,7 @@ public class Denizen extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SleepingTrait.class).withName("sleeping"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ParticlesTrait.class).withName("particles"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SneakingTrait.class).withName("sneaking"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(InvisibleTrait.class).withName("invisible"));
 
         // Create instance of PacketHelper if ProtocolLib has been hooked
 		if(Depends.protocolManager != null) {
@@ -216,9 +216,6 @@ public class Denizen extends JavaPlugin {
         dB.echoDebug(DebugElement.Footer);
 
         ws_helper.serverStartEvent();
-
-        // Initialize ScoreboardAPI
-        new ScoreboardAPI();
     }
 
     /*

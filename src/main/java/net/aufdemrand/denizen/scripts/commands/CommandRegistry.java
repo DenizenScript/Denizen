@@ -135,6 +135,9 @@ public class CommandRegistry implements DenizenRegistry {
 		
         registerCoreMember(IfCommand.class, 
         		"IF", "if [comparable] (!)(operator) (compared_to) (bridge) (...) [command] (else) (command)  +--> see documentation.", 2);
+
+        registerCoreMember(InvisibleCommand.class,
+                "INVISIBLE", "invisible [npc] [toggle:true|false|toggle]", 2);
 		
         registerCoreMember(ListenCommand.class, 
         		"LISTEN", "listen [listener_type] [id:listener_id] (...)  +--> see documentation - http://bit.ly/XJlKwm", 2);

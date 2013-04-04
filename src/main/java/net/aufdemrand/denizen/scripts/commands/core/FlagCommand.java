@@ -42,7 +42,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
                 // Determine flagAction and set the flagName/flagValue
             else if (arg.split(":", 3).length > 1) {
-                String[] flagArgs = arg.split(":");
+                String[] flagArgs = arg.split(":", 3);
                 name = flagArgs[0].toUpperCase();
 
                 if (flagArgs.length == 2) {
@@ -52,8 +52,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
                         value = "1";
                     }   else if (flagArgs[1].equals("-")
                             || flagArgs[1].equals("--")) {
-                    	// Using equals instead of startsWith because
-                    	// people need to be able to set values like "-2"
+                        // Using equals instead of startsWith because
+                        // people need to be able to set values like "-2"
                         action = Action.DECREASE;
                         value = "1";
                     }   else if (flagArgs[1].startsWith("!")) {
@@ -72,7 +72,11 @@ public class FlagCommand extends AbstractCommand implements Listener {
                     else if (flagArgs[1].startsWith("-")) action = Action.DECREASE;
                     else if (flagArgs[1].startsWith("*")) action = Action.MULTIPLY;
                     else if (flagArgs[1].startsWith("/")) action = Action.DIVIDE;
-                    value = flagArgs[2];
+                    else action = Action.SET_VALUE;
+
+                    if (action == Action.SET_VALUE)
+                        value = flagArgs[1] + ":" + flagArgs[2];
+                    else value = flagArgs[2];
                 }
             } else {
                 name = arg.toUpperCase();
