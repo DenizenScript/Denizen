@@ -1,19 +1,23 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
+import net.aufdemrand.denizen.utilities.arguments.Element;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.io.File;
@@ -34,9 +38,19 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 
-public class YamlCommand extends AbstractCommand implements Listener{
+public class YamlCommand extends AbstractCommand implements Listener {
+
+    @Override
+    public void onEnable() {
+        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+    }
 
     Map<String, YamlConfiguration> yamls = new HashMap<String, YamlConfiguration>();
+
+    private YamlConfiguration getYaml(String id) {
+        if (id == null) return null;
+        return yamls.get(id.toUpperCase());
+    }
 
     enum Action{ LOAD, CREATE, READ, WRITE, SAVE }
 
@@ -51,13 +65,10 @@ public class YamlCommand extends AbstractCommand implements Listener{
 
         for (String arg : scriptEntry.getArguments()) {
 
-            if (aH.matchesValueArg("LOAD, CREATE", arg, aH.ArgumentType.Custom)) {
+            if (aH.matchesValueArg("LOAD, CREATE, SAVE", arg, aH.ArgumentType.Custom)) {
                 action = Action.valueOf(arg.split(":")[0].toUpperCase());
                 filename = aH.getStringFrom(arg);
             }
-
-            else if (aH.matchesArg("SAVE", arg))
-                action = Action.SAVE;
 
             else if (aH.matchesValueArg("READ, WRITE", arg, aH.ArgumentType.Custom)) {
                 action = Action.valueOf(arg.split(":")[0].toUpperCase());
@@ -93,20 +104,24 @@ public class YamlCommand extends AbstractCommand implements Listener{
         String key = (String) scriptEntry.getObject("key");
         String value = (String) scriptEntry.getObject("value");
         Action action = (Action) scriptEntry.getObject("action");
+        String id = (String) scriptEntry.getObject("id");
+
+        YamlConfiguration yamlConfiguration;
 
         switch (action) {
 
             case LOAD:
-                YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(
-                        new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename));
+                File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename);
+                if (file == null) throw new CommandExecutionException("File cannot be found!");
+                yamlConfiguration = YamlConfiguration.loadConfiguration(file);
                 if (yamlConfiguration != null)
-                    yamls.put(filename.toUpperCase(), yamlConfiguration);
+                    yamls.put(id.toUpperCase(), yamlConfiguration);
                 break;
 
             case SAVE:
-                if (yamls.containsKey(filename.toUpperCase())) {
+                if (yamls.containsKey(id.toUpperCase())) {
                     try {
-                        yamls.get(filename.toUpperCase()).save(new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename));
+                        yamls.get(id.toUpperCase()).save(new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename));
                     } catch (IOException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
@@ -114,23 +129,47 @@ public class YamlCommand extends AbstractCommand implements Listener{
                 break;
 
             case WRITE:
-                if (yamls.containsKey(filename.toUpperCase()))
-                    yamls.get(filename.toUpperCase()).set(key, value);
-                break;
-
-            case READ:
-                if (yamls.containsKey(filename.toUpperCase()))
-                    yamls.get(filename.toUpperCase()).getString(key);
+                if (yamls.containsKey(id.toUpperCase()))
+                    yamls.get(id.toUpperCase()).set(key, value);
                 break;
 
             case CREATE:
-
+                yamlConfiguration = YamlConfiguration.loadConfiguration(
+                        new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename));
+                if (yamlConfiguration != null)
+                    yamls.put(id.toUpperCase(), yamlConfiguration);
                 break;
-
-
         }
 
+    }
+
+    @EventHandler
+    public void yaml(ReplaceableTagEvent event) {
+
+        if (!event.matches("yaml")) return;
+
+        if (!event.hasNameContext()) return;
+        if (!event.hasTypeContext()) return;
+
+        String id = event.getNameContext();
+        String path = event.getTypeContext();
+
+        if (!yamls.containsKey(id.toUpperCase())) return;
+
+        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+
+        attribute.fulfill(1);
+
+        if (attribute.startsWith("contains")) {
+            event.setReplaced(new Element(String.valueOf(getYaml(id).contains(path)))
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        if (attribute.startsWith("read")) {
+            event.setReplaced(new Element(getYaml(id).getString(path)).getAttribute(attribute.fulfill(1)));
+        }
 
     }
+
 
 }

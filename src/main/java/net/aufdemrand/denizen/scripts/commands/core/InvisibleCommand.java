@@ -60,10 +60,6 @@ public class InvisibleCommand extends AbstractCommand {
         switch (target) {
 
             case NPC:
-
-                if (scriptEntry.getNPC().getEntity().hasPotionEffect(PotionEffectType.INVISIBILITY))
-                    dB.echoDebug("NPC IS INVIS!");
-
                 if (!scriptEntry.getNPC().getCitizen().hasTrait(InvisibleTrait.class))
                     scriptEntry.getNPC().getCitizen().addTrait(InvisibleTrait.class);
                 InvisibleTrait trait = scriptEntry.getNPC().getCitizen().getTrait(InvisibleTrait.class);

@@ -226,6 +226,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(WorldCommand.class,
                 "WORLD", "world [type:global|player] (player:player.name) [action:sub_action]", 1);
 
+        registerCoreMember(YamlCommand.class,
+                "YAML", "...", 1);
+
         registerCoreMember(ZapCommand.class, 
         		"ZAP", "zap [#|step:step_name] (script:script_name{current_script}) (duration:#)", 0);
 

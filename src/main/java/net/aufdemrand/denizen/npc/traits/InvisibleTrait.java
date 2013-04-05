@@ -30,6 +30,7 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
     private void setInvisible() {
 
         if (npc instanceof Player) {
+
             if (npc.isSpawned()) invis.apply((Player) npc.getBukkitEntity());
         } else {
             if (npc.isSpawned()) invis.apply(npc.getBukkitEntity());
