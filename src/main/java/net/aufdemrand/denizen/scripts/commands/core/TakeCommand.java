@@ -48,8 +48,11 @@ public class TakeCommand extends AbstractCommand{
 			else if (aH.matchesQuantity(arg))
 				quantity = aH.getDoubleFrom(arg);
 
-			else if (aH.matchesItem(arg) || aH.matchesItem("item:" + arg))
+			else if (aH.matchesItem(arg) || aH.matchesItem("item:" + arg)) {
 				takeType = TakeType.ITEM;
+                item = aH.getItemFrom(arg).getItemStack();
+            }
+
 			
 			else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 
@@ -100,7 +103,7 @@ public class TakeCommand extends AbstractCommand{
         	break;
 
         case ITEM:
-        	((ItemStack)scriptEntry.getObject("item")).setAmount(((Double) scriptEntry.getObject("quantity")).intValue());
+        	((ItemStack) scriptEntry.getObject("item")).setAmount(((Double) scriptEntry.getObject("quantity")).intValue());
 			if (!scriptEntry.getPlayer().getInventory().removeItem((ItemStack)scriptEntry.getObject("item")).isEmpty()) 
         	    dB.echoDebug("The Player did not have enough " + ((ItemStack) scriptEntry.getObject("item")).getType().toString()
                         + " on hand, so Denizen took as much as possible. To avoid this situation, use an IF or REQUIREMENT to check.");
