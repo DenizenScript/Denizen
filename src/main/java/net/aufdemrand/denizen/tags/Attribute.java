@@ -1,13 +1,7 @@
 package net.aufdemrand.denizen.tags;
 
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.npc.dNPC;
+
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.tags.core.*;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,28 +16,47 @@ import java.util.regex.Pattern;
 
 public class Attribute {
 
-    String attribute;
+    List<String> attributes;
 
-    public Attribute(String attribute) {
-        this.attribute = attribute.toLowerCase();
+    ScriptEntry scriptEntry;
+
+    public ScriptEntry getScriptEntry() {
+        return scriptEntry;
+    }
+
+    public Attribute(String attributes, ScriptEntry scriptEntry) {
+
+        this.scriptEntry = scriptEntry;
+
+        Pattern attributer = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?");
+        List<String> matches = new ArrayList<String>();
+        Matcher matcher = attributer.matcher(attributes);
+
+        while (matcher.find()) {
+            matches.add(matcher.group());
+        }
+
+        this.attributes = matches;
     }
 
     public boolean startsWith(String string) {
         string = string.toLowerCase();
-        if (attribute.startsWith(string)) return true;
+        if (attributes.isEmpty()) return false;
+        if (attributes.get(0).toLowerCase().startsWith(string)) return true;
         return false;
     }
 
     public boolean startsWith(String string, int attribute) {
         string = string.toLowerCase();
-        if (this.attribute.split("\\.")[attribute - 1].startsWith(string)) return true;
+        if (attributes.isEmpty()) return false;
+        if (attributes.size() < attribute) return false;
+        if (attributes.get(attribute - 1).toLowerCase().startsWith(string)) return true;
         return false;
     }
 
     public Attribute fulfill(int attributes) {
-        if (attribute.split("\\.").length >= attributes)
-            attribute = "";
-        else attribute = attribute.split("\\.", attributes + 1)[attributes];
+        for (int x = attributes; x > 0; x--)
+            this.attributes.remove(0);
         return this;
     }
 
@@ -68,9 +81,8 @@ public class Attribute {
     }
 
     private String getAttribute(int num) {
-        int size = attribute.split("\\.").length;
-        if (num > size) return "";
-        else return attribute.split("\\.")[num - 1];
+        if (attributes.size() < num) return "";
+        else return attributes.get(num - 1);
     }
 
 }

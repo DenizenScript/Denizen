@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class dList extends ArrayList<String> implements dScriptArgument {
 
@@ -32,13 +33,13 @@ public class dList extends ArrayList<String> implements dScriptArgument {
         addAll(Arrays.asList(items.split("\\|")));
     }
 
-    public dList(String prefix, java.util.List<String> items) {
+    public dList(String prefix, List<String> items) {
         if (prefix == null) this.prefix = "list";
         else this.prefix = prefix;
         addAll(items);
     }
 
-    public dList(java.util.List<String> items) {
+    public dList(List<String> items) {
         this.prefix = "list";
         addAll(items);
     }
@@ -85,6 +86,7 @@ public class dList extends ArrayList<String> implements dScriptArgument {
         if (attribute == null) return null;
 
         if (attribute.startsWith("ascslist")) {
+            if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
             StringBuilder dScriptArg = new StringBuilder(); 
             for (String item : this)
                 dScriptArg.append(item + ", ");
@@ -93,6 +95,7 @@ public class dList extends ArrayList<String> implements dScriptArgument {
         }
 
         if (attribute.startsWith("get")) {
+            if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
             int index = attribute.getIntContext(1);
             if (index > size()) return null;
             String item;

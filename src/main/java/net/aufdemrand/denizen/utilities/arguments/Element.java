@@ -3,7 +3,9 @@ package net.aufdemrand.denizen.utilities.arguments;
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.util.StringUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -93,8 +95,8 @@ public class Element implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("substring")) {            // suibstring[2|8]
-            int beginning_index = Integer.valueOf(attribute.getContext(1).split("\\|")[0]) - 1;
-            int ending_index = Integer.valueOf(attribute.getContext(1).split("\\|")[1]) - 1;
+            int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;
+            int ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]) - 1;
             return new Element(String.valueOf(element.substring(beginning_index, ending_index)))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -122,12 +124,17 @@ public class Element implements dScriptArgument {
         if (attribute.startsWith("split") && attribute.startsWith("limit", 2)) {
             String split_string = (attribute.hasContext(1) ? attribute.getContext(1) : " ");
             Integer limit = (attribute.hasContext(2) ? attribute.getIntContext(2) : 1);
-            return new dList(Arrays.asList(element.split(split_string, limit))).getAttribute(attribute.fulfill(2));
-        }
+            if (split_string.toUpperCase().startsWith("regex:"))
+                return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1], limit))).getAttribute(attribute.fulfill(1));
+            else
+                return new dList(Arrays.asList(StringUtils.split(element, split_string, limit))).getAttribute(attribute.fulfill(1));        }
 
         if (attribute.startsWith("split")) {
             String split_string = (attribute.hasContext(1) ? attribute.getContext(1) : " ");
-            return new dList(Arrays.asList(element.split(split_string))).getAttribute(attribute.fulfill(1));
+            if (split_string.toUpperCase().startsWith("regex:"))
+                return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1]))).getAttribute(attribute.fulfill(1));
+            else
+                return new dList(Arrays.asList(StringUtils.split(element, split_string))).getAttribute(attribute.fulfill(1));
         }
 
         return element;

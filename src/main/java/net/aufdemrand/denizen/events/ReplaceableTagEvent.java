@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.citizensnpcs.api.CitizensAPI;
@@ -87,7 +88,9 @@ public class ReplaceableTagEvent extends Event {
     // Component pattern that matches groups of characters that are not
     // [] or . and that optionally contain [] and a . at the end
     Pattern componentRegex = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?(\\.)?");
-    
+
+    public String raw_tag;
+
     public ReplaceableTagEvent(OfflinePlayer player, dNPC npc, String tag) {
         this(player, npc, tag, null);
     }
@@ -133,6 +136,10 @@ public class ReplaceableTagEvent extends Event {
         				  						// and any trailing spaces
         }
 
+        // Alternatives are stripped, base context is stripped, let's remember the raw tag for
+        // the attributer.
+        raw_tag = tag;
+
         // Get value
         Matcher bracketMatcher = null;    
         Matcher valueMatcher = valueRegex.matcher(tag);
@@ -158,7 +165,7 @@ public class ReplaceableTagEvent extends Event {
         String[] contexts = new String[4];
         String tagPart = null;
         int n = 0;
-        
+
         Matcher componentMatcher = componentRegex.matcher(tag);
         
         while (componentMatcher.find() && n < 4)
