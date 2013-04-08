@@ -4,6 +4,7 @@ package net.aufdemrand.denizen.tags;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,21 +21,27 @@ public class Attribute {
 
     ScriptEntry scriptEntry;
 
+    String raw_tag;
+
     public ScriptEntry getScriptEntry() {
         return scriptEntry;
     }
 
     public Attribute(String attributes, ScriptEntry scriptEntry) {
-
+        raw_tag = attributes;
         this.scriptEntry = scriptEntry;
+
+        if (attributes == null) {
+            this.attributes = Collections.emptyList();
+            return;
+        }
 
         Pattern attributer = Pattern.compile("[^\\[\\]\\.]+(\\[.*?\\])?");
         List<String> matches = new ArrayList<String>();
         Matcher matcher = attributer.matcher(attributes);
 
-        while (matcher.find()) {
+        while (matcher.find())
             matches.add(matcher.group());
-        }
 
         this.attributes = matches;
     }
@@ -80,7 +87,7 @@ public class Attribute {
         return 0;
     }
 
-    private String getAttribute(int num) {
+    public String getAttribute(int num) {
         if (attributes.size() < num) return "";
         else return attributes.get(num - 1);
     }
