@@ -45,6 +45,8 @@ public class InteractScriptContainer extends ScriptContainer {
         // Make default step the only step if there is only one step
         if (defaultStep == null && steps.size() == 1)
             defaultStep = steps.get(0);
+
+        if (defaultStep == null) throw new ExceptionInInitializerError("Must specify a default step in '" + getName() + "'!");
     }
 
     private String defaultStep = null;
