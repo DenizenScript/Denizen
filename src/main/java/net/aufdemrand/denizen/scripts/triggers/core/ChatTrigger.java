@@ -130,7 +130,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             // REGEX matches are left for last, so save it in case non-REGEX
                             // matches don't exist
                             regexId = entry.getKey();
-                            regexMessage = entry.getValue().replace("/" + keyword + "/", m.group());
+                            regexMessage = entry.getValue().replace(matcher.group(), m.group());
+                            dB.log("entry value: " + entry.getValue() + "  keyword: " + keyword + "  m.group: " + m.group() + "  matcher.group: " + matcher.group());
                         }
                     }
                     else if (isKeywordStrict(keyword)) {
