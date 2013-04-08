@@ -29,7 +29,7 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 
 public class TakeCommand extends AbstractCommand{
 
-    private enum TakeType { MONEY, ITEMINHAND, ITEM }
+    private enum TakeType { MONEY, ITEMINHAND, ITEM, INVENTORY }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -44,6 +44,9 @@ public class TakeCommand extends AbstractCommand{
 
             else if (aH.matchesArg("ITEM_IN_HAND", arg))
                 takeType = TakeType.ITEMINHAND;
+
+            else if (aH.matchesArg("INVENTORY", arg))
+                takeType = TakeType.INVENTORY;
 
             else if (aH.matchesValueArg("QTY", arg, aH.ArgumentType.Double))
                 quantity = aH.getDoubleFrom(arg);
@@ -66,6 +69,10 @@ public class TakeCommand extends AbstractCommand{
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         switch ((TakeType)scriptEntry.getObject("takeType")) {
+
+            case INVENTORY:
+                scriptEntry.getPlayer().getInventory().clear();
+                break;
 
             case ITEMINHAND:
                 int inHandAmt = scriptEntry.getPlayer().getItemInHand().getAmount();
