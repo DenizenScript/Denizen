@@ -19,6 +19,7 @@ public class Element implements dScriptArgument {
      * @return  a dScript dList
      *
      */
+    @ObjectFetcher("l")
     public static Element valueOf(String string) {
         if (string == null) return null;
 
@@ -94,7 +95,10 @@ public class Element implements dScriptArgument {
             return new Element(Boolean.valueOf(element).toString())
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("substring")) {            // suibstring[2|8]
+        if (attribute.startsWith("aslist"))
+            return new dList("List", element).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("substring")) {            // substring[2|8]
             int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;
             int ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]) - 1;
             return new Element(String.valueOf(element.substring(beginning_index, ending_index)))
