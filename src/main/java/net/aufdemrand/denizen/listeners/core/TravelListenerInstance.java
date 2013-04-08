@@ -86,7 +86,7 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 				dB.echoDebug("...radius set to: " + radius);
 			} else if (aH.matchesValueArg(TYPE_ARG, arg, ArgumentType.Custom)) {
 				try {
-					type = TravelType.valueOf(aH.getStringFrom(arg));
+					type = TravelType.valueOf(aH.getStringFrom(arg).toUpperCase());
 					dB.echoDebug("...set TYPE to: " + aH.getStringFrom(arg));
 				} catch (Exception e) {e.printStackTrace();}
 			} else if (aH.matchesValueArg(TARGET_ARG, arg, ArgumentType.LivingEntity)) {

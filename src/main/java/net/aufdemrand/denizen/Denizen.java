@@ -44,11 +44,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Denizen extends JavaPlugin {
     public final static int configVersion = 2;
     public static String versionTag = "0.8.8 pre-release";
-    
+
     private boolean startedSuccessful = false;
-    
+
     private CommandHandler commandHandler;
-    
+
     public CommandHandler getCommandHandler() {
         return commandHandler;
     }
@@ -65,7 +65,7 @@ public class Denizen extends JavaPlugin {
     public ActivityEngine getActivityEngine() {
         return activityEngine;
     }
-    
+
     public ScriptEngine getScriptEngine() {
         return scriptEngine;
     }
@@ -81,8 +81,8 @@ public class Denizen extends JavaPlugin {
     private ActivityRegistry activityRegistry = new ActivityRegistry(this);
     private ListenerRegistry listenerRegistry = new ListenerRegistry(this);
     private dNPCRegistry dNPCRegistry;
-    
-    
+
+
     public ActivityRegistry getActivityRegistry() {
         return activityRegistry;
     }
@@ -98,7 +98,7 @@ public class Denizen extends JavaPlugin {
     public ListenerRegistry getListenerRegistry() {
         return listenerRegistry;
     }
-    
+
     public RequirementRegistry getRequirementRegistry() {
         return requirementRegistry;
     }
@@ -111,7 +111,7 @@ public class Denizen extends JavaPlugin {
     /*
      * Denizen Managers
      */
-    
+
     private FlagManager flagManager = new FlagManager(this);
     private TagManager tagManager = new TagManager(this);
 
@@ -131,19 +131,19 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public void onEnable() {
-		// Activate dependencies
-		depends.initialize();
-		
-		if(Depends.citizens == null || !Depends.citizens.isEnabled()) {
-			dB.echoError("Citizens does not seem to be activated! Deactivating Denizen!");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		} else startedSuccessful = true;
-		
+        // Activate dependencies
+        depends.initialize();
+
+        if(Depends.citizens == null || !Depends.citizens.isEnabled()) {
+            dB.echoError("Citizens does not seem to be activated! Deactivating Denizen!");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        } else startedSuccessful = true;
+
         // Startup procedure
         dB.echoDebug(DebugElement.Footer);
         dB.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
-        dB.echoDebug(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable NPCs"); 
+        dB.echoDebug(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable NPCs");
         dB.echoDebug(DebugElement.Spacer);
         dB.echoDebug(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
         dB.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
@@ -151,7 +151,7 @@ public class Denizen extends JavaPlugin {
 
         // Create the dNPC Registry
         dNPCRegistry = new dNPCRegistry(this);
-        
+
         // Register commandHandler with Citizens2
         commandHandler = new CommandHandler(Depends.citizens);
 
@@ -159,18 +159,18 @@ public class Denizen extends JavaPlugin {
         ScriptRegistry._registerCoreTypes();
 
         // Populate config.yml if it doesn't yet exist.
-        saveDefaultConfig(); 
+        saveDefaultConfig();
         reloadConfig();
-		
+
         // Warn if configuration is outdated / too new
         if (!getConfig().isSet("Config.Version") ||
-        	getConfig().getInt("Config.Version", 0) != configVersion) {
-        	
+                getConfig().getInt("Config.Version", 0) != configVersion) {
+
             dB.echoError("Your Denizen config file is from a different version. " +
-            			 "Some settings will not be available unless you generate a new one. " +
-            			 "This is easily done by deleting the current config.yml file in the Denizen folder.");
+                    "Some settings will not be available unless you generate a new one. " +
+                    "This is easily done by deleting the current config.yml file in the Denizen folder.");
         }
-        
+
         ScriptHelper.reloadScripts();
         reloadSaves();
 
@@ -193,15 +193,15 @@ public class Denizen extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(InvisibleTrait.class).withName("invisible"));
 
         // Create instance of PacketHelper if ProtocolLib has been hooked
-		if(Depends.protocolManager != null) {
-			new PacketHelper(this);
-			dB.echoApproval("ProtocolLib hooked, traits and commands with custom packages can be used!");
-		}
-		
+        if(Depends.protocolManager != null) {
+            new PacketHelper(this);
+            dB.echoApproval("ProtocolLib hooked, traits and commands with custom packages can be used!");
+        }
+
         // Compile and load Denizen externals
         RuntimeCompiler compiler = new RuntimeCompiler(this);
         compiler.loader();
-        
+
         // Register Core Members in the Denizen Registries
         getCommandRegistry().registerCoreMembers();
         getTriggerRegistry().registerCoreMembers();
@@ -224,20 +224,26 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public void onDisable() {
-		if(!startedSuccessful) return;
-		
+        if(!startedSuccessful) return;
+
         // Save locations
         dLocation._saveLocations();
 
         // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
         for (Player player : this.getServer().getOnlinePlayers())
             getListenerRegistry().deconstructPlayer(player);
+
         for (OfflinePlayer player : this.getServer().getOfflinePlayers())
-            getListenerRegistry().deconstructPlayer(player);
-        
+            try {
+                getListenerRegistry().deconstructPlayer(player); } catch (Exception e) {
+                if (player == null) dB.echoDebug("Tell aufdemrand ASAP about this error!");
+                else dB.echoError(player.getName() + " is having trouble deconstructing!");
+            }
+
+
         //Disable core members
         getCommandRegistry().disableCoreMembers();
-        
+
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
         Bukkit.getServer().getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
@@ -285,7 +291,7 @@ public class Denizen extends JavaPlugin {
         Citizens citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
         return citizens.onCommand(sender, cmd, cmdName, args);
     }
-    
+
 }
 
 
