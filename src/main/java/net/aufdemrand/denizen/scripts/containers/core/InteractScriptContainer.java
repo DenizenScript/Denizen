@@ -18,7 +18,13 @@ public class InteractScriptContainer extends ScriptContainer {
 
         try {
             // Find steps/default step in the script
-            for (String step : getConfigurationSection("STEPS").getKeys(false)) {
+            Set<String> keys = new HashSet<String>();
+            keys = getConfigurationSection("STEPS").getKeys(false);
+
+            if (keys.isEmpty())
+                throw new ExceptionInInitializerError("Could not find any STEPS in " + getName() + "! Is the type on this script correct?");
+
+            for (String step : keys) {
                 if (step.contains("*")) {
                     ConfigurationSection defaultStepSection = getConfigurationSection("STEPS." + step);
                     step = step.replace("*", "");
@@ -26,16 +32,22 @@ public class InteractScriptContainer extends ScriptContainer {
                     set("STEPS." + step + "*", null);
                     defaultStep = step;
                 }
+
                 if (step.equalsIgnoreCase("1")) defaultStep = step;
                 if (step.equalsIgnoreCase("DEFAULT")) defaultStep = step;
                 steps.add(step);
             }
+
         } catch (Exception e) {
             dB.echoError("Could not find any STEPS in " + getName() + "! Is the type on this script correct?");
         }
+
+        // Make default step the only step if there is only one step
+        if (defaultStep == null && steps.size() == 1)
+            defaultStep = steps.get(0);
     }
 
-    private String defaultStep;
+    private String defaultStep = null;
     private List<String> steps = new ArrayList<String>();
 
     public List<String> getStepNames() {
