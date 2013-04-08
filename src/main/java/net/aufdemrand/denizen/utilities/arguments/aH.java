@@ -7,9 +7,12 @@ import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_5_R2.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_5_R2.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -42,17 +45,20 @@ public class aH {
     final static Pattern doublePtrn = Pattern.compile("(-)?(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
     final static Pattern floatPtrn = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
     final static Pattern integerPtrn = Pattern.compile("(-)?\\d+");
-    final static Pattern locationPattern = Pattern.compile("location:((-)?\\d+(\\.\\d+)?,){3}\\w+", Pattern.CASE_INSENSITIVE);
+    final static Pattern locationPattern =
+            Pattern.compile("location:((-)?\\d+(\\.\\d+)?,){3}\\w+", Pattern.CASE_INSENSITIVE);
     final static Pattern wordPtrn = Pattern.compile("\\w+");
-    final static Pattern matchesDurationPtrn = Pattern.compile("duration:(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)", Pattern.CASE_INSENSITIVE);
+    final static Pattern matchesDurationPtrn =
+            Pattern.compile("duration:(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesEntityPtrn =
             Pattern.compile("(?:.+?|):((ENTITY\\.|PLAYER\\.|NPC\\.).+)|(PLAYER|NPC)", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesQuantityPtrn = Pattern.compile("qty:(-)?\\d+", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesQueuePtrn = Pattern.compile("queue:(.+)", Pattern.CASE_INSENSITIVE);
-    
+
+
     /**
      * <p>Used to determine if a argument string matches a non-valued custom argument.
-     * If a dScript valued argument (such as PLAYER:NAME) is passed, this method
+     * If a dScript valued argument (such as TARGET:NAME) is passed, this method
      * will always return false. Also supports multiple argument names, separated by a
      * comma (,) character. This method will trim() each name specified.</p>
      *
@@ -182,7 +188,7 @@ public class aH {
 
         dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
                 "prefix is correct, the value is not valid. Check documentation for valid value." +
-                "Perhaps a replaceable Tag has failed to fill in a value?");
+                "Perhaps a replaceable tag has failed to fill in a value?");
         return false;
     }
 
@@ -199,8 +205,8 @@ public class aH {
      * <tt>'arg'</tt> will return false.
      * </ol>
      *
-     * @param arg the argument to check
-     * @return true or false
+     * @param arg  the argument to check
+     * @return  true or false
      *
      */
     public static boolean getBooleanFrom(String arg) {
@@ -215,10 +221,10 @@ public class aH {
      *
      * <b>Examples:</b>
      * <ol>
-     * <tt>'LEVEL:3.5'</tt> will return '3.5D'.<br>
-     * <tt>'INT:1'</tt> will return '1D'.<br>
-     * <tt>'1950'</tt> will return '1950D'.<br>
-     * <tt>'-.377'</tt> will return '-0.377D'.<br>
+     * <tt>'LEVEL:3.5'</tt> will return '3.5'.<br>
+     * <tt>'INT:1'</tt> will return '1.0'.<br>
+     * <tt>'1950'</tt> will return '1950.0'.<br>
+     * <tt>'-.377'</tt> will return '-0.377'.<br>
      * </ol>
      *
      * @param arg the argument to check
@@ -236,15 +242,12 @@ public class aH {
     /**
      * <p>Returns a Bukkit EntityType from a dScript argument string. Also accounts
      * for the argument prefix being passed along, for convenience. Though the
-     * <tt>matchesEntity(...)</tt> requires an <tt>ITEM:</tt> prefix, this method
+     * <tt>matchesEntity(...)</tt> requires an <tt>ENTITY:</tt> prefix, this method
      * does not, so it can be used in a CustomValueArg.<p>
-     *
-     * <p>Provides a line of dB output if returning null. For getting saved entities
-     * make with the 'NEW ENTITY Command', use {@link #getLivingEntityFrom(String)}</p>
      *
      * <b>Examples:</b>
      * <ol>
-     * <tt>'zombie'</tt> will return 'EntityType.Zombie'.<br>
+     * <tt>'zombie'</tt> will return 'EntityType.ZOMBIE'.<br>
      * <tt>'monster:skeleton'</tt> will return 'EntityType.SKELETON'.<br>
      * <tt>'1983'</tt> will return 'null'.<br>
      * </ol>
@@ -273,25 +276,32 @@ public class aH {
         Matcher m = matchesEntityPtrn.matcher(arg);
         if (m.matches()) {
             String entityGroup = m.group(1);
-            String entityGroupUpper =entityGroup.toUpperCase();
-            if (entityGroupUpper.startsWith("ENTITY.")) {
-                LivingEntity returnable = ((Denizen) Bukkit.getPluginManager().getPlugin("Denizen"))
-                        .getCommandRegistry().get(NewCommand.class).getEntity(entityGroup.split("\\.")[1]);
-                if (returnable != null) return returnable;
-                else dB.echoError("Invalid entity! '" + entityGroup + "' could not be found.");
+            String entityGroupUpper = entityGroup.toUpperCase();
+            if (entityGroupUpper.startsWith("ENTITY.")
+                    || entityGroupUpper.startsWith("@E.")) {
+                int entityID = Integer.valueOf(entityGroup.split("\\.")[1]);
+                Entity entity = null;
+                for (World world : Bukkit.getWorlds()) {
+                    entity = ((CraftWorld) world).getHandle().getEntity(entityID);
+                    if (entity != null) break;
+                }
+                if (entity != null) return (LivingEntity) entity.getBukkitEntity();
+                else dB.echoError("Invalid entity! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
             }
 
-            else if (entityGroupUpper.startsWith("NPC.") ||
-            		entityGroupUpper.startsWith("NPCID.")) {
+            else if (entityGroupUpper.startsWith("NPC.")
+            		|| entityGroupUpper.startsWith("NPCID.")
+                    || entityGroupUpper.startsWith("@N.")) {
                 LivingEntity returnable = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(entityGroup.split("\\.")[1])).getBukkitEntity();
                 if (returnable != null) return returnable;
-                else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found.");
+                else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
             }
 
-            else if (entityGroupUpper.startsWith("PLAYER.")) {
+            else if (entityGroupUpper.startsWith("PLAYER.")
+                    || entityGroupUpper.startsWith("@P.")) {
                 LivingEntity returnable = getPlayerFrom(entityGroup.split("\\.")[1]);
                 if (returnable != null) return returnable;
-                else dB.echoError("Invalid Player! '" + entityGroup + "' could not be found.");
+                else dB.echoError("Invalid Player! '" + entityGroup + "' could not be found. Has the player logged off?");
             }
         }
 

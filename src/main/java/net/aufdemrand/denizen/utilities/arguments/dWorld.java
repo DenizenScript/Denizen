@@ -2,17 +2,16 @@ package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class dWorld implements dScriptArgument {
 
@@ -22,20 +21,26 @@ public class dWorld implements dScriptArgument {
      * @return  a dScript dList
      *
      */
+    @ObjectFetcher("w")
     public static dWorld valueOf(String string) {
         if (string == null) return null;
 
-        String prefix = null;
-        // Strip prefix (ie. targets:...)
-        if (string.split(":").length > 1) {
-            prefix = string.split(":", 2)[0];
-            string = string.split(":", 2)[1];
+        // Make sure string matches what this interpreter can accept.
+        final Pattern world_object_pattern =
+                Pattern.compile("(.+?:|)((w@|)(.+))",
+                        Pattern.CASE_INSENSITIVE);
+
+        Matcher m = world_object_pattern.matcher(string);
+
+        if (m.matches()) {
+            String prefix = m.group(1);
+            String world_name = m.group(2).split("@")[1];
+
+            for (World world : Bukkit.getWorlds())
+                if (world.getName().equalsIgnoreCase(world_name)) return new dWorld(prefix, world);
         }
 
-        for (World world : Bukkit.getWorlds())
-            if (world.getName().equalsIgnoreCase(string)) return new dWorld(prefix, world);
-
-        dB.echoError("World '" + string + "' is invalid or does not exist.");
+        dB.echoError("World '" + m.group(2) + "' is invalid or does not exist.");
         return null;
     }
 

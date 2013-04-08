@@ -4,12 +4,19 @@ import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.CitizensAPI;
+import net.minecraft.server.v1_5_R2.Entity;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_5_R2.CraftWorld;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class dEntity implements dScriptArgument {
 
@@ -23,7 +30,7 @@ public class dEntity implements dScriptArgument {
      */
     public static dEntity getSavedEntity(String id) {
         if (entities.containsKey(id.toUpperCase()))
-                return entities.get(id.toUpperCase());
+            return entities.get(id.toUpperCase());
         else return null;
     }
 
@@ -60,15 +67,69 @@ public class dEntity implements dScriptArgument {
     }
 
     /**
-     * Gets a Item Object from a string form.
+     * Gets a dEntity Object from a string form.</br>
+     * </br>
+     * n@13 will return NPC 13</br>
+     * e@5884 will return the entity with the entityid of 5884</br>
+     * p@aufdemrand will return the player object of aufdemrand</br>
+     * </br>
+     * Note that the NPCs, Entities, and Players must be spawned,
+     * one coincidentally Players must be logged in.</br>
+     *
      *
      * @param string  the string or dScript argument String
-     * @return  an Item, or null if incorrectly formatted
+     * @return  a dEntity, or null
      *
      */
+    @ObjectFetcher("e")
     public static dEntity valueOf(String string) {
 
-        // Create entity!
+        // Make sure string matches what this interpreter can accept.
+        final Pattern matchesEntityPtrn =
+                Pattern.compile("(?:.+?:|)((n@|e@|p@|)(.+))",
+                        Pattern.CASE_INSENSITIVE);
+
+        Matcher m = matchesEntityPtrn.matcher(string);
+
+        if (m.matches()) {
+            String entityGroup = m.group(1);
+            String entityGroupUpper = entityGroup.toUpperCase();
+
+            // TODO: Deprecate NPC./NPCID.
+            if (entityGroupUpper.startsWith("N@")) {
+                LivingEntity returnable = CitizensAPI.getNPCRegistry()
+                        .getById(Integer.valueOf(m.group(4))).getBukkitEntity();
+
+                if (returnable != null) return new dEntity(returnable);
+                else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
+            }
+
+            // TODO: Deprecate PLAYER.
+            else if (entityGroupUpper.startsWith("P@")) {
+                LivingEntity returnable = aH.getPlayerFrom(m.group(4));
+
+                if (returnable != null) new dEntity(returnable);
+                else dB.echoError("Invalid Player! '" + entityGroup + "' could not be found. Has the player logged off?");
+            }
+
+            // Assume entity
+            else {
+
+                if (aH.matchesInteger(m.group(4))) {
+                    int entityID = Integer.valueOf(m.group(4));
+                    Entity entity = null;
+
+                    for (World world : Bukkit.getWorlds()) {
+                        entity = ((CraftWorld) world).getHandle().getEntity(entityID);
+                        if (entity != null) break;
+                    }
+
+                    if (entity != null) return new dEntity((LivingEntity) entity.getBukkitEntity());
+                }
+                // Got this far? Invalid entity.
+                dB.echoError("Invalid entity! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
+            }
+        }
 
         return null;
     }
@@ -139,7 +200,7 @@ public class dEntity implements dScriptArgument {
     }
 
     public LivingEntity getEntity(String string) {
-       return entity;
+        return entity;
     }
 
     @Override
@@ -147,8 +208,10 @@ public class dEntity implements dScriptArgument {
 
         if (attribute == null) return null;
 
-        // Desensitize the attribute for comparison
-        String id = this.id.toLowerCase();
+        if (entity == null) {
+            dB.echoDebug("dEntity has returned null.");
+            return "null";
+        }
 
         if (attribute.startsWith("name"))
             return new Element(entity.getCustomName()).getAttribute(attribute.fulfill(1));
