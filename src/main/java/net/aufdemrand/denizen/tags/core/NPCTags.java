@@ -11,6 +11,7 @@ import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +37,7 @@ public class NPCTags implements Listener {
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
 
         if (type.equals("NAME")) {
-            event.setReplaced(n.getName());
+            event.setReplaced(ChatColor.stripColor(n.getName()));
             if (subType.equals("NICKNAME")) {
                 if (n.getCitizen().hasTrait(NicknameTrait.class))
                     event.setReplaced(n.getCitizen().getTrait(NicknameTrait.class).getNickname());

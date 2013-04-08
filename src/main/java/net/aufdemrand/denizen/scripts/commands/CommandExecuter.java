@@ -115,6 +115,9 @@ public class CommandExecuter {
 
             scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry, false));
 
+            // dBug the filled arguments
+            dB.echoDebug(ChatColor.AQUA + "+> " + ChatColor.DARK_GRAY + "Filled tags: " + scriptEntry.getArguments().toString());
+
 			// Parse the rest of the arguments for execution. 
 			command.parseArgs(scriptEntry);
 		}	catch (InvalidArgumentsException e) {
@@ -154,7 +157,6 @@ public class CommandExecuter {
 				else e.printStackTrace(); 
 			}
 		}
-		dB.echoDebug(DebugElement.Footer);
 
 		return true;
 

@@ -61,20 +61,20 @@ public class FlagTags implements Listener {
         // Check flag replacement type
         if (event.getType().toUpperCase().startsWith("G")) {
             if (denizen.flagManager().getGlobalFlag(flagName).get(index).isEmpty()) {
-                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
+                // dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
             } else {
                 FlagManager.Flag flag = denizen.flagManager().getGlobalFlag(flagName);
                 event.setReplaced(getReplaceable(flag, flag.get(index), replaceType));
-                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
+                // dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
             }
 
         } else if (event.getType().toUpperCase().startsWith("D") || event.getType().toUpperCase().startsWith("N")) {
             if (denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName).get(index).isEmpty()) {
-                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
+                // dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
             } else {
                 FlagManager.Flag flag = denizen.flagManager().getNPCFlag(event.getNPC().getId(), flagName);
                 event.setReplaced(getReplaceable(flag, flag.get(index), replaceType));
-                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
+                // dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
             }
 
         } else if (event.getType().toUpperCase().startsWith("P")) {
@@ -91,12 +91,10 @@ public class FlagTags implements Listener {
             if (denizen.flagManager().getPlayerFlag(name, flagName).get(index).isEmpty()) {
             	if (replaceType.toString() == "ISEXPIRED")
             		event.setReplaced("true");
-            	else
-            		dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' flag not found, using fallback!", flagName);
             } else {
                 FlagManager.Flag flag = denizen.flagManager().getPlayerFlag(name, flagName);
                 event.setReplaced(getReplaceable(flag, flag.get(index), replaceType));
-                dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
+                // dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
 
             }
         }               

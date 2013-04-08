@@ -24,48 +24,8 @@ import java.util.Set;
 
 public abstract class AbstractTrigger implements RegistrationableInstance {
 
-	/**
-	 * Contains required options for a Trigger in a single class for the
-	 * ability to add optional options in the future.
-	 *
-	 */
-    public class TriggerOptions { 
-        public boolean ENABLED_BY_DEFAULT = true; 
-        public double DEFAULT_COOLDOWN = -1;
-        public double DEFAULT_RADIUS = -1;
-        public CooldownType DEFAULT_COOLDOWN_TYPE = CooldownType.NPC;
-
-        public TriggerOptions() { }
-        
-        public TriggerOptions(boolean enabledByDefault, String defaultCooldown) {
-            this.ENABLED_BY_DEFAULT = enabledByDefault;
-            this.DEFAULT_COOLDOWN = Duration.valueOf(defaultCooldown).getSeconds();
-        }
-        
-        public TriggerOptions(boolean enabledByDefault, String defaultCooldown, CooldownType defaultCooldownType) {
-            this.ENABLED_BY_DEFAULT = enabledByDefault;
-            this.DEFAULT_COOLDOWN = Duration.valueOf(defaultCooldown).getSeconds();
-            this.DEFAULT_COOLDOWN_TYPE = defaultCooldownType;
-        }
-        
-        public TriggerOptions(boolean enabledByDefault, String defaultCooldown, double defaultRadius) {
-            this.ENABLED_BY_DEFAULT = enabledByDefault;
-            this.DEFAULT_COOLDOWN = Duration.valueOf(defaultCooldown).getSeconds();
-            this.DEFAULT_RADIUS = defaultRadius;
-        }
-        
-        public TriggerOptions(boolean enabledByDefault, String defaultCooldown, double defaultRadius, CooldownType defaultCooldownType) {
-            this.ENABLED_BY_DEFAULT = enabledByDefault;
-            this.DEFAULT_COOLDOWN = Duration.valueOf(defaultCooldown).getSeconds();
-            this.DEFAULT_RADIUS = defaultRadius;
-            this.DEFAULT_COOLDOWN_TYPE = defaultCooldownType;
-        }
-    }
-
     public Denizen denizen;
     protected String name;
-
-    public TriggerOptions triggerOptions = new TriggerOptions();
 
     @Override
     public AbstractTrigger activate() {
@@ -86,11 +46,7 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     public String getName() {
         return name;
     }
-    
-    public TriggerOptions getOptions() {
-        return triggerOptions;
-    }
-    
+
     /**
 	 * Part of the Plugin disable sequence.
 	 * 
@@ -109,28 +65,13 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     public boolean parse(dNPC npc, Player player, InteractScriptContainer script, String id) {
         if (npc == null || player == null || script == null) return false;
 
-        dB.echoDebug(DebugElement.Header, "Parsing " + name + " trigger: " + npc.getName() + "/" + player.getName());
-
         List<ScriptEntry> entries = script.getEntriesFor(this.getClass(), player, npc, id);
+        if (entries.isEmpty()) return false;
 
-        if (entries.isEmpty()) {
-            dB.echoDebug(DebugElement.Footer);
-            return false;
-        }
+        dB.echoDebug(DebugElement.Header, "Parsing " + name + " trigger: " + npc.getName() + "/" + player.getName());
         ScriptQueue._getQueue(ScriptQueue._getNextId()).addEntries(entries).start();
-        dB.echoDebug(DebugElement.Footer);
+
         return true;
-    }
-
-    public AbstractTrigger withOptions(boolean enabledByDefault, String defaultCooldown, CooldownType defaultCooldownType) {
-        this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultCooldownType);
-        return this;
-    }
-
-	public AbstractTrigger withOptions(boolean enabledByDefault, String defaultCooldown,
-                                       double defaultRadius, CooldownType defaultCooldownType) {
-        this.triggerOptions = new TriggerOptions(enabledByDefault, defaultCooldown, defaultRadius, defaultCooldownType);
-        return this;
     }
 
 	/**

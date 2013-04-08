@@ -96,14 +96,10 @@ public class TriggerRegistry implements DenizenRegistry {
 
     @Override
     public void registerCoreMembers() {
-        new ClickTrigger().activate().as("Click").withOptions(Settings.TriggerEnabled("Click"),
-        		Settings.TriggerDefaultCooldown("Click"), CooldownType.PLAYER);
-        new ChatTrigger().activate().as("Chat").withOptions(Settings.TriggerEnabled("Chat"),
-        		Settings.TriggerDefaultCooldown("Chat"), Settings.TriggerDefaultRange("Chat"), CooldownType.PLAYER);
-        new DamageTrigger().activate().as("Damage").withOptions(Settings.TriggerEnabled("Damage"),
-        		Settings.TriggerDefaultCooldown("Damage"), CooldownType.NPC);
-        new ProximityTrigger().activate ().as("Proximity").withOptions(Settings.TriggerEnabled("Proximity"),
-        		Settings.TriggerDefaultCooldown("Proximity"), Settings.TriggerDefaultRange("Proximity"), CooldownType.PLAYER);
+        new ClickTrigger().activate().as("Click");
+        new ChatTrigger().activate().as("Chat");
+        new DamageTrigger().activate().as("Damage");
+        new ProximityTrigger().activate ().as("Proximity");
         dB.echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 
