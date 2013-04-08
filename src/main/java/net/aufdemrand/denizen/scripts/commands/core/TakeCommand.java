@@ -28,86 +28,85 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
  */
 
 public class TakeCommand extends AbstractCommand{
-	
-	private enum TakeType { MONEY, ITEMINHAND, ITEM }
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-		
-		TakeType takeType = null;
-		double quantity = 1;
-		ItemStack item = null;
-		
-		for (String arg : scriptEntry.getArguments()) {
-			if (aH.matchesArg("MONEY, COINS", arg))
-				takeType = TakeType.MONEY;
+    private enum TakeType { MONEY, ITEMINHAND, ITEM }
 
-			else if (aH.matchesArg("ITEMINHAND", arg))
-				takeType = TakeType.ITEMINHAND;
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-			else if (aH.matchesQuantity(arg))
-				quantity = aH.getDoubleFrom(arg);
+        TakeType takeType = null;
+        double quantity = 1;
+        ItemStack item = null;
 
-			else if (aH.matchesItem(arg) || aH.matchesItem("item:" + arg)) {
-				takeType = TakeType.ITEM;
+        for (String arg : scriptEntry.getArguments()) {
+            if (aH.matchesArg("MONEY, COINS", arg))
+                takeType = TakeType.MONEY;
+
+            else if (aH.matchesArg("ITEM_IN_HAND", arg))
+                takeType = TakeType.ITEMINHAND;
+
+            else if (aH.matchesValueArg("QTY", arg, aH.ArgumentType.Double))
+                quantity = aH.getDoubleFrom(arg);
+
+            else if (aH.matchesItem(arg) || aH.matchesItem("item:" + arg)) {
+                takeType = TakeType.ITEM;
                 item = aH.getItemFrom(arg).getItemStack();
             }
 
-			
-			else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
-			scriptEntry.addObject("item", item);
-			scriptEntry.addObject("takeType", takeType);
-			scriptEntry.addObject("quantity", quantity);
+
+        scriptEntry.addObject("item", item);
+        scriptEntry.addObject("takeType", takeType);
+        scriptEntry.addObject("quantity", quantity);
 
     }
 
-	@Override
-	public void execute(ScriptEntry scriptEntry)
-			throws CommandExecutionException {
-		switch ((TakeType)scriptEntry.getObject("takeType")) {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        case ITEMINHAND:
-			int inHandAmt = scriptEntry.getPlayer().getItemInHand().getAmount();
-			int theAmount = ((Double) scriptEntry.getObject("quantity")).intValue();
-			ItemStack newHandItem = new ItemStack(0);
-			if (theAmount > inHandAmt) {
-				dB.echoDebug("...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
-				scriptEntry.getPlayer().setItemInHand(newHandItem);
-			}
-			else {
+        switch ((TakeType)scriptEntry.getObject("takeType")) {
 
-				// amount is just right!
-				if (theAmount == inHandAmt) {
-					scriptEntry.getPlayer().setItemInHand(newHandItem);
-				} else {
-					// amount is less than what's in hand, need to make a new itemstack of what's left...
-					newHandItem = new ItemStack(scriptEntry.getPlayer().getItemInHand().getType(),
-							inHandAmt - theAmount, scriptEntry.getPlayer().getItemInHand().getData().getData());
-					newHandItem.setItemMeta(scriptEntry.getPlayer().getItemInHand().getItemMeta());
-					scriptEntry.getPlayer().setItemInHand(newHandItem);
-					scriptEntry.getPlayer().updateInventory();
-				}
-			}
-        	break;
-        	
-        case MONEY:
-			if(Depends.economy != null) {
-				double amount = (Double) scriptEntry.getObject("quantity");
-				dB.echoDebug ("...taking " + amount + " money.");
-				Depends.economy.withdrawPlayer(scriptEntry.getPlayer().getName(), amount);
-			} else {
-				dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
-			}
-        	break;
+            case ITEMINHAND:
+                int inHandAmt = scriptEntry.getPlayer().getItemInHand().getAmount();
+                int theAmount = ((Double) scriptEntry.getObject("quantity")).intValue();
+                ItemStack newHandItem = new ItemStack(0);
+                if (theAmount > inHandAmt) {
+                    dB.echoDebug("...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
+                    scriptEntry.getPlayer().setItemInHand(newHandItem);
+                }
+                else {
 
-        case ITEM:
-        	((ItemStack) scriptEntry.getObject("item")).setAmount(((Double) scriptEntry.getObject("quantity")).intValue());
-			if (!scriptEntry.getPlayer().getInventory().removeItem((ItemStack)scriptEntry.getObject("item")).isEmpty()) 
-        	    dB.echoDebug("The Player did not have enough " + ((ItemStack) scriptEntry.getObject("item")).getType().toString()
-                        + " on hand, so Denizen took as much as possible. To avoid this situation, use an IF or REQUIREMENT to check.");
+                    // amount is just right!
+                    if (theAmount == inHandAmt) {
+                        scriptEntry.getPlayer().setItemInHand(newHandItem);
+                    } else {
+                        // amount is less than what's in hand, need to make a new itemstack of what's left...
+                        newHandItem = new ItemStack(scriptEntry.getPlayer().getItemInHand().getType(),
+                                inHandAmt - theAmount, scriptEntry.getPlayer().getItemInHand().getData().getData());
+                        newHandItem.setItemMeta(scriptEntry.getPlayer().getItemInHand().getItemMeta());
+                        scriptEntry.getPlayer().setItemInHand(newHandItem);
+                        scriptEntry.getPlayer().updateInventory();
+                    }
+                }
                 break;
-		}
-	}
+
+            case MONEY:
+                if(Depends.economy != null) {
+                    double amount = (Double) scriptEntry.getObject("quantity");
+                    dB.echoDebug ("...taking " + amount + " money.");
+                    Depends.economy.withdrawPlayer(scriptEntry.getPlayer().getName(), amount);
+                } else {
+                    dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                }
+                break;
+
+            case ITEM:
+                ((ItemStack) scriptEntry.getObject("item")).setAmount(((Double) scriptEntry.getObject("quantity")).intValue());
+                if (!scriptEntry.getPlayer().getInventory().removeItem((ItemStack)scriptEntry.getObject("item")).isEmpty())
+                    dB.echoDebug("The Player did not have enough " + ((ItemStack) scriptEntry.getObject("item")).getType().toString()
+                            + " on hand, so Denizen took as much as possible. To avoid this situation, use an IF or REQUIREMENT to check.");
+                break;
+        }
+    }
 }

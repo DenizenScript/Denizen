@@ -39,14 +39,14 @@ public class GiveCommand  extends AbstractCommand {
             throws InvalidArgumentsException {
 
         GiveType type = null;
-        int amt = 1;
+        double amt = 1;
         dItem item = null;
         boolean engrave = false;
 
 		/* Match arguments to expected variables */
         for (String thisArg : scriptEntry.getArguments()) {
-            if (aH.matchesQuantity(thisArg))
-                amt = aH.getIntegerFrom(thisArg);
+            if (aH.matchesValueArg("QTY", thisArg, aH.ArgumentType.Double))
+                amt = aH.getDoubleFrom(thisArg);
 
             else if (aH.matchesArg("MONEY", thisArg))
                 type = GiveType.MONEY;
@@ -83,7 +83,7 @@ public class GiveCommand  extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         GiveType type = (GiveType) scriptEntry.getObject("type");
-        Integer amt = (Integer) scriptEntry.getObject("amt");
+        Double amt = (Double) scriptEntry.getObject("amt");
         dItem item = (dItem) scriptEntry.getObject("item");
         Boolean engrave = (Boolean) scriptEntry.getObject("engrave");
 
@@ -97,17 +97,17 @@ public class GiveCommand  extends AbstractCommand {
 
             case MONEY:
                 if(Depends.economy != null)
-                    Depends.economy.depositPlayer(scriptEntry.getPlayer().getName(), (double) amt);
+                    Depends.economy.depositPlayer(scriptEntry.getPlayer().getName(), amt);
                 else dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 break;
 
             case EXP:
-                scriptEntry.getPlayer().giveExp(amt);
+                scriptEntry.getPlayer().giveExp(amt.intValue());
                 break;
 
             case ITEM:
                 ItemStack is = item.getItemStack();
-                is.setAmount(amt);
+                is.setAmount(amt.intValue());
                 if(engrave) is = NBTItem.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
 
                 HashMap<Integer, ItemStack> leftovers = scriptEntry.getPlayer().getInventory().addItem(is);
