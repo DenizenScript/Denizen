@@ -89,7 +89,6 @@ public class ChatCommand extends AbstractCommand {
 
             } else {
                 context.setMessage(arg);
-                dB.echoDebug(Messages.DEBUG_SET_TEXT, arg);
             }
         }
 
@@ -112,6 +111,11 @@ public class ChatCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         SpeechContext context = (SpeechContext) scriptEntry.getObject("context");
+
+        dB.report(getName(),
+                aH.debugObj("Talker", context.getTalker().getName())
+                        + aH.debugObj("Direct recipients?", String.valueOf(context.hasRecipients()))
+                        + aH.debugObj("Message", context.getMessage()));
 
         // If the talker is an NPC, use the NPC object to speak
         if (CitizensAPI.getNPCRegistry().isNPC(context.getTalker().getEntity()))
