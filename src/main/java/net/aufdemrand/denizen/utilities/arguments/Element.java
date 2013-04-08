@@ -73,37 +73,54 @@ public class Element implements dScriptArgument {
 
         if (attribute == null) return null;
 
-        if (attribute.startsWith("asint"))
+        if (attribute.startsWith("asint")
+                || attribute.startsWith("as_int"))
             try { return new Element(String.valueOf(Integer.valueOf(element)))
                     .getAttribute(attribute.fulfill(1)); }
-            catch (NumberFormatException e) { dB.echoError("'" + element + "' is not a valid Integer."); }
+            catch (NumberFormatException e) {
+                dB.echoError("'" + element + "' is not a valid Integer.");
+                return null;
+            }
 
-        if (attribute.startsWith("asdouble"))
+        if (attribute.startsWith("asdouble")
+                || attribute.startsWith("as_double"))
             try { return new Element(String.valueOf(Double.valueOf(element)))
                     .getAttribute(attribute.fulfill(1)); }
-            catch (NumberFormatException e) { dB.echoError("'" + element + "' is not a valid Double."); }
+            catch (NumberFormatException e) {
+                dB.echoError("'" + element + "' is not a valid Double.");
+                return null;
+            }
 
-        if (attribute.startsWith("asmoney")) {
+        if (attribute.startsWith("asmoney")
+                || attribute.startsWith("as_money")) {
             try {
                 DecimalFormat d = new DecimalFormat("0.00");
             return new Element(String.valueOf(d.format(Double.valueOf(element))))
                     .getAttribute(attribute.fulfill(1)); }
-            catch (NumberFormatException e) { dB.echoError("'" + element + "' is not a valid Money format."); }
+            catch (NumberFormatException e) {
+                dB.echoError("'" + element + "' is not a valid Money format.");
+                return null;
+            }
         }
 
-        if (attribute.startsWith("asboolean"))
+        if (attribute.startsWith("asboolean")
+                || attribute.startsWith("as_boolean"))
             return new Element(Boolean.valueOf(element).toString())
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("aslist"))
+        if (attribute.startsWith("aslist")
+                || attribute.startsWith("as_list"))
             return new dList("List", element).getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("substring")) {            // substring[2|8]
+        if (attribute.startsWith("substring")) {            // substring[2,8]
             int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;
             int ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]) - 1;
             return new Element(String.valueOf(element.substring(beginning_index, ending_index)))
                     .getAttribute(attribute.fulfill(1));
         }
+
+        if (attribute.startsWith("last_color"))
+            return new Element(String.valueOf(ChatColor.getLastColors(element))).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
