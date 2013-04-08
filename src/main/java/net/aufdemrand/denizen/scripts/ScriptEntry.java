@@ -58,7 +58,7 @@ public class ScriptEntry {
 		this.runTime = creationTime;
         this.holdTime = creationTime;
 
-        // Check if this is an 'instant' command.
+        // Check if this is an 'instant' or 'waitfor' command.
 		if (command.startsWith("^")) {
 			instant = true;
 			this.command = command.substring(1);
@@ -70,7 +70,19 @@ public class ScriptEntry {
 		this.args = new ArrayList<String>();
 		if (arguments != null)
             this.args = Arrays.asList(arguments);
+
+        // Check for replaceable tags.
+        for (String arg : args) {
+            if (arg.indexOf("<") >= 0
+                    && arg.indexOf(">") >= 0) {
+                has_tags = true;
+                break;
+            }
+        }
+
 	}
+
+    public boolean has_tags = false;
 
 	public ScriptEntry addObject(String key, Object object) {
         if (object == null) return this;
