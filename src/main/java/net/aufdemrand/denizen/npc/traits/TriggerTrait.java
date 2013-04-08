@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.npc.traits;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
@@ -40,13 +41,13 @@ public class TriggerTrait extends Trait implements Listener {
         super("triggers");
         for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet())
             if (!enabled.containsKey(triggerName))
-                enabled.put(triggerName, DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().ENABLED_BY_DEFAULT);
+                enabled.put(triggerName, Settings.TriggerEnabled(triggerName));
     }
 
     public void onSpawn() {
         for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet())
             if (!enabled.containsKey(triggerName))
-                enabled.put(triggerName, DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().ENABLED_BY_DEFAULT);
+                enabled.put(triggerName, Settings.TriggerEnabled(triggerName));
     }
 
     /**
@@ -90,13 +91,15 @@ public class TriggerTrait extends Trait implements Listener {
     public double getCooldownDuration(String triggerName) {
         if (duration.containsKey(triggerName.toUpperCase()))
             return duration.get(triggerName.toUpperCase());
-        else return DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN;
+        else return Settings.TriggerDefaultCooldown(triggerName);
     }
 
     public CooldownType getCooldownType(String triggerName) {
+        try {
         if (type.containsKey(triggerName.toUpperCase()))
             return type.get(triggerName.toUpperCase());
-        else return DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().DEFAULT_COOLDOWN_TYPE;
+        else return CooldownType.valueOf(Settings.TriggerDefaultCooldownType(triggerName).toUpperCase());
+        } catch (Exception e) { return CooldownType.PLAYER; }
     }
 
     public void setLocalRadius(String triggerName, int value) {
@@ -106,7 +109,7 @@ public class TriggerTrait extends Trait implements Listener {
     public double getRadius(String triggerName) {
         if (radius.containsKey(triggerName.toUpperCase()))
             return radius.get(triggerName.toUpperCase());
-        else return DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName).getOptions().DEFAULT_RADIUS;
+        else return Settings.TriggerDefaultRange(triggerName);
     }
 
     public void describe(CommandSender sender, int page) throws CommandException {

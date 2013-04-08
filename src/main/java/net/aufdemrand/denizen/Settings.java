@@ -96,7 +96,7 @@ public class Settings {
 	
 	public static boolean TriggerEnabled(String triggerName) {
 		return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers." + triggerName + ".Enabled", true);
+                .getBoolean("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase() + triggerName.substring(1).toLowerCase() + ".Enabled", true);
 	}
 	
 	/*
@@ -106,9 +106,9 @@ public class Settings {
      
 	*/
 	
-	public static String TriggerDefaultCooldown(String triggerName) {
-		return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Triggers." + triggerName + ".Cooldown", "5s");
+	public static double TriggerDefaultCooldown(String triggerName) {
+		return Duration.valueOf(DenizenAPI.getCurrentInstance().getConfig()
+                .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase() + triggerName.substring(1).toLowerCase() + ".Cooldown", "5s")).getSeconds();
 	}
 	
 	/*
@@ -121,9 +121,21 @@ public class Settings {
 
 	public static double TriggerDefaultRange(String triggerName) {
 		return DenizenAPI.getCurrentInstance().getConfig()
-                .getDouble("Triggers." + triggerName + ".Range", -1);
+                .getDouble("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase() + triggerName.substring(1).toLowerCase() + ".Range", -1);
 	}
-	
+
+    /*
+
+	# This set of nodes defines cooldown-types for different types of
+	# interact-script triggers.
+
+	*/
+
+    public static String TriggerDefaultCooldownType(String triggerName) {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase() + triggerName.substring(1).toLowerCase() + ".Cooldown Type", "Player");
+    }
+
 	/* 
 	 
 	# If the damage trigger is disabled on an NPC, and the NPC is not
