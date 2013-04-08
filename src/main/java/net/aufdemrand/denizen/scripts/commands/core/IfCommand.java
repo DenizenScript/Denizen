@@ -94,7 +94,7 @@ public class IfCommand extends AbstractCommand {
                         || aH.matchesArg("ORLESS", arg) || aH.matchesArg("CONTAINS", arg))
                     comparables.get(index).operator = Operator.valueOf(arg.toUpperCase());
                     // Set outcomeCommand
-                else if (denizen.getCommandRegistry().get(arg) != null)
+                else if (denizen.getCommandRegistry().get(arg.replace("^", "")) != null)
                     outcomeCommand = arg;
                     // Set comparable
                 else if (comparables.get(index).comparable == null) {
