@@ -66,6 +66,9 @@ public class IfCommand extends AbstractCommand {
 
         // Iterate through the arguments, build comparables
         for (String arg : scriptEntry.getArguments()) {
+
+            arg = arg.trim();
+
             if (outcomeCommand == null) {
                 // Set logic (Optional, default is REGULAR)
                 if (arg.startsWith("!")) {
