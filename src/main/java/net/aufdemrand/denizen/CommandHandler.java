@@ -730,6 +730,13 @@ public class CommandHandler {
 
         if (player == null) throw new CommandException("Specified player not online or not found!");
 
+        Map<String,AbstractListener> listeners = denizen.getListenerRegistry().getListenersFor(player);
+
+        if (listeners == null || listeners.isEmpty()) {
+            Messaging.send(sender, ChatColor.GREEN + player.getName() + " has no active listeners.");
+            return;
+        }
+
         if (args.hasValueFlag("report")) {
             for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
                 if (quest.getListenerId().equalsIgnoreCase(args.getFlag("report")))
@@ -765,8 +772,6 @@ public class CommandHandler {
         paginator.header("Active quest listeners for " + player.getName() + ":");
         paginator.addLine("<e>Key: <a>Type  <b>ID");
 
-        Map<String,AbstractListener> listeners = denizen.getListenerRegistry().getListenersFor(player);
-        
         if (listeners == null || listeners.isEmpty())
             paginator.addLine("None.");
         else for (AbstractListener quest : listeners.values())
