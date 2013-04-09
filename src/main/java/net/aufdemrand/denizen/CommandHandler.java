@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen;
 
+import java.util.Map;
 import java.util.Set;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
@@ -763,9 +764,12 @@ public class CommandHandler {
         Paginator paginator = new Paginator();
         paginator.header("Active quest listeners for " + player.getName() + ":");
         paginator.addLine("<e>Key: <a>Type  <b>ID");
-        if (denizen.getListenerRegistry().getListenersFor(player).isEmpty())
+
+        Map<String,AbstractListener> listeners = denizen.getListenerRegistry().getListenersFor(player);
+        
+        if (listeners == null || listeners.isEmpty())
             paginator.addLine("None.");
-        else for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
+        else for (AbstractListener quest : listeners.values())
             paginator.addLine("<a>" + quest.getListenerType() + "  <b>" + quest.getListenerId());
 
         paginator.sendPage(sender, args.getInteger(1, 1));

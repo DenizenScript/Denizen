@@ -37,6 +37,7 @@ public class TakeCommand extends AbstractCommand{
         TakeType takeType = null;
         double quantity = 1;
         ItemStack item = null;
+        boolean npc = false;
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesArg("MONEY, COINS", arg))
@@ -47,6 +48,9 @@ public class TakeCommand extends AbstractCommand{
 
             else if (aH.matchesArg("INVENTORY", arg))
                 takeType = TakeType.INVENTORY;
+
+            else if (aH.matchesArg("NPC", arg))
+                npc = true;
 
             else if (aH.matchesValueArg("QTY", arg, aH.ArgumentType.Double))
                 quantity = aH.getDoubleFrom(arg);
@@ -59,19 +63,34 @@ public class TakeCommand extends AbstractCommand{
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
-        scriptEntry.addObject("item", item);
-        scriptEntry.addObject("takeType", takeType);
-        scriptEntry.addObject("quantity", quantity);
+        scriptEntry.addObject("item", item)
+                .addObject("takeType", takeType)
+                .addObject("quantity", quantity)
+                .addObject("npc", npc);
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        switch ((TakeType)scriptEntry.getObject("takeType")) {
+        boolean npc = (Boolean) scriptEntry.getObject("npc");
+        TakeType type = (TakeType) scriptEntry.getObject("takeType");
+        double quantity = (Double) scriptEntry.getObject("quantity");
+
+        dB.report(getName(),
+                aH.debugObj("Type", type.name())
+                        + aH.debugObj("Quantity", String.valueOf(quantity))
+                        + ((type == TakeType.INVENTORY && npc)
+                        ? aH.debugObj("NPC", "true") : ""));
+
+        switch (type) {
 
             case INVENTORY:
-                scriptEntry.getPlayer().getInventory().clear();
+
+                if (npc)
+                    scriptEntry.getNPC().getEntity().getEquipment().clear();
+                else // Player
+                    scriptEntry.getPlayer().getInventory().clear();
                 break;
 
             case ITEMINHAND:
