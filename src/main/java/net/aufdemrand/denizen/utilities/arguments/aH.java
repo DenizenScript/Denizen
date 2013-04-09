@@ -278,7 +278,7 @@ public class aH {
             String entityGroup = m.group(1);
             String entityGroupUpper = entityGroup.toUpperCase();
             if (entityGroupUpper.startsWith("ENTITY.")
-                    || entityGroupUpper.startsWith("@E.")) {
+                    || entityGroupUpper.startsWith("E@")) {
                 int entityID = Integer.valueOf(entityGroup.split("\\.")[1]);
                 Entity entity = null;
                 for (World world : Bukkit.getWorlds()) {
@@ -291,7 +291,7 @@ public class aH {
 
             else if (entityGroupUpper.startsWith("NPC.")
             		|| entityGroupUpper.startsWith("NPCID.")
-                    || entityGroupUpper.startsWith("@N.")) {
+                    || entityGroupUpper.startsWith("n@")) {
                 LivingEntity returnable = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(entityGroup.split("\\.")[1])).getBukkitEntity();
                 if (returnable != null) return returnable;
                 else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found. Has it been despawned or killed?");

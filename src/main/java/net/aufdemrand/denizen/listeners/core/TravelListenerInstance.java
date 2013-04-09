@@ -124,7 +124,7 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 		type = TravelType.valueOf((String) get("Type"));
 		distance = (Integer) get("Distance");
 		blocksWalked = (Integer) get("Blocks Walked");
-		endPoint = (dLocation) get("End Location");
+		endPoint = dLocation.valueOf((String) get("End Location"));
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 		store("Distance", distance);
 		store("Radius", radius);
 		store("Blocks Walked", blocksWalked);
-		store("End Location", endPoint);
+		store("End Location", endPoint.dScriptArgValue());
 	}
 
 	@Override
