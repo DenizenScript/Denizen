@@ -53,7 +53,8 @@ public class CommandExecuter {
             // Throw exception if arguments are required for this command, but not supplied.
             if (command.getOptions().REQUIRED_ARGS > scriptEntry.getArguments().size()) throw new InvalidArgumentsException("");
 
-            if (scriptEntry.has_tags) {
+            if (scriptEntry.has_tags)
+                scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry, true)); // Replace tags
 
 			/*  If using NPCID:# or PLAYER:Name arguments, these need to be changed out immediately because...
 			 *  1) Denizen/Player flags need the desired NPC/PLAYER before parseArgs's getFilledArguments() so that
@@ -63,62 +64,64 @@ public class CommandExecuter {
 			 *     here, instead of requiring each command to take care of the argument.
 			 */
 
-                scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry, true)); // Replace tags
 
-                List<String> newArgs = new ArrayList<String>();
 
-                for (String arg : scriptEntry.getArguments()) {
-                    String[] split = arg.split(":");
+            List<String> newArgs = new ArrayList<String>();
 
-                    // Fill player/off-line player
-                    if (aH.matchesValueArg("PLAYER", arg, aH.ArgumentType.String)) {
-                        boolean foundNewPlayer = false;
-                        dB.echoDebug("...replacing the linked Player.");
-                        for (Player playa : Bukkit.getServer().getOnlinePlayers())
-                            if (playa.getName().equalsIgnoreCase(split[1])) {
-                                foundNewPlayer = true;
-                                scriptEntry.setPlayer(playa);
-                            }
-                        if (foundNewPlayer) dB.echoDebug("...player set to '%s'.", split[1]);
-                        else {
-                            dB.echoDebug("This player is not online! Searching for offline player...");
-                            for (OfflinePlayer playa : Bukkit.getServer().getOfflinePlayers())
-                                if (playa.getName().equalsIgnoreCase(split[1])) {
-                                    scriptEntry.setPlayer(null);
-                                    scriptEntry.setOfflinePlayer(playa);
-                                    foundNewPlayer = true;
-                                }
+            for (String arg : scriptEntry.getArguments()) {
+                String[] split = arg.split(":");
+
+                // Fill player/off-line player
+                if (aH.matchesValueArg("PLAYER", arg, aH.ArgumentType.String)) {
+                    boolean foundNewPlayer = false;
+                    dB.echoDebug("...replacing the linked Player.");
+                    for (Player playa : Bukkit.getServer().getOnlinePlayers())
+                        if (playa.getName().equalsIgnoreCase(split[1])) {
+                            foundNewPlayer = true;
+                            scriptEntry.setPlayer(playa);
                         }
-                        if (foundNewPlayer) {
-                            dB.echoDebug("Found an offline player.. linking.");
-                        }
-                        else { dB.echoError("Could not find a valid player!"); scriptEntry.setPlayer(null); }
-                    }
-
-                    // Fill Denizen with NPCID
-                    else if (aH.matchesValueArg("NPCID", arg, aH.ArgumentType.String)) {
-                        dB.echoDebug("...replacing the linked NPCID.");
-                        try {
-                            if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(split[1])) != null)
-                                scriptEntry.setNPC(plugin.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(split[1]))));
-                            dB.echoDebug("...NPC set to '%s'.", split[1]);
-                        } catch (Exception e) {
-                            dB.echoError("NPCID specified could not be matched to an NPC!");
-                            scriptEntry.setNPC(null);
-                        }
-                    }
+                    if (foundNewPlayer) dB.echoDebug("...player set to '%s'.", split[1]);
                     else {
-                        newArgs.add(arg);
+                        dB.echoDebug("This player is not online! Searching for offline player...");
+                        for (OfflinePlayer playa : Bukkit.getServer().getOfflinePlayers())
+                            if (playa.getName().equalsIgnoreCase(split[1])) {
+                                scriptEntry.setPlayer(null);
+                                scriptEntry.setOfflinePlayer(playa);
+                                foundNewPlayer = true;
+                            }
+                    }
+                    if (foundNewPlayer) {
+                        dB.echoDebug("Found an offline player.. linking.");
+                    }
+                    else { dB.echoError("Could not find a valid player!"); scriptEntry.setPlayer(null); }
+                }
+
+                // Fill Denizen with NPCID
+                else if (aH.matchesValueArg("NPCID", arg, aH.ArgumentType.String)) {
+                    dB.echoDebug("...replacing the linked NPCID.");
+                    try {
+                        if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(split[1])) != null)
+                            scriptEntry.setNPC(plugin.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(split[1]))));
+                        dB.echoDebug("...NPC set to '%s'.", split[1]);
+                    } catch (Exception e) {
+                        dB.echoError("NPCID specified could not be matched to an NPC!");
+                        scriptEntry.setNPC(null);
                     }
                 }
-                // Add the arguments back to the scriptEntry.
-                scriptEntry.setArguments(newArgs);
-                // Now process non-instant tags.
+                else {
+                    newArgs.add(arg);
+                }
+            }
+            // Add the arguments back to the scriptEntry.
+            scriptEntry.setArguments(newArgs);
+
+            // Now process non-instant tags.
+            if (scriptEntry.has_tags)
                 scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry, false));
 
-                // dBug the filled arguments
-                dB.echoDebug(ChatColor.AQUA + "+> " + ChatColor.DARK_GRAY + "Filled tags: " + scriptEntry.getArguments().toString());
-            }
+            // dBug the filled arguments
+            dB.echoDebug(ChatColor.AQUA + "+> " + ChatColor.DARK_GRAY + "Filled tags: " + scriptEntry.getArguments().toString());
+
 
             // Parse the rest of the arguments for execution.
             command.parseArgs(scriptEntry);

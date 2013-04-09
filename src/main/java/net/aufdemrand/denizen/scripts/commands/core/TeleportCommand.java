@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.arguments.dEntity;
 import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
@@ -94,12 +95,16 @@ public class TeleportCommand extends AbstractCommand {
             else if (aH.matchesValueArg("TARGETS, TARGET", arg, ArgumentType.Custom)) {
                 teleportPlayer = false;
                 for (String target : aH.getListFrom(arg)) {
-                    if (CitizensAPI.getNPCRegistry().getNPC(aH.getLivingEntityFrom(target)) != null) {
-                        teleportNPCs.add(CitizensAPI.getNPCRegistry().getNPC(aH.getLivingEntityFrom(target)));
-                        continue;
-                    } else if (aH.getLivingEntityFrom(target) != null && aH.getLivingEntityFrom(target) instanceof Player) {
-                        teleportEntities.add(aH.getPlayerFrom(target));
-                        continue;
+                    // Get entity
+                    LivingEntity entity = dEntity.valueOf(target).getBukkitEntity();
+                    if (entity != null) {
+                        if (CitizensAPI.getNPCRegistry().getNPC(entity) != null) {
+                            teleportNPCs.add(CitizensAPI.getNPCRegistry().getNPC(entity));
+                            continue;
+                        } else if (entity instanceof Player) {
+                            teleportEntities.add(aH.getPlayerFrom(target));
+                            continue;
+                        }
                     }
                     dB.echoError("Invalid TARGET '%s'!", target);
                 }
@@ -133,7 +138,7 @@ public class TeleportCommand extends AbstractCommand {
      * @param	scriptEntry the ScriptEntry
      */
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         dLocation teleportLocation = (dLocation) scriptEntry.getObject("location");

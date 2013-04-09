@@ -95,7 +95,6 @@ public class dEntity implements dScriptArgument {
             String entityGroup = m.group(1);
             String entityGroupUpper = entityGroup.toUpperCase();
 
-            // TODO: Deprecate NPC./NPCID.
             if (entityGroupUpper.startsWith("N@")) {
                 LivingEntity returnable = CitizensAPI.getNPCRegistry()
                         .getById(Integer.valueOf(m.group(4))).getBukkitEntity();
@@ -104,7 +103,6 @@ public class dEntity implements dScriptArgument {
                 else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
             }
 
-            // TODO: Deprecate PLAYER.
             else if (entityGroupUpper.startsWith("P@")) {
                 LivingEntity returnable = aH.getPlayerFrom(m.group(4));
 
@@ -114,7 +112,6 @@ public class dEntity implements dScriptArgument {
 
             // Assume entity
             else {
-
                 if (aH.matchesInteger(m.group(4))) {
                     int entityID = Integer.valueOf(m.group(4));
                     Entity entity = null;
@@ -123,7 +120,6 @@ public class dEntity implements dScriptArgument {
                         entity = ((CraftWorld) world).getHandle().getEntity(entityID);
                         if (entity != null) break;
                     }
-
                     if (entity != null) return new dEntity((LivingEntity) entity.getBukkitEntity());
                 }
                 // Got this far? Invalid entity.
