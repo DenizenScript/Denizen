@@ -43,7 +43,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Denizen extends JavaPlugin {
     public final static int configVersion = 2;
-    public static String versionTag = "0.8.8 pre-release";
+    public final static String versionTag = "0.8.8 pre-release";
 
     private boolean startedSuccessful = false;
 
@@ -57,8 +57,6 @@ public class Denizen extends JavaPlugin {
     /*
      * Denizen Engines
      */
-
-    // private ScriptEngine scriptEngine = new ScriptEngine(this);
     private ScriptEngine scriptEngine = new ScriptEngine(this);
     private ActivityEngine activityEngine = new ActivityEngine(this);
 
@@ -74,7 +72,6 @@ public class Denizen extends JavaPlugin {
     /*
      * Denizen Registries
      */
-
     private CommandRegistry commandRegistry = new CommandRegistry(this);
     private TriggerRegistry triggerRegistry = new TriggerRegistry(this);
     private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
@@ -143,7 +140,7 @@ public class Denizen extends JavaPlugin {
         // Startup procedure
         dB.echoDebug(DebugElement.Footer);
         dB.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
-        dB.echoDebug(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable NPCs");
+        dB.echoDebug(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable minecraft");
         dB.echoDebug(DebugElement.Spacer);
         dB.echoDebug(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
         dB.echoDebug(ChatColor.GRAY + "version: "+ ChatColor.WHITE + versionTag);
@@ -236,8 +233,9 @@ public class Denizen extends JavaPlugin {
         for (OfflinePlayer player : this.getServer().getOfflinePlayers())
             try {
                 getListenerRegistry().deconstructPlayer(player); } catch (Exception e) {
-                if (player == null) dB.echoDebug("Tell aufdemrand ASAP about this error!");
-                else dB.echoError(player.getName() + " is having trouble deconstructing!");
+                if (player == null) dB.echoDebug("Tell aufdemrand ASAP about this error! ERR: OPN");
+                else dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
+                        "You might have a corrupt player file!");
             }
 
 
