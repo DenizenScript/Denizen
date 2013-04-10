@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.citizensnpcs.api.event.DespawnReason;
+import net.citizensnpcs.trait.CurrentLocation;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -42,6 +44,13 @@ public class ExecuteCommand extends AbstractCommand {
 		if (executeType == null)
 			throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EXECUTE_TYPE");
 
+        if (executeType == Type.AS_NPC && scriptEntry.getNPC() == null)
+            throw new InvalidArgumentsException("Must have a NPC link when using AS_NPC.");
+
+        if (executeType == Type.AS_OP || executeType == Type.AS_PLAYER
+                && scriptEntry.getPlayer() == null)
+            throw new InvalidArgumentsException("Must have a Player link when using AS_OP or AS_PLAYER.");
+
 		if (command == null)
 			throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "COMMAND_TEXT");
 
@@ -76,11 +85,19 @@ public class ExecuteCommand extends AbstractCommand {
 			return;
 			
 		case AS_NPC:
-			if (scriptEntry.getNPC().getEntity().getType() != EntityType.PLAYER)
+			boolean should_despawn = false;
+            if (!scriptEntry.getNPC().isSpawned()) {
+                scriptEntry.getNPC().getCitizen()
+                        .spawn(scriptEntry.getNPC().getCitizen()
+                                .getTrait(CurrentLocation.class).getLocation());
+                should_despawn = true;
+            }
+            if (scriptEntry.getNPC().getEntity().getType() != EntityType.PLAYER)
 				throw new CommandExecutionException("Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
 			((Player) scriptEntry.getNPC().getEntity()).setOp(true);
 			((Player) scriptEntry.getNPC().getEntity()).performCommand(command);
 			((Player) scriptEntry.getNPC().getEntity()).setOp(false);
+            if (should_despawn) scriptEntry.getNPC().getCitizen().despawn(DespawnReason.PLUGIN);
 			return;
 			
 		case AS_SERVER:
