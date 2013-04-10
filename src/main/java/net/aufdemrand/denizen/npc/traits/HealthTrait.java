@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.event.NPCDeathEvent;
 import net.citizensnpcs.api.persistence.Persist;
@@ -194,11 +196,15 @@ public class HealthTrait extends Trait implements Listener {
     
     public void die()
     {
+        try {
     	// Set the player as the killer of the NPC, for listeners
     	if (player != null)
     		((CraftLivingEntity) npc.getBukkitEntity())
     			.getHandle().killer = (EntityHuman) ((CraftLivingEntity) player).getHandle();
-    	
+        } catch (Exception e) {
+            dB.echoError("Report this error to aufdemrand! Err: HealthTraitDie");
+        }
+
     	setHealth();
         
     	EntityDeathEvent entityDeath = new EntityDeathEvent(npc.getBukkitEntity(), null);
@@ -276,33 +282,37 @@ public class HealthTrait extends Trait implements Listener {
         if (npc.getBukkitEntity() == null)
         	return;
 
-        loc = aH.getLocationFrom(DenizenAPI.getCurrentInstance().tagManager()
-                .tag(null, DenizenAPI.getDenizenNPC(npc), respawnLocation, false));
+        loc = aH.getLocationFrom(
+                TagManager.tag(null, DenizenAPI.getDenizenNPC(npc), respawnLocation, false));
         if (loc == null) loc = npc.getBukkitEntity().getLocation();
         
         if (animatedeath) {
+            // Cancel navigation to keep the NPC from damaging players
+            // while the death animation is being carried out.
+            npc.getNavigator().cancelNavigation();
+            // Reset health now to avoid the death from happening instantly
             setHealth();
+            // Play animation
             npc.getBukkitEntity().playEffect(EntityEffect.DEATH);
 
+            // Schedule the delayed task to carry out the death after the animation
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
-                        public void run() {
-                        	die();
-                        }
-                    } , (long) ((Duration.valueOf(animationDelay).getSeconds() * 20)) );
-
-        } else {
-        	die();
+                        public void run() { die(); }
+                    }, 60);
         }
+
+        // No animated death? Then just die now.
+        else die();
 
         if (respawn) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                         public void run() {
                             if (npc.isSpawned()) return;
-                            npc.spawn(loc);
+                            else npc.spawn(loc);
                         }
-                    } , (long) ((Duration.valueOf(respawnDelay).getSeconds() * 20)) );
+                    } , (Duration.valueOf(respawnDelay).getTicks()));
         }
 
     }

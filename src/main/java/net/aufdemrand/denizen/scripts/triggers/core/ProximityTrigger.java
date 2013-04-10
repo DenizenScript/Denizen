@@ -221,7 +221,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 // the "Move" script.
                 //
                 boolean exitedProximity = hasExitedProximityOf(event.getPlayer(), npc);
-                double distance = npcLocation.distance(toBlockLocation);
+                double distance = 0;
+                if (!playerChangedWorlds) distance = npcLocation.distance(toBlockLocation);
+
                 if (!exitedProximity
                     && (playerChangedWorlds || distance >= exitRadius)) {
                     if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
