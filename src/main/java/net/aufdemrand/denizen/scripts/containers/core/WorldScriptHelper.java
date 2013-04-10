@@ -142,7 +142,6 @@ public class WorldScriptHelper implements Listener {
         // Handle determine message
         if (determination.toUpperCase().startsWith("MESSAGE"))
             event.setQuitMessage(aH.getStringFrom(determination));
-
     }
 
     @EventHandler
@@ -280,8 +279,6 @@ public class WorldScriptHelper implements Listener {
         context.put("message", event.getMessage());
 
         String determination = doEvent("player chats", null, event.getPlayer(), context);
-
-        dB.echoDebug(determination);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
