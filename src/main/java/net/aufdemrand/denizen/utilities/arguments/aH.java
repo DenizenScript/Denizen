@@ -73,7 +73,7 @@ public class aH {
         return "<G>" + prefix + "='<A>" + id + "<Y>(" + value.toString() + ")<G>'  ";
     }
 
-    private class Argument {
+    private static class Argument {
         String raw_value;
         String prefix;
         String value;
@@ -87,7 +87,7 @@ public class aH {
             int first_colon = string.indexOf(":");
             int first_space = string.indexOf(" ");
 
-            if (first_colon < first_space)
+
 
         }
 
@@ -95,7 +95,7 @@ public class aH {
 
     public static Argument interpret(String arg) {
         // Trim leading/trailing whitespace
-
+        return new Argument(arg);
     }
 
 
@@ -314,12 +314,9 @@ public class aH {
      *
      */
     public static EntityType getEntityFrom(String arg) {
-
-
             for (EntityType validEntity : EntityType.values())
-                if (m.group(1).equalsIgnoreCase(validEntity.name()))
+                if (getStringFrom(arg).equalsIgnoreCase(validEntity.name()))
                     return validEntity;
-        }
         // No match
         return null;
     }
