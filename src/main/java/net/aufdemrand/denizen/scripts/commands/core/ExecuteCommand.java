@@ -47,7 +47,7 @@ public class ExecuteCommand extends AbstractCommand {
         if (executeType == Type.AS_NPC && scriptEntry.getNPC() == null)
             throw new InvalidArgumentsException("Must have a NPC link when using AS_NPC.");
 
-        if (executeType == Type.AS_OP || executeType == Type.AS_PLAYER
+        if ((executeType == Type.AS_OP || executeType == Type.AS_PLAYER)
                 && scriptEntry.getPlayer() == null)
             throw new InvalidArgumentsException("Must have a Player link when using AS_OP or AS_PLAYER.");
 

@@ -31,16 +31,73 @@ import java.util.regex.Pattern;
 public class aH {
 
     public enum ArgumentType {
-        LivingEntity, Item, Boolean, Custom, Double, Float, Integer, String, Word, Location, Script, Duration
+        LivingEntity,
+        Item,
+        Boolean,
+        Custom,
+        Double,
+        Float,
+        Integer,
+        String,
+        Word,
+        Location,
+        Script,
+        Duration
     }
 
-    public static String debugObj(String prefix, String value) {
-        return "<G>" + prefix + "='<Y>" + value + "<G>'  ";
+    /**
+     * To be used with the dBuggers' .report to provide debug output for
+     * objects.
+     *
+     * @param prefix  name/type/simple description of the object being reported
+     * @param value  object being reported will report the value of toString()
+     *
+     * @return  color coded debug report
+     */
+    public static String debugObj(String prefix, Object value) {
+        return "<G>" + prefix + "='<Y>" + value.toString() + "<G>'  ";
     }
 
-    public static String debugUniqueObj(String prefix, String id, String value) {
-        return "<G>" + prefix + "='<A>" + id + "<Y>(" + value + ")<G>'  ";
+    /**
+     * To be used with the dBuggers' .report to provide debug output for
+     * objects that may have some kind of id or type also associated with
+     * the object.
+     *
+     * @param prefix  name/type/simple description of the object being reported
+     * @param id  additional id/type of the object
+     * @param value  object being reported will report the value of toString()
+     *
+     * @return  color coded debug report
+     */
+    public static String debugUniqueObj(String prefix, String id, Object value) {
+        return "<G>" + prefix + "='<A>" + id + "<Y>(" + value.toString() + ")<G>'  ";
     }
+
+    private class Argument {
+        String raw_value;
+        String prefix;
+        String value;
+        ArgumentType argument_type;
+        Object argument_object;
+
+        public Argument(String string) {
+            raw_value = string;
+
+            string = string.trim();
+            int first_colon = string.indexOf(":");
+            int first_space = string.indexOf(" ");
+
+            if (first_colon < first_space)
+
+        }
+
+    }
+
+    public static Argument interpret(String arg) {
+        // Trim leading/trailing whitespace
+
+    }
+
 
     final static Pattern doublePtrn = Pattern.compile("(-)?(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
     final static Pattern floatPtrn = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
@@ -257,9 +314,8 @@ public class aH {
      *
      */
     public static EntityType getEntityFrom(String arg) {
-        Matcher m = matchesEntityPtrn.matcher(arg);
-        if (m.matches()) {
-            // Match against valid EntityTypes using Bukkit enum
+
+
             for (EntityType validEntity : EntityType.values())
                 if (m.group(1).equalsIgnoreCase(validEntity.name()))
                     return validEntity;
