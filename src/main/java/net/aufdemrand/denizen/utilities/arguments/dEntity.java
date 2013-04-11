@@ -97,7 +97,7 @@ public class dEntity implements dScriptArgument {
 
             if (entityGroupUpper.startsWith("N@")) {
                 LivingEntity returnable = CitizensAPI.getNPCRegistry()
-                        .getById(Integer.valueOf(m.group(4))).getBukkitEntity();
+                        .getById(Integer.valueOf(m.group(3))).getBukkitEntity();
 
                 if (returnable != null) return new dEntity(returnable);
                 else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
@@ -112,8 +112,8 @@ public class dEntity implements dScriptArgument {
 
             // Assume entity
             else {
-                if (aH.matchesInteger(m.group(4))) {
-                    int entityID = Integer.valueOf(m.group(4));
+                if (aH.matchesInteger(m.group(3))) {
+                    int entityID = Integer.valueOf(m.group(3));
                     Entity entity = null;
 
                     for (World world : Bukkit.getWorlds()) {

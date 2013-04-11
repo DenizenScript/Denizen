@@ -43,6 +43,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
      * @return  true if it exists, false if not
      */
     public static boolean isSavedLocation(String id) {
+        if (id == null) return false;
         return locations.containsKey(id.toLowerCase());
     }
 
@@ -86,18 +87,20 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
             string = string.split(":", 2)[1];
         // Split values
         String[] split = string.split(",");
-        // If 5 values, contains an id
+
         if (split.length == 5)
-        try {
-            return new dLocation(split[0], Bukkit.getWorld(split[4]),
-                    Double.valueOf(split[1]),
-                    Double.valueOf(split[2]),
-                    Double.valueOf(split[3]));
-        } catch(Exception e) {
-            return null;
-        }
-        // If 4 values, standard id-less dScript location format
-        else if (split.length == 4) {
+            // If 5 values, contains an id with standard dScript location format
+            try {
+                return new dLocation(split[0], Bukkit.getWorld(split[4]),
+                        Double.valueOf(split[1]),
+                        Double.valueOf(split[2]),
+                        Double.valueOf(split[3]));
+            } catch(Exception e) {
+                return null;
+            }
+
+        else if (split.length == 4)
+            // If 4 values, standard id-less dScript location format
             try {
                 return new dLocation(Bukkit.getWorld(split[3]),
                         Double.valueOf(split[0]),
@@ -106,7 +109,20 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
             } catch(Exception e) {
                 return null;
             }
-        }
+
+
+        else if (split.length == 6)
+            // If 6 values, id-less location with pitch/yaw
+            try {
+                return new dLocation(split[0], Bukkit.getWorld(split[4]),
+                        Double.valueOf(split[1]),
+                        Double.valueOf(split[2]),
+                        Double.valueOf(split[3]));
+            } catch(Exception e) {
+                return null;
+            }
+
+
         return null;
     }
 
@@ -172,7 +188,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
     public dLocation(World world, double x, double y, double z) {
         super(world, x, y, z);
     }
-    
+
     public dLocation(World world, double x, double y, double z, float yaw, float pitch) {
         super(world, x, y, z, yaw, pitch);
     }

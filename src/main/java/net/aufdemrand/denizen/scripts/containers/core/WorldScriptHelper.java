@@ -345,9 +345,10 @@ public class WorldScriptHelper implements Listener {
                 event.setDamage(aH.getIntegerFrom(determination));
 
             if (CitizensAPI.getNPCRegistry().isNPC(event.getDamager())) {
-                context.put("damager", String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getDamager()).getId()));
+                dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getDamager()));
+                context.put("damager", String.valueOf(npc.getId()));
 
-                determination = doEvent("player damaged by npc", null, (Player) event.getEntity(), context);
+                determination = doEvent("player damaged by npc", npc, (Player) event.getEntity(), context);
                 if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
                 if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Integer))
@@ -390,8 +391,14 @@ public class WorldScriptHelper implements Listener {
                 event.setCancelled(true);
             if (aH.matchesValueArg("AMOUNT", determination, aH.ArgumentType.Integer))
                 event.setAmount(aH.getIntegerFrom(determination));
-
         }
+
+    }
+
+    @EventHandler
+    public void bucketFill(PlayerBucketEvent event) {
+
+
 
     }
 

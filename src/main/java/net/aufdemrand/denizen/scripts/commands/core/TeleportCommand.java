@@ -37,14 +37,8 @@ import java.util.List;
  *  <br/>
  */
 public class TeleportCommand extends AbstractCommand {
-    public	static	final	String	NPC_ARG = "NPC";
 
-    /**
-     * This method is called when the command is enabled.
-     */
-    @Override
-    public void onEnable() {
-    }
+    public	static	final	String	NPC_ARG = "NPC";
 
     /**
      * This method will parse the arguments needed to execute the Teleport
