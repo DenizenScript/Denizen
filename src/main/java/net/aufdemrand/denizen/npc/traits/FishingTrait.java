@@ -27,6 +27,8 @@ public class FishingTrait extends Trait {
 
 	@Persist("fishing")
     private boolean fishing = false;
+	@Persist("catch fish")
+    private boolean catchFish = false;
 	
 	@Persist("fishing spot")
 	private Location fishingLocation = null;
@@ -163,7 +165,7 @@ public class FishingTrait extends Trait {
             fishHook.getBukkitEntity().remove();
         } catch(Exception e){ }
         
-        if (chance>65 && fishHook != null) {
+        if (chance>65 && fishHook != null && catchFish) {
             try{
                 fish.getBukkitEntity().remove();
             } catch(Exception e) { }
@@ -235,6 +237,10 @@ public class FishingTrait extends Trait {
         if (mag !=0) 
             return victor.multiply(1/mag);
         return victor.multiply(0);
+    }
+    
+    public void setCatchFish(Boolean catchFish) {
+    	this.catchFish = catchFish;
     }
 
 }

@@ -19,12 +19,16 @@ public class FishCommand extends AbstractCommand {
 			throws InvalidArgumentsException {
 		Location location = null;
 		Boolean stopping = false;
+		Boolean catchFish = false;
 		
 		for (String arg : scriptEntry.getArguments()) {
 			if (aH.matchesLocation(arg)) {
 				location = aH.getLocationFrom(arg);
 				dB.echoDebug("...location set");
 				continue;
+			} else if (aH.matchesArg("CATCHFISH", arg)) {
+				catchFish = true;
+				dB.echoDebug("...npc will catch fish");
 			} else if (aH.matchesArg("STOP", arg)) {
 				stopping = true;
 				dB.echoDebug("...stopping");
@@ -32,14 +36,16 @@ public class FishCommand extends AbstractCommand {
 			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 		
-		scriptEntry.addObject("location", location);
-		scriptEntry.addObject("stopping", stopping);
+		scriptEntry.addObject("location", location)
+			.addObject("stopping", stopping)
+			.addObject("catchFish", catchFish);
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry)
 			throws CommandExecutionException {
 		Boolean stopping = (Boolean) scriptEntry.getObject("stopping");
+		Boolean catchFish = (Boolean) scriptEntry.getObject("catchFish");
 		NPC npc = scriptEntry.getNPC().getCitizen();
 		FishingTrait trait = new FishingTrait();
 		
@@ -58,6 +64,9 @@ public class FishCommand extends AbstractCommand {
 		}
 		
 		trait.startFishing(location);
+		if (catchFish) {
+			trait.setCatchFish(true);
+		}
 		return;
 		
 	}

@@ -113,7 +113,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
 
         registerCoreMember(FishCommand.class, 
-        		"FISH", "fish (stop) (location:x,y,z,world)", 1);
+        		"FISH", "fish (catchfish) (stop) (location:x,y,z,world)", 1);
 
         registerCoreMember(FlagCommand.class, 
         		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value] (duration:#)", 1);

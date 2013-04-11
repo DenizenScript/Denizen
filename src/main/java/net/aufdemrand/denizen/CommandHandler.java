@@ -481,7 +481,7 @@ public class CommandHandler {
 	 */
     @Command(
             aliases = { "npc" }, usage = "fish (--location x,y,z,world) (--anchor anchor_name) (-c)",
-            desc = "Makes the NPC fish, casting at the given location.", flags = "c", modifiers = { "fish" },
+            desc = "Makes the NPC fish, casting at the given location.", flags = "c, f", modifiers = { "fish" },
             min = 1, max = 3, permission = "npc.fish")
     @Requirements(selected = true, ownership = true)
     public void startFishing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
@@ -494,6 +494,8 @@ public class CommandHandler {
         }
         if (args.hasFlag('c')) {
         	trait.startFishing(args.getSenderTargetBlockLocation());
+        } else if (args.hasFlag('f')) {
+        	trait.setCatchFish(true);
         } else if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
