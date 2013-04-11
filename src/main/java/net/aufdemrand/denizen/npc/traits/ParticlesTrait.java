@@ -33,6 +33,9 @@ public class ParticlesTrait extends Trait {
 	@Persist("particle delay")
 	int wait = 10;
 	
+	@Persist("dense")
+	Boolean dense = false;
+	
 	int counter = 0;
 	//int c = 0;
 	int tempcounter = 0;
@@ -118,11 +121,13 @@ public class ParticlesTrait extends Trait {
 	public void playFlameEffect() {
 		Location location = npc.getBukkitEntity().getLocation();
 		world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 0);
+		if (dense) world.playEffect(location.add(0, 1, 0), Effect.MOBSPAWNER_FLAMES, 0);
 	}
 	
 	public void playEnderEffect() {
 		Location location = npc.getBukkitEntity().getLocation();
 		world.playEffect(location, Effect.ENDER_SIGNAL, 0);
+		if (dense) world.playEffect(location.add(0, 1, 0), Effect.ENDER_SIGNAL, 0);
 	}
 	
 	public void playPotionEffect() {
@@ -132,13 +137,15 @@ public class ParticlesTrait extends Trait {
 	public void playPotionBreakEffect() {
 		Location location = npc.getBukkitEntity().getLocation();
 		world.playEffect(location, Effect.POTION_BREAK, 0);
+		if (dense) world.playEffect(location.add(0, 1, 0), Effect.POTION_BREAK, 0);
 	}
 	
 	public void playHeartEffect() {
 		Location location = npc.getBukkitEntity().getLocation();
 		Wolf tempWolf = (Wolf) world.spawn(location, Wolf.class);
-		((CraftWolf)tempWolf).getHandle().setInvisible(true);
+		((CraftWolf) tempWolf).getHandle().setInvisible(true);
 		tempWolf.playEffect(EntityEffect.WOLF_HEARTS);
+		if (dense) tempWolf.playEffect(EntityEffect.WOLF_HEARTS);
 		tempWolf.remove();
 	}
 	
@@ -153,6 +160,17 @@ public class ParticlesTrait extends Trait {
 		world.playEffect(location, Effect.SMOKE, 6);
 		world.playEffect(location, Effect.SMOKE, 7);
 		world.playEffect(location, Effect.SMOKE, 8);
+		if (dense) { 
+			world.playEffect(location.add(0, 1, 0), Effect.SMOKE, 0);
+			world.playEffect(location.add(0, 1, 0), Effect.SMOKE, 1);
+			world.playEffect(location.add(0, 1, 0), Effect.SMOKE, 2);
+			world.playEffect(location.add(0, 1, 0), Effect.SMOKE, 3);
+			world.playEffect(location.add(0, 1, 0), Effect.SMOKE, 4);
+			world.playEffect(location.add(0, 1, 0), Effect.SMOKE, 5);
+			world.playEffect(location.add(0, 1, 0), Effect.SMOKE, 6);
+			world.playEffect(location.add(0, 1, 0), Effect.SMOKE, 7);
+			world.playEffect(location.add(0, 1, 0), Effect.SMOKE, 8);
+		}
 	}
 
 	public void playExplosionEffect() {
@@ -170,6 +188,10 @@ public class ParticlesTrait extends Trait {
 	
 	public ParticlesTrait() {
 		super("particles");
+	}
+	
+	public void setDense (Boolean dense) {
+		this.dense = dense;
 	}
 
 }

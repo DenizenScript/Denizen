@@ -492,11 +492,16 @@ public class CommandHandler {
             Messaging.send(sender, ChatColor.RED + npc.getName() + " is already fishing!");
             return;
         }
+        
         if (args.hasFlag('c')) {
         	trait.startFishing(args.getSenderTargetBlockLocation());
-        } else if (args.hasFlag('f')) {
+        }
+        
+        if (args.hasFlag('f')) {
         	trait.setCatchFish(true);
-        } else if (args.hasValueFlag("location")) {
+        }
+        
+        if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
                 Messaging.send(sender, ChatColor.RED + "Usage: /npc fish --location x,y,z,world");
@@ -551,6 +556,10 @@ public class CommandHandler {
     	
         if (args.hasValueFlag("wait")) {
         	trait.setWait(args.getFlagInteger("wait"));
+        }
+        
+        if (args.hasFlag('d')) {
+        	trait.setDense(true);
         }
             
     	if (args.hasValueFlag("play")) {
