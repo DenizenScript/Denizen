@@ -88,7 +88,9 @@ public class NameplateTrait extends Trait implements Listener {
 	 * @return The stored {@link ChatColor}
 	 */
 	public ChatColor getColor() {
-		return ChatColor.valueOf(colors.get(DEFAULT_KEY));
+		try {
+            return ChatColor.valueOf(colors.get(DEFAULT_KEY));
+        } catch (Exception e) { return ChatColor.YELLOW; }
 	}
 	
 	/**
