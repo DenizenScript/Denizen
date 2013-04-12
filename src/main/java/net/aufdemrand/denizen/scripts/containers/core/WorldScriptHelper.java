@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.utilities.arguments.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,6 +27,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -294,6 +296,7 @@ public class WorldScriptHelper implements Listener {
                 && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             Map<String, String> context = new HashMap<String, String>();
             context.put("cause", event.getCause().toString());
+            context.put("amount", String.valueOf(event.getDamage()));
 
             String determination;
 
@@ -396,9 +399,39 @@ public class WorldScriptHelper implements Listener {
     }
 
     @EventHandler
-    public void bucketFill(PlayerBucketEvent event) {
+    public void bucketFill(PlayerBucketFillEvent event) {
+        Map<String, String> context = new HashMap<String, String>();
+        context.put("bucket_type", event.getBucket().name());
+        context.put("bucket", new dItem(event.getItemStack()).dScriptArgValue());
+        context.put("clicked_location", new dLocation(event.getBlockClicked().getLocation()).dScriptArgValue());
 
+        String determination = doEvent("fill bucket", null, event.getPlayer(), context);
 
+        // Handle message
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        if (determination.toUpperCase().startsWith("ITEM_IN_HAND")) {
+            ItemStack is = dItem.valueOf(aH.getStringFrom(determination)).getItemStack();
+            event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
+        }
+    }
+
+    @EventHandler
+    public void bucketEmpty(PlayerBucketEmptyEvent event) {
+        Map<String, String> context = new HashMap<String, String>();
+        context.put("bucket_type", event.getBucket().name());
+        context.put("bucket", new dItem(event.getItemStack()).dScriptArgValue());
+        context.put("clicked_location", new dLocation(event.getBlockClicked().getLocation()).dScriptArgValue());
+
+        String determination = doEvent("empty bucket", null, event.getPlayer(), context);
+
+        // Handle message
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        if (determination.toUpperCase().startsWith("ITEM_IN_HAND")) {
+            ItemStack is = dItem.valueOf(aH.getStringFrom(determination)).getItemStack();
+            event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
+        }
 
     }
 
