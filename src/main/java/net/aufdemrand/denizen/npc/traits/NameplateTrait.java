@@ -42,7 +42,7 @@ public class NameplateTrait extends Trait implements Listener {
     private String text = null;
 
     @Persist(value="colors", collectionType=ConcurrentHashMap.class)
-	private Map<String, ChatColor> colors = new ConcurrentHashMap<String, ChatColor>(8, 0.9f, 1);
+	private Map<String, String> colors = new ConcurrentHashMap<String, String>(8, 0.9f, 1);
 
 	public NameplateTrait() {
 		super("nameplate");
@@ -78,7 +78,7 @@ public class NameplateTrait extends Trait implements Listener {
     }
 	
 	public void setColor(ChatColor color, String player) {
-		this.colors.put(player, color);
+		this.colors.put(player, color.name());
 		refreshTag( getNPC() );
 	}
 	
@@ -88,7 +88,7 @@ public class NameplateTrait extends Trait implements Listener {
 	 * @return The stored {@link ChatColor}
 	 */
 	public ChatColor getColor() {
-		return colors.get(DEFAULT_KEY);
+		return ChatColor.valueOf(colors.get(DEFAULT_KEY));
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public class NameplateTrait extends Trait implements Listener {
 	 */
 	public ChatColor getColor(String player) {
 		if(!colors.containsKey(player)) return getColor();
-		else return colors.get(player);
+		else return ChatColor.valueOf(colors.get(player));
 	}
 	
 	
@@ -190,25 +190,6 @@ public class NameplateTrait extends Trait implements Listener {
 		return players;
 	}
 	
-//	@Override
-//	public void load(DataKey key) {
-//		for(DataKey k : key.getSubKeys()) {
-//			ChatColor c = null;
-//
-//			try {
-//				c = ChatColor.valueOf(key.getString(k.name()));
-//			} catch( Exception e) {}
-//
-//			colors.put(k.name(), c );
-//		}
-//	}
-//
-//	@Override
-//	public void save(DataKey key) {
-//		for(Entry<String, ChatColor> entry: colors.entrySet()) {
-//			key.setString(entry.getKey(), entry.getValue().name());
-//		}
-//	}
 
 	
 }
