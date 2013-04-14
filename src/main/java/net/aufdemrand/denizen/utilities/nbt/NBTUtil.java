@@ -4,7 +4,7 @@ import net.minecraft.server.v1_5_R2.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
-public class NBTItem {
+public class NBTUtil {
 
     public static MapOfEnchantments getEnchantments(ItemStack item) {
         return new MapOfEnchantments(item);
@@ -58,6 +58,8 @@ public class NBTItem {
         tag.setString(key, value);
         return CraftItemStack.asCraftMirror(cis);
     }
+
+
 
 }
 
