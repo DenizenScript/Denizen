@@ -71,10 +71,10 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		}
 
 		// Need targets, need type
-		if (targets.isEmpty()) {
-			dB.echoError("Missing TARGETS argument!");
-			cancel();
-		}
+		//if (targets.isEmpty()) {
+		//	dB.echoError("Missing TARGETS argument!");
+		//	cancel();
+		//}
 
 		if (type == null) {
 			dB.echoError("Missing TYPE argument! Valid: NPC, ENTITY, PLAYER, GROUP");
@@ -179,7 +179,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
 		} else if (type == KillType.PLAYER) {
 			if (event.getEntityType() == EntityType.PLAYER) 
-				if (targets.contains(((Player) event.getEntity()).getName().toUpperCase()) || targets.contains("*")) {
+				if (targets.contains(((Player) event.getEntity()).getName().toUpperCase()) || targets.contains("*") || targets.isEmpty()) {
 					currentKills++;
 					dB.log(player.getName() + " killed " + ((Player) event.getEntity()).getName().toUpperCase() + ". Current progress '" + currentKills + "/" + quantity + "'.");
 					check();
