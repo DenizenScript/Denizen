@@ -1,10 +1,14 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
+import net.minecraft.server.v1_5_R2.EntityLiving;
 import net.minecraft.server.v1_5_R2.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_5_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
-public class NBTUtil {
+public class NBTItem {
 
     public static MapOfEnchantments getEnchantments(ItemStack item) {
         return new MapOfEnchantments(item);
@@ -59,6 +63,61 @@ public class NBTUtil {
         return CraftItemStack.asCraftMirror(cis);
     }
 
+    public static LivingEntity addCustomNBT(LivingEntity entity, String key, String value) {
+        Entity bukkitEntity = entity;
+        net.minecraft.server.v1_5_R2.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        NBTTagCompound tag = new NBTTagCompound();
+
+        // Writes the entity's NBT data to tag
+        nmsEntity.c(tag);
+
+        // Add custom NBT
+        tag.setString(key, value);
+
+        // Write tag back
+        ((EntityLiving)nmsEntity).a(tag);
+        return entity;
+    }
+
+    public static LivingEntity removeCustomNBT(LivingEntity entity, String key) {
+        Entity bukkitEntity = entity;
+        net.minecraft.server.v1_5_R2.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        NBTTagCompound tag = new NBTTagCompound();
+
+        // Writes the entity's NBT data to tag
+        nmsEntity.c(tag);
+
+        // Remove custom NBT
+        tag.remove(key);
+
+        // Write tag back
+        ((EntityLiving)nmsEntity).a(tag);
+        return entity;
+    }
+
+    public static boolean hasCustomNBT(LivingEntity entity, String key) {
+        Entity bukkitEntity = entity;
+        net.minecraft.server.v1_5_R2.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        NBTTagCompound tag = new NBTTagCompound();
+
+        // Writes the entity's NBT data to tag
+        nmsEntity.c(tag);
+
+        // Check for key
+        return tag.hasKey(key);
+    }
+
+    public static String getCustomNBT(LivingEntity entity, String key) {
+        Entity bukkitEntity = entity;
+        net.minecraft.server.v1_5_R2.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        NBTTagCompound tag = new NBTTagCompound();
+
+        // Writes the entity's NBT data to tag
+        nmsEntity.c(tag);
+
+        // Check for string
+        return tag.getString(key);
+    }
 
 
 }
