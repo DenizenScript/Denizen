@@ -1,12 +1,14 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import org.bukkit.Location;
+import org.bukkit.Sound;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class AnimateChestCommand extends AbstractCommand {
@@ -18,6 +20,7 @@ public class AnimateChestCommand extends AbstractCommand {
 			throws InvalidArgumentsException {
 		String chestAction = "OPEN";
 		Location location = null;
+		Boolean sound = true;
 		
 		for (String arg : scriptEntry.getArguments()) {
 			if (aH.matchesArg("OPEN, CLOSE", arg)) {
@@ -26,12 +29,18 @@ public class AnimateChestCommand extends AbstractCommand {
 			} else if (aH.matchesLocation(arg)) {
 				location = aH.getLocationFrom(arg);
 				dB.echoDebug("...location set");
+			} else if (aH.matchesValueArg("SOUND", arg, ArgumentType.Boolean)) {
+				sound = aH.getBooleanFrom(arg);
+				if (sound) dB.echoDebug("...sound enabled");
+				else dB.echoDebug("...sound disabled");
 			} else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+
 		}
 		
 		if (location == null) dB.echoError("...location is invalid");
 		
 		scriptEntry.addObject("location", location)
+			.addObject("sound", sound)
 			.addObject("chestAction", chestAction);
 	}
 
@@ -40,17 +49,23 @@ public class AnimateChestCommand extends AbstractCommand {
 			throws CommandExecutionException {
 		Location location = (Location) scriptEntry.getObject("location");
 		ChestAction action = ChestAction.valueOf(((String) scriptEntry.getObject("chestAction")).toUpperCase());
+		Boolean sound = (Boolean) scriptEntry.getObject("sound");
 		
 		switch (action) {
 		case OPEN:
+			if (sound) scriptEntry.getPlayer().playSound(location, Sound.CHEST_OPEN, 1, 1);
 			scriptEntry.getPlayer().playNote(location, (byte)1, (byte)1);
 			dB.echoDebug("...opening chest");
 			break;
+			
 		case CLOSE:
+			if (sound) scriptEntry.getPlayer().playSound(location, Sound.CHEST_CLOSE, 1, 1);
 			scriptEntry.getPlayer().playNote(location, (byte)1, (byte)0);
 			dB.echoDebug("...closing chest");
 			break;
+			
 		default:
+			dB.echoError("...error animating chest");
 			break;
 		}
 	}
