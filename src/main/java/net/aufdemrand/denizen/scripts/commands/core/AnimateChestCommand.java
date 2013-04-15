@@ -29,7 +29,7 @@ public class AnimateChestCommand extends AbstractCommand {
 			} else if (aH.matchesLocation(arg)) {
 				location = aH.getLocationFrom(arg);
 				dB.echoDebug("...location set");
-			} else if (aH.matchesValueArg("SOUND", arg, ArgumentType.Boolean)) {
+			} else if (aH.matchesValueArg("SOUND", arg, ArgumentType.Custom)) {
 				sound = aH.getBooleanFrom(arg);
 				if (sound) dB.echoDebug("...sound enabled");
 				else dB.echoDebug("...sound disabled");
