@@ -51,6 +51,9 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(AttackCommand.class, 
         		"ATTACK", "attack (stop)", 0);
+        
+        registerCoreMember(AnimateChestCommand.class, 
+        		"ANIMATECHEST", "animatechest [location:x,y,z,world] ({open}|close) (sound:{true}|false)", 1);
 
         registerCoreMember(AnchorCommand.class,
                 "ANCHOR", "anchor [id:name] [assume|add|remove|walkto|walknear] (range:#)", 2);
