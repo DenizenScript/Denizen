@@ -8,7 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
-public class NBTUtil {
+public class NBTItem {
 
     public static MapOfEnchantments getEnchantments(ItemStack item) {
         return new MapOfEnchantments(item);
@@ -115,7 +115,7 @@ public class NBTUtil {
         // Writes the entity's NBT data to tag
         nmsEntity.c(tag);
 
-        // Check for string
+        // Return contents of the tag
         return tag.getString(key);
     }
 
