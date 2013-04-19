@@ -168,6 +168,9 @@ public class CommandRegistry implements DenizenRegistry {
 
         registerCoreMember(PoseCommand.class,
                 "POSE", "pose (player) [id:name]", 1);
+
+        registerCoreMember(PauseCommand.class,
+                "PAUSE", "pause [waypoints|navigation]", 1);
 		
         registerCoreMember(QueueCommand.class,
                 "QUEUE", "queue (queue:id{residing_queue}) [clear|pause|resume|delay:#]", 1);

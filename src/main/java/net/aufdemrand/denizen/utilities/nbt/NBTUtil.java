@@ -8,7 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
-public class NBTItem {
+public class NBTUtil {
 
     public static MapOfEnchantments getEnchantments(ItemStack item) {
         return new MapOfEnchantments(item);
