@@ -59,7 +59,7 @@ public class AnimateChestCommand extends AbstractCommand {
 			break;
 			
 		case CLOSE:
-			if (sound) scriptEntry.getPlayer().playSound(location, Sound.CHEST_CLOSE, 1, 1);
+			if (sound) scriptEntry.getPlayer().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
 			scriptEntry.getPlayer().playNote(location, (byte)1, (byte)0);
 			dB.echoDebug("...closing chest");
 			break;
