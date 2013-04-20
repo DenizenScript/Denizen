@@ -25,7 +25,7 @@ public class WorldGuardUtilities {
 		ApplicableRegionSet currentRegions = Depends.worldGuard.getRegionManager(thePlayer.getWorld()).getApplicableRegions(thePlayer.getLocation());
 		for(ProtectedRegion thisRegion: currentRegions){
 			dB.echoDebug("...checking current player region: " + thisRegion.getId());
-			if (thisRegion.getId().contains(region)) {
+			if (thisRegion.getId().equalsIgnoreCase(region)) {
 				inRegion = true;
 				dB.echoDebug("...matched region");
 			} 
