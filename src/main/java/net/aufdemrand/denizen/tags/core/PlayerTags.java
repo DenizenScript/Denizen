@@ -173,92 +173,91 @@ public class PlayerTags implements Listener {
         }
 
         else if (type.equalsIgnoreCase("ITEM_IN_HAND")) {
-            if (subType.equalsIgnoreCase("QTY"))
-                event.setReplaced(String.valueOf(p.getItemInHand().getAmount()));
-            else if (subType.equalsIgnoreCase("ID"))
-                event.setReplaced(String.valueOf(p.getItemInHand().getTypeId()));
-            else if (subType.equalsIgnoreCase("DURABILITY"))
-                event.setReplaced(String.valueOf(p.getItemInHand().getDurability()));
-            else if (subType.equalsIgnoreCase("DATA"))
-                event.setReplaced(String.valueOf(p.getItemInHand().getData()));
-            else if (subType.equalsIgnoreCase("MAX_STACK"))
-                event.setReplaced(String.valueOf(p.getItemInHand().getMaxStackSize()));
-            else if (subType.equalsIgnoreCase("OWNER")) {
-                if (NBTItem.hasCustomNBT(p.getItemInHand(), "owner"))
-                    event.setReplaced(NBTItem.getCustomNBT(p.getItemInHand(), "owner"));
+            if (p.getItemInHand() != null) {
+	        	if (subType.equalsIgnoreCase("QTY"))
+	                event.setReplaced(String.valueOf(p.getItemInHand().getAmount()));
+	            else if (subType.equalsIgnoreCase("ID"))
+	                event.setReplaced(String.valueOf(p.getItemInHand().getTypeId()));
+	            else if (subType.equalsIgnoreCase("DURABILITY"))
+	                event.setReplaced(String.valueOf(p.getItemInHand().getDurability()));
+	            else if (subType.equalsIgnoreCase("DATA"))
+	                event.setReplaced(String.valueOf(p.getItemInHand().getData()));
+	            else if (subType.equalsIgnoreCase("MAX_STACK"))
+	                event.setReplaced(String.valueOf(p.getItemInHand().getMaxStackSize()));
+	            else if (subType.equalsIgnoreCase("OWNER")) {
+	                if (NBTItem.hasCustomNBT(p.getItemInHand(), "owner"))
+	                    event.setReplaced(NBTItem.getCustomNBT(p.getItemInHand(), "owner"));
+	            }
+	            else if (subType.equalsIgnoreCase("ENCHANTMENTS"))
+	            {
+	                String enchantments = null;
+	
+	                if (specifier.equalsIgnoreCase("LEVELS"))
+	                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels();
+	                else if (specifier.equalsIgnoreCase("LEVELS_ONLY"))
+	                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly();
+	                else
+	                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptList();
+	
+	                if (enchantments != null && enchantments.length() > 0)
+	                    event.setReplaced(enchantments);
+	            }
+	            else if (subType.equalsIgnoreCase("LORE")) {
+	                if (p.getItemInHand().hasItemMeta()) {
+	                    if (p.getItemInHand().getItemMeta().hasLore()) {
+	                        event.setReplaced(new dList(p.getItemInHand().getItemMeta().getLore()).dScriptArgValue());
+	                    }
+	                }
+	            }
+	            else if (subType.equalsIgnoreCase("DISPLAY"))
+	                // This is the name set when using an anvil
+	                event.setReplaced(p.getItemInHand().getItemMeta().getDisplayName());
+	            else if (subType.equalsIgnoreCase("MATERIAL"))
+	                if (specifier.equalsIgnoreCase("FORMATTED"))
+	                {
+	                    // Turn "1 iron sword" into "an iron sword"
+	                    // "2 iron swords" into "iron swords"
+	                    // "1 emerald" into "an emerald"
+	                    // etc.
+	                    String itemName = p.getItemInHand().getType().name().toLowerCase().replace('_', ' ');
+	                    int itemQty = p.getItemInHand().getAmount();
+	
+	                    if (itemName.equalsIgnoreCase("air"))
+	                    {
+	                        event.setReplaced("nothing");
+	                    }
+	                    else if (itemName.equalsIgnoreCase("ice") || itemName.equalsIgnoreCase("dirt"))
+	                    {
+	                        event.setReplaced(itemName);
+	                    }
+	                    else if (itemQty > 1)
+	                    {
+	                        if (itemName.equalsIgnoreCase("cactus"))
+	                            event.setReplaced("cactuses");
+	                        else if (itemName.endsWith("y"))
+	                            event.setReplaced(itemName.substring(0, itemName.length() - 1) + "ies"); // lily -> lilies
+	                        else if (itemName.endsWith("s"))
+	                            event.setReplaced(itemName); // shears -> shears
+	                        else
+	                            event.setReplaced(itemName + "s"); // iron sword -> iron swords
+	                    }
+	                    else
+	                    {
+	                        if (itemName.equalsIgnoreCase("cactus"))
+	                            event.setReplaced("a cactus");
+	                        else if (itemName.endsWith("s"))
+	                            event.setReplaced(itemName);
+	                        else if (itemName.startsWith("a") ||
+	                                itemName.startsWith("e") ||
+	                                itemName.startsWith("i") ||
+	                                itemName.startsWith("o") ||
+	                                itemName.startsWith("u"))
+	                            event.setReplaced("an " + itemName); // emerald -> an emerald
+	                        else
+	                            event.setReplaced("a " + itemName); // diamond -> a diamond
+	                    }
+	                } else event.setReplaced(p.getItemInHand().getType().name());
             }
-            else if (subType.equalsIgnoreCase("ENCHANTMENTS"))
-            {
-                String enchantments = null;
-
-                if (specifier.equalsIgnoreCase("LEVELS"))
-                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels();
-                else if (specifier.equalsIgnoreCase("LEVELS_ONLY"))
-                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly();
-                else
-                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptList();
-
-                if (enchantments != null && enchantments.length() > 0)
-                    event.setReplaced(enchantments);
-            }
-            else if (subType.equalsIgnoreCase("LORE")) {
-                if (p.getItemInHand().hasItemMeta()) {
-                    if (p.getItemInHand().getItemMeta().hasLore()) {
-                        event.setReplaced(new dList(p.getItemInHand().getItemMeta().getLore()).dScriptArgValue());
-                    }
-                }
-            }
-            else if (subType.equalsIgnoreCase("DISPLAY"))
-                // This is the name set when using an anvil
-                event.setReplaced(p.getItemInHand().getItemMeta().getDisplayName());
-            else if (subType.equalsIgnoreCase("MATERIAL"))
-                if (specifier.equalsIgnoreCase("FORMATTED"))
-                {
-                    // Turn "1 iron sword" into "an iron sword"
-                    // "2 iron swords" into "iron swords"
-                    // "1 emerald" into "an emerald"
-                    // etc.
-                    String itemName = p.getItemInHand().getType().name().toLowerCase().replace('_', ' ');
-                    int itemQty = p.getItemInHand().getAmount();
-
-                    if (itemName.equalsIgnoreCase("air"))
-                    {
-                        event.setReplaced("nothing");
-                    }
-                    else if (itemName.equalsIgnoreCase("ice") || itemName.equalsIgnoreCase("dirt"))
-                    {
-                        event.setReplaced(itemName);
-                    }
-                    else if (itemQty > 1)
-                    {
-                        if (itemName.equalsIgnoreCase("cactus"))
-                            event.setReplaced("cactuses");
-                        else if (itemName.endsWith("y"))
-                            event.setReplaced(itemName.substring(0, itemName.length() - 1) + "ies"); // lily -> lilies
-                        else if (itemName.endsWith("s"))
-                            event.setReplaced(itemName); // shears -> shears
-                        else
-                            event.setReplaced(itemName + "s"); // iron sword -> iron swords
-                    }
-                    else
-                    {
-                        if (itemName.equalsIgnoreCase("cactus"))
-                            event.setReplaced("a cactus");
-                        else if (itemName.endsWith("s"))
-                            event.setReplaced(itemName);
-                        else if (itemName.startsWith("a") ||
-                                itemName.startsWith("e") ||
-                                itemName.startsWith("i") ||
-                                itemName.startsWith("o") ||
-                                itemName.startsWith("u"))
-                            event.setReplaced("an " + itemName); // emerald -> an emerald
-                        else
-                            event.setReplaced("a " + itemName); // diamond -> a diamond
-                    }
-                }
-                else
-                    event.setReplaced(p.getItemInHand().getType().name());
-
 
         } else if (type.equalsIgnoreCase("NAME")) {
             event.setReplaced(p.getName());
