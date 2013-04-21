@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
@@ -167,6 +168,24 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " collected a " + event.getItem().getItemStack().getType().toString() + ".");
 					check();
 
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void listenBucket(PlayerBucketFillEvent event) {
+		if (type == BlockType.COLLECT) {
+			if (event.getPlayer() == player) {
+				
+				if (region != null) 
+					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+			
+				if (blocks.contains(event.getBucket().name().toUpperCase())
+						|| blocks.contains(String.valueOf(event.getBucket().name().toUpperCase()))) {
+					currentBlocks++;
+					dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " collected a " + event.getBucket().name().toString() + ".");
+					check();
 				}
 			}
 		}
