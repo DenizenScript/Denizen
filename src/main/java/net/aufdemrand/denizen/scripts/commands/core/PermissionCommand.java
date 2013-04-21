@@ -36,12 +36,13 @@ public class PermissionCommand extends AbstractCommand {
 
         }
 
-        // Add objects that need to be passed to execute() to the scriptEntry
+        /* Add objects that need to be passed to execute() to the scriptEntry
         scriptEntry.addObject("action", action)
                     .addObject("player", player)
                     .addObject("permission", permission)
                     .addObject("group", group)
                     .addObject("world", world);
+        */
     }
 
     @Override
