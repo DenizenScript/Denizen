@@ -546,7 +546,7 @@ public class CommandHandler {
      * Effect
      */
     @Command(
-            aliases = { "npc" }, usage = "effect (--play effect_name) (--wait #) (-d)",
+            aliases = { "npc" }, usage = "effect (--play effect_name) (--delay #) (-d)",
             desc = "Sets the NPC particle effect.", modifiers = { "effect" }, flags = "d",
             min = 1, max = 3, permission = "npc.effect")
     @Requirements(selected = true, ownership = true)
@@ -554,8 +554,8 @@ public class CommandHandler {
         if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
             ParticlesTrait trait = npc.getTrait(ParticlesTrait.class); 
     	
-        if (args.hasValueFlag("wait")) {
-        	trait.setWait(args.getFlagInteger("wait"));
+        if (args.hasValueFlag("delay")) {
+        	trait.setWait(args.getFlagInteger("delay"));
         }
         
         if (args.hasFlag('d')) {
