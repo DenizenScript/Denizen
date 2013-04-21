@@ -446,16 +446,29 @@ public class PlayerTags implements Listener {
 
 
         } else if (type.equalsIgnoreCase("EQUIPMENT")) {
-            if (subType.equalsIgnoreCase("BOOTS") && p.getInventory().getBoots() != null)
-                event.setReplaced(p.getInventory().getBoots().getType().name());
-            else if (subType.equalsIgnoreCase("CHESTPLATE") && p.getInventory().getChestplate() != null)
-                event.setReplaced(p.getInventory().getChestplate().getType().name());
-            else if (subType.equalsIgnoreCase("HELMET") && p.getInventory().getHelmet() != null)
-                event.setReplaced(p.getInventory().getHelmet().getType().name());
-            else if (subType.equalsIgnoreCase("LEGGINGS") && p.getInventory().getLeggings() != null)
-                event.setReplaced(p.getInventory().getLeggings().getType().name());
-            else
+            if (subType.equalsIgnoreCase("BOOTS") && p.getInventory().getBoots() != null) {
+            	if (specifier.equalsIgnoreCase("DISPLAYNAME")) {
+            		event.setReplaced(p.getInventory().getBoots().getItemMeta().getDisplayName());
+            	} else event.setReplaced(p.getInventory().getBoots().getType().name());
+            	
+            } else if (subType.equalsIgnoreCase("CHESTPLATE") && p.getInventory().getChestplate() != null) {
+            	if (specifier.equalsIgnoreCase("DISPLAYNAME")) {
+            		event.setReplaced(p.getInventory().getChestplate().getItemMeta().getDisplayName());
+            	} else event.setReplaced(p.getInventory().getChestplate().getType().name());
+            	
+            } else if (subType.equalsIgnoreCase("HELMET") && p.getInventory().getHelmet() != null) {
+            	if (specifier.equalsIgnoreCase("DISPLAYNAME")) {
+            		event.setReplaced(p.getInventory().getHelmet().getItemMeta().getDisplayName());
+            	} else event.setReplaced(p.getInventory().getHelmet().getType().name());
+            	
+            } else if (subType.equalsIgnoreCase("LEGGINGS") && p.getInventory().getLeggings() != null) {
+            	if (specifier.equalsIgnoreCase("DISPLAYNAME")) {
+            		event.setReplaced(p.getInventory().getLeggings().getItemMeta().getDisplayName());
+            	} else event.setReplaced(p.getInventory().getLeggings().getType().name());
+            	
+            } else
                 event.setReplaced("NOTHING");
+            
             if (specifier.equalsIgnoreCase("FORMATTED"))
                 event.setReplaced(event.getReplaced().toLowerCase().replace('_', ' '));
 
