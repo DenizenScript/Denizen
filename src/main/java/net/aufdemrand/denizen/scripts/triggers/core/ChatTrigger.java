@@ -7,9 +7,12 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +20,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,24 +36,26 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     }
 
     @EventHandler
-    public void chatTrigger(AsyncPlayerChatEvent event) {
-
+    public void chatTrigger(final AsyncPlayerChatEvent event) {
         if (event.isCancelled()) return;
+        
+        Callable<Boolean> call = new Callable<Boolean>() {
+            public Boolean call() {
 
         // Check if there is an NPC within range of a player to chat to.
         dNPC npc = Utilities.getClosestNPC(event.getPlayer().getLocation(), 25);
 
         // No NPC? Nothing else to do here.
-        if (npc == null) return;
+        if (npc == null) return null;
 
         // If the NPC doesn't have triggers, or the triggers are not enabled, then
         // just return.
-        if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
-        if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) return;
+        if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return null;
+        if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) return null;
 
         // Check range
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(event.getPlayer().getLocation()))
-            return;
+            return null;
 
         // Debugger
         dB.report(name, aH.debugObj("Player", event.getPlayer().getName())
@@ -63,41 +71,41 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // if enabled. Should the Player chat only when looking at the NPC? This may
         // reduce accidental chats with NPCs.
         if (Settings.ChatMustSeeNPC())
-            if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return;
+            if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return null;
         if (Settings.ChatMustLookAtNPC())
-            if (!Utilities.isFacingEntity(event.getPlayer(), npc.getEntity(), 45)) return;
+            if (!Utilities.isFacingEntity(event.getPlayer(), npc.getEntity(), 45)) return null;
 
+        Boolean ret = null;
+        
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
         // If available (not engaged, and cool) sets cool down and returns true.
-         if (!npc.getTriggerTrait().trigger(this, event.getPlayer())) {
+         if (!npc.getTriggerTrait().trigger(ChatTrigger.this, event.getPlayer())) {
             // If the NPC is not interactable, Settings may allow the chat to filter
             // through. Check the Settings if this is enabled.
             if (Settings.ChatGloballyIfUninteractable()) {
                 dB.echoDebug (ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
                         + "The NPC is currently cooling down or engaged.");
-                return;
+                return null;
             } else {
-                event.setCancelled(true);
+                ret = true;
             }
         }
 
         // Denizen should be good to interact with. Let's get the script.
-        InteractScriptContainer script = npc.getInteractScript(event.getPlayer(), this.getClass());
+        InteractScriptContainer script = npc.getInteractScript(event.getPlayer(), ChatTrigger.class);
 
         // Check if the NPC has Chat Triggers for this step.
         if (!script.containsTriggerInStep(
                 InteractScriptHelper.getCurrentStep(event.getPlayer(),
-                        script.getName()), this.getClass())) {
+                        script.getName()),  ChatTrigger.class)) {
 
             // No chat trigger for this step.. do we chat globally, or to the NPC?
             if (!Settings.ChatGloballyIfNoChatTriggers()) {
-                event.setCancelled(true);
                 dB.echoDebug(event.getPlayer().getName() + " says to "
                         + npc.getNicknameTrait().getNickname() + ", " + event.getMessage());
-                return;
+                return true;
             }
-
-            else return;
+            else return ret;
         }
 
 
@@ -110,7 +118,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         String regexMessage = null;
         Map<String, String> idMap = new HashMap<String, String>();
         if (script != null)
-            idMap = script.getIdMapFor(this.getClass(), event.getPlayer());
+            idMap = script.getIdMapFor(ChatTrigger.class, event.getPlayer());
 
         if (!idMap.isEmpty()) {
             // Iterate through the different id entries in the step's chat trigger
@@ -119,7 +127,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 // matches the text the player has said
                 Matcher matcher = triggerPattern.matcher(entry.getValue());
                 while (matcher.find ()) {
-                    if (!script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
+                    if (!script.checkSpecificTriggerScriptRequirementsFor(ChatTrigger.class,
                             event.getPlayer(), npc, entry.getKey())) continue;
                     String keyword = TagManager.tag(event.getPlayer(), npc, matcher.group().replace("/", ""));
                     // Check if the trigger is REGEX
@@ -162,29 +170,40 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
-            event.setCancelled(true);
             Utilities.talkToNPC(replacementText, event.getPlayer(), npc, Settings.ChatToNpcOverhearingRange());
             parse(npc, event.getPlayer(), script, id);
-
+            return true;
         } else {
-
             if (!Settings.ChatGloballyIfFailedChatTriggers ()) {
-                event.setCancelled(true);
                 Utilities.talkToNPC(event.getMessage(), event.getPlayer(), npc, Settings.ChatToNpcOverhearingRange());
-                return;
+                return true;
             }
-
-            // No matching chat triggers, and the config.yml says we should just
-            // ignore the interaction...
-
+                    // No matching chat triggers, and the config.yml says we
+                    // should just ignore the interaction...
+            }
+        return ret;
         }
+        };
+        Boolean cancelled = null;
+        try {
+            cancelled = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (cancelled == null)
+            return;
+        event.setCancelled(cancelled);
     }
 
-    private Boolean isKeywordRegex (String keyWord) {
+    private boolean isKeywordRegex (String keyWord) {
         return keyWord.toUpperCase().startsWith("REGEX:");
     }
 
-    private Boolean isKeywordStrict (String keyWord) {
+    private boolean isKeywordStrict (String keyWord) {
         return keyWord.toUpperCase().startsWith("STRICT:");
     }
 
