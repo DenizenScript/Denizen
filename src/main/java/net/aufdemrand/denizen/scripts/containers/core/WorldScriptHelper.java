@@ -33,7 +33,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class WorldScriptHelper implements Listener {
 
@@ -285,13 +288,28 @@ public class WorldScriptHelper implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void playerChat(AsyncPlayerChatEvent event) {
-
-        Map<String, String> context = new HashMap<String, String>();
+    public void playerChat(final AsyncPlayerChatEvent event) {
+        final Map<String, String> context = new HashMap<String, String>();
         context.put("message", event.getMessage());
 
-        String determination = doEvent("player chats", null, event.getPlayer(), context);
+        Callable<String> call = new Callable<String>() {
+            public String call() {
+                return doEvent("player chats", null, event.getPlayer(), context);
+            }
+        };
+        String determination = null;
+        try {
+            determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        if (determination == null)
+            return;
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
         if (determination.toUpperCase().startsWith("MESSAGE"))
