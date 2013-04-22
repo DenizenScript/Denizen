@@ -99,7 +99,7 @@ public class WorldScriptHelper implements Listener {
         String command = event.getMessage().split(" ")[0].replace("/", "").toUpperCase();
 
         // Fill context
-        context.put("args", args.dScriptArgValue());
+        context.put("args", args.as_dScriptArgValue());
         context.put("command", command);
         context.put("raw_args", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
         String determination;
@@ -220,12 +220,27 @@ public class WorldScriptHelper implements Listener {
     public void playerInteract(PlayerInteractEvent event) {
 
         String determination;
+        Map<String, String> context = new HashMap<String, String>();
+
+        if (event.getItem() != null ) {
+            context.put("item_in_hand", new dItem(event.getItem()).as_dScriptArgValue());
+
+            determination = doEvent("player swings " + new dItem(event.getItem()).dScriptArgValue(), null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+
+            determination = doEvent("player swings item", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        }
+
+        determination = doEvent("player swings arm", null, event.getPlayer(), context);
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+
 
         if (event.getAction() == Action.LEFT_CLICK_AIR) {
-            Map<String, String> context = new HashMap<String, String>();
-
             if (event.getItem() != null ) {
-                context.put("item_in_hand", new dItem(event.getItem()).dScriptArgValue());
 
                 determination = doEvent("player swings " + new dItem(event.getItem()).dScriptArgValue() + " in air", null, event.getPlayer(), context);
                 if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -242,11 +257,8 @@ public class WorldScriptHelper implements Listener {
         }
 
         else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            Map<String, String> context = new HashMap<String, String>();
-
             context.put("location clicked", new dLocation(event.getClickedBlock().getLocation()).dScriptArgValue());
             if (event.getItem() != null ) {
-                context.put("item_in_hand", new dItem(event.getItem()).dScriptArgValue());
 
                 determination = doEvent("player hits block with " + new dItem(event.getItem()).dScriptArgValue(), null, event.getPlayer(), context);
                 if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -264,8 +276,6 @@ public class WorldScriptHelper implements Listener {
         }
 
         else if (event.getAction() == Action.PHYSICAL) {
-            Map<String, String> context = new HashMap<String, String>();
-
             context.put("interact location", new dLocation(event.getClickedBlock().getLocation()).dScriptArgValue());
             determination = doEvent("player interacts with block", null, event.getPlayer(), context);
             if (determination.toUpperCase().startsWith("CANCELLED"))

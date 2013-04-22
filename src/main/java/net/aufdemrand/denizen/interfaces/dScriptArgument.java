@@ -9,7 +9,7 @@ public interface dScriptArgument {
      *
      * @return
      */
-    public String getDefaultPrefix();
+    public String getPrefix();
 
     /**
      * <p>Gets a standard dB representation of this argument.</p>
@@ -25,13 +25,9 @@ public interface dScriptArgument {
      */
     public String debug();
 
-    /**
-     * Gets the dScript argument, prefix and value. This is a valid dScript representation
-     * of the argument.
-     *
-     * @return
-     */
-    public String as_dScriptArg();
+    public boolean isUnique();
+
+    public String getType();
 
     /**
      * Gets an ugly, but exact, string representation of this dScriptArgument.
@@ -40,8 +36,7 @@ public interface dScriptArgument {
      *
      * @return  a single-line string representation of this argument
      */
-    @Override
-    public String toString();
+    public String identify();
 
     /**
      * Sets the prefix for this argument, otherwise uses the default.

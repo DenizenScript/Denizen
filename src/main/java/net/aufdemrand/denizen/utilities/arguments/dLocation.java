@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
@@ -27,13 +28,18 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         return locations.get(id.toLowerCase());
     }
 
-    public static String isSavedLocation(org.bukkit.Location location) {
+    public static String isSavedLocation(Location location) {
         for (Map.Entry<String, dLocation> entry : locations.entrySet()) {
             if (Utilities.checkLocation(entry.getValue(), location, 1)) {
                 return entry.getKey();
             }
         }
         return null;
+    }
+
+    public static dLocation saveLocationAs(dLocation location, String id) {
+        locations.put(id.toLowerCase(), location);
+        return location;
     }
 
     /**
@@ -66,7 +72,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
     public static void _saveLocations() {
         List<String> loclist = new ArrayList<String>();
         for (Map.Entry<String, dLocation> entry : locations.entrySet())
-            loclist.add(entry.getValue().asString());
+            loclist.add(entry.getValue().toString());
 
         DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", loclist);
     }
@@ -91,10 +97,10 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         if (split.length == 5)
             // If 5 values, contains an id with standard dScript location format
             try {
-                return new dLocation(split[0], Bukkit.getWorld(split[4]),
+                return new dLocation(Bukkit.getWorld(split[4]),
                         Double.valueOf(split[1]),
                         Double.valueOf(split[2]),
-                        Double.valueOf(split[3]));
+                        Double.valueOf(split[3])).rememberAs(split[0]);
             } catch(Exception e) {
                 return null;
             }
@@ -114,10 +120,10 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         else if (split.length == 6)
             // If 6 values, id-less location with pitch/yaw
             try {
-                return new dLocation(split[0], Bukkit.getWorld(split[4]),
+                return new dLocation(Bukkit.getWorld(split[4]),
                         Double.valueOf(split[1]),
                         Double.valueOf(split[2]),
-                        Double.valueOf(split[3]));
+                        Double.valueOf(split[3])).rememberAs(split[0]);
             } catch(Exception e) {
                 return null;
             }
@@ -126,58 +132,21 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         return null;
     }
 
-
-    private String Id;
-    private String prefix = "Location";
-
-    /**
-     * Creates a new saved Location. dLocations should only be given an 'Id'
-     * if they should be saved for later. dLocations with an 'Id' are persisted
-     * and can be recalled at any time with {@link #getSavedLocation(String)}
-     *
-     * @param id saved Id of the Location
-     * @param location the Bukkit Location to reference
-     */
-    public dLocation(String id, org.bukkit.Location location) {
-        super(location.getWorld(), location.getX(), location.getY(), location.getZ());
-        this.Id = id.toLowerCase();
-        locations.put(Id, this);
-        dB.echoDebug(locations.toString());
-    }
-
     /**
      * Turns a Bukkit Location into a Location, which has some helpful methods
      * for working with dScript. If working with temporary locations, this is
-     * a much better method to use than {@link #dLocation(String, org.bukkit.Location)}.
+     * a much better method to use than {@link #dLocation(Location)}.
      *
      * @param location the Bukkit Location to reference
      */
-    public dLocation(org.bukkit.Location location) {
+    public dLocation(Location location) {
         super(location.getWorld(), location.getX(), location.getY(), location.getZ());
-    }
-
-    /**
-     * Creates a new saved Location. dLocations should only be given an 'Id'
-     * if they should be saved for later. dLocations with an 'Id' are persisted
-     * and can be recalled at any time with {@link #getSavedLocation(String)}
-     *
-     * @param id  saved Id of the Location
-     * @param world  the Bukkit World referenced
-     * @param x  the x-coordinate of the location
-     * @param y  the y-coordinate of the location
-     * @param z  the z-coordinate of the location
-     *
-     */
-    public dLocation(String id, World world, double x, double y, double z) {
-        super(world, x, y, z);
-        this.Id = id.toLowerCase();
-        locations.put(Id, this);
     }
 
     /**
      * Turns a world and coordinates into a Location, which has some helpful methods
      * for working with dScript. If working with temporary locations, this is
-     * a much better method to use than {@link #dLocation(String, org.bukkit.World, double, double, double)}.
+     * a much better method to use than {@link #dLocation(org.bukkit.World, double, double, double)}.
      *
      * @param world  the world in which the location resides
      * @param x  x-coordinate of the location
@@ -193,37 +162,42 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         super(world, x, y, z, yaw, pitch);
     }
 
+    public dLocation rememberAs(String id) {
+        dLocation.saveLocationAs(this, id);
+        return this;
+    }
+
+    String prefix = "Location";
+
     @Override
-    public String getDefaultPrefix() {
+    public String getPrefix() {
         return prefix;
     }
 
     @Override
     public String debug() {
-        return (Id != null ? "<G>" + prefix + "='<A>" + Id + "(<Y>" + getX() + "," + getY()
+        return (isSavedLocation(this) != null ? "<G>" + prefix + "='<A>" + isSavedLocation(this) + "(<Y>" + getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName() + "<A>)<G>'  "
                 : "<G>" + prefix + "='<Y>" + getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName() + "<G>'  ");
     }
 
     @Override
-    public String as_dScriptArg() {
+    public String as_dScriptArgValue() {
         return getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName();
     }
 
-    public String dScriptArgValue() {
-        return getDefaultPrefix().toLowerCase() + ":" + as_dScriptArg();
-    }
-
-    public String asString() {
-        if (Id == null) return null;
-        return Id + "," + getX() + "," + getY()
+    @Override
+    public String toString() {
+        if (isSavedLocation(this) != null)
+            return "l@" + isSavedLocation(this);
+        else return "l@" + getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName();
     }
 
     @Override
-    public dScriptArgument setPrefix(String prefix) {
+    public dLocation setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }

@@ -19,6 +19,7 @@ public class FlagManager {
     }
 
     public static boolean playerHasFlag(Player player, String flagName) {
+        if (player == null || flagName == null) return false;
         if (DenizenAPI.getCurrentInstance().flagManager()
                 .getPlayerFlag(player.getName(), flagName).size() > 0)
             return true;
@@ -26,6 +27,7 @@ public class FlagManager {
     }
 
     public static boolean npcHasFlag(dNPC npc, String flagName) {
+        if (npc == null || flagName == null) return false;
         if (DenizenAPI.getCurrentInstance().flagManager()
                 .getNPCFlag(npc.getId(), flagName).size() > 0)
             return true;
@@ -33,35 +35,11 @@ public class FlagManager {
     }
 
     public static boolean serverHasFlag(String flagName) {
+        if (flagName == null) return false;
         if (DenizenAPI.getCurrentInstance().flagManager()
                 .getGlobalFlag(flagName).size() > 0)
             return true;
         else return false;
-    }
-
-
-    /**
-     * When given a FlagType and necessary information, this returns a Flag object.
-     * When getting a FlagType.GLOBAL, targetName/npcid are not necessary and can be 
-     * null. When getting a FlagType.PLAYER, npcid is not necessary and can be null. When
-     * getting a FlagType.NPC, targetName is not necessary, as NPC flags
-     * require an npcid instead. If it isn't obvious, flagType and flagName are required.
-     * If this flag currently exists it will be populated with the current values. If 
-     * the flag does NOT exist, it will be created with blank values.
-     *
-     * If getting a known specific FlagType, getPlayerFlag(..), getDenizenFlag(..),
-     * or getGlobalFlag(..) may be a cleaner method of retrieval.
-     *
-     */
-    public Flag getFlag(FlagCommand.Type flagType, String targetName, Integer npcid, String flagName) {
-        if (flagType == FlagCommand.Type.GLOBAL)
-            return new Flag("Global.Flags." + flagName.toUpperCase());
-        else if (flagType == FlagCommand.Type.PLAYER)
-            return new Flag("Players." + targetName + ".Flags." + flagName.toUpperCase());
-        else if (flagType == FlagCommand.Type.NPC)
-            return new Flag("NPCs." + npcid + ".Flags." + flagName.toUpperCase());
-
-        return new Flag("Global.Flags.null");
     }
 
     /**
@@ -71,7 +49,7 @@ public class FlagManager {
      *
      */
     public Flag getNPCFlag(int npcid, String flagName) {
-        return new Flag("NPCs." + npcid + ".Flags." + flagName.toUpperCase());
+        return new Flag("NPCs." + npcid + ".Flags." + flagName.toUpperCase(), flagName, "n@" + npcid);
     }
 
     /**
@@ -81,7 +59,7 @@ public class FlagManager {
      *
      */
     public Flag getGlobalFlag(String flagName) {
-        return new Flag("Global.Flags." + flagName.toUpperCase());
+        return new Flag("Global.Flags." + flagName.toUpperCase(), flagName, null);
     }
 
     /**
@@ -91,7 +69,7 @@ public class FlagManager {
      *
      */
     public Flag getPlayerFlag(String playerName, String flagName) {
-        return new Flag("Players." + playerName + ".Flags." + flagName.toUpperCase());
+        return new Flag("Players." + playerName + ".Flags." + flagName.toUpperCase(), flagName, "p@" + playerName);
     }
 
 
@@ -120,10 +98,14 @@ public class FlagManager {
     public class Flag {
         private Value value;
         private String flagPath;
+        private String flagName;
+        private String flagOwner;
         private long expiration = (long) -1;
 
-        Flag(String flagPath) {
+        Flag(String flagPath, String flagName, String flagOwner) {
             this.flagPath = flagPath;
+            this.flagName = flagName;
+            this.flagOwner = flagOwner;
             rebuild();
         }
 
@@ -360,7 +342,7 @@ public class FlagManager {
          */
         public void save() {
             denizen.getSaves().set(flagPath, value.values);
-            denizen.getSaves().set(flagPath + "-expiration", expiration);
+            denizen.getSaves().set(flagPath + "-expiration", (expiration > 0 ? expiration : null));
         }
 
         /**
@@ -372,7 +354,7 @@ public class FlagManager {
         @Override
         public String toString() {
             checkExpired();
-            return value.get(value.size()).asString();
+            return (flagOwner == null ? "fl@" + flagName : "fl[" + flagOwner + "]@" + flagName);
         }
 
         /**
@@ -388,7 +370,7 @@ public class FlagManager {
                     denizen.getSaves().set(flagPath + "-expiration", null);
                     denizen.getSaves().set(flagPath, null);
                     rebuild();
-                    dB.echoDebug("// A FLAG has expired! " + flagPath);
+                    dB.echoDebug("// '" + flagName + "' has expired! " + flagPath);
                     return true;
                 }
             return false;
@@ -604,11 +586,11 @@ public class FlagManager {
             try {
                 // If an Integer
                 if (aH.matchesInteger(arg))
-                    return Integer.valueOf(aH.getIntegerFrom(arg));
+                    return aH.getIntegerFrom(arg);
 
                     // If a Double
                 else if (aH.matchesDouble(arg))
-                    return Double.valueOf(aH.getDoubleFrom(arg));
+                    return aH.getDoubleFrom(arg);
 
                     // If a Boolean
                 else if (arg.equalsIgnoreCase("true")) return true;

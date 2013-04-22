@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 public class dPlayer implements dScriptArgument {
 
@@ -18,24 +19,21 @@ public class dPlayer implements dScriptArgument {
      * @return  a dScript dList
      *
      */
+    @ObjectFetcher("p")
     public static dPlayer valueOf(String string) {
         if (string == null) return null;
 
-        String prefix = null;
-        // Strip prefix (ie. targets:...)
-        if (string.split(":").length > 1) {
-            prefix = string.split(":", 2)[0];
+        if (string.split(":").length > 1)
             string = string.split(":", 2)[1];
-        }
 
         for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-            if (player.getName().equalsIgnoreCase(string)) return new dPlayer(prefix, player);
+            if (player.getName().equalsIgnoreCase(string)) return new dPlayer(player);
 
-        dB.echoError("Player '" + string + "' is invalid, or has never logged in to this server.");
+        dB.echoDebug("Player '" + string + "' is invalid, or has never logged in to this server.");
         return null;
     }
 
-    public org.bukkit.entity.Player getPlayerEntity() {
+    public Player getPlayerEntity() {
         return Bukkit.getPlayer(player);
     }
 
@@ -48,22 +46,23 @@ public class dPlayer implements dScriptArgument {
         return false;
     }
 
-    private String prefix;
     String player;
 
     public dPlayer(OfflinePlayer player) {
-        this(null, player);
-    }
-
-    public dPlayer(String prefix, OfflinePlayer player) {
-        if (prefix == null) this.prefix = "Player";
-        else this.prefix = prefix;
         this.player = player.getName();
     }
 
+    private String prefix = "Player";
+
     @Override
-    public String getDefaultPrefix() {
+    public String getPrefix() {
         return prefix;
+    }
+
+    @Override
+    public dPlayer setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
     }
 
     @Override
@@ -72,19 +71,15 @@ public class dPlayer implements dScriptArgument {
     }
 
     @Override
-    public String as_dScriptArg() {
-        return prefix + ":" + player;
-    }
-
-    public String dScriptArgValue() {
+    public String as_dScriptArgValue() {
         return player;
     }
 
     @Override
-    public dScriptArgument setPrefix(String prefix) {
-        this.prefix = prefix;
-        return this;
+    public String toString() {
+        return "p@" + player;
     }
+
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -150,7 +145,7 @@ public class dPlayer implements dScriptArgument {
             }
         }
 
-        if (!isOnline()) return new Element(dScriptArgValue()).getAttribute(attribute);
+        if (!isOnline()) return new Element(as_dScriptArgValue()).getAttribute(attribute);
 
         // Player is required to be online after this point...
 
@@ -409,7 +404,7 @@ public class dPlayer implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        return dScriptArgValue();
+        return toString();
     }
 
 }

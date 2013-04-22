@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemDespawnEvent;
@@ -14,10 +15,8 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 
 /*
  * Denizen dScript ENGRAVE command:
@@ -104,7 +103,7 @@ public class EngraveCommand extends AbstractCommand implements Listener {
     @EventHandler
     public void checkOwner(PlayerPickupItemEvent event) {
         ItemStack item = event.getItem().getItemStack();
-        if (NBTItem.hasCustomNBT(item, "owner") 
+        if (NBTItem.hasCustomNBT(item, "owner")
                 && !NBTItem.getCustomNBT(item, "owner").equalsIgnoreCase(event.getPlayer().getName())) {
             dB.echoDebug(NBTItem.getCustomNBT(item, "owner"));
 

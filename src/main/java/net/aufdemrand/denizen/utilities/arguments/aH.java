@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -552,6 +554,14 @@ public class aH {
         arg = getValuePart(arg);
         for (NPC npc : CitizensAPI.getNPCRegistry())
             if (npc.getId() == Integer.parseInt(arg)) return npc;
+        dB.echoError("NPC '" + arg + "' is invalid, or has been removed.");
+        return null;
+    }
+
+    public static dNPC getdNPCFrom(String arg) {
+        arg = getValuePart(arg);
+        for (NPC npc : CitizensAPI.getNPCRegistry())
+            if (npc.getId() == Integer.parseInt(arg)) return DenizenAPI.getDenizenNPC(npc);
         dB.echoError("NPC '" + arg + "' is invalid, or has been removed.");
         return null;
     }

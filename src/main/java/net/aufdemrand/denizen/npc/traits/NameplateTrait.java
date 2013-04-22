@@ -76,12 +76,12 @@ public class NameplateTrait extends Trait implements Listener {
     public void setColor(ChatColor color) {
 		this.setColor(color, DEFAULT_KEY);
     }
-	
+
 	public void setColor(ChatColor color, String player) {
 		this.colors.put(player, color.name());
 		refreshTag( getNPC() );
 	}
-	
+
 	/**
 	 * Returns the {@link ChatColor} prefixed to the nameplate
 	 * 
@@ -92,7 +92,7 @@ public class NameplateTrait extends Trait implements Listener {
             return ChatColor.valueOf(colors.get(DEFAULT_KEY));
         } catch (Exception e) { return ChatColor.YELLOW; }
 	}
-	
+
 	/**
 	 * Returns the {@link ChatColor} prefixed to the nameplate for a specific
 	 * player.
@@ -104,7 +104,6 @@ public class NameplateTrait extends Trait implements Listener {
 		if(!colors.containsKey(player)) return getColor();
 		else return ChatColor.valueOf(colors.get(player));
 	}
-	
 	
 	/**
 	 * Returns true if a color has been set

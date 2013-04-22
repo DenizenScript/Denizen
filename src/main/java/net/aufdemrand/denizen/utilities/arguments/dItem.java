@@ -1,18 +1,21 @@
 package net.aufdemrand.denizen.utilities.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
-import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,21 +23,43 @@ import java.util.regex.Pattern;
 public class dItem implements dScriptArgument {
 
     /////////////////////
-    //   STATIC METHODS
+    //  STATIC METHODS
     /////////////////
 
+    public static Map<String, dItem> items = new HashMap<String, dItem>();
 
-    // Patterns used in valueOf...
-    // TODO: Make prettier.. maybe an array of Patterns isn't even necessary anymore.
-    //  Seperate them out instead?
-    final static Pattern[] getItemPtrn = {
-            Pattern.compile("(?:(?:.+?:)|)(\\d+):(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+?):(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+)"),
-            Pattern.compile("(?:(?:.+?:)|)item\\.(.+)", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("(?:(?:.+?:)|)(.+)"),
-    };
+    /**
+     * Gets a saved item based on an Id.
+     *
+     * @param id  the Id key of the location
+     * @return  the Location associated
+     */
+    public static dItem getSavedItem(String id) {
+        if (items.containsKey(id.toLowerCase()))
+            return items.get(id.toLowerCase());
+        else return null;
+    }
+
+    public static void saveItemAs(dItem item, String id) {
+        if (item == null) return;
+        items.put(id.toLowerCase(), item);
+    }
+
+    /**
+     * Checks if there is a saved item with this Id.
+     *
+     * @param id  the Id to check
+     * @return  true if it exists, false if not
+     */
+    public static boolean isSavedItem(String id) {
+        return items.containsKey(id.toLowerCase());
+    }
+
+    public static String isSavedItem(dItem item) {
+        for (Map.Entry<String, dItem> i : items.entrySet())
+            if (i.getValue() == item) return i.getKey();
+        return null;
+    }
 
     /**
      * Gets a Item Object from a string form.
@@ -43,71 +68,97 @@ public class dItem implements dScriptArgument {
      * @return  an Item, or null if incorrectly formatted
      *
      */
-
+    @ObjectFetcher("i")
     public static dItem valueOf(String string) {
-        return valueOf(string, null, null);
-    }
-
-    public static dItem valueOf(String string, Player player, dNPC npc) {
-
         if (string == null) return null;
+        Matcher m;
 
-        Matcher[] m = new Matcher[4];
+
+        ///////
+        // Match @object format for spawned Item entities
+
+        final Pattern item_by_entity_id = Pattern.compile("(i@)(\\d+)");
+        m = item_by_entity_id.matcher(string);
+
+        // Check if it's an entity in the world
+        if (m.matches())
+            for (World world : Bukkit.getWorlds())
+                for (Entity entity : world.getEntitiesByClass(Item.class))
+                    if (entity.getEntityId() == Integer.valueOf(m.group(2)))
+                        return new dItem(((Item) entity).getItemStack());
+
+
+        ////////
+        // Match @object format for saved dItems
+
+        final Pattern item_by_saved = Pattern.compile("(i@)(.+)");
+        m = item_by_saved.matcher(string);
+
+        // Check if it's an entity in the world
+        if (m.matches())
+            return items.get(m.group(2));
+
+
+        ///////
+        // Match item script custom items
+
+        // Check if it's a valid item script
+        if (ScriptRegistry.containsScript(string, ItemScriptContainer.class))
+            // Get item from script
+            return ScriptRegistry.getScriptContainerAs(m.group(1), ItemScriptContainer.class).getItemFrom();
+
+
+        ///////
+        // Match bukkit/minecraft standard items format
+
         dItem stack = null;
 
-        // Check if a saved item instance from NEW
-        m[0] = getItemPtrn[4].matcher(string);
-        if (m[0].matches()) {
-            // TODO: Finish NEW command.
+        final Pattern item_id_with_data = Pattern.compile("(\\d+):(\\d+)");
+        m = item_id_with_data.matcher(string);
+        if (m.matches()) {
+            try {
+                stack = new dItem(Integer.valueOf(m.group(1)));
+                if (stack != null) {
+                    stack.setDurability(Short.valueOf(m.group(2)));
+                    return stack;
+                }
+            } catch (Exception e) { }
         }
 
-        // Check traditional item patterns.
-        m[0] = getItemPtrn[0].matcher(string);
-        m[1] = getItemPtrn[1].matcher(string);
-        m[2] = getItemPtrn[2].matcher(string);
-        m[3] = getItemPtrn[3].matcher(string);
-
-        try {
-            // Match 'ItemId:Data'
-            if (m[0].matches()) {
-                stack = new dItem(Integer.valueOf(m[0].group(1)));
-                stack.setDurability(Short.valueOf(m[0].group(2)));
-                return stack;
-
-                // Match 'ItemId'
-            } else if (m[1].matches()) {
-                stack = new dItem(Integer.valueOf(m[1].group(1)));
-                return stack;
-
-                // Match 'Material:Data'
-            } else if (m[2].matches()) {
-                stack = new dItem(Material.valueOf(m[2].group(1).toUpperCase()));
-                stack.setDurability(Short.valueOf(m[2].group(2)));
-                return stack;
-
-                // Match 'Material'
-            } else if (m[3].matches()) {
-                stack = new dItem(Material.valueOf(m[3].group(1).toUpperCase()));
-                return stack;
-            }
-
-        } catch (Exception e) {
-            // Just a catch, might be an item script...
+        final Pattern item_id = Pattern.compile("(\\d+)");
+        m = item_id.matcher(string);
+        if (m.matches()) {
+            try {
+                stack = new dItem(Integer.valueOf(m.group(1)));
+                if (stack != null)
+                    return stack;
+            } catch (Exception e) { }
         }
 
-        // Check custom item script
-        m[0] = getItemPtrn[5].matcher(string);
-        if (m[0].matches() && ScriptRegistry.containsScript(m[0].group(1), ItemScriptContainer.class)) {
-
-            dB.echoDebug("TEST!");
-
-            // Get item from script
-            return ScriptRegistry.getScriptContainerAs(m[0].group(1), ItemScriptContainer.class).getItemFrom(player, npc);
+        final Pattern item_material_with_data = Pattern.compile("([a-z\\x5F]+?):(\\d+)", Pattern.CASE_INSENSITIVE);
+        m = item_material_with_data.matcher(string);
+        if (m.matches()) {
+            try {
+                stack = new dItem(Material.valueOf(m.group(1).toUpperCase()));
+                if (stack != null) {
+                    stack.setDurability(Short.valueOf(m.group(2)));
+                    return stack;
+                }
+            } catch (Exception e) { }
         }
 
-        // No match.
-        // dB.echoError("Invalid item! Failed to find a matching Item type.");
-        return stack;
+        final Pattern item_material = Pattern.compile("([a-z\\x5F]+)", Pattern.CASE_INSENSITIVE);
+        m = item_material.matcher(string);
+        if (m.matches()) {
+            try {
+                stack = new dItem(Material.valueOf(m.group(1).toUpperCase()));
+                if (stack != null)
+                    return stack;
+            } catch (Exception e) { }
+        }
+
+        // No match! Return null.
+        return null;
     }
 
 
@@ -115,9 +166,7 @@ public class dItem implements dScriptArgument {
     //   INSTANCE METHODS
     /////////////////
 
-
-    private ItemStack item;
-    private String prefix = "Item";
+    // Constructors
 
     public dItem(Material material) {
         item = new ItemStack(material);
@@ -139,18 +188,29 @@ public class dItem implements dScriptArgument {
         this.item = item;
     }
 
-    public int comparesTo(dItem item) {
-        return comparesTo(item.getItemStack());
-    }
+    // Bukkit itemstack associated
+
+    private ItemStack item;
 
     public ItemStack getItemStack() {
         return item;
     }
 
+    // Compare item to item.
+    // -1 indicates it is not a match
+    //  0 indicates it is a perfect match
+    //  1 indicates the item being matched against
+    //    was probably originally alike, but may have been
+    //    modified or enhanced.
+
+    public int comparesTo(dItem item) {
+        return comparesTo(item.getItemStack());
+    }
+
     public int comparesTo(ItemStack item) {
+        if (item == null) return -1;
 
         int determination = 0;
-
         ItemStack compared = getItemStack();
         ItemStack compared_to = item;
 
@@ -209,22 +269,23 @@ public class dItem implements dScriptArgument {
                 if (compared.getItemMeta().getEnchants().size() > compared_to.getItemMeta().getEnchants().size())
                     determination++;
             }
-
         }
 
         if (isRepairable()) {
             if (compared.getDurability() < compared_to.getDurability())
                 determination++;
         } else
-
-        // Check data
-        if (getItemStack().getData().getData() != item.getData().getData()) return -1;
+            // Check data
+            if (getItemStack().getData().getData() != item.getData().getData()) return -1;
 
         return determination;
     }
 
+    // Additional helper methods
+
     public void setDurability(short amt) {
-        item.setDurability(amt);
+        if (item != null)
+            item.setDurability(amt);
     }
 
     public boolean isRepairable() {
@@ -261,9 +322,8 @@ public class dItem implements dScriptArgument {
     }
 
     public String getId() {
-
         if (NBTItem.hasCustomNBT(getItemStack(), "denizen-script-id"))
-             return NBTItem.getCustomNBT(getItemStack(), "denizen-script-id");
+            return NBTItem.getCustomNBT(getItemStack(), "denizen-script-id");
         else
             return getItemStack().getType().name().toLowerCase() + ":" + getItemStack().getData().getData();
     }
@@ -272,15 +332,26 @@ public class dItem implements dScriptArgument {
         this.item = item;
     }
 
+    public dItem rememberAs(String id) {
+        dItem.saveItemAs(this, id);
+        return this;
+    }
+
 
 
     //////////////////////////////
     //  DSCRIPT ARGUMENT METHODS
     /////////////////////////
 
+    private String prefix = "Item";
 
     @Override
-    public String getDefaultPrefix() {
+    public String getType() {
+        return "item";
+    }
+
+    @Override
+    public String getPrefix() {
         return prefix;
     }
 
@@ -290,22 +361,24 @@ public class dItem implements dScriptArgument {
     }
 
     @Override
-    public String as_dScriptArg() {
-        return prefix + ":" + getId();
-    }
+    public String identify() {
+        if (isSavedItem(this) != null)
+            return "i@" + isSavedItem(this);
+        else if (item != null) {
 
-    public String dScriptArgValue() {
-        return getDefaultPrefix().toLowerCase() + ":" + as_dScriptArg();
-    }
+        }
 
-    @Override
-    public String toString() {
-        // TODO: Serialize itemstack?
-        return getId();
+        return null;
     }
 
     @Override
-    public dScriptArgument setPrefix(String prefix) {
+    public boolean isUnique() {
+        if (isSavedItem(this) != null) return true;
+        else return false;
+    }
+
+    @Override
+    public dItem setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
@@ -320,7 +393,7 @@ public class dItem implements dScriptArgument {
 
         if (attribute.startsWith("qty"))
             return new Element(String.valueOf(getItemStack().getAmount()))
-                .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("id"))
             return new Element(id)
@@ -399,7 +472,7 @@ public class dItem implements dScriptArgument {
         if (attribute.startsWith("lore")) {
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore())
                 return new dList(getItemStack().getItemMeta().getLore()).getAttribute(attribute.fulfill(1));
-            else return new dList("Empty dList", "").getAttribute(attribute.fulfill(1));
+            else return new dList("").getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("prefix"))
@@ -422,7 +495,7 @@ public class dItem implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        return new Element(dScriptArgValue()).getAttribute(attribute.fulfill(1));
+        return new Element(identify()).getAttribute(attribute.fulfill(1));
     }
 
 }
