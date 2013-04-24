@@ -89,17 +89,17 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			// Put the type of this inventory in a string and check if it matches the
 			// listener's type
 			String inventoryType = event.getInventory().getType().toString();
-			if (
-				   (type == ItemType.CRAFT && (inventoryType == "CRAFTING" || inventoryType == "WORKBENCH"))
-				|| (type == ItemType.SMELT && inventoryType == "FURNACE")
-			   )
+			if ((type == ItemType.CRAFT && (inventoryType == "CRAFTING" || inventoryType == "WORKBENCH"))
+				|| (type == ItemType.SMELT && inventoryType == "FURNACE")) {
 				
-			{
 				if (region != null)
 					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
 				
 				// Get the item in the result slot as an ItemStack
 				final ItemStack item = new ItemStack(event.getCurrentItem());
+				
+				//if item isnt a required item, then return
+				if (!items.contains(item)) return;
 				
 				if (event.isShiftClick())
 				{
