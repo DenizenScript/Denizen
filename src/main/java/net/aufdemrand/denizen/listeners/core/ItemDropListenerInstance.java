@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemDropListenerType.ItemDropType;
-import net.aufdemrand.denizen.utilities.RandomGenerator;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -206,7 +206,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		dB.echoDebug("...within region");
 		
 		dB.echoDebug("...trying to drop item");
-		if (RandomGenerator.nextInt(101) < dropRate) {
+		if (Utilities.getRandom().nextInt(101) < dropRate) {
 			dB.echoDebug("...item should drop now");
 			event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), item);
 			qtyDropped++;
@@ -232,7 +232,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		}
 		dB.echoDebug("...within region");
 		
-		if (RandomGenerator.nextInt(101) < dropRate) {
+		if (Utilities.getRandom().nextInt(101) < dropRate) {
 			event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
 			qtyDropped++;
 			dB.echoDebug("...item dropped");
@@ -257,7 +257,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		}
 		dB.echoDebug("...within region");
 		
-		if (RandomGenerator.nextInt(101) < dropRate) {
+		if (Utilities.getRandom().nextInt(101) < dropRate) {
 			event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
 			qtyDropped++;
 			dB.echoDebug("...item dropped");

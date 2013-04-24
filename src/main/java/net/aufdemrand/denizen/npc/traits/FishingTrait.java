@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.npc.traits;
 import java.util.ArrayList;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.RandomGenerator;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -146,7 +146,7 @@ public class FishingTrait extends Trait {
         victor = normalizeVector(victor);
         v = v + (.5 * Math.pow(hangtime, 2));   
         //Random rand = new Random(1234);
-        v = v+ (RandomGenerator.nextDouble() - .8)/2;
+        v = v+ (Utilities.getRandom().nextDouble() - .8)/2;
         victor = victor.multiply(v / 20.0);
 
         Projectile theHook = (Projectile) fishHook.getBukkitEntity();

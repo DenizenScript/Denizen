@@ -1,16 +1,16 @@
 package net.aufdemrand.denizen.tags.core;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.utilities.RandomGenerator;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
 
 public class UtilTags implements Listener {
 
@@ -42,7 +42,7 @@ public class UtilTags implements Listener {
                             max = store;
                         }
 
-                        event.setReplaced(String.valueOf(RandomGenerator.randInt(min, max)));
+                        event.setReplaced(String.valueOf(Utilities.getRandom().nextInt(max - min + 1) + min));
                     }
                 }
             }

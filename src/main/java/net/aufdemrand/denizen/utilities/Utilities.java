@@ -30,11 +30,13 @@ import org.bukkit.util.Vector;
  */
 public class Utilities {
 
+    static Random random = new Random();
+	
     public static Location getWalkableLocationNear(Location location, int range) {
         Location returnable;
 
-        int selected_x = RandomGenerator.nextInt(range * 2);
-        int selected_z = RandomGenerator.nextInt(range * 2);
+        int selected_x = random.nextInt(range * 2);
+        int selected_z = random.nextInt(range * 2);
         returnable = location.add(selected_x - range, 1, selected_z - range);
 
         if (!isWalkable(returnable)) return getWalkableLocationNear(location, range);
@@ -580,6 +582,10 @@ public class Utilities {
         }
 
         return files;
+    }
+    
+    public static Random getRandom() {
+    	return random;
     }
 
 }
