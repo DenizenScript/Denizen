@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemDropListenerType.ItemDropType;
+import net.aufdemrand.denizen.utilities.RandomGenerator;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -36,8 +37,6 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 	Integer dropRate = 100;
 	Integer quantity = 1;
 	Integer qtyDropped = 0;
-	
-	Random r = new Random();
 	
 	@Override
 	public void constructed() {
@@ -154,7 +153,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		dropRate = (Integer) get("dropRate");
 		quantity = (Integer) get("quantity");
 		qtyDropped = (Integer) get("qtyDropped");
-		r = (Random) get("r");
+		//r = (Random) get("r");
 		
 	}
 
@@ -171,7 +170,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		store("dropRate", dropRate);
 		store("quantity", quantity);
 		store("qtyDropped", qtyDropped);
-		store("r", r);
+		//store("r", r);
 	}
 
 	@Override
@@ -207,7 +206,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		dB.echoDebug("...within region");
 		
 		dB.echoDebug("...trying to drop item");
-		if (r.nextInt(101) < dropRate) {
+		if (RandomGenerator.nextInt(101) < dropRate) {
 			dB.echoDebug("...item should drop now");
 			event.getEntity().getWorld().dropItem(event.getEntity().getLocation(), item);
 			qtyDropped++;
@@ -233,7 +232,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		}
 		dB.echoDebug("...within region");
 		
-		if (r.nextInt(101) < dropRate) {
+		if (RandomGenerator.nextInt(101) < dropRate) {
 			event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
 			qtyDropped++;
 			dB.echoDebug("...item dropped");
@@ -258,7 +257,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		}
 		dB.echoDebug("...within region");
 		
-		if (r.nextInt(101) < dropRate) {
+		if (RandomGenerator.nextInt(101) < dropRate) {
 			event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
 			qtyDropped++;
 			dB.echoDebug("...item dropped");

@@ -5,11 +5,11 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.RandomGenerator;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
-import java.util.Random;
 
 /**
  * Randomly selects a random script entry from the proceeding entries, discards
@@ -74,8 +74,7 @@ public class RandomCommand extends AbstractCommand {
         Integer possibilities = (Integer) scriptEntry.getObject("possibilities");
         ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
 
-		Random random = new Random();
-		int selected = random.nextInt(possibilities);
+		int selected = RandomGenerator.nextInt(possibilities);
 		ScriptEntry keeping = null;
 		
 		dB.echoDebug("...random number generator selected '%s'", String.valueOf(selected + 1));

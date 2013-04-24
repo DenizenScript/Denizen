@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.utilities.RandomGenerator;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 
 import org.bukkit.event.EventHandler;
@@ -9,7 +10,6 @@ import org.bukkit.event.Listener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 import java.util.UUID;
 
 public class UtilTags implements Listener {
@@ -42,8 +42,7 @@ public class UtilTags implements Listener {
                             max = store;
                         }
 
-                        Random rand = new Random();
-                        event.setReplaced(String.valueOf(rand.nextInt(max - min + 1) + min));
+                        event.setReplaced(String.valueOf(RandomGenerator.randInt(min, max)));
                     }
                 }
             }

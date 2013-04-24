@@ -32,10 +32,9 @@ public class Utilities {
 
     public static Location getWalkableLocationNear(Location location, int range) {
         Location returnable;
-        Random range_random  = new Random();
 
-        int selected_x = range_random.nextInt(range * 2);
-        int selected_z = range_random.nextInt(range * 2);
+        int selected_x = RandomGenerator.nextInt(range * 2);
+        int selected_z = RandomGenerator.nextInt(range * 2);
         returnable = location.add(selected_x - range, 1, selected_z - range);
 
         if (!isWalkable(returnable)) return getWalkableLocationNear(location, range);

@@ -3,10 +3,10 @@ package net.aufdemrand.denizen.npc.activities.core;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.activities.AbstractActivity;
+import net.aufdemrand.denizen.utilities.RandomGenerator;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -94,12 +94,12 @@ public class WanderActivity extends AbstractActivity implements Listener {
 
 	public Location getNewLocation(double X, double Y, double Z, World world, int radius, int depth) {
 		Location newLocation = new Location(world, X, Y, Z);
-		Random intRandom = new Random();
-		int randomX = intRandom.nextInt(radius * 2) - radius;
-		int randomZ = intRandom.nextInt(radius * 2) - radius;
+		
+		int randomX = RandomGenerator.nextInt(radius * 2) - radius;
+		int randomZ = RandomGenerator.nextInt(radius * 2) - radius;
 		int randomY = 0;
 
-		if (depth > 1) randomY = intRandom.nextInt(depth * 2) - depth;
+		if (depth > 1) randomY = RandomGenerator.nextInt(depth * 2) - depth;
 		else randomY = 2;
 
 		newLocation.setX(newLocation.getX() + randomX);
