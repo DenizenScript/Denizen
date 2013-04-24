@@ -166,9 +166,9 @@ public class PlayerTags implements Listener {
             if (subType.equalsIgnoreCase("NPC"))
             {
                 if (specifier.equalsIgnoreCase("NAME"))
-                    event.setReplaced(String.valueOf(Utilities.getClosestNPC(p.getLocation(), range).getId()));
-                else
                     event.setReplaced(String.valueOf(Utilities.getClosestNPC(p.getLocation(), range).getName()));
+                else
+                    event.setReplaced(String.valueOf(Utilities.getClosestNPC(p.getLocation(), range).getId()));
             }
         }
 
