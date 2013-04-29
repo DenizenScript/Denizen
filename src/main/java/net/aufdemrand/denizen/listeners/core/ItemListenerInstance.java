@@ -60,7 +60,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			}
 		}
 		
-		if (items.isEmpty()) {
+		if (items.isEmpty() && !type.name().equalsIgnoreCase("FISH")) {
 			dB.echoError("Missing ITEMS argument!");
 			cancel();
 		}
