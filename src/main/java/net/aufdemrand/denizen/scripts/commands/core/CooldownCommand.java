@@ -109,11 +109,11 @@ public class CooldownCommand extends AbstractCommand {
         Type type = (Type) scriptEntry.getObject("type");
 
         // Report to dB
-        dB.report(getName(),
-                aH.debugObj("Type", type.toString())
-                        + script.debug()
-                        + (type == Type.PLAYER ? aH.debugObj("Player", scriptEntry.getPlayer().getName()) : "")
-                        + duration.debug());
+        //dB.report(getName(),
+        //        aH.debugObj("Type", type.toString())
+        //                + script.debug()
+        //                + (type == Type.PLAYER ? aH.debugObj("Player", scriptEntry.getPlayer().getName()) : "")
+        //                + duration.debug());
 
         // Perform cooldown
         if (type == Type.PLAYER)
