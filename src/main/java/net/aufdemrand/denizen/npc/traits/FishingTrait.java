@@ -39,6 +39,10 @@ public class FishingTrait extends Trait {
 	Location fishingSpot = null;
 	EntityFishingHook fishHook = null;
 	EntityItem fish = null;
+	
+	@Persist("catch chance")
+	int catchPercent = 65;
+	
 	int reelCount = 100;
 	int castCount = 0;
 	
@@ -165,7 +169,7 @@ public class FishingTrait extends Trait {
             fishHook.getBukkitEntity().remove();
         } catch(Exception e){ }
         
-        if (chance>65 && fishHook != null && catchFish) {
+        if (chance>catchPercent && fishHook != null && catchFish) {
             try{
                 fish.getBukkitEntity().remove();
             } catch(Exception e) { }
@@ -241,6 +245,10 @@ public class FishingTrait extends Trait {
     
     public void setCatchFish(Boolean catchFish) {
     	this.catchFish = catchFish;
+    }    
+    
+    public void setCatchPercent(int catchPercent) {
+    	this.catchPercent = catchPercent;
     }
 
 }

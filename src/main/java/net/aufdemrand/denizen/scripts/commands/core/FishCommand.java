@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.npc.traits.FishingTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
@@ -20,6 +21,7 @@ public class FishCommand extends AbstractCommand {
 		Location location = null;
 		Boolean stopping = false;
 		Boolean catchFish = false;
+		int catchPercent = 65;
 		
 		for (String arg : scriptEntry.getArguments()) {
 			if (aH.matchesLocation(arg)) {
@@ -33,12 +35,17 @@ public class FishCommand extends AbstractCommand {
 				stopping = true;
 				dB.echoDebug("...stopping");
 				continue;
+			} else if (aH.matchesValueArg("CATCHPERCENT, PERCENT", arg, ArgumentType.Integer)) {
+				catchPercent = aH.getIntegerFrom(arg);
+				dB.echoDebug("...set catch percent: " + catchPercent);
 			} else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+
 		}
 		
 		scriptEntry.addObject("location", location)
 			.addObject("stopping", stopping)
-			.addObject("catchFish", catchFish);
+			.addObject("catchFish", catchFish)
+			.addObject("catchPercent", catchPercent);
 	}
 
 	@Override
@@ -46,6 +53,7 @@ public class FishCommand extends AbstractCommand {
 			throws CommandExecutionException {
 		Boolean stopping = (Boolean) scriptEntry.getObject("stopping");
 		Boolean catchFish = (Boolean) scriptEntry.getObject("catchFish");
+		int catchPercent = (Integer) scriptEntry.getObject("catchPercent");
 		NPC npc = scriptEntry.getNPC().getCitizen();
 		FishingTrait trait = new FishingTrait();
 		
@@ -64,9 +72,9 @@ public class FishCommand extends AbstractCommand {
 		}
 		
 		trait.startFishing(location);
-		if (catchFish) {
-			trait.setCatchFish(true);
-		}
+		trait.setCatchPercent(catchPercent);
+		if (catchFish) trait.setCatchFish(true);
+		
 		return;
 		
 	}

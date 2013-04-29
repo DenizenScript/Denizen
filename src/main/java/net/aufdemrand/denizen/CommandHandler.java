@@ -501,6 +501,10 @@ public class CommandHandler {
         	trait.setCatchFish(true);
         }
         
+        if (args.hasValueFlag("percent")) {
+        	trait.setCatchPercent(args.getFlagInteger("percent"));
+        }
+        
         if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
