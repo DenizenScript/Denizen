@@ -145,6 +145,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(ListenCommand.class, 
         		"LISTEN", "listen [listener_type] [id:listener_id] (...)  +--> see documentation - http://bit.ly/XJlKwm", 2);
         
+        registerCoreMember(LogCommand.class, 
+        		"LOG", "log [\"message\"] (type:severe|info|warning|fine|finer|finest) [file:filename]", 2);
+        
         registerCoreMember(LookCommand.class, 
         		"LOOK", "look (player) [location:x,y,z,world]", 1);
         
@@ -164,7 +167,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"NEW", "new itemstack [item:material] (qty:#)", 2);
         
         registerCoreMember(OxygenCommand.class, 
-        		"OXYGEN", "oxygen (type:maximum|remaining) (mode:set|add|remove) [qty:#]", 2);
+        		"OXYGEN", "oxygen (type:maximum|remaining) (mode:set|add|remove) [qty:#]", 1);
         
         registerCoreMember(PlaySoundCommand.class, 
                 "PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
