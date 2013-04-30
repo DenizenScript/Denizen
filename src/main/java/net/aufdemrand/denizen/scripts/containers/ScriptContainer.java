@@ -98,13 +98,13 @@ public class ScriptContainer {
         List<ScriptEntry> list = new ArrayList<ScriptEntry>();
         if (path == null) path = "script";
         List<String> stringEntries = contents.getStringList(path.toUpperCase());
-        if (stringEntries == null || stringEntries.size() == 0) return list;
+        if (stringEntries == null || stringEntries.isEmpty()) return list;
         list = ScriptBuilder.buildScriptEntries(stringEntries, this, player, npc);
         return list;
     }
 
     public boolean checkCooldown(Player player) {
-        return DenizenAPI._commandRegistry().get(CooldownCommand.class).checkCooldown(player.getName(), name);
+        return CooldownCommand.checkCooldown(player.getName(), name);
     }
 
 }

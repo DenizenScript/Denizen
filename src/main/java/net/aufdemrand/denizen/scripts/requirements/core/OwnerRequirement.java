@@ -11,11 +11,7 @@ public class OwnerRequirement extends AbstractRequirement{
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
-		if (context.getNPC().getCitizen().getTrait(Owner.class)
-                .getOwner().equalsIgnoreCase(context.getPlayer().getName()))
-			return true;
-
-		return false;
+		return context.getNPC().getCitizen().getTrait(Owner.class).isOwnedBy(context.getPlayer());
 	}
 
 }

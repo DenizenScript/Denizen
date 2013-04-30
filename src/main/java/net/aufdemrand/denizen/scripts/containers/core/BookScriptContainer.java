@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.arguments.dItem;
 
 import org.bukkit.Material;
@@ -11,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.List;
+import net.aufdemrand.denizen.tags.TagManager;
 
 public class BookScriptContainer extends ScriptContainer {
 	
@@ -27,19 +27,15 @@ public class BookScriptContainer extends ScriptContainer {
         // Get current ItemMeta from the book
         BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
         
-        
-
         if (contains("TITLE")) {
         	String title = getString("TITLE");
-        	title = DenizenAPI.getCurrentInstance().tagManager()
-                    .tag(player, npc, title, false);
+        	title = TagManager.tag(player, npc, title, false);
             bookInfo.setTitle(title);
         }
         
         if (contains("AUTHOR")) {
         	String author = getString("AUTHOR");
-        	author = DenizenAPI.getCurrentInstance().tagManager()
-                     .tag(player, npc, author, false);
+        	author = TagManager.tag(player, npc, author, false);
             bookInfo.setAuthor(author);
         }
 
@@ -47,8 +43,7 @@ public class BookScriptContainer extends ScriptContainer {
             List<String> pages = getStringList("TEXT");
 
             for (String page : pages) {
-            	page = DenizenAPI.getCurrentInstance().tagManager()
-                       .tag(player, npc, page, false);
+            	page = TagManager.tag(player, npc, page, false);
                 bookInfo.addPage(page);
             }
         }

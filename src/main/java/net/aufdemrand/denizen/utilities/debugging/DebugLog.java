@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.aufdemrand.denizen.utilities.debugging;
 
 import java.io.PrintWriter;
@@ -18,7 +14,7 @@ import java.util.logging.Logger;
  *
  * Handles debug logs
  *
- * @uathor SpaceEmotion
+ * @author SpaceEmotion
  */
 public class DebugLog extends Logger {
     private final static DebugFormatter formatter = new DebugFormatter();
