@@ -101,7 +101,6 @@ public class AnchorCommand extends AbstractCommand {
                 npc.getCitizen().getTrait(Anchors.class)
                         .removeAnchor(npc.getCitizen().getTrait(Anchors.class)
                                 .getAnchor(id));
-                return;
         }
 
     }

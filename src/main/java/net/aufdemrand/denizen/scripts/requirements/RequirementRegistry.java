@@ -90,6 +90,9 @@ public class RequirementRegistry implements DenizenRegistry {
         registerCoreMember(PoweredRequirement.class, 
         		"ISPOWERED", "ispowered [location:x,y,z,world]", 1);
         
+        registerCoreMember(OxygenRequirement.class, 
+        		"OXYGEN", "oxygen (range:below|equals|above) [qty:#]", 1);
+        
         registerCoreMember(ProcedureRequirement.class, 
         		"PROCEDURE", "procedure [script:procedure_script]", 1);
         

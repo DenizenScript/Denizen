@@ -6,14 +6,11 @@ import java.util.*;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.minecraft.server.v1_5_R2.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_5_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_5_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
@@ -63,6 +60,17 @@ public class Utilities {
         }
         return output;
     }
+	
+	public static String[] wrapWords(String text, int width) {
+		StringBuilder sb = new StringBuilder(text);
+		
+		int i = 0;
+		while (i + width < sb.length() && (i = sb.lastIndexOf(" ", i + width)) != -1) {
+			sb.replace(i, i + 1, "\n");
+		}
+		
+		return sb.toString().split("\n");
+	}
 
     /**
      *

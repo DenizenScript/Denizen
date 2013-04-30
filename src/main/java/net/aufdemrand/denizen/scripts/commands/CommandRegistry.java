@@ -163,6 +163,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(NewCommand.class, 
         		"NEW", "new itemstack [item:material] (qty:#)", 2);
         
+        registerCoreMember(OxygenCommand.class, 
+        		"OXYGEN", "oxygen (type:maximum|remaining) (mode:set|add|remove) [qty:#]", 2);
+        
         registerCoreMember(PlaySoundCommand.class, 
                 "PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
         
