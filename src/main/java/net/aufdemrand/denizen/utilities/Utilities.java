@@ -7,12 +7,13 @@ import java.util.*;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.minecraft.server.v1_5_R2.EntityLiving;
+import net.citizensnpcs.api.CitizensAPI;
+import net.minecraft.server.v1_5_R3.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_5_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_5_R2.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_5_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -28,7 +29,8 @@ import org.bukkit.util.Vector;
 public class Utilities {
 
     public static Location getWalkableLocationNear(Location location, int range) {
-        Location returnable;
+    	
+    	Location returnable;
         Random range_random  = new Random();
 
         int selected_x = range_random.nextInt(range * 2);
@@ -265,7 +267,7 @@ public class Utilities {
 
         else
         {
-            net.minecraft.server.v1_5_R2.Entity handle = ((CraftEntity) entity).getHandle();
+            net.minecraft.server.v1_5_R3.Entity handle = ((CraftEntity) entity).getHandle();
             handle.yaw = (float) yaw;
             handle.pitch = (float) pitch;
         }

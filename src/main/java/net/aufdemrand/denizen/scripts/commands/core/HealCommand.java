@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import org.bukkit.craftbukkit.v1_5_R2.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
