@@ -186,7 +186,7 @@ public class ScriptQueue implements Listener {
         if (!is_stopping) {
             is_stopping = true;
             List<ScriptEntry> entries = lastEntryExecuted.getScript()
-                    .getContainer().getEntries(lastEntryExecuted.getPlayer(), lastEntryExecuted.getNPC(), "on queue end");
+                    .getContainer().getBaseEntries(lastEntryExecuted.getPlayer(), lastEntryExecuted.getNPC(), "on queue end");
             if (!entries.isEmpty())
                 scriptEntries.addAll(entries);
             else {
@@ -283,7 +283,7 @@ public class ScriptQueue implements Listener {
 
     public ScriptQueue injectEntries(List<ScriptEntry> entries, int position) {
         if (position > scriptEntries.size() || position < 0) position = 1;
-        if (scriptEntries.size() == 0) position = 0;
+        if (scriptEntries.isEmpty()) position = 0;
         scriptEntries.addAll(position, entries);
         return this;
 
@@ -305,7 +305,7 @@ public class ScriptQueue implements Listener {
 
     public ScriptQueue injectEntry(ScriptEntry entry, int position) {
         if (position > scriptEntries.size() || position < 0) position = 1;
-        if (scriptEntries.size() == 0) position = 0;
+        if (scriptEntries.isEmpty()) position = 0;
         scriptEntries.add(position, entry);
         return this;
     }

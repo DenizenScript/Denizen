@@ -33,7 +33,7 @@ public class ActionHandler {
                         + (player != null ? aH.debugObj("Player", player.getName()) : ""));
 
         // Fetch script from Actions
-        List<ScriptEntry> script = assignment.getEntries(player, npc, "actions.on " + actionName);
+        List<ScriptEntry> script = assignment.getBaseEntries(player, npc, "actions.on " + actionName);
         if (script.isEmpty()) return false;
 
         dB.echoDebug(DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());

@@ -7,8 +7,6 @@ import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
-import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
-import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
@@ -65,7 +63,7 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     public boolean parse(dNPC npc, Player player, InteractScriptContainer script, String id) {
         if (npc == null || player == null || script == null) return false;
 
-        List<ScriptEntry> entries = script.getEntriesFor(this.getClass(), player, npc, id);
+        List<ScriptEntry> entries = script.getEntriesFor(this, player, npc, id);
         if (entries.isEmpty()) return false;
 
         dB.echoDebug(DebugElement.Header, "Parsing " + name + " trigger: " + npc.getName() + "/" + player.getName());

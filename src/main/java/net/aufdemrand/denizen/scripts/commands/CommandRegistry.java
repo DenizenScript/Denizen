@@ -65,7 +65,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"CAST", "cast [effect] (duration:#{60s}) (power:#{1}) (target(s):npc|player|npc.#|player.player_name|entity_name)", 1);
         
         registerCoreMember(ChatCommand.class, 
-        		"CHAT", "chat [\"chat text\"] (npcid:#) (target(s):npc.#|player.name{attached player})", 1);
+        		"CHAT", "chat [\"chat text\"] (npcid:#) (target(s):npc.#|player.name{attached player}) (inrange)", 1);
         
         registerCoreMember(ChunkLoadCommand.class,
                 "CHUNKLOAD", "chunkload ({add}|remove|removeall) [location:x,y,z,world] (duration:{-1s})", 1);

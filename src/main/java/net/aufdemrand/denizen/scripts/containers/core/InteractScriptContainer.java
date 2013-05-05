@@ -129,7 +129,7 @@ public class InteractScriptContainer extends ScriptContainer {
      * <p>Note: This is handled internally with the parse() method in AbstractTrigger, so for
      * basic triggers, you probably don't need to even call this.</p>
      *
-     * @param trigger  the class of the Trigger to use
+     * @param trigger  the trigger to use
      * @param player  the Player involved
      * @param npc  the NPC involved
      * @param id  the id of the Trigger Script, optional
@@ -137,11 +137,11 @@ public class InteractScriptContainer extends ScriptContainer {
      * @return  a list of ScriptEntries from the script or an empty list if no script was found
      *
      */
-    public List<ScriptEntry> getEntriesFor(Class<? extends AbstractTrigger> trigger,
+    public List<ScriptEntry> getEntriesFor(AbstractTrigger trigger,
                                            Player player, dNPC npc, String id) {
         // Get the trigger name
         String triggerName = DenizenAPI.getCurrentInstance()
-                .getTriggerRegistry().get(trigger).getName().toUpperCase();
+                .getTriggerRegistry().get(trigger.getClass()).getName().toUpperCase();
         // Check for entries
         if (contains("STEPS." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
                 + triggerName + " TRIGGER."
@@ -150,7 +150,7 @@ public class InteractScriptContainer extends ScriptContainer {
             return getEntries(player, npc,
                     "STEPS." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
                             + triggerName + " TRIGGER."
-                            + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT"));
+                            + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT"), trigger);
             // No entries, so just return an empty list to avoid NPEs
         } else {
             return Collections.emptyList();

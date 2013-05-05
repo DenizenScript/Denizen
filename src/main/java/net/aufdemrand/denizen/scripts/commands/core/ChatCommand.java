@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.triggers.core.ProximityTrigger;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -53,6 +54,7 @@ public class ChatCommand extends AbstractCommand {
         // Create empty speech context
         SpeechContext context = new SpeechContext("");
         boolean noTargets = false;
+        boolean inRange = false;
 
         if (scriptEntry.getNPC() != null)
             context.setTalker(scriptEntry.getNPC().getEntity());
@@ -86,6 +88,8 @@ public class ChatCommand extends AbstractCommand {
                     //
                     dB.echoError("Invalid TALKER! Perhaps the NPC doesn't exist?");
 
+            } else if (aH.matchesValueArg("INRANGE", arg, ArgumentType.Custom)) {
+                inRange = true;
             } else {
                 context.setMessage(arg);
             }
@@ -103,18 +107,24 @@ public class ChatCommand extends AbstractCommand {
 
         // Add context to the ScriptEntry to pass along to execute().
         scriptEntry.addObject("context", context);
-
+        scriptEntry.addObject("inrange", inRange);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-
         SpeechContext context = (SpeechContext) scriptEntry.getObject("context");
-
+        boolean inRange = (Boolean) scriptEntry.getObject("inrange");
+        
         dB.report(getName(),
                 aH.debugObj("Talker", context.getTalker().getName())
                         + aH.debugObj("Direct recipients?", String.valueOf(context.hasRecipients()))
-                        + aH.debugObj("Message", context.getMessage()));
+                        + aH.debugObj("Message", context.getMessage())
+                        + aH.debugObj("InRange", inRange));
+		
+        if(inRange && scriptEntry.getTrigger() != null && scriptEntry.getTrigger() instanceof ProximityTrigger) {
+            ProximityTrigger trigger = (ProximityTrigger) scriptEntry.getTrigger();
+            if(trigger.hasExitedProximityOf(scriptEntry.getPlayer(), scriptEntry.getNPC())) return;
+        }
 
         // If the talker is an NPC, use the NPC object to speak
         if (CitizensAPI.getNPCRegistry().isNPC(context.getTalker().getEntity()))

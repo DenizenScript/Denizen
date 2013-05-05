@@ -303,7 +303,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     //
     // Ensures that a Player who has entered proximity of an NPC also fires Exit Proximity.
     //
-    private boolean hasExitedProximityOf(Player player, dNPC npc) {
+    public boolean hasExitedProximityOf(Player player, dNPC npc) {
         // If Player hasn't entered proximity, it's not in the Map. Return true, must be exited.
         Set<Integer> existing = proximityTracker.get(player);
         if (existing == null) return true;

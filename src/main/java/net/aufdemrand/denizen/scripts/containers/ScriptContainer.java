@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 
 public class ScriptContainer {
 
@@ -91,15 +92,19 @@ public class ScriptContainer {
     }
 
     public List<ScriptEntry> getBaseEntries(Player player, dNPC npc) {
-        return getEntries(player, npc, null);
+        return getBaseEntries(player, npc, null);
     }
 
-    public List<ScriptEntry> getEntries(Player player, dNPC npc, String path) {
+    public List<ScriptEntry> getBaseEntries(Player player, dNPC npc, String path) {
+        return getEntries(player, npc, path, null);
+    }
+
+    public List<ScriptEntry> getEntries(Player player, dNPC npc, String path, AbstractTrigger trigger) {
         List<ScriptEntry> list = new ArrayList<ScriptEntry>();
         if (path == null) path = "script";
         List<String> stringEntries = contents.getStringList(path.toUpperCase());
         if (stringEntries == null || stringEntries.isEmpty()) return list;
-        list = ScriptBuilder.buildScriptEntries(stringEntries, this, player, npc);
+        list = ScriptBuilder.buildScriptEntries(stringEntries, this, player, npc, trigger);
         return list;
     }
 

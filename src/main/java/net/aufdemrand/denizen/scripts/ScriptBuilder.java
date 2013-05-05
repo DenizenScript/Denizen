@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 
 public class ScriptBuilder {
 
@@ -35,6 +36,10 @@ public class ScriptBuilder {
      */
 
     public static List<ScriptEntry> buildScriptEntries(List<String> contents, ScriptContainer parent, Player player, dNPC npc) {
+        return buildScriptEntries(contents, parent, player, npc, null);
+    }
+    
+    public static List<ScriptEntry> buildScriptEntries(List<String> contents, ScriptContainer parent, Player player, dNPC npc, AbstractTrigger trigger) {
         List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
         if (contents == null || contents.isEmpty()) {
@@ -70,8 +75,7 @@ public class ScriptBuilder {
                 String[] args = aH.buildArgs(scriptEntry[1]);
                 if (dB.showScriptBuilder)
                     dB.echoDebug("Adding '" + scriptEntry[0] + "'  Args: " + Arrays.toString(args));
-                ScriptEntry newEntry = new ScriptEntry(scriptEntry[0], args, parent).setPlayer(player).setNPC(npc);
-                scriptCommands.add(newEntry);
+                scriptCommands.add(new ScriptEntry(scriptEntry[0], args, parent).setPlayer(player).setNPC(npc).setTrigger(trigger));
             } catch (Exception e) {
                 if (dB.showStackTraces) e.printStackTrace();
             }

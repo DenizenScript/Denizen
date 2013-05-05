@@ -8,6 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 
 
 /**
@@ -37,6 +38,8 @@ public class ScriptEntry {
 	private dNPC npc = null;
 
     private Script script = null;
+	
+	private AbstractTrigger trigger = null;
 
 	private ScriptQueue queue = null;
 	private List<String> args = null;
@@ -144,6 +147,10 @@ public class ScriptEntry {
 	public Script getScript() {
         return script;
 	}
+	
+	public AbstractTrigger getTrigger() {
+		return trigger;
+	}
 
 	public ScriptQueue getResidingQueue() {
 		return queue;
@@ -192,6 +199,11 @@ public class ScriptEntry {
 	
 	public ScriptEntry setScript(String scriptName) {
 		this.script = Script.valueOf(scriptName);
+		return this;
+	}
+	
+	public ScriptEntry setTrigger(AbstractTrigger trigger) {
+		this.trigger = trigger;
 		return this;
 	}
 

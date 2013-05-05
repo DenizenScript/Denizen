@@ -54,7 +54,7 @@ public class WorldScriptHelper implements Listener {
             if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
 
             // Fetch script from Event
-            List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
+            List<ScriptEntry> entries = script.getBaseEntries(player, npc, "events.on " + eventName);
             if (entries.isEmpty()) continue;
 
             dB.report("Event",
