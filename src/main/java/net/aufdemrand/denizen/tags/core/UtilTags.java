@@ -59,14 +59,14 @@ public class UtilTags implements Listener {
                 if (subType.equalsIgnoreCase("FROM"))
                     from = Integer.valueOf(subTypeContext);
             } catch (NumberFormatException e) { }
-            int to = item_to_trim.length();
+            int to = item_to_trim.length() + 1;
             try {
                 if (specifier.equalsIgnoreCase("TO"))
                     to = Integer.valueOf(specifierContext);
             } catch (NumberFormatException e) { }
 
             if (to > item_to_trim.length())
-                to = item_to_trim.length()+1;
+                to = item_to_trim.length() + 1;
 
             event.setReplaced(item_to_trim.substring(from - 1, to - 1));
         }
