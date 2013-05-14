@@ -31,7 +31,7 @@ public class PermissionCommand extends AbstractCommand {
             } else if (aH.matchesValueArg("GROUP", arg, ArgumentType.String)) {
                 group = aH.getStringFrom(arg);
             } else if (aH.matchesValueArg("WORLD", arg, ArgumentType.String)) {
-                group = aH.getStringFrom(arg);
+                world = aH.getStringFrom(arg);
             } else permission = arg;
 
         }

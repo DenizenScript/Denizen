@@ -27,7 +27,7 @@ public class GroupCommand extends AbstractCommand {
             if (aH.matchesArg("ADD, REMOVE", arg)) {
                 action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
             } else if (aH.matchesValueArg("WORLD", arg, ArgumentType.String)) {
-                group = aH.getStringFrom(arg);
+                world = aH.getStringFrom(arg);
             } else group = arg;
         }
 
