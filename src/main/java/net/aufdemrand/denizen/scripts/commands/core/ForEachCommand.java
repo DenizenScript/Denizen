@@ -78,7 +78,7 @@ public class ForEachCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(getName(),
-                aH.debugObj("Type", scriptEntry.getPlayer().getName())
+                aH.debugObj("Type", type.toString())
                         + (type == Type.LOCATION ? loc_1.debug() + loc_2.debug() : "")
                         + script.debug());
 
