@@ -354,6 +354,8 @@ public class FlagManager {
         @Override
         public String toString() {
             checkExpired();
+            // Possibly use reflection to check whether dList or dElement is calling this?
+            // If dList, return fl@..., if dElement, return f@...
             return (flagOwner == null ? "fl@" + flagName : "fl[" + flagOwner + "]@" + flagName);
         }
 

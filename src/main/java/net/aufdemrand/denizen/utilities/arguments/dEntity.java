@@ -3,10 +3,9 @@ package net.aufdemrand.denizen.utilities.arguments;
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
-import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.nbt.NBTItem;
+import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
 import net.minecraft.server.v1_5_R2.Entity;
 import org.bukkit.Bukkit;
@@ -17,6 +16,8 @@ import org.bukkit.craftbukkit.v1_5_R2.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,59 +26,62 @@ import java.util.regex.Pattern;
 
 public class dEntity implements dScriptArgument {
 
+
     /////////////////////
     //   STATIC METHODS
     /////////////////
 
-    public static Map<String, dEntity> entities = new HashMap<String, dEntity>();
+    public static Map<String, dEntity> uniqueObjects = new HashMap<String, dEntity>();
 
-    /**
-     * Gets a saved location based on an Id.
-     *
-     * @param id  the Id key of the location
-     * @return  the Location associated
-     */
-    public static dEntity getSavedEntity(String id) {
-        if (entities.containsKey(id.toUpperCase()))
-            return entities.get(id.toUpperCase());
+    public static boolean isSaved(String id) {
+        return uniqueObjects.containsKey(id.toUpperCase());
+    }
+
+    public static boolean isSaved(dEntity entity) {
+        return uniqueObjects.containsValue(entity);
+    }
+
+    public static dEntity getSaved(String id) {
+        if (uniqueObjects.containsKey(id.toUpperCase()))
+            return uniqueObjects.get(id.toUpperCase());
         else return null;
     }
 
-    public static void saveEntityAs(dEntity entity, String id) {
-        if (entity == null) return;
-        entities.put(id.toUpperCase(), entity);
-    }
-
-    /**
-     * Checks if there is a saved item with this Id.
-     *
-     * @param id  the Id to check
-     * @return  true if it exists, false if not
-     */
-    public static boolean isSavedEntity(String id) {
-        return entities.containsKey(id.toUpperCase());
-    }
-
-    public static String isSavedEntity(dEntity entity) {
-        for (Map.Entry<String, dEntity> i : entities.entrySet())
+    public static String getSaved(dEntity entity) {
+        for (Map.Entry<String, dEntity> i : uniqueObjects.entrySet())
             if (i.getValue() == entity) return i.getKey();
         return null;
     }
 
+    public static void saveAs(dEntity entity, String id) {
+        if (entity == null) return;
+        uniqueObjects.put(id.toUpperCase(), entity);
+    }
+
+    public static void remove(String id) {
+        uniqueObjects.remove(id.toUpperCase());
+    }
+
+
+    //////////////////
+    //    OBJECT FETCHER
+    ////////////////
+
     /**
-     * Gets a dEntity Object from a string form.</br>
+     * Gets a dEntity Object from a string form. </br>
      * </br>
-     * n@13 will return the entity object of NPC 13</br>
-     * e@5884 will return the entity with the entityid of 5884</br>
-     * p@aufdemrand will return the entity object of aufdemrand</br>
+     * Unique dEntities: </br>
+     * n@13 will return the entity object of NPC 13 </br>
+     * e@5884 will return the entity object for the entity with the entityid of 5884 </br>
+     * e@jimmys_pet will return the saved entity object for the id 'jimmys pet' </br>
+     * p@aufdemrand will return the entity object for aufdemrand </br>
      * </br>
-     * Note that the NPCs, Entities, and Players must be spawned,
-     * one coincidentally Players must be logged in.</br>
-     *
+     * New dEntities: </br>
+     * zombie will return an unspawned Zombie dEntity </br>
+     * super_creeper will return an unspawned custom 'Super_Creeper' dEntity </br>
      *
      * @param string  the string or dScript argument String
      * @return  a dEntity, or null
-     *
      */
     @ObjectFetcher("e")
     public static dEntity valueOf(String string) {
@@ -92,26 +96,29 @@ public class dEntity implements dScriptArgument {
                         Pattern.CASE_INSENSITIVE);
 
         Matcher m;
-
         m = entity_by_id.matcher(string);
 
         if (m.matches()) {
             String entityGroup = m.group(1);
             String entityGroupUpper = entityGroup.toUpperCase();
 
+            // NPC entity
             if (entityGroupUpper.startsWith("N@")) {
                 LivingEntity returnable = CitizensAPI.getNPCRegistry()
                         .getById(Integer.valueOf(m.group(3))).getBukkitEntity();
 
                 if (returnable != null) return new dEntity(returnable);
-                else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
+                else dB.echoError("Invalid NPC! '" + entityGroup
+                        + "' could not be found. Has it been despawned or killed?");
             }
 
+            // Player entity
             else if (entityGroupUpper.startsWith("P@")) {
                 LivingEntity returnable = aH.getPlayerFrom(m.group(3));
 
                 if (returnable != null) new dEntity(returnable);
-                else dB.echoError("Invalid Player! '" + entityGroup + "' could not be found. Has the player logged off?");
+                else dB.echoError("Invalid Player! '" + entityGroup
+                        + "' could not be found. Has the player logged off?");
             }
 
             // Assume entity
@@ -127,26 +134,31 @@ public class dEntity implements dScriptArgument {
                     if (entity != null) return new dEntity((LivingEntity) entity.getBukkitEntity());
                 }
 
-                else if (isSavedEntity(m.group(3)))
-                    return getSavedEntity(m.group(3));
+                else if (isSaved(m.group(3)))
+                    return getSaved(m.group(3));
 
                 // Got this far? Invalid entity.
-                dB.echoError("Invalid entity! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
+                dB.echoError("Invalid entity! '" + entityGroup
+                        + "' could not be found. Has it been despawned or killed?");
             }
         }
 
         ////////
-        // Match EntityType
+        // Match Entity_Type
 
         string = string.replace("e@", "");
 
         for (EntityType type : EntityType.values()) {
             if (type.name().equalsIgnoreCase(string))
+                // Construct a new 'vanilla' unspawned dEntity
                 return new dEntity(type);
         }
 
-        if (ScriptRegistry.containsScript(m.group(1), ItemScriptContainer.class)) {
-            // Get item from script
+        ////////
+        // Match Custom Entity
+
+        if (ScriptRegistry.containsScript(m.group(1), EntityScriptContainer.class)) {
+            // Construct a new custom unspawned entity from script
             return ScriptRegistry.getScriptContainerAs(m.group(1), EntityScriptContainer.class).getEntityFrom();
         }
 
@@ -155,39 +167,108 @@ public class dEntity implements dScriptArgument {
 
 
     /////////////////////
-    //   INSTANCE METHODS
-    /////////////////
-
-    private LivingEntity entity;
-    private EntityType entity_type;
+    //   CONSTRUCTORS
+    //////////////////
 
     public dEntity(LivingEntity entity) {
-        this.entity = entity;
+        if (entity != null) {
+            this.entity = entity;
+            this.entity_type = entity.getType();
+        } else dB.echoError("Entity referenced is null!");
     }
 
     public dEntity(EntityType entityType) {
-        this.entity = null;
-        this.entity_type = entityType;
+        if (entityType != null) {
+            this.entity = null;
+            this.entity_type = entityType;
+        } else dB.echoError("Entity_type referenced is null!");
     }
 
-    public void spawnAt(Location location) {
-        entity = (LivingEntity) location.getWorld().spawnEntity(location, entity_type);
-    }
+
+    /////////////////////
+    //   INSTANCE FIELDS/METHODS
+    /////////////////
+
+    private LivingEntity entity = null;
+    private EntityType entity_type = null;
+    private DespawnedEntity despawned_entity = null;
 
     public LivingEntity getBukkitEntity() {
         return entity;
     }
 
-    public boolean isAlive() {
+    public void spawnAt(Location location) {
+        // If the entity is already spawned, teleport it.
+        if (entity != null) entity.teleport(location);
+
+        else {
+            if (entity_type != null) {
+                if (despawned_entity != null) {
+                    // If entity had a custom_script, use the script to rebuild the base entity.
+                    if (despawned_entity.custom_script != null)
+                    { } // Build entity from custom script
+                    // Else, use the entity_type specified/remembered
+                    else entity = (LivingEntity) location.getWorld().spawnEntity(location, entity_type);
+
+                    entity.teleport(location);
+                    entity.getEquipment().setArmorContents(despawned_entity.equipment);
+                    entity.setHealth(despawned_entity.health);
+
+                    despawned_entity = null;
+                }
+
+                else entity = (LivingEntity) location.getWorld().spawnEntity(location, entity_type);
+            }
+
+            else dB.echoError("Cannot spawn a null dEntity!");
+        }
+    }
+
+    public void despawn() {
+        despawned_entity = new DespawnedEntity(this);
+        entity.remove();
+    }
+
+    public void respawn() {
+        if (despawned_entity != null)
+            spawnAt(despawned_entity.location);
+        else if (entity != null)
+            dB.echoDebug("Entity " + identify() + " is already spawned!");
+        else
+            dB.echoError("Cannot respawn a null dEntity!");
+
+    }
+
+    public boolean isSpawned() {
         return entity != null;
     }
 
     public dEntity rememberAs(String id) {
-        dEntity.saveEntityAs(this, id);
+        dEntity.saveAs(this, id);
         return this;
     }
 
 
+    // Used to store some information about a livingEntity while it's despawned
+    private class DespawnedEntity {
+
+        Integer health = null;
+        Location location = null;
+        ItemStack[] equipment = null;
+        String custom_script = null;
+
+        public DespawnedEntity(dEntity entity) {
+            if (entity != null) {
+                // Save some important info to rebuild the entity
+                health = entity.getBukkitEntity().getHealth();
+                location = entity.getBukkitEntity().getLocation();
+                equipment = entity.getBukkitEntity().getEquipment().getArmorContents();
+
+                if (CustomNBT.hasCustomNBT(entity.getBukkitEntity(), "denizen-script-id"))
+                    custom_script = CustomNBT.getCustomNBT(entity.getBukkitEntity(), "denizen-script-id");
+            }
+        }
+    }
 
     //////////////////////////////
     //  DSCRIPT ARGUMENT METHODS
@@ -195,6 +276,7 @@ public class dEntity implements dScriptArgument {
 
     private String prefix = "Entity";
 
+    @Override
     public String getType() {
         return "entity";
     }
@@ -217,6 +299,8 @@ public class dEntity implements dScriptArgument {
 
     @Override
     public String identify() {
+
+        // Check if entity is a Player or NPC
         if (getBukkitEntity() != null) {
             if (CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
                 return "n@" + CitizensAPI.getNPCRegistry().getNPC(getBukkitEntity()).getId();
@@ -224,12 +308,15 @@ public class dEntity implements dScriptArgument {
                 return "p@" + ((Player) getBukkitEntity()).getName();
         }
 
+        // Check if entity is a 'saved entity'
         else if (isUnique())
-            return "e@" + isSavedEntity(this);
+            return "e@" + getSaved(this);
 
-        else if (isAlive())
+            // Check if entity is spawned, therefore having a bukkit entityId
+        else if (isSpawned())
             return "e@" + getBukkitEntity().getEntityId();
 
+            // Check if an entity_type is available
         else if (entity_type != null)
             return "e@" + entity_type.name();
 
@@ -238,13 +325,7 @@ public class dEntity implements dScriptArgument {
 
     @Override
     public boolean isUnique() {
-        if (isSavedEntity(this) != null) return true;
-        else return false;
-    }
-
-    @Override
-    public String toString() {
-        return "e@" + entity.getEntityId();
+        return isSaved(this);
     }
 
     @Override
@@ -261,8 +342,8 @@ public class dEntity implements dScriptArgument {
             return new Element(entity.getCustomName()).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("type")) {
-            if (NBTItem.hasCustomNBT(getBukkitEntity(), "denizen-script-id"))
-                return new Script(NBTItem.getCustomNBT(getBukkitEntity(), "denizen-script-id"))
+            if (CustomNBT.hasCustomNBT(getBukkitEntity(), "denizen-script-id"))
+                return new Script(CustomNBT.getCustomNBT(getBukkitEntity(), "denizen-script-id"))
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(getBukkitEntity().getType().name())

@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.aufdemrand.denizen.utilities.nbt.NBTItem;
+import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemDespawnEvent;
@@ -77,13 +77,13 @@ public class EngraveCommand extends AbstractCommand implements Listener {
         switch (action) {
         case ADD:
             dB.echoDebug("Engraving '" + item.getType() + "' with an inscription of '" + target + "'.");
-            NBTItem.addCustomNBT(item, "owner", target);
-            dB.echoDebug(NBTItem.getCustomNBT(item, "owner"));
+            CustomNBT.addCustomNBT(item, "owner", target);
+            dB.echoDebug(CustomNBT.getCustomNBT(item, "owner"));
             
             return;
         case REMOVE: 
             dB.echoDebug("Removing engraving on '" + item.getType() + "'.");            
-            NBTItem.removeCustomNBT(item, "owner");
+            CustomNBT.removeCustomNBT(item, "owner");
             return;            
         }
     }
@@ -103,9 +103,9 @@ public class EngraveCommand extends AbstractCommand implements Listener {
     @EventHandler
     public void checkOwner(PlayerPickupItemEvent event) {
         ItemStack item = event.getItem().getItemStack();
-        if (NBTItem.hasCustomNBT(item, "owner")
-                && !NBTItem.getCustomNBT(item, "owner").equalsIgnoreCase(event.getPlayer().getName())) {
-            dB.echoDebug(NBTItem.getCustomNBT(item, "owner"));
+        if (CustomNBT.hasCustomNBT(item, "owner")
+                && !CustomNBT.getCustomNBT(item, "owner").equalsIgnoreCase(event.getPlayer().getName())) {
+            dB.echoDebug(CustomNBT.getCustomNBT(item, "owner"));
 
             // See why item isn't being picked up if sneaking.
             if (event.getPlayer().isSneaking()) {
@@ -140,8 +140,8 @@ public class EngraveCommand extends AbstractCommand implements Listener {
     public void stopDespawn(ItemDespawnEvent event) {
         ItemStack item = event.getEntity().getItemStack();
         // Check if the item has an engraving, otherwise carry on.
-        if (NBTItem.hasCustomNBT(item, "owner")) {
-            dB.echoDebug(NBTItem.getCustomNBT(item, "owner"));
+        if (CustomNBT.hasCustomNBT(item, "owner")) {
+            dB.echoDebug(CustomNBT.getCustomNBT(item, "owner"));
 
             // If in the delay map
             if (despawnDelay.containsKey(event.getEntity().getEntityId())) {
@@ -150,12 +150,12 @@ public class EngraveCommand extends AbstractCommand implements Listener {
                     event.setCancelled(true);
                 else 
                     // If cooled, remove from map.
-                    dB.echoDebug("Removed an ENGRAVED '" + item.getType().name() + "' which belonged to '" + NBTItem.getCustomNBT(item, "owner") + "'.");
+                    dB.echoDebug("Removed an ENGRAVED '" + item.getType().name() + "' which belonged to '" + CustomNBT.getCustomNBT(item, "owner") + "'.");
                     despawnDelay.remove(event.getEntity().getEntityId());
             } else {
                 // If not in delay map, add to delay map and cancel despawn.
                 event.setCancelled(true);
-                dB.echoDebug("Stopped despawn of an ENGRAVED '" + item + "' which belonged to '" + NBTItem.getCustomNBT(item, "owner") + "'. Will remove from world in 10 minutes.");
+                dB.echoDebug("Stopped despawn of an ENGRAVED '" + item + "' which belonged to '" + CustomNBT.getCustomNBT(item, "owner") + "'. Will remove from world in 10 minutes.");
                 despawnDelay.put(event.getEntity().getEntityId(), System.currentTimeMillis() + (1000 * 60 * 10));
             }
         }

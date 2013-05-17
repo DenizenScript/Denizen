@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.nbt.NBTItem;
+import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,44 +22,46 @@ import java.util.regex.Pattern;
 
 public class dItem implements dScriptArgument {
 
+
     /////////////////////
     //  STATIC METHODS
     /////////////////
 
-    public static Map<String, dItem> items = new HashMap<String, dItem>();
+    public static Map<String, dItem> uniqueObjects = new HashMap<String, dItem>();
 
-    /**
-     * Gets a saved item based on an Id.
-     *
-     * @param id  the Id key of the location
-     * @return  the Location associated
-     */
-    public static dItem getSavedItem(String id) {
-        if (items.containsKey(id.toLowerCase()))
-            return items.get(id.toLowerCase());
+    public static boolean isSaved(String id) {
+        return uniqueObjects.containsKey(id.toUpperCase());
+    }
+
+    public static boolean isSaved(dItem item) {
+        return uniqueObjects.containsValue(item);
+    }
+
+    public static dItem getSaved(String id) {
+        if (uniqueObjects.containsKey(id.toUpperCase()))
+            return uniqueObjects.get(id.toUpperCase());
         else return null;
     }
 
-    public static void saveItemAs(dItem item, String id) {
-        if (item == null) return;
-        items.put(id.toLowerCase(), item);
-    }
-
-    /**
-     * Checks if there is a saved item with this Id.
-     *
-     * @param id  the Id to check
-     * @return  true if it exists, false if not
-     */
-    public static boolean isSavedItem(String id) {
-        return items.containsKey(id.toLowerCase());
-    }
-
-    public static String isSavedItem(dItem item) {
-        for (Map.Entry<String, dItem> i : items.entrySet())
+    public static String getSaved(dItem item) {
+        for (Map.Entry<String, dItem> i : uniqueObjects.entrySet())
             if (i.getValue() == item) return i.getKey();
         return null;
     }
+
+    public static void saveAs(dItem item, String id) {
+        if (item == null) return;
+        uniqueObjects.put(id.toUpperCase(), item);
+    }
+
+    public static void remove(String id) {
+        uniqueObjects.remove(id.toUpperCase());
+    }
+
+
+    //////////////////
+    //    OBJECT FETCHER
+    ////////////////
 
     /**
      * Gets a Item Object from a string form.
@@ -72,7 +74,6 @@ public class dItem implements dScriptArgument {
     public static dItem valueOf(String string) {
         if (string == null) return null;
         Matcher m;
-
 
         ///////
         // Match @object format for spawned Item entities
@@ -87,17 +88,14 @@ public class dItem implements dScriptArgument {
                     if (entity.getEntityId() == Integer.valueOf(m.group(2)))
                         return new dItem(((Item) entity).getItemStack());
 
-
         ////////
         // Match @object format for saved dItems
 
         final Pattern item_by_saved = Pattern.compile("(i@)(.+)");
         m = item_by_saved.matcher(string);
 
-        // Check if it's an entity in the world
         if (m.matches())
-            return items.get(m.group(2));
-
+            return getSaved(m.group(2));
 
         ///////
         // Match item script custom items
@@ -106,7 +104,6 @@ public class dItem implements dScriptArgument {
         if (ScriptRegistry.containsScript(string, ItemScriptContainer.class))
             // Get item from script
             return ScriptRegistry.getScriptContainerAs(m.group(1), ItemScriptContainer.class).getItemFrom();
-
 
         ///////
         // Match bukkit/minecraft standard items format
@@ -162,11 +159,9 @@ public class dItem implements dScriptArgument {
     }
 
 
-    /////////////////////
-    //   INSTANCE METHODS
-    /////////////////
-
-    // Constructors
+    ///////////////
+    //   Constructors
+    /////////////
 
     public dItem(Material material) {
         item = new ItemStack(material);
@@ -187,6 +182,11 @@ public class dItem implements dScriptArgument {
     public dItem(ItemStack item) {
         this.item = item;
     }
+
+
+    /////////////////////
+    //   INSTANCE FIELDS/METHODS
+    /////////////////
 
     // Bukkit itemstack associated
 
@@ -321,22 +321,14 @@ public class dItem implements dScriptArgument {
         }
     }
 
-    public String getId() {
-        if (NBTItem.hasCustomNBT(getItemStack(), "denizen-script-id"))
-            return NBTItem.getCustomNBT(getItemStack(), "denizen-script-id");
-        else
-            return getItemStack().getType().name().toLowerCase() + ":" + getItemStack().getData().getData();
-    }
-
     public void setItemStack(ItemStack item) {
         this.item = item;
     }
 
     public dItem rememberAs(String id) {
-        dItem.saveItemAs(this, id);
+        dItem.saveAs(this, id);
         return this;
     }
-
 
 
     //////////////////////////////
@@ -357,24 +349,29 @@ public class dItem implements dScriptArgument {
 
     @Override
     public String debug() {
-        return "<G>" + prefix + "='<Y>" + getId() + "<G>'  ";
+        return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
     }
 
     @Override
     public String identify() {
-        if (isSavedItem(this) != null)
-            return "i@" + isSavedItem(this);
-        else if (item != null) {
+        // If saved item, return that
+        if (isSaved(this))
+            return "i@" + getSaved(this);
 
-        }
+        // If not a saved item, but is a custom item, return the script id
+        else if (CustomNBT.hasCustomNBT(getItemStack(), "denizen-script-id"))
+            return CustomNBT.getCustomNBT(getItemStack(), "denizen-script-id");
 
-        return null;
+        // Else, return the material name and data
+        else if (getItemStack() != null)
+            return getItemStack().getType().name().toLowerCase() + ":" + getItemStack().getData().getData();
+
+        return "null";
     }
 
     @Override
     public boolean isUnique() {
-        if (isSavedItem(this) != null) return true;
-        else return false;
+        return isSaved(this);
     }
 
     @Override
@@ -388,15 +385,8 @@ public class dItem implements dScriptArgument {
 
         if (attribute == null) return null;
 
-        // Desensitize the attribute for comparison
-        String id = getId().toLowerCase();
-
         if (attribute.startsWith("qty"))
             return new Element(String.valueOf(getItemStack().getAmount()))
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("id"))
-            return new Element(id)
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("typeid"))
@@ -420,6 +410,8 @@ public class dItem implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("material.formatted")) {
+
+            String id = item.getType().name().toLowerCase();
 
             if (id.equals("air"))
                 return new Element("nothing")
@@ -494,6 +486,11 @@ public class dItem implements dScriptArgument {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
+
+        if (attribute.startsWith("identify"))
+            return new Element(identify())
+                    .getAttribute(attribute.fulfill(1));
+
 
         return new Element(identify()).getAttribute(attribute.fulfill(1));
     }

@@ -8,7 +8,7 @@ import net.aufdemrand.denizen.utilities.arguments.dItem;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.nbt.NBTItem;
+import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -108,7 +108,7 @@ public class GiveCommand  extends AbstractCommand {
             case ITEM:
                 ItemStack is = item.getItemStack();
                 is.setAmount(amt.intValue());
-                if(engrave) is = NBTItem.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
+                if(engrave) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
 
                 HashMap<Integer, ItemStack> leftovers = scriptEntry.getPlayer().getInventory().addItem(is);
 

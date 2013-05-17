@@ -8,7 +8,7 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.nbt.NBTItem;
+import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -185,19 +185,19 @@ public class PlayerTags implements Listener {
 	            else if (subType.equalsIgnoreCase("MAX_STACK"))
 	                event.setReplaced(String.valueOf(p.getItemInHand().getMaxStackSize()));
 	            else if (subType.equalsIgnoreCase("OWNER")) {
-	                if (NBTItem.hasCustomNBT(p.getItemInHand(), "owner"))
-	                    event.setReplaced(NBTItem.getCustomNBT(p.getItemInHand(), "owner"));
+	                if (CustomNBT.hasCustomNBT(p.getItemInHand(), "owner"))
+	                    event.setReplaced(CustomNBT.getCustomNBT(p.getItemInHand(), "owner"));
 	            }
 	            else if (subType.equalsIgnoreCase("ENCHANTMENTS"))
 	            {
 	                String enchantments = null;
 	
 	                if (specifier.equalsIgnoreCase("LEVELS"))
-	                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListWithLevels();
+	                    enchantments = CustomNBT.getEnchantments(p.getItemInHand()).asDScriptListWithLevels();
 	                else if (specifier.equalsIgnoreCase("LEVELS_ONLY"))
-	                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly();
+	                    enchantments = CustomNBT.getEnchantments(p.getItemInHand()).asDScriptListLevelsOnly();
 	                else
-	                    enchantments = NBTItem.getEnchantments(p.getItemInHand()).asDScriptList();
+	                    enchantments = CustomNBT.getEnchantments(p.getItemInHand()).asDScriptList();
 	
 	                if (enchantments != null && enchantments.length() > 0)
 	                    event.setReplaced(enchantments);

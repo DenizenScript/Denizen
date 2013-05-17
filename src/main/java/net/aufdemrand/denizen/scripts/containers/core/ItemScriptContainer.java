@@ -9,8 +9,8 @@ import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.arguments.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
-import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -100,7 +100,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
 
             // Set Id of the stack
-            stack.setItemStack(NBTItem.addCustomNBT(stack.getItemStack(), "denizen-script-id", getName()));
+            stack.setItemStack(CustomNBT.addCustomNBT(stack.getItemStack(), "denizen-script-id", getName()));
 
         } catch (Exception e) {
             dB.echoError("Woah! An exception has been called with this item script!");

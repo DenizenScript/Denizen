@@ -10,72 +10,77 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class dLocation extends org.bukkit.Location implements dScriptArgument {
 
-    public static Map<String, dLocation> locations = new ConcurrentHashMap<String, dLocation>(8, 0.9f, 1);
 
-    /**
-     * Gets a saved location based on an Id.
-     *
-     * @param id  the Id key of the location
-     * @return  the Location associated
-     */
-    public static dLocation getSavedLocation(String id) {
-        return locations.get(id.toLowerCase());
+    /////////////////////
+    //   STATIC METHODS
+    /////////////////
+
+    public static Map<String, dLocation> uniqueObjects = new HashMap<String, dLocation>();
+
+    public static boolean isSaved(String id) {
+        return uniqueObjects.containsKey(id.toUpperCase());
     }
 
-    public static String isSavedLocation(Location location) {
-        for (Map.Entry<String, dLocation> entry : locations.entrySet()) {
-            if (Utilities.checkLocation(entry.getValue(), location, 1)) {
-                return entry.getKey();
-            }
-        }
+    public static boolean isSaved(dLocation location) {
+        return uniqueObjects.containsValue(location);
+    }
+
+    public static dLocation getSaved(String id) {
+        if (uniqueObjects.containsKey(id.toUpperCase()))
+            return uniqueObjects.get(id.toUpperCase());
+        else return null;
+    }
+
+    public static String getSaved(dLocation location) {
+        for (Map.Entry<String, dLocation> i : uniqueObjects.entrySet())
+            if (i.getValue() == location) return i.getKey();
         return null;
     }
 
-    public static dLocation saveLocationAs(dLocation location, String id) {
-        locations.put(id.toLowerCase(), location);
-        return location;
+    public static void saveAs(dLocation location, String id) {
+        if (location == null) return;
+        uniqueObjects.put(id.toUpperCase(), location);
     }
 
-    /**
-     * Checks if there is a saved location with this Id.
-     *
-     * @param id  the Id to check
-     * @return  true if it exists, false if not
-     */
-    public static boolean isSavedLocation(String id) {
-        if (id == null) return false;
-        return locations.containsKey(id.toLowerCase());
+    public static void remove(String id) {
+        uniqueObjects.remove(id.toUpperCase());
     }
 
-    /**
+    /*
      * Called on server startup or /denizen reload locations. Should probably not be called manually.
      */
     public static void _recallLocations() {
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
-        locations.clear();
+        uniqueObjects.clear();
         for (String location : loclist) {
             dLocation loc = valueOf(location);
             // TODO: Finish this
         }
     }
 
-    /**
+    /*
      * Called by Denizen internally on a server shutdown or /denizen save. Should probably
      * not be called manually.
      */
     public static void _saveLocations() {
         List<String> loclist = new ArrayList<String>();
-        for (Map.Entry<String, dLocation> entry : locations.entrySet())
+        for (Map.Entry<String, dLocation> entry : uniqueObjects.entrySet())
             loclist.add(entry.getValue().toString());
 
         DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", loclist);
     }
+
+
+    //////////////////
+    //    OBJECT FETCHER
+    ////////////////
 
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
@@ -134,8 +139,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
 
     /**
      * Turns a Bukkit Location into a Location, which has some helpful methods
-     * for working with dScript. If working with temporary locations, this is
-     * a much better method to use than {@link #dLocation(Location)}.
+     * for working with dScript.
      *
      * @param location the Bukkit Location to reference
      */
@@ -163,9 +167,11 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
     }
 
     public dLocation rememberAs(String id) {
-        dLocation.saveLocationAs(this, id);
+        dLocation.saveAs(this, id);
         return this;
     }
+
+
 
     String prefix = "Location";
 
@@ -176,10 +182,25 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
 
     @Override
     public String debug() {
-        return (isSavedLocation(this) != null ? "<G>" + prefix + "='<A>" + isSavedLocation(this) + "(<Y>" + getX() + "," + getY()
+        return (isSaved(this) ? "<G>" + prefix + "='<A>" + getSaved(this) + "(<Y>" + getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName() + "<A>)<G>'  "
                 : "<G>" + prefix + "='<Y>" + getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName() + "<G>'  ");
+    }
+
+    @Override
+    public boolean isUnique() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getType() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String identify() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

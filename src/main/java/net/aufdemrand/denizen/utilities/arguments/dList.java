@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class dList extends ArrayList<String> implements dScriptArgument {
 
-    @ObjectFetcher("f")
+    @ObjectFetcher("li, fl")
     public static dList valueOf(String string) {
         if (string == null) return null;
 
@@ -25,7 +25,7 @@ public class dList extends ArrayList<String> implements dScriptArgument {
 
         // Make sure string matches what this interpreter can accept.
         final Pattern flag_by_id =
-                Pattern.compile("(f\\[((?:p@|n@)(.+?))\\]@|f@)(.+)",
+                Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
                         Pattern.CASE_INSENSITIVE);
 
         Matcher m;
@@ -36,15 +36,15 @@ public class dList extends ArrayList<String> implements dScriptArgument {
 
             try {
                 // Global
-                if (m.group(1).equalsIgnoreCase("f@")) {
+                if (m.group(1).equalsIgnoreCase("fl@")) {
                     if (FlagManager.serverHasFlag(m.group(4)))
                         return new dList(flag_manager.getGlobalFlag(m.group(4)));
 
-                } if (m.group(2).toLowerCase().startsWith("p@")) {
+                } else if (m.group(2).toLowerCase().startsWith("p@")) {
                     if (FlagManager.playerHasFlag(aH.getPlayerFrom(m.group(3)), m.group(4)))
                         return new dList(flag_manager.getPlayerFlag(m.group(3), m.group(4)));
 
-                } if (m.group(2).toLowerCase().startsWith("n@")) {
+                } else if (m.group(2).toLowerCase().startsWith("n@")) {
                     if (FlagManager.npcHasFlag(aH.getdNPCFrom(m.group(3)), m.group(4)))
                         return new dList(flag_manager.getNPCFlag(Integer.valueOf(m.group(3)), m.group(4)));
                 }
@@ -56,16 +56,14 @@ public class dList extends ArrayList<String> implements dScriptArgument {
         }
 
         // Use value of string, which will seperate values by the use of a pipe (|)
-        return new dList(string.replaceFirst("a@", ""));
+        return new dList(string.replaceFirst("li@", ""));
     }
 
 
     /////////////
-    // Instance Methods
+    //   Constructors
     //////////
 
-
-    private FlagManager.Flag flag = null;
 
     public dList(String items) {
         addAll(Arrays.asList(items.split("\\|")));
@@ -80,22 +78,16 @@ public class dList extends ArrayList<String> implements dScriptArgument {
         addAll(flag.values());
     }
 
-    private String getId() {
-        if (flag != null)
-            return flag.toString();
 
-        if (isEmpty()) return "li@";
-        StringBuilder dScriptArg = new StringBuilder();
-        dScriptArg.append("li@");
-        for (String item : this)
-            dScriptArg.append(item + "|");
-        return dScriptArg.toString().substring(0, dScriptArg.length() - 1);
+    /////////////
+    //   Instance Fields/Methods
+    //////////
 
-    }
+    private FlagManager.Flag flag = null;
 
 
     //////////////////////////////
-    //  DSCRIPT ARGUMENT METHODS
+    //    DSCRIPT ARGUMENT METHODS
     /////////////////////////
 
 
@@ -114,17 +106,33 @@ public class dList extends ArrayList<String> implements dScriptArgument {
 
     @Override
     public String debug() {
-        return "<G>" + prefix + "='<Y>" + getId() + "<G>'  ";
+        return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
     }
 
     @Override
-    public String as_dScriptArgValue() {
-        return getId();
+    public boolean isUnique() {
+        if (flag != null) return true;
+        else return false;
     }
 
     @Override
-    public String toString() {
-        return "l@" + getId();
+    public String getType() {
+        return "list";
+    }
+
+    @Override
+    public String identify() {
+        if (flag != null)
+            return flag.toString();
+
+        if (isEmpty()) return "li@";
+
+        StringBuilder dScriptArg = new StringBuilder();
+        dScriptArg.append("li@");
+        for (String item : this)
+            dScriptArg.append(item + "|");
+
+        return dScriptArg.toString().substring(0, dScriptArg.length() - 1);
     }
 
     @Override

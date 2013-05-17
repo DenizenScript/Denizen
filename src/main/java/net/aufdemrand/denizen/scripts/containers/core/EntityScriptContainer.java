@@ -25,7 +25,11 @@ public class EntityScriptContainer extends ScriptContainer {
         dEntity entity = null;
         try {
             // Check validity of material
-            if (contains("TYPE")){ }
+            if (contains("TYPE")){
+
+                // TODO:
+
+            }
 
             // Set Id of the stack
 
