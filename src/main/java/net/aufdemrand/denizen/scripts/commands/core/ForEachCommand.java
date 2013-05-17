@@ -103,8 +103,8 @@ public class ForEachCommand extends AbstractCommand {
             dB.echoDebug("amts = " + x_amt + " " + y_amt + " " + z_amt);
 
             for (int x = 0; x != x_amt + 1; x = x + x_inc) {
-                for (int y = 0; x != y_amt + 1; y = y + y_inc) {
-                    for (int z = 0; x != z_amt + 1; z = z + z_inc) {
+                for (int y = 0; y != y_amt + 1; y = y + y_inc) {
+                    for (int z = 0; z != z_amt + 1; z = z + z_inc) {
                         
                         dB.echoDebug("x,y,z = " + x + " " + y + " " + z);
 
