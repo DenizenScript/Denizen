@@ -74,8 +74,6 @@ public class ForEachCommand extends AbstractCommand {
         dLocation loc_2 = (dLocation) scriptEntry.getObject("loc_2");
         Script script = (Script) scriptEntry.getObject("script");
 
-        Boolean stop = (Boolean) scriptEntry.getObject("stop");
-
         // Report to dB
         dB.report(getName(),
                 aH.debugObj("Type", type.toString())
@@ -83,8 +81,6 @@ public class ForEachCommand extends AbstractCommand {
                         + script.debug());
 
         if (type == Type.LOCATION) {
-            
-            dB.echoDebug("Type Location...");
 
             int x_inc = -1;
             int y_inc = -1;
@@ -94,21 +90,16 @@ public class ForEachCommand extends AbstractCommand {
             if (loc_1.getBlockY() <= loc_2.getBlockY()) y_inc = 1;
             if (loc_1.getBlockZ() <= loc_2.getBlockZ()) z_inc = 1;
 
-            dB.echoDebug("incs = " + x_inc + " " + y_inc + " " + z_inc);
-
             int x_amt = Math.abs(loc_1.getBlockX() - loc_2.getBlockX());
             int y_amt = Math.abs(loc_1.getBlockY() - loc_2.getBlockY());
             int z_amt = Math.abs(loc_1.getBlockZ() - loc_2.getBlockZ());
 
-            dB.echoDebug("amts = " + x_amt + " " + y_amt + " " + z_amt);
-
             for (int x = 0; x != x_amt + 1; x = x + x_inc) {
                 for (int y = 0; y != y_amt + 1; y = y + y_inc) {
                     for (int z = 0; z != z_amt + 1; z = z + z_inc) {
+                        dLocation loc = new dLocation(loc_1.add((double) x, (double) y, (double) z));
                         
-                        dB.echoDebug("x,y,z = " + x + " " + y + " " + z);
-
-                    dLocation loc = new dLocation(loc_1.add((double) x, (double) y, (double) z));
+                        dB.echoDebug("location: " + loc.dScriptArgValue());
 
                         Map<String, String> context = new HashMap<String, String>();
                         context.put("location", loc.dScriptArgValue());
