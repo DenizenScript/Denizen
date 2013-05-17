@@ -123,7 +123,10 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(FollowCommand.class, 
         		"FOLLOW", "follow (stop)", 0);
-		
+
+        registerCoreMember(ForEachCommand.class,
+                "FOREACH", "foreach [location:x,y,z,world|x,y,z,world] ['script_to_run']", 0);
+
         registerCoreMember(GiveCommand.class, 
         		"GIVE", "give [money|item:#(:#)|item:material(:#)] (qty:#) (engrave)", 1);
         
