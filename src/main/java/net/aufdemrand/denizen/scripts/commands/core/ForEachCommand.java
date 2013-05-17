@@ -83,6 +83,8 @@ public class ForEachCommand extends AbstractCommand {
                         + script.debug());
 
         if (type == Type.LOCATION) {
+            
+            dB.echoDebug("Type Location...");
 
             int x_inc = -1;
             int y_inc = -1;
@@ -92,13 +94,19 @@ public class ForEachCommand extends AbstractCommand {
             if (loc_1.getBlockY() <= loc_2.getBlockY()) y_inc = 1;
             if (loc_1.getBlockZ() <= loc_2.getBlockZ()) z_inc = 1;
 
+            dB.echoDebug("incs = " + x_inc + " " + y_inc + " " + z_inc);
+
             int x_amt = Math.abs(loc_1.getBlockX() - loc_2.getBlockX());
             int y_amt = Math.abs(loc_1.getBlockY() - loc_2.getBlockY());
             int z_amt = Math.abs(loc_1.getBlockZ() - loc_2.getBlockZ());
 
+            dB.echoDebug("amts = " + x_amt + " " + y_amt + " " + z_amt);
+
             for (int x = 0; x != x_amt; x = x + x_inc) {
                 for (int y = 0; x != y_amt; y = y + y_inc) {
                     for (int z = 0; x != z_amt; z = z + z_inc) {
+                        
+                        dB.echoDebug("x,y,z = " + x + " " + y + " " + z);
 
                     dLocation loc = new dLocation(loc_1.add((double) x, (double) y, (double) z));
 
