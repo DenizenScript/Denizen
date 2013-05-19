@@ -94,15 +94,15 @@ public class ForEachCommand extends AbstractCommand {
             int y_amt = Math.abs(loc_1.getBlockY() - loc_2.getBlockY());
             int z_amt = Math.abs(loc_1.getBlockZ() - loc_2.getBlockZ());
 
-            for (int x = 0; x != x_amt + 1; x = x + x_inc) {
-                for (int y = 0; y != y_amt + 1; y = y + y_inc) {
-                    for (int z = 0; z != z_amt + 1; z = z + z_inc) {
+            for (int x = 0; x != x_amt + 1; x + x_inc) {
+                for (int y = 0; y != y_amt + 1; y + y_inc) {
+                    for (int z = 0; z != z_amt + 1; z + z_inc) {
                         dLocation loc = new dLocation(loc_1.add((double) x, (double) y, (double) z));
                         
-                        dB.echoDebug("location: " + loc.dScriptArgValue());
+                        dB.echoDebug("location: " + loc.dScriptArg());
 
                         Map<String, String> context = new HashMap<String, String>();
-                        context.put("1", loc.dScriptArgValue());
+                        context.put("location", loc.dScriptArg());
 
                         ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
                                 .runTaskScript(ScriptQueue._getNextId(),
