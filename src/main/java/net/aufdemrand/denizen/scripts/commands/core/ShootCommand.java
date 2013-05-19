@@ -182,7 +182,7 @@ public class ShootCommand extends AbstractCommand {
         			        fireworkMeta.setPower(2);
         			        firework.setFireworkMeta(fireworkMeta);
         				}
-        				if ((Float) scriptEntry.getObject("explosion") > 0)
+        				if ((Double) scriptEntry.getObject("explosion") > 0)
         				{
         					entity.getWorld().createExplosion(entity.getLocation(),
         							(Float) scriptEntry.getObject("explosion"));
