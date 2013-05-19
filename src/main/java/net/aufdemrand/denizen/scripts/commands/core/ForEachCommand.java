@@ -102,7 +102,7 @@ public class ForEachCommand extends AbstractCommand {
                         dB.echoDebug("location: " + loc.as_dScriptArg());
 
                         Map<String, String> context = new HashMap<String, String>();
-                        context.put("location", loc.as_dScriptArg());
+                        context.put("1", loc.as_dScriptArg());
 
                         ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
                                 .runTaskScript(ScriptQueue._getNextId(),
