@@ -291,7 +291,8 @@ public class WorldScriptHelper implements Listener {
         try {
             determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // Comment for now.. is this harmless? 
+            // e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (Exception e) {
