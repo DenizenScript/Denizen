@@ -99,10 +99,10 @@ public class ForEachCommand extends AbstractCommand {
                     for (int z = 0; z != z_amt + 1; z++) {
                         dLocation loc = new dLocation(loc_1.add((double) x * x_inc, (double) y * y_inc, (double) z * z_inc));
                         
-                        dB.echoDebug("location: " + loc.dScriptArg());
+                        dB.echoDebug("location: " + loc.as_dScriptArg());
 
                         Map<String, String> context = new HashMap<String, String>();
-                        context.put("location", loc.dScriptArg());
+                        context.put("location", loc.as_dScriptArg());
 
                         ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
                                 .runTaskScript(ScriptQueue._getNextId(),
