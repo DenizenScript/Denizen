@@ -3,15 +3,15 @@ package net.aufdemrand.denizen.listeners.core;
 import java.util.List;
 
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.arguments.dLocation;
+import net.aufdemrand.denizen.arguments.dLocation;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.TravelListenerType.TravelType;
-import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
+import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;

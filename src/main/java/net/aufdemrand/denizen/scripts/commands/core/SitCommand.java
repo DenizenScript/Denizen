@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.utilities.arguments.dLocation;
+import net.aufdemrand.denizen.arguments.dLocation;
 import org.bukkit.entity.EntityType;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -8,7 +8,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.SittingTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;

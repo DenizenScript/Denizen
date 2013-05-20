@@ -5,13 +5,11 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
+import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.craftbukkit.v1_5_R2.entity.CraftLivingEntity;
-import org.bukkit.entity.Player;
 
 public class HealthCommand extends AbstractCommand {
 

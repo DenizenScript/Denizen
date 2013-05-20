@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.utilities.arguments.dEntity;
+import net.aufdemrand.denizen.arguments.dEntity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_5_R2.EntityLiving;
 import net.minecraft.server.v1_5_R2.NBTTagCompound;

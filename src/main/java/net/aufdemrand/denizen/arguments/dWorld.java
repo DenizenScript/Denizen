@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -182,7 +182,7 @@ public class dWorld implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        return dScriptArgValue();
+        return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
 }

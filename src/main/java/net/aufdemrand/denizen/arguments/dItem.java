@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -71,7 +71,7 @@ public class dItem implements dScriptArgument {
      *
      */
     @ObjectFetcher("i")
-    public static dItem valueOf(String string) {
+    public static dScriptArgument valueOf(String string) {
         if (string == null) return null;
         Matcher m;
 
@@ -339,7 +339,7 @@ public class dItem implements dScriptArgument {
 
     @Override
     public String getType() {
-        return "item";
+        return "dItem";
     }
 
     @Override
@@ -492,7 +492,7 @@ public class dItem implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
 
 
-        return new Element(identify()).getAttribute(attribute.fulfill(1));
+        return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
 }

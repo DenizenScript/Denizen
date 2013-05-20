@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.dItem;
+import net.aufdemrand.denizen.arguments.dItem;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;

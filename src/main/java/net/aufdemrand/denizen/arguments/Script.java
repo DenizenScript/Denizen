@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -114,7 +114,8 @@ public class Script implements dScriptArgument {
     @Override
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return as_dScriptArg();
-        return null;
+
+        return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
 

@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
-import net.aufdemrand.denizen.utilities.arguments.dItem;
+import net.aufdemrand.denizen.arguments.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Color;
 import org.bukkit.inventory.meta.LeatherArmorMeta;

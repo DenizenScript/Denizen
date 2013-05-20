@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.dLocation;
+import net.aufdemrand.denizen.arguments.dLocation;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;

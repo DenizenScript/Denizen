@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.arguments;
 
 import com.google.common.primitives.Ints;
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
@@ -207,8 +207,7 @@ public class Duration implements dScriptArgument {
                         .getAttribute(attribute.fulfill(1));
         }
 
-        return new Element(dScriptArgValue())
-                .getAttribute(attribute);
+        return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
 

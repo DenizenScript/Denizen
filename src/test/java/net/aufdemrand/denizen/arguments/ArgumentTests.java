@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.arguments;
 
-import net.aufdemrand.denizen.utilities.arguments.Script;
 import org.junit.Test;
 
 public class ArgumentTests {

@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
 

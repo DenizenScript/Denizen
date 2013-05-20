@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
-import net.aufdemrand.denizen.utilities.arguments.dItem;
+import net.aufdemrand.denizen.arguments.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;

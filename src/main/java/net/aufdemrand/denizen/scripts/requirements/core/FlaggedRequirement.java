@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.List;

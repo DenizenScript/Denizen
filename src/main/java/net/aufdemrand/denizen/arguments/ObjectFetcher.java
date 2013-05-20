@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.arguments;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

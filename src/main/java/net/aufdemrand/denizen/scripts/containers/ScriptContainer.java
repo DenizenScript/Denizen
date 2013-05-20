@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.Script;
+import net.aufdemrand.denizen.arguments.Script;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

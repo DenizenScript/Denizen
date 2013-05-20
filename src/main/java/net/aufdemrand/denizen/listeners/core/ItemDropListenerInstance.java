@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.listeners.core;
 
 import java.util.List;
-import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,8 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemDropListenerType.ItemDropType;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
+import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 

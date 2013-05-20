@@ -1,6 +1,6 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.arguments;
 
-import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -9,16 +9,17 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_5_R2.Entity;
+import net.minecraft.server.v1_5_R3.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_5_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,21 +32,6 @@ import java.util.regex.Pattern;
  *
  */
 public class aH {
-
-    public enum ArgumentType {
-        LivingEntity,
-        Item,
-        Boolean,
-        Custom,
-        Double,
-        Float,
-        Integer,
-        String,
-        Word,
-        Location,
-        Script,
-        Duration
-    }
 
     /**
      * To be used with the dBuggers' .report to provide debug output for
@@ -75,29 +61,158 @@ public class aH {
         return "<G>" + prefix + "='<A>" + id + "<Y>(" + value.toString() + ")<G>'  ";
     }
 
-    private static class Argument {
+    public enum PrimitiveType { Float, Double, Integer, Boolean, String, Word}
+
+    final static Pattern floatPrimitive = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
+    final static Pattern doublePrimitive = Pattern.compile("(-)?(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
+    final static Pattern integerPrimitive = Pattern.compile("(-)?\\d+");
+    final static Pattern booleanPrimitive = Pattern.compile("true|false", Pattern.CASE_INSENSITIVE);
+    final static Pattern wordPrimitive = Pattern.compile("\\w+");
+
+    public static class Argument {
         String raw_value;
         String prefix;
         String value;
-        ArgumentType argument_type;
-        Object argument_object;
 
+        // Construction
         public Argument(String string) {
             raw_value = string;
-
             string = string.trim();
+
             int first_colon = string.indexOf(":");
             int first_space = string.indexOf(" ");
 
+            if (first_space < first_colon) value = string;  else {
+                prefix = string.split(":")[0];
+                value = string.split(":")[1];
+            }
+        }
 
+        public boolean matchesEnum(Enum[] values) {
+            for (Enum value : values)
+                if (value.name().replace("_", "").equalsIgnoreCase(this.value.replace("_", "")))
+                    return true;
 
+            return false;
+        }
+
+        public boolean matchesPrefix(String values) {
+            for (String value : values.split(","))
+                if (value.trim().equalsIgnoreCase((prefix != null ? prefix : "null")))
+                    return true;
+
+            return false;
+        }
+
+        public boolean matchesPrimitive(PrimitiveType argumentType) {
+            if (value == null) return false;
+
+            switch (argumentType) {
+                case Word:
+                    return wordPrimitive.matcher(value).matches();
+
+                case Integer:
+                    return integerPrimitive.matcher(value).matches();
+
+                case Double:
+                    return doublePrimitive.matcher(value).matches();
+
+                case Float:
+                    return floatPrimitive.matcher(value).matches();
+
+                case Boolean:
+                    return booleanPrimitive.matcher(value).matches();
+
+                case String:
+                    return true;
+            }
+
+            return false;
+        }
+
+        public boolean matchesArgumentType(Class<? extends dScriptArgument> clazz) {
+
+            try {
+                return (Boolean) clazz.getMethod("matches", Boolean.class).invoke(null, value);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        public Element asElement() {
+            return new Element(prefix, value);
+        }
+
+        public <T extends dScriptArgument> T asType(Class<? extends dScriptArgument> clazz) {
+
+            dScriptArgument arg = null;
+            try {
+                arg = (dScriptArgument) clazz.getMethod("valueOf", dScriptArgument.class)
+                        .invoke(null, value);
+
+                return (T) clazz.cast(arg).setPrefix(prefix);
+
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+
+            return null;
         }
 
     }
 
-    public static Argument interpret(String arg) {
-        // Trim leading/trailing whitespace
-        return new Argument(arg);
+
+    public static List<Argument> interpret(List<String> args) {
+        List<Argument> arg_list = new ArrayList<Argument>();
+        for (String string : args)
+            arg_list.add(new Argument(string.trim()));
+        return arg_list;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // OLD SKOOL METHODS
+
+
+    public enum ArgumentType {
+        LivingEntity,
+        Item,
+        Boolean,
+        Custom,
+        Double,
+        Float,
+        Integer,
+        String,
+        Word,
+        Location,
+        Script,
+        Duration
     }
 
 
@@ -316,9 +431,9 @@ public class aH {
      *
      */
     public static EntityType getEntityFrom(String arg) {
-            for (EntityType validEntity : EntityType.values())
-                if (getStringFrom(arg).equalsIgnoreCase(validEntity.name()))
-                    return validEntity;
+        for (EntityType validEntity : EntityType.values())
+            if (getStringFrom(arg).equalsIgnoreCase(validEntity.name()))
+                return validEntity;
         // No match
         return null;
     }
@@ -345,7 +460,7 @@ public class aH {
             }
 
             else if (entityGroupUpper.startsWith("NPC.")
-            		|| entityGroupUpper.startsWith("NPCID.")
+                    || entityGroupUpper.startsWith("NPCID.")
                     || entityGroupUpper.startsWith("n@")) {
                 LivingEntity returnable = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(entityGroup.split("\\.")[1])).getBukkitEntity();
                 if (returnable != null) return returnable;
@@ -401,7 +516,7 @@ public class aH {
      */
     public static int getIntegerFrom(String arg) {
         try {
-             return Integer.valueOf(getValuePart(arg));
+            return Integer.valueOf(getValuePart(arg));
         } catch (NumberFormatException e) {
             return 0;
         }
@@ -593,7 +708,7 @@ public class aH {
      *
      */
     public static OfflinePlayer getOfflinePlayerFrom(String arg) {
-       arg = getValuePart(arg);
+        arg = getValuePart(arg);
         for (OfflinePlayer player : Bukkit.getOfflinePlayers())
             if (player.getName().equalsIgnoreCase(arg)) return player;
         dB.echoError("OfflinePlayer '" + arg + "' is invalid, or has never logged in to this server.");
@@ -638,7 +753,7 @@ public class aH {
         String[] parts = arg.split(":", 2);
         return parts.length >=2 ? parts[1] : arg;
     }
-    
+
     /**
      * <p>Gets a Duration object from the dScript duration value format. Accepts a prefix in the
      * argument for convenience.</p>
@@ -798,7 +913,7 @@ public class aH {
      */
     public static boolean matchesItem(String arg) {
         if (arg.length() > 5 && arg.toUpperCase().startsWith("ITEM:"))
-        		return true;
+            return true;
         // TODO: Other matches____ do some actual checks.
         return false;
     }
@@ -971,7 +1086,7 @@ public class aH {
     final private static Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
     final static Pattern matchesTogglePtrn = Pattern.compile("toggle:(?:(?:true)|(?:false)|(?:toggle))", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesScriptPtrn = Pattern.compile("script:(.+)", Pattern.CASE_INSENSITIVE);
-    
+
     /**
      * Builds an arguments array, recognizing items in quotes as a single item
      *

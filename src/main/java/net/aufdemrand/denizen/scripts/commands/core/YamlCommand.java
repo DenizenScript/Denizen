@@ -1,17 +1,14 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.*;
+import net.aufdemrand.denizen.arguments.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -21,7 +18,6 @@ import org.bukkit.event.Listener;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *

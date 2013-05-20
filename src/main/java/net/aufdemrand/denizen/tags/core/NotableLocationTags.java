@@ -3,12 +3,8 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.arguments.dLocation;
+import net.aufdemrand.denizen.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.trait.Anchors;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.scripts.requirements;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
-import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 

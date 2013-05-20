@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

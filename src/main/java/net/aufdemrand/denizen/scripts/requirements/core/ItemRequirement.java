@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.inventory.ItemStack;

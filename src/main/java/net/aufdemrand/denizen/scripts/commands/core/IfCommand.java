@@ -8,15 +8,12 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
-import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 /**
  * Core dScript IF command.

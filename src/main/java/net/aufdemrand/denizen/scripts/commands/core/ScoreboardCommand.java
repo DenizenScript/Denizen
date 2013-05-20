@@ -2,21 +2,16 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
+import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.citizensnpcs.trait.Poses;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

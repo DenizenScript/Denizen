@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.arguments.*;
+import net.aufdemrand.denizen.arguments.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;

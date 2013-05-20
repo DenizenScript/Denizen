@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -7,16 +7,15 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
-import net.minecraft.server.v1_5_R2.Entity;
+import net.minecraft.server.v1_5_R3.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_5_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -84,7 +83,7 @@ public class dEntity implements dScriptArgument {
      * @return  a dEntity, or null
      */
     @ObjectFetcher("e")
-    public static dEntity valueOf(String string) {
+    public static dScriptArgument valueOf(String string) {
         if (string == null) return null;
 
         ///////
@@ -278,7 +277,7 @@ public class dEntity implements dScriptArgument {
 
     @Override
     public String getType() {
-        return "entity";
+        return "dEntity";
     }
 
     @Override
@@ -466,7 +465,7 @@ public class dEntity implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        return identify();
+        return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
 }

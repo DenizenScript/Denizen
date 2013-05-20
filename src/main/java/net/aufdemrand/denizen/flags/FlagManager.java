@@ -2,9 +2,8 @@ package net.aufdemrand.denizen.flags;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.dNPC;
-import net.aufdemrand.denizen.scripts.commands.core.FlagCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
 import java.util.ArrayList;

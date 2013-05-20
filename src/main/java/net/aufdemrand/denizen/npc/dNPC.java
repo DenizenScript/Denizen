@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.dLocation;
+import net.aufdemrand.denizen.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;

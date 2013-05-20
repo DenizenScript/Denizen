@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.utilities.arguments.Duration;
+import net.aufdemrand.denizen.arguments.Duration;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

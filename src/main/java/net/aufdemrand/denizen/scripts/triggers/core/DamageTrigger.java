@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.dItem;
+import net.aufdemrand.denizen.arguments.dItem;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;

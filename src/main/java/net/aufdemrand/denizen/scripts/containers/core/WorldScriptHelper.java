@@ -8,10 +8,10 @@ import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.dItem;
-import net.aufdemrand.denizen.utilities.arguments.dLocation;
-import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.dList;
+import net.aufdemrand.denizen.arguments.dItem;
+import net.aufdemrand.denizen.arguments.dLocation;
+import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.arguments.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class WorldScriptHelper implements Listener {
 

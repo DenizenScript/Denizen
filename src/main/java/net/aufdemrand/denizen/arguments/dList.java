@@ -1,6 +1,5 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.arguments;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -17,7 +16,7 @@ import java.util.regex.Pattern;
 public class dList extends ArrayList<String> implements dScriptArgument {
 
     @ObjectFetcher("li, fl")
-    public static dList valueOf(String string) {
+    public static dScriptArgument valueOf(String string) {
         if (string == null) return null;
 
         ///////
@@ -117,7 +116,7 @@ public class dList extends ArrayList<String> implements dScriptArgument {
 
     @Override
     public String getType() {
-        return "list";
+        return "dList";
     }
 
     @Override
@@ -179,7 +178,7 @@ public class dList extends ArrayList<String> implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        return new Element(toString()).getAttribute(attribute);
+        return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
 }

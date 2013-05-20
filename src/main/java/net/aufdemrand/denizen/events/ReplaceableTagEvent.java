@@ -5,9 +5,8 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.arguments.aH;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.OfflinePlayer;

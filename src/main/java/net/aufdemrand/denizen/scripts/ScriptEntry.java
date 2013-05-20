@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.scripts;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.utilities.arguments.Script;
+import net.aufdemrand.denizen.arguments.Script;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 

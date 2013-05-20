@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -20,7 +20,7 @@ public class dPlayer implements dScriptArgument {
      *
      */
     @ObjectFetcher("p")
-    public static dPlayer valueOf(String string) {
+    public static dScriptArgument valueOf(String string) {
         if (string == null) return null;
 
         if (string.split(":").length > 1)
@@ -404,7 +404,7 @@ public class dPlayer implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        return toString();
+        return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
 }

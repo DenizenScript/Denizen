@@ -1,10 +1,8 @@
-package net.aufdemrand.denizen.utilities.arguments;
+package net.aufdemrand.denizen.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class dLocation extends org.bukkit.Location implements dScriptArgument {
 
@@ -60,7 +57,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
         uniqueObjects.clear();
         for (String location : loclist) {
-            dLocation loc = valueOf(location);
+            dLocation loc = (dLocation) valueOf(location);
             // TODO: Finish this
         }
     }
@@ -91,7 +88,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
      * @return  a Location, or null if incorrectly formatted
      *
      */
-    public static dLocation valueOf(String string) {
+    public static dScriptArgument valueOf(String string) {
         if (string == null) return null;
         // Strip prefix (ie. location:...)
         if (string.split(":").length > 1)
@@ -176,8 +173,19 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
     String prefix = "Location";
 
     @Override
+    public String getType() {
+        return "dLocation";
+    }
+
+    @Override
     public String getPrefix() {
         return prefix;
+    }
+
+    @Override
+    public dLocation setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
     }
 
     @Override
@@ -194,34 +202,19 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
     }
 
     @Override
-    public String getType() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public String identify() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public String as_dScriptArgValue() {
-        return getX() + "," + getY()
-                + "," + getZ() + "," + getWorld().getName();
-    }
-
-    @Override
     public String toString() {
-        if (isSavedLocation(this) != null)
-            return "l@" + isSavedLocation(this);
+        if (isSaved(this))
+            return "l@" + getSaved(this);
         else return "l@" + getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName();
     }
 
-    @Override
-    public dLocation setPrefix(String prefix) {
-        this.prefix = prefix;
-        return this;
-    }
+
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -352,7 +345,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
 //        else if (type.equals("Z"))
 //            event.setReplaced(String.valueOf(fromLocation.getZ()));
 
-        return dScriptArgValue();
+        return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
 }
