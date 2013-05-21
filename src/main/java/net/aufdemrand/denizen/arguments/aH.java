@@ -33,34 +33,6 @@ import java.util.regex.Pattern;
  */
 public class aH {
 
-    /**
-     * To be used with the dBuggers' .report to provide debug output for
-     * objects.
-     *
-     * @param prefix  name/type/simple description of the object being reported
-     * @param value  object being reported will report the value of toString()
-     *
-     * @return  color coded debug report
-     */
-    public static String debugObj(String prefix, Object value) {
-        return "<G>" + prefix + "='<Y>" + value.toString() + "<G>'  ";
-    }
-
-    /**
-     * To be used with the dBuggers' .report to provide debug output for
-     * objects that may have some kind of id or type also associated with
-     * the object.
-     *
-     * @param prefix  name/type/simple description of the object being reported
-     * @param id  additional id/type of the object
-     * @param value  object being reported will report the value of toString()
-     *
-     * @return  color coded debug report
-     */
-    public static String debugUniqueObj(String prefix, String id, Object value) {
-        return "<G>" + prefix + "='<A>" + id + "<Y>(" + value.toString() + ")<G>'  ";
-    }
-
     public enum PrimitiveType { Float, Double, Integer, Boolean, String, Word}
 
     final static Pattern floatPrimitive = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
@@ -164,7 +136,6 @@ public class aH {
 
             return null;
         }
-
     }
 
 
@@ -198,6 +169,35 @@ public class aH {
 
 
     // OLD SKOOL METHODS
+
+
+    /**
+     * To be used with the dBuggers' .report to provide debug output for
+     * objects.
+     *
+     * @param prefix  name/type/simple description of the object being reported
+     * @param value  object being reported will report the value of toString()
+     *
+     * @return  color coded debug report
+     */
+    public static String debugObj(String prefix, Object value) {
+        return "<G>" + prefix + "='<Y>" + value.toString() + "<G>'  ";
+    }
+
+    /**
+     * To be used with the dBuggers' .report to provide debug output for
+     * objects that may have some kind of id or type also associated with
+     * the object.
+     *
+     * @param prefix  name/type/simple description of the object being reported
+     * @param id  additional id/type of the object
+     * @param value  object being reported will report the value of toString()
+     *
+     * @return  color coded debug report
+     */
+    public static String debugUniqueObj(String prefix, String id, Object value) {
+        return "<G>" + prefix + "='<A>" + id + "<Y>(" + value.toString() + ")<G>'  ";
+    }
 
 
     public enum ArgumentType {

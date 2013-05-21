@@ -25,6 +25,22 @@ import static net.aufdemrand.denizen.arguments.aH.Argument;
  */
 public class AnchorCommand extends AbstractCommand {
 
+    public String getHelp() {
+        return  "Controls NPCs' anchors. Anchors are 'bookmarked locations'" +
+                "stored at the NPC-level. Valid actions are Add, Remove, " +
+                "Assume Walk_To, and Walk_Near. \n" +
+                " \n" +
+                "Use to add or remove an anchor from a NPC. \n" +
+                "- anchor add id:pride_rock location:<npc.location> \n" +
+                "- anchor remove id:the_jungle \n" +
+                "Use to 'teleport' the npc directly to an existing anchor. \n" +
+                "- anchor assume id:bedroom \n" +
+                "Use to make a NPC navigate to or near an anchor for easy" +
+                "'waypoint behavior'. \n" +
+                "- anchor walkto id:anchor_1 \n" +
+                "- anchor walknear id:front_porch range:5";
+    }
+
     private enum Action { ADD, REMOVE, ASSUME, WALKTO, WALKNEAR }
 
     @Override
@@ -98,8 +114,8 @@ public class AnchorCommand extends AbstractCommand {
                 return;
 
             case WALKNEAR:
-                npc.getNavigator().setTarget(Utilities
-                        .getWalkableLocationNear(npc.getCitizen().getTrait(Anchors.class)
+                npc.getNavigator().setTarget(
+                        Utilities.getWalkableLocationNear(npc.getCitizen().getTrait(Anchors.class)
                                 .getAnchor(id.asString()).getLocation(), range.asInt()));
                 return;
 
