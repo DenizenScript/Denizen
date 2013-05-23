@@ -122,6 +122,7 @@ public class ListenCommand extends AbstractCommand {
 
             } catch (Exception e) {
 				dB.echoDebug("Cancelled creation of NEW listener!");
+                if (dB.showStackTraces) e.printStackTrace();
 				try { denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id).cancel(); }
 				catch (Exception ex) { }
 			}
