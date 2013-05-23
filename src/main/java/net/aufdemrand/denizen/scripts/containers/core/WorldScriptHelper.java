@@ -266,6 +266,58 @@ public class WorldScriptHelper implements Listener {
                 event.setCancelled(true);
         }
 
+        if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+            Map<String, String> context = new HashMap<String, String>();
+
+            if (event.getItem() != null ) {
+                context.put("item_in_hand", new dItem(event.getItem()).dScriptArgValue());
+
+                determination = doEvent("player uses " + new dItem(event.getItem()).dScriptArgValue() + " in air", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
+                    event.setCancelled(true);
+
+                determination = doEvent("player uses item in air", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
+                    event.setCancelled(true);
+            }
+
+            determination = doEvent("player right clicks", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+
+            determination = doEvent("player right clicks air", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        }
+
+        else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Map<String, String> context = new HashMap<String, String>();
+
+            context.put("location clicked", new dLocation(event.getClickedBlock().getLocation()).dScriptArgValue());
+            if (event.getItem() != null ) {
+                context.put("item_in_hand", new dItem(event.getItem()).dScriptArgValue());
+
+                determination = doEvent("player uses " + new dItem(event.getItem()).dScriptArgValue() + " on block", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
+                    event.setCancelled(true);
+
+                determination = doEvent("player uses item on block", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
+                    event.setCancelled(true);
+            }
+
+            determination = doEvent("player right clicks", null, event.getPlayer(), context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+
+            determination = doEvent("player right clicks block", null, event.getPlayer(), context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        }
+
+
         else if (event.getAction() == Action.PHYSICAL) {
             Map<String, String> context = new HashMap<String, String>();
 
