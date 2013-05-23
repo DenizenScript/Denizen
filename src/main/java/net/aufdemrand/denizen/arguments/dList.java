@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class dList extends ArrayList<String> implements dScriptArgument {
 
     @ObjectFetcher("li, fl")
-    public static dScriptArgument valueOf(String string) {
+    public static dList valueOf(String string) {
         if (string == null) return null;
 
         ///////
@@ -56,6 +56,24 @@ public class dList extends ArrayList<String> implements dScriptArgument {
 
         // Use value of string, which will seperate values by the use of a pipe (|)
         return new dList(string.replaceFirst("li@", ""));
+    }
+
+
+    public static boolean matches(String arg) {
+
+        // Make sure string matches what this interpreter can accept.
+        final Pattern flag_by_id =
+                Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
+                        Pattern.CASE_INSENSITIVE);
+
+        Matcher m;
+        m = flag_by_id.matcher(arg);
+
+        if (m.matches()) return true;
+
+        if (arg.contains("|")) return true;
+
+        return false;
     }
 
 

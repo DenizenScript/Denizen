@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.arguments;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -12,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
@@ -71,7 +73,7 @@ public class dItem implements dScriptArgument {
      *
      */
     @ObjectFetcher("i")
-    public static dScriptArgument valueOf(String string) {
+    public static dItem valueOf(String string) {
         if (string == null) return null;
         Matcher m;
 
@@ -156,6 +158,27 @@ public class dItem implements dScriptArgument {
 
         // No match! Return null.
         return null;
+    }
+
+
+    public static boolean matches(String arg) {
+
+        final Pattern entity_by_id =
+                Pattern.compile("((n@|e@|p@)(.+))",
+                        Pattern.CASE_INSENSITIVE);
+        Matcher m;
+        m = entity_by_id.matcher(arg);
+        if (m.matches()) return true;
+
+        arg = arg.replace("e@", "");
+
+        if (ScriptRegistry.containsScript(m.group(1), EntityScriptContainer.class))
+            return true;
+
+        for (EntityType type : EntityType.values())
+            if (type.name().equalsIgnoreCase(arg)) return true;
+
+        return false;
     }
 
 

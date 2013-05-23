@@ -83,7 +83,7 @@ public class dEntity implements dScriptArgument {
      * @return  a dEntity, or null
      */
     @ObjectFetcher("e")
-    public static dScriptArgument valueOf(String string) {
+    public static dEntity valueOf(String string) {
         if (string == null) return null;
 
         ///////
@@ -143,6 +143,14 @@ public class dEntity implements dScriptArgument {
         }
 
         ////////
+        // Match Custom Entity
+
+        if (ScriptRegistry.containsScript(m.group(1), EntityScriptContainer.class)) {
+            // Construct a new custom unspawned entity from script
+            return ScriptRegistry.getScriptContainerAs(m.group(1), EntityScriptContainer.class).getEntityFrom();
+        }
+
+        ////////
         // Match Entity_Type
 
         string = string.replace("e@", "");
@@ -153,15 +161,28 @@ public class dEntity implements dScriptArgument {
                 return new dEntity(type);
         }
 
-        ////////
-        // Match Custom Entity
-
-        if (ScriptRegistry.containsScript(m.group(1), EntityScriptContainer.class)) {
-            // Construct a new custom unspawned entity from script
-            return ScriptRegistry.getScriptContainerAs(m.group(1), EntityScriptContainer.class).getEntityFrom();
-        }
-
         return null;
+    }
+
+
+    public static boolean matches(String arg) {
+
+        final Pattern entity_by_id =
+                Pattern.compile("((n@|e@|p@)(.+))",
+                        Pattern.CASE_INSENSITIVE);
+        Matcher m;
+        m = entity_by_id.matcher(arg);
+        if (m.matches()) return true;
+
+        arg = arg.replace("e@", "");
+
+        if (ScriptRegistry.containsScript(m.group(1), EntityScriptContainer.class))
+            return true;
+
+        for (EntityType type : EntityType.values())
+            if (type.name().equalsIgnoreCase(arg)) return true;
+
+        return false;
     }
 
 

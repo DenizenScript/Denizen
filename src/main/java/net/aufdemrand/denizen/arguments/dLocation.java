@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class dLocation extends org.bukkit.Location implements dScriptArgument {
 
@@ -88,27 +90,29 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
      * @return  a Location, or null if incorrectly formatted
      *
      */
-    public static dScriptArgument valueOf(String string) {
+    public static dLocation valueOf(String string) {
         if (string == null) return null;
-        // Strip prefix (ie. location:...)
-        if (string.split(":").length > 1)
-            string = string.split(":", 2)[1];
+
+        ////////
+        // Match @object format for saved dLocations
+        Matcher m;
+
+        final Pattern item_by_saved = Pattern.compile("(l@)(.+)");
+        m = item_by_saved.matcher(string);
+
+        if (m.matches())
+            return getSaved(m.group(2));
+
+
+        ////////
+        // Match location formats
+
         // Split values
         String[] split = string.split(",");
 
-        if (split.length == 5)
-            // If 5 values, contains an id with standard dScript location format
-            try {
-                return new dLocation(Bukkit.getWorld(split[4]),
-                        Double.valueOf(split[1]),
-                        Double.valueOf(split[2]),
-                        Double.valueOf(split[3])).rememberAs(split[0]);
-            } catch(Exception e) {
-                return null;
-            }
-
-        else if (split.length == 4)
-            // If 4 values, standard id-less dScript location format
+        if (split.length == 4)
+            // If 4 values, standard dScript location format
+            // x,y,z,world
             try {
                 return new dLocation(Bukkit.getWorld(split[3]),
                         Double.valueOf(split[0]),
@@ -120,7 +124,8 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
 
 
         else if (split.length == 6)
-            // If 6 values, id-less location with pitch/yaw
+            // If 6 values, location with pitch/yaw
+            // x,y,z,yaw,pitch,world
             try {
                 return new dLocation(Bukkit.getWorld(split[4]),
                         Double.valueOf(split[1]),
@@ -130,8 +135,11 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
                 return null;
             }
 
-
         return null;
+    }
+
+    public static dScriptArgument fetchAsArg(String arg) {
+        return valueOf(arg);
     }
 
     /**

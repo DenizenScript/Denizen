@@ -121,7 +121,7 @@ public class aH {
 
             dScriptArgument arg = null;
             try {
-                arg = (dScriptArgument) clazz.getMethod("valueOf", dScriptArgument.class)
+                arg = (dScriptArgument) clazz.getMethod("valueOf", clazz)
                         .invoke(null, value);
 
                 return (T) clazz.cast(arg).setPrefix(prefix);
