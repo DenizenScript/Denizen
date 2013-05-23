@@ -105,7 +105,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                 dB.echoDebug("2: " + item.getType().name());
 
 				//if item isnt a required item, then return
-				if (!items.contains(item)) return;
+				if (!items.contains(item.getType().toString())) return;
 
                 dB.echoDebug("3");
 
