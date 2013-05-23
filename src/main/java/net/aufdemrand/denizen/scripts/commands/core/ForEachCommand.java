@@ -94,7 +94,7 @@ public class ForEachCommand extends AbstractCommand {
             int y_amt = Math.abs(loc_1.getBlockY() - loc_2.getBlockY());
             int z_amt = Math.abs(loc_1.getBlockZ() - loc_2.getBlockZ());
 
-            for (int x = 0; x != z_amt + 1; x++) {
+            for (int x = 0; x != x_amt + 1; x++) {
                 for (int y = 0; y != y_amt + 1; y++) {
                     for (int z = 0; z != z_amt + 1; z++) {
                         dLocation loc = new dLocation(loc_1.add((double) x * x_inc, (double) y * y_inc, (double) z * z_inc));

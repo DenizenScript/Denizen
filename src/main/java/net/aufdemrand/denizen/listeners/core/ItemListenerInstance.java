@@ -83,7 +83,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	public void listenItem(InventoryClickEvent event)
 	{
 
-        dB.echoDebug("0: " + event.getSlotType().toString() + " :: " + event.getWhoClicked().getName());
+        // dB.echoDebug("0: " + event.getSlotType().toString() + " :: " + event.getWhoClicked().getName());
 		// Proceed if the slot clicked is a RESULT slot and the player is the right one
 		if (event.getSlotType().toString() == "RESULT"
 			&& event.getWhoClicked() == player)
