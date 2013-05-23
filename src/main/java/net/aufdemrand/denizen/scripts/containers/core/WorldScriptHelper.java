@@ -239,6 +239,10 @@ public class WorldScriptHelper implements Listener {
                     event.setCancelled(true);
             }
 
+            determination = doEvent("player left clicks", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+
             determination = doEvent("player swings arm in air", null, event.getPlayer(), context);
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
@@ -260,10 +264,15 @@ public class WorldScriptHelper implements Listener {
                     event.setCancelled(true);
             }
 
+            determination = doEvent("player left clicks", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+
             determination = doEvent("player hits block", null, event.getPlayer(), context);
 
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
+
         }
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR) {
