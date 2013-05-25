@@ -24,7 +24,10 @@ public class ActionHandler {
 
         if (assignment == null) return false;
 
-        if (!assignment.contains("actions.on " + actionName)) return false;
+        if (!assignment.contains("actions.on " + actionName)) {
+            dB.echoDebug("Tried to do 'on " + actionName + ":' but couldn't find a matching script.");
+            return false;
+        }
 
         dB.report("Action",
                 aH.debugObj("Type", "On " + actionName)

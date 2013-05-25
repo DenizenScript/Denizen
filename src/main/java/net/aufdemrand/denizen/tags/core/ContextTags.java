@@ -39,7 +39,7 @@ public class ContextTags implements Listener {
 
         // Requirements
         if (type.equalsIgnoreCase("REQUIREMENTS")) {
-            if (sub_type.equals("CHECK"))
+            if (sub_type.equalsIgnoreCase("CHECK"))
                 event.setReplaced(String.valueOf(event.getScriptEntry().getScript().getContainer()
                         .checkBaseRequirements(event.getPlayer(), event.getNPC())));
         }
