@@ -2,10 +2,12 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -67,7 +69,14 @@ public class ContextTags implements Listener {
 
         // First check for entry object context
         if (event.getScriptEntry().hasObject(type)) {
-            event.setReplaced(event.getScriptEntry().getObject(type).toString());
+
+            if (event.getScriptEntry().getObject(type) instanceof dScriptArgument) {
+                Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+                event.setReplaced(((dScriptArgument) event.getScriptEntry().getObject(type)).getAttribute(attribute.fulfill(2)));
+            } else
+                event.setReplaced(event.getScriptEntry().getObject(type).toString());
+
+            return;
         }
 
         // Next, try to replace with task-script-defined context
