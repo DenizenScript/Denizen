@@ -14,21 +14,21 @@ import java.text.DecimalFormat;
 public class FlagTags implements Listener {
 
     Denizen denizen;
-    
+
     public FlagTags(Denizen denizen) {
         this.denizen = denizen;
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    private enum ReplaceType { LENGTH, SIZE, ASSTRING, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASPLAYERLIST, ASNPCLIST, ASCSLIST, ISEXPIRED, EXPIRATION }
+    private enum ReplaceType { LENGTH, ABS, SIZE, ASSTRING, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASPLAYERLIST, ASNPCLIST, ASCSLIST, ISEXPIRED, EXPIRATION }
 
     /**
      * Replaces FLAG TAGs. Called automatically by the dScript ScriptBuilder and Executer.
-     * 
-     * @param event 
+     *
+     * @param event
      *      ReplaceableTagEvent
      */
-    
+
     @EventHandler
     public void flagTag(ReplaceableTagEvent event) {
         if (!event.matches("FLAG")) return;
@@ -89,46 +89,48 @@ public class FlagTags implements Listener {
             if (name == null) return;
 
             if (denizen.flagManager().getPlayerFlag(name, flagName).get(index).isEmpty()) {
-            	if (replaceType.toString() == "ISEXPIRED")
-            		event.setReplaced("true");
+                if (replaceType.toString() == "ISEXPIRED")
+                    event.setReplaced("true");
             } else {
                 FlagManager.Flag flag = denizen.flagManager().getPlayerFlag(name, flagName);
                 event.setReplaced(getReplaceable(flag, flag.get(index), replaceType));
                 // dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
 
             }
-        }               
+        }
     }
 
     private String getReplaceable(FlagManager.Flag flag, Value value, ReplaceType replaceType) {
         switch (replaceType) {
-        case ASINT:
-            return String.valueOf(value.asInteger());
-        case ASDOUBLE:
-            return String.valueOf(value.asDouble());
-        case ASSTRING:
-            return value.asString();
-        case ASLIST:
-            return String.valueOf(value.asList());
-        case ASPLAYERLIST:
-            return String.valueOf(value.asList("player."));
-        case ASNPCLIST:
-            return String.valueOf(value.asList("npc."));
-        case ASCSLIST:
-            return String.valueOf(value.asCommaSeparatedList());
-        case ASMONEY:
-            DecimalFormat d = new DecimalFormat("0.00");
-            return String.valueOf(d.format(value.asDouble()));
-        case LENGTH:
-            return String.valueOf(value.asString().length());
-        case SIZE:
-        	return String.valueOf(value.asSize());
-        case ISEXPIRED:
-            return String.valueOf(flag.checkExpired());
-        case EXPIRATION:
-            return String.valueOf(flag.expirationTime());
+            case ASINT:
+                return String.valueOf(value.asInteger());
+            case ASDOUBLE:
+                return String.valueOf(value.asDouble());
+            case ABS:
+                return String.valueOf(Math.abs(value.asDouble()));
+            case ASSTRING:
+                return value.asString();
+            case ASLIST:
+                return String.valueOf(value.asList());
+            case ASPLAYERLIST:
+                return String.valueOf(value.asList("player."));
+            case ASNPCLIST:
+                return String.valueOf(value.asList("npc."));
+            case ASCSLIST:
+                return String.valueOf(value.asCommaSeparatedList());
+            case ASMONEY:
+                DecimalFormat d = new DecimalFormat("0.00");
+                return String.valueOf(d.format(value.asDouble()));
+            case LENGTH:
+                return String.valueOf(value.asString().length());
+            case SIZE:
+                return String.valueOf(value.asSize());
+            case ISEXPIRED:
+                return String.valueOf(flag.checkExpired());
+            case EXPIRATION:
+                return String.valueOf(flag.expirationTime());
         }
         return null;
     }
-    
+
 }
