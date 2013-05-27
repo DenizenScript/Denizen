@@ -681,11 +681,14 @@ public class CommandHandler {
     @Command(
             aliases = { "denizen" }, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db" },
-            min = 1, max = 3, permission = "denizen.debug", flags = "s")
+            min = 1, max = 3, permission = "denizen.debug", flags = "sc")
     public void debug(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (args.hasFlag('s')) {
             if (!dB.debugMode) dB.toggle();
             dB.showStackTraces = !dB.showStackTraces;
+        } else if (args.hasFlag('c')) {
+            if (!dB.debugMode) dB.toggle();
+            dB.showColor = !dB.showColor;
         } else dB.toggle();
 
         Messaging.send(sender, ChatColor.YELLOW + "Denizen debugger is " + (dB.debugMode ?

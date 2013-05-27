@@ -57,6 +57,7 @@ public class dB {
 	public static boolean debugMode = Settings.ShowDebug();
 	public static boolean showStackTraces = true;
     public static boolean showScriptBuilder = false;
+    public static boolean showColor = true;
 
 	/**
 	 * Can be used with echoDebug(...) to output a header, footer, 
@@ -132,7 +133,9 @@ public class dB {
 				}                          // 16:05:06 [INFO]    
 			}
 			// Send buffer to the player
-			commandSender.sendMessage(buffer);
+            if (showColor)
+			    commandSender.sendMessage(buffer);
+            else commandSender.sendMessage(ChatColor.stripColor(buffer));
 		}
 	}
 	
