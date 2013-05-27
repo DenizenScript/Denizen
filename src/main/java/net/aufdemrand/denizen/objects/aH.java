@@ -1,7 +1,6 @@
-package net.aufdemrand.denizen.arguments;
+package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
-import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
@@ -609,9 +608,9 @@ public class aH {
         return location;
     }
 
-    public static Script getScriptFrom(String arg) {
+    public static dScript getScriptFrom(String arg) {
         // Build location argument from dScript argument
-        Script script = Script.valueOf(arg);
+        dScript script = dScript.valueOf(arg);
         // Check if location returned as null
         if (script == null)
             dB.echoError("Unable to build a script with this information! Provided: '" + arg + "'.");

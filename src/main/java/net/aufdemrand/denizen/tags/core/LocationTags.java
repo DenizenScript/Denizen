@@ -3,8 +3,8 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.arguments.dLocation;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.aH;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

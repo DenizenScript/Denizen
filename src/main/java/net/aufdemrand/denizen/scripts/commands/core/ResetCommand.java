@@ -2,10 +2,10 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.arguments.Script;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ResetCommand extends AbstractCommand {
@@ -15,7 +15,7 @@ public class ResetCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        Script script = scriptEntry.getScript();
+        dScript script = scriptEntry.getScript();
         Type type = null;
 
         for (String arg : scriptEntry.getArguments()) {
@@ -52,7 +52,7 @@ public class ResetCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Type type = (Type) scriptEntry.getObject("type");
-        Script script = (Script) scriptEntry.getObject("script");
+        dScript script = (dScript) scriptEntry.getObject("script");
 
         switch (type) {
             case FAIL:

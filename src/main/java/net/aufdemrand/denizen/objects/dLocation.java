@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.arguments;
+package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -31,6 +31,13 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         return uniqueObjects.containsValue(location);
     }
 
+    public static boolean isSaved(Location location) {
+        for (Map.Entry<String, dLocation> i : uniqueObjects.entrySet())
+            if (i.getValue() == location) return true;
+
+        return uniqueObjects.containsValue(location);
+    }
+
     public static dLocation getSaved(String id) {
         if (uniqueObjects.containsKey(id.toUpperCase()))
             return uniqueObjects.get(id.toUpperCase());
@@ -59,7 +66,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
         uniqueObjects.clear();
         for (String location : loclist) {
-            dLocation loc = (dLocation) valueOf(location);
+            dLocation loc = valueOf(location);
             // TODO: Finish this
         }
     }
@@ -124,13 +131,17 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
 
 
         else if (split.length == 6)
+
             // If 6 values, location with pitch/yaw
             // x,y,z,yaw,pitch,world
-            try {
-                return new dLocation(Bukkit.getWorld(split[4]),
-                        Double.valueOf(split[1]),
-                        Double.valueOf(split[2]),
-                        Double.valueOf(split[3])).rememberAs(split[0]);
+            try
+            {    return new dLocation(Bukkit.getWorld(split[5]),
+                    Double.valueOf(split[0]),
+                    Double.valueOf(split[1]),
+                    Double.valueOf(split[2]),
+                    Float.valueOf(split[3]),
+                    Float.valueOf(split[4]));
+
             } catch(Exception e) {
                 return null;
             }
@@ -138,8 +149,21 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         return null;
     }
 
-    public static dScriptArgument fetchAsArg(String arg) {
-        return valueOf(arg);
+
+    public boolean matches(String string) {
+        final Pattern location_by_saved = Pattern.compile("(l@)(.+)");
+        Matcher m = location_by_saved.matcher(string);
+        if (m.matches())
+            return true;
+
+        final Pattern location =
+                Pattern.compile("(((-)?\\d+(\\.\\d+)?,){3}|((-)?\\d+(\\.\\d+)?,){5})\\w+",
+                        Pattern.CASE_INSENSITIVE);
+        m = location.matcher(string);
+        if (m.matches())
+            return true;
+
+        return false;
     }
 
     /**

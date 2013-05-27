@@ -7,10 +7,10 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.arguments.Duration;
-import net.aufdemrand.denizen.arguments.dItem;
-import net.aufdemrand.denizen.arguments.dLocation;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
@@ -86,22 +86,22 @@ public class DisplayItemCommand extends AbstractCommand {
             if (duration != null) ticks = duration.getTicksAsInt();
 
             // Display the item
-            if (displayed.containsKey(location.dScriptArgValue())) {
-                displayed.get(location.dScriptArgValue()).remove();
-                displayed.remove(location.dScriptArgValue());
+            if (displayed.containsKey(location.identify())) {
+                displayed.get(location.identify()).remove();
+                displayed.remove(location.identify());
             }
 
             // Remember the item entity
-            displayed.put(location.dScriptArgValue(), location.getBlock().getLocation().add(0, 1, 0).getWorld().dropItem(location, item.getItemStack()));
-            displayed.get(location.dScriptArgValue()).setPickupDelay(Integer.MAX_VALUE);
-            displayed.get(location.dScriptArgValue()).setTicksLived(ticks);
+            displayed.put(location.identify(), location.getBlock().getLocation().add(0, 1, 0).getWorld().dropItem(location, item.getItemStack()));
+            displayed.get(location.identify()).setPickupDelay(Integer.MAX_VALUE);
+            displayed.get(location.identify()).setTicksLived(ticks);
         }
 
         // Remove the item
         else if (action == Action.REMOVE) {
-            if (displayed.containsKey(location.dScriptArgValue())) {
-                displayed.get(location.dScriptArgValue()).remove();
-                displayed.remove(location.dScriptArgValue());
+            if (displayed.containsKey(location.identify())) {
+                displayed.get(location.identify()).remove();
+                displayed.remove(location.identify());
             }
 
         }

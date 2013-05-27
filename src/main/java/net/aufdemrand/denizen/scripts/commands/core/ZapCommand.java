@@ -2,12 +2,12 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
-import net.aufdemrand.denizen.arguments.Duration;
-import net.aufdemrand.denizen.arguments.Script;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.event.Listener;
@@ -53,7 +53,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize required fields
-        Script script = scriptEntry.getScript();
+        dScript script = scriptEntry.getScript();
         String step = null;
         Duration duration = new Duration(-1d);
 
@@ -84,7 +84,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        final Script script = (Script) scriptEntry.getObject("script");
+        final dScript script = (dScript) scriptEntry.getObject("script");
         String step = (String) scriptEntry.getObject("step");
         Duration duration = (Duration) scriptEntry.getObject("duration");
 

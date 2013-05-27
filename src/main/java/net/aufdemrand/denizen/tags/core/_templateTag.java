@@ -3,8 +3,8 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.arguments.aH;
-import net.aufdemrand.denizen.arguments.dList;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -96,7 +96,7 @@ public class _templateTag implements Listener {
 
             // Use event.setReplaced() to pass the attribute off to the dList object (or any other dScriptArg object).
             // The dList constructor requires a string list and a prefix.
-            event.setReplaced(new dList("skills", skills).getAttribute(attribute));
+            event.setReplaced(new dList(skills).getAttribute(attribute));
         }
 
         // Got here? No attributes were handled! Probably should let the dBugger know.

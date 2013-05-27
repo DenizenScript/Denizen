@@ -2,11 +2,11 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.arguments.dLocation;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
@@ -97,7 +97,7 @@ public class NPCTags implements Listener {
                 event.setReplaced(n.getWorld().getName());
             else if (subType.equals("PREVIOUS_LOCATION"))
                 if (previousLocations.containsKey(n.getId()))
-                    event.setReplaced(previousLocations.get(n.getId()).dScriptArgValue());
+                    event.setReplaced(previousLocations.get(n.getId()).identify());
 
         } else if (type.equals("NAVIGATOR")) {
             if (subType.equals("IS_NAVIGATING"))
@@ -108,7 +108,7 @@ public class NPCTags implements Listener {
                 event.setReplaced(Boolean.toString(n.getNavigator().getLocalParameters().avoidWater()));
             else if (subType.equals("TARGET_LOCATION")) {
                 dLocation loc = new dLocation(n.getNavigator().getTargetAsLocation());
-                if (loc != null) event.setReplaced(loc.dScriptArgValue());
+                if (loc != null) event.setReplaced(loc.identify());
             } else if (subType.equals("IS_FIGHTING")) {
                 event.setReplaced(String.valueOf(event.getNPC().getNavigator().getEntityTarget().isAggressive()));
             } else if (subType.equals("TARGET_TYPE")) {

@@ -3,11 +3,11 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.events.ScriptFailEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.arguments.Script;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.Bukkit;
@@ -40,7 +40,7 @@ public class FailCommand extends AbstractCommand {
         String player = null;
 
 		// Get some defaults from the ScriptEntry
-		Script script = scriptEntry.getScript();
+		dScript script = scriptEntry.getScript();
 
 		if (scriptEntry.getPlayer() != null)
             player = scriptEntry.getPlayer().getName();
@@ -71,7 +71,7 @@ public class FailCommand extends AbstractCommand {
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		// Grab objects from scriptEntry
         String player = (String) scriptEntry.getObject("player");
-        Script script = (Script) scriptEntry.getObject("script");
+        dScript script = (dScript) scriptEntry.getObject("script");
 
         // Report to dB
         dB.report(getName(),

@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.arguments;
+package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.interfaces.dScriptArgument;

@@ -2,12 +2,12 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.arguments.Duration;
-import net.aufdemrand.denizen.arguments.Script;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.OfflinePlayer;
@@ -56,7 +56,7 @@ public class CooldownCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Define necessary fields
-        Script script = scriptEntry.getScript();
+        dScript script = scriptEntry.getScript();
         Duration duration = null;
         OfflinePlayer player = null;
         Type type = Type.PLAYER;
@@ -103,7 +103,7 @@ public class CooldownCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
-        Script script = (Script) scriptEntry.getObject("script");
+        dScript script = (dScript) scriptEntry.getObject("script");
         Duration duration = (Duration) scriptEntry.getObject("duration");
         Type type = (Type) scriptEntry.getObject("type");
 

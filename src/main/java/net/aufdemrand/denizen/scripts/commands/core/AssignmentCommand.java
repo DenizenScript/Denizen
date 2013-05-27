@@ -3,10 +3,10 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.arguments.Script;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
@@ -23,7 +23,7 @@ public class AssignmentCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         // Initialize fields
-        Script script = null;
+        dScript script = null;
         Action action = Action.SET;
 
         // Parse arguments
@@ -61,7 +61,7 @@ public class AssignmentCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
         Action action = (Action) scriptEntry.getObject("action");
-        Script script = (Script) scriptEntry.getObject("script");
+        dScript script = (dScript) scriptEntry.getObject("script");
 
         // Report to dB
         dB.report(getName(),

@@ -5,14 +5,14 @@ import java.util.Map;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
-import net.aufdemrand.denizen.arguments.Duration;
-import net.aufdemrand.denizen.arguments.Script;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
@@ -63,7 +63,7 @@ public class RuntaskCommand extends AbstractCommand {
         // Initialize necessary fields
         Map<String, String> context = null;
         Boolean instant = false;
-        Script script = null;
+        dScript script = null;
         Duration delay = null;
         ScriptQueue queue = scriptEntry.getResidingQueue();
 
@@ -132,7 +132,7 @@ public class RuntaskCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Map<String, String> context = (HashMap<String, String>) scriptEntry.getObject("context");
-        Script script = (Script) scriptEntry.getObject("script");
+        dScript script = (dScript) scriptEntry.getObject("script");
         ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
         Boolean instant = (Boolean) scriptEntry.getObject("instant");
         Duration delay = (Duration) scriptEntry.getObject("delay");
@@ -143,7 +143,7 @@ public class RuntaskCommand extends AbstractCommand {
                         + (delay != null ? delay.debug() : "")
                         + aH.debugObj("Instant", instant.toString())
                         + aH.debugObj("Queue", queue.id)
-                        + (instant == false ? aH.debugObj("Speed", queue.getSpeed().dScriptArgValue()) : "" )
+                        + (instant == false ? aH.debugObj("Speed", queue.getSpeed()) : "" )
                         + (context != null ? aH.debugObj("Context", context.toString()) : "")
                         + (scriptEntry.getPlayer() != null
                         ? aH.debugObj("Player", scriptEntry.getPlayer().getName()) : "")

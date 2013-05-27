@@ -1,5 +1,6 @@
-package net.aufdemrand.denizen.npc;
+package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
@@ -8,21 +9,21 @@ import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Owner;
-import net.minecraft.server.v1_5_R2.EntityLiving;
+import net.minecraft.server.v1_5_R3.EntityLiving;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_5_R2.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-public class dNPC {
+public class dNPC implements dScriptArgument {
 
     private int npcid;
     private final org.bukkit.Location locationCache = new org.bukkit.Location(null, 0, 0, 0);
@@ -156,35 +157,41 @@ public class dNPC {
 
 
 
+    private String prefix = "npc";
 
-
-    @Deprecated
-    public String getAssignment() {
-        if (getCitizen().hasTrait(AssignmentTrait.class))
-            return getCitizen().getTrait(AssignmentTrait.class).getAssignment().getName();
-        else return null;
+    @Override
+    public String getPrefix() {
+        return prefix;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Deprecated
-    public boolean hasAssignment() {
-        if (!getCitizen().hasTrait(AssignmentTrait.class)) return false;
-        return getCitizen().getTrait(AssignmentTrait.class).hasAssignment();
+    @Override
+    public String debug() {
+        return null;
     }
 
-    @Deprecated
-    public boolean setAssignment(String assignment, Player player) {
-        if (!getCitizen().hasTrait(AssignmentTrait.class))
-            getCitizen().addTrait(AssignmentTrait.class);
-        return getCitizen().getTrait(AssignmentTrait.class)
-                .setAssignment(
-                        assignment,
-                        player);
+    @Override
+    public boolean isUnique() {
+        return true;
     }
 
-    @Deprecated
-    public boolean isInteracting() {
-        if (!DenizenAPI._commandRegistry().get(EngageCommand.class).getEngaged(getCitizen())) return true;
-        else return false;
+    @Override
+    public String getType() {
+        return "npc";
     }
 
+    @Override
+    public String identify() {
+        return "n@" + npcid;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public dNPC setPrefix(String prefix) {
+
+        return this;
+    }
+
+    @Override
+    public String getAttribute(Attribute attribute) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

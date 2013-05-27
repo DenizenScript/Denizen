@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.arguments.Element;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;

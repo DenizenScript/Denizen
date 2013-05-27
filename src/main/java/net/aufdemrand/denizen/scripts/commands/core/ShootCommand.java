@@ -3,15 +3,15 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.arguments.Duration;
-import net.aufdemrand.denizen.arguments.dLocation;
-import net.aufdemrand.denizen.arguments.Script;
-import net.aufdemrand.denizen.arguments.aH;
-import net.aufdemrand.denizen.arguments.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.Color;
@@ -41,7 +41,7 @@ public class ShootCommand extends AbstractCommand {
         EntityType entityType = null;
         //Integer qty = null;
         dLocation location = null;
-        Script newScript = null;
+        dScript newScript = null;
         Boolean ride = false;
         Boolean burn = false;
         double explosion = -1;
@@ -169,7 +169,7 @@ public class ShootCommand extends AbstractCommand {
         				
         				if (scriptEntry.getObject("script") != null)
         				{
-                            ((TaskScriptContainer) ((Script) scriptEntry.getObject("script")).
+                            ((TaskScriptContainer) ((dScript) scriptEntry.getObject("script")).
                             		getContainer()).setSpeed(new Duration(
                             		Duration.valueOf(Settings.ScriptQueueSpeed()).getSeconds()))
                             		.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), null);

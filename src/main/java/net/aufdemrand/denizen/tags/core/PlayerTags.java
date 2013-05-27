@@ -5,7 +5,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.arguments.*;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
@@ -205,7 +205,7 @@ public class PlayerTags implements Listener {
 	            else if (subType.equalsIgnoreCase("LORE")) {
 	                if (p.getItemInHand().hasItemMeta()) {
 	                    if (p.getItemInHand().getItemMeta().hasLore()) {
-	                        event.setReplaced(new dList(p.getItemInHand().getItemMeta().getLore()).dScriptArgValue());
+	                        event.setReplaced(new dList(p.getItemInHand().getItemMeta().getLore()).identify());
 	                    }
 	                }
 	            }
@@ -294,7 +294,7 @@ public class PlayerTags implements Listener {
                 int range = 50;
                 if (aH.matchesInteger(subTypeContext))
                     range = aH.getIntegerFrom(subTypeContext);
-                event.setReplaced(new dLocation(p.getTargetBlock(null, range).getLocation()).dScriptArgValue());
+                event.setReplaced(new dLocation(p.getTargetBlock(null, range).getLocation()).identify());
             }
             else if (subType.equalsIgnoreCase("STANDING_ON"))
                 if (specifier.equalsIgnoreCase("FORMATTED"))

@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.arguments;
+package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Script implements dScriptArgument {
+public class dScript implements dScriptArgument {
 
     final public static Pattern matchesScriptPtrn = Pattern.compile("(?:.+:|)(.+)", Pattern.CASE_INSENSITIVE);
 
@@ -19,11 +19,11 @@ public class Script implements dScriptArgument {
      * @param string  the dScript argument String
      * @return  a Script, or null if incorrectly formatted
      */
-    public static Script valueOf(String string) {
+    public static dScript valueOf(String string) {
 
         Matcher m = matchesScriptPtrn.matcher(string);
         if (m.matches()) {
-            Script script = new Script(m.group(1));
+            dScript script = new dScript(m.group(1));
             // Make sure it's valid.
             if (script.isValid()) return script;
         }
@@ -40,7 +40,7 @@ public class Script implements dScriptArgument {
      *
      * @param scriptName
      */
-    public Script (String scriptName) {
+    public dScript(String scriptName) {
         // Required for tests
         if (DenizenAPI.getCurrentInstance() == null) return;
         if (ScriptRegistry.getScriptContainer(scriptName) != null) {
@@ -68,6 +68,11 @@ public class Script implements dScriptArgument {
         return (container != null ? container.getType() : "invalid");
     }
 
+    @Override
+    public String identify() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     /**
      * Gets the name of the ScriptContainer.
      *
@@ -87,7 +92,7 @@ public class Script implements dScriptArgument {
     }
 
     @Override
-    public String getDefaultPrefix() {
+    public String getPrefix() {
        return prefix;
     }
 
@@ -97,8 +102,8 @@ public class Script implements dScriptArgument {
     }
 
     @Override
-    public String as_dScriptArg() {
-        return prefix + ":" + name;
+    public boolean isUnique() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public String dScriptArgValue() {
@@ -113,7 +118,7 @@ public class Script implements dScriptArgument {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        if (attribute == null) return as_dScriptArg();
+        if (attribute == null) return "null";
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }

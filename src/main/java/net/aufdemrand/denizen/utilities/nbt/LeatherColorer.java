@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
-import net.aufdemrand.denizen.arguments.dItem;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Color;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -29,7 +29,7 @@ public class LeatherColorer {
                 blue = Integer.parseInt(regex[2]);
             }
         } catch (Exception e) {
-            dB.echoError("Unable to color '" + item.dScriptArgValue() + "'");
+            dB.echoError("Unable to color '" + item + "'");
             return;
         }
 
@@ -39,7 +39,7 @@ public class LeatherColorer {
             meta.setColor(Color.fromRGB(red, green, blue));
             item.getItemStack().setItemMeta(meta);
         } catch(Exception e) {
-            dB.echoError("Unable to color '" + item.dScriptArgValue() + "'.");
+            dB.echoError("Unable to color '" + item.identify() + "'.");
         }
     }
 

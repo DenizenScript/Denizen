@@ -5,8 +5,8 @@ import java.io.FilenameFilter;
 import java.util.*;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.npc.dNPC;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.aH;
 import net.minecraft.server.v1_5_R3.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.arguments;
+package net.aufdemrand.denizen.objects;
 
 import com.google.common.primitives.Ints;
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
@@ -11,7 +11,9 @@ import java.util.regex.Pattern;
 
 public class Duration implements dScriptArgument {
 
-    final static Pattern matchesDurationPtrn = Pattern.compile("(?:.+:|)(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)", Pattern.CASE_INSENSITIVE);
+    final static Pattern match =
+            Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)",
+                    Pattern.CASE_INSENSITIVE);
 
     /**
      * Gets a Duration Object from a dScript argument. Durations must be a positive
@@ -25,7 +27,7 @@ public class Duration implements dScriptArgument {
     public static Duration valueOf(String string) {
         if (string == null) return null;
 
-        Matcher m = matchesDurationPtrn.matcher(string);
+        Matcher m = match.matcher(string);
         if (m.matches()) {
             if (m.group().toUpperCase().endsWith("T"))
                 // Matches TICKS, so 1 tick = .05 seconds
@@ -48,6 +50,14 @@ public class Duration implements dScriptArgument {
         }
 
         return null;
+    }
+
+
+    public static boolean matches(String string) {
+        Matcher m = match.matcher(string);
+        if (m.matches()) return true;
+
+        return false;
     }
 
 
@@ -128,7 +138,7 @@ public class Duration implements dScriptArgument {
     }
 
     @Override
-    public String getDefaultPrefix() {
+    public String getPrefix() {
         return prefix;
     }
 
@@ -138,12 +148,35 @@ public class Duration implements dScriptArgument {
     }
 
     @Override
-    public String as_dScriptArg() {
-        return prefix + ":" + seconds;
+    public boolean isUnique() {
+        return false;
     }
 
-    public String dScriptArgValue() {
-        return String.valueOf(seconds);
+    @Override
+    public String getType() {
+        return "duration";
+    }
+
+    @Override
+    public String identify() {
+        double seconds = getTicks() / 20;
+        double days = seconds / 86400;
+        double hours = (seconds - days * 86400) / 3600;
+        double minutes = (seconds - days * 86400 - hours * 3600) / 60;
+        seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
+
+        String timeString = "";
+
+        if (days > 0)
+            timeString = String.valueOf(days) + "d ";
+        else if (hours > 0)
+            timeString = timeString + String.valueOf(hours) + "h ";
+        else if (minutes > 0 && days == 0)
+            timeString = timeString + String.valueOf(minutes) + "m ";
+        else if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
+            timeString = timeString + String.valueOf(seconds) + "s";
+
+        return timeString;
     }
 
     @Override

@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
-import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.arguments.Script;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -36,7 +36,7 @@ public class ScriptEntry {
     private OfflinePlayer offlinePlayer = null;
 	private dNPC npc = null;
 
-    private Script script = null;
+    private dScript script = null;
 
 	private ScriptQueue queue = null;
 	private List<String> args = null;
@@ -141,7 +141,7 @@ public class ScriptEntry {
         return objects.containsKey(key.toUpperCase());
     }
 
-	public Script getScript() {
+	public dScript getScript() {
         return script;
 	}
 
@@ -191,7 +191,7 @@ public class ScriptEntry {
 	}
 	
 	public ScriptEntry setScript(String scriptName) {
-		this.script = Script.valueOf(scriptName);
+		this.script = dScript.valueOf(scriptName);
 		return this;
 	}
 

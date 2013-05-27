@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.npc;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;

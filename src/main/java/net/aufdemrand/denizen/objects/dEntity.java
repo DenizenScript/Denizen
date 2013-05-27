@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.arguments;
+package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -115,7 +115,7 @@ public class dEntity implements dScriptArgument {
             else if (entityGroupUpper.startsWith("P@")) {
                 LivingEntity returnable = aH.getPlayerFrom(m.group(3));
 
-                if (returnable != null) new dEntity(returnable);
+                if (returnable != null) return new dEntity(returnable);
                 else dB.echoError("Invalid Player! '" + entityGroup
                         + "' could not be found. Has the player logged off?");
             }
@@ -363,7 +363,7 @@ public class dEntity implements dScriptArgument {
 
         if (attribute.startsWith("type")) {
             if (CustomNBT.hasCustomNBT(getBukkitEntity(), "denizen-script-id"))
-                return new Script(CustomNBT.getCustomNBT(getBukkitEntity(), "denizen-script-id"))
+                return new dScript(CustomNBT.getCustomNBT(getBukkitEntity(), "denizen-script-id"))
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(getBukkitEntity().getType().name())

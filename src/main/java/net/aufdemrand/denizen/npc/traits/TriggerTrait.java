@@ -78,7 +78,7 @@ public class TriggerTrait extends Trait implements Listener {
     }
 
     public boolean isEnabled(String triggerName) {
-        if (!DenizenAPI.getDenizenNPC(npc).hasAssignment()) return false;
+        if (!DenizenAPI.getDenizenNPC(npc).getAssignmentTrait().hasAssignment()) return false;
         if (enabled.containsKey(triggerName.toUpperCase()))
             return enabled.get(triggerName.toUpperCase());
         else return false;

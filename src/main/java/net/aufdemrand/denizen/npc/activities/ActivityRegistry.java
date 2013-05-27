@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.npc.activities;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.activities.core.TaskActivity;
 import net.aufdemrand.denizen.npc.activities.core.WanderActivity;
 import net.aufdemrand.denizen.utilities.debugging.dB;

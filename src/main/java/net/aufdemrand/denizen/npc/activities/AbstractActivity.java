@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.npc.activities;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.objects.dNPC;
 import org.bukkit.Bukkit;
 
 public abstract class AbstractActivity implements RegistrationableInstance {

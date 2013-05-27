@@ -1,13 +1,13 @@
 package net.aufdemrand.denizen.scripts.containers;
 
-import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.arguments.Script;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -33,8 +33,8 @@ public class ScriptContainer {
 
     private String name;
 
-    public Script getAsScriptArg() {
-        return Script.valueOf(name);
+    public dScript getAsScriptArg() {
+        return dScript.valueOf(name);
     }
 
     public String getType() {

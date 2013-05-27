@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.requirements;
 
-import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import org.bukkit.entity.Player;
 

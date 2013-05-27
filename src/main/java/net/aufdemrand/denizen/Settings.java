@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.arguments.Duration;
+import net.aufdemrand.denizen.objects.Duration;
 
 public class Settings {
 

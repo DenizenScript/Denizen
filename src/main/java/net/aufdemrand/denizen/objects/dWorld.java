@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.arguments;
+package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -10,39 +10,47 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class dWorld implements dScriptArgument {
 
-    /**
-     *
-     * @param string  the string or dScript argument String
-     * @return  a dScript dList
-     *
-     */
     @ObjectFetcher("w")
-    public static dWorld valueOf(String string) {
+    public static dPlayer valueOf(String string) {
         if (string == null) return null;
 
-        // Make sure string matches what this interpreter can accept.
-        final Pattern world_object_pattern =
-                Pattern.compile("(.+?:|)((w@|)(.+))",
-                        Pattern.CASE_INSENSITIVE);
+        string = string.replace("w@", "");
 
-        Matcher m = world_object_pattern.matcher(string);
+        ////////
+        // Match world name
 
-        if (m.matches()) {
-            String prefix = m.group(1);
-            String world_name = m.group(2).split("@")[1];
+        World returnable = null;
 
-            for (World world : Bukkit.getWorlds())
-                if (world.getName().equalsIgnoreCase(world_name)) return new dWorld(prefix, world);
-        }
+        for (World world : Bukkit.getWorlds())
+            if (world.getName().equalsIgnoreCase(string))
+                returnable = world;
 
-        dB.echoError("World '" + m.group(2) + "' is invalid or does not exist.");
+        if (returnable != null) new dWorld(returnable);
+        else dB.echoError("Invalid World! '" + string
+                + "' could not be found.");
+
         return null;
     }
+
+
+    public static boolean matches(String arg) {
+
+        arg = arg.replace("w@", "");
+
+        World returnable = null;
+
+        for (World world : Bukkit.getWorlds())
+            if (world.getName().equalsIgnoreCase(arg))
+                returnable = world;
+
+        if (returnable != null) return true;
+
+        return false;
+    }
+
 
     public World getWorld() {
         return Bukkit.getWorld(world_name);
@@ -62,22 +70,34 @@ public class dWorld implements dScriptArgument {
     }
 
     @Override
-    public String getDefaultPrefix() {
+    public String getPrefix() {
         return prefix;
     }
 
     @Override
     public String debug() {
-        return (prefix + "='<A>" + world_name + "<G>'  ");
+        return (prefix + "='<A>" + identify() + "<G>'  ");
     }
 
     @Override
-    public String as_dScriptArg() {
-        return prefix + ":" + world_name;
+    public boolean isUnique() {
+        return true;
     }
 
-    public String dScriptArgValue() {
-        return world_name;
+    @Override
+    public String getType() {
+        return "World";
+    }
+
+    @Override
+    public String identify() {
+        return "w@" + world_name;
+
+    }
+
+    @Override
+    public String toString() {
+        return "w@" + world_name;
     }
 
     @Override

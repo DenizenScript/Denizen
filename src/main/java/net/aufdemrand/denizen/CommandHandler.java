@@ -12,8 +12,8 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptRepo;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.arguments.dLocation;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.command.Command;
@@ -950,11 +950,11 @@ public class CommandHandler {
         if (!(sender instanceof Player)) return;
 
         if (args.hasValueFlag("name")) {
-            new dLocation(args.getFlag("name"), ((Player) sender).getLocation());
+            new dLocation(((Player) sender).getLocation()).rememberAs(args.getFlag("name"));
             return;
         }
 
-        else Messaging.send(sender, dLocation.locations.toString());
+        else Messaging.send(sender, dLocation.uniqueObjects.toString());
     }
 
 }

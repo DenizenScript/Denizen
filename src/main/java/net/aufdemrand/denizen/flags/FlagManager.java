@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.flags;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.arguments.aH;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
 import java.util.ArrayList;
@@ -95,6 +95,7 @@ public class FlagManager {
      *
      */
     public class Flag {
+
         private Value value;
         private String flagPath;
         private String flagName;

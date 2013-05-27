@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.arguments;
+package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -21,14 +21,7 @@ public class Element implements dScriptArgument {
     public static dScriptArgument valueOf(String string) {
         if (string == null) return null;
 
-        String prefix = null;
-        // Strip prefix (ie. targets:...)
-        if (string.split(":").length > 1) {
-            prefix = string.split(":", 2)[0];
-            string = string.split(":", 2)[1];
-        }
-
-        return new Element(prefix, string);
+        return new Element(string);
     }
 
 
@@ -66,9 +59,6 @@ public class Element implements dScriptArgument {
     public String asString() {
         return element;
     }
-
-
-
 
     private String prefix;
 
@@ -156,6 +146,9 @@ public class Element implements dScriptArgument {
 
         if (attribute.startsWith("last_color"))
             return new Element(String.valueOf(ChatColor.getLastColors(element))).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("strip_color"))
+            return new Element(String.valueOf(ChatColor.stripColor(element))).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("split") && attribute.startsWith("limit", 2)) {
             String split_string = (attribute.hasContext(1) ? attribute.getContext(1) : " ");

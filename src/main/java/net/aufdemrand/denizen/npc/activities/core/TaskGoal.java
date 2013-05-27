@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.npc.activities.core;
 
-import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.citizensnpcs.api.ai.Goal;

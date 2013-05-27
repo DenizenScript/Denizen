@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.arguments;
+package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -13,46 +13,62 @@ import org.bukkit.entity.Player;
 
 public class dPlayer implements dScriptArgument {
 
-    /**
-     *
-     * @param string  the string or dScript argument String
-     * @return  a dScript dList
-     *
-     */
     @ObjectFetcher("p")
-    public static dScriptArgument valueOf(String string) {
+    public static dPlayer valueOf(String string) {
         if (string == null) return null;
 
-        if (string.split(":").length > 1)
-            string = string.split(":", 2)[1];
+        string = string.replace("p@", "");
 
-        for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-            if (player.getName().equalsIgnoreCase(string)) return new dPlayer(player);
+        ////////
+        // Match player name
 
-        dB.echoDebug("Player '" + string + "' is invalid, or has never logged in to this server.");
+        OfflinePlayer returnable = aH.getOfflinePlayerFrom(string);
+
+        if (returnable != null) new dPlayer(returnable);
+        else dB.echoError("Invalid Player! '" + string
+                + "' could not be found. Has the player logged off?");
+
         return null;
     }
+
+
+    public static boolean matches(String arg) {
+
+        arg = arg.replace("p@", "");
+
+        OfflinePlayer returnable = aH.getOfflinePlayerFrom(arg);
+        if (returnable != null) return true;
+
+        return false;
+    }
+
 
     public Player getPlayerEntity() {
         return Bukkit.getPlayer(player);
     }
 
+
     public OfflinePlayer getOfflinePlayer() {
         return Bukkit.getOfflinePlayer(player);
     }
+
 
     public boolean isOnline() {
         if (Bukkit.getPlayer(player) != null) return true;
         return false;
     }
 
+
     String player;
+
 
     public dPlayer(OfflinePlayer player) {
         this.player = player.getName();
     }
 
+
     private String prefix = "Player";
+
 
     @Override
     public String getPrefix() {
@@ -67,17 +83,27 @@ public class dPlayer implements dScriptArgument {
 
     @Override
     public String debug() {
-        return (prefix + "='<A>" + player + "<G>'  ");
+        return (prefix + "='<A>" + identify() + "<G>'  ");
     }
 
     @Override
-    public String as_dScriptArgValue() {
-        return player;
+    public boolean isUnique() {
+        return true;
+    }
+
+    @Override
+    public String getType() {
+        return "player";
+    }
+
+    @Override
+    public String identify() {
+        return "p@" + player;
     }
 
     @Override
     public String toString() {
-        return "p@" + player;
+        return identify();
     }
 
 
@@ -145,7 +171,7 @@ public class dPlayer implements dScriptArgument {
             }
         }
 
-        if (!isOnline()) return new Element(as_dScriptArgValue()).getAttribute(attribute);
+        if (!isOnline()) return new Element(identify()).getAttribute(attribute);
 
         // Player is required to be online after this point...
 

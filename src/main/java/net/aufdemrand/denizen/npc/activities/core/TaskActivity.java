@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.activities.AbstractActivity;
-import net.aufdemrand.denizen.arguments.aH;
-import net.aufdemrand.denizen.arguments.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.Goal;
 
