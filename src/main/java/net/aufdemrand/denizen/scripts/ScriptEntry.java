@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import org.bukkit.OfflinePlayer;
@@ -32,8 +33,7 @@ public class ScriptEntry {
     private boolean waitfor = false;
     private boolean done = false;
 
-    private Player player = null;
-    private OfflinePlayer offlinePlayer = null;
+    private dPlayer player = null;
 	private dNPC npc = null;
 
     private dScript script = null;
@@ -110,20 +110,11 @@ public class ScriptEntry {
 		return npc;
 	}
 
-    public OfflinePlayer getOfflinePlayer() {
-        return offlinePlayer;
-    }
-
     public void setFinished(boolean finished) {
         done = finished;
     }
 
-    public ScriptEntry setOfflinePlayer(OfflinePlayer offlinePlayer) {
-        this.offlinePlayer = offlinePlayer;
-        return this;
-    }
-
-    public Player getPlayer() {
+    public dPlayer getPlayer() {
         return player;
     }
 
@@ -180,10 +171,15 @@ public class ScriptEntry {
 		return this;
 	}
 
-	public ScriptEntry setPlayer(Player player) {
-		this.player = player;
+	public ScriptEntry setPlayer(OfflinePlayer player) {
+		this.player = new dPlayer(player);
 		return this;
 	}
+
+    public ScriptEntry setPlayer(dPlayer player) {
+        this.player = player;
+        return this;
+    }
 	
 	public ScriptEntry setNPC(dNPC dNPC) {
 		this.npc = dNPC;

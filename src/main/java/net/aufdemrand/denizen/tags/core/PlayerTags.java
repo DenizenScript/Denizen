@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -50,6 +51,10 @@ public class PlayerTags implements Listener {
 
         // These tags require a player.
         if (!event.matches("PLAYER")) return;
+
+        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+
+        event.setReplaced();
 
         Player p = event.getPlayer();
         String type = event.getType() != null ? event.getType() : "";

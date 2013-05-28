@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.ScriptEntryExecuteEvent;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
@@ -74,25 +75,16 @@ public class CommandExecuter {
                 if (aH.matchesValueArg("PLAYER", arg, aH.ArgumentType.String)) {
                     boolean foundNewPlayer = false;
                     dB.echoDebug("...replacing the linked Player.");
-                    for (Player playa : Bukkit.getServer().getOnlinePlayers())
+
+                    for (OfflinePlayer playa : Bukkit.getServer().getOfflinePlayers())
                         if (playa.getName().equalsIgnoreCase(split[1])) {
-                            foundNewPlayer = true;
                             scriptEntry.setPlayer(playa);
+                            foundNewPlayer = true;
                         }
-                    if (foundNewPlayer) dB.echoDebug("...player set to '%s'.", split[1]);
-                    else {
-                        dB.echoDebug("This player is not online! Searching for offline player...");
-                        for (OfflinePlayer playa : Bukkit.getServer().getOfflinePlayers())
-                            if (playa.getName().equalsIgnoreCase(split[1])) {
-                                scriptEntry.setPlayer(null);
-                                scriptEntry.setOfflinePlayer(playa);
-                                foundNewPlayer = true;
-                            }
-                    }
-                    if (foundNewPlayer) {
-                        dB.echoDebug("Found an offline player.. linking.");
-                    }
+
+                    if (foundNewPlayer) dB.echoDebug("Found an offline player.. linking.");
                     else { dB.echoError("Could not find a valid player!"); scriptEntry.setPlayer(null); }
+
                 }
 
                 // Fill Denizen with NPCID
@@ -116,16 +108,16 @@ public class CommandExecuter {
 
             // Now process non-instant tags.
             if (scriptEntry.has_tags)
-                scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry, false));
+                scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, false));
 
             // dBug the filled arguments
             dB.echoDebug(ChatColor.AQUA + "+> " + ChatColor.DARK_GRAY + "Filled tags: " + scriptEntry.getArguments().toString());
-
 
             // Parse the rest of the arguments for execution.
             command.parseArgs(scriptEntry);
 
         }	catch (InvalidArgumentsException e) {
+
             keepGoing = false;
             // Give usage hint if InvalidArgumentsException was called.
             dB.echoError("Woah! Invalid arguments were specified!");
@@ -134,6 +126,7 @@ public class CommandExecuter {
             dB.echoDebug(DebugElement.Footer);
 
         } catch (Exception e) {
+
             keepGoing = false;
             dB.echoError("Woah! An exception has been called with this command!");
             if (!dB.showStackTraces)
@@ -142,6 +135,7 @@ public class CommandExecuter {
             dB.echoDebug(DebugElement.Footer);
 
         } finally {
+
             if (keepGoing)
                 try {
                     // Fire event for last minute cancellation/alterations

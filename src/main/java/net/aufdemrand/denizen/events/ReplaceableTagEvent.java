@@ -4,9 +4,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.OfflinePlayer;
@@ -41,8 +43,7 @@ import org.bukkit.event.HandlerList;
 public class ReplaceableTagEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private Player player;
-    private OfflinePlayer offlinePlayer;
+    private dPlayer player;
     private dNPC npc;
 
     private boolean instant = false;
@@ -99,9 +100,7 @@ public class ReplaceableTagEvent extends Event {
         // Add ScriptEntry if available
         this.scriptEntry = scriptEntry;
 
-        if (player instanceof Player)
-            this.player = (Player) player;
-        else this.offlinePlayer = player;
+        this.player = new dPlayer(player);
 
         this.replaced = tag;
         this.npc = npc;
@@ -112,18 +111,7 @@ public class ReplaceableTagEvent extends Event {
             instant = true;
             tag = tag.substring(1);
         }
-        
-        // Get base context
-        Matcher basecontextMatcher = basecontextRegex.matcher(tag);
-        
-        if (basecontextMatcher.find())
-        {
-        	tag = tag.substring(basecontextMatcher.end()).trim();
-        	baseContext = basecontextMatcher.group().replace("[", "")
-					   	  .replace("]", "");
-        	parseContext();
-        }
-        
+
         // Get alternative text
         Matcher alternativeMatcher = alternativeRegex.matcher(tag);
         
@@ -290,7 +278,7 @@ public class ReplaceableTagEvent extends Event {
         return npc;
     }
 
-    public Player getPlayer() {
+    public dPlayer getPlayer() {
         return player;
     }
 
@@ -315,35 +303,11 @@ public class ReplaceableTagEvent extends Event {
         wasReplaced = true;
     }
 
-    public boolean hasOfflinePlayer() {
-        return offlinePlayer != null;
-    }
-
-    public OfflinePlayer getOfflinePlayer() {
-        return offlinePlayer;
-    }
-
+    // TODO: Remove in 1.0
+    @Deprecated
     private void parseContext() {
-        if (baseContext == null || baseContext.length() == 1) return;
-        LivingEntity entity;
-        for (String context : baseContext.split("\\|")) {
-            entity = aH.getLivingEntityFrom(context);
-            if (entity != null) {
-                if (CitizensAPI.getNPCRegistry().isNPC(entity))
-                    npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
-
-                else if (entity instanceof Player) {
-                    player = (Player) entity;
-                    break;
-                }
-            }
-            // Else, might be an offlineplayer
-            try {
-                OfflinePlayer offline = aH.getOfflinePlayerFrom(context.split("\\.")[1]);
-                if (offline != null) this.offlinePlayer = offline;
-                this.player = null;
-            } catch (Exception e) { }
-        }
+        dB.echoDebug("Using 'context' in this way has been deprecated, as it is now possible " +
+                "to specify specific objects.");
     }
 
     public boolean hasScriptEntryAttached() {
@@ -357,7 +321,7 @@ public class ReplaceableTagEvent extends Event {
     @Override
     public String toString() {
         return  (instant ? "Instant=true," : "")
-                + "Player=" + (player != null ? player.getName() : "null") + ", "
+                + "Player=" + (player != null ? player.identify() : "null") + ", "
                 + "NPC=" + (npc != null ? npc.getName() : "null") + ", "
                 + "NAME=" + (nameContext != null ? name + "(" + nameContext + "), " : name + ", ")
                 + (type != null ? (typeContext != null ? "TYPE=" + type + "(" + typeContext + "), " : "TYPE=" + type + ", ") : "" )
