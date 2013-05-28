@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -25,7 +26,7 @@ public class InteractScriptHelper {
      * @return  the highest priority InteractScriptContainer that meets requirements, if any.
      *
      */
-    public static InteractScriptContainer getInteractScript(dNPC npc, Player player,
+    public static InteractScriptContainer getInteractScript(dNPC npc, dPlayer player,
                                                             Class<? extends AbstractTrigger> trigger) {
         // If no trigger, npc or player specified, return null.
         // These objects are required to progress any further.
@@ -189,7 +190,7 @@ public class InteractScriptHelper {
      * @return the current, or default, step name
      *
      */
-    public static String getCurrentStep(Player player, String scriptName) {
+    public static String getCurrentStep(dPlayer player, String scriptName) {
         if (scriptName == null) return null;
         // Probe 'saves.yml' for the current step
         if (DenizenAPI._saves().contains("Players." + player.getName()

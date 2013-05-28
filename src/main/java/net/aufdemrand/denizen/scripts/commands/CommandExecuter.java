@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ScriptEntryExecuteEvent;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -32,7 +33,7 @@ public class CommandExecuter {
     public boolean execute(ScriptEntry scriptEntry) {
         if (plugin.getCommandRegistry().get(scriptEntry.getCommandName()) == null) {
             dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName());
-            dB.echoError(scriptEntry.getCommandName() + " is an invalid dScript command! Are you sure the command loaded?");
+            dB.echoError(scriptEntry.getCommandName() + " is an invalid dCommand! Are you sure it loaded?");
             dB.echoDebug(DebugElement.Footer);
             return false;
         }
@@ -42,8 +43,8 @@ public class CommandExecuter {
 
         // Debugger information
         if (scriptEntry.getPlayer() != null)
-            dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName() + "/" + scriptEntry.getPlayer().getName());
-        else dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/" + scriptEntry.getNPC().getName() : ""));
+            dB.echoDebug(DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + "/" + scriptEntry.getPlayer().getName());
+        else dB.echoDebug(DebugElement.Header, "Executing dCommand: " + scriptEntry.getCommandName() + (scriptEntry.getNPC() != null ? "/" + scriptEntry.getNPC().getName() : ""));
 
         // Don't execute() if problems arise in parseArgs()
         boolean keepGoing = true;
@@ -54,7 +55,7 @@ public class CommandExecuter {
             if (command.getOptions().REQUIRED_ARGS > scriptEntry.getArguments().size()) throw new InvalidArgumentsException("");
 
             if (scriptEntry.has_tags)
-                scriptEntry.setArguments(plugin.tagManager().fillArguments(scriptEntry.getArguments(), scriptEntry, true)); // Replace tags
+                scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, true)); // Replace tags
 
 			/*  If using NPCID:# or PLAYER:Name arguments, these need to be changed out immediately because...
 			 *  1) Denizen/Player flags need the desired NPC/PLAYER before parseArgs's getFilledArguments() so that
@@ -64,28 +65,14 @@ public class CommandExecuter {
 			 *     here, instead of requiring each command to take care of the argument.
 			 */
 
-
-
             List<String> newArgs = new ArrayList<String>();
 
             for (String arg : scriptEntry.getArguments()) {
                 String[] split = arg.split(":");
 
                 // Fill player/off-line player
-                if (aH.matchesValueArg("PLAYER", arg, aH.ArgumentType.String)) {
-                    boolean foundNewPlayer = false;
-                    dB.echoDebug("...replacing the linked Player.");
-
-                    for (OfflinePlayer playa : Bukkit.getServer().getOfflinePlayers())
-                        if (playa.getName().equalsIgnoreCase(split[1])) {
-                            scriptEntry.setPlayer(playa);
-                            foundNewPlayer = true;
-                        }
-
-                    if (foundNewPlayer) dB.echoDebug("Found an offline player.. linking.");
-                    else { dB.echoError("Could not find a valid player!"); scriptEntry.setPlayer(null); }
-
-                }
+                if (aH.matchesValueArg("PLAYER", arg, aH.ArgumentType.String))
+                    scriptEntry.setPlayer(dPlayer.valueOf(split[1]));
 
                 // Fill Denizen with NPCID
                 else if (aH.matchesValueArg("NPCID", arg, aH.ArgumentType.String)) {
@@ -99,10 +86,10 @@ public class CommandExecuter {
                         scriptEntry.setNPC(null);
                     }
                 }
-                else {
-                    newArgs.add(arg);
-                }
+
+                else newArgs.add(arg);
             }
+
             // Add the arguments back to the scriptEntry.
             scriptEntry.setArguments(newArgs);
 

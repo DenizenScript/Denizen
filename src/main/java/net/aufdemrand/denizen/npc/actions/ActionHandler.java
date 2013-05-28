@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.npc.actions;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
@@ -20,7 +21,7 @@ public class ActionHandler {
         this.denizen = denizen;
     }
 
-    public boolean doAction(String actionName, dNPC npc, Player player, AssignmentScriptContainer assignment) {
+    public boolean doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment) {
 
         if (assignment == null) return false;
 

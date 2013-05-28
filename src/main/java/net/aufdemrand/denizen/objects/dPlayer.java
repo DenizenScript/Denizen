@@ -48,6 +48,11 @@ public class dPlayer implements dScriptArgument {
     }
 
 
+    public String getName() {
+        return getPlayerEntity() != null ? getPlayerEntity().getName() : getOfflinePlayer().getName();
+    }
+
+
     public OfflinePlayer getOfflinePlayer() {
         return Bukkit.getOfflinePlayer(player);
     }

@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.containers;
 
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -71,11 +72,11 @@ public class ScriptContainer {
         return name;
     }
 
-    public boolean checkBaseRequirements(Player player, dNPC npc) {
+    public boolean checkBaseRequirements(dPlayer player, dNPC npc) {
         return checkRequirements(player, npc, "");
     }
 
-    public boolean checkRequirements(Player player, dNPC npc, String path) {
+    public boolean checkRequirements(dPlayer player, dNPC npc, String path) {
         if (path == null) path = "";
         if (path.length() > 0) path = path + ".";
         // Get requirements
@@ -90,11 +91,11 @@ public class ScriptContainer {
         return DenizenAPI.getCurrentInstance().getScriptEngine().getRequirementChecker().check(context);
     }
 
-    public List<ScriptEntry> getBaseEntries(Player player, dNPC npc) {
+    public List<ScriptEntry> getBaseEntries(dPlayer player, dNPC npc) {
         return getEntries(player, npc, null);
     }
 
-    public List<ScriptEntry> getEntries(Player player, dNPC npc, String path) {
+    public List<ScriptEntry> getEntries(dPlayer player, dNPC npc, String path) {
         List<ScriptEntry> list = new ArrayList<ScriptEntry>();
         if (path == null) path = "script";
         List<String> stringEntries = contents.getStringList(path.toUpperCase());
@@ -103,7 +104,7 @@ public class ScriptContainer {
         return list;
     }
 
-    public boolean checkCooldown(Player player) {
+    public boolean checkCooldown(dPlayer player) {
         return DenizenAPI._commandRegistry().get(CooldownCommand.class).checkCooldown(player.getName(), name);
     }
 

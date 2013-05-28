@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
@@ -41,11 +42,11 @@ public class TaskScriptContainer extends ScriptContainer {
         return this;
     }
 
-    public ScriptQueue runTaskScript(Player player, dNPC npc, Map<String, String> context) {
+    public ScriptQueue runTaskScript(dPlayer player, dNPC npc, Map<String, String> context) {
         return runTaskScript(ScriptQueue._getNextId(), player, npc, context);
     }
 
-    public ScriptQueue runTaskScript(String queueId, Player player, dNPC npc, Map<String, String> context) {
+    public ScriptQueue runTaskScript(String queueId, dPlayer player, dNPC npc, Map<String, String> context) {
         ScriptQueue queue = ScriptQueue._getQueue(queueId);
         List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
         if (context != null)
@@ -69,7 +70,7 @@ public class TaskScriptContainer extends ScriptContainer {
         return Collections.emptyMap();
     }
 
-    public ScriptQueue runTaskScriptWithDelay(String queueId, Player player, dNPC npc, Map<String, String> context, Duration delay) {
+    public ScriptQueue runTaskScriptWithDelay(String queueId, dPlayer player, dNPC npc, Map<String, String> context, Duration delay) {
         ScriptQueue queue = ScriptQueue._getQueue(queueId);
         List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
         if (context != null)
@@ -82,7 +83,7 @@ public class TaskScriptContainer extends ScriptContainer {
         return queue;
     }
 
-    public ScriptQueue injectTaskScript(String queueId, Player player, dNPC npc, Map<String, String> context) {
+    public ScriptQueue injectTaskScript(String queueId, dPlayer player, dNPC npc, Map<String, String> context) {
         ScriptQueue queue = ScriptQueue._getQueue(queueId);
         List<ScriptEntry> listOfEntries = getBaseEntries(player, npc);
         if (context != null)

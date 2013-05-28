@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.flags;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -17,7 +18,7 @@ public class FlagManager {
         this.denizen = denizen;
     }
 
-    public static boolean playerHasFlag(Player player, String flagName) {
+    public static boolean playerHasFlag(dPlayer player, String flagName) {
         if (player == null || flagName == null) return false;
         if (DenizenAPI.getCurrentInstance().flagManager()
                 .getPlayerFlag(player.getName(), flagName).size() > 0)

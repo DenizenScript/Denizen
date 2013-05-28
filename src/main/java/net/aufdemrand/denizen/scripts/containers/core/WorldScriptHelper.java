@@ -1,17 +1,13 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
@@ -56,7 +52,7 @@ public class WorldScriptHelper implements Listener {
             if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
 
             // Fetch script from Event
-            List<ScriptEntry> entries = script.getEntries(player, npc, "events.on " + eventName);
+            List<ScriptEntry> entries = script.getEntries(new dPlayer(player), npc, "events.on " + eventName);
             if (entries.isEmpty()) continue;
 
             dB.report("Event",

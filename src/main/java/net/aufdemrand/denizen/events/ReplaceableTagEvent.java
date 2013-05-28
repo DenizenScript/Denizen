@@ -91,16 +91,16 @@ public class ReplaceableTagEvent extends Event {
 
     public String raw_tag;
 
-    public ReplaceableTagEvent(OfflinePlayer player, dNPC npc, String tag) {
+    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag) {
         this(player, npc, tag, null);
     }
 
-    public ReplaceableTagEvent(OfflinePlayer player, dNPC npc, String tag, ScriptEntry scriptEntry) {
+    public ReplaceableTagEvent(dPlayer player, dNPC npc, String tag, ScriptEntry scriptEntry) {
 
         // Add ScriptEntry if available
         this.scriptEntry = scriptEntry;
 
-        this.player = new dPlayer(player);
+        this.player = player;
 
         this.replaced = tag;
         this.npc = npc;

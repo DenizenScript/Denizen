@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.dItem;
@@ -18,12 +19,12 @@ public class BookScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
-    public dItem getBookFrom(Player player, dNPC npc) {
+    public dItem getBookFrom(dPlayer player, dNPC npc) {
         dItem stack = new dItem(Material.BOOK);
         return writeBookTo(stack, player, npc);
     }
 
-    public dItem writeBookTo(dItem book, Player player, dNPC npc) {
+    public dItem writeBookTo(dItem book, dPlayer player, dNPC npc) {
         // Get current ItemMeta from the book
         BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
         

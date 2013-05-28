@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.tags;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
 import org.bukkit.Bukkit;
@@ -32,7 +33,6 @@ public class TagManager {
     public void registerCoreTags() {
         new PlayerTags(denizen);
         new UtilTags(denizen);
-        new OfflinePlayerTags(denizen);
         new FlagTags(denizen);
         new BookmarkTags(denizen);
         new ConstantTags(denizen);
@@ -46,15 +46,15 @@ public class TagManager {
         new ForeignCharacterTags(denizen);
     }
 
-    public static String tag(OfflinePlayer player, dNPC npc, String arg) {
+    public static String tag(dPlayer player, dNPC npc, String arg) {
         return tag(player, npc, arg, false, null);
     }
 
-    public static String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant) {
+    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant) {
         return tag(player, npc, arg, instant, null);
     }
 
-    public static String tag(OfflinePlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
+    public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
         if (arg == null) return null;
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
         if (arg.indexOf('>') == -1 || arg.length() < 3) return arg;
@@ -111,16 +111,13 @@ public class TagManager {
         List<String> filledArgs = new ArrayList<String>();
         if (args != null) {
             for (String argument : args) {
-                if (scriptEntry.getPlayer() == null && scriptEntry.getOfflinePlayer() != null)
-                    filledArgs.add(tag(scriptEntry.getOfflinePlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
-                else
-                    filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
+                filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
             }
         }
         return filledArgs;
     }
 
-    public static List<String> fillArguments(String[] args, Player player, dNPC npc) {
+    public static List<String> fillArguments(String[] args, dPlayer player, dNPC npc) {
         List<String> filledArgs = new ArrayList<String>();
         if (args != null) {
             for (String argument : args) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -29,7 +30,7 @@ public class ItemScriptContainer extends ScriptContainer {
        return getItemFrom(null, null);
    }
 
-    public dItem getItemFrom(Player player, dNPC npc) {
+    public dItem getItemFrom(dPlayer player, dNPC npc) {
         // Try to use this script to make an item.
         dItem stack = null;
         try {

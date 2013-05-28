@@ -25,6 +25,36 @@ import org.bukkit.entity.Player;
 
 public class dNPC implements dScriptArgument {
 
+    @ObjectFetcher("n")
+    public static dNPC valueOf(String string) {
+        if (string == null) return null;
+
+        ////////
+        // Match NPC id
+
+        string = string.replace("n@", "");
+        NPC npc;
+        if (aH.matchesInteger(string)) {
+            npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
+            if (npc != null) return new dNPC(npc);
+        }
+
+        return null;
+    }
+
+
+    public static boolean matches(String string) {
+
+        string = string.replace("n@", "");
+        NPC npc;
+        if (aH.matchesInteger(string)) {
+            npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
+            if (npc != null) return true;
+        }
+
+        return false;
+    }
+
     private int npcid;
     private final org.bukkit.Location locationCache = new org.bukkit.Location(null, 0, 0, 0);
 
@@ -68,11 +98,11 @@ public class dNPC implements dScriptArgument {
         return getCitizen().getName();
     }
 
-    public InteractScriptContainer getInteractScript(Player player, Class<? extends AbstractTrigger> triggerType) {
+    public InteractScriptContainer getInteractScript(dPlayer player, Class<? extends AbstractTrigger> triggerType) {
         return InteractScriptHelper.getInteractScript(this, player, triggerType);
     }
 
-    public InteractScriptContainer getInteractScriptQuietly(Player player, Class<? extends AbstractTrigger> triggerType) {
+    public InteractScriptContainer getInteractScriptQuietly(dPlayer player, Class<? extends AbstractTrigger> triggerType) {
         boolean db = dB.debugMode;
         dB.debugMode = false;
         InteractScriptContainer script = InteractScriptHelper.getInteractScript(this, player, triggerType);
@@ -142,7 +172,7 @@ public class dNPC implements dScriptArgument {
         return getCitizen().getTrait(TriggerTrait.class);
     }
 
-    public void action(String actionName, Player player) {
+    public void action(String actionName, dPlayer player) {
     	if (getCitizen() != null)
     	{
     		if (getCitizen().hasTrait(AssignmentTrait.class))
@@ -166,7 +196,7 @@ public class dNPC implements dScriptArgument {
 
     @Override
     public String debug() {
-        return null;
+        return (prefix + "='<A>" + identify() + "<G>'  ");
     }
 
     @Override

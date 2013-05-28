@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.requirements;
 
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import org.bukkit.entity.Player;
 
@@ -8,13 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Press
- * Date: 1/16/13
- * Time: 6:50 PM
- * To change this template use File | Settings | File Templates.
- */
 public class RequirementsContext {
 
     protected RequirementsMode mode;
@@ -22,7 +16,7 @@ public class RequirementsContext {
 
     private Map<String, Object> objects = new HashMap<String, Object>();
 
-    protected Player player = null;
+    protected dPlayer player = null;
     protected dNPC npc = null;
     protected ScriptContainer container;
 
@@ -32,7 +26,7 @@ public class RequirementsContext {
         this.container = scriptContainer;
     }
 
-    public RequirementsContext attachPlayer(Player player) {
+    public RequirementsContext attachPlayer(dPlayer player) {
         this.player = player;
         return this;
     }
@@ -46,7 +40,7 @@ public class RequirementsContext {
         return npc;
     }
 
-    public Player getPlayer() {
+    public dPlayer getPlayer() {
         return player;
     }
 

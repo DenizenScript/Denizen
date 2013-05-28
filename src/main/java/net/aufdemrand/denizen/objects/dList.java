@@ -40,7 +40,7 @@ public class dList extends ArrayList<String> implements dScriptArgument {
                         return new dList(flag_manager.getGlobalFlag(m.group(4)));
 
                 } else if (m.group(2).toLowerCase().startsWith("p@")) {
-                    if (FlagManager.playerHasFlag(aH.getPlayerFrom(m.group(3)), m.group(4)))
+                    if (FlagManager.playerHasFlag(dPlayer.valueOf(m.group(3)), m.group(4)))
                         return new dList(flag_manager.getPlayerFlag(m.group(3), m.group(4)));
 
                 } else if (m.group(2).toLowerCase().startsWith("n@")) {
