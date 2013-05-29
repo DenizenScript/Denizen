@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -34,7 +35,7 @@ public class ScriptBuilder {
      * Builds ScriptEntry(ies) of items read from a script 
      */
 
-    public static List<ScriptEntry> buildScriptEntries(List<String> contents, ScriptContainer parent, Player player, dNPC npc) {
+    public static List<ScriptEntry> buildScriptEntries(List<String> contents, ScriptContainer parent, dPlayer player, dNPC npc) {
         List<ScriptEntry> scriptCommands = new ArrayList<ScriptEntry>();
 
         if (contents == null || contents.isEmpty()) {

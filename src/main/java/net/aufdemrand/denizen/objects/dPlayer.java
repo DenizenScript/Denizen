@@ -11,7 +11,29 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public class dPlayer implements dScriptArgument {
+
+
+    /////////////////////
+    //   STATIC METHODS
+    /////////////////
+
+    static Map<String, dPlayer> players = new HashMap<String, dPlayer>();
+
+    public static dPlayer mirrorBukkitPlayer(Player player) {
+        if (players.containsKey(player.getName())) return players.get(player.getName());
+        else return new dPlayer(player);
+    }
+
+
+    /////////////////////
+    //   OBJECT FETCHER
+    /////////////////
 
     @ObjectFetcher("p")
     public static dPlayer valueOf(String string) {
@@ -24,7 +46,11 @@ public class dPlayer implements dScriptArgument {
 
         OfflinePlayer returnable = aH.getOfflinePlayerFrom(string);
 
-        if (returnable != null) new dPlayer(returnable);
+        if (returnable != null) {
+            if (players.containsKey(returnable.getName())) return players.get(returnable.getName());
+            else return new dPlayer(returnable);
+        }
+
         else dB.echoError("Invalid Player! '" + string
                 + "' could not be found. Has the player logged off?");
 
@@ -43,37 +69,47 @@ public class dPlayer implements dScriptArgument {
     }
 
 
+    /////////////////////
+    //   STATIC CONSTRUCTORS
+    /////////////////
+
+    public dPlayer(OfflinePlayer player) {
+        this.player_name = player.getName();
+
+        // Keep in a map to avoid multiple instances of a dPlayer per player.
+        players.put(this.player_name, this);
+    }
+
+
+    /////////////////////
+    //   INSTANCE FIELDS/METHODS
+    /////////////////
+
+    String player_name;
+
     public Player getPlayerEntity() {
-        return Bukkit.getPlayer(player);
+        return Bukkit.getPlayer(player_name);
     }
-
-
-    public String getName() {
-        return getPlayerEntity() != null ? getPlayerEntity().getName() : getOfflinePlayer().getName();
-    }
-
 
     public OfflinePlayer getOfflinePlayer() {
-        return Bukkit.getOfflinePlayer(player);
+        return Bukkit.getOfflinePlayer(player_name);
     }
 
+    public String getName() {
+        return player_name;
+    }
 
     public boolean isOnline() {
-        if (Bukkit.getPlayer(player) != null) return true;
+        if (Bukkit.getPlayer(player_name) != null) return true;
         return false;
     }
 
 
-    String player;
-
-
-    public dPlayer(OfflinePlayer player) {
-        this.player = player.getName();
-    }
-
+    /////////////////////
+    //   DSCRIPTARGUMENT METHODS
+    /////////////////
 
     private String prefix = "Player";
-
 
     @Override
     public String getPrefix() {
@@ -103,7 +139,7 @@ public class dPlayer implements dScriptArgument {
 
     @Override
     public String identify() {
-        return "p@" + player;
+        return "p@" + player_name;
     }
 
     @Override
@@ -143,13 +179,13 @@ public class dPlayer implements dScriptArgument {
 
         // This can be parsed later with more detail if the player is online, so only check for offline.
         if (attribute.startsWith("name") && !isOnline())
-            return new Element(player).getAttribute(attribute.fulfill(1));
+            return new Element(player_name).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("is_online"))
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("chat_history"))
-            return new dList(PlayerTags.playerChatHistory.get(player))
+            return new dList(PlayerTags.playerChatHistory.get(player_name))
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("location.bed_spawn"))
@@ -167,7 +203,7 @@ public class dPlayer implements dScriptArgument {
                     return new Element(Depends.economy.currencyNamePlural())
                             .getAttribute(attribute.fulfill(2));
 
-                return new Element(String.valueOf(Depends.economy.getBalance(player)))
+                return new Element(String.valueOf(Depends.economy.getBalance(player_name)))
                         .getAttribute(attribute.fulfill(1));
 
             } else {
@@ -210,7 +246,7 @@ public class dPlayer implements dScriptArgument {
                     .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("name"))
-            return new Element(player).getAttribute(attribute.fulfill(1));
+            return new Element(player_name).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
@@ -289,7 +325,7 @@ public class dPlayer implements dScriptArgument {
 
             // Non-world specific permission
             if (attribute.startsWith("permission.global"))
-                return new Element(String.valueOf(Depends.permissions.has((World) null, player, permission)))
+                return new Element(String.valueOf(Depends.permissions.has((World) null, player_name, permission)))
                         .getAttribute(attribute.fulfill(2));
 
             // Permission in current world
@@ -307,7 +343,7 @@ public class dPlayer implements dScriptArgument {
 
             // Non-world specific permission
             if (attribute.startsWith("group.global"))
-                return new Element(String.valueOf(Depends.permissions.playerInGroup((World) null, player, group)))
+                return new Element(String.valueOf(Depends.permissions.playerInGroup((World) null, player_name, group)))
                         .getAttribute(attribute.fulfill(2));
 
             // Permission in current world

@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.triggers.core;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
@@ -29,11 +30,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
     final static Pattern triggerPattern = Pattern.compile("\\/([^/]*)\\/");
 
-    @Override
-    public void onEnable() {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
-    }
-
     @EventHandler
     public void chatTrigger(final AsyncPlayerChatEvent event) {
         if (event.isCancelled()) return;
@@ -43,6 +39,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // Check if there is an NPC within range of a player to chat to.
         dNPC npc = Utilities.getClosestNPC(event.getPlayer().getLocation(), 25);
+        dPlayer player = d
 
         // No NPC? Nothing else to do here.
         if (npc == null) return null;

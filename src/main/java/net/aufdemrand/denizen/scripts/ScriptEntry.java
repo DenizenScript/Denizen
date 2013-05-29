@@ -47,7 +47,7 @@ public class ScriptEntry {
 
         // Must never be null
         if (command == null)
-            throw new ScriptEntryCreationException("CommandType cannot be null!");
+            throw new ScriptEntryCreationException("dCommand 'type' cannot be null!");
 
         this.command = command.toUpperCase();
         this.script = script.getAsScriptArg();
@@ -168,11 +168,6 @@ public class ScriptEntry {
 
 	public ScriptEntry setInstant(boolean instant) {
 		this.instant = instant;
-		return this;
-	}
-
-	public ScriptEntry setPlayer(OfflinePlayer player) {
-		this.player = new dPlayer(player);
 		return this;
 	}
 

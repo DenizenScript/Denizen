@@ -4,9 +4,11 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
@@ -22,28 +24,24 @@ import java.util.Set;
 
 public abstract class AbstractTrigger implements RegistrationableInstance {
 
-    public Denizen denizen;
     protected String name;
-
-    @Override
-    public AbstractTrigger activate() {
-        denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-        return this;
-    }
 
     @Override
     public AbstractTrigger as(String triggerName) {
         this.name = triggerName.toUpperCase();
         // Register command with Registry
-        denizen.getTriggerRegistry().register(triggerName, this);
+        DenizenAPI.getCurrentInstance().getTriggerRegistry().register(triggerName, this);
         onEnable();
         return this;
     }
-    
+
+
     @Override
     public String getName() {
+        // Return the name of the trigger specified upon registration.
         return name;
     }
+
 
     /**
 	 * Part of the Plugin disable sequence.
@@ -52,15 +50,48 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 	 * onDisable() to Denizen. (ie. Server shuts down or restarts)
 	 * 
 	 */
+
+    @Override
 	public void onDisable() {
-	
+        // Nothing to do here on this level of abstraction.
 	}
 
-    public boolean parse(dNPC npc, Player player, InteractScriptContainer script) {
+
+    /**
+     * Part of the Plugin enable sequence.
+     *
+     * Can be '@Override'n by a Trigger which requires a method when bukkit sends a
+     * onEnable() to Denizen. (ie. Server shuts down or restarts)
+     *
+     */
+
+    @Override
+    public void onEnable() {
+        // Nothing to do here on this level of abstraction.
+    }
+
+
+    /**
+     * Part of the Plugin disable sequence.
+     *
+     * Can be '@Override'n by a Trigger which requires a method when being enabled via
+     * the Trigger Registry, usually upon startup.
+     *
+     */
+
+    @Override
+    public AbstractTrigger activate() {
+        // Nothing to do here on this level of abstraction.
+        return this;
+    }
+
+
+    public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script) {
         return parse(npc, player, script, null);
     }
 
-    public boolean parse(dNPC npc, Player player, InteractScriptContainer script, String id) {
+
+    public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script, String id) {
         if (npc == null || player == null || script == null) return false;
 
         List<ScriptEntry> entries = script.getEntriesFor(this.getClass(), player, npc, id);

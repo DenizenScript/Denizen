@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.Duration;
@@ -49,7 +50,7 @@ public class HealthTrait extends Trait implements Listener {
     private String respawnLocation = "<npc.location>";
 
     // internal
-	private Player player = null;
+	private dPlayer player = null;
     private boolean dying = false;
     private Location loc;
 
@@ -194,13 +195,12 @@ public class HealthTrait extends Trait implements Listener {
         currenthealth = health;
     }
     
-    public void die()
-    {
+    public void die() {
         try {
     	// Set the player as the killer of the NPC, for listeners
     	if (player != null)
     		((CraftLivingEntity) npc.getBukkitEntity())
-    			.getHandle().killer = (EntityHuman) ((CraftLivingEntity) player).getHandle();
+    			.getHandle().killer = (EntityHuman) ((CraftLivingEntity) player.getPlayerEntity()).getHandle();
         } catch (Exception e) {
             dB.echoError("Report this error to aufdemrand! Err: HealthTraitDie");
         }
@@ -242,7 +242,7 @@ public class HealthTrait extends Trait implements Listener {
         	// Check if the damager was a player and, if so, attach
         	// that player to the action's ScriptEntry
         	if (killerEntity instanceof Player)
-        		player = (Player) killerEntity;
+        		player = dPlayer.mirrorBukkitPlayer((Player) killerEntity);
         	
         	// If the damager was a projectile, take its shooter into
         	// account as well
@@ -251,7 +251,7 @@ public class HealthTrait extends Trait implements Listener {
         		LivingEntity shooter = ((Projectile) killerEntity).getShooter();
         		
         		if (shooter instanceof Player)
-        			player = (Player) shooter;
+        			player = dPlayer.mirrorBukkitPlayer((Player) shooter);
         		
         		DenizenAPI.getDenizenNPC(npc).action("death by " +
         	        	shooter.getType().toString(), player);
@@ -266,12 +266,13 @@ public class HealthTrait extends Trait implements Listener {
         else if (event instanceof EntityDamageByBlockEvent)
         {
         	DenizenAPI.getDenizenNPC(npc).action("death by block", player);
-        	
+
+            // TODO:
         	// The line of code below should work, but a Bukkit bug makes the damager
         	// return null. Uncomment it once the bug is fixed.
         	
-        	//DenizenAPI.getDenizenNPC(npc).action("death by " +
-    		//		((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
+        	// DenizenAPI.getDenizenNPC(npc).action("death by " +
+    		//	((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
         }
         
         DenizenAPI.getDenizenNPC(npc).action("death", player);
@@ -284,6 +285,7 @@ public class HealthTrait extends Trait implements Listener {
 
         loc = aH.getLocationFrom(
                 TagManager.tag(null, DenizenAPI.getDenizenNPC(npc), respawnLocation, false));
+
         if (loc == null) loc = npc.getBukkitEntity().getLocation();
         
         if (animatedeath) {

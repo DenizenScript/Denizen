@@ -91,13 +91,20 @@ public class WorldScriptHelper implements Listener {
 
         // Well, this is ugly :(
         // Fill tags in any arguments
-        dList args = new dList(Arrays.asList(aH.buildArgs(TagManager.tag(event.getPlayer(), null,
-                (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : "")))));
+
+        dPlayer player = dPlayer.valueOf(event.getPlayer().getName());
+
+        List<String> args = Arrays.asList(
+                aH.buildArgs(
+                        TagManager.tag(player, null,
+                                (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
+
+        dList args_list = new dList(args);
 
         String command = event.getMessage().split(" ")[0].replace("/", "").toUpperCase();
 
         // Fill context
-        context.put("args", args);
+        context.put("args", args_list);
         context.put("command", command);
         context.put("raw_args", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
         String determination;

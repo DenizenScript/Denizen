@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.events.dScriptReloadEvent;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -30,6 +31,7 @@ public class ConstantsTrait extends Trait {
         super("constants");
     }
 
+
     /**
      * Returns the value of the specified Constant, unique to this NPC. Note:
      * Returns tags filled with the currently assigned NPC. See: Denizen TagManager
@@ -38,15 +40,16 @@ public class ConstantsTrait extends Trait {
      * @return value of the constant
      */
     public String getConstant(String name) {
+
         getAssignmentConstants();
+
         if (constants.containsKey(name.toLowerCase()))
-            return DenizenAPI.getCurrentInstance().tagManager()
-                    .tag(null, DenizenAPI.getDenizenNPC(npc), constants.get(name.toLowerCase()), false);
+            return TagManager.tag(null, DenizenAPI.getDenizenNPC(npc), constants.get(name.toLowerCase()), false);
         else if (getAssignmentConstants().containsKey(name.toLowerCase()))
-            return DenizenAPI.getCurrentInstance().tagManager()
-                    .tag(null, DenizenAPI.getDenizenNPC(npc), assignmentConstants.get(name.toLowerCase()), false);
+            return TagManager.tag(null, DenizenAPI.getDenizenNPC(npc), assignmentConstants.get(name.toLowerCase()), false);
         return null;
     }
+
 
     /**
      * Gets a map of the NPCs constants. Note: Does not include any constants
@@ -58,6 +61,7 @@ public class ConstantsTrait extends Trait {
     public Map<String, String> getNPCConstants() {
         return constants;
     }
+
 
     /**
      * Gets a map of the NPCs constants, including those inherited by the Assignment.
@@ -74,6 +78,7 @@ public class ConstantsTrait extends Trait {
         return allConstants;
     }
 
+
     /**
      * Sets the value of a constant, as identified by the name. This will
      * override any constants inherited from the NPCs Assignment.
@@ -84,6 +89,7 @@ public class ConstantsTrait extends Trait {
     public void setConstant(String name, String value) {
         constants.put(name.toLowerCase(), value);
     }
+
 
     /**
      * Removes an NPC-specific constant, as identified by the name. This will
@@ -97,6 +103,7 @@ public class ConstantsTrait extends Trait {
             constants.remove(name.toLowerCase());
     }
 
+
     /**
      * Checks if this NPC has any unique constants, beyond what is inherited from
      * the NPCs Assignment.
@@ -106,6 +113,52 @@ public class ConstantsTrait extends Trait {
     public boolean hasNPCConstants() {
         return !constants.isEmpty();
     }
+
+
+    public Map<String, String> getAssignmentConstants() {
+        // Check to make sure NPC has an assignment
+        if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()) {
+            // Check to make sure assignment hasn't changed.. if it has, the assignmentConstants map will be rebuilt
+            if (assignment != null && assignment.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment().getName()))
+                return assignmentConstants;
+            else return rebuildAssignmentConstants();
+        }
+        return assignmentConstants;
+    }
+
+
+    public Map<String, String> rebuildAssignmentConstants() {
+        // Builds a map of constants inherited from the NPCs current Assignment
+        if (!npc.hasTrait(AssignmentTrait.class) || !npc.getTrait(AssignmentTrait.class).hasAssignment()) {
+            assignmentConstants.clear();
+            return assignmentConstants;
+        }
+
+        if (npc.getTrait(AssignmentTrait.class).getAssignment() != null) {
+            assignment = npc.getTrait(AssignmentTrait.class).getAssignment().getName();
+            assignmentConstants.clear();
+        } else return assignmentConstants;
+
+        if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS"))
+            for (String constant : ScriptRegistry.getScriptContainer(assignment).getConfigurationSection("DEFAULT CONSTANTS").getKeys(false))
+                assignmentConstants.put(constant.toLowerCase(),
+                        ScriptRegistry.getScriptContainer(assignment)
+                                .getString("DEFAULT CONSTANTS." + constant.toUpperCase(), ""));
+
+        return assignmentConstants;
+    }
+
+
+    /**
+     * Rebuilds assignment constants on a script reload
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onScriptsReload(dScriptReloadEvent event) {
+        rebuildAssignmentConstants();
+    }
+
 
     public void describe(CommandSender sender, int page) throws CommandException {
         Paginator paginator = new Paginator().header("Constants for " + npc.getName());
@@ -133,48 +186,6 @@ public class ConstantsTrait extends Trait {
 
         if (!paginator.sendPage(sender, page))
             throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
-    }
-
-    public Map<String, String> getAssignmentConstants() {
-        // Check to make sure NPC has an assignment
-        if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()) {
-            // Check to make sure assignment hasn't changed.. if it has, the assignmentConstants map will be rebuilt
-            if (assignment != null && assignment.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment().getName()))
-                return assignmentConstants;
-            else return rebuildAssignmentConstants();
-        }
-        return assignmentConstants;
-    }
-
-    public Map<String, String> rebuildAssignmentConstants() {
-        // Builds a map of constants inherited from the NPCs current Assignment
-        if (!npc.hasTrait(AssignmentTrait.class) || !npc.getTrait(AssignmentTrait.class).hasAssignment()) {
-            assignmentConstants.clear();
-            return assignmentConstants;
-        }
-
-        if (npc.getTrait(AssignmentTrait.class).getAssignment() != null) {
-            assignment = npc.getTrait(AssignmentTrait.class).getAssignment().getName();
-            assignmentConstants.clear();
-        } else return assignmentConstants;
-
-        if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS"))
-            for (String constant : ScriptRegistry.getScriptContainer(assignment).getConfigurationSection("DEFAULT CONSTANTS").getKeys(false))
-                assignmentConstants.put(constant.toLowerCase(),
-                        ScriptRegistry.getScriptContainer(assignment)
-                                .getString("DEFAULT CONSTANTS." + constant.toUpperCase(), ""));
-
-        return assignmentConstants;
-    }
-
-    /**
-     * Rebuilds assignment constants on a script reload
-     *
-     * @param event
-     */
-    @EventHandler
-    public void onScriptsReload(dScriptReloadEvent event) {
-        rebuildAssignmentConstants();
     }
 
 }

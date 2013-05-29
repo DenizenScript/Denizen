@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.triggers.core.ChatTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.ClickTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.DamageTrigger;
@@ -18,42 +19,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TriggerRegistry implements DenizenRegistry {
 
-    // TODO: Add a method that extracts Trigger Options on startup.
-    // ie. Range/Cooldown/etc.
-
-    public enum CooldownType { NPC, PLAYER }
-
-    public Denizen denizen;
+    ////////
+    // Registry
+    //////
 
     private Map<String, AbstractTrigger> instances = new HashMap<String, AbstractTrigger>();
     private Map<Class<? extends AbstractTrigger>, String> classes = new HashMap<Class<? extends AbstractTrigger>, String>();
-
-    Map<Integer, Map<String, Long>> npcCooldown = new ConcurrentHashMap<Integer, Map<String,Long>>(8, 0.9f, 1);
-
-    Map<String, Map<String, Long>> playerCooldown = new ConcurrentHashMap<String, Map<String,Long>>(8, 0.9f, 1);
-
-    public TriggerRegistry(Denizen denizen) {
-        this.denizen = denizen;
-    }
-
-    public boolean checkCooldown(NPC npc, Player player, AbstractTrigger triggerClass, CooldownType cooldownType) {
-        switch (cooldownType) {
-            case NPC:
-                // Check npcCooldown
-                if (!npcCooldown.containsKey(npc.getId())) return true;
-                else if (!npcCooldown.get(npc.getId()).containsKey(triggerClass.name)) return true;
-                else if (System.currentTimeMillis() > npcCooldown.get(npc.getId()).get(triggerClass.name)) return true;
-                break;
-
-            case PLAYER:
-                // Check playerCooldown
-                if (!playerCooldown.containsKey(player.getName() + "/" + npc.getId())) return true;
-                else if (!playerCooldown.get(player.getName() + "/" + npc.getId()).containsKey(triggerClass.name)) return true;
-                else if (System.currentTimeMillis() > playerCooldown.get(player.getName() + "/" + npc.getId()).get(triggerClass.name)) return true;
-                break;
-        }
-        return false;
-    }
 
     @Override
     public void disableCoreMembers() {
@@ -65,11 +36,6 @@ public class TriggerRegistry implements DenizenRegistry {
                 if (dB.showStackTraces) e.printStackTrace();
             }
     }
-
-    /*
-     * Trigger cool-downs are used by Denizen internally in intervals specified by the config.
-     * Not to be confused with Script Cool-downs. 
-     */
 
     @Override
     public <T extends RegistrationableInstance> T get(Class<T> clazz) {
@@ -103,21 +69,64 @@ public class TriggerRegistry implements DenizenRegistry {
         dB.echoApproval("Loaded core triggers: " + instances.keySet().toString());
     }
 
-    public void setCooldown(NPC npc, Player player, AbstractTrigger triggerClass, double seconds, CooldownType type) {
-        if (type == CooldownType.NPC) {
-            Map<String, Long> triggerMap = new HashMap<String, Long>();
-            if (npcCooldown.containsKey(npc.getId()))
-                triggerMap = npcCooldown.get(npc.getId());
-            triggerMap.put(triggerClass.name, System.currentTimeMillis() + (long) (seconds * 1000));
-            npcCooldown.put(npc.getId(), triggerMap);
 
-        } else if (type == CooldownType.PLAYER) {
-            Map<String, Long> triggerMap = new HashMap<String, Long>();
-            if (playerCooldown.containsKey(player.getName() + "/" + npc.getId()))
-                triggerMap = playerCooldown.get(player.getName() + "/" + npc.getId());
-            triggerMap.put(triggerClass.name, System.currentTimeMillis() + (long) (seconds * 1000));
-            playerCooldown.put(player.getName() + "/" + npc.getId(), triggerMap);
+    /////////
+    // Trigger Cooldowns
+    ///////
+
+    Map<Integer, Map<String, Long>> npcCooldown    = new ConcurrentHashMap<Integer, Map<String,Long>>(8, 0.9f, 1);
+    Map <String, Map<String, Long>> playerCooldown = new ConcurrentHashMap <String, Map<String,Long>>(8, 0.9f, 1);
+
+    public enum CooldownType { NPC, PLAYER }
+
+    /*
+     * Trigger cool-downs are used by Denizen internally in intervals specified by the config.
+     * Not to be confused with Script Cool-downs.
+     */
+
+    public boolean checkCooldown(NPC npc, dPlayer player, AbstractTrigger triggerClass, CooldownType cooldownType) {
+        switch (cooldownType) {
+            case NPC:
+                // Check npcCooldown
+                if (!npcCooldown.containsKey(npc.getId())) return true;
+                else if (!npcCooldown.get(npc.getId()).containsKey(triggerClass.name)) return true;
+                else if (System.currentTimeMillis() > npcCooldown.get(npc.getId()).get(triggerClass.name)) return true;
+                break;
+
+            case PLAYER:
+                // Check playerCooldown
+                if (!playerCooldown.containsKey(player.getName() + "/" + npc.getId())) return true;
+                else if (!playerCooldown.get(player.getName() + "/" + npc.getId()).containsKey(triggerClass.name)) return true;
+                else if (System.currentTimeMillis() > playerCooldown.get(player.getName() + "/" + npc.getId()).get(triggerClass.name)) return true;
+                break;
         }
+
+        // If broken from the switch, the trigger is not cool.
+        return false;
+    }
+
+    public void setCooldown(NPC npc, dPlayer player, AbstractTrigger triggerClass, double seconds, CooldownType cooldownType) {
+        Map<String, Long> triggerMap = new HashMap<String, Long>();
+
+        switch (cooldownType) {
+            case NPC:
+                // set npcCooldown
+                if (npcCooldown.containsKey(npc.getId()))
+                    triggerMap = npcCooldown.get(npc.getId());
+                triggerMap.put(triggerClass.name, System.currentTimeMillis() + (long) (seconds * 1000));
+                npcCooldown.put(npc.getId(), triggerMap);
+                break;
+
+            case PLAYER:
+                // set playerCooldown
+                if (playerCooldown.containsKey(player.getName() + "/" + npc.getId()))
+                    triggerMap = playerCooldown.get(player.getName() + "/" + npc.getId());
+                triggerMap.put(triggerClass.name, System.currentTimeMillis() + (long) (seconds * 1000));
+                playerCooldown.put(player.getName() + "/" + npc.getId(), triggerMap);
+                break;
+        }
+
+        // All done!
     }
 
 }

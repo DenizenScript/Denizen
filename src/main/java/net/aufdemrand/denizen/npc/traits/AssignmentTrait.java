@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -26,10 +27,6 @@ public class AssignmentTrait extends Trait {
     // Saved to the C2 saves.yml
     @Persist
     private String assignment = "";
-
-    public void buildLocationContext() {
-        // TODO: finish this
-    }
 
     public AssignmentTrait() {
         super("assignment");
@@ -57,14 +54,14 @@ public class AssignmentTrait extends Trait {
      * @return false if the assignment is invalid
      *
      */
-    public boolean setAssignment(String assignment, Player player) {
+    public boolean setAssignment(String assignment, dPlayer player) {
         if (ScriptRegistry.containsScript(assignment, AssignmentScriptContainer.class)) {
             this.assignment = assignment.toUpperCase();
             // Add Constants/Trigger trait if not already added to the NPC.
             if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
             if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
             if (Settings.HealthTraitEnabledByDefault())
-            	if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
+                if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
             // Reset Constants
             npc.getTrait(ConstantsTrait.class).rebuildAssignmentConstants();
             // 'On Assignment' action.
@@ -106,7 +103,7 @@ public class AssignmentTrait extends Trait {
      * @param player the player removing the assignment, can be null
      *
      */
-    public void removeAssignment (Player player) {
+    public void removeAssignment (dPlayer player) {
         assignment = "";
         DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc).action("remove assignment", player);
     }
@@ -167,49 +164,42 @@ public class AssignmentTrait extends Trait {
         if (!paginator.sendPage(sender, page))
             throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
     }
-    
+
+
     // Listen for this NPC's hits on entities
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onHit(EntityDamageByEntityEvent event)
-    {
-        
-    	// Check if the damager is this NPC
-    	if (event.getDamager() != npc.getBukkitEntity())
-    	{
-    		// If the damager is not this NPC, the damager could still
-    		// be a projectile shot by this NPC, in which case we want
-    		// to continue
-    		if (event.getDamager() instanceof Projectile)
-    		{
-    			if (((Projectile) event.getDamager()).getShooter() != npc.getBukkitEntity())
-    				return;
-    		}
-    		else return;
-    	}
-    	
-    	Player player = null;
-    	
-    	// Check if the entity hit by this NPC is a player
-    	if (event.getEntity() instanceof Player)
-    		player = (Player) event.getEntity();
-    	
-		DenizenAPI.getDenizenNPC(npc).action("hit", player);
-    	
-    	DenizenAPI.getDenizenNPC(npc).action("hit on "
-    			+ event.getEntityType().toString(), player);
-    	
-    	if (event.getEntity() instanceof LivingEntity)
-    	{
-    		if (((LivingEntity) event.getEntity()).getHealth()
-    			- event.getDamage() <= 0)
-    		{
-        		DenizenAPI.getDenizenNPC(npc).action("kill", player);
-            	
-            	DenizenAPI.getDenizenNPC(npc).action("kill of "
-            			+ event.getEntityType().toString(), player);
-    		}
-    	}
+    public void onHit(EntityDamageByEntityEvent event) {
 
+        // Check if the damager is this NPC
+        if (event.getDamager() != npc.getBukkitEntity()) {
+
+            // If the damager is not this NPC, the damager could still be a
+            // projectile shot by this NPC, in which case we want to continue
+            if (event.getDamager() instanceof Projectile) {
+                if (((Projectile) event.getDamager()).getShooter() != npc.getBukkitEntity()) return;
+            }
+
+            else return;
+        }
+
+        dPlayer player = null;
+
+        // Check if the entity hit by this NPC is a player
+        if (event.getEntity() instanceof Player)
+            player = dPlayer.mirrorBukkitPlayer((Player) event.getEntity());
+
+        DenizenAPI.getDenizenNPC(npc).action("hit", player);
+        DenizenAPI.getDenizenNPC(npc).action("hit on " + event.getEntityType().toString(), player);
+
+        if (event.getEntity() instanceof LivingEntity) {
+            if (((LivingEntity) event.getEntity()).getHealth() - event.getDamage() <= 0) {
+                DenizenAPI.getDenizenNPC(npc).action("kill", player);
+                DenizenAPI.getDenizenNPC(npc).action("kill of "	+ event.getEntityType().toString(), player);
+            }
+        }
+
+        // All done!
     }
+
 
 }

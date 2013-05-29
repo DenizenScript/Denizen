@@ -7,6 +7,7 @@ import java.util.*;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.minecraft.server.v1_5_R3.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -70,7 +71,7 @@ public class Utilities {
      * @param range  the range, in blocks, that 'bystanders' will hear he chat
      *
      */
-    public static void talkToNPC(String message, Player player, dNPC npc, double range) {
+    public static void talkToNPC(String message, dPlayer player, dNPC npc, double range) {
         // Get formats from Settings, and fill in <TEXT>
         String talkFormat = Settings.ChatToNpcFormat()
                 .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
@@ -84,13 +85,13 @@ public class Utilities {
                 .tag(player, npc, bystanderFormat, false);
 
         // Send message to player
-        player.sendMessage(talkFormat);
+        player.getPlayerEntity().sendMessage(talkFormat);
 
         // Send message to bystanders
         for (Player target : Bukkit.getOnlinePlayers()) {
             if (target != player)
-                if (target.getWorld().equals(player.getWorld())
-                        && target.getLocation().distance(player.getLocation()) <= range)
+                if (target.getWorld().equals(player.getPlayerEntity().getWorld())
+                        && target.getLocation().distance(player.getPlayerEntity().getLocation()) <= range)
                     target.sendMessage(bystanderFormat);
         }
     }
