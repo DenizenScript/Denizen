@@ -165,15 +165,15 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 				check();
 			}
 		} else if (type == TravelType.TOLOCATION) {
-			if (!player.getLocation().getWorld().equals(endPoint.getWorld())) return;
+			if (!player.getPlayerEntity().getLocation().getWorld().equals(endPoint.getWorld())) return;
 			//if (player.getLocation().distance(endPoint) <= radius) {
-			if (Utilities.checkLocation(player, endPoint, radius)) {
+			if (Utilities.checkLocation(player.getPlayerEntity(), endPoint, radius)) {
 				dB.echoDebug("...player reached location");
 				finish();
 			}
 		} else if (type == TravelType.TONPC) {
 			//if (player.getLocation().distance(target.getBukkitEntity().getLocation()) <= radius) {
-			if (Utilities.checkLocation(player, target.getBukkitEntity().getLocation(), radius)) {
+			if (Utilities.checkLocation(player.getPlayerEntity(), target.getBukkitEntity().getLocation(), radius)) {
 				dB.echoDebug("...player reached NPC");
 				finish();
 			}

@@ -50,7 +50,6 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 	 * onDisable() to Denizen. (ie. Server shuts down or restarts)
 	 * 
 	 */
-
     @Override
 	public void onDisable() {
         // Nothing to do here on this level of abstraction.
@@ -64,7 +63,6 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
      * onEnable() to Denizen. (ie. Server shuts down or restarts)
      *
      */
-
     @Override
     public void onEnable() {
         // Nothing to do here on this level of abstraction.
@@ -72,13 +70,12 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
 
     /**
-     * Part of the Plugin disable sequence.
+     * Part of the Plugin enable sequence.
      *
      * Can be '@Override'n by a Trigger which requires a method when being enabled via
      * the Trigger Registry, usually upon startup.
      *
      */
-
     @Override
     public AbstractTrigger activate() {
         // Nothing to do here on this level of abstraction.

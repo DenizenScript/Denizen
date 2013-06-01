@@ -412,7 +412,7 @@ public class dItem implements dScriptArgument {
             return new Element(String.valueOf(getItemStack().getAmount()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("typeid"))
+        if (attribute.startsWith("id"))
             return new Element(String.valueOf(getItemStack().getTypeId()))
                     .getAttribute(attribute.fulfill(1));
 

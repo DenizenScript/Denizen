@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
@@ -143,11 +144,11 @@ public class NPCTags implements Listener {
         	if (event.getNPC().getNavigator().getEntityTarget().isAggressive()
         		&& entity.isDead() == false)
         	{
-        		Player player = null;
+        		dPlayer player = null;
         	
         		// Check if the entity attacked by this NPC is a player
         		if (entity instanceof Player)
-        			player = (Player) entity;
+        			player = dPlayer.mirrorBukkitPlayer((Player) entity);
         		
         		npc.action("attack", player);
         	

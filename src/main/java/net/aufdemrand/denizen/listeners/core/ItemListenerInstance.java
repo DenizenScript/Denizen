@@ -96,7 +96,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 				
 			{
 				if (region != null)
-					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+					if (!WorldGuardUtilities.checkPlayerWGRegion(player.getPlayerEntity(), region)) return;
 				
 				// Get the item in the result slot as an ItemStack
 				final ItemStack item = new ItemStack(event.getCurrentItem());
@@ -105,7 +105,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 				{
 					// Save the quantity of items of this type that the player had
 					// before the event took place
-					final int initialQty = Utilities.countItems(item, player.getInventory());
+					final int initialQty = Utilities.countItems(item, player.getPlayerEntity().getInventory());
 					
 					// Run a task 1 tick later, after the event has occurred, and
 					// see how many items of this type the player has then in the
@@ -116,7 +116,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 						@Override
 		                public void run()
 						{
-							int newQty = Utilities.countItems(item, player.getInventory());
+							int newQty = Utilities.countItems(item, player.getPlayerEntity().getInventory());
 							int difference = newQty - initialQty;
 		                            	
 							// If any items were obtained (i.e. if shift click was
@@ -150,7 +150,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			{
 
 				if (region != null) 
-					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+					if (!WorldGuardUtilities.checkPlayerWGRegion(player.getPlayerEntity(), region)) return;
 				
 				if (event.getState().toString() == "CAUGHT_FISH")
 				{

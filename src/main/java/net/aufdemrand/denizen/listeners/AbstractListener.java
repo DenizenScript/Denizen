@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -18,7 +19,7 @@ public abstract class AbstractListener {
 
 	protected String listenerType;
 	public String listenerId;
-	protected Player player;
+	protected dPlayer player;
 	protected String scriptName;
     protected dNPC npc;
 	protected Map<String, Object> saveable = new HashMap<String, Object>();
@@ -27,7 +28,7 @@ public abstract class AbstractListener {
 		this.denizen = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 	}
 
-	public void build(Player player, String listenerId, String listenerType, List<String> args, String finishScript, dNPC npc) {
+	public void build(dPlayer player, String listenerId, String listenerType, List<String> args, String finishScript, dNPC npc) {
 		this.player = player;
 		this.listenerId = listenerId;
 		this.listenerType = listenerType;
@@ -74,7 +75,7 @@ public abstract class AbstractListener {
 		return listenerType != null ? listenerType : "";
 	}
 
-	public void load(Player player, dNPC npc, String listenerId, String listenerType) {
+	public void load(dPlayer player, dNPC npc, String listenerId, String listenerType) {
 		this.player = player;
 		this.listenerId = listenerId;
 		this.listenerType = listenerType;

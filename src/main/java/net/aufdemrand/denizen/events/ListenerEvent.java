@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.events;
 
+import net.aufdemrand.denizen.objects.dPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -15,15 +16,15 @@ import org.bukkit.event.HandlerList;
 public class ListenerEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private Player player;
+    private dPlayer player;
     private String id;
 
-    public ListenerEvent(Player player, String id) {
+    public ListenerEvent(dPlayer player, String id) {
         this.player = player;
         this.id = id;
     }
 
-    public Player getPlayer() {
+    public dPlayer getPlayer() {
         return player;
     }
 

@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.events;
 
+import net.aufdemrand.denizen.objects.dPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
@@ -15,7 +16,7 @@ public class ListenerCancelEvent extends ListenerEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    public ListenerCancelEvent(Player player, String id) {
+    public ListenerCancelEvent(dPlayer player, String id) {
         super(player, id);
     }
 

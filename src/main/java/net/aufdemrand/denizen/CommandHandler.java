@@ -5,6 +5,7 @@ import java.util.Set;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
@@ -202,7 +203,7 @@ public class CommandHandler {
         if (args.hasValueFlag("set")) {
         	String script = args.getFlag("set").replace("\"", "");
         	
-            if (trait.setAssignment(script, player))
+            if (trait.setAssignment(script, dPlayer.mirrorBukkitPlayer(player)))
                 if (trait.hasAssignment())
                     Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment is now: '" + trait.getAssignment().getName() + "'.");
                 else Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment was not able to be set.");
@@ -213,7 +214,7 @@ public class CommandHandler {
             return;
 
         } else if (args.hasFlag('r')) {
-            trait.removeAssignment(player);
+            trait.removeAssignment(dPlayer.mirrorBukkitPlayer(player));
             Messaging.send(sender,  ChatColor.YELLOW + npc.getName() + "'s assignment has been removed.");
             return;
 

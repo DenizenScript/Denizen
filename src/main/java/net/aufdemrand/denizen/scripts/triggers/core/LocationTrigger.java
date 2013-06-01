@@ -2,8 +2,10 @@ package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -194,7 +196,7 @@ public class LocationTrigger extends AbstractTrigger implements Listener {
  
 	@Override
 	public void onEnable() {
-		denizen.getServer().getPluginManager().registerEvents(this, denizen);
+		Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
 	}
 
 }

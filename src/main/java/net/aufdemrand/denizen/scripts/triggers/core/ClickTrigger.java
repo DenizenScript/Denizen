@@ -2,12 +2,14 @@ package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.dItem;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,19 +37,19 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         // super AbstractTrigger and contains the name of the trigger that was use in registration.
         if (!npc.getTriggerTrait().isEnabled(name)) return;
 
+        // We'll get the player too, since it makes reading the next few methods a bit easier:
+        dPlayer player = dPlayer.mirrorBukkitPlayer(event.getClicker());
+
         // Check availability based on the NPC's ENGAGED status and the trigger's COOLDOWN that is
         // provided (and adjustable) by the TriggerTrait. Just use .trigger(...)!
         // If unavailable (engaged or not cool), .trigger calls 'On Unavailable' action and returns false.
         // If available (not engaged, and cool), .trigger sets cool down and returns true.
-        if (!npc.getTriggerTrait().trigger(this, event.getClicker())) return;
+        if (!npc.getTriggerTrait().trigger(this, player)) return;
 
         // Note: In some cases, the automatic actions that .trigger offers may not be
         // desired. In this case, it's recommended to at least use .triggerCooldownOnly which
         // only handles cooling down the trigger with the triggertrait if the 'available' criteria
-        // is met. This handles the built-in cooldown that TriggerTrait
-
-        // We'll get the player too, since it makes reading the next few methods a bit easier:
-        Player player = event.getClicker();
+        // is met. This handles the built-in cooldown that TriggerTrait implements.
 
         // Okay, now we need to know which interact script will be selected for the Player/NPC
         // based on requirements/npc's assignment script. To get that information, use:
@@ -76,7 +78,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                     String entry_value = TagManager.tag(player, npc, entry.getValue());
                     // Check if the item specified in the specified id's 'trigger:' key
                     // matches the item that the player is holding.
-                    if (dItem.valueOf(entry_value).comparesTo(player.getItemInHand()) >= 0
+                    if (dItem.valueOf(entry_value).comparesTo(player.getPlayerEntity().getItemInHand()) >= 0
                             && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
                             player, npc, entry.getKey()))
                         id = entry.getKey();
@@ -98,7 +100,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
     @Override
     public void onEnable() {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
 }

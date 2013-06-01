@@ -196,11 +196,11 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		if (event.getEntity().getType() != mob) return;
 		dB.echoDebug("...proper mob");
 		if (location != null) {
-			if (location.distance(player.getLocation()) > radius ) return;
+			if (location.distance(player.getPlayerEntity().getLocation()) > radius ) return;
 		}
 		dB.echoDebug("...within range");
 		if (region != null) {
-			if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+			if (!WorldGuardUtilities.checkPlayerWGRegion(player.getPlayerEntity(), region)) return;
 		}
 		dB.echoDebug("...within region");
 		
@@ -223,11 +223,11 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		if (event.getBlock().getType() != block) return;
 		dB.echoDebug("...proper block mined");
 		if (location != null) {
-			if (location.distance(player.getLocation()) > radius ) return;
+			if (location.distance(player.getPlayerEntity().getLocation()) > radius ) return;
 		}
 		dB.echoDebug("...within range");
 		if (region != null) {
-			if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+			if (!WorldGuardUtilities.checkPlayerWGRegion(player.getPlayerEntity(), region)) return;
 		}
 		dB.echoDebug("...within region");
 		
@@ -248,11 +248,11 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		if (event.getBlock().getType() != block) return;
 		dB.echoDebug("...proper block placed");
 		if (location != null) {
-			if (location.distance(player.getLocation()) > radius ) return;
+			if (location.distance(player.getPlayerEntity().getLocation()) > radius ) return;
 		}
 		dB.echoDebug("...within range");
 		if (region != null) {
-			if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
+			if (!WorldGuardUtilities.checkPlayerWGRegion(player.getPlayerEntity(), region)) return;
 		}
 		dB.echoDebug("...within region");
 		

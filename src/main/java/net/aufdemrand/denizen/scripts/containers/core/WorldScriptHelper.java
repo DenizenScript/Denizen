@@ -97,7 +97,7 @@ public class WorldScriptHelper implements Listener {
         List<String> args = Arrays.asList(
                 aH.buildArgs(
                         TagManager.tag(player, null,
-                                (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
+                                (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""))));
 
         dList args_list = new dList(args);
 

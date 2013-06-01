@@ -39,7 +39,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // Check if there is an NPC within range of a player to chat to.
         dNPC npc = Utilities.getClosestNPC(event.getPlayer().getLocation(), 25);
-        dPlayer player = d
+        dPlayer player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
 
         // No NPC? Nothing else to do here.
         if (npc == null) return null;
@@ -75,7 +75,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
         // If available (not engaged, and cool) sets cool down and returns true.
-         if (!npc.getTriggerTrait().trigger(ChatTrigger.this, event.getPlayer())) {
+         if (!npc.getTriggerTrait().trigger(ChatTrigger.this, player)) {
             // If the NPC is not interactable, Settings may allow the chat to filter
             // through. Check the Settings if this is enabled.
             if (Settings.ChatGloballyIfUninteractable()) {
@@ -88,11 +88,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         }
 
         // Denizen should be good to interact with. Let's get the script.
-        InteractScriptContainer script = npc.getInteractScript(event.getPlayer(), ChatTrigger.class);
+        InteractScriptContainer script = npc.getInteractScript(player, ChatTrigger.class);
 
         // Check if the NPC has Chat Triggers for this step.
         if (!script.containsTriggerInStep(
-                InteractScriptHelper.getCurrentStep(event.getPlayer(),
+                InteractScriptHelper.getCurrentStep(player,
                         script.getName()),  ChatTrigger.class)) {
 
             // No chat trigger for this step.. do we chat globally, or to the NPC?
@@ -114,7 +114,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         String regexMessage = null;
         Map<String, String> idMap = new HashMap<String, String>();
         if (script != null)
-            idMap = script.getIdMapFor(ChatTrigger.class, event.getPlayer());
+            idMap = script.getIdMapFor(ChatTrigger.class, player);
 
         if (!idMap.isEmpty()) {
             // Iterate through the different id entries in the step's chat trigger
@@ -124,8 +124,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 Matcher matcher = triggerPattern.matcher(entry.getValue());
                 while (matcher.find ()) {
                     if (!script.checkSpecificTriggerScriptRequirementsFor(ChatTrigger.class,
-                            event.getPlayer(), npc, entry.getKey())) continue;
-                    String keyword = TagManager.tag(event.getPlayer(), npc, matcher.group().replace("/", ""));
+                            player, npc, entry.getKey())) continue;
+                    String keyword = TagManager.tag(player, npc, matcher.group().replace("/", ""));
                     // Check if the trigger is REGEX
                     if(isKeywordRegex(keyword)) {
                         Pattern	pattern = Pattern.compile(keyword.substring(6));
@@ -166,12 +166,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
-            Utilities.talkToNPC(replacementText, event.getPlayer(), npc, Settings.ChatToNpcOverhearingRange());
-            parse(npc, event.getPlayer(), script, id);
+            Utilities.talkToNPC(replacementText, player, npc, Settings.ChatToNpcOverhearingRange());
+            parse(npc, player, script, id);
             return true;
         } else {
             if (!Settings.ChatGloballyIfFailedChatTriggers ()) {
-                Utilities.talkToNPC(event.getMessage(), event.getPlayer(), npc, Settings.ChatToNpcOverhearingRange());
+                Utilities.talkToNPC(event.getMessage(), player, npc, Settings.ChatToNpcOverhearingRange());
                 return true;
             }
                     // No matching chat triggers, and the config.yml says we

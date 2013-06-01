@@ -82,10 +82,8 @@ public class FlagTags implements Listener {
             String name = null;
             if (event.getPlayer() != null)
                 name = event.getPlayer().getName();
-            if (name == null && event.hasOfflinePlayer())
-                name = event.getOfflinePlayer().getName();
 
-            // No name? No flag replaceament!
+            // No name? No flag replacement!
             if (name == null) return;
 
             if (denizen.flagManager().getPlayerFlag(name, flagName).get(index).isEmpty()) {

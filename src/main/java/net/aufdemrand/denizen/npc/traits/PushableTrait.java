@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.npc.traits;
 
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.event.NPCPushEvent;
@@ -122,7 +123,7 @@ public class PushableTrait extends Trait implements Listener {
                 for (Entity le : ((CraftLivingEntity)event.getNPC().getBukkitEntity()).getNearbyEntities(1, 1, 1))
                     if (le instanceof Player) pusher = (Player) le;
                 if (pusher != null) {
-                    DenizenAPI.getDenizenNPC(npc).action("push", pusher);
+                    DenizenAPI.getDenizenNPC(npc).action("push", dPlayer.mirrorBukkitPlayer(pusher));
                     pushedTimer = System.currentTimeMillis() + (delay * 1000);
                 }
             } // End push action

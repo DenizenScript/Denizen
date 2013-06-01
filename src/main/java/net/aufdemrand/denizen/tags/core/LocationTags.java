@@ -32,7 +32,7 @@ public class LocationTags implements Listener {
         if (aH.matchesLocation("location:" + nameContext))
         	fromLocation = aH.getLocationFrom("location:" + nameContext);
         else if (event.getPlayer() != null)
-        	fromLocation = new dLocation(event.getPlayer().getLocation());
+        	fromLocation = new dLocation(event.getPlayer().getPlayerEntity().getLocation());
         else
         	fromLocation = new dLocation(event.getNPC().getLocation());
         

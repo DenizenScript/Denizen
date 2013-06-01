@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.activities.ActivityEngine;
 import net.aufdemrand.denizen.npc.activities.ActivityRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -73,7 +74,7 @@ public class Denizen extends JavaPlugin {
      * Denizen Registries
      */
     private CommandRegistry commandRegistry = new CommandRegistry(this);
-    private TriggerRegistry triggerRegistry = new TriggerRegistry(this);
+    private TriggerRegistry triggerRegistry = new TriggerRegistry();
     private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
     private ActivityRegistry activityRegistry = new ActivityRegistry(this);
     private ListenerRegistry listenerRegistry = new ListenerRegistry(this);
@@ -228,16 +229,15 @@ public class Denizen extends JavaPlugin {
 
         // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
         for (Player player : this.getServer().getOnlinePlayers())
-            getListenerRegistry().deconstructPlayer(player);
+            getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player));
 
         for (OfflinePlayer player : this.getServer().getOfflinePlayers())
             try {
-                getListenerRegistry().deconstructPlayer(player); } catch (Exception e) {
+                getListenerRegistry().deconstructPlayer(dPlayer.valueOf(player.getName())); } catch (Exception e) {
                 if (player == null) dB.echoDebug("Tell aufdemrand ASAP about this error! ERR: OPN");
                 else dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
                         "You might have a corrupt player file!");
             }
-
 
         //Disable core members
         getCommandRegistry().disableCoreMembers();

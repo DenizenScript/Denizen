@@ -3,11 +3,13 @@ package net.aufdemrand.denizen.scripts.triggers.core;
 import net.aufdemrand.denizen.events.dScriptReloadEvent;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -73,7 +75,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
     @Override
     public void onEnable() {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
     //
@@ -157,13 +159,13 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         && hasExitedProximityOf(event.getPlayer(), npc)) continue;
 
                 // Get the player
-                Player player = event.getPlayer();
+                dPlayer player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
 
                 //
                 // Check to make sure the NPC has an assignment. If no assignment, a script doesn't need to be parsed,
                 // but it does still need to trigger for cooldown and action purposes.
                 //
-                InteractScriptContainer script = npc.getInteractScriptQuietly(event.getPlayer(), this.getClass());
+                InteractScriptContainer script = npc.getInteractScriptQuietly(player, this.getClass());
 
                 //
                 // Set default ranges with information from the TriggerTrait. This allows per-npc overrides and will
@@ -226,24 +228,24 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
                 if (!exitedProximity
                     && (playerChangedWorlds || distance >= exitRadius)) {
-                    if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
+                    if (!npc.getTriggerTrait().triggerCooldownOnly(this, player))
                         continue;
                     // Remember that NPC has exited proximity.
                     exitProximityOf(event.getPlayer(), npc);
                     dB.echoDebug(ChatColor.YELLOW + "FOUND! NPC is in EXITING range: '" + npc.getName() + "'");
                     // Exit Proximity Action
-                    npc.action("exit proximity", event.getPlayer());
+                    npc.action("exit proximity", player);
                     // Parse Interact Script
                     parse(npc, player, script, "EXIT");
                 }
                 else if (exitedProximity && distance <= entryRadius) {
                     // Cooldown
-                    if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
+                    if (!npc.getTriggerTrait().triggerCooldownOnly(this, player))
                         continue;
                     // Remember that Player has entered proximity of the NPC
                     enterProximityOf(event.getPlayer(), npc);
                     // Enter Proximity Action
-                    npc.action("enter proximity", event.getPlayer());
+                    npc.action("enter proximity", player);
                     // Parse Interact Script
                     parse(npc, player, script, "ENTRY");
                 }
@@ -254,7 +256,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                     // if (!npc.getTriggerTrait().triggerCooldownOnly(this, event.getPlayer()))
                     //     continue;
                    // Move Proximity Action
-                   npc.action("move proximity", event.getPlayer());
+                   npc.action("move proximity", player);
                    // Parse Interact Script
                    parse(npc, player, script, "MOVE");
                 }

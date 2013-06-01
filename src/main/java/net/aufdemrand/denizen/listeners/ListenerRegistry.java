@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.listeners.core.*;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -45,7 +46,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		listeners.put(player.getName(), playerListeners);
 	}
 
-	public void cancel(Player player, String listenerId, AbstractListener instance) {
+	public void cancel(dPlayer player, String listenerId, AbstractListener instance) {
 		removeListenerFor(player, listenerId);
         Bukkit.getPluginManager().callEvent(new ListenerCancelEvent(player, listenerId));
 	}
@@ -65,7 +66,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 			}
 	}
 
-	public void finish(Player player, dNPC npc, String listenerId, String finishScript, AbstractListener instance) {
+	public void finish(dPlayer player, dNPC npc, String listenerId, String finishScript, AbstractListener instance) {
 		if (finishScript != null)
             try {
                 // TODO: Add context to this
@@ -136,14 +137,14 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
                 dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getById(denizen.getSaves().getInt(path + listenerId + ".Linked NPCID")));
                 if (get(type) == null) return;
 				dB.log(event.getPlayer().getName() + " has a LISTENER in progress. Loading '" + listenerId + "'.");
-				get(type).createInstance(event.getPlayer(), listenerId).load(event.getPlayer(), npc, listenerId, type);
+				get(type).createInstance(event.getPlayer(), listenerId).load(dPlayer.mirrorBukkitPlayer(event.getPlayer()), npc, listenerId, type);
 			} catch (Exception e) {
 				dB.log(event.getPlayer() + " has a saved listener named '" + listenerId + "' that may be corrupt. Skipping for now, but perhaps check the contents of your saves.yml for problems?");
 			}
 		}
 	}
 
-    public void deconstructPlayer(OfflinePlayer player ) {
+    public void deconstructPlayer(dPlayer player ) {
 
         // Clear previous MemorySection in saves
         denizen.getSaves().set("Listeners." + player.getName(), null);
@@ -165,7 +166,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 
 	@EventHandler
 	public void playerQuit(PlayerQuitEvent event) {
-        deconstructPlayer(event.getPlayer());
+        deconstructPlayer(dPlayer.mirrorBukkitPlayer(event.getPlayer()));
     }
 
 	@Override
@@ -184,7 +185,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
-	public void removeListenerFor(Player player, String listenerId) {
+	public void removeListenerFor(dPlayer player, String listenerId) {
 		Map<String, AbstractListener> playerListeners;
 		if (listeners.containsKey(player.getName())) {
 			playerListeners = listeners.get(player.getName());

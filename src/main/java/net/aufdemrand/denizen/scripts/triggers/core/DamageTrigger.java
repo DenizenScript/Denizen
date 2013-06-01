@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
@@ -9,6 +10,7 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.dItem;
 import net.citizensnpcs.api.CitizensAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -33,35 +35,38 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 
             if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
             if (!npc.getTriggerTrait().isEnabled(name)) return;
-            if (!npc.getTriggerTrait().trigger(this, player)) return;
+
+            dPlayer dplayer = dPlayer.mirrorBukkitPlayer(player);
+
+            if (!npc.getTriggerTrait().trigger(this, dplayer)) return;
 
             InteractScriptContainer script = InteractScriptHelper
-                    .getInteractScript(npc, player, getClass());
+                    .getInteractScript(npc, dplayer, getClass());
 
             String id = null;
             if (script != null) {
-                Map<String, String> idMap = script.getIdMapFor(this.getClass(), player);
+                Map<String, String> idMap = script.getIdMapFor(this.getClass(), dplayer);
                 if (!idMap.isEmpty())
                     // Iterate through the different id entries in the step's click trigger
                     for (Map.Entry<String, String> entry : idMap.entrySet()) {
                         // Tag the entry value to account for replaceables
-                        String entry_value = TagManager.tag(player, npc, entry.getValue());
+                        String entry_value = TagManager.tag(dplayer, npc, entry.getValue());
                         // Check if the item specified in the specified id's 'trigger:' key
                         // matches the item that the player is holding.
                         if (dItem.valueOf(entry_value).comparesTo(player.getItemInHand()) >= 0
                                 && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
-                                player, npc, entry.getKey()))
+                                dplayer, npc, entry.getKey()))
                             id = entry.getKey();
                     }
             }
 
-            if (!parse(npc, player, script, id))
-                npc.action("no damage trigger", player);        }
+            if (!parse(npc, dplayer, script, id))
+                npc.action("no damage trigger", dplayer);        }
     }
 
     @Override
     public void onEnable() {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
 }
