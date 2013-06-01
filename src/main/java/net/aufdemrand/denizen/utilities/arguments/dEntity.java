@@ -86,16 +86,22 @@ public class dEntity implements dScriptArgument {
 
         // Make sure string matches what this interpreter can accept.
         final Pattern matchesEntityPtrn =
-                Pattern.compile("(?:.+?:|)((n@|e@|p@|)(.+))",
+                Pattern.compile("(?:.+?:|)((p@|n@|e@|player\\.|npc\\.|entity\\.)(.+))",
                         Pattern.CASE_INSENSITIVE);
 
         Matcher m = matchesEntityPtrn.matcher(string);
 
         if (m.matches()) {
+        	        	
             String entityGroup = m.group(1);
             String entityGroupUpper = entityGroup.toUpperCase();
-
-            if (entityGroupUpper.startsWith("N@")) {
+            
+            if (entityGroupUpper.startsWith("N@") || entityGroupUpper.startsWith("NPC.")) {
+            	
+            	// Major problem here! NPC.getBukkitEntity() always returns null
+            	// when an NPC is not currently spawned. Someone should talk to
+            	// both aufdemrand and fullwall about it.
+            	
                 LivingEntity returnable = CitizensAPI.getNPCRegistry()
                         .getById(Integer.valueOf(m.group(3))).getBukkitEntity();
 
@@ -103,10 +109,11 @@ public class dEntity implements dScriptArgument {
                 else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
             }
 
-            else if (entityGroupUpper.startsWith("P@")) {
-                LivingEntity returnable = aH.getPlayerFrom(m.group(4));
+            else if (entityGroupUpper.startsWith("P@") || entityGroupUpper.startsWith("PLAYER.")) {
+            	
+                LivingEntity returnable = aH.getPlayerFrom(m.group(3));
 
-                if (returnable != null) new dEntity(returnable);
+                if (returnable != null) return new dEntity(returnable);
                 else dB.echoError("Invalid Player! '" + entityGroup + "' could not be found. Has the player logged off?");
             }
 
@@ -133,7 +140,7 @@ public class dEntity implements dScriptArgument {
     private String id = null;
     private String prefix = "Entity";
 
-    private LivingEntity entity;
+    private LivingEntity entity = null;
 
     public dEntity(LivingEntity entity) {
         this.entity = entity;

@@ -108,7 +108,7 @@ public class aH {
     final static Pattern matchesDurationPtrn =
             Pattern.compile("duration:(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesEntityPtrn =
-            Pattern.compile("((entity\\.|player\\.|npc\\.).+)|(player|npc)", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("(?:.+?:|)((p@|n@|e@|player\\.|npc\\.|entity\\.).+)|(player|npc)", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesQuantityPtrn = Pattern.compile("qty:(-)?\\d+", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesQueuePtrn = Pattern.compile("queue:(.+)", Pattern.CASE_INSENSITIVE);
 
@@ -524,10 +524,11 @@ public class aH {
      * @return a Bukkit Player object, or null
      */
     public static Player getPlayerFrom(String arg) {
+    	
         arg = getValuePart(arg);
-        // Remove prefix if using PLAYER.playername format
-        if (arg.toUpperCase().contains("PLAYER."))
-            arg = arg.toUpperCase().replace("PLAYER.", "");
+        // Remove prefix if using PLAYER.playername or P@ formats
+        arg = arg.toUpperCase().replace("P@", "").replace("PLAYER.", "");
+        
         for (Player player : Bukkit.getOnlinePlayers())
             if (player.getName().equalsIgnoreCase(arg)) return player;
         dB.echoError("Player '" + arg + "' is invalid, or offline.");
