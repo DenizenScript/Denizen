@@ -60,7 +60,6 @@ public class LookCommand extends AbstractCommand {
 			if (aH.matchesDuration(arg)) {
 				duration = aH.getIntegerFrom(arg);
 				dB.echoDebug("...look duration set to '%s'.", arg);
-				continue;
 			}
 			
         	else if (aH.matchesArg("PLAYER", arg)) {
@@ -88,8 +87,9 @@ public class LookCommand extends AbstractCommand {
         // If TARGET is NPC/PLAYER and no NPC/PLAYER available, throw exception.
         if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
         else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
+        
         scriptEntry.addObject("target", targetType)
-        		.addObject("location", location);
+        		   .addObject("location", location);
 	}
 
 	@Override

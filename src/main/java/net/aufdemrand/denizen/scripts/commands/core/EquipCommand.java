@@ -28,7 +28,7 @@ public class EquipCommand extends AbstractCommand{
 			} else if (aH.matchesArg("ITEMINHAND, HAND, HOLDING", arg)) {
 				try {
 					equipType = EquipType.valueOf(arg);
-					dB.echoDebug("... equiping to " + equipType.name());
+					dB.echoDebug("... equipping for " + equipType.name());
 				} catch (Exception e) { throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg); }
 			} 
 		}

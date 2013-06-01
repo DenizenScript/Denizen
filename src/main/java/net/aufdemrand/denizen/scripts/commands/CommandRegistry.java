@@ -132,7 +132,10 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(GroupCommand.class, 
                 "GROUP", "group [add|remove]  [group] (player:player_name) (world:world_name)", 2);
-		
+	
+        registerCoreMember(HeadCommand.class, 
+        		"HEAD", "head (player) [skin:name]", 0);
+        
         registerCoreMember(HealCommand.class, 
         		"HEAL", "heal (amt:#) (target:npc|{player})", 0);
 
