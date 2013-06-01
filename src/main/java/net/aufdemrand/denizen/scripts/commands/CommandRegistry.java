@@ -214,6 +214,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(SitCommand.class, 
         		"SIT", "sit (location:x,y,z,world)", 0);
 
+        registerCoreMember(SpawnCommand.class, 
+        		"SPAWN", "spawn [entity:name] (location:x,y,z,world)", 1);
+        
         registerCoreMember(StandCommand.class, 
         		"STAND", "stand", 0);
         

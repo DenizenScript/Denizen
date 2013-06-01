@@ -88,9 +88,9 @@ public class ShootCommand extends AbstractCommand {
         if (entityType == null) throw new InvalidArgumentsException(Messages.ERROR_INVALID_ENTITY);
 
         // Stash objects
+        scriptEntry.addObject("entityType", entityType);
         scriptEntry.addObject("location", location);
         scriptEntry.addObject("script", newScript);
-        scriptEntry.addObject("entityType", entityType);
         scriptEntry.addObject("ride", ride);
         scriptEntry.addObject("burn", burn);
         scriptEntry.addObject("explosion", explosion);
@@ -101,8 +101,11 @@ public class ShootCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
     	
-        final dLocation location = scriptEntry.hasObject("location") ? (dLocation) scriptEntry.getObject("location") : (dLocation) scriptEntry.getNPC().getEyeLocation().getDirection().
-                multiply(4).toLocation(scriptEntry.getNPC().getWorld());
+        final dLocation location = scriptEntry.hasObject("location") ?
+        		                   (dLocation) scriptEntry.getObject("location") :
+        		                   (dLocation) scriptEntry.getNPC().getEyeLocation().getDirection().
+                                   multiply(4).toLocation(scriptEntry.getNPC().getWorld());
+        		                   
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
         Boolean ride = (Boolean) scriptEntry.getObject("ride");
         Boolean burn = (Boolean) scriptEntry.getObject("burn");
