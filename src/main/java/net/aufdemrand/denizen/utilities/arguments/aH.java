@@ -108,7 +108,7 @@ public class aH {
     final static Pattern matchesDurationPtrn =
             Pattern.compile("duration:(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesEntityPtrn =
-            Pattern.compile("(?:.+?|):((ENTITY\\.|PLAYER\\.|NPC\\.).+)|(PLAYER|NPC)", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("((entity\\.|player\\.|npc\\.).+)|(player|npc)", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesQuantityPtrn = Pattern.compile("qty:(-)?\\d+", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesQueuePtrn = Pattern.compile("queue:(.+)", Pattern.CASE_INSENSITIVE);
 
@@ -327,9 +327,12 @@ public class aH {
      */
     public static LivingEntity getLivingEntityFrom(String arg) {
         Matcher m = matchesEntityPtrn.matcher(arg);
+        
         if (m.matches()) {
+        	
             String entityGroup = m.group(1);
             String entityGroupUpper = entityGroup.toUpperCase();
+
             if (entityGroupUpper.startsWith("ENTITY.")
                     || entityGroupUpper.startsWith("E@")) {
                 int entityID = Integer.valueOf(entityGroup.split("\\.")[1]);
