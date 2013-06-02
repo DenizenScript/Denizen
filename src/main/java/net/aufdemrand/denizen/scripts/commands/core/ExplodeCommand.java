@@ -1,29 +1,14 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
-import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.arguments.Duration;
-import net.aufdemrand.denizen.utilities.arguments.dLocation;
-import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
+import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Type;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Firework;
-import org.bukkit.entity.Projectile;
-import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 /**
  * Create an explosion at a location.
@@ -39,6 +24,8 @@ public class ExplodeCommand extends AbstractCommand {
 
         dLocation location = null;
         Float power = 1F;
+        boolean breakblocks = false;
+        boolean setFire = false;
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesLocation(arg)) {
@@ -49,12 +36,22 @@ public class ExplodeCommand extends AbstractCommand {
                 power = aH.getFloatFrom(arg);
                 dB.echoDebug("...will have a power of " + power);
                 
+            } else if (aH.matchesArg("breakblocks", arg)) {
+                    breakblocks = true;
+                    dB.echoDebug("...will break blocks.");        
+                    
+            } else if (aH.matchesArg("setFire", arg)) {
+                setFire = true;
+                dB.echoDebug("...will set Fire on blocks.");
+                    
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }            
 
          // Stash objects
          scriptEntry.addObject("location", location);
          scriptEntry.addObject("power", power);
+         scriptEntry.addObject("breakblocks", breakblocks);
+         scriptEntry.addObject("setFire", setFire);
     }
     
     @Override
@@ -65,9 +62,10 @@ public class ExplodeCommand extends AbstractCommand {
                 (dLocation) scriptEntry.getObject("location") :
                 (dLocation) scriptEntry.getNPC().getLocation();
         Float power = (Float) scriptEntry.getObject("power");
-                                   
-
-        location.getWorld().createExplosion(location, (Float) power);
+        boolean breakblocks = (Boolean) scriptEntry.getObject("breakblocks");
+        boolean setFire = (Boolean) scriptEntry.getObject("setFire");
+        
+        location.getWorld().createExplosion(location.getX(),location.getY(),location.getZ(), (Float) power,breakblocks,setFire);
  
     }
 
