@@ -176,7 +176,7 @@ public class dEntity implements dScriptArgument {
 
         arg = arg.replace("e@", "");
 
-        if (ScriptRegistry.containsScript(m.group(1), EntityScriptContainer.class))
+        if (ScriptRegistry.containsScript(arg, EntityScriptContainer.class))
             return true;
 
         for (EntityType type : EntityType.values())

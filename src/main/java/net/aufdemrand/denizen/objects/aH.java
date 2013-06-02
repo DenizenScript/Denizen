@@ -41,7 +41,7 @@ public class aH {
     final static Pattern wordPrimitive = Pattern.compile("\\w+");
 
     public static class Argument {
-        String raw_value;
+        public String raw_value;
         String prefix;
         String value;
 
@@ -53,10 +53,16 @@ public class aH {
             int first_colon = string.indexOf(":");
             int first_space = string.indexOf(" ");
 
-            if (first_space < first_colon) value = string;  else {
+            dB.log("Constructing Argument: " + raw_value + " " + first_colon + "," + first_space);
+
+            if ((first_space > -1 && first_space < first_colon) || first_colon == -1)  value = string;
+            else {
                 prefix = string.split(":")[0];
                 value = string.split(":")[1];
             }
+
+            dB.log("Constructed Argument: " + prefix + ":" + value);
+
         }
 
         public boolean matchesEnum(Enum[] values) {
@@ -103,8 +109,10 @@ public class aH {
 
         public boolean matchesArgumentType(Class<? extends dScriptArgument> clazz) {
 
+            dB.log("Calling matches: " + prefix + ":" + value + " " + clazz.toString());
+
             try {
-                return (Boolean) clazz.getMethod("matches", Boolean.class).invoke(null, value);
+                return (Boolean) clazz.getMethod("matches", String.class).invoke(null, value);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -118,9 +126,11 @@ public class aH {
 
         public <T extends dScriptArgument> T asType(Class<? extends dScriptArgument> clazz) {
 
+            dB.log("Calling asType: " + prefix + ":" + value + " " + clazz.toString());
+
             dScriptArgument arg = null;
             try {
-                arg = (dScriptArgument) clazz.getMethod("valueOf", clazz)
+                arg = (dScriptArgument) clazz.getMethod("valueOf", String.class)
                         .invoke(null, value);
 
                 return (T) clazz.cast(arg).setPrefix(prefix);

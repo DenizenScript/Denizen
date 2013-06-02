@@ -2,11 +2,9 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.entity.EntityType;
@@ -20,71 +18,102 @@ import org.bukkit.entity.ExperienceOrb;
 
 public class DropCommand extends AbstractCommand {
 
+    public String getHelp() {
+        return  "Drops things into the world. Must specify something to drop," +
+                "such as 'experience', an item, or an entity. Must also" +
+                "specify a location, and if more than 1, a quantity. \n" +
+                " \n" +
+                "Use to drop items, even custom item_scripts. \n" +
+                "- drop iron_helmet location:<npc.location> \n" +
+                "- drop i@butter qty:5 location:<notable.location[churn]> \n" +
+                "Use to reward the player with some experience. \n" +
+                "- drop experience qty:1000 location:<player.location> \n" +
+                "Use to drop entities, such as boats or minecarts. \n" +
+                "- drop e@boat location:<player.flag[dock_location]>";
+    }
+
+    enum Action { DROP_ITEM, DROP_EXP, DROP_ENTITY }
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize necessary fields
-        dItem item = null;
-        Integer qty = null;
-        dLocation location = null;
-        Boolean exp = false;
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-        // Set some defaults
-        if (scriptEntry.getPlayer() != null)
-            location = new dLocation(scriptEntry.getPlayer().getPlayerEntity().getLocation());
-        if (location == null && scriptEntry.getNPC() != null)
-            location = new dLocation(scriptEntry.getNPC().getLocation());
+            if (!scriptEntry.hasObject("action")
+                    && arg.matchesArgumentType(dItem.class)) {
+                // dItem arg
+                scriptEntry.addObject("action", new Element(Action.DROP_ITEM.toString()).setPrefix("action"));
+                scriptEntry.addObject("item", arg.asType(dItem.class).setPrefix("item"));  }
 
-        for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesItem(arg)) {
-                item = aH.getItemFrom(arg);
 
-            } else if (aH.matchesArg("XP, EXP", arg)) {
-                exp = true;
+            else if (!scriptEntry.hasObject("action")
+                    && arg.matchesPrefix("experience, exp, xp"))
+                // Experience arg
+                scriptEntry.addObject("action", new Element(Action.DROP_EXP.toString()).setPrefix("action"));
 
-            } else if (aH.matchesQuantity(arg)) {
-                qty = aH.getIntegerFrom(arg);
 
-            } else if (aH.matchesLocation(arg)) {
-                location = aH.getLocationFrom(arg);
+            else if (!scriptEntry.hasObject("action")
+                    && arg.matchesArgumentType(dEntity.class)) {
+                // Entity arg
+                scriptEntry.addObject("action", new Element(Action.DROP_ITEM.toString()).setPrefix("action"));
+                scriptEntry.addObject("entity", arg.asType(dEntity.class).setPrefix("entity"));  }
 
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+
+            else if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class))
+                // dLocation arg
+                scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
+
+
+            else if (!scriptEntry.hasObject("qty")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                // Quantity arg
+                scriptEntry.addObject("qty", arg.asElement().setPrefix("qty"));
+
+
+            else dB.echoError("Unhandled argument: '" + arg.raw_value + "'");
         }
 
-        if (item == null && !exp) throw new InvalidArgumentsException(Messages.ERROR_INVALID_ITEM);
-        if (location == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
+        if (!scriptEntry.hasObject("action"))
+            throw new InvalidArgumentsException("Must specify something to drop!");
 
-        // Stash objects
-        scriptEntry.addObject("location", location);
-        scriptEntry.addObject("item", item);
-        scriptEntry.addObject("exp", exp);
-        scriptEntry.addObject("qty", qty);
+        if (!scriptEntry.hasObject("qty")) scriptEntry.addObject("qty", Element.valueOf("1"));
+
     }
+
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+
         // Get objects
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        Integer qty = (Integer) scriptEntry.getObject("qty");
-        Boolean exp = (Boolean) scriptEntry.getObject("exp");
+        Element qty = (Element) scriptEntry.getObject("qty");
+        Element action = (Element) scriptEntry.getObject("action");
         dItem item = (dItem) scriptEntry.getObject("item");
-
-        // Set quantity if not specified
-        if (qty != null && item != null)
-            item.getItemStack().setAmount(qty);
-        else qty = 1;
+        dEntity entity = (dEntity) scriptEntry.getObject("entity");
 
         // Report to dB
         dB.report(getName(),
-                location.debug()
-                + (item != null ? item.debug()
-                : aH.debugObj("Exp", String.valueOf(qty))));
+                action.debug() + location.debug() + qty.debug()
+                        + (Action.valueOf(action.asString()) == Action.DROP_ITEM ? item.debug() : "")
+                        + (Action.valueOf(action.asString()) == Action.DROP_ENTITY ? entity.debug() : ""));
 
-        if (exp)
-            ((ExperienceOrb) location.getWorld().spawnEntity(location, EntityType.EXPERIENCE_ORB))
-                    .setExperience(qty);
-        else
-            location.getWorld().dropItemNaturally(location, item.getItemStack());
+        switch (Action.valueOf(action.asString())) {
+            case DROP_EXP:
+                ((ExperienceOrb) location.getWorld()
+                        .spawnEntity(location, EntityType.EXPERIENCE_ORB))
+                        .setExperience(qty.asInt());
+                break;
+
+            case DROP_ITEM:
+                location.getWorld()
+                        .dropItemNaturally(location, item.getItemStack());
+                break;
+
+            case DROP_ENTITY:
+                entity.spawnAt(location);
+                break;
+        }
 
     }
 

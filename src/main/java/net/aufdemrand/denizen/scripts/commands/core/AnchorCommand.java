@@ -39,7 +39,9 @@ public class AnchorCommand extends AbstractCommand {
                 "- anchor walknear id:front_porch range:5";
     }
 
+
     private enum Action { ADD, REMOVE, ASSUME, WALKTO, WALKNEAR }
+
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -72,7 +74,7 @@ public class AnchorCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
 
 
-            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT);
+            else dB.echoError("Unhandled argument: '" + arg.raw_value + "'");
         }
 
 
@@ -80,6 +82,7 @@ public class AnchorCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify an 'Anchor Action'.");
 
     }
+
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {

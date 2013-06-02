@@ -150,7 +150,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
     }
 
 
-    public boolean matches(String string) {
+    public static boolean matches(String string) {
         final Pattern location_by_saved = Pattern.compile("(l@)(.+)");
         Matcher m = location_by_saved.matcher(string);
         if (m.matches())

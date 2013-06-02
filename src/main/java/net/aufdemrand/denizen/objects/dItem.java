@@ -162,23 +162,11 @@ public class dItem implements dScriptArgument {
 
 
     public static boolean matches(String arg) {
-
-        final Pattern entity_by_id =
-                Pattern.compile("((n@|e@|p@)(.+))",
-                        Pattern.CASE_INSENSITIVE);
-        Matcher m;
-        m = entity_by_id.matcher(arg);
-        if (m.matches()) return true;
-
-        arg = arg.replace("e@", "");
-
-        if (ScriptRegistry.containsScript(m.group(1), EntityScriptContainer.class))
-            return true;
-
-        for (EntityType type : EntityType.values())
-            if (type.name().equalsIgnoreCase(arg)) return true;
-
+        // TODO: Make this better. Probably creating some unnecessary
+        // objects by doing this :(
+        if (valueOf(arg) != null) return true;
         return false;
+
     }
 
 
