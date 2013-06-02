@@ -106,6 +106,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(ExperienceCommand.class,
                 "EXPERIENCE", "experience [{set}|give|take] (level) [#] (player:player_name)", 2);
 
+        registerCoreMember(ExplodeCommand.class,
+                "EXPLODE", "explode (power:#) (location:x,y,z,world)", 0);
+        
         registerCoreMember(FailCommand.class, 
         		"FAIL", "fail (script:name{attached script}) (player:player_name)", 0);
         
