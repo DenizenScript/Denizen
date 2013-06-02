@@ -45,7 +45,6 @@ public class ShootCommand extends AbstractCommand {
         Boolean ride = false;
         Boolean burn = false;
         double explosion = -1;
-        Boolean fireworks = false;
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
@@ -77,10 +76,6 @@ public class ShootCommand extends AbstractCommand {
             } else if (aH.matchesValueArg("explosion", arg, ArgumentType.Double)) {
             	explosion = aH.getDoubleFrom(arg);
                 dB.echoDebug("...will have an explosion radius of " + explosion);
-                
-            } else if (aH.matchesArg("fireworks", arg)) {
-                fireworks = true;
-                dB.echoDebug("...will launch fireworks.");
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -94,7 +89,6 @@ public class ShootCommand extends AbstractCommand {
         scriptEntry.addObject("ride", ride);
         scriptEntry.addObject("burn", burn);
         scriptEntry.addObject("explosion", explosion);
-        scriptEntry.addObject("fireworks", fireworks);
     }
     
 	@Override
@@ -177,14 +171,7 @@ public class ShootCommand extends AbstractCommand {
                             		Duration.valueOf(Settings.ScriptQueueSpeed()).getSeconds()))
                             		.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), null);
         				}
-        				if ((Boolean) scriptEntry.getObject("fireworks"))
-        				{
-        					Firework firework = entity.getWorld().spawn(entity.getLocation(), Firework.class);
-        			        FireworkMeta fireworkMeta = (FireworkMeta) firework.getFireworkMeta();
-        			        fireworkMeta.addEffects(FireworkEffect.builder().withColor(Color.YELLOW).with(Type.STAR).build());
-        			        fireworkMeta.setPower(2);
-        			        firework.setFireworkMeta(fireworkMeta);
-        				}
+        				
         				if ((Double) scriptEntry.getObject("explosion") > 0)
         				{
         					entity.getWorld().createExplosion(entity.getLocation(),

@@ -347,14 +347,14 @@ public class aH {
 
             else if (entityGroupUpper.startsWith("NPC.")
             		|| entityGroupUpper.startsWith("NPCID.")
-                    || entityGroupUpper.startsWith("n@")) {
+                    || entityGroupUpper.startsWith("N@")) {
                 LivingEntity returnable = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(entityGroup.split("\\.")[1])).getBukkitEntity();
                 if (returnable != null) return returnable;
                 else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
             }
 
             else if (entityGroupUpper.startsWith("PLAYER.")
-                    || entityGroupUpper.startsWith("@P.")) {
+                    || entityGroupUpper.startsWith("P@.")) {
                 LivingEntity returnable = getPlayerFrom(entityGroup.split("\\.")[1]);
                 if (returnable != null) return returnable;
                 else dB.echoError("Invalid Player! '" + entityGroup + "' could not be found. Has the player logged off?");
