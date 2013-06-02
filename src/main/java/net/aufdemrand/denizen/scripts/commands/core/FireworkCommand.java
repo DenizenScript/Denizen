@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +13,11 @@ import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.entity.Firework;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 /**
@@ -134,8 +131,6 @@ public class FireworkCommand extends AbstractCommand {
         
         fireworkBuilder.with(type);
 		
-        dB.echoApproval("Size of primary: " + primary.size());
-        
         // If there are no primary colors, there will be an error, so add one
         if (primary.size() == 0) {
         	
