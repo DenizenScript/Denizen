@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -235,24 +236,17 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
 
     @Override
     public String identify() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public String toString() {
         if (isSaved(this))
             return "l@" + getSaved(this);
         else return "l@" + getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName();
     }
 
-
-
     @Override
     public String getAttribute(Attribute attribute) {
-
-
         if (attribute == null) return null;
+
+        dB.log("getAttribute: " + getType() + " ---> " + attribute.attributes.toString());
 
         if (attribute.startsWith("biome.formatted"))
             return new Element(getBlock().getBiome().name().toLowerCase().replace('_', ' '))

@@ -109,7 +109,7 @@ public class aH {
 
         public boolean matchesArgumentType(Class<? extends dScriptArgument> clazz) {
 
-            dB.log("Calling matches: " + prefix + ":" + value + " " + clazz.toString());
+            dB.log("Calling matches: " + prefix + ":" + value + " " + clazz.getCanonicalName());
 
             try {
                 return (Boolean) clazz.getMethod("matches", String.class).invoke(null, value);
@@ -126,7 +126,7 @@ public class aH {
 
         public <T extends dScriptArgument> T asType(Class<? extends dScriptArgument> clazz) {
 
-            dB.log("Calling asType: " + prefix + ":" + value + " " + clazz.toString());
+            dB.log("Calling asType: " + prefix + ":" + value + " " + clazz.getCanonicalName());
 
             dScriptArgument arg = null;
             try {

@@ -17,7 +17,8 @@ import java.util.regex.Pattern;
 
 public class Attribute {
 
-    List<String> attributes;
+    // TODO: Make this private. It's public right now to enable easy debugging.
+    public List<String> attributes;
 
     ScriptEntry scriptEntry;
 
