@@ -68,7 +68,7 @@ public class NarrateCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
-        Player player = scriptEntry.getPlayer();
+        Player player = scriptEntry.getPlayer().getPlayerEntity();
         String text = (String) scriptEntry.getObject("text");
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
 

@@ -19,7 +19,7 @@ public class GroupCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         // Initialize fields
         Action action = null;
-        Player player = scriptEntry.getPlayer();
+        Player player = scriptEntry.getPlayer().getPlayerEntity();
         String group = null;
         String world = null;
 

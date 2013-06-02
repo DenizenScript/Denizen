@@ -81,7 +81,7 @@ public class PoseCommand extends AbstractCommand {
             		npc.getCitizen().getTrait(Poses.class).assumePose(id);
             	else
             	{
-            		Player player = scriptEntry.getPlayer();
+            		Player player = scriptEntry.getPlayer().getPlayerEntity();
             		Location location = player.getLocation();
             		location.setYaw(npc.getCitizen().getTrait(Poses.class).getPose(id).getYaw());
             		location.setPitch(npc.getCitizen().getTrait(Poses.class).getPose(id).getPitch());

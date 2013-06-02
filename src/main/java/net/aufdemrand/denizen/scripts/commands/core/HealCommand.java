@@ -96,7 +96,7 @@ public class HealCommand extends AbstractCommand {
                 return;
 
             case PLAYER:
-                Player player = scriptEntry.getPlayer();
+                Player player = scriptEntry.getPlayer().getPlayerEntity();
                 // Set to max health
                 if (amount == Integer.MAX_VALUE) player.setHealth(player.getMaxHealth());
                     // else, increase health

@@ -46,7 +46,7 @@ public class PauseCommand extends AbstractCommand {
 	    dNPC = null;
 	    player = null;
 	    if (scriptEntry.getNPC() != null) dNPC = scriptEntry.getNPC();
-		if (scriptEntry.getPlayer() != null) player = scriptEntry.getPlayer();
+		if (scriptEntry.getPlayer() != null) player = scriptEntry.getPlayer().getPlayerEntity();
 
 		// Parse arguments
 		for (String arg : scriptEntry.getArguments()) {

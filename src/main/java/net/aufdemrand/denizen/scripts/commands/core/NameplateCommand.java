@@ -8,6 +8,7 @@ import java.util.List;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.NameplateTrait;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
@@ -51,7 +52,7 @@ public class NameplateCommand extends AbstractCommand {
 
             else if(aH.matchesValueArg("TARGET", arg, ArgumentType.Word)) {
                 player = true;
-                scriptEntry.setPlayer(aH.getPlayerFrom(arg));
+                scriptEntry.setPlayer(new dPlayer(aH.getPlayerFrom(arg)));
             }
 
             else if (aH.matchesValueArg("SET", arg, ArgumentType.Custom))

@@ -87,8 +87,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
         String player = null;
 
         if (type == Type.PLAYER) {
-            if (scriptEntry.getOfflinePlayer() != null)
-                player = scriptEntry.getOfflinePlayer().getName();
             if (player == null && scriptEntry.getPlayer() != null)
                 player = scriptEntry.getPlayer().getName();
         }

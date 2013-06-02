@@ -46,7 +46,7 @@ public class InGroupRequirement extends AbstractRequirement{
 						}
 						else
 						{
-							if (Depends.permissions.playerInGroup(context.getPlayer(), arg))
+							if (Depends.permissions.playerInGroup(context.getPlayer().getPlayerEntity(), arg))
 							{
 								dB.echoDebug("...player is in group: " + arg);
 								outcome = true;

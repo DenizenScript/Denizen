@@ -93,7 +93,7 @@ public class ChatCommand extends AbstractCommand {
 
         // Add default recipient as the scriptEntry Player if no recipients set otherwise
         if (!context.hasRecipients() && !noTargets && scriptEntry.getPlayer() != null)
-            context.addRecipient(scriptEntry.getPlayer());
+            context.addRecipient(scriptEntry.getPlayer().getPlayerEntity());
 
         // Verify essential fields are set
         if (context.getTalker() == null)

@@ -16,8 +16,6 @@ import static net.aufdemrand.denizen.objects.aH.Argument;
 
 /**
  *
- * TODO: Document usage
- *
  * Controls a NPC's 'Anchors' trait.
  *
  * @author aufdemrand
@@ -130,6 +128,7 @@ public class AnchorCommand extends AbstractCommand {
                                 .getAnchor(id.asString()));
                 return;
         }
+
 
     }
 }

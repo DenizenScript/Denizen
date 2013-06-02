@@ -90,29 +90,29 @@ public class TakeCommand extends AbstractCommand{
                 if (npc)
                     scriptEntry.getNPC().getEntity().getEquipment().clear();
                 else // Player
-                    scriptEntry.getPlayer().getInventory().clear();
+                    scriptEntry.getPlayer().getPlayerEntity().getInventory().clear();
                 break;
 
             case ITEMINHAND:
-                int inHandAmt = scriptEntry.getPlayer().getItemInHand().getAmount();
+                int inHandAmt = scriptEntry.getPlayer().getPlayerEntity().getItemInHand().getAmount();
                 int theAmount = ((Double) scriptEntry.getObject("quantity")).intValue();
                 ItemStack newHandItem = new ItemStack(0);
                 if (theAmount > inHandAmt) {
                     dB.echoDebug("...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
-                    scriptEntry.getPlayer().setItemInHand(newHandItem);
+                    scriptEntry.getPlayer().getPlayerEntity().setItemInHand(newHandItem);
                 }
                 else {
 
                     // amount is just right!
                     if (theAmount == inHandAmt) {
-                        scriptEntry.getPlayer().setItemInHand(newHandItem);
+                        scriptEntry.getPlayer().getPlayerEntity().setItemInHand(newHandItem);
                     } else {
                         // amount is less than what's in hand, need to make a new itemstack of what's left...
-                        newHandItem = new ItemStack(scriptEntry.getPlayer().getItemInHand().getType(),
-                                inHandAmt - theAmount, scriptEntry.getPlayer().getItemInHand().getData().getData());
-                        newHandItem.setItemMeta(scriptEntry.getPlayer().getItemInHand().getItemMeta());
-                        scriptEntry.getPlayer().setItemInHand(newHandItem);
-                        scriptEntry.getPlayer().updateInventory();
+                        newHandItem = new ItemStack(scriptEntry.getPlayer().getPlayerEntity().getItemInHand().getType(),
+                                inHandAmt - theAmount, scriptEntry.getPlayer().getPlayerEntity().getItemInHand().getData().getData());
+                        newHandItem.setItemMeta(scriptEntry.getPlayer().getPlayerEntity().getItemInHand().getItemMeta());
+                        scriptEntry.getPlayer().getPlayerEntity().setItemInHand(newHandItem);
+                        scriptEntry.getPlayer().getPlayerEntity().updateInventory();
                     }
                 }
                 break;
@@ -129,7 +129,7 @@ public class TakeCommand extends AbstractCommand{
 
             case ITEM:
                 ((ItemStack) scriptEntry.getObject("item")).setAmount(((Double) scriptEntry.getObject("quantity")).intValue());
-                if (!scriptEntry.getPlayer().getInventory().removeItem((ItemStack)scriptEntry.getObject("item")).isEmpty())
+                if (!scriptEntry.getPlayer().getPlayerEntity().getInventory().removeItem((ItemStack)scriptEntry.getObject("item")).isEmpty())
                     dB.echoDebug("The Player did not have enough " + ((ItemStack) scriptEntry.getObject("item")).getType().toString()
                             + " on hand, so Denizen took as much as possible. To avoid this situation, use an IF or REQUIREMENT to check.");
                 break;

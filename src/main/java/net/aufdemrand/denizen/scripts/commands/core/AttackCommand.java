@@ -57,7 +57,7 @@ public class AttackCommand extends AbstractCommand {
         // Start attacking
         else
             scriptEntry.getNPC().getNavigator()
-                    .setTarget(scriptEntry.getPlayer(), true);
+                    .setTarget(scriptEntry.getPlayer().getPlayerEntity(), true);
 
     }
 

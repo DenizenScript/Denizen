@@ -93,7 +93,7 @@ public class CastCommand extends AbstractCommand{
                         if (scriptEntry.getPlayer() == null)
                             dB.echoError("Cannot add PLAYER as a target! Attached Player is NULL!");
                         else
-                            targets.add(scriptEntry.getPlayer());
+                            targets.add(scriptEntry.getPlayer().getPlayerEntity());
 
                     // If specifying the linked NPC
                     } else if (aH.getStringFrom(t).equalsIgnoreCase("NPC") && scriptEntry.getNPC() != null) {
@@ -127,7 +127,7 @@ public class CastCommand extends AbstractCommand{
         // No targets specified, let's use defaults if available
         // Target Player by default
         if (targets.isEmpty() && scriptEntry.getPlayer() != null)
-            targets.add(scriptEntry.getPlayer());
+            targets.add(scriptEntry.getPlayer().getPlayerEntity());
         // If no Player, target the NPC by default
         if (targets.isEmpty() && scriptEntry.getNPC() != null)
             targets.add(scriptEntry.getNPC().getEntity());

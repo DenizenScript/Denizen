@@ -31,7 +31,7 @@ public class DropCommand extends AbstractCommand {
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
-            location = new dLocation(scriptEntry.getPlayer().getLocation());
+            location = new dLocation(scriptEntry.getPlayer().getPlayerEntity().getLocation());
         if (location == null && scriptEntry.getNPC() != null)
             location = new dLocation(scriptEntry.getNPC().getLocation());
 

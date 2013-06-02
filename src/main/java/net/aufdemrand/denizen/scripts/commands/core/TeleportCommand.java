@@ -111,7 +111,7 @@ public class TeleportCommand extends AbstractCommand {
         // If we're teleporting the player, add them as a recipient.
         //
         if (teleportPlayer == true) {
-            teleportEntities.add (scriptEntry.getPlayer());
+            teleportEntities.add(scriptEntry.getPlayer().getPlayerEntity());
         }
 
         // Check some required arguments, make sure they are valid

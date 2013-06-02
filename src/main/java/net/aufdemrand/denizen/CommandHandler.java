@@ -737,11 +737,11 @@ public class CommandHandler {
     public void listener(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         Denizen denizen = ((Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen"));
 
-        Player player = null;
-        if (sender instanceof Player) player = (Player) sender;
+        dPlayer player = null;
+        if (sender instanceof Player) player = dPlayer.mirrorBukkitPlayer((Player) sender);
 
         if (args.hasValueFlag("player"))
-            player = aH.getPlayerFrom(args.getFlag("player"));
+            player = dPlayer.valueOf(args.getFlag("player"));
 
         if (player == null) throw new CommandException("Specified player not online or not found!");
 

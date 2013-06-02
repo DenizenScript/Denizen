@@ -40,7 +40,7 @@ public class PermissionRequirement extends AbstractRequirement{
 						}
 						else
 						{
-							if(Depends.permissions.has(context.getPlayer(), arg))
+							if(Depends.permissions.has(context.getPlayer().getPlayerEntity(), arg))
 							{
 								dB.echoDebug("...player has permission: " + arg);
 								outcome = true;

@@ -34,7 +34,7 @@ public class WorldCommand extends AbstractCommand {
         Type type = Type.GLOBAL;
         Action action = null;
         SubAction sub = null;
-        Player player = scriptEntry.getPlayer();
+        Player player = scriptEntry.getPlayer().getPlayerEntity();
         
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesArg("player", arg)) {

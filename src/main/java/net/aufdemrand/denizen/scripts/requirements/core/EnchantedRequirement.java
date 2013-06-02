@@ -38,7 +38,7 @@ public class EnchantedRequirement extends AbstractRequirement{
 			switch (checkType) {
 
 			case ITEMINHAND:
-				if (!context.getPlayer().getItemInHand().getEnchantments().isEmpty()) outcome = true;
+				if (!context.getPlayer().getPlayerEntity().getItemInHand().getEnchantments().isEmpty()) outcome = true;
 				break;
 
 			}

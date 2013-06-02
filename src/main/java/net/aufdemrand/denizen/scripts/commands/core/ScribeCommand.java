@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -104,7 +105,7 @@ public class ScribeCommand extends AbstractCommand implements Listener{
         BookAction action = BookAction.NONE;
 
         dItem book = null;
-        Player player = scriptEntry.getPlayer();
+        Player player = scriptEntry.getPlayer().getPlayerEntity();
         String scriptName = null;
         Location location = null;
         dNPC npc = scriptEntry.getNPC();
@@ -162,7 +163,7 @@ public class ScribeCommand extends AbstractCommand implements Listener{
 
         BookScriptContainer bookScript = ScriptRegistry.getScriptContainerAs(scriptName, BookScriptContainer.class);
         
-        book = bookScript.writeBookTo(book, player, npc);
+        book = bookScript.writeBookTo(book, dPlayer.mirrorBukkitPlayer(player), npc);
 
         // Post-write action? Can be NONE.
         switch (action) {

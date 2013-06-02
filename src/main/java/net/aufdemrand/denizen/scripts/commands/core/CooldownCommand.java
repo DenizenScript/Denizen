@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -58,14 +59,7 @@ public class CooldownCommand extends AbstractCommand {
         // Define necessary fields
         dScript script = scriptEntry.getScript();
         Duration duration = null;
-        OfflinePlayer player = null;
         Type type = Type.PLAYER;
-
-        // Set player in scriptEntry to the target
-        if (scriptEntry.getPlayer() != null)
-            player = scriptEntry.getPlayer();
-        else if (scriptEntry.getOfflinePlayer() != null)
-            player = scriptEntry.getOfflinePlayer();
 
         // Parse Arguments
         for (String arg : scriptEntry.getArguments()) {
@@ -86,7 +80,7 @@ public class CooldownCommand extends AbstractCommand {
         }
 
         // Check to make sure required arguments have been filled
-        if (type == Type.PLAYER && player == null)
+        if (type == Type.PLAYER && scriptEntry.getPlayer() == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
         if (script == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
@@ -95,9 +89,6 @@ public class CooldownCommand extends AbstractCommand {
         scriptEntry.addObject("script", script);
         scriptEntry.addObject("duration", duration);
         scriptEntry.addObject("type", type);
-        // Store the player only when necessary
-        if (type == Type.PLAYER)
-            scriptEntry.addObject("player", player);
     }
 
     @Override
@@ -116,7 +107,7 @@ public class CooldownCommand extends AbstractCommand {
 
         // Perform cooldown
         if (type == Type.PLAYER)
-            setCooldown(((OfflinePlayer) scriptEntry.getObject("player")).getName(),
+            setCooldown(scriptEntry.getPlayer().getName(),
                     duration.getSecondsAsInt(),
                     script.getName(),
                     false);

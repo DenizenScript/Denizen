@@ -51,7 +51,7 @@ public class FollowCommand extends AbstractCommand {
                     .cancelNavigation();
         else
             scriptEntry.getNPC().getNavigator()
-                    .setTarget(scriptEntry.getPlayer(), false);
+                    .setTarget(scriptEntry.getPlayer().getPlayerEntity(), false);
 
     }
 

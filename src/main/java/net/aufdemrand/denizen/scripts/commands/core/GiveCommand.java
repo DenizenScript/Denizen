@@ -102,7 +102,7 @@ public class GiveCommand  extends AbstractCommand {
                 break;
 
             case EXP:
-                scriptEntry.getPlayer().giveExp(amt.intValue());
+                scriptEntry.getPlayer().getPlayerEntity().giveExp(amt.intValue());
                 break;
 
             case ITEM:
@@ -110,13 +110,13 @@ public class GiveCommand  extends AbstractCommand {
                 is.setAmount(amt.intValue());
                 if(engrave) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
 
-                HashMap<Integer, ItemStack> leftovers = scriptEntry.getPlayer().getInventory().addItem(is);
+                HashMap<Integer, ItemStack> leftovers = scriptEntry.getPlayer().getPlayerEntity().getInventory().addItem(is);
 
                 if (!leftovers.isEmpty()) {
                     dB.echoDebug ("'" + scriptEntry.getPlayer().getName() + "' did not have enough space in their inventory," +
                             " the rest of the items have been placed on the floor.");
                     for (Map.Entry<Integer, ItemStack> leftoverItem : leftovers.entrySet())
-                        scriptEntry.getPlayer().getWorld().dropItem(scriptEntry.getPlayer().getLocation(), leftoverItem.getValue());
+                        scriptEntry.getPlayer().getPlayerEntity().getWorld().dropItem(scriptEntry.getPlayer().getPlayerEntity().getLocation(), leftoverItem.getValue());
                 }
                 break;
         }

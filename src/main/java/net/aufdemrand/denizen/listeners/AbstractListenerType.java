@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.listeners;
 
 
+import net.aufdemrand.denizen.objects.dPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -29,7 +30,7 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
 		return this;
 	}
 
-	public AbstractListener createInstance(Player player, String listenerId) {
+	public AbstractListener createInstance(dPlayer player, String listenerId) {
 		try {
 			denizen.getListenerRegistry().addListenerFor(player, instanceClass.newInstance(), listenerId);
 			return denizen.getListenerRegistry().getListenerFor(player, listenerId);

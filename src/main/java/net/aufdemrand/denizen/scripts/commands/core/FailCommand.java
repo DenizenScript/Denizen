@@ -36,17 +36,9 @@ public class FailCommand extends AbstractCommand {
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        // Initialize required fields
-        String player = null;
-
 		// Get some defaults from the ScriptEntry
 		dScript script = scriptEntry.getScript();
 
-		if (scriptEntry.getPlayer() != null)
-            player = scriptEntry.getPlayer().getName();
-        if (player == null && scriptEntry.getOfflinePlayer() != null)
-            player = scriptEntry.getOfflinePlayer().getName();
-		
 		// Parse the arguments
 		for (String arg : scriptEntry.getArguments()) {
 
@@ -57,28 +49,26 @@ public class FailCommand extends AbstractCommand {
 		}
 
         // Check for required args
-		if (player == null)
+		if (scriptEntry.getPlayer() == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
 		if (script == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
 
         // Stash objects
         scriptEntry.addObject("script", script);
-        scriptEntry.addObject("player", player);
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		// Grab objects from scriptEntry
-        String player = (String) scriptEntry.getObject("player");
         dScript script = (dScript) scriptEntry.getObject("script");
 
         // Report to dB
         dB.report(getName(),
-                aH.debugObj("Player", player)
+                scriptEntry.getPlayer().debug()
                         + script.debug());
 
-        failScript(player, script.getName());
+        failScript(scriptEntry.getPlayer().getName(), script.getName());
 	}
 
     public static void resetFails(String playerName, String scriptName) {

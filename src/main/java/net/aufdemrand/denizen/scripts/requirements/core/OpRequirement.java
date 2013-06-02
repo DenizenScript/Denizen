@@ -17,7 +17,7 @@ public class OpRequirement extends AbstractRequirement{
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
         // Make sure player isn't null and then check op status.
-		if (context.getPlayer() != null && context.getPlayer().isOp())
+		if (context.getPlayer() != null && context.getPlayer().getPlayerEntity().isOp())
             // Player is an op, return true;
 			return true;
         // Player is not op, return false;

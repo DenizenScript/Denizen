@@ -104,7 +104,7 @@ public class LookCommand extends AbstractCommand {
     	}
     	else
     	{
-    		entity = scriptEntry.getPlayer();
+    		entity = scriptEntry.getPlayer().getPlayerEntity();
     	}
 
     	if (location != null)

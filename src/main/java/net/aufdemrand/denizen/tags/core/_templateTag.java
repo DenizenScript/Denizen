@@ -20,25 +20,33 @@ public class _templateTag implements Listener {
 
 	public _templateTag(Denizen denizen) {
 		// Register this class with bukkit's plugin manager events.
-		// denizen.getServer().getPluginManager().registerEvents(this, denizen);
+		// Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	@EventHandler
 	public void constantTags(ReplaceableTagEvent event) {
-		// This will ensure that the name of the tag is tag_name.
-        // ie. <skills.something...> .. the tag_name would be 'skills'
+		// Since this event will be called each time Denizen comes across a
+        // replaceable tag, something needs to tell Denizen if this is the
+        // appropriate place to fill the tag. This is done by checking the
+        // tag 'name'. Using event.matches(tag_name) will ensure that the name
+        // of the tag is 'tag_name'. :)
+        // ie. <skills.something...> .. the tag name would be 'skills'
         if (!event.matches("skills")) return;
 
 		// Your event may need to fetch some information.
-        // Denizen will break down the first 4 parts of the tag, as well
-        // as a 'value' that is indicated with ':' to help identify the intent.
+        // Denizen will break down the first 4 parts of the tag to help identify
+        // the intent: name, type, subtype, and specifier
+
         // It also has some helper methods to check if a part is present, and to
         // easily fetch the information.
-        // ie. <tag_name.type.subtype.specifier:value> ... to get the type easily, use:
+        // ie. <name.type.subtype.specifier> ... to get the type easily, use:
+
         String type = event.hasType() ? event.getType() : "";
         // The other parts may be handled the same way.
 
         // The various parts may also have some 'context', which can be referenced easy.
+        // Context to a type, subtype, specifier, etc. is contained in [] brackets.
+        // ie. <tag_name.type[context]>
         String type_context = event.hasTypeContext() ? event.getTypeContext() : "";
 
         //

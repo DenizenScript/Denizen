@@ -42,7 +42,7 @@ public class EngraveCommand extends AbstractCommand implements Listener {
         // Initialize fields
         Action action = Action.ADD;
         String target = scriptEntry.getPlayer().getName();
-        ItemStack item = scriptEntry.getPlayer().getItemInHand() != null ? scriptEntry.getPlayer().getItemInHand(): null;
+        ItemStack item = scriptEntry.getPlayer().getPlayerEntity().getItemInHand() != null ? scriptEntry.getPlayer().getPlayerEntity().getItemInHand(): null;
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesArg("ADD, REMOVE, REMOVEALL", arg)) {

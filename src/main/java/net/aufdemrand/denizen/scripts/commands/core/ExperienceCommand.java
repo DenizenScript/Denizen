@@ -56,7 +56,7 @@ public class ExperienceCommand extends AbstractCommand {
             + aH.debugObj("Quantity", level ? quantity.toString() + " levels" : quantity.toString())
             + aH.debugObj("Player", scriptEntry.getPlayer().getName()));
 
-        Player player = scriptEntry.getPlayer();
+        Player player = scriptEntry.getPlayer().getPlayerEntity();
 
         switch (type) {
             case SET:

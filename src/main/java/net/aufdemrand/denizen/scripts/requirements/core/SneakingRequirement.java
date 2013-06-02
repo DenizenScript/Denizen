@@ -13,7 +13,7 @@ public class SneakingRequirement extends AbstractRequirement {
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
         boolean outcome = false;
 
-		if (context.getPlayer().isSneaking()) {
+		if (context.getPlayer().getPlayerEntity().isSneaking()) {
 			outcome = true;
 		}
 

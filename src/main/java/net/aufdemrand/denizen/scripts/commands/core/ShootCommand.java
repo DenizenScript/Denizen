@@ -49,7 +49,7 @@ public class ShootCommand extends AbstractCommand {
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
-            location = new dLocation(scriptEntry.getPlayer().getLocation());
+            location = new dLocation(scriptEntry.getPlayer().getPlayerEntity().getLocation());
         if (location == null && scriptEntry.getNPC() != null)
             location = new dLocation(scriptEntry.getNPC().getLocation());
 
@@ -126,7 +126,7 @@ public class ShootCommand extends AbstractCommand {
         
         if (ride == true)
         {
-        	entity.setPassenger(scriptEntry.getPlayer());
+        	entity.setPassenger(scriptEntry.getPlayer().getPlayerEntity());
         }
         
         if (burn == true)

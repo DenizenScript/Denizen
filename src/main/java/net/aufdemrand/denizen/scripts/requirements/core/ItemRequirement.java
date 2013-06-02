@@ -45,7 +45,7 @@ public class ItemRequirement extends AbstractRequirement {
 			} else throw new RequirementCheckException ("Invalid argument specified!");
 		}
 		
-		if (context.getPlayer().getInventory().containsAtLeast(item, quantity)) {
+		if (context.getPlayer().getPlayerEntity().getInventory().containsAtLeast(item, quantity)) {
 			dB.echoDebug("...player has item");
 			return true;
 		} else {

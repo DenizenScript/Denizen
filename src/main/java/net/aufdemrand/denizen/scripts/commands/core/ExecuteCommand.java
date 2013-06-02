@@ -73,15 +73,15 @@ public class ExecuteCommand extends AbstractCommand {
 		switch (type) {
 
 		case AS_PLAYER:
-			scriptEntry.getPlayer().performCommand(command);
+			scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
 			return;
 			
 		case AS_OP:
 			boolean isOp = false;
-			if (scriptEntry.getPlayer().isOp()) isOp = true;
-			if (!isOp) scriptEntry.getPlayer().setOp(true);
-            scriptEntry.getPlayer().performCommand(command);
-			if (!isOp) scriptEntry.getPlayer().setOp(false);
+			if (scriptEntry.getPlayer().getPlayerEntity().isOp()) isOp = true;
+			if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(true);
+            scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
+			if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(false);
 			return;
 			
 		case AS_NPC:

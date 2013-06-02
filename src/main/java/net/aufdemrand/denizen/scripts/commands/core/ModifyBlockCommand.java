@@ -57,7 +57,7 @@ public class ModifyBlockCommand extends AbstractCommand{
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
 		
-		thePlayer = scriptEntry.getPlayer();
+		thePlayer = scriptEntry.getPlayer().getPlayerEntity();
 		material = null;
 		location = null;
 		radius = 0;

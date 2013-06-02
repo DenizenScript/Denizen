@@ -37,7 +37,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		this.denizen = denizen;
 	}
 
-	public void addListenerFor(Player player, AbstractListener instance, String listenerId) {
+	public void addListenerFor(dPlayer player, AbstractListener instance, String listenerId) {
 		Map<String, AbstractListener> playerListeners;
 		if (listeners.containsKey(player.getName())) {
 			playerListeners = listeners.get(player.getName());
@@ -97,7 +97,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		return null;
 	}
 
-	public AbstractListener getListenerFor(Player player, String listenerId) {
+	public AbstractListener getListenerFor(dPlayer player, String listenerId) {
 		if (listeners.containsKey(player.getName())) {
 			Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
 			if (playerListeners.containsKey(listenerId.toLowerCase())) return playerListeners.get(listenerId.toLowerCase());
@@ -105,7 +105,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
 		return null;
 	}
 
-	public Map<String, AbstractListener> getListenersFor(OfflinePlayer player) {
+	public Map<String, AbstractListener> getListenersFor(dPlayer player) {
 		if (listeners.containsKey(player.getName())) {
 			Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
 			return playerListeners;
@@ -137,7 +137,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
                 dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getById(denizen.getSaves().getInt(path + listenerId + ".Linked NPCID")));
                 if (get(type) == null) return;
 				dB.log(event.getPlayer().getName() + " has a LISTENER in progress. Loading '" + listenerId + "'.");
-				get(type).createInstance(event.getPlayer(), listenerId).load(dPlayer.mirrorBukkitPlayer(event.getPlayer()), npc, listenerId, type);
+				get(type).createInstance(dPlayer.mirrorBukkitPlayer(event.getPlayer()), listenerId).load(dPlayer.mirrorBukkitPlayer(event.getPlayer()), npc, listenerId, type);
 			} catch (Exception e) {
 				dB.log(event.getPlayer() + " has a saved listener named '" + listenerId + "' that may be corrupt. Skipping for now, but perhaps check the contents of your saves.yml for problems?");
 			}
@@ -155,7 +155,7 @@ public class ListenerRegistry implements DenizenRegistry, Listener {
         }
 
         // If there are quest listeners, invoke save() for each of them.
-        for (Map.Entry<String, AbstractListener> entry : getListenersFor((OfflinePlayer) player).entrySet()) {
+        for (Map.Entry<String, AbstractListener> entry : getListenersFor(player).entrySet()) {
             dB.log(player.getName() + " has a LISTENER in progress. Saving '" + entry.getKey() + "'.");
             entry.getValue().save();
         }

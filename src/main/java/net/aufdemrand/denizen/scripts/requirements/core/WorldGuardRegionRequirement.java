@@ -56,7 +56,7 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
 		/*
 		 * Check if player is in the given region.
 		 */
-		outcome = WorldGuardUtilities.checkPlayerWGRegion(context.getPlayer(), region);
+		outcome = WorldGuardUtilities.checkPlayerWGRegion(context.getPlayer().getPlayerEntity(), region);
 		
 		/*
 		 * Display proper debug output

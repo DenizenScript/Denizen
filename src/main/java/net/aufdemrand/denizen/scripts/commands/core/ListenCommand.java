@@ -91,7 +91,7 @@ public class ListenCommand extends AbstractCommand {
 		}
 
 		if (id == null) id = scriptEntry.getScript().getName();
-		if (scriptEntry.getPlayer() == null && !(listenAction == ListenAction.CANCEL && scriptEntry.getOfflinePlayer() != null))
+		if (scriptEntry.getPlayer() == null )
             throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
 
         scriptEntry.addObject("action", listenAction);
@@ -138,7 +138,7 @@ public class ListenCommand extends AbstractCommand {
 				denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id).cancel();
 			break;
             }
-            else denizen.getSaves().set("Listeners." + scriptEntry.getOfflinePlayer().getName() + "." + id, null);
+            else denizen.getSaves().set("Listeners." + scriptEntry.getPlayer().getName() + "." + id, null);
 		}
 	}
 
