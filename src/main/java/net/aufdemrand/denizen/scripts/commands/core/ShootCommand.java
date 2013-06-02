@@ -14,14 +14,9 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Type;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.Projectile;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -104,12 +99,10 @@ public class ShootCommand extends AbstractCommand {
         Boolean ride = (Boolean) scriptEntry.getObject("ride");
         Boolean burn = (Boolean) scriptEntry.getObject("burn");
         
-        if (location == null)
-        {
+        if (location == null) {
         	
         }
-        else
-        {
+        else {
         	Utilities.faceLocation(scriptEntry.getNPC().getCitizen().getBukkitEntity(), location);
         }
 
@@ -121,18 +114,15 @@ public class ShootCommand extends AbstractCommand {
         
         Utilities.faceLocation(entity, location);
         
-        if (ride == true)
-        {
+        if (ride == true) {
         	entity.setPassenger(scriptEntry.getPlayer());
         }
         
-        if (burn == true)
-        {
+        if (burn == true) {
         	entity.setFireTicks(500);
         }
         
-        if (entity instanceof Projectile)
-		{
+        if (entity instanceof Projectile) {
 			((Projectile) entity).setShooter(scriptEntry.getNPC().getCitizen().getBukkitEntity());
 		}
         

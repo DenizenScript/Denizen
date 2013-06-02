@@ -10,6 +10,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_5_R3.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
@@ -17,6 +18,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -321,6 +323,41 @@ public class aH {
         return null;
     }
 
+    /**
+     * <p>Returns a Bukkit Color from a dScript argument string.
+     *
+     * @param arg the argument to check
+     * @return a Color or null
+     *
+     */
+    public static Color getColorFrom(String arg) {
+
+    	Field colorField = null;
+    	
+		try {
+			colorField = Color.class.getField(arg.toUpperCase());
+		} catch (SecurityException e1) {
+			dB.echoError("Security exception getting color field!");
+		} catch (NoSuchFieldException e1) {
+			dB.echoError("No such color field!");
+		}
+    	    	
+    	if (colorField != null) {
+    	
+    		try {
+    			Color color = null;
+    			return (Color) colorField.get(color);
+    		} catch (IllegalArgumentException e) {
+    			dB.echoError("Illegal argument for color!");
+    		} catch (IllegalAccessException e) {
+    			dB.echoError("Illegal access for color!");
+    		}
+    	}
+    			
+        // No match
+        return null;
+    }    
+    
     /**
      *
      *
@@ -711,6 +748,27 @@ public class aH {
             dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
                     "prefix is correct, the value is not valid. 'DURATION' requires a positive integer value. " +
                     "Perhaps a replaceable Tag has failed to fill in a valid value?");
+        return false;
+    }
+    
+    /**
+     * <p>Used to determine if a dScript argument string is a valid Color. Will check
+     * against Bukkit's Color fields.</p>
+     *
+     * @param arg the dScript argument string
+     * @return true if matched, otherwise false
+     *
+     */
+    public static boolean matchesColor(String arg) {
+    	
+    	for (Field field : Color.class.getFields()) {
+    		
+    		if (arg.toUpperCase().matches(field.getName())) {
+    			
+    			return true;
+    		}
+    	}
+    	
         return false;
     }
 
