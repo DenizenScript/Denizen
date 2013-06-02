@@ -53,7 +53,7 @@ public class aH {
             int first_colon = string.indexOf(":");
             int first_space = string.indexOf(" ");
 
-            dB.log("Constructing Argument: " + raw_value + " " + first_colon + "," + first_space);
+            // dB.log("Constructing Argument: " + raw_value + " " + first_colon + "," + first_space);
 
             if ((first_space > -1 && first_space < first_colon) || first_colon == -1)  value = string;
             else {
@@ -61,7 +61,7 @@ public class aH {
                 value = string.split(":")[1];
             }
 
-            dB.log("Constructed Argument: " + prefix + ":" + value);
+            // dB.log("Constructed Argument: " + prefix + ":" + value);
 
         }
 
@@ -109,7 +109,7 @@ public class aH {
 
         public boolean matchesArgumentType(Class<? extends dScriptArgument> clazz) {
 
-            dB.log("Calling matches: " + prefix + ":" + value + " " + clazz.getCanonicalName());
+            // dB.log("Calling matches: " + prefix + ":" + value + " " + clazz.getCanonicalName());
 
             try {
                 return (Boolean) clazz.getMethod("matches", String.class).invoke(null, value);
@@ -126,12 +126,14 @@ public class aH {
 
         public <T extends dScriptArgument> T asType(Class<? extends dScriptArgument> clazz) {
 
-            dB.log("Calling asType: " + prefix + ":" + value + " " + clazz.getCanonicalName());
+            // dB.log("Calling asType: " + prefix + ":" + value + " " + clazz.getCanonicalName());
 
             dScriptArgument arg = null;
             try {
                 arg = (dScriptArgument) clazz.getMethod("valueOf", String.class)
                         .invoke(null, value);
+
+                dB.log("Cool! Created: " + clazz.cast(arg).debug());
 
                 return (T) clazz.cast(arg).setPrefix(prefix);
 

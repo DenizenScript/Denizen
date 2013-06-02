@@ -135,17 +135,15 @@ public class dEntity implements dScriptArgument {
 
                 else if (isSaved(m.group(3)))
                     return getSaved(m.group(3));
-
-                // Got this far? Invalid entity.
-                dB.echoError("Invalid entity! '" + entityGroup
-                        + "' could not be found. Has it been despawned or killed?");
             }
         }
+
+        string = string.replace("e@", "");
 
         ////////
         // Match Custom Entity
 
-        if (ScriptRegistry.containsScript(m.group(1), EntityScriptContainer.class)) {
+        if (ScriptRegistry.containsScript(string, EntityScriptContainer.class)) {
             // Construct a new custom unspawned entity from script
             return ScriptRegistry.getScriptContainerAs(m.group(1), EntityScriptContainer.class).getEntityFrom();
         }
@@ -153,13 +151,13 @@ public class dEntity implements dScriptArgument {
         ////////
         // Match Entity_Type
 
-        string = string.replace("e@", "");
-
         for (EntityType type : EntityType.values()) {
             if (type.name().equalsIgnoreCase(string))
                 // Construct a new 'vanilla' unspawned dEntity
                 return new dEntity(type);
         }
+
+        dB.log("valueOf dEntity returning null: " + string);
 
         return null;
     }
@@ -219,7 +217,7 @@ public class dEntity implements dScriptArgument {
 
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
-        if (entity != null) entity.teleport(location);
+        if (entity != null && isUnique()) entity.teleport(location);
 
         else {
             if (entity_type != null) {
@@ -237,7 +235,11 @@ public class dEntity implements dScriptArgument {
                     despawned_entity = null;
                 }
 
-                else entity = (LivingEntity) location.getWorld().spawnEntity(location, entity_type);
+                else {
+                    org.bukkit.entity.Entity ent = location.getWorld().spawnEntity(location, entity_type);
+                    if (ent instanceof LivingEntity) entity = (LivingEntity) ent;
+                }
+
             }
 
             else dB.echoError("Cannot spawn a null dEntity!");
@@ -289,6 +291,8 @@ public class dEntity implements dScriptArgument {
             }
         }
     }
+
+
 
     //////////////////////////////
     //  DSCRIPT ARGUMENT METHODS

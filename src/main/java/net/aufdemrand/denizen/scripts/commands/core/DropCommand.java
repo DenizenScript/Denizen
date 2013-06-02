@@ -11,7 +11,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 
 /**
- * Drops items or experience in a location.
+ * Drops things into the world.
  *
  * @author Jeremy Schroeder
  */
@@ -40,6 +40,7 @@ public class DropCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("action")
+                    && !arg.matchesPrefix("qty")
                     && arg.matchesArgumentType(dItem.class)) {
                 // dItem arg
                 scriptEntry.addObject("action", new Element(Action.DROP_ITEM.toString()).setPrefix("action"));
@@ -55,7 +56,7 @@ public class DropCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesArgumentType(dEntity.class)) {
                 // Entity arg
-                scriptEntry.addObject("action", new Element(Action.DROP_ITEM.toString()).setPrefix("action"));
+                scriptEntry.addObject("action", new Element(Action.DROP_ENTITY.toString()).setPrefix("action"));
                 scriptEntry.addObject("entity", arg.asType(dEntity.class).setPrefix("entity"));  }
 
 
@@ -106,12 +107,14 @@ public class DropCommand extends AbstractCommand {
                 break;
 
             case DROP_ITEM:
+                for (int x = 0; x < qty.asInt(); x++)
                 location.getWorld()
                         .dropItemNaturally(location, item.getItemStack());
                 break;
 
             case DROP_ENTITY:
-                entity.spawnAt(location);
+                for (int x = 0; x < qty.asInt(); x++)
+                    entity.spawnAt(location);
                 break;
         }
 

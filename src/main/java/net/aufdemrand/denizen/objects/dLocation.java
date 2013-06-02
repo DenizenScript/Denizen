@@ -108,7 +108,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         final Pattern item_by_saved = Pattern.compile("(l@)(.+)");
         m = item_by_saved.matcher(string);
 
-        if (m.matches())
+        if (m.matches() && isSaved(m.group(2)))
             return getSaved(m.group(2));
 
 
@@ -116,7 +116,7 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         // Match location formats
 
         // Split values
-        String[] split = string.split(",");
+        String[] split = string.replace("l@", "").split(",");
 
         if (split.length == 4)
             // If 4 values, standard dScript location format
@@ -146,6 +146,8 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
             } catch(Exception e) {
                 return null;
             }
+
+        dB.log("valueOf dLocation returning null: " + string);
 
         return null;
     }

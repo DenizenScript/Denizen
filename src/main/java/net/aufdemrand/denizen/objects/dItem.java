@@ -156,15 +156,23 @@ public class dItem implements dScriptArgument {
             } catch (Exception e) { }
         }
 
+        if (!nope) dB.log("valueOf dItem returning null: " + string);
+
         // No match! Return null.
         return null;
     }
 
+    public static boolean nope = false;
 
     public static boolean matches(String arg) {
         // TODO: Make this better. Probably creating some unnecessary
         // objects by doing this :(
-        if (valueOf(arg) != null) return true;
+        nope = true;
+        if (valueOf(arg) != null) {
+            nope = false;
+            return true;
+        }
+        nope = false;
         return false;
 
     }
