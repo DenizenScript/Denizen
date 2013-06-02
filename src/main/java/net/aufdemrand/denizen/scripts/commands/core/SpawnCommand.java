@@ -57,7 +57,7 @@ public class SpawnCommand extends AbstractCommand {
         		                   
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
 
-        final Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
+        final Entity entity = location.getWorld().spawnEntity(
         					  location, entityType);
 
     }

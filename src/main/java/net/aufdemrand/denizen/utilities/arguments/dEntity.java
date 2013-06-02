@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_5_R3.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -102,8 +103,15 @@ public class dEntity implements dScriptArgument {
             	// when an NPC is not currently spawned. Someone should talk to
             	// both aufdemrand and fullwall about it.
             	
-                LivingEntity returnable = CitizensAPI.getNPCRegistry()
-                        .getById(Integer.valueOf(m.group(3))).getBukkitEntity();
+            	NPC npc = CitizensAPI.getNPCRegistry()
+                          .getById(Integer.valueOf(m.group(3)));
+            	
+            	if (!npc.isSpawned()) {
+            		
+            		npc.spawn(npc.getStoredLocation());
+            	}
+            			
+                LivingEntity returnable = npc.getBukkitEntity();
 
                 if (returnable != null) return new dEntity(returnable);
                 else dB.echoError("Invalid NPC! '" + entityGroup + "' could not be found. Has it been despawned or killed?");
