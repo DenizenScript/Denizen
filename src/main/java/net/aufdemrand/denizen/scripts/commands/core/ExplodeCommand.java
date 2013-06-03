@@ -65,7 +65,7 @@ public class ExplodeCommand extends AbstractCommand {
         boolean breakblocks = (Boolean) scriptEntry.getObject("breakblocks");
         boolean setFire = (Boolean) scriptEntry.getObject("setFire");
         
-        location.getWorld().createExplosion(location.getX(),location.getY(),location.getZ(), (Float) power,breakblocks,setFire);
+        location.getWorld().createExplosion(location.getX(),location.getY(),location.getZ(), (Float) power, setFire, breakblocks);
  
     }
 
