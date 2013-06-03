@@ -31,67 +31,25 @@ public class NewCommand extends AbstractCommand implements Listener {
 		denizen.getServer().getPluginManager().registerEvents(this, denizen);
 	}
 
-	private Map<String, dItem> itemStacks = new ConcurrentHashMap<String, dItem>(8, 0.9f, 1);
-	private Map<String, LivingEntity> entities = new ConcurrentHashMap<String, LivingEntity>(8, 0.9f, 1);
-	private Map<String, Integer> npcs = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
-	
-	/**
-	 * Gets a currently saved ItemStack, created with Denizen's NEW command, given a
-	 * case-insensitive 'id'. Note: These do not persist through a restart and may
-	 * return null in such a case. This is meant for working with ItemStacks in the
-	 * short-term, ie. creating an item (with NEW) and applying enchants, lore, etc.
-	 * directly after.
-	 * 
-	 * @param id ID specified upon creation
-	 * @return the saved ItemStack, or null if not found
-	 * 
-	 */
-	public ItemStack getItem(String id) {
-		if (itemStacks.containsKey(id.toUpperCase())) return itemStacks.get(id.toUpperCase()).getItemStack();
-		else return null;
-	}
-
-	/**
-	 * Gets a currently saved LivingEntity, created with Denizen's NEW command, given a
-	 * case-insensitive 'id'. Note: Saved entities DO persist through a restart, but still
-	 * may return null if removed by Bukkit, ie. the Entity dies. If the Bukkit LivingEntity
-	 * returns null, it is removed from this registry as well.
-	 * 
-	 * @param id ID specified upon creation
-	 * @return the saved LivingEntity, or null if not found
-	 * 
-	 */
-	public LivingEntity getEntity(String id) {
-		if (entities.containsKey(id.toUpperCase())) return entities.get(id.toUpperCase());
-		else return null;
-	}
-	
-	/**
-	 * Gets a currently saved C2 NPC, created with Denizen's NEW command, given a case-
-	 * insensitive 'id'. Note: Saved NPCs DO persist through a restart, but still may
-	 * return null if removed by C2. Unlike 'entities', NPCs can die without being lost
-	 * through this method. If the NPCID associated with the 'id' returns null, it is
-	 * removed from this registry as well. Note: NPCs may also be valid, but unspawned.
-	 * 
-	 * @param id ID specified upon creation. This is different than the NPCID.
-	 * @return the saved NPC, or null if not found
-	 * 
-	 */
-	public NPC getNPC(String id) {
-		if (npcs.containsKey(id.toUpperCase()) && CitizensAPI.getNPCRegistry().getById(npcs.get(id.toUpperCase())) != null)
-			return CitizensAPI.getNPCRegistry().getById(npcs.get(id.toUpperCase()));
-		return null;
-	}
-	
 	/**
 	 * Used by the NewCommand for differentiating which object to create.
 	 * 
 	 */
-	private enum ObjectType { ITEMSTACK, ENTITY, NPC }
+	private enum ObjectType { LOCATION, ITEMSTACK, ENTITY, NPC }
 
 	@SuppressWarnings("unused")
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+
+            if (!scriptEntry.hasObject("type")
+                    && arg.matchesPrefix("location, loc, l")) {
+                // new dLocation arg
+
+            }
+
+        }
 
 		// Initialize required fields
 		ObjectType objectType = null;

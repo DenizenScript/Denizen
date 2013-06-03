@@ -96,8 +96,10 @@ public class dItem implements dScriptArgument {
         final Pattern item_by_saved = Pattern.compile("(i@)(.+)");
         m = item_by_saved.matcher(string);
 
-        if (m.matches())
+        if (m.matches() && isSaved(m.group(2)))
             return getSaved(m.group(2));
+
+        string = string.replace("i@", "");
 
         ///////
         // Match item script custom items
@@ -105,7 +107,7 @@ public class dItem implements dScriptArgument {
         // Check if it's a valid item script
         if (ScriptRegistry.containsScript(string, ItemScriptContainer.class))
             // Get item from script
-            return ScriptRegistry.getScriptContainerAs(m.group(1), ItemScriptContainer.class).getItemFrom();
+            return ScriptRegistry.getScriptContainerAs(string, ItemScriptContainer.class).getItemFrom();
 
         ///////
         // Match bukkit/minecraft standard items format
@@ -381,9 +383,10 @@ public class dItem implements dScriptArgument {
         else if (CustomNBT.hasCustomNBT(getItemStack(), "denizen-script-id"))
             return CustomNBT.getCustomNBT(getItemStack(), "denizen-script-id");
 
-        // Else, return the material name and data
+        // Else, return the material name and data (if not 0)
         else if (getItemStack() != null)
-            return getItemStack().getType().name().toLowerCase() + ":" + getItemStack().getData().getData();
+            return getItemStack().getType().name().toLowerCase()
+                    + (getItemStack().getData().getData() != 0 ? ":" + getItemStack().getData().getData() : "");
 
         return "null";
     }
@@ -424,7 +427,7 @@ public class dItem implements dScriptArgument {
             return new Element(String.valueOf(getItemStack().getDurability()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("repariable"))
+        if (attribute.startsWith("repairable"))
             return new Element(String.valueOf(isRepairable()))
                     .getAttribute(attribute.fulfill(1));
 

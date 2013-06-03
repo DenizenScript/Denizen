@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_5_R3.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -103,10 +104,10 @@ public class dEntity implements dScriptArgument {
 
             // NPC entity
             if (entityGroupUpper.startsWith("N@")) {
-                LivingEntity returnable = CitizensAPI.getNPCRegistry()
-                        .getById(Integer.valueOf(m.group(3))).getBukkitEntity();
+                NPC returnable = CitizensAPI.getNPCRegistry()
+                        .getById(Integer.valueOf(m.group(3)));
 
-                if (returnable != null) return new dEntity(returnable);
+                if (returnable != null) return new dEntity(returnable.getBukkitEntity());
                 else dB.echoError("Invalid NPC! '" + entityGroup
                         + "' could not be found. Has it been despawned or killed?");
             }
@@ -349,6 +350,8 @@ public class dEntity implements dScriptArgument {
 
     @Override
     public boolean isUnique() {
+        if (entity instanceof Player) return true;
+        if (CitizensAPI.getNPCRegistry().isNPC(entity)) return true;
         return isSaved(this);
     }
 

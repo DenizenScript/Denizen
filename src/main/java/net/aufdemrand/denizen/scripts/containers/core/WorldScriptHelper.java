@@ -167,10 +167,7 @@ public class WorldScriptHelper implements Listener {
     public void walkOnLocationEvent(PlayerMoveEvent event) {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
-        // TODO: Fix this
-        // String name = dLocation.getSaved(event.getPlayer().getLocation());
-
-        String name = null;
+        String name = dLocation.getSaved(event.getPlayer().getLocation());
 
         if (name != null) {
             Map<String, Object> context = new HashMap<String, Object>();
@@ -235,7 +232,7 @@ public class WorldScriptHelper implements Listener {
 
             // TODO: Test this
 
-            determination = doEvent("player swings " + new dItem(event.getItem()).identify(), null, event.getPlayer(), context);
+            determination = doEvent("player swings " + new dItem(event.getItem()).identify().split(":")[0], null, event.getPlayer(), context);
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
 
@@ -252,7 +249,9 @@ public class WorldScriptHelper implements Listener {
         if (event.getAction() == Action.LEFT_CLICK_AIR) {
             if (event.getItem() != null ) {
 
-                determination = doEvent("player swings " + new dItem(event.getItem()).identify() + " in air", null, event.getPlayer(), context);
+                determination = doEvent("player swings "
+                        + new dItem(event.getItem()).identify().split(":")[0]
+                        + " in air", null, event.getPlayer(), context);
                 if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
 
@@ -270,7 +269,8 @@ public class WorldScriptHelper implements Listener {
             context.put("location clicked", new dLocation(event.getClickedBlock().getLocation()));
             if (event.getItem() != null ) {
 
-                determination = doEvent("player hits block with " + new dItem(event.getItem()).identify(), null, event.getPlayer(), context);
+                determination = doEvent("player hits block with "
+                        + new dItem(event.getItem()).identify().split(":")[0], null, event.getPlayer(), context);
                 if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
 
@@ -308,7 +308,7 @@ public class WorldScriptHelper implements Listener {
         try {
             determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (Exception e) {

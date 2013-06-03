@@ -46,9 +46,19 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
     }
 
     public static String getSaved(dLocation location) {
-        for (Map.Entry<String, dLocation> i : uniqueObjects.entrySet())
-            if (i.getValue() == location) return i.getKey();
+        for (Map.Entry<String, dLocation> i : uniqueObjects.entrySet()) {
+            if (i.getValue().getBlockX() != location.getBlockX()) continue;
+            if (i.getValue().getBlockY() != location.getBlockY()) continue;
+            if (i.getValue().getBlockZ() != location.getBlockZ()) continue;
+            if (i.getValue().getWorld().getName() != location.getWorld().getName()) continue;
+            return i.getKey();
+        }
         return null;
+    }
+
+    public static String getSaved(Location location) {
+        dLocation dLoc = new dLocation(location);
+        return getSaved(dLoc);
     }
 
     public static void saveAs(dLocation location, String id) {
@@ -67,8 +77,9 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
         uniqueObjects.clear();
         for (String location : loclist) {
-            dLocation loc = valueOf(location);
-            // TODO: Finish this
+            String id = location.split(";")[0];
+            dLocation loc = valueOf(location.split(";")[1]);
+            uniqueObjects.put(id, loc);
         }
     }
 
@@ -79,7 +90,13 @@ public class dLocation extends org.bukkit.Location implements dScriptArgument {
     public static void _saveLocations() {
         List<String> loclist = new ArrayList<String>();
         for (Map.Entry<String, dLocation> entry : uniqueObjects.entrySet())
-            loclist.add(entry.getValue().toString());
+            loclist.add(entry.getKey() + ";"
+                    + entry.getValue().getBlockX()
+                    + "," + entry.getValue().getBlockY()
+                    + "," + entry.getValue().getBlockZ()
+                    + "," + entry.getValue().getYaw()
+                    + "," + entry.getValue().getPitch()
+                    + "," + entry.getValue().getWorld().getName());
 
         DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", loclist);
     }

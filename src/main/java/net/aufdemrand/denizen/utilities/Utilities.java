@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.minecraft.server.v1_5_R3.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -79,17 +80,15 @@ public class Utilities {
                 .replace("<TEXT>", message).replace("<text>", message).replace("<Text>", message);
 
         // Fill in tags
-        talkFormat = DenizenAPI.getCurrentInstance().tagManager()
-                .tag(player, npc, talkFormat, false);
-        bystanderFormat = DenizenAPI.getCurrentInstance().tagManager()
-                .tag(player, npc, bystanderFormat, false);
+        talkFormat = TagManager.tag(player, npc, talkFormat, false);
+        bystanderFormat = TagManager.tag(player, npc, bystanderFormat, false);
 
         // Send message to player
         player.getPlayerEntity().sendMessage(talkFormat);
 
         // Send message to bystanders
         for (Player target : Bukkit.getOnlinePlayers()) {
-            if (target != player)
+            if (target != player.getPlayerEntity())
                 if (target.getWorld().equals(player.getPlayerEntity().getWorld())
                         && target.getLocation().distance(player.getPlayerEntity().getLocation()) <= range)
                     target.sendMessage(bystanderFormat);

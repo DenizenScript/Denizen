@@ -99,6 +99,11 @@ public class dPlayer implements dScriptArgument {
         return player_name;
     }
 
+    public dLocation getLocation() {
+        if (isOnline()) return new dLocation(getPlayerEntity().getLocation());
+        else return null;
+    }
+
     public boolean isOnline() {
         if (Bukkit.getPlayer(player_name) != null) return true;
         return false;
@@ -185,9 +190,17 @@ public class dPlayer implements dScriptArgument {
         if (attribute.startsWith("is_online"))
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("chat_history"))
+        if (attribute.startsWith("chat_history_list"))
             return new dList(PlayerTags.playerChatHistory.get(player_name))
                     .getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("chat_history")) {
+            int x = 1;
+            if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
+                x = attribute.getIntContext(1);
+            return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("location.bed_spawn"))
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())

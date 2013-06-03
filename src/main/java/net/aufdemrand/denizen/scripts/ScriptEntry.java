@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dScript;
