@@ -965,6 +965,7 @@ public class CommandHandler {
 
         if (args.hasValueFlag("name")) {
             new dLocation(args.getFlag("name"), ((Player) sender).getLocation());
+            Messaging.send(sender, "Created new notable called " + args.getFlag("name"));
             return;
         }
 

@@ -17,10 +17,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.FireworkEffect.Type;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 /**
@@ -32,8 +29,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 public class FireworkCommand extends AbstractCommand {
 	
-	public enum EquipType { HAND, BOOTS, LEGS, CHEST, HEAD }
-	
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -43,7 +38,8 @@ public class FireworkCommand extends AbstractCommand {
         Integer power = 1;
         Boolean flicker = false;
         Boolean trail = false;
-        List<String> effects = new ArrayList<String>();
+        List<Color> primary = new ArrayList<Color>();
+        List<Color> fade = new ArrayList<Color>();
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesLocation(arg)) {
@@ -51,8 +47,19 @@ public class FireworkCommand extends AbstractCommand {
                 dB.echoDebug("...location set to '%s'.", arg);
 
             } else if (aH.matchesValueArg("type", arg, ArgumentType.String)) {
-            	//type = aH.getTypeFrom(arg);
-                dB.echoDebug("...will have a power of " + power);
+            	
+            	for (FireworkEffect.Type typeValue : FireworkEffect.Type.values()) {
+            		
+            		dB.echoApproval("Checking if " + typeValue.name() + " matches " + arg.split(":", 2)[1].toUpperCase());
+            		
+            		if (arg.split(":", 2)[1].toUpperCase().matches(typeValue.name())) {
+            			
+            			type = typeValue;
+            			break;
+            		}
+            	}
+            	
+                dB.echoDebug("...will be of type " + type);
             
             } else if (aH.matchesValueArg("power", arg, ArgumentType.Integer)) {
             	power = aH.getIntegerFrom(arg);
@@ -66,35 +73,27 @@ public class FireworkCommand extends AbstractCommand {
                 trail = true;
                 dB.echoDebug("...will have a trail.");
                 
-            } else if (aH.matchesValueArg("EFFECTS, EFFECT", arg, ArgumentType.String)) {
-            	// May be multiple effects, so let's treat this as a potential list.
+            } else if (aH.matchesValueArg("PRIMARY", arg, ArgumentType.String)) {
+            	// May be multiple colors, so let's treat this as a potential list.
                 // dScript list entries are separated by pipes ('|')
                 for (String element : aH.getListFrom(arg)) {
                 	
-                	String[] effect = element.split(";", 5);
-                	
-                	dB.echoApproval("Element: " + element);
-                	dB.echoApproval("Effect length: " + effect.length);
-                	
-                	if (effect.length == 2) {
-                	
-                		//if (effect[1])
-                		
-                		//for (FireworkEffect.Type type : FireworkEffect.Type.values()) {
-                	        
-                			dB.echoApproval("Looking at: " + type.name());
-                			
-                			if (type.name().equals(effect[1])) {
-                				dB.echoApproval("Effect types matched!");
-                				break;
-                	        }
-                	    //}
-                		
-                		dB.echoApproval("Effect " + element + " seems valid!");
-                           
+                	if (aH.matchesColor(element)) {
+                		primary.add(aH.getColorFrom(element));
+                	}
+                	else {
+                    	dB.echoError("Invalid color" + element + "!");
                     }
-                    else  {
-                    	dB.echoError("Invalid firework EFFECT!");
+                }
+            } else if (aH.matchesValueArg("FADE", arg, ArgumentType.String)) {
+            	// Same as above
+                for (String element : aH.getListFrom(arg)) {
+                	
+                	if (aH.matchesColor(element)) {
+                		fade.add(aH.getColorFrom(element));
+                	}
+                	else {
+                    	dB.echoError("Invalid color" + element + "!");
                     }
                 }
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
@@ -102,6 +101,9 @@ public class FireworkCommand extends AbstractCommand {
 
         // Stash objects
         scriptEntry.addObject("location", location);
+        scriptEntry.addObject("type", type);
+        scriptEntry.addObject("primary", primary);
+        scriptEntry.addObject("fade", fade);
         scriptEntry.addObject("power", power);
         scriptEntry.addObject("flicker", flicker);
         scriptEntry.addObject("trail", trail);
@@ -118,6 +120,8 @@ public class FireworkCommand extends AbstractCommand {
         Boolean flicker = (Boolean) scriptEntry.getObject("flicker");
         Boolean trail = (Boolean) scriptEntry.getObject("trail");
         Type type = (Type) scriptEntry.getObject("type");
+        List<Color> primary = (List<Color>) scriptEntry.getObject("primary");
+        List<Color> fade = (List<Color>) scriptEntry.getObject("fade");
         
         Firework firework = location.getWorld().spawn(location, Firework.class);
         FireworkMeta fireworkMeta = (FireworkMeta) firework.getFireworkMeta();
@@ -126,15 +130,19 @@ public class FireworkCommand extends AbstractCommand {
         Builder fireworkBuilder = FireworkEffect.builder();
         
         fireworkBuilder.with(type);
-		//fireworkBuilder.withColor(arg0);
-		//fireworkBuilder.withFade(arg0);
+		
+        // If there are no primary colors, there will be an error, so add one
+        if (primary.size() == 0) {
+        	
+        	primary.add(aH.getColorFrom("yellow"));
+        }
+        
+        fireworkBuilder.withColor(primary);
+		fireworkBuilder.withFade(fade);
         
         if (flicker) { fireworkBuilder.withFlicker(); }
         if (trail) { fireworkBuilder.withTrail(); }
         
-        //fireworkBuilder.
-        
-        //fireworkMeta.addEffects(FireworkEffect.builder().withColor(Color.YELLOW).with(Type.STAR).build());
         fireworkMeta.addEffects(fireworkBuilder.build());
         firework.setFireworkMeta(fireworkMeta);
 

@@ -118,6 +118,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(FinishCommand.class, 
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
 
+        registerCoreMember(FireworkCommand.class, 
+        		"FIREWORK", "firework (location:x,y,z,world) (power:#) (type:fireworktype) (primary:color1|color2|...) (fade:color1|color2|...) (flicker) (trail)", 0);
+        
         registerCoreMember(FishCommand.class, 
         		"FISH", "fish (catchfish) (stop) (location:x,y,z,world) (catchpercent:#{65})", 1);
 
