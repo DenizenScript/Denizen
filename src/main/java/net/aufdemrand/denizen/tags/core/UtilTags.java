@@ -52,12 +52,13 @@ public class UtilTags implements Listener {
                 event.setReplaced(UUID.randomUUID().toString());
         }
 
-        else if (type.equalsIgnoreCase("SUBSTR")) {
+        else if (type.equalsIgnoreCase("SUBSTR")
+                || type.equalsIgnoreCase("TRIM")
+                || type.equalsIgnoreCase("SUBSTRING")) {
             String text = event.getTypeContext();
             int from = 1;
             
             if (subType.equalsIgnoreCase("AFTER")) {
-            	
             	from = text.toUpperCase().indexOf(subTypeContext) + subTypeContext.length() + 1;
             }
             
