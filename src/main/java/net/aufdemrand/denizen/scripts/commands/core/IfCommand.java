@@ -61,15 +61,20 @@ public class IfCommand extends AbstractCommand {
         String elseCommand = null;
         ArrayList<String> elseArgs = new ArrayList<String>();
 
+        // Keep track of this to avoid Denizen overlooking comparedTo when an operator is used
+        // with a value that matches the name of a command. (Good find dimensionZ!)
+        boolean usedOperator = false;
+
         comparables.add(new Comparable());
         int index = 0;
 
         // Iterate through the arguments, build comparables
         for (String arg : scriptEntry.getArguments()) {
-
+            // Trim unwanted spaces
             arg = arg.trim();
 
             if (outcomeCommand == null) {
+
                 // Set logic (Optional, default is REGULAR)
                 if (arg.startsWith("!")) {
                     comparables.get(index).logic = Logic.NEGATIVE;
@@ -80,10 +85,13 @@ public class IfCommand extends AbstractCommand {
                     else
                         arg = arg.substring(1);
                 }
+
                 // Replace symbol-operators/bridges with ENUM value for matching
                 arg = arg.replace("==", "EQUALS").replace(">=", "ORMORE").replace("<=", "ORLESS")
-                		.replace("<", "LESS").replace(">", "MORE")
+                        .replace("<", "LESS").replace(">", "MORE")
                         .replace("||", "OR").replace("&&", "AND");
+
+
                 // Set bridge
                 if (aH.matchesArg("OR", arg) || aH.matchesArg("AND", arg)) {
                     index++;
@@ -91,39 +99,43 @@ public class IfCommand extends AbstractCommand {
                     comparables.add(new Comparable());
                     comparables.get(index).bridge = Bridge.valueOf(arg.toUpperCase());
                 }
+
                 // Set operator (Optional, default is EQUALS)
                 else if (aH.matchesArg("EQUALS", arg) || aH.matchesArg("MATCHES", arg) || aH.matchesArg("ISEMPTY", arg)
                         || aH.matchesArg("ORMORE", arg) || aH.matchesArg("MORE", arg) || aH.matchesArg("LESS", arg)
-                        || aH.matchesArg("ORLESS", arg) || aH.matchesArg("CONTAINS", arg))
+                        || aH.matchesArg("ORLESS", arg) || aH.matchesArg("CONTAINS", arg)) {
                     comparables.get(index).operator = Operator.valueOf(arg.toUpperCase());
-                    // Set outcomeCommand
-                else if (denizen.getCommandRegistry().get(arg.replace("^", "")) != null)
-                    outcomeCommand = arg;
-                    // Set comparable
+                    usedOperator = true;
+                }
+
+                // Set comparable
                 else if (comparables.get(index).comparable == null) {
                     // If using MATCHES operator, keep as string.
                     comparables.get(index).comparable = findObjectType(arg);
                 }
-                // Set compared-to
+
+                // Set outcomeCommand first since compared-to is technically optional.
+                // If using an operator though, skip on to compared-to!
+                else if (!usedOperator && denizen.getCommandRegistry().get(arg.replace("^", "")) != null)
+                    outcomeCommand = arg;
+
+                    // Set compared-to
                 else {
                     comparables.get(index).comparedto = matchObjectType(comparables.get(index), arg);
+                    usedOperator = false;
                 }
 
                 // Set outcome command.
             }  else if (elseCommand == null) {
                 if (aH.matchesArg("ELSE", arg)) elseCommand = "";
-                else {
-                    outcomeArgs.add(arg);
-                }
+                else outcomeArgs.add(arg);
 
                 // Set ELSE command
             } else {
                 // Specify ELSE command
                 if (elseCommand.equals("")) elseCommand = arg;
                     // Add elseArgs arguments
-                else {
-                    elseArgs.add(arg);
-                }
+                else elseArgs.add(arg);
             }
         }
 
@@ -136,7 +148,7 @@ public class IfCommand extends AbstractCommand {
     }
 
     @SuppressWarnings({ "unchecked", "incomplete-switch" })
-	@Override
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Grab comparables from the ScriptEntry
@@ -188,11 +200,11 @@ public class IfCommand extends AbstractCommand {
                             }
                             else if (((String) com.comparedto).equalsIgnoreCase("even integer")) {
                                 if (aH.matchesInteger(comparable) && (aH.getIntegerFrom(comparable) % 2) == 0)
-                                	com.outcome = true;
+                                    com.outcome = true;
                             }
                             else if (((String) com.comparedto).equalsIgnoreCase("odd integer")) {
-                            	if (aH.matchesInteger(comparable) && (aH.getIntegerFrom(comparable) % 2) == 1)
-                                	com.outcome = true;
+                                if (aH.matchesInteger(comparable) && (aH.getIntegerFrom(comparable) % 2) == 1)
+                                    com.outcome = true;
                             }
                             else if (((String) com.comparedto).equalsIgnoreCase("duration")) {
                                 if (aH.matchesDuration("duration:" + comparable)) com.outcome = true;
@@ -334,16 +346,16 @@ public class IfCommand extends AbstractCommand {
                 // COMPARABLE IS BOOLEAN
                 //
             }   else if (com.comparable instanceof Boolean) {
-            	
-            	// Check to make sure comparedto is Boolean
+
+                // Check to make sure comparedto is Boolean
                 if (!(com.comparedto instanceof Boolean)) {
                     // Not comparing with a Boolean, outcome = false;
                 } else {
                     // Comparing booleans.. let's do the logic
-                	if ((Boolean) com.comparable.equals((Boolean) com.comparedto))
-                		com.outcome = true;
-                	else
-                		com.outcome = false;
+                    if ((Boolean) com.comparable.equals((Boolean) com.comparedto))
+                        com.outcome = true;
+                    else
+                        com.outcome = false;
                 }
             }
 
@@ -463,10 +475,10 @@ public class IfCommand extends AbstractCommand {
                 ((Object[]) scriptEntry.getObject("outcome-command-args")).length, String[].class);
 
         try { ScriptEntry entry = new ScriptEntry(outcomeCommand, outcomeArgs,
-                    scriptEntry.getScript().getContainer())
-                    .setPlayer(scriptEntry.getPlayer())
-                    .setNPC(scriptEntry.getNPC()).setInstant(true)
-                    .addObject("reqId", scriptEntry.getObject("reqId"));
+                scriptEntry.getScript().getContainer())
+                .setPlayer(scriptEntry.getPlayer())
+                .setNPC(scriptEntry.getNPC()).setInstant(true)
+                .addObject("reqId", scriptEntry.getObject("reqId"));
             scriptEntry.getResidingQueue().injectEntry(entry, 0);
         } catch (ScriptEntryCreationException e) {
             dB.echoError("There has been a problem running the Command. Check syntax.");
@@ -493,10 +505,10 @@ public class IfCommand extends AbstractCommand {
         if (elseCommand == null) return;
 
         try { ScriptEntry entry = new ScriptEntry(elseCommand, elseArgs,
-                    scriptEntry.getScript().getContainer())
-                    .setPlayer(scriptEntry.getPlayer())
-                    .setNPC(scriptEntry.getNPC()).setInstant(true)
-                    .addObject("reqId", scriptEntry.getObject("reqId"));
+                scriptEntry.getScript().getContainer())
+                .setPlayer(scriptEntry.getPlayer())
+                .setNPC(scriptEntry.getNPC()).setInstant(true)
+                .addObject("reqId", scriptEntry.getObject("reqId"));
             scriptEntry.getResidingQueue().injectEntry(entry, 0);
         } catch (ScriptEntryCreationException e) {
             dB.echoError("There has been a problem running the ELSE Command. Check syntax.");
