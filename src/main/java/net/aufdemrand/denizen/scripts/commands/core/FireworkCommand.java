@@ -50,8 +50,6 @@ public class FireworkCommand extends AbstractCommand {
             	
             	for (FireworkEffect.Type typeValue : FireworkEffect.Type.values()) {
             		
-            		dB.echoApproval("Checking if " + typeValue.name() + " matches " + arg.split(":", 2)[1].toUpperCase());
-            		
             		if (arg.split(":", 2)[1].toUpperCase().matches(typeValue.name())) {
             			
             			type = typeValue;
@@ -82,7 +80,7 @@ public class FireworkCommand extends AbstractCommand {
                 		primary.add(aH.getColorFrom(element));
                 	}
                 	else {
-                    	dB.echoError("Invalid color" + element + "!");
+                    	dB.echoError("Invalid color " + element + "!");
                     }
                 }
             } else if (aH.matchesValueArg("FADE", arg, ArgumentType.String)) {
@@ -93,7 +91,7 @@ public class FireworkCommand extends AbstractCommand {
                 		fade.add(aH.getColorFrom(element));
                 	}
                 	else {
-                    	dB.echoError("Invalid color" + element + "!");
+                    	dB.echoError("Invalid color " + element + "!");
                     }
                 }
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);

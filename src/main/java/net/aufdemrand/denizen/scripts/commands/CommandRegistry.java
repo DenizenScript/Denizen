@@ -95,10 +95,10 @@ public class CommandRegistry implements DenizenRegistry {
         		"ENGAGE", "engage (duration:#) (npcid:#)", 0);
 
         registerCoreMember(EngraveCommand.class, 
-                "ENGRAVE", "engrave (SET|REMOVE) (TARGET:player_name)", 0);
+                "ENGRAVE", "engrave (set|remove) (target:player_name)", 0);
         
         registerCoreMember(EquipCommand.class, 
-                "EQUIP", "equip ({HAND}|BOOTS|LEGS|CHEST|HEAD) [item:#(:#)|item:material(:#)]", 1);
+                "EQUIP", "equip (hand:[#|material](:#)) (head:[#|material](:#)) (chest:[#|material](:#)) (legs:[#|material](:#)) (boots:[#|material](:#))", 1);
         
         registerCoreMember(ExecuteCommand.class, 
         		"EXECUTE", "execute [as_player|as_op|as_npc|as_server] [\"Bukkit command\"]", 2);

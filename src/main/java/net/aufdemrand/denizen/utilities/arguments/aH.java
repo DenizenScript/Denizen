@@ -391,7 +391,7 @@ public class aH {
             }
 
             else if (entityGroupUpper.startsWith("PLAYER.")
-                    || entityGroupUpper.startsWith("P@.")) {
+                    || entityGroupUpper.startsWith("P@")) {
                 LivingEntity returnable = getPlayerFrom(entityGroup.split("\\.")[1]);
                 if (returnable != null) return returnable;
                 else dB.echoError("Invalid Player! '" + entityGroup + "' could not be found. Has the player logged off?");
