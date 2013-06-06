@@ -71,7 +71,7 @@ public class _templateTag implements Listener {
         //
 
         // For this example, let's process a tag in the format of: <skills.for[player_name]>
-        // and return a dList dScriptArgument object to fulfill any additional attributes of the tag.
+        // and return a dList dObject object to fulfill any additional attributes of the tag.
         if (type.equalsIgnoreCase("for")) {
             // Check if type_context is a valid player...
             if (aH.getPlayerFrom(type_context) == null) {

@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
 import com.google.common.primitives.Ints;
-import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
@@ -9,7 +8,7 @@ import org.bukkit.ChatColor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Duration implements dScriptArgument {
+public class Duration implements dObject {
 
     final static Pattern match =
             Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)",
@@ -180,7 +179,7 @@ public class Duration implements dScriptArgument {
     }
 
     @Override
-    public dScriptArgument setPrefix(String prefix) {
+    public dObject setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }

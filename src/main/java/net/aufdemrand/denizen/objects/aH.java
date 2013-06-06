@@ -1,22 +1,10 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.commands.core.NewCommand;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_5_R3.Entity;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -107,7 +95,7 @@ public class aH {
             return false;
         }
 
-        public boolean matchesArgumentType(Class<? extends dScriptArgument> clazz) {
+        public boolean matchesArgumentType(Class<? extends dObject> clazz) {
 
             // dB.log("Calling matches: " + prefix + ":" + value + " " + clazz.getCanonicalName());
 
@@ -124,13 +112,13 @@ public class aH {
             return new Element(prefix, value);
         }
 
-        public <T extends dScriptArgument> T asType(Class<? extends dScriptArgument> clazz) {
+        public <T extends dObject> T asType(Class<? extends dObject> clazz) {
 
             // dB.log("Calling asType: " + prefix + ":" + value + " " + clazz.getCanonicalName());
 
-            dScriptArgument arg = null;
+            dObject arg = null;
             try {
-                arg = (dScriptArgument) clazz.getMethod("valueOf", String.class)
+                arg = (dObject) clazz.getMethod("valueOf", String.class)
                         .invoke(null, value);
 
                 dB.log("Cool! Created: " + clazz.cast(arg).debug());
@@ -150,6 +138,13 @@ public class aH {
     }
 
 
+    /**
+     * Turns a list of string arguments (separated by buildArgs) into Argument
+     * Objects for easy matching and dObject creation throughout Denizen.
+     *
+     * @param args  a list of string arguments
+     * @return  a list of Arguments
+     */
     public static List<Argument> interpret(List<String> args) {
         List<Argument> arg_list = new ArrayList<Argument>();
         for (String string : args)
@@ -158,12 +153,42 @@ public class aH {
     }
 
 
+    /**
+     * Builds an arguments array, recognizing items in quotes as a single item, but
+     * otherwise splitting on a space.
+     *
+     * @param stringArgs  the line of arguments that need split
+     * @return  an array of arguments
+     *
+     */
+    public static String[] buildArgs(String stringArgs) {
+        final Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
+
+        if (stringArgs == null) return null;
+        java.util.List<String> matchList = new ArrayList<String>();
+        Matcher regexMatcher = regex.matcher(stringArgs);
+        while (regexMatcher.find()) {
+            if (regexMatcher.group(1) != null)
+                matchList.add(regexMatcher.group(1));
+            else if (regexMatcher.group(2) != null)
+                matchList.add(regexMatcher.group(2));
+            else
+                matchList.add(regexMatcher.group());
+        }
+
+        if (dB.showScriptBuilder)
+            dB.echoDebug(ChatColor.GRAY + "Args: " + Arrays.toString(matchList.toArray()));
+
+        return matchList.toArray(new String[matchList.size()]);
+    }
+
+
 
 
 
     /**
      * To be used with the dBuggers' .report to provide debug output for
-     * objects.
+     * objects that don't extend dObject.
      *
      * @param prefix  name/type/simple description of the object being reported
      * @param value  object being reported will report the value of toString()
@@ -349,23 +374,6 @@ public class aH {
         return false;
     }
 
-    /**
-     * <p>Returns a boolean value from a dScript argument string. Also accounts
-     * for the argument prefix being passed along, for convenience.</p>
-     *
-     * <b>Examples:</b>
-     * <ol>
-     * <tt>'TOGGLE:true'</tt> will return true.<br>
-     * <tt>'WORKING:false'</tt> will return false.<br>
-     * <tt>'FILL:bleh'</tt> will return false.<br>
-     * <tt>'true'</tt> will return true.<br>
-     * <tt>'arg'</tt> will return false.
-     * </ol>
-     *
-     * @param arg  the argument to check
-     * @return  true or false
-     *
-     */
     public static boolean getBooleanFrom(String arg) {
         return Boolean.valueOf(getStringFrom(arg));
     }
@@ -485,7 +493,7 @@ public class aH {
 
     public static boolean matchesContext(String arg) {
         if (arg.toUpperCase().startsWith("CONTEXT:")) return true;
-        // TODO: Other matches____ do some actual checks.
+        // TODO: Other matches____ do some actual checks, should this?.
         return false;
     }
 
@@ -561,32 +569,6 @@ public class aH {
 
 
 
-    /**
-     * Builds an arguments array, recognizing items in quotes as a single item, but
-     * otherwise splitting on a space.
-     *
-     * @param stringArgs  the line of arguments that need split
-     * @return  an array of arguments
-     *
-     */
-    public static String[] buildArgs(String stringArgs) {
-        final Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
 
-        if (stringArgs == null) return null;
-        java.util.List<String> matchList = new ArrayList<String>();
-        Matcher regexMatcher = regex.matcher(stringArgs);
-        while (regexMatcher.find()) {
-            if (regexMatcher.group(1) != null)
-                matchList.add(regexMatcher.group(1));
-            else if (regexMatcher.group(2) != null)
-                matchList.add(regexMatcher.group(2));
-            else
-                matchList.add(regexMatcher.group());
-        }
 
-        if (dB.showScriptBuilder)
-            dB.echoDebug(ChatColor.GRAY + "Args: " + Arrays.toString(matchList.toArray()));
-
-        return matchList.toArray(new String[matchList.size()]);
-    }
 }

@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
@@ -21,9 +20,8 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
-public class dNPC implements dScriptArgument {
+public class dNPC implements dObject {
 
     @ObjectFetcher("n")
     public static dNPC valueOf(String string) {

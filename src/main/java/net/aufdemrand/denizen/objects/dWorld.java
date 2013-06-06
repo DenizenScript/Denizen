@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
@@ -11,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class dWorld implements dScriptArgument {
+public class dWorld implements dObject {
 
     @ObjectFetcher("w")
     public static dPlayer valueOf(String string) {
@@ -101,7 +100,7 @@ public class dWorld implements dScriptArgument {
     }
 
     @Override
-    public dScriptArgument setPrefix(String prefix) {
+    public dObject setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }

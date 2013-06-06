@@ -1,11 +1,12 @@
-package net.aufdemrand.denizen.interfaces;
+package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.tags.Attribute;
 
-public interface dScriptArgument {
+public interface dObject {
 
     /**
-     * Retrieves the default dScript argument prefix.
+     * Retrieves the dScript argument prefix. dObjects should provide a default
+     * prefix if nothing else has been specified.
      *
      * @return
      */
@@ -13,7 +14,8 @@ public interface dScriptArgument {
 
 
     /**
-     * <p>Gets a standard dB representation of this argument.</p>
+     * <p>Gets a standard dB representation of this argument. All dObjects should follow
+     * suit.</p>
      *
      * Example: <br/>
      * <tt>
@@ -47,8 +49,8 @@ public interface dScriptArgument {
 
 
     /**
-     * Gets an ugly, but exact, string representation of this dScriptArgument.
-     * While not specified in the dScriptArgument Interface, this value should be
+     * Gets an ugly, but exact, string representation of this dObject.
+     * While not specified in the dObject Interface, this value should be
      * able to be used with a static valueOf(String) method to reconstruct the object.
      *
      * @return  a single-line string representation of this argument
@@ -59,9 +61,9 @@ public interface dScriptArgument {
     /**
      * Sets the prefix for this argument, otherwise uses the default.
      *
-     * @return  the dScriptArgument
+     * @return  the dObject
      */
-    public dScriptArgument setPrefix(String prefix);
+    public dObject setPrefix(String prefix);
 
 
     /**

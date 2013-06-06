@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.apache.commons.lang.StringUtils;
@@ -9,7 +8,7 @@ import org.bukkit.ChatColor;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
-public class Element implements dScriptArgument {
+public class Element implements dObject {
 
     /**
      *
@@ -18,7 +17,7 @@ public class Element implements dScriptArgument {
      *
      */
     @ObjectFetcher("el")
-    public static dScriptArgument valueOf(String string) {
+    public static dObject valueOf(String string) {
         if (string == null) return null;
 
         return new Element(string);
@@ -73,7 +72,7 @@ public class Element implements dScriptArgument {
     }
 
     @Override
-    public dScriptArgument setPrefix(String prefix) {
+    public dObject setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }

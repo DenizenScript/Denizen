@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.interfaces.dScriptArgument;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -9,7 +8,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dScript implements dScriptArgument {
+public class dScript implements dObject {
 
     final public static Pattern matchesScriptPtrn = Pattern.compile("(?:.+:|)(.+)", Pattern.CASE_INSENSITIVE);
 
@@ -111,7 +110,7 @@ public class dScript implements dScriptArgument {
     }
 
     @Override
-    public dScriptArgument setPrefix(String prefix) {
+    public dObject setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
