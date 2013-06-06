@@ -354,7 +354,7 @@ public class aH {
 		} catch (NoSuchFieldException e1) {
 			dB.echoError("No such color field!");
 		}
-    	    	
+
     	if (colorField != null) {
     	
     		try {
@@ -767,8 +767,8 @@ public class aH {
     }
     
     /**
-     * <p>Used to determine if a dScript argument string is a valid Color. Will check
-     * against Bukkit's Color fields.</p>
+     * <p>Used to determine if a dScript argument string is a valid Color. Will accept
+     * "RANDOM", RGB values and Bukkit's Color fields.</p>
      *
      * @param arg the dScript argument string
      * @return true if matched, otherwise false

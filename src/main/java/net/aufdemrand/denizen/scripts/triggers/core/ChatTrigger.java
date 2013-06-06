@@ -46,16 +46,16 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         dNPC npc = Utilities.getClosestNPC(event.getPlayer().getLocation(), 25);
 
         // No NPC? Nothing else to do here.
-        if (npc == null) return null;
+        if (npc == null) return false;
 
         // If the NPC doesn't have triggers, or the triggers are not enabled, then
         // just return.
-        if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return null;
-        if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) return null;
+        if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return false;
+        if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) return false;
 
         // Check range
         if (npc.getTriggerTrait().getRadius(name) < npc.getLocation().distance(event.getPlayer().getLocation()))
-            return null;
+            return false;
 
         // Debugger
         dB.report(name, aH.debugObj("Player", event.getPlayer().getName())
@@ -71,11 +71,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // if enabled. Should the Player chat only when looking at the NPC? This may
         // reduce accidental chats with NPCs.
         if (Settings.ChatMustSeeNPC())
-            if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return null;
+            if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return false;
         if (Settings.ChatMustLookAtNPC())
-            if (!Utilities.isFacingEntity(event.getPlayer(), npc.getEntity(), 45)) return null;
-
-        Boolean ret = null;
+            if (!Utilities.isFacingEntity(event.getPlayer(), npc.getEntity(), 45)) return false;
         
         // If engaged or not cool, calls On Unavailable, if cool, calls On Chat
         // If available (not engaged, and cool) sets cool down and returns true.
@@ -85,9 +83,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             if (Settings.ChatGloballyIfUninteractable()) {
                 dB.echoDebug (ChatColor.YELLOW + "Resuming. " + ChatColor.WHITE
                         + "The NPC is currently cooling down or engaged.");
-                return null;
+                return false;
             } else {
-                ret = true;
+                return true;
             }
         }
 
@@ -105,7 +103,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         + npc.getNicknameTrait().getNickname() + ", " + event.getMessage());
                 return true;
             }
-            else return ret;
+            else return false;
         }
 
 
@@ -181,22 +179,22 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                     // No matching chat triggers, and the config.yml says we
                     // should just ignore the interaction...
             }
-        return ret;
+        return false;
         }
         };
-        Boolean cancelled = null;
+        event.setCancelled(true);
+        Boolean cancelled = false;
         try {
             cancelled = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (cancelled == null)
-            return;
-        event.setCancelled(cancelled);
+        if (cancelled == false)
+        	event.setCancelled(cancelled);
     }
 
     private boolean isKeywordRegex (String keyWord) {
