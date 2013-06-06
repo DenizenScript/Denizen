@@ -66,8 +66,6 @@ public class HeadCommand extends AbstractCommand {
         
     	TargetType target = (TargetType) scriptEntry.getObject("target");
         String skin = (String) scriptEntry.getObject("skin");
-        Player player = scriptEntry.getPlayer();
-        NPC npc = scriptEntry.getNPC().getCitizen();
 		
         // Create head item with chosen skin
         ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
@@ -77,12 +75,15 @@ public class HeadCommand extends AbstractCommand {
         
     	if (target.name() == "NPC")
     	{
+            NPC npc = scriptEntry.getNPC().getCitizen();
+    		
     		if (!npc.hasTrait(Equipment.class)) npc.addTrait(Equipment.class);
     		Equipment trait = npc.getTrait(Equipment.class);
     		trait.set(1, item);
     	}
     	else
     	{
+    		Player player = scriptEntry.getPlayer();
     		player.getInventory().setHelmet(item);
     	}
 
