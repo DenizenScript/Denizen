@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -50,12 +51,19 @@ public class FireworkCommand extends AbstractCommand {
             	
             	String typeArg = arg.split(":", 2)[1].toUpperCase();
             	
-            	for (FireworkEffect.Type typeValue : FireworkEffect.Type.values()) {
+            	if (typeArg.matches("RANDOM")) {
             		
-            		if (typeArg.matches(typeValue.name())) {
+            		type = FireworkEffect.Type.values()[new Random().nextInt(FireworkEffect.Type.values().length)];
+            	}
+            	else {
+            	
+            		for (FireworkEffect.Type typeValue : FireworkEffect.Type.values()) {
+            		
+            			if (typeArg.matches(typeValue.name())) {
             			
-            			type = typeValue;
-            			break;
+            				type = typeValue;
+            				break;
+            			}
             		}
             	}
             	

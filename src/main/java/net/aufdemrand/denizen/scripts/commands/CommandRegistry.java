@@ -119,7 +119,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
 
         registerCoreMember(FireworkCommand.class, 
-        		"FIREWORK", "firework (location:x,y,z,world) (power:#) (type:fireworktype) (primary:color1|color2|...) (fade:color1|color2|...) (flicker) (trail)", 0);
+        		"FIREWORK", "firework (location:x,y,z,world) (power:#) (type:name|random) (primary:color1|color2|...) (fade:color1|color2|...) (flicker) (trail)", 0);
         
         registerCoreMember(FishCommand.class, 
         		"FISH", "fish (catchfish) (stop) (location:x,y,z,world) (catchpercent:#{65})", 1);
@@ -170,7 +170,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"LOOKCLOSE", "lookclose [toggle:true|false]", 1);
 		
         registerCoreMember(MountCommand.class, 
-        		"MOUNT", "mount (cancel) (location:x,y,z,world) (target(s):[npc.#]|[player.name])", 0);
+        		"MOUNT", "mount (cancel) (location:x,y,z,world) (target(s):[n@#]|[p@name]|[e@name])", 0);
         
         registerCoreMember(ModifyBlockCommand.class, 
         		"MODIFYBLOCK", "modifyblock [location:x,y,z,world] [material:data] (radius:#) (height:#) (depth:#)", 2);
@@ -179,7 +179,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"NAMEPLATE", "nameplate [set:text|chat_color] (target:player_name)", 1);
         
         registerCoreMember(NarrateCommand.class, 
-        		"NARRATE", "narrate [\"narration text\"] (player:name) (format:format)", 1);
+        		"NARRATE", "narrate [\"narration text\"] (player:name) (format:name)", 1);
         
         registerCoreMember(NewCommand.class, 
         		"NEW", "new itemstack [item:material] (qty:#)", 2);
@@ -191,7 +191,7 @@ public class CommandRegistry implements DenizenRegistry {
                 "PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
         
         registerCoreMember(PermissionCommand.class, 
-                "PERMISSION", "permission [add|remove] [permission] (player:player_name) (group:group_name) (world:world_name)", 2);
+                "PERMISSION", "permission [add|remove] [permission] (player:name) (group:name) (world:name)", 2);
 
         registerCoreMember(PoseCommand.class,
                 "POSE", "pose (player) [id:name]", 1);
@@ -242,7 +242,7 @@ public class CommandRegistry implements DenizenRegistry {
         		"TAKE", "take [money|iteminhand|item:#(:#)|item:material(:#)] (qty:#)", 1);
         
         registerCoreMember(TeleportCommand.class, 
-        		"TELEPORT", "teleport (npc) [location:x,y,z,world] (target(s):[npc.#]|[player.name])", 1);
+        		"TELEPORT", "teleport (npc) [location:x,y,z,world] (target(s):[n@#]|[p@name])", 1);
         
         registerCoreMember(TriggerCommand.class, 
         		"TRIGGER", "trigger [name:trigger_name] [(toggle:true|false)|(cooldown:#.#)|(radius:#)]", 2);

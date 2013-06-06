@@ -14,7 +14,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -71,11 +70,8 @@ public class MountCommand extends AbstractCommand {
                             entityLocation = new dLocation(scriptEntry.getNPC().getLocation());
                 		
                 		if (entityLocation != null) {
+                			
                 			EntityType entityType = aH.getEntityFrom(target);
-                			
-                			dB.echoApproval("Entity type is: " + entityType.name());
-                			dB.echoApproval("Entity location is: " + entityLocation.toString());
-                			
                 			entity = entityLocation.getWorld().spawnEntity(entityLocation, entityType);
                 		}
                 	}
@@ -129,8 +125,6 @@ public class MountCommand extends AbstractCommand {
         dB.echoApproval("<G>Executing '<Y>" + getName() + "<G>': "
                 + "Targets=<Y>'" + entities.toString() + "<G>'");
 
-        //Collections.reverse(entities);
-        
         Entity lastEntity = null;
         
         for (Entity entity : entities) {

@@ -107,6 +107,7 @@ public class aH {
     final static Pattern locationPattern =
             Pattern.compile("location:((-)?\\d+(\\.\\d+)?,){3}\\w+", Pattern.CASE_INSENSITIVE);
     final static Pattern wordPtrn = Pattern.compile("\\w+");
+    final static Pattern rgbPtrn = Pattern.compile("(\\d+),(\\d+),(\\d+)");
     final static Pattern matchesDurationPtrn =
             Pattern.compile("duration:(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesEntityPtrn =
@@ -332,6 +333,18 @@ public class aH {
      */
     public static Color getColorFrom(String arg) {
 
+    	if (arg.toUpperCase().matches("RANDOM")) {
+    		
+    		return Color.fromRGB(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));
+    	}
+    	
+    	Matcher m = rgbPtrn.matcher(arg);
+    	
+    	if (m.matches()) {
+    		
+    		return Color.fromRGB(aH.getIntegerFrom(m.group(1)), aH.getIntegerFrom(m.group(2)), aH.getIntegerFrom(m.group(3)));
+    	}
+    	
     	Field colorField = null;
     	
 		try {
@@ -762,6 +775,14 @@ public class aH {
      *
      */
     public static boolean matchesColor(String arg) {
+    	    	
+    	if (arg.toUpperCase().matches("RANDOM"))
+    		return true;
+    	
+    	Matcher m = rgbPtrn.matcher(arg);
+    	
+    	if (m.matches())
+    		return true;
     	
     	for (Field field : Color.class.getFields()) {
     		

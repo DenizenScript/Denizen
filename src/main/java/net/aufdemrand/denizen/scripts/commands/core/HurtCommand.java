@@ -21,7 +21,7 @@ public class HurtCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         TargetType targetType = TargetType.PLAYER;
-        int amount = 0;
+        int amount = 1;
 
         for (String arg : scriptEntry.getArguments()) {
 
@@ -75,10 +75,8 @@ public class HurtCommand extends AbstractCommand {
 
             case PLAYER:
                 Player player = scriptEntry.getPlayer();
-                // Set to max health
-                if (amount == Integer.MAX_VALUE) player.setHealth(player.getMaxHealth());
-                    // else, increase health
-                else ((CraftLivingEntity) player).getHandle().setHealth(player.getHealth() + amount);
+                // Injure player
+                ((CraftLivingEntity) player).getHandle().setHealth(player.getHealth() - amount);
                 return;
         }
 
