@@ -661,7 +661,9 @@ public class aH {
     public static String getStringFrom(String arg) {
         if (arg.split(":").length >= 2 &&
                 ((arg.indexOf(':') < arg.indexOf(' ') || arg.indexOf(' ') == -1)))
-            return arg.split(":", 2)[1];
+        	return arg.split(":", 2)[1];
+        else if (arg.split("@").length >= 2)
+            return arg.split("@", 2)[1];
         else return arg;
     }
 
@@ -792,7 +794,7 @@ public class aH {
      *
      */
     public static boolean matchesEntityType(String arg) {
-        final Pattern matchesEntityPtrn = Pattern.compile("entity:(.+)", Pattern.CASE_INSENSITIVE);
+        final Pattern matchesEntityPtrn = Pattern.compile("(?:entity:|e@)(.+)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesEntityPtrn.matcher(arg);
         if (m.matches()) {
             String group = m.group(1).toUpperCase();

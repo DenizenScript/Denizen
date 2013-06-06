@@ -145,6 +145,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(HealCommand.class, 
         		"HEAL", "heal (amt:#) (target:npc|{player})", 0);
 
+        registerCoreMember(HurtCommand.class, 
+        		"HURT", "hurt (amt:#) (target:npc|{player})", 0);
+        
         registerCoreMember(HealthCommand.class,
                 "HEALTH", "health (toggle:true|false|toggle) (set_max:#)", 1);
 		
@@ -166,6 +169,9 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(LookcloseCommand.class, 
         		"LOOKCLOSE", "lookclose [toggle:true|false]", 1);
 		
+        registerCoreMember(MountCommand.class, 
+        		"MOUNT", "mount (cancel) (location:x,y,z,world) (target(s):[npc.#]|[player.name])", 0);
+        
         registerCoreMember(ModifyBlockCommand.class, 
         		"MODIFYBLOCK", "modifyblock [location:x,y,z,world] [material:data] (radius:#) (height:#) (depth:#)", 2);
 		

@@ -48,9 +48,11 @@ public class FireworkCommand extends AbstractCommand {
 
             } else if (aH.matchesValueArg("type", arg, ArgumentType.String)) {
             	
+            	String typeArg = arg.split(":", 2)[1].toUpperCase();
+            	
             	for (FireworkEffect.Type typeValue : FireworkEffect.Type.values()) {
             		
-            		if (arg.split(":", 2)[1].toUpperCase().matches(typeValue.name())) {
+            		if (typeArg.matches(typeValue.name())) {
             			
             			type = typeValue;
             			break;
@@ -107,6 +109,7 @@ public class FireworkCommand extends AbstractCommand {
         scriptEntry.addObject("trail", trail);
     }
     
+    @SuppressWarnings("unchecked")
 	@Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
