@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -39,7 +42,6 @@ public class ShootCommand extends AbstractCommand {
         Script newScript = null;
         Boolean ride = false;
         Boolean burn = false;
-        double explosion = -1;
 
         // Set some defaults
         if (scriptEntry.getPlayer() != null)
@@ -68,10 +70,6 @@ public class ShootCommand extends AbstractCommand {
                 burn = true;
                 dB.echoDebug("...will burn.");
                
-            } else if (aH.matchesValueArg("explosion", arg, ArgumentType.Double)) {
-            	explosion = aH.getDoubleFrom(arg);
-                dB.echoDebug("...will have an explosion radius of " + explosion);
-
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
         
@@ -83,7 +81,6 @@ public class ShootCommand extends AbstractCommand {
         scriptEntry.addObject("script", newScript);
         scriptEntry.addObject("ride", ride);
         scriptEntry.addObject("burn", burn);
-        scriptEntry.addObject("explosion", explosion);
     }
     
 	@Override
@@ -156,16 +153,12 @@ public class ShootCommand extends AbstractCommand {
         				
         				if (scriptEntry.getObject("script") != null)
         				{
+        					Map<String, String> context = new HashMap<String, String>();
+            				context.put("1", entity.getLocation().getX() + "," + entity.getLocation().getY() + "," + entity.getLocation().getZ() + "," + entity.getLocation().getWorld().getName());
+        					
                             ((TaskScriptContainer) ((Script) scriptEntry.getObject("script")).
-                            		getContainer()).setSpeed(new Duration(
-                            		Duration.valueOf(Settings.ScriptQueueSpeed()).getSeconds()))
-                            		.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), null);
-        				}
-        				
-        				if ((Double) scriptEntry.getObject("explosion") > 0)
-        				{
-        					entity.getWorld().createExplosion(entity.getLocation(),
-        							(Float) scriptEntry.getObject("explosion"));
+                            		getContainer()).setSpeed(new Duration(0))
+                            		.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
         				}
         				
         			}
