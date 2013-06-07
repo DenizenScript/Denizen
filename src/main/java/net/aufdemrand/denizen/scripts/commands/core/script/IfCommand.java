@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.scripts.commands.core.IfCommand;
+package net.aufdemrand.denizen.scripts.commands.core.script;
 
 import java.util.ArrayList;
 import java.util.Arrays;
