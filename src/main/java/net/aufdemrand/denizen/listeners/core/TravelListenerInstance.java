@@ -90,9 +90,9 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 					dB.echoDebug("...set TYPE to: " + aH.getStringFrom(arg));
 				} catch (Exception e) {e.printStackTrace();}
 			} else if (aH.matchesValueArg(TARGET_ARG, arg, ArgumentType.LivingEntity)) {
-				if ((CitizensAPI.getNPCRegistry().getNPC(aH.getLivingEntityFrom(arg)) != null &&
-						CitizensAPI.getNPCRegistry().isNPC(aH.getLivingEntityFrom(arg)))){
-					target = CitizensAPI.getNPCRegistry().getNPC(aH.getLivingEntityFrom(arg));
+				if ((CitizensAPI.getNPCRegistry().getNPC(aH.getEntityFrom(arg).getBukkitEntity()) != null &&
+						CitizensAPI.getNPCRegistry().isNPC(aH.getEntityFrom(arg).getBukkitEntity()))){
+					target = CitizensAPI.getNPCRegistry().getNPC(aH.getEntityFrom(arg).getBukkitEntity());
 					dB.echoDebug("...NPC set to: " + target.getId());
 				}
 			}

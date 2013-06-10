@@ -96,7 +96,7 @@ public class TeleportCommand extends AbstractCommand {
                             teleportNPCs.add(CitizensAPI.getNPCRegistry().getNPC(entity));
                             continue;
                         } else if (entity instanceof Player) {
-                            teleportEntities.add(aH.getPlayerFrom(target));
+                            teleportEntities.add(aH.getPlayerFrom(target).getPlayerEntity());
                             continue;
                         }
                     }

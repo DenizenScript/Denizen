@@ -55,7 +55,7 @@ public class ShootCommand extends AbstractCommand {
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesEntityType(arg)) {
-                entityType = aH.getEntityFrom(arg);
+                entityType = aH.getEntityTypeFrom(arg);
                 dB.echoDebug("...entity set to '%s'.", arg);
 
             } else if (aH.matchesLocation(arg)) {

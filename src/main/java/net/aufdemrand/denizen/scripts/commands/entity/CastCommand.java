@@ -102,8 +102,8 @@ public class CastCommand extends AbstractCommand{
                         else targets.add(scriptEntry.getNPC().getEntity());
 
                     // If a saved LivingEntity
-                    } else if (aH.getLivingEntityFrom(t) != null) {
-                        targets.add(aH.getLivingEntityFrom(t));
+                    } else if (aH.getEntityFrom(t) != null) {
+                        targets.add(aH.getEntityFrom(t).getBukkitEntity());
 
                     // If nothing could be made of the object
                     } else  {

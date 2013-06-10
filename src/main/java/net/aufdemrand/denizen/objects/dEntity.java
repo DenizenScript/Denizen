@@ -113,7 +113,7 @@ public class dEntity implements dObject {
 
             // Player entity
             else if (entityGroupUpper.startsWith("P@")) {
-                LivingEntity returnable = aH.getPlayerFrom(m.group(3));
+                LivingEntity returnable = aH.getPlayerFrom(m.group(3)).getPlayerEntity();
 
                 if (returnable != null) return new dEntity(returnable);
                 else dB.echoError("Invalid Player! '" + entityGroup

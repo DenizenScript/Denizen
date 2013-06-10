@@ -41,7 +41,13 @@ public class dPlayer implements dObject {
         ////////
         // Match player name
 
-        OfflinePlayer returnable = aH.getOfflinePlayerFrom(string);
+        OfflinePlayer returnable = null;
+
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+            if (player.getName().equalsIgnoreCase(string)) {
+                returnable = player;
+                break;
+            }
 
         if (returnable != null) {
             if (players.containsKey(returnable.getName())) return players.get(returnable.getName());
@@ -59,7 +65,14 @@ public class dPlayer implements dObject {
 
         arg = arg.replace("p@", "");
 
-        OfflinePlayer returnable = aH.getOfflinePlayerFrom(arg);
+        OfflinePlayer returnable = null;
+
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+            if (player.getName().equalsIgnoreCase(arg)) {
+                returnable = player;
+                break;
+            }
+
         if (returnable != null) return true;
 
         return false;

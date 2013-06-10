@@ -68,8 +68,8 @@ public class ChatCommand extends AbstractCommand {
                 else {
                     // Iterate through targets, make sure target is LivingEntity
                     for (String target : aH.getListFrom(arg)) {
-                        if (aH.getLivingEntityFrom(target) != null) {
-                            context.addRecipient(aH.getLivingEntityFrom(target));
+                        if (aH.getEntityFrom(target) != null) {
+                            context.addRecipient(aH.getEntityFrom(target).getBukkitEntity());
                         } else
                             dB.echoError("Invalid TARGET: '%s'", target);
                     }
@@ -78,8 +78,8 @@ public class ChatCommand extends AbstractCommand {
 
             } else if (aH.matchesValueArg("TALKER", arg, ArgumentType.LivingEntity)) {
                 String talker = aH.getStringFrom(arg);
-                if (talker.startsWith("NPC.") && aH.getLivingEntityFrom(talker) != null) {
-                    context.setTalker(aH.getLivingEntityFrom(talker));
+                if (aH.getNPCFrom(talker) != null) {
+                    context.setTalker(aH.getEntityFrom(talker).getBukkitEntity());
                 } else
                     //
                     // TODO: add hooking into Converse to handle player talking

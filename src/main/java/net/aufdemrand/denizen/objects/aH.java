@@ -344,42 +344,35 @@ public class aH {
         switch (type) {
             case Word:
                 return wordPrimitive.matcher(string_arg).matches();
-                break;
 
             case Integer:
                 return integerPrimitive.matcher(string_arg).matches();
-                break;
 
             case Double:
                 return doublePrimitive.matcher(string_arg).matches();
-                break;
 
             case Float:
                 return floatPrimitive.matcher(string_arg).matches();
-                break;
 
             case Boolean:
                 return booleanPrimitive.matcher(string_arg).matches();
-                break;
 
             case Location:
                 return dLocation.matches(string_arg);
 
             case Script:
-                return dScript.matches(string_arg);
+                // return dScript.matches(string_arg);
+                return true;
 
             case Item:
                 return dItem.matches(string_arg);
 
             case LivingEntity:
                 return dEntity.matches(string_arg);
-                break;
 
             case Duration:
                 return Duration.matches(string_arg);
 
-            default:
-                return true;
         }
 
         dB.echoError("While parsing '" + string_arg + "', Denizen has run into a problem. While the " +
@@ -523,29 +516,19 @@ public class aH {
     }
 
     public static boolean matchesLocation(String arg) {
-        Matcher m = locationPattern.matcher(arg);
-        if (m.matches())
+        if (arg.length() > 8 && arg.toUpperCase().startsWith("LOCATION:"))
             return true;
-        else if (arg.toUpperCase().startsWith("location:"))
-            dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
-                    "prefix is correct, the value is not valid. Perhaps a replaceable Tag has failed " +
-                    "to fill in a valid location?");
         return false;
     }
 
     public static boolean matchesQuantity(String arg) {
-        Matcher m = matchesQuantityPtrn.matcher(arg);
-        if (m.matches()) return true;
-        else if (arg.toUpperCase().startsWith("qty:"))
-            dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
-                    "prefix is correct, the value is not valid. 'QTY' requires a an integer value. " +
-                    "Perhaps a replaceable Tag has failed to fill in a valid value?");
+        if (arg.length() > 4 && arg.toUpperCase().startsWith("QTY:"))
+            return true;
         return false;
     }
 
     public static boolean matchesQueue(String arg) {
-        Matcher m = matchesQueuePtrn.matcher(arg);
-        if (m.matches())
+        if (arg.length() > 6 && arg.toUpperCase().startsWith("QUEUE:"))
             return true;
         return false;
     }
