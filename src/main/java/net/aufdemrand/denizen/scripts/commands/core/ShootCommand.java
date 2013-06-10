@@ -15,6 +15,8 @@ import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -41,20 +43,10 @@ public class ShootCommand extends AbstractCommand {
 	    LivingEntity shooter = null;
         EntityType entityType = null;
         //Integer qty = null;
-        dLocation location = null;
+        Location location = null;
         Script newScript = null;
         Boolean ride = false;
         Boolean burn = false;
-
-        // Set some defaults
-        if (scriptEntry.getPlayer() != null) {
-        	
-            location = new dLocation(scriptEntry.getPlayer().getLocation());
-        }
-        if (location == null && scriptEntry.getNPC() != null) {
-        	
-            location = new dLocation(scriptEntry.getNPC().getLocation());
-        }
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesEntityType(arg)) {
@@ -84,13 +76,20 @@ public class ShootCommand extends AbstractCommand {
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
         
-        if (shooterType.name().matches("NPC")) {
+        if (shooterType.name().equals("NPC")) {
         	
         	shooter = scriptEntry.getNPC().getEntity();
         }
-        else if (shooterType.name().matches("PLAYER")) {
+        else if (shooterType.name().equals("PLAYER")) {
         	
         	shooter = scriptEntry.getPlayer();
+        }
+        
+        if (location == null) {
+        	
+        	location = shooter.getEyeLocation().add(
+        			   		shooter.getEyeLocation().getDirection().
+                    		multiply(40));
         }
         
         if (entityType == null) throw new InvalidArgumentsException(Messages.ERROR_INVALID_ENTITY);
@@ -99,6 +98,7 @@ public class ShootCommand extends AbstractCommand {
         scriptEntry.addObject("entityType", entityType);
         scriptEntry.addObject("location", location);
         scriptEntry.addObject("shooter", shooter);
+        scriptEntry.addObject("shooterType", shooterType);
         scriptEntry.addObject("script", newScript);
         scriptEntry.addObject("ride", ride);
         scriptEntry.addObject("burn", burn);
@@ -108,18 +108,21 @@ public class ShootCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
     	
-        final dLocation location = scriptEntry.hasObject("location") ?
-        		                   (dLocation) scriptEntry.getObject("location") :
-        		                   (dLocation) scriptEntry.getNPC().getEyeLocation().getDirection().
-                                   multiply(4).toLocation(scriptEntry.getNPC().getWorld());
-        		                   
+		final Location location = (Location) scriptEntry.getObject("location");
+		LivingEntity shooter = (LivingEntity) scriptEntry.getObject("shooter");
+		ShooterType shooterType = (ShooterType) scriptEntry.getObject("shooterType");
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
-        LivingEntity shooter = (LivingEntity) scriptEntry.getObject("shooter");
+        
         Boolean ride = (Boolean) scriptEntry.getObject("ride");
         Boolean burn = (Boolean) scriptEntry.getObject("burn");
         
-        if (location != null) {
-
+        // If the shooter is an NPC, always rotate it to face the destination
+        // of the projectile, but if the shooter is a player, only rotate him/her
+        // if he/she is not looking in the correct general direction
+        
+        if (shooterType.name().equals("NPC") ||
+        	Utilities.isFacingLocation(shooter, location, 45) == false) {
+        
         	Utilities.faceLocation(shooter, location);
         }
         
@@ -151,18 +154,26 @@ public class ShootCommand extends AbstractCommand {
     	        				
         			if (runs < 40 && entity.isValid())
         			{
-        				//dB.echoDebug(entity.getType().name() + " flying time " + getRuns() + " in task " + getId());
-
-        				Vector v1 = entity.getLocation().toVector().clone();
-        				Vector v2 = location.toVector().clone();
+        				Vector v1 = entity.getLocation().toVector();
+        				Vector v2 = location.toVector();
         				Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
         							
         				entity.setVelocity(v3);
         				runs++;
-        						
+        				
+        				// Check if the entity is close to its destination
+        				
         				if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
         				&& Math.abs(v2.getZ() - v1.getZ()) < 2)
         				{
+        					runs = 40;
+        				}
+        				
+        				// Check if the entity has collided with something
+        				// using the most basic possible calculation
+        				
+        				if (entity.getLocation().add(v3).getBlock().getType().toString().equals("AIR") == false) {
+
         					runs = 40;
         				}
         			}
