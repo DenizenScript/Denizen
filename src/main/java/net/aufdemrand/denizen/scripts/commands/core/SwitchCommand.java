@@ -79,7 +79,7 @@ public class SwitchCommand extends AbstractCommand {
 
             } else if (aH.matchesLocation(arg)) {
                 interactLocation = aH.getLocationFrom(arg);
-                if (interactLocation != null) dB.echoError("...switch LOCATION now: '%s'", arg);
+                if (interactLocation != null) dB.echoDebug("...switch LOCATION now: '%s'", arg);
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }	
@@ -103,7 +103,7 @@ public class SwitchCommand extends AbstractCommand {
             // Store new delayed task ID, for checking against, then schedule new delayed task.
             taskMap.put(interactLocation, denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen, 
                     new Runnable() {
-                @Override public void run() { 
+                		public void run() {
                     // Check to see if the state of the block is what is expected. If switched during 
                     // the duration, the switchback is cancelled.
                     if (switchState == SwitchState.OFF && !((interactLocation.getBlock().getData() & 0x8) > 0))
@@ -121,133 +121,28 @@ public class SwitchCommand extends AbstractCommand {
     public void switchBlock(Location interactLocation, SwitchState switchState) {
         World world = interactLocation.getWorld();
         boolean currentState = (interactLocation.getBlock().getData() & 0x8) > 0;
+        String state = switchState.toString();
+        
+        if ((state == "ON" && currentState == false) ||
+        	(state == "OFF" && currentState == true) ||
+        	 state == "TOGGLE") {
+        	
+        	try {
 
-        // Might be a way to generalize this portion and negate the need for a switch all-together.
-        switch (interactLocation.getBlock().getType()) {
-
-        case LEVER:
-            switch (switchState) {
-            case TOGGLE:
-                Block.LEVER.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case ON:
-                if (currentState != true) 
-                    Block.LEVER.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case OFF:
-                if (currentState != false) 
-                    Block.LEVER.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            }
-            dB.echoDebug("SWITCHED! Current state now: " + ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
-            break;
-
-        case STONE_BUTTON:
-            switch (switchState) {
-            case TOGGLE:
-                Block.STONE_BUTTON.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case ON:
-                if (currentState != true) 
-                    Block.STONE_BUTTON.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case OFF:
-                if (currentState != false) 
-                    Block.STONE_BUTTON.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            }
-            dB.echoDebug("SWITCHED! Current state now: " + ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
-            break;
-
-        case STONE_PLATE:
-            switch (switchState) {
-            case TOGGLE:
-                Block.STONE_PLATE.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case ON:
-                if (currentState != true) 
-                    Block.STONE_PLATE.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case OFF:
-                if (currentState != false) 
-                    Block.STONE_PLATE.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            }
-            dB.echoDebug("SWITCHED! Current state now: " + ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
-            break;
-
-        case WOOD_PLATE:
-            switch (switchState) {
-            case TOGGLE:
-                Block.WOOD_PLATE.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case ON:
-                if (currentState != true) 
-                    Block.WOOD_PLATE.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case OFF:
-                if (currentState != false) 
-                    Block.WOOD_PLATE.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            }
-            dB.echoDebug("SWITCHED! Current state now: " + ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
-            break;
-
-        case WOODEN_DOOR:
-            switch (switchState) {
-            case TOGGLE:
-                Block.WOODEN_DOOR.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case ON:
-                if (currentState != true) 
-                    Block.WOODEN_DOOR.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case OFF:
-                if (currentState != false) 
-                    Block.WOODEN_DOOR.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            }
-            dB.echoDebug("SWITCHED! Current state now: " + ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
-            break;
-
-        case IRON_DOOR_BLOCK:
-            switch (switchState) {
-            case TOGGLE:
-                Block.IRON_DOOR_BLOCK.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case ON:
-                if (currentState != true) 
-                    Block.WOODEN_DOOR.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case OFF:
-                if (currentState != false) 
-                    Block.WOODEN_DOOR.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            }
-            dB.echoDebug("SWITCHED! Current state now: " + ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
-            break;
-
-        case TRAP_DOOR:
-            switch (switchState) {
-            case TOGGLE:
-                Block.TRAP_DOOR.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case ON:
-                if (currentState != true) 
-                    Block.TRAP_DOOR.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            case OFF:
-                if (currentState != false) 
-                    Block.TRAP_DOOR.interact(((CraftWorld)world).getHandle(), interactLocation.getBlockX(), interactLocation.getBlockY(), interactLocation.getBlockZ(), null, 0, 0f, 0f, 0f);
-                break;
-            }
-            dB.echoDebug("SWITCHED! Current state now: " + ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
-            break;
-
-        // If block isn't any of the above...
-        default:
-            dB.echoError("UNSWITCHABLE! Not a valid type of block!");
-            break;
+        		Block.byId[interactLocation.getBlock().getType().getId()]
+        			.interact(((CraftWorld)world).getHandle(),
+        					  interactLocation.getBlockX(),
+        					  interactLocation.getBlockY(),
+        					  interactLocation.getBlockZ(),
+        					  null, 0, 0f, 0f, 0f);
+        		
+        		dB.echoDebug("Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
+  					  ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
+        		
+        	} catch (NullPointerException e) {
+        		
+        		dB.echoDebug("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
+        	}
         }
     }
 }
