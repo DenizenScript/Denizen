@@ -99,7 +99,7 @@ public class LookCommand extends AbstractCommand {
         Location location = (Location) scriptEntry.getObject("location");
         LivingEntity entity = null;
 		
-    	if (target.name() == "NPC")
+    	if (target.name().matches("NPC"))
     	{
     		entity = scriptEntry.getNPC().getCitizen().getBukkitEntity();
     		

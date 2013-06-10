@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -14,11 +13,11 @@ import net.aufdemrand.denizen.utilities.arguments.Duration;
 import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -32,10 +31,14 @@ import org.bukkit.util.Vector;
 
 public class ShootCommand extends AbstractCommand {
 	
+    private enum ShooterType { NPC, PLAYER }
+	
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
+	    ShooterType shooterType = ShooterType.NPC;
+	    LivingEntity shooter = null;
         EntityType entityType = null;
         //Integer qty = null;
         dLocation location = null;
@@ -44,21 +47,29 @@ public class ShootCommand extends AbstractCommand {
         Boolean burn = false;
 
         // Set some defaults
-        if (scriptEntry.getPlayer() != null)
+        if (scriptEntry.getPlayer() != null) {
+        	
             location = new dLocation(scriptEntry.getPlayer().getLocation());
-        if (location == null && scriptEntry.getNPC() != null)
+        }
+        if (location == null && scriptEntry.getNPC() != null) {
+        	
             location = new dLocation(scriptEntry.getNPC().getLocation());
+        }
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesEntityType(arg)) {
                 entityType = aH.getEntityFrom(arg);
-                dB.echoDebug("...entity set to '%s'.", arg);
+                dB.echoDebug("...projectile set to '%s'.", arg);
 
             } else if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
                 dB.echoDebug("...location set to '%s'.", arg);
                 
-            } else if (aH.matchesScript(arg)) {
+            } else if (aH.matchesArg("PLAYER", arg)) {
+        		shooterType = ShooterType.PLAYER;
+                dB.echoDebug("... will be shot by the player!");
+                
+        	} else if (aH.matchesScript(arg)) {
 				newScript = aH.getScriptFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
 
@@ -73,11 +84,21 @@ public class ShootCommand extends AbstractCommand {
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
         
+        if (shooterType.name().matches("NPC")) {
+        	
+        	shooter = scriptEntry.getNPC().getEntity();
+        }
+        else if (shooterType.name().matches("PLAYER")) {
+        	
+        	shooter = scriptEntry.getPlayer();
+        }
+        
         if (entityType == null) throw new InvalidArgumentsException(Messages.ERROR_INVALID_ENTITY);
-
+        
         // Stash objects
         scriptEntry.addObject("entityType", entityType);
         scriptEntry.addObject("location", location);
+        scriptEntry.addObject("shooter", shooter);
         scriptEntry.addObject("script", newScript);
         scriptEntry.addObject("ride", ride);
         scriptEntry.addObject("burn", burn);
@@ -93,19 +114,18 @@ public class ShootCommand extends AbstractCommand {
                                    multiply(4).toLocation(scriptEntry.getNPC().getWorld());
         		                   
         EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
+        LivingEntity shooter = (LivingEntity) scriptEntry.getObject("shooter");
         Boolean ride = (Boolean) scriptEntry.getObject("ride");
         Boolean burn = (Boolean) scriptEntry.getObject("burn");
         
-        if (location == null) {
-        	
-        }
-        else {
-        	Utilities.faceLocation(scriptEntry.getNPC().getCitizen().getBukkitEntity(), location);
-        }
+        if (location != null) {
 
-        final Entity entity = scriptEntry.getNPC().getWorld().spawnEntity(
-        				scriptEntry.getNPC().getEyeLocation().add(
-        				scriptEntry.getNPC().getEyeLocation().getDirection())
+        	Utilities.faceLocation(shooter, location);
+        }
+        
+        final Entity entity = shooter.getWorld().spawnEntity(
+        				shooter.getEyeLocation().add(
+        				shooter.getEyeLocation().getDirection())
         				.subtract(0, 0.4, 0),
         				entityType);
         
@@ -120,13 +140,13 @@ public class ShootCommand extends AbstractCommand {
         }
         
         if (entity instanceof Projectile) {
-			((Projectile) entity).setShooter(scriptEntry.getNPC().getCitizen().getBukkitEntity());
+			((Projectile) entity).setShooter(shooter);
 		}
         
         BukkitRunnable task = new BukkitRunnable()
         	{
                 int runs = 0;
-        		@Override
+
         		public void run() {
     	        				
         			if (runs < 40 && entity.isValid())
