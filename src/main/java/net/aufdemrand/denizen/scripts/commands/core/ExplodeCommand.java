@@ -25,7 +25,7 @@ public class ExplodeCommand extends AbstractCommand {
         dLocation location = null;
         Float power = 1F;
         boolean breakblocks = false;
-        boolean setFire = false;
+        boolean fire = false;
 
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesLocation(arg)) {
@@ -40,9 +40,9 @@ public class ExplodeCommand extends AbstractCommand {
                     breakblocks = true;
                     dB.echoDebug("...will break blocks.");        
                     
-            } else if (aH.matchesArg("setFire", arg)) {
-                setFire = true;
-                dB.echoDebug("...will set Fire on blocks.");
+            } else if (aH.matchesArg("fire", arg)) {
+                fire = true;
+                dB.echoDebug("...will set fire on blocks.");
                     
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }            
@@ -51,7 +51,7 @@ public class ExplodeCommand extends AbstractCommand {
          scriptEntry.addObject("location", location);
          scriptEntry.addObject("power", power);
          scriptEntry.addObject("breakblocks", breakblocks);
-         scriptEntry.addObject("setFire", setFire);
+         scriptEntry.addObject("fire", fire);
     }
     
     @Override
@@ -63,9 +63,9 @@ public class ExplodeCommand extends AbstractCommand {
                 (dLocation) scriptEntry.getNPC().getLocation();
         Float power = (Float) scriptEntry.getObject("power");
         boolean breakblocks = (Boolean) scriptEntry.getObject("breakblocks");
-        boolean setFire = (Boolean) scriptEntry.getObject("setFire");
+        boolean fire = (Boolean) scriptEntry.getObject("fire");
         
-        location.getWorld().createExplosion(location.getX(),location.getY(),location.getZ(), (Float) power, setFire, breakblocks);
+        location.getWorld().createExplosion(location.getX(),location.getY(),location.getZ(), (Float) power, fire, breakblocks);
  
     }
 

@@ -107,7 +107,7 @@ public class CommandRegistry implements DenizenRegistry {
                 "EXPERIENCE", "experience [{set}|give|take] (level) [#] (player:player_name)", 2);
 
         registerCoreMember(ExplodeCommand.class,
-                "EXPLODE", "explode (power:#) (location:x,y,z,world)", 0);
+                "EXPLODE", "explode (power:#) (location:x,y,z,world) (fire) (breakblocks)", 0);
         
         registerCoreMember(FailCommand.class, 
         		"FAIL", "fail (script:name{attached script}) (player:player_name)", 0);
@@ -221,13 +221,13 @@ public class CommandRegistry implements DenizenRegistry {
         		"SCRIBE", "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
 
         registerCoreMember(ShootCommand.class, 
-        		"SHOOT", "shoot [entity:name] (ride) (burn) (explosion:#) (location:x,y,z,world) (script:name)", 1);
+        		"SHOOT", "shoot (player) [entity:name] (ride) (burn) (location:x,y,z,world) (script:name)", 1);
 
         registerCoreMember(SitCommand.class, 
         		"SIT", "sit (location:x,y,z,world)", 0);
 
         registerCoreMember(SpawnCommand.class, 
-        		"SPAWN", "spawn [entity:name] (location:x,y,z,world)", 1);
+        		"SPAWN", "spawn [entity:name] (location:x,y,z,world) (target:[n@#]|[p@name])", 1);
         
         registerCoreMember(StandCommand.class, 
         		"STAND", "stand", 0);
