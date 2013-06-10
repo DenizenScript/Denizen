@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Switches a button or lever.
  * 
- * @author Jeremy Schroeder, Mason Adkins
+ * @author Jeremy Schroeder, Mason Adkins, David Cernat
  */
 
 public class SwitchCommand extends AbstractCommand {
@@ -66,17 +66,21 @@ public class SwitchCommand extends AbstractCommand {
                 dB.echoDebug(Messages.DEBUG_SET_DURATION, arg);
 
             } else if (aH.matchesValueArg("STATE", arg, ArgumentType.Custom)) {
-                if (aH.getStringFrom(arg).equalsIgnoreCase("ON") || aH.getStringFrom(arg).equalsIgnoreCase("OPEN")) {
-                    switchState = SwitchState.ON;
-                    dB.echoDebug("...set STATE: 'ON'.");
-                } else if (aH.getStringFrom(arg).equalsIgnoreCase("OFF") || aH.getStringFrom(arg).equalsIgnoreCase("CLOSE")) {
-                    switchState = SwitchState.OFF;
-                    dB.echoDebug("...set STATE: 'OFF'.");
-                } else if (aH.getStringFrom(arg).equalsIgnoreCase("TOGGLE")) {
-                    switchState = SwitchState.TOGGLE;
-                    dB.echoDebug("...set STATE: 'TOGGLE'.");
-                } else dB.echoError("Unknown STATE! Valid: ON, OFF, TOGGLE");
-
+                
+            	String state = aH.getStringFrom(arg).toUpperCase(); 
+            	
+            	if (state.matches("ON|OPEN")) {
+            		switchState = SwitchState.ON;
+            	}
+            	else if (state.matches("OFF|CLOSE")) {
+            		switchState = SwitchState.OFF;
+            	}
+            	else if (state.matches("TOGGLE")) {
+            		switchState = SwitchState.TOGGLE;
+            	}
+            	
+            	dB.echoDebug("...set STATE: " + switchState.toString());
+            	
             } else if (aH.matchesLocation(arg)) {
                 interactLocation = aH.getLocationFrom(arg);
                 if (interactLocation != null) dB.echoDebug("...switch LOCATION now: '%s'", arg);

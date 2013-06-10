@@ -59,7 +59,7 @@ public class SpawnCommand extends AbstractCommand {
 
         final Entity entity = location.getWorld().spawnEntity(
         					  location, entityType);
-
+        
     }
 
 }
