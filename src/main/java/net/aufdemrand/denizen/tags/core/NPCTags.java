@@ -62,9 +62,10 @@ public class NPCTags implements Listener {
         else if (type.equals("HEALTH")) {
         	
         	if (subType.equals("MAX"))
-        		event.setReplaced(String.valueOf(n.getHealthTrait().getMaxhealth()));
+        		event.setReplaced(String.valueOf(n.getCitizen().getBukkitEntity().getMaxHealth()));
         	else
-        		event.setReplaced(String.valueOf(n.getHealthTrait().getHealth()));
+        		
+        		event.setReplaced(String.valueOf(n.getCitizen().getBukkitEntity().getHealth()));
             
         } else if (type.equals("TYPE")) {
         	if (subType.equals("FORMATTED"))
