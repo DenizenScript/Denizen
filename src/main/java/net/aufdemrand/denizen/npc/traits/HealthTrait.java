@@ -176,7 +176,7 @@ public class HealthTrait extends Trait implements Listener {
         npc.getBukkitEntity().damage(npc.getBukkitEntity().getHealth());
     }
     
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDeath(EntityDamageEvent event) {
     	// Don't use NPCDamageEvent because it doesn't work well
     	
