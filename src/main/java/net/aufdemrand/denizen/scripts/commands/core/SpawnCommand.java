@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -49,6 +50,11 @@ public class SpawnCommand extends AbstractCommand {
             }
             else if (aH.matchesValueArg("TARGET", arg, ArgumentType.Custom)) {
             	target = dEntity.valueOf(aH.getStringFrom(arg)).getBukkitEntity();
+                dB.echoDebug("...target set to '%s' at " +
+                		target.getLocation().getBlockX() + "," +
+                		target.getLocation().getBlockY() + "," +
+                		target.getLocation().getBlockZ() + "," +
+                		target.getLocation().getWorld().getName(), arg);
             }
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
@@ -77,11 +83,11 @@ public class SpawnCommand extends AbstractCommand {
         
         // If target is not null and entity is a Creature, make entity go after the target 
         if (target != null && entity instanceof CraftCreature) {
-        	
-        	dB.echoApproval("SETTING TARGET! " + target.getType().toString());
-        	        	
+        	        	        	
         	((CraftCreature) entity).getHandle().
         			setGoalTarget(((CraftLivingEntity) target).getHandle());
+        	
+        	((CraftCreature) entity).setTarget(target);
         }
         
         // If entity is a Skeleton, give it a bow
