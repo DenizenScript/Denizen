@@ -189,8 +189,6 @@ public class HealthTrait extends Trait implements Listener {
         // Check if the event pertains to this NPC
         if (event.getEntity() != npc.getBukkitEntity() || dying) return;
 
-        dB.echoApproval("Health left is: " + this.getHealth());
-        
         // Make sure this is a killing blow
         if (this.getHealth() - event.getDamage() > 0)
             return;

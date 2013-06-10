@@ -6,6 +6,8 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
@@ -34,16 +36,30 @@ public class NPCTags implements Listener {
         if (n == null) return; // to avoid exceptions in scripts with no NPC attached
         
         String type = event.getType() != null ? event.getType().toUpperCase() : "";
+        String typeContext = event.getTypeContext() != null ? event.getTypeContext() : "";
         String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
-
+        
         if (type.equals("NAME")) {
             event.setReplaced(ChatColor.stripColor(n.getName()));
             if (subType.equals("NICKNAME")) {
                 if (n.getCitizen().hasTrait(NicknameTrait.class))
                     event.setReplaced(n.getCitizen().getTrait(NicknameTrait.class).getNickname());
+            }    
+        }
+        
+        else if (type.equalsIgnoreCase("CLOSEST"))
+        {
+            int range = 100;
+
+            if (aH.matchesInteger(typeContext))
+                range = aH.getIntegerFrom(typeContext);
+
+            if (subType.equalsIgnoreCase("PLAYER")) {
+                event.setReplaced(String.valueOf(Utilities.getClosestPlayer(n.getLocation(), range).getName()));
             }
-            
-        } else if (type.equals("HEALTH")) {
+        }
+        
+        else if (type.equals("HEALTH")) {
         	
         	if (subType.equals("MAX"))
         		event.setReplaced(String.valueOf(n.getHealthTrait().getMaxhealth()));

@@ -316,6 +316,36 @@ public class Utilities {
     public static void faceEntity(Entity entity, Entity target) {
         faceLocation(entity, target.getLocation());
     }
+    
+    
+    /**
+     * Finds the closest Player to a particular location.
+     *
+     * @param location	The location to find the closest Player to.
+     * @param range	The maximum range to look for the Player.
+     *
+     * @return	The closest Player to the location, or null if no Player was found
+     * 					within the range specified.
+     */
+    
+    @SuppressWarnings("unchecked")
+	public static Player getClosestPlayer (Location location, int range) {
+    	
+        Player closestPlayer = null;
+        double closestDistance = Math.pow(range, 2);
+        List playerList = new ArrayList(Arrays.asList(Bukkit.getOnlinePlayers()));
+        Iterator<Player> it = playerList.iterator();
+        while (it.hasNext()) {
+            Player player = it.next();
+            Location loc = player.getLocation();
+            if (loc.getWorld().equals(location.getWorld())
+                    && loc.distanceSquared(location) < closestDistance) {
+                closestPlayer = player;
+                closestDistance = player.getLocation().distanceSquared(location);
+            }
+        }
+        return closestPlayer;
+    }
 
 
     /**
@@ -329,9 +359,10 @@ public class Utilities {
      */
     
     public static dNPC getClosestNPC (Location location, int range) {
+    	
         dNPC closestNPC = null;
         double closestDistance = Math.pow(range, 2);
-        Iterator<dNPC>	it = DenizenAPI.getSpawnedNPCs().iterator();
+        Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
         while (it.hasNext()) {
             dNPC npc = it.next();
             Location loc = npc.getLocation();
@@ -355,6 +386,7 @@ public class Utilities {
      */
     
     public static Set<dNPC> getClosestNPCs (Location location, int maxRange) {
+    	
         maxRange = (int) Math.pow(maxRange, 2);
         Set<dNPC> closestNPCs = new HashSet<dNPC> ();
         Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
@@ -379,6 +411,7 @@ public class Utilities {
      */
     
     public static double normalizeYaw(double yaw) {
+    	
         yaw = (yaw - 90) % 360;
         if (yaw < 0) yaw += 360.0;
         return yaw;
