@@ -75,7 +75,7 @@ public class EquipCommand extends AbstractCommand{
 	
     public dItem getItem(String arg) {
     	
-    	arg = "ITEM:" + arg.split(":")[1];
+    	arg = "ITEM:" + aH.getStringFrom(arg);
 		
 		if (aH.matchesItem(arg)) {
 			return (aH.getItemFrom(arg));
