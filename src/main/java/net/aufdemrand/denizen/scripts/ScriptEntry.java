@@ -1,10 +1,7 @@
 package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -87,7 +84,9 @@ public class ScriptEntry {
 
 	public ScriptEntry addObject(String key, Object object) {
         if (object == null) return this;
-		objects.put(key.toUpperCase(), object);
+		if (object instanceof dObject)
+            ((dObject) object).setPrefix(key);
+        objects.put(key.toUpperCase(), object);
 		return this;
 	}
 

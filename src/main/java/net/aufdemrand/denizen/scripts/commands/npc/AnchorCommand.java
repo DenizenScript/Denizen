@@ -29,19 +29,24 @@ public class AnchorCommand extends AbstractCommand {
                 "Assume Walk_To, and Walk_Near. \n" +
                 " \n" +
                 "Use to add or remove an anchor from a NPC. \n" +
-                "- anchor add id:pride_rock location:<npc.location> \n" +
-                "- anchor remove id:the_jungle \n" +
+                "- anchor add i:pride_rock <npc.location> \n" +
+                "- anchor remove i:the_jungle \n" +
                 "Use to 'teleport' the npc directly to an existing anchor. \n" +
-                "- anchor assume id:bedroom \n" +
+                "- anchor assume i:bedroom \n" +
                 "Use to make a NPC navigate to or near an anchor for easy" +
                 "'waypoint behavior'. \n" +
-                "- anchor walkto id:anchor_1 \n" +
-                "- anchor walknear id:front_porch range:5";
+                "- anchor walkto i:anchor_1 \n" +
+                "- anchor walknear i:front_porch r:5";
     }
 
+    public String getUsage() {
+        return "- anchor [<action>] [id|i:id_name] ([<location>]) ([range|r:#])";
+    }
 
     private enum Action { ADD, REMOVE, ASSUME, WALKTO, WALKNEAR }
 
+    public static final	String  RANGE_ARG = "range, r";
+    public static final	String     ID_ARG = "id, i";
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -52,26 +57,26 @@ public class AnchorCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values()))
                 // add Action
-                scriptEntry.addObject("action", arg.asElement().setPrefix("action"));
+                scriptEntry.addObject("action", arg.asElement());
 
 
             else if (!scriptEntry.hasObject("range")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("range, r"))
+                    && arg.matchesPrefix(RANGE_ARG))
                 // add range (for WALKNEAR)
-                scriptEntry.addObject("range", arg.asElement().setPrefix("range"));
+                scriptEntry.addObject("range", arg.asElement());
 
 
             else if (!scriptEntry.hasObject("id")
-                    && arg.matchesPrefix("id, i"))
+                    && arg.matchesPrefix(ID_ARG))
                 // add anchor ID
-                scriptEntry.addObject("id", arg.asElement().setPrefix("id"));
+                scriptEntry.addObject("id", arg.asElement());
 
 
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
                 // add location (for ADD)
-                scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
 
 
             else dB.echoError("Unhandled argument: '" + arg.raw_value + "'");

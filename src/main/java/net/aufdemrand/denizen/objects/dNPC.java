@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
+import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;

@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.commands.core.EngageCommand;
+import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -13,7 +13,6 @@ import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.util.Messages;
 import net.citizensnpcs.util.Paginator;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import java.util.Map;

@@ -50,7 +50,22 @@ public class aH {
             }
 
             // dB.log("Constructed Argument: " + prefix + ":" + value);
+        }
 
+        public boolean startsWith(String string) {
+            return value.startsWith(string);
+        }
+
+        public boolean matches(String string) {
+            return value.toLowerCase().matches(string.toLowerCase());
+        }
+
+        public void replaceValue(String string) {
+            value = string;
+        }
+
+        public String getValue() {
+            return value;
         }
 
         public boolean matchesEnum(Enum[] values) {

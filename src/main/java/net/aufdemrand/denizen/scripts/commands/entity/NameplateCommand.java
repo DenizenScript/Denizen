@@ -52,7 +52,7 @@ public class NameplateCommand extends AbstractCommand {
 
             else if(aH.matchesValueArg("TARGET", arg, ArgumentType.Word)) {
                 player = true;
-                scriptEntry.setPlayer(new dPlayer(aH.getPlayerFrom(arg)));
+                scriptEntry.setPlayer(aH.getPlayerFrom(arg));
             }
 
             else if (aH.matchesValueArg("SET", arg, ArgumentType.Custom))

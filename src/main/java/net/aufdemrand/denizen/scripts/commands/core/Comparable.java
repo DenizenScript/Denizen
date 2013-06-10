@@ -1,8 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.utilities.arguments.aH;
-import net.aufdemrand.denizen.utilities.arguments.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
 import java.util.List;
@@ -34,117 +33,100 @@ public class Comparable {
     }
 
     Logic         logic = Logic.REGULAR;
-    Bridge       bridge = Bridge.OR;
+    Bridge       bridge = Bridge.FIRST;
     Object   comparable = null;
     Operator   operator = Operator.EQUALS;
     Object   comparedto = (boolean) true;
     Boolean     outcome = null;
 
 
+    public void setNegativeLogic() {
+        logic = Logic.NEGATIVE;
+    }
+
+
+    public void setComparable(String arg) {
+
+        // If a Number
+        if (aH.matchesDouble(arg) || aH.matchesInteger(arg))
+            comparable = aH.getDoubleFrom(arg);
+
+            // If a Boolean
+        else if (arg.equalsIgnoreCase("true")) comparable = true;
+        else if (arg.equalsIgnoreCase("false")) comparable = false;
+
+            // If a List<Object>
+        else if (dList.matches(arg)) {
+            comparable = dList.valueOf(arg);
+        }
+
+        // If none of the above, must be a String! :D
+        // 'arg' is already a String.
+        else comparable = arg;
+    }
+
+
+    public void setComparedto(String arg) {
+
+        // If MATCHES, change comparable to String
+        if (operator == Comparable.Operator.MATCHES)
+            comparable = String.valueOf(comparable);
+
+        // Comparable is String, return String
+        if (comparable instanceof String)
+            comparedto = arg;
+
+            // Comparable is a Number, return Double
+        else if (comparable instanceof Double) {
+            if (aH.matchesDouble(arg) || aH.matchesInteger(arg))
+                comparedto = aH.getDoubleFrom(arg);
+            else {
+                dB.echoDebug(ChatColor.YELLOW + "WARNING! " + ChatColor.WHITE + "Cannot compare NUMBER("
+                        + comparable + ") with '" + arg + "'. Outcome for this Comparable will be false.");
+                comparedto = Double.NaN;
+            }
+        }
+
+        else if (comparable instanceof Boolean) {
+            comparedto = aH.getBooleanFrom(arg);
+        }
+
+        else if (comparable instanceof dList) {
+            if (dList.matches(arg))
+                comparedto = dList.valueOf(arg);
+        }
+
+        else comparedto = arg;
+    }
 
 
     public boolean determineOutcome() {
 
-        //
-        // Comparable is a STRING
-        //
-        if (comparable instanceof String) {
+        outcome = false;
 
+        if (comparable instanceof String) {
             compare_as_strings();
             return outcome;
+        }
 
-        }	else if (comparable instanceof List) {
-
+        else if (comparable instanceof dList) {
             compare_as_list();
             return outcome;
+        }
 
-            switch(operator) {
-                case CONTAINS:
-                    for (String string : ((List<String>) comparable)) {
-                        if (comparedto instanceof Integer) {
-                            if (aH.getIntegerFrom(string) == (Integer) comparedto) outcome = true;
+        else if (comparable instanceof Double) {
+            compare_as_numbers();
+            return outcome;
+        }
 
-                        }   else if (comparedto instanceof Double) {
-                            if (aH.getDoubleFrom(string) == (Double) comparedto) outcome = true;
-
-                        }	else if (comparedto instanceof Boolean) {
-                            if (Boolean.valueOf(string).booleanValue() == ((Boolean) comparedto).booleanValue()) outcome = true;
-
-                        }   else if (comparedto instanceof String) {
-                            if (string.equalsIgnoreCase((String) comparedto)) outcome = true;
-                        }
-                    }
-                    break;
-                case ORMORE:
-                    if (((List<String>) comparable).size() >= (Integer.parseInt(String.valueOf(comparedto)))) outcome = true;
-                    break;
-                case ORLESS:
-                    if (((List<String>) comparable).size() <= (Integer.parseInt(String.valueOf(comparedto)))) outcome = true;
-                    break;
-                case MORE:
-                    if (((List<String>) comparable).size() > (Integer.parseInt(String.valueOf(comparedto)))) outcome = true;
-                    break;
-                case LESS:
-                    if (((List<String>) comparable).size() < (Integer.parseInt(String.valueOf(comparedto)))) outcome = true;
-                    break;
-            }
-
-
-            //
-            // COMPARABLE IS DOUBLE
-            //
-        }   else if (comparable instanceof Double) {
-
-            // Check to make sure comparedto is Double
-            if (!(comparedto instanceof Double)) {
-                // Not comparing with a Double, outcome = false
-            } else {
-
-
-            }
-
-
-            //
-            // COMPARABLE IS INTEGER
-            //
-        }	else if (comparable instanceof Integer) {
-
-            // Check to make sure comparedto is Integer
-            if (!(comparedto instanceof Integer)) {
-                // Not comparing with an Integer, outcome = false;
-            } else {
-                // Comparing integers.. let's do the logic
-                switch(operator) {
-                    case EQUALS:
-                        if (((Integer) comparable).compareTo((Integer) comparedto) == 0) outcome = true;
-                        break;
-                    case ORMORE:
-                        if (((Integer) comparable).compareTo((Integer) comparedto) >= 0) outcome = true;
-                        break;
-                    case ORLESS:
-                        if (((Integer) comparable).compareTo((Integer) comparedto) <= 0) outcome = true;
-                        break;
-                    case MORE:
-                        if (((Integer) comparable).compareTo((Integer) comparedto) > 0) outcome = true;
-                        break;
-                    case LESS:
-                        if (((Integer) comparable).compareTo((Integer) comparedto) < 0) outcome = true;
-                        break;
-                }
-            }
-
-
-            //
-            // COMPARABLE IS BOOLEAN
-            //
-        }   else if (comparable instanceof Boolean) {
+        else if (comparable instanceof Boolean) {
 
             // Check to make sure comparedto is Boolean
             if (!(comparedto instanceof Boolean)) {
                 // Not comparing with a Boolean, outcome = false;
             } else {
                 // Comparing booleans.. let's do the logic
-                if ((Boolean) comparable.equals((Boolean) comparedto))
+                if (comparable.equals(comparedto))
                     outcome = true;
                 else
                     outcome = false;
@@ -153,8 +135,8 @@ public class Comparable {
 
         if (logic == Comparable.Logic.NEGATIVE) outcome = !outcome;
 
+        return outcome;
     }
-
 
 
     private void compare_as_numbers() {
@@ -162,8 +144,83 @@ public class Comparable {
         outcome = false;
 
         Double comparable = (Double) this.comparable;
-        Double comparedto = ()
+        Double comparedto = (Double) this.comparedto;
 
+        switch(operator) {
+
+            case EQUALS:
+                if (comparable.compareTo(comparedto) == 0) outcome = true;
+                break;
+
+            case OR_MORE:
+                if (comparable.compareTo(comparedto) >= 0) outcome = true;
+                break;
+
+            case OR_LESS:
+                if (comparable.compareTo(comparedto) <= 0) outcome = true;
+                break;
+
+            case MORE:
+                if (comparable.compareTo(comparedto) > 0) outcome = true;
+                break;
+
+            case LESS:
+                if (comparable.compareTo(comparedto) < 0) outcome = true;
+                break;
+        }
+
+    }
+
+
+    private void compare_as_list() {
+        outcome = false;
+
+        dList comparable = (dList) this.comparable;
+
+        switch(operator) {
+
+            case CONTAINS:
+                for (String string : comparable) {
+                    if (comparedto instanceof Integer) {
+                        if (aH.matchesInteger(string)
+                                && aH.getIntegerFrom(string) == (Integer) comparedto)
+                            outcome = true;
+                    }   else if (comparedto instanceof Double) {
+                        if (aH.matchesDouble(string) &&
+                                aH.getDoubleFrom(string) == (Double) comparedto)
+                            outcome = true;
+                    }   else if (comparedto instanceof String) {
+                        if (string.equalsIgnoreCase((String) comparedto))
+                            outcome = true;
+                    }
+                }
+                break;
+
+            case OR_MORE:
+                if (!(comparedto instanceof Double)) break;
+                outcome = (comparable.size() >= ((Double) comparedto).intValue());
+                break;
+
+            case OR_LESS:
+                if (!(comparedto instanceof Double)) break;
+                outcome = (comparable.size() <= ((Double) comparedto).intValue());
+                break;
+
+            case MORE:
+                if (!(comparedto instanceof Double)) break;
+                outcome = (comparable.size() > ((Double) comparedto).intValue());
+                break;
+
+            case LESS:
+                if (!(comparedto instanceof Double)) break;
+                outcome = (comparable.size() < ((Double) comparedto).intValue());
+                break;
+
+            case EQUALS:
+                if (comparedto instanceof dList)
+                    outcome = ((dList) comparedto).containsAll(comparable);
+                break;
+        }
 
     }
 

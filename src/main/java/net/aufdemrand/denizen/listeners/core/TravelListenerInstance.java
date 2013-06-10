@@ -39,10 +39,10 @@ import net.citizensnpcs.api.npc.NPC;
  */
 public class TravelListenerInstance extends AbstractListener implements Listener{
 	
-	public	static	final	String	DISTANCE_ARG = "DISTANCE, D";
-	public	static	final	String	TYPE_ARG = "TYPE";
-	public	static	final	String	TARGET_ARG = "TARGET";
-	public	static	final	String	RADIUS_ARG = "RADIUS, R";
+	public static final	String DISTANCE_ARG = "DISTANCE, D";
+	public static final	String     TYPE_ARG = "TYPE";
+	public static final	String   TARGET_ARG = "TARGET";
+	public static final	String   RADIUS_ARG = "RADIUS, R";
 	
 	private	NPC target;
 	private dLocation endPoint;

@@ -70,7 +70,7 @@ public class dList extends ArrayList<String> implements dObject {
 
         if (m.matches()) return true;
 
-        if (arg.contains("|")) return true;
+        if (arg.contains("|") || arg.startsWith("li@")) return true;
 
         return false;
     }

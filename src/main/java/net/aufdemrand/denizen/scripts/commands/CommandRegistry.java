@@ -7,6 +7,14 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.interfaces.DenizenRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.commands.core.*;
+import net.aufdemrand.denizen.scripts.commands.item.*;
+import net.aufdemrand.denizen.scripts.commands.player.*;
+import net.aufdemrand.denizen.scripts.commands.server.AnnounceCommand;
+import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
+import net.aufdemrand.denizen.scripts.commands.server.ScoreboardCommand;
+import net.aufdemrand.denizen.scripts.commands.entity.*;
+import net.aufdemrand.denizen.scripts.commands.npc.*;
+import net.aufdemrand.denizen.scripts.commands.world.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class CommandRegistry implements DenizenRegistry {
@@ -46,19 +54,19 @@ public class CommandRegistry implements DenizenRegistry {
 
 	@Override
 	public void registerCoreMembers() {
-        registerCoreMember(AnnounceCommand.class, 
+        registerCoreMember(AnnounceCommand.class,
         		"ANNOUNCE", "announce [\"announcement text\"] (to_ops)", 1);
         
         registerCoreMember(AttackCommand.class, 
         		"ATTACK", "attack (stop)", 0);
         
-        registerCoreMember(AnimateChestCommand.class, 
+        registerCoreMember(AnimateChestCommand.class,
         		"ANIMATECHEST", "animatechest [location:x,y,z,world] ({open}|close) (sound:{true}|false)", 1);
 
         registerCoreMember(AnchorCommand.class,
                 "ANCHOR", "anchor [id:name] [assume|add|remove|walkto|walknear] (range:#)", 2);
         
-        registerCoreMember(AssignmentCommand.class, 
+        registerCoreMember(AssignmentCommand.class,
         		"ASSIGNMENT", "assignment [{set}|remove] (script:assignment_script)", 1);
         
         registerCoreMember(CastCommand.class, 
@@ -69,10 +77,7 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(ChunkLoadCommand.class,
                 "CHUNKLOAD", "chunkload ({add}|remove|removeall) [location:x,y,z,world] (duration:{-1s})", 1);
-        
-        registerCoreMember(ClearCommand.class, 
-        		"CLEAR", "clear (queue:name) (...)", 1);
-        
+
         registerCoreMember(CooldownCommand.class, 
         		"COOLDOWN", "cooldown (duration:#{60s}) (global|player:name{attached player}) (script:name)", 1);
 
@@ -91,16 +96,16 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(DropCommand.class, 
         		"DROP", "drop [item:#(:#)|item:material(:#)|xp] (qty:#{1}) (location:x,y,z,world)", 1);
 		
-        registerCoreMember(EngageCommand.class, 
+        registerCoreMember(EngageCommand.class,
         		"ENGAGE", "engage (duration:#) (npcid:#)", 0);
 
-        registerCoreMember(EngraveCommand.class, 
+        registerCoreMember(EngraveCommand.class,
                 "ENGRAVE", "engrave (SET|REMOVE) (TARGET:player_name)", 0);
         
         registerCoreMember(EquipCommand.class, 
                 "EQUIP", "equip ({HAND}|BOOTS|LEGS|CHEST|HEAD) [item:#(:#)|item:material(:#)]", 1);
         
-        registerCoreMember(ExecuteCommand.class, 
+        registerCoreMember(ExecuteCommand.class,
         		"EXECUTE", "execute [as_player|as_op|as_npc|as_server] [\"Bukkit command\"]", 2);
 
         registerCoreMember(ExperienceCommand.class,
@@ -124,10 +129,10 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(FollowCommand.class, 
         		"FOLLOW", "follow (stop)", 0);
 		
-        registerCoreMember(GiveCommand.class, 
+        registerCoreMember(GiveCommand.class,
         		"GIVE", "give [money|item:#(:#)|item:material(:#)] (qty:#) (engrave)", 1);
         
-        registerCoreMember(GroupCommand.class, 
+        registerCoreMember(GroupCommand.class,
                 "GROUP", "group [add|remove]  [group] (player:player_name) (world:world_name)", 2);
 		
         registerCoreMember(HealCommand.class, 
@@ -142,31 +147,31 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [npc] [toggle:true|false|toggle]", 2);
 		
-        registerCoreMember(ListenCommand.class, 
+        registerCoreMember(ListenCommand.class,
         		"LISTEN", "listen [listener_type] [id:listener_id] (...)  +--> see documentation - http://bit.ly/XJlKwm", 2);
         
-        registerCoreMember(LookCommand.class, 
+        registerCoreMember(LookCommand.class,
         		"LOOK", "look (player) [location:x,y,z,world]", 1);
         
-        registerCoreMember(LookcloseCommand.class, 
+        registerCoreMember(LookcloseCommand.class,
         		"LOOKCLOSE", "lookclose [toggle:true|false]", 1);
 		
-        registerCoreMember(ModifyBlockCommand.class, 
+        registerCoreMember(ModifyBlockCommand.class,
         		"MODIFYBLOCK", "modifyblock [location:x,y,z,world] [material:data] (radius:#) (height:#) (depth:#)", 2);
 		
-        registerCoreMember(NameplateCommand.class, 
+        registerCoreMember(NameplateCommand.class,
         		"NAMEPLATE", "nameplate [set:text|chat_color] (target:player_name)", 1);
         
-        registerCoreMember(NarrateCommand.class, 
+        registerCoreMember(NarrateCommand.class,
         		"NARRATE", "narrate [\"narration text\"] (player:name) (format:format)", 1);
         
         registerCoreMember(NewCommand.class, 
         		"NEW", "new itemstack [item:material] (qty:#)", 2);
         
-        registerCoreMember(PlaySoundCommand.class, 
+        registerCoreMember(PlaySoundCommand.class,
                 "PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
         
-        registerCoreMember(PermissionCommand.class, 
+        registerCoreMember(PermissionCommand.class,
                 "PERMISSION", "permission [add|remove] [permission] (player:player_name) (group:group_name) (world:world_name)", 2);
 
         registerCoreMember(PoseCommand.class,
@@ -193,10 +198,10 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(ScoreboardCommand.class,
                 "SCOREBOARD", "", 1);
 		
-        registerCoreMember(ScribeCommand.class, 
+        registerCoreMember(ScribeCommand.class,
         		"SCRIBE", "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
 
-        registerCoreMember(ShootCommand.class, 
+        registerCoreMember(ShootCommand.class,
         		"SHOOT", "shoot [entity:name] (ride) (burn) (explosion:#) (location:x,y,z,world) (script:name)", 1);
 
         registerCoreMember(SitCommand.class, 
@@ -205,16 +210,16 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(StandCommand.class, 
         		"STAND", "stand", 0);
         
-        registerCoreMember(StrikeCommand.class, 
+        registerCoreMember(StrikeCommand.class,
         		"STRIKE", "strike (no_damage) [location:x,y,z,world]", 1);
         
-        registerCoreMember(SwitchCommand.class, 
+        registerCoreMember(SwitchCommand.class,
         		"SWITCH", "switch [location:x,y,z,world] (state:[{toggle}|on|off]) (duration:#)", 1);
 		
-        registerCoreMember(TakeCommand.class, 
+        registerCoreMember(TakeCommand.class,
         		"TAKE", "take [money|iteminhand|item:#(:#)|item:material(:#)] (qty:#)", 1);
         
-        registerCoreMember(TeleportCommand.class, 
+        registerCoreMember(TeleportCommand.class,
         		"TELEPORT", "teleport (npc) [location:x,y,z,world] (target(s):[npc.#]|[player.name])", 1);
         
         registerCoreMember(TriggerCommand.class, 
