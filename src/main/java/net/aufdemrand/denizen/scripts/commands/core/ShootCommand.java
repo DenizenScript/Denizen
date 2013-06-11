@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.Duration;
-import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.arguments.Script;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -147,54 +146,54 @@ public class ShootCommand extends AbstractCommand {
 		}
         
         BukkitRunnable task = new BukkitRunnable()
-        	{
-                int runs = 0;
+        {
+        	int runs = 0;
 
-        		public void run() {
+        	public void run() {
     	        				
-        			if (runs < 40 && entity.isValid())
-        			{
-        				Vector v1 = entity.getLocation().toVector();
-        				Vector v2 = location.toVector();
-        				Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
+        		if (runs < 40 && entity.isValid())
+        		{
+        			Vector v1 = entity.getLocation().toVector();
+        			Vector v2 = location.toVector();
+        			Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
         							
-        				entity.setVelocity(v3);
-        				runs++;
+        			entity.setVelocity(v3);
+        			runs++;
         				
-        				// Check if the entity is close to its destination
+        			// Check if the entity is close to its destination
         				
-        				if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
-        				&& Math.abs(v2.getZ() - v1.getZ()) < 2)
-        				{
+        			if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
+        				&& Math.abs(v2.getZ() - v1.getZ()) < 2) {
+        			
         					runs = 40;
-        				}
-        				
-        				// Check if the entity has collided with something
-        				// using the most basic possible calculation
-        				
-        				if (entity.getLocation().add(v3).getBlock().getType().toString().equals("AIR") == false) {
-
-        					runs = 40;
-        				}
         			}
-        			else
-        			{
-        				this.cancel();
-        				runs = 0;
         				
-        				if (scriptEntry.getObject("script") != null)
-        				{
-        					Map<String, String> context = new HashMap<String, String>();
-            				context.put("1", entity.getLocation().getX() + "," + entity.getLocation().getY() + "," + entity.getLocation().getZ() + "," + entity.getLocation().getWorld().getName());
-        					
-                            ((TaskScriptContainer) ((Script) scriptEntry.getObject("script")).
-                            		getContainer()).setSpeed(new Duration(0))
-                            		.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
-        				}
+        			// Check if the entity has collided with something
+        			// using the most basic possible calculation
         				
+        			if (entity.getLocation().add(v3).getBlock().getType().toString().equals("AIR") == false) {
+
+        				runs = 40;
         			}
         		}
-       		};
+        		else {
+
+        			this.cancel();
+        			runs = 0;
+        				
+        			if (scriptEntry.getObject("script") != null)
+        			{
+        				Map<String, String> context = new HashMap<String, String>();
+            			context.put("1", entity.getLocation().getX() + "," + entity.getLocation().getY() + "," + entity.getLocation().getZ() + "," + entity.getLocation().getWorld().getName());
+        					
+                        ((TaskScriptContainer) ((Script) scriptEntry.getObject("script")).
+                           		getContainer()).setSpeed(new Duration(0))
+                           		.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
+        			}
+        				
+        		}
+        	}
+       	};
         
        	task.runTaskTimer(denizen, 0, 2);     
     }

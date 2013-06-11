@@ -30,7 +30,7 @@ public class MountCommand extends AbstractCommand {
             throws InvalidArgumentsException {
 
         //
-        // List of entities to be teleported.
+        // List of entities to be mounted.
         //
         List<Entity> entities = new ArrayList<Entity> ();
 
@@ -83,7 +83,7 @@ public class MountCommand extends AbstractCommand {
             			entities.add(entity);
             		}
             		else {
-            			dB.echoError("Invalid TARGET '%s'!", target);
+            			dB.echoError("Invalid target '%s'!", target);
             		}
                 }
             }
