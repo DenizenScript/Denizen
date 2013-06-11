@@ -231,14 +231,6 @@ public class FlyCommand extends AbstractCommand {
             				destinations.remove(0);
             			}
             		}
-        			
-            		// Check if the entity has collided with something
-            		// using the most basic possible calculation
-    				
-            		if (entity.getLocation().add(v3).getBlock().getType().toString().equals("AIR") == false) {
-
-            			flying = false;
-            		}
             	}
             	else {
         			
