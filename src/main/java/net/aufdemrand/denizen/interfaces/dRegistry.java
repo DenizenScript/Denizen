@@ -10,7 +10,7 @@ import java.util.Map;
  * 
  */
 
-public interface DenizenRegistry {
+public interface dRegistry {
 
     /**
      * Called by an AbstractInstance to get added to the registry.

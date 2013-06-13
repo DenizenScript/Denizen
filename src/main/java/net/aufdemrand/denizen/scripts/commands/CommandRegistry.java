@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.interfaces.DenizenRegistry;
+import net.aufdemrand.denizen.interfaces.dRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.commands.core.*;
 import net.aufdemrand.denizen.scripts.commands.item.*;
@@ -17,7 +17,7 @@ import net.aufdemrand.denizen.scripts.commands.npc.*;
 import net.aufdemrand.denizen.scripts.commands.world.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-public class CommandRegistry implements DenizenRegistry {
+public class CommandRegistry implements dRegistry {
 
 	public Denizen denizen;
 

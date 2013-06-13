@@ -1,8 +1,6 @@
 package net.aufdemrand.denizen.scripts.triggers;
 
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.interfaces.DenizenRegistry;
+import net.aufdemrand.denizen.interfaces.dRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.triggers.core.ChatTrigger;
@@ -11,13 +9,12 @@ import net.aufdemrand.denizen.scripts.triggers.core.DamageTrigger;
 import net.aufdemrand.denizen.scripts.triggers.core.ProximityTrigger;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TriggerRegistry implements DenizenRegistry {
+public class TriggerRegistry implements dRegistry {
 
     ////////
     // Registry

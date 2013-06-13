@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.requirements;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.interfaces.DenizenRegistry;
+import net.aufdemrand.denizen.interfaces.dRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.requirements.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequirementRegistry implements DenizenRegistry {
+public class RequirementRegistry implements dRegistry {
 
     public Denizen denizen;
 

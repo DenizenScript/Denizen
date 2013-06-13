@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.interfaces;
 
-public interface ExternalDenizenClass {
+public interface dExternal {
 
     /**
      * Called by the RuntimeCompiler after an 'External Dependency' is compiled and loaded.

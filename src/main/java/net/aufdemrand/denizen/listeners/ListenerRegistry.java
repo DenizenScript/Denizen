@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.listeners;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ListenerCancelEvent;
 import net.aufdemrand.denizen.events.ListenerFinishEvent;
-import net.aufdemrand.denizen.interfaces.DenizenRegistry;
+import net.aufdemrand.denizen.interfaces.dRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.listeners.core.*;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -14,8 +14,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -26,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ListenerRegistry implements DenizenRegistry, Listener {
+public class ListenerRegistry implements dRegistry, Listener {
 
 	private Map<String, Map<String, AbstractListener>> listeners = new ConcurrentHashMap<String, Map<String, AbstractListener>>();
 	private Map<String, AbstractListenerType> types = new ConcurrentHashMap<String, AbstractListenerType>();

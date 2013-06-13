@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.npc.activities;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.interfaces.DenizenRegistry;
+import net.aufdemrand.denizen.interfaces.dRegistry;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.activities.core.TaskActivity;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class ActivityRegistry implements DenizenRegistry {
+public class ActivityRegistry implements dRegistry {
 
     public final Denizen denizen;
 

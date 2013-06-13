@@ -272,51 +272,12 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("name"))
             return new Element(player_name).getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("location.cursor_on")) {
-            int range = attribute.getIntContext(2);
-            if (range < 1) range = 50;
-            return new dLocation(getPlayerEntity().getTargetBlock(null, range).getLocation())
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        if (attribute.startsWith("location.standing_on"))
-            return new dLocation(getPlayerEntity().getLocation().add(0, -1, 0))
-                    .getAttribute(attribute.fulfill(2));
-
         if (attribute.startsWith("location.compass_target"))
             return new dLocation(getPlayerEntity().getCompassTarget())
                     .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("location"))
             return new dLocation(getPlayerEntity().getLocation())
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("health.formatted")) {
-            int maxHealth = getPlayerEntity().getMaxHealth();
-            if (attribute.hasContext(2))
-                maxHealth = attribute.getIntContext(2);
-            if ((float) getPlayerEntity().getHealth() / maxHealth < .10)
-                return new Element("dying").getAttribute(attribute.fulfill(2));
-            else if ((float) getPlayerEntity().getHealth() / maxHealth < .40)
-                return new Element("seriously wounded").getAttribute(attribute.fulfill(2));
-            else if ((float) getPlayerEntity().getHealth() / maxHealth < .75)
-                return new Element("injured").getAttribute(attribute.fulfill(2));
-            else if ((float) getPlayerEntity().getHealth() / maxHealth < 1)
-                return new Element("scraped").getAttribute(attribute.fulfill(2));
-
-            else return new Element("healthy").getAttribute(attribute.fulfill(2));
-        }
-
-        if (attribute.startsWith("health.percentage")) {
-            int maxHealth = getPlayerEntity().getMaxHealth();
-            if (attribute.hasContext(2))
-                maxHealth = attribute.getIntContext(2);
-            return new Element(String.valueOf(((float) getPlayerEntity().getHealth() / maxHealth) * 100))
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        if (attribute.startsWith("health"))
-            return new Element(String.valueOf(getPlayerEntity().getHealth()))
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("food_level.formatted")) {
@@ -395,10 +356,6 @@ public class dPlayer implements dObject {
             return new Element(String.valueOf(getPlayerEntity().isSprinting()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("is_inside_vehicle"))
-            return new Element(String.valueOf(getPlayerEntity().isInsideVehicle()))
-                    .getAttribute(attribute.fulfill(1));
-
         if (attribute.startsWith("gamemode.id"))
             return new Element(String.valueOf(getPlayerEntity().getGameMode().getValue()))
                     .getAttribute(attribute.fulfill(1));
@@ -411,44 +368,12 @@ public class dPlayer implements dObject {
             return new dItem(getPlayerEntity().getItemOnCursor())
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("killer"))
-            return new dPlayer(getPlayerEntity().getKiller())
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("last_damage_cause"))
-            return new Element(String.valueOf(getPlayerEntity().getLastDamageCause().getCause().toString()))
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("last_damage"))
-            return new Element(String.valueOf(getPlayerEntity().getLastDamage()))
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("time_lived"))
-            return new Duration(getPlayerEntity().getTicksLived() / 20)
-                    .getAttribute(attribute.fulfill(1));
-
         if (attribute.startsWith("allowed_flight"))
             return new Element(String.valueOf(getPlayerEntity().getAllowFlight()))
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("host_name"))
             return new Element(String.valueOf(getPlayerEntity().getAddress().getHostName()))
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("can_pickup_items"))
-            return new Element(String.valueOf(getPlayerEntity().getCanPickupItems()))
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("entity_id"))
-            return new Element(String.valueOf(getPlayerEntity().getEntityId()))
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("fall_distance"))
-            return new Element(String.valueOf(getPlayerEntity().getFallDistance()))
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("uuid"))
-            return new Element(String.valueOf(getPlayerEntity().getUniqueId().toString()))
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("time_asleep"))
@@ -462,18 +387,6 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("player_time_offset"))
             return new Element(String.valueOf(getPlayerEntity().getPlayerTimeOffset()))
                     .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("has_effect")) {
-            // Add later
-        }
-
-        if (attribute.startsWith("equipment")) {
-            // Add later
-        }
-
-        if (attribute.startsWith("world")) {
-            // Add world dScriptArg
-        }
 
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
@@ -495,7 +408,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        return new Element(identify()).getAttribute(attribute.fulfill(0));
+        return new dEntity(getPlayerEntity()).getAttribute(attribute.fulfill(0));
     }
 
 }

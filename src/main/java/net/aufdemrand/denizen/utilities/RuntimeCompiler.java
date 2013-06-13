@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.interfaces.ExternalDenizenClass;
+import net.aufdemrand.denizen.interfaces.dExternal;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
@@ -59,8 +59,8 @@ public class RuntimeCompiler {
                         try {
                             compilationUnit.addJavaSource(fileName.replace(".java", ""), readFile(f.getAbsolutePath()));
                             ClassLoader classLoader = javaSourceCompiler.compile(compilationUnit);
-                            Class<ExternalDenizenClass> load = (Class<ExternalDenizenClass>) classLoader.loadClass(fileName.replace(".java", ""));
-                            ExternalDenizenClass loadedClass = load.newInstance();
+                            Class<dExternal> load = (Class<dExternal>) classLoader.loadClass(fileName.replace(".java", ""));
+                            dExternal loadedClass = load.newInstance();
                             loadedClass.load();
                         } catch (Exception e) {
                             if (e instanceof IllegalStateException)

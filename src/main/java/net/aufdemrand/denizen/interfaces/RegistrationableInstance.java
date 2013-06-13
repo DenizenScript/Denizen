@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.interfaces;
 
 /**
- * Container interface for instances loaded into a DenizenRegistry.
+ * Container interface for instances loaded into a dRegistry.
  * 
  * @author Jeremy Schroeder
  *

@@ -364,10 +364,29 @@ public class dEntity implements dObject {
             return "null";
         }
 
-        if (attribute.startsWith("name"))
-            return new Element(entity.getCustomName()).getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("type")) {
+
+        if (attribute.startsWith("custom_name")) {
+            if (entity.getCustomName() == null) return "null";
+            return new Element(entity.getCustomName()).getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("name")) {
+            if (CitizensAPI.getNPCRegistry().isNPC(entity))
+                return new Element(CitizensAPI.getNPCRegistry().getNPC(entity).getName())
+                .getAttribute(attribute.fulfill(1));
+            if (entity instanceof Player)
+                return new Element(((Player) entity).getName())
+                        .getAttribute(attribute.fulfill(1));
+            return new Element(entity.getType().getName())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("entity_type"))
+            return new Element(entity.getType().getName())
+                    .getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("custom_id")) {
             if (CustomNBT.hasCustomNBT(getBukkitEntity(), "denizen-script-id"))
                 return new dScript(CustomNBT.getCustomNBT(getBukkitEntity(), "denizen-script-id"))
                         .getAttribute(attribute.fulfill(1));
@@ -414,6 +433,10 @@ public class dEntity implements dObject {
             return new Element(String.valueOf(((float) entity.getHealth() / maxHealth) * 100))
                     .getAttribute(attribute.fulfill(2));
         }
+
+        if (attribute.startsWith("health.max"))
+            return new Element(String.valueOf(entity.getMaxHealth()))
+                    .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("health"))
             return new Element(String.valueOf(entity.getHealth()))
@@ -464,7 +487,8 @@ public class dEntity implements dObject {
         }
 
         if (attribute.startsWith("world")) {
-            // Add world dScriptArg
+            return new dWorld(entity.getWorld())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("prefix"))
