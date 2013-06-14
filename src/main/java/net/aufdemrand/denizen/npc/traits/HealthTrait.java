@@ -193,19 +193,12 @@ public class HealthTrait extends Trait implements Listener {
     	// Don't use NPCDamageEvent because it doesn't work well
     	
         // Check if the event pertains to this NPC
-        if (event.getEntity() != npc.getBukkitEntity()) return;
-        
-        if (dying) {
-        	
-        	event.setCancelled(true);
-        	return;
-        }
+        if (event.getEntity() != npc.getBukkitEntity() || dying) return;
 
         // Make sure this is a killing blow
         if (this.getHealth() - event.getDamage() > 0)
             return;
 
-        event.setCancelled(true);
         dying = true;
         player = null;
         
@@ -270,6 +263,8 @@ public class HealthTrait extends Trait implements Listener {
             // Cancel navigation to keep the NPC from damaging players
             // while the death animation is being carried out.
             npc.getNavigator().cancelNavigation();
+            // Reset health now to avoid the death from happening instantly
+            setHealth(); 
             // Play animation
             npc.getBukkitEntity().playEffect(EntityEffect.DEATH);
 
