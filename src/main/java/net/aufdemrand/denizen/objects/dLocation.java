@@ -249,6 +249,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
     @Override
     public boolean isUnique() {
+        if (isSaved(this)) return true;
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

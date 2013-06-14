@@ -156,7 +156,8 @@ public class dList extends ArrayList<String> implements dObject {
 
         if (attribute == null) return null;
 
-        if (attribute.startsWith("ascslist")) {
+        if (attribute.startsWith("ascslist")
+                || attribute.startsWith("as_cslist")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
             StringBuilder dScriptArg = new StringBuilder();
             for (String item : this)
@@ -166,14 +167,20 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         if (attribute.startsWith("get")) {
-            if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
+            if (isEmpty()) return "null";
             int index = attribute.getIntContext(1);
-            if (index > size()) return null;
+            if (index > size()) return "null";
             String item;
             if (index > 0) item = get(index - 1);
             else item = get(0);
+            if (attribute.getAttribute(2).startsWith("as")) {
+
+            }
+            else
             return new Element(item).getAttribute(attribute.fulfill(1));
         }
+
+
 
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
