@@ -41,7 +41,7 @@ public class EquipCommand extends AbstractCommand{
 			else if (aH.matchesValueArg("LEGS, LEGGINGS", arg, ArgumentType.String)) {
 				equipment.put("legs", getItem(arg));
 			}
-			else if (aH.matchesValueArg("BOOTS", arg, ArgumentType.String)) {
+			else if (aH.matchesValueArg("BOOTS, FEET", arg, ArgumentType.String)) {
 				equipment.put("boots", getItem(arg));
 			}
 			else if (aH.matchesArg("PLAYER", arg)) {

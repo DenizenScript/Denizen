@@ -21,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 public class HealthTrait extends Trait implements Listener {
 
@@ -42,6 +43,7 @@ public class HealthTrait extends Trait implements Listener {
 	private Player player = null;
     private boolean dying = false;
     private Location loc;
+    private int entityId = -1;
 
     public double getAnimationDelay() {
         return Duration.valueOf(animationDelay).getSeconds();
@@ -176,19 +178,39 @@ public class HealthTrait extends Trait implements Listener {
         npc.getBukkitEntity().damage(npc.getBukkitEntity().getHealth());
     }
     
+    // Listen for deaths to clear drops
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onDeath(EntityDamageEvent event) {
+    public void onDeath(EntityDeathEvent event) {
+    	
+    	if (event.getEntity().getEntityId() != entityId) return;
+    	
+    	event.getDrops().clear();
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onDamage(EntityDamageEvent event) {
+    	
     	// Don't use NPCDamageEvent because it doesn't work well
     	
         // Check if the event pertains to this NPC
-        if (event.getEntity() != npc.getBukkitEntity() || dying) return;
+        if (event.getEntity() != npc.getBukkitEntity()) return;
+        
+        if (dying) {
+        	
+        	event.setCancelled(true);
+        	return;
+        }
 
         // Make sure this is a killing blow
         if (this.getHealth() - event.getDamage() > 0)
             return;
 
+        event.setCancelled(true);
         dying = true;
         player = null;
+        
+        // Save entityId for EntityDeath event
+        entityId = npc.getBukkitEntity().getEntityId();
         
     	String deathCause = event.getCause().toString().toLowerCase().replace('_', ' ');
     	
@@ -248,8 +270,6 @@ public class HealthTrait extends Trait implements Listener {
             // Cancel navigation to keep the NPC from damaging players
             // while the death animation is being carried out.
             npc.getNavigator().cancelNavigation();
-            // Reset health now to avoid the death from happening instantly
-            setHealth();
             // Play animation
             npc.getBukkitEntity().playEffect(EntityEffect.DEATH);
 
@@ -272,7 +292,5 @@ public class HealthTrait extends Trait implements Listener {
                         }
                     } , (Duration.valueOf(respawnDelay).getTicks()));
         }
-
     }
-
 }

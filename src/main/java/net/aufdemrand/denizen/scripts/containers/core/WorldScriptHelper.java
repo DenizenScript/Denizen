@@ -37,6 +37,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class WorldScriptHelper implements Listener {
 
@@ -138,7 +139,7 @@ public class WorldScriptHelper implements Listener {
     }
 
     @EventHandler
-    public void loginEvent(PlayerQuitEvent event) {
+    public void quitEvent(PlayerQuitEvent event) {
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("message", event.getQuitMessage());
 
@@ -350,10 +351,10 @@ public class WorldScriptHelper implements Listener {
         };
         String determination = null;
         try {
-            determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
+            determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get(10, TimeUnit.SECONDS) : call.call();
         } catch (InterruptedException e) {
-            // Comment for now.. is this harmless? 
-            // e.printStackTrace();
+        	// Need to find a way to fix this eventually
+            //e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (Exception e) {
