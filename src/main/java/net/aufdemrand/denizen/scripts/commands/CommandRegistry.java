@@ -176,34 +176,37 @@ public class CommandRegistry implements DenizenRegistry {
         		"MOUNT", "mount (cancel) (location:x,y,z,world) (target(s):[n@#]|[p@name]|[e@name])", 0);
         
         registerCoreMember(ModifyBlockCommand.class, 
-        		"MODIFYBLOCK", "modifyblock [location:x,y,z,world] [material:data] (radius:#) (height:#) (depth:#)", 2);
+        		"MODIFYBLOCK", "modifyblock [location:<x,y,z,world>] [<material>(:<data>)] (radius:<#>) (height:<#>) (depth:<#>)", 2);
 		
         registerCoreMember(NameplateCommand.class, 
-        		"NAMEPLATE", "nameplate [set:text|chat_color] (target:player_name)", 1);
+        		"NAMEPLATE", "nameplate [set:text|chat_color] (target:<name>)", 1);
         
         registerCoreMember(NarrateCommand.class, 
-        		"NARRATE", "narrate [\"narration text\"] (player:name) (format:name)", 1);
+        		"NARRATE", "narrate [\"narration text\"] (player:<name>) (format:<name>)", 1);
         
         registerCoreMember(NewCommand.class, 
-        		"NEW", "new itemstack [item:material] (qty:#)", 2);
+        		"NEW", "new itemstack [item:<material>] (qty:<#>)", 2);
         
         registerCoreMember(OxygenCommand.class, 
-        		"OXYGEN", "oxygen (type:maximum|remaining) (mode:set|add|remove) [qty:#]", 1);
+        		"OXYGEN", "oxygen (type:maximum|remaining) (mode:set|add|remove) [qty:<#>]", 1);
+        
+        registerCoreMember(PlayEffectCommand.class, 
+                "PLAYEFFECT", "playeffect [location:<x,y,z,world>] [effect:<name>] (volume:<#>) (pitch:<#>)", 2);
         
         registerCoreMember(PlaySoundCommand.class, 
-                "PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
+                "PLAYSOUND", "playsound [location:<x,y,z,world>] [sound:<name>] (volume:<#>) (pitch:<#>)", 2);
         
         registerCoreMember(PermissionCommand.class, 
-                "PERMISSION", "permission [add|remove] [permission] (player:name) (group:name) (world:name)", 2);
+                "PERMISSION", "permission [add|remove] [permission] (player:<name>) (group:<name>) (world:<name>)", 2);
 
         registerCoreMember(PoseCommand.class,
-                "POSE", "pose (player) [id:name]", 1);
+                "POSE", "pose (player) [id:<name>]", 1);
 
         registerCoreMember(PauseCommand.class,
                 "PAUSE", "pause [waypoints|navigation]", 1);
 		
         registerCoreMember(QueueCommand.class,
-                "QUEUE", "queue (queue:id{residing_queue}) [clear|pause|resume|delay:#]", 1);
+                "QUEUE", "queue (queue:<id>{<residing_queue>}) [clear|pause|resume|delay:<#>]", 1);
         
         registerCoreMember(RandomCommand.class, 
         		"RANDOM", "random [#]", 1);

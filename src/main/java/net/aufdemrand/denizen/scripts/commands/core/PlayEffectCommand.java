@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -12,30 +12,29 @@ import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
-/* PLAYSOUND [LOCATION:x,y,z,world] [SOUND:NAME] (VOLUME:#) (PITCH:#)*/
+/* playeffect [location:<x,y,z,world>] [effect:<name>] (data:<#>) (radius:<#>)*/
 
 /* 
  * Arguments: [] - Required, () - Optional 
- * [LOCATION:x,y,z,world] specifies location of the sound
- * [SOUND:NAME] name of sound to be played
- * (VOLUME:#) adjusts the volume of the sound
- * (PITCH:#) adjusts the pitch of the sound
+ * [location:<x,y,z,world>] specifies location of the effect
+ * [effect:<name>] sets the name of effect to be played
+ * (data:<#>) sets the special data value of the effect
+ * (radius:<#>) adjusts the radius within which players will observe the effect
  * 
  * Example Usage:
- * PLAYSOUND LOCATION:123,65,765,world SOUND:SPLASH VOLUME:1 PITCH:2
- * PLAYSOUND LOCATION:123,65,765,world S:SPLASH V:2 P:1
- * 
+ * playeffect location:123,65,765,world effect:record_play data:2259 radius:7
+ * playeffect location:<npc.location> e:smoke r:3
  */
 
-public class PlaySoundCommand extends AbstractCommand {
+public class PlayEffectCommand extends AbstractCommand {
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize fields
-        Sound sound = null;
-        float volume = 1;
-        float pitch = 1;
+        Effect effect = null;
+        int radius = 3;
+        int data = 0;
         Location location = null;
 
         // Iterate through arguments
@@ -43,34 +42,34 @@ public class PlaySoundCommand extends AbstractCommand {
 			if (aH.matchesLocation(arg))
                 location = aH.getLocationFrom(arg);
 
-			else if (aH.matchesValueArg("sound, s", arg, ArgumentType.Custom)) {
+			else if (aH.matchesValueArg("effect, e", arg, ArgumentType.Custom)) {
         		try {
-            		sound = Sound.valueOf(aH.getStringFrom(arg).toUpperCase());
+            		effect = Effect.valueOf(aH.getStringFrom(arg).toUpperCase());
             	} catch (Exception e) {
-            		dB.echoError("Invalid sound!");
+            		dB.echoError("Invalid effect!");
             	}
             }
 			
-			else if (aH.matchesValueArg("volume, v", arg, ArgumentType.Float))
-            	volume = aH.getFloatFrom(arg);
+			else if (aH.matchesValueArg("radius, r", arg, ArgumentType.Float))
+            	radius = aH.getIntegerFrom(arg);
 
-			else if (aH.matchesValueArg("pitch, p", arg, ArgumentType.Float))
-                pitch = aH.getFloatFrom(arg);
+			else if (aH.matchesValueArg("data, d", arg, ArgumentType.Float))
+                data = aH.getIntegerFrom(arg);
             
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 
         // Check required args
-		if (sound == null)
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "SOUND");
+		if (effect == null)
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EFFECT");
 		if (location == null)
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
 
         // Stash args in ScriptEntry for use in execute()
         scriptEntry.addObject("location", location);
-        scriptEntry.addObject("sound", sound);
-        scriptEntry.addObject("volume", volume);
-        scriptEntry.addObject("pitch", pitch);
+        scriptEntry.addObject("effect", effect);
+        scriptEntry.addObject("radius", radius);
+        scriptEntry.addObject("data", data);
 	}
 
 	@Override
@@ -78,19 +77,20 @@ public class PlaySoundCommand extends AbstractCommand {
 
         // Extract objects from ScriptEntry
         Location location = (Location) scriptEntry.getObject("location");
-        Sound sound = (Sound) scriptEntry.getObject("sound");
-        Float volume = (Float) scriptEntry.getObject("volume");
-        Float pitch = (Float) scriptEntry.getObject("pitch");
+        Effect effect = (Effect) scriptEntry.getObject("effect");
+        int radius = (Integer) scriptEntry.getObject("radius");
+        int data = (Integer) scriptEntry.getObject("data");
 
         // Debugger
         dB.echoApproval("Executing '" + getName() + "': "
                 + "Location='" + location.getX() + "," + location.getY()
                 + "," + location.getZ() + "," + location.getWorld().getName() + "', "
-                + "Sound='" + sound.toString() + ", "
-                + "Volume/Pitch='" + volume + "/" + pitch + "'");
+                + "Effect='" + effect.toString() + ", "
+                + "Data='" + data + ", "
+                + "Radius='" + radius + "'");
 
         // Play the sound
-        location.getWorld().playSound(location, sound, volume, pitch);
+        location.getWorld().playEffect(location, effect, data, radius);
 	}
 
 }
