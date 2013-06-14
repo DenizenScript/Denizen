@@ -28,10 +28,7 @@ public class dItem implements dScriptArgument {
     // TODO: Make prettier.. maybe an array of Patterns isn't even necessary anymore.
     //  Seperate them out instead?
     final static Pattern[] getItemPtrn = {
-            Pattern.compile("(?:(?:.+?:)|)(\\d+):(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+?):(\\d+)"),
-            Pattern.compile("(?:(?:.+?:)|)([a-zA-Z\\x5F]+)"),
+            Pattern.compile("(?:item:)?(\\w+):?(\\d+)?"),
             Pattern.compile("(?:(?:.+?:)|)item\\.(.+)", Pattern.CASE_INSENSITIVE),
             Pattern.compile("(?:(?:.+?:)|)(.+)"),
     };
@@ -56,47 +53,44 @@ public class dItem implements dScriptArgument {
         dItem stack = null;
 
         // Check if a saved item instance from NEW
-        m[0] = getItemPtrn[4].matcher(string);
+        m[0] = getItemPtrn[1].matcher(string);
         if (m[0].matches()) {
             // TODO: Finish NEW command.
         }
 
         // Check traditional item patterns.
         m[0] = getItemPtrn[0].matcher(string);
-        m[1] = getItemPtrn[1].matcher(string);
-        m[2] = getItemPtrn[2].matcher(string);
-        m[3] = getItemPtrn[3].matcher(string);
 
         try {
-            // Match 'ItemId:Data'
-            if (m[0].matches()) {
-                stack = new dItem(Integer.valueOf(m[0].group(1)));
-                stack.setDurability(Short.valueOf(m[0].group(2)));
-                return stack;
-
-                // Match 'ItemId'
-            } else if (m[1].matches()) {
-                stack = new dItem(Integer.valueOf(m[1].group(1)));
-                return stack;
-
-                // Match 'Material:Data'
-            } else if (m[2].matches()) {
-                stack = new dItem(Material.valueOf(m[2].group(1).toUpperCase()));
-                stack.setDurability(Short.valueOf(m[2].group(2)));
-                return stack;
-
-                // Match 'Material'
-            } else if (m[3].matches()) {
-                stack = new dItem(Material.valueOf(m[3].group(1).toUpperCase()));
-                return stack;
-            }
+        	if (m[0].matches()) {
+        		
+        		String material = m[0].group(1).toUpperCase();
+        		String data = null;
+        		
+        		if (m[0].groupCount() > 1) {
+        			data = m[0].group(2);
+        		}
+        		
+        		if (aH.matchesInteger(material)) {
+        			stack = new dItem(Integer.valueOf(material));
+        		}
+        		else {
+        			stack = new dItem(Material.valueOf(material));
+        		}
+        		
+        		if (data != null) {
+        			stack.setDurability(Short.valueOf(m[0].group(2)));
+        		}
+        		
+        		return stack;
+        	}
 
         } catch (Exception e) {
             // Just a catch, might be an item script...
         }
 
         // Check custom item script
-        m[0] = getItemPtrn[5].matcher(string);
+        m[0] = getItemPtrn[2].matcher(string);
         if (m[0].matches() && ScriptRegistry.containsScript(m[0].group(1), ItemScriptContainer.class)) {
 
             dB.echoDebug("TEST!");
