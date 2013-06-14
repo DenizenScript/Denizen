@@ -28,7 +28,7 @@ public class dItem implements dScriptArgument {
     // TODO: Make prettier.. maybe an array of Patterns isn't even necessary anymore.
     //  Seperate them out instead?
     final static Pattern[] getItemPtrn = {
-            Pattern.compile("(?:item:)?(\\w+):?(\\d+)?"),
+            Pattern.compile("(?:item:)?(\\w+):?(\\d+)?", Pattern.CASE_INSENSITIVE),
             Pattern.compile("(?:(?:.+?:)|)item\\.(.+)", Pattern.CASE_INSENSITIVE),
             Pattern.compile("(?:(?:.+?:)|)(.+)"),
     };
