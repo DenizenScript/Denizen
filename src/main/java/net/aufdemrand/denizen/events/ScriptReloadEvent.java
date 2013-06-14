@@ -10,7 +10,7 @@ import org.bukkit.event.HandlerList;
  * @author Jeremy Schroeder
  *
  */
-public class dScriptReloadEvent extends Event {
+public class ScriptReloadEvent extends Event {
     
     private static final HandlerList handlers = new HandlerList();
 

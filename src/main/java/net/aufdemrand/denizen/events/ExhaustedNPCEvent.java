@@ -13,12 +13,12 @@ import org.bukkit.event.HandlerList;
  * @author Jeremy Schroeder
  *
  */
-public class NPCExhaustedEvent extends NPCEvent implements Cancellable {
+public class ExhaustedNPCEvent extends NPCEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled = false;
 
-    public NPCExhaustedEvent(NPC npc) {
+    public ExhaustedNPCEvent(NPC npc) {
     	super(npc);
     }
     
