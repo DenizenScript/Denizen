@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import net.aufdemrand.denizen.events.NPCExhaustedEvent;
+import net.aufdemrand.denizen.events.ExhaustedNPCEvent;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
@@ -63,7 +63,7 @@ public class HungerTrait extends Trait implements Listener {
         if (allowexhaustion) {
             if (isStarving()) {
                 // Create NPCExhaustedEvent, give chance for outside plugins to cancel.
-                NPCExhaustedEvent e = new NPCExhaustedEvent(npc);
+                ExhaustedNPCEvent e = new ExhaustedNPCEvent(npc);
                 Bukkit.getServer().getPluginManager().callEvent(e);
 
                 // If still exhausted, cancel navigation and fire 'On Exhausted:' action

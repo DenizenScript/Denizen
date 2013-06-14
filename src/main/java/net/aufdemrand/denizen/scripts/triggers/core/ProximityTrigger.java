@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
-import net.aufdemrand.denizen.events.dScriptReloadEvent;
+import net.aufdemrand.denizen.events.ScriptReloadEvent;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -289,7 +289,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      *
      */
     @EventHandler
-    public void checkMaxProximities(dScriptReloadEvent event) {
+    public void checkMaxProximities(ScriptReloadEvent event) {
 
         for (String script : ScriptRegistry._getScriptNames()) {
             //

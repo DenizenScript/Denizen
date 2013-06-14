@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -283,90 +284,103 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element(String.valueOf(getBlock().getBiome().name()))
                     .getAttribute(attribute.fulfill(1));
 
-//        else if (type.equals("BLOCK"))
-//        {
-//            if (subType.equals("BELOW"))
-//            {
-//                fromLocation = new Location(fromLocation.add(0, -1, 0));
-//            }
-//
-//            else if (subType.equals("MATERIAL") || specifier.equals("MATERIAL"))
-//            {
-//                event.setReplaced(fromLocation.getBlock().getType().toString());
-//            }
-//        }
-//
-//        else if (type.equals("DIRECTION"))
-//        {
-//            if (fromLocation != null && toLocation != null)
-//            {
-//                event.setReplaced(Utilities.getCardinal(Utilities.getYaw
-//                        (toLocation.toVector().subtract
-//                                (fromLocation.toVector()).normalize())));
-//            }
-//        }
-//
-//        else if (type.equals("DISTANCE"))
-//        {
-//            if (fromLocation != null && toLocation != null)
-//            {
-//                if (subType.equals("ASINT"))
-//                {
-//                    event.setReplaced(String.valueOf((int)fromLocation.distance(toLocation)));
-//                }
-//                else if (subType.equals("VERTICAL"))
-//                {
-//                    if (fromLocation.getWorld().getName() == toLocation.getWorld().getName()
-//                            || specifier.equals("MULTIWORLD"))
-//                    {
-//                        // Only calculate distance between locations on different worlds
-//                        // if the MULTIWORLD specifier is used
-//                        event.setReplaced(String.valueOf(Math.abs(
-//                                fromLocation.getY() - toLocation.getY())));
-//                    }
-//                }
-//                else if (subType.equals("HORIZONTAL"))
-//                {
-//                    if (fromLocation.getWorld().getName() == toLocation.getWorld().getName()
-//                            || specifier.equals("MULTIWORLD"))
-//                    {
-//                        // Only calculate distance between locations on different worlds
-//                        // if the MULTIWORLD specifier is used
-//                        event.setReplaced(String.valueOf(Math.sqrt(
-//                                Math.pow(fromLocation.getX() - toLocation.getX(), 2) +
-//                                        Math.pow(fromLocation.getZ() - toLocation.getZ(), 2))));
-//                    }
-//                }
-//                else
-//                    event.setReplaced(String.valueOf(fromLocation.distance(toLocation)));
-//            }
-//        }
-//
-//        else if (type.equals("FORMATTED"))
-//            event.setReplaced("X '" + fromLocation.getX()
-//                    + "', Y '" + fromLocation.getY()
-//                    + "', Z '" + fromLocation.getZ()
-//                    + "', in world '" + fromLocation.getWorld().getName() + "'");
-//
-//        else if (type.equals("IS_LIQUID"))
-//        {
-//            event.setReplaced(String.valueOf(fromLocation.getBlock().isLiquid()));
-//        }
-//
-//        else if (type.equals("LIGHT"))
-//        {
-//            if (subType.equals("BLOCKS"))
-//                event.setReplaced(String.valueOf((int) fromLocation.getBlock().getLightFromBlocks()));
-//            else if (subType.equals("SKY"))
-//                event.setReplaced(String.valueOf((int) fromLocation.getBlock().getLightFromSky()));
-//            else
-//                event.setReplaced(String.valueOf((int) fromLocation.getBlock().getLightLevel()));
-//        }
-//
-//        else if (type.equals("POWER"))
-//        {
-//            event.setReplaced(String.valueOf((int) fromLocation.getBlock().getBlockPower()));
-//        }
+        if (attribute.startsWith("block.below"))
+            return new dLocation(this.add(0,-1,0))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("block.above"))
+            return new dLocation(this.add(0,1,0))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("add")) {
+            if (attribute.hasContext(1) && attribute.getContext(1).split(",").length == 3) {
+                String[] ints = attribute.getContext(1).split(",", 3);
+                if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
+                        && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
+                        && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2])))
+                    return new dLocation(this.add(Double.valueOf(ints[0]),
+                            Double.valueOf(ints[1]),
+                            Double.valueOf(ints[2]))).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        if (attribute.startsWith("block.material"))
+            return new Element(getBlock().getType().toString()).getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("direction"))
+            if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1)))
+                return new Element(Utilities.getCardinal(Utilities.getYaw
+                        (this.toVector().subtract(dLocation.valueOf(attribute.getContext(1)).toVector())
+                                .normalize())))
+                        .getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("distance")) {
+            if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
+                dLocation toLocation = dLocation.valueOf(attribute.getContext(1));
+
+                if (attribute.getAttribute(2).startsWith("horizontal")) {
+                    if (attribute.getAttribute(3).startsWith("multiworld"))
+                        return new Element(String.valueOf(Math.sqrt(
+                                Math.pow(this.getX() - toLocation.getX(), 2) +
+                                        Math.pow(toLocation.getZ() - toLocation.getZ(), 2))))
+                                .getAttribute(attribute.fulfill(3));
+                    else if (this.getWorld() == toLocation.getWorld())
+                        return new Element(String.valueOf(Math.sqrt(
+                                Math.pow(this.getX() - toLocation.getX(), 2) +
+                                        Math.pow(toLocation.getZ() - toLocation.getZ(), 2))))
+                                .getAttribute(attribute.fulfill(2));
+                }
+
+                else if (attribute.getAttribute(2).startsWith("vertical")) {
+                    if (attribute.getAttribute(3).startsWith("multiworld"))
+                        return new Element(String.valueOf(Math.abs(this.getY() - toLocation.getY())))
+                                .getAttribute(attribute.fulfill(3));
+                    else if (this.getWorld() == toLocation.getWorld())
+                        return new Element(String.valueOf(Math.abs(this.getY() - toLocation.getY())))
+                                .getAttribute(attribute.fulfill(2));
+                }
+
+                else return new Element(String.valueOf(this.distance(toLocation)))
+                            .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        if (attribute.startsWith("formatted.simple"))
+            return new Element("X '" + getBlockX()
+                    + "', Y '" + getBlockY()
+                    + "', Z '" + getBlockZ()
+                    + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("formatted"))
+            return new Element("X '" + getX()
+                    + "', Y '" + getY()
+                    + "', Z '" + getZ()
+                    + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("is_liquid"))
+            return new Element(String.valueOf(getBlock().isLiquid())).getAttribute(attribute.fulfill(1));
+
+
+        if (attribute.startsWith("light.from_blocks") ||
+                attribute.startsWith("light.blocks"))
+            return new Element(String.valueOf((int) getBlock().getLightFromBlocks()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("light.from_sky") ||
+                attribute.startsWith("light.sky"))
+            return new Element(String.valueOf((int) getBlock().getLightFromSky()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("light"))
+            return new Element(String.valueOf((int) getBlock().getLightLevel()))
+                    .getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("power"))
+            return new Element(String.valueOf(getBlock().getBlockPower()))
+                    .getAttribute(attribute.fulfill(1));
+
+
+
 //
 //        else if (type.equals("TIME"))
 //        {

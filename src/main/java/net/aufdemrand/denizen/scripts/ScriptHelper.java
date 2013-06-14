@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts;
 
-import net.aufdemrand.denizen.events.dScriptReloadEvent;
+import net.aufdemrand.denizen.events.ScriptReloadEvent;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
@@ -36,7 +36,7 @@ public class ScriptHelper {
         }
 
         ScriptRegistry._buildCoreYamlScriptContainers(getScripts());
-        Bukkit.getServer().getPluginManager().callEvent(new dScriptReloadEvent());
+        Bukkit.getServer().getPluginManager().callEvent(new ScriptReloadEvent());
     }
 
     public static FileConfiguration _gs() {

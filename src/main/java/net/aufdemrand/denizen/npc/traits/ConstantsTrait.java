@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.npc.traits;
 
-import net.aufdemrand.denizen.events.dScriptReloadEvent;
+import net.aufdemrand.denizen.events.ScriptReloadEvent;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -155,7 +155,7 @@ public class ConstantsTrait extends Trait {
      * @param event
      */
     @EventHandler
-    public void onScriptsReload(dScriptReloadEvent event) {
+    public void onScriptsReload(ScriptReloadEvent event) {
         rebuildAssignmentConstants();
     }
 
