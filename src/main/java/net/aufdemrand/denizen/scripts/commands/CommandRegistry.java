@@ -172,8 +172,11 @@ public class CommandRegistry implements DenizenRegistry {
         registerCoreMember(LookcloseCommand.class, 
         		"LOOKCLOSE", "lookclose [toggle:true|false]", 1);
 		
+        registerCoreMember(MidiCommand.class, 
+        		"MIDI", "midi [file:<name>] (listener(s):[p@<name>|...])|(location:<x,y,z,world>) (tempo:<#.#>)", 1);
+        
         registerCoreMember(MountCommand.class, 
-        		"MOUNT", "mount (cancel) (location:x,y,z,world) (target(s):[n@#]|[p@name]|[e@name])", 0);
+        		"MOUNT", "mount (cancel) (location:<x,y,z,world>) (target(s):[n@#]|[p@name]|[e@name])", 0);
         
         registerCoreMember(ModifyBlockCommand.class, 
         		"MODIFYBLOCK", "modifyblock [location:<x,y,z,world>] [<material>(:<data>)] (radius:<#>) (height:<#>) (depth:<#>)", 2);

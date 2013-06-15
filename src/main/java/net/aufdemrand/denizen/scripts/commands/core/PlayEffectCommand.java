@@ -14,7 +14,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /* playeffect [location:<x,y,z,world>] [effect:<name>] (data:<#>) (radius:<#>)*/
 
-/* 
+/** 
  * Arguments: [] - Required, () - Optional 
  * [location:<x,y,z,world>] specifies location of the effect
  * [effect:<name>] sets the name of effect to be played
@@ -24,6 +24,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * Example Usage:
  * playeffect location:123,65,765,world effect:record_play data:2259 radius:7
  * playeffect location:<npc.location> e:smoke r:3
+ * 
+ * @author David Cernat
  */
 
 public class PlayEffectCommand extends AbstractCommand {
@@ -50,10 +52,10 @@ public class PlayEffectCommand extends AbstractCommand {
             	}
             }
 			
-			else if (aH.matchesValueArg("radius, r", arg, ArgumentType.Float))
+			else if (aH.matchesValueArg("radius, r", arg, ArgumentType.Integer))
             	radius = aH.getIntegerFrom(arg);
 
-			else if (aH.matchesValueArg("data, d", arg, ArgumentType.Float))
+			else if (aH.matchesValueArg("data, d", arg, ArgumentType.Integer))
                 data = aH.getIntegerFrom(arg);
             
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
