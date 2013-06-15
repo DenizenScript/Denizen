@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.arguments.Element;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 
 import org.bukkit.event.EventHandler;
@@ -23,6 +25,7 @@ public class UtilTags implements Listener {
         if (!event.matches("UTIL")) return;
 
         String type = event.getType() != null ? event.getType() : "";
+        String typeContext = event.getTypeContext() != null ? event.getTypeContext() : "";
         String subType = event.getSubType() != null ? event.getSubType() : "";
         String subTypeContext = event.getSubTypeContext() != null ? event.getSubTypeContext().toUpperCase() : "";
         String specifier = event.getSpecifier() != null ? event.getSpecifier() : "";
@@ -111,6 +114,11 @@ public class UtilTags implements Listener {
         	
         	event.setReplaced(format.format(currentDate));
 
+        }
+
+        else if (type.equalsIgnoreCase("AS_ELEMENT")) {
+            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            event.setReplaced(new Element(typeContext).getAttribute(attribute.fulfill(2)));
         }
 
     }

@@ -75,7 +75,7 @@ public class aH {
         return "<G>" + prefix + "='<A>" + id + "<Y>(" + value.toString() + ")<G>'  ";
     }
 
-    private static class Argument {
+    public static class Argument {
         String raw_value;
         String prefix;
         String value;
