@@ -23,6 +23,7 @@ public class UtilTags implements Listener {
         if (!event.matches("UTIL")) return;
 
         String type = event.getType() != null ? event.getType() : "";
+        String typeContext = event.getTypeContext() != null ? event.getTypeContext() : "";
         String subType = event.getSubType() != null ? event.getSubType() : "";
         String subTypeContext = event.getSubTypeContext() != null ? event.getSubTypeContext().toUpperCase() : "";
         String specifier = event.getSpecifier() != null ? event.getSpecifier() : "";
@@ -99,8 +100,9 @@ public class UtilTags implements Listener {
         	} else format.applyPattern("EEE, MMM d, yyyy");
         	
         	event.setReplaced(format.format(currentDate));
-
         }
+
+
 
     }
 
