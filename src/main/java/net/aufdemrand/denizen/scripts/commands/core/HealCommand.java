@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -87,12 +86,12 @@ public class HealCommand extends AbstractCommand {
 
             case NPC:
                 NPC npc = scriptEntry.getNPC().getCitizen();
-                if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
+                
                 // Set health to max
                 if (amount == Integer.MAX_VALUE)
-                    npc.getTrait(HealthTrait.class).setHealth(npc.getTrait(HealthTrait.class).getMaxhealth());
+                    npc.getBukkitEntity().setHealth(npc.getBukkitEntity().getMaxHealth());
                     // else, set Health
-                else npc.getTrait(HealthTrait.class).heal(amount);
+                else npc.getBukkitEntity().setHealth(npc.getBukkitEntity().getHealth() + amount);
                 return;
 
             case PLAYER:

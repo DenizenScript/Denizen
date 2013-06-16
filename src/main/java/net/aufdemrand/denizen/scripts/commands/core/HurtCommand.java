@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
@@ -65,14 +64,10 @@ public class HurtCommand extends AbstractCommand {
 
             case NPC:
                 NPC npc = scriptEntry.getNPC().getCitizen();
-                if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
-                // Set health to max
-                if (amount == Integer.MAX_VALUE)
-                    npc.getTrait(HealthTrait.class).setHealth(npc.getTrait(HealthTrait.class).getMaxhealth());
-                    // else, set Health
-                else npc.getTrait(HealthTrait.class).heal(amount);
-                return;
 
+                npc.getBukkitEntity().setHealth(npc.getBukkitEntity().getHealth() - amount);
+                return;
+                
             case PLAYER:
                 Player player = scriptEntry.getPlayer();
                 // Injure player
