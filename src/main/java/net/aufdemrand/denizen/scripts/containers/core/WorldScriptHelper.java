@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.arguments.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,7 +37,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class WorldScriptHelper implements Listener {
@@ -458,10 +458,68 @@ public class WorldScriptHelper implements Listener {
 
         }
     }
-
+    
+    @EventHandler
+    public void playerConsume(PlayerItemConsumeEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        String determination;
+        
+        ItemStack item = event.getItem(); 
+        
+        String id = String.valueOf(item.getTypeId());
+        String material = item.getType().name();
+        String data = String.valueOf(item.getData().getData());
+        String display = String.valueOf(item.getItemMeta().getDisplayName());
+        
+        context.put("id", id);
+        context.put("material", material);
+        context.put("data", data);
+        context.put("display", display);
+        
+        determination = doEvent("player consumes item", null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + id, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + id + ":" + data, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + material, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + material + ":" + data, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        if (display != null) {
+        	
+            determination = doEvent("player consumes " + display, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+            
+            determination = doEvent("player consumes " + id + " " + display, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+            
+            determination = doEvent("player consumes " + material + " " + display, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        }
+    }
 
     @EventHandler
-    public void playerEat(EntityRegainHealthEvent event) {
+    public void playerHeal(EntityRegainHealthEvent event) {
 
         if (event.getEntity() instanceof  Player
                 && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
