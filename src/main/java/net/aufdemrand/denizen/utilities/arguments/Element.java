@@ -147,7 +147,8 @@ public class Element implements dScriptArgument {
             String contains = attribute.getContext(1);
 
             if (contains.toLowerCase().startsWith("regex:")) {
-                if (Pattern.compile(contains, Pattern.CASE_INSENSITIVE).matcher(element).matches())
+            	
+                if (Pattern.compile(contains.substring(("regex:").length()), Pattern.CASE_INSENSITIVE).matcher(element).matches())
                     return new Element("true").getAttribute(attribute.fulfill(1));
                 else return new Element("false").getAttribute(attribute.fulfill(1));
             }
