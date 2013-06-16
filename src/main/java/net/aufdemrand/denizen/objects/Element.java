@@ -131,11 +131,35 @@ public class Element implements dObject {
 
         if (attribute.startsWith("aslist")
                 || attribute.startsWith("as_list"))
-            return new dList(element).getAttribute(attribute.fulfill(1));
+            return dList.valueOf(element).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("asentity")
                 || attribute.startsWith("as_entity"))
-            return new dEntity(element).getAttribute(attribute.fulfill(1));
+            return dEntity.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("aslocation")
+                || attribute.startsWith("as_location"))
+            return dLocation.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("asplayer")
+                || attribute.startsWith("as_player"))
+            return dPlayer.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("asnpc")
+                || attribute.startsWith("as_npc"))
+            return dNPC.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("asitem")
+                || attribute.startsWith("as_item"))
+            return dItem.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("asscript")
+                || attribute.startsWith("as_script"))
+            return dScript.valueOf(element).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("asduration")
+                || attribute.startsWith("as_duration"))
+            return Duration.valueOf(element).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("substring")) {            // substring[2,8]
             int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;

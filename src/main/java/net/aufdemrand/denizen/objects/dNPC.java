@@ -16,6 +16,7 @@ import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.minecraft.server.v1_5_R3.EntityLiving;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
@@ -220,6 +221,88 @@ public class dNPC implements dObject {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+        if (type.equals("NAME")) {
+            event.setReplaced(ChatColor.stripColor(n.getName()));
+            if (subType.equals("NICKNAME")) {
+                if (n.getCitizen().hasTrait(NicknameTrait.class))
+                    event.setReplaced(n.getCitizen().getTrait(NicknameTrait.class).getNickname());
+            }
+
+        } else if (type.equals("HEALTH")) {
+
+            if (subType.equals("MAX"))
+                event.setReplaced(String.valueOf(n.getHealthTrait().getMaxhealth()));
+            else
+                event.setReplaced(String.valueOf(n.getHealthTrait().getHealth()));
+
+        } else if (type.equals("TYPE")) {
+            if (subType.equals("FORMATTED"))
+                event.setReplaced(String.valueOf(n.getEntityType().name().toLowerCase().replace('_', ' ')));
+            else
+                event.setReplaced(String.valueOf(n.getEntityType().name()));
+
+        } else if (type.equals("ID")) {
+            event.setReplaced(String.valueOf(n.getId()));
+
+        } else if (type.equals("OWNER")) {
+            event.setReplaced(String.valueOf(n.getOwner()));
+
+        } else if (type.equals("LOCATION")) {
+            dLocation loc = n.getLocation();
+            event.setReplaced(loc.getX()
+                    + "," + loc.getY()
+                    + "," + loc.getZ()
+                    + "," + n.getWorld().getName());
+            if (subType.equals("BLOCK"))
+                event.setReplaced(loc.getBlockX()
+                        + "," + loc.getBlockY()
+                        + "," + loc.getBlockZ()
+                        + "," + n.getWorld().getName());
+            else if (subType.equals("FORMATTED"))
+                event.setReplaced("X '" + loc.getX()
+                        + "', Y '" + loc.getY()
+                        + "', Z '" + loc.getZ()
+                        + "', in world '" + n.getWorld().getName() + "'");
+            else if (subType.equals("X"))
+                event.setReplaced(String.valueOf(n.getLocation().getX()));
+            else if (subType.equals("Y"))
+                event.setReplaced(String.valueOf(n.getLocation().getY()));
+            else if (subType.equals("Z"))
+                event.setReplaced(String.valueOf(n.getLocation().getZ()));
+            else if (subType.equals("STANDING_ON"))
+                event.setReplaced(loc.add(0, -1, 0).getBlock().getType().name());
+            else if (subType.equals("STANDING_ON_DISPLAY"))
+                event.setReplaced(n.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
+            else if (subType.equals("WORLD_SPAWN"))
+                event.setReplaced(n.getWorld().getSpawnLocation().getX()
+                        + "," + n.getWorld().getSpawnLocation().getY()
+                        + "," + n.getWorld().getSpawnLocation().getZ()
+                        + "," + n.getWorld().getName());
+            else if (subType.equals("WORLD"))
+                event.setReplaced(n.getWorld().getName());
+            else if (subType.equals("PREVIOUS_LOCATION"))
+                if (previousLocations.containsKey(n.getId()))
+                    event.setReplaced(previousLocations.get(n.getId()).identify());
+
+        } else if (type.equals("NAVIGATOR")) {
+            if (subType.equals("IS_NAVIGATING"))
+                event.setReplaced(Boolean.toString(n.getNavigator().isNavigating()));
+            else if (subType.equals("SPEED"))
+                event.setReplaced(String.valueOf(n.getNavigator().getLocalParameters().speedModifier()));
+            else if (subType.equals("AVOID_WATER"))
+                event.setReplaced(Boolean.toString(n.getNavigator().getLocalParameters().avoidWater()));
+            else if (subType.equals("TARGET_LOCATION")) {
+                dLocation loc = new dLocation(n.getNavigator().getTargetAsLocation());
+                if (loc != null) event.setReplaced(loc.identify());
+            } else if (subType.equals("IS_FIGHTING")) {
+                event.setReplaced(String.valueOf(event.getNPC().getNavigator().getEntityTarget().isAggressive()));
+            } else if (subType.equals("TARGET_TYPE")) {
+                event.setReplaced(event.getNPC().getNavigator().getTargetType().toString());
+            }
+
+        }
+
+
     }
 }

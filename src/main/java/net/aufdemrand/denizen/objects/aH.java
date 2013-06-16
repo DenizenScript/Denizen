@@ -491,22 +491,13 @@ public class aH {
         return Duration.matches(arg);
     }
 
-    @Deprecated
     public static boolean matchesEntityType(String arg) {
-        final Pattern matchesEntityPtrn = Pattern.compile("entity:(.+)", Pattern.CASE_INSENSITIVE);
-        Matcher m = matchesEntityPtrn.matcher(arg);
-        if (m.matches()) {
-            String group = m.group(1).toUpperCase();
-            // Check against valid EntityTypes using Bukkit's EntityType enum
-            for (EntityType validEntity : EntityType.values())
-                if (group.equals(validEntity.name()))
-                    return true;
-        }
-        // Check for valid prefix, warn about value.
-        if (arg.toUpperCase().startsWith("entity:"))
-            dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
-                    "prefix is correct, the value is not valid. Perhaps a replaceable Tag has failed " +
-                    "to fill in a valid EntityType, or the EntityType you provided is not correct?");
+        arg = arg.replace("duration:", "");
+
+        // Check against valid EntityTypes using Bukkit's EntityType enum
+        for (EntityType validEntity : EntityType.values())
+            if (arg.equalsIgnoreCase(validEntity.name()))
+                return true;
         return false;
     }
 

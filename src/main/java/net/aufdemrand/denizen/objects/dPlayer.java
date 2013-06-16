@@ -165,7 +165,7 @@ public class dPlayer implements dObject {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        if (attribute == null) return null;
+        if (attribute == null) return "null";
 
         dB.log("getAttribute: " + getType() + " ---> " + attribute.attributes.toString());
 
