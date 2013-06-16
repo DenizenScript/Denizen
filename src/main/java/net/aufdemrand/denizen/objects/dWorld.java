@@ -114,20 +114,20 @@ public class dWorld implements dObject {
             return new Element(String.valueOf(getWorld().canGenerateStructures()))
                     .getAttribute(attribute.fulfill(1));
 
-        getWorld().getName())
-        .getAttribute(attribute.fulfill(1));
-
-        getWorld().getAllowAnimals())
-        .getAttribute(attribute.fulfill(1));
-
-        getWorld().getAllowMonsters())
-        .getAttribute(attribute.fulfill(1));
-
-        getWorld().getAmbientSpawnLimit())
-        .getAttribute(attribute.fulfill(1));
-
-        getWorld().getAnimalSpawnLimit())
-        .getAttribute(attribute.fulfill(1));
+//        getWorld().getName())
+//        .getAttribute(attribute.fulfill(1));
+//
+//        getWorld().getAllowAnimals())
+//        .getAttribute(attribute.fulfill(1));
+//
+//        getWorld().getAllowMonsters())
+//        .getAttribute(attribute.fulfill(1));
+//
+//        getWorld().getAmbientSpawnLimit())
+//        .getAttribute(attribute.fulfill(1));
+//
+//        getWorld().getAnimalSpawnLimit())
+//        .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("highest_block")) {
             // TODO: finish

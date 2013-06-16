@@ -318,6 +318,7 @@ public class aH {
      * @return true if matched, false otherwise
      *
      */
+    @Deprecated
     public static boolean matchesValueArg(String names, String string_arg, ArgumentType type) {
         if (string_arg == null) return false;
 
@@ -373,6 +374,9 @@ public class aH {
             case Duration:
                 return Duration.matches(string_arg);
 
+            case String:
+                return true;
+
         }
 
         dB.echoError("While parsing '" + string_arg + "', Denizen has run into a problem. While the " +
@@ -394,6 +398,7 @@ public class aH {
         }
     }
 
+    @Deprecated
     public static EntityType getEntityTypeFrom(String arg) {
         for (EntityType validEntity : EntityType.values())
             if (getStringFrom(arg).equalsIgnoreCase(validEntity.name()))
@@ -403,7 +408,9 @@ public class aH {
         return null;
     }
 
+    @Deprecated
     public static dEntity getEntityFrom(String arg) {
+        arg = arg.replace("entity:", "");
         return dEntity.valueOf(arg);
     }
 
@@ -423,32 +430,43 @@ public class aH {
         }
     }
 
+    @Deprecated
     public static dItem getItemFrom(String arg) {
+        arg = arg.replace("item:", "");
         dItem stack = dItem.valueOf(arg);
         return stack;
     }
 
+    @Deprecated
     public static dList getListFrom(String arg) {
         return dList.valueOf(arg);
     }
 
+    @Deprecated
     public static dLocation getLocationFrom(String arg) {
+        arg = arg.replace("location:", "");
         return dLocation.valueOf(arg);
     }
 
+    @Deprecated
     public static dScript getScriptFrom(String arg) {
+        arg = arg.replace("script:", "");
         return dScript.valueOf(arg);
     }
 
-     public static dPlayer getPlayerFrom(String arg) {
+    @Deprecated
+    public static dPlayer getPlayerFrom(String arg) {
         return dPlayer.valueOf(arg);
     }
 
+    @Deprecated
     public static dNPC getNPCFrom(String arg) {
         return dNPC.valueOf(arg);
     }
 
+    @Deprecated
     public static ScriptQueue getQueueFrom(String arg) {
+        arg = arg.replace("queue:", "");
         return ScriptQueue._getQueue(getStringFrom(arg).toUpperCase());
     }
 
@@ -457,7 +475,9 @@ public class aH {
         return parts.length >=2 ? parts[1] : arg;
     }
 
+    @Deprecated
     public static Duration getDurationFrom(String arg) {
+        arg = arg.replace("duration:", "");
         return Duration.valueOf(arg);
     }
 
@@ -465,11 +485,13 @@ public class aH {
         return doublePrimitive.matcher(arg).matches();
     }
 
+    @Deprecated
     public static boolean matchesDuration(String arg) {
-        if (!arg.toLowerCase().startsWith("duration:")) return false;
-        return Duration.matches(aH.getStringFrom(arg));
+        arg = arg.replace("duration:", "");
+        return Duration.matches(arg);
     }
 
+    @Deprecated
     public static boolean matchesEntityType(String arg) {
         final Pattern matchesEntityPtrn = Pattern.compile("entity:(.+)", Pattern.CASE_INSENSITIVE);
         Matcher m = matchesEntityPtrn.matcher(arg);
@@ -492,6 +514,7 @@ public class aH {
         return integerPrimitive.matcher(arg).matches();
     }
 
+    @Deprecated
     public static boolean matchesItem(String arg) {
         if (arg.length() > 5 && arg.toUpperCase().startsWith("ITEM:"))
             return true;
@@ -499,12 +522,14 @@ public class aH {
         return false;
     }
 
+    @Deprecated
     public static boolean matchesContext(String arg) {
         if (arg.toUpperCase().startsWith("CONTEXT:")) return true;
         // TODO: Other matches____ do some actual checks, should this?.
         return false;
     }
 
+    @Deprecated
     public static Map<String, String> getContextFrom(String arg) {
         Map<String, String> context = new HashMap<String, String>();
         int x = 1;
@@ -515,24 +540,28 @@ public class aH {
         return context;
     }
 
+    @Deprecated
     public static boolean matchesLocation(String arg) {
         if (arg.length() > 8 && arg.toUpperCase().startsWith("LOCATION:"))
             return true;
         return false;
     }
 
+    @Deprecated
     public static boolean matchesQuantity(String arg) {
         if (arg.length() > 4 && arg.toUpperCase().startsWith("QTY:"))
             return true;
         return false;
     }
 
+    @Deprecated
     public static boolean matchesQueue(String arg) {
         if (arg.length() > 6 && arg.toUpperCase().startsWith("QUEUE:"))
             return true;
         return false;
     }
 
+    @Deprecated
     public static boolean matchesScript(String arg) {
         Matcher m = matchesScriptPtrn.matcher(arg);
         if (m.matches()) {
@@ -547,17 +576,18 @@ public class aH {
         return false;
     }
 
+    @Deprecated
     public static boolean matchesToggle(String arg) {
-        Matcher m = matchesTogglePtrn.matcher(arg);
-        if (m.matches()) return true;
+        final Pattern m = Pattern.compile("toggle:true|false|toggle");
+        if (m.matcher(arg).matches()) return true;
         else if (arg.toUpperCase().startsWith("toggle:"))
-            dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the " +
-                    "prefix is correct, the value is not valid. 'TOGGLE' requires a value of TRUE, FALSE, or TOGGLE. " +
-                    "Perhaps a replaceable Tag has failed to fill in a valid value?");
+            dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the prefix is " +
+                    "correct, the value is not valid. 'TOGGLE' requires a value of TRUE, FALSE, or TOGGLE. ");
+
         return false;
     }
 
-    final static Pattern matchesTogglePtrn = Pattern.compile("toggle:(?:(?:true)|(?:false)|(?:toggle))", Pattern.CASE_INSENSITIVE);
+    final static Pattern matchesTogglePtrn = Pattern.compile("toggle:true|false|toggle", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesScriptPtrn = Pattern.compile("script:(.+)", Pattern.CASE_INSENSITIVE);
 
 

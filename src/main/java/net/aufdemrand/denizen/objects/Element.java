@@ -23,9 +23,6 @@ public class Element implements dObject {
         return new Element(string);
     }
 
-
-
-
     private String element;
 
     public Element(String string) {
@@ -135,6 +132,10 @@ public class Element implements dObject {
         if (attribute.startsWith("aslist")
                 || attribute.startsWith("as_list"))
             return new dList(element).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("asentity")
+                || attribute.startsWith("as_entity"))
+            return new dEntity(element).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("substring")) {            // substring[2,8]
             int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;
