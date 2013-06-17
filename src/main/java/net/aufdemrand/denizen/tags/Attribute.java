@@ -80,8 +80,7 @@ public class Attribute {
         	Matcher contextMatcher = Pattern.compile("\\[.+\\]").matcher(text);
         	
         	if (contextMatcher.find()) {
-        		
-        		return text.substring(contextMatcher.start() + 1);
+        		return text.substring(contextMatcher.start() + 1, contextMatcher.end() - 1);
             }
         }
         return null;
