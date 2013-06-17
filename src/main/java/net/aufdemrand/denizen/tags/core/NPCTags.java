@@ -6,8 +6,10 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
@@ -31,92 +33,23 @@ public class NPCTags implements Listener {
     public void npcTags(ReplaceableTagEvent event) {
         if (!event.matches("npc")) return;
 
+        // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
+        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+
+        // PlayerTags require a... dPlayer!
         dNPC n = event.getNPC();
-        if (n == null) return; // to avoid exceptions in scripts with no NPC attached
-        
-        String type = event.getType() != null ? event.getType().toUpperCase() : "";
-        String subType = event.getSubType() != null ? event.getSubType().toUpperCase() : "";
 
-        if (type.equals("NAME")) {
-            event.setReplaced(ChatColor.stripColor(n.getName()));
-            if (subType.equals("NICKNAME")) {
-                if (n.getCitizen().hasTrait(NicknameTrait.class))
-                    event.setReplaced(n.getCitizen().getTrait(NicknameTrait.class).getNickname());
-            }
-            
-        } else if (type.equals("HEALTH")) {
-        	
-        	if (subType.equals("MAX"))
-        		event.setReplaced(String.valueOf(n.getHealthTrait().getMaxhealth()));
-        	else
-        		event.setReplaced(String.valueOf(n.getHealthTrait().getHealth()));
-            
-        } else if (type.equals("TYPE")) {
-        	if (subType.equals("FORMATTED"))
-        		event.setReplaced(String.valueOf(n.getEntityType().name().toLowerCase().replace('_', ' ')));
-        	else
-        		event.setReplaced(String.valueOf(n.getEntityType().name()));
-
-        } else if (type.equals("ID")) {
-            event.setReplaced(String.valueOf(n.getId()));
-        
-        } else if (type.equals("OWNER")) {
-            event.setReplaced(String.valueOf(n.getOwner()));
-
-        } else if (type.equals("LOCATION")) {
-            dLocation loc = n.getLocation();
-            event.setReplaced(loc.getX()
-                    + "," + loc.getY()
-                    + "," + loc.getZ()
-                    + "," + n.getWorld().getName());
-            if (subType.equals("BLOCK"))
-                event.setReplaced(loc.getBlockX()
-                        + "," + loc.getBlockY()
-                        + "," + loc.getBlockZ()
-                        + "," + n.getWorld().getName());
-            else if (subType.equals("FORMATTED"))
-                event.setReplaced("X '" + loc.getX()
-                        + "', Y '" + loc.getY()
-                        + "', Z '" + loc.getZ()
-                        + "', in world '" + n.getWorld().getName() + "'");
-            else if (subType.equals("X"))
-                event.setReplaced(String.valueOf(n.getLocation().getX()));
-            else if (subType.equals("Y"))
-                event.setReplaced(String.valueOf(n.getLocation().getY()));
-            else if (subType.equals("Z"))
-                event.setReplaced(String.valueOf(n.getLocation().getZ()));
-            else if (subType.equals("STANDING_ON"))
-                event.setReplaced(loc.add(0, -1, 0).getBlock().getType().name());
-            else if (subType.equals("STANDING_ON_DISPLAY"))
-            	event.setReplaced(n.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
-            else if (subType.equals("WORLD_SPAWN"))
-                event.setReplaced(n.getWorld().getSpawnLocation().getX()
-                        + "," + n.getWorld().getSpawnLocation().getY()
-                        + "," + n.getWorld().getSpawnLocation().getZ()
-                        + "," + n.getWorld().getName());
-            else if (subType.equals("WORLD"))
-                event.setReplaced(n.getWorld().getName());
-            else if (subType.equals("PREVIOUS_LOCATION"))
-                if (previousLocations.containsKey(n.getId()))
-                    event.setReplaced(previousLocations.get(n.getId()).identify());
-
-        } else if (type.equals("NAVIGATOR")) {
-            if (subType.equals("IS_NAVIGATING"))
-                event.setReplaced(Boolean.toString(n.getNavigator().isNavigating()));
-            else if (subType.equals("SPEED"))
-                event.setReplaced(String.valueOf(n.getNavigator().getLocalParameters().speedModifier()));
-            else if (subType.equals("AVOID_WATER"))
-                event.setReplaced(Boolean.toString(n.getNavigator().getLocalParameters().avoidWater()));
-            else if (subType.equals("TARGET_LOCATION")) {
-                dLocation loc = new dLocation(n.getNavigator().getTargetAsLocation());
-                if (loc != null) event.setReplaced(loc.identify());
-            } else if (subType.equals("IS_FIGHTING")) {
-                event.setReplaced(String.valueOf(event.getNPC().getNavigator().getEntityTarget().isAggressive()));
-            } else if (subType.equals("TARGET_TYPE")) {
-                event.setReplaced(event.getNPC().getNavigator().getTargetType().toString());
+        // Player tag may specify a new player in the <player[context]...> portion of the tag.
+        if (attribute.hasContext(1))
+            // Check if this is a valid player and update the dPlayer object reference.
+            if (dNPC.matches(attribute.getContext(1)))
+                n = dNPC.valueOf(attribute.getContext(1));
+            else {
+                dB.echoDebug("Could not match '" + attribute.getContext(1) + "' to a valid NPC!");
+                return;
             }
 
-        }
+        event.setReplaced(n.getAttribute(attribute.fulfill(1)));
 
     }
 

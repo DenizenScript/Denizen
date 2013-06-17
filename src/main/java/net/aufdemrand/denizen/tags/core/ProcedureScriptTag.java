@@ -26,7 +26,7 @@ public class ProcedureScriptTag implements Listener {
        if (event.getValue() == null) return;
 
        // Get the script's name from the tag's value
-       dScript script = aH.getScriptFrom(event.getValue());
+       dScript script = dScript.valueOf(event.getValue());
 
        if (script == null) {
            dB.echoError("Tried to call a procedure script, but couldn't find a match!");
@@ -42,7 +42,7 @@ public class ProcedureScriptTag implements Listener {
        // Create new ID -- this is what we will look for when determining an outcome
        long id = DetermineCommand.getNewId();
 
-       // Add the reqId to each of the entries
+       // Add the reqId to each of the entries for referencing
        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 
        ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(entries).start();
