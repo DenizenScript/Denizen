@@ -379,6 +379,8 @@ public class PlayerTags implements Listener {
             {
                 if (subType.equalsIgnoreCase("GLOBAL"))
                     event.setReplaced(String.valueOf(Depends.permissions.has((World) null, p.getName(), typeContext)));
+                else if (subType.equalsIgnoreCase("WORLD"))
+                    event.setReplaced(String.valueOf(Depends.permissions.has(subTypeContext, p.getName(), typeContext)));
                 else
                     event.setReplaced(String.valueOf(Depends.permissions.has(p, typeContext)));
             }
@@ -392,6 +394,8 @@ public class PlayerTags implements Listener {
             {
                 if (subType.equalsIgnoreCase("GLOBAL"))
                     event.setReplaced(String.valueOf(Depends.permissions.playerInGroup((World) null, p.getName(), typeContext)));
+                else if (subType.equalsIgnoreCase("WORLD"))
+                    event.setReplaced(String.valueOf(Depends.permissions.playerInGroup(subTypeContext, p.getName(), typeContext)));
                 else
                     event.setReplaced(String.valueOf(Depends.permissions.playerInGroup(p, typeContext)));
             }
