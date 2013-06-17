@@ -109,9 +109,9 @@ public class FlagTags implements Listener {
         case ASLIST:
             return String.valueOf(value.asList());
         case ASPLAYERLIST:
-            return String.valueOf(value.asList("player."));
+            return String.valueOf(value.asList());
         case ASNPCLIST:
-            return String.valueOf(value.asList("npc."));
+            return String.valueOf(value.asList());
         case ASCSLIST:
             return String.valueOf(value.asCommaSeparatedList());
         case ASMONEY:

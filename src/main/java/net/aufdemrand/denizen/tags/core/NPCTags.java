@@ -120,7 +120,7 @@ public class NPCTags implements Listener {
 
     }
 
-    private Map<Integer, dLocation> previousLocations = new HashMap<Integer, dLocation>();
+    public static Map<Integer, dLocation> previousLocations = new HashMap<Integer, dLocation>();
 
     @EventHandler
     public void navComplete(NavigationCompleteEvent event) {

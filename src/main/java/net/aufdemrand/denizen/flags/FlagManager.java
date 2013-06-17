@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.flags;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -527,30 +528,9 @@ public class FlagManager {
          * exist, "" is returned.
          *
          */
-        public String asList() {
+        public dList asList() {
             adjustIndex();
-            String returnList = "";
-
-            for (String string : values)
-                returnList = returnList + string + "|";
-
-            return returnList.substring(0, returnList.length() - 1);
-        }
-        
-        /**
-         * Returns a String value of the entirety of the values
-         * contained as a dScript list, with a prefix added to
-         * to each value. If the value doesn't exist, "" is returned.
-         *
-         */
-        public String asList(String prefix) {
-            adjustIndex();
-            String returnList = "";
-
-            for (String string : values)
-                returnList = returnList + prefix + string + "|";
-
-            return returnList.substring(0, returnList.length() - 1);
+            return new dList(values);
         }
 
         /**
@@ -602,9 +582,7 @@ public class FlagManager {
                     // If a List<Object>
                 else if (arg.contains("|")) {
                     List<String> toList = new ArrayList<String>();
-                    for (String string : arg.split("\\|")) // the pipe character | needs to be escaped
-                        toList.add(string);
-                    return toList;
+                    return new dList(toList);
                 }
 
                 // Must be a String

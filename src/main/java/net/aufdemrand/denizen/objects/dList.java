@@ -177,10 +177,8 @@ public class dList extends ArrayList<String> implements dObject {
 
             }
             else
-            return new Element(item).getAttribute(attribute.fulfill(1));
+                return new Element(item).getAttribute(attribute.fulfill(1));
         }
-
-
 
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
@@ -202,7 +200,19 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        return new Element(identify()).getAttribute(attribute.fulfill(0));
+        if (attribute.startsWith("identify")) {
+            return new Element(identify())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("type")) {
+            return new Element(getType())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        return (flag != null
+                ? new Element(flag.getLast().asString()).getAttribute(attribute.fulfill(0))
+                : new Element(identify()).getAttribute(attribute.fulfill(0)));
     }
 
 }

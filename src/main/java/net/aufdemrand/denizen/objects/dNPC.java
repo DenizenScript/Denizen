@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.tags.core.NPCTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
@@ -172,19 +173,17 @@ public class dNPC implements dObject {
     }
 
     public void action(String actionName, dPlayer player) {
-    	if (getCitizen() != null)
-    	{
-    		if (getCitizen().hasTrait(AssignmentTrait.class))
-    			DenizenAPI.getCurrentInstance().getNPCRegistry()
-                    .getActionHandler().doAction(
-                    actionName,
-                    this,
-                    player,
-                    getAssignmentTrait().getAssignment());
-    	}
+        if (getCitizen() != null)
+        {
+            if (getCitizen().hasTrait(AssignmentTrait.class))
+                DenizenAPI.getCurrentInstance().getNPCRegistry()
+                        .getActionHandler().doAction(
+                        actionName,
+                        this,
+                        player,
+                        getAssignmentTrait().getAssignment());
+        }
     }
-
-
 
     private String prefix = "npc";
 
@@ -222,87 +221,77 @@ public class dNPC implements dObject {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (type.equals("NAME")) {
-            event.setReplaced(ChatColor.stripColor(n.getName()));
-            if (subType.equals("NICKNAME")) {
-                if (n.getCitizen().hasTrait(NicknameTrait.class))
-                    event.setReplaced(n.getCitizen().getTrait(NicknameTrait.class).getNickname());
-            }
+        if (attribute == null) return "null";
 
-        } else if (type.equals("HEALTH")) {
+        dB.log("getAttribute: " + getType() + " ---> " + attribute.attributes.toString());
 
-            if (subType.equals("MAX"))
-                event.setReplaced(String.valueOf(n.getHealthTrait().getMaxhealth()));
-            else
-                event.setReplaced(String.valueOf(n.getHealthTrait().getHealth()));
+        if (attribute.startsWith("name.nickname"))
+            return new Element(getCitizen().hasTrait(NicknameTrait.class) ? getCitizen().getTrait(NicknameTrait.class)
+                    .getNickname() : getName()).getAttribute(attribute.fulfill(2));
 
-        } else if (type.equals("TYPE")) {
-            if (subType.equals("FORMATTED"))
-                event.setReplaced(String.valueOf(n.getEntityType().name().toLowerCase().replace('_', ' ')));
-            else
-                event.setReplaced(String.valueOf(n.getEntityType().name()));
+        if (attribute.startsWith("name"))
+            return new Element(ChatColor.stripColor(getName()))
+                    .getAttribute(attribute.fulfill(1));
 
-        } else if (type.equals("ID")) {
-            event.setReplaced(String.valueOf(n.getId()));
+        if (attribute.startsWith("id"))
+            return new Element(String.valueOf(getId())).getAttribute(attribute.fulfill(1));
 
-        } else if (type.equals("OWNER")) {
-            event.setReplaced(String.valueOf(n.getOwner()));
+        if (attribute.startsWith("owner"))
+            return new Element(getOwner()).getAttribute(attribute.fulfill(1));
 
-        } else if (type.equals("LOCATION")) {
-            dLocation loc = n.getLocation();
-            event.setReplaced(loc.getX()
-                    + "," + loc.getY()
-                    + "," + loc.getZ()
-                    + "," + n.getWorld().getName());
-            if (subType.equals("BLOCK"))
-                event.setReplaced(loc.getBlockX()
-                        + "," + loc.getBlockY()
-                        + "," + loc.getBlockZ()
-                        + "," + n.getWorld().getName());
-            else if (subType.equals("FORMATTED"))
-                event.setReplaced("X '" + loc.getX()
-                        + "', Y '" + loc.getY()
-                        + "', Z '" + loc.getZ()
-                        + "', in world '" + n.getWorld().getName() + "'");
-            else if (subType.equals("X"))
-                event.setReplaced(String.valueOf(n.getLocation().getX()));
-            else if (subType.equals("Y"))
-                event.setReplaced(String.valueOf(n.getLocation().getY()));
-            else if (subType.equals("Z"))
-                event.setReplaced(String.valueOf(n.getLocation().getZ()));
-            else if (subType.equals("STANDING_ON"))
-                event.setReplaced(loc.add(0, -1, 0).getBlock().getType().name());
-            else if (subType.equals("STANDING_ON_DISPLAY"))
-                event.setReplaced(n.getLocation().add(0, -1, 0).getBlock().getType().name().toLowerCase().replace('_', ' '));
-            else if (subType.equals("WORLD_SPAWN"))
-                event.setReplaced(n.getWorld().getSpawnLocation().getX()
-                        + "," + n.getWorld().getSpawnLocation().getY()
-                        + "," + n.getWorld().getSpawnLocation().getZ()
-                        + "," + n.getWorld().getName());
-            else if (subType.equals("WORLD"))
-                event.setReplaced(n.getWorld().getName());
-            else if (subType.equals("PREVIOUS_LOCATION"))
-                if (previousLocations.containsKey(n.getId()))
-                    event.setReplaced(previousLocations.get(n.getId()).identify());
+        if (attribute.startsWith("is_spawned"))
+            return new Element(String.valueOf(isSpawned())).getAttribute(attribute.fulfill(1));
 
-        } else if (type.equals("NAVIGATOR")) {
-            if (subType.equals("IS_NAVIGATING"))
-                event.setReplaced(Boolean.toString(n.getNavigator().isNavigating()));
-            else if (subType.equals("SPEED"))
-                event.setReplaced(String.valueOf(n.getNavigator().getLocalParameters().speedModifier()));
-            else if (subType.equals("AVOID_WATER"))
-                event.setReplaced(Boolean.toString(n.getNavigator().getLocalParameters().avoidWater()));
-            else if (subType.equals("TARGET_LOCATION")) {
-                dLocation loc = new dLocation(n.getNavigator().getTargetAsLocation());
-                if (loc != null) event.setReplaced(loc.identify());
-            } else if (subType.equals("IS_FIGHTING")) {
-                event.setReplaced(String.valueOf(event.getNPC().getNavigator().getEntityTarget().isAggressive()));
-            } else if (subType.equals("TARGET_TYPE")) {
-                event.setReplaced(event.getNPC().getNavigator().getTargetType().toString());
-            }
+        if (attribute.startsWith("location.previous_location"))
+            return (NPCTags.previousLocations.containsKey(getId())
+                    ? NPCTags.previousLocations.get(getId()).getAttribute(attribute.fulfill(2))
+                    : "null");
 
-        }
+        if (attribute.startsWith("navigator.is_navigating"))
+            return new Element(String.valueOf(getNavigator().isNavigating())).getAttribute(attribute.fulfill(2));
 
+        if (attribute.startsWith("navigator.speed"))
+            return new Element(String.valueOf(getNavigator().getLocalParameters().speed()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("navigator.attack_strategy"))
+            return new Element(String.valueOf(getNavigator().getLocalParameters().attackStrategy().toString()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("navigator.speed_modifier"))
+            return new Element(String.valueOf(getNavigator().getLocalParameters().speedModifier()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("navigator.base_speed"))
+            return new Element(String.valueOf(getNavigator().getLocalParameters().baseSpeed()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("navigator.avoid_water"))
+            return new Element(String.valueOf(getNavigator().getLocalParameters().avoidWater()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("navigator.target_location"))
+            return (getNavigator().getTargetAsLocation() != null
+                    ? new dLocation(getNavigator().getTargetAsLocation()).getAttribute(attribute.fulfill(2))
+                    : "null");
+
+        if (attribute.startsWith("navigator.is_fighting"))
+            return new Element(String.valueOf(getNavigator().getEntityTarget().isAggressive()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("navigator.target_type"))
+            return new Element(String.valueOf(getNavigator().getTargetType().toString()))
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("navigator.target_entity"))
+            return (getNavigator().getEntityTarget().getTarget() != null
+                    ? new dEntity(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(2))
+                    : "null");
+
+        return (getEntity() != null
+                ? new dEntity(getEntity()).getAttribute(attribute.fulfill(0))
+                : new Element(identify()).getAttribute(attribute.fulfill(0)));
 
     }
+
 }
