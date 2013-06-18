@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -41,14 +42,14 @@ public class WorldCommand extends AbstractCommand {
                 player = Bukkit.getServer().getPlayer(aH.getStringFrom("player"));
                 type = Type.PLAYER;
                 
-            } else if (aH.matchesArg("weather", arg)) {
+            } else if (aH.matchesValueArg("weather", arg, ArgumentType.Custom)) {
                 action = Action.WEATHER;
-                sub = SubAction.valueOf(aH.getStringFrom("weather"));
+                sub = SubAction.valueOf(aH.getStringFrom(arg).toUpperCase());
                 if(sub == null) throw new InvalidArgumentsException("Invalid sub action for WEATHER!");
 
-            } else if (aH.matchesArg("time", arg)) {
+            } else if (aH.matchesValueArg("time", arg, ArgumentType.Custom)) {
                 action = Action.TIME;
-                sub = SubAction.valueOf(aH.getStringFrom("time"));
+                sub = SubAction.valueOf(aH.getStringFrom(arg).toUpperCase());
                 if(sub == null) throw new InvalidArgumentsException("Invalid sub action for TIME!");
 
             } else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
@@ -66,7 +67,7 @@ public class WorldCommand extends AbstractCommand {
     
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        Type type = (Type) scriptEntry.getObject("time");
+        Type type = (Type) scriptEntry.getObject("type");
         Action action = (Action) scriptEntry.getObject("action");
         SubAction sub = (SubAction) scriptEntry.getObject("subaction");
         Player player = (Player) scriptEntry.getObject("player");

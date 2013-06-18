@@ -57,7 +57,9 @@ public class MidiCommand extends AbstractCommand {
 
 			else if (aH.matchesValueArg("file, f", arg, ArgumentType.Custom)) {
         		try {
-        			String path = "plugins/Denizen/midi/" + aH.getStringFrom(arg);
+        			String path = denizen.getDataFolder() + 
+        					File.separator + "midi" +
+        					File.separator + aH.getStringFrom(arg);
         			
         			if (!path.endsWith(".mid")) {
         				
@@ -121,7 +123,7 @@ public class MidiCommand extends AbstractCommand {
 		Set<Player> listeners = (Set<Player>) scriptEntry.getObject("listeners");
         Location location = (Location) scriptEntry.getObject("location");
         Float tempo = (Float) scriptEntry.getObject("tempo");
-        
+                
         // Report to dB
         dB.report(getName(),
                aH.debugObj("Playing midi file", file.getPath()

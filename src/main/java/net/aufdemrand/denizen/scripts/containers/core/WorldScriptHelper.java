@@ -28,6 +28,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -585,6 +586,54 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("MESSAGE"))
             event.setDeathMessage(aH.getStringFrom(determination));
+    }
+    
+    
+    @EventHandler
+    public void weatherChange(WeatherChangeEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        String world = event.getWorld().getName();
+        
+        context.put("world", world);
+
+        String determination = doEvent("weather changes", null, null, context);
+
+        // Handle messages
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("weather changes in " + world, null, null, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        if (event.toWeatherState() == true) {
+
+            determination = doEvent("weather rains", null, null, context);
+
+            // Handle messages
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        	
+        	determination = doEvent("weather rains in " + world, null, null, context);
+        
+        	if (determination.toUpperCase().startsWith("CANCELLED"))
+        		event.setCancelled(true);
+        }
+        else {
+        	
+        	determination = doEvent("weather clears", null, null, context);
+
+            // Handle messages
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        
+        	determination = doEvent("weather clears in " + world, null, null, context);
+        
+        	if (determination.toUpperCase().startsWith("CANCELLED"))
+        		event.setCancelled(true);
+        }
     }
 
 

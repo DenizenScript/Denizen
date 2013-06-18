@@ -42,10 +42,6 @@ Triggers:
   Damage:
     Enabled: false
     Cooldown: 0.5s
-  Location:
-    Enabled: false
-    Cooldown: 5s
-    Range: 2
   Proximity:
     Enabled: false
     Cooldown: 1s
