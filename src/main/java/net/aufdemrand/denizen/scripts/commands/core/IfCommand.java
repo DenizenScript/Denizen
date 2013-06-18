@@ -1,27 +1,25 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 /**
  * Core dScript IF command.
  *
- * @author Jeremy Schroeder
+ * @author Jeremy Schroeder, David Cernat
  */
 
 public class IfCommand extends AbstractCommand {
@@ -56,27 +54,45 @@ public class IfCommand extends AbstractCommand {
         // Initialize necessary fields
         List<Comparable> comparables = new ArrayList<Comparable>();
 
-        String outcomeCommand = null;
-        ArrayList<String> outcomeArgs = new ArrayList<String>();
-        String elseCommand = null;
-        ArrayList<String> elseArgs = new ArrayList<String>();
+        TreeMap<Integer, ArrayList<String>> outcomeCommands = new TreeMap<Integer, ArrayList<String>>();
+        TreeMap<Integer, ArrayList<String>> elseCommands = new TreeMap<Integer, ArrayList<String>>();
 
         // Keep track of this to avoid Denizen overlooking comparedTo when an operator is used
         // with a value that matches the name of a command. (Good find dimensionZ!)
         boolean usedOperator = false;
+        
+        // Track whether we are inside the Else argument or not
+        boolean insideElse = false;
+        
+        // Track whether we are adding a new command or not
+        boolean newCommand = false;
+        
+        // Track whether we are inside recursive brackets whose contents
+        // should be added as arguments to our current If, not as commands
+        int bracketsEntered = 0;
 
         comparables.add(new Comparable());
         int index = 0;
 
         // Iterate through the arguments, build comparables
         for (String arg : scriptEntry.getArguments()) {
+        	
             // Trim unwanted spaces
             arg = arg.trim();
 
-            if (outcomeCommand == null) {
+
+            // Read "-" as meaning we are moving to a new command, unless we
+            // are inside nested brackets (i.e. bracketsEntered of at least 2)
+            // in which case we just treat what follows as arguments
+            if (aH.matchesArg("-", arg) && bracketsEntered < 2) {
+            	
+            	newCommand = true;
+            }
+            
+            else if (outcomeCommands.isEmpty()) {
 
                 // Set logic (Optional, default is REGULAR)
-                if (arg.startsWith("!")) {
+            	if (arg.startsWith("!")) {
                     comparables.get(index).logic = Logic.NEGATIVE;
                     if ( arg.length() == 1)
                         continue;
@@ -113,38 +129,132 @@ public class IfCommand extends AbstractCommand {
                     // If using MATCHES operator, keep as string.
                     comparables.get(index).comparable = findObjectType(arg);
                 }
-
-                // Set outcomeCommand first since compared-to is technically optional.
+                
+                // If we find a bracket, add it to the number of brackets we
+                // are inside (which should probably always be 1 at this point)
+                else if (aH.matchesArg("{", arg)) {
+                	
+                	bracketsEntered++;
+                }
+                
+                // Add outcomeCommand first since compared-to is technically optional.
                 // If using an operator though, skip on to compared-to!
-                else if (!usedOperator && denizen.getCommandRegistry().get(arg.replace("^", "")) != null)
-                    outcomeCommand = arg;
+                else if (!usedOperator && denizen.getCommandRegistry().get(arg.replace("^", "")) != null) {
 
-                    // Set compared-to
+                	// Only add a new command here if the list of commands is empty,
+                	// so as to not add two commands when people use an optional -
+                	// in front of their first (and sometimes only) command
+                	if (outcomeCommands.size() == 0) {
+
+                    	outcomeCommands.put(outcomeCommands.size(), new ArrayList<String>());
+                    	outcomeCommands.get(outcomeCommands.lastKey()).add(arg.toUpperCase());
+                    	newCommand = false;
+                	}
+                	
+                }
+                // Set compared-to
                 else {
+                	
                     comparables.get(index).comparedto = matchObjectType(comparables.get(index), arg);
                     usedOperator = false;
                 }
+            }
+            // Process outcome commands
+            else if (insideElse == false) {
+            	// Move to else commands if we read an "else" and we're not
+            	// currently going through nested arguments
+                if (aH.matchesArg("else", arg) && bracketsEntered == 0) {
 
-                // Set outcome command.
-            }  else if (elseCommand == null) {
-                if (aH.matchesArg("ELSE", arg)) elseCommand = "";
-                else outcomeArgs.add(arg);
+                	insideElse = true;
+                }
 
-                // Set ELSE command
-            } else {
-                // Specify ELSE command
-                if (elseCommand.equals("")) elseCommand = arg;
-                    // Add elseArgs arguments
-                else elseArgs.add(arg);
+            	// If we find a bracket, and we're already inside
+            	// nested brackets, add the bracket to the current
+            	// command's arguments
+                else if (aH.matchesArg("{", arg)) {
+                	
+                	bracketsEntered++;
+                	
+                	if (bracketsEntered > 1) {
+                		
+                		outcomeCommands.get(outcomeCommands.lastKey()).add(arg);
+                	}
+                }
+                
+                else if (aH.matchesArg("}", arg)) {
+                	
+                	bracketsEntered--;
+                	
+                	if (bracketsEntered > 0) {
+                		
+                		outcomeCommands.get(outcomeCommands.lastKey()).add(arg);
+                	}
+                }
+                // Add new outcome command if the last argument was a non-nested "-"
+                else if (newCommand == true) {
+
+                	newCommand = false;
+                	outcomeCommands.put(outcomeCommands.size(), new ArrayList<String>());
+                	outcomeCommands.get(outcomeCommands.lastKey()).add(arg.toUpperCase());
+                }
+                // Add new outcome argument
+                else {
+
+                	outcomeCommands.get(outcomeCommands.lastKey()).add(arg);
+                }
+            }
+            // Process else commands
+            else {
+            	// If we find a bracket, and we're already inside
+            	// nested brackets, add the bracket to the current
+            	// command's arguments
+            	if (aH.matchesArg("{", arg)) {
+                	
+                	bracketsEntered++;
+                	
+                	if (bracketsEntered > 1) {
+                	
+                		elseCommands.get(elseCommands.lastKey()).add(arg);
+                	}
+                }
+                
+                else if (aH.matchesArg("}", arg)) {
+                	
+                	bracketsEntered--;
+                	
+                	if (bracketsEntered > 0) {
+         
+                		elseCommands.get(elseCommands.lastKey()).add(arg);
+                	}
+                }
+                // Add new else command if the last argument was a non-nested "-"
+            	// or if it was "else" and we have no else commands yet
+            	else if (newCommand == true || elseCommands.size() == 0) {
+
+                	newCommand = false;
+                	elseCommands.put(elseCommands.size(), new ArrayList<String>());
+                	elseCommands.get(elseCommands.lastKey()).add(arg.toUpperCase());
+                	
+                	// If we find an "if", act like we entered a set of
+                	// brackets, so we treat the if's commands as arguments
+                	// and don't add them to our current else commands
+                	if (aH.matchesArg("if", arg)) {
+                		
+                		bracketsEntered++;
+                	}
+                }
+                // Add new else argument
+                else {
+                	
+                	elseCommands.get(elseCommands.lastKey()).add(arg);
+                }
             }
         }
 
         // Stash objects required to execute() into the ScriptEntry
         scriptEntry.addObject("comparables", comparables);
-        scriptEntry.addObject("outcome-command", outcomeCommand);
-        scriptEntry.addObject("outcome-command-args", outcomeArgs.toArray());
-        scriptEntry.addObject("else-command", elseCommand);
-        scriptEntry.addObject("else-command-args", elseArgs.toArray());
+        scriptEntry.addObject("outcomeCommands", outcomeCommands);
+        scriptEntry.addObject("elseCommands", elseCommands);
     }
 
     @SuppressWarnings({ "unchecked", "incomplete-switch" })
@@ -384,8 +494,8 @@ public class IfCommand extends AbstractCommand {
         }
 
         // Determine outcome -- do, or else?
-        if (ormet > 0 && andcount == andmet) doCommand(scriptEntry);
-        else doElse(scriptEntry);
+        if (ormet > 0 && andcount == andmet) doCommands(scriptEntry, "outcomeCommands");
+        else doCommands(scriptEntry, "elseCommands");
     }
 
 
@@ -469,57 +579,39 @@ public class IfCommand extends AbstractCommand {
 
     // Runs the outcome-command if the evaluation of the statement == true
 
-    private void doCommand(ScriptEntry scriptEntry) {
-        String outcomeCommand = ((String) scriptEntry.getObject("outcome-command")).toUpperCase();
-        String[] outcomeArgs = Arrays.copyOf((Object[]) scriptEntry.getObject("outcome-command-args"),
-                ((Object[]) scriptEntry.getObject("outcome-command-args")).length, String[].class);
-
-        try { ScriptEntry entry = new ScriptEntry(outcomeCommand, outcomeArgs,
-                scriptEntry.getScript().getContainer())
-                .setPlayer(scriptEntry.getPlayer())
-                .setNPC(scriptEntry.getNPC()).setInstant(true)
-                .addObject("reqId", scriptEntry.getObject("reqId"));
-            scriptEntry.getResidingQueue().injectEntry(entry, 0);
-        } catch (ScriptEntryCreationException e) {
-            dB.echoError("There has been a problem running the Command. Check syntax.");
-            if (dB.showStackTraces) {
-                dB.echoDebug("STACKTRACE follows:");
-                e.printStackTrace();
+    @SuppressWarnings("unchecked")
+	private void doCommands(ScriptEntry scriptEntry, String map) {
+    	
+    	TreeMap<Integer, ArrayList<String>> commandMap = (TreeMap<Integer, ArrayList<String>>) scriptEntry.getObject(map);
+    	
+    	List<ScriptEntry> entries = new ArrayList<ScriptEntry>();
+    	
+    	for (Map.Entry<Integer, ArrayList<String>> pairs : commandMap.entrySet())
+    	{
+    		ArrayList<String> commandArray = pairs.getValue();
+    		String command = commandArray.get(0);
+    		commandArray.remove(0);
+    		String[] arguments = commandArray.toArray(new String[commandArray.size()]);
+    		
+            try {
+            	ScriptEntry entry = new ScriptEntry(command, arguments,
+            			scriptEntry.getScript().getContainer())
+                		.setPlayer(scriptEntry.getPlayer())
+                		.setNPC(scriptEntry.getNPC()).setInstant(true)
+                		.addObject("reqId", scriptEntry.getObject("reqId"));
+            
+            	entries.add(entry);
+                
+            } catch (ScriptEntryCreationException e) {
+                dB.echoError("There has been a problem running the Command. Check syntax.");
+                if (dB.showStackTraces) {
+                    dB.echoDebug("STACKTRACE follows:");
+                    e.printStackTrace();
+                }
+                else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
             }
-            else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
-        }
+    	}
+    	
+        scriptEntry.getResidingQueue().injectEntries(entries, 0);
     }
-
-
-    // If ELSE command is specified, runs it if the evaluation of the statement == false
-
-    private void doElse(ScriptEntry scriptEntry) {
-
-        String elseCommand = null;
-        if (scriptEntry.getObject("else-command") != null)
-            elseCommand = ((String) scriptEntry.getObject("else-command")).toUpperCase();
-        String[] elseArgs = null;
-        if (scriptEntry.getObject("else-command-args") != null)
-            elseArgs = Arrays.copyOf((Object[]) scriptEntry.getObject("else-command-args"),
-                    ((Object[]) scriptEntry.getObject("else-command-args")).length, String[].class);
-        if (elseCommand == null) return;
-
-        try { ScriptEntry entry = new ScriptEntry(elseCommand, elseArgs,
-                scriptEntry.getScript().getContainer())
-                .setPlayer(scriptEntry.getPlayer())
-                .setNPC(scriptEntry.getNPC()).setInstant(true)
-                .addObject("reqId", scriptEntry.getObject("reqId"));
-            scriptEntry.getResidingQueue().injectEntry(entry, 0);
-        } catch (ScriptEntryCreationException e) {
-            dB.echoError("There has been a problem running the ELSE Command. Check syntax.");
-            if (dB.showStackTraces) {
-                dB.echoDebug("STACKTRACE follows:");
-                e.printStackTrace();
-            }
-            else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
-        }
-
-    }
-
-
 }
