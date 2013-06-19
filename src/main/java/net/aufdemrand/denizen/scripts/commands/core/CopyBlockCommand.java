@@ -14,10 +14,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.inventory.InventoryHolder;
 
 /**
- * Modifies blocks based based of single block location.
- * Possibility to do faux animations with blocks.
- * 
- * @author Mason Adkins
+ * @author aufdemrand
  */
 
 public class CopyBlockCommand extends AbstractCommand{
@@ -87,7 +84,7 @@ public class CopyBlockCommand extends AbstractCommand{
         }
 
 
-        // TODO: Account for Noteblock, Skull, Jukebox, Sign
+        // TODO: Account for Noteblock, Skull, Jukebox
 
 	}
 }
