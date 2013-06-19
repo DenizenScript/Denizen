@@ -37,7 +37,7 @@ public class LogCommand extends AbstractCommand {
         Type type = Type.INFO;
         
         if(scriptEntry.getArguments().size() < 2) {
-            throw new InvalidArgumentsException("Needs at least 2 arguements (message and file)!");
+            throw new InvalidArgumentsException("Needs at least 2 arguments (message and file)!");
         }
         
         for(String arg : scriptEntry.getArguments()) {
