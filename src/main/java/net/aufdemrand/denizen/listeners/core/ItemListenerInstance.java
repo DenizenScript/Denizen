@@ -94,30 +94,22 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			if ((type == ItemType.CRAFT && (inventoryType == "CRAFTING" || inventoryType == "WORKBENCH"))
 				|| (type == ItemType.SMELT && inventoryType == "FURNACE")) {
 
-                dB.echoDebug("1: " + inventoryType);
-
 				if (region != null)
 					if (!WorldGuardUtilities.checkPlayerWGRegion(player, region)) return;
 				
 				// Get the item in the result slot as an ItemStack
 				final ItemStack item = new ItemStack(event.getCurrentItem());
 
-                dB.echoDebug("2: " + item.getType().name());
-
 				//if item isnt a required item, then return
-				if (!items.contains(item.getType().toString())) return;
-
-                dB.echoDebug("3");
+				if (!items.contains(item.getType().toString())
+				 && !items.contains(item.getTypeId()))
+					return;
 
 				if (event.isShiftClick())
 				{
-
-
 					// Save the quantity of items of this type that the player had
 					// before the event took place
 					final int initialQty = Utilities.countItems(item, player.getInventory());
-
-                    dB.echoDebug("4: " + initialQty);
 
 					// Run a task 1 tick later, after the event has occurred, and
 					// see how many items of this type the player has then in the
@@ -131,8 +123,6 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 							int newQty = Utilities.countItems(item, player.getInventory());
 							int difference = newQty - initialQty;
 
-                            dB.echoDebug("5: " + difference);
-		                            	
 							// If any items were obtained (i.e. if shift click was
 							// used with the player's inventory not being full),
 							// increase the number of current items
@@ -149,10 +139,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 					// If shift click was not used, simply increase the current items
 					// by the quantity of the item in the result slot
 					increment(item.getType().toString(), item.getAmount());
-
-                    dB.echoDebug("5");
 				}
-				
 			}
 		}
 	}
