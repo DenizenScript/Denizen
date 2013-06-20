@@ -60,24 +60,26 @@ public class UtilTags implements Listener {
                 || type.equalsIgnoreCase("SUBSTRING")) {
             String text = event.getTypeContext();
             int from = 1;
+            int to = text.length() + 1;
             
             if (subType.equalsIgnoreCase("AFTER")) {
             	from = text.toUpperCase().indexOf(subTypeContext) + subTypeContext.length() + 1;
+            }
+            
+            if (subType.equalsIgnoreCase("BEFORE")) {
+            	to = text.toUpperCase().indexOf(subTypeContext) + 1;
             }
             
             try {
                 if (subType.equalsIgnoreCase("FROM"))
                     from = Integer.valueOf(subTypeContext);
             } catch (NumberFormatException e) { }
-            int to = text.length() + 1;
             
             try {
                 if (specifier.equalsIgnoreCase("TO"))
                     to = Integer.valueOf(specifierContext);
             } catch (NumberFormatException e) { }
 
-            
-            
             if (to > text.length())
                 to = text.length() + 1;
 
