@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 
 import java.text.DecimalFormat;
 
+@Deprecated
 public class FlagTags implements Listener {
 
     Denizen denizen;

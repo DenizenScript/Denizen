@@ -30,8 +30,9 @@ public class aH {
 
     public static class Argument {
         public String raw_value;
-        String prefix;
+        String prefix = null;
         String value;
+        boolean has_prefix = false;
 
         // Construction
         public Argument(String string) {
@@ -45,6 +46,7 @@ public class aH {
 
             if ((first_space > -1 && first_space < first_colon) || first_colon == -1)  value = string;
             else {
+                has_prefix = true;
                 prefix = string.split(":")[0];
                 value = string.split(":")[1];
             }
@@ -52,12 +54,16 @@ public class aH {
             // dB.log("Constructed Argument: " + prefix + ":" + value);
         }
 
+        public boolean hasPrefix() {
+            return has_prefix;
+        }
+
         public boolean startsWith(String string) {
             return value.startsWith(string);
         }
 
         public boolean matches(String string) {
-            return value.toLowerCase().matches(string.toLowerCase());
+            return value.equalsIgnoreCase(string);
         }
 
         public void replaceValue(String string) {
@@ -231,18 +237,8 @@ public class aH {
 
 
     public enum ArgumentType {
-        LivingEntity,
-        Item,
-        Boolean,
-        Custom,
-        Double,
-        Float,
-        Integer,
-        String,
-        Word,
-        Location,
-        Script,
-        Duration
+        LivingEntity, Item, Boolean, Custom, Double, Float,
+        Integer, String, Word, Location, Script, Duration
     }
 
 

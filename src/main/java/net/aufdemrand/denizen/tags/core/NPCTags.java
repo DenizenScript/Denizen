@@ -53,6 +53,11 @@ public class NPCTags implements Listener {
 
     }
 
+
+    ///////
+    // Keep track of previous locations and fire navigation actions
+    ////
+
     public static Map<Integer, dLocation> previousLocations = new HashMap<Integer, dLocation>();
 
     @EventHandler

@@ -34,7 +34,6 @@ public class TagManager {
         new PlayerTags(denizen);
         new UtilTags(denizen);
         new FlagTags(denizen);
-        new BookmarkTags(denizen);
         new ConstantTags(denizen);
         new ProcedureScriptTag(denizen);
         new NPCTags(denizen);

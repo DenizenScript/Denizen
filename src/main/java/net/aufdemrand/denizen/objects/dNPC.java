@@ -16,12 +16,17 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Owner;
+import net.citizensnpcs.trait.Anchors;
+import net.citizensnpcs.util.Anchor;
 import net.minecraft.server.v1_5_R3.EntityLiving;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class dNPC implements dObject {
 
@@ -232,6 +237,27 @@ public class dNPC implements dObject {
         if (attribute.startsWith("name"))
             return new Element(ChatColor.stripColor(getName()))
                     .getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("anchor.list")
+                || attribute.startsWith("anchors.list")) {
+            List<String> list = new ArrayList<String>();
+            for (Anchor anchor : getCitizen().getTrait(Anchors.class).getAnchors())
+                list.add(anchor.getName());
+            return new dList(list).getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("has_anchors")) {
+            return (new Element(String.valueOf(getCitizen().getTrait(Anchors.class).getAnchors().size() > 0)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("anchor")) {
+            if (attribute.hasContext(1)
+                    && getCitizen().getTrait(Anchors.class).getAnchor(attribute.getContext(1)) != null)
+                return new dLocation(getCitizen().getTrait(Anchors.class)
+                        .getAnchor(attribute.getContext(1)).getLocation())
+                .getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("id"))
             return new Element(String.valueOf(getId())).getAttribute(attribute.fulfill(1));

@@ -327,20 +327,6 @@ public class Comparable {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public String toString() {
         return  (logic != Logic.REGULAR ? "Logic='" + logic.toString() + "', " : "")
