@@ -12,13 +12,44 @@ public class TextTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
+    @EventHandler
+    public void foreignCharacterTags(ReplaceableTagEvent event) {
+
+        if (!event.getName().startsWith("&")) return;
+
+        if (event.getName().equals("&auml")) {
+            event.setReplaced("ä");
+            return;
+        }
+        else if (event.getName().equals("&Auml")) {
+            event.setReplaced("Ä");
+            return;
+        }
+        else if (event.getName().equals("&ouml")) {
+            event.setReplaced("ö");
+            return;
+        }
+        else if (event.getName().equals("&Ouml")) {
+            event.setReplaced("Ö");
+            return;
+        }
+        else if (event.getName().equals("&uuml")) {
+            event.setReplaced("ü");
+            return;
+        }
+        else if (event.getName().equals("&Uuml")) {
+            event.setReplaced("Ü");
+            return;
+        }
+
+    }
+
     // Thanks geckon :)
     final String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","k","l","m","n","o","r"};
     @EventHandler
-    public void textTags(ReplaceableTagEvent event) {
+    public void colorTags(ReplaceableTagEvent event) {
         int i = 0;
-        for (ChatColor color : ChatColor.values()) 
-        {
+        for (ChatColor color : ChatColor.values()) {
             if (i > 22) break;
             if (event.matches(color.name()))
                 event.setReplaced(color.toString());

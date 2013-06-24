@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.aH;
 
+import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -17,6 +18,15 @@ public class UtilTags implements Listener {
     public UtilTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
+
+    @EventHandler
+    public void mathTags(ReplaceableTagEvent event) {
+        if (!(event.matches("m") || event.matches("math"))) return;
+        Double evalulation = new DoubleEvaluator().evaluate(event.getValue());
+        event.setReplaced(String.valueOf(evalulation));
+    }
+
+
 
     @EventHandler
     public void utilTags(ReplaceableTagEvent event) {

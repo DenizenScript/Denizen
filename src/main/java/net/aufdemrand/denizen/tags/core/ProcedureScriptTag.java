@@ -29,7 +29,7 @@ public class ProcedureScriptTag implements Listener {
        dScript script = dScript.valueOf(event.getValue());
 
        if (script == null) {
-           dB.echoError("Tried to call a procedure script, but couldn't find a match!");
+           dB.echoError("Tried to execute '" + event.getValue() + "', but it couldn't be found!");
            return;
        }
 

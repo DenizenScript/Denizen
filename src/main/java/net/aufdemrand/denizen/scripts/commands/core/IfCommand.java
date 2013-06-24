@@ -28,7 +28,6 @@ public class IfCommand extends AbstractCommand {
         List<Comparable> comparables = new ArrayList<Comparable>();
         // Insert new comparable into the list
         comparables.add(new Comparable());
-        int index = 0;
 
         // Indicate that comparables are building
         boolean building_comparables = true;
@@ -43,9 +42,6 @@ public class IfCommand extends AbstractCommand {
         // Keep track of this to avoid Denizen overlooking comparedTo when an operator is used
         // with a value that matches the name of a command. (Good find dimensionZ!)
         boolean used_operator = false;
-
-        // Track whether we are inside the Else argument or not
-        boolean insideElse = false;
 
         // Track whether we are adding a new command or not
         boolean newCommand = false;
@@ -256,12 +252,14 @@ public class IfCommand extends AbstractCommand {
 
 
     private void doCommand(ScriptEntry scriptEntry, String map) {
-        TreeMap<Integer, ArrayList<String>> commandMap = (TreeMap<Integer, ArrayList<String>>) scriptEntry.getObject(map);
+        TreeMap<Integer, ArrayList<String>> commandMap =
+                (TreeMap<Integer, ArrayList<String>>) scriptEntry.getObject(map);
+
+        if (map == null || map.length() == 0) return;
 
         List<ScriptEntry> entries = new ArrayList<ScriptEntry>();
 
-        for (Map.Entry<Integer, ArrayList<String>> pairs : commandMap.entrySet())
-        {
+        for (Map.Entry<Integer, ArrayList<String>> pairs : commandMap.entrySet()) {
             ArrayList<String> commandArray = pairs.getValue();
             String command = commandArray.get(0);
             commandArray.remove(0);
