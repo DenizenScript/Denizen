@@ -42,7 +42,6 @@ public class TagManager {
         new LocationTags(denizen);
         new SpecialCharacterTags(denizen);
         new TextTags(denizen);
-        new ForeignCharacterTags(denizen);
     }
 
     public static String tag(dPlayer player, dNPC npc, String arg) {

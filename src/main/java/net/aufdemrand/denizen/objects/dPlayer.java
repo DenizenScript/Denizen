@@ -84,6 +84,8 @@ public class dPlayer implements dObject {
     /////////////////
 
     public dPlayer(OfflinePlayer player) {
+        if (player == null) return;
+
         this.player_name = player.getName();
 
         // Keep in a map to avoid multiple instances of a dPlayer per player.

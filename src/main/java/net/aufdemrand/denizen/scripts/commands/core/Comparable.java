@@ -230,8 +230,8 @@ public class Comparable {
 
         outcome = false;
 
-        String comparable = (String) this.comparable;
-        String comparedto = (String) this.comparedto;
+        String comparable = String.valueOf(this.comparable);
+        String comparedto = String.valueOf(this.comparedto);
 
         if (comparable == null || comparedto == null) return;
 
