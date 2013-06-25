@@ -217,7 +217,7 @@ public class aH {
      * @return  color coded debug report
      */
     public static String debugObj(String prefix, Object value) {
-        return "<G>" + prefix + "='<Y>" + value.toString() + "<G>'  ";
+        return "<G>" + prefix + "='<Y>" + (value != null ? value.toString() : "null") + "<G>'  ";
     }
 
     /**
@@ -232,7 +232,7 @@ public class aH {
      * @return  color coded debug report
      */
     public static String debugUniqueObj(String prefix, String id, Object value) {
-        return "<G>" + prefix + "='<A>" + id + "<Y>(" + value.toString() + ")<G>'  ";
+        return "<G>" + prefix + "='<A>" + id + "<Y>(" + (value != null ? value.toString() : "null") + ")<G>'  ";
     }
 
 

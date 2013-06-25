@@ -49,7 +49,9 @@ public class FlagTags implements Listener {
                 int replaceTypeIndex = flagName.split("\\.").length - 1;
                 replaceType = ReplaceType.valueOf(flagName.split("\\.")[replaceTypeIndex].replace("_", "").toUpperCase());
                 flagName = flagName.replace("." + flagName.split("\\.")[replaceTypeIndex], "");
-            } catch (Exception e) { e.printStackTrace(); replaceType = ReplaceType.ASSTRING; }
+            } catch (Exception e) {
+                replaceType = ReplaceType.ASSTRING;
+            }
         }
 
         // Get index, if specified
