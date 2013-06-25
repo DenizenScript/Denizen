@@ -18,7 +18,7 @@ public class MoneyRequirement extends AbstractRequirement{
 		
 		if(Depends.economy != null) {
 			double quantity = 0;
-			double balance = 0;
+			double balance;
 			
 			for (String arg : args) {
 				if (aH.matchesQuantity(arg) || aH.matchesInteger(arg) || aH.matchesDouble(arg)) {

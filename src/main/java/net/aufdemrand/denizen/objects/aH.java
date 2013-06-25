@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The dScript Argument Helper will aide you in parsing and formatting arguments from a 
+ * The dScript Argument Helper will aid you in parsing and formatting arguments from a 
  * dScript argument string (such as those found in a ScriptEntry.getArguments() method).
  *
  * @author aufdemrand

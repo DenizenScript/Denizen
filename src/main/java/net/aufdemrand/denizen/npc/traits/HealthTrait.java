@@ -32,10 +32,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 public class HealthTrait extends Trait implements Listener {
 
     // Saved to the C2 saves.yml
-    @Persist("max")
-    private int maxhealth = 20;
-    @Persist("current")
-    private int currenthealth = 20;
 
     @Persist("animatedeath")
     private boolean animatedeath = Settings.HealthTraitAnimatedDeathEnabled();
@@ -53,6 +49,7 @@ public class HealthTrait extends Trait implements Listener {
 	private dPlayer player = null;
     private boolean dying = false;
     private Location loc;
+    private int entityId = -1;
 
     public double getAnimationDelay() {
         return Duration.valueOf(animationDelay).getSeconds();
@@ -112,25 +109,13 @@ public class HealthTrait extends Trait implements Listener {
 
 
     /**
-     * Listens for spawn of an NPC and updates its health with saved
-     * information from this Trait. If a respawn from death, sets health to maxHealth.
-     * If any other type of respawn, sets health to the last known currentHealth.
+     * Listens for spawn of an NPC and updates its health with the max health
+     * information for this trait.
      *
      */
     @Override public void onSpawn() {
         dying = false;
-        if (currenthealth > 0) setHealth(currenthealth);
-        else setHealth();
-    }
-
-    /**
-     * Listens for a despawn to note currentHealth as the time. Will be used
-     * to reset health on a respawn.
-     *
-     */
-    @Override public void onDespawn() {
-        if (getHealth() > 0) currenthealth = getHealth();
-        else currenthealth = -1;
+        setHealth();
     }
 
     public HealthTrait() {
@@ -144,8 +129,8 @@ public class HealthTrait extends Trait implements Listener {
      *
      */
     public int getHealth() {
-        if (!npc.isSpawned()) return currenthealth;
-        else return ((CraftLivingEntity) npc.getBukkitEntity()).getHandle().getHealth();
+    	if (!npc.isSpawned()) return 0;
+    	else return npc.getBukkitEntity().getHealth();
     }
 
     /**
@@ -155,7 +140,7 @@ public class HealthTrait extends Trait implements Listener {
      *
      */
     public void setMaxhealth(int newMax) {
-        this.maxhealth = newMax;
+    	npc.getBukkitEntity().setMaxHealth(newMax);
     }
 
     /**
@@ -164,7 +149,7 @@ public class HealthTrait extends Trait implements Listener {
      * @return maximum health
      */
     public int getMaxhealth() {
-        return maxhealth;
+    	return npc.getBukkitEntity().getMaxHealth();
     }
 
     /**
@@ -181,7 +166,7 @@ public class HealthTrait extends Trait implements Listener {
      *
      */
     public void setHealth() {
-        setHealth(maxhealth);
+    	setHealth(npc.getBukkitEntity().getMaxHealth());
     }
 
     /**
@@ -191,35 +176,24 @@ public class HealthTrait extends Trait implements Listener {
      */
     public void setHealth(int health) {
         if (npc.getBukkitEntity() != null)
-            ((CraftLivingEntity) npc.getBukkitEntity()).getHandle().setHealth(health);
-        currenthealth = health;
+        	npc.getBukkitEntity().setHealth(health);
     }
     
     public void die() {
-        try {
-    	// Set the player as the killer of the NPC, for listeners
-    	if (player != null)
-    		((CraftLivingEntity) npc.getBukkitEntity())
-    			.getHandle().killer = (EntityHuman) ((CraftLivingEntity) player.getPlayerEntity()).getHandle();
-        } catch (Exception e) {
-            dB.echoError("Report this error to aufdemrand! Err: HealthTraitDie");
-        }
-
-    	setHealth();
-        
-    	EntityDeathEvent entityDeath = new EntityDeathEvent(npc.getBukkitEntity(), null);
-    	NPCDeathEvent npcDeath = new NPCDeathEvent(npc, entityDeath);
-    	
-        DenizenAPI.getCurrentInstance().getServer()
-			.getPluginManager().callEvent(npcDeath);
-        DenizenAPI.getCurrentInstance().getServer()
-			.getPluginManager().callEvent(entityDeath);
-        
-        npc.despawn(DespawnReason.DEATH);
+    	npc.getBukkitEntity().damage(npc.getBukkitEntity().getHealth());
     }
     
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onDeath(EntityDamageEvent event) {
+    // Listen for deaths to clear drops
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onDeath(EntityDeathEvent event) {
+    	
+    	if (event.getEntity().getEntityId() != entityId) return;
+    	
+    	event.getDrops().clear();
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onDamage(EntityDamageEvent event) {
     	// Don't use NPCDamageEvent because it doesn't work well
     	
         // Check if the event pertains to this NPC
@@ -231,6 +205,9 @@ public class HealthTrait extends Trait implements Listener {
 
         dying = true;
         player = null;
+        
+        // Save entityId for EntityDeath event
+        entityId = npc.getBukkitEntity().getEntityId();
         
     	String deathCause = event.getCause().toString().toLowerCase().replace('_', ' ');
     	

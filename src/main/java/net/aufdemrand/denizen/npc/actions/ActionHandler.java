@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -23,7 +22,10 @@ public class ActionHandler {
 
     public boolean doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment) {
 
-        if (assignment == null) return false;
+        if (assignment == null) {
+        	// dB.echoDebug("Tried to do 'on " + actionName + ":' but couldn't find a matching script.");
+        	return false;
+        }
 
         if (!assignment.contains("actions.on " + actionName)) return false;
 

@@ -87,7 +87,7 @@ public class ParticlesTrait extends Trait {
 		case POTION:
 			/*
             if (!el.effects.isEmpty()) {
-                c = net.minecraft.server.v1_5_R2.PotionBrewer.a(el.effects.values());
+                c = net.minecraft.server.v1_5_R3.PotionBrewer.a(el.effects.values());
             }
             dw.watch(8, Integer.valueOf(c));
             */

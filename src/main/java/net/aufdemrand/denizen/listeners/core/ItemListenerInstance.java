@@ -60,7 +60,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			}
 		}
 		
-		if (items.isEmpty()) {
+		if (items.isEmpty() && !type.name().equalsIgnoreCase("FISH")) {
 			dB.echoError("Missing ITEMS argument!");
 			cancel();
 		}
@@ -89,17 +89,19 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			// Put the type of this inventory in a string and check if it matches the
 			// listener's type
 			String inventoryType = event.getInventory().getType().toString();
-			if (
-				   (type == ItemType.CRAFT && (inventoryType == "CRAFTING" || inventoryType == "WORKBENCH"))
-				|| (type == ItemType.SMELT && inventoryType == "FURNACE")
-			   )
-				
-			{
+            if ((type == ItemType.CRAFT && (inventoryType == "CRAFTING" || inventoryType == "WORKBENCH"))
+                    || (type == ItemType.SMELT && inventoryType == "FURNACE")) {
+
 				if (region != null)
 					if (!WorldGuardUtilities.checkPlayerWGRegion(player.getPlayerEntity(), region)) return;
 				
 				// Get the item in the result slot as an ItemStack
 				final ItemStack item = new ItemStack(event.getCurrentItem());
+				
+                //if item isn't a required item, then return
+                if (!items.contains(item.getType().toString())
+                	&& !items.contains(item.getTypeId()))
+                    return;
 				
 				if (event.isShiftClick())
 				{
@@ -215,7 +217,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 	@Override
 	public void constructed() {
-		denizen.getServer().getPluginManager().registerEvents((Listener) this, denizen);
+		denizen.getServer().getPluginManager().registerEvents(this, denizen); 
 	}
 
 	@Override

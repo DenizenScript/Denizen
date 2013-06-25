@@ -7,7 +7,7 @@
 	<groupId>net.aufdemrand</groupId>
 	<artifactId>denizen</artifactId>
     <packaging>jar</packaging>
-    <version>0.9-SNAPSHOT</version>
+    <version>0.9.0-SNAPSHOT</version>
     <name>Denizen</name>
 	<description>Scriptable NPCs for Citizens2</description>
 

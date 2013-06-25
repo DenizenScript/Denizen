@@ -41,8 +41,9 @@ public class Attribute {
         List<String> matches = new ArrayList<String>();
         Matcher matcher = attributer.matcher(attributes);
 
-        while (matcher.find())
+        while (matcher.find()) {
             matches.add(matcher.group());
+        }
 
         this.attributes = matches;
     }
@@ -74,8 +75,15 @@ public class Attribute {
     }
 
     public String getContext(int attribute) {
-        if (hasContext(attribute))
-            return getAttribute(attribute).split("\\[", 2)[1].replace("]", "");
+        if (hasContext(attribute)) {
+            
+            String text = getAttribute(attribute);
+            Matcher contextMatcher = Pattern.compile("\\[.+\\]").matcher(text);
+            
+            if (contextMatcher.find()) {
+                return text.substring(contextMatcher.start() + 1, contextMatcher.end() - 1);
+            }
+        }
         return null;
     }
 

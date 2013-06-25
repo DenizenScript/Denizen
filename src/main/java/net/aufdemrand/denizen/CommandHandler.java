@@ -502,6 +502,10 @@ public class CommandHandler {
         	trait.setCatchFish(true);
         }
         
+        if (args.hasValueFlag("percent")) {
+        	trait.setCatchPercent(args.getFlagInteger("percent"));
+        }
+        
         if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
@@ -696,6 +700,16 @@ public class CommandHandler {
                 ((dB.showStackTraces) ? "enabled and showing stack-traces." : "enabled.") : "disabled."));
     }
 
+    /*
+     * DENIZEN HELP
+     */
+    @Command(
+            aliases = { "denizen" }, usage = "help",
+            desc = "Links to the Denizen handbook.", modifiers = { "help"},
+            min = 1, max = 3, permission = "denizen.basic")
+    public void help(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        Messaging.send(sender, "§cFor help about Denizen, please read the Denizen Handbook here: §bhttp://goo.gl/4CSK8");
+    }
 
     /*
      * DENIZEN VERSION
@@ -955,6 +969,7 @@ public class CommandHandler {
 
         if (args.hasValueFlag("name")) {
             new dLocation(((Player) sender).getLocation()).rememberAs(args.getFlag("name"));
+            Messaging.send(sender, "Created new notable called " + args.getFlag("name"));
             return;
         }
 

@@ -132,7 +132,9 @@ public class ListenerRegistry implements dRegistry, Listener {
 			// People tend to worry when they see long-ass stacktraces.. let's catch them.
 			try {
 				String type = denizen.getSaves().getString(path + listenerId + ".Listener Type");
-                dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getById(denizen.getSaves().getInt(path + listenerId + ".Linked NPCID")));
+				dNPC npc = null;
+				if (denizen.getSaves().contains(path + listenerId + ".Linked NPCID"))
+					npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getById(denizen.getSaves().getInt(path + listenerId + ".Linked NPCID")));
                 if (get(type) == null) return;
 				dB.log(event.getPlayer().getName() + " has a LISTENER in progress. Loading '" + listenerId + "'.");
 				get(type).createInstance(dPlayer.mirrorBukkitPlayer(event.getPlayer()), listenerId).load(dPlayer.mirrorBukkitPlayer(event.getPlayer()), npc, listenerId, type);
