@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.dItem;
 
@@ -32,15 +33,13 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("TITLE")) {
         	String title = getString("TITLE");
-        	title = DenizenAPI.getCurrentInstance().tagManager()
-                    .tag(player, npc, title, false);
+        	title = TagManager.tag(player, npc, title, false);
             bookInfo.setTitle(title);
         }
         
         if (contains("AUTHOR")) {
         	String author = getString("AUTHOR");
-        	author = DenizenAPI.getCurrentInstance().tagManager()
-                     .tag(player, npc, author, false);
+        	author = TagManager.tag(player, npc, author, false);
             bookInfo.setAuthor(author);
         }
 
@@ -48,8 +47,7 @@ public class BookScriptContainer extends ScriptContainer {
             List<String> pages = getStringList("TEXT");
 
             for (String page : pages) {
-            	page = DenizenAPI.getCurrentInstance().tagManager()
-                       .tag(player, npc, page, false);
+            	page = TagManager.tag(player, npc, page, false);
                 bookInfo.addPage(page);
             }
         }

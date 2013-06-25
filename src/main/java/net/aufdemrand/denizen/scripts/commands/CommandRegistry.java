@@ -100,10 +100,10 @@ public class CommandRegistry implements dRegistry {
         		"ENGAGE", "engage (duration:#) (npcid:#)", 0);
 
         registerCoreMember(EngraveCommand.class,
-                "ENGRAVE", "engrave (SET|REMOVE) (TARGET:player_name)", 0);
+        		"ENGRAVE", "engrave (set|remove) (target:player_name)", 0);
         
         registerCoreMember(EquipCommand.class, 
-                "EQUIP", "equip ({HAND}|BOOTS|LEGS|CHEST|HEAD) [item:#(:#)|item:material(:#)]", 1);
+        		"EQUIP", "equip (hand:[#|material](:#)) (head:[#|material](:#)) (chest:[#|material](:#)) (legs:[#|material](:#)) (boots:[#|material](:#))", 1);
         
         registerCoreMember(ExecuteCommand.class,
         		"EXECUTE", "execute [as_player|as_op|as_npc|as_server] [\"Bukkit command\"]", 2);
@@ -111,6 +111,9 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ExperienceCommand.class,
                 "EXPERIENCE", "experience [{set}|give|take] (level) [#] (player:player_name)", 2);
 
+        registerCoreMember(ExplodeCommand.class,
+        		"EXPLODE", "explode (power:#) (location:x,y,z,world) (fire) (breakblocks)", 0);
+        
         registerCoreMember(FailCommand.class, 
         		"FAIL", "fail (script:name{attached script}) (player:player_name)", 0);
         
@@ -120,27 +123,42 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(FinishCommand.class, 
         		"FINISH", "finish (script:name{attached script}) (player:player_name)", 0);
 
+        registerCoreMember(FireworkCommand.class,
+        		"FIREWORK", "firework (location:x,y,z,world) (power:#) (type:name|random) (primary:color1|color2|...) (fade:color1|color2|...) (flicker) (trail)", 0);
+        
         registerCoreMember(FishCommand.class, 
-        		"FISH", "fish (catchfish) (stop) (location:x,y,z,world)", 1);
+        		"FISH", "fish (catchfish) (stop) (location:x,y,z,world) (catchpercent:#{65})", 1);
 
         registerCoreMember(FlagCommand.class, 
         		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value] (duration:#)", 1);
         
+        registerCoreMember(FlyCommand.class,
+        		"FLY", "fly [entities:e@name|...] (origin:x,y,z,world) (destination(s):x,y,z,world|...)", 1);
+        
         registerCoreMember(FollowCommand.class, 
         		"FOLLOW", "follow (stop)", 0);
 		
+        registerCoreMember(ForEachCommand.class,
+        		"FOREACH", "foreach [location:x,y,z,world|x,y,z,world] ['script_to_run']", 0); 
+        
         registerCoreMember(GiveCommand.class,
         		"GIVE", "give [money|item:#(:#)|item:material(:#)] (qty:#) (engrave)", 1);
         
         registerCoreMember(GroupCommand.class,
                 "GROUP", "group [add|remove]  [group] (player:player_name) (world:world_name)", 2);
 		
+        registerCoreMember(HeadCommand.class,
+        		"HEAD", "head (player) [skin:name]", 0);
+        
         registerCoreMember(HealCommand.class, 
         		"HEAL", "heal (amt:#) (target:npc|{player})", 0);
-
+        
         registerCoreMember(HealthCommand.class,
                 "HEALTH", "health (toggle:true|false|toggle) (set_max:#)", 1);
 		
+        registerCoreMember(HurtCommand.class,
+        		"HURT", "hurt (amt:#) (target:npc|{player})", 0);
+        
         registerCoreMember(IfCommand.class, 
         		"IF", "if [comparable] (!)(operator) (compared_to) (bridge) (...) [command] (else) (command)  +--> see documentation.", 2);
 
@@ -150,38 +168,53 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ListenCommand.class,
         		"LISTEN", "listen [listener_type] [id:listener_id] (...)  +--> see documentation - http://bit.ly/XJlKwm", 2);
         
+        registerCoreMember(LogCommand.class,
+        		"LOG", "log [\"message\"] (type:severe|info|warning|fine|finer|finest) [file:filename]", 2);
+        
         registerCoreMember(LookCommand.class,
         		"LOOK", "look (player) [location:x,y,z,world]", 1);
         
         registerCoreMember(LookcloseCommand.class,
         		"LOOKCLOSE", "lookclose [toggle:true|false]", 1);
 		
+        registerCoreMember(MidiCommand.class,
+        		"MIDI", "midi [file:<name>] (listener(s):[p@<name>|...])|(location:<x,y,z,world>) (tempo:<#.#>)", 1);
+        
+        registerCoreMember(MountCommand.class,
+        		"MOUNT", "mount (cancel) (location:<x,y,z,world>) (target(s):[n@#]|[p@name]|[e@name])", 0);
+        
         registerCoreMember(ModifyBlockCommand.class,
-        		"MODIFYBLOCK", "modifyblock [location:x,y,z,world] [material:data] (radius:#) (height:#) (depth:#)", 2);
+        		"MODIFYBLOCK", "modifyblock [location:<x,y,z,world>] [<material>(:<data>)] (radius:<#>) (height:<#>) (depth:<#>)", 2);
 		
         registerCoreMember(NameplateCommand.class,
-        		"NAMEPLATE", "nameplate [set:text|chat_color] (target:player_name)", 1);
+        		"NAMEPLATE", "nameplate [set:text|chat_color] (target:<name>)", 1);
         
         registerCoreMember(NarrateCommand.class,
-        		"NARRATE", "narrate [\"narration text\"] (player:name) (format:format)", 1);
+        		"NARRATE", "narrate [\"narration text\"] (target(s):p@<name>|...) (format:<name>)", 1);
         
         registerCoreMember(NewCommand.class, 
-        		"NEW", "new itemstack [item:material] (qty:#)", 2);
+        		"NEW", "new itemstack [item:<material>] (qty:<#>)", 2);
+        
+        registerCoreMember(OxygenCommand.class,
+        		"OXYGEN", "oxygen (type:maximum|remaining) (mode:set|add|remove) [qty:<#>]", 1);
+        
+        registerCoreMember(PlayEffectCommand.class,
+        		"PLAYEFFECT", "playeffect [location:<x,y,z,world>] [effect:<name>] (volume:<#>) (pitch:<#>)", 2);
         
         registerCoreMember(PlaySoundCommand.class,
-                "PLAYSOUND", "playsound [location:x,y,z,world] [sound:name] (volume:#) (pitch:#)", 2);
+        		"PLAYSOUND", "playsound [location:<x,y,z,world>] [sound:<name>] (volume:<#>) (pitch:<#>)", 2);
         
         registerCoreMember(PermissionCommand.class,
-                "PERMISSION", "permission [add|remove] [permission] (player:player_name) (group:group_name) (world:world_name)", 2);
+        		"PERMISSION", "permission [add|remove] [permission] (player:<name>) (group:<name>) (world:<name>)", 2);
 
         registerCoreMember(PoseCommand.class,
-                "POSE", "pose (player) [id:name]", 1);
+        		"POSE", "pose (player) [id:<name>]", 1);
 
         registerCoreMember(PauseCommand.class,
                 "PAUSE", "pause [waypoints|navigation]", 1);
 		
         registerCoreMember(QueueCommand.class,
-                "QUEUE", "queue (queue:id{residing_queue}) [clear|pause|resume|delay:#]", 1);
+        		"QUEUE", "queue (queue:<id>{<residing_queue>}) [clear|pause|resume|delay:<#>]", 1);
         
         registerCoreMember(RandomCommand.class, 
         		"RANDOM", "random [#]", 1);
@@ -202,11 +235,14 @@ public class CommandRegistry implements dRegistry {
         		"SCRIBE", "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
 
         registerCoreMember(ShootCommand.class,
-        		"SHOOT", "shoot [entity:name] (ride) (burn) (explosion:#) (location:x,y,z,world) (script:name)", 1);
+        		"SHOOT", "shoot (player) [entity:name] (ride) (burn) (location:x,y,z,world) (script:name)", 1);
 
         registerCoreMember(SitCommand.class, 
         		"SIT", "sit (location:x,y,z,world)", 0);
 
+        registerCoreMember(SpawnCommand.class,
+        		"SPAWN", "spawn [entity:name] (location:x,y,z,world) (target:[n@#]|[p@name])", 1);
+        
         registerCoreMember(StandCommand.class, 
         		"STAND", "stand", 0);
         
@@ -220,7 +256,7 @@ public class CommandRegistry implements dRegistry {
         		"TAKE", "take [money|iteminhand|item:#(:#)|item:material(:#)] (qty:#)", 1);
         
         registerCoreMember(TeleportCommand.class,
-        		"TELEPORT", "teleport (npc) [location:x,y,z,world] (target(s):[npc.#]|[player.name])", 1);
+        		"TELEPORT", "teleport (npc) [location:x,y,z,world] (target(s):[n@#]|[p@name])", 1);
         
         registerCoreMember(TriggerCommand.class, 
         		"TRIGGER", "trigger [name:trigger_name] [(toggle:true|false)|(cooldown:#.#)|(radius:#)]", 2);

@@ -56,7 +56,6 @@ public class LookCommand extends AbstractCommand {
 			if (aH.matchesDuration(arg)) {
 				duration = aH.getIntegerFrom(arg);
 				dB.echoDebug("...look duration set to '%s'.", arg);
-				continue;
 			}
 			
         	else if (aH.matchesArg("PLAYER", arg)) {
@@ -85,7 +84,7 @@ public class LookCommand extends AbstractCommand {
         if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
         else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
         scriptEntry.addObject("target", targetType)
-        		.addObject("location", location);
+        		   .addObject("location", location);
 	}
 
 	@Override
@@ -95,20 +94,17 @@ public class LookCommand extends AbstractCommand {
         Location location = (Location) scriptEntry.getObject("location");
         LivingEntity entity = null;
 		
-    	if (target.name() == "NPC")
-    	{
+        if (target.name().matches("NPC")) {
     		entity = scriptEntry.getNPC().getCitizen().getBukkitEntity();
     		
     		// Turn off the NPC's lookclose
     		scriptEntry.getNPC().getCitizen().getTrait(LookClose.class).lookClose(false);
     	}
-    	else
-    	{
+    	else {
     		entity = scriptEntry.getPlayer().getPlayerEntity();
     	}
 
-    	if (location != null)
-    	{
+    	if (location != null) {
     		Utilities.faceLocation(entity, location);
     	}
     	

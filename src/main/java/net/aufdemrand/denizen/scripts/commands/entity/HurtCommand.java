@@ -2,11 +2,10 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.traits.HealthTrait;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
@@ -21,7 +20,7 @@ public class HurtCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         TargetType targetType = TargetType.PLAYER;
-        int amount = 0;
+        int amount = 1;
 
         for (String arg : scriptEntry.getArguments()) {
 
@@ -65,20 +64,14 @@ public class HurtCommand extends AbstractCommand {
 
             case NPC:
                 NPC npc = scriptEntry.getNPC().getCitizen();
-                if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
-                // Set health to max
-                if (amount == Integer.MAX_VALUE)
-                    npc.getTrait(HealthTrait.class).setHealth(npc.getTrait(HealthTrait.class).getMaxhealth());
-                    // else, set Health
-                else npc.getTrait(HealthTrait.class).heal(amount);
-                return;
 
+                npc.getBukkitEntity().setHealth(npc.getBukkitEntity().getHealth() - amount);
+                return;
+                
             case PLAYER:
                 Player player = scriptEntry.getPlayer().getPlayerEntity();
-                // Set to max health
-                if (amount == Integer.MAX_VALUE) player.setHealth(player.getMaxHealth());
-                    // else, increase health
-                else ((CraftLivingEntity) player).getHandle().setHealth(player.getHealth() + amount);
+                // Injure player
+                ((CraftLivingEntity) player).getHandle().setHealth(player.getHealth() - amount);
                 return;
         }
 

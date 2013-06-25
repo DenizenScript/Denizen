@@ -2,10 +2,10 @@ package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 
@@ -31,18 +31,17 @@ public class PermissionCommand extends AbstractCommand {
             } else if (aH.matchesValueArg("GROUP", arg, ArgumentType.String)) {
                 group = aH.getStringFrom(arg);
             } else if (aH.matchesValueArg("WORLD", arg, ArgumentType.String)) {
-                group = aH.getStringFrom(arg);
+                world = aH.getStringFrom(arg);
             } else permission = arg;
 
         }
 
-        /* Add objects that need to be passed to execute() to the scriptEntry
+        // Add objects that need to be passed to execute() to the scriptEntry
         scriptEntry.addObject("action", action)
                     .addObject("player", player)
                     .addObject("permission", permission)
                     .addObject("group", group)
                     .addObject("world", world);
-        */
     }
 
     @Override
@@ -64,30 +63,47 @@ public class PermissionCommand extends AbstractCommand {
                 aH.debugObj("Action", action.toString())
                         + aH.debugObj("Player", player.getName())
                         + aH.debugObj("Permission", permission)
-                        + aH.debugObj("Group", group)
-                        + aH.debugObj("World", world));
+                        + (group != null ? aH.debugObj("Group", group) : "")
+                        + (world != null ? aH.debugObj("World", world) : ""));
+		
 
         switch (action) {
         case ADD:
             if(group != null) {
                 if(Depends.permissions.groupHas(world, group, permission)) {
                     dB.echoDebug("Group " + group + " already has permission " + permission);
-                } else Depends.permissions.groupAdd(world, group, permission);
+                }
+                else {
+                	Depends.permissions.groupAdd(world, group, permission);
+                	dB.echoDebug("Added permission " + permission + " for group " + group);
+                }
             } else {
                 if(Depends.permissions.has(player, permission)) {
                     dB.echoDebug("Player " + player.getName() + " already has permission " + permission);
-                } else Depends.permissions.playerAdd(player, permission);
+                }
+                else {
+                	Depends.permissions.playerAdd(player, permission);
+                	dB.echoDebug("Added permission " + permission + " for player " + player.getName());
+                }
             }
             return;
         case REMOVE: 
             if(group != null) {
                 if(!Depends.permissions.groupHas(world, group, permission)) {
                     dB.echoDebug("Group " + group + " does not have access to permission " + permission);
-                } else Depends.permissions.groupRemove(world, group, permission);
+                }
+                else {
+                	Depends.permissions.groupRemove(world, group, permission);
+                	dB.echoDebug("Removed permission " + permission + " for group " + group);
+                }
             } else {
                 if(!Depends.permissions.has(player, permission)) {
                     dB.echoDebug("Player " + player.getName() + " does not have access to permission " + permission);
-                } else Depends.permissions.playerRemove(world, player.getName(), permission);
+                }
+                else {
+                	Depends.permissions.playerRemove(world, player.getName(), permission);
+                	dB.echoDebug("Removed permission " + permission + " for player " + player.getName());
+                }
             }
             return;
         }

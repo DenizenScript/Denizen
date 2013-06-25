@@ -2,18 +2,17 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 /**
  * Modifies blocks based based of single block location.
@@ -44,25 +43,16 @@ public class ModifyBlockCommand extends AbstractCommand{
      * MODIFYBLOCK LOCATION:??? M:STONE R:2 D:3 H:2
      *
      */
-	
-	private World theWorld;
-	private Player thePlayer;
-	private Material material;
-	private Location location;
-	
-	private int radius;
-	private int height;
-	private int depth;
 
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
 		
-		thePlayer = scriptEntry.getPlayer().getPlayerEntity();
-		material = null;
-		location = null;
-		radius = 0;
-		height = 0;
-		depth = 0;
+		Material material = null;
+		int data = 0;
+		dLocation location = null;
+		int radius = 0;
+		int height = 0;
+		int depth = 0;
 		
 		for (String arg : scriptEntry.getArguments()) {			
 		    if (aH.matchesLocation(arg)){
@@ -72,8 +62,21 @@ public class ModifyBlockCommand extends AbstractCommand{
             }
 			
 			else if (aH.matchesValueArg("MATERIAL, M", arg, ArgumentType.Custom)) {
-				if (aH.matchesValueArg("MATERIAL", arg, ArgumentType.Integer)) material = Material.getMaterial(aH.getIntegerFrom(arg));
-				else material = Material.getMaterial(aH.getStringFrom(arg));
+				
+				String value = aH.getStringFrom(arg).toUpperCase();
+				
+				if (value.split(":", 2).length > 1) {
+					data = aH.getIntegerFrom(value.split(":", 2)[1]);
+				}
+				
+				value = value.split(":", 2)[0];
+				
+				if (aH.matchesInteger(value)) {
+					material = Material.getMaterial(aH.getIntegerFrom(value));
+				}
+				else {
+					material = Material.getMaterial(value);
+				}
 				
 				if (material != null) dB.echoDebug("...material set to " + material);
 				else dB.echoDebug("...material not valid.");
@@ -98,28 +101,45 @@ public class ModifyBlockCommand extends AbstractCommand{
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
+		
+        // Store objects in ScriptEntry for use in execute()
+        scriptEntry.addObject("material", material);
+        scriptEntry.addObject("data", data);
+        scriptEntry.addObject("location", location);
+        scriptEntry.addObject("radius", radius);
+        scriptEntry.addObject("height", height);
+        scriptEntry.addObject("depth", depth);
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		
+		final Material material = (Material) scriptEntry.getObject("material");
+		final int data = (Integer) scriptEntry.getObject("data");
+        final dLocation location = (dLocation) scriptEntry.getObject("location");
+        final int radius = (Integer) scriptEntry.getObject("radius");
+        final int height = (Integer) scriptEntry.getObject("height");
+        final int depth = (Integer) scriptEntry.getObject("depth");
+        
 		if (location == null || material == null){
 			dB.echoDebug("...can not exectue");
 			return;
 		}
 		
-		theWorld = thePlayer.getWorld();
+		World world = scriptEntry.getPlayer().getPlayerEntity().getWorld();
 		Block startBlock = location.getBlock();
 		Block currentBlock;
 		
 		startBlock.setType(material);
+		startBlock.setData((byte) data);
 		
 		if (radius != 0){
 			for (int x = 0; x  < 2*radius+1;  x++){
 				for (int z = 0; z < 2*radius+1; z++){
-					currentBlock = theWorld.getBlockAt(startBlock.getX() + x - radius, startBlock.getY(), startBlock.getZ() + z - radius);
+					currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY(), startBlock.getZ() + z - radius);
 					if (currentBlock.getType() != material){
 						currentBlock.setType(material);
+						currentBlock.setData((byte) data);
 					}
 				}
 			}
@@ -129,9 +149,10 @@ public class ModifyBlockCommand extends AbstractCommand{
 			for (int x = 0; x  < 2*radius+1;  x++){
 				for (int z = 0; z < 2*radius+1; z++){
 					for (int y = 1; y < height + 1; y++){
-						currentBlock = theWorld.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() + y, startBlock.getZ() + z - radius);
+						currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() + y, startBlock.getZ() + z - radius);
 						if (currentBlock.getType() != material){
 							currentBlock.setType(material);
+							currentBlock.setData((byte) data);
 						}
 					}
 				}
@@ -142,9 +163,10 @@ public class ModifyBlockCommand extends AbstractCommand{
 			for (int x = 0; x  < 2*radius+1;  x++){
 				for (int z = 0; z < 2*radius+1; z++){
 					for (int y = 1; y < depth + 1; y++){
-						currentBlock = theWorld.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() - y, startBlock.getZ() + z - radius);
+						currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() - y, startBlock.getZ() + z - radius);
 						if (currentBlock.getType() != material){
 							currentBlock.setType(material);
+							currentBlock.setData((byte) data);
 						}
 					}
 				}

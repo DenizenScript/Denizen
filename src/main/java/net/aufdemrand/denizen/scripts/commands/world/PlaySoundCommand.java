@@ -43,18 +43,18 @@ public class PlaySoundCommand extends AbstractCommand {
 			if (aH.matchesLocation(arg))
                 location = aH.getLocationFrom(arg);
 
-			else if (aH.matchesValueArg("SOUND", arg, ArgumentType.Custom) || aH.matchesValueArg("S", arg, ArgumentType.Custom)) {
+			else if (aH.matchesValueArg("sound, s", arg, ArgumentType.Custom)) {
         		try {
             		sound = Sound.valueOf(aH.getStringFrom(arg).toUpperCase());
             	} catch (Exception e) {
-            		dB.echoError("Invalid SOUND!");
+            		dB.echoError("Invalid sound!");
             	}
             }
 			
-			else if (aH.matchesValueArg("VOLUME, V", arg, ArgumentType.Float))
+			else if (aH.matchesValueArg("volume, v", arg, ArgumentType.Float))
             	volume = aH.getFloatFrom(arg);
 
-			else if (aH.matchesValueArg("PITCH, P", arg, ArgumentType.Float))
+			else if (aH.matchesValueArg("pitch, p", arg, ArgumentType.Float))
                 pitch = aH.getFloatFrom(arg);
             
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
