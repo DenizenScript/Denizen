@@ -27,7 +27,7 @@ public class RemoveCommand extends AbstractCommand {
     	
     	for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesEntityType(arg)) {
-                entityType = aH.getEntityFrom(arg);
+                entityType = aH.getEntityTypeFrom(arg);
                 dB.echoDebug("...will remove all '%s'.", arg);
             }
     	}

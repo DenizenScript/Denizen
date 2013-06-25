@@ -21,7 +21,7 @@ public class FlagTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    private enum ReplaceType { LENGTH, SIZE, ASSTRING, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASPLAYERLIST, ASNPCLIST, ASCSLIST, ISEXPIRED, EXPIRATION }
+    private enum ReplaceType { LENGTH, SIZE, ASSTRING, ABS, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASPLAYERLIST, ASNPCLIST, ASCSLIST, ISEXPIRED, EXPIRATION }
 
     /**
      * Replaces FLAG TAGs. Called automatically by the dScript ScriptBuilder and Executer.
@@ -98,7 +98,7 @@ public class FlagTags implements Listener {
                 // dB.echoDebug(ChatColor.YELLOW + "//REPLACED//" + ChatColor.WHITE + " '%s' with flag value '" + event.getReplaced() + "'.", flagName);
 
             }
-        }               
+        }
     }
 
     private String getReplaceable(FlagManager.Flag flag, Value value, ReplaceType replaceType) {
@@ -107,14 +107,16 @@ public class FlagTags implements Listener {
             return String.valueOf(value.asInteger());
         case ASDOUBLE:
             return String.valueOf(value.asDouble());
+        case ABS:
+        	return String.valueOf(Math.abs(value.asDouble()));
         case ASSTRING:
             return value.asString();
         case ASLIST:
             return String.valueOf(value.asList());
         case ASPLAYERLIST:
-            return String.valueOf(value.asList());
+            return String.valueOf(value.asList("p@"));
         case ASNPCLIST:
-            return String.valueOf(value.asList());
+            return String.valueOf(value.asList("n@"));
         case ASCSLIST:
             return String.valueOf(value.asCommaSeparatedList());
         case ASMONEY:

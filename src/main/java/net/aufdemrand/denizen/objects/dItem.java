@@ -111,48 +111,35 @@ public class dItem implements dObject {
 
         dItem stack = null;
 
-        final Pattern item_id_with_data = Pattern.compile("(\\d+):(\\d+)");
-        m = item_id_with_data.matcher(string);
+        final Pattern itemPattern = Pattern.compile("(?:item:)?(\\w+):?(\\d+)?", Pattern.CASE_INSENSITIVE);
+        
+        m = itemPattern.matcher(string);
+        
         if (m.matches()) {
-            try {
-                stack = new dItem(Integer.valueOf(m.group(1)));
-                if (stack != null) {
-                    stack.setDurability(Short.valueOf(m.group(2)));
-                    return stack;
-                }
-            } catch (Exception e) { }
-        }
-
-        final Pattern item_id = Pattern.compile("(\\d+)");
-        m = item_id.matcher(string);
-        if (m.matches()) {
-            try {
-                stack = new dItem(Integer.valueOf(m.group(1)));
-                if (stack != null)
-                    return stack;
-            } catch (Exception e) { }
-        }
-
-        final Pattern item_material_with_data = Pattern.compile("([a-z\\x5F]+?):(\\d+)", Pattern.CASE_INSENSITIVE);
-        m = item_material_with_data.matcher(string);
-        if (m.matches()) {
-            try {
-                stack = new dItem(Material.valueOf(m.group(1).toUpperCase()));
-                if (stack != null) {
-                    stack.setDurability(Short.valueOf(m.group(2)));
-                    return stack;
-                }
-            } catch (Exception e) { }
-        }
-
-        final Pattern item_material = Pattern.compile("([a-z\\x5F]+)", Pattern.CASE_INSENSITIVE);
-        m = item_material.matcher(string);
-        if (m.matches()) {
-            try {
-                stack = new dItem(Material.valueOf(m.group(1).toUpperCase()));
-                if (stack != null)
-                    return stack;
-            } catch (Exception e) { }
+        	try {
+        		String material = m.group(1).toUpperCase();
+        		String data = null;
+           
+        		if (m.groupCount() > 1) {
+        			data = m.group(2);
+        		}
+           
+        		if (aH.matchesInteger(material)) {
+        			stack = new dItem(Integer.valueOf(material));
+        		}
+        		else {
+        			stack = new dItem(Material.valueOf(material));
+        		}
+           
+        		if (data != null) {
+        			stack.setDurability(Short.valueOf(m.group(2)));
+        		}
+           
+        		return stack;
+        	}
+        	catch (Exception e) {
+               // Just a catch, might be an item script...
+        	}
         }
 
         if (!nope) dB.log("valueOf dItem returning null: " + string);

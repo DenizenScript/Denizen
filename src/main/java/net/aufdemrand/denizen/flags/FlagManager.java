@@ -532,6 +532,18 @@ public class FlagManager {
             adjustIndex();
             return new dList(values);
         }
+        
+        /**
+         * Returns a String value of the entirety of the values
+         * contained as a dScript list, with a prefix added to
+         * the start of each value. If the value doesn't
+         * exist, "" is returned.
+         *
+         */
+        public dList asList(String prefix) {
+            adjustIndex();
+            return new dList(values, prefix);
+        }
 
         /**
          * Returns a String value of the value in the specified index. If

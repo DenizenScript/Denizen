@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class Element implements dObject {
 
@@ -160,6 +161,21 @@ public class Element implements dObject {
         if (attribute.startsWith("asduration")
                 || attribute.startsWith("as_duration"))
             return Duration.valueOf(element).getAttribute(attribute.fulfill(1));
+        
+        if (attribute.startsWith("contains")) {
+            String contains = attribute.getContext(1);
+
+            if (contains.toLowerCase().startsWith("regex:")) {
+            	
+                if (Pattern.compile(contains.substring(("regex:").length()), Pattern.CASE_INSENSITIVE).matcher(element).matches())
+                    return new Element("true").getAttribute(attribute.fulfill(1));
+                else return new Element("false").getAttribute(attribute.fulfill(1));
+            }
+
+            else if (element.toLowerCase().contains(contains.toLowerCase()))
+                return new Element("true").getAttribute(attribute.fulfill(1));
+            else return new Element("false").getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("substring")) {            // substring[2,8]
             int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;
@@ -173,18 +189,18 @@ public class Element implements dObject {
 
         if (attribute.startsWith("strip_color"))
             return new Element(String.valueOf(ChatColor.stripColor(element))).getAttribute(attribute.fulfill(1));
-
+        
         if (attribute.startsWith("split") && attribute.startsWith("limit", 2)) {
             String split_string = (attribute.hasContext(1) ? attribute.getContext(1) : " ");
             Integer limit = (attribute.hasContext(2) ? attribute.getIntContext(2) : 1);
-            if (split_string.toUpperCase().startsWith("regex:"))
+            if (split_string.toLowerCase().startsWith("regex:"))
                 return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1], limit))).getAttribute(attribute.fulfill(1));
             else
                 return new dList(Arrays.asList(StringUtils.split(element, split_string, limit))).getAttribute(attribute.fulfill(1));        }
 
         if (attribute.startsWith("split")) {
             String split_string = (attribute.hasContext(1) ? attribute.getContext(1) : " ");
-            if (split_string.toUpperCase().startsWith("regex:"))
+            if (split_string.toLowerCase().startsWith("regex:"))
                 return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1]))).getAttribute(attribute.fulfill(1));
             else
                 return new dList(Arrays.asList(StringUtils.split(element, split_string))).getAttribute(attribute.fulfill(1));

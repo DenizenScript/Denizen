@@ -88,6 +88,13 @@ public class dList extends ArrayList<String> implements dObject {
     public dList(List<String> items) {
         addAll(items);
     }
+    
+    public dList(List<String> items, String prefix) {
+    	
+    	for (String element : items) {
+    		add(prefix + element);
+    	}
+    }
 
     public dList(FlagManager.Flag flag) {
         this.flag = flag;
