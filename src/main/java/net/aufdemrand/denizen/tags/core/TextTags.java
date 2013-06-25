@@ -17,35 +17,30 @@ public class TextTags implements Listener {
 
         if (!event.getName().startsWith("&")) return;
 
-        if (event.getName().equals("&auml")) {
+        if (event.getName().equals("&auml"))
             event.setReplaced("ä");
-            return;
-        }
-        else if (event.getName().equals("&Auml")) {
+
+        else if (event.getName().equals("&Auml"))
             event.setReplaced("Ä");
-            return;
-        }
-        else if (event.getName().equals("&ouml")) {
+
+        else if (event.getName().equals("&ouml"))
             event.setReplaced("ö");
-            return;
-        }
-        else if (event.getName().equals("&Ouml")) {
+
+        else if (event.getName().equals("&Ouml"))
             event.setReplaced("Ö");
-            return;
-        }
-        else if (event.getName().equals("&uuml")) {
+
+        else if (event.getName().equals("&uuml"))
             event.setReplaced("ü");
-            return;
-        }
-        else if (event.getName().equals("&Uuml")) {
+
+        else if (event.getName().equals("&Uuml"))
             event.setReplaced("Ü");
-            return;
-        }
 
     }
 
     // Thanks geckon :)
-    final String[] code = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","k","l","m","n","o","r"};
+    final String[] code = {"0","1","2","3","4","5","6","7","8","9"
+            ,"a","b","c","d","e","f","k","l","m","n","o","r"};
+
     @EventHandler
     public void colorTags(ReplaceableTagEvent event) {
         int i = 0;

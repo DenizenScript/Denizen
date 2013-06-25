@@ -26,8 +26,6 @@ public class UtilTags implements Listener {
         event.setReplaced(String.valueOf(evalulation));
     }
 
-
-
     @EventHandler
     public void utilTags(ReplaceableTagEvent event) {
         if (!event.matches("UTIL")) return;
