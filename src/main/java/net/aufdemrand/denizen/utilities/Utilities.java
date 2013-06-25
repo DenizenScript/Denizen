@@ -63,6 +63,17 @@ public class Utilities {
         }
         return output;
     }
+    
+	public static String[] wrapWords(String text, int width) {
+		StringBuilder sb = new StringBuilder(text);
+		
+		int i = 0;
+		while (i + width < sb.length() && (i = sb.lastIndexOf(" ", i + width)) != -1) {
+			sb.replace(i, i + 1, "\n");
+		}
+		
+		return sb.toString().split("\n");
+	}
 
     /**
      *
@@ -305,6 +316,35 @@ public class Utilities {
         faceLocation(entity, target.getLocation());
     }
 
+    
+    /**
+     * Finds the closest Player to a particular location.
+     *
+     * @param location	The location to find the closest Player to.
+     * @param range	The maximum range to look for the Player.
+     *
+     * @return	The closest Player to the location, or null if no Player was found
+     * 					within the range specified.
+     */
+    
+	public static Player getClosestPlayer (Location location, int range) {
+    	
+        Player closestPlayer = null;
+        double closestDistance = Math.pow(range, 2);
+        List<Player> playerList = new ArrayList<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
+        Iterator<Player> it = playerList.iterator();
+        while (it.hasNext()) {
+            Player player = it.next();
+            Location loc = player.getLocation();
+            if (loc.getWorld().equals(location.getWorld())
+                    && loc.distanceSquared(location) < closestDistance) {
+                closestPlayer = player;
+                closestDistance = player.getLocation().distanceSquared(location);
+            }
+        }
+        return closestPlayer;
+    }
+    
 
     /**
      * Finds the closest NPC to a particular location.
@@ -319,7 +359,7 @@ public class Utilities {
     public static dNPC getClosestNPC (Location location, int range) {
         dNPC closestNPC = null;
         double closestDistance = Math.pow(range, 2);
-        Iterator<dNPC>	it = DenizenAPI.getSpawnedNPCs().iterator();
+        Iterator<dNPC> it = DenizenAPI.getSpawnedNPCs().iterator();
         while (it.hasNext()) {
             dNPC npc = it.next();
             Location loc = npc.getLocation();

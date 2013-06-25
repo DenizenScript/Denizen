@@ -34,6 +34,7 @@ public class ScriptRegistry {
         _registerType("procedure", ProcedureScriptContainer.class);
         _registerType("world", WorldScriptContainer.class);
         _registerType("format", FormatScriptContainer.class);
+        _registerType("inventory", InventoryScriptContainer.class);
     }
 
     public static boolean containsScript(String id) {

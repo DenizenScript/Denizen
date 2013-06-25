@@ -85,8 +85,7 @@ public abstract class InventoryMenuItem {
         List<String> lore = new ArrayList<String>();
 
         for (String s : lines) {
-            // TODO: Fix this
-        	//lore.addAll(Arrays.asList(Utilities.wrapWords(s, 24)));
+        	lore.addAll(Arrays.asList(Utilities.wrapWords(s, 24)));
         }
 
         meta.setLore(lore);

@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -86,14 +87,13 @@ public class FireworkCommand extends AbstractCommand {
                 dB.echoDebug("...will have a trail.");
             
             }
-            /* TODO: Create dColor object
             else if (aH.matchesValueArg("PRIMARY", arg, ArgumentType.String)) {
             	// May be multiple colors, so let's treat this as a potential list.
                 // dScript list entries are separated by pipes ('|')
                 for (String element : aH.getListFrom(arg)) {
                 	
-                	if (aH.matchesColor(element)) {
-                		primary.add(aH.getColorFrom(element));
+                	if (dColor.matches(element)) {
+                		primary.add(dColor.valueOf(element).getColor());
                 	}
                 	else {
                     	dB.echoError("Invalid color " + element + "!");
@@ -103,14 +103,14 @@ public class FireworkCommand extends AbstractCommand {
             	// Same as above
                 for (String element : aH.getListFrom(arg)) {
                 	
-                	if (aH.matchesColor(element)) {
-                		fade.add(aH.getColorFrom(element));
+                	if (dColor.matches(element)) {
+                		fade.add(dColor.valueOf(element).getColor());
                 	}
                 	else {
                     	dB.echoError("Invalid color " + element + "!");
                     }
                 }
-            }*/
+            }
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
@@ -150,7 +150,7 @@ public class FireworkCommand extends AbstractCommand {
         // If there are no primary colors, there will be an error, so add one
         if (primary.size() == 0) {
         	
-        	//primary.add(aH.getColorFrom("yellow"));
+        	primary.add(dColor.valueOf("yellow").getColor());
         }
         
         fireworkBuilder.withColor(primary);

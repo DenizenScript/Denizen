@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 public class dItem implements dObject {
 
+    final static Pattern itemPattern = Pattern.compile("(?:item:)?(\\w+):?(\\d+)?", Pattern.CASE_INSENSITIVE);
 
     /////////////////////
     //  STATIC METHODS
@@ -110,8 +111,6 @@ public class dItem implements dObject {
         // Match bukkit/minecraft standard items format
 
         dItem stack = null;
-
-        final Pattern itemPattern = Pattern.compile("(?:item:)?(\\w+):?(\\d+)?", Pattern.CASE_INSENSITIVE);
         
         m = itemPattern.matcher(string);
         
