@@ -435,7 +435,7 @@ public class aH {
 
     @Deprecated
     public static dList getListFrom(String arg) {
-        return dList.valueOf(arg);
+        return dList.valueOf(aH.getStringFrom(arg));
     }
 
     @Deprecated
@@ -452,12 +452,12 @@ public class aH {
 
     @Deprecated
     public static dPlayer getPlayerFrom(String arg) {
-        return dPlayer.valueOf(arg);
+        return dPlayer.valueOf(aH.getStringFrom(arg));
     }
 
     @Deprecated
     public static dNPC getNPCFrom(String arg) {
-        return dNPC.valueOf(arg);
+        return dNPC.valueOf(aH.getStringFrom(arg));
     }
 
     @Deprecated
