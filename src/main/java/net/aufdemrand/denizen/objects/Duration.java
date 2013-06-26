@@ -14,6 +14,8 @@ public class Duration implements dObject {
             Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)",
                     Pattern.CASE_INSENSITIVE);
 
+    final public static Duration ZERO = new Duration(0);
+
     /**
      * Gets a Duration Object from a dScript argument. Durations must be a positive
      * number. Can specify the unit of time by using one of the following: T=ticks, M=minutes,

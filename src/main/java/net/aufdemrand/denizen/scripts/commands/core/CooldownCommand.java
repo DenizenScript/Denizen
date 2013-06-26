@@ -2,123 +2,122 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import org.bukkit.OfflinePlayer;
 
 /**
  * <p>Sets a 'cooldown' period on a script. Can be per-player or globally.</p>
- *
- * <b>dScript Usage:</b><br>
- * <pre>COOLDOWN ({PLAYER}|GLOBAL) (#{60}|DURATION:#) (SCRIPT:script_name)</pre>
- *
- * <ol><tt>Arguments: [] - Required, () - Optional, {} - Default</ol></tt>
- *
- * <ol><tt>({PLAYER}|GLOBAL)</tt><br> 
- *         The scope of the cooldown. If not specified, it's assumed that the script
- *         should be cooled down for the PLAYER. If GLOBAL, all players are affected.</ol>
- *
- * <ol><tt>(#{60})</tt><br> 
- *         The duration of the cooldown period. Worth noting that if not specified, the
- *         default value is 60 seconds.</ol>
- *
- * <ol><tt>(DURATION:#)</tt><br>
- *         Same as using an integer value for the cooldown period, but accepts the dScript
- *         time format for minutes, hours, days etc. For example: '60m' = 60 minutes. '1d' = 1 day.
- *         Worth noting: Durations are in real-time, not minecraft time.</ol>
- *
- * <ol><tt>[({PLAYER}|GLOBAL)]</tt><br> 
- *         The scope of the cooldown. Specifying PLAYER only affects the player, GLOBAL in turn
- *         will affect ALL players.</ol>
- *
- * <br><b>Example Usage:</b><br>
- * <ol><tt>
- *  - COOLDOWN 100 <br>
- *  - COOLDOWN DURATION:18h GLOBAL <br>
- *  - COOLDOWN 'SCRIPT:A Different Script' 10m
- * </ol></tt>
- *
  *
  * @author Jeremy Schroeder
  *
  */
 public class CooldownCommand extends AbstractCommand {
 
-    private enum Type {GLOBAL, PLAYER}
+
+    private enum Type { GLOBAL, PLAYER }
+
+
+    public String getHelp() {
+        return  "Cools down an interact script. While cool, players cannot " +
+                "run the script. When on cooldown, the script will not pass " +
+                "requirements allowing the next lowest priority script to " +
+                "trigger. You can use <script[...].cooled_down[player]> to " +
+                "return whether the script is cooled down, and <script[...].cooldown> " +
+                "to get the duration of the cooldown in progress. Cooldown requires" +
+                "a type (player or default, a script, and a duration. It also requires" +
+                "a valid link to a dPlayer.\n" +
+                " \n" +
+                "Use to keep a player from activating a script for a specified duration. \n" +
+                "- cooldown bonus_script 11h \n" +
+                "- cooldown hit_indicator 5s \n" +
+                "Use the 'global' argument to indicate the script to be on cooldown for all players. \n" +
+                "- cooldown global daily_treasure_offering 24h  \n";
+    }
+
+
+    public String getUsage() {
+        return "- cooldown ({player}|global) (script_name) [duration]";
+    }
+
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Define necessary fields
-        dScript script = scriptEntry.getScript();
-        Duration duration = null;
-        Type type = Type.PLAYER;
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-        // Parse Arguments
-        for (String arg : scriptEntry.getArguments()) {
+            if (!scriptEntry.hasObject("type")
+                    && arg.matchesEnum(Type.values()))
+                // add Type
+                scriptEntry.addObject("type", arg.asElement());
 
-            if (aH.matchesDuration(arg) || aH.matchesInteger(arg))
-                duration = aH.getDurationFrom(arg);
 
-                // Default is PLAYER, but having both to choose from seems to be most straightforward
-            else if (aH.matchesArg("GLOBAL, PLAYER", arg))
-                type = Type.valueOf(arg.toUpperCase());
+            else if (!scriptEntry.hasObject("duration")
+                    && arg.matchesArgumentType(Duration.class))
+                // add range (for WALKNEAR)
+                scriptEntry.addObject("duration", arg.asType(Duration.class));
 
-                // Must be an actual script! If the script doesn't exist, matchesScript(...)
-                // will echo an error.
-            else if (aH.matchesScript(arg))
-                script = aH.getScriptFrom(arg);
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else if (!scriptEntry.hasObject("script")
+                    && arg.matchesArgumentType(dScript.class))
+                // add anchor ID
+                scriptEntry.addObject("script", arg.asType(dScript.class));
         }
 
         // Check to make sure required arguments have been filled
-        if (type == Type.PLAYER && scriptEntry.getPlayer() == null)
-            throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
-        if (script == null)
+
+        if (scriptEntry.hasObject("type")
+                && ((Element) scriptEntry.getObject("type")).identify().equalsIgnoreCase("player")
+                && scriptEntry.getPlayer() == null)
+            throw new InvalidArgumentsException("Requires a type, either ");
+
+        if ((!scriptEntry.hasObject("script"))
+                || (scriptEntry.hasObject("script")
+                && !((dScript) scriptEntry.getObject("script")).isValid()))
             throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
 
-        // Store necessary items in the scriptEntry
-        scriptEntry.addObject("script", script);
-        scriptEntry.addObject("duration", duration);
-        scriptEntry.addObject("type", type);
+        if ((!scriptEntry.hasObject("duration"))
+                || (scriptEntry.hasObject("script")
+                && !((dScript) scriptEntry.getObject("script")).isValid()))
+            throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
     }
+
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
         dScript script = (dScript) scriptEntry.getObject("script");
         Duration duration = (Duration) scriptEntry.getObject("duration");
-        Type type = (Type) scriptEntry.getObject("type");
+        Element type = (scriptEntry.hasObject("type") ?
+                (Element) scriptEntry.getObject("type") : new Element("player"));
 
         // Report to dB
-        dB.report(getName(),
-                aH.debugObj("Type", type.toString())
-                        + script.debug()
-                        + (type == Type.PLAYER ? aH.debugObj("Player", scriptEntry.getPlayer().getName()) : "")
-                        + duration.debug());
+        dB.report(getName(), type.debug()
+                + script.debug()
+                + (type.toString().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
+                + duration.debug());
 
         // Perform cooldown
-        if (type == Type.PLAYER)
-            setCooldown(scriptEntry.getPlayer().getName(),
-                    duration.getSecondsAsInt(),
-                    script.getName(),
-                    false);
+        Type type_ = Type.valueOf(type.asString().toUpperCase());
 
-        else if (type == Type.GLOBAL)
-            setCooldown(null,
-                    duration.getSecondsAsInt(),
-                    script.getName(),
-                    true);
+        switch (type_) {
+            case PLAYER:
+                setCooldown(scriptEntry.getPlayer().getName(),
+                        duration,
+                        script.getName(),
+                        false);
 
+            case GLOBAL:
+                setCooldown(null,
+                        duration,
+                        script.getName(),
+                        true);
+        }
     }
+
 
     /**
      * Checks if a script is cooled-down for a Player. If a cool-down is currently in progress,
@@ -140,11 +139,11 @@ public class CooldownCommand extends AbstractCommand {
 
         // Check current entry GLOBALLY, reset it if necessary
         if (DenizenAPI._saves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
-            if (System.currentTimeMillis() < DenizenAPI._saves().getLong("Global.Scripts." + scriptName + ".Cooldown Time"))
+            if (System.currentTimeMillis()
+                    < DenizenAPI._saves().getLong("Global.Scripts." + scriptName + ".Cooldown Time"))
                 return false;
-            else {
+            else
                 DenizenAPI._saves().set("Global.Scripts." + scriptName + ".Cooldown Time", null);
-            }
         }
 
         // Now check for player-specific cooldowns
@@ -154,13 +153,15 @@ public class CooldownCommand extends AbstractCommand {
             return true;
 
         // If there is an entry, check against the time
-        if (System.currentTimeMillis() >= DenizenAPI._saves().getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))	{
+        if (System.currentTimeMillis()
+                >= DenizenAPI._saves().getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))	{
             DenizenAPI._saves().set("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time", null);
             return true;
         }
 
         return false;
     }
+
 
     /**
      * Sets a cooldown for a Denizen Script. Can be for a specific Player, or GLOBAL.
@@ -174,18 +175,22 @@ public class CooldownCommand extends AbstractCommand {
      * @param global
      * 		whether the script should be cooled down globally
      */
-    public static void setCooldown(String playerName, int duration, String scriptName, boolean global) {
+    public static void setCooldown(String playerName, Duration duration, String scriptName, boolean global) {
         // I hate case-sensitivity. The positive here outweighs the negative.
         if (playerName != null) playerName = playerName.toUpperCase();
         scriptName = scriptName.toUpperCase();
 
         // Set global cooldown
         if (global) {
-            DenizenAPI._saves().set("Global.Scripts." + scriptName + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
+            DenizenAPI._saves().set("Global.Scripts." + scriptName + ".Cooldown Time",
+                    System.currentTimeMillis()
+                            + (duration.getSecondsAsInt() * 1000));
 
             // or set Player cooldown
         }   else {
-            DenizenAPI._saves().set("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time", System.currentTimeMillis() + (duration * 1000));
+            DenizenAPI._saves().set("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time",
+                    System.currentTimeMillis()
+                            + (duration.getSecondsAsInt() * 1000));
         }
     }
 

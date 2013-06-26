@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -64,11 +65,11 @@ public class ResetCommand extends AbstractCommand {
                 return;
 
             case PLAYER_COOLDOWN:
-                CooldownCommand.setCooldown(scriptEntry.getPlayer().getName(), 0, script.getName(), false);
+                CooldownCommand.setCooldown(scriptEntry.getPlayer().getName(), Duration.ZERO, script.getName(), false);
                 return;
 
             case GLOBAL_COOLDOWN:
-                CooldownCommand.setCooldown(scriptEntry.getPlayer().getName(), 0, script.getName(), true);
+                CooldownCommand.setCooldown(scriptEntry.getPlayer().getName(), Duration.ZERO, script.getName(), true);
                 return;
         }
 

@@ -129,7 +129,10 @@ public class ScriptEntry {
 	}
 
     public boolean hasObject(String key) {
-        return objects.containsKey(key.toUpperCase());
+        if (objects.containsKey(key.toUpperCase())
+                && objects.get(key.toUpperCase()) != null)
+        return true;
+        else return false;
     }
 
 	public dScript getScript() {

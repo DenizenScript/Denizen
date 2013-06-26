@@ -9,27 +9,16 @@ import java.util.List;
 public class Comparable {
 
     public static enum Operator {
-        EQUALS,
-        MATCHES,
-        OR_MORE,
-        OR_LESS,
-        MORE,
-        LESS,
-        CONTAINS,
-        IS_EMPTY
+        EQUALS, MATCHES, OR_MORE, OR_LESS, MORE,
+        LESS, CONTAINS, IS_EMPTY
     }
 
     public static enum Bridge {
-        OR,
-        AND,
-        FIRST,
-        THEN,
-        ELSE
+        OR, AND, FIRST, THEN, ELSE
     }
 
     public static enum Logic {
-        REGULAR,
-        NEGATIVE
+        REGULAR, NEGATIVE
     }
 
     Logic         logic = Logic.REGULAR;
