@@ -1,6 +1,6 @@
 name: Denizen
 author: aufdemrand
-version: 0.9.0-prerelease
+version: 0.9.1-SNAPSHOT
 main: net.aufdemrand.denizen.Denizen
 depend: [Citizens]
 softdepend: [Vault, WorldGuard]

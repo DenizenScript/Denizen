@@ -23,6 +23,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -140,7 +141,7 @@ public class WorldScriptHelper implements Listener {
     }
 
     @EventHandler
-    public void loginEvent(PlayerQuitEvent event) {
+    public void quitEvent(PlayerQuitEvent event) {
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("message", event.getQuitMessage());
 
@@ -259,6 +260,10 @@ public class WorldScriptHelper implements Listener {
                 if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
             }
+            
+            determination = doEvent("player left clicks", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
 
             determination = doEvent("player swings arm in air", null, event.getPlayer(), context);
             if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -278,8 +283,61 @@ public class WorldScriptHelper implements Listener {
                 if (determination.toUpperCase().startsWith("CANCELLED"))
                     event.setCancelled(true);
             }
+            
+            determination = doEvent("player left clicks", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
 
             determination = doEvent("player hits block", null, event.getPlayer(), context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        }
+        
+        if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+
+            if (event.getItem() != null ) {
+                context.put("item_in_hand", new dItem(event.getItem()).identify().split(":")[0]);
+
+                determination = doEvent("player uses " + new dItem(event.getItem()).identify().split(":")[0] + " in air", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
+                    event.setCancelled(true);
+
+                determination = doEvent("player uses item in air", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
+                    event.setCancelled(true);
+            }
+
+            determination = doEvent("player right clicks", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+
+            determination = doEvent("player right clicks air", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        }
+
+        else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+            context.put("location clicked", new dLocation(event.getClickedBlock().getLocation()).identify());
+            if (event.getItem() != null ) {
+                context.put("item_in_hand", new dItem(event.getItem()).identify());
+
+                determination = doEvent("player uses " + new dItem(event.getItem()).identify() + " on block", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
+                    event.setCancelled(true);
+
+                determination = doEvent("player uses item on block", null, event.getPlayer(), context);
+                if (determination.toUpperCase().startsWith("CANCELLED"))
+                    event.setCancelled(true);
+            }
+
+            determination = doEvent("player right clicks", null, event.getPlayer(), context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+
+            determination = doEvent("player right clicks block", null, event.getPlayer(), context);
 
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
@@ -308,6 +366,7 @@ public class WorldScriptHelper implements Listener {
         try {
             determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
+        	// TODO: Need to find a way to fix this eventually
             // e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -412,10 +471,70 @@ public class WorldScriptHelper implements Listener {
 
         }
     }
+    
+    
+    @EventHandler
+    public void playerConsume(PlayerItemConsumeEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        String determination;
+        
+        ItemStack item = event.getItem(); 
+        
+        String id = String.valueOf(item.getTypeId());
+        String material = item.getType().name();
+        String data = String.valueOf(item.getData().getData());
+        String display = String.valueOf(item.getItemMeta().getDisplayName());
+        
+        context.put("id", id);
+        context.put("material", material);
+        context.put("data", data);
+        context.put("display", display);
+        
+        determination = doEvent("player consumes item", null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + id, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + id + ":" + data, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + material, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + material + ":" + data, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        if (display != null) {
+        	
+            determination = doEvent("player consumes " + display, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+            
+            determination = doEvent("player consumes " + id + " " + display, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+            
+            determination = doEvent("player consumes " + material + " " + display, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        }
+    }
 
 
     @EventHandler
-    public void playerEat(EntityRegainHealthEvent event) {
+    public void playerHeal(EntityRegainHealthEvent event) {
 
         if (event.getEntity() instanceof  Player
                 && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
@@ -481,6 +600,54 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("MESSAGE"))
             event.setDeathMessage(aH.getStringFrom(determination));
+    }
+    
+    
+    @EventHandler
+    public void weatherChange(WeatherChangeEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        String world = event.getWorld().getName();
+        
+        context.put("world", world);
+
+        String determination = doEvent("weather changes", null, null, context);
+
+        // Handle messages
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("weather changes in " + world, null, null, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        if (event.toWeatherState() == true) {
+
+            determination = doEvent("weather rains", null, null, context);
+
+            // Handle messages
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        	
+        	determination = doEvent("weather rains in " + world, null, null, context);
+        
+        	if (determination.toUpperCase().startsWith("CANCELLED"))
+        		event.setCancelled(true);
+        }
+        else {
+        	
+        	determination = doEvent("weather clears", null, null, context);
+
+            // Handle messages
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        
+        	determination = doEvent("weather clears in " + world, null, null, context);
+        
+        	if (determination.toUpperCase().startsWith("CANCELLED"))
+        		event.setCancelled(true);
+        }
     }
 
 

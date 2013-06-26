@@ -372,6 +372,9 @@ public class aH {
 
             case String:
                 return true;
+                
+            case Custom:
+                return true;
 
         }
 

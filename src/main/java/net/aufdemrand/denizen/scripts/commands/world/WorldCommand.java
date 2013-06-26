@@ -42,13 +42,15 @@ public class WorldCommand extends AbstractCommand {
                 player = Bukkit.getServer().getPlayer(aH.getStringFrom("player"));
                 type = Type.PLAYER;
                 
-            } else if (aH.matchesValueArg("weather", arg, ArgumentType.Custom)) { 
+            } else if (aH.matchesValueArg("weather", arg, ArgumentType.String)) { 
                 action = Action.WEATHER;
-                sub = SubAction.valueOf(aH.getStringFrom("weather"));
+                Bukkit.broadcastMessage("Got inside weather!");
+                sub = SubAction.valueOf(aH.getStringFrom(arg).toUpperCase());
                 if(sub == null) throw new InvalidArgumentsException("Invalid sub action for WEATHER!");
 
-        	} else if (aH.matchesValueArg("time", arg, ArgumentType.Custom)) {
+        	} else if (aH.matchesValueArg("time", arg, ArgumentType.String)) {
                 action = Action.TIME;
+                Bukkit.broadcastMessage("Got inside time!");
                 sub = SubAction.valueOf(aH.getStringFrom(arg).toUpperCase());
                 if(sub == null) throw new InvalidArgumentsException("Invalid sub action for TIME!");
 

@@ -225,7 +225,7 @@ public class dPlayer implements dObject {
                     return new Element(Depends.economy.currencyNameSingular())
                             .getAttribute(attribute.fulfill(2));
 
-                if (attribute.startsWith("money.currency_plural"))
+                if (attribute.startsWith("money.currency"))
                     return new Element(Depends.economy.currencyNamePlural())
                             .getAttribute(attribute.fulfill(2));
 

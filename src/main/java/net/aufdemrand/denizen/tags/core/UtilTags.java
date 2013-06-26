@@ -6,7 +6,9 @@ import java.util.UUID;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 
 import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
@@ -60,23 +62,35 @@ public class UtilTags implements Listener {
                 event.setReplaced(UUID.randomUUID().toString());
         }
 
-        else if (type.equalsIgnoreCase("TRIM")) {
-            String item_to_trim = event.getTypeContext();
+        else if (type.equalsIgnoreCase("SUBSTR")
+                || type.equalsIgnoreCase("TRIM")
+                || type.equalsIgnoreCase("SUBSTRING")) {
+            String text = event.getTypeContext();
             int from = 1;
+            int to = text.length() + 1;
+            
+            if (subType.equalsIgnoreCase("AFTER")) {
+                from = text.toUpperCase().indexOf(subTypeContext) + subTypeContext.length() + 1;
+            }
+            
+            if (subType.equalsIgnoreCase("BEFORE")) {
+                to = text.toUpperCase().indexOf(subTypeContext) + 1;
+            }
+            
             try {
                 if (subType.equalsIgnoreCase("FROM"))
                     from = Integer.valueOf(subTypeContext);
             } catch (NumberFormatException e) { }
-            int to = item_to_trim.length();
+            
             try {
                 if (specifier.equalsIgnoreCase("TO"))
                     to = Integer.valueOf(specifierContext);
             } catch (NumberFormatException e) { }
 
-            if (to > item_to_trim.length())
-                to = item_to_trim.length()+1;
+            if (to > text.length())
+                to = text.length() + 1;
 
-            event.setReplaced(item_to_trim.substring(from - 1, to - 1));
+            event.setReplaced(text.substring(from - 1, to - 1));
         }
 
         else if (type.equalsIgnoreCase("REPLACE")) {
@@ -110,7 +124,10 @@ public class UtilTags implements Listener {
         	event.setReplaced(format.format(currentDate));
         }
 
-
+        else if (type.equalsIgnoreCase("AS_ELEMENT")) {
+            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            event.setReplaced(new Element(typeContext).getAttribute(attribute.fulfill(2)));
+        }
 
     }
 
