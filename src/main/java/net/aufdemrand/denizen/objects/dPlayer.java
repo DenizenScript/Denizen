@@ -4,6 +4,8 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -335,6 +337,18 @@ public class dPlayer implements dObject {
 
             // Permission in current world
             return new Element(String.valueOf(Depends.permissions.playerInGroup(getPlayerEntity(), group)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
+        if (attribute.startsWith("region")) {
+            if (Depends.worldGuard == null) {
+                dB.echoError("Cannot check region! WorldGuard is not loaded!");
+                return null;
+            }
+
+            String region = attribute.getContext(1);
+
+            return new Element(String.valueOf(WorldGuardUtilities.checkPlayerWGRegion(getPlayerEntity(), region)))
                     .getAttribute(attribute.fulfill(1));
         }
 
