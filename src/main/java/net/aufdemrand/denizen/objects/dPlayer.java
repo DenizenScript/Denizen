@@ -339,18 +339,6 @@ public class dPlayer implements dObject {
             return new Element(String.valueOf(Depends.permissions.playerInGroup(getPlayerEntity(), group)))
                     .getAttribute(attribute.fulfill(1));
         }
-        
-        if (attribute.startsWith("region")) {
-            if (Depends.worldGuard == null) {
-                dB.echoError("Cannot check region! WorldGuard is not loaded!");
-                return null;
-            }
-
-            String region = attribute.getContext(1);
-
-            return new Element(String.valueOf(WorldGuardUtilities.checkPlayerWGRegion(getPlayerEntity(), region)))
-                    .getAttribute(attribute.fulfill(1));
-        }
 
         if (attribute.startsWith("is_flying"))
             return new Element(String.valueOf(getPlayerEntity().isFlying()))

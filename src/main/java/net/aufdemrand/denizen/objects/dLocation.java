@@ -4,6 +4,9 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -378,6 +381,18 @@ public class dLocation extends org.bukkit.Location implements dObject {
         if (attribute.startsWith("power"))
             return new Element(String.valueOf(getBlock().getBlockPower()))
                     .getAttribute(attribute.fulfill(1));
+        
+        if (attribute.startsWith("region")) {
+            if (Depends.worldGuard == null) {
+                dB.echoError("Cannot check region! WorldGuard is not loaded!");
+                return null;
+            }
+
+            String region = attribute.getContext(1);
+
+            return new Element(String.valueOf(WorldGuardUtilities.checkWGRegion(this, region)))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
 
 
