@@ -128,7 +128,7 @@ public class IfCommand extends AbstractCommand {
                         bracketsEntered++;
                         
                         if (bracketsEntered > 1) {
-                            thenOutcome.get(thenOutcome.lastKey()).add(arg.getValue());
+                            thenOutcome.get(thenOutcome.lastKey()).add(arg.raw_value);
                         }
                     }
 
@@ -136,7 +136,7 @@ public class IfCommand extends AbstractCommand {
                         bracketsEntered--;
 
                         if (bracketsEntered > 0) {
-                            thenOutcome.get(thenOutcome.lastKey()).add(arg.getValue());
+                            thenOutcome.get(thenOutcome.lastKey()).add(arg.raw_value);
                         }
                     }
 
@@ -144,13 +144,13 @@ public class IfCommand extends AbstractCommand {
                     // or if there are no outcome commands yet
                     else if (newCommand == true || thenOutcome.size() == 0) {
                         thenOutcome.put(thenOutcome.size(), new ArrayList<String>());
-                        thenOutcome.get(thenOutcome.lastKey()).add(arg.getValue());
+                        thenOutcome.get(thenOutcome.lastKey()).add(arg.raw_value);
                         newCommand = false;
                     }
 
                     // Add new outcome argument
                     else {
-                        thenOutcome.get(thenOutcome.lastKey()).add(arg.getValue());
+                        thenOutcome.get(thenOutcome.lastKey()).add(arg.raw_value);
                     }
                 }
 
@@ -163,7 +163,7 @@ public class IfCommand extends AbstractCommand {
                         bracketsEntered++;
                         
                         if (bracketsEntered > 1) {
-                            elseOutcome.get(elseOutcome.lastKey()).add(arg.getValue());
+                            elseOutcome.get(elseOutcome.lastKey()).add(arg.raw_value);
                         }
                     }
 
@@ -171,7 +171,7 @@ public class IfCommand extends AbstractCommand {
                         bracketsEntered--;
                         
                         if (bracketsEntered > 0) {
-                            elseOutcome.get(elseOutcome.lastKey()).add(arg.getValue());
+                            elseOutcome.get(elseOutcome.lastKey()).add(arg.raw_value);
                         }
                     }
 
@@ -180,7 +180,7 @@ public class IfCommand extends AbstractCommand {
                     else if (newCommand == true || elseOutcome.size() == 0) {
                         newCommand = false;
                         elseOutcome.put(elseOutcome.size(), new ArrayList<String>());
-                        elseOutcome.get(elseOutcome.lastKey()).add(arg.getValue());
+                        elseOutcome.get(elseOutcome.lastKey()).add(arg.raw_value);
 
                         // Important!
                         //
@@ -194,7 +194,7 @@ public class IfCommand extends AbstractCommand {
 
                     // Add new else argument
                     else {
-                        elseOutcome.get(elseOutcome.lastKey()).add(arg.getValue());
+                        elseOutcome.get(elseOutcome.lastKey()).add(arg.raw_value);
                     }
                 }
             }
