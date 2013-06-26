@@ -8,7 +8,7 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.arguments.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities
+import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 import net.aufdemrand.denizen.utilities.nbt.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -406,12 +406,10 @@ public class PlayerTags implements Listener {
             }
 
         } else if (type.equalsIgnoreCase("INREGION")) {
-            if(Depends.worldGuard != null)
-            {
-                event.setReplaced(String.valueOf(WorldGuardUtilities.checkPlayerWGRegion(context.getPlayer(), typeContext)));
+            if(Depends.worldGuard != null) {
+                event.setReplaced(String.valueOf(WorldGuardUtilities.checkPlayerWGRegion(p, typeContext)));
             }
-            else
-            {
+            else {
                 dB.echoError("Cannot check region! WorldGuard isn't loaded!");
             }
         
