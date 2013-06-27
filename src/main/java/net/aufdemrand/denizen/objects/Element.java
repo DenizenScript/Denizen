@@ -31,6 +31,16 @@ public class Element implements dObject {
         this.element = string;
     }
 
+    public Element(Integer integer) {
+        this.prefix = "integer";
+        this.element = String.valueOf(integer);
+    }
+
+    public Element(Double dbl) {
+        this.prefix = "double";
+        this.element = String.valueOf(dbl);
+    }
+
     public Element(String prefix, String string) {
         if (prefix == null) this.prefix = "element";
         else this.prefix = prefix;
@@ -204,6 +214,11 @@ public class Element implements dObject {
                 return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1]))).getAttribute(attribute.fulfill(1));
             else
                 return new dList(Arrays.asList(StringUtils.split(element, split_string))).getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("sqrt")) {
+            return new Element(Math.sqrt(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("prefix"))
