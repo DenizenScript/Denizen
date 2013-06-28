@@ -63,7 +63,7 @@ public class dList extends ArrayList<String> implements dObject {
 
         // Make sure string matches what this interpreter can accept.
         final Pattern flag_by_id =
-                Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
+                Pattern.compile("(fl\\[((?:p@|n@|e@)(.+?))\\]@|fl@)(.+)",
                         Pattern.CASE_INSENSITIVE);
 
         Matcher m;
