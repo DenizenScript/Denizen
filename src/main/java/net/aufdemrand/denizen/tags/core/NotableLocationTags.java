@@ -5,10 +5,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.arguments.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.trait.Anchors;
-import org.bukkit.Location;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -19,11 +16,12 @@ public class NotableLocationTags implements Listener {
 	}
 
 	@EventHandler
-	public void constantTags(ReplaceableTagEvent event) {
+	public void notableTags(ReplaceableTagEvent event) {
+				
 		if (!event.matches("NOTABLE")) return;
 
         String tag = event.raw_tag;
-
+        
         String id = null;
         if (event.hasValue()) {
             id = event.getValue();
@@ -31,7 +29,7 @@ public class NotableLocationTags implements Listener {
         }
 
         else if (event.hasNameContext()) id = event.getNameContext();
-
+        
         if (dLocation.isSavedLocation(id)) {
             dB.echoError("Notable tag '" + event.raw_tag + "': id was not found.");
         }
@@ -39,10 +37,10 @@ public class NotableLocationTags implements Listener {
 		dLocation location = dLocation.getSavedLocation(id);
 
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
-
         attribute.fulfill(1);
-
-        event.setReplaced(location.getAttribute(attribute));
+        tag = location.getAttribute(attribute);
+        
+        event.setReplaced(tag.substring("location:".length()));
 
 	}
 }

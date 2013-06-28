@@ -41,6 +41,7 @@ public class TagManager {
         new AnchorTags(denizen);
         new ContextTags(denizen);
         new LocationTags(denizen);
+        new NotableLocationTags(denizen);
         new SpecialCharacterTags(denizen);
         new TextTags(denizen);
         new ForeignCharacterTags(denizen);
