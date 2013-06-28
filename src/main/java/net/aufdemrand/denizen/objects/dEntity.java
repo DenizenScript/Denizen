@@ -7,12 +7,12 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_5_R3.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -127,10 +127,10 @@ public class dEntity implements dObject {
                     Entity entity = null;
 
                     for (World world : Bukkit.getWorlds()) {
-                        entity = ((CraftWorld) world).getHandle().getEntity(entityID);
+                        entity = ((CraftWorld) world).getHandle().getEntity(entityID).getBukkitEntity();
                         if (entity != null) break;
                     }
-                    if (entity != null) return new dEntity((LivingEntity) entity.getBukkitEntity());
+                    if (entity != null) return new dEntity(entity);
                 }
 
                 else if (isSaved(m.group(3)))
@@ -188,7 +188,7 @@ public class dEntity implements dObject {
     //   CONSTRUCTORS
     //////////////////
 
-    public dEntity(LivingEntity entity) {
+    public dEntity(Entity entity) {
         if (entity != null) {
             this.entity = entity;
             this.entity_type = entity.getType();
@@ -207,12 +207,23 @@ public class dEntity implements dObject {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    private LivingEntity entity = null;
+
+    private Entity entity = null;
     private EntityType entity_type = null;
     private DespawnedEntity despawned_entity = null;
 
-    public LivingEntity getBukkitEntity() {
+    public Entity getBukkitEntity() {
         return entity;
+    }
+
+    public LivingEntity getLivingEntity() {
+        if (entity instanceof LivingEntity)
+            return (LivingEntity) entity;
+        else return null;
+    }
+
+    public boolean isLivingEntity() {
+        return (entity instanceof LivingEntity);
     }
 
     public void spawnAt(Location location) {
@@ -226,11 +237,11 @@ public class dEntity implements dObject {
                     if (despawned_entity.custom_script != null)
                     { } // Build entity from custom script
                     // Else, use the entity_type specified/remembered
-                    else entity = (LivingEntity) location.getWorld().spawnEntity(location, entity_type);
+                    else entity = location.getWorld().spawnEntity(location, entity_type);
 
-                    entity.teleport(location);
-                    entity.getEquipment().setArmorContents(despawned_entity.equipment);
-                    entity.setHealth(despawned_entity.health);
+                    getLivingEntity().teleport(location);
+                    getLivingEntity().getEquipment().setArmorContents(despawned_entity.equipment);
+                    getLivingEntity().setHealth(despawned_entity.health);
 
                     despawned_entity = null;
                 }
@@ -248,7 +259,7 @@ public class dEntity implements dObject {
 
     public void despawn() {
         despawned_entity = new DespawnedEntity(this);
-        entity.remove();
+        getLivingEntity().remove();
     }
 
     public void respawn() {
@@ -282,12 +293,12 @@ public class dEntity implements dObject {
         public DespawnedEntity(dEntity entity) {
             if (entity != null) {
                 // Save some important info to rebuild the entity
-                health = entity.getBukkitEntity().getHealth();
-                location = entity.getBukkitEntity().getLocation();
-                equipment = entity.getBukkitEntity().getEquipment().getArmorContents();
+                health = entity.getLivingEntity().getHealth();
+                location = entity.getLivingEntity().getLocation();
+                equipment = entity.getLivingEntity().getEquipment().getArmorContents();
 
-                if (CustomNBT.hasCustomNBT(entity.getBukkitEntity(), "denizen-script-id"))
-                    custom_script = CustomNBT.getCustomNBT(entity.getBukkitEntity(), "denizen-script-id");
+                if (CustomNBT.hasCustomNBT(entity.getLivingEntity(), "denizen-script-id"))
+                    custom_script = CustomNBT.getCustomNBT(entity.getLivingEntity(), "denizen-script-id");
             }
         }
     }
@@ -367,8 +378,8 @@ public class dEntity implements dObject {
 
 
         if (attribute.startsWith("custom_name")) {
-            if (entity.getCustomName() == null) return "null";
-            return new Element(entity.getCustomName()).getAttribute(attribute.fulfill(2));
+            if (getLivingEntity().getCustomName() == null) return "null";
+            return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.startsWith("name")) {
@@ -387,8 +398,8 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("custom_id")) {
-            if (CustomNBT.hasCustomNBT(getBukkitEntity(), "denizen-script-id"))
-                return new dScript(CustomNBT.getCustomNBT(getBukkitEntity(), "denizen-script-id"))
+            if (CustomNBT.hasCustomNBT(getLivingEntity(), "denizen-script-id"))
+                return new dScript(CustomNBT.getCustomNBT(getLivingEntity(), "denizen-script-id"))
                         .getAttribute(attribute.fulfill(1));
             else
                 return new Element(getBukkitEntity().getType().name())
@@ -398,7 +409,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
             if (range < 1) range = 50;
-            return new dLocation(entity.getTargetBlock(null, range).getLocation())
+            return new dLocation(getLivingEntity().getTargetBlock(null, range).getLocation())
                     .getAttribute(attribute.fulfill(2));
         }
 
@@ -411,35 +422,35 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("health.formatted")) {
-            int maxHealth = entity.getMaxHealth();
+            int maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHealth = attribute.getIntContext(2);
-            if ((float) entity.getHealth() / maxHealth < .10)
+            if ((float) getLivingEntity().getHealth() / maxHealth < .10)
                 return new Element("dying").getAttribute(attribute.fulfill(2));
-            else if ((float) entity.getHealth() / maxHealth < .40)
+            else if ((float) getLivingEntity().getHealth() / maxHealth < .40)
                 return new Element("seriously wounded").getAttribute(attribute.fulfill(2));
-            else if ((float) entity.getHealth() / maxHealth < .75)
+            else if ((float) getLivingEntity().getHealth() / maxHealth < .75)
                 return new Element("injured").getAttribute(attribute.fulfill(2));
-            else if ((float) entity.getHealth() / maxHealth < 1)
+            else if ((float) getLivingEntity().getHealth() / maxHealth < 1)
                 return new Element("scraped").getAttribute(attribute.fulfill(2));
 
             else return new Element("healthy").getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.startsWith("health.percentage")) {
-            int maxHealth = entity.getMaxHealth();
+            int maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHealth = attribute.getIntContext(2);
-            return new Element(String.valueOf(((float) entity.getHealth() / maxHealth) * 100))
+            return new Element(String.valueOf(((float) getLivingEntity().getHealth() / maxHealth) * 100))
                     .getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.startsWith("health.max"))
-            return new Element(String.valueOf(entity.getMaxHealth()))
+            return new Element(String.valueOf(getLivingEntity().getMaxHealth()))
                     .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("health"))
-            return new Element(String.valueOf(entity.getHealth()))
+            return new Element(String.valueOf(getLivingEntity().getHealth()))
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("is_inside_vehicle"))
@@ -447,7 +458,7 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("killer"))
-            return new dPlayer(entity.getKiller())
+            return new dPlayer(getLivingEntity().getKiller())
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("last_damage_cause"))
@@ -455,7 +466,7 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("last_damage"))
-            return new Element(String.valueOf(entity.getLastDamage()))
+            return new Element(String.valueOf(getLivingEntity().getLastDamage()))
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("time_lived"))
@@ -463,7 +474,7 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("can_pickup_items"))
-            return new Element(String.valueOf(entity.getCanPickupItems()))
+            return new Element(String.valueOf(getLivingEntity().getCanPickupItems()))
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("entity_id"))
