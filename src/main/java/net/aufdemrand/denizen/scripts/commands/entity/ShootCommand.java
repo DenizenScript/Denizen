@@ -48,31 +48,31 @@ public class ShootCommand extends AbstractCommand {
         Boolean burn = false;
 
         for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesEntityType(arg)) {
+        	if (aH.matchesArg("PLAYER", arg)) {
+        		shooterType = ShooterType.PLAYER;
+        		dB.echoDebug("... will be shot by the player!");
+        	}
+            else if (aH.matchesEntityType(arg)) {
                 entityType = aH.getEntityTypeFrom(arg);
                 dB.echoDebug("...projectile set to '%s'.", arg);
-
-            } else if (aH.matchesLocation(arg)) {
+            }
+            else if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
                 dB.echoDebug("...location set to '%s'.", arg);
-                
-            } else if (aH.matchesArg("PLAYER", arg)) {
-        		shooterType = ShooterType.PLAYER;
-                dB.echoDebug("... will be shot by the player!");
-                
-        	} else if (aH.matchesScript(arg)) {
+        	}
+            else if (aH.matchesScript(arg)) {
 				newScript = aH.getScriptFrom(arg);
 				dB.echoDebug(Messages.DEBUG_SET_SCRIPT, arg);
-
-            } else if (aH.matchesArg("ride, mount", arg)) {
+            }
+            else if (aH.matchesArg("ride, mount", arg)) {
                 ride = true;
                 dB.echoDebug("...will be mounted.");
-                
-            } else if (aH.matchesArg("burn, burning", arg)) {
+            }
+            else if (aH.matchesArg("burn, burning", arg)) {
                 burn = true;
                 dB.echoDebug("...will burn.");
-               
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            }
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
         
         if (shooterType.name().equals("NPC")) {
@@ -125,11 +125,14 @@ public class ShootCommand extends AbstractCommand {
         	Utilities.faceLocation(shooter, location);
         }
         
-        final Entity entity = shooter.getWorld().spawnEntity(
-        				shooter.getEyeLocation().add(
-        				shooter.getEyeLocation().getDirection())
-        				.subtract(0, 0.4, 0),
-        				entityType);
+        Location spawnLocation = shooter.getEyeLocation().add(
+				  				  shooter.getEyeLocation().getDirection())
+				  				  .subtract(0, 0.4, 0);
+        
+        final Entity entity = (entityType.name() == "FALLING_BLOCK") ?
+        					  shooter.getWorld().spawnFallingBlock(
+        							  spawnLocation, 12, (byte) 0) :
+        					  shooter.getWorld().spawnEntity(spawnLocation, entityType);
         
         Utilities.faceLocation(entity, location);
         

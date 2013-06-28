@@ -491,7 +491,7 @@ public class aH {
     }
 
     public static boolean matchesEntityType(String arg) {
-        arg = arg.replace("duration:", "");
+        arg = arg.replace("entity:", "");
 
         // Check against valid EntityTypes using Bukkit's EntityType enum
         for (EntityType validEntity : EntityType.values())
