@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
@@ -264,7 +266,7 @@ public class dPlayer implements dObject {
         //if (attribute.startsWith("inventory"))
         //    return new dInventory(getPlayerEntity().getInventory())
         //            .getAttribute(attribute.fulfill(1));
-        
+
         if (attribute.startsWith("item_in_hand"))
             return new dItem(getPlayerEntity().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
@@ -326,10 +328,21 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        if (attribute.startsWith("flag")) {
+            if (attribute.hasContext(1)) {
+                if (FlagManager.playerHasFlag(this, attribute.getContext(1)))
+                    return new dList(DenizenAPI.getCurrentInstance().flagManager()
+                            .getPlayerFlag(getName(), attribute.getContext(1)))
+                            .getAttribute(attribute.fulfill(1));
+                return "null";
+            }
+            else return null;
+        }
+
         if (attribute.startsWith("group")) {
             if (Depends.permissions == null) {
                 dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
-                return null;
+                return "null";
             }
 
             String group = attribute.getContext(1);

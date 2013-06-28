@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
@@ -257,6 +258,17 @@ public class dNPC implements dObject {
                 return new dLocation(getCitizen().getTrait(Anchors.class)
                         .getAnchor(attribute.getContext(1)).getLocation())
                 .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("flag")) {
+            if (attribute.hasContext(1)) {
+                if (FlagManager.npcHasFlag(this, attribute.getContext(1)))
+                    return new dList(DenizenAPI.getCurrentInstance().flagManager()
+                            .getNPCFlag(getId(), attribute.getContext(1)))
+                            .getAttribute(attribute.fulfill(1));
+                return "null";
+            }
+            else return null;
         }
 
         if (attribute.startsWith("id"))
