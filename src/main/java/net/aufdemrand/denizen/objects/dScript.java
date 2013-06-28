@@ -28,6 +28,17 @@ public class dScript implements dObject {
         }
         return null;
     }
+    
+    public static boolean matches(String string) {
+    	
+    	Matcher m = matchesScriptPtrn.matcher(string);
+    	if (m.matches()) {
+            dScript script = new dScript(m.group(1));
+            // Make sure it's valid.
+            if (script.isValid()) return true;
+        }
+        return false;
+    }
 
     private ScriptContainer container;
     private String prefix = "Script";
