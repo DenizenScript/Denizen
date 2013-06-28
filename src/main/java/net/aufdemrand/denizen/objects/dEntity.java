@@ -91,20 +91,19 @@ public class dEntity implements dObject {
 
         // Make sure string matches what this interpreter can accept.
         final Pattern entity_by_id =
-                Pattern.compile("((n@|e@|p@)(.+))",
+                Pattern.compile("(n@|e@|p@)(.+)",
                         Pattern.CASE_INSENSITIVE);
 
         Matcher m;
         m = entity_by_id.matcher(string);
 
         if (m.matches()) {
-            String entityGroup = m.group(1);
-            String entityGroupUpper = entityGroup.toUpperCase();
+            String entityGroup = m.group(1).toUpperCase();
 
             // NPC entity
-            if (entityGroupUpper.startsWith("N@")) {
+            if (entityGroup.matches("N@")) {
                 NPC returnable = CitizensAPI.getNPCRegistry()
-                        .getById(Integer.valueOf(m.group(3)));
+                        .getById(Integer.valueOf(m.group(2)));
 
                 if (returnable != null) return new dEntity(returnable.getBukkitEntity());
                 else dB.echoError("Invalid NPC! '" + entityGroup
@@ -112,8 +111,8 @@ public class dEntity implements dObject {
             }
 
             // Player entity
-            else if (entityGroupUpper.startsWith("P@")) {
-                LivingEntity returnable = aH.getPlayerFrom(m.group(3)).getPlayerEntity();
+            else if (entityGroup.matches("P@")) {
+                LivingEntity returnable = aH.getPlayerFrom(m.group(2)).getPlayerEntity();
 
                 if (returnable != null) return new dEntity(returnable);
                 else dB.echoError("Invalid Player! '" + entityGroup
@@ -122,8 +121,8 @@ public class dEntity implements dObject {
 
             // Assume entity
             else {
-                if (aH.matchesInteger(m.group(3))) {
-                    int entityID = Integer.valueOf(m.group(3));
+                if (aH.matchesInteger(m.group(2))) {
+                    int entityID = Integer.valueOf(m.group(2));
                     Entity entity = null;
 
                     for (World world : Bukkit.getWorlds()) {
@@ -133,8 +132,8 @@ public class dEntity implements dObject {
                     if (entity != null) return new dEntity(entity);
                 }
 
-                else if (isSaved(m.group(3)))
-                    return getSaved(m.group(3));
+                else if (isSaved(m.group(2)))
+                    return getSaved(m.group(2));
             }
         }
 
@@ -145,7 +144,7 @@ public class dEntity implements dObject {
 
         if (ScriptRegistry.containsScript(string, EntityScriptContainer.class)) {
             // Construct a new custom unspawned entity from script
-            return ScriptRegistry.getScriptContainerAs(m.group(1), EntityScriptContainer.class).getEntityFrom();
+            return ScriptRegistry.getScriptContainerAs(m.group(0), EntityScriptContainer.class).getEntityFrom();
         }
 
         ////////

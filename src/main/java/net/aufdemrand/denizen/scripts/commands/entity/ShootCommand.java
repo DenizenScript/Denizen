@@ -51,7 +51,7 @@ public class ShootCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dEntity.class)
                 	&& arg.matchesPrefix("projectile, projectiles, p, entity, entities, e")) {
                 // Entity arg
-                scriptEntry.addObject("projectiles", arg.asType(dList.class));
+                scriptEntry.addObject("projectiles", arg.asType(dEntity.class));
             }
             
             else if (!scriptEntry.hasObject("destination")
