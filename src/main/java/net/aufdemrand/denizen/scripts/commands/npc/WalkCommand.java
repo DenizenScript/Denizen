@@ -13,9 +13,9 @@ import org.bukkit.event.Listener;
  * Your command! 
  * This class is a template for a Command in Denizen.
  * 
- * @author Jeremy Schroeder (aufdemrand)
+ * @author Jeremy Schroeder
  */
-public class WalkToCommand extends AbstractCommand implements Listener {
+public class WalkCommand extends AbstractCommand implements Listener {
 	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
