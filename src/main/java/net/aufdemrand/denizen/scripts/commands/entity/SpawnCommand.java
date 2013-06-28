@@ -48,7 +48,7 @@ public class SpawnCommand extends AbstractCommand {
 
             }
             else if (aH.matchesValueArg("TARGET", arg, ArgumentType.Custom)) {
-            	target = dEntity.valueOf(aH.getStringFrom(arg)).getBukkitEntity();
+            	target = dEntity.valueOf(aH.getStringFrom(arg)).getLivingEntity();
                 dB.echoDebug("...target set to '%s' at " +
                 		target.getLocation().getBlockX() + "," +
                 		target.getLocation().getBlockY() + "," +

@@ -90,7 +90,7 @@ public class TeleportCommand extends AbstractCommand {
                 teleportPlayer = false;
                 for (String target : aH.getListFrom(arg)) {
                     // Get entity
-                    LivingEntity entity = dEntity.valueOf(target).getBukkitEntity();
+                    LivingEntity entity = dEntity.valueOf(target).getLivingEntity();
                     if (entity != null) {
                         if (CitizensAPI.getNPCRegistry().getNPC(entity) != null) {
                             teleportNPCs.add(CitizensAPI.getNPCRegistry().getNPC(entity));

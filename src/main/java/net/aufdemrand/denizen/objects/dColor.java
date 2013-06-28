@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.utilities.Utilities;
 import org.bukkit.Color;
 
 import net.aufdemrand.denizen.tags.Attribute;
@@ -29,7 +30,7 @@ public class dColor implements dObject {
     	
     	if (string.toUpperCase().matches("RANDOM")) {
     		
-    		return new dColor(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));
+    		return new dColor(Utilities.getRandom().nextInt(256), Utilities.getRandom().nextInt(256), Utilities.getRandom().nextInt(256));
     	}
     	
     	Matcher m = rgbPattern.matcher(string);
@@ -138,19 +139,16 @@ public class dColor implements dObject {
 
 	@Override
 	public boolean isUnique() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return "color";
 	}
 
 	@Override
 	public String identify() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
