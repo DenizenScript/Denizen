@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 import net.aufdemrand.denizen.Denizen;
@@ -10,6 +11,8 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dList;
+
 
 import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
 import org.bukkit.event.EventHandler;
@@ -56,6 +59,11 @@ public class UtilTags implements Listener {
                         event.setReplaced(String.valueOf(Utilities.getRandom().nextInt(max - min + 1) + min));
                     }
                 }
+            }
+            
+            else if (subType.equalsIgnoreCase("ELEMENT")) {
+            	dList list = dList.valueOf(subTypeContext);
+            	event.setReplaced(list.get(new Random().nextInt(list.size())));
             }
 
             else if (subType.equalsIgnoreCase("UUID"))
