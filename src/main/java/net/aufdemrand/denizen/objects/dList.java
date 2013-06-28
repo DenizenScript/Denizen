@@ -219,7 +219,24 @@ public class dList extends ArrayList<String> implements dObject {
         }
         
         if (attribute.startsWith("random")) {
-        	return new Element(this.get(new Random().nextInt(this.size()))).getAttribute(attribute.fulfill(1));
+        	return new Element(this.get(new Random().nextInt(this.size())))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // FLAG Specific Attributes
+
+        if (attribute.startsWith("is_expired")) {
+            if (flag == null) return new Element("false")
+                    .getAttribute(attribute.fulfill(1));
+            return new Element(flag.checkExpired())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("expiration")) {
+            if (flag == null) return Duration.ZERO
+                    .getAttribute(attribute.fulfill(1));
+            return flag.expiration()
+                    .getAttribute(attribute.fulfill(1));
         }
 
         return (flag != null

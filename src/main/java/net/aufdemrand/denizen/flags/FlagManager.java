@@ -1,11 +1,8 @@
 package net.aufdemrand.denizen.flags;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
 import java.util.ArrayList;
@@ -379,13 +376,18 @@ public class FlagManager {
                 }
             return false;
         }
-        
+
+        public Duration expiration() {
+            return new Duration((double) (expiration - System.currentTimeMillis()) / 1000);
+        }
+
         /**
          * Returns the time left before the flag will expire. Minutes are only shown
          * if there is less than a day left, and seconds are only shown if there are
          * less than 10 minutes left.
          *
          */
+        @Deprecated
         public String expirationTime() {
             rebuild();
             

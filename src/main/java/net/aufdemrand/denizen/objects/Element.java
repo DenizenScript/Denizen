@@ -41,6 +41,11 @@ public class Element implements dObject {
         this.element = String.valueOf(dbl);
     }
 
+    public Element(Boolean bool) {
+        this.prefix = "boolean";
+        this.element = String.valueOf(bool);
+    }
+
     public Element(String prefix, String string) {
         if (prefix == null) this.prefix = "element";
         else this.prefix = prefix;
@@ -218,6 +223,16 @@ public class Element implements dObject {
 
         if (attribute.startsWith("sqrt")) {
             return new Element(Math.sqrt(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("abs")) {
+            return new Element(Math.abs(asDouble()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("length")) {
+            return new Element(element.length())
                     .getAttribute(attribute.fulfill(1));
         }
 
