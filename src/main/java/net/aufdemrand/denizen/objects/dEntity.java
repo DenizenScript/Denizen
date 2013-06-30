@@ -19,6 +19,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Ocelot.Type;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Skeleton;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
@@ -299,7 +300,11 @@ public class dEntity implements dObject {
                     		
                     		if (ent instanceof Ocelot) {
                             
-                    			setSubtype(Ocelot.class, "setCatType", data);
+                    			setSubtype(Ocelot.class, "Type", "setCatType", data);
+                            }
+                    		else if (ent instanceof Skeleton) {
+                                
+                    			setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data);
                             }
     						
     					} catch (IllegalArgumentException e) {
@@ -348,24 +353,25 @@ public class dEntity implements dObject {
     }
     
     /**
-     * Set the subtype of this entity by using the chosen method from
+     * Set the subtype of this entity by using the chosen method and Enum from
      * this Bukkit entity's class and:
      * 1) using a random subtype if value is "RANDOM"
      * 2) looping through the entity's subtypes until one matches the value string
      *
-     * Example: setSubtype(Ocelot.class, "setCatType", "SIAMESE_CAT");
+     * Example: setSubtype(Ocelot.class, "Type", "setCatType", "SIAMESE_CAT");
      * 
      * @param entityClass  The Bukkit entity class of the entity.
+     * @param typeName  The name of the entity class' Enum with subtypes.
      * @param method  The name of the method used to set the subtype of this entity.
      * @param value  The value of the subtype.
      */
 
-    public void setSubtype (Class<? extends Entity> entityClass, String method, String value)
+    public void setSubtype (Class<? extends Entity> entityClass, String typeName, String method, String value)
     		throws IllegalArgumentException, SecurityException, IllegalAccessException,
     		InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
     	
-    	Class<?> typeClass = Class.forName(entityClass.getName() + "$Type");
-    	Object[] types = Class.forName(entityClass.getName() + "$Type").getEnumConstants();
+    	Class<?> typeClass = Class.forName(entityClass.getName() + "$" + typeName);
+    	Object[] types = typeClass.getEnumConstants();
     	
     	if (value.matches("RANDOM")) {
     	
