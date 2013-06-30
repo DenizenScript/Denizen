@@ -105,6 +105,21 @@ public class dEntity implements dObject {
     public static dEntity valueOf(String string) {
         if (string == null) return null;
 
+        // Choose a random entity type if "RANDOM" is used
+        if (string.equalsIgnoreCase("RANDOM")) {
+        	
+        	EntityType randomType = null;
+        	
+        	// When selecting a random entity type, ignore invalid or inappropriate ones
+        	while (randomType == null ||
+        		   randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER)$") == true) {
+        	
+        		randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
+        	}
+        	
+        	return new dEntity(randomType, "RANDOM");
+        }
+        
         ///////
         // Match @object format
 
@@ -167,7 +182,7 @@ public class dEntity implements dObject {
 
         ////////
         // Match Entity_Type
-
+        
         m = entity_with_data.matcher(string);
 
         String data = null;
@@ -193,12 +208,15 @@ public class dEntity implements dObject {
 
 
     public static boolean matches(String arg) {
-
+    	
         Matcher m;
         m = entity_by_id.matcher(arg);
         if (m.matches()) return true;
 
         arg = arg.replace("e@", "");
+        
+        if (arg.equalsIgnoreCase("RANDOM"))
+        	return true;
 
         if (ScriptRegistry.containsScript(arg, EntityScriptContainer.class))
             return true;
