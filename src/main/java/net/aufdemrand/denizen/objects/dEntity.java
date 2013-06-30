@@ -15,6 +15,7 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Ocelot.Type;
@@ -286,43 +287,52 @@ public class dEntity implements dObject {
                 }
 
                 else {
-                    org.bukkit.entity.Entity ent = location.getWorld().spawnEntity(location, entity_type);
+                	
+                	org.bukkit.entity.Entity ent = null;
+                	
+                	if (entity_type.name().matches("FALLING_BLOCK")) {
+                		
+                		ent = location.getWorld().spawnFallingBlock(location, 12, (byte) 0);
+                		entity = ent;
+                	}
+                	
+                	else {
+                		
+                		ent = location.getWorld().spawnEntity(location, entity_type);
+                		entity = ent;
                     
-                    if (ent instanceof LivingEntity) {
-                    	entity = (LivingEntity) ent;
-                    }
-                    
-                    // If there is some special data associated with this dEntity,
-                    // use the setSubtype method to set it in a clean, object-oriented
-                    // way that uses reflection
-                    if (data != null) {
+                    	// If there is some special data associated with this dEntity,
+                    	// use the setSubtype method to set it in a clean, object-oriented
+                    	// way that uses reflection
+                    	if (data != null) {
                     	
-                    	try {
+                    		try {
                     		
-                    		if (ent instanceof Ocelot) {
-                    			setSubtype(Ocelot.class, "Type", "setCatType", data);
-                            }
-                    		else if (ent instanceof Skeleton) {
-                    			setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data);
-                            }
-                    		else if (ent instanceof Villager) {
-                    			setSubtype(Villager.class, "Profession", "setProfession", data);
-                            }
+                    			if (ent instanceof Ocelot) {
+                    				setSubtype(Ocelot.class, "Type", "setCatType", data);
+                    			}
+                    			else if (ent instanceof Skeleton) {
+                    				setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data);
+                    			}
+                    			else if (ent instanceof Villager) {
+                    				setSubtype(Villager.class, "Profession", "setProfession", data);
+                    			}
     						
-    					} catch (IllegalArgumentException e) {
-    						e.printStackTrace();
-    					} catch (SecurityException e) {
-    						e.printStackTrace();
-    					} catch (IllegalAccessException e) {
-    						e.printStackTrace();
-    					} catch (InvocationTargetException e) {
-    						e.printStackTrace();
-    					} catch (NoSuchMethodException e) {
-    						e.printStackTrace();
-    					} catch (ClassNotFoundException e) {
-    						e.printStackTrace();
-    					}
-                    }
+                    		} catch (IllegalArgumentException e) {
+                    			e.printStackTrace();
+                    		} catch (SecurityException e) {
+                    			e.printStackTrace();
+                    		} catch (IllegalAccessException e) {
+                    			e.printStackTrace();
+                    		} catch (InvocationTargetException e) {
+                    			e.printStackTrace();
+                    		} catch (NoSuchMethodException e) {
+                    			e.printStackTrace();
+                    		} catch (ClassNotFoundException e) {
+                    			e.printStackTrace();
+                    		}
+                    	}
+                	}
                 }
             }
 
