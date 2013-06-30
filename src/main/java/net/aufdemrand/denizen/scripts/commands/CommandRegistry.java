@@ -86,7 +86,10 @@ public class CommandRegistry implements dRegistry {
 
         registerCoreMember(DetermineCommand.class, 
         		"DETERMINE", "determine [\"value\"]", 1);
-        
+
+        registerCoreMember(DefineCommand.class,
+                "DEFINE", "define [id] [\"value\"]", 2);
+
         registerCoreMember(DisengageCommand.class, 
         		"DISENGAGE", "disengage (npcid:#)", 0);
 

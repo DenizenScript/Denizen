@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ScriptEntryExecuteEvent;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.objects.aH;
@@ -17,10 +18,14 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandExecuter {
 
     private Denizen plugin;
+    final Pattern definition_pattern = Pattern.compile("%(.+?)%");
+
 
     public CommandExecuter(Denizen denizen) {
         plugin = denizen;
@@ -68,23 +73,32 @@ public class CommandExecuter {
             List<String> newArgs = new ArrayList<String>();
 
             for (String arg : scriptEntry.getArguments()) {
+
+                Matcher m = definition_pattern.matcher(arg);
+                StringBuffer sb = new StringBuffer();
+                dB.log(scriptEntry.getResidingQueue().context.toString());
+                while (m.find()) {
+                    if (scriptEntry.getResidingQueue().context
+                            .containsKey(m.group(1).toLowerCase()))
+                        m.appendReplacement(sb,
+                                scriptEntry.getResidingQueue().context.get(m.group(1)));
+
+                    else m.appendReplacement(sb, "null");
+                }
+                m.appendTail(sb);
+                arg = sb.toString();
+
                 String[] split = arg.split(":");
 
                 // Fill player/off-line player
-                if (aH.matchesValueArg("PLAYER", arg, aH.ArgumentType.String))
+                if (aH.matchesValueArg("player", arg, aH.ArgumentType.String))
                     scriptEntry.setPlayer(dPlayer.valueOf(split[1]));
 
-                // Fill Denizen with NPCID
-                else if (aH.matchesValueArg("NPCID", arg, aH.ArgumentType.String)) {
-                    dB.echoDebug("...replacing the linked NPCID.");
-                    try {
-                        if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(split[1])) != null)
-                            scriptEntry.setNPC(plugin.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(Integer.valueOf(split[1]))));
-                        dB.echoDebug("...NPC set to '%s'.", split[1]);
-                    } catch (Exception e) {
-                        dB.echoError("NPCID specified could not be matched to an NPC!");
-                        scriptEntry.setNPC(null);
-                    }
+                    // Fill NPCID/NPC argument
+                else if (aH.matchesValueArg("npcid, npc", arg, aH.ArgumentType.String)) {
+                    dB.echoDebug("...replacing the linked NPC.");
+                    if (dNPC.matches(aH.getStringFrom(arg)))
+                        scriptEntry.setNPC(dNPC.valueOf(aH.getStringFrom(arg)));
                 }
 
                 else newArgs.add(arg);

@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -54,6 +55,7 @@ public class TagManager {
 
     public static String tag(dPlayer player, dNPC npc, String arg, boolean instant, ScriptEntry scriptEntry) {
         if (arg == null) return null;
+
         // confirm there are/is a replaceable TAG(s), if not, return the arg.
         if (arg.indexOf('>') == -1 || arg.length() < 3) return arg;
 
@@ -87,6 +89,7 @@ public class TagManager {
         // Change brackets back
         if (changeBack) arg = arg.replace("{", "<").replace("}", ">");
         // Return argument with replacements
+
         return arg;
     }
     // Match all < > brackets that don't contain < > inside them

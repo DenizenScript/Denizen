@@ -71,8 +71,7 @@ public class ScriptEntry {
 
         // Check for replaceable tags.
         for (String arg : args) {
-            if (arg.indexOf("<") >= 0
-                    && arg.indexOf(">") >= 0) {
+            if (arg.contains("<") && arg.contains(">")) {
                 has_tags = true;
                 break;
             }
