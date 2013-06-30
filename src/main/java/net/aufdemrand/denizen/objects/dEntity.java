@@ -17,9 +17,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Ocelot.Type;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -270,7 +272,7 @@ public class dEntity implements dObject {
                 if (despawned_entity != null) {
                     // If entity had a custom_script, use the script to rebuild the base entity.
                     if (despawned_entity.custom_script != null)
-                    { } // Build entity from custom script
+                    { } // TODO: Build entity from custom script
                     // Else, use the entity_type specified/remembered
                     else entity = location.getWorld().spawnEntity(location, entity_type);
 
@@ -283,29 +285,38 @@ public class dEntity implements dObject {
 
                 else {
                     org.bukkit.entity.Entity ent = location.getWorld().spawnEntity(location, entity_type);
+                    
                     if (ent instanceof LivingEntity) {
                     	entity = (LivingEntity) ent;
                     }
                     
-                    if (ent instanceof Ocelot) {
+                    // If there is some special data associated with this dEntity,
+                    // use the setSubtype method to set it in a clean, object-oriented
+                    // way that uses reflection
+                    if (data != null) {
                     	
-                    	if (data.matches("RANDOM")) {
+                    	try {
                     		
-                    		((Ocelot) entity).setCatType(Ocelot.Type.values()[new Random().nextInt(Ocelot.Type.values().length)]);
-                    	}
-                    	else {
-
-                    		for (Ocelot.Type type : Ocelot.Type.values()) {
-                            	if (type.name().equalsIgnoreCase(data)) {
-
-                            		((Ocelot) entity).setCatType(Ocelot.Type.valueOf(data));
-                            		break;
-                            	}
-                    		}
-                    	}
+                    		if (ent instanceof Ocelot) {
+                            
+                    			setSubtype(Ocelot.class, "setCatType", data);
+                            }
+    						
+    					} catch (IllegalArgumentException e) {
+    						e.printStackTrace();
+    					} catch (SecurityException e) {
+    						e.printStackTrace();
+    					} catch (IllegalAccessException e) {
+    						e.printStackTrace();
+    					} catch (InvocationTargetException e) {
+    						e.printStackTrace();
+    					} catch (NoSuchMethodException e) {
+    						e.printStackTrace();
+    					} catch (ClassNotFoundException e) {
+    						e.printStackTrace();
+    					}
                     }
                 }
-
             }
 
             else dB.echoError("Cannot spawn a null dEntity!");
@@ -334,6 +345,42 @@ public class dEntity implements dObject {
     public dEntity rememberAs(String id) {
         dEntity.saveAs(this, id);
         return this;
+    }
+    
+    /**
+     * Set the subtype of this entity by using the chosen method from
+     * this Bukkit entity's class and:
+     * 1) using a random subtype if value is "RANDOM"
+     * 2) looping through the entity's subtypes until one matches the value string
+     *
+     * Example: setSubtype(Ocelot.class, "setCatType", "SIAMESE_CAT");
+     * 
+     * @param entityClass  The Bukkit entity class of the entity.
+     * @param method  The name of the method used to set the subtype of this entity.
+     * @param value  The value of the subtype.
+     */
+
+    public void setSubtype (Class<? extends Entity> entityClass, String method, String value)
+    		throws IllegalArgumentException, SecurityException, IllegalAccessException,
+    		InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+    	
+    	Class<?> typeClass = Class.forName(entityClass.getName() + "$Type");
+    	Object[] types = Class.forName(entityClass.getName() + "$Type").getEnumConstants();
+    	
+    	if (value.matches("RANDOM")) {
+    	
+    		entityClass.getMethod(method, typeClass).invoke(entity, types[new Random().nextInt(types.length)]);
+    	}
+    	else { 
+    		for (Object type : types) {
+    		
+    			if (type.toString().equalsIgnoreCase(value)) {
+    			
+    				entityClass.getMethod(method, typeClass).invoke(entity, type);
+    				break;
+    			}
+    		}
+    	}
     }
 
 

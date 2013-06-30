@@ -116,12 +116,12 @@ public class aH {
             return false;
         }
 
-        public boolean matchesArgumentType(Class<? extends dObject> clazz) {
+        public boolean matchesArgumentType(Class<? extends dObject> dClass) {
 
             // dB.log("Calling matches: " + prefix + ":" + value + " " + clazz.getCanonicalName());
 
             try {
-                return (Boolean) clazz.getMethod("matches", String.class).invoke(null, value);
+                return (Boolean) dClass.getMethod("matches", String.class).invoke(null, value);
             } catch (Exception e) {
                 e.printStackTrace();
             }
