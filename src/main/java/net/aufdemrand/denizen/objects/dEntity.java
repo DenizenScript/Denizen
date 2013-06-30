@@ -9,23 +9,37 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class dEntity implements dObject {
 
-
+    /////////////////////
+    //   PATTERNS
+    /////////////////
+    
+    final static Pattern entity_by_id =
+            Pattern.compile("(n@|e@|p@)(.+)",
+                    Pattern.CASE_INSENSITIVE);
+    final static Pattern entity_with_data =
+            Pattern.compile("(\\w+),?(\\w+)?,?(\\w+)?",
+                    Pattern.CASE_INSENSITIVE);
+    
+    
     /////////////////////
     //   STATIC METHODS
     /////////////////
@@ -90,14 +104,13 @@ public class dEntity implements dObject {
         // Match @object format
 
         // Make sure string matches what this interpreter can accept.
-        final Pattern entity_by_id =
-                Pattern.compile("(n@|e@|p@)(.+)",
-                        Pattern.CASE_INSENSITIVE);
+
 
         Matcher m;
         m = entity_by_id.matcher(string);
 
         if (m.matches()) {
+            
             String entityGroup = m.group(1).toUpperCase();
 
             // NPC entity
@@ -150,10 +163,22 @@ public class dEntity implements dObject {
         ////////
         // Match Entity_Type
 
-        for (EntityType type : EntityType.values()) {
-            if (type.name().equalsIgnoreCase(string))
-                // Construct a new 'vanilla' unspawned dEntity
-                return new dEntity(type);
+        m = entity_with_data.matcher(string);
+
+        String data = null;
+        
+        if (m.matches()) {
+            
+        	if (m.group(2) != null) {
+        		
+        		data = m.group(2).toUpperCase();
+        	}
+        
+            for (EntityType type : EntityType.values()) {
+                if (type.name().equalsIgnoreCase(m.group(1)))
+                    // Construct a new 'vanilla' unspawned dEntity                	
+                    return new dEntity(type, data);
+            }
         }
 
         dB.log("valueOf dEntity returning null: " + string);
@@ -164,9 +189,6 @@ public class dEntity implements dObject {
 
     public static boolean matches(String arg) {
 
-        final Pattern entity_by_id =
-                Pattern.compile("((n@|e@|p@)(.+))",
-                        Pattern.CASE_INSENSITIVE);
         Matcher m;
         m = entity_by_id.matcher(arg);
         if (m.matches()) return true;
@@ -176,8 +198,13 @@ public class dEntity implements dObject {
         if (ScriptRegistry.containsScript(arg, EntityScriptContainer.class))
             return true;
 
-        for (EntityType type : EntityType.values())
-            if (type.name().equalsIgnoreCase(arg)) return true;
+        m = entity_with_data.matcher(arg);
+        
+        if (m.matches()) {
+        
+        	for (EntityType type : EntityType.values())
+            	if (type.name().equalsIgnoreCase(m.group(1))) return true;
+        }
 
         return false;
     }
@@ -200,6 +227,14 @@ public class dEntity implements dObject {
             this.entity_type = entityType;
         } else dB.echoError("Entity_type referenced is null!");
     }
+    
+    public dEntity(EntityType entityType, String data) {
+        if (entityType != null) {
+            this.entity = null;
+            this.entity_type = entityType;
+            this.data = data;
+        } else dB.echoError("Entity_type referenced is null!");
+    }
 
 
     /////////////////////
@@ -209,6 +244,7 @@ public class dEntity implements dObject {
 
     private Entity entity = null;
     private EntityType entity_type = null;
+    private String data = null;
     private DespawnedEntity despawned_entity = null;
 
     public Entity getBukkitEntity() {
@@ -241,13 +277,33 @@ public class dEntity implements dObject {
                     getLivingEntity().teleport(location);
                     getLivingEntity().getEquipment().setArmorContents(despawned_entity.equipment);
                     getLivingEntity().setHealth(despawned_entity.health);
-
+                    
                     despawned_entity = null;
                 }
 
                 else {
                     org.bukkit.entity.Entity ent = location.getWorld().spawnEntity(location, entity_type);
-                    if (ent instanceof LivingEntity) entity = (LivingEntity) ent;
+                    if (ent instanceof LivingEntity) {
+                    	entity = (LivingEntity) ent;
+                    }
+                    
+                    if (ent instanceof Ocelot) {
+                    	
+                    	if (data.matches("RANDOM")) {
+                    		
+                    		((Ocelot) entity).setCatType(Ocelot.Type.values()[new Random().nextInt(Ocelot.Type.values().length)]);
+                    	}
+                    	else {
+
+                    		for (Ocelot.Type type : Ocelot.Type.values()) {
+                            	if (type.name().equalsIgnoreCase(data)) {
+
+                            		((Ocelot) entity).setCatType(Ocelot.Type.valueOf(data));
+                            		break;
+                            	}
+                    		}
+                    	}
+                    }
                 }
 
             }
