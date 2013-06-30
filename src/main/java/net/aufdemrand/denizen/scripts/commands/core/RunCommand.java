@@ -18,14 +18,31 @@ import java.util.Map;
 
 /**
  * Runs a task script in a new ScriptQueue.
- * This replaces the now-deprecated runtask queue command.
- *
- *
+ * This replaces the now-deprecated runtask command with queue argument.
  *
  * @author Jeremy Schroeder
  *
  */
 public class RunCommand extends AbstractCommand {
+
+    public String getHelp() {
+        return  "Runs a script in a new ScriptQueue. By using a new and separate" +
+                "queue, scripts can be delayed, run instantly, and even used to" +
+                "create loops. If wanting to run a series of commands in the same" +
+                "queue, use the 'inject' command. \n" +
+                " \n" +
+                "Use to start an 'event' that is independent of the current script. \n" +
+                "- run giant_door_open_script \n" +
+                "Use the 'as' argument to attach a player or npc. \n" +
+                "- run start_walking as:n@4 \n" +
+                "Name the queue with an 'id' argument. \n" +
+                "- run goal_tracker id:<p.name>'s_goal_tracker \n" +
+                "Put a script's execution off by specifying a delay. \n" +
+                "- run gate_closer delay:10s \n" +
+                "Use run with a delay and 'loop' argument to create a script on a " +
+                "timer. You can even specify the amount of loops.\n" +
+                "- run server_announcement loop";
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

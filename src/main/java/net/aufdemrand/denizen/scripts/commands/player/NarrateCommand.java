@@ -90,7 +90,7 @@ public class NarrateCommand extends AbstractCommand {
         // to the targets
         if (targets.size() == 0) {
 
-        	if (scriptEntry.getPlayer() == null) {
+        	if (scriptEntry.getPlayer() == null || !scriptEntry.getPlayer().isOnline()) {
         		throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
         	}
         	else {
