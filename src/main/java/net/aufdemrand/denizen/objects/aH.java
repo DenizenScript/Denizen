@@ -142,7 +142,7 @@ public class aH {
                 arg = (dObject) clazz.getMethod("valueOf", String.class)
                         .invoke(null, value);
 
-                dB.log("Cool! Created: " + clazz.cast(arg).debug());
+                dB.log("Created: " + clazz.cast(arg).debug());
 
                 return (T) clazz.cast(arg).setPrefix(prefix);
 

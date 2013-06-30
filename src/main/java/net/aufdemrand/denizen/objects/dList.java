@@ -4,7 +4,10 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +18,10 @@ import java.util.regex.Pattern;
 
 public class dList extends ArrayList<String> implements dObject {
 
+    final static Pattern flag_by_id =
+            Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
+                    Pattern.CASE_INSENSITIVE);
+	
     @ObjectFetcher("li, fl")
     public static dList valueOf(String string) {
         if (string == null) return null;
@@ -23,9 +30,7 @@ public class dList extends ArrayList<String> implements dObject {
         // Match @object format
 
         // Make sure string matches what this interpreter can accept.
-        final Pattern flag_by_id =
-                Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
-                        Pattern.CASE_INSENSITIVE);
+
 
         Matcher m;
         m = flag_by_id.matcher(string);
@@ -61,12 +66,9 @@ public class dList extends ArrayList<String> implements dObject {
 
     public static boolean matches(String arg) {
 
-        // Make sure string matches what this interpreter can accept.
-        final Pattern flag_by_id =
-                Pattern.compile("(fl\\[((?:p@|n@|e@)(.+?))\\]@|fl@)(.+)",
-                        Pattern.CASE_INSENSITIVE);
-
-        Matcher m;
+    	return true;
+        /*
+    	Matcher m;
         m = flag_by_id.matcher(arg);
 
         if (m.matches()) return true;
@@ -74,6 +76,7 @@ public class dList extends ArrayList<String> implements dObject {
         if (arg.contains("|") || arg.startsWith("li@")) return true;
 
         return false;
+        */
     }
 
 
@@ -143,7 +146,27 @@ public class dList extends ArrayList<String> implements dObject {
     public String getType() {
         return "dList";
     }
-
+    
+    // Return a list that includes only elements belonging to a certain class
+    public List<dObject> filter(Class<? extends dObject> dClass) {
+        
+    	List<dObject> results = new ArrayList<dObject>();
+    	
+    	for (String element : this) {
+    		
+    		try {
+				if ((Boolean) dClass.getMethod("matches", String.class).invoke(null, element)) {
+					
+					results.add((dObject) dClass.getMethod("valueOf", String.class).invoke(null, element));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
+    	
+		return results;
+    }
+    
     @Override
     public String identify() {
         if (flag != null)

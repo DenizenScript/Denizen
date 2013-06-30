@@ -127,13 +127,11 @@ public class dColor implements dObject {
 
 	@Override
 	public String getPrefix() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String debug() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -154,13 +152,11 @@ public class dColor implements dObject {
 
 	@Override
 	public dObject setPrefix(String prefix) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getAttribute(Attribute attribute) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

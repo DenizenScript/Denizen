@@ -25,10 +25,8 @@ import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -346,9 +344,6 @@ public class dEntity implements dObject {
                     			else if (ent instanceof Ocelot) {
                     				setSubtype(Ocelot.class, "Type", "setCatType", data);
                     			}
-                    			else if (ent instanceof Ocelot) {
-                    				setSubtype(Ocelot.class, "Type", "setCatType", data);
-                    			}
                     			else if (ent instanceof Skeleton) {
                     				setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data);
                     			}
@@ -356,17 +351,7 @@ public class dEntity implements dObject {
                     				setSubtype(Villager.class, "Profession", "setProfession", data);
                     			}
     						
-                    		} catch (IllegalArgumentException e) {
-                    			e.printStackTrace();
-                    		} catch (SecurityException e) {
-                    			e.printStackTrace();
-                    		} catch (IllegalAccessException e) {
-                    			e.printStackTrace();
-                    		} catch (InvocationTargetException e) {
-                    			e.printStackTrace();
-                    		} catch (NoSuchMethodException e) {
-                    			e.printStackTrace();
-                    		} catch (ClassNotFoundException e) {
+                    		} catch (Exception e) {
                     			e.printStackTrace();
                     		}
                     	}
@@ -417,8 +402,7 @@ public class dEntity implements dObject {
      */
 
     public void setSubtype (Class<? extends Entity> entityClass, String typeName, String method, String value)
-    		throws IllegalArgumentException, SecurityException, IllegalAccessException,
-    		InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+    		throws Exception {
     	
     	Class<?> typeClass = Class.forName(entityClass.getName() + "$" + typeName);
     	Object[] types = typeClass.getEnumConstants();

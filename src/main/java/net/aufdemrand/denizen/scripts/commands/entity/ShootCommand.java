@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +11,15 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.aufdemrand.denizen.utilities.entity.Conversion;
+import net.aufdemrand.denizen.utilities.entity.Position;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -48,10 +50,10 @@ public class ShootCommand extends AbstractCommand {
             }
             
             else if (!scriptEntry.hasObject("projectiles")
-                    && arg.matchesArgumentType(dEntity.class)
+                    && arg.matchesArgumentType(dList.class)
                 	&& arg.matchesPrefix("projectile, projectiles, p, entity, entities, e")) {
                 // Entity arg
-                scriptEntry.addObject("projectiles", arg.asType(dEntity.class));
+                scriptEntry.addObject("projectiles", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
             
             else if (!scriptEntry.hasObject("destination")
@@ -79,6 +81,7 @@ public class ShootCommand extends AbstractCommand {
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PROJECTILE");
     }
     
+	@SuppressWarnings("unchecked")
 	@Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
@@ -91,7 +94,7 @@ public class ShootCommand extends AbstractCommand {
 											  		shooterEntity.getEyeLocation().getDirection()
 											  		.multiply(40)));
 
-        dEntity projectiles = (dEntity) scriptEntry.getObject("projectiles");
+		List<dEntity> projectiles = (List<dEntity>) scriptEntry.getObject("projectiles");
         final dScript script = (dScript) scriptEntry.getObject("script");
         
         // If the shooter is an NPC, always rotate it to face the destination
@@ -108,17 +111,25 @@ public class ShootCommand extends AbstractCommand {
 				  				 shooterEntity.getEyeLocation().getDirection())
 				  				 .subtract(0, 0.4, 0);
         
-        if (projectiles.isSpawned() == false) {
-        	projectiles.spawnAt(origin);
+        // Go through all the projectiles, spawning and rotating them
+        for (dEntity projectile : projectiles) {
+        	
+        	if (projectile.isSpawned() == false) {
+        		
+        		projectile.spawnAt(origin);
+        	}
+        	
+            Utilities.faceLocation(projectile.getBukkitEntity(), destination);
+            
+            if (projectile.getBukkitEntity() instanceof Projectile) {
+    			((Projectile) projectile.getBukkitEntity()).setShooter(shooter.getLivingEntity());
+    		}
         }
-
-        final Entity projectile = projectiles.getBukkitEntity();
         
-        Utilities.faceLocation(projectile, destination);
+        Position.mount(Conversion.convert(projectiles));
         
-        if (projectile instanceof Projectile) {
-			((Projectile) projectile).setShooter(shooter.getLivingEntity());
-		}
+        // Only use the last projectile in the task below
+        final Entity lastProjectile = projectiles.get(projectiles.size() - 1).getBukkitEntity();
         
         BukkitRunnable task = new BukkitRunnable() {
 
@@ -126,13 +137,13 @@ public class ShootCommand extends AbstractCommand {
 
         	public void run() {
     	        				
-        		if (runs < 40 && projectile.isValid())
+        		if (runs < 40 && lastProjectile.isValid())
         		{
-        			Vector v1 = projectile.getLocation().toVector();
+        			Vector v1 = lastProjectile.getLocation().toVector();
         			Vector v2 = destination.toVector();
         			Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
         							
-        			projectile.setVelocity(v3);
+        			lastProjectile.setVelocity(v3);
         			runs++;
         				
         			// Check if the entity is close to its destination
@@ -146,7 +157,7 @@ public class ShootCommand extends AbstractCommand {
         			// Check if the entity has collided with something
         			// using the most basic possible calculation
         				
-        			if (projectile.getLocation().add(v3).getBlock().getType().toString().equals("AIR") == false) {
+        			if (lastProjectile.getLocation().add(v3).getBlock().getType().toString().equals("AIR") == false) {
 
         				runs = 40;
         			}
@@ -159,7 +170,7 @@ public class ShootCommand extends AbstractCommand {
         			if (script != null)
         			{
         				Map<String, String> context = new HashMap<String, String>();
-            			context.put("1", projectile.getLocation().getX() + "," + projectile.getLocation().getY() + "," + projectile.getLocation().getZ() + "," + projectile.getLocation().getWorld().getName());
+            			context.put("1", lastProjectile.getLocation().getX() + "," + lastProjectile.getLocation().getY() + "," + lastProjectile.getLocation().getZ() + "," + lastProjectile.getLocation().getWorld().getName());
         					
                         ((TaskScriptContainer) script.getContainer()).setSpeed(new Duration(0))
                            		.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
