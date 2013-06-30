@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
 import java.lang.reflect.Field;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +29,7 @@ public class dColor implements dObject {
     	
     	if (string.toUpperCase().matches("RANDOM")) {
     		
+        	// Get a color using random RGB values
     		return new dColor(Utilities.getRandom().nextInt(256), Utilities.getRandom().nextInt(256), Utilities.getRandom().nextInt(256));
     	}
     	
@@ -116,7 +116,7 @@ public class dColor implements dObject {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    // Bukkit itemstack associated
+    // Bukkit Color associated
 
     private Color color;
 

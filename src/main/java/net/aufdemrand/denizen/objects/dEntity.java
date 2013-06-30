@@ -3,22 +3,21 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.Ocelot.Type;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Villager;
@@ -292,7 +291,33 @@ public class dEntity implements dObject {
                 	
                 	if (entity_type.name().matches("FALLING_BLOCK")) {
                 		
-                		ent = location.getWorld().spawnFallingBlock(location, 12, (byte) 0);
+                		Material material = null;
+                		
+                		if (data != null) {
+                			
+                			material = dMaterial.valueOf(data).getMaterial();
+                			
+                			// If we did not get a block with "RANDOM", or we got
+                			// air or portals, keep trying
+                			while (data.equals("RANDOM") && 
+                				   (material.isBlock() == false || 
+                				    material == Material.AIR ||
+                				    material == Material.PORTAL ||
+                				    material == Material.ENDER_PORTAL)) {
+                				
+                				material = dMaterial.valueOf(data).getMaterial();
+                			}
+                		}
+                		
+                		// If material is null, not a block, a portal section or air,
+                		// default to SAND
+                		if (material == null || material.isBlock() == false) {
+                			
+                			material = Material.SAND;
+                		}
+                		
+                		// This is currently the only way to spawn a falling block
+                		ent = location.getWorld().spawnFallingBlock(location, material, (byte) 0);
                 		entity = ent;
                 	}
                 	
@@ -387,7 +412,7 @@ public class dEntity implements dObject {
     	
     	if (value.matches("RANDOM")) {
     	
-    		entityClass.getMethod(method, typeClass).invoke(entity, types[new Random().nextInt(types.length)]);
+    		entityClass.getMethod(method, typeClass).invoke(entity, types[Utilities.getRandom().nextInt(types.length)]);
     	}
     	else { 
     		for (Object type : types) {

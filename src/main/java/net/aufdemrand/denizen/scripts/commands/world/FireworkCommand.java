@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
@@ -55,7 +56,7 @@ public class FireworkCommand extends AbstractCommand {
             	
             	if (typeArg.matches("RANDOM")) {
             		
-            		type = FireworkEffect.Type.values()[new Random().nextInt(FireworkEffect.Type.values().length)];
+            		type = FireworkEffect.Type.values()[Utilities.getRandom().nextInt(FireworkEffect.Type.values().length)];
             	}
             	else {
             	

@@ -258,12 +258,9 @@ public class dB {
 		ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + String.format(message, arg));
 	}
 
-	/* 
-	 * These methods do NOT require DebugMode to be enabled 
-	 */
-
     @SuppressWarnings("restriction")
 	public static void log(String message, String arg) {
+		if (!debugMode) return;
         ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
                 + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
                 sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
@@ -273,6 +270,7 @@ public class dB {
 
     @SuppressWarnings("restriction")
 	public static void log(Messages message, String arg) {
+		if (!debugMode) return;
         ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
                 + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
                 sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
@@ -282,11 +280,16 @@ public class dB {
 	
 	@SuppressWarnings("restriction")
 	public static void log(String message) {
+		if (!debugMode) return;
 		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
                 + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
                 sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
                 : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] " + ChatColor.WHITE + message);
 	}
+	
+	/* 
+	 * These methods do NOT require DebugMode to be enabled 
+	 */
 
 	public static void notify(Player player, String message, String arg) {
 		player.sendMessage(ChatColor.YELLOW + "+> " + ChatColor.WHITE + String.format(message, arg));
