@@ -39,6 +39,7 @@ public class TagManager {
         new ProcedureScriptTag(denizen);
         new NPCTags(denizen);
         new AnchorTags(denizen);
+        new NotableLocationTags(denizen);
         new ContextTags(denizen);
         new LocationTags(denizen);
         new SpecialCharacterTags(denizen);
