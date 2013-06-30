@@ -223,7 +223,7 @@ public class CommandRegistry implements dRegistry {
         		"RANDOM", "random [#]", 1);
         
         registerCoreMember(RemoveCommand.class, 
-        		"REMOVE", "remove (npcid:#)", 0);
+        		"REMOVE", "remove (type:<entity>/npcid:<#>) (region:<name>)", 0);
 
         registerCoreMember(ResetCommand.class,
                 "RESET", "reset [fails|finishes|cooldown] (script:script_name{attached script})", 1);
@@ -238,7 +238,7 @@ public class CommandRegistry implements dRegistry {
         		"SCRIBE", "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
 
         registerCoreMember(ShootCommand.class,
-        		"SHOOT", "shoot (player) [entity:name] (ride) (burn) (location:x,y,z,world) (script:name)", 1);
+        		"SHOOT", "shoot [projectile(s):<entity>|...] (origin:p@<name>/n@<id>) (destination:<x,y,z,world>) (script:<name>)", 1);
 
         registerCoreMember(SitCommand.class, 
         		"SIT", "sit (location:x,y,z,world)", 0);

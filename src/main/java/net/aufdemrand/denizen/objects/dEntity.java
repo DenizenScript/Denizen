@@ -22,6 +22,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
@@ -346,6 +347,9 @@ public class dEntity implements dObject {
                     			}
                     			else if (ent instanceof Skeleton) {
                     				setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data);
+                    			}
+                    			else if (ent instanceof Slime && aH.matchesInteger(data)) {
+                    				((Slime) entity).setSize(aH.getIntegerFrom(data));
                     			}
                     			else if (ent instanceof Villager) {
                     				setSubtype(Villager.class, "Profession", "setProfession", data);
