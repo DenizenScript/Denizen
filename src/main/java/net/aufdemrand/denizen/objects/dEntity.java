@@ -112,7 +112,7 @@ public class dEntity implements dObject {
         	
         	// When selecting a random entity type, ignore invalid or inappropriate ones
         	while (randomType == null ||
-        		   randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER)$") == true) {
+        		   randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$") == true) {
         	
         		randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
         	}
