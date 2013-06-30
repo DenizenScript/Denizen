@@ -62,7 +62,7 @@ public class IfCommand extends AbstractCommand {
                 }
 
                 // Replace symbol-operators/bridges with ENUM value for matching
-                arg.replaceValue(arg.getValue().replace("==", "EQUALS").replace(">=", "ORMORE").replace("<=", "ORLESS")
+                arg.replaceValue(arg.getValue().replace("==", "EQUALS").replace(">=", "OR_MORE").replace("<=", "OR_LESS")
                         .replace("<", "LESS").replace(">", "MORE").replace("||", "OR").replace("&&", "AND"));
 
                 // Set bridge
