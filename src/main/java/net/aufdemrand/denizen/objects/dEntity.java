@@ -14,6 +14,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -293,7 +295,7 @@ public class dEntity implements dObject {
                 		
                 		Material material = null;
                 		
-                		if (data != null) {
+                		if (data != null && dMaterial.matches(data)) {
                 			
                 			material = dMaterial.valueOf(data).getMaterial();
                 			
@@ -309,8 +311,7 @@ public class dEntity implements dObject {
                 			}
                 		}
                 		
-                		// If material is null, not a block, a portal section or air,
-                		// default to SAND
+                		// If material is null or not a block, default to SAND
                 		if (material == null || material.isBlock() == false) {
                 			
                 			material = Material.SAND;
@@ -326,14 +327,26 @@ public class dEntity implements dObject {
                 		ent = location.getWorld().spawnEntity(location, entity_type);
                 		entity = ent;
                     
-                    	// If there is some special data associated with this dEntity,
+                    	// If there is some special subtype data associated with this dEntity,
                     	// use the setSubtype method to set it in a clean, object-oriented
                     	// way that uses reflection
+                		//
+                		// Otherwise, just use entity-specific methods manually
                     	if (data != null) {
                     	
                     		try {
                     		
-                    			if (ent instanceof Ocelot) {
+                    			// Allow creepers to be powered
+                    			if (ent instanceof Creeper && data.equalsIgnoreCase("POWERED")) {
+                    				((Creeper) entity).setPowered(true);
+                    			}
+                    			else if (ent instanceof Enderman && dMaterial.matches(data)) {
+                    				((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data).getMaterialData());
+                    			}
+                    			else if (ent instanceof Ocelot) {
+                    				setSubtype(Ocelot.class, "Type", "setCatType", data);
+                    			}
+                    			else if (ent instanceof Ocelot) {
                     				setSubtype(Ocelot.class, "Type", "setCatType", data);
                     			}
                     			else if (ent instanceof Skeleton) {

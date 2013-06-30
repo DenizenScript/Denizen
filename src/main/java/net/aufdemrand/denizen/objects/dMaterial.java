@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.utilities.Utilities;
 import org.bukkit.Material;
+import org.bukkit.material.MaterialData;
 
 import net.aufdemrand.denizen.tags.Attribute;
 
@@ -99,6 +100,10 @@ public class dMaterial implements dObject {
 
     public Material getMaterial() {
         return material;
+    }
+    
+    public MaterialData getMaterialData() {
+        return new MaterialData(material, (byte) 0);
     }
     
 
