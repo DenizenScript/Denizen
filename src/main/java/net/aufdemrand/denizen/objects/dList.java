@@ -164,7 +164,8 @@ public class dList extends ArrayList<String> implements dObject {
 			}
     	}
     	
-		return results;
+    	if (results.size() > 0) return results;
+    	else return null;
     }
     
     @Override
