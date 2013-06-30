@@ -25,7 +25,7 @@ import java.util.Map;
  * @author Jeremy Schroeder
  *
  */
-public class QueueTaskCommand extends AbstractCommand {
+public class RunCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
