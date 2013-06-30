@@ -21,7 +21,7 @@ public class ConstantTags implements Listener {
 
 	@EventHandler
 	public void constantTags(ReplaceableTagEvent event) {
-		if (!event.matches("CONS")) return;
+		if (!event.matches("cons")) return;
 
         if (!event.hasValue()) {
             dB.echoError("Constant tag '" + event.raw_tag + " does not contain a valid constant! " +

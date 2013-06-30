@@ -88,11 +88,9 @@ public class CommandExecuter {
                 m.appendTail(sb);
                 arg = sb.toString();
 
-                String[] split = arg.split(":");
-
                 // Fill player/off-line player
                 if (aH.matchesValueArg("player", arg, aH.ArgumentType.String))
-                    scriptEntry.setPlayer(dPlayer.valueOf(split[1]));
+                    scriptEntry.setPlayer(dPlayer.valueOf(aH.getStringFrom(arg)));
 
                     // Fill NPCID/NPC argument
                 else if (aH.matchesValueArg("npcid, npc", arg, aH.ArgumentType.String)) {

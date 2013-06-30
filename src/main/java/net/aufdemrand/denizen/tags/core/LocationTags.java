@@ -18,7 +18,7 @@ public class LocationTags implements Listener {
 
     @EventHandler
     public void locationTags(ReplaceableTagEvent event) {
-        if (!event.matches("location")) return;
+        if (!event.matches("location, l")) return;
 
         String nameContext = event.getNameContext() != null ? event.getNameContext().toUpperCase() : "";
         String type = event.getType() != null ? event.getType().toUpperCase() : "";

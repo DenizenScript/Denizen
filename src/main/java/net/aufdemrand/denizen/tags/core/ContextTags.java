@@ -23,7 +23,7 @@ public class ContextTags implements Listener {
 
     @EventHandler
     public void getEntry(ReplaceableTagEvent event) {
-        if (!event.matches("SCRIPT") || event.getScriptEntry() == null) return;
+        if (!event.matches("script, s") || event.getScriptEntry() == null) return;
 
         // Get script
         ScriptContainer script = event.getScriptEntry().getScript().getContainer();
@@ -63,7 +63,7 @@ public class ContextTags implements Listener {
 
     @EventHandler
     public void getContext(ReplaceableTagEvent event) {
-        if (!event.matches("CONTEXT") || event.getScriptEntry() == null) return;
+        if (!event.matches("context, c") || event.getScriptEntry() == null) return;
 
         String type = event.getType();
 

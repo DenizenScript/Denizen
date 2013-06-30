@@ -62,7 +62,7 @@ public class ReplaceableTagEvent extends Event {
 
     private String specifier = null;
     private String specifierContext = null;
-    
+
     private String value = null;
     private String valueContext = null;
 
@@ -70,16 +70,16 @@ public class ReplaceableTagEvent extends Event {
     private String replaced = null;
 
     private ScriptEntry scriptEntry = null;
-    
+
     // Base context pattern that matches initial brackets in tag
     Pattern basecontextRegex = Pattern.compile("^( )?\\[.*?\\]");
-    
+
     // Alternative text pattern that matches everything after ||
     Pattern alternativeRegex = Pattern.compile("\\|\\|.*");
-    
+
     // Bracket pattern that matches brackets
     Pattern bracketRegex = Pattern.compile("\\[.*?\\]");
-    
+
     // Value pattern that matches everything after the last : found
     // that isn't followed by ] without being followed by [ first,
     // and is therefore not between brackets
@@ -114,13 +114,13 @@ public class ReplaceableTagEvent extends Event {
 
         // Get alternative text
         Matcher alternativeMatcher = alternativeRegex.matcher(tag);
-        
+
         if (alternativeMatcher.find())
         {
-        	tag = tag.substring(0, alternativeMatcher.start()).trim(); // remove found alternative from tag
-        	alternative = alternativeMatcher.group()
-        				  .substring(2).trim(); // get rid of the || at the alternative's start
-        				  						// and any trailing spaces
+            tag = tag.substring(0, alternativeMatcher.start()).trim(); // remove found alternative from tag
+            alternative = alternativeMatcher.group()
+                    .substring(2).trim(); // get rid of the || at the alternative's start
+            // and any trailing spaces
         }
 
         // Alternatives are stripped, base context is stripped, let's remember the raw tag for
@@ -128,25 +128,25 @@ public class ReplaceableTagEvent extends Event {
         raw_tag = tag;
 
         // Get value
-        Matcher bracketMatcher = null;    
+        Matcher bracketMatcher = null;
         Matcher valueMatcher = valueRegex.matcher(tag);
-        
+
         if (valueMatcher.find())
         {
-        	tag = tag.substring(0, valueMatcher.start()); // remove found value from tag
-        	
-        	value = valueMatcher.group().substring(1); // get rid of the : at the value's start
-        	bracketMatcher = bracketRegex.matcher(value);
-        	
-        	if (bracketMatcher.find())
-        	{
-        		valueContext = bracketMatcher.group().replace("[", "")
-        					   .replace("]", "");
-        		value = value.substring(0, bracketMatcher.start()) +
-        				value.substring(bracketMatcher.end());
-        	}
+            tag = tag.substring(0, valueMatcher.start()); // remove found value from tag
+
+            value = valueMatcher.group().substring(1); // get rid of the : at the value's start
+            bracketMatcher = bracketRegex.matcher(value);
+
+            if (bracketMatcher.find())
+            {
+                valueContext = bracketMatcher.group().replace("[", "")
+                        .replace("]", "");
+                value = value.substring(0, bracketMatcher.start()) +
+                        value.substring(bracketMatcher.end());
+            }
         }
-        
+
         // Get name, type, subType and specifier, and all their contexts
         String[] components = new String[4];
         String[] contexts = new String[4];
@@ -154,32 +154,32 @@ public class ReplaceableTagEvent extends Event {
         int n = 0;
 
         Matcher componentMatcher = componentRegex.matcher(tag);
-        
+
         while (componentMatcher.find() && n < 4)
         {
-        	tagPart = componentMatcher.group();
-        	bracketMatcher = bracketRegex.matcher(tagPart);
-        	
-        	if (bracketMatcher.find())
-        	{
-        		components[n] = tagPart.substring(0, bracketMatcher.start());
-        		contexts[n] = bracketMatcher.group().replace("[", "")
-        					  .replace("]", "");
-        	}
-        	else
-        		components[n] = tagPart.replace(".", "");
-        	
-        	n++;
+            tagPart = componentMatcher.group();
+            bracketMatcher = bracketRegex.matcher(tagPart);
+
+            if (bracketMatcher.find())
+            {
+                components[n] = tagPart.substring(0, bracketMatcher.start());
+                contexts[n] = bracketMatcher.group().replace("[", "")
+                        .replace("]", "");
+            }
+            else
+                components[n] = tagPart.replace(".", "");
+
+            n++;
         }
-        	
-        	name = components[0];
-        	nameContext = contexts[0];
-        	type = components[1];
-        	typeContext = contexts[1];
-        	subType = components[2];
-        	subTypeContext = contexts[2];
-        	specifier = components[3];
-        	specifierContext = contexts[3];
+
+        name = components[0];
+        nameContext = contexts[0];
+        type = components[1];
+        typeContext = contexts[1];
+        subType = components[2];
+        subTypeContext = contexts[2];
+        specifier = components[3];
+        specifierContext = contexts[3];
     }
 
     public String getName() {
@@ -225,7 +225,7 @@ public class ReplaceableTagEvent extends Event {
     public boolean hasSubTypeContext() {
         return subTypeContext != null;
     }
-    
+
     public String getSpecifier() {
         return specifier;
     }
@@ -291,7 +291,10 @@ public class ReplaceableTagEvent extends Event {
     }
 
     public boolean matches(String tagName) {
-        return this.name.equalsIgnoreCase(tagName);
+        String[] tagNames = tagName.split(",");
+        for (String string: tagNames)
+            if (this.name.equalsIgnoreCase(string.trim())) return true;
+        return false;
     }
 
     public boolean replaced() {

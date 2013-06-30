@@ -1,62 +1,31 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Runs a task script.
+ * Runs a task script in a new ScriptQueue.
+ * This replaces the now-deprecated runtask queue command.
  *
- * <b>dScript Usage:</b><br>
- * <pre>RUNTASK (ID:id_name{script_name}) [SCRIPT:script_name] (INSTANT|QUEUE:QueueType{PLAYER_TASK})
- *     (DELAY:#{0}) </pre>
- *
- * <ol><tt>Arguments: [] - Required, () - Optional, {} - Default</ol></tt>
- *
- * <ol><tt>(ID:id_name{script_name})</tt><br>
- *         The unique ID of this task, useful if the possibility of a CANCELTASK command may be used.
- *         If not specified, the name of the script specified is used.</ol>
- *
- * <ol><tt>[SCRIPT:script_name]</tt><br>
- *         The name of the script that should be run.</ol>
- *
- * <ol><tt>(INSTANT|QUEUE:QueueType{PLAYER_TASK})</tt><br>
- *         Specifies how the script should be run. If using INSTANT, all commands in the script are
- *         run without being queued, resulting in an 'instant' execution of all commands (the initial DELAY
- *         will still be honored). If using a QUEUE, choose whether to use PLAYER_TASK or NPC queue-type.
- *         Default is PLAYER_TASK queue if not specified otherwise.</ol>
- *
- * <ol><tt>(DELAY:#{0})</tt><br>
- *         Specifying a delay will set the script to be run in the future. Uses the dScript time format,
- *         (ie. 30, 6m, 1h, etc). Delayed RUNTASKs can be cancelled with the CANCELTASK command when given
- *         the specified ID. Also note: Delayed Tasks WILL BE LOST on a server reboot, so delaying scripts
- *         for long periods of time may not be honored if your server reboots during the wait period.</ol>
- *
- * <br><b>Example Usage:</b><br>
- * <ol><tt>
- *  - RUNTASK ID:&#60;player.name>_spiders SCRIPT:Spawn_spiders INSTANT DELAY:60
- *  - RUNTASK SCRIPT:Drop_reward QUEUE:NPC
- *  - RUNTASK 'SCRIPT:Welcome to Chakkor'
- * </ol></tt>
  *
  *
  * @author Jeremy Schroeder
  *
  */
-@Deprecated
-public class RuntaskCommand extends AbstractCommand {
+public class QueueTaskCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -67,6 +36,12 @@ public class RuntaskCommand extends AbstractCommand {
         dScript script = null;
         Duration delay = null;
         ScriptQueue queue = scriptEntry.getResidingQueue();
+
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+
+
+
+        }
 
         // Iterate through Arguments to extract needed information
         for (String arg : scriptEntry.getArguments()) {

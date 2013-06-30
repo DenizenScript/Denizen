@@ -33,7 +33,7 @@ public class UtilTags implements Listener {
 
     @EventHandler
     public void utilTags(ReplaceableTagEvent event) {
-        if (!event.matches("UTIL")) return;
+        if (!event.matches("UTIL, U")) return;
 
         String type = event.getType() != null ? event.getType() : "";
         String typeContext = event.getTypeContext() != null ? event.getTypeContext() : "";
