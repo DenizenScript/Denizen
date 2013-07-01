@@ -244,7 +244,7 @@ public class CommandRegistry implements dRegistry {
         		"SHOOT", "shoot [projectile(s):<entity>|...] (origin:p@<name>/n@<id>) (destination:<x,y,z,world>) (script:<name>)", 1);
 
         registerCoreMember(SignCommand.class, 
-        		"SIGN", "sign [\"<text>|<text>|<text>|<text>\"] [location:<x,y,z,world>]", 1);
+        		"SIGN", "sign (type:{sign_post}/wall_sign) [\"<text>|<text>|<text>|<text>\"] [location:<x,y,z,world>]", 1);
         
         registerCoreMember(SitCommand.class, 
         		"SIT", "sit (location:x,y,z,world)", 0);

@@ -20,13 +20,20 @@ import org.bukkit.block.Sign;
  */
 
 public class SignCommand extends AbstractCommand {
+
+    private enum Type { SIGN_POST, WALL_SIGN }
 	
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
     	
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("location")
+        	if (!scriptEntry.hasObject("type")
+                    && arg.matchesEnum(Type.values()))
+                // add Type
+                scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
+        	
+        	else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
                 // Location arg
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
@@ -48,11 +55,17 @@ public class SignCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
 		// Get objects
+		Type type = (Type) scriptEntry.getObject("type");
         dList text = (dList) scriptEntry.getObject("text");
 		dLocation location = (dLocation) scriptEntry.getObject("location");
 		
 		Block sign = location.getBlock();
-		sign.setType(Material.valueOf("SIGN_POST"));
+		
+		if (type.name().equals("WALL_SIGN"))
+			sign.setType(Material.valueOf("WALL_SIGN"));
+		else
+			sign.setType(Material.valueOf("SIGN_POST"));
+		
         BlockState signState = sign.getState();
         
         int n = 0;
