@@ -51,7 +51,7 @@ public class Attribute {
     public boolean startsWith(String string) {
         string = string.toLowerCase();
         if (attributes.isEmpty()) return false;
-        if (attributes.get(0).toLowerCase().startsWith(string)) return true;
+        if (raw_tag.toLowerCase().startsWith(string)) return true;
         return false;
     }
 
@@ -59,15 +59,27 @@ public class Attribute {
         string = string.toLowerCase();
         if (attributes.isEmpty()) return false;
         if (attributes.size() < attribute) return false;
-        if (attributes.get(attribute - 1).toLowerCase().startsWith(string)) return true;
+        if (raw_tag.split(".", attribute)[2].toLowerCase().startsWith(string)) return true;
         return false;
     }
 
     public Attribute fulfill(int attributes) {
-        for (int x = attributes; x > 0; x--)
+        for (int x = attributes; x > 0; x--) {
             this.attributes.remove(0);
+        }
+        rebuild_raw_tag();
         return this;
     }
+
+    private void rebuild_raw_tag() {
+        if (attributes.size() == 0) raw_tag = "";
+        StringBuilder sb = new StringBuilder();
+        for (String attribute : attributes)
+            sb.append(attribute).append(".");
+        raw_tag = sb.toString();
+        if (raw_tag.length() > 1)
+        raw_tag = raw_tag.substring(0, raw_tag.length() - 1);
+   }
 
     public boolean hasContext(int attribute) {
         if (getAttribute(attribute).contains("[")) return true;

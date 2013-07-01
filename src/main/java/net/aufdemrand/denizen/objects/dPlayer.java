@@ -256,7 +256,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("xp.level"))
-            return new Element(String.valueOf(getPlayerEntity().getLevel()))
+            return new Element(getPlayerEntity().getLevel())
                     .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("xp"))
