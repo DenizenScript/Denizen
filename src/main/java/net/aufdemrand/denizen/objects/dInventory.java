@@ -85,50 +85,7 @@ public class dInventory implements dObject {
     	
     	return this;
     }
-    
-    /**
-     * Copy this inventory's contents to another inventory,
-     * cropping it if necessary so that it fits.
-     *
-     * @param destination  The destination inventory
-     *
-     */
-    
-    public void copy(dInventory destination) {
-    	
-    	// If the destination is smaller than our current inventory,
-    	// remove empty stacks from our current inventory in the hope
-    	// that there will then be enough room
-    	
-    	if (destination.getSize() < this.getSize()) {
-
-    		List<ItemStack> itemList = new ArrayList<ItemStack>();
-    		
-    		for (ItemStack item : this.getContents()) {
-
-    			if (item != null) itemList.add(item);
-    		}
-    		
-    		// If there is still not enough room, crop our list of items
-    		// so it fits
-    		
-    		if (destination.getSize() < itemList.size()) {
-    			
-    			itemList = itemList.subList(0, destination.getSize());
-    		}
-
-    		// Set the contents of the destination to our modified
-    		// item list
-    		
-    		ItemStack[] results = itemList.toArray(new ItemStack[itemList.size()]);
-    		destination.setContents(results);
-    	}
-    	else {
-    	
-    		destination.setContents(this.getContents());
-    	}
-    }
-    
+        
     /**
      * Count the number or quantities of stacks that
      * match an item in an inventory.
@@ -168,16 +125,63 @@ public class dInventory implements dObject {
     	return qty;
     }
     
+    /**
+     * Replace another inventory with this one,
+     * cropping it if necessary so that it fits.
+     *
+     * @param destination  The destination inventory
+     *
+     */
+    
+    public void replace(dInventory destination) {
+    	
+    	// If the destination is smaller than our current inventory,
+    	// remove empty stacks from our current inventory in the hope
+    	// that there will then be enough room
+    	
+    	if (destination.getSize() < this.getSize()) {
+
+    		List<ItemStack> itemList = new ArrayList<ItemStack>();
+    		
+    		for (ItemStack item : this.getContents()) {
+
+    			if (item != null) itemList.add(item);
+    		}
+    		
+    		// If there is still not enough room, crop our list of items
+    		// so it fits
+    		
+    		if (destination.getSize() < itemList.size()) {
+    			
+    			itemList = itemList.subList(0, destination.getSize());
+    		}
+
+    		// Set the contents of the destination to our modified
+    		// item list
+    		
+    		ItemStack[] results = itemList.toArray(new ItemStack[itemList.size()]);
+    		destination.setContents(results);
+    	}
+    	else {
+    	
+    		destination.setContents(this.getContents());
+    	}
+    }
+    
+    public void clear() {
+    	inventory.clear();
+    }
+    
     public ItemStack[] getContents() {
-    	return this.inventory.getContents();
+    	return inventory.getContents();
     }
     
     public int getSize() {
-    	return this.inventory.getSize();
+    	return inventory.getSize();
     }
     
     public void setContents(ItemStack[] contents) {
-    	this.inventory.setContents(contents);
+    	inventory.setContents(contents);
     }
     
     

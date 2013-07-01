@@ -13,7 +13,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 /**
@@ -24,12 +23,19 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class InventoryCommand extends AbstractCommand {
 	
+    private enum Action { COPY, MOVE, SWAP, CLEAR }
+	
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
     	
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-        	if (!scriptEntry.hasObject("originEntity") &&
+            if (!scriptEntry.hasObject("action")
+                    && arg.matchesEnum(Action.values()))
+                // add Action
+                scriptEntry.addObject("action", Action.valueOf(arg.asElement().toString()));
+        	
+            else if (!scriptEntry.hasObject("originEntity") &&
         		!scriptEntry.hasObject("originLocation") &&
         		arg.matchesPrefix("origin, o, source, s")) {
         		
@@ -43,7 +49,7 @@ public class InventoryCommand extends AbstractCommand {
             
             else if (!scriptEntry.hasObject("destinationEntity") &&
             		 !scriptEntry.hasObject("destinationLocation") &&
-            		 arg.matchesPrefix("destination, d")) {
+            		 arg.matchesPrefix("destination, d, target, t")) {
         		
             	// Is entity
             	if (arg.matchesArgumentType(dEntity.class))
@@ -55,6 +61,9 @@ public class InventoryCommand extends AbstractCommand {
         }
 
         // Check to make sure required arguments have been filled
+        
+        if (!scriptEntry.hasObject("action"))
+            throw new InvalidArgumentsException("Must specify an Inventory action!");
         
         if (!scriptEntry.hasObject("originEntity") &&
         	!scriptEntry.hasObject("originLocation"))
@@ -68,7 +77,10 @@ public class InventoryCommand extends AbstractCommand {
 	@SuppressWarnings("unchecked")
 	@Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
-        // Get objects
+
+		// Get objects
+        Action action = (Action) scriptEntry.getObject("action");
+		
 		dEntity originEntity = (dEntity) scriptEntry.getObject("originEntity");
 		dLocation originLocation = (dLocation) scriptEntry.getObject("originLocation");
 		
@@ -116,7 +128,30 @@ public class InventoryCommand extends AbstractCommand {
 			}
 		}
 		
-		origin.copy(destination);
+		switch (action) {
+
+			// Turn destination's contents into a copy of origin's
+        	case COPY:
+        		origin.replace(destination);
+        		
+        	// Copy origin's contents to destination, then empty origin
+        	case MOVE:
+        		origin.replace(destination);
+        		origin.clear();
+        	
+        	// Swap the contents of the two inventories
+        	case SWAP:
+        		dInventory temp = destination;
+        		origin.replace(destination);
+        		temp.replace(origin);
+        	
+            // Clear the content of the destination inventory
+            case CLEAR:
+            	destination.clear();
+            
+		}
+		
+		
 		   
     }
 }
