@@ -132,8 +132,8 @@ public class Element implements dObject {
                 || attribute.startsWith("as_money")) {
             try {
                 DecimalFormat d = new DecimalFormat("0.00");
-            return new Element(String.valueOf(d.format(Double.valueOf(element))))
-                    .getAttribute(attribute.fulfill(1)); }
+                return new Element(String.valueOf(d.format(Double.valueOf(element))))
+                        .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Money format.");
                 return null;
@@ -176,12 +176,12 @@ public class Element implements dObject {
         if (attribute.startsWith("asduration")
                 || attribute.startsWith("as_duration"))
             return Duration.valueOf(element).getAttribute(attribute.fulfill(1));
-        
+
         if (attribute.startsWith("contains")) {
             String contains = attribute.getContext(1);
 
             if (contains.toLowerCase().startsWith("regex:")) {
-            	
+
                 if (Pattern.compile(contains.substring(("regex:").length()), Pattern.CASE_INSENSITIVE).matcher(element).matches())
                     return new Element("true").getAttribute(attribute.fulfill(1));
                 else return new Element("false").getAttribute(attribute.fulfill(1));
@@ -204,7 +204,7 @@ public class Element implements dObject {
 
         if (attribute.startsWith("strip_color"))
             return new Element(String.valueOf(ChatColor.stripColor(element))).getAttribute(attribute.fulfill(1));
-        
+
         if (attribute.startsWith("split") && attribute.startsWith("limit", 2)) {
             String split_string = (attribute.hasContext(1) ? attribute.getContext(1) : " ");
             Integer limit = (attribute.hasContext(2) ? attribute.getIntContext(2) : 1);
@@ -256,7 +256,18 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        return element;
+        // Unfilled attributes past this point probably means the tag is spelled
+        // incorrectly. So instead of just passing through what's been resolved
+        // so far, 'null' shall be returned with an error message.
+
+        if (attribute.attributes.size() > 0)                    {
+            dB.echoError("Unfilled attributes '" + attribute.attributes.toString() + "'" +
+                    "for tag <" + attribute.getOrigin() + ">!");
+            return "null";
+        } else {
+            dB.log("Filled tag <" + attribute.getOrigin() + "> with '" + element + "'.");
+            return element;
+        }
     }
 
 }

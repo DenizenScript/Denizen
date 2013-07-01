@@ -396,6 +396,13 @@ public class dPlayer implements dObject {
             return new dItem(getPlayerEntity().getItemOnCursor())
                     .getAttribute(attribute.fulfill(1));
 
+        if (attribute.startsWith("selected_npc")) {
+            if (getPlayerEntity().hasMetadata("selected"))
+                return dNPC.valueOf(String.valueOf(getPlayerEntity().getMetadata("selected").get(0)))
+                        .getAttribute(attribute.fulfill(1));
+            else return "null";
+        }
+
         if (attribute.startsWith("allowed_flight"))
             return new Element(String.valueOf(getPlayerEntity().getAllowFlight()))
                     .getAttribute(attribute.fulfill(1));

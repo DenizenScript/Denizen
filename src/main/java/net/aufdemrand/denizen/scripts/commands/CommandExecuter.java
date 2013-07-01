@@ -112,9 +112,6 @@ public class CommandExecuter {
             if (scriptEntry.has_tags)
                 scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, false));
 
-            // dBug the filled arguments
-            dB.echoDebug(ChatColor.AQUA + "+> " + ChatColor.DARK_GRAY + "Filled tags: " + scriptEntry.getArguments().toString());
-
             // Parse the rest of the arguments for execution.
             command.parseArgs(scriptEntry);
 

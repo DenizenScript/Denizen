@@ -23,13 +23,19 @@ public class Attribute {
     ScriptEntry scriptEntry;
 
     String raw_tag;
+    String origin;
 
     public ScriptEntry getScriptEntry() {
         return scriptEntry;
     }
 
+    public String getOrigin() {
+        return origin;
+    }
+
     public Attribute(String attributes, ScriptEntry scriptEntry) {
         raw_tag = attributes;
+        origin = attributes;
         this.scriptEntry = scriptEntry;
 
         if (attributes == null) {

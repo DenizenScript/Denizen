@@ -7,7 +7,9 @@ import java.util.UUID;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
@@ -24,12 +26,30 @@ public class UtilTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
+
     @EventHandler
     public void mathTags(ReplaceableTagEvent event) {
         if (!(event.matches("m") || event.matches("math"))) return;
         Double evalulation = new DoubleEvaluator().evaluate(event.getValue());
         event.setReplaced(String.valueOf(evalulation));
     }
+
+    @EventHandler
+    public void serverTags(ReplaceableTagEvent event) {
+        if (!event.matches("server, svr")) return;
+        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+        if (attribute.startsWith("flag")) {
+            if (attribute.hasContext(1)) {
+                if (FlagManager.serverHasFlag(attribute.getContext(1)))
+                    event.setReplaced(new dList(DenizenAPI.getCurrentInstance().flagManager()
+                            .getGlobalFlag(attribute.getContext(1)))
+                            .getAttribute(attribute.fulfill(1)));
+                event.setReplaced("null");
+            }
+            else event.setReplaced("null");
+        }
+    }
+
 
     @EventHandler
     public void utilTags(ReplaceableTagEvent event) {
@@ -41,7 +61,7 @@ public class UtilTags implements Listener {
         String subTypeContext = event.getSubTypeContext() != null ? event.getSubTypeContext().toUpperCase() : "";
         String specifier = event.getSpecifier() != null ? event.getSpecifier() : "";
         String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext().toUpperCase() : "";
-        
+
         if (type.equalsIgnoreCase("RANDOM")) {
             if (subType.equalsIgnoreCase("INT")) {
                 if (specifier.equalsIgnoreCase("TO")) {
@@ -60,10 +80,10 @@ public class UtilTags implements Listener {
                     }
                 }
             }
-            
+
             else if (subType.equalsIgnoreCase("ELEMENT")) {
-            	dList list = dList.valueOf(subTypeContext);
-            	event.setReplaced(list.get(new Random().nextInt(list.size())));
+                dList list = dList.valueOf(subTypeContext);
+                event.setReplaced(list.get(new Random().nextInt(list.size())));
             }
 
             else if (subType.equalsIgnoreCase("UUID"))
@@ -76,20 +96,20 @@ public class UtilTags implements Listener {
             String text = event.getTypeContext();
             int from = 1;
             int to = text.length() + 1;
-            
+
             if (subType.equalsIgnoreCase("AFTER")) {
                 from = text.toUpperCase().indexOf(subTypeContext) + subTypeContext.length() + 1;
             }
-            
+
             if (subType.equalsIgnoreCase("BEFORE")) {
                 to = text.toUpperCase().indexOf(subTypeContext) + 1;
             }
-            
+
             try {
                 if (subType.equalsIgnoreCase("FROM"))
                     from = Integer.valueOf(subTypeContext);
             } catch (NumberFormatException e) { }
-            
+
             try {
                 if (specifier.equalsIgnoreCase("TO"))
                     to = Integer.valueOf(specifierContext);
@@ -117,19 +137,19 @@ public class UtilTags implements Listener {
             String item_to_uppercase = event.getTypeContext();
             event.setReplaced(item_to_uppercase.toLowerCase());
         }
-        
+
         else if (type.equalsIgnoreCase("DATE")) {
-        	Date currentDate = new Date();
-        	SimpleDateFormat format = new SimpleDateFormat();
-        	
-        	if (subType.equalsIgnoreCase("TIME")) {
-        		if (specifier.equalsIgnoreCase("24HOUR")) {
-        			format.applyPattern("k:mm");
-        		} else format.applyPattern("K:mm a");
-        		
-        	} else format.applyPattern("EEE, MMM d, yyyy");
-        	
-        	event.setReplaced(format.format(currentDate));
+            Date currentDate = new Date();
+            SimpleDateFormat format = new SimpleDateFormat();
+
+            if (subType.equalsIgnoreCase("TIME")) {
+                if (specifier.equalsIgnoreCase("24HOUR")) {
+                    format.applyPattern("k:mm");
+                } else format.applyPattern("K:mm a");
+
+            } else format.applyPattern("EEE, MMM d, yyyy");
+
+            event.setReplaced(format.format(currentDate));
         }
 
         else if (type.equalsIgnoreCase("AS_ELEMENT")) {
