@@ -11,7 +11,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 
 public class dMaterial implements dObject {
 
-    final static Pattern materialPattern = Pattern.compile("(\\w+):?(\\w+)?");
+    final static Pattern materialPattern = Pattern.compile("(\\w+):?(\\d+)?");
 	
     //////////////////
     //    OBJECT FETCHER
@@ -36,9 +36,16 @@ public class dMaterial implements dObject {
     	
     	if (m.matches()) {
     		
+            int data = 0;
+    		
+    		if (m.group(2) != null) {
+    			
+    			data = aH.getIntegerFrom(m.group(2));
+    		}
+    		
     		if (aH.matchesInteger(m.group(1))) {
     			
-    			return new dMaterial(aH.getIntegerFrom(m.group(1)));		
+    			return new dMaterial(aH.getIntegerFrom(m.group(1)), data);		
     		}
     		else {
     			
@@ -46,7 +53,7 @@ public class dMaterial implements dObject {
     				
     				if (material.name().equalsIgnoreCase(m.group(1))) {
     					
-    					return new dMaterial(material);
+    					return new dMaterial(material, data);
     				}
     			}
     		}
@@ -86,8 +93,18 @@ public class dMaterial implements dObject {
         this.material = material;
     }
     
+    public dMaterial(Material material, int data) {
+        this.material = material;
+        this.data = (byte) data;
+    }
+    
     public dMaterial(int id) {
         this.material = Material.getMaterial(id);
+    }
+    
+    public dMaterial(int id, int data) {
+        this.material = Material.getMaterial(id);
+        this.data = (byte) data;
     }
     
     /////////////////////
@@ -97,25 +114,24 @@ public class dMaterial implements dObject {
     // Bukkit Material associated
 
     private Material material;
+    private byte data = 0;
 
     public Material getMaterial() {
         return material;
     }
     
     public MaterialData getMaterialData() {
-        return new MaterialData(material, (byte) 0);
+        return new MaterialData(material, data);
     }
     
 
 	@Override
 	public String getPrefix() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String debug() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

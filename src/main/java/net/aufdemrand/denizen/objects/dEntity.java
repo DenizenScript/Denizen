@@ -184,20 +184,26 @@ public class dEntity implements dObject {
         // Match Entity_Type
         
         m = entity_with_data.matcher(string);
-
-        String data = null;
         
         if (m.matches()) {
+        	
+            String data1 = null;
+            String data2 = null;
             
         	if (m.group(2) != null) {
         		
-        		data = m.group(2).toUpperCase();
+        		data1 = m.group(2).toUpperCase();
+        	}
+        	
+        	if (m.group(3) != null) {
+        		
+        		data2 = m.group(3).toUpperCase();
         	}
         
             for (EntityType type : EntityType.values()) {
                 if (type.name().equalsIgnoreCase(m.group(1)))
                     // Construct a new 'vanilla' unspawned dEntity                	
-                    return new dEntity(type, data);
+                    return new dEntity(type, data1, data2);
             }
         }
 
@@ -251,11 +257,20 @@ public class dEntity implements dObject {
         } else dB.echoError("Entity_type referenced is null!");
     }
     
-    public dEntity(EntityType entityType, String data) {
+    public dEntity(EntityType entityType, String data1) {
         if (entityType != null) {
             this.entity = null;
             this.entity_type = entityType;
-            this.data = data;
+            this.data1 = data1;
+        } else dB.echoError("Entity_type referenced is null!");
+    }
+    
+    public dEntity(EntityType entityType, String data1, String data2) {
+        if (entityType != null) {
+            this.entity = null;
+            this.entity_type = entityType;
+            this.data1 = data1;
+            this.data2 = data2;
         } else dB.echoError("Entity_type referenced is null!");
     }
 
@@ -267,7 +282,8 @@ public class dEntity implements dObject {
 
     private Entity entity = null;
     private EntityType entity_type = null;
-    private String data = null;
+    private String data1 = null;
+    private String data2 = null;
     private DespawnedEntity despawned_entity = null;
 
     public Entity getBukkitEntity() {
@@ -312,19 +328,19 @@ public class dEntity implements dObject {
                 		
                 		Material material = null;
                 		
-                		if (data != null && dMaterial.matches(data)) {
+                		if (data1 != null && dMaterial.matches(data1)) {
                 			
-                			material = dMaterial.valueOf(data).getMaterial();
+                			material = dMaterial.valueOf(data1).getMaterial();
                 			
                 			// If we did not get a block with "RANDOM", or we got
                 			// air or portals, keep trying
-                			while (data.equals("RANDOM") && 
+                			while (data1.equals("RANDOM") && 
                 				   (material.isBlock() == false || 
                 				    material == Material.AIR ||
                 				    material == Material.PORTAL ||
                 				    material == Material.ENDER_PORTAL)) {
                 				
-                				material = dMaterial.valueOf(data).getMaterial();
+                				material = dMaterial.valueOf(data1).getMaterial();
                 			}
                 		}
                 		
@@ -334,8 +350,16 @@ public class dEntity implements dObject {
                 			material = Material.SAND;
                 		}
                 		
+                		byte materialData = 0;
+                		
+                		// Get special data value from data2 if it is a valid integer
+                		if (data2 != null && aH.matchesInteger(data2)) {
+                			
+                			materialData = (byte) aH.getIntegerFrom(data2);
+                		}
+                		
                 		// This is currently the only way to spawn a falling block
-                		ent = location.getWorld().spawnFallingBlock(location, material, (byte) 0);
+                		ent = location.getWorld().spawnFallingBlock(location, material, materialData);
                 		entity = ent;
                 	}
                 	
@@ -349,28 +373,28 @@ public class dEntity implements dObject {
                     	// way that uses reflection
                 		//
                 		// Otherwise, just use entity-specific methods manually
-                    	if (data != null) {
+                    	if (data1 != null) {
                     	
                     		try {
                     		
                     			// Allow creepers to be powered
-                    			if (ent instanceof Creeper && data.equalsIgnoreCase("POWERED")) {
+                    			if (ent instanceof Creeper && data1.equalsIgnoreCase("POWERED")) {
                     				((Creeper) entity).setPowered(true);
                     			}
-                    			else if (ent instanceof Enderman && dMaterial.matches(data)) {
-                    				((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data).getMaterialData());
+                    			else if (ent instanceof Enderman && dMaterial.matches(data1)) {
+                    				((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data1).getMaterialData());
                     			}
                     			else if (ent instanceof Ocelot) {
-                    				setSubtype(Ocelot.class, "Type", "setCatType", data);
+                    				setSubtype(Ocelot.class, "Type", "setCatType", data1);
                     			}
                     			else if (ent instanceof Skeleton) {
-                    				setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data);
+                    				setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data1);
                     			}
-                    			else if (ent instanceof Slime && aH.matchesInteger(data)) {
-                    				((Slime) entity).setSize(aH.getIntegerFrom(data));
+                    			else if (ent instanceof Slime && aH.matchesInteger(data1)) {
+                    				((Slime) entity).setSize(aH.getIntegerFrom(data1));
                     			}
                     			else if (ent instanceof Villager) {
-                    				setSubtype(Villager.class, "Profession", "setProfession", data);
+                    				setSubtype(Villager.class, "Profession", "setProfession", data1);
                     			}
     						
                     		} catch (Exception e) {
