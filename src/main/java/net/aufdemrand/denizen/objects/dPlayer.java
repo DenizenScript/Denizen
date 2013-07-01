@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

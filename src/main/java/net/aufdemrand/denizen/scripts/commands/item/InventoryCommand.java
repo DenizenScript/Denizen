@@ -23,7 +23,7 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class InventoryCommand extends AbstractCommand {
 	
-    private enum Action { COPY, MOVE, SWAP, CLEAR }
+    private enum Action { OPEN, COPY, MOVE, SWAP, CLEAR }
 	
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -130,6 +130,9 @@ public class InventoryCommand extends AbstractCommand {
 		
 		switch (action) {
 
+			case OPEN:
+				scriptEntry.getPlayer().getPlayerEntity().openInventory(destination.getInventory());
+		
 			// Turn destination's contents into a copy of origin's
         	case COPY:
         		origin.replace(destination);

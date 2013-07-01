@@ -42,7 +42,7 @@ public class RunCommand extends AbstractCommand {
                 "Use run with a delay and 'loop' argument to create a script on a " +
                 "timer. You can even specify the amount of loops.\n" +
                 "- run server_announcement loop 1h";
-                "Attach some definitions to "
+                //"Attach some definitions to "
     }
 
     @Override
