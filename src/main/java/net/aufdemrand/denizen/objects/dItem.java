@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 public class dItem implements dObject {
 
-    final static Pattern itemPattern = Pattern.compile("(?:item:)?(\\w+):?(\\d+)?", Pattern.CASE_INSENSITIVE);
+    final static Pattern itemPattern = Pattern.compile("(?:item:)?(\\w+)[:,]?(\\d+)?", Pattern.CASE_INSENSITIVE);
 
     /////////////////////
     //  STATIC METHODS

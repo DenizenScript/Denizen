@@ -11,9 +11,9 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -208,9 +208,9 @@ public class FlyCommand extends AbstractCommand {
         			
             		// To avoid excessive turbulence, only have the entity rotate
             		// when it really needs to
-            		if (Utilities.isFacingLocation(entity, location, 50) == false) {
+            		if (Rotation.isFacingLocation(entity, location, 50) == false) {
         		        
-            			Utilities.faceLocation(entity, location);
+            			Rotation.faceLocation(entity, location);
             		}
         			
             		Vector v1 = entity.getLocation().toVector();

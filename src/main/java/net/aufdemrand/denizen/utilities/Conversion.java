@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.entity;
+package net.aufdemrand.denizen.utilities;
 
 import java.util.ArrayList;
 import java.util.List;

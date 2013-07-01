@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -65,7 +66,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         + "(" + npc.getTriggerTrait().getRadius(name) + ")")
                         + aH.debugObj("Trigger text", event.getMessage())
                         + aH.debugObj("LOS", String.valueOf(npc.getEntity().hasLineOfSight(event.getPlayer())))
-                        + aH.debugObj("Facing", String.valueOf(Utilities.isFacingEntity(event.getPlayer(), npc.getEntity(), 45))));
+                        + aH.debugObj("Facing", String.valueOf(Rotation.isFacingEntity(event.getPlayer(), npc.getEntity(), 45))));
 
                 // The Denizen config can require some other criteria for a successful chat-with-npc.
                 // Should we check 'line of sight'? Players cannot talk to NPCs through walls
@@ -74,7 +75,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 if (Settings.ChatMustSeeNPC())
                     if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return null;
                 if (Settings.ChatMustLookAtNPC())
-                    if (!Utilities.isFacingEntity(event.getPlayer(), npc.getEntity(), 45)) return null;
+                    if (!Rotation.isFacingEntity(event.getPlayer(), npc.getEntity(), 45)) return null;
 
                 Boolean ret = null;
 

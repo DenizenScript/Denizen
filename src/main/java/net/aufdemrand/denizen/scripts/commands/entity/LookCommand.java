@@ -7,7 +7,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -105,7 +105,7 @@ public class LookCommand extends AbstractCommand {
     	}
 
     	if (location != null) {
-    		Utilities.faceLocation(entity, location);
+    		Rotation.faceLocation(entity, location);
     	}
     	
         

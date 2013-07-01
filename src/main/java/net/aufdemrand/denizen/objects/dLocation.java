@@ -2,10 +2,10 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -312,7 +312,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         if (attribute.startsWith("direction"))
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1)))
-                return new Element(Utilities.getCardinal(Utilities.getYaw
+                return new Element(Rotation.getCardinal(Rotation.getYaw
                         (this.toVector().subtract(dLocation.valueOf(attribute.getContext(1)).toVector())
                                 .normalize())))
                         .getAttribute(attribute.fulfill(1));

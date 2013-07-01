@@ -263,9 +263,9 @@ public class dPlayer implements dObject {
             return new Element(String.valueOf(getPlayerEntity().getExp() * 100))
                     .getAttribute(attribute.fulfill(1));
 
-        //if (attribute.startsWith("inventory"))
-        //    return new dInventory(getPlayerEntity().getInventory())
-        //            .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("inventory"))
+            return new dInventory(getPlayerEntity().getInventory())
+                    .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("item_in_hand"))
             return new dItem(getPlayerEntity().getItemInHand())

@@ -15,10 +15,10 @@ import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.aufdemrand.denizen.utilities.entity.Conversion;
+import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.entity.Position;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -101,9 +101,9 @@ public class ShootCommand extends AbstractCommand {
         // if he/she is not looking in the correct general direction
         
         if (shooter.identify().startsWith("n@") ||
-        	Utilities.isFacingLocation(shooterEntity, destination, 45) == false) {
+        	Rotation.isFacingLocation(shooterEntity, destination, 45) == false) {
         	
-        	Utilities.faceLocation(shooterEntity, destination);
+        	Rotation.faceLocation(shooterEntity, destination);
         }
         
         Location origin = shooterEntity.getEyeLocation().add(
@@ -118,7 +118,7 @@ public class ShootCommand extends AbstractCommand {
         		projectile.spawnAt(origin);
         	}
         	
-            Utilities.faceLocation(projectile.getBukkitEntity(), destination);
+            Rotation.faceLocation(projectile.getBukkitEntity(), destination);
             
             if (projectile.getBukkitEntity() instanceof Projectile) {
     			((Projectile) projectile.getBukkitEntity()).setShooter(shooter.getLivingEntity());
