@@ -116,7 +116,7 @@ public class dColor implements dObject {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    // Bukkit Color associated
+    // Associated with Bukkit Color
 
     private Color color;
 

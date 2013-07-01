@@ -274,7 +274,7 @@ public class CommandRegistry implements dRegistry {
         		"WAIT", "wait (duration:#{5s}) (queue:queue_type) (player:player_name{attached}) (npcid:#{attached})", 0);
 
         registerCoreMember(WalkCommand.class,
-                "WALK", "walk [location:x,y,z,world] (speed:#)", 1);
+                "WALK, WALKTO", "walk [location:x,y,z,world] (speed:#)", 1);
 
         registerCoreMember(WeatherCommand.class,
                 "WEATHER", "weather [type:{global}|player] [sunny|storm|thunder]", 1);
@@ -288,13 +288,16 @@ public class CommandRegistry implements dRegistry {
         dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
 	}
 	
-    private <T extends AbstractCommand> void registerCoreMember(Class<T> cmd, String name, String hint, int args) {
-        try {
-            cmd.newInstance().activate().as(name).withOptions(hint, args);
-        } catch(Exception e) {
-            dB.echoError("Could not register command " + name + ": " + e.getMessage());
-            if (dB.showStackTraces) e.printStackTrace();
-        }
+    private <T extends AbstractCommand> void registerCoreMember(Class<T> cmd, String names, String hint, int args) {
+    	for (String name : names.split(", ")) {
+    	
+    		try {            	
+                cmd.newInstance().activate().as(name).withOptions(hint, args);
+            } catch(Exception e) {
+                dB.echoError("Could not register command " + name + ": " + e.getMessage());
+                if (dB.showStackTraces) e.printStackTrace();
+            }
+    	}
     }
 
 	@Override

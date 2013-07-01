@@ -111,7 +111,7 @@ public class dMaterial implements dObject {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    // Bukkit Material associated
+    // Associated with Bukkit Material
 
     private Material material;
     private byte data = 0;
