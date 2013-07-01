@@ -76,7 +76,14 @@ public class dInventory implements dObject {
         return inventory;
     }
     
-    
+    /**
+     * Adds an array of items to this inventory,
+     * and return the result
+     *
+     * @param items  The array of items
+     * @return  The resulting dInventory
+     *
+     */
     
     public dInventory add(ItemStack[] items) {
     	
@@ -137,32 +144,15 @@ public class dInventory implements dObject {
     
     public void replace(dInventory destination) {
     	
+    	if (this == null || destination == null) return;
+    	
     	// If the destination is smaller than our current inventory,
-    	// remove empty stacks from our current inventory in the hope
-    	// that there will then be enough room
+    	// add as many items as possible
     	
     	if (destination.getSize() < this.getSize()) {
 
-    		List<ItemStack> itemList = new ArrayList<ItemStack>();
-    		
-    		for (ItemStack item : this.getContents()) {
-
-    			if (item != null) itemList.add(item);
-    		}
-    		
-    		// If there is still not enough room, crop our list of items
-    		// so it fits
-    		
-    		if (destination.getSize() < itemList.size()) {
-    			
-    			itemList = itemList.subList(0, destination.getSize());
-    		}
-
-    		// Set the contents of the destination to our modified
-    		// item list
-    		
-    		ItemStack[] results = itemList.toArray(new ItemStack[itemList.size()]);
-    		destination.setContents(results);
+    		destination.clear();
+    		destination.add(this.getContents());
     	}
     	else {
     	

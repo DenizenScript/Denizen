@@ -243,11 +243,14 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ShootCommand.class,
         		"SHOOT", "shoot [projectile(s):<entity>|...] (origin:p@<name>/n@<id>) (destination:<x,y,z,world>) (script:<name>)", 1);
 
+        registerCoreMember(SignCommand.class, 
+        		"SIGN", "sign [\"<text>|<text>|<text>|<text>\"] [location:<x,y,z,world>]", 1);
+        
         registerCoreMember(SitCommand.class, 
         		"SIT", "sit (location:x,y,z,world)", 0);
 
         registerCoreMember(SpawnCommand.class,
-        		"SPAWN", "spawn [entity:name] (location:x,y,z,world) (target:[n@#]|[p@name])", 1);
+        		"SPAWN", "spawn [entity:name] (location:<x,y,z,world>) (target:[n@#]|[p@name])", 1);
         
         registerCoreMember(StandCommand.class, 
         		"STAND", "stand", 0);

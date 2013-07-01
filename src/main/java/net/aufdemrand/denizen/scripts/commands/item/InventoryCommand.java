@@ -159,6 +159,12 @@ public class InventoryCommand extends AbstractCommand {
             case CLEAR:
             	destination.clear();
             	return;
+            	
+            case REMOVE:
+            	return;
+            
+            default:
+            	return;
             
 		}
 		
