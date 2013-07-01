@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 /**
- * Utilities related to entity yaw and pitches.
+ * Utilities related to entity yaws and pitches.
  *
  * @author David Cernat, fullwall
  */

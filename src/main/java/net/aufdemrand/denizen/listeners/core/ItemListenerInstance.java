@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
@@ -107,7 +108,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 				{
 					// Save the quantity of items of this type that the player had
 					// before the event took place
-					final int initialQty = Utilities.countItems(item, player.getPlayerEntity().getInventory());
+					final int initialQty = new dInventory(player.getPlayerEntity().getInventory()).countItems(item);
 					
 					// Run a task 1 tick later, after the event has occurred, and
 					// see how many items of this type the player has then in the
@@ -118,7 +119,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 						@Override
 		                public void run()
 						{
-							int newQty = Utilities.countItems(item, player.getPlayerEntity().getInventory());
+							int newQty = new dInventory(player.getPlayerEntity().getInventory()).countItems(item);
 							int difference = newQty - initialQty;
 		                            	
 							// If any items were obtained (i.e. if shift click was

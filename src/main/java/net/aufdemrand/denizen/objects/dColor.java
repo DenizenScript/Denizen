@@ -142,7 +142,7 @@ public class dColor implements dObject {
 
 	@Override
 	public String getType() {
-		return "color";
+		return "dColor";
 	}
 
 	@Override

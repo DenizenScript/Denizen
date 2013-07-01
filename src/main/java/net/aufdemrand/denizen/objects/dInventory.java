@@ -1,12 +1,20 @@
 package net.aufdemrand.denizen.objects;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.aufdemrand.denizen.utilities.Utilities;
+
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.tags.Attribute;
 
 public class dInventory implements dObject {
 
-
+    final static Pattern inventoryPattern = Pattern.compile("(\\w+):?(\\d+)?");
+    
     //////////////////
     //    OBJECT FETCHER
     ////////////////
@@ -15,11 +23,11 @@ public class dInventory implements dObject {
      * Gets an Inventory Object from a string form.
      *
      * @param string  the string
-     * @return  a Material, or null if incorrectly formatted
+     * @return  an Inventory, or null if incorrectly formatted
      *
      */
-    public static dInventory valueOf(String string) {
-             
+    public static dMaterial valueOf(String string) {
+                
         // No match
         return null;
     }
@@ -34,6 +42,7 @@ public class dInventory implements dObject {
     public static boolean matches(String arg) {
 
         return false;
+
     }
     
     
@@ -58,10 +67,51 @@ public class dInventory implements dObject {
         return inventory;
     }
     
+    public int countItems(ItemStack item)
+    {
+    	int qty = 0;
+    	
+    	for (ItemStack invStack : inventory)
+		{
+			// If ItemStacks are empty here, they are null
+			if (invStack != null)
+			{
+				// If item is null, add up the quantity of every stack
+				// in the inventory
+				//
+				// If not, add up the quantities of the stacks that
+				// match the item
+				
+				if (item == null || invStack.isSimilar(item))
+					qty = qty + invStack.getAmount();
+			}
+		}
+    	
+    	return qty;
+    }
+    
+    
+    
+    //////////////////////////////
+    //  DSCRIPT ARGUMENT METHODS
+    /////////////////////////
 
+    private String prefix = "Inventory";
+    
+    @Override
+    public String getType() {
+        return "dInventory";
+    }
+    
     @Override
     public String getPrefix() {
-        return null;
+        return prefix;
+    }
+    
+    @Override
+    public dInventory setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
     }
 
     @Override
@@ -75,17 +125,7 @@ public class dInventory implements dObject {
     }
 
     @Override
-    public String getType() {
-        return "inventory";
-    }
-
-    @Override
     public String identify() {
-        return null;
-    }
-
-    @Override
-    public dObject setPrefix(String prefix) {
         return null;
     }
 
