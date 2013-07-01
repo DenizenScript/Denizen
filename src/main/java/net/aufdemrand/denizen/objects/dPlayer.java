@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -263,6 +264,13 @@ public class dPlayer implements dObject {
             return new Element(String.valueOf(getPlayerEntity().getExp() * 100))
                     .getAttribute(attribute.fulfill(1));
 
+        if (attribute.startsWith("equipment"))
+        	// The only way to return correct size for dInventory
+        	// created from equipment is to use a CRAFTING type
+        	// that has the expected 4 slots
+        	return new dInventory(InventoryType.CRAFTING).add(getPlayerEntity().getInventory().getArmorContents())
+        			.getAttribute(attribute.fulfill(1));
+        
         if (attribute.startsWith("inventory"))
             return new dInventory(getPlayerEntity().getInventory())
                     .getAttribute(attribute.fulfill(1));

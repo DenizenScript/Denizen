@@ -108,7 +108,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 				{
 					// Save the quantity of items of this type that the player had
 					// before the event took place
-					final int initialQty = new dInventory(player.getPlayerEntity().getInventory()).countItems(item);
+					final int initialQty = new dInventory(player.getPlayerEntity().getInventory()).count(item, false);
 					
 					// Run a task 1 tick later, after the event has occurred, and
 					// see how many items of this type the player has then in the
@@ -119,7 +119,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 						@Override
 		                public void run()
 						{
-							int newQty = new dInventory(player.getPlayerEntity().getInventory()).countItems(item);
+							int newQty = new dInventory(player.getPlayerEntity().getInventory()).count(item, false);
 							int difference = newQty - initialQty;
 		                            	
 							// If any items were obtained (i.e. if shift click was

@@ -1,11 +1,15 @@
 package net.aufdemrand.denizen.objects;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.utilities.Utilities;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,6 +57,11 @@ public class dInventory implements dObject {
     public dInventory(Inventory inventory) {
         this.inventory = inventory;
     }
+    
+    public dInventory(InventoryType type) {
+    	
+    	inventory = Bukkit.getServer().createInventory(null, type);
+    }
 
     
     /////////////////////
@@ -67,7 +76,71 @@ public class dInventory implements dObject {
         return inventory;
     }
     
-    public int countItems(ItemStack item)
+    public dInventory add(ItemStack[] items) {
+    	
+    	for (ItemStack item : items) {
+    		
+    		inventory.addItem(item);
+    	}
+    	
+    	return this;
+    }
+    
+    /**
+     * Copy this inventory's contents to another inventory,
+     * cropping it if necessary so that it fits.
+     *
+     * @param destination  The destination inventory
+     *
+     */
+    
+    public void copy(dInventory destination) {
+    	
+    	// If the destination is smaller than our current inventory,
+    	// remove empty stacks from our current inventory in the hope
+    	// that there will then be enough room
+    	
+    	if (destination.getSize() < this.getSize()) {
+
+    		List<ItemStack> itemList = new ArrayList<ItemStack>();
+    		
+    		for (ItemStack item : this.getContents()) {
+
+    			if (item != null) itemList.add(item);
+    		}
+    		
+    		// If there is still not enough room, crop our list of items
+    		// so it fits
+    		
+    		if (destination.getSize() < itemList.size()) {
+    			
+    			itemList = itemList.subList(0, destination.getSize());
+    		}
+
+    		// Set the contents of the destination to our modified
+    		// item list
+    		
+    		ItemStack[] results = itemList.toArray(new ItemStack[itemList.size()]);
+    		destination.setContents(results);
+    	}
+    	else {
+    	
+    		destination.setContents(this.getContents());
+    	}
+    }
+    
+    /**
+     * Count the number or quantities of stacks that
+     * match an item in an inventory.
+     *
+     * @param item  The item (can be null)
+     * @param stacks  Whether stacks should be counted
+     * 				  instead of item quantities
+     * @return  The number of stacks or quantity of items
+     *
+     */
+    
+    public int count(ItemStack item, boolean stacks)
     {
     	int qty = 0;
     	
@@ -76,40 +149,35 @@ public class dInventory implements dObject {
 			// If ItemStacks are empty here, they are null
 			if (invStack != null)
 			{
-				// If item is null, add up the quantity of every stack
-				// in the inventory
-				//
-				// If not, add up the quantities of the stacks that
-				// match the item
+				// If item is null, include all items in the
+				// inventory
 				
-				if (item == null || invStack.isSimilar(item))
-					qty = qty + invStack.getAmount();
+				if (item == null || invStack.isSimilar(item)) {
+					
+					// If stacks is true, only count the number
+					// of stacks
+					//
+					// Otherwise, count the quantities of stacks
+					
+					if (stacks == true) qty++;
+					else qty = qty + invStack.getAmount();
+				}
 			}
 		}
     	
     	return qty;
     }
     
-    public int countStacks(ItemStack item)
-    {
-    	int qty = 0;
-    	
-    	for (ItemStack invStack : inventory)
-		{
-			// If ItemStacks are empty here, they are null
-			if (invStack != null)
-			{
-				// If item is null, add up every stack in the
-				// inventory
-				//
-				// If not, add up the stacks that match the item
-				
-				if (item == null || invStack.isSimilar(item))
-					qty++;
-			}
-		}
-    	
-    	return qty;
+    public ItemStack[] getContents() {
+    	return this.inventory.getContents();
+    }
+    
+    public int getSize() {
+    	return this.inventory.getSize();
+    }
+    
+    public void setContents(ItemStack[] contents) {
+    	this.inventory.setContents(contents);
     }
     
     
@@ -182,17 +250,17 @@ public class dInventory implements dObject {
         
         if (attribute.startsWith("qty"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-            	return new Element(String.valueOf(countItems
-            		(dItem.valueOf(attribute.getContext(1)).getItemStack())))
+            	return new Element(String.valueOf(count
+            		(dItem.valueOf(attribute.getContext(1)).getItemStack(), false)))
             		.getAttribute(attribute.fulfill(1));
             else
-            	return new Element(String.valueOf(countItems(null)))
+            	return new Element(String.valueOf(count(null, false)))
             		.getAttribute(attribute.fulfill(1));
         
         // Return the number of slots in the inventory
         
         if (attribute.startsWith("size"))
-            return new Element(String.valueOf(getInventory().getSize()))
+            return new Element(String.valueOf(getSize()))
                     .getAttribute(attribute.fulfill(1));
         
         // Get the number of itemstacks that match an item if one is
@@ -200,11 +268,11 @@ public class dInventory implements dObject {
         
         if (attribute.startsWith("stacks"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-            	return new Element(String.valueOf(countStacks
-            		(dItem.valueOf(attribute.getContext(1)).getItemStack())))
+            	return new Element(String.valueOf(count
+            		(dItem.valueOf(attribute.getContext(1)).getItemStack(), true)))
             		.getAttribute(attribute.fulfill(1));
             else
-            	return new Element(String.valueOf(countStacks(null)))
+            	return new Element(String.valueOf(count(null, true)))
             		.getAttribute(attribute.fulfill(1));
         
         // Return the type of the inventory (e.g. "PLAYER", "CRAFTING")

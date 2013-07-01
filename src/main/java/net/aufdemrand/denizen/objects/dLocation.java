@@ -382,7 +382,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element(String.valueOf(getBlock().getBlockPower()))
                     .getAttribute(attribute.fulfill(1));
         
-        if (attribute.startsWith("region")) {
+        if (attribute.startsWith("in_region")) {
             if (Depends.worldGuard == null) {
                 dB.echoError("Cannot check region! WorldGuard is not loaded!");
                 return null;
