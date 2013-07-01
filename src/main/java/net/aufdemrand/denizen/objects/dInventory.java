@@ -90,6 +90,28 @@ public class dInventory implements dObject {
     	return qty;
     }
     
+    public int countStacks(ItemStack item)
+    {
+    	int qty = 0;
+    	
+    	for (ItemStack invStack : inventory)
+		{
+			// If ItemStacks are empty here, they are null
+			if (invStack != null)
+			{
+				// If item is null, add up every stack in the
+				// inventory
+				//
+				// If not, add up the stacks that match the item
+				
+				if (item == null || invStack.isSimilar(item))
+					qty++;
+			}
+		}
+    	
+    	return qty;
+    }
+    
     
     
     //////////////////////////////
@@ -149,10 +171,23 @@ public class dInventory implements dObject {
             	}
             	
             	return new Element(getInventory().containsAtLeast
-            				(dItem.valueOf(attribute.getContext(1)).getItemStack(), qty))
-                        	.getAttribute(attribute.fulfill(1));
+            			(dItem.valueOf(attribute.getContext(1)).getItemStack(), qty))
+                		.getAttribute(attribute.fulfill(1));
             }
         }
+        
+        // Get the combined quantity of itemstacks that match an item if
+        // one if specified, or the combined quantity of all itemstacks
+        // if one is not
+        
+        if (attribute.startsWith("qty"))
+            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
+            	return new Element(String.valueOf(countItems
+            		(dItem.valueOf(attribute.getContext(1)).getItemStack())))
+            		.getAttribute(attribute.fulfill(1));
+            else
+            	return new Element(String.valueOf(countItems(null)))
+            		.getAttribute(attribute.fulfill(1));
         
         // Return the number of slots in the inventory
         
@@ -160,12 +195,23 @@ public class dInventory implements dObject {
             return new Element(String.valueOf(getInventory().getSize()))
                     .getAttribute(attribute.fulfill(1));
         
+        // Get the number of itemstacks that match an item if one is
+        // specified, or the number of all itemstacks if one is not
+        
+        if (attribute.startsWith("stacks"))
+            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
+            	return new Element(String.valueOf(countStacks
+            		(dItem.valueOf(attribute.getContext(1)).getItemStack())))
+            		.getAttribute(attribute.fulfill(1));
+            else
+            	return new Element(String.valueOf(countStacks(null)))
+            		.getAttribute(attribute.fulfill(1));
+        
         // Return the type of the inventory (e.g. "PLAYER", "CRAFTING")
         
         if (attribute.startsWith("type"))
             return new Element(getInventory().getType().name())
                     .getAttribute(attribute.fulfill(1));
-        
         
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
