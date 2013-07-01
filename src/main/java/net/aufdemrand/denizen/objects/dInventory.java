@@ -76,11 +76,13 @@ public class dInventory implements dObject {
         return inventory;
     }
     
+    
+    
     public dInventory add(ItemStack[] items) {
     	
     	for (ItemStack item : items) {
     		
-    		inventory.addItem(item);
+    		if (item != null) inventory.addItem(item);
     	}
     	
     	return this;

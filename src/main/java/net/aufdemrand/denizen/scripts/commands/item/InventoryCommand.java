@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
 
 /**
@@ -23,7 +24,7 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class InventoryCommand extends AbstractCommand {
 	
-    private enum Action { OPEN, COPY, MOVE, SWAP, CLEAR }
+    private enum Action { OPEN, COPY, MOVE, SWAP, ADD, REMOVE, CLEAR }
 	
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -33,7 +34,7 @@ public class InventoryCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values()))
                 // add Action
-                scriptEntry.addObject("action", Action.valueOf(arg.asElement().toString()));
+                scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
         	
             else if (!scriptEntry.hasObject("originEntity") &&
         		!scriptEntry.hasObject("originLocation") &&
@@ -64,10 +65,6 @@ public class InventoryCommand extends AbstractCommand {
         
         if (!scriptEntry.hasObject("action"))
             throw new InvalidArgumentsException("Must specify an Inventory action!");
-        
-        if (!scriptEntry.hasObject("originEntity") &&
-        	!scriptEntry.hasObject("originLocation"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ORIGIN");
         
         if (!scriptEntry.hasObject("destinationEntity") &&
         	!scriptEntry.hasObject("destinationLocation"))
@@ -130,27 +127,38 @@ public class InventoryCommand extends AbstractCommand {
 		
 		switch (action) {
 
+			// Make the attached player open the destination inventory
 			case OPEN:
 				scriptEntry.getPlayer().getPlayerEntity().openInventory(destination.getInventory());
+				return;
 		
 			// Turn destination's contents into a copy of origin's
         	case COPY:
         		origin.replace(destination);
+        		return;
         		
         	// Copy origin's contents to destination, then empty origin
         	case MOVE:
         		origin.replace(destination);
         		origin.clear();
+        		return;
         	
         	// Swap the contents of the two inventories
         	case SWAP:
-        		dInventory temp = destination;
+        		dInventory temp = new dInventory(InventoryType.PLAYER).add(destination.getContents());
         		origin.replace(destination);
         		temp.replace(origin);
+        		return;
+        	
+        	// Add origin's contents to destination
+        	case ADD:
+        		destination.add(origin.getContents());
+        		return;
         	
             // Clear the content of the destination inventory
             case CLEAR:
             	destination.clear();
+            	return;
             
 		}
 		

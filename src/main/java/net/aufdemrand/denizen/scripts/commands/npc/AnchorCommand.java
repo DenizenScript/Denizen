@@ -57,7 +57,7 @@ public class AnchorCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values()))
                 // add Action
-                scriptEntry.addObject("action", arg.asElement());
+            	scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
 
 
             else if (!scriptEntry.hasObject("range")
@@ -93,22 +93,21 @@ public class AnchorCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Get objects
+    	Action action = (Action) scriptEntry.getObject("action");
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        Element action = (Element) scriptEntry.getObject("action");
         Element range = (Element) scriptEntry.getObject("range");
         Element id = (Element) scriptEntry.getObject("id");
 
         // Report to dB
         dB.report(getName(),
                 aH.debugObj("NPC", scriptEntry.getNPC().toString())
-                        + action.debug() + id.debug()
+                        + action.name() + id.debug()
                         + (location != null ? location.debug() : "")
                         + (range != null ? range.debug() : "" ));
 
         dNPC npc = scriptEntry.getNPC();
-        Action action_ = Action.valueOf(action.toString().replace("_", "").toUpperCase());
 
-        switch (action_) {
+        switch (action) {
 
             case ADD:
                 npc.getCitizen().getTrait(Anchors.class).addAnchor(id.asString(), location);
