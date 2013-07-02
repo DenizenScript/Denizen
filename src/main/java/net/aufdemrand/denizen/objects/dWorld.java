@@ -8,9 +8,18 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class dWorld implements dObject {
+
+    static Map<String, dWorld> worlds = new HashMap<String, dWorld>();
+
+    public static dWorld mirrorBukkitWorld(World world) {
+        if (worlds.containsKey(world.getName())) return worlds.get(world.getName());
+        else return new dWorld(world);
+    }
 
     @ObjectFetcher("w")
     public static dPlayer valueOf(String string) {
@@ -66,6 +75,8 @@ public class dWorld implements dObject {
         if (prefix == null) this.prefix = "World";
         else this.prefix = prefix;
         this.world_name = world.getName();
+        if (!worlds.containsKey(world.getName()))
+            worlds.put(world.getName(), this);
     }
 
     @Override

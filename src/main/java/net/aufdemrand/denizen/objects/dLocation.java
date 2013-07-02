@@ -394,9 +394,35 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        if (attribute.startsWith("world")) {
+            return dWorld.mirrorBukkitWorld(getWorld())
+                    .getAttribute(attribute.fulfill(1));
+        }
 
+        if (attribute.startsWith("block.x")) {
+            return new Element(getBlockX()).getAttribute(attribute.fulfill(1));
+        }
 
-//
+        if (attribute.startsWith("block.y")) {
+            return new Element(getBlockY()).getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("block.z")) {
+            return new Element(getBlockZ()).getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("x")) {
+            return new Element(getX()).getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("y")) {
+            return new Element(getY()).getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("z")) {
+            return new Element(getZ()).getAttribute(attribute.fulfill(1));
+        }
+
 //        else if (type.equals("TIME"))
 //        {
 //            if (subType.equals("PERIOD"))
@@ -406,18 +432,6 @@ public class dLocation extends org.bukkit.Location implements dObject {
 //                else if (fromLocation.getWorld().getTime() > 13500)
 //                    event.setReplaced("night");
 //        }
-//
-//        else if (type.equals("WORLD"))
-//            event.setReplaced(fromLocation.getWorld().getName());
-//
-//        else if (type.equals("X"))
-//            event.setReplaced(String.valueOf(fromLocation.getX()));
-//
-//        else if (type.equals("Y"))
-//            event.setReplaced(String.valueOf(fromLocation.getY()));
-//
-//        else if (type.equals("Z"))
-//            event.setReplaced(String.valueOf(fromLocation.getZ()));
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
