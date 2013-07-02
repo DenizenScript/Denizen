@@ -121,7 +121,7 @@ public class HealthTrait extends Trait implements Listener {
      * @return current health points
      *
      */
-    public int getHealth() {
+    public double getHealth() {
         if (!npc.isSpawned()) return 0;
         else return npc.getBukkitEntity().getHealth();
     }
@@ -141,7 +141,7 @@ public class HealthTrait extends Trait implements Listener {
      *
      * @return maximum health
      */
-    public int getMaxhealth() {
+    public double getMaxhealth() {
         return npc.getBukkitEntity().getMaxHealth();
     }
 
@@ -167,7 +167,7 @@ public class HealthTrait extends Trait implements Listener {
      *
      * @param health total health points
      */
-    public void setHealth(int health) {
+    public void setHealth(double health) {
     	
         if (npc.getBukkitEntity() != null)
         	npc.getBukkitEntity().setHealth(health);

@@ -317,7 +317,7 @@ public class PlayerTags implements Listener {
         } else if (type.equalsIgnoreCase("HEALTH")) {
             event.setReplaced(String.valueOf(p.getHealth()));
             if (subType.equalsIgnoreCase("FORMATTED")) {
-                int maxHealth = p.getMaxHealth();
+                double maxHealth = p.getMaxHealth();
                 if (event.getType().split("\\.").length > 2)
                     maxHealth = Integer.valueOf(event.getType().split(".")[2]);
                 if ((float)p.getHealth() / maxHealth < .10)
@@ -331,7 +331,7 @@ public class PlayerTags implements Listener {
                 else
                     event.setReplaced("healthy");
             } else if (subType.equalsIgnoreCase("PERCENTAGE")) {
-                int maxHealth = p.getMaxHealth();
+                double maxHealth = p.getMaxHealth();
                 if (event.getType().split("\\.").length > 2)
                     maxHealth = Integer.valueOf(event.getType().split(".")[2]);
                 event.setReplaced(String.valueOf(((float) p.getHealth() / maxHealth) * 100));

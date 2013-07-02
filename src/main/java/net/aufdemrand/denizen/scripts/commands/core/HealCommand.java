@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_6_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -42,13 +42,13 @@ public class HealCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         TargetType targetType = TargetType.PLAYER;
-        Integer amount = Integer.MAX_VALUE;
+        Double amount = Double.MAX_VALUE;
 
         for (String arg : scriptEntry.getArguments()) {
 
-            if (aH.matchesQuantity(arg) || aH.matchesInteger(arg)
-                    || aH.matchesValueArg("amt", arg, ArgumentType.Integer))
-                amount = aH.getIntegerFrom(arg);
+            if (aH.matchesQuantity(arg) || aH.matchesDouble(arg)
+                    || aH.matchesValueArg("amt", arg, ArgumentType.Double))
+                amount = aH.getDoubleFrom(arg);
 
             else if (aH.matchesValueArg("target", arg, ArgumentType.String)) {
                 try {
@@ -74,12 +74,12 @@ public class HealCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         TargetType target = (TargetType) scriptEntry.getObject("target");
-        Integer amount = (Integer) scriptEntry.getObject("amount");
+        Double amount = (Double) scriptEntry.getObject("amount");
 
         dB.report(getName(),
                 aH.debugObj("Target", (target == TargetType.PLAYER ? scriptEntry.getPlayer().getName()
                         : scriptEntry.getNPC().getName()))
-                        + aH.debugObj("Amount", (amount == Integer.MAX_VALUE ? "Full"
+                        + aH.debugObj("Amount", (amount == Double.MAX_VALUE ? "Full"
                         : String.valueOf(amount))));
 
         switch (target) {
@@ -88,7 +88,7 @@ public class HealCommand extends AbstractCommand {
                 NPC npc = scriptEntry.getNPC().getCitizen();
                 
                 // Set health to max
-                if (amount == Integer.MAX_VALUE)
+                if (amount == Double.MAX_VALUE)
                     npc.getBukkitEntity().setHealth(npc.getBukkitEntity().getMaxHealth());
                     // else, set Health
                 else npc.getBukkitEntity().setHealth(npc.getBukkitEntity().getHealth() + amount);
@@ -97,9 +97,9 @@ public class HealCommand extends AbstractCommand {
             case PLAYER:
                 Player player = scriptEntry.getPlayer();
                 // Set to max health
-                if (amount == Integer.MAX_VALUE) player.setHealth(player.getMaxHealth());
+                if (amount == Double.MAX_VALUE) player.setHealth(player.getMaxHealth());
                     // else, increase health
-                else ((CraftLivingEntity) player).getHandle().setHealth(player.getHealth() + amount);
+                else ((CraftLivingEntity) player).getHandle().setHealth((float) (player.getHealth() + amount));
         }
 
     }

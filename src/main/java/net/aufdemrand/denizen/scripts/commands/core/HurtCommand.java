@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_6_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Player;
 
 public class HurtCommand extends AbstractCommand {
@@ -20,13 +20,13 @@ public class HurtCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         TargetType targetType = TargetType.PLAYER;
-        int amount = 1;
+        double amount = 1;
 
         for (String arg : scriptEntry.getArguments()) {
 
-            if (aH.matchesQuantity(arg) || aH.matchesInteger(arg)
-                    || aH.matchesValueArg("amt", arg, ArgumentType.Integer))
-                amount = aH.getIntegerFrom(arg);
+            if (aH.matchesQuantity(arg) || aH.matchesDouble(arg)
+                    || aH.matchesValueArg("amt", arg, ArgumentType.Double))
+                amount = aH.getDoubleFrom(arg);
 
             else if (aH.matchesValueArg("target", arg, ArgumentType.String)) {
                 try {
@@ -52,12 +52,12 @@ public class HurtCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         TargetType target = (TargetType) scriptEntry.getObject("target");
-        Integer amount = (Integer) scriptEntry.getObject("amount");
+        Double amount = (Double) scriptEntry.getObject("amount");
 
         dB.report(getName(),
                 aH.debugObj("Target", (target == TargetType.PLAYER ? scriptEntry.getPlayer().getName()
                         : scriptEntry.getNPC().getName()))
-                        + aH.debugObj("Amount", (amount == Integer.MAX_VALUE ? "Full"
+                        + aH.debugObj("Amount", (amount == Double.MAX_VALUE ? "Full"
                         : String.valueOf(amount))));
 
         switch (target) {
@@ -71,7 +71,7 @@ public class HurtCommand extends AbstractCommand {
             case PLAYER:
                 Player player = scriptEntry.getPlayer();
                 // Injure player
-                ((CraftLivingEntity) player).getHandle().setHealth(player.getHealth() - amount);
+                ((CraftLivingEntity) player).getHandle().setHealth((float) (player.getHealth() - amount));
                 return;
         }
 

@@ -206,7 +206,7 @@ public class dPlayer implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("health.formatted")) {
-            int maxHealth = getPlayerEntity().getMaxHealth();
+            double maxHealth = getPlayerEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHealth = attribute.getIntContext(2);
             if ((float) getPlayerEntity().getHealth() / maxHealth < .10)
@@ -222,7 +222,7 @@ public class dPlayer implements dScriptArgument {
         }
 
         if (attribute.startsWith("health.percentage")) {
-            int maxHealth = getPlayerEntity().getMaxHealth();
+            double maxHealth = getPlayerEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHealth = attribute.getIntContext(2);
             return new Element(String.valueOf(((float) getPlayerEntity().getHealth() / maxHealth) * 100))
@@ -234,7 +234,7 @@ public class dPlayer implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("food_level.formatted")) {
-            int maxHunger = getPlayerEntity().getMaxHealth();
+            double maxHunger = getPlayerEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHunger = attribute.getIntContext(2);
             if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .10)

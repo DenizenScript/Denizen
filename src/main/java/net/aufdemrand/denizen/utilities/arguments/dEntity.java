@@ -6,11 +6,11 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_5_R3.Entity;
+import net.minecraft.server.v1_6_R1.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R1.CraftWorld;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
@@ -243,7 +243,7 @@ public class dEntity implements dScriptArgument {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("health.formatted")) {
-            int maxHealth = entity.getMaxHealth();
+            double maxHealth = entity.getMaxHealth();
             if (attribute.hasContext(2))
                 maxHealth = attribute.getIntContext(2);
             if ((float) entity.getHealth() / maxHealth < .10)
@@ -259,7 +259,7 @@ public class dEntity implements dScriptArgument {
         }
 
         if (attribute.startsWith("health.percentage")) {
-            int maxHealth = entity.getMaxHealth();
+            double maxHealth = entity.getMaxHealth();
             if (attribute.hasContext(2))
                 maxHealth = attribute.getIntContext(2);
             return new Element(String.valueOf(((float) entity.getHealth() / maxHealth) * 100))
