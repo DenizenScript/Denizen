@@ -22,7 +22,7 @@ public class dWorld implements dObject {
     }
 
     @ObjectFetcher("w")
-    public static dPlayer valueOf(String string) {
+    public static dWorld valueOf(String string) {
         if (string == null) return null;
 
         string = string.replace("w@", "");
@@ -36,7 +36,11 @@ public class dWorld implements dObject {
             if (world.getName().equalsIgnoreCase(string))
                 returnable = world;
 
-        if (returnable != null) new dWorld(returnable);
+        if (returnable != null) {
+            if (worlds.containsKey(returnable.getName()))
+                return worlds.get(returnable.getName());
+            else return new dWorld(returnable);
+        }
         else dB.echoError("Invalid World! '" + string
                 + "' could not be found.");
 
