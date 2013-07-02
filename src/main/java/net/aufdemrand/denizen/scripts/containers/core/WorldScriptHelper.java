@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
@@ -351,6 +352,49 @@ public class WorldScriptHelper implements Listener {
         }
 
     }
+    
+    
+    @EventHandler
+    public void playerInteractEntity(PlayerInteractEntityEvent event) {
+
+        String determination;
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("location", new dLocation(event.getRightClicked().getLocation()));
+        context.put("entity", event.getRightClicked().getType().name());
+
+        determination = doEvent("player interacts with " + event.getRightClicked().getType().name(), null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    
+    @EventHandler
+    public void blockBreak(BlockBreakEvent event) {
+
+        String determination;
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("id", event.getBlock().getTypeId());
+        context.put("type", event.getBlock().getType().name());
+
+        determination = doEvent("player breaks block", null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+        
+        determination = doEvent("player breaks " + event.getBlock().getTypeId(), null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+        
+        determination = doEvent("player breaks " + event.getBlock().getType().name(), null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerChat(final AsyncPlayerChatEvent event) {
