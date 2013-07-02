@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.HealthTrait;
 import net.aufdemrand.denizen.npc.traits.NicknameTrait;
@@ -34,10 +35,8 @@ import java.util.Map;
 
 public class dNPC implements dObject {
 
-    static Map<Integer, dNPC> npcs = new HashMap<Integer, dNPC>();
-
     public static dNPC mirrorCitizensNPC(NPC npc) {
-        if (npcs.containsKey(npc.getId())) return npcs.get(npc.getId());
+        if (dNPCRegistry.denizenNPCs.containsKey(npc.getId())) return dNPCRegistry.denizenNPCs.get(npc.getId());
         else return new dNPC(npc);
     }
 
@@ -51,8 +50,8 @@ public class dNPC implements dObject {
         string = string.replace("n@", "");
         NPC npc;
         if (aH.matchesInteger(string)) {
-            if (npcs.containsKey(aH.getIntegerFrom(string)))
-                return npcs.get(aH.getIntegerFrom(string));
+            if (dNPCRegistry.denizenNPCs.containsKey(aH.getIntegerFrom(string)))
+                return dNPCRegistry.denizenNPCs.get(aH.getIntegerFrom(string));
 
             npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
             if (npc != null) return new dNPC(npc);
@@ -81,8 +80,8 @@ public class dNPC implements dObject {
     public dNPC(NPC citizensNPC) {
         if (citizensNPC != null)
             this.npcid = citizensNPC.getId();
-        if (npcid >= 0 && !npcs.containsKey(npcid))
-            npcs.put(npcid, this);
+        if (npcid >= 0 && !dNPCRegistry.denizenNPCs.containsKey(npcid))
+            dNPCRegistry.denizenNPCs.put(npcid, this);
     }
 
     public EntityLiving getHandle() {

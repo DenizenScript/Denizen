@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class dNPCRegistry implements Listener {
 
-    private static Map<Integer, dNPC> denizenNPCs = new ConcurrentHashMap<Integer, dNPC>(8, 0.9f, 1);
+    public static Map<Integer, dNPC> denizenNPCs = new ConcurrentHashMap<Integer, dNPC>(8, 0.9f, 1);
 
     public static dNPCRegistry getCurrentInstance() {
         return DenizenAPI.getCurrentInstance().getNPCRegistry();
