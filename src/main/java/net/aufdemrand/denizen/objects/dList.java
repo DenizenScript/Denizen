@@ -198,6 +198,16 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        if (attribute.startsWith("asstring")
+                || attribute.startsWith("as_string")) {
+            if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
+            StringBuilder dScriptArg = new StringBuilder();
+            for (String item : this)
+                dScriptArg.append(item + " ");
+            return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 1))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
         if (attribute.startsWith("get")) {
             if (isEmpty()) return "null";
             int index = attribute.getIntContext(1);
