@@ -8,6 +8,7 @@ import java.util.UUID;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -17,6 +18,9 @@ import net.aufdemrand.denizen.objects.dList;
 
 
 import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
+import net.citizensnpcs.Citizens;
+import net.citizensnpcs.npc.NPCSelector;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -38,6 +42,7 @@ public class UtilTags implements Listener {
     public void serverTags(ReplaceableTagEvent event) {
         if (!event.matches("server, svr")) return;
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+
         if (attribute.startsWith("flag")) {
             if (attribute.hasContext(1)) {
                 if (FlagManager.serverHasFlag(attribute.getContext(1)))
@@ -47,6 +52,13 @@ public class UtilTags implements Listener {
                 event.setReplaced("null");
             }
             else event.setReplaced("null");
+        }
+
+        else if (attribute.startsWith("selected_npc")) {
+            event.setReplaced(new dNPC(((Citizens) Bukkit.getPluginManager().getPlugin("Citizens"))
+                    .getNPCSelector().getSelected(Bukkit.getConsoleSender())).getAttribute(attribute.fulfill(1)));
+
+
         }
     }
 
