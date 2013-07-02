@@ -10,11 +10,9 @@ import net.aufdemrand.denizen.utilities.entity.Rotation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Sign;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -421,6 +419,14 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         if (attribute.startsWith("z")) {
             return new Element(getZ()).getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("block.sign_contents")) {
+            if (getBlock().getState() instanceof Sign) {
+                return new dList(Arrays.asList(((Sign) getBlock().getState()).getLines()))
+                        .getAttribute(attribute.fulfill(2));
+            }
+            else return "null";
         }
 
 //        else if (type.equals("TIME"))
