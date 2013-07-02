@@ -103,6 +103,11 @@ public class dPlayer implements dObject {
 
     String player_name;
 
+    public boolean isValid() {
+        if (getPlayerEntity() == null && getOfflinePlayer() == null) return true;
+        return false;
+    }
+
     public Player getPlayerEntity() {
         return Bukkit.getPlayer(player_name);
     }

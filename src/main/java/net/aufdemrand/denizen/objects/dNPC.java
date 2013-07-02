@@ -71,10 +71,12 @@ public class dNPC implements dObject {
         return false;
     }
 
-
+    public boolean isValid() {
+        if (getCitizen() == null) return false;
+        else return true;
+    }
 
     private int npcid = -1;
-    private boolean is_valid = true;
     private final org.bukkit.Location locationCache = new org.bukkit.Location(null, 0, 0, 0);
 
     public dNPC(NPC citizensNPC) {
