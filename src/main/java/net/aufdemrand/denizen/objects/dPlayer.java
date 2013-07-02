@@ -296,7 +296,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("food_level.formatted")) {
-            int maxHunger = getPlayerEntity().getMaxHealth();
+            double maxHunger = getPlayerEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHunger = attribute.getIntContext(2);
             if ((float) getPlayerEntity().getFoodLevel() / maxHunger < .10)

@@ -6,17 +6,12 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.event.DespawnReason;
-import net.citizensnpcs.api.event.NPCDeathEvent;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import net.minecraft.server.v1_5_R3.EntityHuman;
 
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -128,7 +123,7 @@ public class HealthTrait extends Trait implements Listener {
      * @return current health points
      *
      */
-    public int getHealth() {
+    public double getHealth() {
     	if (!npc.isSpawned()) return 0;
     	else return npc.getBukkitEntity().getHealth();
     }
@@ -148,7 +143,7 @@ public class HealthTrait extends Trait implements Listener {
      *
      * @return maximum health
      */
-    public int getMaxhealth() {
+    public double getMaxhealth() {
     	return npc.getBukkitEntity().getMaxHealth();
     }
 
@@ -174,7 +169,7 @@ public class HealthTrait extends Trait implements Listener {
      *
      * @param health total health points
      */
-    public void setHealth(int health) {
+    public void setHealth(double health) {
         if (npc.getBukkitEntity() != null)
         	npc.getBukkitEntity().setHealth(health);
     }

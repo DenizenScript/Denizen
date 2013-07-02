@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_5_R3.EntityLiving;
+import net.minecraft.server.v1_6_R1.EntityLiving;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_6_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_6_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -71,7 +71,7 @@ public class Rotation {
 
         else
         {
-            net.minecraft.server.v1_5_R3.Entity handle = ((CraftEntity) entity).getHandle();
+            net.minecraft.server.v1_6_R1.Entity handle = ((CraftEntity) entity).getHandle();
             handle.yaw = (float) yaw;
             handle.pitch = (float) pitch;
         }

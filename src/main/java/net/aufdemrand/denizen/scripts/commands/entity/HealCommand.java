@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_6_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -46,8 +46,8 @@ public class HealCommand extends AbstractCommand {
 
         for (String arg : scriptEntry.getArguments()) {
 
-            if (aH.matchesQuantity(arg) || aH.matchesInteger(arg)
-                    || aH.matchesValueArg("amt", arg, ArgumentType.Integer))
+            if (aH.matchesQuantity(arg) || aH.matchesDouble(arg)
+                    || aH.matchesValueArg("amt", arg, ArgumentType.Double))
                 amount = aH.getIntegerFrom(arg);
 
             else if (aH.matchesValueArg("target", arg, ArgumentType.String)) {
@@ -74,12 +74,12 @@ public class HealCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         TargetType target = (TargetType) scriptEntry.getObject("target");
-        Integer amount = (Integer) scriptEntry.getObject("amount");
+        Double amount = (Double) scriptEntry.getObject("amount");
 
         dB.report(getName(),
                 aH.debugObj("Target", (target == TargetType.PLAYER ? scriptEntry.getPlayer().getName()
                         : scriptEntry.getNPC().getName()))
-                        + aH.debugObj("Amount", (amount == Integer.MAX_VALUE ? "Full"
+                        + aH.debugObj("Amount", (amount == Double.MAX_VALUE ? "Full"
                         : String.valueOf(amount))));
 
         switch (target) {
@@ -99,7 +99,7 @@ public class HealCommand extends AbstractCommand {
                 // Set to max health
                 if (amount == Integer.MAX_VALUE) player.setHealth(player.getMaxHealth());
                     // else, increase health
-                else ((CraftLivingEntity) player).getHandle().setHealth(player.getHealth() + amount);
+                else ((CraftLivingEntity) player).getHandle().setHealth((float) (player.getHealth() + amount));
         }
 
     }

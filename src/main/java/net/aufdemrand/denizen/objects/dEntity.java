@@ -13,7 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R1.CraftWorld;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
@@ -473,7 +473,7 @@ public class dEntity implements dObject {
     // Used to store some information about a livingEntity while it's despawned
     private class DespawnedEntity {
 
-        Integer health = null;
+        Double health = null;
         Location location = null;
         ItemStack[] equipment = null;
         String custom_script = null;
@@ -606,9 +606,9 @@ public class dEntity implements dObject {
         if (attribute.startsWith("location"))
             return new dLocation(entity.getLocation())
                     .getAttribute(attribute.fulfill(1));
-
+        
         if (attribute.startsWith("health.formatted")) {
-            int maxHealth = getLivingEntity().getMaxHealth();
+            double maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHealth = attribute.getIntContext(2);
             if ((float) getLivingEntity().getHealth() / maxHealth < .10)
@@ -624,7 +624,7 @@ public class dEntity implements dObject {
         }
 
         if (attribute.startsWith("health.percentage")) {
-            int maxHealth = getLivingEntity().getMaxHealth();
+            double maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHealth = attribute.getIntContext(2);
             return new Element(String.valueOf(((float) getLivingEntity().getHealth() / maxHealth) * 100))
