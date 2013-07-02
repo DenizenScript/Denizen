@@ -72,8 +72,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 // Should we check 'line of sight'? Players cannot talk to NPCs through walls
                 // if enabled. Should the Player chat only when looking at the NPC? This may
                 // reduce accidental chats with NPCs.
-                if (Settings.ChatMustSeeNPC())
-                    if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return null;
+                
+                // TODO: CraftBukkit 1.6 broke the two lines below. Think of a workaround.
+                
+                //if (Settings.ChatMustSeeNPC())
+                //    if (!npc.getEntity().hasLineOfSight(event.getPlayer())) return null;
+                
                 if (Settings.ChatMustLookAtNPC())
                     if (!Rotation.isFacingEntity(event.getPlayer(), npc.getEntity(), 45)) return null;
 
