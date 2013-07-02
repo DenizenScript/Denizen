@@ -317,7 +317,8 @@ public class dPlayer implements dObject {
             return new Element(String.valueOf(getPlayerEntity().getFoodLevel()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("permission")) {
+        if (attribute.startsWith("permission")
+                || attribute.startsWith("has_permission")) {
             if (Depends.permissions == null) {
                 dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return null;
@@ -326,7 +327,7 @@ public class dPlayer implements dObject {
             String permission = attribute.getContext(1);
 
             // Non-world specific permission
-            if (attribute.startsWith("permission.global"))
+            if (attribute.getAttribute(2).startsWith("global"))
                 return new Element(String.valueOf(Depends.permissions.has((World) null, player_name, permission)))
                         .getAttribute(attribute.fulfill(2));
 
@@ -346,7 +347,8 @@ public class dPlayer implements dObject {
             else return null;
         }
 
-        if (attribute.startsWith("group")) {
+        if (attribute.startsWith("group")
+                || attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
                 dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return "null";
@@ -355,7 +357,7 @@ public class dPlayer implements dObject {
             String group = attribute.getContext(1);
 
             // Non-world specific permission
-            if (attribute.startsWith("group.global"))
+            if (attribute.getAttribute(2).startsWith("global"))
                 return new Element(String.valueOf(Depends.permissions.playerInGroup((World) null, player_name, group)))
                         .getAttribute(attribute.fulfill(2));
 
@@ -398,7 +400,7 @@ public class dPlayer implements dObject {
 
         if (attribute.startsWith("selected_npc")) {
             if (getPlayerEntity().hasMetadata("selected"))
-                return dNPC.valueOf(String.valueOf(getPlayerEntity().getMetadata("selected").get(0)))
+                return dNPC.valueOf(getPlayerEntity().getMetadata("selected").get(0).asString())
                         .getAttribute(attribute.fulfill(1));
             else return "null";
         }
