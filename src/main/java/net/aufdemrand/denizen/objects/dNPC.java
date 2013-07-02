@@ -246,8 +246,6 @@ public class dNPC implements dObject {
 
         if (attribute == null) return "null";
 
-        dB.log("getAttribute: " + getType() + " ---> " + attribute.attributes.toString());
-
         if (attribute.startsWith("name.nickname"))
             return new Element(getCitizen().hasTrait(NicknameTrait.class) ? getCitizen().getTrait(NicknameTrait.class)
                     .getNickname() : getName()).getAttribute(attribute.fulfill(2));

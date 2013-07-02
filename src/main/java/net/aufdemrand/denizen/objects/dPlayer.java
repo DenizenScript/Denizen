@@ -173,8 +173,6 @@ public class dPlayer implements dObject {
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return "null";
 
-        dB.log("getAttribute: " + getType() + " ---> " + attribute.attributes.toString());
-
         if (attribute.startsWith("has_played_before"))
             return new Element(String.valueOf(getOfflinePlayer().hasPlayedBefore()))
                     .getAttribute(attribute.fulfill(1));

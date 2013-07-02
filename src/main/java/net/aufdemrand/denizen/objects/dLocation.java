@@ -267,8 +267,6 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return null;
 
-        dB.log("getAttribute: " + getType() + " ---> " + attribute.attributes.toString());
-
         if (attribute.startsWith("biome.formatted"))
             return new Element(getBlock().getBiome().name().toLowerCase().replace('_', ' '))
                     .getAttribute(attribute.fulfill(2));
