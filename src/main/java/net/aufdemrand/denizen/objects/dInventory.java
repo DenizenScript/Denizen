@@ -135,6 +135,23 @@ public class dInventory implements dObject {
     }
     
     /**
+     * Fill an inventory with an array of items by
+     * continuing to add the items to it over and
+     * over until there is no more room
+     *
+     * @param item  The array of items
+     * @return  The resulting dInventory
+     *
+     */
+    
+    public dInventory fill(ItemStack[] items) {
+    	
+    	while (this.count(null, false) != this.add(items).count(null, false));
+    	
+    	return this;
+    }
+    
+    /**
      * Remove an array of items from this inventory,
      * and return the result
      *

@@ -166,7 +166,7 @@ public class CommandRegistry implements dRegistry {
         		"IF", "if [comparable] (!)(operator) (compared_to) (bridge) (...) [command] (else) (command)  +--> see documentation.", 2);
 
         registerCoreMember(InventoryCommand.class,
-                "INVENTORY", "inventory [open/copy/move/swap/add/remove/clear] (origin:<entity>/<x,y,z,world>) [destination:<entity>/<x,y,z,world>]", 2);
+                "INVENTORY", "inventory [open/copy/move/swap/add/remove/fill/clear] (origin:<entity>/<x,y,z,world>) [destination:<entity>/<x,y,z,world>]", 2);
         
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [npc] [toggle:true|false|toggle]", 2);

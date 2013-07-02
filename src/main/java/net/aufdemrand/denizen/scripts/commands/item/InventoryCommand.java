@@ -10,10 +10,12 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Lets you store and edit inventories.
@@ -23,7 +25,7 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class InventoryCommand extends AbstractCommand {
 	
-    private enum Action { OPEN, COPY, MOVE, SWAP, ADD, REMOVE, CLEAR }
+    private enum Action { OPEN, COPY, MOVE, SWAP, ADD, REMOVE, FILL, CLEAR }
 	
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -160,6 +162,11 @@ public class InventoryCommand extends AbstractCommand {
         		destination.remove(origin.getContents());
         		return;
         	
+            // Clear the content of the destination inventory
+            case FILL:
+            	destination.fill(origin.getContents());
+               	return;
+        		
             // Clear the content of the destination inventory
             case CLEAR:
             	destination.clear();
