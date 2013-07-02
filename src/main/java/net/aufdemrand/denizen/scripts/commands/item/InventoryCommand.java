@@ -13,7 +13,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryHolder;
 
 /**
@@ -145,7 +144,8 @@ public class InventoryCommand extends AbstractCommand {
         	
         	// Swap the contents of the two inventories
         	case SWAP:
-        		dInventory temp = new dInventory(InventoryType.PLAYER).add(destination.getContents());
+        		dInventory temp = new dInventory(destination.getInventoryType())
+        						  	.add(destination.getContents());
         		origin.replace(destination);
         		temp.replace(origin);
         		return;

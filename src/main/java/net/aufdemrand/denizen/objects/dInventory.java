@@ -187,6 +187,10 @@ public class dInventory implements dObject {
     	return inventory.getContents();
     }
     
+    public InventoryType getInventoryType() {
+    	return inventory.getType();
+    }
+    
     public int getSize() {
     	return inventory.getSize();
     }
