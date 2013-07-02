@@ -14,7 +14,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 
 public class dInventory implements dObject {
 
-    final static Pattern inventoryPattern = Pattern.compile("(\\w+):?(\\d+)?");
+    //final static Pattern inventoryPattern = Pattern.compile("(\\w+)");
     
     //////////////////
     //    OBJECT FETCHER
@@ -27,7 +27,7 @@ public class dInventory implements dObject {
      * @return  an Inventory, or null if incorrectly formatted
      *
      */
-    public static dMaterial valueOf(String string) {
+    public static dInventory valueOf(String string) {
                 
         // No match
         return null;

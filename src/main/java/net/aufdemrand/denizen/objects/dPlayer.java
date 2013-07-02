@@ -104,8 +104,8 @@ public class dPlayer implements dObject {
     String player_name;
 
     public boolean isValid() {
-        if (getPlayerEntity() == null && getOfflinePlayer() == null) return true;
-        return false;
+        if (getPlayerEntity() == null && getOfflinePlayer() == null) return false;
+        return true;
     }
 
     public Player getPlayerEntity() {
@@ -217,6 +217,7 @@ public class dPlayer implements dObject {
             int x = 1;
             if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
                 x = attribute.getIntContext(1);
+            
             return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
                     .getAttribute(attribute.fulfill(1));
         }
