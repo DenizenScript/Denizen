@@ -89,7 +89,7 @@ public class dInventory implements dObject {
 
     // Associated with Bukkit Inventory
 
-    private Inventory inventory;
+    private Inventory inventory = null;
 
     public Inventory getInventory() {
         return inventory;
@@ -105,6 +105,8 @@ public class dInventory implements dObject {
      */
     
     public dInventory add(ItemStack[] items) {
+    	
+    	if (inventory == null || items == null) return this;
     	
     	for (ItemStack item : items) {
     		
@@ -127,6 +129,8 @@ public class dInventory implements dObject {
     
     public int count(ItemStack item, boolean stacks)
     {
+    	if (inventory == null) return 0;
+    	
     	int qty = 0;
     	
     	for (ItemStack invStack : inventory)
@@ -163,6 +167,8 @@ public class dInventory implements dObject {
      */
     
     public dInventory keep(ItemStack[] items) {
+    	
+    	if (inventory == null || items == null) return this;
     	
     	for (ItemStack invStack : inventory) {
     		
@@ -206,6 +212,8 @@ public class dInventory implements dObject {
     
     public dInventory exclude(ItemStack[] items) {
     	
+    	if (inventory == null || items == null) return this;
+    	
     	int oldCount = this.count(null, false);
     	int newCount = -1;
     	
@@ -230,6 +238,8 @@ public class dInventory implements dObject {
     
     public dInventory fill(ItemStack[] items) {
     	
+    	if (inventory == null || items == null) return this;
+    	
     	int oldCount = this.count(null, false);
     	int newCount = -1;
     	
@@ -253,6 +263,8 @@ public class dInventory implements dObject {
     
     public dInventory remove(ItemStack[] items) {
     	
+    	if (inventory == null || items == null) return this;
+    	
     	for (ItemStack item : items) {
     		
     		if (item != null) inventory.removeItem(item);
@@ -271,7 +283,7 @@ public class dInventory implements dObject {
     
     public void replace(dInventory destination) {
     	
-    	if (this == null || destination == null) return;
+    	if (inventory == null || destination == null) return;
     	
     	// If the destination is smaller than our current inventory,
     	// add as many items as possible
@@ -288,11 +300,12 @@ public class dInventory implements dObject {
     }
     
     public void clear() {
-    	inventory.clear();
+    	if (inventory != null) inventory.clear();
     }
     
     public ItemStack[] getContents() {
-    	return inventory.getContents();
+    	if (inventory != null) return inventory.getContents();
+    	else return new ItemStack[0];
     }
     
     public InventoryType getInventoryType() {

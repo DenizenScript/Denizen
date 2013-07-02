@@ -10,11 +10,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryHolder;
-
 /**
  * Lets you store and edit inventories.
  *
