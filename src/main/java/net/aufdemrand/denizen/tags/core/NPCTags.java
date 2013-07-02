@@ -49,6 +49,13 @@ public class NPCTags implements Listener {
                 return;
             }
 
+
+        if (n == null || !n.isValid()) {
+            dB.echoDebug("Invalid or missing player for tag <" + event.raw_tag + ">!");
+            event.setReplaced("null");
+            return;
+        }
+
         event.setReplaced(n.getAttribute(attribute.fulfill(1)));
 
     }

@@ -80,6 +80,12 @@ public class PlayerTags implements Listener {
                 return;
             }
 
+        if (p == null || !p.isValid()) {
+            dB.echoDebug("Invalid or missing player for tag <" + event.raw_tag + ">!");
+            event.setReplaced("null");
+            return;
+        }
+
         event.setReplaced(p.getAttribute(attribute.fulfill(1)));
     }
 
