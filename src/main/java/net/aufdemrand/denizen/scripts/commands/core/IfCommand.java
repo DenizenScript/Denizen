@@ -285,6 +285,10 @@ public class IfCommand extends AbstractCommand {
                         .setNPC(scriptEntry.getNPC()).setInstant(true)
                         .addObject("reqId", scriptEntry.getObject("reqId"));
 
+                // Put tracked objects into new script entries.
+                for (String tracked_object : scriptEntry.tracked_objects)
+                    entry.addObject(tracked_object, scriptEntry.getObject(tracked_object));
+
                 entries.add(entry);
 
             } catch (ScriptEntryCreationException e) {

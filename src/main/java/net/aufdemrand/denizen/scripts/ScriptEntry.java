@@ -191,5 +191,15 @@ public class ScriptEntry {
 	public void setSendingQueue(ScriptQueue scriptQueue) {
 		queue = scriptQueue;
 	}
-	
+
+    // Keep track of objects which were added by mass
+    // so that IF can inject them into new entries.
+    // This is ugly, but it will keep from breaking
+    // previous versions of Denizen.
+    public List<String> tracked_objects = new ArrayList<String>();
+    public ScriptEntry trackObject(String key) {
+        tracked_objects.add(key.toUpperCase());
+        return this;
+    }
+
 }
