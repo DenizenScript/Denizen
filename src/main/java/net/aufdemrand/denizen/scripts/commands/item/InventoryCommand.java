@@ -162,7 +162,8 @@ public class InventoryCommand extends AbstractCommand {
         		destination.remove(origin.getContents());
         		return;
         	
-            // Clear the content of the destination inventory
+            // Add origin's contents over and over to destination
+        	// until destination is full
             case FILL:
             	destination.fill(origin.getContents());
                	return;

@@ -328,6 +328,11 @@ public class dPlayer implements dObject {
             if (attribute.getAttribute(2).startsWith("global"))
                 return new Element(String.valueOf(Depends.permissions.has((World) null, player_name, permission)))
                         .getAttribute(attribute.fulfill(2));
+            
+            // Permission in certain world
+            else if (attribute.getAttribute(2).startsWith("world"))
+                return new Element(String.valueOf(Depends.permissions.has(attribute.getContext(2), player_name, permission)))
+                        .getAttribute(attribute.fulfill(2));
 
             // Permission in current world
             return new Element(String.valueOf(Depends.permissions.has(getPlayerEntity(), permission)))
@@ -357,6 +362,11 @@ public class dPlayer implements dObject {
             // Non-world specific permission
             if (attribute.getAttribute(2).startsWith("global"))
                 return new Element(String.valueOf(Depends.permissions.playerInGroup((World) null, player_name, group)))
+                        .getAttribute(attribute.fulfill(2));
+            
+            // Permission in certain world
+            else if (attribute.getAttribute(2).startsWith("world"))
+                return new Element(String.valueOf(Depends.permissions.playerInGroup(attribute.getContext(2), player_name, group)))
                         .getAttribute(attribute.fulfill(2));
 
             // Permission in current world
