@@ -19,6 +19,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
@@ -393,6 +395,50 @@ public class WorldScriptHelper implements Listener {
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
+    }
+    
+    
+    @EventHandler
+    public void blockIgnite(BlockIgniteEvent event) {
+
+        String determination;
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("id", event.getBlock().getTypeId());
+        context.put("type", event.getBlock().getType().name());
+        
+        determination = doEvent("block ignites", null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+        
+        determination = doEvent("block " + event.getBlock().getTypeId() + " ignites", null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+        
+        determination = doEvent("block " + event.getBlock().getType().name() + " ignites", null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    
+    @EventHandler
+    public void blockRedstone(BlockRedstoneEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("id", event.getBlock().getTypeId());
+        context.put("type", event.getBlock().getType().name());
+        
+        doEvent("block powered", null, null, context);
+        
+        doEvent("block " + event.getBlock().getTypeId() + " powered", null, null, context);
+        
+        doEvent("block " + event.getBlock().getType().name() + " powered", null, null, context);
     }
     
 
