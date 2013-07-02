@@ -19,7 +19,6 @@ import net.aufdemrand.denizen.objects.dList;
 
 import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
-import net.citizensnpcs.npc.NPCSelector;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

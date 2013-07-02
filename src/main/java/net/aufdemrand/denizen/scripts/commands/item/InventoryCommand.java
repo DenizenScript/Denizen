@@ -10,12 +10,10 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
-import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Lets you store and edit inventories.
@@ -25,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class InventoryCommand extends AbstractCommand {
 	
-    private enum Action { OPEN, COPY, MOVE, SWAP, ADD, REMOVE, FILL, CLEAR }
+    private enum Action { OPEN, COPY, MOVE, SWAP, ADD, REMOVE, KEEP, EXCLUDE, FILL, CLEAR }
 	
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -39,7 +37,7 @@ public class InventoryCommand extends AbstractCommand {
         	
             else if (!scriptEntry.hasObject("originEntity") &&
         		!scriptEntry.hasObject("originLocation") &&
-        		arg.matchesPrefix("origin, o, source, s")) {
+        		arg.matchesPrefix("origin, o, source, s, items, i, from, f")) {
         		
         		// Is entity
         		if (arg.matchesArgumentType(dEntity.class))
@@ -51,7 +49,7 @@ public class InventoryCommand extends AbstractCommand {
             
             else if (!scriptEntry.hasObject("destinationEntity") &&
             		 !scriptEntry.hasObject("destinationLocation") &&
-            		 arg.matchesPrefix("destination, d, target, t")) {
+            		 arg.matchesPrefix("destination, d, target, to, t")) {
         		
             	// Is entity
             	if (arg.matchesArgumentType(dEntity.class))
@@ -161,6 +159,18 @@ public class InventoryCommand extends AbstractCommand {
         	case REMOVE:
         		destination.remove(origin.getContents());
         		return;
+        	
+            // Keep only items from the origin's contents in the
+        	// destination
+            case KEEP:
+               	destination.keep(origin.getContents());
+               	return;
+               	
+            // Exclude all items from the origin's contents in the
+            // destination
+            case EXCLUDE:
+               	destination.exclude(origin.getContents());
+               	return;
         	
             // Add origin's contents over and over to destination
         	// until destination is full

@@ -135,6 +135,71 @@ public class dInventory implements dObject {
     }
     
     /**
+     * Keep only the items from a certain array
+     * in this inventory, removing all others
+     *
+     * @param items  The array of items
+     * @return  The resulting dInventory
+     *
+     */
+    
+    public dInventory keep(ItemStack[] items) {
+    	
+    	for (ItemStack invStack : inventory) {
+    		
+    		if (invStack != null) {
+    			
+    			boolean keep = false;
+    			
+    			// See if the item array contains
+    			// this inventory item
+    			for (ItemStack item : items) {
+    				
+    				if (invStack.isSimilar(item)) {
+    					
+    					keep = true;
+    					break;
+    				}
+    			}
+    			
+    			// If the item array did not contain
+    			// this inventory item, remove it
+    			// from the inventory
+    			if (keep == false) {
+    				
+    				this.remove(invStack);
+    			}
+    		}
+    	}
+    	
+    	return this;
+    }
+    
+    /**
+     * Exclude an array of items from this
+     * inventory by removing them over and over
+     * until they are completely gone
+     *
+     * @param items  The array of items
+     * @return  The resulting dInventory
+     *
+     */
+    
+    public dInventory exclude(ItemStack[] items) {
+    	
+    	int oldCount = this.count(null, false);
+    	int newCount = -1;
+    	
+    	while (oldCount != newCount) {
+    		
+    		oldCount = newCount;
+    		newCount = this.remove(items).count(null, false);
+    	}
+    	
+    	return this;
+    }
+    
+    /**
      * Fill an inventory with an array of items by
      * continuing to add the items to it over and
      * over until there is no more room
@@ -146,7 +211,14 @@ public class dInventory implements dObject {
     
     public dInventory fill(ItemStack[] items) {
     	
-    	while (this.count(null, false) != this.add(items).count(null, false));
+    	int oldCount = this.count(null, false);
+    	int newCount = -1;
+    	
+    	while (oldCount != newCount) {
+    		
+    		oldCount = newCount;
+    		newCount = this.add(items).count(null, false);
+    	}
     	
     	return this;
     }
@@ -210,6 +282,10 @@ public class dInventory implements dObject {
     
     public int getSize() {
     	return inventory.getSize();
+    }
+    
+    public void remove(ItemStack item) {
+    	inventory.remove(item);
     }
     
     public void setContents(ItemStack[] contents) {
