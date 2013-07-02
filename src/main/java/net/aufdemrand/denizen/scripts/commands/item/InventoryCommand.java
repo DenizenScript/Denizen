@@ -154,13 +154,15 @@ public class InventoryCommand extends AbstractCommand {
         	case ADD:
         		destination.add(origin.getContents());
         		return;
+        		
+        	// Remove origin's contents from destination
+        	case REMOVE:
+        		destination.remove(origin.getContents());
+        		return;
         	
             // Clear the content of the destination inventory
             case CLEAR:
             	destination.clear();
-            	return;
-            	
-            case REMOVE:
             	return;
             
             default:

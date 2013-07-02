@@ -77,7 +77,7 @@ public class dInventory implements dObject {
     }
     
     /**
-     * Adds an array of items to this inventory,
+     * Add an array of items to this inventory
      * and return the result
      *
      * @param items  The array of items
@@ -132,6 +132,25 @@ public class dInventory implements dObject {
 		}
     	
     	return qty;
+    }
+    
+    /**
+     * Remove an array of items from this inventory,
+     * and return the result
+     *
+     * @param items  The array of items
+     * @return  The resulting dInventory
+     *
+     */
+    
+    public dInventory remove(ItemStack[] items) {
+    	
+    	for (ItemStack item : items) {
+    		
+    		if (item != null) inventory.removeItem(item);
+    	}
+    	
+    	return this;
     }
     
     /**

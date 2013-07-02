@@ -61,10 +61,10 @@ public class SignCommand extends AbstractCommand {
 		
 		Block sign = location.getBlock();
 		
-		if (type.name().equals("WALL_SIGN"))
-			sign.setType(Material.valueOf("WALL_SIGN"));
+		if (type.equals(Type.WALL_SIGN))
+			sign.setType(Material.WALL_SIGN);
 		else
-			sign.setType(Material.valueOf("SIGN_POST"));
+			sign.setType(Material.SIGN_POST);
 		
         BlockState signState = sign.getState();
         
