@@ -25,11 +25,21 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class dNPC implements dObject {
+
+    static Map<Integer, dNPC> npcs = new HashMap<Integer, dNPC>();
+
+    public static dNPC mirrorCitizensNPC(NPC npc) {
+        if (npcs.containsKey(npc.getId())) return npcs.get(npc.getId());
+        else return new dNPC(npc);
+    }
 
     @ObjectFetcher("n")
     public static dNPC valueOf(String string) {
@@ -41,6 +51,9 @@ public class dNPC implements dObject {
         string = string.replace("n@", "");
         NPC npc;
         if (aH.matchesInteger(string)) {
+            if (npcs.containsKey(aH.getIntegerFrom(string)))
+                return npcs.get(aH.getIntegerFrom(string));
+
             npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
             if (npc != null) return new dNPC(npc);
         }
@@ -50,22 +63,26 @@ public class dNPC implements dObject {
 
 
     public static boolean matches(String string) {
-
         string = string.replace("n@", "");
         NPC npc;
         if (aH.matchesInteger(string)) {
             npc = CitizensAPI.getNPCRegistry().getById(aH.getIntegerFrom(string));
             if (npc != null) return true;
         }
-
         return false;
     }
 
-    private int npcid;
+
+
+    private int npcid = -1;
+    private boolean is_valid = true;
     private final org.bukkit.Location locationCache = new org.bukkit.Location(null, 0, 0, 0);
 
     public dNPC(NPC citizensNPC) {
-        this.npcid = citizensNPC.getId();
+        if (citizensNPC != null)
+            this.npcid = citizensNPC.getId();
+        if (npcid >= 0 && !npcs.containsKey(npcid))
+            npcs.put(npcid, this);
     }
 
     public EntityLiving getHandle() {
