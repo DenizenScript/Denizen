@@ -87,41 +87,17 @@ public class InventoryCommand extends AbstractCommand {
 		dInventory destination = null;
 		
 		if (originLocation != null) {
-			
-			BlockState blockState = originLocation.getBlock().getState();
-			
-			if (blockState instanceof InventoryHolder) {
-				
-				origin = new dInventory(((InventoryHolder) blockState).getInventory());
-			}
+			origin = new dInventory(originLocation.getBlock().getState());
 		}
 		else if (originEntity != null) {
-			
-			LivingEntity entity = originEntity.getLivingEntity();
-			
-			if (entity instanceof Player) {
-				
-				origin = new dInventory(((Player) entity).getInventory());
-			}
+			origin = new dInventory(originEntity.getLivingEntity());
 		}
 		
 		if (destinationLocation != null) {
-			
-			BlockState blockState = destinationLocation.getBlock().getState();
-			
-			if (blockState instanceof InventoryHolder) {
-				
-				destination = new dInventory(((InventoryHolder) blockState).getInventory());
-			}
+			destination = new dInventory(destinationLocation.getBlock().getState());
 		}
 		else if (destinationEntity != null) {
-			
-			LivingEntity entity = destinationEntity.getLivingEntity();
-			
-			if (entity instanceof Player) {
-				
-				destination = new dInventory(((Player) entity).getInventory());
-			}
+			destination = new dInventory(destinationEntity.getLivingEntity());
 		}
 		
 		switch (action) {
@@ -173,7 +149,7 @@ public class InventoryCommand extends AbstractCommand {
                	return;
         	
             // Add origin's contents over and over to destination
-        	// until destination is full
+        	// until it is full
             case FILL:
             	destination.fill(origin.getContents());
                	return;

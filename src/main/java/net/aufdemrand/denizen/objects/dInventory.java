@@ -1,16 +1,13 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.aufdemrand.denizen.utilities.Utilities;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import net.aufdemrand.denizen.tags.Attribute;
@@ -61,6 +58,28 @@ public class dInventory implements dObject {
     public dInventory(InventoryType type) {
     	
     	inventory = Bukkit.getServer().createInventory(null, type);
+    }
+    
+    public dInventory(InventoryHolder holder) {
+        this.inventory = holder.getInventory();
+    }
+    
+    public dInventory(Player player) {
+        this.inventory = player.getInventory();
+    }
+    
+    public dInventory(BlockState state) {
+    	
+    	if (state instanceof InventoryHolder) {
+    		this.inventory = ((InventoryHolder) state).getInventory();
+    	}
+    }
+    
+    public dInventory(LivingEntity entity) {
+    	
+    	if (entity instanceof InventoryHolder) {
+    		this.inventory = ((InventoryHolder) entity).getInventory();
+    	}
     }
 
     
