@@ -22,8 +22,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
@@ -680,6 +682,23 @@ public class WorldScriptHelper implements Listener {
     /////////////////
     
     @EventHandler
+    public void entityCombust(EntityCombustEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", new dEntity(entity));
+        context.put("duration", event.getDuration());
+        
+        String determination;
+
+        determination = doEvent(entity.getType().name() + " combusts", null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
     public void entityDamage(EntityDamageEvent event) {
 
         if (event.getEntity() instanceof Player
@@ -766,6 +785,23 @@ public class WorldScriptHelper implements Listener {
             }
 
         }
+    }
+    
+    @EventHandler
+    public void entityExplode(EntityExplodeEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", new dEntity(entity));
+        context.put("location", new dLocation(event.getLocation()));
+        
+        String determination;
+
+        determination = doEvent(entity.getType().name() + " explodes", null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
     }
     
     @EventHandler
