@@ -23,6 +23,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -32,6 +33,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
@@ -131,6 +133,23 @@ public class WorldScriptHelper implements Listener {
         		 "player breaks " + event.getBlock().getType().name() + " with " +
         				 new dItem(event.getPlayer().getItemInHand()).identify().split(":")[0]),
         		null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void blockBurn(BlockBurnEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("type", event.getBlock().getType().name());
+
+        String determination = doEvents(Arrays.asList
+        		("block burns",
+        		 event.getBlock().getType().name() + " burns"),
+        		null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
@@ -420,7 +439,8 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getLocation()));
         
         String determination = doEvents(Arrays.asList
-        		(entity.getType().name() + " explodes"),
+        		("entity explodes",
+        		 entity.getType().name() + " explodes"),
         		null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -446,6 +466,30 @@ public class WorldScriptHelper implements Listener {
             if (aH.matchesValueArg("AMOUNT", determination, aH.ArgumentType.Double))
                 event.setAmount(aH.getDoubleFrom(determination));
         }
+    }
+    
+    @EventHandler
+    public void entityTame(EntityTameEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        context.put("entity", new dEntity(entity));
+        Player player = null;
+        
+        List<String> events = new ArrayList<String>();
+        events.add("entity tamed");
+        events.add(entity.getType().name() + " tamed");
+        
+        if (event.getOwner() instanceof Player) {
+        	player = (Player) event.getOwner();
+        	events.add("player tames entity");
+        	events.add("player tames " + entity.getType().name());
+        }
+
+        String determination = doEvents(events, null, player, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
     }
     
     @EventHandler
