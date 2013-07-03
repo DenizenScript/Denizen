@@ -194,6 +194,25 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("MESSAGE"))
             event.setJoinMessage(aH.getStringFrom(determination));
     }
+    
+    @EventHandler
+    public void bedEnterEvent(PlayerBedEnterEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("location", event.getBed().getLocation());
+
+        String determination = doEvent("player enters bed", null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void bedLeaveEvent(PlayerBedLeaveEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("location", event.getBed().getLocation());
+
+        doEvent("player leaves bed", null, event.getPlayer(), context);
+    }
 
     @EventHandler
     public void walkOnLocationEvent(PlayerMoveEvent event) {
