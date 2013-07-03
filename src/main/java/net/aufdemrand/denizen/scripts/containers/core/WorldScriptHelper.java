@@ -91,8 +91,169 @@ public class WorldScriptHelper implements Listener {
 
         return determination;
     }
+    
+    
+    /////////////////////
+    //   CUSTOM EVENTS
+    /////////////////
+    
+    public void serverStartEvent() {
+        // Start the 'timeEvent'
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        timeEvent();
+                    }
+                }, Settings.WorldScriptTimeEventResolution().getTicks(), Settings.WorldScriptTimeEventResolution().getTicks());
 
+        // Fire the 'Server Start' event
+        doEvent("server start", null, null, null);
+    }
 
+    private Map<String, Integer> current_time = new HashMap<String, Integer>();
+
+    public void timeEvent() {
+        for (World world : Bukkit.getWorlds()) {
+            int hour = Double.valueOf(world.getTime() / 1000).intValue();
+            hour = hour + 6;
+            // Get the hour
+            if (hour >= 24) hour = hour - 24;
+
+            if (!current_time.containsKey(world.getName())
+                    || current_time.get(world.getName()) != hour) {
+                Map<String, Object> context = new HashMap<String, Object>();
+                context.put("time", String.valueOf(hour));
+                context.put("world", world.getName());
+                doEvent("time change in " + world.getName(), null, null, context);
+                doEvent(hour + ":00 in " + world.getName(), null, null, context);
+                current_time.put(world.getName(), hour);
+            }
+        }
+    }
+    
+    
+    /////////////////////
+    //   SERVER EVENTS
+    /////////////////
+
+    @EventHandler
+    public void serverCommandEvent(ServerCommandEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        // Well, this is ugly :(
+        // Fill tags in any arguments
+
+        List<String> args = Arrays.asList(
+                aH.buildArgs(
+                        TagManager.tag(null, null,
+                                (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""))));
+
+        dList args_list = new dList(args);
+
+        String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
+
+        // Fill context
+        context.put("args", args_list);
+        context.put("command", command);
+        context.put("raw_args", (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""));
+
+        doEvent(command + " command", null, null, context).toUpperCase();
+
+        doEvent("command", null, null, context).toUpperCase();
+    }
+    
+    
+    /////////////////////
+    //   PLAYER EVENTS
+    /////////////////
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerChat(final AsyncPlayerChatEvent event) {
+        final Map<String, Object> context = new HashMap<String, Object>();
+        context.put("message", event.getMessage());
+
+        Callable<String> call = new Callable<String>() {
+            public String call() {
+                return doEvent("player chats", null, event.getPlayer(), context);
+            }
+        };
+        String determination = null;
+        try {
+            determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
+        } catch (InterruptedException e) {
+        	// TODO: Need to find a way to fix this eventually
+            // e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (determination == null)
+            return;
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        if (determination.toUpperCase().startsWith("MESSAGE"))
+            event.setMessage(aH.getStringFrom(determination));
+    }
+    
+    @EventHandler
+    public void bedEnterEvent(PlayerBedEnterEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("location", new dLocation(event.getBed().getLocation()));
+
+        String determination = doEvent("player enters bed", null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void bedLeaveEvent(PlayerBedLeaveEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("location", new dLocation(event.getBed().getLocation()));
+
+        doEvent("player leaves bed", null, event.getPlayer(), context);
+    }
+    
+    @EventHandler
+    public void playerBucketEmpty(PlayerBucketEmptyEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("bucket_type", event.getBucket().name());
+        context.put("bucket", new dItem(event.getItemStack()));
+        context.put("clicked_location", new dLocation(event.getBlockClicked().getLocation()));
+
+        String determination = doEvent("empty bucket", null, event.getPlayer(), context);
+
+        // Handle message
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        if (determination.toUpperCase().startsWith("ITEM_IN_HAND")) {
+            ItemStack is = dItem.valueOf(aH.getStringFrom(determination)).getItemStack();
+            event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
+        }
+
+    }
+
+    @EventHandler
+    public void playerBucketFill(PlayerBucketFillEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("bucket_type", event.getBucket().name());
+        context.put("bucket", new dItem(event.getItemStack()));
+        context.put("clicked_location", new dLocation(event.getBlockClicked().getLocation()));
+
+        String determination = doEvent("fill bucket", null, event.getPlayer(), context);
+
+        // Handle message
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        if (determination.toUpperCase().startsWith("ITEM_IN_HAND")) {
+            ItemStack is = dItem.valueOf(aH.getStringFrom(determination)).getItemStack();
+            event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
+        }
+    }
+    
     @EventHandler
     public void playerCommandEvent(PlayerCommandPreprocessEvent event) {
         Map<String, Object> context = new HashMap<String, Object>();
@@ -134,172 +295,18 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
     
-    
     @EventHandler
-    public void serverCommandEvent(ServerCommandEvent event) {
+    public void playerDeath(PlayerDeathEvent event) {
         Map<String, Object> context = new HashMap<String, Object>();
-        
-        // Well, this is ugly :(
-        // Fill tags in any arguments
+        context.put("message", event.getDeathMessage());
 
-        List<String> args = Arrays.asList(
-                aH.buildArgs(
-                        TagManager.tag(null, null,
-                                (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""))));
-
-        dList args_list = new dList(args);
-
-        String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
-
-        // Fill context
-        context.put("args", args_list);
-        context.put("command", command);
-        context.put("raw_args", (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""));
-
-        doEvent(command + " command", null, null, context).toUpperCase();
-
-        doEvent("command", null, null, context).toUpperCase();
-    }
-
-
-    @EventHandler
-    public void loginEvent(PlayerLoginEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        context.put("hostname", event.getHostname());
-
-        String determination = doEvent("player login", null, event.getPlayer(), context).toUpperCase();
-
-        // Handle determine kicked
-        if (determination.toUpperCase().startsWith("KICKED"))
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, aH.getStringFrom(determination));
-    }
-
-    @EventHandler
-    public void quitEvent(PlayerQuitEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        context.put("message", event.getQuitMessage());
-
-        String determination = doEvent("player quit", null, event.getPlayer(), context).toUpperCase();
-
-        // Handle determine message
-        if (determination.toUpperCase().startsWith("MESSAGE"))
-            event.setQuitMessage(aH.getStringFrom(determination));
-    }
-
-    @EventHandler
-    public void joinEvent(PlayerJoinEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        context.put("message", event.getJoinMessage());
-
-        String determination = doEvent("player join", null, event.getPlayer(), context);
+        String determination = doEvent("player death", null, event.getEntity(), context);
 
         // Handle message
         if (determination.toUpperCase().startsWith("MESSAGE"))
-            event.setJoinMessage(aH.getStringFrom(determination));
+            event.setDeathMessage(aH.getStringFrom(determination));
     }
     
-    @EventHandler
-    public void respawnEvent(PlayerRespawnEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        context.put("location", event.getRespawnLocation());
-
-        doEvent("player respawns", null, event.getPlayer(), context);
-        
-        if (event.isBedSpawn()) {
-        	doEvent("player respawns at bed", null, event.getPlayer(), context);
-        }
-        else {
-        	doEvent("player respawns elsewhere", null, event.getPlayer(), context);
-        }
-    }
-    
-    @EventHandler
-    public void levelChangeEvent(PlayerLevelChangeEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        context.put("level", event.getNewLevel());
-
-        doEvent("player levels up", null, event.getPlayer(), context);
-        doEvent("player levels up to " + event.getNewLevel(), null, event.getPlayer(), context);        
-        doEvent("player levels up from " + event.getOldLevel(), null, event.getPlayer(), context);
-    }
-    
-    @EventHandler
-    public void bedEnterEvent(PlayerBedEnterEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        context.put("location", event.getBed().getLocation());
-
-        String determination = doEvent("player enters bed", null, event.getPlayer(), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-    
-    @EventHandler
-    public void bedLeaveEvent(PlayerBedLeaveEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        context.put("location", event.getBed().getLocation());
-
-        doEvent("player leaves bed", null, event.getPlayer(), context);
-    }
-
-    @EventHandler
-    public void walkOnLocationEvent(PlayerMoveEvent event) {
-        if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
-
-        String name = dLocation.getSaved(event.getPlayer().getLocation());
-
-        if (name != null) {
-            Map<String, Object> context = new HashMap<String, Object>();
-            context.put("notable_name", name);
-
-            String determination;
-
-            determination = doEvent("walked over " + name, null, event.getPlayer(), context);
-            if (determination.toUpperCase().startsWith("FROZEN"))
-                event.setCancelled(true);
-
-            determination = doEvent("walked over notable location", null, event.getPlayer(), context);
-            if (determination.toUpperCase().startsWith("FROZEN"))
-                event.setCancelled(true);
-        }
-
-    }
-
-    public void serverStartEvent() {
-        // Start the 'timeEvent'
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        timeEvent();
-                    }
-                }, Settings.WorldScriptTimeEventResolution().getTicks(), Settings.WorldScriptTimeEventResolution().getTicks());
-
-        // Fire the 'Server Start' event
-        doEvent("server start", null, null, null);
-    }
-
-    private Map<String, Integer> current_time = new HashMap<String, Integer>();
-
-    public void timeEvent() {
-        for (World world : Bukkit.getWorlds()) {
-            int hour = Double.valueOf(world.getTime() / 1000).intValue();
-            hour = hour + 6;
-            // Get the hour
-            if (hour >= 24) hour = hour - 24;
-
-            if (!current_time.containsKey(world.getName())
-                    || current_time.get(world.getName()) != hour) {
-                Map<String, Object> context = new HashMap<String, Object>();
-                context.put("time", String.valueOf(hour));
-                context.put("world", world.getName());
-                doEvent("time change in " + world.getName(), null, null, context);
-                doEvent(hour + ":00 in " + world.getName(), null, null, context);
-                current_time.put(world.getName(), hour);
-            }
-        }
-    }
-
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
 
@@ -430,31 +437,175 @@ public class WorldScriptHelper implements Listener {
 
     }
     
-    
     @EventHandler
     public void playerInteractEntity(PlayerInteractEntityEvent event) {
 
+    	Entity entity = event.getRightClicked();
+    	
         String determination;
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("location", new dLocation(event.getRightClicked().getLocation()));
-        context.put("entity", event.getRightClicked().getType().name());
+        context.put("entity", new dEntity(entity));
 
-        determination = doEvent("player right clicks " + event.getRightClicked().getType().name(), null, event.getPlayer(), context);
+        determination = doEvent("player right clicks " + entity.getType().name(), null, event.getPlayer(), context);
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
         
         if (event.getRightClicked() instanceof Player) {
         	
-        	context.put("target", dPlayer.valueOf(((Player) event.getRightClicked()).getName()));
+        	context.put("target", dPlayer.valueOf(((Player) entity).getName()));
         	
-        	determination = doEvent("player right clicks " + ((Player) event.getRightClicked()).getName(), null, event.getPlayer(), context);
+        	determination = doEvent("player right clicks " + ((Player) entity).getName(), null, event.getPlayer(), context);
         	
             if (determination.toUpperCase().startsWith("CANCELLED"))
             	event.setCancelled(true);
         }
     }
     
+    @EventHandler
+    public void playerItemConsume(PlayerItemConsumeEvent event) {
+        
+        ItemStack item = event.getItem(); 
+    	
+        String determination;
+    	Map<String, Object> context = new HashMap<String, Object>();
+        context.put("item", new dItem(item));
+        
+        String id = String.valueOf(item.getTypeId());
+        String material = item.getType().name();
+        String data = String.valueOf(item.getData().getData());
+        String display = String.valueOf(item.getItemMeta().getDisplayName());
+        
+        determination = doEvent("player consumes item", null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + id, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + id + ":" + data, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + material, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        determination = doEvent("player consumes " + material + ":" + data, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        if (display != null) {
+        	
+            determination = doEvent("player consumes " + display, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+            
+            determination = doEvent("player consumes " + id + " " + display, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+            
+            determination = doEvent("player consumes " + material + " " + display, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void joinEvent(PlayerJoinEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("message", event.getJoinMessage());
+
+        String determination = doEvent("player join", null, event.getPlayer(), context);
+
+        // Handle message
+        if (determination.toUpperCase().startsWith("MESSAGE"))
+            event.setJoinMessage(aH.getStringFrom(determination));
+    }
+    
+    @EventHandler
+    public void levelChangeEvent(PlayerLevelChangeEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("level", event.getNewLevel());
+
+        doEvent("player levels up", null, event.getPlayer(), context);
+        doEvent("player levels up to " + event.getNewLevel(), null, event.getPlayer(), context);        
+        doEvent("player levels up from " + event.getOldLevel(), null, event.getPlayer(), context);
+    }
+    
+    @EventHandler
+    public void loginEvent(PlayerLoginEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("hostname", event.getHostname());
+
+        String determination = doEvent("player login", null, event.getPlayer(), context).toUpperCase();
+
+        // Handle determine kicked
+        if (determination.toUpperCase().startsWith("KICKED"))
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, aH.getStringFrom(determination));
+    }
+    
+    @EventHandler
+    public void playerMoveEvent(PlayerMoveEvent event) {
+        if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
+
+        String name = dLocation.getSaved(event.getPlayer().getLocation());
+
+        if (name != null) {
+            Map<String, Object> context = new HashMap<String, Object>();
+            context.put("notable_name", name);
+
+            String determination;
+
+            determination = doEvent("walked over " + name, null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("FROZEN"))
+                event.setCancelled(true);
+
+            determination = doEvent("walked over notable location", null, event.getPlayer(), context);
+            if (determination.toUpperCase().startsWith("FROZEN"))
+                event.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler
+    public void quitEvent(PlayerQuitEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("message", event.getQuitMessage());
+
+        String determination = doEvent("player quit", null, event.getPlayer(), context).toUpperCase();
+
+        // Handle determine message
+        if (determination.toUpperCase().startsWith("MESSAGE"))
+            event.setQuitMessage(aH.getStringFrom(determination));
+    }
+
+    @EventHandler
+    public void respawnEvent(PlayerRespawnEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("location", new dLocation(event.getRespawnLocation()));
+
+        doEvent("player respawns", null, event.getPlayer(), context);
+        
+        if (event.isBedSpawn()) {
+        	doEvent("player respawns at bed", null, event.getPlayer(), context);
+        }
+        else {
+        	doEvent("player respawns elsewhere", null, event.getPlayer(), context);
+        }
+    }
+    
+    
+    /////////////////////
+    //   BLOCK EVENTS
+    /////////////////
     
     @EventHandler
     public void blockBreak(BlockBreakEvent event) {
@@ -463,7 +614,6 @@ public class WorldScriptHelper implements Listener {
         Map<String, Object> context = new HashMap<String, Object>();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("id", event.getBlock().getTypeId());
         context.put("type", event.getBlock().getType().name());
 
         determination = doEvent("player breaks block", null, event.getPlayer(), context);
@@ -490,7 +640,6 @@ public class WorldScriptHelper implements Listener {
         Map<String, Object> context = new HashMap<String, Object>();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("id", event.getBlock().getTypeId());
         context.put("type", event.getBlock().getType().name());
         
         determination = doEvent("block ignites", null, event.getPlayer(), context);
@@ -511,7 +660,6 @@ public class WorldScriptHelper implements Listener {
         Map<String, Object> context = new HashMap<String, Object>();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("id", event.getBlock().getTypeId());
         context.put("type", event.getBlock().getType().name());
         
         if (event.getNewCurrent() > 0) {
@@ -527,85 +675,12 @@ public class WorldScriptHelper implements Listener {
     }
     
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void playerChat(final AsyncPlayerChatEvent event) {
-        final Map<String, Object> context = new HashMap<String, Object>();
-        context.put("message", event.getMessage());
-
-        Callable<String> call = new Callable<String>() {
-            public String call() {
-                return doEvent("player chats", null, event.getPlayer(), context);
-            }
-        };
-        String determination = null;
-        try {
-            determination = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
-        } catch (InterruptedException e) {
-        	// TODO: Need to find a way to fix this eventually
-            // e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (determination == null)
-            return;
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        if (determination.toUpperCase().startsWith("MESSAGE"))
-            event.setMessage(aH.getStringFrom(determination));
-
-    }
+    /////////////////////
+    //   ENTITY EVENTS
+    /////////////////
     
     @EventHandler
-    public void entityTarget(EntityTargetEvent event) {
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        Entity entity = event.getEntity();
-        Entity target = event.getTarget();
-        
-        context.put("reason", event.getReason().name());
-        context.put("entity", new dEntity(entity));
-        
-        if (event.getTarget() instanceof Player) {
-        	context.put("target", new dPlayer((Player) target));        	
-        }
-        else {
-        	context.put("entity", new dEntity(target));
-        }
-
-        String determination;
-
-        determination = doEvent(entity.getType().name() + " targets " + target.getType().name(), null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-
-        determination = doEvent(entity.getType().name() + " targets " + target.getType().name() + " because " + event.getReason().name(), null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-    }
-    
-    @EventHandler
-    public void entityTeleport(EntityTeleportEvent event) {
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        Entity entity = event.getEntity();
-        
-        context.put("entity", new dEntity(entity));
-        context.put("origin", new dLocation(event.getFrom()));
-        context.put("destination", new dLocation(event.getTo()));
-        
-        String determination = doEvent(entity.getType().name() + " teleports", null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void playerHit(EntityDamageEvent event) {
+    public void entityDamage(EntityDamageEvent event) {
 
         if (event.getEntity() instanceof Player
                 && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
@@ -632,7 +707,7 @@ public class WorldScriptHelper implements Listener {
     }
 
     @EventHandler
-    public void playerHitByEntity(EntityDamageByEntityEvent event) {
+    public void entityDamageByEntity(EntityDamageByEntityEvent event) {
 
         String determination;
 
@@ -693,69 +768,8 @@ public class WorldScriptHelper implements Listener {
         }
     }
     
-    
     @EventHandler
-    public void playerConsume(PlayerItemConsumeEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        
-        String determination;
-        
-        ItemStack item = event.getItem(); 
-        
-        String id = String.valueOf(item.getTypeId());
-        String material = item.getType().name();
-        String data = String.valueOf(item.getData().getData());
-        String display = String.valueOf(item.getItemMeta().getDisplayName());
-        
-        context.put("id", id);
-        context.put("item", material);
-        context.put("data", data);
-        context.put("display", display);
-        
-        determination = doEvent("player consumes item", null, event.getPlayer(), context);
-        
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        
-        determination = doEvent("player consumes " + id, null, event.getPlayer(), context);
-        
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        
-        determination = doEvent("player consumes " + id + ":" + data, null, event.getPlayer(), context);
-        
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        
-        determination = doEvent("player consumes " + material, null, event.getPlayer(), context);
-        
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        
-        determination = doEvent("player consumes " + material + ":" + data, null, event.getPlayer(), context);
-        
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        
-        if (display != null) {
-        	
-            determination = doEvent("player consumes " + display, null, event.getPlayer(), context);
-            if (determination.toUpperCase().startsWith("CANCELLED"))
-                event.setCancelled(true);
-            
-            determination = doEvent("player consumes " + id + " " + display, null, event.getPlayer(), context);
-            if (determination.toUpperCase().startsWith("CANCELLED"))
-                event.setCancelled(true);
-            
-            determination = doEvent("player consumes " + material + " " + display, null, event.getPlayer(), context);
-            if (determination.toUpperCase().startsWith("CANCELLED"))
-                event.setCancelled(true);
-        }
-    }
-
-
-    @EventHandler
-    public void playerHeal(EntityRegainHealthEvent event) {
+    public void entityRegainHealth(EntityRegainHealthEvent event) {
 
         if (event.getEntity() instanceof  Player
                 && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
@@ -772,57 +786,57 @@ public class WorldScriptHelper implements Listener {
         }
 
     }
-
+    
     @EventHandler
-    public void bucketFill(PlayerBucketFillEvent event) {
+    public void entityTarget(EntityTargetEvent event) {
+
         Map<String, Object> context = new HashMap<String, Object>();
-        context.put("bucket_type", event.getBucket().name());
-        context.put("bucket", new dItem(event.getItemStack()));
-        context.put("clicked_location", new dLocation(event.getBlockClicked().getLocation()));
-
-        String determination = doEvent("fill bucket", null, event.getPlayer(), context);
-
-        // Handle message
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        if (determination.toUpperCase().startsWith("ITEM_IN_HAND")) {
-            ItemStack is = dItem.valueOf(aH.getStringFrom(determination)).getItemStack();
-            event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
+        Entity entity = event.getEntity();
+        Entity target = event.getTarget();
+        
+        context.put("reason", event.getReason().name());
+        context.put("entity", new dEntity(entity));
+        
+        if (event.getTarget() instanceof Player) {
+        	context.put("target", new dPlayer((Player) target));        	
         }
-    }
-
-    @EventHandler
-    public void bucketEmpty(PlayerBucketEmptyEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        context.put("bucket_type", event.getBucket().name());
-        context.put("bucket", new dItem(event.getItemStack()));
-        context.put("clicked_location", new dLocation(event.getBlockClicked().getLocation()));
-
-        String determination = doEvent("empty bucket", null, event.getPlayer(), context);
-
-        // Handle message
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-        if (determination.toUpperCase().startsWith("ITEM_IN_HAND")) {
-            ItemStack is = dItem.valueOf(aH.getStringFrom(determination)).getItemStack();
-            event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
+        else {
+        	context.put("entity", new dEntity(target));
         }
 
-    }
+        String determination;
 
+        determination = doEvent(entity.getType().name() + " targets " + target.getType().name(), null, null, context);
 
-    @EventHandler
-    public void playerDeath(PlayerDeathEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        context.put("message", event.getDeathMessage());
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
 
-        String determination = doEvent("player death", null, event.getEntity(), context);
+        determination = doEvent(entity.getType().name() + " targets " + target.getType().name() + " because " + event.getReason().name(), null, null, context);
 
-        // Handle message
-        if (determination.toUpperCase().startsWith("MESSAGE"))
-            event.setDeathMessage(aH.getStringFrom(determination));
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
     }
     
+    @EventHandler
+    public void entityTeleport(EntityTeleportEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", new dEntity(entity));
+        context.put("origin", new dLocation(event.getFrom()));
+        context.put("destination", new dLocation(event.getTo()));
+        
+        String determination = doEvent(entity.getType().name() + " teleports", null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+
+    /////////////////////
+    //   WEATHER EVENTS
+    /////////////////
     
     @EventHandler
     public void weatherChange(WeatherChangeEvent event) {
@@ -830,7 +844,7 @@ public class WorldScriptHelper implements Listener {
         
         String world = event.getWorld().getName();
         
-        context.put("world", world);
+        context.put("world", new dWorld(event.getWorld()));
 
         String determination = doEvent("weather changes", null, null, context);
 
