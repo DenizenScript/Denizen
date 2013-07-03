@@ -196,6 +196,31 @@ public class WorldScriptHelper implements Listener {
     }
     
     @EventHandler
+    public void respawnEvent(PlayerRespawnEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("location", event.getRespawnLocation());
+
+        doEvent("player respawns", null, event.getPlayer(), context);
+        
+        if (event.isBedSpawn()) {
+        	doEvent("player respawns at bed", null, event.getPlayer(), context);
+        }
+        else {
+        	doEvent("player respawns elsewhere", null, event.getPlayer(), context);
+        }
+    }
+    
+    @EventHandler
+    public void levelChangeEvent(PlayerLevelChangeEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("level", event.getNewLevel());
+
+        doEvent("player levels up", null, event.getPlayer(), context);
+        doEvent("player levels up to " + event.getNewLevel(), null, event.getPlayer(), context);        
+        doEvent("player levels up from " + event.getOldLevel(), null, event.getPlayer(), context);
+    }
+    
+    @EventHandler
     public void bedEnterEvent(PlayerBedEnterEvent event) {
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("location", event.getBed().getLocation());
@@ -428,17 +453,17 @@ public class WorldScriptHelper implements Listener {
         context.put("id", event.getBlock().getTypeId());
         context.put("type", event.getBlock().getType().name());
 
-        determination = doEvent("player breaks block", null, event.getPlayer(), context);
+        determination = doEvent("block breaks", null, event.getPlayer(), context);
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
         
-        determination = doEvent("player breaks " + event.getBlock().getTypeId(), null, event.getPlayer(), context);
+        determination = doEvent("block " + event.getBlock().getTypeId() + " breaks", null, event.getPlayer(), context);
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
         
-        determination = doEvent("player breaks " + event.getBlock().getType().name(), null, event.getPlayer(), context);
+        determination = doEvent("block " + event.getBlock().getType().name() + " breaks", null, event.getPlayer(), context);
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
