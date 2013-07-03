@@ -215,19 +215,19 @@ public class dPlayer implements dObject {
         	List<String> players = new ArrayList<String>();
         	if (attribute.startsWith("list.online")) {
             	for(Player player : Bukkit.getOnlinePlayers())
-            		players.add("p@" + player.getName());
+            		players.add(player.getName());
             	return new dList(players).getAttribute(attribute.fulfill(2));
         	}
         	else if (attribute.startsWith("list.offline")) {
         		for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
             		if (!Bukkit.getOnlinePlayers().toString().contains(player.getName()))
-            			players.add("p@" + player.getName());
+            			players.add(player.getName());
         		}
         		return new dList(players).getAttribute(attribute.fulfill(2));
         	}
         	else {
         		for(OfflinePlayer player : Bukkit.getOfflinePlayers())
-            		players.add("p@" + player.getName());
+            		players.add(player.getName());
         		return new dList(players).getAttribute(attribute.fulfill(1));
         	}
         }
