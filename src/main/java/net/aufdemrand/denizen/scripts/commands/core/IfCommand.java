@@ -254,11 +254,11 @@ public class IfCommand extends AbstractCommand {
 
         // Determine outcome -- then, or else?
         if (do_then) {
-            dB.log("then: " + scriptEntry.getObject("then-outcome").toString());
+            // dB.log("then: " + scriptEntry.getObject("then-outcome").toString());
             doCommand(scriptEntry, "then-outcome");
         }
         else {
-            dB.log("else: " + scriptEntry.getObject("else-outcome").toString());
+            // dB.log("else: " + scriptEntry.getObject("else-outcome").toString());
             doCommand(scriptEntry, "else-outcome");
         }
     }

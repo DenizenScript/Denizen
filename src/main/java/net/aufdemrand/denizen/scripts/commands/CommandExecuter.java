@@ -69,11 +69,13 @@ public class CommandExecuter {
 
             List<String> newArgs = new ArrayList<String>();
 
+            if (!scriptEntry.getResidingQueue().context.isEmpty())
+                dB.echoDebug("Available Definitions: " + scriptEntry.getResidingQueue().context.toString());
+
             for (String arg : scriptEntry.getArguments()) {
 
                 Matcher m = definition_pattern.matcher(arg);
                 StringBuffer sb = new StringBuffer();
-                dB.log(scriptEntry.getResidingQueue().context.toString());
                 while (m.find()) {
                     if (scriptEntry.getResidingQueue().context
                             .containsKey(m.group(1).toLowerCase()))
