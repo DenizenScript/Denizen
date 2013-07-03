@@ -78,7 +78,7 @@ public class WorldScriptHelper implements Listener {
             if (script == null) continue;
             
             for (String eventName : eventNames) {
-            
+            	
             	if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
 
             	// Fetch script from Event
@@ -630,14 +630,19 @@ public class WorldScriptHelper implements Listener {
         
         events.add(interaction + " in inventory");
         events.add(interaction + " in " + type + " inventory");
-        events.add(interaction + " on " +
+        
+        Bukkit.broadcastMessage("Clicked on item!");
+        
+        if (item.getItemStack() == null) {
+        	events.add(interaction + " on " +
         		item.identify().split(":")[0] + " in inventory");
-        events.add(interaction + " on " +
-        		item.identify().split(":")[0] + " in " + type + " inventory");
-        events.add(interaction + " on " +
-        		item.identify() + " in inventory");
-        events.add(interaction + " on " +
-        		item.identify() + " in " + type + " inventory");
+        	events.add(interaction + " on " +
+        			item.identify().split(":")[0] + " in " + type + " inventory");
+        	events.add(interaction + " on " +
+        			item.identify() + " in inventory");
+        	events.add(interaction + " on " +
+        			item.identify() + " in " + type + " inventory");
+        }
         
         String determination = doEvents(events, null, player, context);
 
@@ -966,7 +971,8 @@ public class WorldScriptHelper implements Listener {
 
             String determination = doEvents(Arrays.asList
             		("player walks over notable",
-            		 "player walks over " + name),
+            		 "player walks over " + name,
+            		 "on walked over " + name),
             		null, event.getPlayer(), context);
             
             if (determination.toUpperCase().startsWith("CANCELLED") ||
