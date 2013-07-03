@@ -26,6 +26,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -37,6 +38,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -516,7 +518,11 @@ public class WorldScriptHelper implements Listener {
         	events.add("player respawns elsewhere");
         }
         
-        doEvents(events, null, event.getPlayer(), context);
+        String determination = doEvents(events, null, event.getPlayer(), context);
+        
+        // Handle determine message
+        if (determination.toUpperCase().startsWith("LOCATION"))
+            event.setRespawnLocation(dLocation.valueOf(aH.getStringFrom(determination)));
     }
     
     
@@ -609,6 +615,27 @@ public class WorldScriptHelper implements Listener {
     /////////////////
     
     @EventHandler
+    public void creatureSpawn(CreatureSpawnEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", new dEntity(entity));
+        context.put("reason", event.getSpawnReason().name());
+        
+        String determination = doEvents(Arrays.asList
+        		("entity spawns",
+        		 "entity spawns because " + event.getSpawnReason().name(),
+        		 entity.getType().name() + " spawns",
+        		 entity.getType().name() + " spawns because " +
+        				 event.getSpawnReason().name()),
+        		null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
     public void entityCombust(EntityCombustEvent event) {
 
         Map<String, Object> context = new HashMap<String, Object>();
@@ -617,8 +644,9 @@ public class WorldScriptHelper implements Listener {
         context.put("entity", new dEntity(entity));
         context.put("duration", event.getDuration());
         
-        String determination = doEvents(Arrays.asList(
-        		entity.getType().name() + " combusts"),
+        String determination = doEvents(Arrays.asList
+        		("entity combusts",
+        		 entity.getType().name() + " combusts"),
         		null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -863,6 +891,23 @@ public class WorldScriptHelper implements Listener {
     /////////////////////
     //   WEATHER EVENTS
     /////////////////
+    
+    @EventHandler
+    public void lightningStrike(LightningStrikeEvent event) {
+    	
+        Map<String, Object> context = new HashMap<String, Object>();
+        String world = event.getWorld().getName();
+        context.put("world", new dWorld(event.getWorld()));
+        context.put("location", new dLocation(event.getLightning().getLocation()));
+        
+        String determination = doEvents(Arrays.asList
+        		("lightning strikes",
+        		 "lightning strikes in " + world),
+        		null, null, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
     
     @EventHandler
     public void weatherChange(WeatherChangeEvent event) {
