@@ -26,6 +26,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -90,7 +91,7 @@ public class WorldScriptHelper implements Listener {
 
 
     @EventHandler
-    public void commandEvent(PlayerCommandPreprocessEvent event) {
+    public void playerCommandEvent(PlayerCommandPreprocessEvent event) {
         Map<String, Object> context = new HashMap<String, Object>();
 
         // Well, this is ugly :(
@@ -128,6 +129,33 @@ public class WorldScriptHelper implements Listener {
         // receive the default 'Invalid command' gibberish from bukkit.
         if (determination.equals("FULFILLED") || determination.equals("CANCELLED"))
             event.setCancelled(true);
+    }
+    
+    
+    @EventHandler
+    public void serverCommandEvent(ServerCommandEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        // Well, this is ugly :(
+        // Fill tags in any arguments
+
+        List<String> args = Arrays.asList(
+                aH.buildArgs(
+                        TagManager.tag(null, null,
+                                (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""))));
+
+        dList args_list = new dList(args);
+
+        String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
+
+        // Fill context
+        context.put("args", args_list);
+        context.put("command", command);
+        context.put("raw_args", (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""));
+
+        doEvent(command + " command", null, null, context).toUpperCase();
+
+        doEvent("command", null, null, context).toUpperCase();
     }
 
 
@@ -364,7 +392,7 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getRightClicked().getLocation()));
         context.put("entity", event.getRightClicked().getType().name());
 
-        determination = doEvent("player interacts with " + event.getRightClicked().getType().name(), null, event.getPlayer(), context);
+        determination = doEvent("player right clicks " + event.getRightClicked().getType().name(), null, event.getPlayer(), context);
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
@@ -434,11 +462,22 @@ public class WorldScriptHelper implements Listener {
         context.put("id", event.getBlock().getTypeId());
         context.put("type", event.getBlock().getType().name());
         
-        doEvent("block powered", null, null, context);
-        
-        doEvent("block " + event.getBlock().getTypeId() + " powered", null, null, context);
-        
-        doEvent("block " + event.getBlock().getType().name() + " powered", null, null, context);
+        if (event.getNewCurrent() > 0) {
+            
+        	doEvent("block powered", null, null, context);
+            
+            doEvent("block " + event.getBlock().getTypeId() + " powered", null, null, context);
+            
+            doEvent("block " + event.getBlock().getType().name() + " powered", null, null, context);
+        }
+        else {
+        	
+        	doEvent("block unpowered", null, null, context);
+            
+            doEvent("block " + event.getBlock().getTypeId() + " unpowered", null, null, context);
+            
+            doEvent("block " + event.getBlock().getType().name() + " unpowered", null, null, context);
+        }
     }
     
 
@@ -577,7 +616,7 @@ public class WorldScriptHelper implements Listener {
         String display = String.valueOf(item.getItemMeta().getDisplayName());
         
         context.put("id", id);
-        context.put("material", material);
+        context.put("item", material);
         context.put("data", data);
         context.put("display", display);
         
