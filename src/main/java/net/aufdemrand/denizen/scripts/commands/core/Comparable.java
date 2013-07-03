@@ -95,17 +95,14 @@ public class Comparable {
 
         if (comparable instanceof String) {
             compare_as_strings();
-            return outcome;
         }
 
         else if (comparable instanceof dList) {
             compare_as_list();
-            return outcome;
         }
 
         else if (comparable instanceof Double) {
             compare_as_numbers();
-            return outcome;
         }
 
         else if (comparable instanceof Boolean) {
