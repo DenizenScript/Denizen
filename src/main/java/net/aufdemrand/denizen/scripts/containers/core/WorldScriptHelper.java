@@ -21,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -650,6 +651,26 @@ public class WorldScriptHelper implements Listener {
         	event.setCancelled(true);
 
         determination = doEvent(event.getBlock().getType().name() + " ignites", null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void blockPlace(BlockPlaceEvent event) {
+
+        String determination;
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("type", event.getBlock().getType().name());
+
+        determination = doEvent("player places block", null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+
+        determination = doEvent("player places " + event.getBlock().getType().name(), null, event.getPlayer(), context);
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
