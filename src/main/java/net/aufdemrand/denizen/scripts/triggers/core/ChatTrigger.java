@@ -194,7 +194,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         try {
             cancelled = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+        	// TODO: Maybe someday we can fix this?
+            //e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (Exception e) {
