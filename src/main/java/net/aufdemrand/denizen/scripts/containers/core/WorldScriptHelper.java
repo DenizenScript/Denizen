@@ -18,6 +18,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -42,6 +43,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -631,8 +634,6 @@ public class WorldScriptHelper implements Listener {
         events.add(interaction + " in inventory");
         events.add(interaction + " in " + type + " inventory");
         
-        Bukkit.broadcastMessage("Clicked on item!");
-        
         if (item.getItemStack() == null) {
         	events.add(interaction + " on " +
         		item.identify().split(":")[0] + " in inventory");
@@ -1051,6 +1052,83 @@ public class WorldScriptHelper implements Listener {
         doEvents(Arrays.asList("command",
         					   command + " command"),
         		null, null, context);
+    }
+    
+    
+    /////////////////////
+    //   VEHICLE EVENTS
+    /////////////////
+    
+    @EventHandler
+    public void vehicleEnter(VehicleEnterEvent event) {
+    	    	
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+    	Entity entity = event.getEntered();
+    	Vehicle vehicle = event.getVehicle();
+        
+    	String entityType = entity.getType().name();
+    	String vehicleType = vehicle.getType().name();
+    	
+    	Player player = null;
+
+    	if (entity instanceof Player) {
+    		context.put("entity", new dPlayer((Player) entity));
+    		player = (Player) entity;
+    	}
+    	else {
+    		context.put("entity", new dEntity(entity));
+    	}
+    	
+    	if (vehicle instanceof Player) {
+    		context.put("vehicle", new dPlayer((Player) vehicle));
+    	}
+    	else {
+    		context.put("vehicle", new dEntity(vehicle));
+    	}
+    	
+        doEvents(Arrays.asList
+        		("entity enters vehicle",
+        		 entityType + " enters vehicle",
+        		 "entity enters " + vehicleType,
+        		 entityType + " enters " + vehicleType),
+        		null, player, context);
+    }
+    
+    @EventHandler
+    public void vehicleExit(VehicleExitEvent event) {
+    	    	
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+    	Entity entity = event.getExited();
+    	Vehicle vehicle = event.getVehicle();
+        
+    	String entityType = entity.getType().name();
+    	String vehicleType = vehicle.getType().name();
+
+    	Player player = null;
+    	
+    	if (entity instanceof Player) {
+    		context.put("entity", new dPlayer((Player) entity));
+    		player = (Player) entity;
+    	}
+    	else {
+    		context.put("entity", new dEntity(entity));
+    	}
+    	
+    	if (vehicle instanceof Player) {
+    		context.put("vehicle", new dPlayer((Player) vehicle));
+    	}
+    	else {
+    		context.put("vehicle", new dEntity(vehicle));
+    	}
+    	
+        doEvents(Arrays.asList
+        		("entity exits vehicle",
+        		 entityType + " exits vehicle",
+        		 "entity exits " + vehicleType,
+        		 entityType + " exits " + vehicleType),
+        		null, player, context);
     }
     
 
