@@ -13,6 +13,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,6 +25,7 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
@@ -440,6 +442,16 @@ public class WorldScriptHelper implements Listener {
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
+        
+        if (event.getRightClicked() instanceof Player) {
+        	
+        	context.put("target", dPlayer.valueOf(((Player) event.getRightClicked()).getName()));
+        	
+        	determination = doEvent("player right clicks " + ((Player) event.getRightClicked()).getName(), null, event.getPlayer(), context);
+        	
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+            	event.setCancelled(true);
+        }
     }
     
     
@@ -453,17 +465,17 @@ public class WorldScriptHelper implements Listener {
         context.put("id", event.getBlock().getTypeId());
         context.put("type", event.getBlock().getType().name());
 
-        determination = doEvent("block breaks", null, event.getPlayer(), context);
+        determination = doEvent("player breaks block", null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+
+        determination = doEvent("player breaks " + event.getBlock().getType().name(), null, event.getPlayer(), context);
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
         
-        determination = doEvent("block " + event.getBlock().getTypeId() + " breaks", null, event.getPlayer(), context);
-        
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-        
-        determination = doEvent("block " + event.getBlock().getType().name() + " breaks", null, event.getPlayer(), context);
+        determination = doEvent("player breaks " + event.getBlock().getType().name() + " with " + new dItem(event.getPlayer().getItemInHand()).identify().split(":")[0], null, event.getPlayer(), context);
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
@@ -484,13 +496,8 @@ public class WorldScriptHelper implements Listener {
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
-        
-        determination = doEvent("block " + event.getBlock().getTypeId() + " ignites", null, event.getPlayer(), context);
-        
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-        
-        determination = doEvent("block " + event.getBlock().getType().name() + " ignites", null, event.getPlayer(), context);
+
+        determination = doEvent(event.getBlock().getType().name() + " ignites", null, event.getPlayer(), context);
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
@@ -509,17 +516,11 @@ public class WorldScriptHelper implements Listener {
         if (event.getNewCurrent() > 0) {
             
         	doEvent("block powered", null, null, context);
-            
-            doEvent("block " + event.getBlock().getTypeId() + " powered", null, null, context);
-            
             doEvent("block " + event.getBlock().getType().name() + " powered", null, null, context);
         }
         else {
         	
         	doEvent("block unpowered", null, null, context);
-            
-            doEvent("block " + event.getBlock().getTypeId() + " unpowered", null, null, context);
-            
             doEvent("block " + event.getBlock().getType().name() + " unpowered", null, null, context);
         }
     }
@@ -554,6 +555,36 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("MESSAGE"))
             event.setMessage(aH.getStringFrom(determination));
 
+    }
+    
+    @EventHandler
+    public void entityTarget(EntityTargetEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        Entity target = event.getTarget();
+        
+        context.put("reason", event.getReason().name());
+        context.put("entity", new dEntity(entity));
+        
+        if (event.getTarget() instanceof Player) {
+        	context.put("target", new dPlayer((Player) target));        	
+        }
+        else {
+        	context.put("entity", new dEntity(target));
+        }
+
+        String determination;
+
+        determination = doEvent(entity.getType().name() + " targets " + target.getType().name(), null, (Player) event.getEntity(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+
+        determination = doEvent(entity.getType().name() + " targets " + target.getType().name() + " because " + event.getReason().name(), null, (Player) event.getEntity(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
     }
 
     @EventHandler
