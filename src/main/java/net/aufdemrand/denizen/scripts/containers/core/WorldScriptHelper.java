@@ -623,10 +623,10 @@ public class WorldScriptHelper implements Listener {
         context.put("click", click);
         
         List<String> events = new ArrayList<String>();
-        events.add("on player clicks in inventory");
-        events.add("on player clicks in " + type + " inventory");
+        events.add("player clicks in inventory");
+        events.add("player clicks in " + type + " inventory");
         
-        String interaction = "on player " + click + " clicks";
+        String interaction = "player " + click + " clicks";
         
         events.add(interaction + " in inventory");
         events.add(interaction + " in " + type + " inventory");
@@ -889,8 +889,11 @@ public class WorldScriptHelper implements Listener {
         events.add("player right clicks " + entity.getType().name());
         
         if (entity instanceof ItemFrame) {
+        	dItem item = new dItem(((ItemFrame) entity).getItem());
+        	context.put("item", item);
+        	
         	events.add("player right clicks " + entity.getType().name() + " " +
-        			new dItem(((ItemFrame) entity).getItem()).identify().split(":")[0]);
+        			item.identify().split(":")[0]);
         }
         
         determination = doEvents(events, null, event.getPlayer(), context);
