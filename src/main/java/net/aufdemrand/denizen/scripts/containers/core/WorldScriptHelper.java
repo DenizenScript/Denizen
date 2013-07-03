@@ -33,6 +33,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
@@ -633,10 +634,13 @@ public class WorldScriptHelper implements Listener {
     	String entityType = entity.getType().name();
     	String cause = event.getCause().name();
     	
+    	String determination;
+    	
     	Player contextPlayer = null;
     	dNPC contextNPC = null;
     	
     	if (entity instanceof Player) {
+    		contextPlayer = (Player) entity;
     		context.put("entity", new dPlayer((Player) entity));
     	}
     	else if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
@@ -671,18 +675,33 @@ public class WorldScriptHelper implements Listener {
     	}
     	
     	if (event instanceof EntityDamageByEntityEvent) {
-    		
+    		    		
     		EntityDamageByEntityEvent subEvent = (EntityDamageByEntityEvent) event;
+    		
+    		// Have a different set of player and NPC contexts for events
+    		// like "player damages player" from the one we have for
+    		// "player damaged by player"
+    		
+        	Player subContextPlayer = null;
+        	dNPC subContextNPC = null;
     		
     		Entity damager = subEvent.getDamager();
     		String damagerType = damager.getType().name();
     		
         	if (damager instanceof Player) {
+        		subContextPlayer = (Player) entity;
         		context.put("damager", new dPlayer((Player) damager));
+        		
+        		// If we had no player in our regular context, use this one
+        		if (contextPlayer == null) contextPlayer = subContextPlayer;
         	}
         	else if (CitizensAPI.getNPCRegistry().isNPC(damager)) {
+        		subContextNPC = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
         		context.put("damager", DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(damager)));
         		damagerType = "npc";
+        		
+        		// If we had no NPC in our regular context, use this one
+        		if (contextNPC == null) contextNPC = subContextNPC;
         	}
         	else {
         		context.put("damager", new dEntity(damager));
@@ -693,10 +712,15 @@ public class WorldScriptHelper implements Listener {
     		events.add(entityType + " damaged by entity");
         	events.add(entityType + " damaged by " + damagerType);
 
-    		events.add("entity damages entity");
-    		events.add("entity damages " + entityType);
-    		events.add(damagerType + " damages entity");
-    		events.add(damagerType + " damages " + entityType);
+        	// Have a new list of events for the subContextPlayer
+        	// and subContextNPC
+        	
+        	List<String> subEvents = new ArrayList<String>();
+        	
+    		subEvents.add("entity damages entity");
+    		subEvents.add("entity damages " + entityType);
+    		subEvents.add(damagerType + " damages entity");
+    		subEvents.add(damagerType + " damages " + entityType);
     		
     		if (isFatal == true) {
     			events.add("entity killed by entity");
@@ -704,21 +728,28 @@ public class WorldScriptHelper implements Listener {
         		events.add(entityType + " killed by entity");
         		events.add(entityType + " killed by " + damagerType);
         		
-        		events.add("entity kills entity");
-        		events.add("entity kills " + entityType);
-        		events.add(damagerType + " kills entity");
-        		events.add(damagerType + " kills " + entityType);
+        		subEvents.add("entity kills entity");
+        		subEvents.add("entity kills " + entityType);
+        		subEvents.add(damagerType + " kills entity");
+        		subEvents.add(damagerType + " kills " + entityType);
     		}
+    		
+    		determination = doEvents(subEvents, subContextNPC, subContextPlayer, context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+            	event.setCancelled(true);
+            if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Double))
+                event.setDamage(aH.getDoubleFrom(determination));
     	}
     	
-        String determination = doEvents(events, contextNPC, contextPlayer, context);
+        determination = doEvents(events, contextNPC, contextPlayer, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
         if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Double))
             event.setDamage(aH.getDoubleFrom(determination));
     }
-    
+
     @EventHandler
     public void entityExplode(EntityExplodeEvent event) {
 
@@ -781,6 +812,13 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
+        if (determination.toUpperCase().startsWith("TARGET")) {
+        	dEntity newTarget = dEntity.valueOf(aH.getStringFrom(determination));
+        	
+        	if (newTarget.getBukkitEntity() != null) {
+        		event.setTarget(newTarget.getBukkitEntity());
+        	}
+        }        	
     }
     
     @EventHandler
@@ -799,6 +837,26 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void foodLevelChange(FoodLevelChangeEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", entity instanceof Player ?
+        		 			  new dPlayer((Player) entity) :
+        				      new dEntity(entity));
+        
+        String determination = doEvents
+        		(Arrays.asList(entity.getType().name() + " changes hunger"),
+        		null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+        if (aH.matchesValueArg("FOOD", determination, aH.ArgumentType.Integer))
+            event.setFoodLevel(aH.getIntegerFrom(determination));
     }
     
 
