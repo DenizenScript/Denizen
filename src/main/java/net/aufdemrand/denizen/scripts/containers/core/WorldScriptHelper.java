@@ -521,21 +521,42 @@ public class WorldScriptHelper implements Listener {
         Map<String, Object> context = new HashMap<String, Object>();
         Entity entity = event.getEntity();
         Entity target = event.getTarget();
+        Player player = null;
         
-        context.put("reason", event.getReason().name());
+        String reason = event.getReason().name();
+        String entityType = entity.getType().name();
+        
         context.put("entity", new dEntity(entity));
+        context.put("reason", reason);
         
-        if (event.getTarget() instanceof Player) {
-        	context.put("target", new dPlayer((Player) target));        	
-        }
-        else {
-        	context.put("target", new dEntity(target));
-        }
+        List<String> events = new ArrayList<String>();
+        events.add("entity targets");
+        events.add("entity targets because " + reason);
+        events.add(entityType + " targets because " + reason);
 
-        String determination = doEvents(Arrays.asList
-        		(entity.getType().name() + " targets " + target.getType().name(),
-        		 entity.getType().name() + " targets " + target.getType().name() + " because " + event.getReason().name()),
-        		null, null, context);
+        if (target != null) {
+        	
+            if (event.getTarget() instanceof Player) {
+            	player = (Player) target;
+            	context.put("target", new dPlayer(player));
+            }
+            else {
+            	context.put("target", new dEntity(target));
+            }
+            
+            String targetType = target.getType().name();
+        	
+        	events.add("entity targets entity");
+        	events.add("entity targets entity because " + reason);
+        	events.add("entity targets " + targetType);
+        	events.add("entity targets " + targetType + " because " + reason);
+        	events.add(entityType + " targets entity");
+        	events.add(entityType + " targets entity because " + reason);
+        	events.add(entityType + " targets " + targetType);
+        	events.add(entityType + " targets " + targetType + " because " + reason);
+        }
+        
+        String determination = doEvents(events, null, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
