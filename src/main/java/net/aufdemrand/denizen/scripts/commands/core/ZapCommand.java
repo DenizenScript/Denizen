@@ -61,13 +61,13 @@ public class ZapCommand extends AbstractCommand implements Listener{
             if (aH.matchesScript(arg)) {
                 script = aH.getScriptFrom(arg);
 
-            } else if (aH.matchesDuration(arg)) {
-                duration = aH.getDurationFrom(arg);
-
             } else if (aH.matchesValueArg("STEP", arg, aH.ArgumentType.String)
                     || aH.matchesInteger(arg)) {
                 step = aH.getStringFrom(arg);
                 dB.echoDebug(Messages.DEBUG_SET_STEP, step);
+                
+            } else if (aH.matchesDuration(arg)) {
+                duration = aH.getDurationFrom(arg);
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
