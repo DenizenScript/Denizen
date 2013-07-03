@@ -57,7 +57,7 @@ public class FeedCommand extends AbstractCommand {
         targetType = TargetType.PLAYER;
         amount = Integer.MAX_VALUE;
         // Set target to Player by default, if available
-        if (scriptEntry.getPlayer() != null) target = (LivingEntity) scriptEntry.getPlayer();
+        if (scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer().getPlayerEntity();
         else target = null;
         
         for (String arg : scriptEntry.getArguments()) {
