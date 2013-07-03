@@ -23,19 +23,25 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -56,7 +62,12 @@ public class WorldScriptHelper implements Listener {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
+    
 
+    /////////////////////
+    //   EVENT HANDLER
+    /////////////////
+    
     public String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, Object> context) {
 
         String determination = "none";
@@ -101,6 +112,107 @@ public class WorldScriptHelper implements Listener {
         }
 
         return determination;
+    }
+    
+    
+    /////////////////////
+    //   BLOCK EVENTS
+    /////////////////
+    
+    @EventHandler
+    public void blockBreak(BlockBreakEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("type", event.getBlock().getType().name());
+
+        String determination = doEvents(Arrays.asList
+        		("player breaks block",
+        		 "player breaks " + event.getBlock().getType().name(),
+        		 "player breaks " + event.getBlock().getType().name() + " with " +
+        				 new dItem(event.getPlayer().getItemInHand()).identify().split(":")[0]),
+        		null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void blockBurn(BlockBurnEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("type", event.getBlock().getType().name());
+
+        String determination = doEvents(Arrays.asList
+        		("block burns",
+        		 event.getBlock().getType().name() + " burns"),
+        		null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void blockIgnite(BlockIgniteEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("type", event.getBlock().getType().name());
+        
+        String determination = doEvents(Arrays.asList
+        		("block ignites",
+        		 event.getBlock().getType().name() + " ignites"),
+        		null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void blockPlace(BlockPlaceEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("type", event.getBlock().getType().name());
+
+        String determination = doEvents(Arrays.asList
+        		("player places block",
+        		 "player places " + event.getBlock().getType().name()),
+        		null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    
+    @EventHandler
+    public void blockRedstone(BlockRedstoneEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("type", event.getBlock().getType().name());
+        
+        List<String> events = new ArrayList<String>();
+        
+        if (event.getNewCurrent() > 0) {
+        	events.add("block powered");
+        	events.add(event.getBlock().getType().name() + " powered");
+        }
+        else {
+        	events.add("block unpowered");
+        	events.add(event.getBlock().getType().name() + " unpowered");
+        }
+        
+    	String determination = doEvents(events, null, null, context);
+    	
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setNewCurrent(event.getOldCurrent());
     }
     
     
@@ -150,33 +262,325 @@ public class WorldScriptHelper implements Listener {
     
     
     /////////////////////
-    //   SERVER EVENTS
+    //   ENTITY EVENTS
     /////////////////
+    
+    @EventHandler
+    public void creatureSpawn(CreatureSpawnEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", new dEntity(entity));
+        context.put("reason", event.getSpawnReason().name());
+        
+        String determination = doEvents(Arrays.asList
+        		("entity spawns",
+        		 "entity spawns because " + event.getSpawnReason().name(),
+        		 entity.getType().name() + " spawns",
+        		 entity.getType().name() + " spawns because " +
+        				 event.getSpawnReason().name()),
+        		null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void entityCombust(EntityCombustEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", new dEntity(entity));
+        context.put("duration", event.getDuration());
+        
+        String determination = doEvents(Arrays.asList
+        		("entity combusts",
+        		 entity.getType().name() + " combusts"),
+        		null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void entityDamage(EntityDamageEvent event) {
+    	
+    	Map<String, Object> context = new HashMap<String, Object>();
+    	boolean isFatal = false;
+    	Entity entity = event.getEntity();
+    	String entityType = entity.getType().name();
+    	String cause = event.getCause().name();
+    	
+    	String determination;
+    	
+    	Player contextPlayer = null;
+    	dNPC contextNPC = null;
+    	
+    	if (entity instanceof Player) {
+    		contextPlayer = (Player) entity;
+    		context.put("entity", new dPlayer((Player) entity));
+    	}
+    	else if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
+    		contextNPC = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+    		context.put("entity", contextNPC);
+    		entityType = "npc";
+    	}
+    	else {
+    		context.put("entity", new dEntity(entity));
+    	}
+
+    	context.put("damage", event.getDamage());
+    	context.put("cause", event.getCause().name());
+    	
+    	if (entity instanceof LivingEntity) {
+    		if (event.getDamage() >= ((LivingEntity) entity).getHealth()) {
+    			isFatal = true;
+    		}
+    	}
+    	
+    	List<String> events = new ArrayList<String>();
+    	events.add("entity damaged");
+    	events.add("entity damaged by " + cause);
+    	events.add(entityType + " damaged");
+    	events.add(entityType + " damaged by " + cause);
+    	
+    	if (isFatal == true) {
+    		events.add("entity killed");
+	    	events.add("entity killed by " + cause);
+	    	events.add(entityType + " killed");
+		    events.add(entityType + " killed by " + cause);
+    	}
+    	
+    	if (event instanceof EntityDamageByEntityEvent) {
+    		    		
+    		EntityDamageByEntityEvent subEvent = (EntityDamageByEntityEvent) event;
+    		
+    		// Have a different set of player and NPC contexts for events
+    		// like "player damages player" from the one we have for
+    		// "player damaged by player"
+    		
+        	Player subContextPlayer = null;
+        	dNPC subContextNPC = null;
+    		
+    		Entity damager = subEvent.getDamager();
+    		String damagerType = damager.getType().name();
+    		
+        	if (damager instanceof Player) {
+        		subContextPlayer = (Player) entity;
+        		context.put("damager", new dPlayer((Player) damager));
+        		
+        		// If we had no player in our regular context, use this one
+        		if (contextPlayer == null) contextPlayer = subContextPlayer;
+        	}
+        	else if (CitizensAPI.getNPCRegistry().isNPC(damager)) {
+        		subContextNPC = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+        		context.put("damager", DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(damager)));
+        		damagerType = "npc";
+        		
+        		// If we had no NPC in our regular context, use this one
+        		if (contextNPC == null) contextNPC = subContextNPC;
+        	}
+        	else {
+        		context.put("damager", new dEntity(damager));
+        	}
+    		
+    		events.add("entity damaged by entity");
+    		events.add("entity damaged by " + damagerType);
+    		events.add(entityType + " damaged by entity");
+        	events.add(entityType + " damaged by " + damagerType);
+
+        	// Have a new list of events for the subContextPlayer
+        	// and subContextNPC
+        	
+        	List<String> subEvents = new ArrayList<String>();
+        	
+    		subEvents.add("entity damages entity");
+    		subEvents.add("entity damages " + entityType);
+    		subEvents.add(damagerType + " damages entity");
+    		subEvents.add(damagerType + " damages " + entityType);
+    		
+    		if (isFatal == true) {
+    			events.add("entity killed by entity");
+        		events.add("entity killed by " + damagerType);
+        		events.add(entityType + " killed by entity");
+        		events.add(entityType + " killed by " + damagerType);
+        		
+        		subEvents.add("entity kills entity");
+        		subEvents.add("entity kills " + entityType);
+        		subEvents.add(damagerType + " kills entity");
+        		subEvents.add(damagerType + " kills " + entityType);
+    		}
+    		
+    		determination = doEvents(subEvents, subContextNPC, subContextPlayer, context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+            	event.setCancelled(true);
+            if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Double))
+                event.setDamage(aH.getDoubleFrom(determination));
+    	}
+    	
+        determination = doEvents(events, contextNPC, contextPlayer, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+        if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Double))
+            event.setDamage(aH.getDoubleFrom(determination));
+    }
 
     @EventHandler
-    public void serverCommandEvent(ServerCommandEvent event) {
+    public void entityExplode(EntityExplodeEvent event) {
+
         Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
         
-        // Well, this is ugly :(
-        // Fill tags in any arguments
-
-        List<String> args = Arrays.asList(
-                aH.buildArgs(
-                        TagManager.tag(null, null,
-                                (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""))));
-
-        dList args_list = new dList(args);
-
-        String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
-
-        // Fill context
-        context.put("args", args_list);
-        context.put("command", command);
-        context.put("raw_args", (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""));
-
-        doEvents(Arrays.asList("command",
-        					   command + " command"),
+        context.put("entity", new dEntity(entity));
+        context.put("location", new dLocation(event.getLocation()));
+        
+        String determination = doEvents(Arrays.asList
+        		("entity explodes",
+        		 entity.getType().name() + " explodes"),
         		null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    // TODO: Make work with all entities
+    @EventHandler
+    public void entityRegainHealth(EntityRegainHealthEvent event) {
+
+        if (event.getEntity() instanceof  Player
+                && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+            Map<String, Object> context = new HashMap<String, Object>();
+            context.put("reason", event.getRegainReason().toString());
+            context.put("amount", String.valueOf(event.getAmount()));
+
+            String determination = doEvents(Arrays.asList
+            		("player regains health"),
+            		null, (Player) event.getEntity(), context);
+
+            if (determination.toUpperCase().startsWith("CANCELLED"))
+                event.setCancelled(true);
+            if (aH.matchesValueArg("AMOUNT", determination, aH.ArgumentType.Double))
+                event.setAmount(aH.getDoubleFrom(determination));
+        }
+    }
+    
+    @EventHandler
+    public void entityTame(EntityTameEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        context.put("entity", new dEntity(entity));
+        Player player = null;
+        
+        List<String> events = new ArrayList<String>();
+        events.add("entity tamed");
+        events.add(entity.getType().name() + " tamed");
+        
+        if (event.getOwner() instanceof Player) {
+        	player = (Player) event.getOwner();
+        	events.add("player tames entity");
+        	events.add("player tames " + entity.getType().name());
+        }
+
+        String determination = doEvents(events, null, player, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void entityTarget(EntityTargetEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        Entity target = event.getTarget();
+        
+        context.put("reason", event.getReason().name());
+        context.put("entity", new dEntity(entity));
+        
+        if (event.getTarget() instanceof Player) {
+        	context.put("target", new dPlayer((Player) target));        	
+        }
+        else {
+        	context.put("target", new dEntity(target));
+        }
+
+        String determination = doEvents(Arrays.asList
+        		(entity.getType().name() + " targets " + target.getType().name(),
+        		 entity.getType().name() + " targets " + target.getType().name() + " because " + event.getReason().name()),
+        		null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+        if (determination.toUpperCase().startsWith("TARGET")) {
+        	dEntity newTarget = dEntity.valueOf(aH.getStringFrom(determination));
+        	
+        	if (newTarget.getBukkitEntity() != null) {
+        		event.setTarget(newTarget.getBukkitEntity());
+        	}
+        }        	
+    }
+    
+    @EventHandler
+    public void entityTeleport(EntityTeleportEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", new dEntity(entity));
+        context.put("origin", new dLocation(event.getFrom()));
+        context.put("destination", new dLocation(event.getTo()));
+        
+        String determination = doEvents(Arrays.asList
+        		("entity teleports",
+        		 entity.getType().name() + " teleports"),
+        		null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void explosionPrimeEvent(ExplosionPrimeEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", new dEntity(entity));
+        context.put("radius", event.getRadius());
+        context.put("fire", event.getFire());
+        
+        String determination = doEvents(Arrays.asList
+        		("entity explodes",
+        		 entity.getType().name() + " explodes"),
+        		null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void foodLevelChange(FoodLevelChangeEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", entity instanceof Player ?
+        		 			  new dPlayer((Player) entity) :
+        				      new dEntity(entity));
+        
+        String determination = doEvents
+        		(Arrays.asList(entity.getType().name() + " changes hunger"),
+        		null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+        if (aH.matchesValueArg("FOOD", determination, aH.ArgumentType.Integer))
+            event.setFoodLevel(aH.getIntegerFrom(determination));
     }
     
     
@@ -515,296 +919,62 @@ public class WorldScriptHelper implements Listener {
         	events.add("player respawns elsewhere");
         }
         
-        doEvents(events, null, event.getPlayer(), context);
-    }
-    
-    
-    /////////////////////
-    //   BLOCK EVENTS
-    /////////////////
-    
-    @EventHandler
-    public void blockBreak(BlockBreakEvent event) {
-
-        Map<String, Object> context = new HashMap<String, Object>();
+        String determination = doEvents(events, null, event.getPlayer(), context);
         
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", event.getBlock().getType().name());
-
-        String determination = doEvents(Arrays.asList
-        		("player breaks block",
-        		 "player breaks " + event.getBlock().getType().name(),
-        		 "player breaks " + event.getBlock().getType().name() + " with " +
-        				 new dItem(event.getPlayer().getItemInHand()).identify().split(":")[0]),
-        		null, event.getPlayer(), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-    }
-    
-    @EventHandler
-    public void blockIgnite(BlockIgniteEvent event) {
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", event.getBlock().getType().name());
-        
-        String determination = doEvents(Arrays.asList
-        		("block ignites",
-        		 event.getBlock().getType().name() + " ignites"),
-        		null, event.getPlayer(), context);
-        
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-    }
-    
-    @EventHandler
-    public void blockPlace(BlockPlaceEvent event) {
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", event.getBlock().getType().name());
-
-        String determination = doEvents(Arrays.asList
-        		("player places block",
-        		 "player places " + event.getBlock().getType().name()),
-        		null, event.getPlayer(), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-    }
-    
-    
-    @EventHandler
-    public void blockRedstone(BlockRedstoneEvent event) {
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", event.getBlock().getType().name());
-        
-        List<String> events = new ArrayList<String>();
-        
-        if (event.getNewCurrent() > 0) {
-        	events.add("block powered");
-        	events.add(event.getBlock().getType().name() + " powered");
-        }
-        else {
-        	events.add("block unpowered");
-        	events.add(event.getBlock().getType().name() + " unpowered");
-        }
-        
-    	String determination = doEvents(events, null, null, context);
-    	
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setNewCurrent(event.getOldCurrent());
+        // Handle determine message
+        if (determination.toUpperCase().startsWith("LOCATION"))
+            event.setRespawnLocation(dLocation.valueOf(aH.getStringFrom(determination)));
     }
     
 
     /////////////////////
-    //   ENTITY EVENTS
+    //   SERVER EVENTS
     /////////////////
-    
-    @EventHandler
-    public void entityCombust(EntityCombustEvent event) {
 
+    @EventHandler
+    public void serverCommandEvent(ServerCommandEvent event) {
         Map<String, Object> context = new HashMap<String, Object>();
-        Entity entity = event.getEntity();
         
-        context.put("entity", new dEntity(entity));
-        context.put("duration", event.getDuration());
-        
-        String determination = doEvents(Arrays.asList(
-        		entity.getType().name() + " combusts"),
+        List<String> args = Arrays.asList(
+                aH.buildArgs(
+                        TagManager.tag(null, null,
+                                (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""))));
+
+        dList args_list = new dList(args);
+
+        String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
+
+        // Fill context
+        context.put("args", args_list);
+        context.put("command", command);
+        context.put("raw_args", (event.getCommand().split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : ""));
+
+        doEvents(Arrays.asList("command",
+        					   command + " command"),
         		null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-    }
-    
-    @EventHandler
-    public void entityDamage(EntityDamageEvent event) {
-    	
-    	Map<String, Object> context = new HashMap<String, Object>();
-    	boolean isFatal = false;
-    	Entity entity = event.getEntity();
-    	String entityType = entity.getType().name();
-    	String cause = event.getCause().name();
-    	
-    	Player contextPlayer = null;
-    	dNPC contextNPC = null;
-    	
-    	if (entity instanceof Player) {
-    		context.put("entity", new dPlayer((Player) entity));
-    	}
-    	else if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
-    		contextNPC = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
-    		context.put("entity", contextNPC);
-    		entityType = "npc";
-    	}
-    	else {
-    		context.put("entity", new dEntity(entity));
-    	}
-
-    	context.put("damage", event.getDamage());
-    	context.put("cause", event.getCause().name());
-    	
-    	if (entity instanceof LivingEntity) {
-    		if (event.getDamage() >= ((LivingEntity) entity).getHealth()) {
-    			isFatal = true;
-    		}
-    	}
-    	
-    	List<String> events = new ArrayList<String>();
-    	events.add("entity damaged");
-    	events.add("entity damaged by " + cause);
-    	events.add(entityType + " damaged");
-    	events.add(entityType + " damaged by " + cause);
-    	
-    	if (isFatal == true) {
-    		events.add("entity killed");
-	    	events.add("entity killed by " + cause);
-	    	events.add(entityType + " killed");
-		    events.add(entityType + " killed by " + cause);
-    	}
-    	
-    	if (event instanceof EntityDamageByEntityEvent) {
-    		
-    		EntityDamageByEntityEvent subEvent = (EntityDamageByEntityEvent) event;
-    		
-    		Entity damager = subEvent.getDamager();
-    		String damagerType = damager.getType().name();
-    		
-        	if (damager instanceof Player) {
-        		context.put("damager", new dPlayer((Player) damager));
-        	}
-        	else if (CitizensAPI.getNPCRegistry().isNPC(damager)) {
-        		context.put("damager", DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(damager)));
-        		damagerType = "npc";
-        	}
-        	else {
-        		context.put("damager", new dEntity(damager));
-        	}
-    		
-    		events.add("entity damaged by entity");
-    		events.add("entity damaged by " + damagerType);
-    		events.add(entityType + " damaged by entity");
-        	events.add(entityType + " damaged by " + damagerType);
-
-    		events.add("entity damages entity");
-    		events.add("entity damages " + entityType);
-    		events.add(damagerType + " damages entity");
-    		events.add(damagerType + " damages " + entityType);
-    		
-    		if (isFatal == true) {
-    			events.add("entity killed by entity");
-        		events.add("entity killed by " + damagerType);
-        		events.add(entityType + " killed by entity");
-        		events.add(entityType + " killed by " + damagerType);
-        		
-        		events.add("entity kills entity");
-        		events.add("entity kills " + entityType);
-        		events.add(damagerType + " kills entity");
-        		events.add(damagerType + " kills " + entityType);
-    		}
-    	}
-    	
-        String determination = doEvents(events, contextNPC, contextPlayer, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-        if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Double))
-            event.setDamage(aH.getDoubleFrom(determination));
-    }
-    
-    @EventHandler
-    public void entityExplode(EntityExplodeEvent event) {
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        Entity entity = event.getEntity();
-        
-        context.put("entity", new dEntity(entity));
-        context.put("location", new dLocation(event.getLocation()));
-        
-        String determination = doEvents(Arrays.asList
-        		(entity.getType().name() + " explodes"),
-        		null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-    }
-    
-    // TODO: Make work with all entities
-    @EventHandler
-    public void entityRegainHealth(EntityRegainHealthEvent event) {
-
-        if (event.getEntity() instanceof  Player
-                && !CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
-            Map<String, Object> context = new HashMap<String, Object>();
-            context.put("reason", event.getRegainReason().toString());
-            context.put("amount", String.valueOf(event.getAmount()));
-
-            String determination = doEvents(Arrays.asList
-            		("player regains health"),
-            		null, (Player) event.getEntity(), context);
-
-            if (determination.toUpperCase().startsWith("CANCELLED"))
-                event.setCancelled(true);
-            if (aH.matchesValueArg("AMOUNT", determination, aH.ArgumentType.Double))
-                event.setAmount(aH.getDoubleFrom(determination));
-        }
-    }
-    
-    @EventHandler
-    public void entityTarget(EntityTargetEvent event) {
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        Entity entity = event.getEntity();
-        Entity target = event.getTarget();
-        
-        context.put("reason", event.getReason().name());
-        context.put("entity", new dEntity(entity));
-        
-        if (event.getTarget() instanceof Player) {
-        	context.put("target", new dPlayer((Player) target));        	
-        }
-        else {
-        	context.put("target", new dEntity(target));
-        }
-
-        String determination = doEvents(Arrays.asList
-        		(entity.getType().name() + " targets " + target.getType().name(),
-        		 entity.getType().name() + " targets " + target.getType().name() + " because " + event.getReason().name()),
-        		null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
-    }
-    
-    @EventHandler
-    public void entityTeleport(EntityTeleportEvent event) {
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        Entity entity = event.getEntity();
-        
-        context.put("entity", new dEntity(entity));
-        context.put("origin", new dLocation(event.getFrom()));
-        context.put("destination", new dLocation(event.getTo()));
-        
-        String determination = doEvents
-        		(Arrays.asList(entity.getType().name() + " teleports"),
-        		null, null, context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
     }
     
 
     /////////////////////
     //   WEATHER EVENTS
     /////////////////
+    
+    @EventHandler
+    public void lightningStrike(LightningStrikeEvent event) {
+    	
+        Map<String, Object> context = new HashMap<String, Object>();
+        String world = event.getWorld().getName();
+        context.put("world", new dWorld(event.getWorld()));
+        context.put("location", new dLocation(event.getLightning().getLocation()));
+        
+        String determination = doEvents(Arrays.asList
+        		("lightning strikes",
+        		 "lightning strikes in " + world),
+        		null, null, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
     
     @EventHandler
     public void weatherChange(WeatherChangeEvent event) {
