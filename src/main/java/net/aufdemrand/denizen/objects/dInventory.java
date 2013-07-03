@@ -253,6 +253,33 @@ public class dInventory implements dObject {
     }
     
     /**
+     * Return the dLocation of this inventory's
+     * holder
+     *
+     * @return  The holder's dLocation
+     *
+     */
+    
+    public dLocation getLocation() {
+    	
+    	if (inventory != null) {
+    		
+    		InventoryHolder holder = inventory.getHolder();
+    		
+    		if (holder instanceof BlockState) {
+    			
+    			return new dLocation(((BlockState) holder).getLocation());
+    		}
+    		else if (holder instanceof Player) {
+    			
+    			return new dLocation(((Player) holder).getLocation());
+    		}
+    	}
+    	
+    	return null;
+    }
+    
+    /**
      * Remove an array of items from this inventory,
      * and return the result
      *
@@ -386,6 +413,14 @@ public class dInventory implements dObject {
             			(dItem.valueOf(attribute.getContext(1)).getItemStack(), qty))
                 		.getAttribute(attribute.fulfill(1));
             }
+        }
+        
+        // Get the location of this inventory's holder
+        
+        if (attribute.startsWith("location")) {
+        	
+        	return new dLocation(getLocation())
+                	.getAttribute(attribute.fulfill(1));
         }
         
         // Get the combined quantity of itemstacks that match an item if

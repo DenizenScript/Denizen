@@ -40,7 +40,7 @@ public class NotableLocationTags implements Listener {
         attribute.fulfill(1);
         tag = location.getAttribute(attribute);
         
-        event.setReplaced(tag.substring("location:".length()));
+        event.setReplaced(tag);
 
 	}
 }
