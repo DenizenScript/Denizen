@@ -14,6 +14,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -208,6 +210,27 @@ public class dPlayer implements dObject {
 
         if (attribute.startsWith("is_online"))
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
+        
+        if (attribute.startsWith("list")) {
+        	List<String> players = new ArrayList<String>();
+        	if (attribute.startsWith("list.online")) {
+            	for(Player player : Bukkit.getOnlinePlayers())
+            		players.add("p@" + player.getName());
+            	return new dList(players).getAttribute(attribute.fulfill(2));
+        	}
+        	else if (attribute.startsWith("list.offline")) {
+        		for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            		if (!Bukkit.getOnlinePlayers().toString().contains(player.getName()))
+            			players.add("p@" + player.getName());
+        		}
+        		return new dList(players).getAttribute(attribute.fulfill(2));
+        	}
+        	else {
+        		for(OfflinePlayer player : Bukkit.getOfflinePlayers())
+            		players.add("p@" + player.getName());
+        		return new dList(players).getAttribute(attribute.fulfill(1));
+        	}
+        }
 
         if (attribute.startsWith("chat_history_list"))
             return new dList(PlayerTags.playerChatHistory.get(player_name))
