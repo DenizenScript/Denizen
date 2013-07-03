@@ -26,6 +26,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
@@ -576,12 +577,28 @@ public class WorldScriptHelper implements Listener {
 
         String determination;
 
-        determination = doEvent(entity.getType().name() + " targets " + target.getType().name(), null, (Player) event.getEntity(), context);
+        determination = doEvent(entity.getType().name() + " targets " + target.getType().name(), null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
 
-        determination = doEvent(entity.getType().name() + " targets " + target.getType().name() + " because " + event.getReason().name(), null, (Player) event.getEntity(), context);
+        determination = doEvent(entity.getType().name() + " targets " + target.getType().name() + " because " + event.getReason().name(), null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void entityTeleport(EntityTeleportEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        
+        context.put("entity", new dEntity(entity));
+        context.put("origin", new dLocation(event.getFrom()));
+        context.put("destination", new dLocation(event.getTo()));
+        
+        String determination = doEvent(entity.getType().name() + " teleports", null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
