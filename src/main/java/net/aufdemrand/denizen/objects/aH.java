@@ -22,11 +22,20 @@ public class aH {
 
     public enum PrimitiveType { Float, Double, Integer, Boolean, String, Word }
 
-    final static Pattern floatPrimitive = Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
-    final static Pattern doublePrimitive = Pattern.compile("(-)?(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
-    final static Pattern integerPrimitive = Pattern.compile("(-)?\\d+");
-    final static Pattern booleanPrimitive = Pattern.compile("true|false", Pattern.CASE_INSENSITIVE);
-    final static Pattern wordPrimitive = Pattern.compile("\\w+");
+    final static Pattern floatPrimitive =
+            Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
+
+    final static Pattern doublePrimitive =
+            Pattern.compile("(-)?(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
+
+    final static Pattern integerPrimitive =
+            Pattern.compile("(-)?\\d+");
+
+    final static Pattern booleanPrimitive =
+            Pattern.compile("true|false", Pattern.CASE_INSENSITIVE);
+
+    final static Pattern wordPrimitive =
+            Pattern.compile("\\w+");
 
     public static class Argument {
         public String raw_value;
@@ -41,8 +50,6 @@ public class aH {
 
             int first_colon = string.indexOf(":");
             int first_space = string.indexOf(" ");
-
-            // dB.log("Constructing Argument: " + raw_value + " " + first_colon + "," + first_space);
 
             if ((first_space > -1 && first_space < first_colon) || first_colon == -1)  value = string;
             else {
