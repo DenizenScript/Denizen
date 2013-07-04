@@ -920,6 +920,7 @@ public class WorldScriptHelper implements Listener {
     public void playerInteractEntity(PlayerInteractEntityEvent event) {
 
     	Entity entity = event.getRightClicked();
+    	dItem item = new dItem(event.getPlayer().getItemInHand());
     	
         String determination;
         Map<String, Object> context = new HashMap<String, Object>();
@@ -935,13 +936,22 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("player right clicks entity");
         events.add("player right clicks " + entity.getType().name());
+       
+        events.add("player right clicks entity with " +
+        		item.identify().split(":")[0]);
+        events.add("player right clicks entity with " +
+        		item.identify());
+        events.add("player right clicks " + entity.getType().name() + " with " +
+           		item.identify().split(":")[0]);
+        events.add("player right clicks " + entity.getType().name() + " with " +
+           		item.identify());
         
         if (entity instanceof ItemFrame) {
-        	dItem item = new dItem(((ItemFrame) entity).getItem());
-        	context.put("item", item);
+        	dItem itemFrame = new dItem(((ItemFrame) entity).getItem());
+        	context.put("itemframe", itemFrame);
         	
         	events.add("player right clicks " + entity.getType().name() + " " +
-        			item.identify().split(":")[0]);
+        			itemFrame.identify().split(":")[0]);
         }
         
         determination = doEvents(events, null, event.getPlayer(), context);

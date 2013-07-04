@@ -54,20 +54,24 @@ public class CommandRegistry implements dRegistry {
 
 	@Override
 	public void registerCoreMembers() {
-        registerCoreMember(AnnounceCommand.class,
-        		"ANNOUNCE", "announce [\"announcement text\"] (to_ops)", 1);
-        
-        registerCoreMember(AttackCommand.class, 
-        		"ATTACK", "attack (stop)", 0);
-        
-        registerCoreMember(AnimateChestCommand.class,
-        		"ANIMATECHEST", "animatechest [location:x,y,z,world] ({open}|close) (sound:{true}|false)", 1);
 
         registerCoreMember(AnchorCommand.class,
                 "ANCHOR", "anchor [id:name] [assume|add|remove|walkto|walknear] (range:#)", 2);
+        		
+        registerCoreMember(AnimateCommand.class,
+        		"ANIMATE", "animate [entities:<entity>|...] [animation:<name>]", 1);
+        
+        registerCoreMember(AnimateChestCommand.class,
+        		"ANIMATECHEST", "animatechest [location:x,y,z,world] ({open}|close) (sound:{true}|false)", 1);
+		
+		registerCoreMember(AnnounceCommand.class,
+        		"ANNOUNCE", "announce [\"announcement text\"] (to_ops)", 1);
         
         registerCoreMember(AssignmentCommand.class,
         		"ASSIGNMENT", "assignment [{set}|remove] (script:assignment_script)", 1);
+		
+        registerCoreMember(AttackCommand.class, 
+        		"ATTACK", "attack (stop)", 0);
         
         registerCoreMember(BurnCommand.class,
         		"BURN", "burn [entities:<entity>|...] (duration:<value>)", 1);
@@ -87,11 +91,11 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(CopyBlockCommand.class,
                 "COPYBLOCK", "copyblock [location:x,y,z,world] [to:x,y,z,world]", 1);
 
-        registerCoreMember(DetermineCommand.class, 
-        		"DETERMINE", "determine [\"value\"]", 1);
-
         registerCoreMember(DefineCommand.class,
                 "DEFINE", "define [id] [\"value\"]", 2);
+        
+        registerCoreMember(DetermineCommand.class, 
+        		"DETERMINE", "determine [\"value\"]", 1);
 
         registerCoreMember(DisengageCommand.class, 
         		"DISENGAGE", "disengage (npcid:#)", 0);

@@ -194,7 +194,7 @@ public class dItem implements dObject {
 
     // Bukkit itemstack associated
 
-    private ItemStack item;
+    private ItemStack item = null;
 
     public ItemStack getItemStack() {
         return item;
@@ -359,19 +359,21 @@ public class dItem implements dObject {
     @Override
     public String identify() {
         // If saved item, return that
-        if (isSaved(this))
-            return "i@" + getSaved(this);
+    	if (getItemStack() == null) return null;
+    	
+    	if (getItemStack().getTypeId() != 0) {
+    	
+    		if (isSaved(this))
+    			return "i@" + getSaved(this);
 
-        // If not a saved item, but is a custom item, return the script id
-        else if (CustomNBT.hasCustomNBT(getItemStack(), "denizen-script-id"))
-            return CustomNBT.getCustomNBT(getItemStack(), "denizen-script-id");
+    		// If not a saved item, but is a custom item, return the script id
+    		else if (CustomNBT.hasCustomNBT(getItemStack(), "denizen-script-id"))
+    			return CustomNBT.getCustomNBT(getItemStack(), "denizen-script-id");
+    	}
 
-        // Else, return the material name and data (if not 0)
-        else if (getItemStack() != null)
-            return getItemStack().getType().name().toLowerCase()
+        // Else, return the material name and data
+        return getItemStack().getType().name().toLowerCase()
                     + (getItemStack().getData().getData() != 0 ? ":" + getItemStack().getData().getData() : "");
-
-        return "null";
     }
 
     @Override
