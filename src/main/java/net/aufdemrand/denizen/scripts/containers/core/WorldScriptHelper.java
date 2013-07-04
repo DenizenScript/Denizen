@@ -933,6 +933,7 @@ public class WorldScriptHelper implements Listener {
         }
         
         List<String> events = new ArrayList<String>();
+        events.add("player right clicks entity");
         events.add("player right clicks " + entity.getType().name());
         
         if (entity instanceof ItemFrame) {

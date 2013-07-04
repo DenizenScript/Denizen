@@ -664,7 +664,7 @@ public class dEntity implements dObject {
             return new Element(String.valueOf(getLivingEntity().getCanPickupItems()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("entity_id"))
+        if (attribute.startsWith("id"))
             return new Element(String.valueOf(entity.getEntityId()))
                     .getAttribute(attribute.fulfill(1));
 
