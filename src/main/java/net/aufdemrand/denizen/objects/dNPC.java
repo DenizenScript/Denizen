@@ -213,7 +213,7 @@ public class dNPC implements dObject {
 
     @Override
     public String getPrefix() {
-        return prefix;  //To change body of implemented methods use File | Settings | File Templates.
+        return prefix;
     }
 
     @Override
@@ -228,17 +228,16 @@ public class dNPC implements dObject {
 
     @Override
     public String getType() {
-        return "npc";
+        return "NPC";
     }
 
     @Override
     public String identify() {
-        return "n@" + npcid;  //To change body of implemented methods use File | Settings | File Templates.
+        return "n@" + npcid;
     }
 
     @Override
     public dNPC setPrefix(String prefix) {
-
         return this;
     }
 

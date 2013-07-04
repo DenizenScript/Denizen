@@ -343,7 +343,7 @@ public class dItem implements dObject {
 
     @Override
     public String getType() {
-        return "dItem";
+        return "Item";
     }
 
     @Override
@@ -374,6 +374,11 @@ public class dItem implements dObject {
         // Else, return the material name and data
         return getItemStack().getType().name().toLowerCase()
                     + (getItemStack().getData().getData() != 0 ? ":" + getItemStack().getData().getData() : "");
+    }
+
+    @Override
+    public String toString() {
+        return identify();
     }
 
     @Override

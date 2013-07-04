@@ -502,7 +502,7 @@ public class dEntity implements dObject {
 
     @Override
     public String getType() {
-        return "dEntity";
+        return "Entity";
     }
 
     @Override

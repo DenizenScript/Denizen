@@ -124,15 +124,16 @@ public class dColor implements dObject {
         return color;
     }
     
+    String prefix = "color";
 
 	@Override
 	public String getPrefix() {
-		return null;
+		return prefix;
 	}
 
 	@Override
 	public String debug() {
-		return null;
+        return (prefix + "='<A>" + identify() + "<G>'  ");
 	}
 
 	@Override
@@ -142,22 +143,24 @@ public class dColor implements dObject {
 
 	@Override
 	public String getType() {
-		return "dColor";
+		return "Color";
 	}
 
 	@Override
 	public String identify() {
-		return null;
+		return "c@" + getColor().getRed() + "," + getColor().getGreen() + "," + getColor().getBlue();
 	}
 
 	@Override
 	public dObject setPrefix(String prefix) {
-		return null;
+		if (prefix != null)
+            this.prefix = prefix;
+        return this;
 	}
 
 	@Override
 	public String getAttribute(Attribute attribute) {
-		return null;
+		return new Element(identify()).getAttribute(attribute);
 	}
 
 }

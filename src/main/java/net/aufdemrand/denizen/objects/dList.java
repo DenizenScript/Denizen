@@ -144,7 +144,7 @@ public class dList extends ArrayList<String> implements dObject {
 
     @Override
     public String getType() {
-        return "dList";
+        return "List";
     }
     
     // Return a list that includes only elements belonging to a certain class
