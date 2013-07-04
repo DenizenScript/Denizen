@@ -29,6 +29,7 @@ public class dPlayer implements dObject {
     static Map<String, dPlayer> players = new HashMap<String, dPlayer>();
 
     public static dPlayer mirrorBukkitPlayer(Player player) {
+        if (player == null) return null;
         if (players.containsKey(player.getName())) return players.get(player.getName());
         else return new dPlayer(player);
     }

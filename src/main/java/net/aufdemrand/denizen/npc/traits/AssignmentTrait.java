@@ -42,6 +42,7 @@ public class AssignmentTrait extends Trait {
         if (hasAssignment())
             dB.echoError("Missing assignment '" + assignment + "' for NPC '"
                     + npc.getName() + "/" + npc.getId() + "! Perhaps the script has been removed?");
+        npc.getTrait(ConstantsTrait.class).rebuildAssignmentConstants();
     }
 
     /**
