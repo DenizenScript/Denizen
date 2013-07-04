@@ -47,7 +47,7 @@ public class RunCommand extends AbstractCommand {
     }
 
     public String getUsage() {
-        return "run [script] (as:p@player|n@npc) (id:id_name) (delay:duration) (loop) (q:#)"
+        return "run [script] (as:p@player|n@npc) (id:id_name) (delay:duration) (loop) (q:#)";
     }
 
     @Override

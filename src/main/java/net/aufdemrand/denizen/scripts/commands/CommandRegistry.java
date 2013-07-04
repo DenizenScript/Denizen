@@ -268,7 +268,7 @@ public class CommandRegistry implements dRegistry {
         		"TELEPORT", "teleport (npc) [location:x,y,z,world] (target(s):[n@#]|[p@name])", 1);
         
         registerCoreMember(TimeCommand.class,
-                "TIME", "time [type:{global}|player] [<#>]", 1);
+                "TIME", "time [type:{global}|player] [time:<#>] (world:<name>)", 1);
         
         registerCoreMember(TriggerCommand.class, 
         		"TRIGGER", "trigger [name:trigger_name] [(toggle:true|false)|(cooldown:#.#)|(radius:#)]", 2);
@@ -283,7 +283,7 @@ public class CommandRegistry implements dRegistry {
                 "WALK, WALKTO", "walk [location:x,y,z,world] (speed:#)", 1);
 
         registerCoreMember(WeatherCommand.class,
-                "WEATHER", "weather [type:{global}|player] [sunny|storm|thunder]", 1);
+                "WEATHER", "weather [type:{global}|player] [sunny|storm|thunder] (world:<name>)", 1);
         
         registerCoreMember(YamlCommand.class,
                 "YAML", "...", 1);

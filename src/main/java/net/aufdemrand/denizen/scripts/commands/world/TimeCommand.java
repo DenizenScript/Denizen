@@ -5,8 +5,8 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
@@ -27,8 +27,12 @@ public class TimeCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values()))
                 // add type
-                scriptEntry.addObject("type", arg.asElement());
+            	scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
 
+            else if (!scriptEntry.hasObject("world")
+                    && arg.matchesArgumentType(dWorld.class))
+                // add value
+                scriptEntry.addObject("world", arg.asType(dWorld.class));
 
             else if (!scriptEntry.hasObject("value")
                     && arg.matchesArgumentType(Duration.class))
@@ -40,21 +44,33 @@ public class TimeCommand extends AbstractCommand {
 
         if ((!scriptEntry.hasObject("value")))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "VALUE");
+        
+        // Use default world if none has been specified
+        
+        if (!scriptEntry.hasObject("world"))
+            scriptEntry.addObject("world", dWorld.valueOf("world"));
     }
     
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
         Duration value = (Duration) scriptEntry.getObject("value");
-        Element type = (scriptEntry.hasObject("type") ?
-                (Element) scriptEntry.getObject("type") : new Element("player"));
+        dWorld world = (dWorld) scriptEntry.getObject("world");
+        Type type = scriptEntry.hasObject("type") ? 
+        		(Type) scriptEntry.getObject("type") : Type.GLOBAL;
 
         // Report to dB
-        dB.report(getName(), type.debug()
+        dB.report(getName(), type.name()
                 + (type.toString().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
+                + world.debug()
                 + value.debug());
 
-        scriptEntry.getPlayer().getPlayerEntity().getWorld().setTime(value.getTicks());
+        if (type.equals(Type.GLOBAL)) {
+        	world.getWorld().setTime(value.getTicks());
+        }
+        else {
+        	scriptEntry.getPlayer().getPlayerEntity().setPlayerTime(value.getTicks(), true);
+        }
     }
     
 }
