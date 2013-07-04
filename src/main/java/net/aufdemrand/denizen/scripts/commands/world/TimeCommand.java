@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import org.bukkit.Bukkit;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -25,21 +27,24 @@ public class TimeCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("type")
-                    && arg.matchesEnum(Type.values()))
+                    && arg.matchesEnum(Type.values())) {
                 // add type
             	scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
-
-            else if (!scriptEntry.hasObject("world")
-                    && arg.matchesArgumentType(dWorld.class))
-                // add value
-                scriptEntry.addObject("world", arg.asType(dWorld.class));
+            }
 
             else if (!scriptEntry.hasObject("value")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 // add value
                 scriptEntry.addObject("value", arg.asType(Duration.class));
+            }
+            
+            else if (!scriptEntry.hasObject("world")
+                    && arg.matchesArgumentType(dWorld.class)) {
+                // add world
+                scriptEntry.addObject("world", arg.asType(dWorld.class));
+        	}
         }
-
+        
         // Check to make sure required arguments have been filled
 
         if ((!scriptEntry.hasObject("value")))
@@ -47,8 +52,9 @@ public class TimeCommand extends AbstractCommand {
         
         // Use default world if none has been specified
         
-        if (!scriptEntry.hasObject("world"))
+        if (!scriptEntry.hasObject("world")) {
             scriptEntry.addObject("world", dWorld.valueOf("world"));
+        }
     }
     
     @Override

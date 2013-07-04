@@ -278,9 +278,9 @@ public class WorldScriptHelper implements Listener {
                 Map<String, Object> context = new HashMap<String, Object>();
                 
                 context.put("time", String.valueOf(hour));
-                context.put("world", world.getName());
+                context.put("world", new dWorld(world));
                 
-                doEvents(Arrays.asList("time change in " + world.getName(),
+                doEvents(Arrays.asList("time changes in " + world.getName(),
                 					   hour + ":00 in " + world.getName()),
                 		null, null, context);
                 
@@ -984,7 +984,8 @@ public class WorldScriptHelper implements Listener {
         context.put("message", event.getJoinMessage());
 
         String determination = doEvents(Arrays.asList
-        		("player join"),
+        		("player joins",
+        		 "player join"),
         		null, event.getPlayer(), context);
 
         // Handle message
@@ -1049,7 +1050,8 @@ public class WorldScriptHelper implements Listener {
         context.put("message", event.getQuitMessage());
 
         String determination = doEvents(Arrays.asList
-        		("player quits"),
+        		("player quits",
+        		 "player quit"),
         		null, event.getPlayer(), context).toUpperCase();
 
         // Handle determine message

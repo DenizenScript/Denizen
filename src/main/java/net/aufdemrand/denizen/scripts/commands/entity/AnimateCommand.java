@@ -17,7 +17,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.util.PlayerAnimation;
 
 /**
- * Animate a list of entities using an EntityEffect.
+ * Animate a list of entities using a PlayerAnimation from Citizens2
+ * or an EntityEffect from Bukkit.
  *
  * @author David Cernat
  */
@@ -77,6 +78,8 @@ public class AnimateCommand extends AbstractCommand {
 
         			Player player = (Player) entity.getBukkitEntity();
         			
+        			// Go through Citizens' PlayerAnimations and find the one
+        			// that matches
         			PlayerAnimation[] animationArray = PlayerAnimation.class.getEnumConstants();
 					    
 					for (PlayerAnimation current : animationArray) {
