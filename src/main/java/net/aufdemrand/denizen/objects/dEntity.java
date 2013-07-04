@@ -548,6 +548,11 @@ public class dEntity implements dObject {
     }
 
     @Override
+    public String toString() {
+        return identify();
+    }
+
+    @Override
     public boolean isUnique() {
         if (entity instanceof Player) return true;
         if (CitizensAPI.getNPCRegistry().isNPC(entity)) return true;
