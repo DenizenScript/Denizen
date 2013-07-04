@@ -21,12 +21,9 @@ public class PlayerTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-
     ///////////
     // Player Chat History
     /////////
-
-    // TODO: Find a better place for this?
 
     public static Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>(8, 0.9f, 2);
 
@@ -66,7 +63,8 @@ public class PlayerTags implements Listener {
             if (dPlayer.matches(attribute.getContext(1)))
                 p = dPlayer.valueOf(attribute.getContext(1));
             else {
-                dB.echoDebug("Could not match '" + attribute.getContext(1) + "' to a valid player!");
+                dB.echoDebug("Could not match '"
+                        + attribute.getContext(1) + "' to a valid player!");
                 return;
             }
 

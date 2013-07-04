@@ -29,12 +29,11 @@ public class UtilTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-
     @EventHandler
     public void mathTags(ReplaceableTagEvent event) {
-        if (!(event.matches("m") || event.matches("math"))) return;
-        Double evalulation = new DoubleEvaluator().evaluate(event.getValue());
-        event.setReplaced(String.valueOf(evalulation));
+        if (!event.matches("math, m")) return;
+        Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
+        event.setReplaced(String.valueOf(evaluation));
     }
 
     @EventHandler
@@ -60,8 +59,8 @@ public class UtilTags implements Listener {
 
 
     @EventHandler
-    public void utilTags(ReplaceableTagEvent event) {
-        if (!event.matches("UTIL, U")) return;
+    public void miscTags(ReplaceableTagEvent event) {
+        if (!event.matches("util, u")) return;
 
         String type = event.getType() != null ? event.getType() : "";
         String typeContext = event.getTypeContext() != null ? event.getTypeContext() : "";

@@ -20,7 +20,7 @@ public class ProcedureScriptTag implements Listener {
     }
 
    @EventHandler
-    public void utilTags(ReplaceableTagEvent event) {
+    public void procedureTag(ReplaceableTagEvent event) {
     if (!event.matches("proc, pr")) return;
        if (event.getValue() == null) return;
 
