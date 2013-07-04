@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -45,6 +46,10 @@ public class RunCommand extends AbstractCommand {
                 //"Attach some definitions to "
     }
 
+    public String getUsage() {
+        return "run [script] (as:p@player|n@npc) (id:id_name) (delay:duration) (loop) (q:#)"
+    }
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -57,68 +62,30 @@ public class RunCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
+            if (!scriptEntry.hasObject("script")
+                    && arg.matchesArgumentType(dScript.class))
+                scriptEntry.addObject("script", arg.asType(dScript.class));
 
+            else if (arg.matchesPrefix("i, id"))
+                scriptEntry.addObject("id", arg.asElement());
 
+            else if (arg.matches("instant, instantly"))
+                scriptEntry.addObject("instant", Element.TRUE);
+
+            else if (arg.matchesPrefix("d, delay")
+                    && arg.matchesArgumentType(Duration.class))
+                scriptEntry.addObject("delay", arg.asType(Duration.class));
+
+            else if (arg.matches("loop"))
+                scriptEntry.addObject("loop", Element.TRUE);
+
+            else if (arg.matchesPrefix("q, quantity")
+                && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                scriptEntry.addObject("quantity", arg.asElement());
         }
 
-        // Iterate through Arguments to extract needed information
-        for (String arg : scriptEntry.getArguments()) {
-
-            // Specify scriptContainer to use
-            if (aH.matchesScript(arg)) {
-                script = aH.getScriptFrom(arg);
-
-            }   // Delay the start of the queue
-            else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
-                delay = aH.getDurationFrom(arg);
-
-            }   // Use a specific queue
-            else if (aH.matchesQueue(arg)) {
-                queue = aH.getQueueFrom(arg);
-
-            }   // TODO: Remove this argument for version 1.0
-            else if (aH.matchesValueArg("SPEED", arg, aH.ArgumentType.Duration)) {
-                dB.log("SPEED argument has been removed from RUNTASK! Instead, specify " +
-                        "a speed on the task script itself, or use the 'QUEUE SET_SPEED:#' command " +
-                        "inside the task script. This warning will be removed in version 1.0 " +
-                        "and this argument deprecated.");
-
-            }   // Gets a new, randomly named queue
-            else if (aH.matchesArg("QUEUE", arg)) {
-                queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
-                instant = false;
-
-            }   // Run the script instantly.
-            else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
-                queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
-                instant = true;
-
-            }   // Build context map if specified
-            else if (aH.matchesContext(arg)) {
-                context = aH.getContextFrom(arg);
-
-            }   // Specify a script name without the 'script:' prefix
-            else if (ScriptRegistry.containsScript(aH.getStringFrom(arg))) {
-                script = aH.getScriptFrom(arg);
-                if (!script.getType().equalsIgnoreCase("TASK"))
-                    script = null;
-
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-        }
-
-        // Must specify at least a valid script to run...
-        if (script == null)
+        if (!scriptEntry.hasObject("script"))
             throw new InvalidArgumentsException("Must define a SCRIPT to be run.");
-        // If not queue, and delayed, throw an exception... this cannot happen.
-        if (queue == scriptEntry.getResidingQueue() && delay != null)
-            throw new InvalidArgumentsException("Cannot delay an INJECTED task script! Use 'QUEUE'.");
-
-        // Put important objects inside the scriptEntry to be sent to execute()
-        scriptEntry.addObject("instant", instant)
-                .addObject("queue", queue)
-                .addObject("delay", (delay != null ? delay.setPrefix("Delay") : null))
-                .addObject("script", script)
-                .addObject("context", context);
     }
 
     @SuppressWarnings("unchecked")

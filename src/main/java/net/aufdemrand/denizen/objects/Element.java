@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 
 public class Element implements dObject {
 
+    public final static Element TRUE = new Element(Boolean.TRUE);
+    public final static Element FALSE = new Element(Boolean.FALSE);
+
     /**
      *
      * @param string  the string or dScript argument String
