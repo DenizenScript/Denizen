@@ -60,9 +60,9 @@ public class TimeCommand extends AbstractCommand {
         		(Type) scriptEntry.getObject("type") : Type.GLOBAL;
 
         // Report to dB
-        dB.report(getName(), type.name()
-                + (type.toString().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
-                + world.debug()
+        dB.report(getName(), type.name() + ", "
+                + (type.name().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
+                + (type.name().equalsIgnoreCase("global") ? world.debug() : "")
                 + value.debug());
 
         if (type.equals(Type.GLOBAL)) {

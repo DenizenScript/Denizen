@@ -268,7 +268,7 @@ public class CommandRegistry implements dRegistry {
         		"TELEPORT", "teleport (npc) [location:x,y,z,world] (target(s):[n@#]|[p@name])", 1);
         
         registerCoreMember(TimeCommand.class,
-                "TIME", "time [type:{global}|player] [time:<#>] (world:<name>)", 1);
+                "TIME", "time [type:{global}|player] [value:<#>] (world:<name>)", 1);
         
         registerCoreMember(TriggerCommand.class, 
         		"TRIGGER", "trigger [name:trigger_name] [(toggle:true|false)|(cooldown:#.#)|(radius:#)]", 2);

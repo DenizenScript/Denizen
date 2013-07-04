@@ -64,9 +64,10 @@ public class WeatherCommand extends AbstractCommand {
         		(Type) scriptEntry.getObject("type") : Type.GLOBAL;
 
         // Report to dB
-        dB.report(getName(), type.name()
-                + (type.toString().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
-                + value.toString());
+        dB.report(getName(), type.name() + ", "
+                + (type.name().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
+                + (type.name().equalsIgnoreCase("global") ? world.debug() : "")
+                + value.name());
 
         switch(value) {
         	case SUNNY:
