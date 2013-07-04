@@ -230,27 +230,30 @@ public class WorldScriptHelper implements Listener {
     }
     
     @EventHandler
-    public void signChange(final SignChangeEvent event) {
+    public void signChange(SignChangeEvent event) {
     	
     	final Map<String, Object> context = new HashMap<String, Object>();
     	
     	final Player player = event.getPlayer();
-        final Block block = event.getBlock();
-        final String[] original = ((Sign) block.getState()).getLines();
-    	
+    	final Block block = event.getBlock();
+        Sign sign = (Sign) block.getState();
+        final String[] oldLines = sign.getLines();
+        
+        context.put("old", new dList(Arrays.asList(oldLines)));
+		context.put("location", new dLocation(block.getLocation()));
+        
     	Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
 			public void run() {
-				((Sign) block.getState()).update();
-				
-				context.put("old", new dList(Arrays.asList(original)));
+
+				Sign sign = (Sign) block.getState();
+		    	context.put("new", new dList(Arrays.asList(sign.getLines())));
 		    	
-				context.put("location", new dLocation(block.getLocation()));
-		    	context.put("lines", new dList(Arrays.asList(((Sign) block.getState()).getLines())));
-		    	
-		    	String determination = doEvents
-		        		(Arrays.asList("player changes sign"),
+		    	String determination = doEvents(Arrays.asList
+		    			("player changes sign"),
 		        		null, player, context);
-		    	if (determination.toUpperCase().startsWith("CANCELLED")) Utilities.setSignLines(((Sign) block.getState()), original);
+
+		    	if (determination.toUpperCase().startsWith("CANCELLED"))
+		    		Utilities.setSignLines(sign, oldLines);
 			}
 		}, 1);
     }
@@ -691,7 +694,7 @@ public class WorldScriptHelper implements Listener {
         events.add(interaction + " in inventory");
         events.add(interaction + " in " + type + " inventory");
         
-        if (item.getItemStack() == null) {
+        if (item.getItemStack() != null) {
         	events.add(interaction + " on " +
         		item.identify().split(":")[0] + " in inventory");
         	events.add(interaction + " on " +

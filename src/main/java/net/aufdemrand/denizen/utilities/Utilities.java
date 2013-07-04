@@ -316,19 +316,16 @@ public class Utilities {
     	return random;
     }
     
-    public static void setSignLines(final BlockState sign, String[] lines) {
-        int n = 0;
+    public static void setSignLines(Sign sign, String[] lines) {
+        
+    	int n = 0;
             
         for (String line : lines) {
-                
-            ((Sign) sign).setLine(n, line);
+        	sign.setLine(n, line);
             n++;
         }
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
-    		public void run() {
-    		    ((Sign) sign).update();
-    		}
-        }, 1);
+        
+        sign.update();
     }
 
 }
