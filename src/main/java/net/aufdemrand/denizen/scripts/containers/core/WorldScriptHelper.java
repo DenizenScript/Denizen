@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -229,19 +230,29 @@ public class WorldScriptHelper implements Listener {
     }
     
     @EventHandler
-    public void signChange(SignChangeEvent event) {
+    public void signChange(final SignChangeEvent event) {
     	
-    	Map<String, Object> context = new HashMap<String, Object>();
+    	final Map<String, Object> context = new HashMap<String, Object>();
     	
-    	context.put("location", new dLocation(event.getBlock().getLocation()));
-    	context.put("sign_contents", new dList(Arrays.asList(((Sign) event.getBlock().getState()).getLines())));
+    	final Player player = event.getPlayer();
+        final Block block = event.getBlock();
+        final String[] original = ((Sign) block.getState()).getLines();
     	
-    	String determination = doEvents
-        		(Arrays.asList("player changes sign"),
-        		null, event.getPlayer(), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-        	event.setCancelled(true);
+    	Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+			public void run() {
+				((Sign) block.getState()).update();
+				
+				context.put("old", new dList(Arrays.asList(original)));
+		    	
+				context.put("location", new dLocation(block.getLocation()));
+		    	context.put("lines", new dList(Arrays.asList(((Sign) block.getState()).getLines())));
+		    	
+		    	String determination = doEvents
+		        		(Arrays.asList("player changes sign"),
+		        		null, player, context);
+		    	if (determination.toUpperCase().startsWith("CANCELLED")) Utilities.setSignLines(((Sign) block.getState()), original);
+			}
+		}, 1);
     }
     
     

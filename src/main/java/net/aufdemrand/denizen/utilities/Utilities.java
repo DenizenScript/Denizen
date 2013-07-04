@@ -11,6 +11,8 @@ import net.aufdemrand.denizen.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -312,6 +314,21 @@ public class Utilities {
     
     public static Random getRandom() {
     	return random;
+    }
+    
+    public static void setSignLines(final BlockState sign, String[] lines) {
+        int n = 0;
+            
+        for (String line : lines) {
+                
+            ((Sign) sign).setLine(n, line);
+            n++;
+        }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+    		public void run() {
+    		    ((Sign) sign).update();
+    		}
+        }, 1);
     }
 
 }
