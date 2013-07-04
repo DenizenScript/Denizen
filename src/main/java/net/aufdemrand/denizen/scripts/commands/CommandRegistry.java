@@ -235,6 +235,9 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(RemoveCommand.class, 
         		"REMOVE", "remove (type:<entity>/npcid:<#>) (region:<name>)", 0);
 
+        registerCoreMember(RenameCommand.class,
+                "RENAME", "rename (npc:n@...) [new_name]", 1);
+
         registerCoreMember(ResetCommand.class,
                 "RESET", "reset [fails|finishes|cooldown] (script:script_name{attached script})", 1);
 
