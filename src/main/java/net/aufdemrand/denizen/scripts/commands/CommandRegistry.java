@@ -213,7 +213,10 @@ public class CommandRegistry implements DenizenRegistry {
         
         registerCoreMember(RandomCommand.class, 
         		"RANDOM", "random [#]", 1);
-        
+
+        registerCoreMember(RenameCommand.class,
+                "RENAME", "rename [new_name]", 0);
+
         registerCoreMember(RemoveCommand.class, 
         		"REMOVE", "remove (npcid:#)", 0);
 
