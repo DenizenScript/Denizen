@@ -181,6 +181,11 @@ public class Duration implements dObject {
     }
 
     @Override
+    public String toString() {
+        return identify();
+    }
+
+    @Override
     public dObject setPrefix(String prefix) {
         this.prefix = prefix;
         return this;

@@ -361,7 +361,7 @@ public class dInventory implements dObject {
     
     @Override
     public String getType() {
-        return "dInventory";
+        return "Inventory";
     }
     
     @Override

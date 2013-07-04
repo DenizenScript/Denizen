@@ -74,13 +74,19 @@ public class dScript implements dObject {
      *
      * @return  the type of the Script Container
      */
+    @Override
     public String getType() {
         return (container != null ? container.getType() : "invalid");
     }
 
     @Override
     public String identify() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "s@" + name;
+    }
+
+    @Override
+    public String toString() {
+        return identify();
     }
 
     /**
@@ -113,11 +119,7 @@ public class dScript implements dObject {
 
     @Override
     public boolean isUnique() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public String dScriptArgValue() {
-        return name;
+        return true;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

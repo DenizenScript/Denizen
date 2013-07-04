@@ -48,7 +48,6 @@ public class UtilTags implements Listener {
                     event.setReplaced(new dList(DenizenAPI.getCurrentInstance().flagManager()
                             .getGlobalFlag(attribute.getContext(1)))
                             .getAttribute(attribute.fulfill(1)));
-                event.setReplaced("null");
             }
             else event.setReplaced("null");
         }
@@ -56,8 +55,6 @@ public class UtilTags implements Listener {
         else if (attribute.startsWith("selected_npc")) {
             event.setReplaced(new dNPC(((Citizens) Bukkit.getPluginManager().getPlugin("Citizens"))
                     .getNPCSelector().getSelected(Bukkit.getConsoleSender())).getAttribute(attribute.fulfill(1)));
-
-
         }
     }
 

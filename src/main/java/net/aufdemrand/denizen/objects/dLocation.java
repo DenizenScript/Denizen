@@ -227,7 +227,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
     @Override
     public String getType() {
-        return "dLocation";
+        return "Location";
     }
 
     @Override
@@ -261,6 +261,11 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return "l@" + getSaved(this);
         else return "l@" + getX() + "," + getY()
                 + "," + getZ() + "," + getWorld().getName();
+    }
+
+    @Override
+    public String toString() {
+        return identify();
     }
 
     @Override

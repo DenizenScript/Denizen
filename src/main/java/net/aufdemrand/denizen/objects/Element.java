@@ -79,7 +79,7 @@ public class Element implements dObject {
 
     @Override
     public String getType() {
-        return "element";
+        return "Element";
     }
 
     @Override
@@ -101,6 +101,11 @@ public class Element implements dObject {
     @Override
     public String identify() {
         return element;
+    }
+
+    @Override
+    public String toString() {
+        return identify();
     }
 
     @Override

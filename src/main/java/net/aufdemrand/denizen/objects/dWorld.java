@@ -111,7 +111,7 @@ public class dWorld implements dObject {
 
     @Override
     public String toString() {
-        return "w@" + world_name;
+        return identify();
     }
 
     @Override

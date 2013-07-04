@@ -123,16 +123,17 @@ public class dMaterial implements dObject {
     public MaterialData getMaterialData() {
         return new MaterialData(material, data);
     }
-    
+
+    String prefix = "material";
 
 	@Override
 	public String getPrefix() {
-		return null;
+		return prefix;
 	}
 
 	@Override
 	public String debug() {
-		return null;
+		return (prefix + "='<A>" + identify() + "<G>'  ");
 	}
 
 	@Override
@@ -142,22 +143,30 @@ public class dMaterial implements dObject {
 
 	@Override
 	public String getType() {
-		return "dMaterial";
+		return "Material";
 	}
 
 	@Override
 	public String identify() {
-		return null;
+		return "m@" + material.name();
 	}
+
+    @Override
+    public String toString() {
+        return identify();
+    }
 
 	@Override
 	public dObject setPrefix(String prefix) {
-		return null;
+		if (prefix != null)
+        this.prefix = prefix;
+        return this;
 	}
 
 	@Override
 	public String getAttribute(Attribute attribute) {
-		return null;
+
+		return new Element(identify()).getAttribute(attribute);
 	}
 
 }

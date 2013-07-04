@@ -163,7 +163,7 @@ public class dPlayer implements dObject {
 
     @Override
     public String getType() {
-        return "player";
+        return "Player";
     }
 
     @Override
