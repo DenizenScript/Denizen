@@ -341,10 +341,6 @@ public class dPlayer implements dObject {
             return new dLocation(getPlayerEntity().getCompassTarget())
                     .getAttribute(attribute.fulfill(2));
 
-        if (attribute.startsWith("location"))
-            return new dLocation(getPlayerEntity().getLocation())
-                    .getAttribute(attribute.fulfill(1));
-
         if (attribute.startsWith("food_level.formatted")) {
             double maxHunger = getPlayerEntity().getMaxHealth();
             if (attribute.hasContext(2))

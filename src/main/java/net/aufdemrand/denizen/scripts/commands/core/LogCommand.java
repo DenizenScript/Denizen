@@ -21,6 +21,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
  * @author spaceemotion
  */
 public class LogCommand extends AbstractCommand {
+
     protected static File logDirectory;
     public enum Type { SEVERE, INFO, WARNING, FINE, FINER, FINEST };
     
