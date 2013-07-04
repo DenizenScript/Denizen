@@ -127,15 +127,22 @@ public class WorldScriptHelper implements Listener {
     public void blockBreak(BlockBreakEvent event) {
 
         Map<String, Object> context = new HashMap<String, Object>();
+        String blockType = event.getBlock().getType().name();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("type", event.getBlock().getType().name());
 
         String determination = doEvents(Arrays.asList
         		("player breaks block",
-        		 "player breaks " + event.getBlock().getType().name(),
-        		 "player breaks " + event.getBlock().getType().name() + " with " +
-        				 new dItem(event.getPlayer().getItemInHand()).identify().split(":")[0]),
+        		 "player breaks " + blockType,
+        		 "player breaks block with " +
+        				 new dItem(event.getPlayer().getItemInHand()).identify().split(":")[0],
+        		 "player breaks block with " +
+                		 new dItem(event.getPlayer().getItemInHand()).identify(),
+        		 "player breaks " + blockType + " with " +
+        				 new dItem(event.getPlayer().getItemInHand()).identify().split(":")[0],
+        		 "player breaks " + blockType + " with " +
+                		 new dItem(event.getPlayer().getItemInHand()).identify()),
         		null, event.getPlayer(), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -316,7 +323,7 @@ public class WorldScriptHelper implements Listener {
     	Entity entity = event.getEntity();
     	String entityType = entity.getType().name();
     	String cause = event.getCause().name();
-    	
+    	 
     	String determination;
     	
     	Player contextPlayer = null;
@@ -599,8 +606,8 @@ public class WorldScriptHelper implements Listener {
         context.put("fire", event.getFire());
         
         String determination = doEvents(Arrays.asList
-        		("entity explodes",
-        		 entity.getType().name() + " explodes"),
+        		("entity explosion primes",
+        		 entity.getType().name() + " explosion primes"),
         		null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
