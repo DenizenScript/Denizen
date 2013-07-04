@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
@@ -27,6 +28,7 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -214,6 +216,22 @@ public class WorldScriptHelper implements Listener {
     	
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setNewCurrent(event.getOldCurrent());
+    }
+    
+    @EventHandler
+    public void signChange(SignChangeEvent event) {
+    	
+    	Map<String, Object> context = new HashMap<String, Object>();
+    	
+    	context.put("location", new dLocation(event.getBlock().getLocation()));
+    	context.put("sign_contents", new dList(Arrays.asList(((Sign) event.getBlock().getState()).getLines())));
+    	
+    	String determination = doEvents
+        		(Arrays.asList("player changes sign"),
+        		null, event.getPlayer(), context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
     }
     
     
@@ -630,8 +648,6 @@ public class WorldScriptHelper implements Listener {
         
         events.add(interaction + " in inventory");
         events.add(interaction + " in " + type + " inventory");
-        
-        Bukkit.broadcastMessage("Clicked on item!");
         
         if (item.getItemStack() == null) {
         	events.add(interaction + " on " +
