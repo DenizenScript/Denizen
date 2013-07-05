@@ -79,13 +79,15 @@ public class WorldScriptHelper implements Listener {
 
         String determination = "none";
 
+        // dB.log("Fired for '" + eventNames.toString() + "'");
+
         for (WorldScriptContainer script : world_scripts.values()) {
 
             if (script == null) continue;
             
             for (String eventName : eventNames) {
-            	
-            	if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
+
+                if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
 
             	// Fetch script from Event
             	List<ScriptEntry> entries = script.getEntries(new dPlayer(player), npc, "events.on " + eventName);
