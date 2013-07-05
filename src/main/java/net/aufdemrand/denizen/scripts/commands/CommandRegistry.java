@@ -72,6 +72,9 @@ public class CommandRegistry implements dRegistry {
 		
         registerCoreMember(AttackCommand.class, 
         		"ATTACK", "attack (stop)", 0);
+
+        registerCoreMember(BreakCommand.class,
+                "BREAK", "break [l@location] as:[e@entity]", 1);
         
         registerCoreMember(BurnCommand.class,
         		"BURN", "burn [entities:<entity>|...] (duration:<value>)", 1);
