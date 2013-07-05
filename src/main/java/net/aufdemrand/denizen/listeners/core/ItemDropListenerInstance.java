@@ -57,7 +57,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 					type = ItemDropType.valueOf(aH.getStringFrom(arg).toUpperCase());
 					dB.echoDebug("...type set to: " + type.name());
 					continue;
-				} catch (Exception e) { dB.echoDebug("...type " + type.name() + " is not valid."); }
+				} catch (Exception e) { dB.echoDebug("...type " + aH.getStringFrom(arg) + " is not valid."); }
 				
 			} else if (aH.matchesItem(arg)) {
 				item = aH.getItemFrom(arg).getItemStack();
