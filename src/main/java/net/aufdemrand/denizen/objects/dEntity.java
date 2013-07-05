@@ -569,6 +569,13 @@ public class dEntity implements dObject {
             return "null";
         }
 
+        if (attribute.startsWith("get_vehicle")) {
+            if (getLivingEntity().isInsideVehicle())
+                return new dEntity(getBukkitEntity().getVehicle())
+                        .getAttribute(attribute.fulfill(1));
+            else return "null";
+        }
+
         if (attribute.startsWith("custom_name")) {
             if (getLivingEntity().getCustomName() == null) return "null";
             return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(2));
@@ -586,7 +593,7 @@ public class dEntity implements dObject {
         }
 
         if (attribute.startsWith("entity_type"))
-            return new Element(entity.getType().getName())
+            return new Element(entity.getType().getName().replace("Entity", ""))
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("custom_id")) {
