@@ -660,13 +660,17 @@ public class dEntity implements dObject {
             return new dPlayer(getLivingEntity().getKiller())
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("last_damage_cause"))
+        if (attribute.startsWith("last_damage.cause"))
             return new Element(String.valueOf(entity.getLastDamageCause().getCause().toString()))
-                    .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(2));
 
-        if (attribute.startsWith("last_damage"))
+        if (attribute.startsWith("last_damage.amount"))
             return new Element(String.valueOf(getLivingEntity().getLastDamage()))
-                    .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(2));
+
+        if (attribute.startsWith("last_damage.duration"))
+            return new Duration((long) getLivingEntity().getNoDamageTicks())
+            .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("time_lived"))
             return new Duration(entity.getTicksLived() / 20)
