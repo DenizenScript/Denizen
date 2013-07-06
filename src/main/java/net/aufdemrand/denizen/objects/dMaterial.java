@@ -36,7 +36,7 @@ public class dMaterial implements dObject {
     	
     	if (m.matches()) {
     		
-            int data = 0;
+            int data = -1;
     		
     		if (m.group(2) != null) {
     			
@@ -95,7 +95,9 @@ public class dMaterial implements dObject {
     
     public dMaterial(Material material, int data) {
         this.material = material;
-        this.data = (byte) data;
+        if (data < 0)
+            this.data = null;
+        else this.data = (byte) data;
     }
     
     public dMaterial(int id) {
@@ -104,7 +106,9 @@ public class dMaterial implements dObject {
     
     public dMaterial(int id, int data) {
         this.material = Material.getMaterial(id);
-        this.data = (byte) data;
+        if (data < 0)
+            this.data = null;
+        else this.data = (byte) data;
     }
     
     /////////////////////
@@ -114,14 +118,24 @@ public class dMaterial implements dObject {
     // Associated with Bukkit Material
 
     private Material material;
-    private byte data = 0;
+    private Byte data = 0;
 
     public Material getMaterial() {
         return material;
     }
+
+    public boolean specifiedData() {
+        return data != null;
+    }
+
+    public boolean matchesMaterialData(MaterialData data) {
+        if (specifiedData())
+            return (material == data.getItemType() && data.equals(data.getData()));
+        else return material == data.getItemType();
+    }
     
     public MaterialData getMaterialData() {
-        return new MaterialData(material, data);
+        return new MaterialData(material, data != null ? data : 0);
     }
 
     String prefix = "material";
