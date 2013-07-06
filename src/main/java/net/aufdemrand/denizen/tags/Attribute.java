@@ -66,7 +66,7 @@ public class Attribute {
         string = string.toLowerCase();
         if (attributes.isEmpty()) return false;
         if (attributes.size() < attribute) return false;
-        if (raw_tag.split(".", attribute)[2].toLowerCase().startsWith(string)) return true;
+        if (raw_tag.split(".", attribute)[attribute - 1].toLowerCase().startsWith(string)) return true;
         return false;
     }
 
