@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
 
@@ -308,6 +309,74 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
 
+        if (attribute.startsWith("find")) {
+
+            attribute.fulfill(1);
+            ArrayList<dObject> found = new ArrayList<dObject>();
+
+            // <location.find.blocks[sandstone|cobblestone].within[5]>
+
+            if (attribute.startsWith("blocks")
+                    && attribute.getAttribute(2).startsWith("within")
+                    && attribute.hasContext(2)) {
+                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                List<dObject> materials = new ArrayList<dObject>();
+                if (attribute.hasContext(1))
+                    materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
+
+                dB.log(materials + " " + radius + " ");
+                attribute.fulfill(2);
+
+                for (int x = -(radius); x <= radius; x++)
+                    for (int y = -(radius); y <= radius; y++)
+                        for (int z = -(radius); z <= radius; z++)
+                            if (!materials.isEmpty()) {
+                                for (dObject material : materials)
+                                    if (((dMaterial) material).matchesMaterialData(getBlock()
+                                            .getRelative(x,y,z).getType().getNewData(getBlock()
+                                                    .getRelative(x,y,z).getData())))
+                                        found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
+                            } else found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
+            }
+
+            // <location.find.surface_blocks[sandstone|cobblestone].within[5]>
+
+            else if (attribute.startsWith("surface_blocks")
+                    && attribute.getAttribute(2).startsWith("within")
+                    && attribute.hasContext(2)) {
+                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                List<dObject> materials = new ArrayList<dObject>();
+                if (attribute.hasContext(1))
+                    materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
+
+                attribute.fulfill(2);
+
+                for (int x = -(radius); x <= radius; x++)
+                    for (int y = -(radius); y <= radius; y++)
+                        for (int z = -(radius); z <= radius; z++)
+                            if (!materials.isEmpty()) {
+                                for (dObject material : materials)
+                                    if (((dMaterial) material).matchesMaterialData(getBlock()
+                                            .getRelative(x,y,z).getType().getNewData(getBlock()
+                                                    .getRelative(x,y,z).getData()))) {
+                                        Location l = getBlock().getRelative(x,y,z).getLocation();
+                                        if (l.add(0,1,0).getBlock().getType() == Material.AIR
+                                                && l.add(0,1,0).getBlock().getType() == Material.AIR)
+                                            found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
+                                    }
+                            } else {
+                                Location l = getBlock().getRelative(x,y,z).getLocation();
+                                if (l.add(0,1,0).getBlock().getType() == Material.AIR
+                                        && l.add(0,1,0).getBlock().getType() == Material.AIR)
+                                    found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
+                            }
+            }
+
+            else return "null";
+
+            return new dList(found).getAttribute(attribute);
+        }
+
         if (attribute.startsWith("block.material"))
             return new Element(getBlock().getType().toString()).getAttribute(attribute.fulfill(2));
 
@@ -382,7 +451,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         if (attribute.startsWith("power"))
             return new Element(String.valueOf(getBlock().getBlockPower()))
                     .getAttribute(attribute.fulfill(1));
-        
+
         if (attribute.startsWith("in_region")) {
             if (Depends.worldGuard == null) {
                 dB.echoError("Cannot check region! WorldGuard is not loaded!");
