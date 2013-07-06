@@ -217,16 +217,21 @@ public class Element implements dObject {
             String split_string = (attribute.hasContext(1) ? attribute.getContext(1) : " ");
             Integer limit = (attribute.hasContext(2) ? attribute.getIntContext(2) : 1);
             if (split_string.toLowerCase().startsWith("regex:"))
-                return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1], limit))).getAttribute(attribute.fulfill(1));
+                return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1], limit)))
+                        .getAttribute(attribute.fulfill(1));
             else
-                return new dList(Arrays.asList(StringUtils.split(element, split_string, limit))).getAttribute(attribute.fulfill(1));        }
+                return new dList(Arrays.asList(StringUtils.split(element, split_string, limit)))
+                        .getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("split")) {
             String split_string = (attribute.hasContext(1) ? attribute.getContext(1) : " ");
             if (split_string.toLowerCase().startsWith("regex:"))
-                return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1]))).getAttribute(attribute.fulfill(1));
+                return new dList(Arrays.asList(element.split(split_string.split(":", 2)[1])))
+                        .getAttribute(attribute.fulfill(1));
             else
-                return new dList(Arrays.asList(StringUtils.split(element, split_string))).getAttribute(attribute.fulfill(1));
+                return new dList(Arrays.asList(StringUtils.split(element, split_string)))
+                        .getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("sqrt")) {

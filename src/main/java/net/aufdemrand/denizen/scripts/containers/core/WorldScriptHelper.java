@@ -836,8 +836,8 @@ public class WorldScriptHelper implements Listener {
 
         // Fill context
         context.put("args", args_list);
-        context.put("command", command);
-        context.put("raw_args", (event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : ""));
+        context.put("command", new Element(command));
+        context.put("raw_args", new Element((event.getMessage().split(" ").length > 1 ? event.getMessage().split(" ", 2)[1] : "")));
         String determination;
 
         // Run any event scripts and get the determination.
@@ -855,7 +855,7 @@ public class WorldScriptHelper implements Listener {
     public void playerDeath(PlayerDeathEvent event) {
 
     	Map<String, Object> context = new HashMap<String, Object>();
-        context.put("message", event.getDeathMessage());
+        context.put("message", new Element(event.getDeathMessage()));
         
         String determination = doEvents(Arrays.asList
         		("player dies"),
@@ -870,7 +870,7 @@ public class WorldScriptHelper implements Listener {
     public void playerGameModeChange(PlayerGameModeChangeEvent event) {
     	
     	Map<String, Object> context = new HashMap<String, Object>();
-        context.put("gamemode", event.getNewGameMode().name());
+        context.put("gamemode", new Element(event.getNewGameMode().name()));
         
         String determination = doEvents(Arrays.asList
         		("player changes gamemode",
