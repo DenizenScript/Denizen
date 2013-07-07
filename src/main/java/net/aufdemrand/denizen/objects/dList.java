@@ -202,6 +202,12 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        if (attribute.startsWith("size"))
+            return new Element(size()).getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("is_empty"))
+            return new Element(isEmpty()).getAttribute(attribute.fulfill(1));
+
         if (attribute.startsWith("asstring")
                 || attribute.startsWith("as_string")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
