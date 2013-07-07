@@ -14,16 +14,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R1.CraftWorld;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Slime;
-import org.bukkit.entity.Villager;
+import org.bukkit.craftbukkit.v1_6_R1.entity.CraftAnimals;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -36,7 +28,7 @@ public class dEntity implements dObject {
     /////////////////////
     //   PATTERNS
     /////////////////
-    
+
     final static Pattern entity_by_id =
             Pattern.compile("(n@|e@|p@)(.+)",
                     Pattern.CASE_INSENSITIVE);
@@ -44,8 +36,8 @@ public class dEntity implements dObject {
     final static Pattern entity_with_data =
             Pattern.compile("(\\w+),?(\\w+)?,?(\\w+)?",
                     Pattern.CASE_INSENSITIVE);
-    
-    
+
+
     /////////////////////
     //   STATIC METHODS
     /////////////////
@@ -108,19 +100,19 @@ public class dEntity implements dObject {
 
         // Choose a random entity type if "RANDOM" is used
         if (string.equalsIgnoreCase("RANDOM")) {
-        	
-        	EntityType randomType = null;
-        	
-        	// When selecting a random entity type, ignore invalid or inappropriate ones
-        	while (randomType == null ||
-        		   randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$") == true) {
-        	
-        		randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
-        	}
-        	
-        	return new dEntity(randomType, "RANDOM");
+
+            EntityType randomType = null;
+
+            // When selecting a random entity type, ignore invalid or inappropriate ones
+            while (randomType == null ||
+                    randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$") == true) {
+
+                randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
+            }
+
+            return new dEntity(randomType, "RANDOM");
         }
-        
+
         ///////
         // Match @object format
 
@@ -131,7 +123,7 @@ public class dEntity implements dObject {
         m = entity_by_id.matcher(string);
 
         if (m.matches()) {
-            
+
             String entityGroup = m.group(1).toUpperCase();
 
             // NPC entity
@@ -183,24 +175,24 @@ public class dEntity implements dObject {
 
         ////////
         // Match Entity_Type
-        
+
         m = entity_with_data.matcher(string);
-        
+
         if (m.matches()) {
-        	
+
             String data1 = null;
             String data2 = null;
-            
-        	if (m.group(2) != null) {
-        		
-        		data1 = m.group(2).toUpperCase();
-        	}
-        	
-        	if (m.group(3) != null) {
-        		
-        		data2 = m.group(3).toUpperCase();
-        	}
-        
+
+            if (m.group(2) != null) {
+
+                data1 = m.group(2).toUpperCase();
+            }
+
+            if (m.group(3) != null) {
+
+                data2 = m.group(3).toUpperCase();
+            }
+
             for (EntityType type : EntityType.values()) {
                 if (type.name().equalsIgnoreCase(m.group(1)))
                     // Construct a new 'vanilla' unspawned dEntity                	
@@ -215,25 +207,25 @@ public class dEntity implements dObject {
 
 
     public static boolean matches(String arg) {
-    	
+
         Matcher m;
         m = entity_by_id.matcher(arg);
         if (m.matches()) return true;
 
         arg = arg.replace("e@", "");
-        
+
         if (arg.equalsIgnoreCase("RANDOM"))
-        	return true;
+            return true;
 
         if (ScriptRegistry.containsScript(arg, EntityScriptContainer.class))
             return true;
 
         m = entity_with_data.matcher(arg);
-        
+
         if (m.matches()) {
-        
-        	for (EntityType type : EntityType.values())
-            	if (type.name().equalsIgnoreCase(m.group(1))) return true;
+
+            for (EntityType type : EntityType.values())
+                if (type.name().equalsIgnoreCase(m.group(1))) return true;
         }
 
         return false;
@@ -257,7 +249,7 @@ public class dEntity implements dObject {
             this.entity_type = entityType;
         } else dB.echoError("Entity_type referenced is null!");
     }
-    
+
     public dEntity(EntityType entityType, String data1) {
         if (entityType != null) {
             this.entity = null;
@@ -265,7 +257,7 @@ public class dEntity implements dObject {
             this.data1 = data1;
         } else dB.echoError("Entity_type referenced is null!");
     }
-    
+
     public dEntity(EntityType entityType, String data1, String data2) {
         if (entityType != null) {
             this.entity = null;
@@ -317,92 +309,92 @@ public class dEntity implements dObject {
                     getLivingEntity().teleport(location);
                     getLivingEntity().getEquipment().setArmorContents(despawned_entity.equipment);
                     getLivingEntity().setHealth(despawned_entity.health);
-                    
+
                     despawned_entity = null;
                 }
 
                 else {
-                	
-                	org.bukkit.entity.Entity ent = null;
-                	
-                	if (entity_type.name().matches("FALLING_BLOCK")) {
-                		
-                		Material material = null;
-                		
-                		if (data1 != null && dMaterial.matches(data1)) {
-                			
-                			material = dMaterial.valueOf(data1).getMaterial();
-                			
-                			// If we did not get a block with "RANDOM", or we got
-                			// air or portals, keep trying
-                			while (data1.equals("RANDOM") && 
-                				   (material.isBlock() == false || 
-                				    material == Material.AIR ||
-                				    material == Material.PORTAL ||
-                				    material == Material.ENDER_PORTAL)) {
-                				
-                				material = dMaterial.valueOf(data1).getMaterial();
-                			}
-                		}
-                		
-                		// If material is null or not a block, default to SAND
-                		if (material == null || material.isBlock() == false) {
-                			
-                			material = Material.SAND;
-                		}
-                		
-                		byte materialData = 0;
-                		
-                		// Get special data value from data2 if it is a valid integer
-                		if (data2 != null && aH.matchesInteger(data2)) {
-                			
-                			materialData = (byte) aH.getIntegerFrom(data2);
-                		}
-                		
-                		// This is currently the only way to spawn a falling block
-                		ent = location.getWorld().spawnFallingBlock(location, material, materialData);
-                		entity = ent;
-                	}
-                	
-                	else {
-                		
-                		ent = location.getWorld().spawnEntity(location, entity_type);
-                		entity = ent;
-                    
-                    	// If there is some special subtype data associated with this dEntity,
-                    	// use the setSubtype method to set it in a clean, object-oriented
-                    	// way that uses reflection
-                		//
-                		// Otherwise, just use entity-specific methods manually
-                    	if (data1 != null) {
-                    	
-                    		try {
-                    		
-                    			// Allow creepers to be powered
-                    			if (ent instanceof Creeper && data1.equalsIgnoreCase("POWERED")) {
-                    				((Creeper) entity).setPowered(true);
-                    			}
-                    			else if (ent instanceof Enderman && dMaterial.matches(data1)) {
-                    				((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data1).getMaterialData());
-                    			}
-                    			else if (ent instanceof Ocelot) {
-                    				setSubtype(Ocelot.class, "Type", "setCatType", data1);
-                    			}
-                    			else if (ent instanceof Skeleton) {
-                    				setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data1);
-                    			}
-                    			else if (ent instanceof Slime && aH.matchesInteger(data1)) {
-                    				((Slime) entity).setSize(aH.getIntegerFrom(data1));
-                    			}
-                    			else if (ent instanceof Villager) {
-                    				setSubtype(Villager.class, "Profession", "setProfession", data1);
-                    			}
-    						
-                    		} catch (Exception e) {
-                    			e.printStackTrace();
-                    		}
-                    	}
-                	}
+
+                    org.bukkit.entity.Entity ent = null;
+
+                    if (entity_type.name().matches("FALLING_BLOCK")) {
+
+                        Material material = null;
+
+                        if (data1 != null && dMaterial.matches(data1)) {
+
+                            material = dMaterial.valueOf(data1).getMaterial();
+
+                            // If we did not get a block with "RANDOM", or we got
+                            // air or portals, keep trying
+                            while (data1.equals("RANDOM") &&
+                                    (material.isBlock() == false ||
+                                            material == Material.AIR ||
+                                            material == Material.PORTAL ||
+                                            material == Material.ENDER_PORTAL)) {
+
+                                material = dMaterial.valueOf(data1).getMaterial();
+                            }
+                        }
+
+                        // If material is null or not a block, default to SAND
+                        if (material == null || material.isBlock() == false) {
+
+                            material = Material.SAND;
+                        }
+
+                        byte materialData = 0;
+
+                        // Get special data value from data2 if it is a valid integer
+                        if (data2 != null && aH.matchesInteger(data2)) {
+
+                            materialData = (byte) aH.getIntegerFrom(data2);
+                        }
+
+                        // This is currently the only way to spawn a falling block
+                        ent = location.getWorld().spawnFallingBlock(location, material, materialData);
+                        entity = ent;
+                    }
+
+                    else {
+
+                        ent = location.getWorld().spawnEntity(location, entity_type);
+                        entity = ent;
+
+                        // If there is some special subtype data associated with this dEntity,
+                        // use the setSubtype method to set it in a clean, object-oriented
+                        // way that uses reflection
+                        //
+                        // Otherwise, just use entity-specific methods manually
+                        if (data1 != null) {
+
+                            try {
+
+                                // Allow creepers to be powered
+                                if (ent instanceof Creeper && data1.equalsIgnoreCase("POWERED")) {
+                                    ((Creeper) entity).setPowered(true);
+                                }
+                                else if (ent instanceof Enderman && dMaterial.matches(data1)) {
+                                    ((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data1).getMaterialData());
+                                }
+                                else if (ent instanceof Ocelot) {
+                                    setSubtype(Ocelot.class, "Type", "setCatType", data1);
+                                }
+                                else if (ent instanceof Skeleton) {
+                                    setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data1);
+                                }
+                                else if (ent instanceof Slime && aH.matchesInteger(data1)) {
+                                    ((Slime) entity).setSize(aH.getIntegerFrom(data1));
+                                }
+                                else if (ent instanceof Villager) {
+                                    setSubtype(Villager.class, "Profession", "setProfession", data1);
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                 }
             }
 
@@ -433,7 +425,7 @@ public class dEntity implements dObject {
         dEntity.saveAs(this, id);
         return this;
     }
-    
+
     /**
      * Set the subtype of this entity by using the chosen method and Enum from
      * this Bukkit entity's class and:
@@ -441,7 +433,7 @@ public class dEntity implements dObject {
      * 2) looping through the entity's subtypes until one matches the value string
      *
      * Example: setSubtype(Ocelot.class, "Type", "setCatType", "SIAMESE_CAT");
-     * 
+     *
      * @param entityClass  The Bukkit entity class of the entity.
      * @param typeName  The name of the entity class' Enum with subtypes.
      * @param method  The name of the method used to set the subtype of this entity.
@@ -449,25 +441,25 @@ public class dEntity implements dObject {
      */
 
     public void setSubtype (Class<? extends Entity> entityClass, String typeName, String method, String value)
-    		throws Exception {
-    	
-    	Class<?> typeClass = Class.forName(entityClass.getName() + "$" + typeName);
-    	Object[] types = typeClass.getEnumConstants();
-    	
-    	if (value.matches("RANDOM")) {
-    	
-    		entityClass.getMethod(method, typeClass).invoke(entity, types[Utilities.getRandom().nextInt(types.length)]);
-    	}
-    	else { 
-    		for (Object type : types) {
-    		
-    			if (type.toString().equalsIgnoreCase(value)) {
-    			
-    				entityClass.getMethod(method, typeClass).invoke(entity, type);
-    				break;
-    			}
-    		}
-    	}
+            throws Exception {
+
+        Class<?> typeClass = Class.forName(entityClass.getName() + "$" + typeName);
+        Object[] types = typeClass.getEnumConstants();
+
+        if (value.matches("RANDOM")) {
+
+            entityClass.getMethod(method, typeClass).invoke(entity, types[Utilities.getRandom().nextInt(types.length)]);
+        }
+        else {
+            for (Object type : types) {
+
+                if (type.toString().equalsIgnoreCase(value)) {
+
+                    entityClass.getMethod(method, typeClass).invoke(entity, type);
+                    break;
+                }
+            }
+        }
     }
 
 
@@ -570,7 +562,7 @@ public class dEntity implements dObject {
         }
 
         if (attribute.startsWith("get_vehicle")) {
-            if (getLivingEntity().isInsideVehicle())
+            if (getBukkitEntity().isInsideVehicle())
                 return new dEntity(getBukkitEntity().getVehicle())
                         .getAttribute(attribute.fulfill(1));
             else return "null";
@@ -584,7 +576,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("name")) {
             if (CitizensAPI.getNPCRegistry().isNPC(entity))
                 return new Element(CitizensAPI.getNPCRegistry().getNPC(entity).getName())
-                .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
             if (entity instanceof Player)
                 return new Element(((Player) entity).getName())
                         .getAttribute(attribute.fulfill(1));
@@ -592,9 +584,13 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith("entity_type"))
-            return new Element(entity.getType().getName().replace("Entity", ""))
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("entity_type"))      {
+           // TODO: Fix this.. seems to be a bug? Horse will not return correct entityType
+           if (entity instanceof CraftAnimals
+                   && !(entity instanceof Pig))
+                return new Element("HORSE").getAttribute(attribute.fulfill(1));
+            return new Element(entity_type.toString()).getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("custom_id")) {
             if (CustomNBT.hasCustomNBT(getLivingEntity(), "denizen-script-id"))
@@ -619,7 +615,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("location"))
             return new dLocation(entity.getLocation())
                     .getAttribute(attribute.fulfill(1));
-        
+
         if (attribute.startsWith("health.formatted")) {
             double maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
@@ -670,7 +666,7 @@ public class dEntity implements dObject {
 
         if (attribute.startsWith("last_damage.duration"))
             return new Duration((long) getLivingEntity().getNoDamageTicks())
-            .getAttribute(attribute.fulfill(2));
+                    .getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("time_lived"))
             return new Duration(entity.getTicksLived() / 20)
