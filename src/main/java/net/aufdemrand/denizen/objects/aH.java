@@ -125,8 +125,6 @@ public class aH {
 
         public boolean matchesArgumentType(Class<? extends dObject> dClass) {
 
-            // dB.log("Calling matches: " + prefix + ":" + value + " " + clazz.getCanonicalName());
-
             try {
                 return (Boolean) dClass.getMethod("matches", String.class).invoke(null, value);
             } catch (Exception e) {
