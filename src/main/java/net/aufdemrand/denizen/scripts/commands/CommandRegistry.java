@@ -244,6 +244,9 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ResetCommand.class,
                 "RESET", "reset [fails|finishes|cooldown] (script:script_name{attached script})", 1);
 
+        registerCoreMember(RunCommand.class,
+                "RUN", "run [script] (path:...) (as:p@player|n@npc) (def:...|...) (id:id_name) (delay:duration) (loop) (q:#)", 1);
+
         registerCoreMember(RuntaskCommand.class,
         		"RUNTASK", "runtask [script_name] (instantly) (queue|queue:queue_name) (delay:#)", 1);
 

@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,7 +46,7 @@ public class RunCommand extends AbstractCommand {
     }
 
     public String getUsage() {
-        return "run [script] (as:p@player|n@npc) (def:...|...) (id:id_name) (delay:duration) (loop) (q:#)";
+        return "run [script] (path:...) (as:p@player|n@npc) (def:...|...) (id:id_name) (delay:duration) (loop) (q:#)";
     }
 
     @Override
@@ -60,6 +61,9 @@ public class RunCommand extends AbstractCommand {
             else if (arg.matchesPrefix("i, id"))
                 scriptEntry.addObject("id", arg.asElement());
 
+            else if (arg.matchesPrefix("p, path"))
+                scriptEntry.addObject("path", arg.asElement());
+
             else if (arg.matches("instant, instantly"))
                 scriptEntry.addObject("instant", Element.TRUE);
 
@@ -71,7 +75,7 @@ public class RunCommand extends AbstractCommand {
                 scriptEntry.addObject("loop", Element.TRUE);
 
             else if (arg.matchesPrefix("q, quantity")
-                && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("quantity", arg.asElement());
 
             else if (arg.matchesPrefix("a, as")
@@ -90,11 +94,63 @@ public class RunCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must define a SCRIPT to be run.");
     }
 
-    @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
+        // definitions
+        // loop
+        // quantity
+        // delay
+        // instant
 
+        // Get the script
+        dScript script = (dScript) scriptEntry.getObject("script");
+
+        // Get the entries
+        List<ScriptEntry> entries;
+        // If a path is specified
+        if (scriptEntry.hasObject("path"))
+            entries = script.getContainer().getEntries(
+                    scriptEntry.getPlayer(),
+                    scriptEntry.getNPC(),
+                    (String) scriptEntry.getObject("path"));
+        // Else, assume standard path
+        else entries = script.getContainer().getBaseEntries(
+                scriptEntry.getPlayer(),
+                scriptEntry.getNPC());
+
+        // Get the 'id' if specified
+        String id = (scriptEntry.hasObject("id") ?
+                (String) scriptEntry.getObject("id") : ScriptQueue._getNextId());
+
+        // Build the queue
+        ScriptQueue queue;
+        if (scriptEntry.hasObject("instant"))
+            queue = ScriptQueue._getInstantQueue(id).addEntries(entries);
+        else queue = ScriptQueue._getQueue(id).addEntries(entries);
+
+        // Set any delay
+        if (scriptEntry.hasObject("delay"))
+            queue.delayFor(((Duration) scriptEntry.getObject("delay")).getTicks());
+
+        // Set any definitions
+        if (scriptEntry.hasObject("definitions")) {
+            int x = 1;
+            dList definitions = (dList) scriptEntry.getObject("definitions");
+            String[] definition_names = null;
+            try { definition_names = script.getContainer().getString("definitions").split(","); }
+                catch (Exception e) { }
+            for (String definition : definitions) {
+                queue.context.put(definition_names != null && definition_names.length >= x ?
+                definition_names[x - 1] : String.valueOf(x), definition);
+                x++;
+            }
+        }
+
+        dB.log(queue.getQueueSize() + " " + entries.size());
+
+        // OK, GO!
+        queue.start();
     }
 
 }
