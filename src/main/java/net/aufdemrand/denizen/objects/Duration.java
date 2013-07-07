@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import com.google.common.primitives.Ints;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
@@ -11,7 +12,7 @@ import java.util.regex.Pattern;
 public class Duration implements dObject {
 
     final static Pattern match =
-            Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)",
+            Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d)((-\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d))?",
                     Pattern.CASE_INSENSITIVE);
 
     final public static Duration ZERO = new Duration(0);
@@ -27,6 +28,27 @@ public class Duration implements dObject {
      */
     public static Duration valueOf(String string) {
         if (string == null) return null;
+
+        // Pick a duration between
+        if (string.indexOf("-") > 0
+                && Duration.matches(string.split("-", 2)[0])
+                && Duration.matches(string.split("-", 2)[1])) {
+
+            String[] split = string.split("-", 2);
+            dB.echoDebug("Getting a Duration within range: " + split);
+
+            Duration low = Duration.valueOf(split[0]);
+            Duration high = Duration.valueOf(split[1]);
+
+            if (low != null && high != null)                   {
+                int seconds = Utilities.getRandom()
+                        .nextInt((high.getSecondsAsInt() - low.getSecondsAsInt())
+                                + low.getSecondsAsInt());
+                dB.echoDebug("Getting random duration between " + low.identify() + " and " + high.identify() + "... " + seconds + "s");
+                return new Duration(seconds);
+            }
+            else return null;
+        }
 
         Matcher m = match.matcher(string);
         if (m.matches()) {
@@ -162,22 +184,17 @@ public class Duration implements dObject {
     public String identify() {
         double seconds = getTicks() / 20;
         double days = seconds / 86400;
-        double hours = (seconds - days * 86400) / 3600;
-        double minutes = (seconds - days * 86400 - hours * 3600) / 60;
-        seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
+        double hours = seconds / 3600;
+        double minutes = seconds / 60;
 
-        String timeString = "";
+        if (days >= 1)
+            return days + "d";
+        if (hours >= 2)
+            return hours + "h";
+        if (minutes >= 2)
+            return minutes + "m";
 
-        if (days > 0)
-            timeString = String.valueOf(days) + "d ";
-        else if (hours > 0)
-            timeString = timeString + String.valueOf(hours) + "h ";
-        else if (minutes > 0 && days == 0)
-            timeString = timeString + String.valueOf(minutes) + "m ";
-        else if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
-            timeString = timeString + String.valueOf(seconds) + "s";
-
-        return timeString;
+        else return seconds + "s";
     }
 
     @Override
