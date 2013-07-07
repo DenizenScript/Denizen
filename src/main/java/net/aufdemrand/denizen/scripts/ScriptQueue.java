@@ -220,7 +220,7 @@ public class ScriptQueue implements Listener {
                     // Turn the engine
                     revolve();
                 }
-            }, ticks, ticks);
+            }, delayTicks, ticks);
             // If the ticks are 0, this is an 'instant queue'
         else
         {
