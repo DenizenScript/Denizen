@@ -196,6 +196,13 @@ public class dLocation extends org.bukkit.Location implements dObject {
      */
     public dLocation(Location location) {
         super(location.getWorld(), location.getX(), location.getY(), location.getZ());
+        // If supplied location has pitch/yaw, set it.
+        if (location.getPitch() > 0f
+                && location.getYaw() > 0f) {
+            hasPitchYaw = true;
+            this.setPitch(location.getPitch());
+            this.setYaw(location.getYaw());
+        }
     }
 
     /**
@@ -214,7 +221,26 @@ public class dLocation extends org.bukkit.Location implements dObject {
     }
 
     public dLocation(World world, double x, double y, double z, float yaw, float pitch) {
-        super(world, x, y, z, yaw, pitch);
+        super(world, x, y, z, pitch, yaw);
+        hasPitchYaw = true;
+    }
+
+    boolean hasPitchYaw = false;
+
+    @Override
+    public void setPitch(float pitch) {
+        hasPitchYaw = true;
+        super.setPitch(pitch);
+    }
+
+    @Override
+    public void setYaw(float yaw) {
+        hasPitchYaw = true;
+        super.setYaw(yaw);
+    }
+
+    public boolean hasPitchYaw() {
+        return hasPitchYaw;
     }
 
     public dLocation rememberAs(String id) {
@@ -244,10 +270,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
     @Override
     public String debug() {
-        return (isSaved(this) ? "<G>" + prefix + "='<A>" + getSaved(this) + "(<Y>" + getX() + "," + getY()
-                + "," + getZ() + "," + getWorld().getName() + "<A>)<G>'  "
-                : "<G>" + prefix + "='<Y>" + getX() + "," + getY()
-                + "," + getZ() + "," + getWorld().getName() + "<G>'  ");
+        return (isSaved(this) ? "<G>" + prefix + "='<A>" + getSaved(this) + "(<Y>" + identify()+ "<A>)<G>'  "
+                : "<G>" + prefix + "='<Y>" + identify() + "<G>'  ");
     }
 
     @Override
@@ -260,8 +284,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public String identify() {
         if (isSaved(this))
             return "l@" + getSaved(this);
+        else if (hasPitchYaw()) return "l@" + getX() + "," + getY()
+                + "," + getZ() + "," + getPitch() + "," + getYaw() + "," + getWorld().getName();
         else return "l@" + getX() + "," + getY()
-                + "," + getZ() + "," + getWorld().getName();
+                    + "," + getZ() + "," + getWorld().getName();
     }
 
     @Override
@@ -309,13 +335,31 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
 
-        if (attribute.startsWith("find")) {
+        if (attribute.startsWith("with_pose")) {
+            String context = attribute.getContext(1);
+            Float pitch = 0f;
+            Float yaw = 0f;
+            if (dEntity.matches(context)) {
+                dEntity ent = dEntity.valueOf(context);
+                if (ent.isSpawned()) {
+                    pitch = ent.getBukkitEntity().getLocation().getPitch();
+                    yaw = ent.getBukkitEntity().getLocation().getYaw();
+                }
+            } else if (context.split(",").length == 2) {
+                String[] split = context.split(",");
+                pitch = Float.valueOf(split[0]);
+                yaw = Float.valueOf(split[1]);
+            }
+            dLocation loc = dLocation.valueOf(identify());
+            loc.setPitch(pitch);
+            loc.setYaw(yaw);
+            return loc.getAttribute(attribute.fulfill(1));
+        }
 
+        if (attribute.startsWith("find")) {
             attribute.fulfill(1);
             ArrayList<dObject> found = new ArrayList<dObject>();
-
             // <location.find.blocks[sandstone|cobblestone].within[5]>
-
             if (attribute.startsWith("blocks")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
@@ -324,7 +368,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 if (attribute.hasContext(1))
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
 
-                dB.log(materials + " " + radius + " ");
+                // dB.log(materials + " " + radius + " ");
                 attribute.fulfill(2);
 
                 for (int x = -(radius); x <= radius; x++)
@@ -500,16 +544,6 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
             else return "null";
         }
-
-//        else if (type.equals("TIME"))
-//        {
-//            if (subType.equals("PERIOD"))
-//                if (fromLocation.getWorld().getTime() < 13500 ||
-//                        fromLocation.getWorld().getTime() > 23000)
-//                    event.setReplaced("day");
-//                else if (fromLocation.getWorld().getTime() > 13500)
-//                    event.setReplaced("night");
-//        }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
