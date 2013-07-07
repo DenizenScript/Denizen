@@ -244,6 +244,30 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        if (attribute.startsWith("mul")
+                && attribute.hasContext(1)) {
+            return new Element(asDouble() * aH.getDoubleFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("sub")
+                && attribute.hasContext(1)) {
+            return new Element(asDouble() - aH.getDoubleFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("add")
+                && attribute.hasContext(1)) {
+            return new Element(asDouble() + aH.getDoubleFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("div")
+                && attribute.hasContext(1)) {
+            return new Element(asDouble() / aH.getDoubleFrom(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
         if (attribute.startsWith("length")) {
             return new Element(element.length())
                     .getAttribute(attribute.fulfill(1));

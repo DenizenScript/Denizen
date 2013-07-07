@@ -11,45 +11,54 @@ import java.util.regex.Pattern;
 
 public class Duration implements dObject {
 
+    // Use regex pattern matching to easily determine if a string
+    // value is a valid Duration.
     final static Pattern match =
             Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d)((-\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d))?",
                     Pattern.CASE_INSENSITIVE);
 
+
+    // Define a 'ZERO' Duration
     final public static Duration ZERO = new Duration(0);
+
 
     /**
      * Gets a Duration Object from a dScript argument. Durations must be a positive
      * number. Can specify the unit of time by using one of the following: T=ticks, M=minutes,
      * S=seconds, H=hours, D=days. Not using a unit will imply seconds. Examples: 10s, 50m, 1d, 50.
-     * Can also include a prefix, though it will be ignored. Example: duration:10, time:30m.
      *
-     * @param string  the dScript argument String
-     * @return  a Script, or null if incorrectly formatted
+     * @param string  the Argument value.
+     * @return  a Duration, or null if incorrectly formatted.
      */
     public static Duration valueOf(String string) {
         if (string == null) return null;
 
-        // Pick a duration between
+        // Pick a duration between a high and low number if there is a '-' present.
         if (string.indexOf("-") > 0
                 && Duration.matches(string.split("-", 2)[0])
                 && Duration.matches(string.split("-", 2)[1])) {
 
             String[] split = string.split("-", 2);
-            dB.echoDebug("Getting a Duration within range: " + split);
-
             Duration low = Duration.valueOf(split[0]);
             Duration high = Duration.valueOf(split[1]);
 
-            if (low != null && high != null)                   {
+            // Make sure 'low' and 'high' returned valid Durations,
+            // and that 'low' is less time than 'high'.
+            if (low != null && high != null
+                    && low.getSecondsAsInt() < high.getSecondsAsInt()) {
                 int seconds = Utilities.getRandom()
                         .nextInt((high.getSecondsAsInt() - low.getSecondsAsInt())
                                 + low.getSecondsAsInt());
-                dB.echoDebug("Getting random duration between " + low.identify() + " and " + high.identify() + "... " + seconds + "s");
+                // Send the result to the debugger since it's probably good to know what is being chosen.
+                dB.echoDebug("Getting random duration between " + low.identify()
+                        + " and " + high.identify() + "... " + seconds + "s");
+
                 return new Duration(seconds);
-            }
-            else return null;
+
+            } else return null;
         }
 
+        // Standard Duration. Check the type and create new Duration object accordingly.
         Matcher m = match.matcher(string);
         if (m.matches()) {
             if (m.group().toUpperCase().endsWith("T"))
@@ -76,6 +85,12 @@ public class Duration implements dObject {
     }
 
 
+    /**
+     * Checks to see if the string is a valid Duration.
+     *
+     * @param string  the String to match.
+     * @return  true if valid.
+     */
     public static boolean matches(String string) {
         Matcher m = match.matcher(string);
         if (m.matches()) return true;
@@ -84,60 +99,78 @@ public class Duration implements dObject {
     }
 
 
+    // The amount of seconds in the duration.
     private double seconds;
+
+
+    // Duration's default dObject prefix.
     private String prefix = "Duration";
+
 
     /**
      * Creates a duration object when given number of seconds.
      *
-     * @param seconds  number of seconds
+     * @param seconds  the number of seconds.
      */
     public Duration(double seconds) {
         this.seconds = seconds;
         if (this.seconds < 0) this.seconds = 0;
     }
 
+
     /**
      * Creates a duration object when given number of seconds.
      *
-     * @param seconds  number of seconds
+     * @param seconds  the number of seconds.
      */
     public Duration(int seconds) {
         this.seconds = seconds;
         if (this.seconds < 0) this.seconds = 0;
     }
 
+
     /**
      * Creates a duration object when given number of Bukkit ticks.
      *
-     * @param ticks  number of ticks
+     * @param ticks  the number of ticks.
      */
     public Duration (long ticks) {
         this.seconds = ticks / 20;
         if (this.seconds < 0) this.seconds = 0;
     }
 
+
     /**
-     * Gets the number of ticks of this duration.
+     * Gets the number of ticks of this duration. There are 20 ticks
+     * per second.
      *
-     * @return  number of ticks
+     * @return  the number of ticks.
      */
     public long getTicks() {
         return (long) (seconds * 20);
     }
 
+
     /**
-     * Gets the number of ticks of this duration.
+     * Gets the number of ticks of this duration as an integer. There are
+     * 20 per second.
      *
-     * @return  number of ticks
+     * @return  the number of ticks.
      */
     public int getTicksAsInt() {
         return Ints.checkedCast((long) (seconds * 20));
     }
 
+
+    /**
+     * Gets the number of milliseconds in this duration.
+     *
+     * @return  the number of milliseconds.
+     */
     public long getMillis() {
         return (long) (seconds * 1000);
     }
+
 
     /**
      * Gets the number of seconds of this duration.
@@ -147,6 +180,7 @@ public class Duration implements dObject {
     public double getSeconds() {
         return seconds;
     }
+
 
     /**
      * Gets the number of seconds as an integer value of the duration.
@@ -160,26 +194,41 @@ public class Duration implements dObject {
         return Ints.checkedCast(Math.round(seconds));
     }
 
+
     @Override
     public String getPrefix() {
         return prefix;
     }
 
+
     @Override
     public String debug() {
-        return ChatColor.DARK_GRAY +  prefix + "='" + ChatColor.YELLOW + seconds + " seconds" + ChatColor.DARK_GRAY + "'  ";
+        return ChatColor.DARK_GRAY +  prefix + "='"
+                + ChatColor.YELLOW + identify()
+                + ChatColor.DARK_GRAY + "'  ";
     }
 
+
+    // Durations are not unique, cannot be saved or persisted.
     @Override
     public boolean isUnique() {
         return false;
     }
+
 
     @Override
     public String getType() {
         return "duration";
     }
 
+
+    /**
+     * Return the value of this Duration. This will also return a
+     * valid String that can be re-interpreted with Duration.valueOf()
+     * thus acting as a form of 'serialization/deserialization'.
+     *
+     * @return  a valid String-form Duration.
+     */
     @Override
     public String identify() {
         double seconds = getTicks() / 20;
@@ -197,16 +246,24 @@ public class Duration implements dObject {
         else return seconds + "s";
     }
 
+
+    /**
+     * Acts just like identify().
+     *
+     * @return  a valid String-form Duration.
+     */
     @Override
     public String toString() {
         return identify();
     }
+
 
     @Override
     public dObject setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
+
 
     @Override
     public String getAttribute(Attribute attribute) {
