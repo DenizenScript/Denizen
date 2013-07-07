@@ -93,7 +93,7 @@ public class dNPC implements dObject {
     public NPC getCitizen() {
         NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
         if (npc == null)
-            dB.log("Uh oh! Denizen has encountered an NPE while trying to fetch a NPC. Has this NPC been removed?");
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC. Has this NPC been removed?");
         return npc;
     }
 
@@ -101,7 +101,7 @@ public class dNPC implements dObject {
         try {
             return getCitizen().getBukkitEntity();
         } catch (NullPointerException e) {
-            dB.log("Uh oh! Denizen has encountered an NPE while trying to fetch a NPC entity. Has this NPC been removed?");
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. Has this NPC been removed?");
             return null;
         }
     }

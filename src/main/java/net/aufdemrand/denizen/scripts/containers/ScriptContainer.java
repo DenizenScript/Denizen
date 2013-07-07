@@ -105,7 +105,7 @@ public class ScriptContainer {
     }
 
     public boolean checkCooldown(dPlayer player) {
-        return DenizenAPI._commandRegistry().get(CooldownCommand.class).checkCooldown(player.getName(), name);
+        return CooldownCommand.checkCooldown(player.getName(), name);
     }
 
 }
