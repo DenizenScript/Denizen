@@ -127,7 +127,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 	@EventHandler
 	public void listenBreak(BlockBreakEvent event) {
 		if (type == BlockType.BREAK) {
-			if (event.getPlayer() == player) {
+			if (event.getPlayer() == player.getPlayerEntity()) {
 				
 				if (region != null) 
 					if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
@@ -152,7 +152,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 	@EventHandler
 	public void listenCollect(PlayerPickupItemEvent event) {
 		if (type == BlockType.COLLECT) {
-			if (event.getPlayer() == player) {
+			if (event.getPlayer() == player.getPlayerEntity()) {
 				
 				if (region != null) 
 					if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
@@ -176,7 +176,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 	@EventHandler
 	public void listenBucket(PlayerBucketFillEvent event) {
 		if (type == BlockType.COLLECT) {
-			if (event.getPlayer() == player) {
+			if (event.getPlayer() == player.getPlayerEntity()) {
 				
 				if (region != null) 
 					if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
@@ -195,7 +195,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 	@EventHandler
 	public void listenPlace(BlockPlaceEvent event) {
 		if (type == BlockType.BUILD) {
-			if (event.getPlayer() == player) {
+			if (event.getPlayer() == player.getPlayerEntity()) {
 				
 				if (region != null) 
 					if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;

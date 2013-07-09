@@ -85,7 +85,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	{
 		// Proceed if the slot clicked is a RESULT slot and the player is the right one
 		if (event.getSlotType().toString() == "RESULT"
-			&& event.getWhoClicked() == player)
+			&& event.getWhoClicked() == player.getPlayerEntity())
 		{	
 			// Put the type of this inventory in a string and check if it matches the
 			// listener's type
@@ -149,7 +149,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	{
 		if (type == ItemType.FISH)
 		{
-			if (event.getPlayer() == player)
+			if (event.getPlayer() == player.getPlayerEntity())
 			{
 
 				if (region != null) 

@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.utilities.debugging.dB;

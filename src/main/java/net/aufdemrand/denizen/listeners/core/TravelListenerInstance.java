@@ -156,7 +156,7 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 	 */
   @EventHandler
 	public void walking(PlayerMoveEvent event) {
-		if (!(event.getPlayer() == player)) return;
+		if (!(event.getPlayer() == player.getPlayerEntity())) return;
 		
 		if (type == TravelType.DISTANCE){
 			if (!event.getTo().getBlock().equals(event.getFrom().getBlock())) {
