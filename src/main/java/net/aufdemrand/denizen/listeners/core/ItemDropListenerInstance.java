@@ -191,7 +191,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 	public void mobKilled(EntityDeathEvent event) {
 		if (type != ItemDropType.MOBKILL) return;
 		dB.echoDebug("...checking kill");
-		if (event.getEntity().getKiller() != player) return;
+		if (event.getEntity().getKiller() != player.getPlayerEntity()) return;
 		dB.echoDebug("...killed by player");
 		if (event.getEntity().getType() != mob) return;
 		dB.echoDebug("...proper mob");
@@ -218,7 +218,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 	public void blockMined(BlockBreakEvent event) {
 		if (type != ItemDropType.BLOCKBREAK) return;
 		dB.echoDebug("...checking blockbreakevent");
-		if (event.getPlayer() != player) return;
+		if (event.getPlayer() != player.getPlayerEntity()) return;
 		dB.echoDebug("...mined by player");
 		if (event.getBlock().getType() != block) return;
 		dB.echoDebug("...proper block mined");
@@ -243,7 +243,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 	public void blockPlaced(BlockPlaceEvent event) {
 		if (type != ItemDropType.BLOCKPLACE) return;
 		dB.echoDebug("...checking blockplaceevent");
-		if (event.getPlayer() != player) return;
+		if (event.getPlayer() != player.getPlayerEntity()) return;
 		dB.echoDebug("...placed by player");
 		if (event.getBlock().getType() != block) return;
 		dB.echoDebug("...proper block placed");

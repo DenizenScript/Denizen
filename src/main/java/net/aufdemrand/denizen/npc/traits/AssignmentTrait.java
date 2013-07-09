@@ -190,12 +190,12 @@ public class AssignmentTrait extends Trait {
             player = dPlayer.mirrorBukkitPlayer((Player) event.getEntity());
 
         DenizenAPI.getDenizenNPC(npc).action("hit", player);
-        DenizenAPI.getDenizenNPC(npc).action("hit on " + event.getEntityType().toString(), player);
+        DenizenAPI.getDenizenNPC(npc).action("hit on " + event.getEntityType().name(), player);
 
         if (event.getEntity() instanceof LivingEntity) {
             if (((LivingEntity) event.getEntity()).getHealth() - event.getDamage() <= 0) {
                 DenizenAPI.getDenizenNPC(npc).action("kill", player);
-                DenizenAPI.getDenizenNPC(npc).action("kill of "	+ event.getEntityType().toString(), player);
+                DenizenAPI.getDenizenNPC(npc).action("kill of "	+ event.getEntityType().name(), player);
             }
         }
 

@@ -153,16 +153,18 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
 	@EventHandler
 	public void listen(EntityDeathEvent event) {
+		
 		// Only continue if the event is an event for the player that owns this listener.
-		if (event.getEntity().getKiller() != player) return;
-
+		if (event.getEntity().getKiller() != player.getPlayerEntity()) return;
+		
 		// If REGION argument specified, check. If not in region, don't count kill!
 		if (region != null) 
 			if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
-
+		
 		// Check type!
 		if (type == KillType.ENTITY) {
-			if (targets.contains(event.getEntityType().toString()) || targets.contains(event.getEntityType().toString().toLowerCase()) || targets.contains("*")) { 
+			
+			if (targets.contains(event.getEntityType().name()) || targets.contains(event.getEntityType().name().toLowerCase()) || targets.contains("*")) { 
 				currentKills++;
 				dB.log(player.getName() + " killed a " + event.getEntityType().toString() + ". Current progress '" + currentKills + "/" + quantity + "'.");
 				check();
