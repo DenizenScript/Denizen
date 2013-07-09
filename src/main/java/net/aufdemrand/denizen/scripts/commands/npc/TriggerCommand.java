@@ -42,7 +42,7 @@ public class TriggerCommand extends AbstractCommand {
             else if (aH.matchesValueArg("RADIUS", arg, ArgumentType.Integer))
                 radius = aH.getIntegerFrom(arg);
 
-			else if (aH.matchesToggle(arg))
+			else if (aH.matchesState(arg))
                 toggle = Toggle.valueOf(aH.getStringFrom(arg.toUpperCase()));
 
             else if (aH.matchesValueArg("NAME", arg, ArgumentType.String))

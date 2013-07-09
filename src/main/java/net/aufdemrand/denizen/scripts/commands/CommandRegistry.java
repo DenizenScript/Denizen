@@ -167,7 +167,7 @@ public class CommandRegistry implements dRegistry {
         		"HEAL", "heal (amt:#) (target:npc|{player})", 0);
         
         registerCoreMember(HealthCommand.class,
-                "HEALTH", "health (toggle:true|false|toggle) (set_max:#)", 1);
+                "HEALTH", "health (state:true|false|toggle) (set_max:#)", 1);
 		
         registerCoreMember(HurtCommand.class,
         		"HURT", "hurt (amt:#) (target:npc|{player})", 0);
@@ -179,7 +179,7 @@ public class CommandRegistry implements dRegistry {
                 "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] (origin:<entity>/<x,y,z,world>) [destination:<entity>/<x,y,z,world>]", 2);
         
         registerCoreMember(InvisibleCommand.class,
-                "INVISIBLE", "invisible [npc] [toggle:true|false|toggle]", 2);
+                "INVISIBLE", "invisible [npc] [state:true|false|toggle]", 2);
 		
         registerCoreMember(ListenCommand.class,
         		"LISTEN", "listen [listener_type] [id:listener_id] (...)  +--> see documentation - http://bit.ly/XJlKwm", 2);
@@ -191,7 +191,7 @@ public class CommandRegistry implements dRegistry {
         		"LOOK", "look (player) [location:x,y,z,world]", 1);
         
         registerCoreMember(LookcloseCommand.class,
-        		"LOOKCLOSE", "lookclose [toggle:true|false]", 1);
+        		"LOOKCLOSE", "lookclose [state:true|false]", 1);
 		
         registerCoreMember(MidiCommand.class,
         		"MIDI", "midi [file:<name>] (listener(s):[p@<name>|...])|(location:<x,y,z,world>) (tempo:<#.#>)", 1);
@@ -287,10 +287,10 @@ public class CommandRegistry implements dRegistry {
                 "TIME", "time [type:{global}|player] [<value>] (world:<name>)", 1);
         
         registerCoreMember(TriggerCommand.class, 
-        		"TRIGGER", "trigger [name:trigger_name] [(toggle:true|false)|(cooldown:#.#)|(radius:#)]", 2);
+        		"TRIGGER", "trigger [name:trigger_name] [(state:true|false)|(cooldown:#.#)|(radius:#)]", 2);
 		
         registerCoreMember(VulnerableCommand.class, 
-        		"VULNERABLE", "vulnerable (toggle:{true}|false|toggle)", 0);
+        		"VULNERABLE", "vulnerable (state:{true}|false|toggle)", 0);
 		
         registerCoreMember(WaitCommand.class, 
         		"WAIT", "wait (duration:#{5s}) (queue:queue_type) (player:player_name{attached}) (npcid:#{attached})", 0);

@@ -578,17 +578,16 @@ public class aH {
     }
 
     @Deprecated
-    public static boolean matchesToggle(String arg) {
-        final Pattern m = Pattern.compile("toggle:true|false|toggle");
+    public static boolean matchesState(String arg) {
+        final Pattern m = Pattern.compile("(state|toggle):(true|false|toggle)");
         if (m.matcher(arg).matches()) return true;
-        else if (arg.toUpperCase().startsWith("toggle:"))
+        else if (arg.toUpperCase().startsWith("(state|toggle):"))
             dB.echoError("While parsing '" + arg + "', Denizen has run into a problem. While the prefix is " +
-                    "correct, the value is not valid. 'TOGGLE' requires a value of TRUE, FALSE, or TOGGLE. ");
+                    "correct, the value is not valid. 'STATE' requires a value of TRUE, FALSE, or TOGGLE. ");
 
         return false;
     }
 
-    final static Pattern matchesTogglePtrn = Pattern.compile("toggle:true|false|toggle", Pattern.CASE_INSENSITIVE);
     final static Pattern matchesScriptPtrn = Pattern.compile("script:(.+)", Pattern.CASE_INSENSITIVE);
 
 

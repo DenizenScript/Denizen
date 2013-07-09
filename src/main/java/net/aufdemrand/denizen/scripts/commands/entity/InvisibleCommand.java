@@ -1,5 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.InvisibleTrait;
@@ -9,7 +13,10 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
- * Instructs the NPC to follow a player.
+ * Makes a player or an NPC invisible.
+ *
+ * Note: Only works on NPCs that you have used
+ * "/npc playerlist" on!
  *
  * @author aufdemrand
  *
@@ -24,8 +31,8 @@ public class InvisibleCommand extends AbstractCommand {
 
         // Parse Arguments
         for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesToggle(arg))
-                scriptEntry.addObject("toggle", Action.valueOf(aH.getStringFrom(arg).toUpperCase()));
+            if (aH.matchesState(arg))
+                scriptEntry.addObject("state", Action.valueOf(aH.getStringFrom(arg).toUpperCase()));
 
             else if (aH.matchesArg("NPC, PLAYER", arg))
                 scriptEntry.addObject("target", Target.valueOf(aH.getStringFrom(arg).toUpperCase()));
@@ -33,8 +40,8 @@ public class InvisibleCommand extends AbstractCommand {
             else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
-        if (scriptEntry.getObject("toggle") == null)
-            throw new InvalidArgumentsException("Must specify a toggle action!");
+        if (scriptEntry.getObject("state") == null)
+            throw new InvalidArgumentsException("Must specify a state action!");
 
         if (scriptEntry.getObject("target") == null)
             throw new InvalidArgumentsException("Must specify a target!");
@@ -47,7 +54,7 @@ public class InvisibleCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
-        Action action = (Action) scriptEntry.getObject("toggle");
+        Action action = (Action) scriptEntry.getObject("state");
         Target target = (Target) scriptEntry.getObject("target");
 
         // Report to dB
@@ -81,8 +88,31 @@ public class InvisibleCommand extends AbstractCommand {
                 break;
 
             case PLAYER:
+            	
+            	if (scriptEntry.getPlayer() != null) {
+            	
+            	Player player = scriptEntry.getPlayer().getPlayerEntity();
+            	PotionEffect invis = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
+            	
+            		switch (action) {
+            	
+                		case FALSE:
+                			player.removePotionEffect(PotionEffectType.INVISIBILITY);
+                			break;
 
-                // TODO
+                		case TRUE:
+                			invis.apply(player);
+                			break;
+
+                		case TOGGLE:
+                			if (player.hasPotionEffect(PotionEffectType.INVISIBILITY))
+                				player.removePotionEffect(PotionEffectType.INVISIBILITY);
+                			else 
+                				invis.apply(player);
+
+                			break;
+            		}
+            	}
         }
 
     }

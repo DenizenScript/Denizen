@@ -52,7 +52,7 @@ public class LookcloseCommand extends AbstractCommand {
                 range = aH.getDoubleFrom(arg);
                 dB.echoDebug(Messages.DEBUG_SET_RANGE, String.valueOf(range));
 
-            }   else if (aH.matchesToggle(arg)) {
+            }   else if (aH.matchesState(arg)) {
                 toggle = aH.getBooleanFrom(arg);
                 dB.echoDebug(Messages.DEBUG_TOGGLE, String.valueOf(toggle));
 

@@ -23,7 +23,7 @@ public class HealthCommand extends AbstractCommand {
 
         for (String arg : scriptEntry.getArguments()) {
 
-            if (aH.matchesToggle(arg))
+            if (aH.matchesState(arg))
                 action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
 
             else if (aH.matchesValueArg("SET_MAX", arg, ArgumentType.Integer)) {

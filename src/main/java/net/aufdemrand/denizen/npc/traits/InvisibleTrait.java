@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.npc.traits;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.trait.Toggleable;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.potion.PotionEffect;
@@ -20,6 +21,7 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
     }
 
     public void setInvisible(boolean invisible) {
+    	
         this.invisible = invisible;
         if (invisible) setInvisible();
         else if (npc.isSpawned())
@@ -29,13 +31,7 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
 
     private void setInvisible() {
 
-        if (npc instanceof Player) {
-
-            if (npc.isSpawned()) invis.apply((Player) npc.getBukkitEntity());
-        } else {
-            if (npc.isSpawned()) invis.apply(npc.getBukkitEntity());
-        }
-
+        invis.apply(npc.getBukkitEntity());
     }
 
     @Override
