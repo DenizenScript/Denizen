@@ -9,17 +9,25 @@ import org.bukkit.ChatColor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * Durations are a more convenient way to get a 'unit of time' within Denizen.
+ *
+ */
+
 public class Duration implements dObject {
 
     // Use regex pattern matching to easily determine if a string
     // value is a valid Duration.
     final static Pattern match =
-            Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d)((-\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d))?",
+            Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)(?:(?:-\\d+.\\d+|.\\d+|\\d+)(?:t|m|s|h|d|))?",
                     Pattern.CASE_INSENSITIVE);
 
 
     // Define a 'ZERO' Duration
     final public static Duration ZERO = new Duration(0);
+
+
 
 
     /**
