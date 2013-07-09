@@ -71,7 +71,7 @@ public class AnnounceCommand extends AbstractCommand {
                 announceType = AnnounceType.TO_FLAGGED;
             }
 
-            else text = aH.getStringFrom(arg);
+            else text = arg;
         }
 
         // If text is missing, alert the console.

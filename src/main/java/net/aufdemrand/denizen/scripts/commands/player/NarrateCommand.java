@@ -82,7 +82,7 @@ public class NarrateCommand extends AbstractCommand {
                 }
 			}
             else {
-                text = aH.getStringFrom(arg);
+                text = arg;
             }
         }
         
