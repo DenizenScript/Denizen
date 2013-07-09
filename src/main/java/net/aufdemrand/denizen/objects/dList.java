@@ -150,6 +150,17 @@ public class dList extends ArrayList<String> implements dObject {
         return "List";
     }
     
+    public String[] toArray() {
+    	
+    	List<String> list = new ArrayList<String>();
+    	
+    	for (String string : this) {
+    		list.add(string);
+    	}
+    	
+    	return list.toArray(new String[list.size()]);
+    }
+    
     // Return a list that includes only elements belonging to a certain class
     public List<dObject> filter(Class<? extends dObject> dClass) {
         

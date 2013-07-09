@@ -7,6 +7,8 @@ import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -48,6 +50,11 @@ public class SignCommand extends AbstractCommand {
         
         if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException("Must specify a Sign location!");
+        
+        // Default to SIGN_POST type
+        
+        if (!scriptEntry.hasObject("type"))
+            scriptEntry.addObject("type", Type.SIGN_POST);
     }
     
 	@SuppressWarnings("unchecked")
@@ -59,23 +66,16 @@ public class SignCommand extends AbstractCommand {
         dList text = (dList) scriptEntry.getObject("text");
 		dLocation location = (dLocation) scriptEntry.getObject("location");
 		
+        // Report to dB
+        dB.report(getName(), type.name() + ", "
+                + location.debug()
+                + text.debug());
+		
 		Block sign = location.getBlock();
-		
-		if (type.equals(Type.WALL_SIGN))
-			sign.setType(Material.WALL_SIGN);
-		else
-			sign.setType(Material.SIGN_POST);
-		
+		sign.setType(Material.valueOf(type.name()));
         BlockState signState = sign.getState();
         
-        int n = 0;
-        
-        for (String line : text) {
-            
-            ((Sign) signState).setLine(n, line);
-            n++;
-        }
-        
-        signState.update();
+        Utilities.setSignLines((Sign) signState, text.toArray());
+        Utilities.setSignRotation(signState);
     }
 }

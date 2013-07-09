@@ -2,15 +2,25 @@ package net.aufdemrand.denizen.utilities;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+import java.util.Set;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.TagManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
@@ -316,6 +326,13 @@ public class Utilities {
     	return random;
     }
     
+    /**
+     * Set the lines on a sign to the strings in a string array
+     *
+     * @param sign  The sign
+     * @param lines  The string array
+     */
+    
     public static void setSignLines(Sign sign, String[] lines) {
         
     	int n = 0;
@@ -326,6 +343,24 @@ public class Utilities {
         }
         
         sign.update();
+    }
+    
+    /**
+     * Make a wall sign attach itself to an available surface
+     *
+     * @param signState  The sign's blockState
+     */
+    
+    public static void setSignRotation(BlockState signState) {
+    	
+        BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
+        for (BlockFace bf : blockFaces) {
+                Block bu = signState.getBlock().getRelative(bf);
+                if ((bu.getType() != Material.AIR)) {
+                        ((org.bukkit.material.Sign) signState.getData()).setFacingDirection(bf.getOppositeFace());
+                        signState.update();
+                }
+        }
     }
 
 }
