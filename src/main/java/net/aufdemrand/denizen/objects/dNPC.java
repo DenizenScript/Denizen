@@ -272,18 +272,25 @@ public class dNPC implements dObject {
                     && getCitizen().getTrait(Anchors.class).getAnchor(attribute.getContext(1)) != null)
                 return new dLocation(getCitizen().getTrait(Anchors.class)
                         .getAnchor(attribute.getContext(1)).getLocation())
-                .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("flag")) {
-            if (attribute.hasContext(1)) {
-                if (FlagManager.npcHasFlag(this, attribute.getContext(1)))
-                    return new dList(DenizenAPI.getCurrentInstance().flagManager()
-                            .getNPCFlag(getId(), attribute.getContext(1)))
-                            .getAttribute(attribute.fulfill(1));
-                return "null";
-            }
-            else return null;
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else return "null";
+            attribute.fulfill(1);
+            if (attribute.startsWith("is_expired")
+                    || attribute.startsWith("isexpired"))
+                return new Element(!FlagManager.npcHasFlag(this, flag_name))
+                        .getAttribute(attribute.fulfill(1));
+            if (attribute.startsWith("size") && !FlagManager.npcHasFlag(this, flag_name))
+                return new Element(0).getAttribute(attribute.fulfill(1));
+            if (FlagManager.npcHasFlag(this, flag_name))
+                return new dList(DenizenAPI.getCurrentInstance().flagManager()
+                        .getNPCFlag(getId(), flag_name))
+                        .getAttribute(attribute);
+            else return "null";
         }
 
         if (attribute.startsWith("id"))

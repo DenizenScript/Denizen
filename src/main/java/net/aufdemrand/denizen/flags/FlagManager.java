@@ -231,7 +231,7 @@ public class FlagManager {
         	
             checkExpired();
         	
-            String[] split = ((String) obj).split("\\|"); // the pipe character | needs to be escaped
+            String[] split = ((String) obj).replace("li@", "").split("\\|"); // the pipe character | needs to be escaped
         	
             if (split.length > 0)
             {
@@ -292,7 +292,6 @@ public class FlagManager {
 
                 // Else, remove specified index
             } else if (index < size()) value.values.remove(index - 1);
-
             save();
             rebuild();
         }

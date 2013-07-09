@@ -104,18 +104,21 @@ public class dPlayer implements dObject {
     //   INSTANCE FIELDS/METHODS
     /////////////////
 
-    String player_name;
+    String player_name = null;
 
     public boolean isValid() {
+        if (player_name == null) return false;
         if (getPlayerEntity() == null && getOfflinePlayer() == null) return false;
         return true;
     }
 
     public Player getPlayerEntity() {
+        if (player_name == null) return null;
         return Bukkit.getPlayer(player_name);
     }
 
     public OfflinePlayer getOfflinePlayer() {
+        if (player_name == null) return null;
         return Bukkit.getOfflinePlayer(player_name);
     }
 
@@ -129,13 +132,14 @@ public class dPlayer implements dObject {
     }
 
     public boolean isOnline() {
+        if (player_name == null) return false;
         if (Bukkit.getPlayer(player_name) != null) return true;
         return false;
     }
 
 
     /////////////////////
-    //   DSCRIPTARGUMENT METHODS
+    //   dObject Methods
     /////////////////
 
     private String prefix = "Player";
@@ -180,6 +184,8 @@ public class dPlayer implements dObject {
     @Override
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return "null";
+
+        if (player_name == null) return "null";
 
         if (attribute.startsWith("entity"))
             return new dEntity(getPlayerEntity())
@@ -386,14 +392,21 @@ public class dPlayer implements dObject {
         }
 
         if (attribute.startsWith("flag")) {
-            if (attribute.hasContext(1)) {
-                if (FlagManager.playerHasFlag(this, attribute.getContext(1)))
-                    return new dList(DenizenAPI.getCurrentInstance().flagManager()
-                            .getPlayerFlag(getName(), attribute.getContext(1)))
-                            .getAttribute(attribute.fulfill(1));
-                return "null";
-            }
-            else return null;
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else return "null";
+            attribute.fulfill(1);
+            if (attribute.startsWith("is_expired")
+                    || attribute.startsWith("isexpired"))
+                return new Element(!FlagManager.playerHasFlag(this, flag_name))
+                        .getAttribute(attribute.fulfill(1));
+            if (attribute.startsWith("size") && !FlagManager.playerHasFlag(this, flag_name))
+                return new Element(0).getAttribute(attribute.fulfill(1));
+            if (FlagManager.playerHasFlag(this, flag_name))
+                return new dList(DenizenAPI.getCurrentInstance().flagManager()
+                        .getPlayerFlag(getName(), flag_name))
+                        .getAttribute(attribute);
+            else return "null";
         }
 
         if (attribute.startsWith("group")

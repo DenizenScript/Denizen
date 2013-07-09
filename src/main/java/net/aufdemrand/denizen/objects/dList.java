@@ -98,7 +98,6 @@ public class dList extends ArrayList<String> implements dObject {
     }
     
     public dList(List<String> items, String prefix) {
-    	
     	for (String element : items) {
     		add(prefix + element);
     	}
@@ -171,7 +170,12 @@ public class dList extends ArrayList<String> implements dObject {
     	if (results.size() > 0) return results;
     	else return null;
     }
-    
+
+    @Override
+    public String toString() {
+        return identify();
+    }
+
     @Override
     public String identify() {
         if (flag != null)
@@ -269,19 +273,26 @@ public class dList extends ArrayList<String> implements dObject {
 
         // FLAG Specific Attributes
 
-        if (attribute.startsWith("is_expired")) {
-            if (flag == null) return new Element("false")
-                    .getAttribute(attribute.fulfill(1));
-            return new Element(flag.checkExpired())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        // Note: is_expired attribute is handled in player/npc/server
+        // since expired flags return 'null'
 
-        if (attribute.startsWith("expiration")) {
-            if (flag == null) return Duration.ZERO
-                    .getAttribute(attribute.fulfill(1));
+        if (flag != null && attribute.startsWith("expiration")) {
             return flag.expiration()
                     .getAttribute(attribute.fulfill(1));
         }
+
+        // Need this attribute (for flags) since they return the last
+        // element of the list, unless '.as_list' is specified.
+
+        if (flag != null && (attribute.startsWith("as_list")
+                || attribute.startsWith("aslist")))
+            return new dList(this).getAttribute(attribute.fulfill(1));
+
+
+        // If this is a flag, return the last element (this is how it has always worked...)
+        // Use as_list to return a list representation of the flag.
+        // If this is NOT a flag, but instead a normal dList, return an element
+        // with dList's identify() value.
 
         return (flag != null
                 ? new Element(flag.getLast().asString()).getAttribute(attribute.fulfill(0))
