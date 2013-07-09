@@ -121,7 +121,7 @@ public class RunCommand extends AbstractCommand {
 
         // Get the 'id' if specified
         String id = (scriptEntry.hasObject("id") ?
-                (String) scriptEntry.getObject("id") : ScriptQueue._getNextId());
+                ((Element) scriptEntry.getObject("id")).asString() : ScriptQueue._getNextId());
 
         // Build the queue
         ScriptQueue queue;
@@ -138,11 +138,11 @@ public class RunCommand extends AbstractCommand {
             int x = 1;
             dList definitions = (dList) scriptEntry.getObject("definitions");
             String[] definition_names = null;
-            try { definition_names = script.getContainer().getString("definitions").split(","); }
+            try { definition_names = script.getContainer().getString("definitions").split("\\|"); }
                 catch (Exception e) { }
             for (String definition : definitions) {
                 queue.context.put(definition_names != null && definition_names.length >= x ?
-                definition_names[x - 1] : String.valueOf(x), definition);
+                definition_names[x - 1].trim() : String.valueOf(x), definition);
                 x++;
             }
         }
