@@ -296,7 +296,7 @@ public class CommandRegistry implements dRegistry {
         		"WAIT", "wait (duration:#{5s}) (queue:queue_type) (player:player_name{attached}) (npcid:#{attached})", 0);
 
         registerCoreMember(WalkCommand.class,
-                "WALK, WALKTO", "walk [location:x,y,z,world] (speed:#)", 1);
+                "WALK, WALKTO", "walk [l@location] (speed:percentage) (auto_range)", 1);
 
         registerCoreMember(WeatherCommand.class,
                 "WEATHER", "weather [type:{global}|player] [sunny|storm|thunder] (world:<name>)", 1);

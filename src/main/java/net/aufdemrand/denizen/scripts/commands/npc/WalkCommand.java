@@ -2,207 +2,88 @@ package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.event.Listener;
 
 /**
- * Your command! 
- * This class is a template for a Command in Denizen.
- * 
+ * Handles NPC walking with the Citizens API.
+ *
  * @author Jeremy Schroeder
  */
-public class WalkCommand extends AbstractCommand implements Listener {
-	
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+public class WalkCommand extends AbstractCommand {
 
-        // Initialize required fields
-		dLocation location = null;
-		float speed = -1f;
+    //                        percentage
+    // walk [location] (speed:#.#) (auto_range)
 
-		for (String arg : scriptEntry.getArguments()) {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-            if (aH.matchesLocation(arg))
-                location = aH.getLocationFrom(arg);
+        // Interpret arguments
 
-            else if (aH.matchesValueArg("SPEED", arg, aH.ArgumentType.Double))
-                speed = (float) aH.getDoubleFrom(arg);
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-		}
-		
-		scriptEntry.addObject("location", location)
-		    .addObject("speed", speed);
-	}
+            if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class))
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+            else if (!scriptEntry.hasObject("speed")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Percentage)
+                    && arg.matchesPrefix("s, speed"))
+                scriptEntry.addObject("speed", arg.asElement());
 
-        dLocation location = (dLocation) scriptEntry.getObject("location");
-        Float speed = (Float) scriptEntry.getObject("speed");
+            else if (!scriptEntry.hasObject("auto_range")
+                    && arg.matches("auto_range"))
+                scriptEntry.addObject("auto_range", Element.TRUE);
 
-        scriptEntry.getNPC().getNavigator().setTarget(location);
-        
-        if (speed > 0)
-            scriptEntry.getNPC().getNavigator().getLocalParameters().speedModifier(speed);
-
-	}
+        }
 
 
+        // Check for required information
 
-	/*
-	@Override
-	public boolean execute(ScriptEntry theEntry) throws CommandException {
+        if (!scriptEntry.hasObject("location"))
+            throw new InvalidArgumentsException("Must specify a location!");
+        if (scriptEntry.getNPC() == null
+                || !scriptEntry.getNPC().isValid()
+                || !scriptEntry.getNPC().isSpawned())
+            throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
 
-		 
-		Location walkLocation = null;
-		boolean returning = false;
-		Float Speed = null;
+    }
 
-		if (theEntry.getCommand().equalsIgnoreCase("return")) {
-			if (returns.containsKey(theEntry.getDenizen())){
-				walkLocation = returns.get(theEntry.getDenizen());
-				returning = true;
-			}
-			lse
-			{
-				aH.echoDebug("Return location not found for " + theEntry.getDenizen().getName());
-				return false;
-			}
-		}
 
-		for (String thisArg : theEntry.arguments()) {
-			
-			// Fill replaceables
-			if (thisArg.contains("<")) thisArg = aH.fillReplaceables(theEntry.getPlayer(), theEntry.getDenizen(), thisArg, false);
-			
-			if(thisArg.toUpperCase().contains("SPEED:")){
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-				try {
-					Speed = Float.valueOf( aH.getStringModifier(thisArg));		
-					aH.echoDebug("... speed set to " + Speed);
-				} catch (Exception e) {
-					aH.echoDebug("... Invalid Speed!");
-				}
-			}
-		}
+        // Fetch required objects
 
-		if(theEntry.getCommand().equalsIgnoreCase("walkto"))  {
-			walkLocation = handleWalkTo(theEntry);
-		}
-		else if(theEntry.getCommand().equalsIgnoreCase("walk"))  {
-			walkLocation = handleWalk(theEntry);
-		}
+        dLocation loc = (dLocation) scriptEntry.getObject("location");
+        Element speed = (Element) scriptEntry.getObject("speed");
+        Element auto_range = (Element) scriptEntry.getObject("auto_range");
 
-		
-		if (walkLocation != null) {
 
-			double dist = theEntry.getDenizen().getLocation().distance(walkLocation);
-			theEntry.getDenizen().getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(true);
-			theEntry.getDenizen().getNavigator().cancelNavigation();
-			theEntry.getDenizen().getCitizensEntity().getNavigator().setTarget(walkLocation);
-			if(Speed!=null) theEntry.getDenizen().getCitizensEntity().getNavigator().getDefaultParameters().speedModifier(Speed);
-			if (returning) theEntry.getDenizen().getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(false);
-			else returns.put(theEntry.getDenizen(), walkLocation);
-			return true;
+        // Debug the execution
 
-		}
-		else	aH.echoDebug("...No location!");
-		
-		
-		return false;
-	}
+        dB.report(getName(), loc.debug()
+                + (speed != null ? speed.debug() : "")
+                + (auto_range != null ? auto_range.debug() : ""));
 
-	private Location handleWalkTo(ScriptEntry theEntry){
-		Location out = null;
-		
-		for (String thisArg : theEntry.arguments()) {
+        // Do the execution
 
-			// If argument is a modifier.				
+        if (auto_range != null
+                && auto_range == Element.TRUE) {
+            double distance = scriptEntry.getNPC().getLocation().distance(loc);
+            if (scriptEntry.getNPC().getNavigator().getLocalParameters().range() < distance)
+                scriptEntry.getNPC().getNavigator().getDefaultParameters().range((float) distance + 10);
+        }
 
-			if(thisArg.equalsIgnoreCase("PLAYER")){
-				if (theEntry.getPlayer() == null) return null;
+        if (speed != null)
+            scriptEntry.getNPC().getNavigator().getLocalParameters().speedModifier(speed.asFloat());
 
-				out = theEntry.getPlayer().getLocation();
-				org.bukkit.util.Vector victor = out.getDirection();
-				out.subtract(victor);
-				aH.echoDebug("...walk location now at '%s'.", theEntry.getPlayer().getName());
-			}
+        scriptEntry.getNPC().getNavigator().setTarget(loc);
+    }
 
-			// If argument is a BOOKMARK modifier
-			if (aH.matchesBookmark(thisArg)) {
-				out = aH.getBookmarkModifier(thisArg, theEntry.getDenizen());
-				if (out != null)
-					aH.echoDebug("...walk location now at '%s'.", thisArg);
-			}
 
-			else aH.echoError("...unable to match '%s'!", thisArg);
-		}
-
-		return out;	
-
-	}
-
-	private Location handleWalk(ScriptEntry theEntry){
-		Location out = theEntry.getDenizen().getLocation();
-		
-		for (String thisArg : theEntry.arguments()) {
-
-			if(thisArg.toUpperCase().contains("FORWARD:")){
-				double amt = Double.valueOf( aH.getStringModifier(thisArg));
-				Vector victor = theEntry.getDenizen().getLocation().getDirection();
-				victor.multiply(amt);
-				aH.echoDebug("... offset forward " + amt);
-				out.add(victor);
-			}
-			
-			if(thisArg.toUpperCase().contains("NORTH:") || thisArg.toUpperCase().contains("Z:"  )){
-				double amt = Double.valueOf( aH.getStringModifier(thisArg));
-				out.add(0, 0, amt);
-				aH.echoDebug("... offset z " + amt);
-			}
-			
-			if(thisArg.toUpperCase().contains("SOUTH:")){
-				double amt = Double.valueOf( aH.getStringModifier(thisArg));
-				out.add(0, 0, -amt);
-				aH.echoDebug("... offset -z " + amt);
-			}
-			
-			
-			if(thisArg.toUpperCase().contains("WEST:") || thisArg.toUpperCase().contains("X:"  )){
-				double amt = Double.valueOf( aH.getStringModifier(thisArg));
-				out.add(amt, 0, 0);
-				aH.echoDebug("... offset x " + amt);
-			}
-			
-			if(thisArg.toUpperCase().contains("EAST:")){
-				double amt = Double.valueOf( aH.getStringModifier(thisArg));
-				out.add(-amt, 0, 0);
-				aH.echoDebug("... offset -x " + amt);
-			}
-			
-			if(thisArg.toUpperCase().contains("UP:") || thisArg.toUpperCase().contains("Y:"  )){
-				double amt = Double.valueOf( aH.getStringModifier(thisArg));
-				out.add(0, amt, 0);
-				aH.echoDebug("... offset y " + amt);
-			}
-			
-			if(thisArg.toUpperCase().contains("DOWN:")){
-				double amt = Double.valueOf( aH.getStringModifier(thisArg));
-				out.add(0, -amt,0);
-				aH.echoDebug("... offset -y " + amt);
-			}
-			
-			
-		}
-
-		return out;	
-	}
- */
-
-	
 }
