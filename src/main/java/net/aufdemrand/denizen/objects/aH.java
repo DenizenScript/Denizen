@@ -20,13 +20,16 @@ import java.util.regex.Pattern;
  */
 public class aH {
 
-    public enum PrimitiveType { Float, Double, Integer, Boolean, String, Word }
+    public enum PrimitiveType { Float, Double, Integer, Boolean, String, Word, Percentage }
 
     final static Pattern floatPrimitive =
             Pattern.compile("^[-+]?[0-9]+[.]?[0-9]*([eE][-+]?[0-9]+)?$");
 
     final static Pattern doublePrimitive =
             Pattern.compile("(-)?(?:(?:\\d+)|)(?:(?:\\.\\d+)|)");
+
+    final static Pattern percentagePrimitive =
+            Pattern.compile("(?:(?:\\d+)|)(?:(?:\\.\\d+)|)(%|)");
 
     final static Pattern integerPrimitive =
             Pattern.compile("(-)?\\d+");
@@ -115,6 +118,9 @@ public class aH {
 
                 case Boolean:
                     return booleanPrimitive.matcher(value).matches();
+
+                case Percentage:
+                    return percentagePrimitive.matcher(value).matches();
 
                 case String:
                     return true;

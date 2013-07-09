@@ -56,15 +56,15 @@ public class Element implements dObject {
     }
 
     public double asDouble() {
-        return Double.valueOf(element);
+        return Double.valueOf(element.replace("%", ""));
     }
 
     public float asFloat() {
-        return Float.valueOf(element);
+        return Float.valueOf(element.replace("%", ""));
     }
 
     public int asInt() {
-        return Integer.valueOf(element);
+        return Integer.valueOf(element.replace("%", ""));
     }
 
     public boolean asBoolean() {
