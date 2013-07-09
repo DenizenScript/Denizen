@@ -8,12 +8,12 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.citizensnpcs.api.CitizensAPI;
-import net.minecraft.server.v1_6_R1.EntityLiving;
+import net.minecraft.server.v1_6_R2.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_6_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_6_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -267,7 +267,7 @@ public class Utilities {
 
         else
         {
-            net.minecraft.server.v1_6_R1.Entity handle = ((CraftEntity) entity).getHandle();
+            net.minecraft.server.v1_6_R2.Entity handle = ((CraftEntity) entity).getHandle();
             handle.yaw = (float) yaw;
             handle.pitch = (float) pitch;
         }

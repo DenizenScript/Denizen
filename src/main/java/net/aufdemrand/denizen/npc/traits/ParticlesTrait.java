@@ -5,16 +5,16 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import net.minecraft.server.v1_6_R1.DataWatcher;
-import net.minecraft.server.v1_6_R1.EntityLiving;
+import net.minecraft.server.v1_6_R2.DataWatcher;
+import net.minecraft.server.v1_6_R2.EntityLiving;
 
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_6_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_6_R1.entity.CraftWolf;
+import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftWolf;
 import org.bukkit.entity.Wolf;
 
 public class ParticlesTrait extends Trait {
@@ -87,7 +87,7 @@ public class ParticlesTrait extends Trait {
 		case POTION:
 			/*
             if (!el.effects.isEmpty()) {
-                c = net.minecraft.server.v1_6_R1.PotionBrewer.a(el.effects.values());
+                c = net.minecraft.server.v1_6_R2.PotionBrewer.a(el.effects.values());
             }
             dw.watch(8, Integer.valueOf(c));
             */
