@@ -149,7 +149,7 @@ public class FlyCommand extends AbstractCommand {
         			// Because setPassenger() is a toggle, only use it if the new passenger
         			// is not already the current passenger
         		
-        			if (entity.getPassenger() != lastEntity) {
+        			if (entity.getPassenger() != lastEntity && lastEntity != entity) {
         				lastEntity.teleport(entity.getLocation());
         				entity.setPassenger(lastEntity);
         			}
