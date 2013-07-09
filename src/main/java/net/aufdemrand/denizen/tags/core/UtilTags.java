@@ -42,12 +42,27 @@ public class UtilTags implements Listener {
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
         if (attribute.startsWith("flag")) {
-            if (attribute.hasContext(1)) {
-                if (FlagManager.serverHasFlag(attribute.getContext(1)))
-                    event.setReplaced(new dList(DenizenAPI.getCurrentInstance().flagManager()
-                            .getGlobalFlag(attribute.getContext(1)))
-                            .getAttribute(attribute.fulfill(1)));
+            String flag_name;
+            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            else {
+                event.setReplaced("null");
+                return;
             }
+            attribute.fulfill(1);
+            if (attribute.startsWith("is_expired")
+                    || attribute.startsWith("isexpired")) {
+                event.setReplaced(new Element(!FlagManager.serverHasFlag(flag_name))
+                        .getAttribute(attribute.fulfill(1)));
+                return;
+            }
+            if (attribute.startsWith("size") && !FlagManager.serverHasFlag(flag_name)) {
+                event.setReplaced(new Element(0).getAttribute(attribute.fulfill(1)));
+                return;
+            }
+            if (FlagManager.serverHasFlag(flag_name))
+                event.setReplaced(new dList(DenizenAPI.getCurrentInstance().flagManager()
+                        .getGlobalFlag(flag_name))
+                        .getAttribute(attribute));
             else event.setReplaced("null");
         }
 
@@ -56,7 +71,6 @@ public class UtilTags implements Listener {
                     .getNPCSelector().getSelected(Bukkit.getConsoleSender())).getAttribute(attribute.fulfill(1)));
         }
     }
-
 
     @EventHandler
     public void miscTags(ReplaceableTagEvent event) {
