@@ -6,7 +6,7 @@ _util_dtime_command:
     events:
         on dtime command:
         - if !<player.is_op> queue clear
-        - flag 'ddtc_time:<context.args>'
+        - flag 'ddtc_time:<context.args.get[1]>'
         - if <flag.p:ddtc_time> > 24
           queue clear
           else narrate 'Changing time to <flag.p:ddtc_time>:00.'
@@ -30,8 +30,13 @@ _util_dtime_command:
     context: task|flag|type
 
     script:
-    - runtask '_depend generic loop process'
-      "context:<context.task>|<context.flag>|<context.type>|<util.random.uuid>"
+    - ^if %3% == global || <context.type> == global ^define 3 server
+      else ^define 3 <context.type>
+    - ^define queue <util.random.uuid>
+    - ^if %1% != null
+      ^run '_depend generic loop process' id:%queue% "def:%1%|%2%|%3%|%queue%" instantly
+      else ^run '_depend generic loop process'
+      "def:<context.task>|<context.flag>|%3%|%queue%" instantly
 
 "_util_gl":
     type: task
@@ -39,23 +44,24 @@ _util_dtime_command:
     context: task|flag|type
 
     script:
-    - runtask '_depend generic loop process'
-      "context:<context.task>|<context.flag>|<context.type>|<util.random.uuid>"
+    - if %1% != null
+      run '_depend generic loop process' id:<util.random.uuid> "def:%1%|%2%|%3%|<util.random.uuid>" instantly
+      else run '_depend generic loop process'
+      "def:<context.task>|<context.flag>|<context.type>|<util.random.uuid>" instantly
 
 "_depend generic loop process":
     type: task
-    speed: 0
-    context: task|flag|type|id
+    definitions: task|flag|type|id
 
     script:
-    - ^if "<flag.g:Iterator <context.id>.size || 0>" == 0
-      flag global "Iterator <context.id>:|:<flag.<context.type>:<context.flag>.aslist>"
-    - ^runtask "<context.task>" "context:<flag.g:Iterator <context.id>[1]>"
-    - ^flag global "Iterator <context.id>:<-:<flag.g:Iterator <context.id>[1]>"
-    - ^if "<flag.g:Iterator <context.id>.size || 0>" > 0
-      runtask '_depend Generic Loop Process'
-      "context:<context.task>|<context.flag>|<context.type>|<context.id>"
-      else flag global "Iterator <context.id>:!"
+    - ^if "<server.flag[Iterator %id%]>" == null
+      ^flag global "Iterator %id%:|:<%type%.flag[%flag%].aslist>"
+    - ^runtask "%task%" "context:<server.flag[Iterator %id%].get[1]>" queue instantly
+    - ^flag global "Iterator %id%:<-:<server.flag[Iterator %id%].get[1]>"
+    - ^if "<server.flag[Iterator %id%].size || 0>" > 0
+      run '_depend Generic Loop Process' id:%id%
+      "def:%task%|%flag%|%type%|%id%"
+      else flag global "Iterator %id%:!"
 
 
 
