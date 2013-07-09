@@ -105,7 +105,6 @@ public class WalkCommand extends AbstractCommand implements Listener {
 			theEntry.getDenizen().getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(true);
 			theEntry.getDenizen().getNavigator().cancelNavigation();
 			theEntry.getDenizen().getCitizensEntity().getNavigator().setTarget(walkLocation);
-			if (theEntry.getDenizen().getNavigator().getDefaultParameters().range() < dist ) theEntry.getDenizen().getNavigator().getLocalParameters().range((float) (dist + 3)); 
 			if(Speed!=null) theEntry.getDenizen().getCitizensEntity().getNavigator().getDefaultParameters().speedModifier(Speed);
 			if (returning) theEntry.getDenizen().getCitizensEntity().getTrait(Waypoints.class).getCurrentProvider().setPaused(false);
 			else returns.put(theEntry.getDenizen(), walkLocation);
