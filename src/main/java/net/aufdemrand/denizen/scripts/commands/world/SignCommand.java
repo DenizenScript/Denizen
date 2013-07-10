@@ -68,8 +68,8 @@ public class SignCommand extends AbstractCommand {
 		
         // Report to dB
         dB.report(getName(), type.name() + ", "
-                + location.debug()
-                + text.debug());
+                + aH.debugObj("location", location)
+                + aH.debugObj("text", text));
 		
 		Block sign = location.getBlock();
 		sign.setType(Material.valueOf(type.name()));

@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
@@ -63,6 +64,12 @@ public class FlyCommand extends AbstractCommand {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
+            
+        	else if (!scriptEntry.hasObject("speed")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                // Add value
+                scriptEntry.addObject("speed", arg.asElement());
+            }
         }
     	
     	// Check to make sure required arguments have been filled
@@ -81,6 +88,12 @@ public class FlyCommand extends AbstractCommand {
         	else
         		throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ORIGIN");
         }
+        
+        // Use a default speed of 1.5 if one is not specified
+        
+        if ((!scriptEntry.hasObject("speed"))) {
+        	scriptEntry.addObject("speed", 1.5);
+        }
     }
     
 	@SuppressWarnings("unchecked")
@@ -92,7 +105,9 @@ public class FlyCommand extends AbstractCommand {
 		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 		final List<dLocation> destinations = scriptEntry.hasObject("destinations") ?
 								(List<dLocation>) scriptEntry.getObject("destinations") :
-								new ArrayList<dLocation>();			
+								new ArrayList<dLocation>();
+		
+		final Element speed = (Element) scriptEntry.getObject("speed");
 		Boolean cancel = scriptEntry.hasObject("cancel") ?
 							true :
 							false;
@@ -101,6 +116,7 @@ public class FlyCommand extends AbstractCommand {
         dB.report(getName(), (cancel == true ? "cancel, " : "") +
         					 aH.debugObj("origin", origin) +
         					 aH.debugObj("entities", entities.toString()) +
+        					 aH.debugObj("speed", speed) +
         					 (destinations.size() > 0 ? aH.debugObj("destinations", destinations.toString()) : ""));
 		        
 		// Mount or dismount all of the entities
@@ -177,7 +193,7 @@ public class FlyCommand extends AbstractCommand {
         			
             		Vector v1 = entity.getLocation().toVector();
             		Vector v2 = location.toVector();
-            		Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
+            		Vector v3 = v2.clone().subtract(v1).normalize().multiply(speed.asDouble());
     				
             		entity.setVelocity(v3);
     				

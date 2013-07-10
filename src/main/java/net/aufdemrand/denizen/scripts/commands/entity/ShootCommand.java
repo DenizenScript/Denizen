@@ -7,6 +7,7 @@ import java.util.Map;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
@@ -61,10 +62,10 @@ public class ShootCommand extends AbstractCommand {
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
         	
-            else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)) {
-                // add value
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+            else if (!scriptEntry.hasObject("speed")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                // Add value
+                scriptEntry.addObject("speed", arg.asElement());
             }
         	
             else if (!scriptEntry.hasObject("script")
@@ -90,6 +91,12 @@ public class ShootCommand extends AbstractCommand {
         	else
         		throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ORIGIN");
         }
+        
+        // Use a default speed of 1.5 if one is not specified
+        
+        if ((!scriptEntry.hasObject("speed"))) {
+        	scriptEntry.addObject("speed", 1.5);
+        }
     }
     
 	@SuppressWarnings("unchecked")
@@ -106,12 +113,14 @@ public class ShootCommand extends AbstractCommand {
 											  		.multiply(40)));
 
 		List<dEntity> projectiles = (List<dEntity>) scriptEntry.getObject("projectiles");
+		final Element speed = (Element) scriptEntry.getObject("speed");
         final dScript script = (dScript) scriptEntry.getObject("script");
         
         // Report to dB
         dB.report(getName(), aH.debugObj("origin", shooter) +
         					 aH.debugObj("projectiles", projectiles.toString()) +
         					 aH.debugObj("destination", destination) +
+        					 aH.debugObj("speed", speed) +
         					 (script != null ? aH.debugObj("script", script) : ""));
         
         // If the shooter is an NPC, always rotate it to face the destination
@@ -160,7 +169,7 @@ public class ShootCommand extends AbstractCommand {
         		{
         			Vector v1 = lastProjectile.getLocation().toVector();
         			Vector v2 = destination.toVector();
-        			Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
+        			Vector v3 = v2.clone().subtract(v1).normalize().multiply(speed.asDouble());
         							
         			lastProjectile.setVelocity(v3);
         			runs++;
