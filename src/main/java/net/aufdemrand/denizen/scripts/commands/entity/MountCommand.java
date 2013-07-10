@@ -55,7 +55,7 @@ public class MountCommand extends AbstractCommand {
         if ((!scriptEntry.hasObject("entities")))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
         
-        // Use the NPC or player's locations as the origin if one is not specified
+        // Use the NPC or player's locations as the location if one is not specified
         
         if ((!scriptEntry.hasObject("location"))) {
         	

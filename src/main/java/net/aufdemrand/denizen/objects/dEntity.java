@@ -15,6 +15,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftAnimals;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -329,9 +331,9 @@ public class dEntity implements dObject {
                             // air or portals, keep trying
                             while (data1.equals("RANDOM") &&
                                     (material.isBlock() == false ||
-                                            material == Material.AIR ||
-                                            material == Material.PORTAL ||
-                                            material == Material.ENDER_PORTAL)) {
+                                     material == Material.AIR ||
+                                     material == Material.PORTAL ||
+                                     material == Material.ENDER_PORTAL)) {
 
                                 material = dMaterial.valueOf(data1).getMaterial();
                             }
@@ -374,18 +376,32 @@ public class dEntity implements dObject {
                                 if (ent instanceof Creeper && data1.equalsIgnoreCase("POWERED")) {
                                     ((Creeper) entity).setPowered(true);
                                 }
+                                // Allow setting of blocks held by endermen
                                 else if (ent instanceof Enderman && dMaterial.matches(data1)) {
                                     ((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data1).getMaterialData());
                                 }
+                                // Allow setting of ocelot types
                                 else if (ent instanceof Ocelot) {
                                     setSubtype(Ocelot.class, "Type", "setCatType", data1);
                                 }
+                                // Allow setting of skeleton types and their weapons
                                 else if (ent instanceof Skeleton) {
                                     setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data1);
+                                    
+                                    // Give skeletons bows by default, unless data2 specifies
+                                    // a different weapon
+                                    if (dItem.matches(data2) == false) {
+                                    	data2 = "bow";
+                                    }
+                                    
+                                    ((Skeleton) entity).getEquipment()
+                            			.setItemInHand(dItem.valueOf(data2).getItemStack());
                                 }
+                                // Allow setting of slime sizes
                                 else if (ent instanceof Slime && aH.matchesInteger(data1)) {
                                     ((Slime) entity).setSize(aH.getIntegerFrom(data1));
                                 }
+                                // Allow setting of villager professions
                                 else if (ent instanceof Villager) {
                                     setSubtype(Villager.class, "Profession", "setProfession", data1);
                                 }
@@ -428,6 +444,21 @@ public class dEntity implements dObject {
     
     public void teleport(Location location) {
     	this.getBukkitEntity().teleport(location);
+    }
+    
+    /**
+     * Make this entity target another living entity, attempting both
+     * old entity AI and new entity AI targeting methods
+     *
+     * @param target  The LivingEntity target
+     */
+    
+    public void target(LivingEntity target) {
+    	
+    	((CraftCreature) entity).getHandle().
+			setGoalTarget(((CraftLivingEntity) target).getHandle());
+
+    	((CraftCreature) entity).setTarget(target);
     }
 
     /**

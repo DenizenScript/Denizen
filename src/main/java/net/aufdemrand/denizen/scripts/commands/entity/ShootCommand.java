@@ -44,7 +44,7 @@ public class ShootCommand extends AbstractCommand {
 
         	if (!scriptEntry.hasObject("origin")
                     && arg.matchesArgumentType(dEntity.class)
-                    && arg.matchesPrefix("origin, o, source, s")) {
+                    && arg.matchesPrefix("origin, o, source, shooter, s")) {
                 // Entity arg
                 scriptEntry.addObject("origin", arg.asType(dEntity.class).setPrefix("entity"));
             }

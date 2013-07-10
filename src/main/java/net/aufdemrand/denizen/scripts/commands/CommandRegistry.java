@@ -266,7 +266,7 @@ public class CommandRegistry implements dRegistry {
         		"SIT", "sit (location:x,y,z,world)", 0);
 
         registerCoreMember(SpawnCommand.class,
-        		"SPAWN", "spawn [entity:name] (location:<x,y,z,world>) (target:[n@#]|[p@name])", 1);
+        		"SPAWN", "spawn [entities:<entity>|...] (location:<x,y,z,world>) (target:<entity>)", 1);
         
         registerCoreMember(StandCommand.class, 
         		"STAND", "stand", 0);

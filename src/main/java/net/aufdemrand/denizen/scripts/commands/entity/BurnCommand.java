@@ -42,7 +42,7 @@ public class BurnCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
         
         if ((!scriptEntry.hasObject("entities")))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITY");
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
     }
     
 	@SuppressWarnings("unchecked")
