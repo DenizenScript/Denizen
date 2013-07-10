@@ -27,7 +27,6 @@ public class BurnCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
         	if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentType(dList.class)
                 	&& arg.matchesPrefix("entity, entities, e")) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));

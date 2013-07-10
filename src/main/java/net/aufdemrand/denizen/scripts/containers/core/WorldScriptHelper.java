@@ -137,18 +137,23 @@ public class WorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("type", new Element(event.getBlock().getType().name()));
 
-        String determination = doEvents(Arrays.asList
-        		("player breaks block",
-        		 "player breaks " + blockType,
-        		 "player breaks block with " +
-        				 new dItem(event.getPlayer().getItemInHand()).identify().split(":")[0],
-        		 "player breaks block with " +
-                		 new dItem(event.getPlayer().getItemInHand()).identify(),
-        		 "player breaks " + blockType + " with " +
-        				 new dItem(event.getPlayer().getItemInHand()).identify().split(":")[0],
-        		 "player breaks " + blockType + " with " +
-                		 new dItem(event.getPlayer().getItemInHand()).identify()),
-        		null, event.getPlayer(), context);
+        dItem item = new dItem(event.getPlayer().getItemInHand());
+        
+        List<String> events = new ArrayList<String>();
+        events.add("player breaks block");
+        events.add("player breaks " + blockType);
+        events.add("player breaks block with " + item.identify());
+        events.add("player breaks " + blockType + " with " + item.identify());
+        
+        if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        	
+        	events.add("player breaks block with " +
+        			item.identify().split(":")[0]);
+        	events.add("player breaks " + blockType + " with " +
+        			item.identify().split(":")[0]);
+        }
+        
+        String determination = doEvents(events, null, event.getPlayer(), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
@@ -697,14 +702,19 @@ public class WorldScriptHelper implements Listener {
         events.add(interaction + " in " + type + " inventory");
         
         if (item.getItemStack() != null) {
-        	events.add(interaction + " on " +
-        		item.identify().split(":")[0] + " in inventory");
-        	events.add(interaction + " on " +
-        			item.identify().split(":")[0] + " in " + type + " inventory");
+
         	events.add(interaction + " on " +
         			item.identify() + " in inventory");
         	events.add(interaction + " on " +
         			item.identify() + " in " + type + " inventory");
+        	
+        	if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        		
+        		events.add(interaction + " on " +
+                		item.identify().split(":")[0] + " in inventory");
+        		events.add(interaction + " on " +
+            			item.identify().split(":")[0] + " in " + type + " inventory");
+        	}
         }
         
         String determination = doEvents(events, null, player, context);
@@ -909,8 +919,12 @@ public class WorldScriptHelper implements Listener {
         	context.put("item", item);
         	
         	events.add(interaction + " with item");
-        	events.add(interaction + " with " + item.identify().split(":")[0]);
         	events.add(interaction + " with " + item.identify());
+        	
+        	if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        	
+        		events.add(interaction + " with " + item.identify().split(":")[0]);
+        	}
         }
         
         if (event.hasBlock()) {
@@ -922,8 +936,12 @@ public class WorldScriptHelper implements Listener {
         	
         	if (event.hasItem()) {
             	events.add(interaction + " with item");
-            	events.add(interaction + " with " + item.identify().split(":")[0]);
             	events.add(interaction + " with " + item.identify());
+            	
+            	if (item.identify().equals(item.identify().split(":")[0]) == false) {
+            		
+                	events.add(interaction + " with " + item.identify().split(":")[0]);
+            	}
             }
         }
         
@@ -953,22 +971,31 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("player right clicks entity");
         events.add("player right clicks " + entity.getType().name());
-       
-        events.add("player right clicks entity with " +
-        		item.identify().split(":")[0]);
         events.add("player right clicks entity with " +
         		item.identify());
         events.add("player right clicks " + entity.getType().name() + " with " +
-           		item.identify().split(":")[0]);
-        events.add("player right clicks " + entity.getType().name() + " with " +
            		item.identify());
+        
+        if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        	
+            events.add("player right clicks entity with " +
+            		item.identify().split(":")[0]);
+            events.add("player right clicks " + entity.getType().name() + " with " +
+               		item.identify().split(":")[0]);
+        }
         
         if (entity instanceof ItemFrame) {
         	dItem itemFrame = new dItem(((ItemFrame) entity).getItem());
         	context.put("itemframe", itemFrame);
         	
         	events.add("player right clicks " + entity.getType().name() + " " +
-        			itemFrame.identify().split(":")[0]);
+        			itemFrame.identify());
+        	
+        	if (itemFrame.identify().equals(itemFrame.identify().split(":")[0]) == false) {
+        		
+        		events.add("player right clicks " + entity.getType().name() + " " +
+            			itemFrame.identify().split(":")[0]);
+        	}
         }
         
         determination = doEvents(events, null, event.getPlayer(), context);
@@ -986,8 +1013,12 @@ public class WorldScriptHelper implements Listener {
         context.put("item", item);
         
         List<String> events = new ArrayList<String>();
-        events.add("player consumes " + item.identify().split(":")[0]);
         events.add("player consumes " + item.identify());
+        
+        if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        	
+        	events.add("player consumes " + item.identify().split(":")[0]);
+        }
         
         String determination = doEvents(events, null, event.getPlayer(), context);
         

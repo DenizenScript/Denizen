@@ -354,12 +354,17 @@ public class Utilities {
     public static void setSignRotation(BlockState signState) {
     	
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
-        for (BlockFace bf : blockFaces) {
-                Block bu = signState.getBlock().getRelative(bf);
-                if ((bu.getType() != Material.AIR)) {
-                        ((org.bukkit.material.Sign) signState.getData()).setFacingDirection(bf.getOppositeFace());
-                        signState.update();
-                }
+        
+        for (BlockFace blockFace : blockFaces) {
+                
+        	Block block = signState.getBlock().getRelative(blockFace);
+            
+        	if ((block.getType() != Material.AIR)) {
+        		
+            	((org.bukkit.material.Sign) signState.getData())
+            		.setFacingDirection(blockFace.getOppositeFace());
+                signState.update();
+            }
         }
     }
 
