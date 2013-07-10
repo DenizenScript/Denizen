@@ -68,7 +68,8 @@ public class AnimateCommand extends AbstractCommand {
 				(EntityEffect) scriptEntry.getObject("effect") : null;
 
         // Report to dB
-        dB.report(getName(), animation != null ? animation.name() : effect.name());
+        dB.report(getName(), animation != null ? animation.name() : effect.name()
+        		+ aH.debugObj("entities", entities.toString()));
 		
         // Go through all the entities and animate them
         for (dEntity entity : entities) {

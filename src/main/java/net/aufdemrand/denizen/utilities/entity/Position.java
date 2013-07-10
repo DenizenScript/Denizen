@@ -18,9 +18,11 @@ public class Position {
 		
 		for (Entity entity : entities) {
 			
-        	if (lastEntity != null) {
-        	// Because setPassenger() is a toggle, only use it if the new passenger
-        	// is not already the current passenger
+        	if (lastEntity != null && entity != lastEntity) {
+        	
+        		// Because setPassenger() is a toggle, only use it if the new passenger
+        		// is not already the current passenger, and also make sure we're not
+        		// mounting the entity on itself
 	        		
         		if (entity.getPassenger() != lastEntity) {
         			lastEntity.teleport(entity.getLocation());

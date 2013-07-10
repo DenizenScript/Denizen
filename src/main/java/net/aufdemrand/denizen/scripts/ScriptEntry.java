@@ -108,6 +108,12 @@ public class ScriptEntry {
 	public dNPC getNPC() {
 		return npc;
 	}
+	
+    public boolean hasNPC() {
+
+    	if (npc != null) return true;
+    	return false;
+    }
 
     public void setFinished(boolean finished) {
         done = finished;
@@ -115,6 +121,12 @@ public class ScriptEntry {
 
     public dPlayer getPlayer() {
         return player;
+    }
+    
+    public boolean hasPlayer() {
+
+    	if (player != null) return true;
+    	return false;
     }
 
     public Map<String, Object> getObjects() {

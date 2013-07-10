@@ -146,7 +146,7 @@ public class CommandRegistry implements dRegistry {
         		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value] (duration:#)", 1);
         
         registerCoreMember(FlyCommand.class,
-        		"FLY", "fly [entities:e@name|...] (origin:x,y,z,world) (destination(s):x,y,z,world|...)", 1);
+        		"FLY", "fly [entities:<entity>|...] (origin:<x,y,z,world>) (destination(s):<x,y,z,world>|...)", 1);
         
         registerCoreMember(FollowCommand.class, 
         		"FOLLOW", "follow (stop)", 0);

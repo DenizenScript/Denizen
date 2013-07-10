@@ -425,6 +425,10 @@ public class dEntity implements dObject {
         dEntity.saveAs(this, id);
         return this;
     }
+    
+    public void teleport(Location location) {
+    	this.getBukkitEntity().teleport(location);
+    }
 
     /**
      * Set the subtype of this entity by using the chosen method and Enum from

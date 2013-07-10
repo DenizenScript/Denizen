@@ -58,7 +58,7 @@ public class ShootCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("destination")
                     && arg.matchesArgumentType(dLocation.class)) {
                 // Location arg
-                scriptEntry.addObject("destination", arg.asType(dLocation.class).setPrefix("location"));
+                scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
         	
             else if (!scriptEntry.hasObject("duration")
@@ -77,7 +77,19 @@ public class ShootCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
         
         if ((!scriptEntry.hasObject("projectiles")))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PROJECTILE");
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PROJECTILES");
+        
+        // Use the NPC or player's locations as the origin if one is not specified
+        
+        if ((!scriptEntry.hasObject("origin"))) {
+        	
+        	if (scriptEntry.hasNPC())
+        		scriptEntry.addObject("origin", scriptEntry.getNPC().getLocation());
+        	else if (scriptEntry.hasPlayer())
+        		scriptEntry.addObject("origin", scriptEntry.getPlayer().getLocation());
+        	else
+        		throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ORIGIN");
+        }
     }
     
 	@SuppressWarnings("unchecked")
@@ -97,10 +109,10 @@ public class ShootCommand extends AbstractCommand {
         final dScript script = (dScript) scriptEntry.getObject("script");
         
         // Report to dB
-        dB.report(getName(), aH.debugObj("shooter", shooter.debug()) +
+        dB.report(getName(), aH.debugObj("origin", shooter) +
         					 aH.debugObj("projectiles", projectiles.toString()) +
-        					 destination.debug() +
-        					 (script != null ? script.debug() : ""));
+        					 aH.debugObj("destination", destination) +
+        					 (script != null ? aH.debugObj("script", script) : ""));
         
         // If the shooter is an NPC, always rotate it to face the destination
         // of the projectile, but if the shooter is a player, only rotate him/her
@@ -116,12 +128,14 @@ public class ShootCommand extends AbstractCommand {
 				  				 shooterEntity.getEyeLocation().getDirection())
 				  				 .subtract(0, 0.4, 0);
         
-        // Go through all the projectiles, spawning and rotating them
+        // Go through all the projectiles, spawning/teleporting and rotating them
         for (dEntity projectile : projectiles) {
         	
         	if (projectile.isSpawned() == false) {
-        		
         		projectile.spawnAt(origin);
+        	}
+        	else {
+        		projectile.teleport(origin);
         	}
         	
             Rotation.faceLocation(projectile.getBukkitEntity(), destination);
