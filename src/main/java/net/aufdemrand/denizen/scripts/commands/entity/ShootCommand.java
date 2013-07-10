@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.entity.Position;
@@ -49,7 +50,6 @@ public class ShootCommand extends AbstractCommand {
             }
             
             else if (!scriptEntry.hasObject("projectiles")
-                    && arg.matchesArgumentType(dList.class)
                 	&& arg.matchesPrefix("projectile, projectiles, p, entity, entities, e")) {
                 // Entity arg
                 scriptEntry.addObject("projectiles", ((dList) arg.asType(dList.class)).filter(dEntity.class));
@@ -95,6 +95,12 @@ public class ShootCommand extends AbstractCommand {
 
 		List<dEntity> projectiles = (List<dEntity>) scriptEntry.getObject("projectiles");
         final dScript script = (dScript) scriptEntry.getObject("script");
+        
+        // Report to dB
+        dB.report(getName(), aH.debugObj("shooter", shooter.debug()) +
+        					 aH.debugObj("projectiles", projectiles.toString()) +
+        					 destination.debug() +
+        					 (script != null ? script.debug() : ""));
         
         // If the shooter is an NPC, always rotate it to face the destination
         // of the projectile, but if the shooter is a player, only rotate him/her
