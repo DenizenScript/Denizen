@@ -730,7 +730,7 @@ public class WorldScriptHelper implements Listener {
     //   PLAYER EVENTS
     /////////////////
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void playerChat(final AsyncPlayerChatEvent event) {
     	
         final Map<String, Object> context = new HashMap<String, Object>();
