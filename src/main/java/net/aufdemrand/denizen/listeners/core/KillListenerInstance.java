@@ -159,7 +159,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 		
 		// If REGION argument specified, check. If not in region, don't count kill!
 		if (region != null) 
-			if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
+			if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
 		
 		// Check type!
 		if (type == KillType.ENTITY) {

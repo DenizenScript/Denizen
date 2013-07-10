@@ -49,7 +49,7 @@ public class NPCTags implements Listener {
 
 
         if (n == null || !n.isValid()) {
-            dB.echoDebug("Invalid or missing player for tag <" + event.raw_tag + ">!");
+            dB.echoDebug("Invalid or missing NPC for tag <" + event.raw_tag + ">!");
             event.setReplaced("null");
             return;
         }

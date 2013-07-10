@@ -200,7 +200,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		}
 		dB.echoDebug("...within range");
 		if (region != null) {
-			if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
+			if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
 		}
 		dB.echoDebug("...within region");
 		
@@ -227,7 +227,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		}
 		dB.echoDebug("...within range");
 		if (region != null) {
-			if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
+			if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
 		}
 		dB.echoDebug("...within region");
 		
@@ -252,7 +252,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		}
 		dB.echoDebug("...within range");
 		if (region != null) {
-			if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
+			if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
 		}
 		dB.echoDebug("...within region");
 		

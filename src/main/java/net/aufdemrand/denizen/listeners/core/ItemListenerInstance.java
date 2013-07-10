@@ -94,7 +94,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                     || (type == ItemType.SMELT && inventoryType == "FURNACE")) {
 
 				if (region != null)
-					if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
+					if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
 				
 				// Get the item in the result slot as an ItemStack
 				final ItemStack item = new ItemStack(event.getCurrentItem());
@@ -153,7 +153,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 			{
 
 				if (region != null) 
-					if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
+					if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
 				
 				if (event.getState().toString() == "CAUGHT_FISH")
 				{
