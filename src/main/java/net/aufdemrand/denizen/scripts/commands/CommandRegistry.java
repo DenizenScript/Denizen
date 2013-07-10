@@ -146,7 +146,7 @@ public class CommandRegistry implements dRegistry {
         		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value] (duration:#)", 1);
         
         registerCoreMember(FlyCommand.class,
-        		"FLY", "fly [entities:<entity>|...] (origin:<x,y,z,world>) (destination(s):<x,y,z,world>|...)", 1);
+        		"FLY", "fly (cancel) [entities:<entity>|...] (origin:<x,y,z,world>) (destination(s):<x,y,z,world>|...)", 1);
         
         registerCoreMember(FollowCommand.class, 
         		"FOLLOW", "follow (stop)", 0);
@@ -197,7 +197,7 @@ public class CommandRegistry implements dRegistry {
         		"MIDI", "midi [file:<name>] (listener(s):[p@<name>|...])|(location:<x,y,z,world>) (tempo:<#.#>)", 1);
         
         registerCoreMember(MountCommand.class,
-        		"MOUNT", "mount (cancel) (location:<x,y,z,world>) (target(s):[n@#]|[p@name]|[e@name])", 0);
+        		"MOUNT", "mount (cancel) [entities:<entity>|...] (location:<x,y,z,world>)", 0);
         
         registerCoreMember(ModifyBlockCommand.class,
         		"MODIFYBLOCK", "modifyblock [location:<x,y,z,world>] [<material>(:<data>)] (radius:<#>) (height:<#>) (depth:<#>)", 2);

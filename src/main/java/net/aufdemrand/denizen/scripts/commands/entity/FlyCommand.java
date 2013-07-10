@@ -98,31 +98,33 @@ public class FlyCommand extends AbstractCommand {
 							false;
 		
         // Report to dB
-        dB.report(getName(), cancel == true ? "cancel, " : "" +
+        dB.report(getName(), (cancel == true ? "cancel, " : "") +
         					 aH.debugObj("origin", origin) +
         					 aH.debugObj("entities", entities.toString()) +
         					 (destinations.size() > 0 ? aH.debugObj("destinations", destinations.toString()) : ""));
 		        
-		// Go through all the entities, spawning/teleporting them
-        for (dEntity entity : entities) {
-        	
-        	if (entity.isSpawned() == false) {
-        		entity.spawnAt(origin);
-        	}
-        	else {
-        		entity.teleport(origin);
-        	}
-        }
-		
 		// Mount or dismount all of the entities
 		if (cancel == false) {
+			
+			// Go through all the entities, spawning/teleporting them
+	        for (dEntity entity : entities) {
+	        	
+	        	if (entity.isSpawned() == false) {
+	        		entity.spawnAt(origin);
+	        	}
+	        	else {
+	        		entity.teleport(origin);
+	        	}
+	        }
+			
 			Position.mount(Conversion.convert(entities));
 		}
 		else {
 			Position.dismount(Conversion.convert(entities));
 			
-	        // Go no further if we are dismounting entities
+			// Go no further if we are dismounting entities
 			return;
+			
 		}
         
         // Get the last entity on the list

@@ -1,20 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import java.util.List;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.aufdemrand.denizen.utilities.entity.Position;
 
 /**
  * Mounts a player on the NPC if no targets are specified.
@@ -24,133 +23,85 @@ import java.util.List;
  */
 
 public class MountCommand extends AbstractCommand {
-
+	
     @Override
-    public void parseArgs(ScriptEntry scriptEntry)
-            throws InvalidArgumentsException {
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        //
-        // List of entities to be mounted.
-        //
-        List<Entity> entities = new ArrayList<Entity> ();
+        // Initialize necessary fields
 
-        //
-        // Process the arguments.
-        //
-        Boolean dismount = false;
-        dLocation location = null;
-        
-        for (String arg : scriptEntry.getArguments()) {
-
-        	if (aH.matchesLocation(arg)) {
-
-                location = aH.getLocationFrom(arg);
-                dB.echoDebug("...location set to '%s'.", arg);
-        	}
-        	else if (aH.matchesArg("cancel", arg)) {
-        		dismount = true;
-        		dB.echoDebug("...will dismount.");
-        	}
-        	else if (aH.matchesValueArg("TARGETS, TARGET", arg, ArgumentType.Custom)) {
-            	
-                Entity entity = null;
-
-                for (String target : aH.getListFrom(arg)) {
-                    // Get entity
-                	if (aH.matchesEntityType(target)) {
-                		
-                		dLocation entityLocation = null;
-                		
-                		// Cannot spawn an entity without a location, so go through possible locations
-                		if (location != null)
-                			entityLocation = location;
-                		else if (scriptEntry.getPlayer() != null)
-                            entityLocation = new dLocation(scriptEntry.getPlayer().getLocation());
-                		else if (scriptEntry.getNPC() != null)
-                            entityLocation = new dLocation(scriptEntry.getNPC().getLocation());
-                		
-                		if (entityLocation != null) {
-                			
-                			EntityType entityType = aH.getEntityTypeFrom(target);
-                			entity = entityLocation.getWorld().spawnEntity(entityLocation, entityType);
-                		}
-                	}
-                	else {
-                		entity = dEntity.valueOf(target).getBukkitEntity();
-                	}
-                	
-                	if (entity != null) {
-            			entities.add(entity);
-            		}
-            		else {
-            			dB.echoError("Invalid target '%s'!", target);
-            		}
-                }
+    	for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        	
+    		if (!scriptEntry.hasObject("cancel")
+    				&& arg.matches("cancel")) {
+    			
+    			scriptEntry.addObject("cancel", "");
+    		}
+    		
+            if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class)) {
+                // Location arg
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
-            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            
+        	else if (!scriptEntry.hasObject("entities")
+                	&& arg.matchesPrefix("entity, entities, e")) {
+                // Entity arg
+                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+            }
         }
-
-        // If there are no targets, default to the player mounting this NPC
+    	
+    	// Check to make sure required arguments have been filled
         
-        if (entities.size() == 0) {
-            entities.add(scriptEntry.getPlayer().getPlayerEntity());
-            entities.add(scriptEntry.getNPC().getEntity());
-        }
+        if ((!scriptEntry.hasObject("entities")))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
         
-        // If there is only one target entity, there will be no one to mount
-        // it, so make this player mount it by adding him/her to the start
-        // of the list
-
-        if (entities.size() == 1) {
+        // Use the NPC or player's locations as the origin if one is not specified
+        
+        if ((!scriptEntry.hasObject("location"))) {
         	
-        	entities.add(0, scriptEntry.getPlayer().getPlayerEntity());
+        	if (scriptEntry.hasNPC())
+        		scriptEntry.addObject("location", scriptEntry.getNPC().getLocation());
+        	else if (scriptEntry.hasPlayer())
+        		scriptEntry.addObject("location", scriptEntry.getPlayer().getLocation());
+        	else
+        		throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
         }
-
-        // Store objects in ScriptEntry for use in execute()
-        scriptEntry.addObject("entities", entities);
-        scriptEntry.addObject("location", location);
-        scriptEntry.addObject("dismount", dismount);
     }
-
-    @SuppressWarnings("unchecked")
+    
+	@SuppressWarnings("unchecked")
 	@Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+        // Get objects
+    	
+		dLocation location = (dLocation) scriptEntry.getObject("location");
+		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");			
+		Boolean cancel = scriptEntry.hasObject("cancel") ?
+							true :
+							false;
+		
+        // Report to dB
+        dB.report(getName(), (cancel == true ? "cancel, " : "") +
+        					 aH.debugObj("location", location) +
+        					 aH.debugObj("entities", entities.toString()));
 
-        List<Entity> entities = (List<Entity>) scriptEntry.getObject("entities");
-        final dLocation location = (dLocation) scriptEntry.getObject("location");
-        Boolean dismount = (Boolean) scriptEntry.getObject("dismount");
-
-        // Debug output
-        dB.echoApproval("<G>Executing '<Y>" + getName() + "<G>': "
-                + "Targets=<Y>'" + entities.toString() + "<G>'");
-
-        Entity lastEntity = null;
-        
-        for (Entity entity : entities) {
-        	
-        	if (dismount) {
-        		
-        		entity.leaveVehicle();
-        	}
-        	else {
-        	
-        		if (lastEntity != null) {
-        			// Because setPassenger() is a toggle, only use it if the new passenger
-        			// is not already the current passenger
-        		
-        			if (entity.getPassenger() != lastEntity) {
-        				lastEntity.teleport(entity.getLocation());
-        				entity.setPassenger(lastEntity);
-        			}
-        		}
-        	
-        		lastEntity = entity;
-        	}
-        }
-        
-        if (location != null) {
-    		lastEntity.teleport(location);
-    	}
+		// Mount or dismount all of the entities
+		if (cancel == false) {
+			
+			// Go through all the entities, spawning/teleporting them
+	        for (dEntity entity : entities) {
+	        	
+	        	if (entity.isSpawned() == false) {
+	        		entity.spawnAt(location);
+	        	}
+	        	else {
+	        		entity.teleport(location);
+	        	}
+	        }
+			
+			Position.mount(Conversion.convert(entities));
+		}
+		else {
+			Position.dismount(Conversion.convert(entities));
+		}
     }
 }

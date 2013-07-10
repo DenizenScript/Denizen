@@ -18,19 +18,22 @@ public class Position {
 		
 		for (Entity entity : entities) {
 			
-        	if (lastEntity != null && entity != lastEntity) {
+			if (entity != null) {
+			
+				if (lastEntity != null && entity != lastEntity) {
         	
-        		// Because setPassenger() is a toggle, only use it if the new passenger
-        		// is not already the current passenger, and also make sure we're not
-        		// mounting the entity on itself
+        			// Because setPassenger() is a toggle, only use it if the new passenger
+        			// is not already the current passenger, and also make sure we're not
+        			// mounting the entity on itself
 	        		
-        		if (entity.getPassenger() != lastEntity) {
-        			lastEntity.teleport(entity.getLocation());
-        			entity.setPassenger(lastEntity);
+        			if (entity.getPassenger() != lastEntity) {
+        				lastEntity.teleport(entity.getLocation());
+        				entity.setPassenger(lastEntity);
+        			}
         		}
-        	}
 	        	
-        	lastEntity = entity;
+        		lastEntity = entity;
+			}
         }
 	}
 	
@@ -43,7 +46,9 @@ public class Position {
 		
 		for (Entity entity : entities) {
 		
-			entity.leaveVehicle();
+			if (entity != null) {
+				entity.leaveVehicle();
+			}
 		}
 	}
 }
