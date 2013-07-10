@@ -46,6 +46,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
@@ -1168,6 +1170,78 @@ public class WorldScriptHelper implements Listener {
     /////////////////
     
     @EventHandler
+    public void vehicleDamage(VehicleDamageEvent event) {
+    	    	
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+    	Entity entity = event.getAttacker();
+    	Vehicle vehicle = event.getVehicle();
+        
+    	String entityType = entity.getType().name();
+    	String vehicleType = vehicle.getType().name();
+    	
+    	Player player = null;
+
+    	context.put("damage", new Element(event.getDamage()));
+    	context.put("vehicle", new dEntity(vehicle));
+    	
+    	if (entity instanceof Player) {
+    		context.put("entity", new dPlayer((Player) entity));
+    		player = (Player) entity;
+    	}
+    	else {
+    		context.put("entity", new dEntity(entity));
+    	}
+    	
+        String determination = doEvents(Arrays.asList
+        		("entity damages vehicle",
+        		 entityType + " damages vehicle",
+        		 "entity damages " + vehicleType,
+        		 entityType + " damages " + vehicleType),
+        		null, player, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Double))
+            event.setDamage(aH.getDoubleFrom(determination));
+    }
+    
+    @EventHandler
+    public void vehicleDestroy(VehicleDestroyEvent event) {
+    	    	
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+    	Entity entity = event.getAttacker();
+    	Vehicle vehicle = event.getVehicle();
+        
+    	String entityType = entity.getType().name();
+    	String vehicleType = vehicle.getType().name();
+    	
+    	Player player = null;
+
+    	context.put("vehicle", new dEntity(vehicle));
+    	
+    	if (entity instanceof Player) {
+    		context.put("entity", new dPlayer((Player) entity));
+    		player = (Player) entity;
+    	}
+    	else {
+    		context.put("entity", new dEntity(entity));
+    	}
+    	
+        String determination = doEvents(Arrays.asList
+        		("entity destroys vehicle",
+        		 entityType + " destroys vehicle",
+        		 "entity destroys " + vehicleType,
+        		 entityType + " destroys " + vehicleType),
+        		null, player, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    @EventHandler
     public void vehicleEnter(VehicleEnterEvent event) {
     	    	
         Map<String, Object> context = new HashMap<String, Object>();
@@ -1180,6 +1254,8 @@ public class WorldScriptHelper implements Listener {
     	
     	Player player = null;
 
+    	context.put("vehicle", new dEntity(vehicle));
+    	
     	if (entity instanceof Player) {
     		context.put("entity", new dPlayer((Player) entity));
     		player = (Player) entity;
@@ -1188,19 +1264,15 @@ public class WorldScriptHelper implements Listener {
     		context.put("entity", new dEntity(entity));
     	}
     	
-    	if (vehicle instanceof Player) {
-    		context.put("vehicle", new dPlayer((Player) vehicle));
-    	}
-    	else {
-    		context.put("vehicle", new dEntity(vehicle));
-    	}
-    	
-        doEvents(Arrays.asList
+        String determination = doEvents(Arrays.asList
         		("entity enters vehicle",
         		 entityType + " enters vehicle",
         		 "entity enters " + vehicleType,
         		 entityType + " enters " + vehicleType),
         		null, player, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
     }
     
     @EventHandler
@@ -1216,6 +1288,8 @@ public class WorldScriptHelper implements Listener {
 
     	Player player = null;
     	
+    	context.put("vehicle", new dEntity(vehicle));
+    	
     	if (entity instanceof Player) {
     		context.put("entity", new dPlayer((Player) entity));
     		player = (Player) entity;
@@ -1224,19 +1298,15 @@ public class WorldScriptHelper implements Listener {
     		context.put("entity", new dEntity(entity));
     	}
     	
-    	if (vehicle instanceof Player) {
-    		context.put("vehicle", new dPlayer((Player) vehicle));
-    	}
-    	else {
-    		context.put("vehicle", new dEntity(vehicle));
-    	}
-    	
-        doEvents(Arrays.asList
+        String determination = doEvents(Arrays.asList
         		("entity exits vehicle",
         		 entityType + " exits vehicle",
         		 "entity exits " + vehicleType,
         		 entityType + " exits " + vehicleType),
         		null, player, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
     }
     
 
