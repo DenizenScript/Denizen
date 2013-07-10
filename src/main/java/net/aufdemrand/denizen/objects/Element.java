@@ -122,7 +122,7 @@ public class Element implements dObject {
                 || attribute.startsWith("as_int"))
             try {
             	return new Element(String.valueOf
-            		(Integer.valueOf(Double.valueOf(element).intValue())))
+            		(Double.valueOf(element).intValue()))
                     .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Integer.");

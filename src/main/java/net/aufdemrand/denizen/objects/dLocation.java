@@ -179,7 +179,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return true;
 
         final Pattern location =
-                Pattern.compile("(((-)?\\d+(\\.\\d+)?,){3}|((-)?\\d+(\\.\\d+)?,){5})\\w+",
+                Pattern.compile("((-?\\d+(\\.\\d+)?,){3}|(-?\\d+(\\.\\d+)?,){5})\\w+",
                         Pattern.CASE_INSENSITIVE);
         m = location.matcher(string);
         if (m.matches())
