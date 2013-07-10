@@ -37,7 +37,7 @@ public class MountCommand extends AbstractCommand {
     			scriptEntry.addObject("cancel", "");
     		}
     		
-            if (!scriptEntry.hasObject("location")
+    		else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
                 // Location arg
                 scriptEntry.addObject("location", arg.asType(dLocation.class));

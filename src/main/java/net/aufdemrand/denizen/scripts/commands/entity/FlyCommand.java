@@ -47,7 +47,7 @@ public class FlyCommand extends AbstractCommand {
     			scriptEntry.addObject("cancel", "");
     		}
     		
-            if (!scriptEntry.hasObject("origin")
+    		else if (!scriptEntry.hasObject("origin")
                     && arg.matchesArgumentType(dLocation.class)) {
                 // Location arg
                 scriptEntry.addObject("origin", arg.asType(dLocation.class).setPrefix("origin"));
