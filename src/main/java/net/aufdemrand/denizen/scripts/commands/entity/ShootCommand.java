@@ -95,7 +95,7 @@ public class ShootCommand extends AbstractCommand {
         // Use a default speed of 1.5 if one is not specified
         
         if ((!scriptEntry.hasObject("speed"))) {
-        	scriptEntry.addObject("speed", 1.5);
+        	scriptEntry.addObject("speed", new Element(1.5));
         }
     }
     
