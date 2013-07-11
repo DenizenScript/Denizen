@@ -1,12 +1,15 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -36,7 +39,7 @@ public class TakeCommand extends AbstractCommand{
 
         TakeType takeType = null;
         double quantity = 1;
-        ItemStack item = null;
+        dItem item = null;
         boolean npc = false;
 
         for (String arg : scriptEntry.getArguments()) {
@@ -57,7 +60,7 @@ public class TakeCommand extends AbstractCommand{
 
             else if (aH.matchesItem(arg) || aH.matchesItem("item:" + arg)) {
                 takeType = TakeType.ITEM;
-                item = aH.getItemFrom(arg).getItemStack();
+                item = dItem.valueOf(aH.getStringFrom(arg), scriptEntry.getPlayer(), scriptEntry.getNPC());
             }
 
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
@@ -75,7 +78,8 @@ public class TakeCommand extends AbstractCommand{
 
         boolean npc = (Boolean) scriptEntry.getObject("npc");
         TakeType type = (TakeType) scriptEntry.getObject("takeType");
-        double quantity = (Double) scriptEntry.getObject("quantity");
+        Double quantity = (Double) scriptEntry.getObject("quantity");
+        dItem item = (dItem) scriptEntry.getObject("item");
 
         dB.report(getName(),
                 aH.debugObj("Type", type.name())
@@ -128,9 +132,18 @@ public class TakeCommand extends AbstractCommand{
                 break;
 
             case ITEM:
-                ((ItemStack) scriptEntry.getObject("item")).setAmount(((Double) scriptEntry.getObject("quantity")).intValue());
-                if (!scriptEntry.getPlayer().getPlayerEntity().getInventory().removeItem((ItemStack)scriptEntry.getObject("item")).isEmpty())
-                    dB.echoDebug("The Player did not have enough " + ((ItemStack) scriptEntry.getObject("item")).getType().toString()
+            	ItemStack is = item.getItemStack();
+                is.setAmount(quantity.intValue());
+                
+                dInventory inventory = new dInventory(scriptEntry.getPlayer().getPlayerEntity().getInventory());
+                
+                // Use method that Ignores special book meta to allow books
+                // that update
+                if (item.getItemStack().getItemMeta() instanceof BookMeta) {
+                	inventory.removeBook(is);
+                }
+                else if (!inventory.getInventory().removeItem(is).isEmpty())
+                    dB.echoDebug("The Player did not have enough " + is.getType().toString()
                             + " on hand, so Denizen took as much as possible. To avoid this situation, use an IF or REQUIREMENT to check.");
                 break;
         }

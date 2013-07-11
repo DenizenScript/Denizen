@@ -59,7 +59,7 @@ public class GiveCommand  extends AbstractCommand {
                 engrave = true;
 
             else if (aH.matchesItem(thisArg) || aH.matchesItem("item:" + thisArg)) {
-                item = aH.getItemFrom (thisArg);
+                item = dItem.valueOf(aH.getStringFrom(thisArg), scriptEntry.getPlayer(), scriptEntry.getNPC());
                 type = GiveType.ITEM;
             }
 

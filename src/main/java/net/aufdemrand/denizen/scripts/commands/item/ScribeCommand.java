@@ -127,7 +127,7 @@ public class ScribeCommand extends AbstractCommand implements Listener{
 
             else if (aH.matchesItem(arg)) {
                 book = aH.getItemFrom(arg);
-                if (book.getItemStack().getType() == Material.BOOK || book.getItemStack().getType() == Material.WRITTEN_BOOK) {
+                if (book.getItemStack().getType() == Material.BOOK_AND_QUILL || book.getItemStack().getType() == Material.WRITTEN_BOOK) {
                     savedItem = true;
                 } else {
                     book = null;

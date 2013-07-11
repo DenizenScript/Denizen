@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -62,16 +63,25 @@ public class dItem implements dObject {
     //////////////////
     //    OBJECT FETCHER
     ////////////////
+    
+    public static dItem valueOf(String string) {
+    	
+    	return valueOf(string, null, null);
+    }
 
     /**
      * Gets a Item Object from a string form.
      *
-     * @param string  the string or dScript argument String
+     * @param string  The string or dScript argument String
+     * @param string  The dPlayer to be used for player contexts
+     *                where applicable.
+     * @param string  The dNPC to be used for NPC contexts
+     *                where applicable.
      * @return  an Item, or null if incorrectly formatted
      *
      */
     @ObjectFetcher("i")
-    public static dItem valueOf(String string) {
+    public static dItem valueOf(String string, dPlayer player, dNPC npc) {
         if (string == null) return null;
         Matcher m;
 
@@ -100,12 +110,17 @@ public class dItem implements dObject {
         string = string.replace("i@", "");
 
         ///////
-        // Match item script custom items
+        // Match item and book script custom items
 
-        // Check if it's a valid item script
+        // Check if it's a valid item/book script
+        
         if (ScriptRegistry.containsScript(string, ItemScriptContainer.class))
             // Get item from script
-            return ScriptRegistry.getScriptContainerAs(string, ItemScriptContainer.class).getItemFrom();
+            return ScriptRegistry.getScriptContainerAs(string, ItemScriptContainer.class).getItemFrom(player, npc);
+        
+        else if (ScriptRegistry.containsScript(string, BookScriptContainer.class))
+        	// Get book from script
+            return ScriptRegistry.getScriptContainerAs(string, BookScriptContainer.class).getBookFrom(player, npc);
 
         ///////
         // Match bukkit/minecraft standard items format
