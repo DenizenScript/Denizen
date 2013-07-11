@@ -31,7 +31,6 @@ public class AnimateCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
         	if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentType(dList.class)
                 	&& arg.matchesPrefix("entity, entities, e")) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
@@ -51,7 +50,7 @@ public class AnimateCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
         
         if ((!scriptEntry.hasObject("entities")))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITY");
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
         
         if (!scriptEntry.hasObject("effect") && !scriptEntry.hasObject("animation"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ANIMATION");
@@ -69,7 +68,8 @@ public class AnimateCommand extends AbstractCommand {
 				(EntityEffect) scriptEntry.getObject("effect") : null;
 
         // Report to dB
-        dB.report(getName(), animation != null ? animation.name() : effect.name());
+        dB.report(getName(), (animation != null ? animation.name() : effect.name()) +
+        		aH.debugObj("entities", entities.toString()));
 		
         // Go through all the entities and animate them
         for (dEntity entity : entities) {

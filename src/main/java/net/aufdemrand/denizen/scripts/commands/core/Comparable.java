@@ -45,7 +45,7 @@ public class Comparable {
         else if (arg.equalsIgnoreCase("false")) comparable = false;
 
             // If a List<Object>
-        else if (arg.contains("|") || arg.startsWith("li@")) {
+        else if (dList.matches(arg)) {
             comparable = dList.valueOf(arg);
         }
 
@@ -83,6 +83,8 @@ public class Comparable {
         else if (comparable instanceof dList) {
             if (dList.matches(arg))
                 comparedto = dList.valueOf(arg);
+            else
+            	comparedto = arg;
         }
 
         else comparedto = arg;

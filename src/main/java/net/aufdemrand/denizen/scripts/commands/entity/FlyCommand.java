@@ -5,19 +5,21 @@ import java.util.List;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -36,146 +38,122 @@ public class FlyCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
-    	List<Entity> entities = new ArrayList<Entity> ();
-    	List<dLocation> destinations = new ArrayList<dLocation> ();
-    	dLocation origin = null;
-    	Boolean dismount = false;
 
-        for (String arg : scriptEntry.getArguments()) {
-        	if (aH.matchesValueArg("origin", arg, ArgumentType.Location)) {
-        		
-        		origin = aH.getLocationFrom(arg);
-                dB.echoDebug("...origin set to '%s'.", arg);
-                
-            }
-        	else if (aH.matchesArg("cancel", arg)) {
-        		dismount = true;
-        		dB.echoDebug("...will dismount.");
-        	}
-        	else if (aH.matchesValueArg("destination, destinations", arg, ArgumentType.Custom)) {
+    	for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
         	
-        		for (String destination : aH.getListFrom(arg)) {
-
-        			if (aH.matchesLocation("location:" + destination)) {
-        				        				
-        				destinations.add(aH.getLocationFrom(destination));
-                        dB.echoDebug("...added '%s' to destinations.", arg);
-        			}
-        		}
-        	}
-        	else if (aH.matchesValueArg("entities, entity", arg, ArgumentType.Custom)) {
-            	
-                Entity entity = null;
-
-                for (String target : aH.getListFrom(arg)) {
-                    // Get entity
-                	if (aH.matchesEntityType(target)) {
-                		
-                		dLocation entityLocation = null;
-                		
-                		// Cannot spawn an entity without a location, so go through possible locations
-                		if (origin != null)
-                			entityLocation = origin;
-                		else if (scriptEntry.getPlayer() != null)
-                            entityLocation = new dLocation(scriptEntry.getPlayer().getLocation());
-                		else if (scriptEntry.getNPC() != null)
-                            entityLocation = new dLocation(scriptEntry.getNPC().getLocation());
-                		
-                		if (entityLocation != null) {
-                			
-                			EntityType entityType = aH.getEntityTypeFrom(target);
-                			entity = entityLocation.getWorld().spawnEntity(entityLocation, entityType);
-                		}
-                	}
-                	else {
-                		entity = dEntity.valueOf(target).getBukkitEntity();
-                	}
-                	
-                	if (entity != null) {
-            			entities.add(entity);
-            		}
-            		else {
-            			dB.echoError("Invalid entity '%s'!", target);
-            		}
-                }
+    		if (!scriptEntry.hasObject("cancel")
+    				&& arg.matches("cancel")) {
+    			
+    			scriptEntry.addObject("cancel", "");
+    		}
+    		
+    		else if (!scriptEntry.hasObject("origin")
+                    && arg.matchesArgumentType(dLocation.class)) {
+                // Location arg
+                scriptEntry.addObject("origin", arg.asType(dLocation.class).setPrefix("origin"));
             }
-               
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-        }
-        
-        // If there are no targets, default to the player mounting this NPC
-        
-        if (entities.size() == 0) {
-            entities.add(scriptEntry.getPlayer().getPlayerEntity());
-            entities.add(scriptEntry.getNPC().getEntity());
-        }
-        
-        // If there is only one target entity, there will be no one to mount
-        // it, so make this player mount it by adding him/her to the start
-        // of the list
-
-        if (entities.size() == 1) {
         	
-        	entities.add(0, scriptEntry.getPlayer().getPlayerEntity());
+            else if (!scriptEntry.hasObject("destinations")
+                	&& arg.matchesPrefix("destination, destinations, d")) {
+                // Entity arg
+                scriptEntry.addObject("destinations", ((dList) arg.asType(dList.class)).filter(dLocation.class));
+            }
+            
+        	else if (!scriptEntry.hasObject("entities")
+                	&& arg.matchesPrefix("entity, entities, e")) {
+                // Entity arg
+                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+            }
+            
+        	else if (!scriptEntry.hasObject("speed")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                // Add value
+                scriptEntry.addObject("speed", arg.asElement());
+            }
+        }
+    	
+    	// Check to make sure required arguments have been filled
+        
+        if ((!scriptEntry.hasObject("entities")))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+        
+        // Use the NPC or player's locations as the origin if one is not specified
+        
+        if ((!scriptEntry.hasObject("origin"))) {
+        	
+        	if (scriptEntry.hasNPC())
+        		scriptEntry.addObject("origin", scriptEntry.getNPC().getLocation());
+        	else if (scriptEntry.hasPlayer())
+        		scriptEntry.addObject("origin", scriptEntry.getPlayer().getLocation());
+        	else
+        		throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ORIGIN");
         }
         
-        // Stash objects
-        scriptEntry.addObject("entities", entities);
-        scriptEntry.addObject("destinations", destinations);
-        scriptEntry.addObject("origin", origin);
-        scriptEntry.addObject("dismount", dismount);
+        // Use a default speed of 1.5 if one is not specified
+        
+        if ((!scriptEntry.hasObject("speed"))) {
+        	scriptEntry.addObject("speed", new Element(1.5));
+        }
     }
     
+	@SuppressWarnings("unchecked")
 	@Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
     	
 		dLocation origin = (dLocation) scriptEntry.getObject("origin");
-		List<Entity> entities = (List<Entity>) scriptEntry.getObject("entities");
-		final List<dLocation> destinations = (List<dLocation>) scriptEntry.getObject("destinations");
-		Boolean dismount = (Boolean) scriptEntry.getObject("dismount");
+		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+		final List<dLocation> destinations = scriptEntry.hasObject("destinations") ?
+								(List<dLocation>) scriptEntry.getObject("destinations") :
+								new ArrayList<dLocation>();
 		
-		Entity lastEntity = null;
+		final Element speed = (Element) scriptEntry.getObject("speed");
+		Boolean cancel = scriptEntry.hasObject("cancel") ?
+							true :
+							false;
+		
+        // Report to dB
+        dB.report(getName(), (cancel == true ? "cancel, " : "") +
+        					 aH.debugObj("origin", origin) +
+        					 aH.debugObj("entities", entities.toString()) +
+        					 aH.debugObj("speed", speed) +
+        					 (destinations.size() > 0 ? aH.debugObj("destinations", destinations.toString()) : ""));
+		        
+		// Mount or dismount all of the entities
+		if (cancel == false) {
+			
+			// Go through all the entities, spawning/teleporting them
+	        for (dEntity entity : entities) {
+	        	
+	        	if (entity.isSpawned() == false) {
+	        		entity.spawnAt(origin);
+	        	}
+	        	else {
+	        		entity.teleport(origin);
+	        	}
+	        }
+			
+			Position.mount(Conversion.convert(entities));
+		}
+		else {
+			Position.dismount(Conversion.convert(entities));
+			
+			// Go no further if we are dismounting entities
+			return;
+			
+		}
         
-        for (Entity entity : entities) {
-        	
-        	if (dismount) {
-        		
-        		entity.leaveVehicle();
-        	}
-        	else {
-        	
-        		if (lastEntity != null) {
-        			// Because setPassenger() is a toggle, only use it if the new passenger
-        			// is not already the current passenger
-        		
-        			if (entity.getPassenger() != lastEntity && lastEntity != entity) {
-        				lastEntity.teleport(entity.getLocation());
-        				entity.setPassenger(lastEntity);
-        			}
-        		}
-        	
-        		lastEntity = entity;
-        	}
-        }
+        // Get the last entity on the list
+        final Entity entity = entities.get(entities.size() - 1).getBukkitEntity();
         
-        if (origin != null) {
-    		lastEntity.teleport(origin);
-    	}
-        
-        if (dismount) {
-        	
-        	return;
-        }
-        
-        final Entity entity = lastEntity;
+        // Get the attached player
         final Player player = scriptEntry.getPlayer().getPlayerEntity();
         
 		// Set freeflight to true only if there are no destinations
         final Boolean freeflight = destinations.size() > 0 ? false : true;
         
-        BukkitRunnable task = new BukkitRunnable()
-        {
+        BukkitRunnable task = new BukkitRunnable() {
+
         	Location location = null;
         	Boolean flying = true;
 
@@ -215,7 +193,7 @@ public class FlyCommand extends AbstractCommand {
         			
             		Vector v1 = entity.getLocation().toVector();
             		Vector v2 = location.toVector();
-            		Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
+            		Vector v3 = v2.clone().subtract(v1).normalize().multiply(speed.asDouble());
     				
             		entity.setVelocity(v3);
     				

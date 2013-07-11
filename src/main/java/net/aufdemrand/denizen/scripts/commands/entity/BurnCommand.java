@@ -27,7 +27,6 @@ public class BurnCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
         	if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentType(dList.class)
                 	&& arg.matchesPrefix("entity, entities, e")) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
@@ -43,7 +42,7 @@ public class BurnCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
         
         if ((!scriptEntry.hasObject("entities")))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITY");
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
     }
     
 	@SuppressWarnings("unchecked")
@@ -55,7 +54,8 @@ public class BurnCommand extends AbstractCommand {
 		Duration duration = (Duration) scriptEntry.getObject("duration");
         
         // Report to dB
-        dB.report(getName(), duration.debug() + aH.debugObj("entities", entities.toString()));
+        dB.report(getName(), duration.debug() +
+        		aH.debugObj("entities", entities.toString()));
 		
         // Go through all the entities and set them on fire
         for (dEntity entity : entities) {

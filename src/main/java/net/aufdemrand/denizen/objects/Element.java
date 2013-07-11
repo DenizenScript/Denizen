@@ -120,7 +120,9 @@ public class Element implements dObject {
 
         if (attribute.startsWith("asint")
                 || attribute.startsWith("as_int"))
-            try { return new Element(String.valueOf(Integer.valueOf(element)))
+            try {
+            	return new Element(String.valueOf
+            		(Double.valueOf(element).intValue()))
                     .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Integer.");

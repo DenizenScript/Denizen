@@ -66,7 +66,7 @@ public class RemoveCommand extends AbstractCommand {
     			for (Entity entity : world.getEntities()) {
     				if (region != null) {
     					
-    					if (WorldGuardUtilities.checkWGRegion(entity.getLocation(), region)) {
+    					if (WorldGuardUtilities.inRegion(entity.getLocation(), region)) {
     						
     						if (entityType == null) {
     							entity.remove();

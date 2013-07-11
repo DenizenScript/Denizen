@@ -149,7 +149,7 @@ public class CommandRegistry implements dRegistry {
         		"FLAG", "flag ({player}|npc|global) [name([#])](:action)[:value] (duration:#)", 1);
         
         registerCoreMember(FlyCommand.class,
-        		"FLY", "fly [entities:e@name|...] (origin:x,y,z,world) (destination(s):x,y,z,world|...)", 1);
+        		"FLY", "fly (cancel) [entities:<entity>|...] (origin:<x,y,z,world>) (destination(s):<x,y,z,world>|...) (speed:<#>)", 1);
         
         registerCoreMember(FollowCommand.class, 
         		"FOLLOW", "follow (stop)", 0);
@@ -200,7 +200,7 @@ public class CommandRegistry implements dRegistry {
         		"MIDI", "midi [file:<name>] (listener(s):[p@<name>|...])|(location:<x,y,z,world>) (tempo:<#.#>)", 1);
         
         registerCoreMember(MountCommand.class,
-        		"MOUNT", "mount (cancel) (location:<x,y,z,world>) (target(s):[n@#]|[p@name]|[e@name])", 0);
+        		"MOUNT", "mount (cancel) [entities:<entity>|...] (location:<x,y,z,world>)", 0);
         
         registerCoreMember(ModifyBlockCommand.class,
         		"MODIFYBLOCK", "modifyblock [location:<x,y,z,world>] [<material>(:<data>)] (radius:<#>) (height:<#>) (depth:<#>)", 2);
@@ -218,7 +218,7 @@ public class CommandRegistry implements dRegistry {
         		"OXYGEN", "oxygen (type:maximum|remaining) (mode:set|add|remove) [qty:<#>]", 1);
         
         registerCoreMember(PlayEffectCommand.class,
-        		"PLAYEFFECT", "playeffect [location:<x,y,z,world>] [effect:<name>] (volume:<#>) (pitch:<#>)", 2);
+        		"PLAYEFFECT", "playeffect [location:<x,y,z,world>] [effect:<name>] (data:<#>) (radius:<#>)", 2);
         
         registerCoreMember(PlaySoundCommand.class,
         		"PLAYSOUND", "playsound [location:<x,y,z,world>] [sound:<name>] (volume:<#>) (pitch:<#>)", 2);
@@ -260,7 +260,7 @@ public class CommandRegistry implements dRegistry {
         		"SCRIBE", "scribe [script:book_script] (give|{drop}|equip) (location:x,y,z,world) OR scribe [item:id.name] [script:book_script]", 1);
 
         registerCoreMember(ShootCommand.class,
-        		"SHOOT", "shoot [projectile(s):<entity>|...] (origin:p@<name>/n@<id>) (destination:<x,y,z,world>) (script:<name>)", 1);
+        		"SHOOT", "shoot [projectile(s):<entity>|...] (origin:p@<name>/n@<id>) (destination:<x,y,z,world>) (speed:<#>) (script:<name>)", 1);
 
         registerCoreMember(SignCommand.class, 
         		"SIGN", "sign (type:{sign_post}/wall_sign) [\"<text>|<text>|<text>|<text>\"] [location:<x,y,z,world>]", 1);
@@ -269,7 +269,7 @@ public class CommandRegistry implements dRegistry {
         		"SIT", "sit (location:x,y,z,world)", 0);
 
         registerCoreMember(SpawnCommand.class,
-        		"SPAWN", "spawn [entity:name] (location:<x,y,z,world>) (target:[n@#]|[p@name])", 1);
+        		"SPAWN", "spawn [entities:<entity>|...] (location:<x,y,z,world>) (target:<entity>)", 1);
         
         registerCoreMember(StandCommand.class, 
         		"STAND", "stand", 0);

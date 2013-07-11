@@ -7,6 +7,7 @@ import java.util.Map;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
@@ -15,6 +16,7 @@ import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.entity.Position;
@@ -43,13 +45,12 @@ public class ShootCommand extends AbstractCommand {
 
         	if (!scriptEntry.hasObject("origin")
                     && arg.matchesArgumentType(dEntity.class)
-                    && arg.matchesPrefix("origin, o, source, s")) {
+                    && arg.matchesPrefix("origin, o, source, shooter, s")) {
                 // Entity arg
                 scriptEntry.addObject("origin", arg.asType(dEntity.class).setPrefix("entity"));
             }
             
             else if (!scriptEntry.hasObject("projectiles")
-                    && arg.matchesArgumentType(dList.class)
                 	&& arg.matchesPrefix("projectile, projectiles, p, entity, entities, e")) {
                 // Entity arg
                 scriptEntry.addObject("projectiles", ((dList) arg.asType(dList.class)).filter(dEntity.class));
@@ -58,13 +59,13 @@ public class ShootCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("destination")
                     && arg.matchesArgumentType(dLocation.class)) {
                 // Location arg
-                scriptEntry.addObject("destination", arg.asType(dLocation.class).setPrefix("location"));
+                scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
         	
-            else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class)) {
-                // add value
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
+            else if (!scriptEntry.hasObject("speed")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                // Add value
+                scriptEntry.addObject("speed", arg.asElement());
             }
         	
             else if (!scriptEntry.hasObject("script")
@@ -77,7 +78,25 @@ public class ShootCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
         
         if ((!scriptEntry.hasObject("projectiles")))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PROJECTILE");
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PROJECTILES");
+        
+        // Use the NPC or player's locations as the origin if one is not specified
+        
+        if ((!scriptEntry.hasObject("origin"))) {
+        	
+        	if (scriptEntry.hasNPC())
+        		scriptEntry.addObject("origin", scriptEntry.getNPC().getLocation());
+        	else if (scriptEntry.hasPlayer())
+        		scriptEntry.addObject("origin", scriptEntry.getPlayer().getLocation());
+        	else
+        		throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ORIGIN");
+        }
+        
+        // Use a default speed of 1.5 if one is not specified
+        
+        if ((!scriptEntry.hasObject("speed"))) {
+        	scriptEntry.addObject("speed", new Element(1.5));
+        }
     }
     
 	@SuppressWarnings("unchecked")
@@ -94,7 +113,15 @@ public class ShootCommand extends AbstractCommand {
 											  		.multiply(40)));
 
 		List<dEntity> projectiles = (List<dEntity>) scriptEntry.getObject("projectiles");
+		final Element speed = (Element) scriptEntry.getObject("speed");
         final dScript script = (dScript) scriptEntry.getObject("script");
+        
+        // Report to dB
+        dB.report(getName(), aH.debugObj("origin", shooter) +
+        					 aH.debugObj("projectiles", projectiles.toString()) +
+        					 aH.debugObj("destination", destination) +
+        					 aH.debugObj("speed", speed) +
+        					 (script != null ? aH.debugObj("script", script) : ""));
         
         // If the shooter is an NPC, always rotate it to face the destination
         // of the projectile, but if the shooter is a player, only rotate him/her
@@ -110,12 +137,14 @@ public class ShootCommand extends AbstractCommand {
 				  				 shooterEntity.getEyeLocation().getDirection())
 				  				 .subtract(0, 0.4, 0);
         
-        // Go through all the projectiles, spawning and rotating them
+        // Go through all the projectiles, spawning/teleporting and rotating them
         for (dEntity projectile : projectiles) {
         	
         	if (projectile.isSpawned() == false) {
-        		
         		projectile.spawnAt(origin);
+        	}
+        	else {
+        		projectile.teleport(origin);
         	}
         	
             Rotation.faceLocation(projectile.getBukkitEntity(), destination);
@@ -140,7 +169,7 @@ public class ShootCommand extends AbstractCommand {
         		{
         			Vector v1 = lastProjectile.getLocation().toVector();
         			Vector v2 = destination.toVector();
-        			Vector v3 = v2.clone().subtract(v1).normalize().multiply(1.5);
+        			Vector v3 = v2.clone().subtract(v1).normalize().multiply(speed.asDouble());
         							
         			lastProjectile.setVelocity(v3);
         			runs++;

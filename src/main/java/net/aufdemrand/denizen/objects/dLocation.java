@@ -179,7 +179,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return true;
 
         final Pattern location =
-                Pattern.compile("(((-)?\\d+(\\.\\d+)?,){3}|((-)?\\d+(\\.\\d+)?,){5})\\w+",
+                Pattern.compile("((-?\\d+(\\.\\d+)?,){3}|(-?\\d+(\\.\\d+)?,){5})\\w+",
                         Pattern.CASE_INSENSITIVE);
         m = location.matcher(string);
         if (m.matches())
@@ -502,9 +502,24 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return null;
             }
 
-            String region = attribute.getContext(1);
+            // Check if the player is in the specified region
+            if (attribute.hasContext(1)) {
+            
+            	String region = attribute.getContext(1);
 
-            return new Element(String.valueOf(WorldGuardUtilities.checkWGRegion(this, region)))
+            	return new Element(String.valueOf(WorldGuardUtilities.inRegion(this, region)))
+            		.getAttribute(attribute.fulfill(1));
+            }
+            
+            // Check if the player is in any region
+            else {
+            	return new Element(String.valueOf(WorldGuardUtilities.inRegion(this)))
+        			.getAttribute(attribute.fulfill(1));
+            }
+        }
+        
+        if (attribute.startsWith("regions")) {
+            return new dList(WorldGuardUtilities.getRegions(this))
                     .getAttribute(attribute.fulfill(1));
         }
 

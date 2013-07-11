@@ -158,7 +158,11 @@ public class dWorld implements dObject {
         if (attribute.startsWith("difficulty"))
             return new Element(getWorld().getDifficulty().name())
                     .getAttribute(attribute.fulfill(1));
-
+        
+        if (attribute.startsWith("name"))
+            return new Element(String.valueOf(getWorld().getName()))
+                    .getAttribute(attribute.fulfill(1));
+        
         if (attribute.startsWith("players")) {
             List<String> players = new ArrayList<String>();
             for(Player player : getWorld().getPlayers())

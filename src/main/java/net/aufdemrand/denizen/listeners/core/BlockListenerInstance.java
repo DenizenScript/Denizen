@@ -130,7 +130,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 			if (event.getPlayer() == player.getPlayerEntity()) {
 				
 				if (region != null) 
-					if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
+					if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
 				
 				if (blocks.contains(event.getBlock().getType().toString())
 						|| blocks.contains(String.valueOf(event.getBlock().getTypeId()))) {
@@ -155,7 +155,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 			if (event.getPlayer() == player.getPlayerEntity()) {
 				
 				if (region != null) 
-					if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
+					if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
 				
 				if (blocks.contains(event.getItem().getItemStack().getType().toString())
 						|| blocks.contains(String.valueOf(event.getItem().getItemStack().getTypeId()))) {
@@ -179,7 +179,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 			if (event.getPlayer() == player.getPlayerEntity()) {
 				
 				if (region != null) 
-					if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
+					if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
 			
 				if (blocks.contains(event.getBucket().name().toUpperCase())
 						|| blocks.contains(String.valueOf(event.getBucket().name().toUpperCase()))) {
@@ -198,7 +198,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 			if (event.getPlayer() == player.getPlayerEntity()) {
 				
 				if (region != null) 
-					if (!WorldGuardUtilities.checkWGRegion(player.getPlayerEntity().getLocation(), region)) return;
+					if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
 				
 				if (blocks.contains(event.getBlock().getType().toString())
 						|| blocks.contains(String.valueOf(event.getBlock().getTypeId()))) {

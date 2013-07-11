@@ -119,7 +119,7 @@ public class RuntaskCommand extends AbstractCommand {
         // If not queue, and delayed, throw an exception... this cannot happen.
         if (queue == scriptEntry.getResidingQueue() && delay != null)
             throw new InvalidArgumentsException("Cannot delay an INJECTED task script! Use 'QUEUE'.");
-
+        
         // Put important objects inside the scriptEntry to be sent to execute()
         scriptEntry.addObject("instant", instant)
                 .addObject("queue", queue)
@@ -153,26 +153,28 @@ public class RuntaskCommand extends AbstractCommand {
 
         if (instant) {
             // Instant, but no delay
-            if (delay == null)
+            if (delay == null) {
 
-                if (scriptEntry.getResidingQueue() != queue)
+                if (scriptEntry.getResidingQueue() != queue) {
                     // Instant, no delay, new queue
                     ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
                             .runTaskScript(queue.id,
                                     scriptEntry.getPlayer(),
                                     scriptEntry.getNPC(),
                                     context);
+                }
 
-                else
+                else {
                     // Instant, no delay, injection into current queue
                     ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
                             .injectTaskScript(queue.id,
                                     scriptEntry.getPlayer(),
                                     scriptEntry.getNPC(),
                                     context);
+                }
+            }
 
-
-            else
+            else {
                 // Instant, has delay, new queue
                 ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
                         .runTaskScriptWithDelay(queue.id,
@@ -180,29 +182,32 @@ public class RuntaskCommand extends AbstractCommand {
                                 scriptEntry.getNPC(),
                                 context,
                                 delay);
+            }
+        }
+        else {
 
-        } else {
-
-            if (delay == null)
+            if (delay == null) {
 
                 // Not instant, no delay, new queue
-                if (scriptEntry.getResidingQueue() != queue)
+                if (scriptEntry.getResidingQueue() != queue) {
                     ((TaskScriptContainer) script.getContainer())
                             .runTaskScript(queue.id,
                                     scriptEntry.getPlayer(),
                                     scriptEntry.getNPC(),
                                     context);
+                }
 
-                else
+                else {
                     // Not instant, no delay, injection into current queue
                     ((TaskScriptContainer) script.getContainer())
                             .injectTaskScript(queue.id,
                                     scriptEntry.getPlayer(),
                                     scriptEntry.getNPC(),
                                     context);
+                }
+            }
 
-
-            else
+            else {
                 // Not instant, delayed, new queue
                 ((TaskScriptContainer) script.getContainer())
                         .runTaskScriptWithDelay(queue.id,
@@ -210,7 +215,8 @@ public class RuntaskCommand extends AbstractCommand {
                                 scriptEntry.getNPC(),
                                 context,
                                 delay);
+            }
         }
-    }
 
+    }
 }

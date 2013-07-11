@@ -487,7 +487,8 @@ public class aH {
 
     @Deprecated
     public static Duration getDurationFrom(String arg) {
-        arg = arg.replace("duration:", "");
+    	if (arg.split(":").length > 1)
+    		arg = arg.split(":")[1];
         return Duration.valueOf(arg);
     }
 
@@ -497,7 +498,8 @@ public class aH {
 
     @Deprecated
     public static boolean matchesDuration(String arg) {
-        arg = arg.replace("duration:", "");
+    	if (arg.split(":").length > 1)
+    		arg = arg.split(":")[1];
         return Duration.matches(arg);
     }
 
