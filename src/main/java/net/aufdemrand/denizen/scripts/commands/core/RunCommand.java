@@ -113,7 +113,7 @@ public class RunCommand extends AbstractCommand {
             entries = script.getContainer().getEntries(
                     scriptEntry.getPlayer(),
                     scriptEntry.getNPC(),
-                    (String) scriptEntry.getObject("path"));
+                    scriptEntry.getElement("path").asString());
         // Else, assume standard path
         else entries = script.getContainer().getBaseEntries(
                 scriptEntry.getPlayer(),
@@ -121,7 +121,7 @@ public class RunCommand extends AbstractCommand {
 
         // Get the 'id' if specified
         String id = (scriptEntry.hasObject("id") ?
-                ((Element) scriptEntry.getObject("id")).asString() : ScriptQueue._getNextId());
+                (scriptEntry.getElement("id")).asString() : ScriptQueue._getNextId());
 
         // Build the queue
         ScriptQueue queue;
