@@ -33,6 +33,20 @@ public class CommandExecuter {
 	 */
 
     public boolean execute(ScriptEntry scriptEntry) {
+
+        Matcher m = definition_pattern.matcher(scriptEntry.getCommandName());
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            if (scriptEntry.getResidingQueue().context
+                    .containsKey(m.group(1).toLowerCase()))
+                m.appendReplacement(sb,
+                        scriptEntry.getResidingQueue().context.get(m.group(1)));
+
+            else m.appendReplacement(sb, "null");
+        }
+        m.appendTail(sb);
+        scriptEntry.setCommandName(sb.toString());
+
         if (plugin.getCommandRegistry().get(scriptEntry.getCommandName()) == null) {
             dB.echoDebug(DebugElement.Header, "Executing command: " + scriptEntry.getCommandName());
             dB.echoError(scriptEntry.getCommandName() + " is an invalid dCommand! Are you sure it loaded?");
@@ -74,8 +88,8 @@ public class CommandExecuter {
 
             for (String arg : scriptEntry.getArguments()) {
 
-                Matcher m = definition_pattern.matcher(arg);
-                StringBuffer sb = new StringBuffer();
+                m = definition_pattern.matcher(arg);
+                sb = new StringBuffer();
                 while (m.find()) {
                     if (scriptEntry.getResidingQueue().context
                             .containsKey(m.group(1).toLowerCase()))
@@ -87,8 +101,7 @@ public class CommandExecuter {
                 m.appendTail(sb);
                 arg = sb.toString();
 
-                
-                
+
                 // Fill player/off-line player
                 if (aH.matchesValueArg("player", arg, aH.ArgumentType.String)) {
                 	arg = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg, false);

@@ -11,14 +11,14 @@ import java.util.*;
 
 /**
  * ScriptEntry contain information about a single entry from a dScript.
- *  
+ *
  * @author Jeremy Schroeder
  *
  */
 public class ScriptEntry {
 
     // The name of the command that will be executed
-	private String command;
+    private String command;
 
     // The queuetime and allowed-run-time can dictate whether it's okay
     // for this command to run in the queue.
@@ -27,19 +27,19 @@ public class ScriptEntry {
     private long runTime;
     private long holdTime;
 
-	private boolean instant = false;
+    private boolean instant = false;
     private boolean waitfor = false;
     private boolean done = false;
 
     private dPlayer player = null;
-	private dNPC npc = null;
+    private dNPC npc = null;
 
     private dScript script = null;
 
-	private ScriptQueue queue = null;
-	private List<String> args = null;
+    private ScriptQueue queue = null;
+    private List<String> args = null;
 
-	private Map<String, Object> objects = new HashMap<String, Object>();
+    private Map<String, Object> objects = new HashMap<String, Object>();
 
     public ScriptEntry(String command, String[] arguments, ScriptContainer script) throws ScriptEntryCreationException {
 
@@ -51,22 +51,22 @@ public class ScriptEntry {
         this.script = script.getAsScriptArg();
 
         // Internal, never null. runTime/holdTime can be adjusted mid-execution
-		this.creationTime = System.currentTimeMillis();
+        this.creationTime = System.currentTimeMillis();
         this.queueTime = creationTime;
-		this.runTime = creationTime;
+        this.runTime = creationTime;
         this.holdTime = creationTime;
 
         // Check if this is an 'instant' or 'waitfor' command.
-		if (command.startsWith("^")) {
-			instant = true;
-			this.command = command.substring(1);
-		} else if (command.startsWith("~")) {
+        if (command.startsWith("^")) {
+            instant = true;
+            this.command = command.substring(1);
+        } else if (command.startsWith("~")) {
             waitfor = true;
             this.command = command.substring(1);
         }
 
-		this.args = new ArrayList<String>();
-		if (arguments != null)
+        this.args = new ArrayList<String>();
+        if (arguments != null)
             this.args = Arrays.asList(arguments);
 
         // Check for replaceable tags.
@@ -77,37 +77,37 @@ public class ScriptEntry {
             }
         }
 
-	}
+    }
 
     public boolean has_tags = false;
 
-	public ScriptEntry addObject(String key, Object object) {
+    public ScriptEntry addObject(String key, Object object) {
         if (object == null) return this;
-		if (object instanceof dObject)
+        if (object instanceof dObject)
             ((dObject) object).setPrefix(key);
         objects.put(key.toUpperCase(), object);
-		return this;
-	}
+        return this;
+    }
 
-	public long getRunTime() {
-		return runTime;
-	}
+    public long getRunTime() {
+        return runTime;
+    }
 
     public long getHoldTime() {
         return holdTime;
     }
 
-	public List<String> getArguments() {
-		return args;
-	}
+    public List<String> getArguments() {
+        return args;
+    }
 
-	public String getCommandName() {
-		return command;
-	}
+    public String getCommandName() {
+        return command;
+    }
 
-	public dNPC getNPC() {
-		return npc;
-	}
+    public dNPC getNPC() {
+        return npc;
+    }
 
     public void setFinished(boolean finished) {
         done = finished;
@@ -118,37 +118,49 @@ public class ScriptEntry {
     }
 
     public Map<String, Object> getObjects() {
-		return objects;
-	}
-	
-	public Object getObject(String key) {
-		try {
-			return objects.get(key.toUpperCase());
-		} catch (Exception e) { return null; }
-	}
+        return objects;
+    }
+
+    public Object getObject(String key) {
+        try {
+            return objects.get(key.toUpperCase());
+        } catch (Exception e) { return null; }
+    }
+
+    public dObject getdObject(String key) {
+        try {
+            return (dObject) objects.get(key.toUpperCase());
+        } catch (Exception e) { return null; }
+    }
+
+    public Element getElement(String key) {
+        try {
+            return (Element) objects.get(key.toUpperCase());
+        } catch (Exception e) { return null; }
+    }
 
     public boolean hasObject(String key) {
         if (objects.containsKey(key.toUpperCase())
                 && objects.get(key.toUpperCase()) != null)
-        return true;
+            return true;
         else return false;
     }
 
-	public dScript getScript() {
+    public dScript getScript() {
         return script;
-	}
+    }
 
-	public ScriptQueue getResidingQueue() {
-		return queue;
-	}
+    public ScriptQueue getResidingQueue() {
+        return queue;
+    }
 
-	public Long getQueueTime() {
-		return queueTime;
-	}
+    public Long getQueueTime() {
+        return queueTime;
+    }
 
-	public boolean isInstant() {
-		return instant;
-	}
+    public boolean isInstant() {
+        return instant;
+    }
 
     public boolean shouldWaitFor() {
         return waitfor;
@@ -158,39 +170,39 @@ public class ScriptEntry {
         return done;
     }
 
-	public ScriptEntry setRunTime(Long newTime) {
-		runTime = newTime;
-		return this;
-	}
-	
-	public ScriptEntry setArguments(List<String> arguments) {
-		args = arguments;
-		return this;
-	}
+    public ScriptEntry setRunTime(Long newTime) {
+        runTime = newTime;
+        return this;
+    }
 
-	public ScriptEntry setInstant(boolean instant) {
-		this.instant = instant;
-		return this;
-	}
+    public ScriptEntry setArguments(List<String> arguments) {
+        args = arguments;
+        return this;
+    }
+
+    public ScriptEntry setInstant(boolean instant) {
+        this.instant = instant;
+        return this;
+    }
 
     public ScriptEntry setPlayer(dPlayer player) {
         this.player = player;
         return this;
     }
-	
-	public ScriptEntry setNPC(dNPC dNPC) {
-		this.npc = dNPC;
-		return this;
-	}
-	
-	public ScriptEntry setScript(String scriptName) {
-		this.script = dScript.valueOf(scriptName);
-		return this;
-	}
 
-	public void setSendingQueue(ScriptQueue scriptQueue) {
-		queue = scriptQueue;
-	}
+    public ScriptEntry setNPC(dNPC dNPC) {
+        this.npc = dNPC;
+        return this;
+    }
+
+    public ScriptEntry setScript(String scriptName) {
+        this.script = dScript.valueOf(scriptName);
+        return this;
+    }
+
+    public void setSendingQueue(ScriptQueue scriptQueue) {
+        queue = scriptQueue;
+    }
 
     // Keep track of objects which were added by mass
     // so that IF can inject them into new entries.
@@ -202,4 +214,7 @@ public class ScriptEntry {
         return this;
     }
 
+    public void setCommandName(String commandName) {
+        this.command = commandName;
+    }
 }
