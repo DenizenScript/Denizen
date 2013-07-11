@@ -36,7 +36,8 @@ public class AnimateCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
         	
-        	if (!scriptEntry.hasObject("animation")) {
+        	if (!scriptEntry.hasObject("animation") &&
+        		!scriptEntry.hasObject("effect")) {
         		
         		if (arg.matchesEnum(PlayerAnimation.values())) {
                 	scriptEntry.addObject("animation", PlayerAnimation.valueOf(arg.getValue().toUpperCase()));
