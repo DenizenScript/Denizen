@@ -64,4 +64,82 @@ _util_dtime_command:
       else flag global "Iterator %id%:!"
 
 
+# ex command
+
+"ex command":
+  type: world
+
+  events:
+    on ex command:
+    - define command_name <c.args.get[1]>
+    - flag "list:|:<c.args>"
+    - flag "list:<-:%command_name%"
+    - define raw_args "<player.flag[list].as_list>"
+    - run 'ex it' path:<player.flag[list].size> instantly def:%command_name%
+    - if <player.flag[list].size> > 12 {
+      - flag list:!
+      - narrate '<red>Too many arguments!'
+      }
+    - determine fulfilled
+
+"ex it":
+  type: task
+
+  1:
+    - "%1% <player.flag[list].get[1]>"
+
+  2:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]>"
+
+  3:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]> <player.flag[list].get[3]>"
+
+  4:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]> <player.flag[list].get[3]>
+           <player.flag[list].get[4]>"
+
+  5:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]> <player.flag[list].get[3]>
+           <player.flag[list].get[4]> <player.flag[list].get[5]>"
+
+  6:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]> <player.flag[list].get[3]>
+           <player.flag[list].get[4]> <player.flag[list].get[5]> <player.flag[list].get[6]>"
+
+  7:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]> <player.flag[list].get[3]>
+           <player.flag[list].get[4]> <player.flag[list].get[5]> <player.flag[list].get[6]>
+           <player.flag[list].get[7]>"
+
+  8:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]> <player.flag[list].get[3]>
+           <player.flag[list].get[4]> <player.flag[list].get[5]> <player.flag[list].get[6]>
+           <player.flag[list].get[7]> <player.flag[list].get[8]>"
+
+  9:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]> <player.flag[list].get[3]>
+           <player.flag[list].get[4]> <player.flag[list].get[5]> <player.flag[list].get[6]>
+           <player.flag[list].get[7]> <player.flag[list].get[8]> <player.flag[list].get[9]>"
+
+  10:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]> <player.flag[list].get[3]>
+           <player.flag[list].get[4]> <player.flag[list].get[5]> <player.flag[list].get[6]>
+           <player.flag[list].get[7]> <player.flag[list].get[8]> <player.flag[list].get[9]>
+           <player.flag[list].get[10]>"
+
+  11:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]> <player.flag[list].get[3]>
+           <player.flag[list].get[4]> <player.flag[list].get[5]> <player.flag[list].get[6]>
+           <player.flag[list].get[7]> <player.flag[list].get[8]> <player.flag[list].get[9]>
+           <player.flag[list].get[10]> <player.flag[list].get[11]>"
+
+  12:
+    - "%1% <player.flag[list].get[1]> <player.flag[list].get[2]> <player.flag[list].get[3]>
+           <player.flag[list].get[4]> <player.flag[list].get[5]> <player.flag[list].get[6]>
+           <player.flag[list].get[7]> <player.flag[list].get[8]> <player.flag[list].get[9]>
+           <player.flag[list].get[10]> <player.flag[list].get[11]> <player.flag[list].get[12]>"
+
+  on queue completes:
+  - flag list:!
+
 

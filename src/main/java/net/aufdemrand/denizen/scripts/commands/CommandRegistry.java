@@ -94,6 +94,9 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(CopyBlockCommand.class,
                 "COPYBLOCK", "copyblock [location:x,y,z,world] [to:x,y,z,world]", 1);
 
+        registerCoreMember(CreateWorldCommand.class,
+                "CREATEWORLD", "createworld [world_name] (g:generator_name)", 1);
+
         registerCoreMember(DefineCommand.class,
                 "DEFINE", "define [id] [\"value\"]", 2);
         
