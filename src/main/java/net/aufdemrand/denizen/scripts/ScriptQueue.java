@@ -185,9 +185,11 @@ public class ScriptQueue implements Listener {
         if (!is_stopping) {
             is_stopping = true;
             List<ScriptEntry> entries = lastEntryExecuted.getScript()
-                    .getContainer().getEntries(lastEntryExecuted.getPlayer(), lastEntryExecuted.getNPC(), "on queue end");
-            if (!entries.isEmpty())
+                    .getContainer().getEntries(lastEntryExecuted.getPlayer(), lastEntryExecuted.getNPC(), "on queue completes");
+            if (!entries.isEmpty()) {
                 scriptEntries.addAll(entries);
+                dB.log("Finishing up queue " + id + "...");
+            }
             else {
                 _queues.remove(id);
                 dB.echoDebug("Completing queue " + id + "...");
@@ -285,7 +287,6 @@ public class ScriptQueue implements Listener {
         if (scriptEntries.size() == 0) position = 0;
         scriptEntries.addAll(position, entries);
         return this;
-
     }
 
 
