@@ -487,6 +487,8 @@ public class WorldScriptHelper implements Listener {
         Map<String, Object> context = new HashMap<String, Object>();
         Entity entity = event.getEntity();
         
+        if (entity == null) return;
+        
         context.put("entity", new dEntity(entity));
         context.put("location", new dLocation(event.getLocation()));
         
@@ -1079,11 +1081,12 @@ public class WorldScriptHelper implements Listener {
 
         if (name != null) {
             Map<String, Object> context = new HashMap<String, Object>();
-            context.put("notable_name", new Element(name));
+            context.put("notable", new Element(name));
 
             String determination = doEvents(Arrays.asList
             		("player walks over notable",
             		 "player walks over " + name,
+            		 "walked over notable",
             		 "walked over " + name),
             		null, event.getPlayer(), context);
             

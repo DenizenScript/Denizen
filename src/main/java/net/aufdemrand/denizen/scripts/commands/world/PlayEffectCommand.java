@@ -1,9 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import org.bukkit.Effect;
-import org.bukkit.EntityEffect;
-import org.bukkit.craftbukkit.v1_6_R2.entity.CraftWolf;
-import org.bukkit.entity.Wolf;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -14,10 +11,14 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.aufdemrand.denizen.utilities.ParticleEffect;
 
 /* playeffect [location:<x,y,z,world>] [effect:<name>] (data:<#>) (radius:<#>)*/
 
 /** 
+ * Lets you play a Bukkit effect or a ParticleEffect from the
+ * ParticleEffect Library at a certain location.
+ * 
  * Arguments: [] - Required, () - Optional 
  * [location:<x,y,z,world>] specifies location of the effect
  * [effect:<name>] sets the name of effect to be played
@@ -33,9 +34,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class PlayEffectCommand extends AbstractCommand {
 
-	// Implement some special effects that are not in Bukkit's Effect class
-	private enum SpecialEffect { HEARTS, EXPLOSION }
-	
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -54,14 +52,14 @@ public class PlayEffectCommand extends AbstractCommand {
 				if (arg.matchesEnum(Effect.values())) {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
                 }
-				else if (arg.matchesEnum(SpecialEffect.values())) {
-                    scriptEntry.addObject("specialeffect", SpecialEffect.valueOf(arg.getValue().toUpperCase()));
+				else if (arg.matchesEnum(ParticleEffect.values())) {
+                    scriptEntry.addObject("specialeffect", ParticleEffect.valueOf(arg.getValue().toUpperCase()));
                 }
 			}
 			
 			else if (!scriptEntry.hasObject("radius")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)
-                    && arg.matchesPrefix("radius, r")) {
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("range, radius, r")) {
                 // Add value
                 scriptEntry.addObject("radius", arg.asElement());
             }
@@ -99,7 +97,7 @@ public class PlayEffectCommand extends AbstractCommand {
         // Extract objects from ScriptEntry
         dLocation location = (dLocation) scriptEntry.getObject("location");
         Effect effect = (Effect) scriptEntry.getObject("effect");
-        SpecialEffect specialEffect = (SpecialEffect) scriptEntry.getObject("specialeffect");
+        ParticleEffect particleEffect = (ParticleEffect) scriptEntry.getObject("specialeffect");
         Element radius = (Element) scriptEntry.getObject("radius");
         Element data = (Element) scriptEntry.getObject("data");
 
@@ -107,7 +105,7 @@ public class PlayEffectCommand extends AbstractCommand {
         dB.report(getName(),
         		(effect != null ?
         			aH.debugObj("effect", effect.name()) :
-        			aH.debugObj("special effect", specialEffect.name())) +
+        			aH.debugObj("special effect", particleEffect.name())) +
         		aH.debugObj("location", location.toString() +
         		aH.debugObj("radius", radius) +
         		aH.debugObj("data", data)));
@@ -118,18 +116,9 @@ public class PlayEffectCommand extends AbstractCommand {
         }
         // Play one of the special effects
         else {
-        	if (specialEffect.equals(SpecialEffect.HEARTS)) {
-        	
-        		Wolf wolf = (Wolf) location.getWorld().spawn(location, Wolf.class);
-        		((CraftWolf) wolf).getHandle().setInvisible(true);
-        		wolf.playEffect(EntityEffect.WOLF_HEARTS);
-        		wolf.remove();
-        	}
-        	else if (specialEffect.equals(SpecialEffect.EXPLOSION)) {
-            	
-        		location.getWorld().createExplosion(location, 0);
-        	}
+        	ParticleEffect.fromName(particleEffect.name())
+        		.play(location, radius.asDouble(),
+        			  1.0F, 1.0F, 1.0F, 1.0F, 3);
         }
 	}
-
 }
