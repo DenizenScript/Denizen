@@ -26,10 +26,11 @@ public class InventoryCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.values()))
+                    && arg.matchesEnum(Action.values())) {
                 // add Action
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
-        	
+            }
+                
             else if (!scriptEntry.hasObject("originEntity") &&
         		!scriptEntry.hasObject("originLocation") &&
         		arg.matchesPrefix("origin, o, source, s, items, i, from, f")) {

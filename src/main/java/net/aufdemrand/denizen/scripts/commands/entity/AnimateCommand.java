@@ -36,15 +36,15 @@ public class AnimateCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
         	
-        	if (!scriptEntry.hasObject("animation")
-                    && arg.matchesEnum(PlayerAnimation.values()))
-                // add type
-            	scriptEntry.addObject("animation", PlayerAnimation.valueOf(arg.getValue().toUpperCase()));
-            
-            if (!scriptEntry.hasObject("animation")
-                    && arg.matchesEnum(EntityEffect.values()))
-                // add type
-            	scriptEntry.addObject("effect", EntityEffect.valueOf(arg.getValue().toUpperCase()));
+        	if (!scriptEntry.hasObject("animation")) {
+        		
+        		if (arg.matchesEnum(PlayerAnimation.values())) {
+                	scriptEntry.addObject("animation", PlayerAnimation.valueOf(arg.getValue().toUpperCase()));
+                }
+        		else if (arg.matchesEnum(EntityEffect.values())) {
+                	scriptEntry.addObject("effect", EntityEffect.valueOf(arg.getValue().toUpperCase()));
+        		}
+        	}
         }
 
         // Check to make sure required arguments have been filled
@@ -68,7 +68,10 @@ public class AnimateCommand extends AbstractCommand {
 				(EntityEffect) scriptEntry.getObject("effect") : null;
 
         // Report to dB
-        dB.report(getName(), (animation != null ? animation.name() : effect.name()) +
+        dB.report(getName(),
+        		(animation != null ?
+        			aH.debugObj("animation", animation.name()) :
+        			aH.debugObj("effect", effect.name())) +
         		aH.debugObj("entities", entities.toString()));
 		
         // Go through all the entities and animate them

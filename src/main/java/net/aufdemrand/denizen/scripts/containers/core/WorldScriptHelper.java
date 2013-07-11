@@ -1084,7 +1084,7 @@ public class WorldScriptHelper implements Listener {
             String determination = doEvents(Arrays.asList
             		("player walks over notable",
             		 "player walks over " + name,
-            		 "on walked over " + name),
+            		 "walked over " + name),
             		null, event.getPlayer(), context);
             
             if (determination.toUpperCase().startsWith("CANCELLED") ||
