@@ -86,7 +86,7 @@ public class RunCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dNPC.class))
                 scriptEntry.setNPC((dNPC) arg.asType(dNPC.class));
 
-            else if (arg.matchesPrefix("d, def"))
+            else if (arg.matchesPrefix("d, def, c, context"))
                 scriptEntry.addObject("definitions", arg.asType(dList.class));
         }
 

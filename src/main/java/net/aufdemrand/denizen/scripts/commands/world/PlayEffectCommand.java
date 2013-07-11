@@ -23,11 +23,12 @@ import net.aufdemrand.denizen.utilities.ParticleEffect;
  * (data:<#>) sets the special data value of the effect
  * (radius:<#>) adjusts the radius within which players will observe the effect
  * (qty:<#>) sets the number of times the effect will be played
+ * (offset:<#>) sets the offset of ParticleEffects.
  * 
  * Example Usage:
  * playeffect location:123,65,765,world effect:record_play data:2259 radius:7
  * playeffect location:<npc.location> e:smoke r:3
- * playeffect location:<npc.location> effect:heart radius:7 qty:60
+ * playeffect location:<npc.location> effect:heart radius:7 qty:1000 offset:20
  * 
  * @author David Cernat
  */
@@ -67,7 +68,7 @@ public class PlayEffectCommand extends AbstractCommand {
             }
 			
 			else if (!scriptEntry.hasObject("data")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("data, d")) {
                 // Add value
                 scriptEntry.addObject("data", arg.asElement());
@@ -78,6 +79,13 @@ public class PlayEffectCommand extends AbstractCommand {
                     && arg.matchesPrefix("qty, q")) {
                 // Add value
                 scriptEntry.addObject("qty", arg.asElement());
+            }
+			
+			else if (!scriptEntry.hasObject("offset")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("offset, o")) {
+                // Add value
+                scriptEntry.addObject("offset", arg.asElement());
             }
 		}
         
@@ -90,7 +98,7 @@ public class PlayEffectCommand extends AbstractCommand {
         	!scriptEntry.hasObject("particleeffect"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EFFECT");
         
-        // Use default radius, data and qty if necessary
+        // Use default values if necessary
         
         if ((!scriptEntry.hasObject("radius"))) {
         	scriptEntry.addObject("radius", new Element(5));
@@ -102,6 +110,10 @@ public class PlayEffectCommand extends AbstractCommand {
         
         if ((!scriptEntry.hasObject("qty"))) {
         	scriptEntry.addObject("qty", new Element(1));
+        }
+        
+        if ((!scriptEntry.hasObject("offset"))) {
+        	scriptEntry.addObject("offset", new Element(0.5));
         }
 	}
 
@@ -115,6 +127,7 @@ public class PlayEffectCommand extends AbstractCommand {
         Element radius = (Element) scriptEntry.getObject("radius");
         Element data = (Element) scriptEntry.getObject("data");
         Element qty = (Element) scriptEntry.getObject("qty");
+        Element offset = (Element) scriptEntry.getObject("offset");
 
         // Slightly increase the location's Y so effects don't seem
         // to come out of the ground
@@ -128,7 +141,8 @@ public class PlayEffectCommand extends AbstractCommand {
         		aH.debugObj("location", location.toString()) +
         		aH.debugObj("radius", radius) +
         		aH.debugObj("data", data) +
-        		aH.debugObj("qty", qty));
+        		aH.debugObj("qty", qty) +
+        		(effect != null ? "" : aH.debugObj("offset", offset)));
         
         // Play the Bukkit effect the number of times specified
         if (effect != null) {
@@ -139,9 +153,9 @@ public class PlayEffectCommand extends AbstractCommand {
         }
         // Play a ParticleEffect
         else {
-        	ParticleEffect.fromName(particleEffect.name())
+        	ParticleEffect.valueOf(particleEffect.name())
         		.play(location, radius.asDouble(),
-        			  0.5F, 0.5F, 0.5F, 1.0F, qty.asInt());
+        			  offset.asFloat(), offset.asFloat(), offset.asFloat(), data.asFloat(), qty.asInt());
         }
 	}
 }

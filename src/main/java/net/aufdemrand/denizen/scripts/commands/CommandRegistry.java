@@ -218,7 +218,7 @@ public class CommandRegistry implements dRegistry {
         		"OXYGEN", "oxygen (type:maximum|remaining) (mode:set|add|remove) [qty:<#>]", 1);
         
         registerCoreMember(PlayEffectCommand.class,
-        		"PLAYEFFECT", "playeffect [location:<x,y,z,world>] [effect:<name>] (data:<#>) (radius:<#>) (qty:<#>)", 2);
+        		"PLAYEFFECT", "playeffect [location:<x,y,z,world>] [effect:<name>] (data:<#>) (radius:<#>) (qty:<#>) (offset:<#>)", 2);
         
         registerCoreMember(PlaySoundCommand.class,
         		"PLAYSOUND", "playsound [location:<x,y,z,world>] [sound:<name>] (volume:<#>) (pitch:<#>)", 2);

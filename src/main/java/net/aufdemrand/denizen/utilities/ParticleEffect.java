@@ -53,7 +53,8 @@ public enum ParticleEffect {
     SLIME("slime", 29),
     HEART("heart", 30),
     ANGRY_VILLAGER("angryVillager", 31),
-    HAPPY_VILLAGER("happyVillager", 32);
+    HAPPY_VILLAGER("happyVillager", 32),
+    RANDOM("random", 33);
  
     private String name;
     private int id;
@@ -95,7 +96,7 @@ public enum ParticleEffect {
     public static ParticleEffect fromId(int id) {
         return ID_MAP.get(id);
     }
- 
+    
     /**
     * Plays a particle effect at a location which is only shown to a specific player.
     */
@@ -184,7 +185,13 @@ public enum ParticleEffect {
     }
  
     private Object createNormalPacket(ParticleEffect effect, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
-        return createPacket(effect.getName(), loc, offsetX, offsetY, offsetZ, speed, amount);
+        
+    	// Get another effect if "RANDOM" is used
+    	while (effect.equals(ParticleEffect.RANDOM)){
+    		effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
+    	}
+    	
+    	return createPacket(effect.getName(), loc, offsetX, offsetY, offsetZ, speed, amount);
     }
  
     private static Object createTileCrackPacket(int id, byte data, Location loc, float offsetX, float offsetY, float offsetZ, int amount) {
