@@ -303,19 +303,19 @@ public class dPlayer implements dObject {
 
         if (attribute.startsWith("equipment.boots"))
         	return new dItem(getPlayerEntity().getInventory().getBoots())
-        			.getAttribute(attribute.fulfill(1));
+        			.getAttribute(attribute.fulfill(2));
         
         if (attribute.startsWith("equipment.chestplate"))
         	return new dItem(getPlayerEntity().getInventory().getChestplate())
-        			.getAttribute(attribute.fulfill(1));
+        			.getAttribute(attribute.fulfill(2));
         
         if (attribute.startsWith("equipment.helmet"))
         	return new dItem(getPlayerEntity().getInventory().getHelmet())
-        			.getAttribute(attribute.fulfill(1));
+        			.getAttribute(attribute.fulfill(2));
         
         if (attribute.startsWith("equipment.leggings"))
         	return new dItem(getPlayerEntity().getInventory().getLeggings())
-        			.getAttribute(attribute.fulfill(1));
+        			.getAttribute(attribute.fulfill(2));
         
         if (attribute.startsWith("equipment"))
         	// The only way to return correct size for dInventory
