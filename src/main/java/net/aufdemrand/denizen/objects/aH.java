@@ -525,7 +525,8 @@ public class aH {
 
     @Deprecated
     public static boolean matchesContext(String arg) {
-        if (arg.toUpperCase().startsWith("CONTEXT:")) return true;
+        if (arg.toUpperCase().startsWith("CONTEXT:") ||
+        	arg.toUpperCase().startsWith("DEFINE:")) return true;
         // TODO: Other matches____ do some actual checks, should this?.
         return false;
     }

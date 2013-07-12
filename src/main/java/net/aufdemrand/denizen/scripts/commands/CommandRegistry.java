@@ -248,10 +248,10 @@ public class CommandRegistry implements dRegistry {
                 "RESET", "reset [fails/finishes/cooldown] (script:<name>)", 1);
 
         registerCoreMember(RunCommand.class,
-                "RUN", "run [<script>] (path:<name>) (as:<player>/<npc>) (def:<element>|...) (id:id_name) (delay:duration) (loop) (q:#)", 1);
+                "RUN", "run [<script>] (path:<name>) (as:<player>/<npc>) (define:<element>|...) (id:<name>) (delay:<duration>) (loop) (qty:<#>)", 1);
 
         registerCoreMember(RuntaskCommand.class,
-        		"RUNTASK", "runtask [<name>] (instantly) (queue/queue:<name>) (delay:<#>)", 1);
+        		"RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
 
         registerCoreMember(ScoreboardCommand.class,
                 "SCOREBOARD", "scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)", 1);
