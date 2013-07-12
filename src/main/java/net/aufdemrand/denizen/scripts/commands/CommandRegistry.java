@@ -176,7 +176,7 @@ public class CommandRegistry implements dRegistry {
         		"HURT", "hurt (amt:<#>) (target:<entity>)", 0);
         
         registerCoreMember(IfCommand.class, 
-        		"IF", "- if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
+        		"IF", "if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
 
         registerCoreMember(InventoryCommand.class,
                 "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] (origin:<entity>/<location>) [destination:<entity>/<location>]", 2);
