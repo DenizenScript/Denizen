@@ -74,16 +74,16 @@ public class CommandRegistry implements dRegistry {
         		"ATTACK", "attack (stop)", 0);
 
         registerCoreMember(BreakCommand.class,
-                "BREAK", "break [<location>] (as:<entity>)", 1);
+                "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);
         
         registerCoreMember(BurnCommand.class,
         		"BURN", "burn [entities:<entity>|...] (duration:<value>)", 1);
         
         registerCoreMember(CastCommand.class, 
-        		"CAST", "cast [effect] (duration:<#>) (power:<#>) (target(s):<entity>|...)", 1);
+        		"CAST", "cast [effect] (duration:<#>) (power:<#>) (targets:<entity>|...)", 1);
         
         registerCoreMember(ChatCommand.class, 
-        		"CHAT", "chat [\"<text>\"] (target(s):<entity>|...)", 1);
+        		"CHAT", "chat [\"<text>\"] (targets:<entity>|...)", 1);
         
         registerCoreMember(ChunkLoadCommand.class,
                 "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<location>] (duration:<value>)", 1);
@@ -149,10 +149,10 @@ public class CommandRegistry implements dRegistry {
         		"FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<#>)", 1);
         
         registerCoreMember(FlyCommand.class,
-        		"FLY", "fly (cancel) [entities:<entity>|...] (origin:<location>) (destination(s):<location>|...) (speed:<#>)", 1);
+        		"FLY", "fly (cancel) [entities:<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)", 1);
         
         registerCoreMember(FollowCommand.class, 
-        		"FOLLOW", "follow (stop)", 0);
+        		"FOLLOW", "follow (stop) (lead:<#.#>)", 0);
 		
         registerCoreMember(ForEachCommand.class,
         		"FOREACH", "foreach [location:<location>|...] [<script>]", 0); 
@@ -167,13 +167,13 @@ public class CommandRegistry implements dRegistry {
         		"HEAD", "head (player) [skin:<name>]", 0);
         
         registerCoreMember(HealCommand.class, 
-        		"HEAL", "heal (amt:<#>) (target:<entity>)", 0);
+        		"HEAL", "heal (qty:<#.#>) (target:<entity>)", 0);
         
         registerCoreMember(HealthCommand.class,
                 "HEALTH", "health (state:true/false/toggle) (set_max:<#>)", 1);
 		
         registerCoreMember(HurtCommand.class,
-        		"HURT", "hurt (amt:<#>) (target:<entity>)", 0);
+        		"HURT", "hurt (qty:<#.#>) (target:<entity>)", 0);
         
         registerCoreMember(IfCommand.class, 
         		"IF", "if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
@@ -197,7 +197,7 @@ public class CommandRegistry implements dRegistry {
         		"LOOKCLOSE", "lookclose [state:true/false]", 1);
 		
         registerCoreMember(MidiCommand.class,
-        		"MIDI", "midi [file:<name>] [<location>/listener(s):<player>|...] (tempo:<#>)", 1);
+        		"MIDI", "midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#>)", 1);
         
         registerCoreMember(MountCommand.class,
         		"MOUNT", "mount (cancel) [entities:<entity>|...] (<location>)", 0);
@@ -209,7 +209,7 @@ public class CommandRegistry implements dRegistry {
         		"NAMEPLATE", "nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib", 1);
         
         registerCoreMember(NarrateCommand.class,
-        		"NARRATE", "narrate [\"<text>\"] (target(s):<entity>|...) (format:<name>)", 1);
+        		"NARRATE", "narrate [\"<text>\"] (targets:<entity>|...) (format:<name>)", 1);
         
         registerCoreMember(NewCommand.class, 
         		"NEW", "new [itemstack/entity/npc] [id:<name>] (<item> qty:<#>)", 2);
@@ -218,7 +218,7 @@ public class CommandRegistry implements dRegistry {
         		"OXYGEN", "oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]", 1);
         
         registerCoreMember(PlayEffectCommand.class,
-        		"PLAYEFFECT", "playeffect [<location>] [effect:<name>] (data:<#>) (radius:<#>) (qty:<#>) (offset:<#>)", 2);
+        		"PLAYEFFECT", "playeffect [<location>] [effect:<name>] (qty:<#>) (radius:<#.#>) (data:<#.#>) (offset:<#.#>)", 2);
         
         registerCoreMember(PlaySoundCommand.class,
         		"PLAYSOUND", "playsound [<location>] [sound:<name>] (volume:<#>) (pitch:<#>)", 2);

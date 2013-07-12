@@ -156,6 +156,9 @@ public class dEntity implements dObject {
                     for (World world : Bukkit.getWorlds()) {
                     	net.minecraft.server.v1_6_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
                     	
+                    	// Make sure the nmsEntity is valid, to prevent
+                    	// unpleasant errors
+                    	
                     	if (nmsEntity != null) {
                     		entity = nmsEntity.getBukkitEntity();
                     	}
