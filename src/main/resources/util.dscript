@@ -71,6 +71,7 @@ _util_dtime_command:
 
   events:
     on ex command:
+    - if !<player.is_op> queue clear
     - define command_name <c.args.get[1]>
     - flag "list:|:<c.args>"
     - flag "list:<-:%command_name%"
