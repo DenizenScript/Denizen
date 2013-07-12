@@ -4,7 +4,9 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -66,6 +68,10 @@ public class dWorld implements dObject {
 
     public World getWorld() {
         return Bukkit.getWorld(world_name);
+    }
+    
+    public List<Entity> getEntities() {
+        return getWorld().getEntities();
     }
 
     private String prefix;

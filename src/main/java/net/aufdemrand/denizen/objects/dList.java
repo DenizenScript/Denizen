@@ -168,7 +168,14 @@ public class dList extends ArrayList<String> implements dObject {
     		try {
 				if ((Boolean) dClass.getMethod("matches", String.class).invoke(null, element)) {
 					
-					results.add((dObject) dClass.getMethod("valueOf", String.class).invoke(null, element));
+					dObject object = (dObject) dClass.getMethod("valueOf", String.class).invoke(null, element); 
+					
+					// Only add the object if it is not null, thus filtering useless
+					// list items
+					
+					if (object != null) {
+						results.add(object);
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -48,10 +48,21 @@ public class WeatherCommand extends AbstractCommand {
         if ((!scriptEntry.hasObject("value")))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "VALUE");
         
-        // Use default world if none has been specified
+        // If the world has not been specified, try to use the NPC's or player's
+        // world, or default to "world" if necessary
         
-        if (!scriptEntry.hasObject("world"))
-            scriptEntry.addObject("world", dWorld.valueOf("world"));
+        if (!scriptEntry.hasObject("world")) {
+            
+            if ((scriptEntry.hasNPC())) {
+            	scriptEntry.addObject("world", new dWorld(scriptEntry.getNPC().getWorld()));
+            }
+            else if ((scriptEntry.hasPlayer())) {
+            	scriptEntry.addObject("world", new dWorld(scriptEntry.getPlayer().getWorld()));
+            }
+            else {
+            	scriptEntry.addObject("world", dWorld.valueOf("world"));
+            }
+        }
     }
     
     @Override
@@ -64,10 +75,12 @@ public class WeatherCommand extends AbstractCommand {
         		(Type) scriptEntry.getObject("type") : Type.GLOBAL;
 
         // Report to dB
-        dB.report(getName(), type.name() + ", "
-                + (type.name().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
-                + (type.name().equalsIgnoreCase("global") ? world.debug() : "")
-                + value.name());
+        dB.report(getName(), aH.debugObj("type", type.name()) +
+        		(type.name().equalsIgnoreCase("player") ?
+        				aH.debugObj("player", scriptEntry.getPlayer()) : "") +
+                (type.name().equalsIgnoreCase("global") ?
+                        		aH.debugObj("world", world) : "") +
+                aH.debugObj("value", value));
 
         switch(value) {
         	case SUNNY:

@@ -43,6 +43,11 @@ public class BurnCommand extends AbstractCommand {
         
         if ((!scriptEntry.hasObject("entities")))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+        
+        // Use default duration if one is not specified
+        
+        if ((!scriptEntry.hasObject("duration")))
+        	scriptEntry.addObject("duration", Duration.valueOf("5s"));
     }
     
 	@SuppressWarnings("unchecked")

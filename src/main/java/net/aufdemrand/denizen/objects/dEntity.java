@@ -154,7 +154,15 @@ public class dEntity implements dObject {
                     Entity entity = null;
 
                     for (World world : Bukkit.getWorlds()) {
-                        entity = ((CraftWorld) world).getHandle().getEntity(entityID).getBukkitEntity();
+                    	net.minecraft.server.v1_6_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
+                    	
+                    	if (nmsEntity != null) {
+                    		entity = nmsEntity.getBukkitEntity();
+                    	}
+                    	else {
+                    		return null;
+                    	}
+                    	
                         if (entity != null) break;
                     }
                     if (entity != null) return new dEntity(entity);
@@ -281,6 +289,10 @@ public class dEntity implements dObject {
     private String data2 = null;
     private DespawnedEntity despawned_entity = null;
 
+    public EntityType getEntityType() {
+    	return entity_type;
+    }
+    
     public Entity getBukkitEntity() {
         return entity;
     }
@@ -294,6 +306,43 @@ public class dEntity implements dObject {
     public boolean isLivingEntity() {
         return (entity instanceof LivingEntity);
     }
+    
+    /**
+     * Get the NPC corresponding to this entity
+     *
+     * @return  The NPC
+     */
+    
+    public NPC getNPC() {
+    	
+    	return CitizensAPI.getNPCRegistry().getNPC(getBukkitEntity());
+    }
+    
+    /**
+     * Whether this entity is an NPC
+     *
+     * @return  true or false
+     */
+    
+    public boolean isNPC() {
+    	if (CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
+    		return true;
+    	return false;
+    }
+    
+    /**
+     * Whether this entity identifies as a generic
+     * entity type instead of a spawned entity
+     *
+     * @return  true or false
+     */
+    
+    public boolean isGeneric() {
+    	if (identify().matches("e@\\D+"))
+    		return true;
+    	return false;
+    }
+    
 
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
@@ -436,6 +485,10 @@ public class dEntity implements dObject {
     public boolean isSpawned() {
         return entity != null;
     }
+    
+    public void remove() {
+        entity.remove();
+    }
 
     public dEntity rememberAs(String id) {
         dEntity.saveAs(this, id);
@@ -553,14 +606,14 @@ public class dEntity implements dObject {
 
         // Check if entity is a Player or NPC
         if (getBukkitEntity() != null) {
-            if (CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
-                return "n@" + CitizensAPI.getNPCRegistry().getNPC(getBukkitEntity()).getId();
+            if (isNPC())
+                return "n@" + getNPC().getId();
             else if (getBukkitEntity() instanceof Player)
                 return "p@" + ((Player) getBukkitEntity()).getName();
         }
-
+        
         // Check if entity is a 'saved entity'
-        else if (isUnique())
+        if (isUnique())
             return "e@" + getSaved(this);
 
             // Check if entity is spawned, therefore having a bukkit entityId
@@ -582,7 +635,7 @@ public class dEntity implements dObject {
     @Override
     public boolean isUnique() {
         if (entity instanceof Player) return true;
-        if (CitizensAPI.getNPCRegistry().isNPC(entity)) return true;
+        if (isNPC()) return true;
         return isSaved(this);
     }
 
@@ -609,8 +662,8 @@ public class dEntity implements dObject {
         }
 
         if (attribute.startsWith("name")) {
-            if (CitizensAPI.getNPCRegistry().isNPC(entity))
-                return new Element(CitizensAPI.getNPCRegistry().getNPC(entity).getName())
+            if (isNPC())
+                return new Element(getNPC().getName())
                         .getAttribute(attribute.fulfill(1));
             if (entity instanceof Player)
                 return new Element(((Player) entity).getName())
@@ -723,7 +776,7 @@ public class dEntity implements dObject {
             return new Element(String.valueOf(getLivingEntity().getCanPickupItems()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("entity_id"))
+        if (attribute.startsWith("id"))
             return new Element(String.valueOf(entity.getEntityId()))
                     .getAttribute(attribute.fulfill(1));
 

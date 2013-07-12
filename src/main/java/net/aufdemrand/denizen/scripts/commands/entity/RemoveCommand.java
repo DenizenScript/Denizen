@@ -1,89 +1,135 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
+import java.util.List;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 /**
- * Safely removes an NPC.
- * 
- * To be expanded to use multiple NPCs and possibly other entities as well.
+ * Delete certain entities or all entities of a type.
+ * Can permanently remove NPCs if used on them.
  *
+ * @author David Cernat
  */
-public class RemoveCommand extends AbstractCommand {
 
+public class RemoveCommand extends AbstractCommand {
+	
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
-        EntityType entityType = null;
-        String region = null;
     	
-    	for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesEntityType(arg)) {
-                entityType = aH.getEntityTypeFrom(arg);
-                dB.echoDebug("...will remove all '%s'.", arg);
-            }
-            else if (aH.matchesValueArg("region", arg, ArgumentType.String)) {
-            	region = aH.getStringFrom(arg);
-                dB.echoDebug("...in region " + region);
-            }
-    	}
-    	
-    	scriptEntry.addObject("entityType", entityType);
-    	scriptEntry.addObject("region", region);
-    }
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-    @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+        	if (!scriptEntry.hasObject("entities")
+                	&& arg.matchesPrefix("entity, entities, e")) {
+                // Entity arg
+                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+            }
+            
+        	else if (!scriptEntry.hasObject("region")
+        			&& arg.matchesPrefix("region, r")) {
+                // Location arg
+                scriptEntry.addObject("region", arg.asElement());
+            }
+        	
+        	else if (!scriptEntry.hasObject("world")
+                    && arg.matchesArgumentType(dWorld.class)) {
+                // add world
+                scriptEntry.addObject("world", arg.asType(dWorld.class));
+        	}
+        }
+
+        // Check to make sure required arguments have been filled
         
-    	EntityType entityType = (EntityType) scriptEntry.getObject("entityType");
-    	String region = (String) scriptEntry.getObject("region");
-    	
-    	// If no entity type or region chosen, remove this NPC
-    	
-    	if (entityType == null && region == null) {
-    	
-    		scriptEntry.getNPC().getCitizen().destroy();
-
-            dB.echoDebug("...have removed NPC '%s'.", String.valueOf(scriptEntry.getNPC().getCitizen().getId()));
-    	}
-    	
-    	// Else, remove regular entities
-    	
-    	else {
-    		
-    		for (World world: Bukkit.getWorlds()) {
-    			for (Entity entity : world.getEntities()) {
-    				if (region != null) {
-    					
-    					if (WorldGuardUtilities.inRegion(entity.getLocation(), region)) {
-    						
-    						if (entityType == null) {
-    							entity.remove();
-    						}
-    						else if (entity.getType().equals(entityType)) {
-    							entity.remove();
-    						}
-    					}
-    				}
-
-    				else if (entity.getType().equals(entityType)) {
-    						
-    					entity.remove();
-                	}
-    			}
-    		}
-    	}
+        if ((!scriptEntry.hasObject("entities")))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+        
+        // If the world has not been specified, try to use the NPC's or player's
+        // world, or default to "world" if necessary
+        
+        if (!scriptEntry.hasObject("world")) {
+            
+            if ((scriptEntry.hasNPC())) {
+            	scriptEntry.addObject("world", new dWorld(scriptEntry.getNPC().getWorld()));
+            }
+            else if ((scriptEntry.hasPlayer())) {
+            	scriptEntry.addObject("world", new dWorld(scriptEntry.getPlayer().getWorld()));
+            }
+            else {
+            	scriptEntry.addObject("world", dWorld.valueOf("world"));
+            }
+        }
     }
+    
+	@SuppressWarnings("unchecked")
+	@Override
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
+		// Get objects
+		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+		dWorld world = (dWorld) scriptEntry.getObject("world");
+		Element region = (Element) scriptEntry.getObject("region");
+		
+        // Report to dB
+        dB.report(getName(), aH.debugObj("entities", entities.toString()) +
+        					 (region != null ? aH.debugObj("region", region) : ""));
+		
+        // Go through all of our entities and remove them
+        
+        for (dEntity entity : entities) {
+    		
+        	// If this is a specific spawned entity, and all
+        	// other applicable conditions are met, remove it
+        	
+        	if (entity.isGeneric() == false
+        		&& region == null ? true :
+        			WorldGuardUtilities.inRegion
+        					(entity.getBukkitEntity().getLocation(),
+        					 region.asString())) {
+        		
+        		if (entity.isNPC()) {
+        			entity.getNPC().destroy();
+        		}
+        		else {
+        			entity.remove();
+        		}
+        	}
+        	
+        	// If this is a generic unspawned entity, remove
+        	// all entities of this type from the world
+        	
+        	else {
+        		
+                // Note: getting the entities from each loaded chunk
+                // in the world (like in Essentials' /killall) has the
+        		// exact same effect as the below
+        		
+        		for (Entity worldEntity : world.getEntities()) {
+        			
+        			// If this entity from the world is of the same type
+        			// as our current dEntity, and all other applicable
+        			// conditions are met, remove it
+        			
+        			if (entity.getEntityType().equals(worldEntity.getType())
+        	        	&& region == null ? true :
+        	        		WorldGuardUtilities.inRegion
+        	        				(entity.getBukkitEntity().getLocation(),
+        	        				 region.asString())) {
+        				
+        				worldEntity.remove();
+        			}
+        		}
+        	}
+    	}
+	}
 }

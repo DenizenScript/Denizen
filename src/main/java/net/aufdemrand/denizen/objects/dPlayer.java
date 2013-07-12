@@ -131,6 +131,16 @@ public class dPlayer implements dObject {
         if (isOnline()) return new dLocation(getPlayerEntity().getLocation());
         else return null;
     }
+    
+    public dLocation getEyeLocation() {
+        if (isOnline()) return new dLocation(getPlayerEntity().getEyeLocation());
+        else return null;
+    }
+    
+    public World getWorld() {
+    	if (isOnline()) return getPlayerEntity().getWorld();
+        else return null;
+    }
 
     public boolean isOnline() {
         if (player_name == null) return false;
@@ -361,7 +371,7 @@ public class dPlayer implements dObject {
             return new Element(player_name).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("eyes"))
-            return new dLocation(getPlayerEntity().getEyeLocation())
+            return new dLocation(getEyeLocation())
                     .getAttribute(attribute.fulfill(1));
         
         if (attribute.startsWith("compass_target"))

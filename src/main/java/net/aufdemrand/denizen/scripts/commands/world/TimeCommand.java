@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -50,10 +51,20 @@ public class TimeCommand extends AbstractCommand {
         if ((!scriptEntry.hasObject("value")))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "VALUE");
         
-        // Use default world if none has been specified
+        // If the world has not been specified, try to use the NPC's or player's
+        // world, or default to "world" if necessary
         
         if (!scriptEntry.hasObject("world")) {
-            scriptEntry.addObject("world", dWorld.valueOf("world"));
+            
+            if ((scriptEntry.hasNPC())) {
+            	scriptEntry.addObject("world", new dWorld(scriptEntry.getNPC().getWorld()));
+            }
+            else if ((scriptEntry.hasPlayer())) {
+            	scriptEntry.addObject("world", new dWorld(scriptEntry.getPlayer().getWorld()));
+            }
+            else {
+            	scriptEntry.addObject("world", dWorld.valueOf("world"));
+            }
         }
     }
     
@@ -66,10 +77,12 @@ public class TimeCommand extends AbstractCommand {
         		(Type) scriptEntry.getObject("type") : Type.GLOBAL;
 
         // Report to dB
-        dB.report(getName(), type.name() + ", "
-                + (type.name().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
-                + (type.name().equalsIgnoreCase("global") ? world.debug() : "")
-                + value.debug());
+        dB.report(getName(), aH.debugObj("type", type.name()) +
+                (type.name().equalsIgnoreCase("player") ?
+                		aH.debugObj("player", scriptEntry.getPlayer()) : "") +
+                (type.name().equalsIgnoreCase("global") ?
+                		aH.debugObj("world", world) : "") +
+                aH.debugObj("value", value));
 
         if (type.equals(Type.GLOBAL)) {
         	world.getWorld().setTime(value.getTicks());

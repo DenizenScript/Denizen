@@ -133,6 +133,10 @@ public class dNPC implements dObject {
         dB.debugMode = db;
         return script;
     }
+    
+    public void destroy() {
+    	getCitizen().destroy();
+    }
 
     public dLocation getLocation() {
         if (isSpawned()) return
