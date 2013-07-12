@@ -424,12 +424,20 @@ public class dLocation extends org.bukkit.Location implements dObject {
         if (attribute.startsWith("block.material"))
             return new Element(getBlock().getType().toString()).getAttribute(attribute.fulfill(2));
 
-        if (attribute.startsWith("direction"))
-            if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1)))
+        if (attribute.startsWith("direction")) {
+            if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
+            	// Subtract this location's vector from the other location's vector,
+            	// not the other way around
                 return new Element(Rotation.getCardinal(Rotation.getYaw
-                        (this.toVector().subtract(dLocation.valueOf(attribute.getContext(1)).toVector())
+                        (dLocation.valueOf(attribute.getContext(1)).toVector().subtract(this.toVector())
                                 .normalize())))
                         .getAttribute(attribute.fulfill(1));
+            }
+            else {
+            	return new Element(Rotation.getCardinal(getYaw()))
+            			.getAttribute(attribute.fulfill(1));
+            }
+        }
 
         if (attribute.startsWith("distance")) {
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
@@ -492,6 +500,14 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element(String.valueOf((int) getBlock().getLightLevel()))
                     .getAttribute(attribute.fulfill(1));
 
+        if (attribute.startsWith("pitch")) {
+            return new Element(String.valueOf(getPitch())).getAttribute(attribute.fulfill(1));
+        }
+        
+        if (attribute.startsWith("yaw")) {
+            return new Element(String.valueOf(getYaw())).getAttribute(attribute.fulfill(1));
+        }
+        
         if (attribute.startsWith("power"))
             return new Element(String.valueOf(getBlock().getBlockPower()))
                     .getAttribute(attribute.fulfill(1));

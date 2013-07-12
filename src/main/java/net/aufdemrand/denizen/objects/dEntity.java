@@ -107,7 +107,7 @@ public class dEntity implements dObject {
 
             // When selecting a random entity type, ignore invalid or inappropriate ones
             while (randomType == null ||
-                    randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$") == true) {
+                   randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$") == true) {
 
                 randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
             }
@@ -647,9 +647,21 @@ public class dEntity implements dObject {
             return new dLocation(entity.getLocation().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(2));
 
-        if (attribute.startsWith("location"))
-            return new dLocation(entity.getLocation())
+        if (attribute.startsWith("location")) {
+        	
+        	if (entity instanceof Player) {
+            	// Important for player yaw and direction!
+            	//
+            	// A player's true yaw is always 90 less than the one given by
+            	// Bukkit's location.getYaw(), so correct it here
+            	
+            	dLocation location = new dLocation(entity.getLocation());
+            	location.setYaw(location.getYaw() - 90);
+            	return location.getAttribute(attribute.fulfill(1));
+        	}
+        	else return new dLocation(entity.getLocation())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("health.formatted")) {
             double maxHealth = getLivingEntity().getMaxHealth();
@@ -711,7 +723,7 @@ public class dEntity implements dObject {
             return new Element(String.valueOf(getLivingEntity().getCanPickupItems()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("id"))
+        if (attribute.startsWith("entity_id"))
             return new Element(String.valueOf(entity.getEntityId()))
                     .getAttribute(attribute.fulfill(1));
 

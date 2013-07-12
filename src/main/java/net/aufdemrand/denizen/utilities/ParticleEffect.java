@@ -48,7 +48,7 @@ public enum ParticleEffect {
     RED_DUST("reddust", 24),
     SNOWBALL_POOF("snowballpoof", 25),
     DRIP_WATER("dripWater", 26),
-    RIP_LAVA("dripLava", 27),
+    DRIP_LAVA("dripLava", 27),
     SNOW_SHOVEL("snowshovel", 28),
     SLIME("slime", 29),
     HEART("heart", 30),
@@ -187,8 +187,13 @@ public enum ParticleEffect {
     private Object createNormalPacket(ParticleEffect effect, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         
     	// Get another effect if "RANDOM" is used
-    	while (effect.equals(ParticleEffect.RANDOM)){
-    		effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
+    	if (effect.equals(ParticleEffect.RANDOM)) {
+    		
+    		// Make sure the new effect is not "RANDOM" or an invisible effect
+    		while (effect.toString().matches("^(RANDOM|BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) {
+    			
+    			effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
+    		}
     	}
     	
     	return createPacket(effect.getName(), loc, offsetX, offsetY, offsetZ, speed, amount);

@@ -46,7 +46,7 @@ public class TakeCommand extends AbstractCommand{
             if (aH.matchesArg("MONEY, COINS", arg))
                 takeType = TakeType.MONEY;
 
-            else if (aH.matchesArg("ITEM_IN_HAND", arg))
+            else if (aH.matchesArg("ITEM_IN_HAND, ITEMINHAND", arg))
                 takeType = TakeType.ITEMINHAND;
 
             else if (aH.matchesArg("INVENTORY", arg))

@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -256,7 +257,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith("location.bed_spawn"))
+        if (attribute.startsWith("bed_spawn"))
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
                     .getAttribute(attribute.fulfill(2));
 
@@ -302,20 +303,24 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("equipment.boots"))
-        	return new dItem(getPlayerEntity().getInventory().getBoots())
-        			.getAttribute(attribute.fulfill(2));
+        	if (getPlayerEntity().getInventory().getBoots() != null)
+        		return new dItem(getPlayerEntity().getInventory().getBoots())
+        				.getAttribute(attribute.fulfill(2));
         
         if (attribute.startsWith("equipment.chestplate"))
-        	return new dItem(getPlayerEntity().getInventory().getChestplate())
-        			.getAttribute(attribute.fulfill(2));
+        	if (getPlayerEntity().getInventory().getChestplate() != null)
+        		return new dItem(getPlayerEntity().getInventory().getChestplate())
+        				.getAttribute(attribute.fulfill(2));
         
         if (attribute.startsWith("equipment.helmet"))
-        	return new dItem(getPlayerEntity().getInventory().getHelmet())
-        			.getAttribute(attribute.fulfill(2));
+        	if (getPlayerEntity().getInventory().getHelmet() != null)
+        		return new dItem(getPlayerEntity().getInventory().getHelmet())
+        				.getAttribute(attribute.fulfill(2));
         
         if (attribute.startsWith("equipment.leggings"))
-        	return new dItem(getPlayerEntity().getInventory().getLeggings())
-        			.getAttribute(attribute.fulfill(2));
+        	if (getPlayerEntity().getInventory().getLeggings() != null)
+        		return new dItem(getPlayerEntity().getInventory().getLeggings())
+        				.getAttribute(attribute.fulfill(2));
         
         if (attribute.startsWith("equipment"))
         	// The only way to return correct size for dInventory
@@ -328,6 +333,18 @@ public class dPlayer implements dObject {
             return new dInventory(getPlayerEntity().getInventory())
                     .getAttribute(attribute.fulfill(1));
 
+        // Estimate the location of the item the player is holding
+        if (attribute.startsWith("item_in_hand.location")) {
+        	
+        	dLocation location = new dLocation(getPlayerEntity().getLocation());
+        	//location.setYaw((float) Rotation.normalizeYaw(Rotation.getYaw(location.getDirection())));
+        	location.setYaw(location.getYaw() + 30);
+        	//location.add(location.getDirection().multiply(1.2));
+        	getPlayerEntity().teleport(location);
+        	
+            return location.getAttribute(attribute.fulfill(2));
+        }
+        
         if (attribute.startsWith("item_in_hand"))
             return new dItem(getPlayerEntity().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
@@ -343,7 +360,11 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("name"))
             return new Element(player_name).getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("location.compass_target"))
+        if (attribute.startsWith("eyes"))
+            return new dLocation(getPlayerEntity().getEyeLocation())
+                    .getAttribute(attribute.fulfill(1));
+        
+        if (attribute.startsWith("compass_target"))
             return new dLocation(getPlayerEntity().getCompassTarget())
                     .getAttribute(attribute.fulfill(2));
 

@@ -9,17 +9,11 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Builds new objects for use with in scripts.
+ * Builds new objects for use within scripts.
  * 
  * @author Jeremy Schroeder
  * 

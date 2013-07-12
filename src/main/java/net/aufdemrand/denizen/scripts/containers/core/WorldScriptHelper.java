@@ -1174,10 +1174,12 @@ public class WorldScriptHelper implements Listener {
     
     @EventHandler
     public void vehicleDamage(VehicleDamageEvent event) {
-    	    	
-        Map<String, Object> context = new HashMap<String, Object>();
+    	
+        Entity entity = event.getAttacker();
+    	
+        if (entity == null) return;
         
-    	Entity entity = event.getAttacker();
+        Map<String, Object> context = new HashMap<String, Object>();
     	Vehicle vehicle = event.getVehicle();
         
     	String entityType = entity.getType().name();
