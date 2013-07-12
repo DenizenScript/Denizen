@@ -28,6 +28,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.block.SignChangeEvent;
@@ -191,6 +192,23 @@ public class WorldScriptHelper implements Listener {
         		 event.getBlock().getType().name() + " ignites"),
         		null, event.getPlayer(), context);
         
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void blockPhysicsEvent(BlockPhysicsEvent event) {
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("type", new Element(event.getBlock().getType().name()));
+
+        String determination = doEvents(Arrays.asList
+        		("block moves",
+        		 event.getBlock().getType().name() + " moves"),
+        		null, null, context);
+
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
     }

@@ -38,7 +38,7 @@ public class UtilTags implements Listener {
 
     @EventHandler
     public void serverTags(ReplaceableTagEvent event) {
-        if (!event.matches("server, svr")) return;
+        if (!event.matches("server, svr, global")) return;
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
         if (attribute.startsWith("flag")) {

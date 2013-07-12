@@ -128,7 +128,7 @@ public class CommandRegistry implements dRegistry {
                 "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
 
         registerCoreMember(ExplodeCommand.class,
-        		"EXPLODE", "explode (power:<#>) (<location>) (fire) (breakblocks)", 0);
+        		"EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
         
         registerCoreMember(FailCommand.class, 
         		"FAIL", "fail (script:<name>)", 0);
@@ -197,7 +197,7 @@ public class CommandRegistry implements dRegistry {
         		"LOOKCLOSE", "lookclose [state:true/false]", 1);
 		
         registerCoreMember(MidiCommand.class,
-        		"MIDI", "midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#>)", 1);
+        		"MIDI", "midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)", 1);
         
         registerCoreMember(MountCommand.class,
         		"MOUNT", "mount (cancel) [entities:<entity>|...] (<location>)", 0);
@@ -221,7 +221,7 @@ public class CommandRegistry implements dRegistry {
         		"PLAYEFFECT", "playeffect [<location>] [effect:<name>] (qty:<#>) (radius:<#.#>) (data:<#.#>) (offset:<#.#>)", 2);
         
         registerCoreMember(PlaySoundCommand.class,
-        		"PLAYSOUND", "playsound [<location>] [sound:<name>] (volume:<#>) (pitch:<#>)", 2);
+        		"PLAYSOUND", "playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
         
         registerCoreMember(PermissionCommand.class,
         		"PERMISSION", "permission [add|remove] [permission] (player:<name>) (group:<name>) (world:<name>)", 2);
