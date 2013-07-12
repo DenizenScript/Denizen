@@ -84,24 +84,33 @@ public class RemoveCommand extends AbstractCommand {
         dB.report(getName(), aH.debugObj("entities", entities.toString()) +
         					 (region != null ? aH.debugObj("region", region) : ""));
 		
+        boolean conditionsMet;
+        
         // Go through all of our entities and remove them
         
         for (dEntity entity : entities) {
+        	
+        	conditionsMet = true;
     		
         	// If this is a specific spawned entity, and all
         	// other applicable conditions are met, remove it
         	
-        	if (entity.isGeneric() == false
-        		&& region == null ? true :
-        			WorldGuardUtilities.inRegion
-        					(entity.getBukkitEntity().getLocation(),
-        					 region.asString())) {
+        	if (entity.isGeneric() == false) {
         		
-        		if (entity.isNPC()) {
-        			entity.getNPC().destroy();
+        		if (region != null) {
+        			conditionsMet = WorldGuardUtilities.inRegion
+        							(entity.getBukkitEntity().getLocation(),
+        							region.asString());
         		}
-        		else {
-        			entity.remove();
+        		
+        		if (conditionsMet == true) {
+        		
+        			if (entity.isNPC()) {
+        				entity.getNPC().destroy();
+        			}
+        			else {
+        				entity.remove();
+        			}
         		}
         	}
         	
@@ -120,13 +129,17 @@ public class RemoveCommand extends AbstractCommand {
         			// as our current dEntity, and all other applicable
         			// conditions are met, remove it
         			
-        			if (entity.getEntityType().equals(worldEntity.getType())
-        	        	&& region == null ? true :
-        	        		WorldGuardUtilities.inRegion
-        	        				(entity.getBukkitEntity().getLocation(),
-        	        				 region.asString())) {
+        			if (entity.getEntityType().equals(worldEntity.getType())) {
         				
-        				worldEntity.remove();
+        				if (region != null) {
+        					conditionsMet = WorldGuardUtilities.inRegion
+        									(worldEntity.getLocation(),
+        									region.asString());
+        				}
+        				
+        				if (conditionsMet == true) {
+        					worldEntity.remove();
+        				}
         			}
         		}
         	}
