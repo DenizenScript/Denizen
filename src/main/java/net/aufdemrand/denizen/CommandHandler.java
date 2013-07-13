@@ -962,9 +962,12 @@ public class CommandHandler {
     @Command(
             aliases = { "notable" }, usage = "add",
             desc = "Adds a new notable to your current location", modifiers = { "add", "save" },
-            min = 2, max = 2, permission = "notable.basic")
+            // Even though different arguments will be combined into one
+            // if they are delimited by quotes, their max number is checked
+            // before that, so it needs to be high
+            min = 2, max = 20, permission = "notable.basic")
     public void addnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-
+    	
         new dLocation(((Player) sender).getLocation()).rememberAs(args.getString(1));
         Messaging.send(sender, "Created new notable called " + (args.getString(1)));
     }
