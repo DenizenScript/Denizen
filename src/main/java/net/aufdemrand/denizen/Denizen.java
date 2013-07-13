@@ -8,10 +8,8 @@ import java.util.logging.Logger;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
-import net.aufdemrand.denizen.npc.activities.ActivityEngine;
-import net.aufdemrand.denizen.npc.activities.ActivityRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -19,9 +17,9 @@ import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
+import net.aufdemrand.denizen.tags.ObjectFetcher;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.RuntimeCompiler;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -44,7 +42,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Denizen extends JavaPlugin {
     public final static int configVersion = 2;
-    public final static String versionTag = "0.9.1";
+    public final static String versionTag = "0.9.2";
 
     private boolean startedSuccessful = false;
 
@@ -59,11 +57,6 @@ public class Denizen extends JavaPlugin {
      * Denizen Engines
      */
     private ScriptEngine scriptEngine = new ScriptEngine(this);
-    private ActivityEngine activityEngine = new ActivityEngine(this);
-
-    public ActivityEngine getActivityEngine() {
-        return activityEngine;
-    }
 
     public ScriptEngine getScriptEngine() {
         return scriptEngine;
@@ -76,14 +69,9 @@ public class Denizen extends JavaPlugin {
     private CommandRegistry commandRegistry = new CommandRegistry(this);
     private TriggerRegistry triggerRegistry = new TriggerRegistry();
     private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
-    private ActivityRegistry activityRegistry = new ActivityRegistry(this);
     private ListenerRegistry listenerRegistry = new ListenerRegistry(this);
     private dNPCRegistry dNPCRegistry;
 
-
-    public ActivityRegistry getActivityRegistry() {
-        return activityRegistry;
-    }
 
     public CommandRegistry getCommandRegistry() {
         return commandRegistry;
@@ -203,7 +191,6 @@ public class Denizen extends JavaPlugin {
         // Register Core Members in the Denizen Registries
         getCommandRegistry().registerCoreMembers();
         getTriggerRegistry().registerCoreMembers();
-        getActivityRegistry().registerCoreMembers();
         getRequirementRegistry().registerCoreMembers();
         getListenerRegistry().registerCoreMembers();
         tagManager().registerCoreTags();
@@ -212,6 +199,28 @@ public class Denizen extends JavaPlugin {
         Depends.citizens.registerCommandClass(CommandHandler.class);
 
         dB.echoDebug(DebugElement.Footer);
+
+        try {
+            ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
+            ObjectFetcher.registerWithObjectFetcher(dCuboid.class);    // cu@
+            ObjectFetcher.registerWithObjectFetcher(dEntity.class);    // e@
+            ObjectFetcher.registerWithObjectFetcher(dInventory.class); // in@
+            ObjectFetcher.registerWithObjectFetcher(dColor.class);     // co@
+            ObjectFetcher.registerWithObjectFetcher(dList.class);      // li@/fl@
+            ObjectFetcher.registerWithObjectFetcher(dLocation.class);  // l@
+            ObjectFetcher.registerWithObjectFetcher(dMaterial.class);  // m@
+            ObjectFetcher.registerWithObjectFetcher(dNPC.class);       // n@
+            ObjectFetcher.registerWithObjectFetcher(dPlayer.class);    // p@
+            ObjectFetcher.registerWithObjectFetcher(dScript.class);    // s@
+            ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
+            ObjectFetcher.registerWithObjectFetcher(Element.class);    // el@
+            ObjectFetcher.registerWithObjectFetcher(Duration.class);   // d@
+            ObjectFetcher._initialize();
+        } catch (IOException e) {
+            //
+        } catch (ClassNotFoundException e) {
+            //
+        }
 
         ws_helper.serverStartEvent();
     }
