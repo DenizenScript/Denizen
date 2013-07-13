@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.tags.core;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
@@ -8,18 +9,20 @@ import java.util.UUID;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dList;
 
 
 import net.aufdemrand.denizen.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -41,6 +44,9 @@ public class UtilTags implements Listener {
         if (!event.matches("server, svr, global")) return;
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
+        // server.flag[...]
+        // server.flag[...].is_expired
+        // server.flag[...].size
         if (attribute.startsWith("flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
@@ -64,12 +70,92 @@ public class UtilTags implements Listener {
                         .getGlobalFlag(flag_name))
                         .getAttribute(attribute));
             else event.setReplaced("null");
+            return;
         }
 
-        else if (attribute.startsWith("selected_npc")) {
+        // server.selected_npc
+        if (attribute.startsWith("selected_npc")) {
             event.setReplaced(new dNPC(((Citizens) Bukkit.getPluginManager().getPlugin("Citizens"))
                     .getNPCSelector().getSelected(Bukkit.getConsoleSender())).getAttribute(attribute.fulfill(1)));
+            return;
         }
+
+        // server.list_npcs
+        if (attribute.startsWith("list_npcs")) {
+            ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+            for (NPC npc : CitizensAPI.getNPCRegistry())
+                npcs.add(dNPC.mirrorCitizensNPC(npc));
+            event.setReplaced(new dList(npcs).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // server.list_worlds
+        if (attribute.startsWith("list_worlds")) {
+            ArrayList<dWorld> worlds = new ArrayList<dWorld>();
+            for (World world : Bukkit.getWorlds())
+                worlds.add(dWorld.mirrorBukkitWorld(world));
+            event.setReplaced(new dList(worlds).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // server.list_players
+        if (attribute.startsWith("list_players")) {
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (Player player : Bukkit.getOnlinePlayers())
+                players.add(dPlayer.mirrorBukkitPlayer(player));
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+                players.add(dPlayer.mirrorBukkitPlayer(player));
+            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // server.list_online_players
+        if (attribute.startsWith("list_online_players")) {
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (Player player : Bukkit.getOnlinePlayers())
+                players.add(dPlayer.mirrorBukkitPlayer(player));
+            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // server.list_offline_players
+        if (attribute.startsWith("list_offline_players")) {
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+                players.add(dPlayer.mirrorBukkitPlayer(player));
+            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // server.list_ops
+        if (attribute.startsWith("list_ops")) {
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (Player player : Bukkit.getOnlinePlayers())
+                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player));
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player));
+            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // server.list_online_ops
+        if (attribute.startsWith("list_online_ops")) {
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (Player player : Bukkit.getOnlinePlayers())
+                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player));
+            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // server.list_offline_ops
+        if (attribute.startsWith("list_offline_ops")) {
+            ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player));
+            event.setReplaced(new dList(players).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
     }
 
     @EventHandler
