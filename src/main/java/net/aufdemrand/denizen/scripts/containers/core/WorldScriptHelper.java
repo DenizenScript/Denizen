@@ -138,10 +138,11 @@ public class WorldScriptHelper implements Listener {
     public void blockBreak(BlockBreakEvent event) {
 
         Map<String, Object> context = new HashMap<String, Object>();
-        String blockType = event.getBlock().getType().name();
+        Block block = event.getBlock();
+        String blockType = block.getType().name();
         
-        context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", new Element(event.getBlock().getType().name()));
+        context.put("location", new dLocation(block.getLocation()));
+        context.put("type", new Element(blockType));
 
         dItem item = new dItem(event.getPlayer().getItemInHand());
         
@@ -163,6 +164,35 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
+        
+        if (determination.toUpperCase().startsWith("DROPS")) {
+
+        	// Cancel the event
+        	event.setCancelled(true);
+        	
+        	// If "drops:nothing" is used, clear the block's drops
+        	if (aH.getStringFrom(determination).equalsIgnoreCase("nothing")) {
+        		block.getDrops().clear();
+        	}
+        	
+        	// Otherwise, get a list of items from "drops"
+        	else {
+        	
+        		List<dObject> newItems = dList.valueOf(aH.getStringFrom(determination)).filter(dItem.class);
+            	List<ItemStack> drops = new ArrayList<ItemStack>();
+            	
+            	for (dObject newItem : newItems) {
+            		
+            		block.getWorld().dropItemNaturally(block.getLocation(),
+            				((dItem) newItem).getItemStack()); // Drop each item
+            		
+            		drops.add(((dItem) newItem).getItemStack());
+            	}
+        	}
+
+        	// Remove the block
+        	block.setType(Material.AIR);
+        }
     }
     
     @EventHandler
