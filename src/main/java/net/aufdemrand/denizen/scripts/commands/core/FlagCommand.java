@@ -176,7 +176,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 break;
             case SPLIT:
                 flag.split(value);
-                dB.echoDebug(flag.toString());
                 break;
             case DELETE:
                 flag.clear();

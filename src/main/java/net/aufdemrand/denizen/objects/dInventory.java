@@ -28,6 +28,7 @@ public class dInventory implements dObject {
      * @return  an Inventory, or null if incorrectly formatted
      *
      */
+    @ObjectFetcher("in")
     public static dInventory valueOf(String string) {
                 
         // No match

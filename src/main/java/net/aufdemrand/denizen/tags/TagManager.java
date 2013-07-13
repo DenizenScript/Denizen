@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.tags;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.tags.core.*;
@@ -10,7 +11,11 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -23,28 +28,71 @@ import java.util.regex.Pattern;
  *
  */
 
-public class TagManager {
+public class TagManager implements Listener {
 
     public Denizen denizen;
 
     public TagManager(Denizen denizen) {
         this.denizen = denizen;
+
     }
 
     public void registerCoreTags() {
-        new PlayerTags(denizen);
-        new UtilTags(denizen);
+        // For compatibility
+        new AnchorTags(denizen);
         new FlagTags(denizen);
         new ConstantTags(denizen);
-        new ProcedureScriptTag(denizen);
+
+        new PlayerTags(denizen);
         new NPCTags(denizen);
-        new AnchorTags(denizen);
+        new LocationTags(denizen);
+
+        new UtilTags(denizen);
+        new ProcedureScriptTag(denizen);
         new NotableLocationTags(denizen);
         new ContextTags(denizen);
-        new LocationTags(denizen);
         new SpecialCharacterTags(denizen);
         new TextTags(denizen);
+
+        denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
+
+    @EventHandler
+    public void fetchObject(ReplaceableTagEvent event) {
+        if (!event.getName().contains("@")) return;
+
+        String object_type = event.getName().split("@")[0].toLowerCase();
+        Class object_class = ObjectFetcher.getObjectClass(object_type);
+
+        if (object_class == null) {
+            dB.echoError("Invalid object type! Could not fetch '" + object_type + "'!");
+            event.setReplaced("null");
+            return;
+        }
+
+        dObject arg;
+        try {
+
+            if ((Boolean) object_class.getMethod("matches", String.class)
+                    .invoke(null, event.getName()) == false) {
+                dB.echoDebug("Returning null. '" + event.getName()
+                        + "' is an invalid " + object_class.getSimpleName() + ".");
+                event.setReplaced("null");
+                return;
+            }
+
+            arg = (dObject) object_class.getMethod("valueOf", String.class)
+                    .invoke(null, event.getName());
+
+            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            event.setReplaced(arg.getAttribute(attribute.fulfill(1)));
+        } catch (Exception e) {
+            dB.echoError("Uh oh! Report this to aufdemrand! Err: TagManagerObjectReflection");
+        }
+
+        return;
+    }
+
 
     public static String tag(dPlayer player, dNPC npc, String arg) {
         return tag(player, npc, arg, false, null);

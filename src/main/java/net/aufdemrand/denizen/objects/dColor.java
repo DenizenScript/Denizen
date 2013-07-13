@@ -25,6 +25,7 @@ public class dColor implements dObject {
      * @return  a Color, or null if incorrectly formatted
      *
      */
+    @ObjectFetcher("co")
     public static dColor valueOf(String string) {
     	
     	if (string.toUpperCase().matches("RANDOM")) {

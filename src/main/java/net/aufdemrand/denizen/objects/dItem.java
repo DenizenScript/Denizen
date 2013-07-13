@@ -390,7 +390,7 @@ public class dItem implements dObject {
 
     		// If not a saved item, but is a custom item, return the script id
     		else if (CustomNBT.hasCustomNBT(getItemStack(), "denizen-script-id"))
-    			return CustomNBT.getCustomNBT(getItemStack(), "denizen-script-id");
+    			return "i@" + CustomNBT.getCustomNBT(getItemStack(), "denizen-script-id");
     	}
 
         // Else, return the material name and data

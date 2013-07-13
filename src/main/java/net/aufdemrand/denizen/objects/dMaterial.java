@@ -24,6 +24,7 @@ public class dMaterial implements dObject {
      * @return  a Material, or null if incorrectly formatted
      *
      */
+    @ObjectFetcher("m")
     public static dMaterial valueOf(String string) {
     	
     	if (string.toUpperCase().matches("RANDOM")) {

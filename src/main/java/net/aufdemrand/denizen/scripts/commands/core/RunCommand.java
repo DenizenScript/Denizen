@@ -147,8 +147,6 @@ public class RunCommand extends AbstractCommand {
             }
         }
 
-        dB.log(queue.getQueueSize() + " " + entries.size());
-
         // OK, GO!
         queue.start();
     }

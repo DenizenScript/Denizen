@@ -18,6 +18,7 @@ public class dScript implements dObject {
      * @param string  the dScript argument String
      * @return  a Script, or null if incorrectly formatted
      */
+    @ObjectFetcher("s")
     public static dScript valueOf(String string) {
 
         Matcher m = matchesScriptPtrn.matcher(string);

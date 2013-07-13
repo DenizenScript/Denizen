@@ -129,6 +129,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
      * @return  a Location, or null if incorrectly formatted
      *
      */
+    @ObjectFetcher("l")
     public static dLocation valueOf(String string) {
         if (string == null) return null;
 
