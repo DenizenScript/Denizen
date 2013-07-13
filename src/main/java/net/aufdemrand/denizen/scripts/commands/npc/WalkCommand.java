@@ -18,6 +18,7 @@ public class WalkCommand extends AbstractCommand {
 
     //                        percentage
     // walk [location] (speed:#.#) (auto_range)
+    //
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
