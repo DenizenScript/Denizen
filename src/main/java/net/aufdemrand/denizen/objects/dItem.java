@@ -22,7 +22,19 @@ import java.util.regex.Pattern;
 
 public class dItem implements dObject {
 
-    final static Pattern itemPattern = Pattern.compile("(?:item:)?(\\w+)[:,]?(\\d+)?", Pattern.CASE_INSENSITIVE);
+	// An item pattern with the following groups:
+	//
+	// 1) An optional item: prefix.
+	// 2) Word characters (letters and digits) and
+	//    spaces that specify the name or ID of the item
+	// 3) Digits that specify the special data value
+	//    of the item
+	// 4) Digits between [] brackets that specify the
+	//    quantity of the item
+	
+    final static Pattern itemPattern =
+    		Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
+    				Pattern.CASE_INSENSITIVE);
 
     /////////////////////
     //  STATIC METHODS
@@ -83,60 +95,90 @@ public class dItem implements dObject {
     @ObjectFetcher("i")
     public static dItem valueOf(String string, dPlayer player, dNPC npc) {
         if (string == null) return null;
+        
         Matcher m;
+        dItem stack = null;
 
         ///////
         // Match @object format for spawned Item entities
 
-        final Pattern item_by_entity_id = Pattern.compile("(i@)(\\d+)");
+        final Pattern item_by_entity_id = Pattern.compile("(i@)(\\d+)\\[?(\\d+)?\\]?");
         m = item_by_entity_id.matcher(string);
 
         // Check if it's an entity in the world
-        if (m.matches())
-            for (World world : Bukkit.getWorlds())
-                for (Entity entity : world.getEntitiesByClass(Item.class))
-                    if (entity.getEntityId() == Integer.valueOf(m.group(2)))
-                        return new dItem(((Item) entity).getItemStack());
+        if (m.matches()) {
+            for (World world : Bukkit.getWorlds()) {
+                for (Entity entity : world.getEntitiesByClass(Item.class)) {
+                    if (entity.getEntityId() == Integer.valueOf(m.group(2))) {
+                        stack = new dItem(((Item) entity).getItemStack());
+                        
+                        if (m.group(3) != null) {
+                        	stack.setAmount(Integer.valueOf(m.group(3)));
+                        }
+                        
+                    	return stack;
+                    }
+                }
+            }
+        }
 
         ////////
         // Match @object format for saved dItems
 
-        final Pattern item_by_saved = Pattern.compile("(i@)(.+)");
+        final Pattern item_by_saved = Pattern.compile("(i@)(.+)\\[?(\\d+)?\\]?");
         m = item_by_saved.matcher(string);
 
-        if (m.matches() && isSaved(m.group(2)))
-            return getSaved(m.group(2));
+        if (m.matches() && isSaved(m.group(2))) {
+            stack = getSaved(m.group(2));
+            
+            if (m.group(3) != null) {
+            	stack.setAmount(Integer.valueOf(m.group(3)));
+            }
+            
+        	return stack;
+        }
 
         string = string.replace("i@", "");
-
-        ///////
-        // Match item and book script custom items
-
-        // Check if it's a valid item/book script
-        
-        if (ScriptRegistry.containsScript(string, ItemScriptContainer.class))
-            // Get item from script
-            return ScriptRegistry.getScriptContainerAs(string, ItemScriptContainer.class).getItemFrom(player, npc);
-        
-        else if (ScriptRegistry.containsScript(string, BookScriptContainer.class))
-        	// Get book from script
-            return ScriptRegistry.getScriptContainerAs(string, BookScriptContainer.class).getBookFrom(player, npc);
-
-        ///////
-        // Match bukkit/minecraft standard items format
-
-        dItem stack = null;
         
         m = itemPattern.matcher(string);
         
         if (m.matches()) {
+        	
+        	try {
+        		
+                ///////
+                // Match item and book script custom items
+        		
+                if (ScriptRegistry.containsScript(m.group(1), ItemScriptContainer.class)) {
+                    // Get item from script
+                    stack = ScriptRegistry.getScriptContainerAs
+                    		(m.group(1), ItemScriptContainer.class).getItemFrom(player, npc);
+                }
+                
+                else if (ScriptRegistry.containsScript(m.group(1), BookScriptContainer.class)) {
+                	// Get book from script
+                    stack = ScriptRegistry.getScriptContainerAs
+                    		(m.group(1), BookScriptContainer.class).getBookFrom(player, npc);
+                }
+                
+                if (stack != null) {
+                	
+                	if (m.group(3) != null) {
+                    	stack.setAmount(Integer.valueOf(m.group(3)));
+                    }
+                	return stack;
+                }
+        	}
+        	catch (Exception e) {
+                // Just a catch, might be a regular item...
+         	}
+        	
+        	
+            ///////
+            // Match Bukkit/Minecraft standard items format
+        	
         	try {
         		String material = m.group(1).toUpperCase();
-        		String data = null;
-           
-        		if (m.groupCount() > 1) {
-        			data = m.group(2);
-        		}
            
         		if (aH.matchesInteger(material)) {
         			stack = new dItem(Integer.valueOf(material));
@@ -145,17 +187,20 @@ public class dItem implements dObject {
         			stack = new dItem(Material.valueOf(material));
         		}
            
-        		if (data != null) {
+        		if (m.group(2) != null) {
         			stack.setDurability(Short.valueOf(m.group(2)));
+        		}
+        		if (m.group(3) != null) {
+        			stack.setAmount(Integer.valueOf(m.group(3)));
         		}
            
         		return stack;
         	}
         	catch (Exception e) {
-               // Just a catch, might be an item script...
+        		dB.log("Does not match a valid item ID or material: " + string);
         	}
         }
-
+        
         if (!nope) dB.log("valueOf dItem returning null: " + string);
 
         // No match! Return null.
@@ -302,12 +347,15 @@ public class dItem implements dObject {
 
     // Additional helper methods
 
+    public void setAmount(int value) {
+        if (item != null)
+            item.setAmount(value);
+    }
+    
     public void setDurability(short value) {
         if (item != null)
             item.setDurability(value);
     }
-    
-    // Additional helper methods
 
     public void setData(byte value) {
         if (item != null)

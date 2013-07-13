@@ -165,7 +165,7 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
         
-        if (determination.toUpperCase().startsWith("DROPS")) {
+        if (determination.toUpperCase().startsWith("DROP")) {
 
         	// Cancel the event
         	event.setCancelled(true);
