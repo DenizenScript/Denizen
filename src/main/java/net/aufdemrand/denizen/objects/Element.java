@@ -121,8 +121,11 @@ public class Element implements dObject {
         if (attribute.startsWith("asint")
                 || attribute.startsWith("as_int"))
             try {
+            	// Round the Double instead of just getting its
+            	// value as an Integer (which would incorrectly
+            	// turn 2.9 into 2)
             	return new Element(String.valueOf
-            		(Double.valueOf(element).intValue()))
+            		(Math.round(Double.valueOf(element))))
                     .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Integer.");

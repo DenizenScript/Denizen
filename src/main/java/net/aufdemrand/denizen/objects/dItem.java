@@ -73,9 +73,9 @@ public class dItem implements dObject {
      * Gets a Item Object from a string form.
      *
      * @param string  The string or dScript argument String
-     * @param string  The dPlayer to be used for player contexts
+     * @param dPlayer  The dPlayer to be used for player contexts
      *                where applicable.
-     * @param string  The dNPC to be used for NPC contexts
+     * @param dNPC  The dNPC to be used for NPC contexts
      *                where applicable.
      * @return  an Item, or null if incorrectly formatted
      *
@@ -302,9 +302,16 @@ public class dItem implements dObject {
 
     // Additional helper methods
 
-    public void setDurability(short amt) {
+    public void setDurability(short value) {
         if (item != null)
-            item.setDurability(amt);
+            item.setDurability(value);
+    }
+    
+    // Additional helper methods
+
+    public void setData(byte value) {
+        if (item != null)
+            item.getData().setData(value);
     }
 
     public boolean isRepairable() {

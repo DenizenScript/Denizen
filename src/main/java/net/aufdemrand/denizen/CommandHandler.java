@@ -961,19 +961,21 @@ public class CommandHandler {
 
     @Command(
             aliases = { "notable" }, usage = "add",
-            desc = "For testing purposes only, use at your own risk!", modifiers = { "add" },
-            min = 1, max = 3, permission = "notable.basic")
+            desc = "Adds a new notable to your current location", modifiers = { "add", "save" },
+            min = 2, max = 2, permission = "notable.basic")
     public void addnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
-        if (!(sender instanceof Player)) return;
+        new dLocation(((Player) sender).getLocation()).rememberAs(args.getString(1));
+        Messaging.send(sender, "Created new notable called " + (args.getString(1)));
+    }
+    
+    @Command(
+            aliases = { "notable" }, usage = "list",
+            desc = "Lists all notables", modifiers = { "list" },
+            min = 1, max = 1, permission = "notable.basic")
+    public void listnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
-        if (args.hasValueFlag("name")) {
-            new dLocation(((Player) sender).getLocation()).rememberAs(args.getFlag("name"));
-            Messaging.send(sender, "Created new notable called " + args.getFlag("name"));
-            return;
-        }
-
-        else Messaging.send(sender, dLocation.uniqueObjects.toString());
+    	Messaging.send(sender, dLocation.uniqueObjects.toString());
     }
 
 }

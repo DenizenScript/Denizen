@@ -19,6 +19,10 @@ import java.util.regex.Pattern;
 
 public class dLocation extends org.bukkit.Location implements dObject {
 
+	// This pattern correctly reads both 0.9 and 0.8 notables
+    final static Pattern notablePattern =
+            Pattern.compile("(\\w+)[;,]((-?\\d+\\.?\\d*,){3,5}\\w+)",
+                    Pattern.CASE_INSENSITIVE);
 
     /////////////////////
     //   STATIC METHODS
@@ -76,12 +80,20 @@ public class dLocation extends org.bukkit.Location implements dObject {
      * Called on server startup or /denizen reload locations. Should probably not be called manually.
      */
     public static void _recallLocations() {
+    	
+    	
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
         uniqueObjects.clear();
         for (String location : loclist) {
-            String id = location.split(";")[0];
-            dLocation loc = valueOf(location.split(";")[1]);
-            uniqueObjects.put(id, loc);
+        	
+        	Matcher m = notablePattern.matcher(location);
+        	
+            if (m.matches()) {
+            	
+            	String id = m.group(1);
+                dLocation loc = valueOf(m.group(2));
+                uniqueObjects.put(id, loc);
+            }
         }
     }
 
@@ -179,7 +191,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return true;
 
         final Pattern location =
-                Pattern.compile("((-?\\d+(\\.\\d+)?,){3}|(-?\\d+(\\.\\d+)?,){5})\\w+",
+                Pattern.compile("(-?\\d+\\.?\\d*,){3,5}\\w+",
                         Pattern.CASE_INSENSITIVE);
         m = location.matcher(string);
         if (m.matches())
@@ -545,15 +557,15 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
 
         if (attribute.startsWith("block.x")) {
-            return new Element(getBlockX()).getAttribute(attribute.fulfill(1));
+            return new Element(getBlockX()).getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.startsWith("block.y")) {
-            return new Element(getBlockY()).getAttribute(attribute.fulfill(1));
+            return new Element(getBlockY()).getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.startsWith("block.z")) {
-            return new Element(getBlockZ()).getAttribute(attribute.fulfill(1));
+            return new Element(getBlockZ()).getAttribute(attribute.fulfill(2));
         }
 
         if (attribute.startsWith("x")) {

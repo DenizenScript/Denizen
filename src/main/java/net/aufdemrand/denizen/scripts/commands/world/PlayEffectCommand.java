@@ -21,7 +21,7 @@ import net.aufdemrand.denizen.utilities.ParticleEffect;
  * [location:<x,y,z,world>] specifies location of the effect
  * [effect:<name>] sets the name of effect to be played
  * (data:<#>) sets the special data value of the effect
- * (radius:<#>) adjusts the radius within which players will observe the effect
+ * (visibility:<#>) adjusts the radius within which players can observe the effect
  * (qty:<#>) sets the number of times the effect will be played
  * (offset:<#>) sets the offset of ParticleEffects.
  * 
@@ -60,11 +60,11 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
 			}
 			
-			else if (!scriptEntry.hasObject("radius")
+			else if (!scriptEntry.hasObject("visibility")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("range, radius, r")) {
+                    && arg.matchesPrefix("visibility, v, radius, r")) {
                 // Add value
-                scriptEntry.addObject("radius", arg.asElement());
+                scriptEntry.addObject("visibility", arg.asElement());
             }
 			
 			else if (!scriptEntry.hasObject("data")
@@ -100,12 +100,12 @@ public class PlayEffectCommand extends AbstractCommand {
         
         // Use default values if necessary
         
-        if ((!scriptEntry.hasObject("radius"))) {
-        	scriptEntry.addObject("radius", new Element(5));
-        }
-        
         if ((!scriptEntry.hasObject("data"))) {
         	scriptEntry.addObject("data", new Element(0));
+        }
+        
+        if ((!scriptEntry.hasObject("visibility"))) {
+        	scriptEntry.addObject("visibility", new Element(5));
         }
         
         if ((!scriptEntry.hasObject("qty"))) {
@@ -124,7 +124,7 @@ public class PlayEffectCommand extends AbstractCommand {
         dLocation location = (dLocation) scriptEntry.getObject("location");
         Effect effect = (Effect) scriptEntry.getObject("effect");
         ParticleEffect particleEffect = (ParticleEffect) scriptEntry.getObject("particleeffect");
-        Element radius = (Element) scriptEntry.getObject("radius");
+        Element visibility = (Element) scriptEntry.getObject("visibility");
         Element data = (Element) scriptEntry.getObject("data");
         Element qty = (Element) scriptEntry.getObject("qty");
         Element offset = (Element) scriptEntry.getObject("offset");
@@ -139,7 +139,7 @@ public class PlayEffectCommand extends AbstractCommand {
         			aH.debugObj("effect", effect.name()) :
         			aH.debugObj("special effect", particleEffect.name())) +
         		aH.debugObj("location", location.toString()) +
-        		aH.debugObj("radius", radius) +
+        		aH.debugObj("radius", visibility) +
         		aH.debugObj("data", data) +
         		aH.debugObj("qty", qty) +
         		(effect != null ? "" : aH.debugObj("offset", offset)));
@@ -148,13 +148,13 @@ public class PlayEffectCommand extends AbstractCommand {
         if (effect != null) {
         	
         	for (int n = 0; n < qty.asInt(); n++) {
-        		location.getWorld().playEffect(location, effect, data.asInt(), radius.asInt());
+        		location.getWorld().playEffect(location, effect, data.asInt(), visibility.asInt());
         	}
         }
         // Play a ParticleEffect
         else {
         	ParticleEffect.valueOf(particleEffect.name())
-        		.play(location, radius.asDouble(),
+        		.play(location, visibility.asDouble(),
         			  offset.asFloat(), offset.asFloat(), offset.asFloat(), data.asFloat(), qty.asInt());
         }
 	}
