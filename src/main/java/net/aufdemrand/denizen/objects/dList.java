@@ -81,7 +81,7 @@ public class dList extends ArrayList<String> implements dObject {
     //   Constructors
     //////////
 
-    public dList(ArrayList<dObject> dObjectList) {
+    public dList(ArrayList<? extends dObject> dObjectList) {
         for (dObject obj : dObjectList)
             add(obj.identify());
     }

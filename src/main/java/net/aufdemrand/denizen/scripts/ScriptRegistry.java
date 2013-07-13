@@ -6,9 +6,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ScriptRegistry {
 
@@ -78,8 +76,30 @@ public class ScriptRegistry {
             }
     }
 
-    public static void _buildYamlScriptContainer(ConfigurationSection configurationSection) {
-        // TODO: Allow others to register dScript with Denizen without adding to Denizen's script folder.
+    public static List<FileConfiguration> outside_scripts = new ArrayList<FileConfiguration>();
+
+    /**
+     * Adds a YAML FileConfiguration to the list of scripts to be loaded. Adding a new
+     * FileConfiguration will reload the scripts automatically.
+     *
+     * @param yaml_script  the FileConfiguration containing the script
+     *
+     */
+    public static void addYamlScriptContainer(FileConfiguration yaml_script) {
+        outside_scripts.add(yaml_script);
+        ScriptHelper.reloadScripts();
+    }
+
+    /**
+     * Removes a YAML FileConfiguration to the list of scripts to be loaded. Removing a
+     * FileConfiguration will reload the scripts automatically.
+     *
+     * @param yaml_script  the FileConfiguration containing the script
+     *
+     */
+    public static void removeYamlScriptContainer(FileConfiguration yaml_script) {
+        outside_scripts.remove(yaml_script);
+        ScriptHelper.reloadScripts();
     }
 
     public static <T extends ScriptContainer> T getScriptContainerAs(String name, Class<T> type) {
@@ -88,6 +108,7 @@ public class ScriptRegistry {
             return (T) type.cast(scriptContainers.get(name.toUpperCase()));
         else return null;
         } catch (Exception e) { }
+
         return null;
     }
 

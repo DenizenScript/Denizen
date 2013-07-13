@@ -73,9 +73,9 @@ public class dItem implements dObject {
      * Gets a Item Object from a string form.
      *
      * @param string  The string or dScript argument String
-     * @param dPlayer  The dPlayer to be used for player contexts
+     * @param player  The dPlayer to be used for player contexts
      *                where applicable.
-     * @param dNPC  The dNPC to be used for NPC contexts
+     * @param npc     The dNPC to be used for NPC contexts
      *                where applicable.
      * @return  an Item, or null if incorrectly formatted
      *

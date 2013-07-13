@@ -18,6 +18,7 @@ public class WalkCommand extends AbstractCommand {
 
     //                        percentage
     // walk [location] (speed:#.#) (auto_range)
+    //
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -79,10 +80,11 @@ public class WalkCommand extends AbstractCommand {
                 scriptEntry.getNPC().getNavigator().getDefaultParameters().range((float) distance + 10);
         }
 
+        scriptEntry.getNPC().getNavigator().setTarget(loc);
+
         if (speed != null)
             scriptEntry.getNPC().getNavigator().getLocalParameters().speedModifier(speed.asFloat());
 
-        scriptEntry.getNPC().getNavigator().setTarget(loc);
     }
 
 

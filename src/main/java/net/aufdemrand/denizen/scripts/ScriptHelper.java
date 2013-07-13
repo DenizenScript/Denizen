@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -73,6 +74,15 @@ public class ScriptHelper {
                 dB.echoDebug("Processing 'genies.dscript'... ");
                 yaml = YamlConfiguration.loadConfiguration(DenizenAPI.getCurrentInstance().getResource("genies.dscript"));
                 sb.append(yaml.saveToString() + "\r\n");
+
+                dB.echoDebug("Processing outside scripts... ");
+                for (FileConfiguration outsideConfig : ScriptRegistry.outside_scripts) {
+                    try {
+                        sb.append(outsideConfig.saveToString() + "\r\n");
+                    } catch (Exception e) {
+                        dB.echoError("Woah! Error parsing outside scripts!");
+                    }
+                }
 
                 for (File f : files){
                     String fileName = f.getAbsolutePath().substring(file.getAbsolutePath().length());
