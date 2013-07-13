@@ -2,10 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -28,6 +25,20 @@ public class ForEachCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+
+            if (!scriptEntry.hasObject("iterable")
+                    && arg.matchesArgumentType(dLocation.class))
+                scriptEntry.addObject("iterable", arg.asType(dLocation.class));
+
+            else if (!scriptEntry.hasObject("iterable")
+                    && arg.matchesArgumentType(dList.class))
+                scriptEntry.addObject("iterable", arg.asType(dList.class));
+
+
+
+        }
 
         Type type = null;
         dScript script = null;
