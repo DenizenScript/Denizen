@@ -17,7 +17,18 @@ import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftAnimals;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -423,19 +434,31 @@ public class dEntity implements dObject {
                         if (data1 != null) {
 
                             try {
-
+                            	
                                 // Allow creepers to be powered
                                 if (ent instanceof Creeper && data1.equalsIgnoreCase("POWERED")) {
                                     ((Creeper) entity).setPowered(true);
                                 }
+                                
                                 // Allow setting of blocks held by endermen
                                 else if (ent instanceof Enderman && dMaterial.matches(data1)) {
                                     ((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data1).getMaterialData());
                                 }
+                                
+                                // Allow setting of horse variants and colors
+                                else if (ent instanceof Horse) {
+                                    setSubtype(Horse.class, "Variant", "setVariant", data1);
+                                    
+                                    if (data2 != null) {
+                                    	setSubtype(Horse.class, "Color", "setColor", data2);
+                                    }
+                                }
+                                
                                 // Allow setting of ocelot types
                                 else if (ent instanceof Ocelot) {
                                     setSubtype(Ocelot.class, "Type", "setCatType", data1);
                                 }
+                                
                                 // Allow setting of skeleton types and their weapons
                                 else if (ent instanceof Skeleton) {
                                     setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data1);
@@ -453,6 +476,7 @@ public class dEntity implements dObject {
                                 else if (ent instanceof Slime && aH.matchesInteger(data1)) {
                                     ((Slime) entity).setSize(aH.getIntegerFrom(data1));
                                 }
+                                
                                 // Allow setting of villager professions
                                 else if (ent instanceof Villager) {
                                     setSubtype(Villager.class, "Profession", "setProfession", data1);

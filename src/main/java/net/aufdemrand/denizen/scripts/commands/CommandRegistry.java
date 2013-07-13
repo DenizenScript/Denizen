@@ -209,7 +209,7 @@ public class CommandRegistry implements dRegistry {
         		"NAMEPLATE", "nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib", 1);
         
         registerCoreMember(NarrateCommand.class,
-        		"NARRATE", "narrate [\"<text>\"] (targets:<entity>|...) (format:<name>)", 1);
+        		"NARRATE", "narrate [\"<text>\"] (targets:<player>|...) (format:<name>)", 1);
         
         registerCoreMember(NewCommand.class, 
         		"NEW", "new [itemstack/entity/npc] [id:<name>] (<item> qty:<#>)", 2);
@@ -257,7 +257,7 @@ public class CommandRegistry implements dRegistry {
                 "SCOREBOARD", "scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)", 1);
 		
         registerCoreMember(ScribeCommand.class,
-        		"SCRIBE", " - scribe [script:<name>] (give/drop/equip) (<item>) (<location>)", 1);
+        		"SCRIBE", "scribe [script:<name>] (give/drop/equip) (<item>) (<location>)", 1);
 
         registerCoreMember(ShootCommand.class,
         		"SHOOT", "shoot [entities:<entity>|...] (origin:<player>/<npc>) (destination:<location>) (speed:<#.#>) (script:<name>)", 1);
