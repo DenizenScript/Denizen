@@ -185,7 +185,7 @@ public class CommandRegistry implements dRegistry {
                 "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);
 		
         registerCoreMember(ListenCommand.class,
-        		"LISTEN", "listen (new/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>]  [script:<name>] (id:<name>)", 2);
+        		"LISTEN", "listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>]  [script:<name>] (id:<name>)", 2);
         
         registerCoreMember(LogCommand.class,
         		"LOG", "log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]", 2);

@@ -105,6 +105,15 @@ public class dNPC implements dObject {
             return null;
         }
     }
+    
+    public dEntity getDenizenEntity() {
+        try {
+            return new dEntity(getCitizen().getBukkitEntity());
+        } catch (NullPointerException e) {
+            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch a NPC entity. Has this NPC been removed?");
+            return null;
+        }
+    }
 
     public EntityType getEntityType() {
         return getCitizen().getBukkitEntity().getType();

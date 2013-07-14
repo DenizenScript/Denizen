@@ -80,7 +80,7 @@ public class MountCommand extends AbstractCommand {
 							false;
 		
         // Report to dB
-        dB.report(getName(), (cancel == true ? "cancel, " : "") +
+        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
         					 aH.debugObj("location", location) +
         					 aH.debugObj("entities", entities.toString()));
 

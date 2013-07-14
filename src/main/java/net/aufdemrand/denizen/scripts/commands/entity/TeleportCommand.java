@@ -1,156 +1,78 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import net.aufdemrand.denizen.exceptions.CommandExecutionException;
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
-
-import java.util.ArrayList;
 import java.util.List;
 
+import net.aufdemrand.denizen.exceptions.CommandExecutionException;
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+
 /**
- * This command will teleport an entity to a new location.
- * 	<br/>
- *  <pre>Usage: TELEPORT (NPC) [LOCATION:x,y,z,world] (TARGETS:[[NPCID|PlayerName](,)+])</pre>
- *  <br/>
- *  Examples:
- *  <br/><br/>
- *  1)  NPC wants to teleport the player to 100,100,100 in world:<br/>
- *  		<pre>- teleport location:100,100,100,world</pre>
- *  <br/>
- *  2)	NPC wants to teleport herself to 50,50,50 in world:<br/>
- *  		<pre>- teleport npc location:50,50,50,world</pre>
- *  <br/>
- *  3)  NPC wants to teleport NPC #456 and the player named "Dave" to 25,25,25
- *  		in world:<br/>
- *  		<pre>- teleport location:25,25,25,world targets:456,Dave</pre>
- *  <br/>
+ * Teleports a list of entities to a location.
+ *
+ * @author David Cernat
  */
+
 public class TeleportCommand extends AbstractCommand {
-
-    public	static	final	String	NPC_ARG = "NPC";
-
-    /**
-     * This method will parse the arguments needed to execute the Teleport
-     * command from the given script entry.  It verifies that the format of the
-     * command is accurate.  If not, it will throw an InvalidArgumentException
-     * with the error message.
-     *
-     * @param	scriptEntry	The script entry processing this command.
-     *
-     * @throws	InvalidArgumentsException
-     */
+	
     @Override
-    public void parseArgs(ScriptEntry scriptEntry)
-            throws InvalidArgumentsException {
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        //
-        // List of entities to be teleported.
-        //
-        List<LivingEntity> teleportEntities = new ArrayList<LivingEntity> ();
+        // Initialize necessary fields
 
-        //
-        // List of NPCs to be teleported.
-        //
-        List<NPC> teleportNPCs = new ArrayList<NPC> ();
-
-        //
-        // This is the location that the entity/entities are being teleported to.
-        //
-        dLocation teleportLocation = null;
-
-        //
-        // Process the arguments.
-        //
-        Boolean teleportPlayer = true;
-        for (String arg : scriptEntry.getArguments()) {
-            //
-            // Is this script attempting to teleport the NPC?
-            //
-            if (arg.equalsIgnoreCase(TeleportCommand.NPC_ARG)) {
-                teleportNPCs.add (scriptEntry.getNPC().getCitizen());
-                teleportPlayer = false;
+    	for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        	
+    		if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class)) {
+                // Location arg
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
-            // If argument is a location?
-            else if (aH.matchesLocation(arg))
-                teleportLocation = aH.getLocationFrom(arg);
-
-            else if (aH.matchesValueArg("TARGETS, TARGET", arg, ArgumentType.Custom)) {
-                teleportPlayer = false;
-                for (String target : aH.getListFrom(arg)) {
-                    // Get entity
-                    LivingEntity entity = dEntity.valueOf(target).getLivingEntity();
-                    if (entity != null) {
-                        if (CitizensAPI.getNPCRegistry().getNPC(entity) != null) {
-                            teleportNPCs.add(CitizensAPI.getNPCRegistry().getNPC(entity));
-                            continue;
-                        } else if (entity instanceof Player) {
-                            teleportEntities.add(aH.getPlayerFrom(target).getPlayerEntity());
-                            continue;
-                        }
-                    }
-                    dB.echoError("Invalid TARGET '%s'!", target);
-                }
+            
+        	else if (!scriptEntry.hasObject("entities")
+                	&& arg.matchesPrefix("entity, entities, e, target, targets, t")) {
+                // Entity arg
+                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
-
-            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+    		
+        	else if (arg.matches("npc")) {
+                // Entity arg
+                scriptEntry.addObject("npc", true);
+            }
         }
-
-        //
-        // If we're teleporting the player, add them as a recipient.
-        //
-        if (teleportPlayer == true) {
-            teleportEntities.add(scriptEntry.getPlayer().getPlayerEntity());
-        }
-
-        // Check some required arguments, make sure they are valid
-        if (teleportLocation == null)
-            throw new InvalidArgumentsException("Missing LOCATION argument. No teleport location.");
-        if (teleportEntities.isEmpty() && teleportNPCs.isEmpty())
-            throw new InvalidArgumentsException("Missing TARGETS argument. Nothing to teleport.");
-
-        // Store objects in ScriptEntry for use in execute()
-        scriptEntry.addObject("location", teleportLocation)
-                .addObject("entities", teleportEntities)
-                .addObject("npcs", teleportNPCs);
+    	
+    	// Check to make sure required arguments have been filled
+        
+        if ((!scriptEntry.hasObject("entities")))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
     }
+    
+	@SuppressWarnings("unchecked")
+	@Override
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+        // Get objects
+    	
+		dLocation location = (dLocation) scriptEntry.getObject("location");
+		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+		
+		// If the "npc" argument was used, add the NPC to the list of entities,
+		// for compatibility with 0.8 scripts
+		if ((Boolean) scriptEntry.getObject("npc") == true) {
+			entities.add(scriptEntry.getNPC().getDenizenEntity());
+		}
+		
+        // Report to dB
+        dB.report(getName(), aH.debugObj("location", location) +
+        					 aH.debugObj("entities", entities.toString()));
 
-    /**
-     * Executes the Teleport command.
-     *
-     * @param	scriptEntry the ScriptEntry
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-
-        dLocation teleportLocation = (dLocation) scriptEntry.getObject("location");
-        List<LivingEntity> teleportEntities = (List<LivingEntity>) scriptEntry.getObject("entities");
-        List<NPC> teleportNPCs = (List<NPC>) scriptEntry.getObject("npcs");
-
-        // Debug output
-        dB.echoApproval("<G>Executing '<Y>" + getName() + "<G>': "
-                + teleportLocation.debug() + ", "
-                + "Targets=<Y>'" + teleportEntities.toString() + "/" + teleportNPCs.toString() + "<G>'");
-
-        for (LivingEntity entity : teleportEntities) {
-            entity.teleport(teleportLocation);
-        }
-
-        for (NPC npc : teleportNPCs) {
-            npc.spawn(teleportLocation);
-            npc.getBukkitEntity().teleport(teleportLocation, PlayerTeleportEvent.TeleportCause.COMMAND);
-        }
-    }
+		for (dEntity entity : entities) {
+	        	
+			entity.teleport(location);
+	    }
+	}
 }

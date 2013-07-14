@@ -113,7 +113,7 @@ public class FlyCommand extends AbstractCommand {
 							false;
 		
         // Report to dB
-        dB.report(getName(), (cancel == true ? "cancel, " : "") +
+        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
         					 aH.debugObj("origin", origin) +
         					 aH.debugObj("entities", entities.toString()) +
         					 aH.debugObj("speed", speed) +
