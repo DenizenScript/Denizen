@@ -345,18 +345,6 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("inventory"))
             return new dInventory(getPlayerEntity().getInventory())
                     .getAttribute(attribute.fulfill(1));
-
-        // Estimate the location of the item the player is holding
-        if (attribute.startsWith("item_in_hand.location")) {
-        	
-        	dLocation location = new dLocation(getPlayerEntity().getLocation());
-        	//location.setYaw((float) Rotation.normalizeYaw(Rotation.getYaw(location.getDirection())));
-        	location.setYaw(location.getYaw() + 30);
-        	//location.add(location.getDirection().multiply(1.2));
-        	getPlayerEntity().teleport(location);
-        	
-            return location.getAttribute(attribute.fulfill(2));
-        }
         
         if (attribute.startsWith("item_in_hand"))
             return new dItem(getPlayerEntity().getItemInHand())

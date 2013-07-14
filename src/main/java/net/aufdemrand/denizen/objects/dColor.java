@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class dColor implements dObject {
 
-    final static Pattern rgbPattern = Pattern.compile("(\\d+),(\\d+),(\\d+)");
+    final static Pattern rgbPattern = Pattern.compile("(\\d+)[,:](\\d+)[,:](\\d+)");
 	
     //////////////////
     //    OBJECT FETCHER

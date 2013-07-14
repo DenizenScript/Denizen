@@ -739,8 +739,10 @@ public class dEntity implements dObject {
             	location.setYaw(location.getYaw() - 90);
             	return location.getAttribute(attribute.fulfill(1));
         	}
-        	else return new dLocation(entity.getLocation())
+        	else {
+        		return new dLocation(entity.getLocation())
                     .getAttribute(attribute.fulfill(1));
+        	}
         }
 
         if (attribute.startsWith("health.formatted")) {

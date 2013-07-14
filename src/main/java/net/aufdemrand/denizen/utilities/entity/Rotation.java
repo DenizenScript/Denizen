@@ -117,6 +117,39 @@ public class Rotation {
         faceLocation(entity, target.getLocation());
     }
 
+    
+    /**
+     * Checks if a Location's yaw is facing another Location.
+     * 
+     * Note: do not use a player's location as the first argument,
+     *       because player yaws need to modified. Use the method
+     *       below this one instead.
+     *
+     * @param  from  The Location we check.
+     * @param  at  The Location we want to know if the first Location's yaw
+     *             is facing 
+     * @param  degreeLimit  How many degrees can be between the direction the
+     * 						first location's yaw is facing and the direction
+     * 						we check if it is facing.
+     *
+     * @return  Returns a boolean.
+     */
+    
+    public static boolean isFacingLocation(Location from, Location at, float degreeLimit) {
+
+        double currentYaw = normalizeYaw(from.getYaw());
+
+        double requiredYaw = normalizeYaw(getYaw(at.toVector().subtract(
+                from.toVector()).normalize()));
+
+        if (Math.abs(requiredYaw - currentYaw) < degreeLimit ||
+                Math.abs(requiredYaw + 360 - currentYaw) < degreeLimit ||
+                Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit)
+            return true;
+
+        return false;
+    }
+    
 
     /**
      * Checks if an Entity is facing a Location.
@@ -132,22 +165,14 @@ public class Rotation {
     
     public static boolean isFacingLocation(Entity from, Location at, float degreeLimit) {
 
-        double currentYaw;
+        Location location = from.getLocation();
+        
+        // Important! Need to subtract 90 from player yaws
+        if (from instanceof Player) {
+            location.setYaw(location.getYaw() - 90);
+        }
 
-        if (from instanceof Player) // need to subtract 90 from player yaws
-            currentYaw = normalizeYaw(from.getLocation().getYaw() - 90);
-        else
-            currentYaw = normalizeYaw(from.getLocation().getYaw());
-
-        double requiredYaw = normalizeYaw(getYaw(at.toVector().subtract(
-                from.getLocation().toVector()).normalize()));
-
-        if (Math.abs(requiredYaw - currentYaw) < degreeLimit ||
-                Math.abs(requiredYaw + 360 - currentYaw) < degreeLimit ||
-                Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit)
-            return true;
-
-        return false;
+        return isFacingLocation(from, at, degreeLimit);
     }
 
 

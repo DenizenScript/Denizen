@@ -208,14 +208,11 @@ public class dLocation extends org.bukkit.Location implements dObject {
      * @param location the Bukkit Location to reference
      */
     public dLocation(Location location) {
-        super(location.getWorld(), location.getX(), location.getY(), location.getZ());
-        // If supplied location has pitch/yaw, set it.
-        if (location.getPitch() > 0f
-                && location.getYaw() > 0f) {
-            hasPitchYaw = true;
-            this.setPitch(location.getPitch());
-            this.setYaw(location.getYaw());
-        }
+    	// Just save the yaw and pitch as they are; don't check if they are
+    	// higher than 0, because Minecraft yaws are weird and can have
+    	// negative values
+        super(location.getWorld(), location.getX(), location.getY(), location.getZ(),
+        	  location.getYaw(), location.getPitch());
     }
 
     /**
@@ -235,25 +232,16 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
     public dLocation(World world, double x, double y, double z, float yaw, float pitch) {
         super(world, x, y, z, pitch, yaw);
-        hasPitchYaw = true;
     }
-
-    boolean hasPitchYaw = false;
 
     @Override
     public void setPitch(float pitch) {
-        hasPitchYaw = true;
         super.setPitch(pitch);
     }
 
     @Override
     public void setYaw(float yaw) {
-        hasPitchYaw = true;
         super.setYaw(yaw);
-    }
-
-    public boolean hasPitchYaw() {
-        return hasPitchYaw;
     }
 
     public dLocation rememberAs(String id) {
@@ -297,7 +285,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public String identify() {
         if (isSaved(this))
             return "l@" + getSaved(this);
-        else if (hasPitchYaw()) return "l@" + getX() + "," + getY()
+        else if (getYaw() != 0.0 && getPitch() != 0.0) return "l@" + getX() + "," + getY()
                 + "," + getZ() + "," + getPitch() + "," + getYaw() + "," + getWorld().getName();
         else return "l@" + getX() + "," + getY()
                     + "," + getZ() + "," + getWorld().getName();
@@ -438,6 +426,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element(getBlock().getType().toString()).getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("direction")) {
+        	// Get the cardinal direction from this location to another
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
             	// Subtract this location's vector from the other location's vector,
             	// not the other way around
@@ -446,6 +435,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                                 .normalize())))
                         .getAttribute(attribute.fulfill(1));
             }
+            // Get a cardinal direction from this location's yaw
             else {
             	return new Element(Rotation.getCardinal(getYaw()))
             			.getAttribute(attribute.fulfill(1));
@@ -517,8 +507,52 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element(String.valueOf(getPitch())).getAttribute(attribute.fulfill(1));
         }
         
+        // Get the raw yaw of this location
+        if (attribute.startsWith("yaw.raw")) {
+            return new Element(String.valueOf
+            		(getYaw())).getAttribute(attribute.fulfill(2));
+        }
+        
+        // Provide a normalized yaw that people can actually make use of,
+        // instead of Minecraft's weird yaws that can have negative values
+        // or exceed 360
         if (attribute.startsWith("yaw")) {
-            return new Element(String.valueOf(getYaw())).getAttribute(attribute.fulfill(1));
+            return new Element(String.valueOf
+            		(Rotation.normalizeYaw(getYaw()))).getAttribute(attribute.fulfill(1));
+        }
+        
+        // Check if this location's yaw is facing another location or entity
+        if (attribute.startsWith("facing")) {
+        	if (attribute.hasContext(1)) {
+        		
+        		// The default number of degrees if there is no degrees attribute
+        		int degrees = 45;
+        		
+        		// The attribute to fulfill from
+        		int attributePos = 1;
+        		
+        		// If there is a degrees attribute with an integer context,
+        		// set degrees to the value in that context
+        		if (attribute.getAttribute(2).startsWith("degrees") &&
+        			attribute.hasContext(2) &&
+        			aH.matchesInteger(attribute.getContext(2))) {
+        			
+        			degrees = attribute.getIntContext(2);
+        			attributePos++;
+        		}
+        		
+        		if (dLocation.matches(attribute.getContext(1))) {
+        			return new Element(Rotation.isFacingLocation
+        					(this, dLocation.valueOf(attribute.getContext(1)), degrees))
+                       		.getAttribute(attribute.fulfill(attributePos));
+        		}
+        		else if (dEntity.matches(attribute.getContext(1))) {
+        			return new Element(Rotation.isFacingLocation
+        					(this, dEntity.valueOf(attribute.getContext(1))
+        							.getBukkitEntity().getLocation(), degrees))
+                       		.getAttribute(attribute.fulfill(attributePos));
+        		} 
+            }
         }
         
         if (attribute.startsWith("power"))

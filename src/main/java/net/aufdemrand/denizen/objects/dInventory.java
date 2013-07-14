@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
@@ -462,7 +461,8 @@ public class dInventory implements dObject {
             	int qty = 1;
             	
             	if (attribute.getAttribute(2).startsWith("qty") &&
-            		attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
+            		attribute.hasContext(2) &&
+            		aH.matchesInteger(attribute.getContext(2))) {
             		
             		qty = attribute.getIntContext(2);
             	}

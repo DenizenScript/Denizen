@@ -204,6 +204,13 @@ public class Element implements dObject {
                 return new Element("true").getAttribute(attribute.fulfill(1));
             else return new Element("false").getAttribute(attribute.fulfill(1));
         }
+        
+        if (attribute.startsWith("after")) {
+            String delimiter = attribute.getContext(1);
+            return new Element(String.valueOf(element.substring
+            		(element.indexOf(delimiter) + delimiter.length())))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("substring")) {            // substring[2,8]
             int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;
