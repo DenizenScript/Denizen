@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -40,16 +41,24 @@ public class TeleportCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
     		
-        	else if (arg.matches("npc")) {
-                // Entity arg
-                scriptEntry.addObject("npc", true);
+        	else if (arg.matches("npc") && scriptEntry.hasNPC()) {
+                // NPC arg for compatibility with old scripts
+                scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
             }
         }
     	
     	// Check to make sure required arguments have been filled
         
-        if ((!scriptEntry.hasObject("entities")))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+        if (!scriptEntry.hasObject("entities"))
+        	
+        	// Teleport the player if no entity was specified
+        	if (scriptEntry.hasPlayer()) {
+        		scriptEntry.addObject("entities",
+        				Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
+        	}
+        	else {
+        		throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
+        	}
     }
     
 	@SuppressWarnings("unchecked")
@@ -59,12 +68,6 @@ public class TeleportCommand extends AbstractCommand {
     	
 		dLocation location = (dLocation) scriptEntry.getObject("location");
 		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-		
-		// If the "npc" argument was used, add the NPC to the list of entities,
-		// for compatibility with 0.8 scripts
-		if ((Boolean) scriptEntry.getObject("npc") == true) {
-			entities.add(scriptEntry.getNPC().getDenizenEntity());
-		}
 		
         // Report to dB
         dB.report(getName(), aH.debugObj("location", location) +

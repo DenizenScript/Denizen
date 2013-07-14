@@ -121,6 +121,10 @@ public class dPlayer implements dObject {
         if (player_name == null) return null;
         return Bukkit.getOfflinePlayer(player_name);
     }
+    
+    public dEntity getDenizenEntity() {
+    	return new dEntity(getPlayerEntity());
+    }
 
     public String getName() {
         return player_name;
