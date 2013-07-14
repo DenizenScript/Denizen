@@ -94,7 +94,7 @@ public class CommandExecuter {
                     if (scriptEntry.getResidingQueue().context
                             .containsKey(m.group(1).toLowerCase()))
                         m.appendReplacement(sb,
-                                scriptEntry.getResidingQueue().context.get(m.group(1)));
+                                scriptEntry.getResidingQueue().context.get(m.group(1).toLowerCase()));
 
                     else m.appendReplacement(sb, "null");
                 }
@@ -104,15 +104,15 @@ public class CommandExecuter {
 
                 // Fill player/off-line player
                 if (aH.matchesValueArg("player", arg, aH.ArgumentType.String)) {
-                	arg = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg, false);
+                    arg = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg, false);
                     scriptEntry.setPlayer(dPlayer.valueOf(aH.getStringFrom(arg)));
                 }
 
-                    // Fill NPCID/NPC argument
+                // Fill NPCID/NPC argument
                 else if (aH.matchesValueArg("npcid, npc", arg, aH.ArgumentType.String)) {
                     dB.echoDebug("...replacing the linked NPC.");
                     arg = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg, false);
-                    
+
                     if (dNPC.matches(aH.getStringFrom(arg)))
                         scriptEntry.setNPC(dNPC.valueOf(aH.getStringFrom(arg)));
                 }
