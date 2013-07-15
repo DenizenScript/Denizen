@@ -28,8 +28,8 @@ public class WaitCommand extends AbstractCommand {
         for (String arg : scriptEntry.getArguments()) {
 
             // Set duration
-            if (aH.matchesInteger(arg) || aH.matchesDouble(arg) || aH.matchesDuration(arg))
-                delay = Duration.valueOf(String.valueOf(aH.getDoubleFrom(arg)));
+            if (aH.matchesDuration(arg))
+                delay = Duration.valueOf(arg);
 
             // Specify queue
             if (aH.matchesQueue(arg))
