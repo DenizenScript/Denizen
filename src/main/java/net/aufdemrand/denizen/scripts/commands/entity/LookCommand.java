@@ -1,12 +1,11 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.trait.Trait;
-import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
@@ -15,8 +14,6 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.citizensnpcs.trait.LookClose;
 
 /**
  * Controls Denizens' heads.
@@ -27,41 +24,48 @@ import net.citizensnpcs.trait.LookClose;
 
 public class LookCommand extends AbstractCommand {
 
-    // look (e@entity) [l@location]    // Note: not specifying entity will default to attached NPC
+    // look (<entity>) [<location>]
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
-            if (!scriptEntry.hasObject("entity")
-                    && arg.matchesArgumentType(dEntity.class))
-                    scriptEntry.addObject("entity", arg.asType(dEntity.class));
-
+            else if (!scriptEntry.hasObject("entities")
+                	&& arg.matchesPrefix("entity, entities, e")) {
+                // Entity arg
+                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
+            }
         }
 
-        if (!scriptEntry.hasObject("entity")
-                && scriptEntry.hasNPC()
-                && scriptEntry.getNPC().isSpawned())
-            scriptEntry.addObject("entity", new dEntity(scriptEntry.getNPC().getEntity()));
-
-        if (!scriptEntry.hasObject("location") || !scriptEntry.hasObject("entity"))
-            throw new InvalidArgumentsException("Must specify a location and spawned entity!");
+        // Use the NPC or player as the entity if no entities are specified
+        
+        scriptEntry.defaultObject("entities",
+				scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null,
+				scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null);
+        
+        if (!scriptEntry.hasObject("location") || !scriptEntry.hasObject("entities"))
+            throw new InvalidArgumentsException("Must specify a location and entity!");
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 		
         dLocation loc = (dLocation) scriptEntry.getObject("location");
-        dEntity ent = (dEntity) scriptEntry.getObject("entity");
+        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 
-        dB.report(getName(), loc.debug() + ent.debug());
+        dB.report(getName(), loc.debug() +
+        		aH.debugObj("entities", entities.toString()));
 
-    	Rotation.faceLocation(ent.getLivingEntity(), loc);
-
+		for (dEntity entity : entities) {
+        	if (entity.isSpawned() == true) {
+        		Rotation.faceLocation(entity.getBukkitEntity(), loc);
+        	}
+	    }
 	}
 
 

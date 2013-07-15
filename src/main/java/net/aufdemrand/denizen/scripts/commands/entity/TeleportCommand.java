@@ -74,8 +74,9 @@ public class TeleportCommand extends AbstractCommand {
         					 aH.debugObj("entities", entities.toString()));
 
 		for (dEntity entity : entities) {
-	        	
-			entity.teleport(location);
+			if (entity.isSpawned() == true) {
+				entity.teleport(location);
+			}
 	    }
 	}
 }
