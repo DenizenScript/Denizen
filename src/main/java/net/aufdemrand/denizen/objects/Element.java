@@ -205,10 +205,19 @@ public class Element implements dObject {
             else return new Element("false").getAttribute(attribute.fulfill(1));
         }
         
+        // Get the substring after a certain text
         if (attribute.startsWith("after")) {
             String delimiter = attribute.getContext(1);
             return new Element(String.valueOf(element.substring
             		(element.indexOf(delimiter) + delimiter.length())))
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
+        // Get the substring before a certain text
+        if (attribute.startsWith("before")) {
+            String delimiter = attribute.getContext(1);
+            return new Element(String.valueOf(element.substring
+            		(0, element.indexOf(delimiter))))
                     .getAttribute(attribute.fulfill(1));
         }
 
