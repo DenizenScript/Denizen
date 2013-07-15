@@ -2,12 +2,11 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
@@ -18,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,13 +67,26 @@ public class NPCTags implements Listener {
 
     @EventHandler
     public void navComplete(NavigationCompleteEvent event) {
+
+        // Do world script event 'On NPC Completes Navigation'
+        WorldScriptHelper.doEvents(Arrays.asList
+                ("npc completes navigation"),
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null).toUpperCase();
+
+        // Do the assignment script action
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("complete navigation", null);
+
     }
 
     @EventHandler
     public void navBegin(NavigationBeginEvent event) {
+        // Do world script event 'On NPC Completes Navigation'
+        WorldScriptHelper.doEvents(Arrays.asList
+                ("npc begins navigation"),
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
+
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("begin navigation", null);
@@ -104,6 +117,10 @@ public class NPCTags implements Listener {
 
     @EventHandler
     public void navCancel(NavigationCancelEvent event) {
+        WorldScriptHelper.doEvents(Arrays.asList
+                ("npc cancels navigation"),
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null).toUpperCase();
+
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("cancel navigation", null);

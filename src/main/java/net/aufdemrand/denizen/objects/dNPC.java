@@ -327,6 +327,11 @@ public class dNPC implements dObject {
             return new Element(String.valueOf(getNavigator().getLocalParameters().speed()))
                     .getAttribute(attribute.fulfill(2));
 
+        if (attribute.startsWith("navigator.range"))
+            return new Element(String.valueOf(getNavigator().getLocalParameters().range()))
+                    .getAttribute(attribute.fulfill(2));
+
+
         if (attribute.startsWith("navigator.attack_strategy"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().attackStrategy().toString()))
                     .getAttribute(attribute.fulfill(2));
