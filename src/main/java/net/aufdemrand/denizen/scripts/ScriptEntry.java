@@ -3,8 +3,6 @@ package net.aufdemrand.denizen.scripts;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -87,6 +85,28 @@ public class ScriptEntry {
             ((dObject) object).setPrefix(key);
         objects.put(key.toUpperCase(), object);
         return this;
+    }
+    
+    /**
+     * If the scriptEntry lacks the object corresponding to the
+     * key, set it to the first non-null argument
+     *
+     * @param key  The key of the object to check
+     * @return  The scriptEntry
+     *
+     */
+    
+    public ScriptEntry defaultObject(String key, Object... objects) {
+    	
+    	if (this.hasObject(key) == false) {
+    		for (Object obj : objects) {
+    			if (obj != null) {
+    				this.addObject(key, obj);
+    				break;
+    			}
+    		}
+    	}
+    	return this;
     }
 
     public long getRunTime() {

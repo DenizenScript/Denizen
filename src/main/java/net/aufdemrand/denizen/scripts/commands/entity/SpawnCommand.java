@@ -46,23 +46,19 @@ public class SpawnCommand extends AbstractCommand {
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
         }
+        
+        // Use the NPC or player's locations as the location if one is not specified
+        
+        scriptEntry.defaultObject("location",
+				scriptEntry.getNPC().getLocation(), scriptEntry.getPlayer().getLocation());
 
         // Check to make sure required arguments have been filled
         
         if ((!scriptEntry.hasObject("entities")))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
         
-        // Use the NPC or player's locations as the location if one is not specified
-        
-        if ((!scriptEntry.hasObject("location"))) {
-        	
-        	if (scriptEntry.hasNPC())
-        		scriptEntry.addObject("location", scriptEntry.getNPC().getLocation());
-        	else if (scriptEntry.hasPlayer())
-        		scriptEntry.addObject("location", scriptEntry.getPlayer().getLocation());
-        	else
-        		throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
-        }
+        if ((!scriptEntry.hasObject("location")))
+        	throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
     }
     
 	@SuppressWarnings("unchecked")

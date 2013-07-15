@@ -51,18 +51,10 @@ public class WeatherCommand extends AbstractCommand {
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to "world" if necessary
         
-        if (!scriptEntry.hasObject("world")) {
-            
-            if ((scriptEntry.hasNPC())) {
-            	scriptEntry.addObject("world", new dWorld(scriptEntry.getNPC().getWorld()));
-            }
-            else if ((scriptEntry.hasPlayer())) {
-            	scriptEntry.addObject("world", new dWorld(scriptEntry.getPlayer().getWorld()));
-            }
-            else {
-            	scriptEntry.addObject("world", dWorld.valueOf("world"));
-            }
-        }
+        scriptEntry.defaultObject("world",
+        		new dWorld(scriptEntry.getNPC().getWorld()),
+        		new dWorld(scriptEntry.getPlayer().getWorld()),
+        		dWorld.valueOf("world"));
     }
     
     @Override

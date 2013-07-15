@@ -50,22 +50,18 @@ public class MountCommand extends AbstractCommand {
             }
         }
     	
+        // Use the NPC or player's locations as the location if one is not specified
+        
+        scriptEntry.defaultObject("location",
+				scriptEntry.getNPC().getLocation(), scriptEntry.getPlayer().getLocation());
+        
     	// Check to make sure required arguments have been filled
         
         if ((!scriptEntry.hasObject("entities")))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
         
-        // Use the NPC or player's locations as the location if one is not specified
-        
-        if ((!scriptEntry.hasObject("location"))) {
-        	
-        	if (scriptEntry.hasNPC())
-        		scriptEntry.addObject("location", scriptEntry.getNPC().getLocation());
-        	else if (scriptEntry.hasPlayer())
-        		scriptEntry.addObject("location", scriptEntry.getPlayer().getLocation());
-        	else
-        		throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
-        }
+        if ((!scriptEntry.hasObject("location")))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
     }
     
 	@SuppressWarnings("unchecked")
@@ -75,9 +71,7 @@ public class MountCommand extends AbstractCommand {
     	
 		dLocation location = (dLocation) scriptEntry.getObject("location");
 		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");			
-		Boolean cancel = scriptEntry.hasObject("cancel") ?
-							true :
-							false;
+		Boolean cancel = scriptEntry.hasObject("cancel");
 		
         // Report to dB
         dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +

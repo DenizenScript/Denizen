@@ -46,8 +46,7 @@ public class BurnCommand extends AbstractCommand {
         
         // Use default duration if one is not specified
         
-        if ((!scriptEntry.hasObject("duration")))
-        	scriptEntry.addObject("duration", Duration.valueOf("5s"));
+        scriptEntry.defaultObject("duration", Duration.valueOf("5s"));
     }
     
 	@SuppressWarnings("unchecked")

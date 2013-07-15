@@ -72,28 +72,21 @@ public class FlyCommand extends AbstractCommand {
             }
         }
     	
+        // Use the NPC or player's locations as the location if one is not specified
+        
+        scriptEntry.defaultObject("origin",
+				scriptEntry.getNPC().getLocation(), scriptEntry.getPlayer().getLocation());
+        
+        // Use a default speed of 1.2 if one is not specified
+        
+        scriptEntry.defaultObject("speed", new Element(1.2));
+    	
     	// Check to make sure required arguments have been filled
         
         if ((!scriptEntry.hasObject("entities")))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
-        
-        // Use the NPC or player's locations as the origin if one is not specified
-        
-        if ((!scriptEntry.hasObject("origin"))) {
-        	
-        	if (scriptEntry.hasNPC())
-        		scriptEntry.addObject("origin", scriptEntry.getNPC().getLocation());
-        	else if (scriptEntry.hasPlayer())
-        		scriptEntry.addObject("origin", scriptEntry.getPlayer().getLocation());
-        	else
-        		throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ORIGIN");
-        }
-        
-        // Use a default speed of 1.5 if one is not specified
-        
-        if ((!scriptEntry.hasObject("speed"))) {
-        	scriptEntry.addObject("speed", new Element(1.5));
-        }
+        if ((!scriptEntry.hasObject("origin")))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ORIGIN");
     }
     
 	@SuppressWarnings("unchecked")

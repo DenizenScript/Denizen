@@ -89,32 +89,23 @@ public class PlayEffectCommand extends AbstractCommand {
             }
 		}
         
+        // Use default values if necessary
+        
+        scriptEntry.defaultObject("location",
+				scriptEntry.getNPC().getLocation(), scriptEntry.getPlayer().getLocation());
+        scriptEntry.defaultObject("data", new Element(0));
+        scriptEntry.defaultObject("visibility", new Element(5));
+        scriptEntry.defaultObject("qty", new Element(1));
+        scriptEntry.defaultObject("offset", new Element(0.5));
+        
         // Check to make sure required arguments have been filled
         
-        if ((!scriptEntry.hasObject("location")))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
-
         if (!scriptEntry.hasObject("effect") &&
         	!scriptEntry.hasObject("particleeffect"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EFFECT");
         
-        // Use default values if necessary
-        
-        if ((!scriptEntry.hasObject("data"))) {
-        	scriptEntry.addObject("data", new Element(0));
-        }
-        
-        if ((!scriptEntry.hasObject("visibility"))) {
-        	scriptEntry.addObject("visibility", new Element(5));
-        }
-        
-        if ((!scriptEntry.hasObject("qty"))) {
-        	scriptEntry.addObject("qty", new Element(1));
-        }
-        
-        if ((!scriptEntry.hasObject("offset"))) {
-        	scriptEntry.addObject("offset", new Element(0.5));
-        }
+        if (!scriptEntry.hasObject("location"))
+        	throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
 	}
 
 	@Override
