@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import org.bukkit.Bukkit;
 import org.bukkit.WeatherType;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -52,8 +53,8 @@ public class WeatherCommand extends AbstractCommand {
         // world, or default to "world" if necessary
         
         scriptEntry.defaultObject("world",
-        		new dWorld(scriptEntry.getNPC().getWorld()),
-        		new dWorld(scriptEntry.getPlayer().getWorld()),
+        		scriptEntry.hasNPC() ? new dWorld(scriptEntry.getNPC().getWorld()) : null,
+                scriptEntry.hasPlayer() ? new dWorld(scriptEntry.getPlayer().getWorld()) : null,
         		dWorld.valueOf("world"));
     }
     

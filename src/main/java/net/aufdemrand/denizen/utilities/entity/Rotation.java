@@ -172,7 +172,7 @@ public class Rotation {
             location.setYaw(location.getYaw() - 90);
         }
 
-        return isFacingLocation(from, at, degreeLimit);
+        return isFacingLocation(location, at, degreeLimit);
     }
 
 

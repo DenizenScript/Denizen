@@ -53,7 +53,8 @@ public class MountCommand extends AbstractCommand {
         // Use the NPC or player's locations as the location if one is not specified
         
         scriptEntry.defaultObject("location",
-				scriptEntry.getNPC().getLocation(), scriptEntry.getPlayer().getLocation());
+        		scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null,
+                scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null);
         
     	// Check to make sure required arguments have been filled
         

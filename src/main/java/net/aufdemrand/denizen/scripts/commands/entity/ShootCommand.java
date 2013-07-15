@@ -78,8 +78,8 @@ public class ShootCommand extends AbstractCommand {
         // Use the NPC or player's locations as the origin if one is not specified
         
         scriptEntry.defaultObject("origin",
-				scriptEntry.getNPC().getDenizenEntity(),
-				scriptEntry.getPlayer().getDenizenEntity());
+				scriptEntry.hasNPC() ? scriptEntry.getNPC().getDenizenEntity() : null,
+				scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null);
         
         // Use a default speed of 1.5 if one is not specified
         

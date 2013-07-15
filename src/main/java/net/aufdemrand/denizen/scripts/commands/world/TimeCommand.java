@@ -50,10 +50,10 @@ public class TimeCommand extends AbstractCommand {
 
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to "world" if necessary
-        
+                
         scriptEntry.defaultObject("world",
-        		new dWorld(scriptEntry.getNPC().getWorld()),
-        		new dWorld(scriptEntry.getPlayer().getWorld()),
+        		scriptEntry.hasNPC() ? new dWorld(scriptEntry.getNPC().getWorld()) : null,
+        		scriptEntry.hasPlayer() ? new dWorld(scriptEntry.getPlayer().getWorld()) : null,
         		dWorld.valueOf("world"));
     }
     

@@ -92,7 +92,8 @@ public class PlayEffectCommand extends AbstractCommand {
         // Use default values if necessary
         
         scriptEntry.defaultObject("location",
-				scriptEntry.getNPC().getLocation(), scriptEntry.getPlayer().getLocation());
+				scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
+				scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
         scriptEntry.defaultObject("data", new Element(0));
         scriptEntry.defaultObject("visibility", new Element(5));
         scriptEntry.defaultObject("qty", new Element(1));

@@ -50,7 +50,8 @@ public class SpawnCommand extends AbstractCommand {
         // Use the NPC or player's locations as the location if one is not specified
         
         scriptEntry.defaultObject("location",
-				scriptEntry.getNPC().getLocation(), scriptEntry.getPlayer().getLocation());
+				scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
+				scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
 
         // Check to make sure required arguments have been filled
         

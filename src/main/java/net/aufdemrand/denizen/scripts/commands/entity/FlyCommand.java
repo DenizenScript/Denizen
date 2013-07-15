@@ -75,7 +75,8 @@ public class FlyCommand extends AbstractCommand {
         // Use the NPC or player's locations as the location if one is not specified
         
         scriptEntry.defaultObject("origin",
-				scriptEntry.getNPC().getLocation(), scriptEntry.getPlayer().getLocation());
+        		scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null,
+        		scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null);
         
         // Use a default speed of 1.2 if one is not specified
         

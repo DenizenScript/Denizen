@@ -96,7 +96,12 @@ public class WorldScriptHelper implements Listener {
                 if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
 
             	// Fetch script from Event
-            	List<ScriptEntry> entries = script.getEntries(new dPlayer(player), npc, "events.on " + eventName);
+                //
+                // Note: a "new dPlayer(null)" will not be null itself,
+                //       so keep a ternary operator here
+            	List<ScriptEntry> entries = script.getEntries
+            			(player != null ? new dPlayer(player) : null,
+            			 npc, "events.on " + eventName);
             	if (entries.isEmpty()) continue;
 
             	dB.report("Event",
