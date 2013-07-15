@@ -2,8 +2,8 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -22,51 +22,65 @@ public class ExplodeCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        dLocation location = null;
-        Float power = 1F;
-        boolean breakblocks = false;
-        boolean fire = false;
-
-        for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesLocation(arg)) {
-                location = aH.getLocationFrom(arg);
-                dB.echoDebug("...location set to '%s'.", arg);
-
-            } else if (aH.matchesValueArg("power", arg, ArgumentType.Float)) {
-                power = aH.getFloatFrom(arg);
-                dB.echoDebug("...will have a power of " + power);
-                
-            } else if (aH.matchesArg("breakblocks", arg)) {
-                    breakblocks = true;
-                    dB.echoDebug("...will break blocks.");        
-                    
-            } else if (aH.matchesArg("fire", arg)) {
-                fire = true;
-                dB.echoDebug("...will set fire on blocks.");
-                    
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-        }            
-
-         // Stash objects
-         scriptEntry.addObject("location", location);
-         scriptEntry.addObject("power", power);
-         scriptEntry.addObject("breakblocks", breakblocks);
-         scriptEntry.addObject("fire", fire);
+        // Iterate through arguments
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        
+            if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class)) {
+                // Location arg
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
+			
+			else if (!scriptEntry.hasObject("power")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Float)
+                    && arg.matchesPrefix("power, p")) {
+                // Add value
+                scriptEntry.addObject("power", arg.asElement());
+            }
+			
+			else if (!scriptEntry.hasObject("breakblocks")
+    				&& arg.matches("breakblocks")) {
+    			
+    			scriptEntry.addObject("breakblocks", "");
+    		}
+			
+			else if (!scriptEntry.hasObject("fire")
+    				&& arg.matches("fire")) {
+    			
+    			scriptEntry.addObject("fire", "");
+    		}
+			
+	        // Use default values if necessary
+	        
+			scriptEntry.defaultObject("power", new Element(1.0));
+			scriptEntry.defaultObject("location",
+					scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
+					scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
+			
+			if (!scriptEntry.hasObject("location")) {
+				throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+			}
+        }
     }
     
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
         
-        final dLocation location = scriptEntry.hasObject("location") ?
-                (dLocation) scriptEntry.getObject("location") :
-                (dLocation) scriptEntry.getNPC().getLocation();
-        Float power = (Float) scriptEntry.getObject("power");
-        boolean breakblocks = (Boolean) scriptEntry.getObject("breakblocks");
-        boolean fire = (Boolean) scriptEntry.getObject("fire");
+        final dLocation location = (dLocation) scriptEntry.getObject("location");
+        Element power = (Element) scriptEntry.getObject("power");
+        Boolean breakblocks = scriptEntry.hasObject("breakblocks");
+        Boolean fire = scriptEntry.hasObject("fire");
         
-        location.getWorld().createExplosion(location.getX(),location.getY(),location.getZ(), (Float) power, fire, breakblocks);
- 
+        // Report to dB
+        dB.report(getName(),
+        		(aH.debugObj("location", location.toString()) +
+        		 aH.debugObj("power", power) +
+        		 aH.debugObj("breakblocks", breakblocks) +
+        		 aH.debugObj("fire", fire)));
+        
+        location.getWorld().createExplosion
+        			(location.getX(), location.getY(), location.getZ(),
+        			 power.asFloat(), fire, breakblocks);
     }
-
 }
