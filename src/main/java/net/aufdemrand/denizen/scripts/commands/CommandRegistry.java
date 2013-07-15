@@ -191,7 +191,7 @@ public class CommandRegistry implements dRegistry {
         		"LOG", "log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]", 2);
         
         registerCoreMember(LookCommand.class,
-        		"LOOK", "look (<entity>) [<location>]", 1);
+        		"LOOK", "look (<entity>|...) [<location>]", 1);
         
         registerCoreMember(LookcloseCommand.class,
         		"LOOKCLOSE", "lookclose [state:true/false]", 1);
