@@ -81,7 +81,7 @@ public class WorldScriptHelper implements Listener {
     //   EVENT HANDLER
     /////////////////
     
-    public String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, Object> context) {
+    public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, Object> context) {
 
         String determination = "none";
 
