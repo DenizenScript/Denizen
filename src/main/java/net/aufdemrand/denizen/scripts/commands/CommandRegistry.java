@@ -309,6 +309,9 @@ public class CommandRegistry implements dRegistry {
 
         registerCoreMember(ZapCommand.class, 
         		"ZAP", "zap [<#>/step:<name>] (script:<name>) (duration:<#>)", 0);
+        
+        
+        // STOP (There's no more commands, spazz!)
 
         dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
 	}
