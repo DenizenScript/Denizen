@@ -1,13 +1,12 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.objects.dPlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 
 /**
- * An event that pertains to a Denizen Listener.
+ * An event that pertains to a Denizen 'Player Listener'.
  *
  * @author Jeremy Schroeder
  *

@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.objects.dPlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
 

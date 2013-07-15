@@ -76,7 +76,10 @@ _util_dtime_command:
     - flag "list:|:<c.args>"
     - flag "list:<-:%command_name%"
     - define raw_args "<player.flag[list].as_list>"
-    - run 'ex it' path:<player.flag[list].size> instantly def:%command_name%
+    - if <player.selected_npc> != null
+      run 'ex it' as:<player.selected_npc> path:<player.flag[list].size> instantly def:%command_name%
+      else
+      run 'ex it' path:<player.flag[list].size> instantly def:%command_name%
     - if <player.flag[list].size> > 12 {
       - flag list:!
       - narrate '<red>Too many arguments!'
