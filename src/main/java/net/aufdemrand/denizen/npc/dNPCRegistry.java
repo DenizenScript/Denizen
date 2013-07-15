@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.npc;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
+import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
@@ -13,10 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -114,12 +112,21 @@ public class dNPCRegistry implements Listener {
     @EventHandler
     public void onSpawn(NPCSpawnEvent event) {
         _registerNPC(event.getNPC());
+        // Do world script event 'On NPC Completes Navigation'
+        WorldScriptHelper.doEvents(Arrays.asList
+                ("npc spawns"),
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null).toUpperCase();
         // On Spawn action
         plugin.getNPCRegistry().getDenizen(event.getNPC()).action("spawn", null);
     }
 
     @EventHandler
     public void despawn(NPCDespawnEvent event) {
+        // Do world script event 'On NPC Completes Navigation'
+        WorldScriptHelper.doEvents(Arrays.asList
+                ("npc despawns"),
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null).toUpperCase();
+
         plugin.getNPCRegistry().getDenizen(event.getNPC()).action("despawn", null);
     }
 

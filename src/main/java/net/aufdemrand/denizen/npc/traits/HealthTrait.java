@@ -1,11 +1,10 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
+import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 
@@ -30,8 +29,6 @@ public class HealthTrait extends Trait implements Listener {
 
     @Persist("animatedeath")
     private boolean animatedeath = Settings.HealthTraitAnimatedDeathEnabled();
-    @Persist("animatedeathdelayinseconds")
-    private String animationDelay = "3s";
 
     @Persist("respawnondeath")
     private boolean respawn = Settings.HealthTraitRespawnEnabled();
@@ -41,17 +38,14 @@ public class HealthTrait extends Trait implements Listener {
     private String respawnLocation = "<npc.location>";
 
     // internal
-	private dPlayer player = null;
+    private dPlayer player = null;
     private boolean dying = false;
     private Location loc;
     private int entityId = -1;
 
-    public double getAnimationDelay() {
-        return Duration.valueOf(animationDelay).getSeconds();
-    }
 
-    public double getRespawnDelay() {
-        return (Duration.valueOf(respawnDelay).getSeconds());
+    public Duration getRespawnDelay() {
+        return Duration.valueOf(respawnDelay);
     }
 
     public void setRespawnLocation(String string) {
@@ -73,16 +67,7 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public Location getRespawnLocation() {
-        return aH.getLocationFrom(respawnLocation);
-    }
-
-    public void setDeathAnimationDelay(int seconds) {
-        animationDelay = String.valueOf(seconds);
-    }
-
-    public void setDeathAnimationDelay(String string) {
-        if (aH.matchesDuration("duration:" + string))
-            animationDelay = string;
+        return dLocation.valueOf(TagManager.tag(null, dNPC.mirrorCitizensNPC(npc), respawnLocation));
     }
 
     public void setRespawnable(boolean respawnable) {
@@ -102,6 +87,7 @@ public class HealthTrait extends Trait implements Listener {
     }
 
 
+    public Integer void_watcher_task = null;
 
     /**
      * Listens for spawn of an NPC and updates its health with the max health
@@ -111,6 +97,24 @@ public class HealthTrait extends Trait implements Listener {
     @Override public void onSpawn() {
         dying = false;
         setHealth();
+
+        void_watcher_task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+            @Override
+            public void run() {
+                if (!npc.isSpawned()) {
+                    Bukkit.getScheduler().cancelTask(void_watcher_task);
+                    return;
+                }
+                if (npc.getBukkitEntity().getLocation().getY() < -1000) {
+                    npc.despawn(DespawnReason.DEATH);
+                    if (respawn) {
+                        if (npc.isSpawned()) npc.getBukkitEntity().teleport(getRespawnLocation());
+                        else npc.spawn(getRespawnLocation());
+                    }
+                }
+            }
+        }, 200, 200);
+
     }
 
     public HealthTrait() {
@@ -124,8 +128,8 @@ public class HealthTrait extends Trait implements Listener {
      *
      */
     public double getHealth() {
-    	if (!npc.isSpawned()) return 0;
-    	else return npc.getBukkitEntity().getHealth();
+        if (!npc.isSpawned()) return 0;
+        else return npc.getBukkitEntity().getHealth();
     }
 
     /**
@@ -135,7 +139,7 @@ public class HealthTrait extends Trait implements Listener {
      *
      */
     public void setMaxhealth(int newMax) {
-    	npc.getBukkitEntity().setMaxHealth(newMax);
+        npc.getBukkitEntity().setMaxHealth(newMax);
     }
 
     /**
@@ -144,7 +148,7 @@ public class HealthTrait extends Trait implements Listener {
      * @return maximum health
      */
     public double getMaxhealth() {
-    	return npc.getBukkitEntity().getMaxHealth();
+        return npc.getBukkitEntity().getMaxHealth();
     }
 
     /**
@@ -161,7 +165,7 @@ public class HealthTrait extends Trait implements Listener {
      *
      */
     public void setHealth() {
-    	setHealth(npc.getBukkitEntity().getMaxHealth());
+        setHealth(npc.getBukkitEntity().getMaxHealth());
     }
 
     /**
@@ -171,26 +175,26 @@ public class HealthTrait extends Trait implements Listener {
      */
     public void setHealth(double health) {
         if (npc.getBukkitEntity() != null)
-        	npc.getBukkitEntity().setHealth(health);
+            npc.getBukkitEntity().setHealth(health);
     }
-    
+
     public void die() {
-    	npc.getBukkitEntity().damage(npc.getBukkitEntity().getHealth());
+        npc.getBukkitEntity().damage(npc.getBukkitEntity().getHealth());
     }
-    
+
     // Listen for deaths to clear drops
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDeath(EntityDeathEvent event) {
-    	
-    	if (event.getEntity().getEntityId() != entityId) return;
-    	
-    	event.getDrops().clear();
+
+        if (event.getEntity().getEntityId() != entityId) return;
+
+        event.getDrops().clear();
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent event) {
-    	// Don't use NPCDamageEvent because it doesn't work well
-    	
+        // Don't use NPCDamageEvent because it doesn't work well
+
         // Check if the event pertains to this NPC
         if (event.getEntity() != npc.getBukkitEntity() || dying) return;
 
@@ -200,66 +204,66 @@ public class HealthTrait extends Trait implements Listener {
 
         dying = true;
         player = null;
-        
+
         // Save entityId for EntityDeath event
         entityId = npc.getBukkitEntity().getEntityId();
-        
-    	String deathCause = event.getCause().toString().toLowerCase().replace('_', ' ');
-    	
+
+        String deathCause = event.getCause().toString().toLowerCase().replace('_', ' ');
+
         // Check if the entity has been killed by another entity
         if (event instanceof EntityDamageByEntityEvent)
         {
-        	Entity killerEntity = ((EntityDamageByEntityEvent) event).getDamager();
-        	
-        	// Check if the damager was a player and, if so, attach
-        	// that player to the action's ScriptEntry
-        	if (killerEntity instanceof Player)
-        		player = dPlayer.mirrorBukkitPlayer((Player) killerEntity);
-        	
-        	// If the damager was a projectile, take its shooter into
-        	// account as well
-        	else if (killerEntity instanceof Projectile)
-        	{
-        		LivingEntity shooter = ((Projectile) killerEntity).getShooter();
-        		
-        		if (shooter instanceof Player)
-        			player = dPlayer.mirrorBukkitPlayer((Player) shooter);
-        		
-        		DenizenAPI.getDenizenNPC(npc).action("death by " +
-        	        	shooter.getType().toString(), player);
-        	}
-        	
-        	DenizenAPI.getDenizenNPC(npc).action("death by entity", player);
-        	DenizenAPI.getDenizenNPC(npc).action("death by " +
-        	killerEntity.getType().toString(), player);
-        	
+            Entity killerEntity = ((EntityDamageByEntityEvent) event).getDamager();
+
+            // Check if the damager was a player and, if so, attach
+            // that player to the action's ScriptEntry
+            if (killerEntity instanceof Player)
+                player = dPlayer.mirrorBukkitPlayer((Player) killerEntity);
+
+                // If the damager was a projectile, take its shooter into
+                // account as well
+            else if (killerEntity instanceof Projectile)
+            {
+                LivingEntity shooter = ((Projectile) killerEntity).getShooter();
+
+                if (shooter instanceof Player)
+                    player = dPlayer.mirrorBukkitPlayer((Player) shooter);
+
+                DenizenAPI.getDenizenNPC(npc).action("death by " +
+                        shooter.getType().toString(), player);
+            }
+
+            DenizenAPI.getDenizenNPC(npc).action("death by entity", player);
+            DenizenAPI.getDenizenNPC(npc).action("death by " +
+                    killerEntity.getType().toString(), player);
+
         }
         // If not, check if the entity has been killed by a block
         else if (event instanceof EntityDamageByBlockEvent)
         {
-        	DenizenAPI.getDenizenNPC(npc).action("death by block", player);
+            DenizenAPI.getDenizenNPC(npc).action("death by block", player);
 
             // TODO:
-        	// The line of code below should work, but a Bukkit bug makes the damager
-        	// return null. Uncomment it once the bug is fixed.
-        	
-        	// DenizenAPI.getDenizenNPC(npc).action("death by " +
-    		//	((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
+            // The line of code below should work, but a Bukkit bug makes the damager
+            // return null. Uncomment it once the bug is fixed.
+
+            // DenizenAPI.getDenizenNPC(npc).action("death by " +
+            //	((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
         }
-        
+
         DenizenAPI.getDenizenNPC(npc).action("death", player);
         DenizenAPI.getDenizenNPC(npc).action("death by " + deathCause, player);
 
         // One of the actions above may have removed the NPC, so check if the
         // NPC's entity still exists before proceeding
         if (npc.getBukkitEntity() == null)
-        	return;
+            return;
 
         loc = aH.getLocationFrom(
                 TagManager.tag(null, DenizenAPI.getDenizenNPC(npc), respawnLocation, false));
 
         if (loc == null) loc = npc.getBukkitEntity().getLocation();
-        
+
         if (animatedeath) {
             // Cancel navigation to keep the NPC from damaging players
             // while the death animation is being carried out.
