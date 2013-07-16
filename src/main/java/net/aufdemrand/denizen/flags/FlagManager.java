@@ -2,11 +2,12 @@ package net.aufdemrand.denizen.flags;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 
 public class FlagManager {
 
@@ -150,9 +151,49 @@ public class FlagManager {
          *
          */
         public void clear() {
+            List<String> world_script_events = new ArrayList<String>();
+
+            Map<String, Object> context = new HashMap<String, Object>();
+            dPlayer player = null;
+            if (dPlayer.matches(flagOwner))
+                player = dPlayer.valueOf(flagOwner);
+            dNPC npc = null;
+            if (dNPC.matches(flagOwner))
+                npc = dNPC.valueOf(flagOwner);
+
+            String type;
+
+            if (player != null) {
+                type = "player";
+                world_script_events.add("player flag cleared");
+                world_script_events.add("player flag " + flagName + " cleared");
+            }
+            else if (npc != null) {
+                type = "npc";
+                world_script_events.add("npc flag cleared");
+                world_script_events.add("npc flag " + flagName + " cleared");
+            }
+            else                  {
+                type = "server";
+                world_script_events.add("server flag cleared");
+                world_script_events.add("server flag " + flagName + " cleared");
+            }
+
+            context.put("owner", flagOwner == null ? "s@server" : flagOwner);
+            context.put("name", flagName);
+            context.put("type", type);
+            context.put("old_value", value.size() > 1
+                    ? new dList(denizen.getSaves().getStringList(flagPath))
+                    : value.size() == 1 ? new Element(value.get(0).asString()): "null");
+
+            world_script_events.add("flag cleared");
+
             denizen.getSaves().set(flagPath, null);
             denizen.getSaves().set(flagPath + "-expiration", null);
             rebuild();
+
+            WorldScriptHelper.doEvents(world_script_events,
+                    npc, player != null ? player.getPlayerEntity() : null, context);
         }
 
         /**
@@ -221,24 +262,20 @@ public class FlagManager {
             rebuild();
             return size();
         }
-        
+
         /**
          * Splits a dScript list into values that are then added to the flag. 
          * Returns the index of the last value added to the flag.
          *
          */
         public int split(Object obj) {
-        	
             checkExpired();
-        	
             String[] split = ((String) obj).replace("li@", "").split("\\|"); // the pipe character | needs to be escaped
-        	
-            if (split.length > 0)
-            {
-            	for (String val : split)
-            	{
-            		value.values.add(val);
-            	}
+
+            if (split.length > 0) {
+                for (String val : split)
+                    value.values.add(val);
+
                 save();
                 rebuild();
             }
@@ -297,17 +334,6 @@ public class FlagManager {
         }
 
         /**
-         * Invalidates the current value/values in the Flag and replaces them with
-         * the object provided. Could be an Integer, String, List<String>, etc. and
-         * in theory, could be anything thats value is easily expressed as a String.
-         *
-         */
-        public void setEntireValue(Object obj) {
-            denizen.getSaves().set(flagPath, obj);
-            rebuild();
-        }
-
-        /**
          * Used to give an expiration time for a flag. This is the same format
          * as System.getCurrentTimeMillis(), which is the number of milliseconds
          * since Jan 1, 1960. As an example, to get a valid expiration for a
@@ -339,8 +365,50 @@ public class FlagManager {
          *
          */
         public void save() {
+
+            List<String> world_script_events = new ArrayList<String>();
+
+            Map<String, Object> context = new HashMap<String, Object>();
+            dPlayer player = null;
+            if (dPlayer.matches(flagOwner)) player = dPlayer.valueOf(flagOwner);
+            dNPC npc = null;
+            if (dNPC.matches(flagOwner)) npc = dNPC.valueOf(flagOwner);
+
+            String type;
+
+            if (player != null) {
+                type = "player";
+                world_script_events.add("player flag changed");
+                world_script_events.add("player flag " + flagName + " changed");
+            }
+            else if (npc != null) {
+                type = "npc";
+                world_script_events.add("npc flag changed");
+                world_script_events.add("npc flag " + flagName + " changed");
+            }
+            else                  {
+                type = "server";
+                world_script_events.add("server flag changed");
+                world_script_events.add("server flag " + flagName + " changed");
+            }
+
+            context.put("owner", flagOwner == null ? "s@server" : flagOwner);
+            context.put("name", flagName);
+            context.put("type", type);
+            context.put("old_value", value.size() > 1
+                    ? new dList(denizen.getSaves().getStringList(flagPath))
+                    : value.size() == 1 ? new Element(value.get(0).asString()): "null");
+
+            world_script_events.add("flag changed");
+
             denizen.getSaves().set(flagPath, value.values);
             denizen.getSaves().set(flagPath + "-expiration", (expiration > 0 ? expiration : null));
+            rebuild();
+
+            WorldScriptHelper.doEvents(world_script_events,
+                    npc, player != null ? player.getPlayerEntity() : null, context);
+
+
         }
 
         /**
@@ -389,24 +457,24 @@ public class FlagManager {
         @Deprecated
         public String expirationTime() {
             rebuild();
-            
+
             long seconds = (expiration - System.currentTimeMillis()) / 1000;
-            
+
             long days = seconds / 86400;
             long hours = (seconds - days * 86400) / 3600;
             long minutes = (seconds - days * 86400 - hours * 3600) / 60;
             seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
-            
+
             String timeString = "";
-            
+
             if (days > 0)
-            	timeString = String.valueOf(days) + "d ";
+                timeString = String.valueOf(days) + "d ";
             if (hours > 0)
-            	timeString = timeString + String.valueOf(hours) + "h ";
+                timeString = timeString + String.valueOf(hours) + "h ";
             if (minutes > 0 && days == 0)
-            	timeString = timeString + String.valueOf(minutes) + "m ";
+                timeString = timeString + String.valueOf(minutes) + "m ";
             if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
-            	timeString = timeString + String.valueOf(seconds) + "s";
+                timeString = timeString + String.valueOf(seconds) + "s";
 
             return timeString.trim();
         }
@@ -533,7 +601,7 @@ public class FlagManager {
             adjustIndex();
             return new dList(values);
         }
-        
+
         /**
          * Returns a String value of the entirety of the values
          * contained as a dScript list, with a prefix added to
