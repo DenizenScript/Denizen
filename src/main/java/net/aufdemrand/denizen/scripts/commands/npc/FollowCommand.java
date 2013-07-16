@@ -38,7 +38,7 @@ public class FollowCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(getName(),
-                aH.debugObj("Player", scriptEntry.getPlayer().getName())
+                        (scriptEntry.getPlayer() != null ? scriptEntry.getPlayer().debug() : "")
                         + (stop == null ? aH.debugObj("Action", "FOLLOW")
                         : aH.debugObj("Action", "STOP"))
                         + (lead != null ? aH.debugObj("Lead", lead.toString()) : "" ));
