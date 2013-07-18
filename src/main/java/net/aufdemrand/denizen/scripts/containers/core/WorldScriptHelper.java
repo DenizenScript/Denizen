@@ -631,7 +631,7 @@ public class WorldScriptHelper implements Listener {
         for (Block block : event.blockList()) {
         	blocks = blocks + new dLocation(block.getLocation()) + "|";
         }
-        context.put("blocks", new dList(blocks));
+        context.put("blocks", blocks.length() > 0 ? new dList(blocks) : null);
         
         String determination = doEvents(Arrays.asList
         		("entity explodes",
