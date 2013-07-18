@@ -14,7 +14,19 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 public class ExperienceCommand extends AbstractCommand {
 
     private enum Type { SET, GIVE, TAKE }
-
+    
+    /**
+     * @author alkarin
+     * https://github.com/alkarinv/BattleArena/blob/master/src/mc/alk/arena/util/ExpUtil.java
+     */
+	public static int getTotalExperience(Player p){return getTotalExperience(p.getLevel(),p.getExp());}
+	public static int getTotalExperience(int level, double bar){return getTotalExpToLevel(level) + (int) (getExpToLevel(level+1)*bar);}
+	public static int getExpToLevel(int level) {if (level < 16){return 17;} else if (level < 31){return 3*level - 31;}else {return 7*level - 155;}}
+	public static int getTotalExpToLevel(int level){if (level < 16){return 17*level;} else if (level < 31){	return (int) (1.5*level*level -29.5*level+360 );} else {return (int) (3.5*level*level-151.5*level+2220);}}
+	public static void setTotalExperience(Player player, int exp){player.setTotalExperience(0);player.setLevel(0);player.setExp(0);if (exp > 0)player.giveExp(exp);}
+	public static void setLevel(Player player, int level){player.setTotalExperience(0);player.setLevel(0);player.setExp(0);if (level > 0)player.giveExp(getExpToLevel(level));}
+	public static void giveExperience(Player player, int exp){final int currentExp = getTotalExperience(player);player.setTotalExperience(0);player.setLevel(0);player.setExp(0);final int newexp = currentExp + exp;if (newexp > 0)player.giveExp(newexp);}
+	
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -60,25 +72,23 @@ public class ExperienceCommand extends AbstractCommand {
         switch (type) {
             case SET:
                 if(level)
-                    player.setLevel(quantity);
+                    setLevel(player, quantity);
                 else
-                    player.setTotalExperience(quantity);
+                	setTotalExperience(player, quantity);
                 break;
 
             case GIVE:
                 if(level)
-                    player.setLevel(player.getLevel() + quantity);
+                    setLevel(player, player.getLevel() + quantity);
                 else
-                    player.giveExp(player.getTotalExperience() + quantity);
+                    giveExperience(player, quantity);
                 break;
 
             case TAKE:
                 if(level)
-                    player.setLevel((player.getLevel() - quantity < 0
-                            ? 0 : player.getLevel() - quantity));
+                    setLevel(player, player.getLevel() - quantity);
                 else
-                    player.setTotalExperience((player.getTotalExperience() - quantity < 0
-                            ? 0 : player.getTotalExperience() - quantity));
+                    giveExperience(player, -quantity);
                 break;
         }
 

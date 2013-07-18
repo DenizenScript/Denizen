@@ -58,7 +58,7 @@ public class FlagManager {
      *
      */
     public Flag getGlobalFlag(String flagName) {
-        return new Flag("Global.Flags." + flagName.toUpperCase(), flagName, null);
+        return new Flag("Global.Flags." + flagName.toUpperCase(), flagName, "SERVER");
     }
 
     /**
@@ -179,7 +179,7 @@ public class FlagManager {
                 world_script_events.add("server flag " + flagName + " cleared");
             }
 
-            context.put("owner", flagOwner == null ? "s@server" : flagOwner);
+            context.put("owner", flagOwner);
             context.put("name", flagName);
             context.put("type", type);
             context.put("old_value", value.size() > 1
@@ -392,7 +392,7 @@ public class FlagManager {
                 world_script_events.add("server flag " + flagName + " changed");
             }
 
-            context.put("owner", flagOwner == null ? "s@server" : flagOwner);
+            context.put("owner", flagOwner);
             context.put("name", flagName);
             context.put("type", type);
             context.put("old_value", value.size() > 1
@@ -422,7 +422,7 @@ public class FlagManager {
             checkExpired();
             // Possibly use reflection to check whether dList or dElement is calling this?
             // If dList, return fl@..., if dElement, return f@...
-            return (flagOwner == null ? "fl@" + flagName : "fl[" + flagOwner + "]@" + flagName);
+            return (flagOwner.equalsIgnoreCase("SERVER") ? "fl@" + flagName : "fl[" + flagOwner + "]@" + flagName);
         }
 
         /**
