@@ -194,6 +194,20 @@ public class dWorld implements dObject {
 //        getWorld().getEntitiesByClasses())
 //        .getAttribute(attribute.fulfill(1));
 
+        // Return "day", "night", "dawn" or "dusk"
+        if (attribute.startsWith("time.period")) {
+        	
+        	long time = getWorld().getTime();
+        	String period;
+        	
+        	if (time >= 23000) period = "dawn"; 
+            else if (time >= 13500) period = "night";
+            else if (time >= 12500) period = "dusk";
+            else period = "day";
+        	
+            return new Element(period).getAttribute(attribute.fulfill(2));
+        }
+        
         if (attribute.startsWith("time"))
             return new Element(String.valueOf(getWorld().getTime()))
                     .getAttribute(attribute.fulfill(1));
