@@ -58,7 +58,7 @@ public class FlagManager {
      *
      */
     public Flag getGlobalFlag(String flagName) {
-        return new Flag("Global.Flags." + flagName.toUpperCase(), flagName, null);
+        return new Flag("Global.Flags." + flagName.toUpperCase(), flagName, "SERVER");
     }
 
     /**
