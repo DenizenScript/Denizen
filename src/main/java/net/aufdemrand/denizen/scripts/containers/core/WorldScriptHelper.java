@@ -627,6 +627,11 @@ public class WorldScriptHelper implements Listener {
         
         context.put("entity", new dEntity(entity));
         context.put("location", new dLocation(event.getLocation()));
+        String blocks = "";
+        for (Block block : event.blockList()) {
+        	blocks = blocks + new dLocation(block.getLocation()) + "|";
+        }
+        context.put("blocks", new dList(blocks));
         
         String determination = doEvents(Arrays.asList
         		("entity explodes",
