@@ -422,7 +422,7 @@ public class FlagManager {
             checkExpired();
             // Possibly use reflection to check whether dList or dElement is calling this?
             // If dList, return fl@..., if dElement, return f@...
-            return (flagOwner == "SERVER" ? "fl@" + flagName : "fl[" + flagOwner + "]@" + flagName);
+            return (flagOwner.equalsIgnoreCase("SERVER") ? "fl@" + flagName : "fl[" + flagOwner + "]@" + flagName);
         }
 
         /**
