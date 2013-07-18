@@ -370,9 +370,9 @@ public class FlagManager {
 
             Map<String, Object> context = new HashMap<String, Object>();
             dPlayer player = null;
-            if (dPlayer.matches(flagOwner)) player = dPlayer.valueOf(flagOwner);
+            if (flagOwner != null && dPlayer.matches(flagOwner)) player = dPlayer.valueOf(flagOwner);
             dNPC npc = null;
-            if (dNPC.matches(flagOwner)) npc = dNPC.valueOf(flagOwner);
+            if (flagOwner != null && dNPC.matches(flagOwner)) npc = dNPC.valueOf(flagOwner);
 
             String type;
 
