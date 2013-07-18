@@ -392,7 +392,7 @@ public class FlagManager {
                 world_script_events.add("server flag " + flagName + " changed");
             }
 
-            context.put("owner", flagOwner == null ? "s@server" : flagOwner);
+            context.put("owner", flagOwner);
             context.put("name", flagName);
             context.put("type", type);
             context.put("old_value", value.size() > 1
