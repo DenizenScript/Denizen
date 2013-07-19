@@ -27,6 +27,7 @@ public class ScriptBuilder {
     public static List<ScriptEntry> addObjectToEntries(List<ScriptEntry> scriptEntryList, String key, Object obj) {
         for (ScriptEntry entry : scriptEntryList) {
             entry.addObject(key, obj);
+            entry.trackObject(key);
         }
         return scriptEntryList;
     }

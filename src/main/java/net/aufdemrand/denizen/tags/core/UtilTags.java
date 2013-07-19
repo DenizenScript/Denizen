@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.scripts.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -40,9 +41,38 @@ public class UtilTags implements Listener {
     }
 
     @EventHandler
+    public void queueTags(ReplaceableTagEvent event) {
+        if (!event.matches("queue, q")) return;
+        Attribute attribute =
+                new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+
+        if (attribute.startsWith("id"))
+            event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().id)
+            .getAttribute(attribute.fulfill(1)));
+
+        if (attribute.startsWith("stats"))
+            event.setReplaced(new Element(ScriptQueue._getStats())
+                    .getAttribute(attribute.fulfill(1)));
+
+        if (attribute.startsWith("size"))
+            event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().getQueueSize())
+                    .getAttribute(attribute.fulfill(1)));
+
+        if (attribute.startsWith("speed"))
+            event.setReplaced(event.getScriptEntry().getResidingQueue().getSpeed()
+                    .getAttribute(attribute.fulfill(1)));
+
+        if (attribute.startsWith("definitions"))
+            event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().getAllContext().toString())
+                    .getAttribute(attribute.fulfill(1)));
+
+    }
+
+    @EventHandler
     public void serverTags(ReplaceableTagEvent event) {
         if (!event.matches("server, svr, global")) return;
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+        Attribute attribute =
+                new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
         // server.flag[...]
         // server.flag[...].is_expired

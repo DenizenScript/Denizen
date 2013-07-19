@@ -59,9 +59,13 @@ public class DefineCommand extends AbstractCommand implements Listener {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        scriptEntry.getResidingQueue().context
-                .put((String) scriptEntry.getObject("definition"),
-                        (String) scriptEntry.getObject("value"));
+        dB.report(getName(), aH.debugObj("queue", scriptEntry.getResidingQueue().id)
+                + aH.debugObj("definition", scriptEntry.getObject("definition").toString())
+                + aH.debugObj("value", scriptEntry.getObject("value").toString()));
+
+        scriptEntry.getResidingQueue().addContext(
+                (String) scriptEntry.getObject("definition"),
+                (String) scriptEntry.getObject("value"));
     }
 
 }

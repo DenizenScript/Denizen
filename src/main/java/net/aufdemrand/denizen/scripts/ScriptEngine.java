@@ -47,12 +47,16 @@ public class ScriptEngine {
                         dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
                     else e.printStackTrace();
                 }
-                // Set as last entry exectured
+                // Set as last entry executed
                 scriptQueue.setLastEntryExecuted(scriptEntry);
 
-                if (scriptEntry.isInstant() || scriptQueue.ticks == 0) {
+                if (scriptEntry.isInstant() || scriptQueue.ticks == 0 && !scriptQueue.hasInjectedItems) {
                     // Remove from execution list
                     scriptEntry = scriptQueue.getNext();
+                }
+                else if (scriptQueue.hasInjectedItems) {
+                    scriptQueue.hasInjectedItems = false;
+                    break;
                 }
                 // If entry isn't instant, end the revolution and wait for another
                 else

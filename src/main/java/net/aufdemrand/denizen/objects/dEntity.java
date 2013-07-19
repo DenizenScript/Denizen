@@ -822,7 +822,7 @@ public class dEntity implements dObject {
         }
 
         if (attribute.startsWith("equipment")) {
-            // Add later
+            return new dInventory(getLivingEntity()).getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("world")) {

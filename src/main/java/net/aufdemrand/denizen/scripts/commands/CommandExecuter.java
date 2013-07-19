@@ -37,10 +37,9 @@ public class CommandExecuter {
         Matcher m = definition_pattern.matcher(scriptEntry.getCommandName());
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
-            if (scriptEntry.getResidingQueue().context
-                    .containsKey(m.group(1).toLowerCase()))
+            if (scriptEntry.getResidingQueue().hasContext(m.group(1).toLowerCase()))
                 m.appendReplacement(sb,
-                        scriptEntry.getResidingQueue().context.get(m.group(1)));
+                        scriptEntry.getResidingQueue().getContext(m.group(1).toLowerCase()));
 
             else m.appendReplacement(sb, "null");
         }
@@ -83,18 +82,24 @@ public class CommandExecuter {
 
             List<String> newArgs = new ArrayList<String>();
 
-            if (!scriptEntry.getResidingQueue().context.isEmpty())
-                dB.echoDebug("Available Definitions: " + scriptEntry.getResidingQueue().context.toString());
+            int nested_depth = 0;
 
             for (String arg : scriptEntry.getArguments()) {
+                if (arg.equals("{")) nested_depth++;
+                if (arg.equals("}")) nested_depth--;
+
+                if (nested_depth > 0) {
+                    newArgs.add(arg);
+                    continue;
+                }
 
                 m = definition_pattern.matcher(arg);
                 sb = new StringBuffer();
                 while (m.find()) {
-                    if (scriptEntry.getResidingQueue().context
-                            .containsKey(m.group(1).toLowerCase()))
+                    if (scriptEntry.getResidingQueue().hasContext(m.group(1).toLowerCase()))
                         m.appendReplacement(sb,
-                                scriptEntry.getResidingQueue().context.get(m.group(1).toLowerCase()));
+                                scriptEntry.getResidingQueue()
+                                        .getContext(m.group(1).toLowerCase()));
 
                     else m.appendReplacement(sb, "null");
                 }

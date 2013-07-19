@@ -129,7 +129,7 @@ public class TagManager implements Listener {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
                     if ((!event.replaced() && event.getAlternative() != null)
-                    || (event.getReplaced() == "null" && event.getAlternative() != null))
+                            || (event.getReplaced() == "null" && event.getAlternative() != null))
                         event.setReplaced(event.getAlternative());
                     arg = arg.substring(0, positions[0]) + event.getReplaced() + arg.substring(positions[1] + 1, arg.length());
                 }
@@ -161,9 +161,16 @@ public class TagManager implements Listener {
 
     public static List<String> fillArguments(List<String> args, ScriptEntry scriptEntry, boolean instant) {
         List<String> filledArgs = new ArrayList<String>();
+
+        int nested_level = 0;
         if (args != null) {
             for (String argument : args) {
-                filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
+                if (argument.equals("{")) nested_level++;
+                if (argument.equals("}")) nested_level--;
+                if (nested_level < 1) {
+                    filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
+                }
+                    else filledArgs.add(argument);
             }
         }
         return filledArgs;

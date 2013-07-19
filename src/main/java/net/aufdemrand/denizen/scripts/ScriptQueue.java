@@ -122,7 +122,23 @@ public class ScriptQueue implements Listener {
 
     // ScriptQueues can have a bit of context, keyed by a String Id. All that can be accessed by either getContext()
     // or a dScript replaceable tag <context.id>
-    public Map<String, String> context = new ConcurrentHashMap<String, String>(8, 0.9f, 1);
+    private ConcurrentHashMap<String, String> context = new ConcurrentHashMap<String, String>(8, 0.9f, 1);
+
+    public String getContext(String key) {
+        return context.get(key.toLowerCase());
+    }
+
+    public boolean hasContext(String key) {
+        return context.containsKey(key.toLowerCase());
+    }
+
+    public void addContext(String key, String value) {
+        context.put(key.toLowerCase(), value);
+    }
+
+    public ConcurrentHashMap<String, String> getAllContext() {
+        return context;
+    }
 
     protected ScriptEntry lastEntryExecuted = null;
 
@@ -281,11 +297,13 @@ public class ScriptQueue implements Listener {
         return this;
     }
 
+    protected boolean hasInjectedItems = false;
 
     public ScriptQueue injectEntries(List<ScriptEntry> entries, int position) {
         if (position > scriptEntries.size() || position < 0) position = 1;
         if (scriptEntries.size() == 0) position = 0;
         scriptEntries.addAll(position, entries);
+        hasInjectedItems = true;
         return this;
     }
 
@@ -307,6 +325,7 @@ public class ScriptQueue implements Listener {
         if (position > scriptEntries.size() || position < 0) position = 1;
         if (scriptEntries.size() == 0) position = 0;
         scriptEntries.add(position, entry);
+        hasInjectedItems = true;
         return this;
     }
 

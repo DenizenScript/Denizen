@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -285,12 +286,6 @@ public class IfCommand extends AbstractCommand {
                         .setNPC(scriptEntry.getNPC()).setInstant(true)
                         .addObject("reqId", scriptEntry.getObject("reqId"));
 
-                entry.setSendingQueue(scriptEntry.getResidingQueue());
-
-                // Put tracked objects into new script entries.
-                for (String tracked_object : scriptEntry.tracked_objects)
-                    entry.addObject(tracked_object, scriptEntry.getObject(tracked_object));
-
                 entries.add(entry);
 
             } catch (ScriptEntryCreationException e) {
@@ -301,6 +296,13 @@ public class IfCommand extends AbstractCommand {
                 }
                 else dB.echoDebug("Use '/denizen debug -s' for the nitty-gritty.");
             }
+        }
+
+
+        // Put tracked objects into new script entries.
+        for (String tracked_object : scriptEntry.tracked_objects) {
+            ScriptBuilder.addObjectToEntries(entries, tracked_object, scriptEntry.getObject(tracked_object));
+            dB.log(tracked_object);
         }
 
         scriptEntry.getResidingQueue().injectEntries(entries, 0);
