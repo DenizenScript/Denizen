@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts;
 
-import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
