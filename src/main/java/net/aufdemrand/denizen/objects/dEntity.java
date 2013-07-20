@@ -26,6 +26,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Villager;
@@ -444,24 +445,29 @@ public class dEntity implements dObject {
                                 else if (ent instanceof Enderman && dMaterial.matches(data1)) {
                                     ((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data1).getMaterialData());
                                 }
-                                
+                                 
                                 // Allow setting of horse variants and colors
                                 else if (ent instanceof Horse) {
-                                    setSubtype(Horse.class, "Variant", "setVariant", data1);
+                                    setSubtype("org.bukkit.entity.Horse", "org.bukkit.entity.Horse$Variant", "setVariant", data1);
                                     
                                     if (data2 != null) {
-                                    	setSubtype(Horse.class, "Color", "setColor", data2);
+                                    	setSubtype("org.bukkit.entity.Horse", "org.bukkit.entity.Horse$Color", "setColor", data2);
                                     }
                                 }
                                 
                                 // Allow setting of ocelot types
                                 else if (ent instanceof Ocelot) {
-                                    setSubtype(Ocelot.class, "Type", "setCatType", data1);
+                                    setSubtype("org.bukkit.entity.Ocelot", "org.bukkit.entity.Ocelot$Type", "setCatType", data1);
+                                }
+                                
+                                // Allow setting of sheep colors
+                                else if (ent instanceof Sheep) {
+                                    setSubtype("org.bukkit.entity.Sheep", "org.bukkit.DyeColor", "setColor", data1);
                                 }
                                 
                                 // Allow setting of skeleton types and their weapons
                                 else if (ent instanceof Skeleton) {
-                                    setSubtype(Skeleton.class, "SkeletonType", "setSkeletonType", data1);
+                                    setSubtype("org.bukkit.entity.Skeleton", "org.bukkit.entity.Skeleton$SkeletonType", "setSkeletonType", data1);
                                     
                                     // Give skeletons bows by default, unless data2 specifies
                                     // a different weapon
@@ -479,7 +485,7 @@ public class dEntity implements dObject {
                                 
                                 // Allow setting of villager professions
                                 else if (ent instanceof Villager) {
-                                    setSubtype(Villager.class, "Profession", "setProfession", data1);
+                                    setSubtype("org.bukkit.entity.Villager", "org.bukkit.entity.Villager$Profession", "setProfession", data1);
                                 }
 
                             } catch (Exception e) {
@@ -547,18 +553,19 @@ public class dEntity implements dObject {
      * 1) using a random subtype if value is "RANDOM"
      * 2) looping through the entity's subtypes until one matches the value string
      *
-     * Example: setSubtype(Ocelot.class, "Type", "setCatType", "SIAMESE_CAT");
+     * Example: setSubtype("Ocelot", "Ocelot@Type", "setCatType", "SIAMESE_CAT");
      *
-     * @param entityClass  The Bukkit entity class of the entity.
+     * @param entityName  The name of the entity's class.
      * @param typeName  The name of the entity class' Enum with subtypes.
      * @param method  The name of the method used to set the subtype of this entity.
      * @param value  The value of the subtype.
      */
 
-    public void setSubtype (Class<? extends Entity> entityClass, String typeName, String method, String value)
+    public void setSubtype (String entityName, String typeName, String method, String value)
             throws Exception {
 
-        Class<?> typeClass = Class.forName(entityClass.getName() + "$" + typeName);
+    	Class<?> entityClass = Class.forName(entityName);    	
+        Class<?> typeClass = Class.forName(typeName);
         Object[] types = typeClass.getEnumConstants();
 
         if (value.matches("RANDOM")) {

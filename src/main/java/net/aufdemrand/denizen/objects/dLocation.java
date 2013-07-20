@@ -428,7 +428,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 double radiusSquared = radius*radius;
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers())
-                	if(player.getLocation().distanceSquared(getBlock().getLocation()) <= radiusSquared)
+                	if (player.getLocation().distanceSquared(getBlock().getLocation()) <= radiusSquared)
                 		found.add(new dPlayer(player));
             }
 
