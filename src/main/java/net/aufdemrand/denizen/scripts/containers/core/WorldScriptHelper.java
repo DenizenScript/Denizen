@@ -4,8 +4,9 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -124,7 +125,7 @@ public class WorldScriptHelper implements Listener {
 
             	// Add the reqId to each of the entries
             	ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
-            	ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(entries).start();
+                InstantQueue.getQueue(null).addEntries(entries).start();
 
             	if (DetermineCommand.hasOutcome(id))
             		determination =  DetermineCommand.getOutcome(id);

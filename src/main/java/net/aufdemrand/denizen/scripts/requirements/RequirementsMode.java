@@ -3,13 +3,6 @@ package net.aufdemrand.denizen.scripts.requirements;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Press
- * Date: 1/16/13
- * Time: 6:48 PM
- * To change this template use File | Settings | File Templates.
- */
 public class RequirementsMode {
 
 

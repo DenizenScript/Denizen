@@ -7,12 +7,14 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
@@ -66,7 +68,7 @@ public class RuntaskCommand extends AbstractCommand {
         Boolean instant = false;
         dScript script = null;
         Duration delay = null;
-        ScriptQueue queue = scriptEntry.getResidingQueue();
+        String queue = scriptEntry.getResidingQueue().id;
 
         // Iterate through Arguments to extract needed information
         for (String arg : scriptEntry.getArguments()) {
@@ -81,7 +83,7 @@ public class RuntaskCommand extends AbstractCommand {
 
             }   // Use a specific queue
             else if (aH.matchesQueue(arg)) {
-                queue = aH.getQueueFrom(arg);
+                queue = aH.getStringFrom(arg);
 
             }   // TODO: Remove this argument for version 1.0
             else if (aH.matchesValueArg("SPEED", arg, aH.ArgumentType.Duration)) {
@@ -92,12 +94,12 @@ public class RuntaskCommand extends AbstractCommand {
 
             }   // Gets a new, randomly named queue
             else if (aH.matchesArg("QUEUE", arg)) {
-                queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
+                queue = ScriptQueue._getNextId();
                 instant = false;
 
             }   // Run the script instantly.
             else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
-                queue = ScriptQueue._getQueue(ScriptQueue._getNextId());
+                queue = ScriptQueue._getNextId();
                 instant = true;
 
             }   // Build context map if specified
@@ -117,7 +119,7 @@ public class RuntaskCommand extends AbstractCommand {
         if (script == null)
             throw new InvalidArgumentsException("Must define a SCRIPT to be run.");
         // If not queue, and delayed, throw an exception... this cannot happen.
-        if (queue == scriptEntry.getResidingQueue() && delay != null)
+        if (queue == scriptEntry.getResidingQueue().id && delay != null)
             throw new InvalidArgumentsException("Cannot delay an INJECTED task script! Use 'QUEUE'.");
         
         // Put important objects inside the scriptEntry to be sent to execute()
@@ -132,10 +134,19 @@ public class RuntaskCommand extends AbstractCommand {
 	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
+        Boolean instant = (Boolean) scriptEntry.getObject("instant");
+
+        ScriptQueue queue;
+        String id = (String) scriptEntry.getObject("queue");
+
+        if (ScriptQueue._queueExists(id))
+            queue = ScriptQueue._getExistingQueue(id);
+        else if (instant)
+            queue = InstantQueue.getQueue(id);
+        else queue = TimedQueue.getQueue(id);
+
         Map<String, String> context = (HashMap<String, String>) scriptEntry.getObject("context");
         dScript script = (dScript) scriptEntry.getObject("script");
-        ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
-        Boolean instant = (Boolean) scriptEntry.getObject("instant");
         Duration delay = (Duration) scriptEntry.getObject("delay");
 
         // Debug output
@@ -143,8 +154,7 @@ public class RuntaskCommand extends AbstractCommand {
                 script.debug()
                         + (delay != null ? delay.debug() : "")
                         + aH.debugObj("Instant", instant.toString())
-                        + aH.debugObj("Queue", queue.id)
-                        + (instant == false ? aH.debugObj("Speed", queue.getSpeed()) : "" )
+                        + aH.debugObj("Queue", id)
                         + (context != null ? aH.debugObj("Context", context.toString()) : "")
                         + (scriptEntry.getPlayer() != null
                         ? aH.debugObj("Player", scriptEntry.getPlayer().getName()) : "")

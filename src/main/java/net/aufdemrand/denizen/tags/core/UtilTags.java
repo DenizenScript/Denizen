@@ -10,7 +10,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -56,10 +56,6 @@ public class UtilTags implements Listener {
 
         if (attribute.startsWith("size"))
             event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().getQueueSize())
-                    .getAttribute(attribute.fulfill(1)));
-
-        if (attribute.startsWith("speed"))
-            event.setReplaced(event.getScriptEntry().getResidingQueue().getSpeed()
                     .getAttribute(attribute.fulfill(1)));
 
         if (attribute.startsWith("definitions"))

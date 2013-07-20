@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 
 import java.util.*;
 

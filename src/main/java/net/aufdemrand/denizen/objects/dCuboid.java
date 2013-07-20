@@ -1,18 +1,9 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.scripts.ScriptQueue;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Sign;
 
 import java.util.*;
 import java.util.regex.Matcher;

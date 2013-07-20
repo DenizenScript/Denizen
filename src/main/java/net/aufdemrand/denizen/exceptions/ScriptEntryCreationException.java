@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class ScriptEntryCreationException extends Exception {
 
-	private static final long serialVersionUID = 3159123423457792068L;
+	private static final long serialVersionUID = 315955523457792068L;
 
 	public ScriptEntryCreationException(String msg) {
 		super(msg);

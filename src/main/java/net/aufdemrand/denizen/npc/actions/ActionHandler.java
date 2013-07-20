@@ -4,9 +4,10 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 
@@ -41,7 +42,7 @@ public class ActionHandler {
 
         dB.echoDebug(DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
 
-        ScriptQueue queue = ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(script);
+        ScriptQueue queue = InstantQueue.getQueue(null).addEntries(script);
         queue.start();
 
         // TODO: Read queue context to see if the event behind action should be cancelled.

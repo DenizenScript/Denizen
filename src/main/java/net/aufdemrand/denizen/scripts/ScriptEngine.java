@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.CommandExecuter;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -50,7 +51,7 @@ public class ScriptEngine {
                 // Set as last entry executed
                 scriptQueue.setLastEntryExecuted(scriptEntry);
 
-                if (scriptEntry.isInstant() || scriptQueue.ticks == 0 && !scriptQueue.hasInjectedItems) {
+                if (scriptEntry.isInstant() && !scriptQueue.hasInjectedItems) {
                     // Remove from execution list
                     scriptEntry = scriptQueue.getNext();
                 }

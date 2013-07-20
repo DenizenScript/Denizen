@@ -5,8 +5,9 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,7 +45,7 @@ public class ProcedureScriptTag implements Listener {
        // Add the reqId to each of the entries for referencing
        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
 
-       ScriptQueue._getInstantQueue(ScriptQueue._getNextId()).addEntries(entries).start();
+       InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries).start();
 
        if (DetermineCommand.hasOutcome(id)) {
            event.setReplaced(DetermineCommand.getOutcome(id));

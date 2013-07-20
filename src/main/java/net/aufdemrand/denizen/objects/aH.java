@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
@@ -472,12 +472,6 @@ public class aH {
     @Deprecated
     public static dNPC getNPCFrom(String arg) {
         return dNPC.valueOf(aH.getStringFrom(arg));
-    }
-
-    @Deprecated
-    public static ScriptQueue getQueueFrom(String arg) {
-        arg = arg.replace("queue:", "");
-        return ScriptQueue._getQueue(getStringFrom(arg).toUpperCase());
     }
 
     public static String getStringFrom(String arg) {

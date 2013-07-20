@@ -6,10 +6,11 @@ import java.util.List;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
@@ -43,7 +44,7 @@ public class QueueCommand extends AbstractCommand {
                 queues.clear();
                 for (String queueName : aH.getListFrom(arg)) {
                     try {
-                        queues.add(aH.getQueueFrom(queueName));
+                        queues.add(ScriptQueue._getExistingQueue(queueName));
                     } catch (Exception e) {
                         // must be null, don't add
                     }
@@ -90,17 +91,20 @@ public class QueueCommand extends AbstractCommand {
 
             case PAUSE:
                 for (ScriptQueue queue : queues)
-                    queue.setPaused(true);
+                if (queue instanceof TimedQueue)
+                    ((TimedQueue) queue).setPaused(true);
                 return;
 
             case RESUME:
                 for (ScriptQueue queue : queues)
-                    queue.setPaused(false);
+                    if (queue instanceof TimedQueue)
+                        ((TimedQueue) queue).setPaused(false);
                 return;
 
             case DELAY:
                 for (ScriptQueue queue : queues)
-                    queue.delayFor(delay.getTicks());
+                    if (queue instanceof TimedQueue)
+                        ((TimedQueue) queue).delayFor(delay);
                 return;
 
         }

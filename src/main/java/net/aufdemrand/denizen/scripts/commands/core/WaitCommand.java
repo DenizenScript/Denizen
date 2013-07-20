@@ -3,14 +3,15 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.scripts.queues.core.Delayable;
+import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
- * Instructs the NPC to follow a player.
  *
  * @author aufdemrand
  *
@@ -33,7 +34,7 @@ public class WaitCommand extends AbstractCommand {
 
             // Specify queue
             if (aH.matchesQueue(arg))
-                queue = aH.getQueueFrom(arg);
+                queue = ScriptQueue._getExistingQueue(arg);
         }
 
         scriptEntry.addObject("queue", queue);
@@ -50,8 +51,12 @@ public class WaitCommand extends AbstractCommand {
         // TODO: dBugger output
 
         // Tell the queue to delay
-        dB.echoDebug("Delaying " + delay);
-        queue.delayUntil(System.currentTimeMillis() + delay.getMillis());
+        if (queue instanceof Delayable) {
+            ((Delayable) queue).delayFor(delay);
+            dB.echoDebug("Delaying " + delay.identify());
+        }
+
+        else dB.echoError("This type of queue is not able to be delayed!");
     }
 
 }

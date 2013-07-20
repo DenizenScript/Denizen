@@ -59,7 +59,7 @@ public class _templateCommand extends AbstractCommand /* implements dExternal */
         // Fetch required objects
 
         // Element required_integer = (Element) scriptEntry.getObject("required_integer");
-        // dLocation required_location = (dLocation) scriptEntry.getObject("required_lcoation");
+        // dLocation required_location = (dLocation) scriptEntry.getObject("required_location");
 
 
         // Debug the execution

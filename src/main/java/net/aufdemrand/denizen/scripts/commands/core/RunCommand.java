@@ -4,16 +4,12 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptQueue;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Runs a task script in a new ScriptQueue.
@@ -126,12 +122,12 @@ public class RunCommand extends AbstractCommand {
         // Build the queue
         ScriptQueue queue;
         if (scriptEntry.hasObject("instant"))
-            queue = ScriptQueue._getInstantQueue(id).addEntries(entries);
-        else queue = ScriptQueue._getQueue(id).addEntries(entries);
+            queue = InstantQueue.getQueue(id).addEntries(entries);
+        else queue = TimedQueue.getQueue(id).addEntries(entries);
 
         // Set any delay
         if (scriptEntry.hasObject("delay"))
-            queue.delayFor(((Duration) scriptEntry.getObject("delay")).getTicks());
+            queue.delayUntil(((Duration) scriptEntry.getObject("delay")).getTicks());
 
         // Set any definitions
         if (scriptEntry.hasObject("definitions")) {
