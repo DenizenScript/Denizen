@@ -74,7 +74,7 @@ public class RunCommand extends AbstractCommand {
             else if (arg.matches("loop"))
                 scriptEntry.addObject("loop", Element.TRUE);
 
-            else if (arg.matchesPrefix("q, quantity")
+            else if (arg.matchesPrefix("q, qty, quantity")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("quantity", arg.asElement());
 
@@ -145,6 +145,14 @@ public class RunCommand extends AbstractCommand {
                 definition_names[x - 1].trim() : String.valueOf(x), definition);
                 x++;
             }
+        }
+        
+        // Run a loop on the script
+        if (scriptEntry.hasObject("loop")) {
+        	int qty = 1;
+        	if (scriptEntry.hasObject("quantity"))
+        		qty = ((Element) scriptEntry.getObject("quantity")).asInt();
+        	queue.setLoop(qty);
         }
 
         // OK, GO!

@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts;
 
-import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
@@ -108,8 +108,11 @@ public class ScriptQueue implements Listener {
     // Keep track of Bukit's Scheduler taskId for the engine, for when it times out.
     protected int taskId;
 
-    //The speed of the engine, the # of ticks between each revolution.
+    // The speed of the engine, the # of ticks between each revolution.
     protected int ticks;
+    
+    // How many times the queue should loop
+    protected int loopQty = 1;
 
     // List of ScriptEntries in the queue
     List<ScriptEntry> scriptEntries = new ArrayList<ScriptEntry>();
@@ -184,6 +187,10 @@ public class ScriptQueue implements Listener {
     public void setSpeed(int ticks) {
         this.ticks = ticks;
     }
+    
+    public void setLoop(int loopQty) {
+    	this.loopQty = loopQty;
+    }
 
 
     public void delayFor(long delayTicks) {
@@ -198,6 +205,7 @@ public class ScriptQueue implements Listener {
     boolean is_stopping = false;
 
     public void stop() {
+        loopTimes++;
         if (!is_stopping) {
             is_stopping = true;
             List<ScriptEntry> entries = lastEntryExecuted.getScript()
@@ -215,17 +223,28 @@ public class ScriptQueue implements Listener {
             _queues.remove(id);
             dB.echoDebug("Completing queue " + id + "...");
             Bukkit.getServer().getScheduler().cancelTask(taskId);
+            isStarted = false;
         }
     }
 
 
     private boolean isStarted = false;
+    private int loopTimes = 0;
 
+    List<ScriptEntry> scriptEntriesClone = new ArrayList<ScriptEntry>();
 
     public void start() {
         // If already started, no need to restart.
-        if (isStarted) return;
-
+        if (isStarted)
+        	return;
+        if (loopQty > 1) {
+            if (loopTimes == 0)
+                scriptEntriesClone.addAll(scriptEntries);
+            else {
+                scriptEntries.clear();
+                scriptEntries.addAll(scriptEntriesClone);
+            }
+        }
         // Start the queue
         dB.echoDebug("Starting queue " + id + ". (Speed=" + ticks + "tpr)");
         isStarted = true;
@@ -261,10 +280,16 @@ public class ScriptQueue implements Listener {
 
     private void revolve() {
         // If entries queued up are empty, deconstruct the queue.
-        if (scriptEntries.isEmpty())
-        {
+        if (scriptEntries.isEmpty()) {
             stop();
+            is_stopping = false;
             isStarted = false;
+            if (loopTimes < loopQty)
+            	Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+        			public void run() {
+        				start();
+        			}
+        		}, 10);
             return;
         }
         // Check if this Queue isn't paused
@@ -274,10 +299,16 @@ public class ScriptQueue implements Listener {
 
         // Criteria met for a successful 'revolution' of this queue...
         DenizenAPI.getCurrentInstance().getScriptEngine().revolve(this);
-        if (scriptEntries.isEmpty())
-        {
+        if (scriptEntries.isEmpty()) {
             stop();
+            is_stopping = false;
             isStarted = false;
+            if (loopTimes < loopQty)
+            	Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+        			public void run() {
+        				start();
+        			}
+        		}, delayTicks + 1);
         }
     }
 
