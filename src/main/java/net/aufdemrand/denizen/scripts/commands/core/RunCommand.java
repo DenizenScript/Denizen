@@ -2,231 +2,150 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dScript;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
- * Runs a task script.
- *
- * <b>dScript Usage:</b><br>
- * <pre>RUNTASK (ID:id_name{script_name}) [SCRIPT:script_name] (INSTANT|QUEUE:QueueType{PLAYER_TASK})
- *     (DELAY:#{0}) </pre>
- *
- * <ol><tt>Arguments: [] - Required, () - Optional, {} - Default</ol></tt>
- *
- * <ol><tt>(ID:id_name{script_name})</tt><br>
- *         The unique ID of this task, useful if the possibility of a CANCELTASK command may be used.
- *         If not specified, the name of the script specified is used.</ol>
- *
- * <ol><tt>[SCRIPT:script_name]</tt><br>
- *         The name of the script that should be run.</ol>
- *
- * <ol><tt>(INSTANT|QUEUE:QueueType{PLAYER_TASK})</tt><br>
- *         Specifies how the script should be run. If using INSTANT, all commands in the script are
- *         run without being queued, resulting in an 'instant' execution of all commands (the initial DELAY
- *         will still be honored). If using a QUEUE, choose whether to use PLAYER_TASK or NPC queue-type.
- *         Default is PLAYER_TASK queue if not specified otherwise.</ol>
- *
- * <ol><tt>(DELAY:#{0})</tt><br>
- *         Specifying a delay will set the script to be run in the future. Uses the dScript time format,
- *         (ie. 30, 6m, 1h, etc). Delayed RUNTASKs can be cancelled with the CANCELTASK command when given
- *         the specified ID. Also note: Delayed Tasks WILL BE LOST on a server reboot, so delaying scripts
- *         for long periods of time may not be honored if your server reboots during the wait period.</ol>
- *
- * <br><b>Example Usage:</b><br>
- * <ol><tt>
- *  - RUNTASK ID:&#60;player.name>_spiders SCRIPT:Spawn_spiders INSTANT DELAY:60
- *  - RUNTASK SCRIPT:Drop_reward QUEUE:NPC
- *  - RUNTASK 'SCRIPT:Welcome to Chakkor'
- * </ol></tt>
- *
+ * Runs a task script in a new ScriptQueue.
+ * This replaces the now-deprecated runtask command with queue argument.
  *
  * @author Jeremy Schroeder
  *
  */
-@Deprecated
 public class RunCommand extends AbstractCommand {
+
+    public String getHelp() {
+        return  "Runs a script in a new ScriptQueue. By using a new and separate" +
+                "queue, scripts can be delayed, run instantly, and even used to" +
+                "create loops. If wanting to run a series of commands in the same" +
+                "queue, use the 'inject' command. \n" +
+                " \n" +
+                "Use to start an 'event' that is independent of the current script. \n" +
+                "- run giant_door_open_script \n" +
+                "Use the 'as' argument to attach a player or npc. \n" +
+                "- run start_walking as:n@4 \n" +
+                "Name the queue with an 'id' argument. \n" +
+                "- run goal_tracker id:<p.name>'s_goal_tracker \n" +
+                "Put a script's execution off by specifying a delay. \n" +
+                "- run gate_closer delay:10s \n" +
+                "Use run with a delay and 'loop' argument to create a script on a " +
+                "timer. You can even specify the amount of loops. \n" +
+                "- run server_announcement loop 1h \n" +
+                "You can also attach some definitions to the task script being run. \n" +
+                "- run get_color_of def:i@epic_leather_armor";
+    }
+
+    public String getUsage() {
+        return "run [script] (path:...) (as:p@player|n@npc) (def:...|...) (id:id_name) (delay:duration) (loop) (q:#)";
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize necessary fields
-        Map<String, String> context = null;
-        Boolean instant = false;
-        dScript script = null;
-        Duration delay = null;
-        String queue = scriptEntry.getResidingQueue().id;
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-        // Iterate through Arguments to extract needed information
-        for (String arg : scriptEntry.getArguments()) {
+            if (!scriptEntry.hasObject("script")
+                    && arg.matchesArgumentType(dScript.class))
+                scriptEntry.addObject("script", arg.asType(dScript.class));
 
-            // Specify scriptContainer to use
-            if (aH.matchesScript(arg)) {
-                script = aH.getScriptFrom(arg);
+            else if (arg.matchesPrefix("i, id"))
+                scriptEntry.addObject("id", arg.asElement());
 
-            }   // Delay the start of the queue
-            else if (aH.matchesValueArg("DELAY", arg, aH.ArgumentType.Duration)) {
-                delay = aH.getDurationFrom(arg);
+            else if (arg.matchesPrefix("p, path"))
+                scriptEntry.addObject("path", arg.asElement());
 
-            }   // Use a specific queue
-            else if (aH.matchesQueue(arg)) {
-                queue = aH.getStringFrom(arg);
+            else if (arg.matches("instant, instantly"))
+                scriptEntry.addObject("instant", Element.TRUE);
 
-            }   // TODO: Remove this argument for version 1.0
-            else if (aH.matchesValueArg("SPEED", arg, aH.ArgumentType.Duration)) {
-                dB.log("SPEED argument has been removed from RUNTASK! Instead, specify " +
-                        "a speed on the task script itself, or use the 'QUEUE SET_SPEED:#' command " +
-                        "inside the task script. This warning will be removed in version 1.0 " +
-                        "and this argument deprecated.");
+            else if (arg.matchesPrefix("delay")
+                    && arg.matchesArgumentType(Duration.class))
+                scriptEntry.addObject("delay", arg.asType(Duration.class));
 
-            }   // Gets a new, randomly named queue
-            else if (aH.matchesArg("QUEUE", arg)) {
-                queue = ScriptQueue._getNextId();
-                instant = false;
+            else if (arg.matches("loop"))
+                scriptEntry.addObject("loop", Element.TRUE);
 
-            }   // Run the script instantly.
-            else if (aH.matchesArg("INSTANT, INSTANTLY", arg)) {
-                queue = ScriptQueue._getNextId();
-                instant = true;
+            else if (arg.matchesPrefix("q, quantity")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                scriptEntry.addObject("quantity", arg.asElement());
 
-            }   // Build context map if specified
-            else if (aH.matchesContext(arg)) {
-                context = aH.getContextFrom(arg);
+            else if (arg.matchesPrefix("a, as")
+                    && arg.matchesArgumentType(dPlayer.class))
+                scriptEntry.setPlayer((dPlayer) arg.asType(dPlayer.class));
 
-            }   // Specify a script name without the 'script:' prefix
-            else if (ScriptRegistry.containsScript(aH.getStringFrom(arg))) {
-                script = aH.getScriptFrom(arg);
-                if (!script.getType().equalsIgnoreCase("TASK"))
-                    script = null;
+            else if (arg.matchesPrefix("a, as")
+                    && arg.matchesArgumentType(dNPC.class))
+                scriptEntry.setNPC((dNPC) arg.asType(dNPC.class));
 
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else if (arg.matchesPrefix("d, def, define, c, context"))
+                scriptEntry.addObject("definitions", arg.asType(dList.class));
         }
 
-        // Must specify at least a valid script to run...
-        if (script == null)
+        if (!scriptEntry.hasObject("script"))
             throw new InvalidArgumentsException("Must define a SCRIPT to be run.");
-        // If not queue, and delayed, throw an exception... this cannot happen.
-        if (queue == scriptEntry.getResidingQueue().id && delay != null)
-            throw new InvalidArgumentsException("Cannot delay an INJECTED task script! Use 'QUEUE'.");
-        
-        // Put important objects inside the scriptEntry to be sent to execute()
-        scriptEntry.addObject("instant", instant)
-                .addObject("queue", queue)
-                .addObject("delay", (delay != null ? delay.setPrefix("Delay") : null))
-                .addObject("script", script)
-                .addObject("context", context);
     }
 
-    @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        Boolean instant = (Boolean) scriptEntry.getObject("instant");
+        // definitions
+        // loop
+        // quantity
+        // delay
+        // instant
 
-        ScriptQueue queue;
-        String id = (String) scriptEntry.getObject("queue");
-
-        if (ScriptQueue._queueExists(id))
-            queue = ScriptQueue._getExistingQueue(id);
-        else if (instant)
-            queue = InstantQueue.getQueue(id);
-        else queue = TimedQueue.getQueue(id);
-
-        Map<String, String> context = (HashMap<String, String>) scriptEntry.getObject("context");
+        // Get the script
         dScript script = (dScript) scriptEntry.getObject("script");
-        Duration delay = (Duration) scriptEntry.getObject("delay");
 
-        // Debug output
-        dB.report(this.getName(),
-                script.debug()
-                        + (delay != null ? delay.debug() : "")
-                        + aH.debugObj("Instant", instant.toString())
-                        + aH.debugObj("Queue", id)
-                        + (context != null ? aH.debugObj("Context", context.toString()) : "")
-                        + (scriptEntry.getPlayer() != null
-                        ? aH.debugObj("Player", scriptEntry.getPlayer().getName()) : "")
-                        + (scriptEntry.getNPC() != null
-                        ? aH.debugObj("NPC", scriptEntry.getNPC().toString()) : ""));
+        // Get the entries
+        List<ScriptEntry> entries;
+        // If a path is specified
+        if (scriptEntry.hasObject("path"))
+            entries = script.getContainer().getEntries(
+                    scriptEntry.getPlayer(),
+                    scriptEntry.getNPC(),
+                    scriptEntry.getElement("path").asString());
 
-        if (instant) {
-            // Instant, but no delay
-            if (delay == null) {
+        // Else, assume standard path
+        else entries = script.getContainer().getBaseEntries(
+                scriptEntry.getPlayer(),
+                scriptEntry.getNPC());
 
-                if (scriptEntry.getResidingQueue() != queue) {
-                    // Instant, no delay, new queue
-                    ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
-                            .runTaskScript(queue.id,
-                                    scriptEntry.getPlayer(),
-                                    scriptEntry.getNPC(),
-                                    context);
-                }
+        // Get the 'id' if specified
+        String id = (scriptEntry.hasObject("id") ?
+                (scriptEntry.getElement("id")).asString() : ScriptQueue._getNextId());
 
-                else {
-                    // Instant, no delay, injection into current queue
-                    ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
-                            .injectTaskScript(queue.id,
-                                    scriptEntry.getPlayer(),
-                                    scriptEntry.getNPC(),
-                                    context);
-                }
-            }
+        // Build the queue
+        ScriptQueue queue;
+        if (scriptEntry.hasObject("instant"))
+            queue = InstantQueue.getQueue(id).addEntries(entries);
+        else queue = TimedQueue.getQueue(id).addEntries(entries);
 
-            else {
-                // Instant, has delay, new queue
-                ((TaskScriptContainer) script.getContainer()).setSpeed(Duration.valueOf("0"))
-                        .runTaskScriptWithDelay(queue.id,
-                                scriptEntry.getPlayer(),
-                                scriptEntry.getNPC(),
-                                context,
-                                delay);
-            }
-        }
-        else {
+        // Set any delay
+        if (scriptEntry.hasObject("delay"))
+            queue.delayUntil(((Duration) scriptEntry.getObject("delay")).getTicks());
 
-            if (delay == null) {
-
-                // Not instant, no delay, new queue
-                if (scriptEntry.getResidingQueue() != queue) {
-                    ((TaskScriptContainer) script.getContainer())
-                            .runTaskScript(queue.id,
-                                    scriptEntry.getPlayer(),
-                                    scriptEntry.getNPC(),
-                                    context);
-                }
-
-                else {
-                    // Not instant, no delay, injection into current queue
-                    ((TaskScriptContainer) script.getContainer())
-                            .injectTaskScript(queue.id,
-                                    scriptEntry.getPlayer(),
-                                    scriptEntry.getNPC(),
-                                    context);
-                }
-            }
-
-            else {
-                // Not instant, delayed, new queue
-                ((TaskScriptContainer) script.getContainer())
-                        .runTaskScriptWithDelay(queue.id,
-                                scriptEntry.getPlayer(),
-                                scriptEntry.getNPC(),
-                                context,
-                                delay);
+        // Set any definitions
+        if (scriptEntry.hasObject("definitions")) {
+            int x = 1;
+            dList definitions = (dList) scriptEntry.getObject("definitions");
+            String[] definition_names = null;
+            try { definition_names = script.getContainer().getString("definitions").split("\\|"); }
+                catch (Exception e) { }
+            for (String definition : definitions) {
+                queue.addContext(definition_names != null && definition_names.length >= x ?
+                definition_names[x - 1].trim() : String.valueOf(x), definition);
+                x++;
             }
         }
 
+        // OK, GO!
+        queue.start();
     }
+
 }
