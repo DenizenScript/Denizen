@@ -279,18 +279,34 @@ public class Duration implements dObject {
 
         if (attribute == null) return null;
 
+        // <--
+        // <d@duration.in_seconds> -> Element(number)
+        // returns the number of seconds in the Duration.
+        // -->
         if (attribute.startsWith("in_seconds"))
             return new Element(String.valueOf(seconds))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <d@duration.in_seconds> -> Element(number)
+        // returns the number of hours in the Duration.
+        // -->
         if (attribute.startsWith("in_hours"))
             return new Element(String.valueOf(seconds / 1800))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <d@duration.in_minutes> -> Element(number)
+        // returns the number of minutes in the Duration.
+        // -->
         if (attribute.startsWith("in_minutes"))
             return new Element(String.valueOf(seconds / 60))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <d@duration.in_ticks> -> Element(number)
+        // returns the number of ticks in the Duration. (20t/second)
+        // -->
         if (attribute.startsWith("in_ticks"))
             return new Element(String.valueOf(getTicksAsInt()))
                     .getAttribute(attribute.fulfill(1));
@@ -315,6 +331,11 @@ public class Duration implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <d@duration.value> -> Element
+        // returns the value of the duration, in the best format
+        // possible.
+        // -->
         if (attribute.startsWith("value")) {
             if (seconds % 43200 == 0)
                 return new Element(seconds / 86400 + "d")
