@@ -121,9 +121,9 @@ public class dPlayer implements dObject {
         if (player_name == null) return null;
         return Bukkit.getOfflinePlayer(player_name);
     }
-    
+
     public dEntity getDenizenEntity() {
-    	return new dEntity(getPlayerEntity());
+        return new dEntity(getPlayerEntity());
     }
 
     public String getName() {
@@ -134,14 +134,14 @@ public class dPlayer implements dObject {
         if (isOnline()) return new dLocation(getPlayerEntity().getLocation());
         else return null;
     }
-    
+
     public dLocation getEyeLocation() {
         if (isOnline()) return new dLocation(getPlayerEntity().getEyeLocation());
         else return null;
     }
-    
+
     public World getWorld() {
-    	if (isOnline()) return getPlayerEntity().getWorld();
+        if (isOnline()) return getPlayerEntity().getWorld();
         else return null;
     }
 
@@ -271,24 +271,24 @@ public class dPlayer implements dObject {
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("list")) {
-        	List<String> players = new ArrayList<String>();
-        	if (attribute.startsWith("list.online")) {
-            	for(Player player : Bukkit.getOnlinePlayers())
-            		players.add(player.getName());
-            	return new dList(players).getAttribute(attribute.fulfill(2));
-        	}
-        	else if (attribute.startsWith("list.offline")) {
-        		for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-            		if (!Bukkit.getOnlinePlayers().toString().contains(player.getName()))
-            			players.add(player.getName());
-        		}
-        		return new dList(players).getAttribute(attribute.fulfill(2));
-        	}
-        	else {
-        		for(OfflinePlayer player : Bukkit.getOfflinePlayers())
-            		players.add(player.getName());
-        		return new dList(players).getAttribute(attribute.fulfill(1));
-        	}
+            List<String> players = new ArrayList<String>();
+            if (attribute.startsWith("list.online")) {
+                for(Player player : Bukkit.getOnlinePlayers())
+                    players.add(player.getName());
+                return new dList(players).getAttribute(attribute.fulfill(2));
+            }
+            else if (attribute.startsWith("list.offline")) {
+                for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                    if (!Bukkit.getOnlinePlayers().toString().contains(player.getName()))
+                        players.add(player.getName());
+                }
+                return new dList(players).getAttribute(attribute.fulfill(2));
+            }
+            else {
+                for(OfflinePlayer player : Bukkit.getOfflinePlayers())
+                    players.add(player.getName());
+                return new dList(players).getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--
@@ -308,7 +308,7 @@ public class dPlayer implements dObject {
             int x = 1;
             if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
                 x = attribute.getIntContext(1);
-            
+
             return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -327,13 +327,24 @@ public class dPlayer implements dObject {
         // returns the amount of money the player has with the registered
         // Economy system.
         // -->
+
         if (attribute.startsWith("money")) {
             if(Depends.economy != null) {
 
+                // <--
+                // <player.money.currency_singular> -> Element
+                // returns the 'singular currency' string, if supported by the
+                // registered Economy system.
+                // -->
                 if (attribute.startsWith("money.currency_singular"))
                     return new Element(Depends.economy.currencyNameSingular())
                             .getAttribute(attribute.fulfill(2));
 
+                // <--
+                // <player.money.currency> -> Element
+                // returns the 'currency' string, if supported by the
+                // registered Economy system.
+                // -->
                 if (attribute.startsWith("money.currency"))
                     return new Element(Depends.economy.currencyNamePlural())
                             .getAttribute(attribute.fulfill(2));
@@ -351,77 +362,143 @@ public class dPlayer implements dObject {
 
         // Player is required to be online after this point...
 
-
-        if (attribute.startsWith("xp.to_next_level"))
-            return new Element(String.valueOf(getPlayerEntity().getExpToLevel()))
-                    .getAttribute(attribute.fulfill(2));
-
+        // <--
+        // <player.xp.total> -> Element(number)
+        // returns the total amount of experience points.
+        // -->
         if (attribute.startsWith("xp.total"))
             return new Element(String.valueOf(getPlayerEntity().getTotalExperience()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <player.xp.level> -> Element(number)
+        // returns the number of levels the player has.
+        // -->
         if (attribute.startsWith("xp.level"))
             return new Element(getPlayerEntity().getLevel())
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <player.xp> -> Element(number)
+        // returns the percentage of experience points to the next level.
+        // -->
         if (attribute.startsWith("xp"))
             return new Element(String.valueOf(getPlayerEntity().getExp() * 100))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.equipment.boots> -> dItem
+        // returns the item the player is wearing as boots, or null
+        // if none.
+        // -->
         if (attribute.startsWith("equipment.boots"))
-        	if (getPlayerEntity().getInventory().getBoots() != null)
-        		return new dItem(getPlayerEntity().getInventory().getBoots())
-        				.getAttribute(attribute.fulfill(2));
-        
+            if (getPlayerEntity().getInventory().getBoots() != null)
+                return new dItem(getPlayerEntity().getInventory().getBoots())
+                        .getAttribute(attribute.fulfill(2));
+
+        // <--
+        // <player.equipment.chestplate> -> dItem
+        // returns the item the player is wearing as a chestplate, or null
+        // if none.
+        // -->
         if (attribute.startsWith("equipment.chestplate"))
-        	if (getPlayerEntity().getInventory().getChestplate() != null)
-        		return new dItem(getPlayerEntity().getInventory().getChestplate())
-        				.getAttribute(attribute.fulfill(2));
-        
+            if (getPlayerEntity().getInventory().getChestplate() != null)
+                return new dItem(getPlayerEntity().getInventory().getChestplate())
+                        .getAttribute(attribute.fulfill(2));
+
+        // <--
+        // <player.equipment.helmet> -> dItem
+        // returns the item the player is wearing as a helmet, or null
+        // if none.
+        // -->
         if (attribute.startsWith("equipment.helmet"))
-        	if (getPlayerEntity().getInventory().getHelmet() != null)
-        		return new dItem(getPlayerEntity().getInventory().getHelmet())
-        				.getAttribute(attribute.fulfill(2));
-        
+            if (getPlayerEntity().getInventory().getHelmet() != null)
+                return new dItem(getPlayerEntity().getInventory().getHelmet())
+                        .getAttribute(attribute.fulfill(2));
+
+        // <--
+        // <player.equipment.leggings> -> dItem
+        // returns the item the player is wearing as leggings, or null
+        // if none.
+        // -->
         if (attribute.startsWith("equipment.leggings"))
-        	if (getPlayerEntity().getInventory().getLeggings() != null)
-        		return new dItem(getPlayerEntity().getInventory().getLeggings())
-        				.getAttribute(attribute.fulfill(2));
-        
+            if (getPlayerEntity().getInventory().getLeggings() != null)
+                return new dItem(getPlayerEntity().getInventory().getLeggings())
+                        .getAttribute(attribute.fulfill(2));
+
+        // <--
+        // <player.equipment> -> dInventory
+        // returns a dInventory containing the player's equipment
+        // -->
         if (attribute.startsWith("equipment"))
-        	// The only way to return correct size for dInventory
-        	// created from equipment is to use a CRAFTING type
-        	// that has the expected 4 slots
-        	return new dInventory(InventoryType.CRAFTING).add(getPlayerEntity().getInventory().getArmorContents())
-        			.getAttribute(attribute.fulfill(1));
-        
+            // The only way to return correct size for dInventory
+            // created from equipment is to use a CRAFTING type
+            // that has the expected 4 slots
+            return new dInventory(InventoryType.CRAFTING).add(getPlayerEntity().getInventory().getArmorContents())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--
+        // <player.inventory> -> dInventory
+        // returns a dInventory of the player's current inventory.
+        // -->
         if (attribute.startsWith("inventory"))
             return new dInventory(getPlayerEntity().getInventory())
                     .getAttribute(attribute.fulfill(1));
-        
+
+        // <--
+        // <player.item_in_hand> -> dItem
+        // returns the item the player is holding, or null
+        // if none.
+        // -->
         if (attribute.startsWith("item_in_hand"))
             return new dItem(getPlayerEntity().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.name.display> -> Element
+        // returns the 'display name' of the player, which may contain
+        // prefixes and suffixes/color, etc.
+        // -->
         if (attribute.startsWith("name.display"))
             return new Element(getPlayerEntity().getDisplayName())
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <player.name.list> -> Element
+        // returns the name of the player as shown in the 'player list'.
+        // -->
         if (attribute.startsWith("name.list"))
             return new Element(getPlayerEntity().getPlayerListName())
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <player.name> -> Element
+        // returns the name of the player.
+        // -->
         if (attribute.startsWith("name"))
             return new Element(player_name).getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.name.list> -> dLocation
+        // returns a dLocation of the player's eyes.
+        // -->
         if (attribute.startsWith("eyes"))
             return new dLocation(getEyeLocation())
                     .getAttribute(attribute.fulfill(1));
-        
+
+        // <--
+        // <player.name.list> -> dLocation
+        // returns a dLocation of the player's 'compass target'.
+        // -->
         if (attribute.startsWith("compass_target"))
             return new dLocation(getPlayerEntity().getCompassTarget())
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <player.food_level.formatted> -> Element
+        // returns a 'formatted' value of the player's current food level.
+        // May be 'starving', 'famished', 'parched, 'hungry' or 'healthy'
+        // -->
         if (attribute.startsWith("food_level.formatted")) {
             double maxHunger = getPlayerEntity().getMaxHealth();
             if (attribute.hasContext(2))
@@ -438,10 +515,18 @@ public class dPlayer implements dObject {
             else return new Element("healthy").getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <player.name.list> -> Element(number)
+        // returns the current food level of the player.
+        // -->
         if (attribute.startsWith("food_level"))
             return new Element(String.valueOf(getPlayerEntity().getFoodLevel()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.has_permission[permission.node]> -> Element(boolean)
+        // returns true if the player has the specified node, false otherwise
+        // -->
         if (attribute.startsWith("permission")
                 || attribute.startsWith("has_permission")) {
             if (Depends.permissions == null) {
@@ -451,20 +536,34 @@ public class dPlayer implements dObject {
 
             String permission = attribute.getContext(1);
 
+            // <--
+            // <player.has_permission[permission.node].global> -> Element(boolean)
+            // returns true if the player has the specified node, regardless of world.
+            // this may or may not be functional with your permissions system.
+            // -->
+
             // Non-world specific permission
             if (attribute.getAttribute(2).startsWith("global"))
                 return new Element(String.valueOf(Depends.permissions.has((World) null, player_name, permission)))
                         .getAttribute(attribute.fulfill(2));
-            
-            // Permission in certain world
+
+                // Permission in certain world
             else if (attribute.getAttribute(2).startsWith("world"))
                 return new Element(String.valueOf(Depends.permissions.has(attribute.getContext(2), player_name, permission)))
                         .getAttribute(attribute.fulfill(2));
+
+            // <--
+            // <player.has_permission[permission.node].world> -> Element(boolean)
+            // returns true if the player has the specified node in regards to the
+            // player's current world. This may or may not be functional with your
+            // permissions system.
+            // -->
 
             // Permission in current world
             return new Element(String.valueOf(Depends.permissions.has(getPlayerEntity(), permission)))
                     .getAttribute(attribute.fulfill(1));
         }
+
 
         if (attribute.startsWith("flag")) {
             String flag_name;
@@ -497,8 +596,8 @@ public class dPlayer implements dObject {
             if (attribute.getAttribute(2).startsWith("global"))
                 return new Element(String.valueOf(Depends.permissions.playerInGroup((World) null, player_name, group)))
                         .getAttribute(attribute.fulfill(2));
-            
-            // Permission in certain world
+
+                // Permission in certain world
             else if (attribute.getAttribute(2).startsWith("world"))
                 return new Element(String.valueOf(Depends.permissions.playerInGroup(attribute.getContext(2), player_name, group)))
                         .getAttribute(attribute.fulfill(2));
