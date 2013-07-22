@@ -201,55 +201,75 @@ public class dPlayer implements dObject {
 
         if (player_name == null) return "null";
 
+        // <--
         // <player.entity> -> dEntity
         // returns the dEntity object of the player
+        // -->
         if (attribute.startsWith("entity"))
             return new dEntity(getPlayerEntity())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
         // <player.has_played_before> -> Element(boolean)
         // returns true if the player has played before
+        // -->
         if (attribute.startsWith("has_played_before"))
             return new Element(String.valueOf(getOfflinePlayer().hasPlayedBefore()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
         // <player.is_op> -> Element(boolean)
         // returns true if the player has 'op status'
+        // -->
         if (attribute.startsWith("is_op"))
             return new Element(String.valueOf(getOfflinePlayer().isOp()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
         // <player.first_played> -> Element(number)
         // returns the 'System.currentTimeMillis()' of when the player
         // first logged on. Will return '0' if player has never played.
+        // -->
         if (attribute.startsWith("first_played"))
             return new Element(String.valueOf(getOfflinePlayer().getFirstPlayed()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
         // <player.last_played> -> Element(number)
         // returns the 'System.currentTimeMillis()' of when the player
         // was last seen. Will return '0' if player has never played.
+        // -->
         if (attribute.startsWith("last_played"))
             return new Element(String.valueOf(getOfflinePlayer().getLastPlayed()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
         // <player.is_banned> -> Element(boolean)
         // returns true if the player is banned
+        // -->
         if (attribute.startsWith("is_banned"))
             return new Element(String.valueOf(getOfflinePlayer().isBanned()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.is_whitelisted> -> Element(boolean)
+        // returns true if the player is whitelisted
+        // -->
         if (attribute.startsWith("is_whitelisted"))
             return new Element(String.valueOf(getOfflinePlayer().isWhitelisted()))
                     .getAttribute(attribute.fulfill(1));
 
-        // This can be parsed later with more detail if the player is online, so only check for offline.
         if (attribute.startsWith("name") && !isOnline())
+            // This can be parsed later with more detail if the player is online, so only check for offline.
             return new Element(player_name).getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.is_online> -> Element(boolean)
+        // returns true if the player is currently online
+        // -->
         if (attribute.startsWith("is_online"))
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
-        
+
         if (attribute.startsWith("list")) {
         	List<String> players = new ArrayList<String>();
         	if (attribute.startsWith("list.online")) {
@@ -271,10 +291,19 @@ public class dPlayer implements dObject {
         	}
         }
 
+        // <--
+        // <player.chat_history_list> -> dList
+        // Returns a list of the last 10 things the player has said, less
+        // if the player hasn't said all that much.
+        // -->
         if (attribute.startsWith("chat_history_list"))
             return new dList(PlayerTags.playerChatHistory.get(player_name))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.chat_history> -> Element
+        // returns the last thing the player said.
+        // -->
         if (attribute.startsWith("chat_history")) {
             int x = 1;
             if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
@@ -284,10 +313,20 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <player.bed_spawn> -> dLocation
+        // Returns a dLocation of the player's bed spawn location, 'null' if
+        // it doesn't exist.
+        // -->
         if (attribute.startsWith("bed_spawn"))
             return new dLocation(getOfflinePlayer().getBedSpawnLocation())
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <player.money> -> Element(number)
+        // returns the amount of money the player has with the registered
+        // Economy system.
+        // -->
         if (attribute.startsWith("money")) {
             if(Depends.economy != null) {
 
