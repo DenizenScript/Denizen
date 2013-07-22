@@ -43,27 +43,33 @@ public class TimedQueue extends ScriptQueue implements Delayable {
     }
 
 
+
     /////////////////////
     // Private instance fields and constructors
     /////////////////////
 
-   // Keep track of Bukkit's Scheduler taskId
+
+    // Keep track of Bukkit's Scheduler taskId
     // for the engine, used when it times out.
     private int task_id;
+
 
     // The speed of the engine, the # of ticks
     // between each revolution. Use setSpeed()
     // to change this.
     private long ticks;
 
+
     // ScriptQueues can be paused mid-rotation.
     // The next entry will be held up until
     // un-paused.
     protected boolean paused = false;
 
+
     // The delay in ticks can put off the
     // start of a queue
     protected long delay_ticks = 0;
+
 
     @Override
     public void delayFor(Duration duration) {
@@ -72,7 +78,8 @@ public class TimedQueue extends ScriptQueue implements Delayable {
 
 
     public TimedQueue(String id, Duration timing) {
-                super(id);
+        super(id);
+        ticks = timing.getTicks();
     }
 
 
@@ -80,6 +87,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
     /////////////////////
     // Public instance setters and getters
     /////////////////////
+
 
     /**
      * Gets the speed of the queue. This is the
@@ -90,6 +98,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
     public Duration getSpeed() {
         return new Duration(ticks);
     }
+
 
     /**
      * Pauses the queue. Paused queues will check
@@ -104,6 +113,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
         return this;
     }
 
+
     /**
      * Checks if the queue is currently paused.
      *
@@ -113,6 +123,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
     public boolean isPaused() {
         return paused;
     }
+
 
     /**
      * Sets the speed of a queue. Uses bukkit's 'ticks', which is
@@ -125,6 +136,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
         return this;
     }
 
+
     @Override
     protected void onStart() {
         task_id = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
@@ -133,10 +145,12 @@ public class TimedQueue extends ScriptQueue implements Delayable {
                 }, 0, ticks == 0 ? 1 : ticks);
     }
 
+
     @Override
     protected void onStop() {
         Bukkit.getScheduler().cancelTask(task_id);
     }
+
 
     @Override
     protected boolean shouldRevolve() {

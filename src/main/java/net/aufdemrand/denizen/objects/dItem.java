@@ -530,6 +530,8 @@ public class dItem implements dObject {
             }
         }
 
+
+
         if (attribute.startsWith("material"))
             return new Element(getItemStack().getType().toString())
                     .getAttribute(attribute.fulfill(1));

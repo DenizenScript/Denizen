@@ -51,6 +51,7 @@ public abstract class ScriptQueue {
         else return _queues.get(id.toUpperCase());
     }
 
+
     /**
      * Gets a random UUID for use in creating a 'nameless' queue.
      *
@@ -321,9 +322,9 @@ public abstract class ScriptQueue {
 
             // Get the entries
             List<ScriptEntry> entries =
-                    lastEntryExecuted.getScript().getContainer()
+                    (lastEntryExecuted != null ? lastEntryExecuted.getScript().getContainer()
                             .getEntries(lastEntryExecuted.getPlayer(),
-                                    lastEntryExecuted.getNPC(), "on queue completes");
+                                    lastEntryExecuted.getNPC(), "on queue completes") : new ArrayList<ScriptEntry>());
             // Add the 'finishing' entries back into the queue (if not empty)
             if (!entries.isEmpty()) {
                 script_entries.addAll(entries);

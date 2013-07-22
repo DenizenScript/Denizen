@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+@Deprecated
 public class NotableLocationTags implements Listener {
 
 	public NotableLocationTags(Denizen denizen) {

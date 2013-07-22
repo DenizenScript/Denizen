@@ -87,11 +87,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
         uniqueObjects.clear();
         for (String location : loclist) {
-        	
         	Matcher m = notablePattern.matcher(location);
-        	
             if (m.matches()) {
-            	
             	String id = m.group(1);
                 dLocation loc = valueOf(m.group(2));
                 uniqueObjects.put(id, loc);
@@ -487,6 +484,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                             .getAttribute(attribute.fulfill(1));
             }
         }
+
+        if (attribute.startsWith("simple"))
+            return new Element(getBlockX() + "," + getBlockY() + "," + getBlockZ()
+            + "," + getWorld().getName()).getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("formatted.simple"))
             return new Element("X '" + getBlockX()

@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.ScriptEngine;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -100,6 +101,7 @@ public class Denizen extends JavaPlugin {
 
     private FlagManager flagManager = new FlagManager(this);
     private TagManager tagManager = new TagManager(this);
+    private NotableManager notableManager = new NotableManager();
 
     public FlagManager flagManager() {
         return flagManager;
@@ -108,6 +110,12 @@ public class Denizen extends JavaPlugin {
     public TagManager tagManager() {
         return tagManager;
     }
+
+    public NotableManager notableManager() {
+        return notableManager;
+    }
+
+
 
     public Depends depends = new Depends();
 
@@ -200,7 +208,10 @@ public class Denizen extends JavaPlugin {
 
         dB.echoDebug(DebugElement.Footer);
 
+
+
         try {
+            // Initialize the ObjectFetcher
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
             ObjectFetcher.registerWithObjectFetcher(dCuboid.class);    // cu@
             ObjectFetcher.registerWithObjectFetcher(dEntity.class);    // e@
@@ -216,6 +227,11 @@ public class Denizen extends JavaPlugin {
             ObjectFetcher.registerWithObjectFetcher(Element.class);    // el@
             ObjectFetcher.registerWithObjectFetcher(Duration.class);   // d@
             ObjectFetcher._initialize();
+
+            // Initialize the NotableManager
+            NotableManager.registerWithObjectFetcher(dCuboid.class);   // cuboid
+            NotableManager._initialize();
+
         } catch (IOException e) {
             //
         } catch (ClassNotFoundException e) {

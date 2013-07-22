@@ -75,7 +75,7 @@ public class dB {
 	}
 
     public static void report(String name, String report) {
-        dB.echoDebug("<Y>+> <G>Executing '<Y>" + name + "<G>': " + report);
+        dB.echoDebug("<Y>+> <G>Executing '<Y>" + name + "<G>': " + trimMessage(report));
     }
 	
 	/**
@@ -235,17 +235,17 @@ public class dB {
 
 	public static void echoApproval(String message) {
 		if (!debugMode) return;
-		ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + message);
+		ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + trimMessage(message));
 	}
 	
 	public static void echoError(String message) {
 		if (!debugMode) return;
-		ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + message);
+		ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + trimMessage(message));
 	}
 
 	public static void echoError(Messages message) {
 		if (!debugMode) return;
-		ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + message.toString());
+		ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR! " + ChatColor.WHITE + trimMessage(message.toString()));
 	}
 
 	public static void echoError(Messages message, String arg) {
@@ -265,7 +265,7 @@ public class dB {
                 + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
                 sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
                 : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] "
-                + ChatColor.WHITE + String.format(message, arg));
+                + ChatColor.WHITE + String.format(trimMessage(message), arg));
 	}
 
     @SuppressWarnings("restriction")
@@ -284,7 +284,7 @@ public class dB {
 		ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
                 + (sun.reflect.Reflection.getCallerClass(2).getSimpleName().length() > 16 ?
                 sun.reflect.Reflection.getCallerClass(2).getSimpleName().substring(0, 12) + "..."
-                : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] " + ChatColor.WHITE + message);
+                : sun.reflect.Reflection.getCallerClass(2).getSimpleName()) + "] " + ChatColor.WHITE + trimMessage(message));
 	}
 	
 	/* 
@@ -303,5 +303,11 @@ public class dB {
         debugMode = !debugMode;
     }
 	
-	
+
+    private static String trimMessage(String message) {
+        if (message.length() > 256)
+            message = message.substring(0, 255) + "... *snip*";
+        return message;
+    }
+
 }

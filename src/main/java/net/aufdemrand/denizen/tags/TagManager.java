@@ -42,6 +42,7 @@ public class TagManager implements Listener {
         new AnchorTags(denizen);
         new FlagTags(denizen);
         new ConstantTags(denizen);
+        new NotableLocationTags(denizen);
 
         new PlayerTags(denizen);
         new NPCTags(denizen);
@@ -49,7 +50,6 @@ public class TagManager implements Listener {
 
         new UtilTags(denizen);
         new ProcedureScriptTag(denizen);
-        new NotableLocationTags(denizen);
         new ContextTags(denizen);
         new SpecialCharacterTags(denizen);
         new TextTags(denizen);
@@ -88,6 +88,7 @@ public class TagManager implements Listener {
             event.setReplaced(arg.getAttribute(attribute.fulfill(1)));
         } catch (Exception e) {
             dB.echoError("Uh oh! Report this to aufdemrand! Err: TagManagerObjectReflection");
+            e.printStackTrace();
         }
 
         return;

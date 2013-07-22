@@ -211,8 +211,8 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(NarrateCommand.class,
         		"NARRATE", "narrate [\"<text>\"] (targets:<player>|...) (format:<name>)", 1);
         
-        registerCoreMember(NewCommand.class, 
-        		"NEW", "new [itemstack/entity/npc] [id:<name>] (<item> qty:<#>)", 2);
+        registerCoreMember(NoteCommand.class,
+        		"NOTE", "note [<Notable dObject>] [as:<name>]", 2);
         
         registerCoreMember(OxygenCommand.class,
         		"OXYGEN", "oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]", 1);
@@ -261,6 +261,9 @@ public class CommandRegistry implements dRegistry {
 
         registerCoreMember(ShootCommand.class,
         		"SHOOT", "shoot [entities:<entity>|...] (origin:<player>/<npc>) (destination:<location>) (speed:<#.#>) (script:<name>)", 1);
+
+        registerCoreMember(ShowFakeCommand.class,
+                "SHOWFAKE", "showfake [<material>] [<location>|...]", 2);
 
         registerCoreMember(SignCommand.class, 
         		"SIGN", "sign (type:{sign_post}/wall_sign) [\"<line>|...\"] [<location>]", 1);

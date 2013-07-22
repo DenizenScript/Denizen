@@ -121,6 +121,18 @@ public class Utilities {
         return -1;
     }
 
+    /**
+     * Checks if c is in between a and b.
+     *
+     * @param a
+     * @param b
+     * @param c
+     * @return  true if c is in between.
+     */
+    public static boolean isBetween(double a, double b, double c) {
+        return b > a ? c > a && c < b : c > b && c < a;
+    }
+
 
     public static int lastIndexOfLCL(String str) {
         for(int i=str.length()-1; i>=0; i--) {
