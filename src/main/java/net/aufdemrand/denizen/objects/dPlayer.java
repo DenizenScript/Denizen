@@ -201,26 +201,40 @@ public class dPlayer implements dObject {
 
         if (player_name == null) return "null";
 
+        // <player.entity> -> dEntity
+        // returns the dEntity object of the player
         if (attribute.startsWith("entity"))
             return new dEntity(getPlayerEntity())
                     .getAttribute(attribute.fulfill(1));
-        
+
+        // <player.has_played_before> -> Element(boolean)
+        // returns true if the player has played before
         if (attribute.startsWith("has_played_before"))
             return new Element(String.valueOf(getOfflinePlayer().hasPlayedBefore()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <player.is_op> -> Element(boolean)
+        // returns true if the player has 'op status'
         if (attribute.startsWith("is_op"))
             return new Element(String.valueOf(getOfflinePlayer().isOp()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <player.first_played> -> Element(number)
+        // returns the 'System.currentTimeMillis()' of when the player
+        // first logged on. Will return '0' if player has never played.
         if (attribute.startsWith("first_played"))
             return new Element(String.valueOf(getOfflinePlayer().getFirstPlayed()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <player.last_played> -> Element(number)
+        // returns the 'System.currentTimeMillis()' of when the player
+        // was last seen. Will return '0' if player has never played.
         if (attribute.startsWith("last_played"))
             return new Element(String.valueOf(getOfflinePlayer().getLastPlayed()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <player.is_banned> -> Element(boolean)
+        // returns true if the player is banned
         if (attribute.startsWith("is_banned"))
             return new Element(String.valueOf(getOfflinePlayer().isBanned()))
                     .getAttribute(attribute.fulfill(1));
