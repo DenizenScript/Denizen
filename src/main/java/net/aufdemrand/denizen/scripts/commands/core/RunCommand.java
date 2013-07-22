@@ -128,7 +128,7 @@ public class RunCommand extends AbstractCommand {
 
         // Set any delay
         if (scriptEntry.hasObject("delay"))
-            queue.delayUntil(((Duration) scriptEntry.getObject("delay")).getTicks());
+            queue.delayUntil(System.currentTimeMillis() + ((Duration) scriptEntry.getObject("delay")).getMillis());
 
         // Set any definitions
         if (scriptEntry.hasObject("definitions")) {
