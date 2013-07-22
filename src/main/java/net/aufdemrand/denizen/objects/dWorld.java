@@ -220,6 +220,8 @@ public class dWorld implements dObject {
             return new Element(String.valueOf(getWorld().hasStorm()))
                     .getAttribute(attribute.fulfill(1));
 
+
+
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));

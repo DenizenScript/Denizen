@@ -247,7 +247,7 @@ public abstract class ScriptQueue {
      *                   System.currentTimeMilis() format.
      */
     public void delayUntil(long delayTime) {
-        delay_time = delayTime;
+        this.delay_time = delayTime;
     }
 
 
@@ -287,7 +287,7 @@ public abstract class ScriptQueue {
 
                         // Take the delay time, find out how many milliseconds away
                         // it is, turn it into seconds, then divide by 20 for ticks.
-                    }, (delay_time - System.currentTimeMillis()) / 1000 / 20);
+                    }, (delay_time - System.currentTimeMillis()) / 1000 * 20);
         }
         else
             // If it's not, start the engine now!
@@ -295,7 +295,7 @@ public abstract class ScriptQueue {
 
         if (is_delayed) {
             dB.echoDebug("...but delaying execution for '"
-                    + new Duration((delay_time - System.currentTimeMillis()) / 1000 / 20).identify() + "'.");
+                    + new Duration((delay_time - System.currentTimeMillis()) / 1000 * 20).identify() + "'.");
         }
 
     }

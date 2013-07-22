@@ -1,14 +1,19 @@
 package net.aufdemrand.denizen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.ScriptBuilder;
+import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptRepo;
@@ -957,6 +962,31 @@ public class CommandHandler {
         trait.report();
     }
 
+
+    /*
+    * DENIZEN TEST, always a new flavor
+    */
+    @Command(
+            aliases = { "denizen" }, usage = "ex",
+            desc = "For bob.", modifiers = { "ex" },
+            min = 1, max = 20, permission = "denizen.basic")
+    public void ex(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+
+        List<String> entries = new ArrayList<String>();
+        String entry = args.getJoinedStrings(1);
+
+        entries.add(entry);
+
+        InstantQueue queue = InstantQueue.getQueue(null);
+
+        List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null, null, null);
+
+        queue.addEntries(scriptEntries);
+
+        queue.start();
+
+
+    }
 
 
     @Command(
