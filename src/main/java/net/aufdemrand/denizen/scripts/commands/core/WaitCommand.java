@@ -38,7 +38,7 @@ public class WaitCommand extends AbstractCommand {
         }
 
         scriptEntry.addObject("queue", queue);
-        scriptEntry.addObject("delay", delay.setPrefix("Duration"));
+        scriptEntry.addObject("delay", delay);
     }
 
 

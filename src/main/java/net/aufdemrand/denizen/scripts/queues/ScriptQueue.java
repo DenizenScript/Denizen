@@ -322,7 +322,8 @@ public abstract class ScriptQueue {
 
             // Get the entries
             List<ScriptEntry> entries =
-                    (lastEntryExecuted != null ? lastEntryExecuted.getScript().getContainer()
+                    (lastEntryExecuted != null && lastEntryExecuted.getScript() != null ?
+                            lastEntryExecuted.getScript().getContainer()
                             .getEntries(lastEntryExecuted.getPlayer(),
                                     lastEntryExecuted.getNPC(), "on queue completes") : new ArrayList<ScriptEntry>());
             // Add the 'finishing' entries back into the queue (if not empty)

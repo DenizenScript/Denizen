@@ -7,6 +7,7 @@ import java.util.Set;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -975,11 +976,15 @@ public class CommandHandler {
         List<String> entries = new ArrayList<String>();
         String entry = args.getJoinedStrings(1);
 
+        dB.log(entry);
+
         entries.add(entry);
 
         InstantQueue queue = InstantQueue.getQueue(null);
 
-        List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null, null, null);
+        List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
+                (sender instanceof Player) ? dPlayer.mirrorBukkitPlayer((Player) sender) : null,
+                npc != null ? dNPC.mirrorCitizensNPC(npc) : null);
 
         queue.addEntries(scriptEntries);
 

@@ -47,6 +47,7 @@ public class ScriptEntry {
             throw new ScriptEntryCreationException("dCommand 'type' cannot be null!");
 
         this.command = command.toUpperCase();
+        if (script != null)
         this.script = script.getAsScriptArg();
 
         // Internal, never null. runTime/holdTime can be adjusted mid-execution
