@@ -583,6 +583,10 @@ public class dPlayer implements dObject {
             else return "null";
         }
 
+        // <--
+        // <player.in_group[group_name]> -> Element(boolean)
+        // returns true if the player has the specified group, false otherwise
+        // -->
         if (attribute.startsWith("group")
                 || attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
@@ -591,6 +595,13 @@ public class dPlayer implements dObject {
             }
 
             String group = attribute.getContext(1);
+
+            // <--
+            // <player.in_group[group_name].global> -> Element(boolean)
+            // returns true if the player has the group with no regard to the
+            // player's current world. This may or may not be functional with your
+            // permissions system.
+            // -->
 
             // Non-world specific permission
             if (attribute.getAttribute(2).startsWith("global"))
@@ -602,43 +613,88 @@ public class dPlayer implements dObject {
                 return new Element(String.valueOf(Depends.permissions.playerInGroup(attribute.getContext(2), player_name, group)))
                         .getAttribute(attribute.fulfill(2));
 
+            // <--
+            // <player.in_group[group_name].world> -> Element(boolean)
+            // returns true if the player has the group in regards to the
+            // player's current world. This may or may not be functional with your
+            // permissions system.
+            // -->
+
             // Permission in current world
             return new Element(String.valueOf(Depends.permissions.playerInGroup(getPlayerEntity(), group)))
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <player.is_flying> -> Element(boolean)
+        // returns true if the player is currently flying, false otherwise
+        // -->
         if (attribute.startsWith("is_flying"))
             return new Element(String.valueOf(getPlayerEntity().isFlying()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.is_sneaking> -> Element(boolean)
+        // returns true if the player is currently sneaking, false otherwise
+        // -->
         if (attribute.startsWith("is_sneaking"))
             return new Element(String.valueOf(getPlayerEntity().isSneaking()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.is_blocking> -> Element(boolean)
+        // returns true if the player is currently blocking, false otherwise
+        // -->
         if (attribute.startsWith("is_blocking"))
             return new Element(String.valueOf(getPlayerEntity().isBlocking()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.is_sleeping> -> Element(boolean)
+        // returns true if the player is currently sleeping, false otherwise
+        // -->
         if (attribute.startsWith("is_sleeping"))
             return new Element(String.valueOf(getPlayerEntity().isSleeping()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.is_sprinting> -> Element(boolean)
+        // returns true if the player is currently sprinting, false otherwise
+        // -->
         if (attribute.startsWith("is_sprinting"))
             return new Element(String.valueOf(getPlayerEntity().isSprinting()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.gamemode.id> -> Element(number)
+        // returns 'gamemode id' of the player. 0 = survival, 1 = creative, 2 = adventure
+        // -->
         if (attribute.startsWith("gamemode.id"))
             return new Element(String.valueOf(getPlayerEntity().getGameMode().getValue()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.gamemode> -> Element
+        // returns the name of the gamemode the player is currently set to.
+        // -->
         if (attribute.startsWith("gamemode"))
             return new Element(String.valueOf(getPlayerEntity().getGameMode().toString()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.item_on_cursor> -> dItem
+        // returns a dItem that the player's cursor is on, if any. This includes
+        // chest interfaces, inventories, and hotbars, etc.
+        // -->
         if (attribute.startsWith("item_on_cursor"))
             return new dItem(getPlayerEntity().getItemOnCursor())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.selected_npc> -> dNPC
+        // returns the dNPC that the player currently has selected with
+        // '/npc sel', null if no player selected.
+        // -->
         if (attribute.startsWith("selected_npc")) {
             if (getPlayerEntity().hasMetadata("selected"))
                 return dNPC.valueOf(getPlayerEntity().getMetadata("selected").get(0).asString())
@@ -646,22 +702,43 @@ public class dPlayer implements dObject {
             else return "null";
         }
 
+        // <--
+        // <player.allowed_flight> -> Element(boolean)
+        // returns a dItem that the player's cursor is on, if any. This includes
+        // chest interfaces, inventories, and hotbars, etc.
+        // -->
         if (attribute.startsWith("allowed_flight"))
             return new Element(String.valueOf(getPlayerEntity().getAllowFlight()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.host_name> -> Element
+        // returns the player's 'host name'.
+        // -->
         if (attribute.startsWith("host_name"))
             return new Element(String.valueOf(getPlayerEntity().getAddress().getHostName()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.time_asleep> -> Duration
+        // returns a Duration of the time the player has been asleep.
+        // -->
         if (attribute.startsWith("time_asleep"))
             return new Duration(getPlayerEntity().getSleepTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.player_time> -> Element
+        // returns the time, specific to the player
+        // -->
         if (attribute.startsWith("player_time"))
             return new Element(String.valueOf(getPlayerEntity().getPlayerTime()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.player_time_offset> -> Element
+        // returns the player's 'offset' of time vs. the real time.
+        // -->
         if (attribute.startsWith("player_time_offset"))
             return new Element(String.valueOf(getPlayerEntity().getPlayerTimeOffset()))
                     .getAttribute(attribute.fulfill(1));
