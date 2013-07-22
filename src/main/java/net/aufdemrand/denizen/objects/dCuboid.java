@@ -406,6 +406,7 @@ String prefix = "Cuboid";
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return null;
 
+
         if (attribute.startsWith("get_blocks"))
             return new dList(getBlocks())
                     .getAttribute(attribute.fulfill(1));

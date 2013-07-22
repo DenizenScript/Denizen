@@ -211,6 +211,10 @@ public class dList extends ArrayList<String> implements dObject {
 
         if (attribute == null) return null;
 
+        // <--
+        // <li@list.as_cslist> -> Element
+        // returns 'comma-separated' list of the contents of this dList.
+        // -->
         if (attribute.startsWith("ascslist")
                 || attribute.startsWith("as_cslist")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
@@ -221,12 +225,24 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <li@list.size> -> Element
+        // returns 'comma-separated' list of the contents of this dList.
+        // -->
         if (attribute.startsWith("size"))
             return new Element(size()).getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <li@list.is_empty> -> Element
+        // returns 'comma-separated' list of the contents of this dList.
+        // -->
         if (attribute.startsWith("is_empty"))
             return new Element(isEmpty()).getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <li@list.as_string> -> Element
+        // returns each item in the list as a single 'String'.
+        // -->
         if (attribute.startsWith("asstring")
                 || attribute.startsWith("as_string")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
@@ -237,6 +253,10 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <li@list.get[#]> -> Element
+        // returns an Element of the value specified by the supplied context.
+        // -->
         if (attribute.startsWith("get")) {
             if (isEmpty()) return "null";
             int index = attribute.getIntContext(1);
@@ -280,7 +300,11 @@ public class dList extends ArrayList<String> implements dObject {
             return new Element(getType())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
+        // <--
+        // <li@list.random> -> Element
+        // gets a random item in the list and returns it as an Element.
+        // -->
         if (attribute.startsWith("random")) {
         	return new Element(this.get(new Random().nextInt(this.size())))
                     .getAttribute(attribute.fulfill(1));
@@ -291,6 +315,17 @@ public class dList extends ArrayList<String> implements dObject {
         // Note: is_expired attribute is handled in player/npc/server
         // since expired flags return 'null'
 
+        // <--
+        // <fl@flag_name.is_expired> -> Element(boolean)
+        // returns true of the flag is expired or does not exist, false if it
+        // is not yet expired, or has no expiration.
+        // -->
+
+        // <--
+        // <fl@flag_name.expiration> -> Duration
+        // returns a Duration of the time remaining on the flag, if it
+        // has an expiration.
+        // -->
         if (flag != null && attribute.startsWith("expiration")) {
             return flag.expiration()
                     .getAttribute(attribute.fulfill(1));
@@ -299,6 +334,10 @@ public class dList extends ArrayList<String> implements dObject {
         // Need this attribute (for flags) since they return the last
         // element of the list, unless '.as_list' is specified.
 
+        // <--
+        // <fl@flag_name.as_list> -> dList
+        // returns a dList containing the items in the flag
+        // -->
         if (flag != null && (attribute.startsWith("as_list")
                 || attribute.startsWith("aslist")))
             return new dList(this).getAttribute(attribute.fulfill(1));

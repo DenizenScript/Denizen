@@ -564,7 +564,10 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-
+        // <--
+        // <player.flag[flag_name]> -> Flag dList
+        // returns 'flag dList' of the player's flag_name specified.
+        // -->
         if (attribute.startsWith("flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
