@@ -263,7 +263,7 @@ public class CommandRegistry implements dRegistry {
         		"SHOOT", "shoot [entities:<entity>|...] (origin:<player>/<npc>) (destination:<location>) (speed:<#.#>) (script:<name>)", 1);
 
         registerCoreMember(ShowFakeCommand.class,
-                "SHOWFAKE", "showfake [<material>] [<location>|...]", 2);
+                "SHOWFAKE", "showfake [<material>] [<location>|...] (duration:<duration>{10s})", 2);
 
         registerCoreMember(SignCommand.class, 
         		"SIGN", "sign (type:{sign_post}/wall_sign) [\"<line>|...\"] [<location>]", 1);
