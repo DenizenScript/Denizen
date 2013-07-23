@@ -121,12 +121,12 @@ public class Element implements dObject {
         if (attribute.startsWith("asint")
                 || attribute.startsWith("as_int"))
             try {
-            	// Round the Double instead of just getting its
-            	// value as an Integer (which would incorrectly
-            	// turn 2.9 into 2)
-            	return new Element(String.valueOf
-            		(Math.round(Double.valueOf(element))))
-                    .getAttribute(attribute.fulfill(1)); }
+                // Round the Double instead of just getting its
+                // value as an Integer (which would incorrectly
+                // turn 2.9 into 2)
+                return new Element(String.valueOf
+                        (Math.round(Double.valueOf(element))))
+                        .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Integer.");
                 return null;
@@ -204,20 +204,20 @@ public class Element implements dObject {
                 return new Element("true").getAttribute(attribute.fulfill(1));
             else return new Element("false").getAttribute(attribute.fulfill(1));
         }
-        
+
         // Get the substring after a certain text
         if (attribute.startsWith("after")) {
             String delimiter = attribute.getContext(1);
             return new Element(String.valueOf(element.substring
-            		(element.indexOf(delimiter) + delimiter.length())))
+                    (element.indexOf(delimiter) + delimiter.length())))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // Get the substring before a certain text
         if (attribute.startsWith("before")) {
             String delimiter = attribute.getContext(1);
             return new Element(String.valueOf(element.substring
-            		(0, element.indexOf(delimiter))))
+                    (0, element.indexOf(delimiter))))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -296,12 +296,18 @@ public class Element implements dObject {
         }
 
         if (attribute.startsWith("replace")
-                && attribute.hasContext(1) && attribute.getAttribute(2).startsWith("with")
-                && attribute.hasContext(2)) {
-            return new Element(element.replace(attribute.getContext(1), attribute.getContext(2)))
-                    .getAttribute(attribute.fulfill(2));
-        }
+                && attribute.hasContext(1)) {
 
+            String replace = attribute.getContext(1);
+            String replacement = "";
+            if (attribute.startsWith("with", 2)) {
+                if (attribute.hasContext(2)) replacement = attribute.getContext(2);
+                attribute.fulfill(1);
+            }
+
+            return new Element(element.replace(replace, replacement))
+                        .getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("length")) {
             return new Element(element.length())

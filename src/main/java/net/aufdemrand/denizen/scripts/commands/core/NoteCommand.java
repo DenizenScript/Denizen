@@ -6,9 +6,9 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.tags.ObjectFetcher;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
 
 public class NoteCommand extends AbstractCommand {
 
@@ -68,6 +68,9 @@ public class NoteCommand extends AbstractCommand {
         }
 
 
-     }
+    }
+
+
+
 
 }

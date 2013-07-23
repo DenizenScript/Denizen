@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.aufdemrand.denizen.events.SavesReloadEvent;
+import net.aufdemrand.denizen.events.ScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
@@ -288,6 +290,8 @@ public class Denizen extends JavaPlugin {
         savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
         // Reload dLocations from saves.yml
         dLocation._recallLocations();
+
+        Bukkit.getServer().getPluginManager().callEvent(new SavesReloadEvent());
     }
 
     public FileConfiguration getSaves() {
