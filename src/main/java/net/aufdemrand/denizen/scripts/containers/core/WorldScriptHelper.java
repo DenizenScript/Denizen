@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.TagManager;
@@ -49,7 +48,23 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBedLeaveEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
@@ -501,7 +516,7 @@ public class WorldScriptHelper implements Listener {
     	Entity entity = event.getEntity();
     	String entityType = entity.getType().name();
     	String cause = event.getCause().name();
-    	 
+
     	String determination;
     	
     	Player player = null;
@@ -1021,6 +1036,48 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("MESSAGE"))
             event.setDeathMessage(aH.getStringFrom(determination));
+    }
+    
+    @EventHandler
+    public void playerFish(PlayerFishEvent event) {
+
+        Entity entity = event.getCaught();
+        String state = event.getState().name();
+        dNPC npc = null;
+    	
+    	Map<String, Object> context = new HashMap<String, Object>();
+        context.put("hook", new dEntity(event.getHook()));
+        context.put("state", new Element(state));
+
+        List<String> events = new ArrayList<String>();
+        events.add("player fishes");
+        events.add("player fishes while " + state);
+        
+        if (entity != null) {
+        	
+        	String entityType = entity.getType().name();
+        	
+        	if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
+        		npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+        		context.put("entity", npc);
+        		entityType = "npc";
+        	}
+        	else if (entity instanceof Player) {
+        		context.put("entity", new dPlayer((Player) entity));
+        	}
+        	else {
+        		context.put("entity", new dEntity(entity));
+        	}
+        	
+        	events.add("player fishes " + entityType);
+        	events.add("player fishes " + entityType + " while " + state);
+        }
+        
+        String determination = doEvents(events, npc, event.getPlayer(), context);
+
+        // Handle message
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
     }
     
     @EventHandler

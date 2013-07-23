@@ -553,7 +553,7 @@ public class dEntity implements dObject {
      * 1) using a random subtype if value is "RANDOM"
      * 2) looping through the entity's subtypes until one matches the value string
      *
-     * Example: setSubtype("Ocelot", "Ocelot@Type", "setCatType", "SIAMESE_CAT");
+     * Example: setSubtype("org.bukkit.entity.Ocelot", "org.bukkit.entity.Ocelot$Type", "setCatType", "SIAMESE_CAT");
      *
      * @param entityName  The name of the entity's class.
      * @param typeName  The name of the entity class' Enum with subtypes.
