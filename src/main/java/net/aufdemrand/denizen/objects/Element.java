@@ -295,6 +295,14 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        if (attribute.startsWith("replace")
+                && attribute.hasContext(1) && attribute.getAttribute(2).startsWith("with")
+                && attribute.hasContext(2)) {
+            return new Element(element.replace(attribute.getContext(1), attribute.getContext(2)))
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+
         if (attribute.startsWith("length")) {
             return new Element(element.length())
                     .getAttribute(attribute.fulfill(1));

@@ -301,7 +301,6 @@ public class IfCommand extends AbstractCommand {
         // Put tracked objects into new script entries.
         for (String tracked_object : scriptEntry.tracked_objects) {
             ScriptBuilder.addObjectToEntries(entries, tracked_object, scriptEntry.getObject(tracked_object));
-            dB.log(tracked_object);
         }
 
         scriptEntry.getResidingQueue().injectEntries(entries, 0);

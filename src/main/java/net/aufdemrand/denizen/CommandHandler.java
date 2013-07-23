@@ -963,37 +963,6 @@ public class CommandHandler {
         trait.report();
     }
 
-
-    /*
-    * DENIZEN TEST, always a new flavor
-    */
-    @Command(
-            aliases = { "denizen" }, usage = "ex",
-            desc = "For bob.", modifiers = { "ex" },
-            min = 1, max = 20, permission = "denizen.basic")
-    public void ex(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-
-        List<String> entries = new ArrayList<String>();
-        String entry = args.getJoinedStrings(1);
-
-        dB.log(entry);
-
-        entries.add(entry);
-
-        InstantQueue queue = InstantQueue.getQueue(null);
-
-        List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                (sender instanceof Player) ? dPlayer.mirrorBukkitPlayer((Player) sender) : null,
-                npc != null ? dNPC.mirrorCitizensNPC(npc) : null);
-
-        queue.addEntries(scriptEntries);
-
-        queue.start();
-
-
-    }
-
-
     @Command(
             aliases = { "notable" }, usage = "add",
             desc = "Adds a new notable to your current location", modifiers = { "add", "save" },

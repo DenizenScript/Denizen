@@ -259,14 +259,27 @@ public class dNPC implements dObject {
 
         if (attribute == null) return "null";
 
+
+        // <--
+        // <npc.name.nickname> -> Element
+        // returns the NPC's nickname provided by the nickname trait, or null if the npc does not have the nickname trait.
+        // -->
         if (attribute.startsWith("name.nickname"))
             return new Element(getCitizen().hasTrait(NicknameTrait.class) ? getCitizen().getTrait(NicknameTrait.class)
                     .getNickname() : getName()).getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.name> -> Element
+        // returns the player's nickname provided by the nickname trait, or null if the NPC does not have a nickname
+        // -->
         if (attribute.startsWith("name"))
             return new Element(ChatColor.stripColor(getName()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <npc.anchor.list> -> dList
+        // returns a dList of anchor names currently assigned to the NPC.
+        // -->
         if (attribute.startsWith("anchor.list")
                 || attribute.startsWith("anchors.list")) {
             List<String> list = new ArrayList<String>();
@@ -275,11 +288,19 @@ public class dNPC implements dObject {
             return new dList(list).getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <npc.has_anchors> -> Element(boolean)
+        // returns true if the NPC has anchors assigned, false otherwise.
+        // -->
         if (attribute.startsWith("has_anchors")) {
             return (new Element(String.valueOf(getCitizen().getTrait(Anchors.class).getAnchors().size() > 0)))
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <npc.anchor[name]> -> dLocation
+        // returns a dLocation associated with the specified anchor, or 'null' if it doesn't exist.
+        // -->
         if (attribute.startsWith("anchor")) {
             if (attribute.hasContext(1)
                     && getCitizen().getTrait(Anchors.class).getAnchor(attribute.getContext(1)) != null)
@@ -288,7 +309,11 @@ public class dNPC implements dObject {
                         .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith("flag")) {
+        // <--
+        // <npc.flag[flag_name]> -> Flag dList
+        // returns 'flag dList' of the NPC's flag_name specified.
+        // -->
+         if (attribute.startsWith("flag")) {
             String flag_name;
             if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
             else return "null";
@@ -306,27 +331,55 @@ public class dNPC implements dObject {
             else return "null";
         }
 
+        // <--
+        // <npc.id> -> Element(number)
+        // returns the NPC's 'npcid' provided by Citizens.
+        // -->
         if (attribute.startsWith("id"))
             return new Element(String.valueOf(getId())).getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <npc.owner> -> Element
+        // returns the owner of the NPC.
+        // -->
         if (attribute.startsWith("owner"))
             return new Element(getOwner()).getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <npc.is_spawned> -> Element(boolean)
+        // returns 'true' if the NPC is spawned, otherwise 'false'.
+        // -->
         if (attribute.startsWith("is_spawned"))
             return new Element(String.valueOf(isSpawned())).getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <npc.location.previous_location> -> dLocation
+        // returns the NPC's previous navigated location.
+        // -->
         if (attribute.startsWith("location.previous_location"))
             return (NPCTags.previousLocations.containsKey(getId())
                     ? NPCTags.previousLocations.get(getId()).getAttribute(attribute.fulfill(2))
                     : "null");
 
+        // <--
+        // <npc.navigator.is_navigating> -> Element(boolean)
+        // returns true if the NPC is currently navigating, false otherwise.
+        // -->
         if (attribute.startsWith("navigator.is_navigating"))
             return new Element(String.valueOf(getNavigator().isNavigating())).getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.speed> -> Element(number)
+        // returns the current speed of the NPC.
+        // -->
         if (attribute.startsWith("navigator.speed"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().speed()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.range> -> Element(number)
+        // returns the maximum 'pathfinding range'
+        // -->
         if (attribute.startsWith("navigator.range"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().range()))
                     .getAttribute(attribute.fulfill(2));

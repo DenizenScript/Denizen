@@ -2,6 +2,8 @@ package net.aufdemrand.denizen;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,11 +13,10 @@ import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.scripts.ScriptEngine;
-import net.aufdemrand.denizen.scripts.ScriptHelper;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.*;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.ObjectFetcher;
@@ -52,8 +53,8 @@ public class Denizen extends JavaPlugin {
     public CommandHandler getCommandHandler() {
         return commandHandler;
     }
-    
-    
+
+
     /*
      * Denizen Engines
      */
@@ -63,7 +64,7 @@ public class Denizen extends JavaPlugin {
         return scriptEngine;
     }
 
-    
+
     /*
      * Denizen Registries
      */
@@ -309,9 +310,40 @@ public class Denizen extends JavaPlugin {
         }
     }
 
+    Citizens citizens;
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
-        Citizens citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
+        if (citizens == null) citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
+
+        dB.log("" + (sender instanceof Player));
+
+        if (!(sender instanceof Player) &&
+                cmdName.equalsIgnoreCase("ex")) {
+
+            List<String> entries = new ArrayList<String>();
+
+            String entry = "";
+            for (String arg : args)
+                entry = entry + arg + " ";
+
+            dB.log(entry);
+
+            entries.add(entry);
+
+            InstantQueue queue = InstantQueue.getQueue(null);
+
+            List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
+                    null, null);
+
+            queue.addEntries(scriptEntries);
+
+            queue.start();
+
+            return true;
+
+        }
+
         return citizens.onCommand(sender, cmd, cmdName, args);
     }
 

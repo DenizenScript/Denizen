@@ -71,6 +71,7 @@ _util_dtime_command:
 
   events:
     on ex command:
+    - if <player> == null queue clear
     - if !<player.is_op> queue clear
     - define command_name <c.args.get[1]>
     - flag npc:<player.selected_npc> "list:|:<c.args>"
