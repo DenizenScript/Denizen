@@ -294,11 +294,6 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public String toString() {
         return identify();
     }
-    
-    @Override
-    public Location toLocation() {
-    	return new Location(getWorld(), getX(), getY(), getZ(), getYaw(), getPitch());
-    }
 
     @Override
     public String getAttribute(Attribute attribute) {
