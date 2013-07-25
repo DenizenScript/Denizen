@@ -299,30 +299,58 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return null;
 
+        // <--
+        // <location.biome.formatted> -> Element
+        // Returns the formatted biome name at the location.
+        // -->
         if (attribute.startsWith("biome.formatted"))
             return new Element(getBlock().getBiome().name().toLowerCase().replace('_', ' '))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <location.biome.humidity> -> Element(Number)
+        // Returns the current humidity at the location.
+        // -->
         if (attribute.startsWith("biome.humidity"))
             return new Element(String.valueOf(getBlock().getHumidity()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <location.biome.temperature> -> Element(Number)
+        // Returns the current temperature at the location.
+        // -->
         if (attribute.startsWith("biome.temperature"))
             return new Element(String.valueOf(getBlock().getTemperature()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <location.biome.humidity> -> Element
+        // Returns Bukkit biome name at the location.
+        // -->
         if (attribute.startsWith("biome"))
             return new Element(String.valueOf(getBlock().getBiome().name()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <location.block.below> -> dLocation
+        // Returns the dLocation of the block below the location.
+        // -->
         if (attribute.startsWith("block.below"))
             return new dLocation(this.add(0,-1,0))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <location.block.above> -> dLocation
+        // Returns the dLocation of the block above the location.
+        // -->
         if (attribute.startsWith("block.above"))
             return new dLocation(this.add(0,1,0))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <location.add[x,y,z]> -> dLocation
+        // Adds to location coordinates, and returns the sum.
+        // -->
         if (attribute.startsWith("add")) {
             if (attribute.hasContext(1) && attribute.getContext(1).split(",").length == 3) {
                 String[] ints = attribute.getContext(1).split(",", 3);
@@ -335,6 +363,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
 
+        // <--
+        // <location.with_pose> -> dLocation
+        // Returns the dLocation with pitch and yaw.
+        // -->
         if (attribute.startsWith("with_pose")) {
             String context = attribute.getContext(1);
             Float pitch = 0f;
@@ -359,7 +391,11 @@ public class dLocation extends org.bukkit.Location implements dObject {
         if (attribute.startsWith("find")) {
             attribute.fulfill(1);
             ArrayList<dObject> found = new ArrayList<dObject>();
-            // <location.find.blocks[sandstone|cobblestone].within[5]>
+            
+            // <--
+            // <location.find.blocks[<block>|...].within[X]> -> dList
+            // Returns a dList of blocks within a radius.
+            // -->
             if (attribute.startsWith("blocks")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
@@ -383,8 +419,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                             } else found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
             }
 
-            // <location.find.surface_blocks[sandstone|cobblestone].within[5]>
-
+            // <--
+            // <location.find.surface_blocks[<block>|...].within[X]> -> dList
+            // Returns a dList of surface blocks within a radius.
+            // -->
             else if (attribute.startsWith("surface_blocks")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
@@ -418,6 +456,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 
             }
             
+            // <--
+            // <location.find.players.within[X]> -> dList
+            // Returns a dList of players within a radius.
+            // -->
             else if (attribute.startsWith("players")
             	&& attribute.getAttribute(2).startsWith("within")
             	&& attribute.hasContext(2)) {
@@ -434,9 +476,20 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new dList(found).getAttribute(attribute);
         }
 
+        // <--
+        // <location.block.material> -> Element
+        // Returns the Bukkit material name of the block at the
+        // location.
+        // -->
         if (attribute.startsWith("block.material"))
             return new Element(getBlock().getType().toString()).getAttribute(attribute.fulfill(2));
 
+        
+        // <--
+        // <location.direction> -> Element
+        // Returns the compass direction of the block or entity
+        // at the location.
+        // -->
         if (attribute.startsWith("direction")) {
         	// Get the cardinal direction from this location to another
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
@@ -454,11 +507,24 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
 
+        // <--
+        // <location.distance[X]> -> Element(Number)
+        // Returns the distance between 2 locations.
+        // -->
         if (attribute.startsWith("distance")) {
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
                 dLocation toLocation = dLocation.valueOf(attribute.getContext(1));
 
+                // <--
+                // <location.distance[X].horizontal> -> Element(Number)
+                // Returns the horizontal distance between 2 locations.
+                // -->
                 if (attribute.getAttribute(2).startsWith("horizontal")) {
+                    
+                	// <--
+                    // <location.distance[X].horizontal.multiworld> -> Element(Number)
+                    // Returns the horizontal distance between 2 multiworld locations.
+                    // -->
                     if (attribute.getAttribute(3).startsWith("multiworld"))
                         return new Element(String.valueOf(Math.sqrt(
                                 Math.pow(this.getX() - toLocation.getX(), 2) +
@@ -471,7 +537,16 @@ public class dLocation extends org.bukkit.Location implements dObject {
                                 .getAttribute(attribute.fulfill(2));
                 }
 
+                // <--
+                // <location.distance[X].vertical> -> Element(Number)
+                // Returns the vertical distance between 2 locations.
+                // -->
                 else if (attribute.getAttribute(2).startsWith("vertical")) {
+                	
+                	// <--
+                    // <location.distance[X].vertical.multiworld> -> Element(Number)
+                    // Returns the vertical distance between 2 multiworld locations.
+                    // -->
                     if (attribute.getAttribute(3).startsWith("multiworld"))
                         return new Element(String.valueOf(Math.abs(this.getY() - toLocation.getY())))
                                 .getAttribute(attribute.fulfill(3));
@@ -485,59 +560,102 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
 
+        // <--
+        // <location.simple> -> Element
+        // Returns the simple version of a dLocation.
+        // -->
         if (attribute.startsWith("simple"))
             return new Element(getBlockX() + "," + getBlockY() + "," + getBlockZ()
             + "," + getWorld().getName()).getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <location.formatted.simple> -> Element
+        // Returns the formatted simple version of a dLocation.
+        // -->
         if (attribute.startsWith("formatted.simple"))
             return new Element("X '" + getBlockX()
                     + "', Y '" + getBlockY()
                     + "', Z '" + getBlockZ()
                     + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <location.formatted> -> Element
+        // Returns the formatted version of a dLocation.
+        // -->
         if (attribute.startsWith("formatted"))
             return new Element("X '" + getX()
                     + "', Y '" + getY()
                     + "', Z '" + getZ()
                     + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <location.is_liquid> -> Element(Boolean)
+        // If the block at the location is a liquid, return
+        // true. Otherwise, returns false.
+        // -->
         if (attribute.startsWith("is_liquid"))
             return new Element(String.valueOf(getBlock().isLiquid())).getAttribute(attribute.fulfill(1));
 
 
+        // <--
+        // <location.light.blocks> -> Element(Number)
+        // Returns the amount of light from blocks that is
+        // on the location.
+        // -->
         if (attribute.startsWith("light.from_blocks") ||
                 attribute.startsWith("light.blocks"))
             return new Element(String.valueOf((int) getBlock().getLightFromBlocks()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <location.light.sky> -> Element(Number)
+        // Returns the amount of light from the sky that is
+        // on the location.
+        // -->
         if (attribute.startsWith("light.from_sky") ||
                 attribute.startsWith("light.sky"))
             return new Element(String.valueOf((int) getBlock().getLightFromSky()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <location.light.blocks> -> Element(Number)
+        // Returns the total amount of light on the location.
+        // -->
         if (attribute.startsWith("light"))
             return new Element(String.valueOf((int) getBlock().getLightLevel()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <location.pitch> -> Element(Number)
+        // Returns the pitch of the object at the location.
+        // -->
         if (attribute.startsWith("pitch")) {
             return new Element(String.valueOf(getPitch())).getAttribute(attribute.fulfill(1));
         }
         
-        // Get the raw yaw of this location
+        // <--
+        // <location.yaw.raw> -> Element(Number)
+        // Returns the raw yaw of the object at the location.
+        // -->
         if (attribute.startsWith("yaw.raw")) {
             return new Element(String.valueOf
             		(getYaw())).getAttribute(attribute.fulfill(2));
         }
         
-        // Provide a normalized yaw that people can actually make use of,
-        // instead of Minecraft's weird yaws that can have negative values
-        // or exceed 360
+        // <--
+        // <location.yaw> -> Element(Number)
+        // Returns the normalized yaw of the object at the location.
+        // -->
         if (attribute.startsWith("yaw")) {
             return new Element(String.valueOf
             		(Rotation.normalizeYaw(getYaw()))).getAttribute(attribute.fulfill(1));
         }
         
-        // Check if this location's yaw is facing another location or entity
+        // <--
+        // <location.facing[<entity>]> -> Element(Boolean)
+        // Returns true if the location's yaw is facing another
+        // entity or location. Otherwise, returns false.
+        // -->
         if (attribute.startsWith("facing")) {
         	if (attribute.hasContext(1)) {
         		
@@ -547,8 +665,12 @@ public class dLocation extends org.bukkit.Location implements dObject {
         		// The attribute to fulfill from
         		int attributePos = 1;
         		
-        		// If there is a degrees attribute with an integer context,
-        		// set degrees to the value in that context
+                // <--
+                // <location.facing[<entity>].degrees[X]> -> Element(Boolean)
+                // Returns true if the location's yaw is facing another
+                // entity or location, within a specified degree range.
+        		// Otherwise, returns false.
+                // -->
         		if (attribute.getAttribute(2).startsWith("degrees") &&
         			attribute.hasContext(2) &&
         			aH.matchesInteger(attribute.getContext(2))) {
@@ -571,10 +693,20 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
         
+        // <--
+        // <location.power> -> Element(Number)
+        // Returns the current power level of a block.
+        // -->
         if (attribute.startsWith("power"))
             return new Element(String.valueOf(getBlock().getBlockPower()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <location.in_region[<name>]> -> Element(Boolean)
+        // If a region name is specified, returns true if the
+        // location is in that region, else it returns true if
+        // the location is in any region. Otherwise, returns false.
+        // -->
         if (attribute.startsWith("in_region")) {
             if (Depends.worldGuard == null) {
                 dB.echoError("Cannot check region! WorldGuard is not loaded!");
@@ -597,40 +729,76 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
         
+        // <--
+        // <location.regions> -> dList
+        // Returns the list of regions that the location is in.
+        // -->
         if (attribute.startsWith("regions")) {
             return new dList(WorldGuardUtilities.getRegions(this))
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <location.world> -> dWorld
+        // Returns the dWorld that the location is in.
+        // -->
         if (attribute.startsWith("world")) {
             return dWorld.mirrorBukkitWorld(getWorld())
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <location.block.x> -> Element(Number)
+        // Returns the X coordinate of the block.
+        // -->
         if (attribute.startsWith("block.x")) {
             return new Element(getBlockX()).getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <location.block.y> -> Element(Number)
+        // Returns the Y coordinate of the block.
+        // -->
         if (attribute.startsWith("block.y")) {
             return new Element(getBlockY()).getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <location.block.z> -> Element(Number)
+        // Returns the Z coordinate of the block.
+        // -->
         if (attribute.startsWith("block.z")) {
             return new Element(getBlockZ()).getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <location.x> -> Element(Number)
+        // Returns the X coordinate of the location.
+        // -->
         if (attribute.startsWith("x")) {
             return new Element(getX()).getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <location.y> -> Element(Number)
+        // Returns the Y coordinate of the location.
+        // -->
         if (attribute.startsWith("y")) {
             return new Element(getY()).getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <location.z> -> Element(Number)
+        // Returns the Z coordinate of the location.
+        // -->
         if (attribute.startsWith("z")) {
             return new Element(getZ()).getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <location.block.sign_contents> -> dList
+        // Returns a list of lines on a sign.
+        // -->
         if (attribute.startsWith("block.sign_contents")) {
             if (getBlock().getState() instanceof Sign) {
                 return new dList(Arrays.asList(((Sign) getBlock().getState()).getLines()))
