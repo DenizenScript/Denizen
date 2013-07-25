@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -22,6 +24,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockBreakEvent;
 
 /**
  * Creates special signs that auto-update with information.
@@ -63,6 +66,7 @@ public class ViewerCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dLocation.class))
                 // Location arg
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
+        	
         }
 
 
@@ -112,15 +116,15 @@ public class ViewerCommand extends AbstractCommand {
                 
                 Utilities.setSignRotation(signState);
                 
-                final String[] contents = content.split("; ");
-                final Player player = Bukkit.getPlayerExact(contents[1]);
+                final Player player = Bukkit.getPlayerExact(scriptEntry.getPlayer().getName());
                 
         		int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
         			public void run() {
         				if (player == null)
-        					Utilities.setSignLines((Sign) signState, new String[]{"", contents[1], "is offline.",""});
+        					Utilities.setSignLines((Sign) signState, new String[]{"", scriptEntry.getPlayer().getName(), "is offline.", ""});
         				else
         					Utilities.setSignLines((Sign) signState, new String[]{String.valueOf(scriptEntry.getPlayer().getLocation().getX()), String.valueOf(scriptEntry.getPlayer().getLocation().getY()), String.valueOf(scriptEntry.getPlayer().getLocation().getZ()), scriptEntry.getPlayer().getWorld().getName()});
+        				
         			}
         		}, 0, 20);
         		
@@ -208,6 +212,11 @@ public class ViewerCommand extends AbstractCommand {
 
     @EventHandler
     public static void reloadViewers(SavesReloadEvent event) {
+    	
+    	for (Viewer viewer : viewers.values()) {
+    		Bukkit.getScheduler().cancelTask(viewer.getTask());
+    	}
+    	
         viewers.clear();
 
         FileConfiguration saves = DenizenAPI.getCurrentInstance().getSaves();
@@ -230,6 +239,15 @@ public class ViewerCommand extends AbstractCommand {
             	viewer.setTask(task);
             }
         }
+    }
+    
+    @EventHandler
+    public static void blockBreaks(BlockBreakEvent event) {
+    	for (Viewer viewer : viewers.values())
+    		if (event.getBlock().getLocation().equals(viewer.getLocation())) {
+    			event.getPlayer().sendMessage(ChatColor.RED + "You're not allowed to break that sign.");
+    			event.setCancelled(true);
+    		}
     }
 	
 	@Override
