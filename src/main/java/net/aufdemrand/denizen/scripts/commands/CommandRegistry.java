@@ -167,7 +167,7 @@ public class CommandRegistry implements dRegistry {
         		"HEAD", "head (player) [skin:<name>]", 0);
         
         registerCoreMember(HealCommand.class, 
-        		"HEAL", "heal (qty:<#.#>) (target:<entity>)", 0);
+        		"HEAL", "heal (<#.#>) (entities:<entity>|...)", 0);
         
         registerCoreMember(HealthCommand.class,
                 "HEALTH", "health (state:true/false/toggle) (set_max:<#>)", 1);
