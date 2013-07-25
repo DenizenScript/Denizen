@@ -294,6 +294,9 @@ public class CommandRegistry implements dRegistry {
         
         registerCoreMember(TriggerCommand.class, 
         		"TRIGGER", "trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)", 2);
+        
+        registerCoreMember(ViewerCommand.class,
+        		"VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in)", 2);
 		
         registerCoreMember(VulnerableCommand.class, 
         		"VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
