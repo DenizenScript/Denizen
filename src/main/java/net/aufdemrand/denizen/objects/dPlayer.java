@@ -479,7 +479,7 @@ public class dPlayer implements dObject {
             return new Element(player_name).getAttribute(attribute.fulfill(1));
 
         // <--
-        // <player.name.list> -> dLocation
+        // <player.eyes> -> dLocation
         // returns a dLocation of the player's eyes.
         // -->
         if (attribute.startsWith("eyes"))
@@ -487,7 +487,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--
-        // <player.name.list> -> dLocation
+        // <player.compass.target> -> dLocation
         // returns a dLocation of the player's 'compass target'.
         // -->
         if (attribute.startsWith("compass_target"))
@@ -516,7 +516,7 @@ public class dPlayer implements dObject {
         }
 
         // <--
-        // <player.name.list> -> Element(number)
+        // <player.food_level> -> Element(number)
         // returns the current food level of the player.
         // -->
         if (attribute.startsWith("food_level"))

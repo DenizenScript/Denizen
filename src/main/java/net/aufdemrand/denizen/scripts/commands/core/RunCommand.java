@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.queues.core.TimedQueue;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.List;
 
@@ -61,14 +62,14 @@ public class RunCommand extends AbstractCommand {
                 scriptEntry.addObject("path", arg.asElement());
 
             else if (arg.matches("instant, instantly"))
-                scriptEntry.addObject("instant", Element.TRUE);
+                scriptEntry.addObject("instant", new Element(true));
 
             else if (arg.matchesPrefix("delay")
                     && arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("delay", arg.asType(Duration.class));
 
             else if (arg.matches("loop"))
-                scriptEntry.addObject("loop", Element.TRUE);
+                scriptEntry.addObject("loop", new Element(true));
 
             else if (arg.matchesPrefix("q, quantity")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
@@ -92,6 +93,9 @@ public class RunCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+
+        dB.report(getName(), scriptEntry.getdObject("script").debug()
+        + (scriptEntry.hasObject("instant") ? scriptEntry.getdObject("instant").debug() : ""));
 
         // definitions
         // loop
