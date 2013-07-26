@@ -5,9 +5,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
  *
@@ -41,21 +43,28 @@ public class DetermineCommand extends AbstractCommand {
         String outcome = "false";
         Boolean passively = false;
 
-        for (String arg : scriptEntry.getArguments())
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments()))
 
-        if (aH.matchesArg("PASSIVELY", arg))
-            passively = true;
-        else
-            outcome = arg;
+            if (arg.matches("passive, passively"))
+                scriptEntry.addObject("passively", new Element(true));
+            else
+                scriptEntry.addObject("outcome", arg.asElement());
 
-        scriptEntry.addObject("outcome", outcome)
-            .addObject("passively", passively);
+        // Set defaults
+        scriptEntry.defaultObject("passively", new Element(false));
+        scriptEntry.defaultObject("outcome", new Element(false));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        String outcome = (String) scriptEntry.getObject("outcome");
-        Boolean passively = (Boolean) scriptEntry.getObject("passively");
+
+        // Report!
+        dB.report(getName(), scriptEntry.getElement("outcome").debug()
+                + scriptEntry.getElement("passively").debug());
+
+        // Fetch
+        String outcome = scriptEntry.getElement("outcome").asString();
+        Boolean passively = scriptEntry.getElement("passively").asBoolean();
 
         Long uniqueId = (Long) scriptEntry.getObject("reqId");
         if (uniqueId == null) return;
