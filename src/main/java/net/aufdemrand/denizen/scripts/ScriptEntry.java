@@ -19,12 +19,7 @@ public class ScriptEntry {
     // The name of the command that will be executed
     private String command;
 
-    // The queuetime and allowed-run-time can dictate whether it's okay
-    // for this command to run in the queue.
     private long creationTime;
-    private long queueTime;
-    private long runTime;
-    private long holdTime;
 
     private boolean instant = false;
     private boolean waitfor = false;
@@ -48,13 +43,10 @@ public class ScriptEntry {
 
         this.command = command.toUpperCase();
         if (script != null)
-        this.script = script.getAsScriptArg();
+            this.script = script.getAsScriptArg();
 
-        // Internal, never null. runTime/holdTime can be adjusted mid-execution
+        // Internal, never null.
         this.creationTime = System.currentTimeMillis();
-        this.queueTime = creationTime;
-        this.runTime = creationTime;
-        this.holdTime = creationTime;
 
         // Check if this is an 'instant' or 'waitfor' command.
         if (command.startsWith("^")) {
@@ -88,7 +80,7 @@ public class ScriptEntry {
         objects.put(key.toUpperCase(), object);
         return this;
     }
-    
+
     /**
      * If the scriptEntry lacks the object corresponding to the
      * key, set it to the first non-null argument
@@ -97,26 +89,18 @@ public class ScriptEntry {
      * @return  The scriptEntry
      *
      */
-    
+
     public ScriptEntry defaultObject(String key, Object... objects) {
-    	
-    	if (this.hasObject(key) == false) {
-    		for (Object obj : objects) {
-    			if (obj != null) {
-    				this.addObject(key, obj);
-    				break;
-    			}
-    		}
-    	}
-    	return this;
-    }
 
-    public long getRunTime() {
-        return runTime;
-    }
-
-    public long getHoldTime() {
-        return holdTime;
+        if (this.hasObject(key) == false) {
+            for (Object obj : objects) {
+                if (obj != null) {
+                    this.addObject(key, obj);
+                    break;
+                }
+            }
+        }
+        return this;
     }
 
     public List<String> getArguments() {
@@ -129,12 +113,12 @@ public class ScriptEntry {
 
     public dNPC getNPC() {
         return npc;
-	}
-	
+    }
+
     public boolean hasNPC() {
 
-    	if (npc != null) return true;
-    	return false;
+        if (npc != null) return true;
+        return false;
     }
 
     public void setFinished(boolean finished) {
@@ -144,11 +128,11 @@ public class ScriptEntry {
     public dPlayer getPlayer() {
         return player;
     }
-    
+
     public boolean hasPlayer() {
 
-    	if (player != null) return true;
-    	return false;
+        if (player != null) return true;
+        return false;
     }
 
     public Map<String, Object> getObjects() {
@@ -188,10 +172,6 @@ public class ScriptEntry {
         return queue;
     }
 
-    public Long getQueueTime() {
-        return queueTime;
-    }
-
     public boolean isInstant() {
         return instant;
     }
@@ -202,11 +182,6 @@ public class ScriptEntry {
 
     public boolean isDone() {
         return done;
-    }
-
-    public ScriptEntry setRunTime(Long newTime) {
-        runTime = newTime;
-        return this;
     }
 
     public ScriptEntry setArguments(List<String> arguments) {
