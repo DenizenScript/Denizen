@@ -276,7 +276,7 @@ public abstract class ScriptQueue {
         if (delay_time > System.currentTimeMillis())
             is_delayed = true;
 
-        dB.echoDebug("Starting queue '" + id + "'");
+        dB.echoDebug("Starting " + getClass().getSimpleName() + " '" + id + "'");
         // If it's delayed, schedule it for later
 
         if (is_delayed) {

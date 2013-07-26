@@ -18,8 +18,8 @@ public abstract class AbstractCommand implements RegistrationableInstance {
 	 * 
 	 */
 	public class CommandOptions { 
-        public String USAGE_HINT = ""; 
-        public int REQUIRED_ARGS = -1;
+        public String USAGE_HINT;
+        public int REQUIRED_ARGS;
         
         public CommandOptions(String usageHint, int numberOfRequiredArgs) {
             this.USAGE_HINT = usageHint;
