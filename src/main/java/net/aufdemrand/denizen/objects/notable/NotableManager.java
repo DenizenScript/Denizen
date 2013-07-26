@@ -99,7 +99,7 @@ public class NotableManager {
      */
     private static void _recallNotables() {
 
-
+        // TODO
 
     }
 
@@ -110,6 +110,7 @@ public class NotableManager {
 
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
 
+            // TODO
 
         }
 

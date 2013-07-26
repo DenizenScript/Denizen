@@ -20,7 +20,7 @@ import org.bukkit.event.Listener;
  */
 public class DefineCommand extends AbstractCommand implements Listener {
 
-    public String getHelp() {
+    public static String getHelp() {
         return  "Defines a script/queue-level variable. Once the queue is" +
                 "completed, this definition is destroyed. Definitions are meant" +
                 "to be used as temporary variables, if any kind of persistence " +
@@ -32,8 +32,8 @@ public class DefineCommand extends AbstractCommand implements Listener {
                 "- strike %doomed_player% \n";
     }
 
-    public String getUsage() {
-        return "- define [id] [value]";
+    public static String getUsage() {
+        return "- define [<id>] [<value>]";
     }
 
     @Override

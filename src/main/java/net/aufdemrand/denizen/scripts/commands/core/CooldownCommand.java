@@ -21,12 +21,12 @@ public class CooldownCommand extends AbstractCommand {
     private enum Type { GLOBAL, PLAYER }
 
 
-    public String getHelp() {
+    public static String getHelp() {
         return  "Cools down an interact script. While cool, players cannot " +
                 "run the script. When on cooldown, the script will not pass " +
                 "requirements allowing the next lowest priority script to " +
-                "trigger. You can use <script[...].cooled_down[player]> to " +
-                "return whether the script is cooled down, and <script[...].cooldown> " +
+                "trigger. You can use <s@script_name.cooled_down[player]> to " +
+                "return whether the script is cooled down, and <s@script_name.cooldown> " +
                 "to get the duration of the cooldown in progress. Cooldown requires" +
                 "a type (player or default, a script, and a duration. It also requires" +
                 "a valid link to a dPlayer.\n" +
@@ -39,7 +39,7 @@ public class CooldownCommand extends AbstractCommand {
     }
 
 
-    public String getUsage() {
+    public static String getUsage() {
         return "- cooldown ({player}|global) (script_name) [duration]";
     }
 

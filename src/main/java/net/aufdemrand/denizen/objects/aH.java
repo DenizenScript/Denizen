@@ -198,7 +198,8 @@ public class aH {
      *
      */
     public static String[] buildArgs(String stringArgs) {
-        final Pattern regex = Pattern.compile("[^\\s\"'¨]+|\"([^\"]*)\"|'([^']*)'|¨([^¨]*)¨");
+        final Pattern regex =
+                Pattern.compile("[^\\s\"'¨]+|\"([^\"]*)\"|'([^']*)'|¨([^¨]*)¨");
 
         if (stringArgs == null) return null;
         java.util.List<String> matchList = new ArrayList<String>();
