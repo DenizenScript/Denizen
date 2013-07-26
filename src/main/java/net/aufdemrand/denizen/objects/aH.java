@@ -72,8 +72,12 @@ public class aH {
             return value.startsWith(string);
         }
 
-        public boolean matches(String string) {
-            return value.equalsIgnoreCase(string);
+        public boolean matches(String values) {
+            for (String value : values.split(","))
+                if (value.trim().equalsIgnoreCase(this.value))
+                    return true;
+
+            return false;
         }
 
         public void replaceValue(String string) {
