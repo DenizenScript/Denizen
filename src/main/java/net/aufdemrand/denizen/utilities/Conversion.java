@@ -15,11 +15,11 @@ public class Conversion {
      * @param entities The list of dEntities
      */
 
-	public static List<Entity> convert(List<dEntity> oldList) {
+	public static List<Entity> convert(List<dEntity> entities) {
 
 		List<Entity> newList = new ArrayList<Entity>();
 		
-		for (dEntity entity : oldList) {
+		for (dEntity entity : entities) {
 			
         	newList.add(entity.getBukkitEntity());
         }

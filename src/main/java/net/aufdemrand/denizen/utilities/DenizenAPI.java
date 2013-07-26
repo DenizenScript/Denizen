@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.scripts.ScriptEngine;
+import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;

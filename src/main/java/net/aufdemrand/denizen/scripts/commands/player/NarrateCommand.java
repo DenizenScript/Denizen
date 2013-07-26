@@ -28,22 +28,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 public class NarrateCommand extends AbstractCommand {
 
     @Override
-    public void onEnable() {
-        // Nothing to do here.
-    }
-
-    /* 
-     * Arguments: [] - Required, () - Optional 
-     * ['Text to announce'] sets the text.
-     * (PLAYER:player_name)
-     * (FORMAT:format)
-     * 
-     * Example Usage:
-     * NARRATE 'Hello, world!'
-     * NARRATE PLAYER:<NPC.OWNER> 'ALERT! Intruder! intruder! <PLAYER.NAME> has infiltrated your base!'
-     */
-
-    @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
     	
         String text = null;

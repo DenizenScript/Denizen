@@ -16,7 +16,6 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.TagManager;
 
-import net.aufdemrand.denizen.utilities.depends.Depends;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -166,7 +166,6 @@ public class TimedQueue extends ScriptQueue implements Delayable {
 
         // If it's delayed, schedule it for later
         return !isDelayed();
-
     }
 
 

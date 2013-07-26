@@ -287,9 +287,10 @@ public abstract class ScriptQueue {
 
                         // Take the delay time, find out how many milliseconds away
                         // it is, turn it into seconds, then divide by 20 for ticks.
-                    }, (delay_time - System.currentTimeMillis()) / 1000 * 20);
-        }
-        else
+                    },
+                    (delay_time - System.currentTimeMillis()) / 1000 * 20);
+
+        } else
             // If it's not, start the engine now!
             onStart();
 
@@ -316,7 +317,6 @@ public abstract class ScriptQueue {
         // If this is the first time this has been called, check the
         // ScriptContainer event 'on queue completes' which may have
         // a few more script entries to run.
-
         if (!is_stopping) {
             is_stopping = true;
 
