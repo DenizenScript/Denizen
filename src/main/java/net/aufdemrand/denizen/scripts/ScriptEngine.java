@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.CommandExecuter;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.core.Delayable;
 import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
@@ -15,7 +16,7 @@ public class ScriptEngine {
 
     public ScriptEngine(Denizen denizenPlugin) {
         denizen  = denizenPlugin;
-        // Create Denizen Executer and RequirementChecker
+        // Create Denizen CommandExecuter and RequirementChecker
         commandExecuter = new CommandExecuter(denizen);
         requirementChecker = new RequirementChecker(denizen);
     }
@@ -26,17 +27,13 @@ public class ScriptEngine {
                 && scriptQueue.getLastEntryExecuted().shouldWaitFor())
             if (!scriptQueue.getLastEntryExecuted().isDone()) return;
 
+        // Okay to run next scriptEntry
         ScriptEntry scriptEntry = scriptQueue.getNext();
+
         while (scriptEntry != null) {
-            // Find next ScriptEntry
+            // Update ScriptEntry with queue information
             scriptEntry.setSendingQueue(scriptQueue);
-            // Check if last entry is still holding up the queue
-            if (scriptQueue.getLastEntryExecuted() != null
-                    && scriptQueue.getLastEntryExecuted().getHoldTime() > System.currentTimeMillis()) {
-                break;
-            }
-            // Check allowed run-time of next ScriptEntry
-            if (scriptEntry.getRunTime() < System.currentTimeMillis()) {
+
                 // Mark script entry with Queue that is sending it to the executer
                 scriptEntry.setSendingQueue(scriptQueue);
                 // Execute the scriptEntry
@@ -51,10 +48,17 @@ public class ScriptEngine {
                 // Set as last entry executed
                 scriptQueue.setLastEntryExecuted(scriptEntry);
 
+                // Check if the scriptQueue is delayed
+                if (scriptQueue instanceof Delayable)
+                    if (((Delayable) scriptQueue).isDelayed()) break;
+
+                // If the entry is instant, and not injected, get the next Entry
                 if (scriptEntry.isInstant() && !scriptQueue.hasInjectedItems) {
                     // Remove from execution list
                     scriptEntry = scriptQueue.getNext();
                 }
+                // If injected, end the revolution to allow the queue to catch
+                // up.
                 else if (scriptQueue.hasInjectedItems) {
                     scriptQueue.hasInjectedItems = false;
                     break;
@@ -62,7 +66,6 @@ public class ScriptEngine {
                 // If entry isn't instant, end the revolution and wait for another
                 else
                     break;
-            }
         }
     }
 
