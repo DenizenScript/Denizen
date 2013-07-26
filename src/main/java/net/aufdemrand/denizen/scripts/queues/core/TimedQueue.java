@@ -76,6 +76,13 @@ public class TimedQueue extends ScriptQueue implements Delayable {
         delay_ticks = System.currentTimeMillis() + duration.getMillis();
     }
 
+    @Override
+    public boolean isDelayed() {
+        if (delay_ticks > System.currentTimeMillis()) return true;
+
+        return false;
+    }
+
 
     public TimedQueue(String id, Duration timing) {
         super(id);
@@ -158,9 +165,8 @@ public class TimedQueue extends ScriptQueue implements Delayable {
         if (paused) return false;
 
         // If it's delayed, schedule it for later
-        if (delay_ticks > System.currentTimeMillis()) return false;
+        return !isDelayed();
 
-        return true;
     }
 
 
