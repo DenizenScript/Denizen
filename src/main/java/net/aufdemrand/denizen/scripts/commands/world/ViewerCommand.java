@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -116,10 +115,9 @@ public class ViewerCommand extends AbstractCommand {
                 
                 Utilities.setSignRotation(signState);
                 
-                final Player player = Bukkit.getPlayerExact(scriptEntry.getPlayer().getName());
-                
         		int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
         			public void run() {
+        				Player player = Bukkit.getPlayerExact(scriptEntry.getPlayer().getName());
         				if (player == null)
         					Utilities.setSignLines((Sign) signState, new String[]{"", scriptEntry.getPlayer().getName(), "is offline.", ""});
         				else
@@ -226,10 +224,10 @@ public class ViewerCommand extends AbstractCommand {
             viewers.put(key, viewer);
             final Sign sign = (Sign) viewer.getLocation().getBlock().getState();
             final String[] content = viewer.getContent().split("; ");
-            final Player player = Bukkit.getPlayerExact(content[1]);
             if (viewer.getContent().startsWith("location")) {
             	int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
         			public void run() {
+        				Player player = Bukkit.getPlayerExact(content[1]);
         				if (player == null)
         					Utilities.setSignLines((Sign) sign, new String[]{"", content[1], "is offline.",""});
         				else
@@ -243,8 +241,9 @@ public class ViewerCommand extends AbstractCommand {
     
     @EventHandler
     public static void blockBreaks(BlockBreakEvent event) {
+    	dLocation location = new dLocation(event.getBlock().getLocation());
     	for (Viewer viewer : viewers.values())
-    		if (event.getBlock().getLocation().equals(viewer.getLocation())) {
+    		if (location.equals(viewer.getLocation())) {
     			event.getPlayer().sendMessage(ChatColor.RED + "You're not allowed to break that sign.");
     			event.setCancelled(true);
     		}

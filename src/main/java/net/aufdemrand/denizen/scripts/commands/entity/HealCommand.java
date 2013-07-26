@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 
 /**
- * Heals a Player or NPC.
+ * Heals an entity.
  *
  * @author Jeremy Schroeder, Mason Adkins, Morphan1
  */
@@ -34,38 +34,36 @@ public class HealCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
         }
-
-        if (!scriptEntry.hasObject("entities"))
-        	scriptEntry.addObject("entities", scriptEntry.getPlayer());
         
         if (!scriptEntry.hasObject("amount"))
         	scriptEntry.addObject("amount", Integer.MAX_VALUE);
+        
     }
-
 
     @SuppressWarnings("unchecked")
 	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-
-    	if (scriptEntry.getObject("amount").equals(Integer.MAX_VALUE)) {
-    		if (scriptEntry.getObject("entities").equals(scriptEntry.getPlayer()))
-    			scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().setHealth(scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().getMaxHealth());
-    		else {
-    	    	List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-    			for (dEntity entity : entities)
-    				entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
-    		}
+    	
+    	if (!scriptEntry.hasObject("entities")) {
+    		if (scriptEntry.getObject("amount").equals(Integer.MAX_VALUE))
+        		scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().setHealth(scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().getMaxHealth());
+        	else {
+        		Double amount = ((Element) scriptEntry.getObject("amount")).asDouble();
+        		scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().setHealth(scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().getHealth() + amount);
+        	}
     	}
     	else {
-    		Double amount = ((Element) scriptEntry.getObject("amount")).asDouble();
-    		if (scriptEntry.getObject("entities").equals(scriptEntry.getPlayer()))
-    			scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().setHealth(scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().getHealth() + amount);
+    		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+    		
+    		if (scriptEntry.getObject("amount").equals(Integer.MAX_VALUE))
+    			for (dEntity entity : entities)
+    				entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
     		else {
-    	    	List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+    			Double amount = ((Element) scriptEntry.getObject("amount")).asDouble();
     			for (dEntity entity : entities)
     				entity.getLivingEntity().setHealth(entity.getLivingEntity().getHealth() + amount);
     		}
-
     	}
+    	
     }
 }
