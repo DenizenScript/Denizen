@@ -275,7 +275,11 @@ public class dPlayer implements dObject {
         // -->
         if (attribute.startsWith("is_online"))
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
-
+        
+        // Return player ip in format #.#.#.#
+        if (attribute.startsWith("ip"))
+            return getPlayerEntity().getAddress().getHostName();
+        
         if (attribute.startsWith("list")) {
             List<String> players = new ArrayList<String>();
             if (attribute.startsWith("list.online")) {
