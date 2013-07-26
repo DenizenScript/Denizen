@@ -126,6 +126,12 @@ public class dPlayer implements dObject {
         return new dEntity(getPlayerEntity());
     }
 
+    public dNPC getSelectedNPC() {
+        if (getPlayerEntity().hasMetadata("selected"))
+            return dNPC.valueOf(getPlayerEntity().getMetadata("selected").get(0).asString());
+        else return null;
+    }
+
     public String getName() {
         return player_name;
     }
@@ -701,7 +707,7 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("selected_npc")) {
             if (getPlayerEntity().hasMetadata("selected"))
                 return dNPC.valueOf(getPlayerEntity().getMetadata("selected").get(0).asString())
-                        .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
             else return "null";
         }
 
