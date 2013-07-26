@@ -15,6 +15,11 @@ public class Settings {
 		return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Debug.Show", false);
 	}
+
+    public static int ConsoleWidth() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getInt("Debug.Console Width", 60);
+    }
 	
 	/*
 

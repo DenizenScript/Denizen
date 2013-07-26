@@ -3,6 +3,7 @@
 
 Debug:
   Show: true
+  Console Width: 60
 
 Scripts:
   Queue Speed: 0.5s

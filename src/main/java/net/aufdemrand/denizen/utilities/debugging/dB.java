@@ -112,9 +112,7 @@ public class dB {
             // 'Hack-fix' for disallowing multiple 'footers' to print in a row
             if (string.equals(ChatColor.LIGHT_PURPLE + "+---------------------+")) {
                 if (!skipFooter) skipFooter = true;
-                else {
-                    return;
-                }
+                else { return; }
             } else skipFooter = false;
 
             // Create buffer for wrapping debug text nicely.
@@ -122,7 +120,7 @@ public class dB {
 			String buffer = "";
             int length = 0;
 			for (String word : words) { // # of total chars * # of lines - timestamp
-				if (length + ChatColor.stripColor(word).length() + 1  < 60) {
+				if (length + ChatColor.stripColor(word).length() + 1  < Settings.ConsoleWidth()) {
 					buffer = buffer + word + " ";
                     length = length + ChatColor.stripColor(word).length() + 1;
                 } else {
@@ -235,7 +233,7 @@ public class dB {
 
 	public static void echoApproval(String message) {
 		if (!debugMode) return;
-		ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + trimMessage(message));
+		ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! " + ChatColor.WHITE + message);
 	}
 	
 	public static void echoError(String message) {
@@ -303,7 +301,6 @@ public class dB {
         debugMode = !debugMode;
     }
 	
-
     private static String trimMessage(String message) {
         if (message.length() > 256)
             message = message.substring(0, 255) + "... *snip*";
