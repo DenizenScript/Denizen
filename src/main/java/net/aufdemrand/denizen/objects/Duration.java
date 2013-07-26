@@ -200,7 +200,18 @@ public class Duration implements dObject {
         // Durations that are a fraction of a second
         // will return as 1 when using this method.
         if (seconds < 1 && seconds > 0) return 1;
-        return Ints.checkedCast(Math.round(seconds));
+        return round(seconds);
+    }
+
+    private int round(double d){
+        double dAbs = Math.abs(d);
+        int i = (int) dAbs;
+        double result = dAbs - (double) i;
+        if(result<0.5){
+            return d<0 ? -i : i;
+        }else{
+            return d<0 ? -(i+1) : i+1;
+        }
     }
 
 
