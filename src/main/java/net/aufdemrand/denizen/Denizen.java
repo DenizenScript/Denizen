@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.events.SavesReloadEvent;
-import net.aufdemrand.denizen.events.ScriptReloadEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
@@ -18,6 +17,7 @@ import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.*;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
+import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
@@ -318,34 +318,42 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String cmdName, String[] args) {
-        if (citizens == null) citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
+        if (citizens == null)
+            citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
 
-        dB.log("" + (sender instanceof Player));
-
+        // /EX command for console
         if (!(sender instanceof Player) &&
                 cmdName.equalsIgnoreCase("ex")) {
-
             List<String> entries = new ArrayList<String>();
-
             String entry = "";
             for (String arg : args)
                 entry = entry + arg + " ";
 
-            dB.log(entry);
-
             entries.add(entry);
-
             InstantQueue queue = InstantQueue.getQueue(null);
-
             List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
                     null, null);
 
             queue.addEntries(scriptEntries);
-
             queue.start();
-
             return true;
 
+        } else if ((sender instanceof Player) &&
+                cmdName.equalsIgnoreCase("ex")) {
+            List<String> entries = new ArrayList<String>();
+            String entry = "";
+            for (String arg : args)
+                entry = entry + arg + " ";
+
+            entries.add(entry);
+            InstantQueue queue = InstantQueue.getQueue(null);
+            List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
+                    dPlayer.mirrorBukkitPlayer((Player) sender),
+                    dPlayer.mirrorBukkitPlayer((Player) sender).getSelectedNPC());
+
+            queue.addEntries(scriptEntries);
+            queue.start();
+            return true;
         }
 
         return citizens.onCommand(sender, cmd, cmdName, args);
