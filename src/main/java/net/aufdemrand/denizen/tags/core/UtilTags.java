@@ -48,7 +48,7 @@ public class UtilTags implements Listener {
 
         if (attribute.startsWith("id"))
             event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().id)
-            .getAttribute(attribute.fulfill(1)));
+                    .getAttribute(attribute.fulfill(1)));
 
         if (attribute.startsWith("stats"))
             event.setReplaced(new Element(ScriptQueue._getStats())
@@ -99,6 +99,15 @@ public class UtilTags implements Listener {
             return;
         }
 
+        // <--
+        // <server.current_time_millis> -> Element(number)
+        // returns the number of milliseconds since Jan 1, 1970.
+        // -->
+        if (attribute.startsWith("current_time_millis")) {
+            event.setReplaced(new Element(String.valueOf(System.currentTimeMillis()))
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
         // server.selected_npc
         if (attribute.startsWith("selected_npc")) {
             event.setReplaced(new dNPC(((Citizens) Bukkit.getPluginManager().getPlugin("Citizens"))
@@ -106,7 +115,10 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // server.list_npcs
+        // <--
+        // <server.current_time_millis> -> dList(dNPC)
+        // returns a dList of dNPCs currently in the Citizens NPC Registry.
+        // -->
         if (attribute.startsWith("list_npcs")) {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
             for (NPC npc : CitizensAPI.getNPCRegistry())
@@ -115,7 +127,10 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // server.list_worlds
+        // <--
+        // <server.current_time_millis> -> dList(dNPC)
+        // returns a dList of dNPCs currently in the Citizens NPC Registry.
+        // -->
         if (attribute.startsWith("list_worlds")) {
             ArrayList<dWorld> worlds = new ArrayList<dWorld>();
             for (World world : Bukkit.getWorlds())
