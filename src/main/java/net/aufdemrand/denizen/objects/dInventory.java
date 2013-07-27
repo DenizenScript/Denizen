@@ -37,7 +37,7 @@ public class dInventory implements dObject {
     /**
      * Determine whether a string is a valid inventory.
      *
-     * @param string  the string
+     * @param arg  the arg string
      * @return  true if matched, otherwise false
      *
      */

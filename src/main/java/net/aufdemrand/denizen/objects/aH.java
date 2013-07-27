@@ -425,7 +425,7 @@ public class aH {
 
     @Deprecated
     public static dEntity getEntityFrom(String arg) {
-        arg = arg.replace("entity:", "");
+        arg = arg.toLowerCase().replace("entity:", "");
         return dEntity.valueOf(arg);
     }
 
@@ -447,7 +447,7 @@ public class aH {
 
     @Deprecated
     public static dItem getItemFrom(String arg) {
-        arg = arg.replace("item:", "");
+        arg = arg.toLowerCase().replace("item:", "");
         dItem stack = dItem.valueOf(arg);
         return stack;
     }
@@ -459,13 +459,13 @@ public class aH {
 
     @Deprecated
     public static dLocation getLocationFrom(String arg) {
-        arg = arg.replace("location:", "");
+        arg = arg.toLowerCase().replace("location:", "");
         return dLocation.valueOf(arg);
     }
 
     @Deprecated
     public static dScript getScriptFrom(String arg) {
-        arg = arg.replace("script:", "");
+        arg = arg.toLowerCase().replace("script:", "");
         return dScript.valueOf(arg);
     }
 
@@ -486,7 +486,7 @@ public class aH {
 
     @Deprecated
     public static Duration getDurationFrom(String arg) {
-    	arg = arg.replace("duration:", "").replace("delay:", "");
+    	arg = arg.toLowerCase().replace("duration:", "").replace("delay:", "");
         return Duration.valueOf(arg);
     }
 
@@ -496,12 +496,12 @@ public class aH {
 
     @Deprecated
     public static boolean matchesDuration(String arg) {
-    	arg = arg.replace("duration:", "").replace("delay:", "");
+    	arg = arg.toLowerCase().replace("duration:", "").replace("delay:", "");
         return Duration.matches(arg);
     }
 
     public static boolean matchesEntityType(String arg) {
-        arg = arg.replace("entity:", "");
+        arg = arg.toLowerCase().replace("entity:", "");
 
         // Check against valid EntityTypes using Bukkit's EntityType enum
         for (EntityType validEntity : EntityType.values())
