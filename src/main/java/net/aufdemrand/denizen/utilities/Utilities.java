@@ -379,5 +379,26 @@ public class Utilities {
             }
         }
     }
+    
+    /**
+     * Check if a block location equals another location.
+     * @param block The block location to check for.
+     * @param location The location to check against.
+     * @return Whether or not the block location eqauls the location.
+     */
+    
+    public static boolean isBlock(Location block, Location location) {
 
+        if (!block.getWorld().getName().equals(location.getWorld().getName()))
+            return false;
+
+        if (Math.abs(block.getBlockX() - location.getBlockX())
+                > 0) return false;
+        if (Math.abs(block.getBlockY() - location.getBlockY())
+                > 0) return false;
+        if (Math.abs(block.getBlockZ() - location.getBlockZ())
+                > 0) return false;
+
+        return true;
+    }
 }
