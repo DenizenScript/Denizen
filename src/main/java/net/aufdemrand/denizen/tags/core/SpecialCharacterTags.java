@@ -44,6 +44,9 @@ public class SpecialCharacterTags implements Listener {
 
        else if (event.getName().equalsIgnoreCase("&lc"))
            event.setReplaced("{");
+       
+       else if (event.getName().equalsIgnoreCase("&ns"))
+    	   event.setReplaced("#");
 
    }
     
