@@ -173,7 +173,7 @@ public class CommandRegistry implements dRegistry {
                 "HEALTH", "health (state:true/false/toggle) (set_max:<#>)", 1);
 		
         registerCoreMember(HurtCommand.class,
-        		"HURT", "hurt (qty:<#.#>) (target:<entity>)", 0);
+        		"HURT", "hurt (<#.#>) (entities:<entity>|...)", 0);
         
         registerCoreMember(IfCommand.class, 
         		"IF", "if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
