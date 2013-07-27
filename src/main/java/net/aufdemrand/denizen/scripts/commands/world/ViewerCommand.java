@@ -23,6 +23,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 /**
@@ -30,7 +31,7 @@ import org.bukkit.event.block.BlockBreakEvent;
  * - viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in)
  * @author Morphan1
  */
-public class ViewerCommand extends AbstractCommand {
+public class ViewerCommand extends AbstractCommand implements Listener {
 
 	private enum Action { CREATE, MODIFY, REMOVE }
 	private enum Type { SIGN_POST, WALL_SIGN }
@@ -218,35 +219,44 @@ public class ViewerCommand extends AbstractCommand {
         viewers.clear();
 
         FileConfiguration saves = DenizenAPI.getCurrentInstance().getSaves();
-
-        for (String key : saves.getConfigurationSection("Viewers").getKeys(false)) {
-            Viewer viewer = new Viewer(key, saves.getString("Viewers." + key.toLowerCase() + ".content"), dLocation.valueOf(saves.getString("Viewers." + key.toLowerCase() + ".dLocation")));
-            viewers.put(key, viewer);
-            final Sign sign = (Sign) viewer.getLocation().getBlock().getState();
-            final String[] content = viewer.getContent().split("; ");
-            if (viewer.getContent().startsWith("location")) {
-            	int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
-        			public void run() {
-        				Player player = Bukkit.getPlayerExact(content[1]);
-        				if (player == null)
-        					Utilities.setSignLines((Sign) sign, new String[]{"", content[1], "is offline.",""});
-        				else
-        					Utilities.setSignLines((Sign) sign, new String[]{String.valueOf(player.getLocation().getX()), String.valueOf(player.getLocation().getY()), String.valueOf(player.getLocation().getZ()), player.getWorld().getName()});
-        			}
-        		}, 0, 20);
-            	viewer.setTask(task);
-            }
-        }
+        
+        if (saves.contains("Viewers"))
+        	for (String key : saves.getConfigurationSection("Viewers").getKeys(false)) {
+        		Viewer viewer = new Viewer(key, saves.getString("Viewers." + key.toLowerCase() + ".content"), dLocation.valueOf(saves.getString("Viewers." + key.toLowerCase() + ".location")));
+        		viewers.put(key, viewer);
+        		final Sign sign = (Sign) viewer.getLocation().getBlock().getState();
+        		final String[] content = viewer.getContent().split("; ");
+        		if (viewer.getContent().startsWith("location")) {
+        			int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+        				public void run() {
+        					Player player = Bukkit.getPlayerExact(content[1]);
+        					if (player == null)
+        						Utilities.setSignLines((Sign) sign, new String[]{"", content[1], "is offline.",""});
+        					else
+        						Utilities.setSignLines((Sign) sign, new String[]{String.valueOf(player.getLocation().getX()), String.valueOf(player.getLocation().getY()), String.valueOf(player.getLocation().getZ()), player.getWorld().getName()});
+        				}
+        			}, 0, 20);
+        			viewer.setTask(task);
+        		}
+        	}
+        else
+        	return;
     }
     
     @EventHandler
     public static void blockBreaks(BlockBreakEvent event) {
     	dLocation location = new dLocation(event.getBlock().getLocation());
     	for (Viewer viewer : viewers.values())
-    		if (location.equals(viewer.getLocation())) {
+    		if (Utilities.isBlock(location, viewer.getLocation())) {
     			event.getPlayer().sendMessage(ChatColor.RED + "You're not allowed to break that sign.");
     			event.setCancelled(true);
     		}
+    }
+    
+    @Override
+    public void onEnable() {
+        DenizenAPI.getCurrentInstance().getServer().getPluginManager()
+        	.registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 	
 	@Override
