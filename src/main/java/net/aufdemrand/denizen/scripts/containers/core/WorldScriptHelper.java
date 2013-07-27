@@ -1030,7 +1030,8 @@ public class WorldScriptHelper implements Listener {
         context.put("message", new Element(event.getDeathMessage()));
         
         String determination = doEvents(Arrays.asList
-        		("player dies"),
+        		("player dies",
+        		 "player death"),
         		null, event.getEntity(), context);
 
         // Handle message
