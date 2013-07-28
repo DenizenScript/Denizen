@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -44,7 +43,11 @@ public class ItemScriptContainer extends ScriptContainer {
             if (stack == null) return null;
 
             ItemMeta meta = stack.getItemStack().getItemMeta();
-
+            List<String> lore = new ArrayList<String>();
+            
+            // Set Id of the first, invisible lore
+            lore.add("§0id: " + getName());
+            
             // Set Display Name
             if (contains("DISPLAY NAME")){
             	String displayName = TagManager.tag(player, npc, getString("DISPLAY NAME"));
@@ -53,14 +56,14 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Set Lore
             if (contains("LORE")) {
-            	List<String> taggedLore = new ArrayList<String>();
+            	
             	for (String l : getStringList("LORE")){
             		 l = TagManager.tag(player, npc, l);
-            		 taggedLore.add(l);
+            		 lore.add(l);
             	}
-                meta.setLore(taggedLore);
             }
             	
+            meta.setLore(lore);
             stack.getItemStack().setItemMeta(meta);
 
             // Set Enchantments
@@ -99,9 +102,6 @@ public class ItemScriptContainer extends ScriptContainer {
 
                 stack = book.writeBookTo(stack, player, npc);
             }
-
-            // Set Id of the stack
-            stack.setItemStack(CustomNBT.addCustomNBT(stack.getItemStack(), "denizen-script-id", getName()));
 
         } catch (Exception e) {
             dB.echoError("Woah! An exception has been called with this item script!");

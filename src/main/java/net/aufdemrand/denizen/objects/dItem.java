@@ -347,6 +347,44 @@ public class dItem implements dObject {
 
     // Additional helper methods
 
+    /**
+     * Check whether this item contains a lore that starts
+     * with a certain prefix.
+     *
+     * @param String  The prefix
+     * @return  True if it does, otherwise false
+     *
+     */
+    public boolean containsLore(String prefix) {
+    	
+    	for (String itemLore : getItemStack().getItemMeta().getLore()) {
+    		if (itemLore.startsWith(prefix)) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+
+    /**
+     * Get the lore from this item that starts with a
+     * certain prefix.
+     *
+     * @param String  The prefix
+     * @return  String  The lore
+     *
+     */
+    public String getLore(String prefix) {
+    	
+    	for (String itemLore : getItemStack().getItemMeta().getLore()) {
+    		if (itemLore.startsWith(prefix)) {
+    			return itemLore.substring(prefix.length());
+    		}
+    	}
+    	
+    	return "";
+    }
+    
     public void setAmount(int value) {
         if (item != null)
             item.setAmount(value);
@@ -437,8 +475,9 @@ public class dItem implements dObject {
     			return "i@" + getSaved(this);
 
     		// If not a saved item, but is a custom item, return the script id
-    		else if (CustomNBT.hasCustomNBT(getItemStack(), "denizen-script-id"))
-    			return "i@" + CustomNBT.getCustomNBT(getItemStack(), "denizen-script-id");
+    		else if (containsLore("§0id:")) {
+    			return "i@" + getLore("§0id: ");
+    		}
     	}
 
         // Else, return the material name and data

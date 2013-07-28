@@ -388,7 +388,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return loc.getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith("find")) {
+        if (attribute.startsWith("find") || attribute.startsWith("nearest")) {
             attribute.fulfill(1);
             ArrayList<dObject> found = new ArrayList<dObject>();
             
