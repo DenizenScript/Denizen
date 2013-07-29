@@ -718,9 +718,16 @@ public class WorldScriptHelper implements Listener {
         		 entity.getType().name() + " shoots arrow"),
         		null, null, context);
         
-        if (determination.toUpperCase().startsWith("PROJECTILE")) {
-        	Entity replaced = entity.getWorld().spawnEntity(entity.getLocation(), EntityType.valueOf(aH.getStringFrom(determination)));
-        	event.setProjectile(replaced);
+        if (dEntity.matches(determination)) {
+        	dEntity newProjectile = dEntity.valueOf(determination);
+        	if (!newProjectile.isSpawned())
+        		try { 
+        			newProjectile = new dEntity(entity.getWorld().spawnEntity(entity.getLocation(), EntityType.valueOf(aH.getStringFrom(determination))));
+        			event.setProjectile(newProjectile.getBukkitEntity());
+        		}
+        		catch(Exception e){}
+        	else
+        		event.setProjectile(newProjectile.getBukkitEntity());
         }
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
