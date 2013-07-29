@@ -20,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -585,6 +586,10 @@ public class WorldScriptHelper implements Listener {
         		
         		// If we had no player in our regular context, use this one
         		if (player == null) player = subPlayer;
+        	}
+        	else if (damager instanceof Projectile) {
+        		context.put("shooter", new dEntity(((Projectile) damager).getShooter()));
+        		context.put("damager", new dEntity(damager));
         	}
         	else {
         		context.put("damager", new dEntity(damager));
