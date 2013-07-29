@@ -492,9 +492,10 @@ public class dItem implements dObject {
     	if (getItemStack() == null) return null;
     	
     	if (getItemStack().getTypeId() != 0) {
-    	
-    		if (isSaved(this))
+    		
+    		if (isSaved(this)) {
     			return "i@" + getSaved(this);
+    		}
 
     		// If not a saved item, but is a custom item, return the script id
     		else if (isItemscript()) {
@@ -532,6 +533,12 @@ public class dItem implements dObject {
             return new Element(String.valueOf(getItemStack().getAmount()))
                     .getAttribute(attribute.fulfill(1));
 
+        // Needs to be above "id" or it won't work
+        if (attribute.startsWith("identify")) {
+            return new Element(identify())
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
         if (attribute.startsWith("id"))
             return new Element(String.valueOf(getItemStack().getTypeId()))
                     .getAttribute(attribute.fulfill(1));
@@ -641,10 +648,6 @@ public class dItem implements dObject {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
-
-        if (attribute.startsWith("identify"))
-            return new Element(identify())
-                    .getAttribute(attribute.fulfill(1));
 
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
