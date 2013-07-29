@@ -17,6 +17,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -40,6 +41,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
@@ -702,6 +704,28 @@ public class WorldScriptHelper implements Listener {
         
         if (aH.matchesValueArg("AMOUNT", determination, aH.ArgumentType.Double))
             event.setAmount(aH.getDoubleFrom(determination));
+    }
+    
+    @EventHandler
+    public void entityShootBow(EntityShootBowEvent event) {
+    	
+        Map<String, Object> context = new HashMap<String, Object>();
+        Entity entity = event.getEntity();
+        context.put("entity", new dEntity(entity));
+        
+        String determination = doEvents(Arrays.asList
+        		("entity shoots arrow",
+        		 entity.getType().name() + " shoots arrow"),
+        		null, null, context);
+        
+        if (determination.toUpperCase().startsWith("PROJECTILE")) {
+        	Entity replaced = entity.getWorld().spawnEntity(entity.getLocation(), EntityType.valueOf(aH.getStringFrom(determination)));
+        	event.setProjectile(replaced);
+        }
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+        
     }
     
     @EventHandler

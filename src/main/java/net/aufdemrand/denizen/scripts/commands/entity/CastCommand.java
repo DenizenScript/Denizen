@@ -9,10 +9,8 @@ import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -64,7 +62,7 @@ import java.util.List;
  *  - NARRATE 'You can see through the night!' <br>
  * </ol></tt>
  *
- * @author aufdemrand, Jeebiss
+ * @author aufdemrand, Jeebiss, Morphan1
  *
  */
 public class CastCommand extends AbstractCommand{
