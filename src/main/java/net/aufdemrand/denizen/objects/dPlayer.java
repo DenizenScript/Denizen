@@ -717,8 +717,7 @@ public class dPlayer implements dObject {
 
         // <--
         // <player.allowed_flight> -> Element(boolean)
-        // returns a dItem that the player's cursor is on, if any. This includes
-        // chest interfaces, inventories, and hotbars, etc.
+        // returns true if the player is allowed to fly, and false otherwise
         // -->
         if (attribute.startsWith("allowed_flight"))
             return new Element(String.valueOf(getPlayerEntity().getAllowFlight()))

@@ -15,7 +15,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -478,7 +480,7 @@ public class dItem implements dObject {
 
     		// If not a saved item, but is a custom item, return the script id
     		else if (containsLore("§0id:")) {
-    			return "i@" + getLore("§0id: ");
+    			return "i@" + getLore("§0id:");
     		}
     	}
 
@@ -586,9 +588,19 @@ public class dItem implements dObject {
 
         }
 
+        // Return all lore except for lore that holds item script ID
         if (attribute.startsWith("lore")) {
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore())
-                return new dList(getItemStack().getItemMeta().getLore()).getAttribute(attribute.fulfill(1));
+            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
+            	
+            	List<String> loreList = new ArrayList<String>();
+            	
+            	for (String itemLore : getItemStack().getItemMeta().getLore()) {
+            		if (!itemLore.startsWith("§0id:")) {
+            			loreList.add(itemLore);
+            		}
+            	}
+                return new dList(loreList).getAttribute(attribute.fulfill(1));
+            }
             else return new dList("").getAttribute(attribute.fulfill(1));
         }
 

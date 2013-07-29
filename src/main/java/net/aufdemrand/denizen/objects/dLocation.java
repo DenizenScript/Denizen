@@ -356,10 +356,11 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 String[] ints = attribute.getContext(1).split(",", 3);
                 if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
                         && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
-                        && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2])))
+                        && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2]))) {
                     return new dLocation(this.clone().add(Double.valueOf(ints[0]),
                             Double.valueOf(ints[1]),
                             Double.valueOf(ints[2]))).getAttribute(attribute.fulfill(1));
+                }
             }
         }
 
