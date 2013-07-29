@@ -472,6 +472,23 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 		found.add(new dPlayer(player));
             }
 
+
+            // <--
+            // <location.find.entities.within[X]> -> dList
+            // Returns a dList of entities within a radius.
+            // -->
+        
+            else if (attribute.startsWith("entities")
+                && attribute.getAttribute(2).startsWith("within")
+                && attribute.hasContext(2)) {
+                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                double radiusSquared = radius*radius;
+                attribute.fulfill(2);
+                for (Entity Entitty : getWorld().getEntitys())
+                        if (Entity.getLocation().distanceSquared(getBlock().getLocation()) <= radiusSquared)
+                                found.add(new dEntity(Entity));
+            }
+
             else return "null";
 
             return new dList(found).getAttribute(attribute);
