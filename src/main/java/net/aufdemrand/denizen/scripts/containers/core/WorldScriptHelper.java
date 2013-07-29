@@ -194,7 +194,7 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
         
-        if (determination.toUpperCase().startsWith("DROP")) {
+        if (determination.length() > 0) {
 
         	// Cancel the event
         	event.setCancelled(true);
@@ -207,7 +207,7 @@ public class WorldScriptHelper implements Listener {
         	// Otherwise, get a list of items from "drops"
         	else {
         	
-        		List<dObject> newItems = dList.valueOf(aH.getStringFrom(determination)).filter(dItem.class);
+        		List<dObject> newItems = dList.valueOf(determination).filter(dItem.class);
             	List<ItemStack> drops = new ArrayList<ItemStack>();
             	
             	for (dObject newItem : newItems) {
@@ -975,8 +975,7 @@ public class WorldScriptHelper implements Listener {
             return;
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        if (determination.toUpperCase().startsWith("MESSAGE"))
-            event.setMessage(aH.getStringFrom(determination));
+        else event.setMessage(determination);
     }
     
     @EventHandler
@@ -1018,8 +1017,8 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        if (determination.toUpperCase().startsWith("ITEM_IN_HAND")) {
-            ItemStack is = dItem.valueOf(aH.getStringFrom(determination)).getItemStack();
+        if (dItem.matches(determination)) {
+            ItemStack is = dItem.valueOf(determination).getItemStack();
             event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
         }
 
@@ -1039,8 +1038,8 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        if (determination.toUpperCase().startsWith("ITEM_IN_HAND")) {
-            ItemStack is = dItem.valueOf(aH.getStringFrom(determination)).getItemStack();
+        if (dItem.matches(determination)) {
+            ItemStack is = dItem.valueOf(determination).getItemStack();
             event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
         }
     }
@@ -1093,8 +1092,8 @@ public class WorldScriptHelper implements Listener {
         		null, event.getEntity(), context);
 
         // Handle message
-        if (determination.toUpperCase().startsWith("MESSAGE"))
-            event.setDeathMessage(aH.getStringFrom(determination));
+        if (determination.length() > 0)
+            event.setDeathMessage(determination);
     }
     
     @EventHandler
@@ -1322,8 +1321,8 @@ public class WorldScriptHelper implements Listener {
         		null, event.getPlayer(), context);
 
         // Handle message
-        if (determination.toUpperCase().startsWith("MESSAGE"))
-            event.setJoinMessage(aH.getStringFrom(determination));
+        if (determination.length() > 0)
+            event.setJoinMessage(determination);
     }
     
     @EventHandler
@@ -1389,8 +1388,8 @@ public class WorldScriptHelper implements Listener {
         		null, event.getPlayer(), context).toUpperCase();
 
         // Handle determine message
-        if (determination.toUpperCase().startsWith("MESSAGE"))
-            event.setQuitMessage(aH.getStringFrom(determination));
+        if (determination.length() > 0)
+            event.setQuitMessage(determination);
     }
 
     @EventHandler
@@ -1411,9 +1410,8 @@ public class WorldScriptHelper implements Listener {
         String determination = doEvents(events, null, event.getPlayer(), context);
         
         // Handle determine message
-        if (determination.toUpperCase().startsWith("LOCATION")) {
-        	
-        	dLocation location = dLocation.valueOf(aH.getStringFrom(determination));
+        if (dLocation.matches(determination)) {
+        	dLocation location = dLocation.valueOf(determination);
 
         	if (location != null) event.setRespawnLocation(location);
         }
