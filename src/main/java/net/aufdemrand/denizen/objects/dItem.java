@@ -357,9 +357,11 @@ public class dItem implements dObject {
      */
     public boolean containsLore(String prefix) {
     	
-    	for (String itemLore : getItemStack().getItemMeta().getLore()) {
-    		if (itemLore.startsWith(prefix)) {
-    			return true;
+    	if (getItemStack().getItemMeta().hasLore()) {
+    		for (String itemLore : getItemStack().getItemMeta().getLore()) {
+    			if (itemLore.startsWith(prefix)) {
+    				return true;
+    			}
     		}
     	}
     	

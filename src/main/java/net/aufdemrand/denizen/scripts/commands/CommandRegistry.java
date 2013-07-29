@@ -71,7 +71,7 @@ public class CommandRegistry implements dRegistry {
         		"ASSIGNMENT", "assignment [{set}/remove] (script:<name>)", 1);
 		
         registerCoreMember(AttackCommand.class, 
-        		"ATTACK", "attack (stop)", 0);
+        		"ATTACK", "attack (cancel) (entities:<entity>|...) (target:<entity>)", 0);
 
         registerCoreMember(BreakCommand.class,
                 "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);

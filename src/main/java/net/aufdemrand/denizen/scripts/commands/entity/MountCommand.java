@@ -80,7 +80,7 @@ public class MountCommand extends AbstractCommand {
         					 aH.debugObj("entities", entities.toString()));
 
 		// Mount or dismount all of the entities
-		if (cancel == false) {
+		if (cancel.equals(false)) {
 			
 			// Go through all the entities, spawning/teleporting them
 	        for (dEntity entity : entities) {

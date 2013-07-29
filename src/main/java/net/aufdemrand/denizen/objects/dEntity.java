@@ -8,6 +8,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_6_R2.EntityLiving;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -541,8 +543,13 @@ public class dEntity implements dObject {
     
     public void target(LivingEntity target) {
     	
+    	// If the target is not null, cast it to an NMS EntityLiving
+    	// as well for one of the two methods below
+    	EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
+    									: null;
+    	
     	((CraftCreature) entity).getHandle().
-			setGoalTarget(((CraftLivingEntity) target).getHandle());
+			setGoalTarget(nmsTarget);
 
     	((CraftCreature) entity).setTarget(target);
     }
@@ -812,7 +819,8 @@ public class dEntity implements dObject {
             return new Element(String.valueOf(getLivingEntity().getCanPickupItems()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("id"))
+        // Get the dEntity's Bukkit entity ID
+        if (attribute.startsWith("eid"))
             return new Element(String.valueOf(entity.getEntityId()))
                     .getAttribute(attribute.fulfill(1));
 
