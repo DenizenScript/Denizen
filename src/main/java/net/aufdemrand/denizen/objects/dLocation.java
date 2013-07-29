@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
@@ -11,6 +12,7 @@ import net.aufdemrand.denizen.utilities.entity.Rotation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
@@ -464,11 +466,9 @@ public class dLocation extends org.bukkit.Location implements dObject {
             else if (attribute.startsWith("players")
             	&& attribute.getAttribute(2).startsWith("within")
             	&& attribute.hasContext(2)) {
-            	int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
-                double radiusSquared = radius*radius;
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers())
-                	if (player.getLocation().distanceSquared(getBlock().getLocation()) <= radiusSquared)
+                	if (Utilities.checkLocation(this, player.getLocation(), aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10))
                 		found.add(new dPlayer(player));
             }
 
@@ -480,11 +480,9 @@ public class dLocation extends org.bukkit.Location implements dObject {
             else if (attribute.startsWith("entities")
                 && attribute.getAttribute(2).startsWith("within")
                 && attribute.hasContext(2)) {
-                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
-                double radiusSquared = radius*radius;
                 attribute.fulfill(2);
                 for (Entity entity : getWorld().getEntities())
-                        if (entity.getLocation().distanceSquared(getBlock().getLocation()) <= radiusSquared)
+                	if (Utilities.checkLocation(this, entity.getLocation(), aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10))
                                 found.add(new dEntity(entity));
             } 
  
