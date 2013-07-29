@@ -124,6 +124,10 @@ public class CastCommand extends AbstractCommand{
         // No potion specified? Problem!
         if (!scriptEntry.hasObject("effect"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PotionType");
+        
+        if (!scriptEntry.hasObject("amplifier"))
+        	scriptEntry.addObject("amplifier", new Element(1));
+
     }
 
     @SuppressWarnings("unchecked")
