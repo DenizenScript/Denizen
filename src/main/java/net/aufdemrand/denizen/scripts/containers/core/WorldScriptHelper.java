@@ -109,9 +109,9 @@ public class WorldScriptHelper implements Listener {
             if (script == null) continue;
             
             for (String eventName : eventNames) {
-
+            	
                 if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
-
+                
             	// Fetch script from Event
                 //
                 // Note: a "new dPlayer(null)" will not be null itself,
@@ -175,12 +175,17 @@ public class WorldScriptHelper implements Listener {
         events.add("player breaks " + blockType + " with " + item.identify());
         
         if (item.identify().equals(item.identify().split(":")[0]) == false) {
-        	
         	events.add("player breaks block with " +
         			item.identify().split(":")[0]);
         	events.add("player breaks " + blockType + " with " +
         			item.identify().split(":")[0]);
         }
+        if (item.isItemscript()) {
+    		events.add("player breaks block with itemscript "
+    				+ item.getMaterial());
+    		events.add("player breaks " + blockType + " with itemscript "
+    				+ item.getMaterial());
+    	}
         
         String determination = doEvents(events, null, event.getPlayer(), context);
 
@@ -781,11 +786,15 @@ public class WorldScriptHelper implements Listener {
         //       and endermen for instance
         
         else if (dEntity.matches(determination)) {
-        	dEntity newTarget = dEntity.valueOf(determination);
+        	final dEntity attacker = new dEntity(entity);
+        	final dEntity newTarget = dEntity.valueOf(determination);
         	
-        	if (newTarget.isSpawned()) {
-        		event.setTarget(newTarget.getBukkitEntity());
-        	}
+        	Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+    			public void run() {
+
+    				attacker.target(newTarget.getLivingEntity());
+    			}
+    		}, 1);
         }
     }
     
@@ -883,11 +892,16 @@ public class WorldScriptHelper implements Listener {
         			item.identify() + " in " + type + " inventory");
         	
         	if (item.identify().equals(item.identify().split(":")[0]) == false) {
-        		
         		events.add(interaction + " on " +
                 		item.identify().split(":")[0] + " in inventory");
         		events.add(interaction + " on " +
             			item.identify().split(":")[0] + " in " + type + " inventory");
+        	}
+        	if (item.isItemscript()) {
+        		events.add(interaction + " on " +
+        				item.getMaterial() + " in inventory");
+        		events.add(interaction + " on " +
+        				item.getMaterial() + " in " + type + " inventory");
         	}
         }
         
@@ -1139,8 +1153,10 @@ public class WorldScriptHelper implements Listener {
         	events.add(interaction + " with " + item.identify());
         	
         	if (item.identify().equals(item.identify().split(":")[0]) == false) {
-        	
         		events.add(interaction + " with " + item.identify().split(":")[0]);
+        	}
+        	if (item.isItemscript()) {
+        		events.add(interaction + " with itemscript " + item.getMaterial());
         	}
         }
         
@@ -1156,8 +1172,10 @@ public class WorldScriptHelper implements Listener {
             	events.add(interaction + " with " + item.identify());
             	
             	if (item.identify().equals(item.identify().split(":")[0]) == false) {
-            		
                 	events.add(interaction + " with " + item.identify().split(":")[0]);
+            	}
+            	if (item.isItemscript()) {
+            		events.add(interaction + " with itemscript " + item.getMaterial());
             	}
             }
         }
@@ -1202,12 +1220,17 @@ public class WorldScriptHelper implements Listener {
            		item.identify());
         
         if (item.identify().equals(item.identify().split(":")[0]) == false) {
-        	
             events.add("player right clicks entity with " +
             		item.identify().split(":")[0]);
             events.add("player right clicks " + entityType + " with " +
                		item.identify().split(":")[0]);
         }
+        if (item.isItemscript()) {
+    		events.add("player right clicks entity with itemscript " +
+    				item.getMaterial());
+    		events.add("player right clicks " + entityType + " with itemscript " +
+    				item.getMaterial());
+    	}
         
         if (entity instanceof ItemFrame) {
         	dItem itemFrame = new dItem(((ItemFrame) entity).getItem());
@@ -1220,6 +1243,10 @@ public class WorldScriptHelper implements Listener {
         		
         		events.add("player right clicks " + entityType + " " +
             			itemFrame.identify().split(":")[0]);
+        	}
+        	if (itemFrame.isItemscript()) {
+        		events.add("player right clicks " + entityType + 
+        				" itemscript " + item.getMaterial());
         	}
         }
         
@@ -1241,9 +1268,11 @@ public class WorldScriptHelper implements Listener {
         events.add("player consumes " + item.identify());
         
         if (item.identify().equals(item.identify().split(":")[0]) == false) {
-        	
         	events.add("player consumes " + item.identify().split(":")[0]);
         }
+        if (item.isItemscript()) {
+    		events.add("player consumes itemscript " + item.getMaterial());
+    	}
         
         String determination = doEvents(events, null, event.getPlayer(), context);
         

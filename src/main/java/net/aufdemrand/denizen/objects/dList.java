@@ -270,6 +270,10 @@ public class dList extends ArrayList<String> implements dObject {
             else
                 return new Element(item).getAttribute(attribute.fulfill(1));
         }
+        
+        if (attribute.startsWith("last")) {
+        	return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("prefix"))
             return new Element(prefix)

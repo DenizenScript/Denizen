@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -389,6 +388,25 @@ public class dItem implements dObject {
     	return "";
     }
     
+    /**
+     * Check whether this item contains the lore specific
+     * to item scripts.
+     *
+     * @return  True if it does, otherwise false
+     *
+     */
+    public boolean isItemscript() {
+    	
+    	if (containsLore("§0id:")) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public String getMaterial() {
+    	return getItemStack().getType().name().toLowerCase();
+    }
+    
     public void setAmount(int value) {
         if (item != null)
             item.setAmount(value);
@@ -479,7 +497,7 @@ public class dItem implements dObject {
     			return "i@" + getSaved(this);
 
     		// If not a saved item, but is a custom item, return the script id
-    		else if (containsLore("§0id:")) {
+    		else if (isItemscript()) {
     			return "i@" + getLore("§0id:");
     		}
     	}

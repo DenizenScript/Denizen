@@ -158,8 +158,9 @@ public class aH {
                         .invoke(null, value);
 
                // dB.log("Created: " + clazz.cast(arg).debug());
-
-                return (T) clazz.cast(arg).setPrefix(prefix);
+                if (arg != null) {
+                	return (T) clazz.cast(arg).setPrefix(prefix);
+                }
 
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
