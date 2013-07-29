@@ -5,7 +5,10 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -68,105 +71,85 @@ public class CastCommand extends AbstractCommand{
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        // Required fields
-        PotionEffect potionEffect;
-        List<LivingEntity> targets = new ArrayList<LivingEntity>();
-        Duration duration = null;
-        int amplifier = 1;
-        PotionEffectType potion = null;
+        
+    	// Iterate through arguments
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-        // Iterate through arguments
-        for (String arg : scriptEntry.getArguments()) {
+            if (!scriptEntry.hasObject("duration")
+            		&& arg.matchesArgumentType(Duration.class)
+            		&& arg.matchesPrefix("duration, d"))
+            	scriptEntry.addObject("duration", arg.asType(Duration.class));
 
-            if (aH.matchesDuration(arg))
-                duration = aH.getDurationFrom(arg);
+            else if (!scriptEntry.hasObject("amplifier")
+            		&& (arg.matchesPrimitive(aH.PrimitiveType.Integer)
+            		|| arg.matchesPrimitive(aH.PrimitiveType.Double))
+            		&& arg.matchesPrefix("power, p"))
+            	scriptEntry.addObject("amplifier", arg.asElement());
+            	
 
-            else if (aH.matchesValueArg("POWER", arg, ArgumentType.Integer))
-                amplifier = aH.getIntegerFrom(arg);
-
-            else if (aH.matchesValueArg("TARGETS, TARGET", arg, ArgumentType.String)) {
-                // May be multiple targets, so let's treat this as a potential list.
-                // dScript list entries are separated by pipes ('|')
-                for (String t : aH.getListFrom(arg)) {
-                    // If specifying the linked PLAYER
-                    if (aH.getStringFrom(t).equalsIgnoreCase("PLAYER") && scriptEntry.getPlayer() != null) {
-                        if (scriptEntry.getPlayer() == null)
-                            dB.echoError("Cannot add PLAYER as a target! Attached Player is NULL!");
-                        else
-                            targets.add(scriptEntry.getPlayer().getPlayerEntity());
-
-                    // If specifying the linked NPC
-                    } else if (aH.getStringFrom(t).equalsIgnoreCase("NPC") && scriptEntry.getNPC() != null) {
-                        if (scriptEntry.getNPC() == null)
-                            dB.echoError("Cannot add NPC as a target! Attached NPC is NULL!");
-                        else targets.add(scriptEntry.getNPC().getEntity());
-
-                    // If a saved LivingEntity
-                    } else if (aH.getEntityFrom(t) != null) {
-                        targets.add(aH.getEntityFrom(t).getLivingEntity());
-
-                    // If nothing could be made of the object
-                    } else  {
-                        dB.echoError("Invalid TARGET type or unavailable TARGET object!");
-                    }
-                }
+        	else if (!scriptEntry.hasObject("entities")
+                	&& arg.matchesPrefix("entity, entities, e, target, targets")) {
+                scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 
             // Try to match a PotionEffectType (this argument is prefixless, since it's required)
-            else if (potion == null) {
-                try { potion = PotionEffectType.getByName(aH.getStringFrom(arg)); }
-                catch (Exception e) { dB.echoError("Invalid PotionEffectType!"); }
+            else if (!scriptEntry.hasObject("effect")
+            		&& arg.matchesPrimitive(aH.PrimitiveType.String)) {
+                if (PotionEffectType.getByName(arg.asElement().asString()) == null)
+                	dB.echoError("Invalid PotionEffectType!");
+                else
+                	scriptEntry.addObject("effect", PotionEffectType.getByName(arg.asElement().asString()));
             }
-
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            
         }
 
         // Set default duration if not specified
-        if (duration == null) duration = new Duration(60);
+        if (!scriptEntry.hasObject("duration"))
+        	scriptEntry.addObject("duration", new Duration(60));
 
         // No targets specified, let's use defaults if available
-        // Target Player by default
-        if (targets.isEmpty() && scriptEntry.getPlayer() != null)
-            targets.add(scriptEntry.getPlayer().getPlayerEntity());
-        // If no Player, target the NPC by default
-        if (targets.isEmpty() && scriptEntry.getNPC() != null)
-            targets.add(scriptEntry.getNPC().getEntity());
+        if (!scriptEntry.hasObject("entities")) {
+        	List<dEntity> entities = new ArrayList<dEntity>();
+        	
+            // Target Player by default
+        	if (scriptEntry.getPlayer() != null)
+        		entities.add(scriptEntry.getPlayer().getDenizenEntity());
+            // If no Player, target the NPC by default
+        	else if (scriptEntry.getNPC() != null)
+        		entities.add(scriptEntry.getNPC().getDenizenEntity());
+            // Still no targets? Problem!
+        	else
+        		throw new InvalidArgumentsException("No valid target entities found!");
+        	scriptEntry.addObject("entities", entities);
+        }
 
         // No potion specified? Problem!
-        if (potion == null)
+        if (!scriptEntry.hasObject("effect"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PotionType");
-        // Still no targets? Problem!
-        if (targets.isEmpty())
-            throw new InvalidArgumentsException("No valid target(s)! Perhaps you specified a non-existing Player or NPCID?");
-
-        // Denizen durations are in seconds, PotionEffect duration is in ticks, so a little bit of math is necessary
-        potionEffect = new PotionEffect(potion, duration.getTicksAsInt(), amplifier);
-
-        // Save items in the scriptEntry
-        scriptEntry.addObject("potion", potionEffect);
-        scriptEntry.addObject("targets", targets);
-        scriptEntry.addObject("duration", duration);
     }
 
     @SuppressWarnings("unchecked")
 	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
-        List<LivingEntity> targets = (List<LivingEntity>) scriptEntry.getObject("targets");
-        PotionEffect potion = (PotionEffect) scriptEntry.getObject("potion");
+        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        PotionEffectType effect = (PotionEffectType) scriptEntry.getObject("effect");
+        int amplifier = ((Element) scriptEntry.getObject("amplifier")).asInt();
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
         // Report to dB
         dB.report(getName(),
-                aH.debugObj("Target(s)", targets.toString())
-                        + aH.debugObj("Potion", potion.getType().getName())
-                        + aH.debugObj("Amplifier", String.valueOf(potion.getAmplifier()))
+                aH.debugObj("Target(s)", entities.toString())
+                        + aH.debugObj("Effect", effect.getName())
+                        + aH.debugObj("Amplifier", amplifier)
                         + duration.debug());
 
         // Apply the PotionEffect to the targets!
-        for (LivingEntity target : targets)
-            if (!potion.apply(target))
-                dB.echoError("Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + target.toString() + "'.");
+        for (dEntity entity : entities) {
+        	PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier);
+            if (!potion.apply(entity.getLivingEntity()))
+                dB.echoError("Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
+        }
     }
 
 }
