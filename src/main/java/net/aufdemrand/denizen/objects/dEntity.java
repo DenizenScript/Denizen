@@ -212,12 +212,12 @@ public class dEntity implements dObject {
 
             if (m.group(2) != null) {
 
-                data1 = m.group(2).toUpperCase();
+                data1 = m.group(2);
             }
 
             if (m.group(3) != null) {
 
-                data2 = m.group(3).toUpperCase();
+                data2 = m.group(3);
             }
 
             for (EntityType type : EntityType.values()) {
@@ -385,7 +385,12 @@ public class dEntity implements dObject {
 
                     org.bukkit.entity.Entity ent = null;
 
-                    if (entity_type.name().matches("FALLING_BLOCK")) {
+                    if (entity_type.name().matches("PLAYER")) {
+                    	
+                    	NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1);
+                    	npc.spawn(location);
+                    }
+                    else if (entity_type.name().matches("FALLING_BLOCK")) {
 
                         Material material = null;
 
@@ -395,7 +400,7 @@ public class dEntity implements dObject {
 
                             // If we did not get a block with "RANDOM", or we got
                             // air or portals, keep trying
-                            while (data1.equals("RANDOM") &&
+                            while (data1.equalsIgnoreCase("RANDOM") &&
                                     (material.isBlock() == false ||
                                      material == Material.AIR ||
                                      material == Material.PORTAL ||
@@ -689,7 +694,7 @@ public class dEntity implements dObject {
             dB.echoDebug("dEntity has returned null.");
             return "null";
         }
-
+        
         if (attribute.startsWith("get_vehicle")) {
             if (getBukkitEntity().isInsideVehicle())
                 return new dEntity(getBukkitEntity().getVehicle())

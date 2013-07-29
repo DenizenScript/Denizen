@@ -12,6 +12,8 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.citizensnpcs.api.ai.Navigator;
+import net.citizensnpcs.api.ai.TargetType;
 
 /**
  *
@@ -35,7 +37,7 @@ public class AttackCommand extends AbstractCommand {
     		}
         	
     		else if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesPrefix("entity, entities, e")) {
+                	&& arg.matchesPrefix("entity, entities, e, attacker, attackers, a")) {
                 // Entity dList arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
@@ -85,13 +87,19 @@ public class AttackCommand extends AbstractCommand {
         
         for (dEntity entity : entities) {
         	if (entity.isNPC()) {
+        		Navigator nav = entity.getNPC().getNavigator();
+        		
         		if (cancel.equals(false)) {
-        			entity.getNPC().getNavigator()
-                		.setTarget(target.getBukkitEntity(), true);
+        			nav.setTarget(target.getBukkitEntity(), true);
         		}
         		else {
-        			entity.getNPC().getNavigator()
-                    	.cancelNavigation();
+        			// Only cancel navigation if the NPC is attacking something
+        			if (nav.isNavigating()
+        				&& nav.getTargetType().equals(TargetType.ENTITY)
+        				&& nav.getEntityTarget().isAggressive()) {
+        				
+        				nav.cancelNavigation();
+        			}
         		}
         	}
         	else {
