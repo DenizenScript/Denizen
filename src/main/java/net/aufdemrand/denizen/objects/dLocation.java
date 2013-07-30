@@ -466,9 +466,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
             else if (attribute.startsWith("players")
             	&& attribute.getAttribute(2).startsWith("within")
             	&& attribute.hasContext(2)) {
+            	int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers())
-                	if (Utilities.checkLocation(this, player.getLocation(), aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10))
+                	if (Utilities.checkLocation(this, player.getLocation(), radius))
                 		found.add(new dPlayer(player));
             }
 
@@ -476,13 +477,13 @@ public class dLocation extends org.bukkit.Location implements dObject {
             // <location.find.entities.within[X]> -> dList
             // Returns a dList of entities within a radius.
             // -->
-        
             else if (attribute.startsWith("entities")
                 && attribute.getAttribute(2).startsWith("within")
                 && attribute.hasContext(2)) {
+            	int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 attribute.fulfill(2);
                 for (Entity entity : getWorld().getEntities())
-                	if (Utilities.checkLocation(this, entity.getLocation(), aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10))
+                	if (Utilities.checkLocation(this, entity.getLocation(), radius))
                                 found.add(new dEntity(entity));
             } 
  
