@@ -194,13 +194,13 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
         
-        if (determination.length() > 0) {
+        else if (determination.equals("none") == false) {
 
         	// Cancel the event
         	event.setCancelled(true);
         	
         	// If "drops:nothing" is used, clear the block's drops
-        	if (aH.getStringFrom(determination).equalsIgnoreCase("nothing")) {
+        	if (determination.equalsIgnoreCase("nothing")) {
         		block.getDrops().clear();
         	}
         	
@@ -1092,8 +1092,9 @@ public class WorldScriptHelper implements Listener {
         		null, event.getEntity(), context);
 
         // Handle message
-        if (determination.length() > 0)
+        if (determination.equals("none") == false) {
             event.setDeathMessage(determination);
+        }
     }
     
     @EventHandler
@@ -1321,8 +1322,9 @@ public class WorldScriptHelper implements Listener {
         		null, event.getPlayer(), context);
 
         // Handle message
-        if (determination.length() > 0)
+        if (determination.equals("none") == false) {
             event.setJoinMessage(determination);
+        }
     }
     
     @EventHandler
@@ -1388,8 +1390,9 @@ public class WorldScriptHelper implements Listener {
         		null, event.getPlayer(), context).toUpperCase();
 
         // Handle determine message
-        if (determination.length() > 0)
+        if (determination.equals("none") == false) {
             event.setQuitMessage(determination);
+        }
     }
 
     @EventHandler
