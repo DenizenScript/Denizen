@@ -67,6 +67,10 @@ public class aH {
         public boolean hasPrefix() {
             return has_prefix;
         }
+        
+        public Argument getPrefix() {
+            return new Argument(prefix);
+        }
 
         public boolean startsWith(String string) {
             return value.startsWith(string);

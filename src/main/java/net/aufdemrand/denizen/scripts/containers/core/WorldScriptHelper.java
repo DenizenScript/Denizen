@@ -716,28 +716,38 @@ public class WorldScriptHelper implements Listener {
     	
         Map<String, Object> context = new HashMap<String, Object>();
         Entity entity = event.getEntity();
+        Entity projectile = event.getProjectile();
         context.put("entity", new dEntity(entity));
+        context.put("bow", new dItem(event.getBow()));
+        context.put("projectile", new dEntity(projectile));
         
         String determination = doEvents(Arrays.asList
-        		("entity shoots arrow",
-        		 entity.getType().name() + " shoots arrow"),
+        		("entity shoots bow",
+        		 entity.getType().name() + " shoots bow"),
         		null, null, context);
         
-        if (dEntity.matches(determination)) {
-        	dEntity newProjectile = dEntity.valueOf(determination);
-        	if (!newProjectile.isSpawned())
-        		try { 
-        			newProjectile = new dEntity(entity.getWorld().spawnEntity(entity.getLocation(), EntityType.valueOf(aH.getStringFrom(determination))));
-        			event.setProjectile(newProjectile.getBukkitEntity());
-        		}
-        		catch(Exception e){}
-        	else
-        		event.setProjectile(newProjectile.getBukkitEntity());
+        if (determination.toUpperCase().startsWith("CANCELLED")) {
+        	event.setCancelled(true);
         }
         
-        if (determination.toUpperCase().startsWith("CANCELLED"))
+        // Don't use event.setProjectile() because it doesn't work
+        else if (dEntity.matches(determination)) {
         	event.setCancelled(true);
-        
+        	dEntity newProjectile = dEntity.valueOf(determination);
+        	
+        	if (!newProjectile.isSpawned()) {
+        		newProjectile.spawnAt(projectile.getLocation());
+        	}
+        	
+        	// Set the entity as the shooter of the projectile
+        	if (newProjectile.getBukkitEntity() instanceof Projectile
+        		&& entity instanceof LivingEntity) {
+        		((Projectile) newProjectile.getBukkitEntity())
+        			.setShooter((LivingEntity) entity);
+        	}
+        	
+        	newProjectile.getBukkitEntity().setVelocity(projectile.getVelocity());
+        }
     }
     
     @EventHandler
