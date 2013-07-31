@@ -50,14 +50,12 @@ public class PlaySoundCommand extends AbstractCommand {
             }
 			
 			else if (!scriptEntry.hasObject("volume")
-					&& (arg.matchesPrimitive(aH.PrimitiveType.Integer)
-					|| arg.matchesPrimitive(aH.PrimitiveType.Double))
+					&& arg.matchesPrimitive(aH.PrimitiveType.Double)
 					&& arg.matchesPrefix("volume, v"))
 				scriptEntry.addObject("volume", arg.asElement());
 
 			else if (!scriptEntry.hasObject("pitch")
-					&& (arg.matchesPrimitive(aH.PrimitiveType.Integer)
-					|| arg.matchesPrimitive(aH.PrimitiveType.Double))
+					&& arg.matchesPrimitive(aH.PrimitiveType.Double)
 					&& arg.matchesPrefix("pitch, p"))
                 scriptEntry.addObject("pitch", arg.asElement());
 			

@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -52,30 +53,47 @@ public class ZapCommand extends AbstractCommand implements Listener{
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize required fields
-        dScript script = scriptEntry.getScript();
-        String step = null;
-        Duration duration = new Duration(-1d);
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        	
+        	if (!scriptEntry.hasObject("script")
+        			&& !scriptEntry.hasObject("step")
+        			&& arg.getPrefix() != null
+        			&& arg.getPrefix().matchesArgumentType(dScript.class)) {
+        		scriptEntry.addObject("script", arg.getPrefix().asType(dScript.class));
+        		scriptEntry.addObject("step", arg.asElement());
+        	}
+        	
+        	else if (!scriptEntry.hasObject("script")
+            		&& arg.matchesArgumentType(dScript.class)) {
+                scriptEntry.addObject("script", arg.asType(dScript.class));
 
-        for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesScript(arg)) {
-                script = aH.getScriptFrom(arg);
-
-            } else if (aH.matchesValueArg("STEP", arg, aH.ArgumentType.String)
-                    || aH.matchesInteger(arg)) {
-                step = aH.getStringFrom(arg);
-                dB.echoDebug(Messages.DEBUG_SET_STEP, step);
+            } 
+            
+            else if (!scriptEntry.hasObject("step")
+            		&& (arg.matchesPrimitive(aH.PrimitiveType.String)
+            		|| arg.matchesPrimitive(aH.PrimitiveType.Integer))) {
+                scriptEntry.addObject("step", arg.asElement());
+                dB.echoDebug(Messages.DEBUG_SET_STEP, arg.toString());
                 
-            } else if (aH.matchesDuration(arg)) {
-                duration = aH.getDurationFrom(arg);
+            } 
+            
+            else if (!scriptEntry.hasObject("duration")
+            		&& arg.matchesArgumentType(Duration.class)) {
+            	scriptEntry.addObject("duration", arg.asType(Duration.class));
 
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            } 
+
         }
 
-        // Add objects to scriptEntry to use in execute()
-        scriptEntry.addObject("script", script)
-                .addObject("step", step)
-                .addObject("duration", duration);
+        if (!scriptEntry.hasObject("script"))
+        	scriptEntry.addObject("script", scriptEntry.getScript());
+        
+        if (!scriptEntry.hasObject("duration"))
+        	scriptEntry.addObject("duration", new Duration(-1d));
+        
+        if (!scriptEntry.hasObject("step"))
+        	throw new InvalidArgumentsException("Must specify a step!");
+
     }
 
     //"PlayerName,ScriptName", TaskID
@@ -85,7 +103,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         final dScript script = (dScript) scriptEntry.getObject("script");
-        String step = (String) scriptEntry.getObject("step");
+        String step = ((Element) scriptEntry.getObject("step")).asString();
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
         // Let's get the current step for reference.

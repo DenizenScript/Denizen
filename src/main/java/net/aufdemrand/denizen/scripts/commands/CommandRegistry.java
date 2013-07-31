@@ -314,7 +314,7 @@ public class CommandRegistry implements dRegistry {
                 "YAML", "yaml [load/create/save:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]", 1);
 
         registerCoreMember(ZapCommand.class, 
-        		"ZAP", "zap [<#>/step:<name>] (script:<name>) (duration:<#>)", 0);
+        		"ZAP", "zap (<script>:)[<step>] (<duration>)", 0);
         
         
         // STOP (There's no more commands, spazz!)
