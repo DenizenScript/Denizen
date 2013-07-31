@@ -39,15 +39,6 @@ public class PlaySoundCommand extends AbstractCommand {
 			if (!scriptEntry.hasObject("location")
 					&& arg.matchesArgumentType(dLocation.class))
 				scriptEntry.addObject("location", arg.asType(dLocation.class));
-
-			else if (!scriptEntry.hasObject("sound")
-					&& Sound.valueOf(arg.toString()) != null) {
-        		try {
-            		scriptEntry.addObject("sound", Sound.valueOf(arg.toString()));
-            	} catch (Exception e) {
-            		dB.echoError("Invalid sound!");
-            	}
-            }
 			
 			else if (!scriptEntry.hasObject("volume")
 					&& arg.matchesPrimitive(aH.PrimitiveType.Double)
@@ -58,6 +49,15 @@ public class PlaySoundCommand extends AbstractCommand {
 					&& arg.matchesPrimitive(aH.PrimitiveType.Double)
 					&& arg.matchesPrefix("pitch, p"))
                 scriptEntry.addObject("pitch", arg.asElement());
+
+			else if (!scriptEntry.hasObject("sound")
+					&& arg.matchesPrimitive(aH.PrimitiveType.String)) {
+        		try {
+            		scriptEntry.addObject("sound", Sound.valueOf(arg.asElement().asString().toUpperCase()));
+            	} catch (Exception e) {
+            		dB.echoError("Invalid sound!");
+            	}
+            }
 			
 		}
 
