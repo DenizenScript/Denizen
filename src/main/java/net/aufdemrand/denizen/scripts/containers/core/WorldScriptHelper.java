@@ -722,15 +722,32 @@ public class WorldScriptHelper implements Listener {
     	
         Map<String, Object> context = new HashMap<String, Object>();
         Entity entity = event.getEntity();
+        String entityType = entity.getType().name();
         Entity projectile = event.getProjectile();
-        context.put("entity", new dEntity(entity));
+
+        Player player = null;
+        dNPC npc = null;
+        
+        if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
+    		npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
+    		context.put("entity", npc);
+    		entityType = "npc";
+    	}
+    	else if (entity instanceof Player) {
+    		player = (Player) entity;
+    		context.put("entity", new dPlayer((Player) entity));
+    	}
+    	else {
+    		context.put("entity", new dEntity(entity));
+    	}
+        
         context.put("bow", new dItem(event.getBow()));
         context.put("projectile", new dEntity(projectile));
         
         String determination = doEvents(Arrays.asList
         		("entity shoots bow",
-        		 entity.getType().name() + " shoots bow"),
-        		null, null, context);
+        		 entityType + " shoots bow"),
+        		npc, player, context);
         
         if (determination.toUpperCase().startsWith("CANCELLED")) {
         	event.setCancelled(true);
