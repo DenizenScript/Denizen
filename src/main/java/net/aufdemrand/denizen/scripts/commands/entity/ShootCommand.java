@@ -76,6 +76,13 @@ public class ShootCommand extends AbstractCommand {
                scriptEntry.addObject("speed", arg.asElement());
            }
         	
+            else if (!scriptEntry.hasObject("height")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("height, h")) {
+               // Add value
+               scriptEntry.addObject("height", arg.asElement());
+           }
+        	
             else if (!scriptEntry.hasObject("script")
                      && arg.matchesArgumentType(dScript.class)) {
                 // add value
@@ -92,7 +99,8 @@ public class ShootCommand extends AbstractCommand {
         // Use a default speed of 1.5 if one is not specified
         
         scriptEntry.defaultObject("speed", new Element(1.5));
-        scriptEntry.defaultObject("duration", new Element("80t"));
+        scriptEntry.defaultObject("height", new Element(0));
+        scriptEntry.defaultObject("duration", Duration.valueOf("80t"));
         
         // Check to make sure required arguments have been filled
         
@@ -119,6 +127,7 @@ public class ShootCommand extends AbstractCommand {
 		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 		final Element speed = (Element) scriptEntry.getObject("speed");
         final dScript script = (dScript) scriptEntry.getObject("script");
+        final double height = ((Element) scriptEntry.getObject("height")).asDouble();
         final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt() / 2;
         
         // Report to dB
@@ -169,7 +178,7 @@ public class ShootCommand extends AbstractCommand {
         	int runs = 0;
 
         	public void run() {
-    	        				
+
         		if (runs < maxTicks && lastEntity.isValid())
         		{
         			Vector v1 = lastEntity.getLocation().toVector();
@@ -204,9 +213,10 @@ public class ShootCommand extends AbstractCommand {
         			{
         				Map<String, String> context = new HashMap<String, String>();
             			context.put("1", lastEntity.getLocation().getX() + "," + lastEntity.getLocation().getY() + "," + lastEntity.getLocation().getZ() + "," + lastEntity.getLocation().getWorld().getName());
-        					
+            			context.put("2", "e@" + lastEntity.getEntityId());
+            			
                         ((TaskScriptContainer) script.getContainer()).setSpeed(new Duration(0))
-                           		.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
+                           			.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
         			}
         				
         		}
