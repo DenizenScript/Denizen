@@ -1402,7 +1402,7 @@ public class WorldScriptHelper implements Listener {
     public void playerMoveEvent(PlayerMoveEvent event) {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
 
-        String name = dLocation.getSaved(event.getPlayer().getLocation());
+        String name = dLocation.getSaved(new dLocation(event.getPlayer().getLocation()));
 
         if (name != null) {
             Map<String, Object> context = new HashMap<String, Object>();
@@ -1433,7 +1433,7 @@ public class WorldScriptHelper implements Listener {
         		null, event.getPlayer(), context).toUpperCase();
 
         // Handle determine message
-        if (determination.equals("none") == false) {
+        if (!determination.equalsIgnoreCase("none")) {
             event.setQuitMessage(determination);
         }
     }
