@@ -2,13 +2,16 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
@@ -17,7 +20,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -194,33 +196,30 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
         
-        else if (determination.equals("none") == false) {
+        // Make nothing drop, usually used as "drop:nothing"
+        else if (determination.toUpperCase().startsWith("NOTHING")) {
+        	event.setCancelled(true);
+        	block.setType(Material.AIR);
+        }
+        
+        // Get a dList of dItems to drop
+        else if (Argument.valueOf(determination).matchesArgumentList(dItem.class)) {
 
         	// Cancel the event
         	event.setCancelled(true);
-        	
-        	// If "drops:nothing" is used, clear the block's drops
-        	if (determination.equalsIgnoreCase("nothing")) {
-        		block.getDrops().clear();
-        	}
-        	
-        	// Otherwise, get a list of items from "drops"
-        	else {
-        	
-        		List<dObject> newItems = dList.valueOf(determination).filter(dItem.class);
-            	List<ItemStack> drops = new ArrayList<ItemStack>();
-            	
-            	for (dObject newItem : newItems) {
-            		
-            		block.getWorld().dropItemNaturally(block.getLocation(),
-            				((dItem) newItem).getItemStack()); // Drop each item
-            		
-            		drops.add(((dItem) newItem).getItemStack());
-            	}
-        	}
-
-        	// Remove the block
         	block.setType(Material.AIR);
+        	
+        	// Get the list of items
+        	Object list = dList.valueOf(determination).filter(dItem.class);
+        	
+        	@SuppressWarnings("unchecked")
+        	List<dItem> newItems = (List<dItem>) list;
+            	
+            for (dItem newItem : newItems) {
+            		
+            	block.getWorld().dropItemNaturally(block.getLocation(),
+            			newItem.getItemStack()); // Drop each item
+            }
         }
     }
     
@@ -634,16 +633,21 @@ public class WorldScriptHelper implements Listener {
 
             if (determination.toUpperCase().startsWith("CANCELLED"))
             	event.setCancelled(true);
-            if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Double))
+            
+            else if (Argument.valueOf(determination)
+            		.matchesPrimitive(aH.PrimitiveType.Double)) {
                 event.setDamage(aH.getDoubleFrom(determination));
+            }
     	}
     	
         determination = doEvents(events, npc, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
-        if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Double))
+        else if (Argument.valueOf(determination)
+        		.matchesPrimitive(aH.PrimitiveType.Double)) {
             event.setDamage(aH.getDoubleFrom(determination));
+        }
     }
 
     @EventHandler
@@ -707,8 +711,10 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
         
-        if (aH.matchesValueArg("AMOUNT", determination, aH.ArgumentType.Double))
+        else if (Argument.valueOf(determination)
+        		.matchesPrimitive(aH.PrimitiveType.Double)) {
             event.setAmount(aH.getDoubleFrom(determination));
+        }
     }
     
     @EventHandler
@@ -731,22 +737,45 @@ public class WorldScriptHelper implements Listener {
         }
         
         // Don't use event.setProjectile() because it doesn't work
-        else if (dEntity.matches(determination)) {
+        else if (Argument.valueOf(determination).matchesArgumentList(dEntity.class)) {
+        	
         	event.setCancelled(true);
-        	dEntity newProjectile = dEntity.valueOf(determination);
         	
-        	if (!newProjectile.isSpawned()) {
-        		newProjectile.spawnAt(projectile.getLocation());
-        	}
+        	// Get the list of entities
+        	Object list = dList.valueOf(determination).filter(dEntity.class);
         	
-        	// Set the entity as the shooter of the projectile
-        	if (newProjectile.getBukkitEntity() instanceof Projectile
-        		&& entity instanceof LivingEntity) {
-        		((Projectile) newProjectile.getBukkitEntity())
-        			.setShooter((LivingEntity) entity);
-        	}
-        	
-        	newProjectile.getBukkitEntity().setVelocity(projectile.getVelocity());
+        	@SuppressWarnings("unchecked")
+			List<dEntity> newProjectiles = (List<dEntity>) list;
+            
+			// Go through all the entities, spawning/teleporting them
+            for (dEntity newProjectile : newProjectiles) {
+            
+            	if (newProjectile.isSpawned() == false) {
+            		newProjectile.spawnAt(projectile.getLocation());
+            	}
+            	else {
+            		newProjectile.teleport(projectile.getLocation());
+            	}
+            	
+            	// Set the entity as the shooter of the projectile
+            	if (newProjectile.getBukkitEntity() instanceof Projectile
+            		&& entity instanceof LivingEntity) {
+            		((Projectile) newProjectile.getBukkitEntity())
+            			.setShooter((LivingEntity) entity);
+            	}
+            }
+            
+            // Mount the projectiles on top of each other
+            Position.mount(Conversion.convert(newProjectiles));
+            
+            // Get the last entity on the list, i.e. the one at the bottom
+            // if there are many mounted on top of each other
+            Entity lastProjectile = newProjectiles.get
+            		(newProjectiles.size() - 1).getBukkitEntity();
+            
+            // Give it the same velocity as the arrow that would
+            // have been shot by the bow
+        	lastProjectile.setVelocity(projectile.getVelocity());
         }
     }
     
@@ -893,8 +922,10 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
         	event.setCancelled(true);
-        if (aH.matchesValueArg("FOOD", determination, aH.ArgumentType.Integer))
+        else if (Argument.valueOf(determination)
+        		.matchesPrimitive(aH.PrimitiveType.Double)) {
             event.setFoodLevel(aH.getIntegerFrom(determination));
+        }
     }
     
     
@@ -1502,8 +1533,10 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
         
-        if (aH.matchesValueArg("DAMAGE", determination, aH.ArgumentType.Double))
+        else if (Argument.valueOf(determination)
+        		.matchesPrimitive(aH.PrimitiveType.Double)) {
             event.setDamage(aH.getDoubleFrom(determination));
+        }
     }
     
     @EventHandler

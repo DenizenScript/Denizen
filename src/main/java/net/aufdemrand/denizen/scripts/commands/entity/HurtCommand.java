@@ -31,7 +31,7 @@ public class HurtCommand extends AbstractCommand {
             	scriptEntry.addObject("amount", arg.asElement());
 
         	else if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesPrefix("entity, entities, e, target, targets")) {
+                	&& arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
         }

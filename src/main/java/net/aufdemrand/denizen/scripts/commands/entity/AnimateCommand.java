@@ -31,7 +31,7 @@ public class AnimateCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
         	if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesPrefix("entity, entities, e")) {
+                	&& arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }

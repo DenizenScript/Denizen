@@ -86,7 +86,7 @@ public class CastCommand extends AbstractCommand{
             	
 
         	else if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesPrefix("entity, entities, e, target, targets")) {
+                	&& arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
 

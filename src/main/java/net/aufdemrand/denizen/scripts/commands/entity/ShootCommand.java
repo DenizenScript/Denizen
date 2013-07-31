@@ -44,32 +44,32 @@ public class ShootCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
         	if (!scriptEntry.hasObject("origin")
-                    && arg.matchesArgumentType(dEntity.class)
-                    && arg.matchesPrefix("origin, o, source, shooter, s")) {
+                && arg.matchesArgumentType(dEntity.class)
+                && arg.matchesPrefix("origin, o, source, shooter, s")) {
                 // Entity arg
                 scriptEntry.addObject("origin", arg.asType(dEntity.class).setPrefix("entity"));
             }
             
             else if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesPrefix("entity, entities, e, projectile, entities, p")) {
+                	 && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
             
             else if (!scriptEntry.hasObject("destination")
-                    && arg.matchesArgumentType(dLocation.class)) {
+                     && arg.matchesArgumentType(dLocation.class)) {
                 // Location arg
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
         	
             else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 // Add value
                 scriptEntry.addObject("speed", arg.asElement());
             }
         	
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class)) {
+                     && arg.matchesArgumentType(dScript.class)) {
                 // add value
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
