@@ -202,11 +202,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         if (wasInterrupted) {
             Thread.currentThread().interrupt();
         }
-        
+
         if (cancelled == null)
             return;
         event.setCancelled(cancelled);
