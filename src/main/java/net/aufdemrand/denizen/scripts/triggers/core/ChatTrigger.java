@@ -40,6 +40,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     public void chatTrigger(final AsyncPlayerChatEvent event) {
         if (event.isCancelled()) return;
 
+        boolean wasInterrupted = Thread.interrupted();
+
         Callable<Boolean> call = new Callable<Boolean>() {
             public Boolean call() {
 
@@ -194,13 +196,17 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         try {
             cancelled = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
-        	// TODO: Maybe someday we can fix this?
-            //e.printStackTrace();
+            e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        if (wasInterrupted) {
+            Thread.currentThread().interrupt();
+        }
+        
         if (cancelled == null)
             return;
         event.setCancelled(cancelled);
