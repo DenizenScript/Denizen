@@ -73,6 +73,8 @@ public class aH {
         }
         
         public Argument getPrefix() {
+        	if (prefix == null)
+        		return null;
             return valueOf(prefix);
         }
 
