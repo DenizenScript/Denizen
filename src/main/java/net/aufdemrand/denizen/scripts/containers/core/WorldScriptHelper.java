@@ -49,6 +49,8 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -151,7 +153,7 @@ public class WorldScriptHelper implements Listener {
             		determination =  DetermineCommand.getOutcome(id);
             	}
         }
-
+        
         return determination;
     }
     
@@ -945,6 +947,58 @@ public class WorldScriptHelper implements Listener {
         }
     }
     
+    @EventHandler
+    public void itemDespawn(ItemDespawnEvent event) {
+    	
+        Map<String, Object> context = new HashMap<String, Object>();
+        dItem item = new dItem(event.getEntity().getItemStack());
+        
+        context.put("item", item);
+        context.put("entity", new dEntity(event.getEntity()));
+        
+        List<String> events = new ArrayList<String>();
+        events.add("item despawns");
+        events.add(item.identify() + " despawns");
+        
+        if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        	events.add(item.identify().split(":")[0] + " despawns");
+        }
+        if (item.isItemscript()) {
+        	events.add("itemscript " + item.getMaterial() + " despawns");
+        }
+        
+        String determination = doEvents(events, null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void itemSpawn(ItemSpawnEvent event) {
+    	
+        Map<String, Object> context = new HashMap<String, Object>();
+        dItem item = new dItem(event.getEntity().getItemStack());
+        
+        context.put("item", item);
+        context.put("entity", new dEntity(event.getEntity()));
+        
+        List<String> events = new ArrayList<String>();
+        events.add("item spawns");
+        events.add(item.identify() + " spawns");
+        
+        if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        	events.add(item.identify().split(":")[0] + " spawns");
+        }
+        if (item.isItemscript()) {
+        	events.add("itemscript " + item.getMaterial() + " spawns");
+        }
+        
+        String determination = doEvents(events, null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+        	event.setCancelled(true);
+    }
+    
     
     /////////////////////
     //   INVENTORY EVENTS
@@ -1408,11 +1462,11 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
         		("player logs in"),
-        		null, event.getPlayer(), context).toUpperCase();
+        		null, event.getPlayer(), context);
 
         // Handle determine kicked
         if (determination.toUpperCase().startsWith("KICKED"))
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, aH.getStringFrom(determination));
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination);
     }
     
     @EventHandler
@@ -1447,7 +1501,7 @@ public class WorldScriptHelper implements Listener {
         String determination = doEvents(Arrays.asList
         		("player quits",
         		 "player quit"),
-        		null, event.getPlayer(), context).toUpperCase();
+        		null, event.getPlayer(), context);
 
         // Handle determine message
         if (determination.equals("none") == false) {
