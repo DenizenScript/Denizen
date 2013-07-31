@@ -580,7 +580,7 @@ public class dEntity implements dObject {
         Class<?> typeClass = Class.forName(typeName);
         Object[] types = typeClass.getEnumConstants();
 
-        if (value.matches("RANDOM")) {
+        if (value.equalsIgnoreCase("RANDOM")) {
 
             entityClass.getMethod(method, typeClass).invoke(entity, types[Utilities.getRandom().nextInt(types.length)]);
         }
