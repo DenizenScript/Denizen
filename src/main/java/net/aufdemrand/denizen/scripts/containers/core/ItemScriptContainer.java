@@ -11,9 +11,12 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
+
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemScriptContainer extends ScriptContainer {
@@ -23,6 +26,28 @@ public class ItemScriptContainer extends ScriptContainer {
 	
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        // Set Recipe
+        if (contains("RECIPE")) {
+        	List<dItem> materials = new ArrayList<dItem>();
+        	for (String recipeRow : getStringList("RECIPE")) {
+        		recipeRow = TagManager.tag(new dPlayer(player), npc, recipeRow);
+        		String[] row = recipeRow.split("\\|", 3);
+        		for (String material : row) {
+        			materials.add(materials.size(), dItem.valueOf(material));
+        			if (material.contains(":"))
+        				materials.get(materials.size()-1).setData(Byte.valueOf(material.split(":")[1]));
+        		}
+        	}
+    		ShapedRecipe recipe = new ShapedRecipe(getItemFrom().getItemStack());
+    		recipe.shape("123", "456", "789");
+    		int x = 1;
+    		for (dItem material : materials) {
+    			if (material.getItemStack().getType().name().equals("AIR") == false)
+    				recipe.setIngredient(String.valueOf(x).charAt(0), material.getItemStack().getData());
+    			x++;
+    		}
+    		Bukkit.getServer().addRecipe(recipe);
+        }
     }
 
    public dItem getItemFrom() {
