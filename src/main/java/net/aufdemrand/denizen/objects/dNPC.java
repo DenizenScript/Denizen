@@ -259,7 +259,7 @@ public class dNPC implements dObject {
         
         // <--
         // <npc> -> dNPC
-        // Returns the dNPC of the NPC. (n@<npc.id>)
+        // Returns the dNPC of the NPC.
         // -->
         
         // <--

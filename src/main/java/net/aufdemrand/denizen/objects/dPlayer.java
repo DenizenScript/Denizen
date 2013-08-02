@@ -209,7 +209,7 @@ public class dPlayer implements dObject {
         
         // <--
         // <player> -> dPlayer
-        // Returns the dPlayer of the player. (p@<player.name>)
+        // Returns the dPlayer of the player.
         // -->
 
         // <--
