@@ -39,11 +39,11 @@ public class ItemScriptContainer extends ScriptContainer {
         		}
         	}
     		ShapedRecipe recipe = new ShapedRecipe(getItemFrom().getItemStack());
-    		recipe.shape("123", "456", "789");
-    		int x = 1;
+    		recipe.shape("abc", "def", "ghi");
+    		char x = 'a';
     		for (dItem material : materials) {
     			if (material.getItemStack().getType().name().equals("AIR") == false)
-    				recipe.setIngredient(String.valueOf(x).charAt(0), material.getItemStack().getData());
+    				recipe.setIngredient(x, material.getItemStack().getData());
     			x++;
     		}
     		Bukkit.getServer().addRecipe(recipe);
