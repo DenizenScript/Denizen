@@ -302,7 +302,7 @@ public class CommandRegistry implements dRegistry {
         		"VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
 		
         registerCoreMember(WaitCommand.class, 
-        		"WAIT", "wait (duration:<value>) (queue:<name>)", 0);
+        		"WAIT", "wait (<duration>) (queue:<name>)", 0);
 
         registerCoreMember(WalkCommand.class,
                 "WALK, WALKTO", "walk [<location>] (speed:<#>) (auto_range)", 1);

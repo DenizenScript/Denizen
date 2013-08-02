@@ -371,7 +371,9 @@ public class Utilities {
                 
         	Block block = signState.getBlock().getRelative(blockFace);
             
-        	if ((block.getType() != Material.AIR)) {
+        	if ((block.getType() != Material.AIR)
+        			&& block.getType() != Material.SIGN_POST
+        			&& block.getType() != Material.WALL_SIGN) {
         		
             	((org.bukkit.material.Sign) signState.getData())
             		.setFacingDirection(blockFace.getOppositeFace());
