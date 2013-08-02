@@ -256,8 +256,12 @@ public class dNPC implements dObject {
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return "null";
-
-
+        
+        // <--
+        // <npc> -> dNPC
+        // Returns the dNPC of the NPC. (n@<npc.id>)
+        // -->
+        
         // <--
         // <npc.name.nickname> -> Element
         // returns the NPC's nickname provided by the nickname trait, or null if the npc does not have the nickname trait.
