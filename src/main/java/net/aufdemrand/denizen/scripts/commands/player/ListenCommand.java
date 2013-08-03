@@ -89,7 +89,7 @@ public class ListenCommand extends AbstractCommand {
 
         // Set defaults
         scriptEntry.defaultObject("action", new Element("new"));
-        scriptEntry.defaultObject("id", UUID.randomUUID().toString());
+        scriptEntry.defaultObject("id", new Element(UUID.randomUUID().toString()));
 
         // Check for type (if using NEW) -- it's required
         if (!scriptEntry.hasObject("type")
