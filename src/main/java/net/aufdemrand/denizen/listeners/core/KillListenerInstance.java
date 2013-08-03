@@ -59,7 +59,6 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
     @Override
     public void onBuild(List<aH.Argument> args) {
-
         // Build the listener from script arguments. onBuild() is called when a new listener is
         // made with the LISTEN command. All arguments except type, id, and script
         // are passed through to here.
@@ -98,7 +97,6 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
     @Override
     public void onLoad() {
-
         // Build the listener from saved data. id and type are saved automatically.
         // onBuild() will not be called, this should handle everything onBuild() would with the
         // saved data from onSave().
@@ -115,7 +113,6 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
     @Override
     public void onSave() {
-
         // If the player leaves the game while a listener is in progress, save the information
         // so that it can be rebuilt onLoad(). id and type are done automatically.
         store("Type", type.name());
@@ -149,7 +146,6 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
     @Override
     public void constructed() {
-
         // Called after build and load methods. Perfect place to register
         // any bukkit events!
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
@@ -161,18 +157,17 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
     @Override
     public void deconstructed() {
-
         // Called when the instance is deconstructed due to either it being
         // saved, finished, or cancelled.
         // This is the perfect place to unregister any bukkit events so it
         // can be cleanly removed from memory.
+
         EntityDeathEvent.getHandlerList().unregister(this);
     }
 
 
     @EventHandler
     public void listen(EntityDeathEvent event) {
-
         // Only continue if the event is an event for the player that owns this listener.
         if (event.getEntity().getKiller() != player.getPlayerEntity()) return;
 
@@ -290,11 +285,11 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
 
     public void check() {
-
         // Check current kills vs. required kills; finish() if necessary.
         if (kills_so_far >= required)
             finish();
     }
+
 
     @EventHandler
     public void listenTag(ReplaceableTagEvent event) {

@@ -78,7 +78,6 @@ public class dItem implements dObject {
     ////////////////
     
     public static dItem valueOf(String string) {
-    	
     	return valueOf(string, null, null);
     }
 
@@ -352,7 +351,7 @@ public class dItem implements dObject {
      * Check whether this item contains a lore that starts
      * with a certain prefix.
      *
-     * @param String  The prefix
+     * @param prefix  The prefix
      * @return  True if it does, otherwise false
      *
      */
@@ -373,7 +372,7 @@ public class dItem implements dObject {
      * Get the lore from this item that starts with a
      * certain prefix.
      *
-     * @param String  The prefix
+     * @param prefix  The prefix
      * @return  String  The lore
      *
      */

@@ -736,7 +736,8 @@ public class CommandHandler {
             desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "save" },
             min = 1, max = 3, permission = "denizen.basic", flags = "s")
     public void save(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        ((Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen")).saveSaves();
+
+        DenizenAPI.getCurrentInstance().saveSaves();
 
         Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml saved to disk from memory.");
     }
