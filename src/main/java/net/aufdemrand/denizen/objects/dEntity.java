@@ -697,7 +697,7 @@ public class dEntity implements dObject {
         
         // <--
         // <entity> -> dEntity
-        // Returns the dEntity of the entity. (e@<entity.id>)
+        // Returns the dEntity of the entity.
         // -->
         
         // <--

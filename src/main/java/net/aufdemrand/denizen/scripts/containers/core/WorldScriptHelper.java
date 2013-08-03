@@ -1131,7 +1131,7 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        if (dItem.matches(determination)) {
+        if (determination.equals("none") == false) {
             ItemStack is = dItem.valueOf(determination).getItemStack();
             event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
         }
@@ -1152,7 +1152,7 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        if (dItem.matches(determination)) {
+        if (determination.equals("none") == false) {
             ItemStack is = dItem.valueOf(determination).getItemStack();
             event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
         }
@@ -1617,8 +1617,8 @@ public class WorldScriptHelper implements Listener {
         
     	Entity entity = event.getAttacker();
     	Vehicle vehicle = event.getVehicle();
-        
-    	String entityType = entity.getType().name();
+   
+    	String entityType = entity != null ? entity.getType().name() : null;
     	String vehicleType = vehicle.getType().name();
     	
     	Player player = null;

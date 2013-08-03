@@ -26,6 +26,7 @@ public class ItemScriptContainer extends ScriptContainer {
 	
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        ItemScriptHelper.item_scripts.put(getName(), this);
         // Set Recipe
         if (contains("RECIPE")) {
         	List<dItem> materials = new ArrayList<dItem>();
@@ -50,9 +51,9 @@ public class ItemScriptContainer extends ScriptContainer {
         }
     }
 
-   public dItem getItemFrom() {
+    public dItem getItemFrom() {
        return getItemFrom(null, null);
-   }
+    }
 
     public dItem getItemFrom(dPlayer player, dNPC npc) {
         // Try to use this script to make an item.
