@@ -80,9 +80,12 @@ public class KillListenerInstance extends AbstractListener implements Listener {
                 this.cuboid = arg.asType(dCuboid.class);
 
             else if (arg.matchesPrefix("targets, target, t, name, names"))
-                targets = (dList) arg.asType(dList.class);
+                targets = arg.asType(dList.class);
 
         }
+
+        if (targets == null)
+            targets = new dList("*");
 
         if (type == null) {
             dB.echoError("Missing TYPE argument! Valid: NPC, ENTITY, PLAYER, GROUP");
@@ -128,7 +131,6 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
     @Override
     public void onFinish() {
-
         // Nothing to do here for now, but this is called when the quest listener is
         // finished, after the script is run, and right before deconstructed().
 
@@ -138,7 +140,6 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
     @Override
     public void onCancel() {
-
         // Nothing to do here for now, but this is called when the quest listener is
         // cancelled, right before deconstructed().
 
