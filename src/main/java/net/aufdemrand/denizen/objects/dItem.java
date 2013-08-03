@@ -198,6 +198,7 @@ public class dItem implements dObject {
         		return stack;
         	}
         	catch (Exception e) {
+                if (!string.equalsIgnoreCase("none"))
         		dB.log("Does not match a valid item ID or material: " + string);
         	}
         }
@@ -220,7 +221,6 @@ public class dItem implements dObject {
         }
         nope = false;
         return false;
-
     }
 
 
