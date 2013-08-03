@@ -2,16 +2,14 @@ package net.aufdemrand.denizen.listeners.core;
 
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 import net.citizensnpcs.api.CitizensAPI;
 
+import net.citizensnpcs.trait.LookClose;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -184,56 +182,102 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         if (cuboid != null)
             if (!cuboid.isInsideCuboid(player.getLocation())) return;
 
-        // Check type!
+        //
+        // ENTITY type Kill Listener
+        //
         if (type == KillType.ENTITY) {
-
+            // Get entity killed
             dEntity ent = new dEntity(event.getEntity());
-            dB.log("Entity killed: " + ent.identify());
             boolean count_it = false;
-
+            // Check targets, if any match entity killed, count_it!
             for (String target : targets) {
                 if (dEntity.valueOf(target) != null)
                     if (ent.comparesTo(dEntity.valueOf(target)) == 1)
                         count_it = true;
             }
-
-            if (count_it
-                    || targets.contains("*")) {
+            // If an entity was found, or targets is '*', increment the
+            // kills_so_far
+            if (count_it || targets.contains("*")) {
                 kills_so_far++;
                 dB.log(player.getName() + " killed a "
                         + ent.identify() + ". Current progress '"
                         + kills_so_far + "/" + required + "'.");
+                // Check the number of kills so far
                 check();
             }
+        }
 
-        } else if (type == KillType.NPC) {
-            if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity()))
-                if (targets.contains(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName().toUpperCase())
-                        || targets.contains("*")
-                        || targets.contains(String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId() ))) {
-                    kills_so_far++;
-                    dB.log(player.getName() + " killed "
-                            + String.valueOf(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getId())
-                            + "/" + CitizensAPI.getNPCRegistry().getNPC(event.getEntity()).getName()
-                            + ". Current progress '" + kills_so_far + "/" + required + "'.");
-                    check();
+        //
+        // NPC type Kill Listener
+        //
+        else if (type == KillType.NPC) {
+            // If a NPC wasn't killed, return.
+            if (!CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) return;
+            // Get the NPC killed
+            dNPC npc = dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
+            boolean count_it = false;
+
+            // Check targets, if any match entity killed, count_it!
+            for (String target : targets) {
+                // Check IDs
+                if (dNPC.valueOf(target) != null) {
+                    if (dNPC.valueOf(target).getId() == npc.getId())
+                        count_it = true;
                 }
+                // Check Names
+                else if (npc.getName().equalsIgnoreCase(target))
+                    count_it = true;
+            }
+            // If NPC was matched or targets contains '*', increment
+            // the kills so far.
+            if (count_it || targets.contains("*")) {
+                kills_so_far++;
+                dB.log(player.getName() + " killed "
+                        + npc.toString() + ". Current progress '"
+                        + kills_so_far + "/" + required + "'.");
+                // Check the number of kills so far
+                check();
+            }
+        }
 
-        } else if (type == KillType.PLAYER) {
-            if (event.getEntityType() == EntityType.PLAYER)
-                if (targets.contains(((Player) event.getEntity()).getName().toUpperCase())
-                        || targets.contains("*")
-                        || targets.isEmpty()) {
-                    kills_so_far++;
-                    dB.log(player.getName() + " killed "
-                            + ((Player) event.getEntity()).getName().toUpperCase()
-                            + ". Current progress '" + kills_so_far + "/" + required + "'.");
-                    check();
-                }
+        //
+        // PLAYER type Kill Listener
+        //
+        else if (type == KillType.PLAYER) {
+            // Check to make sure entity is a Player, and not a NPC
+            if (event.getEntityType() != EntityType.PLAYER) return;
+            if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) return;
 
-        } else if (type == KillType.GROUP) {
+            // Get player killed
+            dPlayer player = dPlayer.mirrorBukkitPlayer((Player) event.getEntity());
+            boolean count_it = false;
+            // Check targets, if any match entity killed, count_it!
+            for (String target : targets) {
+                if (dPlayer.valueOf(target) != null)
+                    if (dPlayer.valueOf(target).getName().equalsIgnoreCase(player.getName()))
+                        count_it = true;
+            }
+            // If an entity was found, or targets is '*', increment the
+            // kills_so_far
+            if (count_it || targets.contains("*")) {
+                kills_so_far++;
+                dB.log(player.getName() + " killed "
+                        + player.getName() + ". Current progress '"
+                        + kills_so_far + "/" + required + "'.");
+                // Check the number of kills so far
+                check();
+            }
+        }
+
+        //
+        // GROUP type Kill Listener
+        //
+        else if (type == KillType.GROUP) {
+            // Require the entity to be a Player
             if (event.getEntityType() == EntityType.PLAYER)
+                // Iterate through groups on the Player
                 for (String group : Depends.permissions.getPlayerGroups((Player) event.getEntity()))
+                    // If a group matches, count it!
                     if (targets.contains(group.toUpperCase())) {
                         kills_so_far++;
                         dB.log(player.getName() + " killed " + ((Player) event.getEntity()).getName().toUpperCase() + " of group " + group + ".");
@@ -241,8 +285,6 @@ public class KillListenerInstance extends AbstractListener implements Listener {
                         break;
                     }
         }
-
-
     }
 
 
