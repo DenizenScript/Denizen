@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
@@ -63,9 +63,19 @@ public class aH {
 
             // dB.log("Constructed Argument: " + prefix + ":" + value);
         }
+        
+        public static Argument valueOf(String string) {
+        	return new Argument(string);
+        }
 
         public boolean hasPrefix() {
             return has_prefix;
+        }
+        
+        public Argument getPrefix() {
+        	if (prefix == null)
+        		return null;
+            return valueOf(prefix);
         }
 
         public boolean startsWith(String string) {
@@ -143,6 +153,18 @@ public class aH {
 
             return false;
         }
+        
+        // Check if this argument matches a dList of a certain dObject
+        public boolean matchesArgumentList(Class<? extends dObject> dClass) {
+
+        	dList list = new dList(this.getValue());
+        	
+        	if (list.filter(dClass) != null) {
+        		return true;
+        	}
+        	
+        	return false;
+        }
 
         public Element asElement() {
             return new Element(prefix, value);
@@ -158,8 +180,9 @@ public class aH {
                         .invoke(null, value);
 
                // dB.log("Created: " + clazz.cast(arg).debug());
-
-                return (T) clazz.cast(arg).setPrefix(prefix);
+                if (arg != null) {
+                	return (T) clazz.cast(arg).setPrefix(prefix);
+                }
 
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

@@ -6,8 +6,8 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_6_R2.EntityLiving;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -210,12 +210,12 @@ public class dEntity implements dObject {
 
             if (m.group(2) != null) {
 
-                data1 = m.group(2).toUpperCase();
+                data1 = m.group(2);
             }
 
             if (m.group(3) != null) {
 
-                data2 = m.group(3).toUpperCase();
+                data2 = m.group(3);
             }
 
             for (EntityType type : EntityType.values()) {
@@ -383,7 +383,12 @@ public class dEntity implements dObject {
 
                     org.bukkit.entity.Entity ent = null;
 
-                    if (entity_type.name().matches("FALLING_BLOCK")) {
+                    if (entity_type.name().matches("PLAYER")) {
+                    	
+                    	NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1);
+                    	npc.spawn(location);
+                    }
+                    else if (entity_type.name().matches("FALLING_BLOCK")) {
 
                         Material material = null;
 
@@ -393,7 +398,7 @@ public class dEntity implements dObject {
 
                             // If we did not get a block with "RANDOM", or we got
                             // air or portals, keep trying
-                            while (data1.equals("RANDOM") &&
+                            while (data1.equalsIgnoreCase("RANDOM") &&
                                     (material.isBlock() == false ||
                                             material == Material.AIR ||
                                             material == Material.PORTAL ||
@@ -541,6 +546,14 @@ public class dEntity implements dObject {
 
     public void target(LivingEntity target) {
 
+    	// If the target is not null, cast it to an NMS EntityLiving
+    	// as well for one of the two methods below
+    	EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
+    									: null;
+    	
+    	((CraftCreature) entity).getHandle().
+			setGoalTarget(nmsTarget);
+
         ((CraftCreature) entity).getHandle().
                 setGoalTarget(((CraftLivingEntity) target).getHandle());
 
@@ -568,7 +581,7 @@ public class dEntity implements dObject {
         Class<?> typeClass = Class.forName(typeName);
         Object[] types = typeClass.getEnumConstants();
 
-        if (value.matches("RANDOM")) {
+        if (value.equalsIgnoreCase("RANDOM")) {
 
             entityClass.getMethod(method, typeClass).invoke(entity, types[Utilities.getRandom().nextInt(types.length)]);
         }
@@ -700,7 +713,17 @@ public class dEntity implements dObject {
             dB.echoDebug("dEntity has returned null.");
             return "null";
         }
-
+        
+        // <--
+        // <entity> -> dEntity
+        // Returns the dEntity of the entity.
+        // -->
+        
+        // <--
+        // <entity.get_vehicle> -> dEntity
+        // If the entity is in a vehicle, returns the vehicle as a
+        // dEntity. Else, returns null.
+        // -->
         if (attribute.startsWith("get_vehicle")) {
             if (getBukkitEntity().isInsideVehicle())
                 return new dEntity(getBukkitEntity().getVehicle())
@@ -708,11 +731,20 @@ public class dEntity implements dObject {
             else return "null";
         }
 
+        // <--
+        // <entity.custom_name> -> Element
+        // If the entity has a custom name, returns the name as an
+        // Element. Else, returns null.
+        // -->
         if (attribute.startsWith("custom_name")) {
             if (getLivingEntity().getCustomName() == null) return "null";
             return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.name> -> Element
+        // Returns the name of the entity.
+        // -->
         if (attribute.startsWith("name")) {
             if (isNPC())
                 return new Element(getNPC().getName())
@@ -724,14 +756,19 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith("entity_type"))      {
-            // TODO: Fix this.. seems to be a bug? Horse will not return correct entityType
-            if (entity instanceof CraftAnimals
-                    && !(entity instanceof Pig))
-                return new Element("HORSE").getAttribute(attribute.fulfill(1));
+        // <--
+        // <entity.entity_type> -> Element
+        // Returns the type of the entity.
+        // -->
+        if (attribute.startsWith("entity_type")) {
             return new Element(entity_type.toString()).getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.custom_id> -> dScript/Element
+        // If the entity has a script ID, returns the dScript of that
+        // ID. Else, returns the name of the entity type.
+        // -->
         if (attribute.startsWith("custom_id")) {
             if (CustomNBT.hasCustomNBT(getLivingEntity(), "denizen-script-id"))
                 return new dScript(CustomNBT.getCustomNBT(getLivingEntity(), "denizen-script-id"))
@@ -741,6 +778,10 @@ public class dEntity implements dObject {
                         .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.location.cursor_on> -> dLocation
+        // Returns the dLocation of where the entity is looking.
+        // -->
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
             if (range < 1) range = 50;
@@ -748,10 +789,18 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.location.standing_on> -> dLocation
+        // Returns the dLocation of what the entity is standing on.
+        // -->
         if (attribute.startsWith("location.standing_on"))
             return new dLocation(entity.getLocation().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <entity.location> -> dLocation
+        // Returns the dLocation of the entity.
+        // -->
         if (attribute.startsWith("location")) {
 
             if (entity instanceof Player) {
@@ -770,6 +819,11 @@ public class dEntity implements dObject {
             }
         }
 
+        // <--
+        // <entity.health.formatted> -> Element
+        // Returns a 'formatted' value of the player's current health level.
+        // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
+        // -->
         if (attribute.startsWith("health.formatted")) {
             double maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
@@ -786,6 +840,10 @@ public class dEntity implements dObject {
             else return new Element("healthy").getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.health.percentage> -> Element(Number)
+        // Returns the entity's current health as a percentage.
+        // -->
         if (attribute.startsWith("health.percentage")) {
             double maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
@@ -794,87 +852,175 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.health.max> -> Element(Number)
+        // Returns the maximum health of the entity.
+        // -->
         if (attribute.startsWith("health.max"))
             return new Element(String.valueOf(getLivingEntity().getMaxHealth()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <entity.health> -> Element(Number)
+        // Returns the current health of the entity.
+        // -->
         if (attribute.startsWith("health"))
             return new Element(String.valueOf(getLivingEntity().getHealth()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.is_inside_vehicle> -> Element(Boolean)
+        // Returns true if the entity is inside a vehicle. Else, returns false.
+        // -->
         if (attribute.startsWith("is_inside_vehicle"))
             return new Element(String.valueOf(entity.isInsideVehicle()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.killer> -> dPlayer
+        // Returns the player that last killed the entity.
+        // -->
         if (attribute.startsWith("killer"))
             return new dPlayer(getLivingEntity().getKiller())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.last_damage.cause> -> Element
+        // Returns the cause of the last damage taken by the entity.
+        // -->
         if (attribute.startsWith("last_damage.cause"))
             return new Element(String.valueOf(entity.getLastDamageCause().getCause().toString()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <entity.last_damage.amount> -> Element(Number)
+        // Returns the amount of the last damage taken by the entity.
+        // -->
         if (attribute.startsWith("last_damage.amount"))
             return new Element(String.valueOf(getLivingEntity().getLastDamage()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <entity.last_damage.duration> -> Duration
+        // Returns the duration of the last damage taken by the entity.
+        // -->
         if (attribute.startsWith("last_damage.duration"))
             return new Duration((long) getLivingEntity().getNoDamageTicks())
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <entity.time_lived> -> Duration
+        // Returns how long the entity has lived.
+        // -->
         if (attribute.startsWith("time_lived"))
             return new Duration(entity.getTicksLived() / 20)
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.can_pickup_items> -> Element(Boolean)
+        // Returns true if the entity can pick up items. Else, returns false.
+        // -->
         if (attribute.startsWith("can_pickup_items"))
             return new Element(String.valueOf(getLivingEntity().getCanPickupItems()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("id"))
+        // <--
+        // <entity.eid> -> Element(Number)
+        // Returns the entity's Bukkit entity ID
+        // -->
+        if (attribute.startsWith("eid"))
             return new Element(String.valueOf(entity.getEntityId()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.fall_distance> -> Element(Number)
+        // Returns how far the entity has fallen.
+        // -->
         if (attribute.startsWith("fall_distance"))
             return new Element(String.valueOf(entity.getFallDistance()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.uuid> -> Element(Number)
+        // Returns a unique ID for the entity.
+        // -->
         if (attribute.startsWith("uuid"))
             return new Element(String.valueOf(entity.getUniqueId().toString()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.has_effect[<effect>]> -> Element(Boolean)
+        // Returns true if the entity has an effect. If no effect is
+        // specified, returns true if the entity has any effect. Else,
+        // returns false.
+        // -->
         if (attribute.startsWith("has_effect")) {
-            // Add later
+        	Boolean returnElement = false;
+            if (attribute.hasContext(1))
+            	for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
+            		if (effect.getType().equals(org.bukkit.potion.PotionType.valueOf(attribute.getContext(1))))
+            			returnElement = true;
+            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
+            return new Element(returnElement).getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.equipment> -> dInventory
+        // Returns the dInventory of the entity.
+        // -->
         if (attribute.startsWith("equipment")) {
             return new dInventory(getLivingEntity()).getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.world> -> dWorld
+        // Returns the world the entity is in.
+        // -->
         if (attribute.startsWith("world")) {
             return new dWorld(entity.getWorld())
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.prefix> -> Element
+        // Returns the prefix of the entity.
+        // -->
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.debug.log> -> Element(Boolean)
+        // Debugs the entity in the log and returns true.
+        // -->
         if (attribute.startsWith("debug.log")) {
             dB.log(debug());
             return new Element(Boolean.TRUE.toString())
                     .getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.debug.no_color> -> Element
+        // Returns the entity's debug with no color.
+        // -->
         if (attribute.startsWith("debug.no_color")) {
             return new Element(ChatColor.stripColor(debug()))
                     .getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.debug> -> Element
+        // Returns the entity's debug.
+        // -->
         if (attribute.startsWith("debug")) {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.type> -> Element
+        // Returns the entity's type.
+        // -->
         if (attribute.startsWith("type")) {
             return new Element(getType())
                     .getAttribute(attribute.fulfill(1));

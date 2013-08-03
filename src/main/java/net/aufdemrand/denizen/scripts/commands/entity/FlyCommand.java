@@ -47,20 +47,20 @@ public class FlyCommand extends AbstractCommand {
     			scriptEntry.addObject("cancel", "");
     		}
     		
-    		else if (!scriptEntry.hasObject("origin")
-                    && arg.matchesArgumentType(dLocation.class)) {
-                // Location arg
-                scriptEntry.addObject("origin", arg.asType(dLocation.class).setPrefix("origin"));
-            }
-        	
             else if (!scriptEntry.hasObject("destinations")
                 	&& arg.matchesPrefix("destination, destinations, d")) {
                 // Entity arg
                 scriptEntry.addObject("destinations", ((dList) arg.asType(dList.class)).filter(dLocation.class));
             }
+    		
+    		else if (!scriptEntry.hasObject("origin")
+                    && arg.matchesArgumentType(dLocation.class)) {
+                // Location arg
+                scriptEntry.addObject("origin", arg.asType(dLocation.class).setPrefix("origin"));
+            }
             
         	else if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesPrefix("entity, entities, e")) {
+                	&& arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
@@ -114,7 +114,7 @@ public class FlyCommand extends AbstractCommand {
         					 (destinations.size() > 0 ? aH.debugObj("destinations", destinations.toString()) : ""));
 		        
 		// Mount or dismount all of the entities
-		if (cancel == false) {
+		if (cancel.equals(false)) {
 			
 			// Go through all the entities, spawning/teleporting them
 	        for (dEntity entity : entities) {

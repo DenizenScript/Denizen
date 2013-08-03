@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.*;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
@@ -173,6 +174,8 @@ public class Denizen extends JavaPlugin {
 
         // Create the command script handler for listener
         WorldScriptHelper ws_helper = new WorldScriptHelper();
+        
+        ItemScriptHelper is_helper = new ItemScriptHelper();
 
         // Register traits
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));

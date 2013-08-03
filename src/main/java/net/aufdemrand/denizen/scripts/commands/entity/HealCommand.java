@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -12,7 +13,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 
 /**
- * Heals a Player or NPC.
+ * Heals an entity.
  *
  * @author Jeremy Schroeder, Mason Adkins, Morphan1
  */
@@ -30,42 +31,40 @@ public class HealCommand extends AbstractCommand {
             	scriptEntry.addObject("amount", arg.asElement());
 
         	else if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesPrefix("entity, entities, e, target, targets")) {
+                	&& arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
         }
-
-        if (!scriptEntry.hasObject("entities"))
-        	scriptEntry.addObject("entities", scriptEntry.getPlayer());
         
         if (!scriptEntry.hasObject("amount"))
         	scriptEntry.addObject("amount", Integer.MAX_VALUE);
+        
+        if (!scriptEntry.hasObject("entities")) {
+        	List<dEntity> entities = new ArrayList<dEntity>();
+        	if (scriptEntry.getPlayer() != null)
+        		entities.add(scriptEntry.getPlayer().getDenizenEntity());
+        	else if (scriptEntry.getNPC() != null)
+        		entities.add(scriptEntry.getNPC().getDenizenEntity());
+        	else
+        		throw new InvalidArgumentsException("No valid target entities found.");
+        	scriptEntry.addObject("entities", entities);
+        }
+        
     }
-
 
     @SuppressWarnings("unchecked")
 	@Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-
-    	if (scriptEntry.getObject("amount").equals(Integer.MAX_VALUE)) {
-    		if (scriptEntry.getObject("entities").equals(scriptEntry.getPlayer()))
-    			scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().setHealth(scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().getMaxHealth());
-    		else {
-    	    	List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-    			for (dEntity entity : entities)
-    				entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
-    		}
-    	}
+    	
+    	List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+    		
+    	if (scriptEntry.getObject("amount").equals(Integer.MAX_VALUE))
+    		for (dEntity entity : entities)
+    			entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
     	else {
     		Double amount = ((Element) scriptEntry.getObject("amount")).asDouble();
-    		if (scriptEntry.getObject("entities").equals(scriptEntry.getPlayer()))
-    			scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().setHealth(scriptEntry.getPlayer().getDenizenEntity().getLivingEntity().getHealth() + amount);
-    		else {
-    	    	List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-    			for (dEntity entity : entities)
-    				entity.getLivingEntity().setHealth(entity.getLivingEntity().getHealth() + amount);
-    		}
-
+    		for (dEntity entity : entities)
+    			entity.getLivingEntity().setHealth(entity.getLivingEntity().getHealth() + amount);
     	}
     }
 }

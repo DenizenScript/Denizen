@@ -35,7 +35,8 @@ public class LookCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
 
-            else if (!scriptEntry.hasObject("entities")) {
+            else if (!scriptEntry.hasObject("entities")
+            		 && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }

@@ -469,7 +469,7 @@ public class dInventory implements dObject {
             	
             	return new Element(getInventory().containsAtLeast
             			(dItem.valueOf(attribute.getContext(1)).getItemStack(), qty))
-                		.getAttribute(attribute.fulfill(1));
+                		.getAttribute(attribute.fulfill(qty == 1 ? 1 : 2));
             }
         }
         

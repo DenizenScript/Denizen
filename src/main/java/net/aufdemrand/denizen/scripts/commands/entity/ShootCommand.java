@@ -44,32 +44,47 @@ public class ShootCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
         	if (!scriptEntry.hasObject("origin")
-                    && arg.matchesArgumentType(dEntity.class)
-                    && arg.matchesPrefix("origin, o, source, shooter, s")) {
+                && arg.matchesArgumentType(dEntity.class)
+                && arg.matchesPrefix("origin, o, source, shooter, s")) {
                 // Entity arg
                 scriptEntry.addObject("origin", arg.asType(dEntity.class).setPrefix("entity"));
             }
             
             else if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesPrefix("entity, entities, e, projectile, entities, p")) {
+                	 && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
             
             else if (!scriptEntry.hasObject("destination")
-                    && arg.matchesArgumentType(dLocation.class)) {
+                     && arg.matchesArgumentType(dLocation.class)) {
                 // Location arg
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
         	
-            else if (!scriptEntry.hasObject("speed")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
+            else if (!scriptEntry.hasObject("duration")
+                     && arg.matchesArgumentType(Duration.class)
+                     && arg.matchesPrefix("duration, d")) {
                 // Add value
-                scriptEntry.addObject("speed", arg.asElement());
+                scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
         	
+            else if (!scriptEntry.hasObject("speed")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("speed, s")) {
+               // Add value
+               scriptEntry.addObject("speed", arg.asElement());
+           }
+        	
+            else if (!scriptEntry.hasObject("height")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("height, h")) {
+               // Add value
+               scriptEntry.addObject("height", arg.asElement());
+           }
+        	
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class)) {
+                     && arg.matchesArgumentType(dScript.class)) {
                 // add value
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
@@ -84,6 +99,8 @@ public class ShootCommand extends AbstractCommand {
         // Use a default speed of 1.5 if one is not specified
         
         scriptEntry.defaultObject("speed", new Element(1.5));
+        scriptEntry.defaultObject("height", new Element(0));
+        scriptEntry.defaultObject("duration", Duration.valueOf("80t"));
         
         // Check to make sure required arguments have been filled
         
@@ -110,6 +127,8 @@ public class ShootCommand extends AbstractCommand {
 		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 		final Element speed = (Element) scriptEntry.getObject("speed");
         final dScript script = (dScript) scriptEntry.getObject("script");
+        final double height = ((Element) scriptEntry.getObject("height")).asDouble();
+        final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt() / 2;
         
         // Report to dB
         dB.report(getName(), aH.debugObj("origin", shooter) +
@@ -159,8 +178,8 @@ public class ShootCommand extends AbstractCommand {
         	int runs = 0;
 
         	public void run() {
-    	        				
-        		if (runs < 40 && lastEntity.isValid())
+
+        		if (runs < maxTicks && lastEntity.isValid())
         		{
         			Vector v1 = lastEntity.getLocation().toVector();
         			Vector v2 = destination.toVector();
@@ -174,7 +193,7 @@ public class ShootCommand extends AbstractCommand {
         			if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
         				&& Math.abs(v2.getZ() - v1.getZ()) < 2) {
         			
-        					runs = 40;
+        					runs = maxTicks;
         			}
         				
         			// Check if the entity has collided with something
@@ -182,7 +201,7 @@ public class ShootCommand extends AbstractCommand {
         				
         			if (lastEntity.getLocation().add(v3).getBlock().getType().toString().equals("AIR") == false) {
 
-        				runs = 40;
+        				runs = maxTicks;
         			}
         		}
         		else {
@@ -194,9 +213,10 @@ public class ShootCommand extends AbstractCommand {
         			{
         				Map<String, String> context = new HashMap<String, String>();
             			context.put("1", lastEntity.getLocation().getX() + "," + lastEntity.getLocation().getY() + "," + lastEntity.getLocation().getZ() + "," + lastEntity.getLocation().getWorld().getName());
-        					
+            			context.put("2", "e@" + lastEntity.getEntityId());
+            			
                         ((TaskScriptContainer) script.getContainer()).setSpeed(new Duration(0))
-                           		.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
+                           			.runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
         			}
         				
         		}

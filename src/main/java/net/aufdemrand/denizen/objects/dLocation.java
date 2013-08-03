@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
@@ -11,6 +12,7 @@ import net.aufdemrand.denizen.utilities.entity.Rotation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
@@ -356,10 +358,11 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 String[] ints = attribute.getContext(1).split(",", 3);
                 if ((aH.matchesDouble(ints[0]) || aH.matchesInteger(ints[0]))
                         && (aH.matchesDouble(ints[1]) || aH.matchesInteger(ints[1]))
-                        && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2])))
+                        && (aH.matchesDouble(ints[2]) || aH.matchesInteger(ints[2]))) {
                     return new dLocation(this.clone().add(Double.valueOf(ints[0]),
                             Double.valueOf(ints[1]),
                             Double.valueOf(ints[2]))).getAttribute(attribute.fulfill(1));
+                }
             }
         }
 
@@ -388,9 +391,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return loc.getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith("find")) {
+        if (attribute.startsWith("find") || attribute.startsWith("nearest")) {
             attribute.fulfill(1);
-            ArrayList<dObject> found = new ArrayList<dObject>();
             
             // <--
             // <location.find.blocks[<block>|...].within[X]> -> dList
@@ -399,6 +401,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             if (attribute.startsWith("blocks")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
+                ArrayList<dLocation> found = new ArrayList<dLocation>();
                 int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 List<dObject> materials = new ArrayList<dObject>();
                 if (attribute.hasContext(1))
@@ -417,6 +420,15 @@ public class dLocation extends org.bukkit.Location implements dObject {
                                                     .getRelative(x,y,z).getData())))
                                         found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
                             } else found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
+                
+                Collections.sort(found, new Comparator<dLocation>() {
+                    @Override
+                    public int compare(dLocation loc1, dLocation loc2) {
+                        return (int) (distanceSquared(loc1) - distanceSquared(loc2));
+                    }
+                });
+
+                return new dList(found).getAttribute(attribute);
             }
 
             // <--
@@ -426,6 +438,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             else if (attribute.startsWith("surface_blocks")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
+                ArrayList<dLocation> found = new ArrayList<dLocation>();
                 int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 List<dObject> materials = new ArrayList<dObject>();
                 if (attribute.hasContext(1))
@@ -453,7 +466,14 @@ public class dLocation extends org.bukkit.Location implements dObject {
                                     found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
                             }
                 
-                
+                Collections.sort(found, new Comparator<dLocation>() {
+                    @Override
+                    public int compare(dLocation loc1, dLocation loc2) {
+                        return (int) (distanceSquared(loc1) - distanceSquared(loc2));
+                    }
+                });
+
+                return new dList(found).getAttribute(attribute); 
             }
             
             // <--
@@ -463,17 +483,48 @@ public class dLocation extends org.bukkit.Location implements dObject {
             else if (attribute.startsWith("players")
             	&& attribute.getAttribute(2).startsWith("within")
             	&& attribute.hasContext(2)) {
+                ArrayList<dPlayer> found = new ArrayList<dPlayer>();
             	int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
-                double radiusSquared = radius*radius;
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers())
-                	if (player.getLocation().distanceSquared(getBlock().getLocation()) <= radiusSquared)
+                	if (Utilities.checkLocation(this, player.getLocation(), radius))
                 		found.add(new dPlayer(player));
+                
+                Collections.sort(found, new Comparator<dPlayer>() {
+                    @Override
+                    public int compare(dPlayer pl1, dPlayer pl2) {
+                        return (int) (distanceSquared(pl1.getLocation()) - distanceSquared(pl2.getLocation()));
+                    }
+                });
+
+                return new dList(found).getAttribute(attribute);
             }
 
-            else return "null";
+            // <--
+            // <location.find.entities.within[X]> -> dList
+            // Returns a dList of entities within a radius.
+            // -->
+            else if (attribute.startsWith("entities")
+                && attribute.getAttribute(2).startsWith("within")
+                && attribute.hasContext(2)) {
+                ArrayList<dEntity> found = new ArrayList<dEntity>();
+            	int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                attribute.fulfill(2);
+                for (Entity entity : getWorld().getEntities())
+                	if (Utilities.checkLocation(this, entity.getLocation(), radius))
+                                found.add(new dEntity(entity));
+                
+                Collections.sort(found, new Comparator<dEntity>() {
+                    @Override
+                    public int compare(dEntity ent1, dEntity ent2) {
+                        return (int) (distanceSquared(ent1.getBukkitEntity().getLocation()) - distanceSquared(ent2.getBukkitEntity().getLocation()));
+                    }
+                });
 
-            return new dList(found).getAttribute(attribute);
+                return new dList(found).getAttribute(attribute);
+            } 
+ 
+            else return "null";
         }
 
         // <--

@@ -7,8 +7,9 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
@@ -32,45 +33,43 @@ public class PlaySoundCommand extends AbstractCommand {
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize fields
-        Sound sound = null;
-        float volume = 1;
-        float pitch = 1;
-        Location location = null;
-
         // Iterate through arguments
-		for (String arg : scriptEntry.getArguments()){
-			if (aH.matchesLocation(arg))
-                location = aH.getLocationFrom(arg);
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        	
+			if (!scriptEntry.hasObject("location")
+					&& arg.matchesArgumentType(dLocation.class))
+				scriptEntry.addObject("location", arg.asType(dLocation.class));
+			
+			else if (!scriptEntry.hasObject("volume")
+					&& arg.matchesPrimitive(aH.PrimitiveType.Double)
+					&& arg.matchesPrefix("volume, v"))
+				scriptEntry.addObject("volume", arg.asElement());
 
-			else if (aH.matchesValueArg("sound, s", arg, ArgumentType.Custom)) {
+			else if (!scriptEntry.hasObject("pitch")
+					&& arg.matchesPrimitive(aH.PrimitiveType.Double)
+					&& arg.matchesPrefix("pitch, p"))
+                scriptEntry.addObject("pitch", arg.asElement());
+
+			else if (!scriptEntry.hasObject("sound")
+					&& arg.matchesPrimitive(aH.PrimitiveType.String)) {
         		try {
-            		sound = Sound.valueOf(aH.getStringFrom(arg).toUpperCase());
+            		scriptEntry.addObject("sound", Sound.valueOf(arg.asElement().asString().toUpperCase()));
             	} catch (Exception e) {
             		dB.echoError("Invalid sound!");
             	}
             }
 			
-			else if (aH.matchesValueArg("volume, v", arg, ArgumentType.Float))
-            	volume = aH.getFloatFrom(arg);
-
-			else if (aH.matchesValueArg("pitch, p", arg, ArgumentType.Float))
-                pitch = aH.getFloatFrom(arg);
-            
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 
-        // Check required args
-		if (sound == null)
+		if (!scriptEntry.hasObject("sound"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "SOUND");
-		if (location == null)
+		if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
-
-        // Stash args in ScriptEntry for use in execute()
-        scriptEntry.addObject("location", location);
-        scriptEntry.addObject("sound", sound);
-        scriptEntry.addObject("volume", volume);
-        scriptEntry.addObject("pitch", pitch);
+		if (!scriptEntry.hasObject("volume"))
+			scriptEntry.addObject("volume", new Element(1));
+		if (!scriptEntry.hasObject("pitch"))
+			scriptEntry.addObject("pitch", new Element(1));
+		
 	}
 
 	@Override
@@ -79,8 +78,8 @@ public class PlaySoundCommand extends AbstractCommand {
         // Extract objects from ScriptEntry
         Location location = (Location) scriptEntry.getObject("location");
         Sound sound = (Sound) scriptEntry.getObject("sound");
-        Float volume = (Float) scriptEntry.getObject("volume");
-        Float pitch = (Float) scriptEntry.getObject("pitch");
+        Float volume = ((Element) scriptEntry.getObject("volume")).asFloat();
+        Float pitch = ((Element) scriptEntry.getObject("pitch")).asFloat();
 
         // Debugger
         dB.echoApproval("Executing '" + getName() + "': "

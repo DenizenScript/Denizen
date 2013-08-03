@@ -206,6 +206,11 @@ public class dPlayer implements dObject {
         if (attribute == null) return "null";
 
         if (player_name == null) return "null";
+        
+        // <--
+        // <player> -> dPlayer
+        // Returns the dPlayer of the player.
+        // -->
 
         // <--
         // <player.entity> -> dEntity
@@ -275,7 +280,11 @@ public class dPlayer implements dObject {
         // -->
         if (attribute.startsWith("is_online"))
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
-
+        
+        // Return player ip in format #.#.#.#
+        if (attribute.startsWith("ip"))
+            return getPlayerEntity().getAddress().getHostName();
+        
         if (attribute.startsWith("list")) {
             List<String> players = new ArrayList<String>();
             if (attribute.startsWith("list.online")) {
@@ -713,8 +722,7 @@ public class dPlayer implements dObject {
 
         // <--
         // <player.allowed_flight> -> Element(boolean)
-        // returns a dItem that the player's cursor is on, if any. This includes
-        // chest interfaces, inventories, and hotbars, etc.
+        // returns true if the player is allowed to fly, and false otherwise
         // -->
         if (attribute.startsWith("allowed_flight"))
             return new Element(String.valueOf(getPlayerEntity().getAllowFlight()))

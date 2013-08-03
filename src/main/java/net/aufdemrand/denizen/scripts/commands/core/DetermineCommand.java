@@ -40,8 +40,6 @@ public class DetermineCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        String outcome = "false";
-        Boolean passively = false;
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments()))
 

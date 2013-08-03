@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,7 +14,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -347,6 +348,65 @@ public class dItem implements dObject {
 
     // Additional helper methods
 
+    /**
+     * Check whether this item contains a lore that starts
+     * with a certain prefix.
+     *
+     * @param String  The prefix
+     * @return  True if it does, otherwise false
+     *
+     */
+    public boolean containsLore(String prefix) {
+    	
+    	if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
+    		for (String itemLore : getItemStack().getItemMeta().getLore()) {
+    			if (itemLore.startsWith(prefix)) {
+    				return true;
+    			}
+    		}
+    	}
+    	
+    	return false;
+    }
+
+    /**
+     * Get the lore from this item that starts with a
+     * certain prefix.
+     *
+     * @param String  The prefix
+     * @return  String  The lore
+     *
+     */
+    public String getLore(String prefix) {
+    	
+    	for (String itemLore : getItemStack().getItemMeta().getLore()) {
+    		if (itemLore.startsWith(prefix)) {
+    			return itemLore.substring(prefix.length());
+    		}
+    	}
+    	
+    	return "";
+    }
+    
+    /**
+     * Check whether this item contains the lore specific
+     * to item scripts.
+     *
+     * @return  True if it does, otherwise false
+     *
+     */
+    public boolean isItemscript() {
+    	
+    	if (containsLore("§0id:")) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public String getMaterial() {
+    	return getItemStack().getType().name().toLowerCase();
+    }
+    
     public void setAmount(int value) {
         if (item != null)
             item.setAmount(value);
@@ -432,13 +492,15 @@ public class dItem implements dObject {
     	if (getItemStack() == null) return null;
     	
     	if (getItemStack().getTypeId() != 0) {
-    	
-    		if (isSaved(this))
+    		
+    		if (isSaved(this)) {
     			return "i@" + getSaved(this);
+    		}
 
     		// If not a saved item, but is a custom item, return the script id
-    		else if (CustomNBT.hasCustomNBT(getItemStack(), "denizen-script-id"))
-    			return "i@" + CustomNBT.getCustomNBT(getItemStack(), "denizen-script-id");
+    		else if (isItemscript()) {
+    			return "i@" + getLore("§0id:");
+    		}
     	}
 
         // Else, return the material name and data
@@ -471,6 +533,12 @@ public class dItem implements dObject {
             return new Element(String.valueOf(getItemStack().getAmount()))
                     .getAttribute(attribute.fulfill(1));
 
+        // Needs to be above "id" or it won't work
+        if (attribute.startsWith("identify")) {
+            return new Element(identify())
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
         if (attribute.startsWith("id"))
             return new Element(String.valueOf(getItemStack().getTypeId()))
                     .getAttribute(attribute.fulfill(1));
@@ -545,9 +613,19 @@ public class dItem implements dObject {
 
         }
 
+        // Return all lore except for lore that holds item script ID
         if (attribute.startsWith("lore")) {
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore())
-                return new dList(getItemStack().getItemMeta().getLore()).getAttribute(attribute.fulfill(1));
+            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
+            	
+            	List<String> loreList = new ArrayList<String>();
+            	
+            	for (String itemLore : getItemStack().getItemMeta().getLore()) {
+            		if (!itemLore.startsWith("§0id:")) {
+            			loreList.add(itemLore);
+            		}
+            	}
+                return new dList(loreList).getAttribute(attribute.fulfill(1));
+            }
             else return new dList("").getAttribute(attribute.fulfill(1));
         }
 
@@ -570,10 +648,6 @@ public class dItem implements dObject {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
-
-        if (attribute.startsWith("identify"))
-            return new Element(identify())
-                    .getAttribute(attribute.fulfill(1));
 
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));

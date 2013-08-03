@@ -59,7 +59,7 @@ public class CommandRegistry implements dRegistry {
                 "ANCHOR", "anchor [id:<name>] [assume/add/remove/walkto/walknear] (range:<#>)", 2);
         		
         registerCoreMember(AnimateCommand.class,
-        		"ANIMATE", "animate [entities:<entity>|...] [animation:<name>]", 1);
+        		"ANIMATE", "animate [<entity>|...] [animation:<name>]", 1);
         
         registerCoreMember(AnimateChestCommand.class,
         		"ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false)", 1);
@@ -71,16 +71,16 @@ public class CommandRegistry implements dRegistry {
         		"ASSIGNMENT", "assignment [{set}/remove] (script:<name>)", 1);
 		
         registerCoreMember(AttackCommand.class, 
-        		"ATTACK", "attack (stop)", 0);
+        		"ATTACK", "attack (cancel) (<entity>|...) (target:<entity>)", 0);
 
         registerCoreMember(BreakCommand.class,
                 "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);
         
         registerCoreMember(BurnCommand.class,
-        		"BURN", "burn [entities:<entity>|...] (duration:<value>)", 1);
+        		"BURN", "burn [<entity>|...] (duration:<value>)", 1);
         
         registerCoreMember(CastCommand.class, 
-        		"CAST", "cast [effect] (duration:<#>) (power:<#>) (targets:<entity>|...)", 1);
+        		"CAST", "cast [<effect>] (duration:<value>) (power:<#>) (<entity>|...)", 1);
         
         registerCoreMember(ChatCommand.class, 
         		"CHAT", "chat [\"<text>\"] (targets:<entity>|...)", 1);
@@ -89,7 +89,7 @@ public class CommandRegistry implements dRegistry {
                 "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<location>] (duration:<value>)", 1);
 
         registerCoreMember(CooldownCommand.class, 
-        		"COOLDOWN", "cooldown (duration:<#>) (global) (script:<name>)", 1);
+        		"COOLDOWN", "cooldown (duration:<value>) (global) (script:<name>)", 1);
 
         registerCoreMember(CopyBlockCommand.class,
                 "COPYBLOCK", "copyblock [location:<location>] [to:<location>]", 1);
@@ -107,13 +107,13 @@ public class CommandRegistry implements dRegistry {
         		"DISENGAGE", "disengage", 0);
 
         registerCoreMember(DisplayItemCommand.class,
-                "DISPLAYITEM", "displayitem (remove) [<item>] [<location>] (duration:<#>)", 2);
+                "DISPLAYITEM", "displayitem (remove) [<item>] [<location>] (duration:<value>)", 2);
 
         registerCoreMember(DropCommand.class, 
         		"DROP", "drop [<item>/<entity>/<xp>] [<location>] (qty:<#>)", 1);
 		
         registerCoreMember(EngageCommand.class,
-        		"ENGAGE", "engage (duration:<#>)", 0);
+        		"ENGAGE", "engage (duration:<value>)", 0);
 
         registerCoreMember(EngraveCommand.class,
         		"ENGRAVE", "engrave (set/remove)", 0);
@@ -146,10 +146,10 @@ public class CommandRegistry implements dRegistry {
         		"FISH", "fish (catchfish) (stop) (<location>) (catchpercent:<#>)", 1);
 
         registerCoreMember(FlagCommand.class, 
-        		"FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<#>)", 1);
+        		"FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
         
         registerCoreMember(FlyCommand.class,
-        		"FLY", "fly (cancel) [entities:<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)", 1);
+        		"FLY", "fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)", 1);
         
         registerCoreMember(FollowCommand.class, 
         		"FOLLOW", "follow (stop) (lead:<#.#>)", 0);
@@ -167,13 +167,13 @@ public class CommandRegistry implements dRegistry {
         		"HEAD", "head (player) [skin:<name>]", 0);
         
         registerCoreMember(HealCommand.class, 
-        		"HEAL", "heal (<#.#>) (entities:<entity>|...)", 0);
+        		"HEAL", "heal (<#.#>) (<entity>|...)", 0);
         
         registerCoreMember(HealthCommand.class,
                 "HEALTH", "health (state:true/false/toggle) (set_max:<#>)", 1);
 		
         registerCoreMember(HurtCommand.class,
-        		"HURT", "hurt (qty:<#.#>) (target:<entity>)", 0);
+        		"HURT", "hurt (<#.#>) (<entity>|...)", 0);
         
         registerCoreMember(IfCommand.class, 
         		"IF", "if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
@@ -200,7 +200,7 @@ public class CommandRegistry implements dRegistry {
         		"MIDI", "midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)", 1);
         
         registerCoreMember(MountCommand.class,
-        		"MOUNT", "mount (cancel) [entities:<entity>|...] (<location>)", 0);
+        		"MOUNT", "mount (cancel) [<entity>|...] (<location>)", 0);
         
         registerCoreMember(ModifyBlockCommand.class,
         		"MODIFYBLOCK", "modifyblock [<location>] [<block>] (radius:<#>) (height:<#>) (depth:<#>)", 2);
@@ -239,7 +239,7 @@ public class CommandRegistry implements dRegistry {
         		"RANDOM", "random [<#>]", 1);
         
         registerCoreMember(RemoveCommand.class, 
-        		"REMOVE", "remove [entities:<entity>|...] (region:<name>)", 0);
+        		"REMOVE", "remove [<entity>|...] (region:<name>)", 0);
 
         registerCoreMember(RenameCommand.class,
                 "RENAME", "rename [<npc>] [<name>]", 1);
@@ -248,7 +248,7 @@ public class CommandRegistry implements dRegistry {
                 "RESET", "reset [fails/finishes/cooldown] (script:<name>)", 1);
 
         registerCoreMember(RunCommand.class,
-                "RUN", "run [<script>] (path:<name>) (as:<player>/<npc>) (define:<element>|...) (id:<name>) (delay:<duration>) (loop) (qty:<#>)", 1);
+                "RUN", "run [<script>] (path:<name>) (as:<player>/<npc>) (define:<element>|...) (id:<name>) (delay:<value>) (loop) (qty:<#>)", 1);
 
         registerCoreMember(RuntaskCommand.class,
         		"RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
@@ -260,7 +260,7 @@ public class CommandRegistry implements dRegistry {
         		"SCRIBE", "scribe [script:<name>] (give/drop/equip) (<item>) (<location>)", 1);
 
         registerCoreMember(ShootCommand.class,
-        		"SHOOT", "shoot [entities:<entity>|...] (origin:<player>/<npc>) (destination:<location>) (speed:<#.#>) (script:<name>)", 1);
+        		"SHOOT", "shoot [<entity>|...] (origin:<player>/<npc>) (destination:<location>) (speed:<#.#>) (duration:<value>) (script:<name>)", 1);
 
         registerCoreMember(ShowFakeCommand.class,
                 "SHOWFAKE", "showfake [<material>] [<location>|...] (d:<duration>{10s})", 2);
@@ -272,7 +272,7 @@ public class CommandRegistry implements dRegistry {
         		"SIT", "sit (<location>)", 0);
 
         registerCoreMember(SpawnCommand.class,
-        		"SPAWN", "spawn [entities:<entity>|...] (<location>) (target:<entity>)", 1);
+        		"SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>)", 1);
         
         registerCoreMember(StandCommand.class, 
         		"STAND", "stand", 0);
@@ -281,13 +281,13 @@ public class CommandRegistry implements dRegistry {
         		"STRIKE", "strike (no_damage) [<location>]", 1);
         
         registerCoreMember(SwitchCommand.class,
-        		"SWITCH", "switch [<location>] (state:[{toggle}/on/off]) (duration:<#>)", 1);
+        		"SWITCH", "switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)", 1);
 		
         registerCoreMember(TakeCommand.class,
         		"TAKE", "take [money/iteminhand/<item>] (qty:<#>)", 1);
         
         registerCoreMember(TeleportCommand.class,
-        		"TELEPORT", "teleport (entities:<entity>|...) (<location>)", 1);
+        		"TELEPORT", "teleport (<entity>|...) (<location>)", 1);
         
         registerCoreMember(TimeCommand.class,
                 "TIME", "time [type:{global}/player] [<value>] (world:<name>)", 1);
@@ -302,7 +302,7 @@ public class CommandRegistry implements dRegistry {
         		"VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
 		
         registerCoreMember(WaitCommand.class, 
-        		"WAIT", "wait (duration:<#>) (queue:<name>)", 0);
+        		"WAIT", "wait (<duration>) (queue:<name>)", 0);
 
         registerCoreMember(WalkCommand.class,
                 "WALK, WALKTO", "walk [<location>] (speed:<#>) (auto_range)", 1);
@@ -314,7 +314,7 @@ public class CommandRegistry implements dRegistry {
                 "YAML", "yaml [load/create/save:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]", 1);
 
         registerCoreMember(ZapCommand.class, 
-        		"ZAP", "zap [<#>/step:<name>] (script:<name>) (duration:<#>)", 0);
+        		"ZAP", "zap (<script>:)[<step>] (<duration>)", 0);
         
         
         // STOP (There's no more commands, spazz!)

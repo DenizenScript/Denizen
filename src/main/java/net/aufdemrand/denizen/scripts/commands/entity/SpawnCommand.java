@@ -28,7 +28,7 @@ public class SpawnCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
         	if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesPrefix("entity, entities, e")) {
+                	&& arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
@@ -76,10 +76,16 @@ public class SpawnCommand extends AbstractCommand {
         					 aH.debugObj("location", location) +
         					 (target != null ? aH.debugObj("target", target) : ""));
 		
+        // Keep a dList of entities that can be called using %entities%
+        // later in the script queue
+        
+        dList entityList = new dList("");
+
         // Go through all the entities and spawn them or teleport them,
         // then set their targets if applicable
         
         for (dEntity entity : entities) {
+        	        	
         	if (entity.isSpawned() == false) {
         		entity.spawnAt(location);
         	}
@@ -87,9 +93,19 @@ public class SpawnCommand extends AbstractCommand {
         		entity.teleport(location);
         	}
         	
+        	// Only add to entityList after the entities have been
+        	// spawned, otherwise you'll get something like "e@skeleton"
+        	// instead of "e@57" on it
+        	
+    		entityList.add(entity.toString());
+        	
         	if (target != null && target.isLivingEntity()) {
         		entity.target(target.getLivingEntity());
         	}
-        }   
+        }
+        
+        // Add the dList to the queue's context
+        
+        scriptEntry.getResidingQueue().addContext("entities", entityList.toString());
 	}
 }
