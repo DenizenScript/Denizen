@@ -7,7 +7,6 @@ import java.util.List;
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemListenerType.ItemType;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.objects.dInventory;
@@ -35,41 +34,41 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 	String region = null;
 	
 	@Override
-	public void onBuild(List<String> args) {
-		for (String arg : args) {
-			if (aH.matchesValueArg ("TYPE", arg, ArgumentType.Custom)) {
-				try { 
-					this.type = ItemType.valueOf(aH.getStringFrom(arg).toUpperCase()); 
-					dB.echoDebug(Messages.DEBUG_SET_TYPE, this.type.name());
-				} catch (Exception e) { dB.echoError("Invalid ItemType!"); }
-			}
-			
-			else if (aH.matchesQuantity(arg)) {
-				this.quantity = aH.getIntegerFrom(arg);
-				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
-			}
-			
-			else if (aH.matchesValueArg("ITEMS, ITEM", arg, ArgumentType.Custom)) {
-				for (String thisItem : aH.getListFrom(arg.toUpperCase()))
-					if (server.getRecipesFor(new ItemStack(Material.matchMaterial(thisItem))) != null) {
-						items.add(thisItem);
-					} else dB.echoError("..." + thisItem + " is not a craftable item");
-				dB.echoDebug("...set ITEMS.: " + Arrays.toString(items.toArray()));
-			} else if (aH.matchesValueArg("REGION", arg, ArgumentType.String)) {
-				region = aH.getStringFrom(arg);
-				dB.echoDebug("...region set: " + region);
-			}
-		}
-		
-		if (items.isEmpty() && !type.name().equalsIgnoreCase("FISH")) {
-			dB.echoError("Missing ITEMS argument!");
-			cancel();
-		}
-		
-		if (type == null) {
-			dB.echoError("Missing TYPE argument! Valid: CRAFT, SMELT, FISH");
-			cancel();
-		}
+	public void onBuild(List<aH.Argument> args) {
+//		for (String arg : args) {
+//			if (aH.matchesValueArg ("TYPE", arg, ArgumentType.Custom)) {
+//				try {
+//					this.type = ItemType.valueOf(aH.getStringFrom(arg).toUpperCase());
+//					dB.echoDebug(Messages.DEBUG_SET_TYPE, this.type.name());
+//				} catch (Exception e) { dB.echoError("Invalid ItemType!"); }
+//			}
+//
+//			else if (aH.matchesQuantity(arg)) {
+//				this.quantity = aH.getIntegerFrom(arg);
+//				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
+//			}
+//
+//			else if (aH.matchesValueArg("ITEMS, ITEM", arg, ArgumentType.Custom)) {
+//				for (String thisItem : aH.getListFrom(arg.toUpperCase()))
+//					if (server.getRecipesFor(new ItemStack(Material.matchMaterial(thisItem))) != null) {
+//						items.add(thisItem);
+//					} else dB.echoError("..." + thisItem + " is not a craftable item");
+//				dB.echoDebug("...set ITEMS.: " + Arrays.toString(items.toArray()));
+//			} else if (aH.matchesValueArg("REGION", arg, ArgumentType.String)) {
+//				region = aH.getStringFrom(arg);
+//				dB.echoDebug("...region set: " + region);
+//			}
+//		}
+//
+//		if (items.isEmpty() && !type.name().equalsIgnoreCase("FISH")) {
+//			dB.echoError("Missing ITEMS argument!");
+//			cancel();
+//		}
+//
+//		if (type == null) {
+//			dB.echoError("Missing TYPE argument! Valid: CRAFT, SMELT, FISH");
+//			cancel();
+//		}
 	}
 	
 	public void increment(String object, int amount)
@@ -211,7 +210,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
 	@Override
 	public String report() {
-		return player.getName() + " current has quest listener '" + listenerId 
+		return player.getName() + " current has quest listener '" + id
 				+ "' active and must " + type.name() + " " + Arrays.toString(items.toArray())
 				+ " '(s). Current progress '" + currentItems + "/" + quantity + "'.";
 	}

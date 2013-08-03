@@ -30,43 +30,45 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 	String region = null;
 
 	Integer currentBlocks = 0;
-	
-	@Override
-	public void onBuild(List<String> args) {
-		for (String arg : args) {
-			if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
-				try { 
-					this.type = BlockType.valueOf(aH.getStringFrom(arg).toUpperCase()); 
-					dB.echoDebug(Messages.DEBUG_SET_TYPE, this.type.name());
-				} catch (Exception e) { dB.echoError("Invalid BlockType!"); }
-			}
-			
-			else if (aH.matchesQuantity(arg)) {
-				quantity = aH.getIntegerFrom(arg);
-				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
-			}
-			
-			else if (aH.matchesArg("BLOCKS, BLOCK", arg)){
-				blocks = aH.getListFrom(arg.toUpperCase());
-				dB.echoDebug("...set BLOCK(S): " + Arrays.toString(blocks.toArray()));
-			}
-			
-			else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
-					region = aH.getStringFrom(arg);
-					dB.echoDebug("...set REGION.");
-			}
-		}
-		
-		if (blocks.isEmpty()) {
-			dB.echoError("Missing BLOCK(S) argument!");
-			cancel();
-			return;
-		}
 
-		if (type == null) {
-			dB.echoError("Missing TYPE argument! Valid: BUILD, COLLECT, BREAK");
-			cancel();
-        }
+	@Override
+	public void onBuild(List<aH.Argument> args) {
+
+//
+//        for (String arg : args) {
+//			if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
+//				try {
+//					this.type = BlockType.valueOf(aH.getStringFrom(arg).toUpperCase());
+//					dB.echoDebug(Messages.DEBUG_SET_TYPE, this.type.name());
+//				} catch (Exception e) { dB.echoError("Invalid BlockType!"); }
+//			}
+//
+//			else if (aH.matchesQuantity(arg)) {
+//				quantity = aH.getIntegerFrom(arg);
+//				dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
+//			}
+//
+//			else if (aH.matchesArg("BLOCKS, BLOCK", arg)){
+//				blocks = aH.getListFrom(arg.toUpperCase());
+//				dB.echoDebug("...set BLOCK(S): " + Arrays.toString(blocks.toArray()));
+//			}
+//
+//			else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
+//					region = aH.getStringFrom(arg);
+//					dB.echoDebug("...set REGION.");
+//			}
+//		}
+//
+//		if (blocks.isEmpty()) {
+//			dB.echoError("Missing BLOCK(S) argument!");
+//			cancel();
+//			return;
+//		}
+//
+//		if (type == null) {
+//			dB.echoError("Missing TYPE argument! Valid: BUILD, COLLECT, BREAK");
+//			cancel();
+//        }
 	}
 
 	@Override
@@ -219,13 +221,13 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     public void listenTag(ReplaceableTagEvent event) {
 		
 		if (!event.matches("LISTENER")) return;
-		if (!event.getType().equalsIgnoreCase(listenerId)) return;
+		if (!event.getType().equalsIgnoreCase(id)) return;
 		
 		if (event.getValue().equalsIgnoreCase("region")) {
 			event.setReplaced(region);
 		}
 		
-		else if (event.getValue().equalsIgnoreCase("quantity")) {
+		else if (event.getValue().equalsIgnoreCase("required")) {
 			event.setReplaced(quantity.toString());
 		}
 		

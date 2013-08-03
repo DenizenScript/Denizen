@@ -11,8 +11,7 @@ import net.aufdemrand.denizen.objects.aH;
 
 public abstract class AbstractListenerType implements RegistrationableInstance {
 
-	Denizen denizen;
-	aH aH;
+    Denizen denizen;
 	String name;
 	Class<? extends AbstractListener> instanceClass;
 	
@@ -23,9 +22,10 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
 	}
 
 	@Override
-	public AbstractListenerType as(String name) {
-		this.name = name.toUpperCase();
-		denizen.getListenerRegistry().register(this.name, this);
+	public AbstractListenerType as(String type) {
+		name = type.toUpperCase();
+		denizen.getListenerRegistry()
+                .register(this.name, this);
 		onEnable();
 		return this;
 	}

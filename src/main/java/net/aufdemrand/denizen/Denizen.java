@@ -73,7 +73,7 @@ public class Denizen extends JavaPlugin {
     private CommandRegistry commandRegistry = new CommandRegistry(this);
     private TriggerRegistry triggerRegistry = new TriggerRegistry();
     private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
-    private ListenerRegistry listenerRegistry = new ListenerRegistry(this);
+    private ListenerRegistry listenerRegistry = new ListenerRegistry();
     private dNPCRegistry dNPCRegistry;
 
 

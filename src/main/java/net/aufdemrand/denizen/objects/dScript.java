@@ -10,7 +10,8 @@ import java.util.regex.Pattern;
 
 public class dScript implements dObject {
 
-    final public static Pattern matchesScriptPtrn = Pattern.compile("(?:.+:|)(.+)", Pattern.CASE_INSENSITIVE);
+    final public static Pattern script_pattern = Pattern.compile("(s@|)(.+)",
+            Pattern.CASE_INSENSITIVE);
 
     /**
      * Gets a Script Argument Object from a dScript argument.
@@ -21,9 +22,9 @@ public class dScript implements dObject {
     @ObjectFetcher("s")
     public static dScript valueOf(String string) {
 
-        Matcher m = matchesScriptPtrn.matcher(string);
+        Matcher m = script_pattern.matcher(string);
         if (m.matches()) {
-            dScript script = new dScript(m.group(1));
+            dScript script = new dScript(m.group(2));
             // Make sure it's valid.
             if (script.isValid()) return script;
         }
@@ -32,9 +33,9 @@ public class dScript implements dObject {
     
     public static boolean matches(String string) {
     	
-    	Matcher m = matchesScriptPtrn.matcher(string);
+    	Matcher m = script_pattern.matcher(string);
     	if (m.matches()) {
-            dScript script = new dScript(m.group(1));
+            dScript script = new dScript(m.group(2));
             // Make sure it's valid.
             if (script.isValid()) return true;
         }
@@ -120,7 +121,7 @@ public class dScript implements dObject {
 
     @Override
     public boolean isUnique() {
-        return true;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;
     }
 
     @Override

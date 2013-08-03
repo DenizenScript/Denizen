@@ -50,81 +50,81 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 	}
 
 	@Override
-	public void onBuild(List<String> args) {
-		for (String arg : args) {
-			if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
-				try {
-					type = ItemDropType.valueOf(aH.getStringFrom(arg).toUpperCase());
-					dB.echoDebug("...type set to: " + type.name());
-					continue;
-				} catch (Exception e) { dB.echoDebug("...type " + aH.getStringFrom(arg) + " is not valid."); }
-				
-			} else if (aH.matchesItem(arg)) {
-				item = aH.getItemFrom(arg).getItemStack();
-				dB.echoDebug("...item set to: " + item);
-				continue;
-				
-			} else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
-				region = aH.getStringFrom(arg);
-				dB.echoDebug("...region set to: " + region);
-				continue;
-				
-			} else if (aH.matchesLocation(arg)) {
-				location = aH.getLocationFrom(arg);
-				dB.echoDebug("...location set to: " + location);
-				continue;
-				
-			} else if (aH.matchesValueArg("RADIUS", arg, ArgumentType.Integer)) {
-				radius = aH.getIntegerFrom(arg);
-				dB.echoDebug("...radius set to: " + radius);
-				continue;
-				
-			} else if (aH.matchesValueArg("DROPRATE", arg, ArgumentType.Integer)) {
-				dropRate = aH.getIntegerFrom(arg);
-				dB.echoDebug("...drop rate set to: " + dropRate + "/100");
-				continue;
-				
-			} else if (aH.matchesValueArg("DROPSFROM", arg, ArgumentType.Custom)) {
-				dropper = aH.getStringFrom(arg);
-				dB.echoDebug("...dropper set to: " + dropper);
-				continue;
-				
-			} else if (aH.matchesQuantity(arg)) {
-				quantity = aH.getIntegerFrom(arg);
-				dB.echoDebug("...quantity set to: " + quantity);
-				continue;
-			}
-		}
-			
-		if (item == null) {
-			dB.echoDebug("...item could not be set");
-			cancel();
-		}
-			
-		switch (type) {
-		
-		case BLOCKPLACE:
-			
-		case BLOCKBREAK:
-			try  { 
-				block = Material.valueOf(dropper);
-				dB.echoDebug("...DROPSFROM material set");
-			} catch (Exception e) { dB.echoDebug("...DROPSFROM is not a valid material"); }
-			break;
-		
-		case MOBKILL:
-			if (aH.matchesEntityType("entity:" + dropper)) {
-				mob = EntityType.valueOf(dropper.toUpperCase());
-				dB.echoDebug("...mob selected from DROPSFROM");
-			} else dB.echoDebug("...could not select mob from DROPSFROM");
-			break;
-			
-		default:
-			dB.echoDebug("...error setting type");
-			cancel();
-			break;
-		
-		}
+	public void onBuild(List<aH.Argument> args) {
+//		for (String arg : args) {
+//			if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
+//				try {
+//					type = ItemDropType.valueOf(aH.getStringFrom(arg).toUpperCase());
+//					dB.echoDebug("...type set to: " + type.name());
+//					continue;
+//				} catch (Exception e) { dB.echoDebug("...type " + aH.getStringFrom(arg) + " is not valid."); }
+//
+//			} else if (aH.matchesItem(arg)) {
+//				item = aH.getItemFrom(arg).getItemStack();
+//				dB.echoDebug("...item set to: " + item);
+//				continue;
+//
+//			} else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
+//				region = aH.getStringFrom(arg);
+//				dB.echoDebug("...region set to: " + region);
+//				continue;
+//
+//			} else if (aH.matchesLocation(arg)) {
+//				location = aH.getLocationFrom(arg);
+//				dB.echoDebug("...location set to: " + location);
+//				continue;
+//
+//			} else if (aH.matchesValueArg("RADIUS", arg, ArgumentType.Integer)) {
+//				radius = aH.getIntegerFrom(arg);
+//				dB.echoDebug("...radius set to: " + radius);
+//				continue;
+//
+//			} else if (aH.matchesValueArg("DROPRATE", arg, ArgumentType.Integer)) {
+//				dropRate = aH.getIntegerFrom(arg);
+//				dB.echoDebug("...drop rate set to: " + dropRate + "/100");
+//				continue;
+//
+//			} else if (aH.matchesValueArg("DROPSFROM", arg, ArgumentType.Custom)) {
+//				dropper = aH.getStringFrom(arg);
+//				dB.echoDebug("...dropper set to: " + dropper);
+//				continue;
+//
+//			} else if (aH.matchesQuantity(arg)) {
+//				quantity = aH.getIntegerFrom(arg);
+//				dB.echoDebug("...required set to: " + quantity);
+//				continue;
+//			}
+//		}
+//
+//		if (item == null) {
+//			dB.echoDebug("...item could not be set");
+//			cancel();
+//		}
+//
+//		switch (type) {
+//
+//		case BLOCKPLACE:
+//
+//		case BLOCKBREAK:
+//			try  {
+//				block = Material.valueOf(dropper);
+//				dB.echoDebug("...DROPSFROM material set");
+//			} catch (Exception e) { dB.echoDebug("...DROPSFROM is not a valid material"); }
+//			break;
+//
+//		case MOBKILL:
+//			if (aH.matchesEntityType("entity:" + dropper)) {
+//				mob = EntityType.valueOf(dropper.toUpperCase());
+//				dB.echoDebug("...mob selected from DROPSFROM");
+//			} else dB.echoDebug("...could not select mob from DROPSFROM");
+//			break;
+//
+//		default:
+//			dB.echoDebug("...error setting type");
+//			cancel();
+//			break;
+//
+//		}
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		region = (String) get("region");
 		radius = (Integer) get("radius");
 		dropRate = (Integer) get("dropRate");
-		quantity = (Integer) get("quantity");
+		quantity = (Integer) get("required");
 		qtyDropped = (Integer) get("qtyDropped");
 		//r = (Random) get("r");
 		
@@ -167,7 +167,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 		store("region", region);
 		store("radius", radius);
 		store("dropRate", dropRate);
-		store("quantity", quantity);
+		store("required", quantity);
 		store("qtyDropped", qtyDropped);
 		//store("r", r);
 	}

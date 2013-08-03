@@ -8,11 +8,13 @@ import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.listeners.core.*;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
 import net.citizensnpcs.api.CitizensAPI;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,30 +26,171 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+
+/**
+ * Keeps track of 'player listener' types and instances for the other various parts
+ * of the API. Also provides some methods for adding/finishing/removing listeners
+ * for players.
+ *
+ * @version 1.0
+ * @author Jeremy Schroeder
+ *
+ */
 public class ListenerRegistry implements dRegistry, Listener {
 
-	private Map<String, Map<String, AbstractListener>> listeners = new ConcurrentHashMap<String, Map<String, AbstractListener>>();
-	private Map<String, AbstractListenerType> types = new ConcurrentHashMap<String, AbstractListenerType>();
 
-	private Denizen denizen;
+	//
+    // Keeps track of active listeners. Keyed by player name.
+    // Value contains name of the listener, and the instance
+    // associated.
+    //
+    private Map<String, Map<String, AbstractListener>>
+            listeners = new ConcurrentHashMap<String, Map<String, AbstractListener>>();
 
-	public ListenerRegistry(Denizen denizen) {
-		this.denizen = denizen;
-	}
 
-	public void addListenerFor(dPlayer player, AbstractListener instance, String listenerId) {
-		Map<String, AbstractListener> playerListeners;
-		if (listeners.containsKey(player.getName())) {
+    //
+    // Stores registered listener types. Keyed by type name. Value
+    // contains the ListenerType instance used to create new
+    // listener instances.
+    //
+    private Map<String, AbstractListenerType>
+            types = new ConcurrentHashMap<String, AbstractListenerType>();
+
+
+    /**
+     * Adds a new listener to the 'listeners' hash-map.
+     *
+     * @param player  the dPlayer
+     * @param instance  the listener instance
+     * @param id  the id of the listener instance
+     */
+	public void addListenerFor(dPlayer player,
+                               AbstractListener instance,
+                               String id) {
+        if (player == null || id == null) return;
+        // Get current instances
+        Map<String, AbstractListener> playerListeners;
+		if (listeners.containsKey(player.getName()))
 			playerListeners = listeners.get(player.getName());
-		} else playerListeners = new HashMap<String, AbstractListener>();
-		playerListeners.put(listenerId.toLowerCase(), instance);
-		listeners.put(player.getName(), playerListeners);
+        else
+            playerListeners = new HashMap<String, AbstractListener>();
+        // Insert instance into hash-map
+		playerListeners.put(id.toLowerCase(), instance);
+        listeners.put(player.getName(), playerListeners);
 	}
 
-	public void cancel(dPlayer player, String listenerId, AbstractListener instance) {
-		removeListenerFor(player, listenerId);
-        Bukkit.getPluginManager().callEvent(new ListenerCancelEvent(player, listenerId));
+
+    /**
+     * Removes a listener instance from a Player. Cancelling an already-in-progress
+     * instance? Use cancel() instead.
+     *
+     * @param player  the dPlayer
+     * @param id  the id of the listener instance
+     */
+    public void removeListenerFor(dPlayer player, String id) {
+        if (player == null || id == null) return;
+        // Get current instances
+        Map<String, AbstractListener> playerListeners;
+        if (listeners.containsKey(player.getName()))
+            playerListeners = listeners.get(player.getName());
+        else
+            return;
+        // Remove instance from hash-map
+        playerListeners.remove(id.toLowerCase());
+        listeners.put(player.getName(), playerListeners);
+    }
+
+
+    /**
+     * Cancels a listener, effectively removing and destroying the instance.
+     * Listeners in progress that are needing to be 'cancelled' should call
+     * this method as it fires a bukkit/world script event, as well.
+     *
+     * @param player  the dPlayer
+     * @param id
+     */
+	public void cancel(dPlayer player, String id) {
+        if (player == null || id == null) return;
+        // Removes listener
+		removeListenerFor(player, id);
+        // Fires bukkit event
+        Bukkit.getPluginManager()
+                .callEvent(new ListenerCancelEvent(player, id));
 	}
+
+
+    /**
+     * Finishes a listener, effectively removing and destroying the instance, but
+     * calls the optional finish_script and bukkit/world script events associated.
+     *
+     * @param player  the dPlayer
+     * @param npc  dNPC attached from the listen command (can be null)
+     * @param id  id of the listener
+     * @param on_finish  dScript to run on finish
+     */
+    public void finish(dPlayer player,
+                       dNPC npc,
+                       String id,
+                       dScript on_finish) {
+        if (player == null || id == null) return;
+        // Run finish script
+        if (on_finish != null)
+            try {
+                // TODO: Add context to this
+                ((TaskScriptContainer) on_finish.getContainer())
+                        .runTaskScript(player, npc, null);
+            } catch (Exception e) {
+                // Hm, not a valid task script?
+                dB.echoError("Tried to run the finish task for: " + id + "/" + player.getName() + ","
+                        + "but it seems not to be valid!");
+            }
+
+        // Remove listener instance from the player
+        removeListenerFor(player, id);
+        Bukkit.getPluginManager().callEvent(new ListenerFinishEvent(player, id));
+    }
+
+    public AbstractListener getListenerFor(dPlayer player, String listenerId) {
+        if (listeners.containsKey(player.getName())) {
+            Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
+            if (playerListeners.containsKey(listenerId.toLowerCase())) return playerListeners.get(listenerId.toLowerCase());
+        }
+        return null;
+    }
+
+    public Map<String, AbstractListener> getListenersFor(dPlayer player) {
+        if (listeners.containsKey(player.getName())) {
+            Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
+            return playerListeners;
+        }
+        return null;
+    }
+
+
+    ////////////////
+    // dRegistry
+    ////////////////
+
+
+    @Override
+    public boolean register(String registrationName, RegistrationableInstance listenerType) {
+        // Registers a new ListenerType
+        types.put(registrationName, (AbstractListenerType) listenerType);
+        return false;
+    }
+
+    @Override
+    public void registerCoreMembers() {
+        // Registers all core listener types.
+        new BlockListenerType().activate().as("BLOCK").withClass(BlockListenerInstance.class);
+        new ItemListenerType().activate().as("ITEM").withClass(ItemListenerInstance.class);
+        new KillListenerType().activate().as("KILL").withClass(KillListenerInstance.class);
+        new ItemDropListenerType().activate().as("ITEMDROP").withClass(ItemDropListenerInstance.class);
+        new TravelListenerType().activate().as("TRAVEL").withClass(TravelListenerInstance.class);
+        // Registers this class with bukkit's event api
+        DenizenAPI.getCurrentInstance().getServer().getPluginManager()
+                .registerEvents(this, DenizenAPI.getCurrentInstance());
+    }
 
 	@Override
 	public void disableCoreMembers() {
@@ -64,27 +207,12 @@ public class ListenerRegistry implements dRegistry, Listener {
 			}
 	}
 
-	public void finish(dPlayer player, dNPC npc, String listenerId, String finishScript, AbstractListener instance) {
-		if (finishScript != null)
-            try {
-                // TODO: Add context to this
-                ScriptRegistry.getScriptContainerAs(finishScript, TaskScriptContainer.class)
-                        .runTaskScript(player, npc, null);
-            } catch (Exception e) {
-                // Hrm, not a valid task script?
-            }
-
-		// Remove listener instance from the player
-		removeListenerFor(player, listenerId);
-        Bukkit.getPluginManager().callEvent(new ListenerFinishEvent(player, listenerId));
-	}
-
 	@Override
 	public <T extends RegistrationableInstance> T get(Class<T> clazz) {
 		if (types.containsValue(clazz)) {
-			for (RegistrationableInstance asl : types.values())
-				if (asl.getClass() == clazz)
-					return (T) clazz.cast(asl);
+			for (RegistrationableInstance ri : types.values())
+				if (ri.getClass() == clazz)
+					return (T) clazz.cast(ri);
 		}
 		return null;
 	}
@@ -95,29 +223,19 @@ public class ListenerRegistry implements dRegistry, Listener {
 		return null;
 	}
 
-	public AbstractListener getListenerFor(dPlayer player, String listenerId) {
-		if (listeners.containsKey(player.getName())) {
-			Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
-			if (playerListeners.containsKey(listenerId.toLowerCase())) return playerListeners.get(listenerId.toLowerCase());
-		}
-		return null;
-	}
-
-	public Map<String, AbstractListener> getListenersFor(dPlayer player) {
-		if (listeners.containsKey(player.getName())) {
-			Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
-			return playerListeners;
-		}
-		return null;
-	}
-
 	@Override
 	public Map<String, AbstractListenerType> list() {
 		return types;
 	}
 
+
+
+
+
 	@EventHandler
 	public void playerJoin(PlayerJoinEvent event) {
+
+        Denizen denizen = DenizenAPI.getCurrentInstance();
 
 		// Any saves quest listeners in progress?
 		if (!denizen.getSaves().contains("Listeners." + event.getPlayer().getName())) return;
@@ -144,7 +262,9 @@ public class ListenerRegistry implements dRegistry, Listener {
 		}
 	}
 
+
     public void deconstructPlayer(dPlayer player ) {
+        Denizen denizen = DenizenAPI.getCurrentInstance();
 
         // Clear previous MemorySection in saves
         denizen.getSaves().set("Listeners." + player.getName(), null);
@@ -164,35 +284,14 @@ public class ListenerRegistry implements dRegistry, Listener {
         listeners.remove(player);
     }
 
+
 	@EventHandler
 	public void playerQuit(PlayerQuitEvent event) {
         deconstructPlayer(dPlayer.mirrorBukkitPlayer(event.getPlayer()));
     }
 
-	@Override
-	public boolean register(String registrationName, RegistrationableInstance listenerType) {
-		types.put(registrationName, (AbstractListenerType) listenerType);
-		return false;
-	}
 
-	@Override
-	public void registerCoreMembers() {
-		new BlockListenerType().activate().as("BLOCK").withClass(BlockListenerInstance.class);
-		new ItemListenerType().activate().as("ITEM").withClass(ItemListenerInstance.class);
-		new KillListenerType().activate().as("KILL").withClass(KillListenerInstance.class);
-		new ItemDropListenerType().activate().as("ITEMDROP").withClass(ItemDropListenerInstance.class);
-		new TravelListenerType().activate().as("TRAVEL").withClass(TravelListenerInstance.class);
-		denizen.getServer().getPluginManager().registerEvents(this, denizen);
-	}
 
-	public void removeListenerFor(dPlayer player, String listenerId) {
-		Map<String, AbstractListener> playerListeners;
-		if (listeners.containsKey(player.getName())) {
-			playerListeners = listeners.get(player.getName());
-		} else return;
-		playerListeners.remove(listenerId.toLowerCase());
-		listeners.put(player.getName(), playerListeners);
 
-	}
 
 }
