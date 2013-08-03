@@ -86,10 +86,16 @@ public class ItemScriptHelper implements Listener {
     }
     
     public static boolean isItemScript(ItemStack item) {
+    	// If the item doesn't have ItemMeta, ignore it.
     	if (!item.hasItemMeta()) return false;
+    	
+    	// Since dItems are handled by lore, it must match an item script on one of the lines
     	if (!item.getItemMeta().hasLore()) return false;
+    	
+    	// Check to make sure the lore includes id:ItemScriptName. If not, ignore the item.
     	for (String line : item.getItemMeta().getLore())
-    		if (dScript.matches(ChatColor.stripColor(line).substring(3))) {
+    		if (ChatColor.stripColor(line).substring(0, 3).equalsIgnoreCase("id:") &&
+    				dScript.matches(ChatColor.stripColor(line).substring(3))) {
     			return true;
     		}
     	return false;
@@ -97,22 +103,28 @@ public class ItemScriptHelper implements Listener {
     
     @EventHandler
     public void boundPrepareItem(PrepareItemCraftEvent event) {
+    	// Since the crafting matrix uses an array, we need a cloned version as a list
     	List<ItemStack> clonedMatrix = new ArrayList<ItemStack>();
-    	for (ItemStack stack : event.getInventory().getMatrix()) {
+    	for (ItemStack stack : event.getInventory().getMatrix())
     		clonedMatrix.add(stack);
-    	}
+    	// Now that we have all of the items, we need to make sure 
     	for (ItemStack stack : clonedMatrix) {
-    		if (!stack.hasItemMeta()) return;
-    		if (!stack.getItemMeta().hasLore()) return;
+    		// We need to check this manually, since the event is a bit different than others
+    		if (!stack.hasItemMeta()) continue;
+    		if (!stack.getItemMeta().hasLore()) continue;
     		for (String line : stack.getItemMeta().getLore()) {
-    			if (dScript.matches(ChatColor.stripColor(line).substring(3))
+    			// Make sure it's an item script AND that's it's bound to the player
+    			if (ChatColor.stripColor(line).substring(0, 3).equalsIgnoreCase("id:")
+    					&& dScript.matches(ChatColor.stripColor(line).substring(3))
     					&& dScript.valueOf(ChatColor.stripColor(line).substring(3)).getContainer().getAsContainerType(ItemScriptContainer.class).bound) {
+    				// If it's a bound item, don't let it get away!
     				clonedMatrix.remove(stack);
     				event.getView().getPlayer().getInventory().addItem(stack);
     				break;
     			}
     		}
     	}
+    	// Now, return the modified matrix back to the crafting screen
     	event.getInventory().setMatrix((ItemStack[]) clonedMatrix.toArray());
     }
     
@@ -121,7 +133,9 @@ public class ItemScriptHelper implements Listener {
     	if (!event.getItemDrop().getItemStack().hasItemMeta()) return;
     	if (!event.getItemDrop().getItemStack().getItemMeta().hasLore()) return;
     	for (String line : event.getItemDrop().getItemStack().getItemMeta().getLore()) {
-    		if (dScript.matches(ChatColor.stripColor(line).substring(3))
+    		// If the item being dropped is bound, don't drop it.
+    		if (ChatColor.stripColor(line).substring(0, 3).equalsIgnoreCase("id:")
+					&& dScript.matches(ChatColor.stripColor(line).substring(3))
 					&& dScript.valueOf(ChatColor.stripColor(line).substring(3)).getContainer().getAsContainerType(ItemScriptContainer.class).bound) {
     			event.setCancelled(true);
     			break;
@@ -131,6 +145,7 @@ public class ItemScriptHelper implements Listener {
     
     @EventHandler
     public void craftItem(CraftItemEvent event) {
+    	// Run a script on craft of an item script
     	if (isItemScript(event.getRecipe().getResult())) {
     		if (!(event.getWhoClicked() instanceof Player)) return;
             String determination = doEvents(Arrays.asList
@@ -143,6 +158,7 @@ public class ItemScriptHelper implements Listener {
     
     @EventHandler
     public void dropItem(PlayerDropItemEvent event) {
+    	// Run a script on drop of an item script
     	if (isItemScript(event.getItemDrop().getItemStack())) {
     		Map<String, Object> context = new HashMap<String, Object>();
     		context.put("location", new dLocation(event.getItemDrop().getLocation()));
