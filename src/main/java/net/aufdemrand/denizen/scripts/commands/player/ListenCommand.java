@@ -104,7 +104,7 @@ public class ListenCommand extends AbstractCommand {
 
     }
 
-    @SuppressWarnings("unchecked")
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         Element action = scriptEntry.getElement("action");

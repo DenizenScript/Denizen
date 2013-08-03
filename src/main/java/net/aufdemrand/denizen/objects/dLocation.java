@@ -862,7 +862,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // <l@location.highest_y> -> dLocation
         // Returns the location of the block at x,z with the highest y.
         // -->
-        if (attribute.startsWith("highest_y")) {
+        if (attribute.startsWith("highest")) {
             return new dLocation(getWorld().getHighestBlockAt(this).getLocation())
                     .getAttribute(attribute.fulfill(1));
         }
