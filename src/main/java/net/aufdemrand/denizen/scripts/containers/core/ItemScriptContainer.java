@@ -23,6 +23,7 @@ public class ItemScriptContainer extends ScriptContainer {
 	
 	dNPC npc = null;
 	Player player = null;
+	public Boolean bound = false;
 	
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
@@ -78,6 +79,11 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("DISPLAY NAME")){
             	String displayName = TagManager.tag(player, npc, getString("DISPLAY NAME"));
             	meta.setDisplayName(displayName);
+            }
+            
+            // Set if the object is bound to the player
+            if (contains("BOUND")) {
+            	bound  = Boolean.valueOf(TagManager.tag(player, npc, getString("BOUND")));
             }
 
             // Set Lore

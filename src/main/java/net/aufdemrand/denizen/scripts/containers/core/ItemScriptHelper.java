@@ -13,9 +13,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +93,40 @@ public class ItemScriptHelper implements Listener {
     			return true;
     		}
     	return false;
+    }
+    
+    @EventHandler
+    public void boundPrepareItem(PrepareItemCraftEvent event) {
+    	List<ItemStack> clonedMatrix = new ArrayList<ItemStack>();
+    	for (ItemStack stack : event.getInventory().getMatrix()) {
+    		clonedMatrix.add(stack);
+    	}
+    	for (ItemStack stack : clonedMatrix) {
+    		if (!stack.hasItemMeta()) return;
+    		if (!stack.getItemMeta().hasLore()) return;
+    		for (String line : stack.getItemMeta().getLore()) {
+    			if (dScript.matches(ChatColor.stripColor(line).substring(3))
+    					&& dScript.valueOf(ChatColor.stripColor(line).substring(3)).getContainer().getAsContainerType(ItemScriptContainer.class).bound) {
+    				clonedMatrix.remove(stack);
+    				event.getView().getPlayer().getInventory().addItem(stack);
+    				break;
+    			}
+    		}
+    	}
+    	event.getInventory().setMatrix((ItemStack[]) clonedMatrix.toArray());
+    }
+    
+    @EventHandler
+    public void boundDropItem(PlayerDropItemEvent event) {
+    	if (!event.getItemDrop().getItemStack().hasItemMeta()) return;
+    	if (!event.getItemDrop().getItemStack().getItemMeta().hasLore()) return;
+    	for (String line : event.getItemDrop().getItemStack().getItemMeta().getLore()) {
+    		if (dScript.matches(ChatColor.stripColor(line).substring(3))
+					&& dScript.valueOf(ChatColor.stripColor(line).substring(3)).getContainer().getAsContainerType(ItemScriptContainer.class).bound) {
+    			event.setCancelled(true);
+    			break;
+    		}
+    	}
     }
     
     @EventHandler

@@ -32,6 +32,7 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -536,7 +537,10 @@ public class dEntity implements dObject {
     }
 
     public void teleport(Location location) {
-        this.getBukkitEntity().teleport(location);
+    	if (isNPC())
+    		getNPC().teleport(location, TeleportCause.PLUGIN);
+    	else
+    		this.getBukkitEntity().teleport(location);
     }
 
     /**
