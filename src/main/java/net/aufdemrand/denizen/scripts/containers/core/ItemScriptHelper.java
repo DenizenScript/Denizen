@@ -13,8 +13,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -80,22 +83,38 @@ public class ItemScriptHelper implements Listener {
         return determination;
     }
     
+    public static boolean isItemScript(ItemStack item) {
+    	if (!item.hasItemMeta()) return false;
+    	if (!item.getItemMeta().hasLore()) return false;
+    	for (String line : item.getItemMeta().getLore())
+    		if (dScript.matches(ChatColor.stripColor(line).substring(3))) {
+    			return true;
+    		}
+    	return false;
+    }
+    
     @EventHandler
     public void craftItem(CraftItemEvent event) {
-    	if (!event.getRecipe().getResult().getItemMeta().hasLore()) return;
-    	boolean itemScript = false;
-    	for (String line : event.getRecipe().getResult().getItemMeta().getLore())
-    		if (dScript.matches(ChatColor.stripColor(line).substring(3))) {
-    			itemScript = true;
-    			break;
-    		}
-    	if (itemScript) {
+    	if (isItemScript(event.getRecipe().getResult())) {
     		if (!(event.getWhoClicked() instanceof Player)) return;
             String determination = doEvents(Arrays.asList
             		("craft"),
             		null, (Player) event.getWhoClicked(), null);
             if (determination.toUpperCase().startsWith("CANCELLED"))
             	event.setCancelled(true);
+    	}
+    }
+    
+    @EventHandler
+    public void dropItem(PlayerDropItemEvent event) {
+    	if (isItemScript(event.getItemDrop().getItemStack())) {
+    		Map<String, Object> context = new HashMap<String, Object>();
+    		context.put("location", new dLocation(event.getItemDrop().getLocation()));
+    		String determination = doEvents(Arrays.asList
+    				("drop"),
+    				null, event.getPlayer(), context);
+    		if (determination.toUpperCase().startsWith("CANCELLED"))
+    			event.setCancelled(true);
     	}
     }
 }
