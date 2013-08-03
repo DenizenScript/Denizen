@@ -107,6 +107,9 @@ public class RequirementRegistry implements dRegistry {
         
         registerCoreMember(SunnyRequirement.class, 
         		"SUNNY", "sunny", 0);
+
+		registerCoreMember(RainyRequirement.class,
+				"RAINY", "rainy", 0);
         
         registerCoreMember(TimeRequirement.class, 
         		"TIME", "time [dawn/day/dusk/night]", 1);

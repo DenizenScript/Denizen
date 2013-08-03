@@ -1,8 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.List;
-import org.bukkit.entity.Entity;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
@@ -15,6 +12,10 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+
+import java.util.List;
 
 /**
  * Delete certain entities or all entities of a type.
@@ -55,12 +56,12 @@ public class RemoveCommand extends AbstractCommand {
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
         
         // If the world has not been specified, try to use the NPC's or player's
-        // world, or default to "world" if necessary
+        // world, or default to the specified world in the server properties if necessary
  
         scriptEntry.defaultObject("world",
         		scriptEntry.hasNPC() ? new dWorld(scriptEntry.getNPC().getWorld()) : null,
         		scriptEntry.hasPlayer() ? new dWorld(scriptEntry.getPlayer().getWorld()) : null,
-        		dWorld.valueOf("world"));
+        		new dWorld(Bukkit.getWorlds().get(0)));
     }
     
 	@SuppressWarnings("unchecked")
@@ -81,13 +82,17 @@ public class RemoveCommand extends AbstractCommand {
         // Go through all of our entities and remove them
         
         for (dEntity entity : entities) {
+			// NP check to prevent errors from happening
+			if(entity == null) {
+				continue;
+			}
         	
         	conditionsMet = true;
     		
         	// If this is a specific spawned entity, and all
         	// other applicable conditions are met, remove it
         	
-        	if (entity.isGeneric() == false) {
+        	if (entity.isGeneric()) {
         		
         		if (region != null) {
         			conditionsMet = WorldGuardUtilities.inRegion
@@ -95,7 +100,7 @@ public class RemoveCommand extends AbstractCommand {
         							region.asString());
         		}
         		
-        		if (conditionsMet == true) {
+        		if (conditionsMet) {
         		
         			if (entity.isNPC()) {
         				entity.getNPC().destroy();
