@@ -14,6 +14,8 @@ import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -25,6 +27,7 @@ import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class HealthTrait extends Trait implements Listener {
 
@@ -262,8 +265,9 @@ public class HealthTrait extends Trait implements Listener {
         if (npc.getBukkitEntity() == null)
             return;
 
-        loc = aH.getLocationFrom(
-                TagManager.tag(null, DenizenAPI.getDenizenNPC(npc), respawnLocation, false));
+        loc = dLocation.valueOf(TagManager.tag(null,
+                DenizenAPI.getDenizenNPC(npc),
+                respawnLocation, false));
 
         if (loc == null) loc = npc.getBukkitEntity().getLocation();
 
@@ -274,17 +278,11 @@ public class HealthTrait extends Trait implements Listener {
             // Reset health now to avoid the death from happening instantly
             setHealth();
             // Play animation
-            npc.getBukkitEntity().playEffect(EntityEffect.DEATH);
+            // playDeathAnimation(npc.getBukkitEntity());
 
-            // Schedule the delayed task to carry out the death after the animation
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-                    new Runnable() {
-                        public void run() { die(); }
-                    }, 60);
         }
 
-        // No animated death? Then just die now.
-        else die();
+        die();
 
         if (respawn) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
@@ -297,5 +295,25 @@ public class HealthTrait extends Trait implements Listener {
         }
 
     }
+
+
+    public void playDeathAnimation(LivingEntity entity) {
+        entity.playEffect(EntityEffect.DEATH);
+        dMaterial mat = new dMaterial(Material.WOOL, 14);
+
+        for (dPlayer player : Utilities.getClosestPlayers(entity.getLocation(), 10)) {
+            for (Block block : Utilities.getRandomSolidBlocks(entity.getLocation(), 3, 65))
+                new FakeBlock(player, new dLocation(block.getLocation()),
+                        mat, Duration.valueOf("10-20s"));
+        }
+
+        ParticleEffect.CRIT.play(entity.getEyeLocation(), .2f, .2f, .2f, 0, 3500);
+
+        for (Block block : Utilities.getRandomSolidBlocks(entity.getLocation(), 2, 5)) {
+            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.BONE)).setPickupDelay(Integer.MAX_VALUE);
+            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE, 1, (short) 14)).setPickupDelay(Integer.MAX_VALUE);
+        }
+    }
+
 
 }
