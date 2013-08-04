@@ -266,7 +266,7 @@ public class CommandRegistry implements dRegistry {
                 "SHOWFAKE", "showfake [<material>] [<location>|...] (d:<duration>{10s})", 2);
 
         registerCoreMember(SignCommand.class, 
-        		"SIGN", "sign (type:{sign_post}/wall_sign) [\"<line>|...\"] [<location>]", 1);
+        		"SIGN", "sign (type:{sign_post}/wall_sign) [\"<line>|...\"] [<location>] (direction:n/e/w/s)", 1);
         
         registerCoreMember(SitCommand.class, 
         		"SIT", "sit (<location>)", 0);
@@ -296,7 +296,7 @@ public class CommandRegistry implements dRegistry {
         		"TRIGGER", "trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)", 2);
         
         registerCoreMember(ViewerCommand.class,
-        		"VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in)", 2);
+        		"VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)", 2);
 		
         registerCoreMember(VulnerableCommand.class, 
         		"VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
