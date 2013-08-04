@@ -104,11 +104,11 @@ public class ItemScriptHelper implements Listener {
     @EventHandler
     public void boundPrepareItem(PrepareItemCraftEvent event) {
     	// Since the crafting matrix uses an array, we need a cloned version as a list
-    	List<ItemStack> clonedMatrix = new ArrayList<ItemStack>();
-    	for (ItemStack stack : event.getInventory().getMatrix())
-    		clonedMatrix.add(stack);
-    	// Now that we have all of the items, we need to make sure 
-    	for (ItemStack stack : clonedMatrix) {
+    	List<ItemStack> clonedMatrix = new ArrayList<ItemStack>(Arrays.asList(event.getInventory().getMatrix()));
+    	// Now that we have all of the items, we need to make sure one of them is bound
+    	for (int i=0; i < clonedMatrix.size(); i++) {
+    		ItemStack stack = clonedMatrix.get(i);
+    		if (stack == null) continue;
     		// We need to check this manually, since the event is a bit different than others
     		if (!stack.hasItemMeta()) continue;
     		if (!stack.getItemMeta().hasLore()) continue;
@@ -125,7 +125,7 @@ public class ItemScriptHelper implements Listener {
     		}
     	}
     	// Now, return the modified matrix back to the crafting screen
-    	event.getInventory().setMatrix((ItemStack[]) clonedMatrix.toArray());
+    	event.getInventory().setMatrix(clonedMatrix.toArray(new ItemStack[clonedMatrix.size()]));
     }
     
     @EventHandler
@@ -148,9 +148,10 @@ public class ItemScriptHelper implements Listener {
     	// Run a script on craft of an item script
     	if (isItemScript(event.getRecipe().getResult())) {
     		if (!(event.getWhoClicked() instanceof Player)) return;
+    		Map<String, Object> context = new HashMap<String, Object>();
             String determination = doEvents(Arrays.asList
             		("craft"),
-            		null, (Player) event.getWhoClicked(), null);
+            		null, (Player) event.getWhoClicked(), context);
             if (determination.toUpperCase().startsWith("CANCELLED"))
             	event.setCancelled(true);
     	}
