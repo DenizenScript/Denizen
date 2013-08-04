@@ -384,6 +384,18 @@ public class Utilities {
         }
     }
     
+    public static void setSignRotation(BlockState signState, String direction) {
+    	
+    	BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
+        
+        for (BlockFace blockFace : blockFaces) {
+        	if (blockFace.name().startsWith(direction.toUpperCase().substring(1)))
+        		((org.bukkit.material.Sign) signState.getData())
+                   	.setFacingDirection(blockFace);
+        }
+        signState.update();
+    }
+    
     /**
      * Check if a block location equals another location.
      * @param block The block location to check for.

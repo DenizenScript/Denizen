@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
@@ -44,6 +45,10 @@ public class SignCommand extends AbstractCommand {
         			&& arg.matchesArgumentType(dList.class))
                 // add text
                 scriptEntry.addObject("text", arg.asType(dList.class));
+        	
+        	else if (!scriptEntry.hasObject("direction")
+        			&& arg.matchesPrefix("direction, dir"))
+        		scriptEntry.addObject("direction", arg.asElement());
         }
 
         // Check to make sure required arguments have been filled
@@ -62,6 +67,7 @@ public class SignCommand extends AbstractCommand {
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
 		// Get objects
+		String direction = scriptEntry.hasObject("direction") ? ((Element) scriptEntry.getObject("direction")).asString() : null;
 		Type type = (Type) scriptEntry.getObject("type");
         dList text = (dList) scriptEntry.getObject("text");
 		dLocation location = (dLocation) scriptEntry.getObject("location");
@@ -76,6 +82,9 @@ public class SignCommand extends AbstractCommand {
         BlockState signState = sign.getState();
         
         Utilities.setSignLines((Sign) signState, text.toArray());
-        Utilities.setSignRotation(signState);
+        if (direction != null)
+        	Utilities.setSignRotation(signState, direction);
+        else
+        	Utilities.setSignRotation(signState);
     }
 }

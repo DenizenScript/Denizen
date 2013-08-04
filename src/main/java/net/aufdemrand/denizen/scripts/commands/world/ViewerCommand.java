@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -19,7 +20,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -58,7 +58,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         	else if (!scriptEntry.hasObject("display")
                     && arg.matchesEnum(Display.values()))
                 // add Action
-                scriptEntry.addObject("display", Display.valueOf(arg.getValue().toUpperCase()));
+                scriptEntry.addObject("display, d", Display.valueOf(arg.getValue().toUpperCase()));
         	
         	else if (arg.matchesPrefix("i, id"))
                 scriptEntry.addObject("id", arg.asElement());
@@ -67,6 +67,10 @@ public class ViewerCommand extends AbstractCommand implements Listener {
                     && arg.matchesArgumentType(dLocation.class))
                 // Location arg
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
+        	
+        	else if (!scriptEntry.hasObject("direction")
+        			&& arg.matchesPrefix("direction, dir"))
+        		scriptEntry.addObject("direction", arg.asElement());
         	
         }
 
@@ -88,11 +92,11 @@ public class ViewerCommand extends AbstractCommand implements Listener {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
 		// Get objects
+		String direction = scriptEntry.hasObject("direction") ? ((Element) scriptEntry.getObject("direction")).asString() : null;
 		Action action = (Action) scriptEntry.getObject("action");
 		Type type = scriptEntry.hasObject("type") ? (Type) scriptEntry.getObject("type") : null;
 		Display display = scriptEntry.hasObject("display") ? (Display) scriptEntry.getObject("display") : null;
@@ -115,7 +119,10 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         		final Block sign = location.getBlock();
         		sign.setType(Material.valueOf(type.name()));
                 
-                Utilities.setSignRotation(sign.getState());
+        		if (direction != null)
+        			Utilities.setSignRotation(sign.getState(), direction);
+        		else
+        			Utilities.setSignRotation(sign.getState());
                 
         		int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
         			public void run() {
