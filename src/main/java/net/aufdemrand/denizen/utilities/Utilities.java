@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.TagManager;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -162,7 +163,35 @@ public class Utilities {
         }
         return props.getProperty("version");
     }
-    
+
+
+    public static List<Block> getRandomSolidBlocks(Location location, int range, int count) {
+        List<Block> blocks = new ArrayList<Block>();
+
+        int x = 0;
+        int f = 0;
+
+        while (x < count) {
+
+            if (f > 1000) break;
+            f++;
+
+            Location loc = location.clone()
+                    .add(Utilities.getRandom().nextInt(range * 2) - range,
+                            Utilities.getRandom().nextInt(range * 2) - range,
+                            Utilities.getRandom().nextInt(range * 2) - range);
+
+            if (loc.getBlock().getType().isSolid()) {
+                blocks.add(loc.getBlock());
+                x++;
+            }
+
+        }
+
+        dB.log(blocks.size() + " blocksize");
+
+        return blocks;
+    }
     
     
     /**
@@ -191,6 +220,34 @@ public class Utilities {
             }
         }
         return closestPlayer;
+    }
+
+
+    /**
+     * Finds the closest Players to a particular location.
+     *
+     * @param location	The location to find the closest Player to.
+     * @param range	The maximum range to look for the Player.
+     *
+     * @return	The closest Player to the location, or null if no Player was found
+     * 					within the range specified.
+     */
+
+    public static List<dPlayer> getClosestPlayers(Location location, int range) {
+
+        List<dPlayer> closestPlayers = new ArrayList<dPlayer>();
+        double closestDistance = Math.pow(range, 2);
+        List<Player> playerList = new ArrayList<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
+        Iterator<Player> it = playerList.iterator();
+        while (it.hasNext()) {
+            Player player = it.next();
+            Location loc = player.getLocation();
+            if (loc.getWorld().equals(location.getWorld())
+                    && loc.distanceSquared(location) < closestDistance) {
+                closestPlayers.add(dPlayer.mirrorBukkitPlayer(player));
+            }
+        }
+        return closestPlayers;
     }
     
 

@@ -11,7 +11,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 
 public class dMaterial implements dObject {
 
-    final static Pattern materialPattern = Pattern.compile("(\\w+):?(\\d+)?");
+    final static Pattern materialPattern = Pattern.compile("(?:m@)?(\\w+):?(\\d+)?", Pattern.CASE_INSENSITIVE);
 	
     //////////////////
     //    OBJECT FETCHER
@@ -26,8 +26,9 @@ public class dMaterial implements dObject {
      */
     @ObjectFetcher("m")
     public static dMaterial valueOf(String string) {
-    	
-    	if (string.toUpperCase().matches("RANDOM")) {
+
+    	if (string.toLowerCase().matches("random")
+                || string.toLowerCase().matches("m@random")) {
     		
     		// Get a random material
     		return new dMaterial(Material.values()[Utilities.getRandom().nextInt(Material.values().length)]);
