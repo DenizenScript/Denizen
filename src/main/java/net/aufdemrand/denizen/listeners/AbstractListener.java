@@ -156,7 +156,7 @@ public abstract class AbstractListener {
 		denizen.getSaves().set("Listeners." + player.getName() + "." + id
                 + ".Listener Type", type);
 		denizen.getSaves().set("Listeners." + player.getName() + "." + id
-                + ".Finish Script", scriptName);
+                + ".Finish Script", scriptName.toString());
 		if (npc != null) denizen.getSaves().set("Listeners." + player.getName() + "."
                 + id + ".Linked NPCID", npc.getId());
 
