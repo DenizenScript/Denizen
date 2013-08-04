@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -73,7 +74,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         if (!scriptEntry.hasObject("action"))
             scriptEntry.addObject("action", Action.CREATE);
         
-        if (!scriptEntry.hasObject("display"))
+        if (!scriptEntry.hasObject("display") && scriptEntry.getObject("action").equals(Action.CREATE))
         	scriptEntry.addObject("display", Display.LOCATION);
         
         if (!scriptEntry.hasObject("id"))
@@ -82,7 +83,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         if (!scriptEntry.hasObject("location") && scriptEntry.getObject("action").equals(Action.CREATE))
             throw new InvalidArgumentsException("Must specify a Sign location!");
         
-        if (!scriptEntry.hasObject("type"))
+        if (!scriptEntry.hasObject("type") && scriptEntry.getObject("action").equals(Action.CREATE))
         	scriptEntry.addObject("type", Type.SIGN_POST);
 	}
 
@@ -93,11 +94,12 @@ public class ViewerCommand extends AbstractCommand implements Listener {
 
 		// Get objects
 		Action action = (Action) scriptEntry.getObject("action");
-		Type type = (Type) scriptEntry.getObject("type");
-		Display display = (Display) scriptEntry.getObject("display");
-        String id = (String) scriptEntry.getObject("id").toString();
-        dLocation location = (dLocation) scriptEntry.getObject("location");
-		String content = display.toString() + "; " + scriptEntry.getPlayer().getName();
+		Type type = scriptEntry.hasObject("type") ? (Type) scriptEntry.getObject("type") : null;
+		Display display = scriptEntry.hasObject("display") ? (Display) scriptEntry.getObject("display") : null;
+        final String id = (String) scriptEntry.getObject("id").toString();
+        if (viewers.containsKey(id)) scriptEntry.setPlayer(dPlayer.valueOf(viewers.get(id).getContent().split("; ")[1]));
+        dLocation location = scriptEntry.hasObject("location") ? (dLocation) scriptEntry.getObject("location") : null;
+		String content = scriptEntry.hasObject("display") ? display.toString() + "; " + scriptEntry.getPlayer().getName() : null;
 		
         switch (action) {
         	
@@ -110,19 +112,18 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         		Viewer viewer = new Viewer(id, content, location);
         		viewers.put(id, viewer);
         		
-        		Block sign = location.getBlock();
+        		final Block sign = location.getBlock();
         		sign.setType(Material.valueOf(type.name()));
-                final BlockState signState = sign.getState();
                 
-                Utilities.setSignRotation(signState);
+                Utilities.setSignRotation(sign.getState());
                 
         		int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
         			public void run() {
-        				Player player = Bukkit.getPlayerExact(scriptEntry.getPlayer().getName());
+        				Player player = Bukkit.getPlayerExact(viewers.get(id).getContent().split("; ")[1]);
         				if (player == null)
-        					Utilities.setSignLines((Sign) signState, new String[]{"", scriptEntry.getPlayer().getName(), "is offline.", ""});
+        					Utilities.setSignLines((Sign) viewers.get(id).getLocation().getBlock().getState(), new String[]{"", viewers.get(id).getContent().split("; ")[1], "is offline.", ""});
         				else
-        					Utilities.setSignLines((Sign) signState, new String[]{String.valueOf(scriptEntry.getPlayer().getLocation().getX()), String.valueOf(scriptEntry.getPlayer().getLocation().getY()), String.valueOf(scriptEntry.getPlayer().getLocation().getZ()), scriptEntry.getPlayer().getWorld().getName()});
+        					Utilities.setSignLines((Sign) viewers.get(id).getLocation().getBlock().getState(), new String[]{String.valueOf((int) player.getLocation().getX()), String.valueOf((int) player.getLocation().getY()), String.valueOf((int) player.getLocation().getZ()), player.getWorld().getName()});
         				
         			}
         		}, 0, 20);
@@ -134,7 +135,30 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         		
         		
         	case MODIFY:
-        		// Insert stuff
+        		if (!viewers.containsKey(id)) {
+        			dB.echoDebug("Viewer ID " + id + " doesn't exist!");
+        			return;
+        		}
+        		if (content != null) viewers.get(id).setContent(content);
+        		if (location != null) {
+        			if (type == null) type = Type.valueOf(viewers.get(id).getLocation().getBlock().getType().name());
+        			Bukkit.getScheduler().cancelTask(viewers.get(id).getTask());
+            		int newTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+            			public void run() {
+            				Player player = Bukkit.getPlayerExact(viewers.get(id).getContent().split("; ")[1]);
+            				if (player == null)
+            					Utilities.setSignLines((Sign) viewers.get(id).getLocation().getBlock().getState(), new String[]{"", viewers.get(id).getContent().split("; ")[1], "is offline.", ""});
+            				else
+            					Utilities.setSignLines((Sign) viewers.get(id).getLocation().getBlock().getState(), new String[]{String.valueOf((int) player.getLocation().getX()), String.valueOf((int) player.getLocation().getY()), String.valueOf((int) player.getLocation().getZ()), player.getWorld().getName()});
+            				
+            			}
+            		}, 0, 20);
+        			viewers.get(id).getLocation().getBlock().setType(Material.AIR);
+        			viewers.get(id).setLocation(location);
+        			viewers.get(id).setTask(newTask);
+        			location.getBlock().setType(Material.valueOf(type.name()));
+        		}
+        		
         		break;
         		
         	case REMOVE:
@@ -221,21 +245,20 @@ public class ViewerCommand extends AbstractCommand implements Listener {
         FileConfiguration saves = DenizenAPI.getCurrentInstance().getSaves();
         
         if (saves.contains("Viewers"))
-        	for (String key : saves.getConfigurationSection("Viewers").getKeys(false)) {
-        		Viewer viewer = new Viewer(key, saves.getString("Viewers." + key.toLowerCase() + ".content"), dLocation.valueOf(saves.getString("Viewers." + key.toLowerCase() + ".location")));
-        		viewers.put(key, viewer);
-        		final Sign sign = (Sign) viewer.getLocation().getBlock().getState();
-        		final String[] content = viewer.getContent().split("; ");
-        		if (viewer.getContent().startsWith("location")) {
+        	for (final String id : saves.getConfigurationSection("Viewers").getKeys(false)) {
+        		Viewer viewer = new Viewer(id, saves.getString("Viewers." + id.toLowerCase() + ".content"), dLocation.valueOf(saves.getString("Viewers." + id.toLowerCase() + ".location")));
+        		viewers.put(id, viewer);
+        		if (viewer.getContent().startsWith("LOCATION")) {
         			int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {
-        				public void run() {
-        					Player player = Bukkit.getPlayerExact(content[1]);
-        					if (player == null)
-        						Utilities.setSignLines((Sign) sign, new String[]{"", content[1], "is offline.",""});
-        					else
-        						Utilities.setSignLines((Sign) sign, new String[]{String.valueOf(player.getLocation().getX()), String.valueOf(player.getLocation().getY()), String.valueOf(player.getLocation().getZ()), player.getWorld().getName()});
-        				}
-        			}, 0, 20);
+            			public void run() {
+            				Player player = Bukkit.getPlayerExact(viewers.get(id).getContent().split("; ")[1]);
+            				if (player == null)
+            					Utilities.setSignLines((Sign) viewers.get(id).getLocation().getBlock().getState(), new String[]{"", viewers.get(id).getContent().split("; ")[1], "is offline.", ""});
+            				else
+            					Utilities.setSignLines((Sign) viewers.get(id).getLocation().getBlock().getState(), new String[]{String.valueOf((int) player.getLocation().getX()), String.valueOf((int) player.getLocation().getY()), String.valueOf((int) player.getLocation().getZ()), player.getWorld().getName()});
+            				
+            			}
+            		}, 0, 20);
         			viewer.setTask(task);
         		}
         	}
@@ -244,7 +267,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
     }
     
     @EventHandler
-    public static void blockBreaks(BlockBreakEvent event) {
+    public static void blockBreak(BlockBreakEvent event) {
     	dLocation location = new dLocation(event.getBlock().getLocation());
     	for (Viewer viewer : viewers.values())
     		if (Utilities.isBlock(location, viewer.getLocation())) {
