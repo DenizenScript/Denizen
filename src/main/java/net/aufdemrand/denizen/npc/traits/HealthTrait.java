@@ -32,16 +32,17 @@ import org.bukkit.inventory.ItemStack;
 public class HealthTrait extends Trait implements Listener {
 
     // Saved to the C2 saves.yml
-
     @Persist("animatedeath")
     private boolean animatedeath = Settings.HealthTraitAnimatedDeathEnabled();
 
     @Persist("respawnondeath")
     private boolean respawn = Settings.HealthTraitRespawnEnabled();
+
     @Persist("respawndelayinseconds")
-    private String respawnDelay = Settings.HealthTraitRespawnDelay();;
+    private String respawnDelay = Settings.HealthTraitRespawnDelay();
+
     @Persist("respawnlocation")
-    private String respawnLocation = "<npc.location>";
+    private String respawnLocation =  "<npc.flag[respawn_location] || <npc.location>>";
 
     // internal
     private dPlayer player = null;
