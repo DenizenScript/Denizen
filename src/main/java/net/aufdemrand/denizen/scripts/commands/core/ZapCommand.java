@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
@@ -57,7 +56,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
         	
         	if (!scriptEntry.hasObject("script")
         			&& !scriptEntry.hasObject("step")
-        			&& arg.getPrefix() != null
+        			&& arg.hasPrefix()
         			&& arg.getPrefix().matchesArgumentType(dScript.class)) {
         		scriptEntry.addObject("script", arg.getPrefix().asType(dScript.class));
         		scriptEntry.addObject("step", arg.asElement());
@@ -90,9 +89,6 @@ public class ZapCommand extends AbstractCommand implements Listener{
         
         if (!scriptEntry.hasObject("duration"))
         	scriptEntry.addObject("duration", new Duration(-1d));
-        
-        if (!scriptEntry.hasObject("step"))
-        	throw new InvalidArgumentsException("Must specify a step!");
 
     }
 
@@ -103,7 +99,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         final dScript script = (dScript) scriptEntry.getObject("script");
-        String step = ((Element) scriptEntry.getObject("step")).asString();
+        String step = scriptEntry.getElement("step").asString();
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
         // Let's get the current step for reference.
