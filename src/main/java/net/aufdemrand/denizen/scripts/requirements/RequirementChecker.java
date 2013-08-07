@@ -49,7 +49,8 @@ public class RequirementChecker {
 
         // Counters for keeping track of checked and met requirements
         int numberChecked = 0;
-        int[] numberMet = new int[context.mode.modeInt.length];
+        int[] numberMet = context.mode.modeInt != null ?
+                new int[context.mode.modeInt.length] : new int[] { 1 };
 
         // Check all requirements
         for (String reqEntry : context.list) {
