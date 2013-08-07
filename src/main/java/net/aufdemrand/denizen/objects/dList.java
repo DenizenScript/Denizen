@@ -254,7 +254,7 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // <--
-        // <li@list.exclude[...|...] -> dList
+        // <li@list.exclude[...|...]> -> dList
         // returns a new dList excluding the items specified.
         // -->
         if (attribute.startsWith("exclude")) {
