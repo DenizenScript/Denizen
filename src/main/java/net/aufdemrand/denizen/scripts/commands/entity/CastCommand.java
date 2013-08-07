@@ -84,19 +84,14 @@ public class CastCommand extends AbstractCommand{
             		&& arg.matchesPrefix("power, p"))
             	scriptEntry.addObject("amplifier", arg.asElement());
             	
+            else if (!scriptEntry.hasObject("effect")
+            		&& PotionEffectType.getByName(arg.asElement().asString()) != null) {
+            	scriptEntry.addObject("effect", PotionEffectType.getByName(arg.asElement().asString()));
+            }
 
         	else if (!scriptEntry.hasObject("entities")
                 	&& arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
-            }
-
-            // Try to match a PotionEffectType (this argument is prefixless, since it's required)
-            else if (!scriptEntry.hasObject("effect")
-            		&& arg.matchesPrimitive(aH.PrimitiveType.String)) {
-                if (PotionEffectType.getByName(arg.asElement().asString()) == null)
-                	dB.echoError("Invalid PotionEffectType!");
-                else
-                	scriptEntry.addObject("effect", PotionEffectType.getByName(arg.asElement().asString()));
             }
             
         }
