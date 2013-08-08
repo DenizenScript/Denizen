@@ -102,6 +102,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 // Denizen should be good to interact with. Let's get the script.
                 InteractScriptContainer script = npc.getInteractScript(player, ChatTrigger.class);
 
+                if (script == null) return null;
+
                 // Check if the NPC has Chat Triggers for this step.
                 if (!script.containsTriggerInStep(
                         InteractScriptHelper.getCurrentStep(player,
@@ -113,6 +115,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                                 + npc.getNicknameTrait().getNickname() + ", " + event.getMessage());
                         return true;
                     }
+
                     else return ret;
                 }
 
@@ -124,9 +127,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 String replacementText = null;
                 String regexId = null;
                 String regexMessage = null;
-                Map<String, String> idMap = new HashMap<String, String>();
-                if (script != null)
-                    idMap = script.getIdMapFor(ChatTrigger.class, player);
+                Map<String, String> idMap = script.getIdMapFor(ChatTrigger.class, player);
 
                 if (!idMap.isEmpty()) {
                     // Iterate through the different id entries in the step's chat trigger
@@ -192,7 +193,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 return ret;
             }
         };
+
         Boolean cancelled = null;
+
         try {
             cancelled = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
