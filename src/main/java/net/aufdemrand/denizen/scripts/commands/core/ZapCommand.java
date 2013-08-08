@@ -63,33 +63,25 @@ public class ZapCommand extends AbstractCommand implements Listener{
         	}
         	
         	else if (!scriptEntry.hasObject("script")
-            		&& arg.matchesArgumentType(dScript.class)) {
+            		&& arg.matchesArgumentType(dScript.class))
                 scriptEntry.addObject("script", arg.asType(dScript.class));
 
-            } 
-            
             else if (!scriptEntry.hasObject("step")
             		&& (arg.matchesPrimitive(aH.PrimitiveType.String)
-            		|| arg.matchesPrimitive(aH.PrimitiveType.Integer))) {
+            		|| arg.matchesPrimitive(aH.PrimitiveType.Integer)))
                 scriptEntry.addObject("step", arg.asElement());
-                dB.echoDebug(Messages.DEBUG_SET_STEP, arg.toString());
-                
-            } 
-            
+
             else if (!scriptEntry.hasObject("duration")
-            		&& arg.matchesArgumentType(Duration.class)) {
+            		&& arg.matchesArgumentType(Duration.class))
             	scriptEntry.addObject("duration", arg.asType(Duration.class));
-
-            } 
-
         }
 
         if (!scriptEntry.hasObject("script"))
         	scriptEntry.addObject("script", scriptEntry.getScript());
-        
-        if (!scriptEntry.hasObject("duration"))
-        	scriptEntry.addObject("duration", new Duration(-1d));
 
+        if (!scriptEntry.hasPlayer() || !scriptEntry.getPlayer().isValid())
+            throw new InvalidArgumentsException("Must have player context!");
+        
     }
 
     //"PlayerName,ScriptName", TaskID
@@ -101,6 +93,10 @@ public class ZapCommand extends AbstractCommand implements Listener{
         final dScript script = (dScript) scriptEntry.getObject("script");
         String step = scriptEntry.getElement("step").asString();
         Duration duration = (Duration) scriptEntry.getObject("duration");
+
+        dB.report(getName(), scriptEntry.getPlayer().debug() + script.debug()
+                + scriptEntry.getElement("step").debug()
+                + (duration != null ? duration.debug() : ""));
 
         // Let's get the current step for reference.
         String currentStep = InteractScriptHelper.getCurrentStep(scriptEntry.getPlayer(), script.getName());
@@ -122,18 +118,21 @@ public class ZapCommand extends AbstractCommand implements Listener{
             } catch (Exception e) { }
 
         // One last thing... check for duration.
-        if (duration.getSeconds() > 0) {
-            // If a DURATION is specified, the currentStep should be remembered and restored after the duration.
+        if (duration != null && duration.getSeconds() > 0) {
+            // If a DURATION is specified, the currentStep should be remembered and
+            // restored after the duration.
             scriptEntry.addObject("step", currentStep);
-            // And let's take away the duration that was set to avoid a re-duration inception-ion-ion-ion-ion... ;)
-            scriptEntry.addObject("duration", new Duration(-1d));
+            // And let's take away the duration that was set to avoid a re-duration
+            // inception-ion-ion-ion-ion... ;)
+            scriptEntry.addObject("duration", Duration.ZERO);
 
             // Now let's add a delayed task to set it back after the duration
 
-            // Delays are in ticks, so let's multiply our duration (which is in seconds) by 20. 20 ticks per second.
+            // Delays are in ticks, so let's multiply our duration (which is in seconds) by 20.
+            // 20 ticks per second.
             long delay = (long) (duration.getSeconds() * 20);
 
-            // Set delayed task and put id in a map (for cancellations with CANCELTASK [id])
+            // Set delayed task and put id in a map
             dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "RESET ZAP for '" + script + "'");
             durations.put(scriptEntry.getPlayer().getName() + "," + script.getName(),
                     denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
