@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
@@ -522,8 +523,33 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 });
 
                 return new dList(found).getAttribute(attribute);
-            } 
- 
+            }
+
+            // <--
+            // <l@location.find.living_entities.within[X]> -> dList
+            // Returns a dList of living entities within a radius.
+            // -->
+            else if (attribute.startsWith("living_entities")
+                    && attribute.getAttribute(2).startsWith("within")
+                    && attribute.hasContext(2)) {
+                ArrayList<dEntity> found = new ArrayList<dEntity>();
+                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                attribute.fulfill(2);
+                for (Entity entity : getWorld().getEntities())
+                    if (entity instanceof LivingEntity
+                            && Utilities.checkLocation(this, entity.getLocation(), radius))
+                        found.add(new dEntity(entity));
+
+                Collections.sort(found, new Comparator<dEntity>() {
+                    @Override
+                    public int compare(dEntity ent1, dEntity ent2) {
+                        return (int) (distanceSquared(ent1.getBukkitEntity().getLocation()) - distanceSquared(ent2.getBukkitEntity().getLocation()));
+                    }
+                });
+
+                return new dList(found).getAttribute(attribute);
+            }
+
             else return "null";
         }
 
