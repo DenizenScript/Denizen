@@ -63,17 +63,16 @@ public class ZapCommand extends AbstractCommand implements Listener{
         	}
         	
         	else if (!scriptEntry.hasObject("script")
-            		&& arg.matchesArgumentType(dScript.class))
+            		&& arg.matchesArgumentType(dScript.class)
+                    && !arg.matchesPrefix("step"))
                 scriptEntry.addObject("script", arg.asType(dScript.class));
-
-            else if (!scriptEntry.hasObject("step")
-            		&& (arg.matchesPrimitive(aH.PrimitiveType.String)
-            		|| arg.matchesPrimitive(aH.PrimitiveType.Integer)))
-                scriptEntry.addObject("step", arg.asElement());
 
             else if (!scriptEntry.hasObject("duration")
             		&& arg.matchesArgumentType(Duration.class))
             	scriptEntry.addObject("duration", arg.asType(Duration.class));
+
+            else if (!scriptEntry.hasObject("step"))
+                scriptEntry.addObject("step", arg.asElement());
         }
 
         if (!scriptEntry.hasObject("script"))

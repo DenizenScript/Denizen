@@ -16,7 +16,7 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
- * Controls Denizens' heads.
+ * Controls entity heads.
  * 
  * @author Jeremy Schroeder
  *
