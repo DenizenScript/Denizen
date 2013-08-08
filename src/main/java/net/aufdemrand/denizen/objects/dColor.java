@@ -13,7 +13,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 public class dColor implements dObject {
 
     final static Pattern rgbPattern = Pattern.compile("(\\d+)[,:](\\d+)[,:](\\d+)");
-	
+
     //////////////////
     //    OBJECT FETCHER
     ////////////////
@@ -27,19 +27,23 @@ public class dColor implements dObject {
      */
     @ObjectFetcher("co")
     public static dColor valueOf(String string) {
-    	
-    	if (string.toUpperCase().matches("RANDOM")) {
+
+        string = string.toUpperCase().replace("CO@", "");
+
+    	if (string.matches("RANDOM")) {
     		
         	// Get a color using random RGB values
-    		return new dColor(Utilities.getRandom().nextInt(256), Utilities.getRandom().nextInt(256), Utilities.getRandom().nextInt(256));
+    		return new dColor(Utilities.getRandom().nextInt(256),
+                    Utilities.getRandom().nextInt(256),
+                    Utilities.getRandom().nextInt(256));
     	}
-    	
+
     	Matcher m = rgbPattern.matcher(string);
-    	
-    	if (m.matches()) {
-    		
-    		return new dColor(aH.getIntegerFrom(m.group(1)), aH.getIntegerFrom(m.group(2)), aH.getIntegerFrom(m.group(3)));
-    	}
+
+    	if (m.matches())
+    		return new dColor(aH.getIntegerFrom(m.group(1)),
+                    aH.getIntegerFrom(m.group(2)),
+                    aH.getIntegerFrom(m.group(3)));
     	
     	Field colorField = null;
     	
@@ -51,19 +55,17 @@ public class dColor implements dObject {
 			dB.echoError("No such color field!");
 		}
 
-    	if (colorField != null) {
-    	
+    	if (colorField != null)
     		return new dColor(colorField);
-    	}
-    			
+
         // No match
         return null;
     }
     
     /**
-     * Determine whether a string is a valid color.
+     * Determines whether a string is a valid color.
      *
-     * @param string  the string
+     * @param arg  the string
      * @return  true if matched, otherwise false
      *
      */
@@ -77,16 +79,10 @@ public class dColor implements dObject {
     	if (m.matches())
     		return true;
     	
-    	for (Field field : Color.class.getFields()) {
-    		
-    		if (arg.toUpperCase().matches(field.getName())) {
-    			
-    			return true;
-    		}
-    	}
+    	for (Field field : Color.class.getFields())
+    		if (arg.toUpperCase().matches(field.getName())) return true;
     	
         return false;
-
     }
     
     
@@ -149,7 +145,7 @@ public class dColor implements dObject {
 
 	@Override
 	public String identify() {
-		return "c@" + getColor().getRed() + "," + getColor().getGreen() + "," + getColor().getBlue();
+		return "co@" + getColor().getRed() + "," + getColor().getGreen() + "," + getColor().getBlue();
 	}
 
 	@Override

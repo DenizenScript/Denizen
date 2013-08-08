@@ -11,23 +11,25 @@ import java.util.regex.Pattern;
 
 
 /**
- * Durations are a more convenient way to get a 'unit of time' within Denizen.
+ * Durations are a convenient way to get a 'unit of time' within Denizen.
+ *
+ * @version 1.0
+ * @author Jeremy Schroeder
  *
  */
-
 public class Duration implements dObject {
 
     // Use regex pattern matching to easily determine if a string
     // value is a valid Duration.
     final static Pattern match =
-            Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)(?:(?:-\\d+.\\d+|.\\d+|\\d+)(?:t|m|s|h|d|))?",
+            Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)" +
+                    // Optional 'high-range' for random durations.
+                    "(?:(?:-\\d+.\\d+|.\\d+|\\d+)(?:t|m|s|h|d|))?",
                     Pattern.CASE_INSENSITIVE);
 
 
     // Define a 'ZERO' Duration
     final public static Duration ZERO = new Duration(0);
-
-
 
 
     /**
@@ -70,19 +72,19 @@ public class Duration implements dObject {
         // Standard Duration. Check the type and create new Duration object accordingly.
         Matcher m = match.matcher(string);
         if (m.matches()) {
-            if (m.group().toUpperCase().endsWith("T"))
+            if (m.group().toLowerCase().endsWith("t"))
                 // Matches TICKS, so 1 tick = .05 seconds
                 return new Duration(Double.valueOf(m.group(1)) * 0.05);
 
-            else if (m.group().toUpperCase().endsWith("D"))
+            else if (m.group().toLowerCase().endsWith("d"))
                 // Matches DAYS, so 1 day = 86400 seconds
                 return new Duration(Double.valueOf(m.group(1)) * 86400);
 
-            else if (m.group().toUpperCase().endsWith("M"))
+            else if (m.group().toLowerCase().endsWith("m"))
                 // Matches MINUTES, so 1 minute = 60 seconds
                 return new Duration(Double.valueOf(m.group(1)) * 60);
 
-            else if (m.group().toUpperCase().endsWith("H"))
+            else if (m.group().toLowerCase().endsWith("h"))
                 // Matches HOURS, so 1 hour = 3600 seconds
                 return new Duration(Double.valueOf(m.group(1)) * 3600);
 
@@ -344,8 +346,7 @@ public class Duration implements dObject {
 
         // <--
         // <d@duration.value> -> Element
-        // returns the value of the duration, in the best format
-        // possible.
+        // returns the value of the duration, in the best format possible.
         // -->
         if (attribute.startsWith("value")) {
             if (seconds % 43200 == 0)
