@@ -67,12 +67,12 @@ public class ZapCommand extends AbstractCommand implements Listener{
                     && !arg.matchesPrefix("step"))
                 scriptEntry.addObject("script", arg.asType(dScript.class));
 
-            else if (!scriptEntry.hasObject("duration")
-            		&& arg.matchesArgumentType(Duration.class))
-            	scriptEntry.addObject("duration", arg.asType(Duration.class));
-
             else if (!scriptEntry.hasObject("step"))
                 scriptEntry.addObject("step", arg.asElement());
+
+            else if (!scriptEntry.hasObject("duration")
+                    && arg.matchesArgumentType(Duration.class))
+                scriptEntry.addObject("duration", arg.asType(Duration.class));
         }
 
         if (!scriptEntry.hasObject("script"))
@@ -100,17 +100,20 @@ public class ZapCommand extends AbstractCommand implements Listener{
         // Let's get the current step for reference.
         String currentStep = InteractScriptHelper.getCurrentStep(scriptEntry.getPlayer(), script.getName());
 
-        // Special-case for backwards compatibility... ability to use ZAP to count up steps.
+        // Special-case for backwards compatibility: ability to use ZAP to count up steps.
         if (step == null) {
-            // Okay, no step was identified.. that means we should count up, ie. if currentStep = 1, new step should = 2
-            // If the currentStep is a number, increment it. If not, set it to '1' so it can be incremented next time.
+            // Okay, no step was identified.. that means we should count up,
+            // ie. if currentStep = 1, new step should = 2
+            // If the currentStep is a number, increment it. If not, set it
+            // to '1' so it can be incremented next time.
             if (aH.matchesInteger(currentStep)) {
                 step = String.valueOf(aH.getIntegerFrom(currentStep) + 1);
             } else step = "1";
         }
 
-        // If the durationsMap already contains an entry for this player/script combination, cancel the task since it's probably not
-        // desired to change back anymore if another ZAP for this script is taking place.
+        // If the durationsMap already contains an entry for this player/script combination,
+        // cancel the task since it's probably not desired to change back anymore if another
+        // ZAP for this script is taking place.
         if (durations.containsKey(scriptEntry.getPlayer().getName() + "," + script.getName()))
             try {
                 denizen.getServer().getScheduler().cancelTask(durations.get(scriptEntry.getPlayer().getName() + "," + script.getName()));
