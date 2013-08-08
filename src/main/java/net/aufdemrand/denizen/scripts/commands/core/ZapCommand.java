@@ -76,8 +76,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
         }
 
-        if (!scriptEntry.hasObject("script"))
-            scriptEntry.addObject("script", scriptEntry.getScript());
+        scriptEntry.defaultObject("script", scriptEntry.getScript());
 
         if (!scriptEntry.hasPlayer() || !scriptEntry.getPlayer().isValid())
             throw new InvalidArgumentsException("Must have player context!");

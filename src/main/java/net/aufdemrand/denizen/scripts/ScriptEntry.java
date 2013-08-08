@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.scripts;
 
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.*;
 
@@ -90,17 +92,17 @@ public class ScriptEntry {
      *
      */
 
-    public ScriptEntry defaultObject(String key, Object... objects) {
-
-        if (this.hasObject(key) == false) {
-            for (Object obj : objects) {
+    public ScriptEntry defaultObject(String key, Object... objects) throws InvalidArgumentsException {
+        if (!hasObject(key))
+            for (Object obj : objects)
                 if (obj != null) {
                     this.addObject(key, obj);
                     break;
                 }
-            }
-        }
-        return this;
+        // Check if the object has been filled. If not, throw new Invalid Arguments Exception.
+        if (!hasObject(key)) throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, key);
+        else
+            return this;
     }
 
     public List<String> getArguments() {
