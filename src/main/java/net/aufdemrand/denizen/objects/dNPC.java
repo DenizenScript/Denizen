@@ -365,7 +365,7 @@ public class dNPC implements dObject {
 
         // <--
         // <npc.script> -> dScript
-        // returns the NPC's previous navigated location.
+        // returns the NPC's assigned script.
         // -->
         if (attribute.startsWith("script")) {
             NPC citizen = getCitizen();
