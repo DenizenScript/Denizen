@@ -826,8 +826,12 @@ public class CommandHandler {
         if (args.hasFlag('a')) {
             denizen.reloadSaves();
             denizen.reloadConfig();
+            ScriptHelper.resetHadAnError();
             ScriptHelper.reloadScripts();
             Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml, Denizen/config.yml, and Denizen/scripts/... reloaded from disk to memory.");
+            if (ScriptHelper.getHadAnError()) {
+                Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
+            }
             return;
         }
         // Reload a specific item
@@ -841,8 +845,12 @@ public class CommandHandler {
                 Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
                 return;
             } else if (args.getString(1).equalsIgnoreCase("scripts")) {
+                ScriptHelper.resetHadAnError();
                 ScriptHelper.reloadScripts();
                 Messaging.send(sender, ChatColor.GREEN + "Denizen/scripts/... reloaded from disk to memory.");
+                if (ScriptHelper.getHadAnError()) {
+                    Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
+                }
                 return;
             }
         }

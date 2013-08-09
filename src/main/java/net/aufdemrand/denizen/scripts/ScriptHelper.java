@@ -50,7 +50,13 @@ public class ScriptHelper {
         }
         return _yamlScripts;
     }
-
+    private static boolean HadAnError = false;
+    public static boolean getHadAnError() {
+        return HadAnError;
+    }
+    public static void resetHadAnError() {
+        HadAnError = false;
+    }
     private static String _concatenateCoreScripts() {
 
         try {
@@ -58,6 +64,7 @@ public class ScriptHelper {
                     .getDataFolder() + File.separator + "scripts");
             if(!file.exists()) {
                 dB.echoError("No script folder found, please create one.");
+                HadAnError = true;
                 return "";
             }
 
@@ -81,6 +88,7 @@ public class ScriptHelper {
                         sb.append(outsideConfig.saveToString() + "\r\n");
                     } catch (Exception e) {
                         dB.echoError("Woah! Error parsing outside scripts!");
+                        HadAnError = true;
                     }
                 }
 
@@ -90,12 +98,17 @@ public class ScriptHelper {
 
                     try {
                         yaml = YamlConfiguration.loadConfiguration(f);
-                        if (yaml != null)
-                            sb.append(yaml.saveToString() + "\r\n");
-                        else dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. See console for YAML errors.");
+						String saved = yaml.saveToString();
+                        if (yaml != null && saved.length() > 0)
+                            sb.append(saved + "\r\n");
+                        else {
+                            dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "! This script has been skipped. See console for YAML errors.");
+                            HadAnError = true;
+                        }
 
                     } catch (RuntimeException e) {
                         dB.echoError(ChatColor.RED + "Woah! Error parsing " + fileName + "!");
+                        HadAnError = true;
                         if (dB.showStackTraces) {
                             dB.echoDebug("STACKTRACE follows:");
                             e.printStackTrace();
@@ -106,10 +119,14 @@ public class ScriptHelper {
 
                 dB.echoApproval("All scripts loaded!");
                 return yamlKeysToUpperCase(sb.toString());
-            } else dB.echoError(ChatColor.RED + "Woah! No scripts in /plugins/Denizen/scripts/ to load!");
+            } else {
+                dB.echoError(ChatColor.RED + "Woah! No scripts in /plugins/Denizen/scripts/ to load!");
+                HadAnError = true;
+            }
 
         } catch (Exception error) {
             dB.echoError(ChatColor.RED + "Woah! No script folder found in /plugins/Denizen/scripts/");
+            HadAnError = true;
             if (dB.showStackTraces) error.printStackTrace();
         }
 

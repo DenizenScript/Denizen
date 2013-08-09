@@ -20,8 +20,10 @@ public class FakeBlock {
                 material.getMaterial(),
                 material.getMaterialData().getData());
 
-        // Schedule removal of the block (and show the original block again)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+        if (duration.getTicks() > 0)
+        {
+            // Schedule removal of the block (and show the original block again)
+            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                 new Runnable() {
                     @Override
                     public void run() {
@@ -31,6 +33,7 @@ public class FakeBlock {
                                 location.getBlock().getData());
                     }
                 }, duration.getTicks());
+        }
     }
 
 }
