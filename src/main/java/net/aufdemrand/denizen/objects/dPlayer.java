@@ -378,6 +378,14 @@ public class dPlayer implements dObject {
         // Player is required to be online after this point...
 
         // <--
+        // <player.xp.to_next_level> -> Element(number)
+        // returns the amount of experience to the next level.
+        // -->
+        if (attribute.startsWith("xp.to_next_level"))
+            return new Element(String.valueOf(getPlayerEntity().getExpToLevel()))
+                    .getAttribute(attribute.fulfill(2)); 
+
+        // <--
         // <player.xp.total> -> Element(number)
         // returns the total amount of experience points.
         // -->
