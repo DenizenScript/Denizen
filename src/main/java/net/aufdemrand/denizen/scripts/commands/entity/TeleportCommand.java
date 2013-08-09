@@ -25,6 +25,8 @@ public class TeleportCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        boolean specified_entities = false;
+
         // Initialize necessary fields
 
     	for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
@@ -37,6 +39,7 @@ public class TeleportCommand extends AbstractCommand {
             
         	else if (!scriptEntry.hasObject("entities")
                 	&& arg.matchesArgumentType(dList.class)) {
+                specified_entities = true;
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
@@ -52,7 +55,7 @@ public class TeleportCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("entities"))
         	
         	// Teleport the player if no entity was specified
-        	if (scriptEntry.hasPlayer()) {
+        	if (scriptEntry.hasPlayer() && !specified_entities) {
         		scriptEntry.addObject("entities",
         				Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
         	}
