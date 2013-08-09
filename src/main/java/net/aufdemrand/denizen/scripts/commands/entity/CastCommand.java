@@ -14,7 +14,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -73,7 +73,11 @@ public class CastCommand extends AbstractCommand{
     	// Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("duration")
+        	if (!scriptEntry.hasObject("remove")
+        			&& arg.matches("remove, cancel"))
+        		scriptEntry.addObject("remove", Element.TRUE);
+        	
+        	else if (!scriptEntry.hasObject("duration")
             		&& arg.matchesArgumentType(Duration.class)
             		&& arg.matchesPrefix("duration, d"))
             	scriptEntry.addObject("duration", arg.asType(Duration.class));
@@ -96,32 +100,16 @@ public class CastCommand extends AbstractCommand{
             
         }
 
-        // Set default duration if not specified
-        if (!scriptEntry.hasObject("duration"))
-        	scriptEntry.addObject("duration", new Duration(60));
-
         // No targets specified, let's use defaults if available
-        if (!scriptEntry.hasObject("entities")) {
-        	List<dEntity> entities = new ArrayList<dEntity>();
-        	
-            // Target Player by default
-        	if (scriptEntry.getPlayer() != null)
-        		entities.add(scriptEntry.getPlayer().getDenizenEntity());
-            // If no Player, target the NPC by default
-        	else if (scriptEntry.getNPC() != null)
-        		entities.add(scriptEntry.getNPC().getDenizenEntity());
-            // Still no targets? Problem!
-        	else
-        		throw new InvalidArgumentsException("No valid target entities found!");
-        	scriptEntry.addObject("entities", entities);
-        }
-
+        scriptEntry.defaultObject("entities", Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()), Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
+        
         // No potion specified? Problem!
         if (!scriptEntry.hasObject("effect"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PotionType");
-        
-        if (!scriptEntry.hasObject("amplifier"))
-        	scriptEntry.addObject("amplifier", new Element(1));
+
+        scriptEntry.defaultObject("duration", new Duration(60));
+        scriptEntry.defaultObject("amplifier", new Element(1));
+        scriptEntry.defaultObject("remove", Element.FALSE);
 
     }
 
@@ -131,8 +119,9 @@ public class CastCommand extends AbstractCommand{
         // Fetch objects
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         PotionEffectType effect = (PotionEffectType) scriptEntry.getObject("effect");
-        int amplifier = ((Element) scriptEntry.getObject("amplifier")).asInt();
+        int amplifier = scriptEntry.getElement("amplifier").asInt();
         Duration duration = (Duration) scriptEntry.getObject("duration");
+        boolean remove = scriptEntry.getElement("remove").asBoolean();
 
         // Report to dB
         dB.report(getName(),
@@ -143,6 +132,9 @@ public class CastCommand extends AbstractCommand{
 
         // Apply the PotionEffect to the targets!
         for (dEntity entity : entities) {
+        	if (entity.getLivingEntity().hasPotionEffect(effect))
+        		entity.getLivingEntity().removePotionEffect(effect);
+        	if (remove) continue;
         	PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier);
             if (!potion.apply(entity.getLivingEntity()))
                 dB.echoError("Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
