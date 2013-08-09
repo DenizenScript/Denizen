@@ -80,7 +80,7 @@ public class CommandRegistry implements dRegistry {
         		"BURN", "burn [<entity>|...] (duration:<value>)", 1);
         
         registerCoreMember(CastCommand.class, 
-        		"CAST", "cast [<effect>] (duration:<value>) (power:<#>) (<entity>|...)", 1);
+        		"CAST, POTION", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)", 1);
         
         registerCoreMember(ChatCommand.class, 
         		"CHAT", "chat [\"<text>\"] (targets:<entity>|...)", 1);
