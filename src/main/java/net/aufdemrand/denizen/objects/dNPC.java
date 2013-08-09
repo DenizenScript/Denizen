@@ -395,41 +395,73 @@ public class dNPC implements dObject {
 
         // <--
         // <npc.navigator.range> -> Element(number)
-        // returns the maximum 'pathfinding range'
+        // returns the maximum pathfinding range
         // -->
         if (attribute.startsWith("navigator.range"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().range()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.attack_strategy> -> Element
+        // returns the NPC's attack strategy
+        // -->
         if (attribute.startsWith("navigator.attack_strategy"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().attackStrategy().toString()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.speed_modifier> -> Element(number)
+        // returns the NPC movement speed modifier
+        // -->
         if (attribute.startsWith("navigator.speed_modifier"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().speedModifier()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.base_speed> -> Element(number)
+        // returns the base navigation speed
+        // -->
         if (attribute.startsWith("navigator.base_speed"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().baseSpeed()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.avoid_water> -> Element(boolean)
+        // returns whether the NPC will avoid water
+        // -->
         if (attribute.startsWith("navigator.avoid_water"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().avoidWater()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.target_location> -> dLocation
+        // returns the location the NPC is curently navigating towards
+        // -->
         if (attribute.startsWith("navigator.target_location"))
             return (getNavigator().getTargetAsLocation() != null
                     ? new dLocation(getNavigator().getTargetAsLocation()).getAttribute(attribute.fulfill(2))
                     : "null");
 
+        // <--
+        // <npc.navigator.is_fighting> -> Element(boolean)
+        // returns whether the NPC is in combat
+        // -->
         if (attribute.startsWith("navigator.is_fighting"))
             return new Element(String.valueOf(getNavigator().getEntityTarget().isAggressive()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.target_type> -> Element
+        // returns the entity type of the target
+        // -->
         if (attribute.startsWith("navigator.target_type"))
             return new Element(String.valueOf(getNavigator().getTargetType().toString()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.target_entity> -> dEntity
+        // returns the entity being targeted
+        // -->
         if (attribute.startsWith("navigator.target_entity"))
             return (getNavigator().getEntityTarget().getTarget() != null
                     ? new dEntity(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(2))
