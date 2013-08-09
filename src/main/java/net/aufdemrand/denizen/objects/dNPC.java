@@ -364,6 +364,21 @@ public class dNPC implements dObject {
                     : "null");
 
         // <--
+        // <npc.script> -> dScript
+        // returns the NPC's assigned script.
+        // -->
+        if (attribute.startsWith("script")) {
+            NPC citizen = getCitizen();
+            if (!citizen.hasTrait(AssignmentTrait.class) || !citizen.getTrait(AssignmentTrait.class).hasAssignment()) {
+                return "null";
+            }
+            else {
+                return new Element(citizen.getTrait(AssignmentTrait.class).getAssignment().getName())
+                    .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--
         // <npc.navigator.is_navigating> -> Element(boolean)
         // returns true if the NPC is currently navigating, false otherwise.
         // -->
@@ -385,7 +400,6 @@ public class dNPC implements dObject {
         if (attribute.startsWith("navigator.range"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().range()))
                     .getAttribute(attribute.fulfill(2));
-
 
         if (attribute.startsWith("navigator.attack_strategy"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().attackStrategy().toString()))
