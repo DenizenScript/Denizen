@@ -152,8 +152,8 @@ public class UtilTags implements Listener {
         }
 
         // <--
-        // <server.current_time_millis> -> dList(dNPC)
-        // returns a dList of dNPCs currently in the Citizens NPC Registry.
+        // <server.list_npcs> -> dList(dNPC)
+        // Returns a dList of dNPCs currently in the Citizens NPC Registry.
         // -->
         if (attribute.startsWith("list_npcs")) {
             ArrayList<dNPC> npcs = new ArrayList<dNPC>();
@@ -164,8 +164,8 @@ public class UtilTags implements Listener {
         }
 
         // <--
-        // <server.current_time_millis> -> dList(dNPC)
-        // returns a dList of dNPCs currently in the Citizens NPC Registry.
+        // <server.list_worlds> -> dList(dWorld)
+        // Returns a dList of all worlds.
         // -->
         if (attribute.startsWith("list_worlds")) {
             ArrayList<dWorld> worlds = new ArrayList<dWorld>();
