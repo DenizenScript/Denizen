@@ -281,17 +281,37 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("is_online"))
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
         
-        // Return player ip in format #.#.#.#
+        // <--
+        // <player.ip> -> Element
+        // Returns the player's IP address.
+        // -->
         if (attribute.startsWith("ip"))
             return getPlayerEntity().getAddress().getHostName();
         
+        // <--
+        // <player.list> -> dList(dPlayer)
+        // Returns all players that have ever played on the server, online or not.
+        // **NOTE: This will only work if there is a player attached to the current script.
+        // If you need it anywhere else, use <server.list_players>**
         if (attribute.startsWith("list")) {
             List<String> players = new ArrayList<String>();
+            
+            // <--
+            // <player.list.online> -> dList(dPlayer)
+            // Returns all online players.
+            // **NOTE: This will only work if there is a player attached to the current script.
+            // If you need it anywhere else, use <server.list_online_players>**
             if (attribute.startsWith("list.online")) {
                 for(Player player : Bukkit.getOnlinePlayers())
                     players.add(player.getName());
                 return new dList(players).getAttribute(attribute.fulfill(2));
             }
+            
+            // <--
+            // <player.list.offline> -> dList(dPlayer)
+            // Returns all offline players.
+            // **NOTE: This will only work if there is a player attached to the current script.
+            // If you need it anywhere else, use <server.list_offline_players>**
             else if (attribute.startsWith("list.offline")) {
                 for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     if (!Bukkit.getOnlinePlayers().toString().contains(player.getName()))
@@ -768,6 +788,10 @@ public class dPlayer implements dObject {
             return new Element(String.valueOf(getPlayerEntity().getPlayerTimeOffset()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.prefix> -> Element
+        // Returns the player's prefix.
+        // -->
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
