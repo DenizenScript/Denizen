@@ -60,7 +60,7 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         // Use value of string, which will seperate values by the use of a pipe (|)
-        return new dList(string.replaceFirst("li@", ""));
+        return new dList(string.replaceFirst("(?i)li@", ""));
     }
 
 
@@ -71,7 +71,10 @@ public class dList extends ArrayList<String> implements dObject {
 
         if (m.matches()) return true;
 
-        if (arg.contains("|") || arg.startsWith("li@")) return true;
+        if (arg.contains("|") || arg.toLowerCase().startsWith("li@")) {
+            dB.log(arg + " is a list.");
+            return true;
+        }
 
         return false;
     }

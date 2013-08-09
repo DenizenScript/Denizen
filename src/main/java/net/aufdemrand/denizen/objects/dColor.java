@@ -71,6 +71,8 @@ public class dColor implements dObject {
      */
     public static boolean matches(String arg) {
 
+        arg = arg.toUpperCase().replace("CO@", "");
+
     	if (arg.toUpperCase().matches("RANDOM"))
     		return true;
     	
