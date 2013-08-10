@@ -103,7 +103,7 @@ public class RequirementRegistry implements dRegistry {
         		"SNEAKING", "sneaking", 0);
         
         registerCoreMember(StormRequirement.class, 
-        		"STORMING", "storm", 0);
+        		"STORMING", "storming", 0);
         
         registerCoreMember(SunnyRequirement.class, 
         		"SUNNY", "sunny", 0);
