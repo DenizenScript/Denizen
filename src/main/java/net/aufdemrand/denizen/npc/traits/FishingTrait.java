@@ -135,6 +135,7 @@ public class FishingTrait extends Trait {
         Vector test = to.clone().subtract(from).toVector();
         Double elev = test.getY();
         Double testAngle = launchAngle(from, to, v, elev, g);
+        if (testAngle == null) return;
         Double hangtime = hangtime(testAngle, v, elev, g);
         Vector victor = to.clone().subtract(from).toVector();
         Double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
