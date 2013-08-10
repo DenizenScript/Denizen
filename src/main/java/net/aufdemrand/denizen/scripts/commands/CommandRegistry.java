@@ -65,7 +65,7 @@ public class CommandRegistry implements dRegistry {
         		"ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false)", 1);
 		
 		registerCoreMember(AnnounceCommand.class,
-        		"ANNOUNCE", "announce [\"<text>\"] (to_ops)", 1);
+        		"ANNOUNCE", "announce [\"<text>\"] (to_ops) (to_flagged:<flag>)", 1);
         
         registerCoreMember(AssignmentCommand.class,
         		"ASSIGNMENT", "assignment [{set}/remove] (script:<name>)", 1);

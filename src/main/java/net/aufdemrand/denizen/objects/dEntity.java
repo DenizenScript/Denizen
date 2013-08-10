@@ -923,7 +923,7 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--
-        // <entity.can_see[entity]> -> Element(Boolean)
+        // <entity.can_see[<entity>]> -> Element(Boolean)
         // Returns true if the entity can see the other entity.
         // -->
         if (attribute.startsWith("can_see")) {
