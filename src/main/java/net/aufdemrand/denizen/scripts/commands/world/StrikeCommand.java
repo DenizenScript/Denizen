@@ -15,28 +15,24 @@ public class StrikeCommand extends AbstractCommand {
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize fields
-        dLocation location = null;
-        Boolean damage = true;
-
         // Iterate through arguments
-		for (String arg : scriptEntry.getArguments()){
-			if (aH.matchesLocation(arg))
-                location = aH.getLocationFrom(arg);
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class))
+                // Location arg
+                scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
 
-			else if (aH.matchesArg("NO_DAMAGE, NODAMAGE", arg))
-                damage = false;
+            else if (arg.matches("no_damage") || arg.matches("nodamage"))
+                scriptEntry.addObject("damage", false);
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
 		}
 
         // Check required args
-		if (location == null)
+		if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
 
-        // Stash args in ScriptEntry for use in execute()
-        scriptEntry.addObject("location", location);
-        scriptEntry.addObject("damage", damage);
+        if (!scriptEntry.hasObject("damage"))
+            scriptEntry.addObject("damage", true);
 	}
 
 	@Override
