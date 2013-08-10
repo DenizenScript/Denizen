@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -17,13 +18,13 @@ public class StrikeCommand extends AbstractCommand {
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        	
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
-                // Location arg
-                scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
 
             else if (arg.matches("no_damage") || arg.matches("nodamage"))
-                scriptEntry.addObject("damage", false);
+                scriptEntry.addObject("damage", Element.FALSE);
 
 		}
 
@@ -31,8 +32,7 @@ public class StrikeCommand extends AbstractCommand {
 		if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
 
-        if (!scriptEntry.hasObject("damage"))
-            scriptEntry.addObject("damage", true);
+        scriptEntry.defaultObject("damage", Element.TRUE);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class StrikeCommand extends AbstractCommand {
 
         // Extract objects from ScriptEntry
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        Boolean damage = (Boolean) scriptEntry.getObject("damage");
+        Boolean damage = scriptEntry.getElement("damage").asBoolean();
 
         // Debugger
         dB.report(getName(),
