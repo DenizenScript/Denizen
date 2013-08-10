@@ -923,6 +923,17 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--
+        // <entity.can_see[entity]> -> Element(Boolean)
+        // Returns true if the entity can see the other entity.
+        // -->
+        if (attribute.startsWith("can_see")) {
+            if (attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
+                dEntity toEntity = dEntity.valueOf(attribute.getContext(1));
+                return new Element(String.valueOf(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity()))).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--
         // <entity.can_pickup_items> -> Element(Boolean)
         // Returns true if the entity can pick up items. Else, returns false.
         // -->

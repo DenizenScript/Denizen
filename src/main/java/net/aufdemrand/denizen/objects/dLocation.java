@@ -585,7 +585,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
 
         // <--
-        // <l@location.distance[X]> -> Element(Number)
+        // <l@location.distance[<location>]> -> Element(Number)
         // Returns the distance between 2 locations.
         // -->
         if (attribute.startsWith("distance")) {
@@ -593,13 +593,13 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 dLocation toLocation = dLocation.valueOf(attribute.getContext(1));
 
                 // <--
-                // <l@location.distance[X].horizontal> -> Element(Number)
+                // <l@location.distance[<location>].horizontal> -> Element(Number)
                 // Returns the horizontal distance between 2 locations.
                 // -->
                 if (attribute.getAttribute(2).startsWith("horizontal")) {
                     
                 	// <--
-                    // <l@location.distance[X].horizontal.multiworld> -> Element(Number)
+                    // <l@location.distance[<location>].horizontal.multiworld> -> Element(Number)
                     // Returns the horizontal distance between 2 multiworld locations.
                     // -->
                     if (attribute.getAttribute(3).startsWith("multiworld"))
@@ -615,13 +615,13 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 }
 
                 // <--
-                // <l@location.distance[X].vertical> -> Element(Number)
+                // <l@location.distance[<location>].vertical> -> Element(Number)
                 // Returns the vertical distance between 2 locations.
                 // -->
                 else if (attribute.getAttribute(2).startsWith("vertical")) {
                 	
                 	// <--
-                    // <l@location.distance[X].vertical.multiworld> -> Element(Number)
+                    // <l@location.distance[<location>].vertical.multiworld> -> Element(Number)
                     // Returns the vertical distance between 2 multiworld locations.
                     // -->
                     if (attribute.getAttribute(3).startsWith("multiworld"))

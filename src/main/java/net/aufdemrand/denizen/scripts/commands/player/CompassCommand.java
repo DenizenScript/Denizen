@@ -52,6 +52,4 @@ public class CompassCommand extends AbstractCommand {
 
 
 	}
-
-
 }
