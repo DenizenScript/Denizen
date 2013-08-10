@@ -40,15 +40,15 @@ public class _templateCommand extends AbstractCommand /* implements dExternal */
 
             // if (!scriptEntry.hasObject("required_location")
             //      && arg.matchesArgumentType(dLocation.class))
-            //      scriptEntry.addObject("required_location", arg.asType(dLocation.class);
+            //      scriptEntry.addObject("required_location", arg.asType(dLocation.class));
 
         }
 
 
         // Check for required information
 
-        // if (!scriptEntry.hasObject("required_object")
-        //      throw new InvalidArgumentsException("Must have required object!")
+        // if (!scriptEntry.hasObject("required_object"))
+        //      throw new InvalidArgumentsException("Must have required object!");
 
 	}
 

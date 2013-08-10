@@ -88,6 +88,9 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ChunkLoadCommand.class,
                 "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<location>] (duration:<value>)", 1);
 
+        registerCoreMember(CompassCommand.class,
+                "COMPASS", "compass [<location>]", 1);
+
         registerCoreMember(CooldownCommand.class, 
         		"COOLDOWN", "cooldown (duration:<value>) (global) (script:<name>)", 1);
 
