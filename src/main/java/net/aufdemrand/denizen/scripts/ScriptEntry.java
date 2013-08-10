@@ -93,7 +93,7 @@ public class ScriptEntry {
      */
 
     public ScriptEntry defaultObject(String key, Object... objects) throws InvalidArgumentsException {
-        if (!this.objects.containsKey(key))
+        if (!this.objects.containsKey(key.toUpperCase()))
             for (Object obj : objects)
                 if (obj != null) {
                     this.addObject(key, obj);

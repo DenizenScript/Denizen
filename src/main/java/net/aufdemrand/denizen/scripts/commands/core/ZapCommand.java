@@ -55,6 +55,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
+            // If the scripter uses the 'script:step' format, handle it.
             if (!scriptEntry.hasObject("script")
                     && !scriptEntry.hasObject("step")
                     && arg.hasPrefix()
@@ -63,24 +64,28 @@ public class ZapCommand extends AbstractCommand implements Listener{
                 scriptEntry.addObject("step", arg.asElement());
             }
 
+            // If a script is found, use that to ZAP
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)
                     && !arg.matchesPrefix("step"))
                 scriptEntry.addObject("script", arg.asType(dScript.class));
 
+            // Add argument as step
             else if (!scriptEntry.hasObject("step"))
                 scriptEntry.addObject("step", arg.asElement());
 
+            // Lastly duration
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
         }
 
+        // Add default script if none was specified.
         scriptEntry.defaultObject("script", scriptEntry.getScript());
 
+        // Check if player is valid
         if (!scriptEntry.hasPlayer() || !scriptEntry.getPlayer().isValid())
             throw new InvalidArgumentsException("Must have player context!");
-
     }
 
     //"PlayerName,ScriptName", TaskID
@@ -90,7 +95,6 @@ public class ZapCommand extends AbstractCommand implements Listener{
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         final dScript script = (dScript) scriptEntry.getObject("script");
-
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
         dB.report(getName(), scriptEntry.getPlayer().debug() + script.debug()

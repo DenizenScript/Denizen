@@ -134,6 +134,10 @@ public class dScript implements dObject {
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return "null";
 
+        if (attribute.startsWith("container_type"))
+            return new Element(getContainer().getType())
+                .getAttribute(attribute.fulfill(1));
+
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
