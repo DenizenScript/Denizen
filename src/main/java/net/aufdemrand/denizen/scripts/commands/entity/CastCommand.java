@@ -69,7 +69,7 @@ public class CastCommand extends AbstractCommand{
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        boolean hasEntities = false;
+    	
     	// Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
@@ -96,20 +96,14 @@ public class CastCommand extends AbstractCommand{
         	else if (!scriptEntry.hasObject("entities")
                 	&& arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
-                hasEntities = true;
+                
             }
             
         }
 
         // No targets specified, let's use defaults if available
-        if (!hasEntities) { // Don't risk NPEs if not neccessary
-            if (scriptEntry.getPlayer() != null) {
-                scriptEntry.defaultObject("entities", Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()));
-            }
-            else {
-                scriptEntry.defaultObject("entities", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
-            }
-        }
+        scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null), 
+        		(scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
         
         // No potion specified? Problem!
         if (!scriptEntry.hasObject("effect"))
