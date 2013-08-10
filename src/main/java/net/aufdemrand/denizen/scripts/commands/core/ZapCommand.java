@@ -130,7 +130,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
         if (duration != null && duration.getSeconds() > 0) {
             // If a DURATION is specified, the currentStep should be remembered and
             // restored after the duration.
-            scriptEntry.addObject("step", currentStep);
+            scriptEntry.addObject("step", new Element(currentStep));
             // And let's take away the duration that was set to avoid a re-duration
             // inception-ion-ion-ion-ion... ;)
             scriptEntry.addObject("duration", Duration.ZERO);
