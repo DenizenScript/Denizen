@@ -30,6 +30,7 @@ import org.bukkit.entity.LivingEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class dNPC implements dObject {
 
@@ -207,7 +208,7 @@ public class dNPC implements dObject {
         return getCitizen().getTrait(TriggerTrait.class);
     }
 
-    public void action(String actionName, dPlayer player) {
+    public void action(String actionName, dPlayer player, Map<String, Object> context) {
         if (getCitizen() != null)
         {
             if (getCitizen().hasTrait(AssignmentTrait.class))
@@ -216,8 +217,13 @@ public class dNPC implements dObject {
                         actionName,
                         this,
                         player,
-                        getAssignmentTrait().getAssignment());
+                        getAssignmentTrait().getAssignment(),
+                        context);
         }
+    }
+
+    public void action(String actionName, dPlayer player) {
+        action(actionName, player, null);
     }
 
     private String prefix = "npc";
