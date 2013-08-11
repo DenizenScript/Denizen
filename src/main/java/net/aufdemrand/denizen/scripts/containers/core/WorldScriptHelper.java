@@ -600,7 +600,10 @@ public class WorldScriptHelper implements Listener {
         		context.put("damager", new dEntity(damager));
         		
         		if (damager instanceof Projectile) {
-        			context.put("shooter", new dEntity(((Projectile) damager).getShooter()));
+                    if (((Projectile) damager).getShooter() != null)
+        			    context.put("shooter", new dEntity(((Projectile) damager).getShooter()));
+                    else
+                        context.put("shooter", Element.valueOf("null"));
         		}
         	}
     		
