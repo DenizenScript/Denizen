@@ -303,6 +303,20 @@ public class Element implements dObject {
             return new Element(String.valueOf(ChatColor.stripColor(element))).getAttribute(attribute.fulfill(1));
 
         // <--
+        // <element.startswith[<string>]> -> Element(Boolean)
+        // Returns whether the element starts with a specified string.
+        // -->
+        if (attribute.startsWith("starts_with") || attribute.startsWith("startswith"))
+            return new Element(String.valueOf(element.startsWith(attribute.getContext(1)))).getAttribute(attribute.fulfill(1));
+
+        // <--
+        // <element.endswith[<string>]> -> Element(Boolean)
+        // Returns whether the element ends with a specified string.
+        // -->
+        if (attribute.startsWith("ends_with") || attribute.startsWith("endswith"))
+            return new Element(String.valueOf(element.endsWith(attribute.getContext(1)))).getAttribute(attribute.fulfill(1));
+
+        // <--
         // <element.split[<string>].limit[<#>]> -> dList
         // Returns a list of portions of this element, split by the specified string,
         // and capped at the specified number of max list items.
