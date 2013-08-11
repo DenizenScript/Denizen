@@ -28,17 +28,19 @@ public class HealthCommand extends AbstractCommand  {
             if (!scriptEntry.hasObject("qty")
                   && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                   scriptEntry.addObject("qty", arg.asElement());
-
+            if (!scriptEntry.hasObject("action")
+                && arg.matchesPrefix("state"))
+                    scriptEntry.addObject("action", arg.asElement());
         }
 
 
         // Check for required information
 
-        if (!scriptEntry.hasObject("qty"))
+        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("action"))
             throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "QUANTITY");
         if (!scriptEntry.hasObject("target")) {
             if (!scriptEntry.hasNPC())
-                throw new InvalidArgumentsException(dB.Messages.ERROR_NO_NPCID);
+                throw new InvalidArgumentsException("Missing NPC!");
             scriptEntry.addObject("target", Element.valueOf("npc"));
         }
 
@@ -51,22 +53,34 @@ public class HealthCommand extends AbstractCommand  {
         // Fetch required objects
 
         Element qty = scriptEntry.getElement("qty");
+        Element action = scriptEntry.getElement("action");
         boolean isplayer = scriptEntry.getElement("target").asString().equalsIgnoreCase("player");
 
+        dB.report(getName(), (qty != null?qty.debug():"") + (action != null?action.debug():""));
 
-        dB.report(getName(), qty.debug());
-
-        if (qty == null)
+        if (qty == null && action == null)
             dB.echoError("Null quantity!");
-
-        if (isplayer) {
-            scriptEntry.getPlayer().getPlayerEntity().setMaxHealth(qty.asDouble());
-        }
-        else {
-            if (scriptEntry.getNPC().getCitizen().hasTrait(HealthTrait.class))
-                scriptEntry.getNPC().getHealthTrait().setMaxhealth(qty.asInt());
+        if (action != null) {
+            if (action.asString().equalsIgnoreCase("true"))
+                scriptEntry.getNPC().getCitizen().addTrait(HealthTrait.class);
+            else if (action.asString().equalsIgnoreCase("false"))
+                scriptEntry.getNPC().getCitizen().removeTrait(HealthTrait.class);
             else
-                dB.echoError("NPC doesn't have health trait!");
+                if (scriptEntry.getNPC().getCitizen().hasTrait(HealthTrait.class))
+                    scriptEntry.getNPC().getCitizen().removeTrait(HealthTrait.class);
+                else
+                    scriptEntry.getNPC().getCitizen().addTrait(HealthTrait.class);
+        }
+        if (qty != null) {
+            if (isplayer) {
+                scriptEntry.getPlayer().getPlayerEntity().setMaxHealth(qty.asDouble());
+            }
+            else {
+                if (scriptEntry.getNPC().getCitizen().hasTrait(HealthTrait.class))
+                    scriptEntry.getNPC().getHealthTrait().setMaxhealth(qty.asInt());
+                else
+                    dB.echoError("NPC doesn't have health trait!");
+            }
         }
 	}
 
