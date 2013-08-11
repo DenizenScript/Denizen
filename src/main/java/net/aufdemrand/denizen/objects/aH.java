@@ -57,8 +57,8 @@ public class aH {
             if ((first_space > -1 && first_space < first_colon) || first_colon == -1)  value = string;
             else {
                 has_prefix = true;
-                prefix = string.split(":")[0];
-                value = string.split(":")[1];
+                prefix = string.split(":", 2)[0];
+                value = string.split(":", 2)[1];
             }
 
             // dB.log("Constructed Argument: " + prefix + ":" + value);
@@ -96,6 +96,13 @@ public class aH {
 
         public String getValue() {
             return value;
+        }
+
+        public String getPrefixAndValue() {
+            if (has_prefix)
+                return prefix + ":" + value;
+            else
+                return value;
         }
 
         public boolean matchesEnum(Enum[] values) {
