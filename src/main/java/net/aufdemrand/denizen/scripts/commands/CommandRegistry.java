@@ -173,7 +173,7 @@ public class CommandRegistry implements dRegistry {
         		"HEAL", "heal (<#.#>) (<entity>|...)", 0);
         
         registerCoreMember(HealthCommand.class,
-                "HEALTH", "health (state:true/false/toggle) (set_max:<#>)", 1);
+                "HEALTH", "health [<#>]", 1);
 		
         registerCoreMember(HurtCommand.class,
         		"HURT", "hurt (<#.#>) (<entity>|...)", 0);

@@ -36,7 +36,7 @@ public class _templateCommand extends AbstractCommand /* implements dExternal */
 
             // if (!scriptEntry.hasObject("required_integer")
             //      && arg.matchesPrimitive(aH.PrimitiveType.Integer))
-            //      scriptEntry.addObject("required_integer", arg.asElement);
+            //      scriptEntry.addObject("required_integer", arg.asElement());
 
             // if (!scriptEntry.hasObject("required_location")
             //      && arg.matchesArgumentType(dLocation.class))
