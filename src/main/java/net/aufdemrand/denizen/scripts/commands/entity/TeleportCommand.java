@@ -40,6 +40,12 @@ public class TeleportCommand extends AbstractCommand {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
+
+            else if (!scriptEntry.hasObject("entities")
+                    && arg.matchesArgumentType(dEntity.class)) {
+                // Entity arg
+                scriptEntry.addObject("entities", Arrays.asList(arg.asType(dEntity.class)));
+            }
     		
         	else if (arg.matches("npc") && scriptEntry.hasNPC()) {
                 // NPC arg for compatibility with old scripts

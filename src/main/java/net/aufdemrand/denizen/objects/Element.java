@@ -239,8 +239,8 @@ public class Element implements dObject {
             return Duration.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--
-        // <element.contains[<element>]> -> Element(Boolean)
-        // Returns whether the element contains a specified element.
+        // <element.contains[<string>]> -> Element(Boolean)
+        // Returns whether the element contains a specified string.
         // -->
         if (attribute.startsWith("contains")) {
             String contains = attribute.getContext(1);
