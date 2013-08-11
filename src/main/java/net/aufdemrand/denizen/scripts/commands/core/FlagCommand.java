@@ -52,9 +52,9 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("mcentity", Element.valueOf("null"));
             }
 
-            else if ((arg.matchesPrefix("entity")|| arg.matchesPrefix("player"))
-                    && !scriptEntry.hasObject("entity"))
-                scriptEntry.addObject("mcentity", arg.asElement());
+            else if ((arg.matchesPrefix("entity"))
+                    && !scriptEntry.hasObject("mcentity"))
+                scriptEntry.addObject("mcentity", new Element(arg.getValue()));
 
                 // Determine flagAction and set the flagName/flagValue
             else if (arg.getPrefixAndValue().split(":", 3).length > 1) {
