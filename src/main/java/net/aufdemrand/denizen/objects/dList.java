@@ -353,7 +353,12 @@ public class dList extends ArrayList<String> implements dObject {
         // gets a random item in the list and returns it as an Element.
         // -->
         if (attribute.startsWith("random")) {
-        	return new Element(this.get(new Random().nextInt(this.size())))
+            if (this.size() == 0) {
+                dB.echoError("Cannot get random item of an empty list!");
+                return new Element("null").getAttribute(attribute.fulfill(1));
+            }
+            else
+        	    return new Element(this.get(new Random().nextInt(this.size())))
                     .getAttribute(attribute.fulfill(1));
         }
 
