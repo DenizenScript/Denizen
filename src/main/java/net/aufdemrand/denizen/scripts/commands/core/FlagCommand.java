@@ -36,25 +36,25 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("duration", arg.asElement());
 
             else if (arg.matches("NPC, DENIZEN")
-                    && !scriptEntry.hasObject("entity")) {
+                    && !scriptEntry.hasObject("mcentity")) {
                 if (!scriptEntry.hasNPC())
                     throw new InvalidArgumentsException("Specified NPC-type flag with no valid NPC reference.");
-                scriptEntry.addObject("entity", Element.valueOf(scriptEntry.getNPC().identify()));
+                scriptEntry.addObject("mcentity", Element.valueOf(scriptEntry.getNPC().identify()));
             }
             else if (arg.matches("PLAYER")
-                    && !scriptEntry.hasObject("entity")) {
+                    && !scriptEntry.hasObject("mcentity")) {
                 if (!scriptEntry.hasPlayer())
                     throw new InvalidArgumentsException("Specified Player-type flag with no valid Player reference.");
-                scriptEntry.addObject("entity", Element.valueOf(scriptEntry.getPlayer().identify()));
+                scriptEntry.addObject("mcentity", Element.valueOf(scriptEntry.getPlayer().identify()));
             }
             else if (arg.matches("GLOBAL, SERVER")
                     && !scriptEntry.hasObject("entity")) {
-                scriptEntry.addObject("entity", Element.valueOf("null"));
+                scriptEntry.addObject("mcentity", Element.valueOf("null"));
             }
 
             else if ((arg.matchesPrefix("entity")|| arg.matchesPrefix("player"))
                     && !scriptEntry.hasObject("entity"))
-                scriptEntry.addObject("entity", arg.asElement());
+                scriptEntry.addObject("mcentity", arg.asElement());
 
                 // Determine flagAction and set the flagName/flagValue
             else if (arg.getPrefixAndValue().split(":", 3).length > 1) {
@@ -114,10 +114,10 @@ public class FlagCommand extends AbstractCommand implements Listener {
         if (!scriptEntry.hasObject("value"))
             scriptEntry.addObject("value", new Element("true"));
 
-        if (!scriptEntry.hasObject("entity")) {
+        if (!scriptEntry.hasObject("mcentity")) {
             if (!scriptEntry.hasPlayer())
-                throw new InvalidArgumentsException("Specified NPC-type flag with no valid NPC reference.");
-            scriptEntry.addObject("entity", Element.valueOf(scriptEntry.getPlayer().identify()));
+                throw new InvalidArgumentsException("Specified Player-type flag with no valid Player reference.");
+            scriptEntry.addObject("mcentity", Element.valueOf(scriptEntry.getPlayer().identify()));
         }
 
         if (!scriptEntry.hasObject("action"))
@@ -135,7 +135,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
         else
             duration = new Duration(-1d);
         Action action = Action.valueOf(scriptEntry.getElement("action").asString());
-        dEntity entity = dEntity.valueOf(scriptEntry.getElement("entity").asString());
+        dEntity entity = dEntity.valueOf(scriptEntry.getElement("mcentity").asString());
         int index = -1;
 
         // Set working index, if specified.
