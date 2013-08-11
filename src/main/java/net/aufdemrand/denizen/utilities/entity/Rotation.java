@@ -9,6 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import net.citizensnpcs.util.NMS;
 
 /**
  * Utilities related to entity yaws and pitches.
@@ -46,29 +47,8 @@ public class Rotation {
         
         if (entity instanceof LivingEntity)
         {
-            EntityLiving handle = ((CraftLivingEntity) entity).getHandle();
-            handle.yaw = (float) yaw;
-            handle.pitch = (float) pitch;
-            // !--- START NMS OBFUSCATED
-            handle.aA = handle.yaw; // The head's yaw
-            // !--- END NMS OBFUSCATED
-
-            if (!(entity instanceof Player))
-            {
-            	// Obfuscated variable used in head turning. If not set to
-            	// be equal to the yaw, non-Player entities will not rotate.
-            	// But do not use on Player entities, because it will break
-            	// their rotation.
-            	//
-            	// In case it ever gets renamed, this EntityLiving line is
-            	// the one with it:
-            	//
-            	// float f5 = MathHelper.g(this.yaw - this.ax);
-            
-            	handle.ax = handle.yaw;
-            }
+            NMS.look((LivingEntity)entity, yaw, pitch);
         }
-
         else
         {
             net.minecraft.server.v1_6_R2.Entity handle = ((CraftEntity) entity).getHandle();
