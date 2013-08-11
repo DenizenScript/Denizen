@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.npc.traits;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.citizensnpcs.api.event.NPCTraitCommandAttachEvent;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.ChatColor;
@@ -33,10 +34,10 @@ public class MobproxTrait extends Trait {
     public void run() {
         checkTimer++;
         if (checkTimer == 40) {
-            int range = frange.getLast().asInteger();
-            boolean acceptnpc = facceptnpc.getLast().asBoolean();
             checkTimer = 0;
             if (getNPC().isSpawned()) {
+                int range = frange.getLast().asInteger();
+                boolean acceptnpc = facceptnpc.getLast().asBoolean();
                 List<Entity> nearby = liveEnt.getNearbyEntities(range, range, range);
                 List<Entity> removeme = new ArrayList<Entity>();
                 removeme.addAll(inrange);
@@ -67,6 +68,20 @@ public class MobproxTrait extends Trait {
         dnpc.action("mob " + act + " proximity", null, context);
         dnpc.action(ent.getType().name() + " " + act + " proximity", null, context);
     }
+    @EventHandler
+    public void onTraitAttachEvent(NPCTraitCommandAttachEvent event) {
+        if (!event.getTraitClass().equals(MobproxTrait.class)) {
+            return;
+        }
+        if (event.getNPC() != getNPC()) {
+            return;
+        }
+        onSpawn();
+        AssignmentTrait at = dnpc.getAssignmentTrait();
+        if (at == null || !at.hasAssignment()) {
+            event.getCommandSender().sendMessage(ChatColor.RED + "Warning: This NPC doesn't have a script assigned! Mobprox only works with scripted Denizen NPCs!");
+        }
+    }
     @Override
     public void onSpawn() {
         liveEnt = getNPC().getBukkitEntity();
@@ -80,6 +95,7 @@ public class MobproxTrait extends Trait {
             facceptnpc.set("false");
         }
     }
+    /*
     @Override
     public void onAttach() {
         onSpawn();
@@ -94,5 +110,6 @@ public class MobproxTrait extends Trait {
             }
         }
     }
+    */
 
 }
