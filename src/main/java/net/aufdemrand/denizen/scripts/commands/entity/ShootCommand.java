@@ -24,6 +24,7 @@ import net.aufdemrand.denizen.utilities.entity.Rotation;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -154,6 +155,7 @@ public class ShootCommand extends AbstractCommand {
         // If the shooter is an NPC, always rotate it to face the destination
         // of the projectile, but if the shooter is a player, only rotate him/her
         // if he/she is not looking in the correct general direction
+        destination.add(0, 1.5d, 0);
 
         if (shooter.isNPC() || !Rotation.isFacingLocation(shooterEntity, destination, 45))
             Rotation.faceLocation(shooterEntity, destination);
@@ -172,7 +174,6 @@ public class ShootCommand extends AbstractCommand {
         }
 
         Position.mount(Conversion.convert(entities));
-        
         // Only use the last projectile in the task below
         final Entity lastEntity = entities.get(entities.size() - 1).getBukkitEntity();
         final Vector v2 = destination.toVector();
