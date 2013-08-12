@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -36,61 +39,87 @@ public class RandomCommand extends AbstractCommand {
 
 	
 	@Override
-	public void parseArgs(ScriptEntry scriptEntry)
-			throws InvalidArgumentsException {
+	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        int possibilities = 1;
-        ScriptQueue queue;
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-		queue = scriptEntry.getResidingQueue();
-		
-		for (String arg : scriptEntry.getArguments()) {
-			//
-			// Make sure the random number is an integer.
-			//
-			if (aH.matchesInteger(arg)) {
-				possibilities = aH.getIntegerFrom(arg);
-			} else {
-				throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-			}
+			if (!scriptEntry.hasObject("possibilities")
+					&& arg.matchesPrimitive(aH.PrimitiveType.Integer))
+				scriptEntry.addObject("possibilities", arg.asElement());
+			
+			else
+				throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
+
 		}	
 
-		if (possibilities <= 1) {
+		if (!scriptEntry.hasObject("possibilities"))
+			throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "POSSIBILITIES");
+		
+		if (scriptEntry.getElement("possibilities").asInt() <= 1)
 			throw new InvalidArgumentsException("Must randomly select more than one item.");
-		}
 
-		if (queue.getQueueSize() < possibilities) {
-			throw new InvalidArgumentsException("Invalid Size! RANDOM [#] must not be larger than the script!");
-		}
+		if (scriptEntry.getResidingQueue().getQueueSize() < scriptEntry.getElement("possibilities").asInt())
+			throw new InvalidArgumentsException("Invalid Size! Random # must not be larger than the script!");
 
-        scriptEntry.addObject("possibilities", possibilities);
-        scriptEntry.addObject("queue", queue);
+        scriptEntry.addObject("queue", scriptEntry.getResidingQueue());
 		
 	}
 
 	@Override
 	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        Integer possibilities = (Integer) scriptEntry.getObject("possibilities");
+        int possibilities = scriptEntry.getElement("possibilities").asInt();
         ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
 
 		int selected = Utilities.getRandom().nextInt(possibilities);
-		ScriptEntry keeping = null;
+		List<ScriptEntry> keeping = new ArrayList<ScriptEntry>();
+		int bracketsEntered = 0;
+		boolean selectedBrackets = false;
 		
 		dB.echoDebug("...random number generator selected '%s'", String.valueOf(selected + 1));
 		
 		for (int x = 0; x < possibilities; x++) {
+			
+			if (bracketsEntered > 0) {
+				if (queue.getEntry(0).getArguments().contains("}"))
+					bracketsEntered--;
+				
+				if (selectedBrackets) {
+					keeping.add(queue.getEntry(0));
+					queue.removeEntry(0);
+					if (bracketsEntered == 0)
+						selectedBrackets = false;
+					continue;
+				}
+				
+				if (x == selected) {
+					selected++;
+					queue.removeEntry(0);
+					continue;
+				}
+			}
+			
+			if (queue.getEntry(0).getArguments().contains("{")) {
+				dB.echoDebug("Found brackets...");
+				bracketsEntered++;
+				if (x == selected)
+					selectedBrackets = true;
+			}
+			
 			if (x != selected) {
 				dB.echoDebug("...removing '%s'", queue.getEntry(0).getCommandName());
 				queue.removeEntry(0);
-			} else {
+			} 
+			
+			else {
 				dB.echoDebug("...selected '%s'", queue.getEntry(0).getCommandName() + ": "
                         + queue.getEntry(0).getArguments());
-				keeping = queue.getEntry(0);
+				keeping.add(queue.getEntry(0));
 				queue.removeEntry(0);
 			}
+			
 		}
 		
-		queue.injectEntry(keeping, 0);
+		queue.injectEntries(keeping, 0);
 	}
 }
