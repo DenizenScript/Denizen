@@ -729,7 +729,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
         
         // <--
-        // <l@location.facing[<entity>]> -> Element(Boolean)
+        // <l@location.facing[<value>]> -> Element(Boolean)
         // Returns true if the location's yaw is facing another
         // entity or location. Otherwise, returns false.
         // -->
@@ -743,7 +743,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         		int attributePos = 1;
         		
                 // <--
-                // <location.facing[<entity>].degrees[X]> -> Element(Boolean)
+                // <location.facing[<value>].degrees[X]> -> Element(Boolean)
                 // Returns true if the location's yaw is facing another
                 // entity or location, within a specified degree range.
         		// Otherwise, returns false.
@@ -885,8 +885,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
 
         // <--
-        // <l@location.highest_y> -> dLocation
-        // Returns the location of the block at x,z with the highest y.
+        // <l@location.highest> -> dLocation
+        // Returns the location of the highest at x,z that isn't air.
         // -->
         if (attribute.startsWith("highest")) {
             return new dLocation(getWorld().getHighestBlockAt(this).getLocation())
