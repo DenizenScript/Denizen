@@ -81,8 +81,10 @@ public class RandomCommand extends AbstractCommand {
 		for (int x = 0; x < possibilities; x++) {
 			
 			if (bracketsEntered > 0) {
-				if (queue.getEntry(0).getArguments().contains("}"))
+				if (queue.getEntry(0).getArguments().contains("}")) {
+					dB.echoDebug("Leaving brackets...");
 					bracketsEntered--;
+				}
 				
 				if (selectedBrackets) {
 					keeping.add(queue.getEntry(0));

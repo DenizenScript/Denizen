@@ -29,7 +29,8 @@ public class NPCTags implements Listener {
 
     @EventHandler
     public void npcTags(ReplaceableTagEvent event) {
-        if (!event.matches("npc")) return;
+    	
+        if (!event.matches("npc") || event.replaced()) return;
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
