@@ -258,8 +258,8 @@ public class Element implements dObject {
         }
 
         // <--
-        // <element.after[<element>]> -> Element
-        // Returns the portion of an element after a specified character.
+        // <element.after[<string>]> -> Element
+        // Returns the portion of an element after a specified string.
         // -->
         // Get the substring after a certain text
         if (attribute.startsWith("after")) {
@@ -270,8 +270,8 @@ public class Element implements dObject {
         }
 
         // <--
-        // <element.before[<element>]> -> Element
-        // Returns the portion of an element before a specified character.
+        // <element.before[<string>]> -> Element
+        // Returns the portion of an element before a specified string.
         // -->
         // Get the substring before a certain text
         if (attribute.startsWith("before")) {
@@ -282,12 +282,18 @@ public class Element implements dObject {
         }
 
         // <--
-        // <element.substring[<#>,<#>]> -> Element
-        // Returns the portion of an element before two string indices.
+        // <element.substring[<#>(,<#>)]> -> Element
+        // Returns the portion of an element between two string indices.
+        // If no second index is specified, it will return the portion of an
+        // element after the specified index.
         // -->
-        if (attribute.startsWith("substring")) {            // substring[2,8]
+        if (attribute.startsWith("substring")||attribute.startsWith("substr")) {            // substring[2,8]
             int beginning_index = Integer.valueOf(attribute.getContext(1).split(",")[0]) - 1;
-            int ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]) - 1;
+            int ending_index;
+            if (attribute.getContext(1).split(",").length > 1)
+                ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]) - 1;
+            else
+                ending_index = element.length();
             return new Element(String.valueOf(element.substring(beginning_index, ending_index)))
                     .getAttribute(attribute.fulfill(1));
         }
