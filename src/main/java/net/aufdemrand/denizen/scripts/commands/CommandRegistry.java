@@ -208,6 +208,9 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ModifyBlockCommand.class,
         		"MODIFYBLOCK", "modifyblock [<location>] [<block>] (radius:<#>) (height:<#>) (depth:<#>)", 2);
 		
+        registerCoreMember(MoveCommand.class,
+        		"MOVE, SHOOT", "move [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<value>) (script:<name>)", 1);
+        
         registerCoreMember(NameplateCommand.class,
         		"NAMEPLATE", "nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib", 1);
         
@@ -261,9 +264,6 @@ public class CommandRegistry implements dRegistry {
 		
         registerCoreMember(ScribeCommand.class,
         		"SCRIBE", "scribe [script:<name>] (give/drop/equip) (<item>) (<location>)", 1);
-
-        registerCoreMember(ShootCommand.class,
-        		"SHOOT", "shoot [<entity>|...] (origin:<player>/<npc>) (destination:<location>) (speed:<#.#>) (duration:<value>) (script:<name>)", 1);
 
         registerCoreMember(ShowFakeCommand.class,
                 "SHOWFAKE", "showfake [<material>] [<location>|...] (d:<duration>{10s})", 2);

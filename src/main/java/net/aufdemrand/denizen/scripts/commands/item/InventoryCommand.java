@@ -37,7 +37,7 @@ public class InventoryCommand extends AbstractCommand {
         		
         		// Is entity
         		if (arg.matchesArgumentType(dEntity.class))
-        			scriptEntry.addObject("originEntity", arg.asType(dEntity.class).setPrefix("entity"));
+        			scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
         		// Is location
         		else if (arg.matchesArgumentType(dLocation.class))
         			scriptEntry.addObject("originLocation", arg.asType(dLocation.class).setPrefix("location"));
@@ -49,7 +49,7 @@ public class InventoryCommand extends AbstractCommand {
         		
             	// Is entity
             	if (arg.matchesArgumentType(dEntity.class))
-            		scriptEntry.addObject("destinationEntity", arg.asType(dEntity.class).setPrefix("entity"));
+            		scriptEntry.addObject("destinationEntity", arg.asType(dEntity.class));
             	// Is location
             	else if (arg.matchesArgumentType(dLocation.class))
             		scriptEntry.addObject("destinationLocation", arg.asType(dLocation.class).setPrefix("location"));

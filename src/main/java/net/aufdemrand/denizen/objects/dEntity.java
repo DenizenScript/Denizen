@@ -337,13 +337,36 @@ public class dEntity implements dObject {
     }
 
     /**
-     * Whether this entity is an NPC
+     * Check whether this entity is an NPC
      *
      * @return  true or false
      */
 
     public boolean isNPC() {
         if (CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
+            return true;
+        return false;
+    }
+    
+    /**
+     * Get the Player corresponding to this entity
+     *
+     * @return  The Player
+     */
+
+    public Player getPlayer() {
+
+        return (Player) getBukkitEntity();
+    }
+
+    /**
+     * Check whether this entity is a Player
+     *
+     * @return  true or false
+     */
+
+    public boolean isPlayer() {
+        if (getBukkitEntity() instanceof Player)
             return true;
         return false;
     }
@@ -359,6 +382,36 @@ public class dEntity implements dObject {
         if (identify().matches("e@\\D+"))
             return true;
         return false;
+    }
+    
+    /**
+     * Get the location of this entity
+     *
+     * @return  The Location
+     */
+
+    public dLocation getLocation() {
+
+        if (!isGeneric()) {
+        	return new dLocation(getBukkitEntity().getLocation());
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Get the eye location of this entity
+     *
+     * @return  The location
+     */
+
+    public dLocation getEyeLocation() {
+
+        if (isLivingEntity()) {
+        	return new dLocation(getLivingEntity().getEyeLocation());
+        }
+        
+        return null;
     }
 
 

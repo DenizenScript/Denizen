@@ -91,12 +91,6 @@ public class SpawnCommand extends AbstractCommand {
         	        	
         	if (entity.isSpawned() == false) {
         		entity.spawnAt(location);
-                if (entity.getEntityType() == EntityType.SKELETON) {
-                    entity.getLivingEntity().getEquipment().setItemInHand(new ItemStack(Material.BOW.getId(), 0));
-                }
-                else if (entity.getEntityType() == EntityType.PIG_ZOMBIE) {
-                    entity.getLivingEntity().getEquipment().setItemInHand(new ItemStack(Material.GOLD_SWORD.getId(), 0));
-                }
         	}
         	else {
         		entity.teleport(location);
