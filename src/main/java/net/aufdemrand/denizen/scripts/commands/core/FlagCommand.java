@@ -3,12 +3,9 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.flags.FlagManager.Flag;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -136,6 +133,9 @@ public class FlagCommand extends AbstractCommand implements Listener {
             duration = new Duration(-1d);
         Action action = Action.valueOf(scriptEntry.getElement("action").asString());
         dEntity entity = dEntity.valueOf(scriptEntry.getElement("mcentity").asString());
+        dPlayer player = null;
+        if (entity == null)
+            player = dPlayer.valueOf(scriptEntry.getElement("mcentity").asString());
         int index = -1;
 
         // Set working index, if specified.
@@ -148,7 +148,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
         }
 
         Flag flag = null;
-        String player = (String) scriptEntry.getObject("player");
 
         // Send information to debugger
         dB.report(getName(),
@@ -156,11 +155,14 @@ public class FlagCommand extends AbstractCommand implements Listener {
                         + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
                         + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value : "null"))
                         + (duration.getSeconds() > 0 ? duration.debug() : "")
-                        + (entity == null?"entity='server'":entity.debug()));
+                        + (entity == null?(player == null?"entity='server'":player.debug()):entity.debug()));
 
         // Returns existing flag (if existing), or a new flag if not
         if (entity == null)
-            flag = denizen.flagManager().getGlobalFlag(name);
+            if (player == null)
+                flag = denizen.flagManager().getGlobalFlag(name);
+            else
+                flag = denizen.flagManager().getPlayerFlag(player.getName(), name);
         else if (entity.isNPC())
             flag = denizen.flagManager().getNPCFlag(scriptEntry.getNPC().getId(), name);
         else if (entity.isLivingEntity() && entity.getLivingEntity() instanceof Player)
@@ -169,7 +171,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
             dB.echoError("Invalid entity specified!");
             return;
         }
-
         // Do flagAction
         switch (action) {
             case INCREASE: case DECREASE: case MULTIPLY: case DIVIDE:
