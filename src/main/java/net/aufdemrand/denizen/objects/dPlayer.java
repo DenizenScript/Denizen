@@ -522,14 +522,6 @@ public class dPlayer implements dObject {
             return new Element(player_name).getAttribute(attribute.fulfill(1));
 
         // <--
-        // <player.eyes> -> dLocation
-        // returns a dLocation of the player's eyes.
-        // -->
-        if (attribute.startsWith("eyes"))
-            return new dLocation(getEyeLocation())
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--
         // <player.compass.target> -> dLocation
         // returns a dLocation of the player's 'compass target'.
         // -->

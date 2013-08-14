@@ -483,32 +483,33 @@ public class dEntity implements dObject {
                         ent = location.getWorld().spawnFallingBlock(location, material, materialData);
                         entity = ent;
                     }
-                    else if (entity_type.name().matches("PIG_ZOMBIE")) {
-                        
-                        // Give pig zombies golden swords by default, unless data2 specifies
-                        // a different weapon
-                        if (dItem.matches(data2) == false) {
-                            data2 = "gold_sword";
-                        }
-
-                        ((PigZombie) entity).getEquipment()
-                                .setItemInHand(dItem.valueOf(data2).getItemStack());
-                    }
-                    else if (entity_type.name().matches("SKELETON")) {
-                        
-                        // Give skeletons bows by default, unless data2 specifies
-                        // a different weapon
-                        if (dItem.matches(data2) == false) {
-                            data2 = "bow";
-                        }
-
-                        ((Skeleton) entity).getEquipment()
-                                .setItemInHand(dItem.valueOf(data2).getItemStack());
-                    }
                     else {
 
                         ent = location.getWorld().spawnEntity(location, entity_type);
                         entity = ent;
+                                                
+                        if (entity_type.name().matches("PIG_ZOMBIE")) {
+                            
+                            // Give pig zombies golden swords by default, unless data2 specifies
+                            // a different weapon
+                            if (dItem.matches(data1) == false) {
+                                data1 = "gold_sword";
+                            }
+
+                            ((PigZombie) entity).getEquipment()
+                                    .setItemInHand(dItem.valueOf(data1).getItemStack());
+                        }
+                        else if (entity_type.name().matches("SKELETON")) {
+                            
+                            // Give skeletons bows by default, unless data2 specifies
+                            // a different weapon
+                            if (dItem.matches(data2) == false) {
+                                data2 = "bow";
+                            }
+
+                            ((Skeleton) entity).getEquipment()
+                                    .setItemInHand(dItem.valueOf(data2).getItemStack());
+                        }
 
                         // If there is some special subtype data associated with this dEntity,
                         // use the setSubtype method to set it in a clean, object-oriented
@@ -869,6 +870,14 @@ public class dEntity implements dObject {
             return new dLocation(entity.getLocation().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <entity.eye_location> -> dLocation
+        // returns a dLocation of the entity's eyes.
+        // -->
+        if (attribute.startsWith("eye_location"))
+            return new dLocation(getEyeLocation())
+                    .getAttribute(attribute.fulfill(1));
+        
         // <--
         // <entity.location> -> dLocation
         // Returns the dLocation of the entity.

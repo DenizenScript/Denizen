@@ -22,6 +22,7 @@ import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -129,9 +130,9 @@ public class ShootCommand extends AbstractCommand {
                                                .add(originEntity.getEyeLocation().getDirection())
                                                .subtract(0, 0.4, 0));
 
-        // If an entity is doing the shooting, get its LivingEntity
+        // If a living entity is doing the shooting, get its LivingEntity
                                    
-        LivingEntity shooter = originEntity.isLivingEntity() ? originEntity.getLivingEntity() : null;
+        LivingEntity shooter = (originEntity != null && originEntity.isLivingEntity()) ? originEntity.getLivingEntity() : null;
         
         final dLocation destination = scriptEntry.hasObject("destination") ?
                                       (dLocation) scriptEntry.getObject("destination") :
