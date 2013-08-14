@@ -8,10 +8,13 @@ import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 
+import net.citizensnpcs.api.event.NPCVehicleExitEvent;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -72,7 +75,7 @@ public class NPCTags implements Listener {
         // Do world script event 'On NPC Completes Navigation'
         WorldScriptHelper.doEvents(Arrays.asList
                 ("npc completes navigation"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null).toUpperCase();
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
 
         // Do the assignment script action
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
@@ -92,14 +95,13 @@ public class NPCTags implements Listener {
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("begin navigation", null);
 
-        if (event.getNPC().getNavigator().getTargetType().toString() == "ENTITY")
-        {
+        if (event.getNPC().getNavigator().getTargetType() == TargetType.ENTITY) {
         	LivingEntity entity = event.getNPC().getNavigator().getEntityTarget().getTarget();
         	
         	// If the NPC has an entity target, is aggressive towards it
         	// and that entity is not dead, trigger "on attack" command
         	if (event.getNPC().getNavigator().getEntityTarget().isAggressive()
-        		&& entity.isDead() == false)
+        		&& !entity.isDead())
         	{
         		dPlayer player = null;
         	
@@ -120,12 +122,25 @@ public class NPCTags implements Listener {
     public void navCancel(NavigationCancelEvent event) {
         WorldScriptHelper.doEvents(Arrays.asList
                 ("npc cancels navigation"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null).toUpperCase();
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("cancel navigation", null);
         npc.action("cancel navigation due to " + event.getCancelReason().toString(), null);
+    }
+
+    @EventHandler
+    public void onNpcDismount(NPCVehicleExitEvent event) {
+        if (event.getExited() instanceof Player) {
+            dNPC npc = dNPC.mirrorCitizensNPC(event.getNPC());
+            npc.action("dismount", dPlayer.mirrorBukkitPlayer((Player)event.getExited()));
+            WorldScriptHelper.doEvents(Arrays.asList("player dismounts npc"),
+                    npc, (Player)event.getExited(), null);
+        }
+        else {
+            dB.echoDebug("NPCVehicleExitEvent without a player?");
+        }
     }
 
 }
