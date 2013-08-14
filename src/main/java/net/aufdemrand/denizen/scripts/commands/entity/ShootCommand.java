@@ -12,7 +12,6 @@ import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -25,10 +24,7 @@ import net.aufdemrand.denizen.utilities.entity.Gravity;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -191,19 +187,6 @@ public class ShootCommand extends AbstractCommand {
                              (physicsType.equals(PhysicsType.CUSTOM) ?
                                      aH.debugObj("speed", speed) + aH.debugObj("duration", new Duration(maxRuns * 2)) : "") +
                              (script != null ? aH.debugObj("script", script) : ""));
-        
-        // If the shooter is not a player, always rotate it to face the destination
-        // of the projectile, but if the shooter is a player, only rotate him/her
-        // if he/she is not looking in the correct general direction
-        
-        if (shooter != null) {
-
-            if (!originEntity.isPlayer() ||
-                Rotation.isFacingLocation(shooter, destination, 45) == false) {
-
-                Rotation.faceLocation(shooter, destination);
-            }
-        }
         
         // Go through all the entities, spawning/teleporting and rotating them
         

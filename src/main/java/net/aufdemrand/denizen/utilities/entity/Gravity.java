@@ -7,7 +7,7 @@ public enum Gravity {
     LEASH_HITCH("LeashKnot", 0.115),
     PAINTING("Painting", 0.115),
     ARROW("Arrow", 0.115),
-    SNOWBALL("Snowball", 0.115),
+    SNOWBALL("Snowball", 0.075),
     FIREBALL("Fireball", 0.115),
     SMALL_FIREBALL("SmallFireball", 0.115),
     ENDER_PEARL("ThrownEnderpearl", 0.115),
