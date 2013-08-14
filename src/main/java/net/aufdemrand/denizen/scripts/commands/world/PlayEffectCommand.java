@@ -35,65 +35,65 @@ import net.aufdemrand.denizen.utilities.ParticleEffect;
 
 public class PlayEffectCommand extends AbstractCommand {
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-        	
-			if (!scriptEntry.hasObject("location")
+            
+            if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
                 // Location arg
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-			
-			else if (!scriptEntry.hasObject("effect") &&
-					 !scriptEntry.hasObject("particleeffect")) {
-				
-				// Add effect
-				if (arg.matchesEnum(Effect.values())) {
+            
+            else if (!scriptEntry.hasObject("effect") &&
+                     !scriptEntry.hasObject("particleeffect")) {
+                
+                // Add effect
+                if (arg.matchesEnum(Effect.values())) {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
                 }
-				else if (arg.matchesEnum(ParticleEffect.values())) {
+                else if (arg.matchesEnum(ParticleEffect.values())) {
                     scriptEntry.addObject("particleeffect",
-                    		ParticleEffect.valueOf(arg.getValue().toUpperCase()));
+                            ParticleEffect.valueOf(arg.getValue().toUpperCase()));
                 }
-			}
-			
-			else if (!scriptEntry.hasObject("visibility")
+            }
+            
+            else if (!scriptEntry.hasObject("visibility")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("visibility, v, radius, r")) {
                 // Add value
                 scriptEntry.addObject("visibility", arg.asElement());
             }
-			
-			else if (!scriptEntry.hasObject("data")
+            
+            else if (!scriptEntry.hasObject("data")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("data, d")) {
                 // Add value
                 scriptEntry.addObject("data", arg.asElement());
             }
-			
-			else if (!scriptEntry.hasObject("qty")
+            
+            else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)
                     && arg.matchesPrefix("qty, q")) {
                 // Add value
                 scriptEntry.addObject("qty", arg.asElement());
             }
-			
-			else if (!scriptEntry.hasObject("offset")
+            
+            else if (!scriptEntry.hasObject("offset")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("offset, o")) {
                 // Add value
                 scriptEntry.addObject("offset", arg.asElement());
             }
-		}
+        }
         
         // Use default values if necessary
         
         scriptEntry.defaultObject("location",
-				scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
-				scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
+                scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null,
+                scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null);
         scriptEntry.defaultObject("data", new Element(0));
         scriptEntry.defaultObject("visibility", new Element(5));
         scriptEntry.defaultObject("qty", new Element(1));
@@ -102,15 +102,15 @@ public class PlayEffectCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
         
         if (!scriptEntry.hasObject("effect") &&
-        	!scriptEntry.hasObject("particleeffect"))
+            !scriptEntry.hasObject("particleeffect"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EFFECT");
         
         if (!scriptEntry.hasObject("location"))
-        	throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
-	}
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
+    }
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Extract objects from ScriptEntry
         dLocation location = (dLocation) scriptEntry.getObject("location");
@@ -126,28 +126,26 @@ public class PlayEffectCommand extends AbstractCommand {
         location.add(0, 1, 0);
         
         // Report to dB
-        dB.report(getName(),
-        		(effect != null ?
-        			aH.debugObj("effect", effect.name()) :
-        			aH.debugObj("special effect", particleEffect.name())) +
-        		aH.debugObj("location", location.toString()) +
-        		aH.debugObj("radius", visibility) +
-        		aH.debugObj("data", data) +
-        		aH.debugObj("qty", qty) +
-        		(effect != null ? "" : aH.debugObj("offset", offset)));
+        dB.report(getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
+                                               aH.debugObj("special effect", particleEffect.name())) +
+                             aH.debugObj("location", location.toString()) +
+                             aH.debugObj("radius", visibility) +
+                             aH.debugObj("data", data) +
+                             aH.debugObj("qty", qty) +
+                             (effect != null ? "" : aH.debugObj("offset", offset)));
         
         // Play the Bukkit effect the number of times specified
         if (effect != null) {
-        	
-        	for (int n = 0; n < qty.asInt(); n++) {
-        		location.getWorld().playEffect(location, effect, data.asInt(), visibility.asInt());
-        	}
+            
+            for (int n = 0; n < qty.asInt(); n++) {
+                location.getWorld().playEffect(location, effect, data.asInt(), visibility.asInt());
+            }
         }
         // Play a ParticleEffect
         else {
-        	ParticleEffect.valueOf(particleEffect.name())
-        		.play(location, visibility.asDouble(),
-        			  offset.asFloat(), offset.asFloat(), offset.asFloat(), data.asFloat(), qty.asInt());
+            ParticleEffect.valueOf(particleEffect.name())
+                .play(location, visibility.asDouble(),
+                      offset.asFloat(), offset.asFloat(), offset.asFloat(), data.asFloat(), qty.asInt());
         }
-	}
+    }
 }

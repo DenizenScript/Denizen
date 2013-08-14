@@ -12,9 +12,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.CitizensAPI;
 
 
 /**
@@ -45,7 +43,7 @@ public class TravelListenerInstance extends AbstractListener implements Listener
     //
     // The type of Travel
     //
-    private	TravelType type;
+    private    TravelType type;
 
     //
     // End point criteria
@@ -164,7 +162,7 @@ public class TravelListenerInstance extends AbstractListener implements Listener
      * This method will be called every time a player moves in the game.  It's
      * used to determine if a player has satisfied a certain travel goal.
      *
-     * @param event	The player movement event.
+     * @param event    The player movement event.
      */
     @EventHandler
     public void walking(PlayerMoveEvent event) {

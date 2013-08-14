@@ -42,12 +42,12 @@ public class UtilTags implements Listener {
 
     @EventHandler
     public void queueTags(ReplaceableTagEvent event) {
-    	
-    	// <--
-    	// <q> -> Bloop
-    	// Returns "q" (or "queue" if you spell it out)... Pretty useless by itself.
-    	// [See <q.id>, <q.stats>, <q.size>, and <q.definitions>]
-    	// -->
+        
+        // <--
+        // <q> -> Bloop
+        // Returns "q" (or "queue" if you spell it out)... Pretty useless by itself.
+        // [See <q.id>, <q.stats>, <q.size>, and <q.definitions>]
+        // -->
         if (!event.matches("queue, q")) return;
         Attribute attribute =
                 new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
@@ -266,11 +266,11 @@ public class UtilTags implements Listener {
         String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext().toUpperCase() : "";
 
         if (type.equalsIgnoreCase("RANDOM")) {
-        	
+            
             // <--
             // <util.random.int[<#>].to[<#>]> -> Element(Number)
-        	// Returns a random number between the 2 specified numbers.
-        	// -->
+            // Returns a random number between the 2 specified numbers.
+            // -->
             if (subType.equalsIgnoreCase("INT")) {
                 if (specifier.equalsIgnoreCase("TO")) {
                     if (aH.matchesInteger(subTypeContext) && aH.matchesInteger(specifierContext)) {
@@ -391,11 +391,11 @@ public class UtilTags implements Listener {
             // Returns the current system time.
             // -->
             if (subType.equalsIgnoreCase("TIME")) {
-            	
-            	// <--
-            	// <util.date.time.24hour> -> Element
-            	// Returns the current system time in 24-hour format.
-            	// -->
+                
+                // <--
+                // <util.date.time.24hour> -> Element
+                // Returns the current system time in 24-hour format.
+                // -->
                 if (specifier.equalsIgnoreCase("24HOUR")) {
                     format.applyPattern("k:mm");
                 } else format.applyPattern("K:mm a");

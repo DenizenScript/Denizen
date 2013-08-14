@@ -228,15 +228,15 @@ public class dWorld implements dObject {
         // returns the time as day, night, dawn, or dusk
         // -->
         if (attribute.startsWith("time.period")) {
-        	
-        	long time = getWorld().getTime();
-        	String period;
-        	
-        	if (time >= 23000) period = "dawn"; 
+            
+            long time = getWorld().getTime();
+            String period;
+            
+            if (time >= 23000) period = "dawn"; 
             else if (time >= 13500) period = "night";
             else if (time >= 12500) period = "dusk";
             else period = "day";
-        	
+            
             return new Element(period).getAttribute(attribute.fulfill(2));
         }
         

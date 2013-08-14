@@ -132,7 +132,7 @@ public class TakeCommand extends AbstractCommand{
                 break;
 
             case ITEM:
-            	ItemStack is = item.getItemStack();
+                ItemStack is = item.getItemStack();
                 is.setAmount(quantity.intValue());
                 
                 dInventory inventory = new dInventory(scriptEntry.getPlayer().getPlayerEntity().getInventory());
@@ -140,7 +140,7 @@ public class TakeCommand extends AbstractCommand{
                 // Use method that Ignores special book meta to allow books
                 // that update
                 if (item.getItemStack().getItemMeta() instanceof BookMeta) {
-                	inventory.removeBook(is);
+                    inventory.removeBook(is);
                 }
                 else if (!inventory.getInventory().removeItem(is).isEmpty())
                     dB.echoDebug("The Player did not have enough " + is.getType().toString()

@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 public class dMaterial implements dObject {
 
     final static Pattern materialPattern = Pattern.compile("(?:m@)?(\\w+):?(\\d+)?", Pattern.CASE_INSENSITIVE);
-	
+    
     //////////////////
     //    OBJECT FETCHER
     ////////////////
@@ -27,40 +27,40 @@ public class dMaterial implements dObject {
     @ObjectFetcher("m")
     public static dMaterial valueOf(String string) {
 
-    	if (string.toLowerCase().matches("random")
+        if (string.toLowerCase().matches("random")
                 || string.toLowerCase().matches("m@random")) {
-    		
-    		// Get a random material
-    		return new dMaterial(Material.values()[Utilities.getRandom().nextInt(Material.values().length)]);
-    	}
-    	
-    	Matcher m = materialPattern.matcher(string);
-    	
-    	if (m.matches()) {
-    		
+            
+            // Get a random material
+            return new dMaterial(Material.values()[Utilities.getRandom().nextInt(Material.values().length)]);
+        }
+        
+        Matcher m = materialPattern.matcher(string);
+        
+        if (m.matches()) {
+            
             int data = -1;
-    		
-    		if (m.group(2) != null) {
-    			
-    			data = aH.getIntegerFrom(m.group(2));
-    		}
-    		
-    		if (aH.matchesInteger(m.group(1))) {
-    			
-    			return new dMaterial(aH.getIntegerFrom(m.group(1)), data);		
-    		}
-    		else {
-    			
-    			for (Material material : Material.values()) {
-    				
-    				if (material.name().equalsIgnoreCase(m.group(1))) {
-    					
-    					return new dMaterial(material, data);
-    				}
-    			}
-    		}
-    	}
-    			
+            
+            if (m.group(2) != null) {
+                
+                data = aH.getIntegerFrom(m.group(2));
+            }
+            
+            if (aH.matchesInteger(m.group(1))) {
+                
+                return new dMaterial(aH.getIntegerFrom(m.group(1)), data);        
+            }
+            else {
+                
+                for (Material material : Material.values()) {
+                    
+                    if (material.name().equalsIgnoreCase(m.group(1))) {
+                        
+                        return new dMaterial(material, data);
+                    }
+                }
+            }
+        }
+                
         // No match
         return null;
     }
@@ -74,14 +74,14 @@ public class dMaterial implements dObject {
      */
     public static boolean matches(String arg) {
 
-    	if (arg.toUpperCase().matches("RANDOM"))
-    		return true;
-    	
-    	Matcher m = materialPattern.matcher(arg);
-    	
-    	if (m.matches())
-    		return true;
-    	
+        if (arg.toUpperCase().matches("RANDOM"))
+            return true;
+        
+        Matcher m = materialPattern.matcher(arg);
+        
+        if (m.matches())
+            return true;
+        
         return false;
 
     }
@@ -142,47 +142,47 @@ public class dMaterial implements dObject {
 
     String prefix = "material";
 
-	@Override
-	public String getPrefix() {
-		return prefix;
-	}
+    @Override
+    public String getPrefix() {
+        return prefix;
+    }
 
-	@Override
-	public String debug() {
-		return (prefix + "='<A>" + identify() + "<G>'  ");
-	}
+    @Override
+    public String debug() {
+        return (prefix + "='<A>" + identify() + "<G>'  ");
+    }
 
-	@Override
-	public boolean isUnique() {
-		return false;
-	}
+    @Override
+    public boolean isUnique() {
+        return false;
+    }
 
-	@Override
-	public String getType() {
-		return "Material";
-	}
+    @Override
+    public String getType() {
+        return "Material";
+    }
 
-	@Override
-	public String identify() {
-		return "m@" + material.name();
-	}
+    @Override
+    public String identify() {
+        return "m@" + material.name();
+    }
 
     @Override
     public String toString() {
         return identify();
     }
 
-	@Override
-	public dObject setPrefix(String prefix) {
-		if (prefix != null)
+    @Override
+    public dObject setPrefix(String prefix) {
+        if (prefix != null)
         this.prefix = prefix;
         return this;
-	}
+    }
 
-	@Override
-	public String getAttribute(Attribute attribute) {
+    @Override
+    public String getAttribute(Attribute attribute) {
 
-		return new Element(identify()).getAttribute(attribute);
-	}
+        return new Element(identify()).getAttribute(attribute);
+    }
 
 }

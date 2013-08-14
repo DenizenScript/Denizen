@@ -18,8 +18,8 @@ public class ScriptEntryExecuteEvent extends Event implements Cancellable {
     }
  
     public void alterScriptEntry(ScriptEntry scriptEntry) {
-    	this.scriptEntry = scriptEntry;
-    	altered = true;
+        this.scriptEntry = scriptEntry;
+        altered = true;
     }
 
     public HandlerList getHandlers() {
@@ -31,21 +31,21 @@ public class ScriptEntryExecuteEvent extends Event implements Cancellable {
     }
 
     public ScriptEntry getScriptEntry() {
-    	return scriptEntry;
+        return scriptEntry;
     }
 
     public boolean isAltered() {
-    	return altered;
+        return altered;
     }
 
     @Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
+    public boolean isCancelled() {
+        return cancelled;
+    }
 
-	@Override
-	public void setCancelled(boolean arg0) {
-		cancelled = arg0;
-	}
+    @Override
+    public void setCancelled(boolean arg0) {
+        cancelled = arg0;
+    }
 
 }

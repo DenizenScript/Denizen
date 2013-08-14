@@ -5,9 +5,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +19,7 @@ public class dList extends ArrayList<String> implements dObject {
     final static Pattern flag_by_id =
             Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
                     Pattern.CASE_INSENSITIVE);
-	
+    
     @ObjectFetcher("li, fl")
     public static dList valueOf(String string) {
         if (string == null) return null;
@@ -49,7 +47,7 @@ public class dList extends ArrayList<String> implements dObject {
                         return new dList(flag_manager.getPlayerFlag(m.group(3), m.group(4)));
 
                 } else if (m.group(2).toLowerCase().startsWith("n@")) {
-                	if (FlagManager.npcHasFlag(dNPC.valueOf(m.group(3)), m.group(4)))
+                    if (FlagManager.npcHasFlag(dNPC.valueOf(m.group(3)), m.group(4)))
                         return new dList(flag_manager.getNPCFlag(Integer.valueOf(m.group(3)), m.group(4)));
                 }
 
@@ -66,7 +64,7 @@ public class dList extends ArrayList<String> implements dObject {
 
     public static boolean matches(String arg) {
 
-    	Matcher m;
+        Matcher m;
         m = flag_by_id.matcher(arg);
 
         if (m.matches()) return true;
@@ -98,9 +96,9 @@ public class dList extends ArrayList<String> implements dObject {
     }
     
     public dList(List<String> items, String prefix) {
-    	for (String element : items) {
-    		add(prefix + element);
-    	}
+        for (String element : items) {
+            add(prefix + element);
+        }
     }
 
     public dList(FlagManager.Flag flag) {
@@ -151,42 +149,42 @@ public class dList extends ArrayList<String> implements dObject {
     }
     
     public String[] toArray() {
-    	
-    	List<String> list = new ArrayList<String>();
-    	
-    	for (String string : this) {
-    		list.add(string);
-    	}
-    	
-    	return list.toArray(new String[list.size()]);
+        
+        List<String> list = new ArrayList<String>();
+        
+        for (String string : this) {
+            list.add(string);
+        }
+        
+        return list.toArray(new String[list.size()]);
     }
     
     // Return a list that includes only elements belonging to a certain class
     public List<dObject> filter(Class<? extends dObject> dClass) {
         
-    	List<dObject> results = new ArrayList<dObject>();
-    	
-    	for (String element : this) {
-    		
-    		try {
-				if ((Boolean) dClass.getMethod("matches", String.class).invoke(null, element)) {
-					
-					dObject object = (dObject) dClass.getMethod("valueOf", String.class).invoke(null, element); 
-					
-					// Only add the object if it is not null, thus filtering useless
-					// list items
-					
-					if (object != null) {
-						results.add(object);
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-    	}
-    	
-    	if (results.size() > 0) return results;
-    	else return null;
+        List<dObject> results = new ArrayList<dObject>();
+        
+        for (String element : this) {
+            
+            try {
+                if ((Boolean) dClass.getMethod("matches", String.class).invoke(null, element)) {
+                    
+                    dObject object = (dObject) dClass.getMethod("valueOf", String.class).invoke(null, element); 
+                    
+                    // Only add the object if it is not null, thus filtering useless
+                    // list items
+                    
+                    if (object != null) {
+                        results.add(object);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        if (results.size() > 0) return results;
+        else return null;
     }
 
     @Override
@@ -293,22 +291,22 @@ public class dList extends ArrayList<String> implements dObject {
         }
         
         if (attribute.startsWith("last")) {
-        	return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
+            return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
         }
         
         if (attribute.startsWith("contains")) {
-        	if (attribute.hasContext(1)) {
-        		boolean state = false;
+            if (attribute.hasContext(1)) {
+                boolean state = false;
 
-        		for (String element : this) {
-        			if (element.equalsIgnoreCase(attribute.getContext(1))) {
-        				state = true;
-        				break;
-        			}
-        		}
-        		
-        		return new Element(state).getAttribute(attribute.fulfill(1));
-        	}
+                for (String element : this) {
+                    if (element.equalsIgnoreCase(attribute.getContext(1))) {
+                        state = true;
+                        break;
+                    }
+                }
+                
+                return new Element(state).getAttribute(attribute.fulfill(1));
+            }
         }
 
         if (attribute.startsWith("prefix"))
@@ -347,7 +345,7 @@ public class dList extends ArrayList<String> implements dObject {
         // -->
         if (attribute.startsWith("random")) {
             if (!this.isEmpty())
-        	    return new Element(this.get(new Random().nextInt(this.size())))
+                return new Element(this.get(new Random().nextInt(this.size())))
                     .getAttribute(attribute.fulfill(1));
         }
 

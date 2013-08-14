@@ -4,8 +4,6 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.flags.FlagManager.Value;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -90,8 +88,8 @@ public class FlagTags implements Listener {
             if (name == null) return;
 
             if (denizen.flagManager().getPlayerFlag(name, flagName).get(index).isEmpty()) {
-            	if (replaceType.toString() == "ISEXPIRED")
-            		event.setReplaced("true");
+                if (replaceType.toString() == "ISEXPIRED")
+                    event.setReplaced("true");
             } else {
                 FlagManager.Flag flag = denizen.flagManager().getPlayerFlag(name, flagName);
                 event.setReplaced(getReplaceable(flag, flag.get(index), replaceType));
@@ -108,7 +106,7 @@ public class FlagTags implements Listener {
         case ASDOUBLE:
             return String.valueOf(value.asDouble());
         case ABS:
-        	return String.valueOf(Math.abs(value.asDouble()));
+            return String.valueOf(Math.abs(value.asDouble()));
         case ASSTRING:
             return value.asString();
         case ASLIST:
@@ -125,7 +123,7 @@ public class FlagTags implements Listener {
         case LENGTH:
             return String.valueOf(value.asString().length());
         case SIZE:
-        	return String.valueOf(value.asSize());
+            return String.valueOf(value.asSize());
         case ISEXPIRED:
             return String.valueOf(flag.checkExpired());
         case EXPIRATION:

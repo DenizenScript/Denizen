@@ -30,50 +30,50 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class PlaySoundCommand extends AbstractCommand {
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-        	
-			if (!scriptEntry.hasObject("location")
-					&& arg.matchesArgumentType(dLocation.class))
-				scriptEntry.addObject("location", arg.asType(dLocation.class));
-			
-			else if (!scriptEntry.hasObject("volume")
-					&& arg.matchesPrimitive(aH.PrimitiveType.Double)
-					&& arg.matchesPrefix("volume, v"))
-				scriptEntry.addObject("volume", arg.asElement());
+            
+            if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class))
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
+            
+            else if (!scriptEntry.hasObject("volume")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("volume, v"))
+                scriptEntry.addObject("volume", arg.asElement());
 
-			else if (!scriptEntry.hasObject("pitch")
-					&& arg.matchesPrimitive(aH.PrimitiveType.Double)
-					&& arg.matchesPrefix("pitch, p"))
+            else if (!scriptEntry.hasObject("pitch")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("pitch, p"))
                 scriptEntry.addObject("pitch", arg.asElement());
 
-			else if (!scriptEntry.hasObject("sound")
-					&& arg.matchesPrimitive(aH.PrimitiveType.String)) {
-        		try {
-            		scriptEntry.addObject("sound", Sound.valueOf(arg.asElement().asString().toUpperCase()));
-            	} catch (Exception e) {
-            		dB.echoError("Invalid sound!");
-            	}
+            else if (!scriptEntry.hasObject("sound")
+                    && arg.matchesPrimitive(aH.PrimitiveType.String)) {
+                try {
+                    scriptEntry.addObject("sound", Sound.valueOf(arg.asElement().asString().toUpperCase()));
+                } catch (Exception e) {
+                    dB.echoError("Invalid sound!");
+                }
             }
-			
-		}
+            
+        }
 
-		if (!scriptEntry.hasObject("sound"))
+        if (!scriptEntry.hasObject("sound"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "SOUND");
-		if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
-		if (!scriptEntry.hasObject("volume"))
-			scriptEntry.addObject("volume", new Element(1));
-		if (!scriptEntry.hasObject("pitch"))
-			scriptEntry.addObject("pitch", new Element(1));
-		
-	}
+        if (!scriptEntry.hasObject("volume"))
+            scriptEntry.addObject("volume", new Element(1));
+        if (!scriptEntry.hasObject("pitch"))
+            scriptEntry.addObject("pitch", new Element(1));
+        
+    }
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Extract objects from ScriptEntry
         Location location = (Location) scriptEntry.getObject("location");
@@ -90,6 +90,6 @@ public class PlaySoundCommand extends AbstractCommand {
 
         // Play the sound
         location.getWorld().playSound(location, sound, volume, pitch);
-	}
+    }
 
 }

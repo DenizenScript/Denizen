@@ -12,7 +12,6 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
  * Teleports a list of entities to a location.
@@ -21,60 +20,54 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  */
 
 public class TeleportCommand extends AbstractCommand {
-	
+    
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
 
-    	for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-        	
-    		if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class)) {
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            
+            if (!scriptEntry.hasObject("location")
+                && arg.matchesArgumentType(dLocation.class)) {
                 // Location arg
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
             
-        	else if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesArgumentType(dList.class)) {
+            else if (!scriptEntry.hasObject("entities")
+                     && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
-
-            else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentType(dEntity.class)) {
-                // Entity arg
-                scriptEntry.addObject("entities", Arrays.asList(arg.asType(dEntity.class)));
-            }
-    		
-        	else if (arg.matches("npc") && scriptEntry.hasNPC()) {
+            
+            else if (arg.matches("npc") && scriptEntry.hasNPC()) {
                 // NPC arg for compatibility with old scripts
                 scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
             }
         }
-    	
-    	// Check to make sure required arguments have been filled
+        
+        // Check to make sure required arguments have been filled
         scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null), 
-        		(scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
-    	
+                                              (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
+        
     }
     
-	@SuppressWarnings("unchecked")
-	@Override
+    @SuppressWarnings("unchecked")
+    @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
-    	
-		dLocation location = (dLocation) scriptEntry.getObject("location");
-		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-		
+        
+        dLocation location = (dLocation) scriptEntry.getObject("location");
+        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        
         // Report to dB
         dB.report(getName(), aH.debugObj("location", location) +
-        					 aH.debugObj("entities", entities.toString()));
+                             aH.debugObj("entities", entities.toString()));
 
-		for (dEntity entity : entities) {
-			if (entity.isSpawned() == true) {
-				entity.teleport(location);
-			}
-	    }
-	}
+        for (dEntity entity : entities) {
+            if (entity.isSpawned() == true) {
+                entity.teleport(location);
+            }
+        }
+    }
 }

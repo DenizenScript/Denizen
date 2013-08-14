@@ -14,9 +14,9 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class Depends {
 
-	public static WorldGuardPlugin worldGuard = null;
-	public static Citizens citizens = null;
-	
+    public static WorldGuardPlugin worldGuard = null;
+    public static Citizens citizens = null;
+    
     public static Economy economy = null;
     public static Permission permissions = null;
     public static Chat chat = null;
@@ -33,11 +33,11 @@ public class Depends {
     }
 
     private boolean setupProtocolManager() {
-		if (Bukkit.getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
+        if (Bukkit.getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
            protocolManager = ProtocolLibrary.getProtocolManager();
         }
-		
-		return protocolManager != null;
+        
+        return protocolManager != null;
     }
 
     private boolean setupEconomy() {
@@ -65,13 +65,13 @@ public class Depends {
     }
 
     private boolean setupPermissions() {
-    	if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
+        if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
-    	try {
-    	RegisteredServiceProvider<Permission> rsp = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
+        try {
+        RegisteredServiceProvider<Permission> rsp = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
         permissions = rsp.getProvider();
-    	} catch (Exception e) { }
+        } catch (Exception e) { }
         return permissions != null;
     }
     
@@ -79,13 +79,13 @@ public class Depends {
         if (Bukkit.getServer().getPluginManager().getPlugin("WorldGuard") == null) {
             return false;
         }
-    	worldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-    	return worldGuard != null;
+        worldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+        return worldGuard != null;
     }
-	
+    
     private boolean setupCitizens() {
         citizens = (Citizens) Bukkit.getServer().getPluginManager().getPlugin("Citizens");
         return citizens != null;
     }
-	
+    
 }

@@ -70,7 +70,7 @@ public class QueueCommand extends AbstractCommand {
     }
 
     @SuppressWarnings({ "incomplete-switch", "unchecked" })
-	@Override
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         List<ScriptQueue> queues = (List<ScriptQueue>) scriptEntry.getObject("queues");

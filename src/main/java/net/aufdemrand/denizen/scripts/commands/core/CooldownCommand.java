@@ -125,11 +125,11 @@ public class CooldownCommand extends AbstractCommand {
      * globally, this will also return false.
      *
      * @param playerName
-     * 		the Player to check
+     *         the Player to check
      * @param scriptName
-     * 		the name of the script to check
+     *         the name of the script to check
      * @return
-     * 		if the script is cool for the Player
+     *         if the script is cool for the Player
      *
      */
     public static boolean checkCooldown(String playerName, String scriptName) {
@@ -154,7 +154,7 @@ public class CooldownCommand extends AbstractCommand {
 
         // If there is an entry, check against the time
         if (System.currentTimeMillis()
-                >= DenizenAPI._saves().getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))	{
+                >= DenizenAPI._saves().getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))    {
             DenizenAPI._saves().set("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time", null);
             return true;
         }
@@ -167,13 +167,13 @@ public class CooldownCommand extends AbstractCommand {
      * Sets a cooldown for a Denizen Script. Can be for a specific Player, or GLOBAL.
      *
      * @param playerName
-     * 		if not a global cooldown, the Player to set the cooldown for
+     *         if not a global cooldown, the Player to set the cooldown for
      * @param duration
-     * 		the duration of the cooldown period, in seconds
+     *         the duration of the cooldown period, in seconds
      * @param scriptName
-     * 		the name of the script to cooldown
+     *         the name of the script to cooldown
      * @param global
-     * 		whether the script should be cooled down globally
+     *         whether the script should be cooled down globally
      */
     public static void setCooldown(String playerName, Duration duration, String scriptName, boolean global) {
         // I hate case-sensitivity. The positive here outweighs the negative.

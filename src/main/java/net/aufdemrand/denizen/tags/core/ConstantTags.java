@@ -15,13 +15,13 @@ import org.bukkit.event.Listener;
 @Deprecated
 public class ConstantTags implements Listener {
 
-	public ConstantTags(Denizen denizen) {
-		denizen.getServer().getPluginManager().registerEvents(this, denizen);
-	}
+    public ConstantTags(Denizen denizen) {
+        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+    }
 
-	@EventHandler
-	public void constantTags(ReplaceableTagEvent event) {
-		if (!event.matches("cons")) return;
+    @EventHandler
+    public void constantTags(ReplaceableTagEvent event) {
+        if (!event.matches("cons")) return;
 
         if (!event.hasValue()) {
             dB.echoError("Constant tag '" + event.raw_tag + " does not contain a valid constant! " +
@@ -29,11 +29,11 @@ public class ConstantTags implements Listener {
             return;
         }
 
-		NPC npc = null;
-		if (event.getType() != null && event.getType().matches("\\d+"))
-			npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(event.getType()));
-		else if (event.getNPC() != null)
-			npc = event.getNPC().getCitizen();
+        NPC npc = null;
+        if (event.getType() != null && event.getType().matches("\\d+"))
+            npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(event.getType()));
+        else if (event.getNPC() != null)
+            npc = event.getNPC().getCitizen();
 
         if (npc == null) {
             dB.echoError("Constant tag '" + event.raw_tag + " does not contain a valid NPC! " +
@@ -44,13 +44,13 @@ public class ConstantTags implements Listener {
 
         Attribute attribute = new Attribute(event.raw_tag.split(":", 2)[1], event.getScriptEntry());
 
-		if (npc.hasTrait(ConstantsTrait.class)
-				&& npc.getTrait(ConstantsTrait.class).getConstant(attribute.getAttribute(1)) != null) {
+        if (npc.hasTrait(ConstantsTrait.class)
+                && npc.getTrait(ConstantsTrait.class).getConstant(attribute.getAttribute(1)) != null) {
             event.setReplaced(new Element(npc.getTrait(ConstantsTrait.class)
                     .getConstant(attribute.getAttribute(1))).getAttribute(attribute.fulfill(1)));
         }
 
-	}
+    }
 
 
 }

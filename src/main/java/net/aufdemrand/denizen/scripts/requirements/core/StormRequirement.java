@@ -14,8 +14,8 @@ public class StormRequirement extends AbstractRequirement {
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
-		World world = context.getPlayer().getPlayerEntity().getWorld();
+        World world = context.getPlayer().getPlayerEntity().getWorld();
 
-		return world.hasStorm() && world.isThundering();
-	}
+        return world.hasStorm() && world.isThundering();
+    }
 }

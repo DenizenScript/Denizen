@@ -12,11 +12,11 @@ import java.util.List;
  */
 public class RainyRequirement extends AbstractRequirement {
 
-	@Override
-	public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
-		World world = context.getPlayer().getPlayerEntity().getWorld();
+    @Override
+    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
+        World world = context.getPlayer().getPlayerEntity().getWorld();
 
-		return world.hasStorm() && !world.isThundering();
-	}
+        return world.hasStorm() && !world.isThundering();
+    }
 
 }

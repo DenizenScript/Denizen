@@ -20,7 +20,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -141,7 +140,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             String keyword = TagManager.tag(player, npc, matcher.group().replace("/", ""));
                             // Check if the trigger is REGEX
                             if(isKeywordRegex(keyword)) {
-                                Pattern	pattern = Pattern.compile(keyword.substring(6));
+                                Pattern    pattern = Pattern.compile(keyword.substring(6));
                                 Matcher m = pattern.matcher(event.getMessage());
                                 if (m.find()) {
                                     // REGEX matches are left for last, so save it in case non-REGEX
@@ -199,7 +198,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         try {
             cancelled = event.isAsynchronous() ? Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), call).get() : call.call();
         } catch (InterruptedException e) {
-        	// e.printStackTrace();
+            // e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (Exception e) {

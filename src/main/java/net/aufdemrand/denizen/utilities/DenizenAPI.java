@@ -27,9 +27,9 @@ public class DenizenAPI {
      * @return a dNPC
      *
      */
-	public static dNPC getDenizenNPC(NPC npc) {
-		return getCurrentInstance().getNPCRegistry().getDenizen(npc);
-	}
+    public static dNPC getDenizenNPC(NPC npc) {
+        return getCurrentInstance().getNPCRegistry().getDenizen(npc);
+    }
 
     /**
      * Similar to getting NPCs from Citizens' NPCRegistry, but this will filter out

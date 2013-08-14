@@ -115,17 +115,17 @@ public class IfCommand extends AbstractCommand {
                 }
 
                 else if (!insideElse) {
-                	
-                	// Move to else commands if we read an "else" and we're not
-                	// currently going through nested arguments
-                	if (arg.matches("else") && bracketsEntered == 0) {
-                    	insideElse = true;
+                    
+                    // Move to else commands if we read an "else" and we're not
+                    // currently going through nested arguments
+                    if (arg.matches("else") && bracketsEntered == 0) {
+                        insideElse = true;
                     }
-                	
+                    
                     // If we find a bracket, and we're already inside
                     // nested brackets, add the bracket to the current
                     // command's arguments
-                	else if (arg.matches("{")) {
+                    else if (arg.matches("{")) {
                         bracketsEntered++;
                         
                         if (bracketsEntered > 1) {
@@ -189,7 +189,7 @@ public class IfCommand extends AbstractCommand {
                         // brackets, so we treat the if's commands as arguments
                         // and don't add them to our current else commands
                         if (arg.matches("if")) {
-                        	bracketsEntered++;
+                            bracketsEntered++;
                         }
                     }
 

@@ -65,7 +65,7 @@ public class PermissionCommand extends AbstractCommand {
                         + aH.debugObj("Permission", permission)
                         + (group != null ? aH.debugObj("Group", group) : "")
                         + (world != null ? aH.debugObj("World", world) : ""));
-		
+        
 
         switch (action) {
         case ADD:
@@ -74,16 +74,16 @@ public class PermissionCommand extends AbstractCommand {
                     dB.echoDebug("Group " + group + " already has permission " + permission);
                 }
                 else {
-                	Depends.permissions.groupAdd(world, group, permission);
-                	dB.echoDebug("Added permission " + permission + " for group " + group);
+                    Depends.permissions.groupAdd(world, group, permission);
+                    dB.echoDebug("Added permission " + permission + " for group " + group);
                 }
             } else {
                 if(Depends.permissions.has(player, permission)) {
                     dB.echoDebug("Player " + player.getName() + " already has permission " + permission);
                 }
                 else {
-                	Depends.permissions.playerAdd(player, permission);
-                	dB.echoDebug("Added permission " + permission + " for player " + player.getName());
+                    Depends.permissions.playerAdd(player, permission);
+                    dB.echoDebug("Added permission " + permission + " for player " + player.getName());
                 }
             }
             return;
@@ -93,16 +93,16 @@ public class PermissionCommand extends AbstractCommand {
                     dB.echoDebug("Group " + group + " does not have access to permission " + permission);
                 }
                 else {
-                	Depends.permissions.groupRemove(world, group, permission);
-                	dB.echoDebug("Removed permission " + permission + " for group " + group);
+                    Depends.permissions.groupRemove(world, group, permission);
+                    dB.echoDebug("Removed permission " + permission + " for group " + group);
                 }
             } else {
                 if(!Depends.permissions.has(player, permission)) {
                     dB.echoDebug("Player " + player.getName() + " does not have access to permission " + permission);
                 }
                 else {
-                	Depends.permissions.playerRemove(world, player.getName(), permission);
-                	dB.echoDebug("Removed permission " + permission + " for player " + player.getName());
+                    Depends.permissions.playerRemove(world, player.getName(), permission);
+                    dB.echoDebug("Removed permission " + permission + " for player " + player.getName());
                 }
             }
             return;

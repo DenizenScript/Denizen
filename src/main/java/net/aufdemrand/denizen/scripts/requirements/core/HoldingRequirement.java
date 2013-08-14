@@ -13,33 +13,33 @@ public class HoldingRequirement extends AbstractRequirement{
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
-		boolean outcome = false;
-		
-		boolean exact = false;
-		int quantity = 1;
-		dItem itemToCheck = null;
-		
-		for (String thisArg : args) {
-			if (aH.matchesQuantity(thisArg))
-				quantity = aH.getIntegerFrom(thisArg);
+        boolean outcome = false;
+        
+        boolean exact = false;
+        int quantity = 1;
+        dItem itemToCheck = null;
+        
+        for (String thisArg : args) {
+            if (aH.matchesQuantity(thisArg))
+                quantity = aH.getIntegerFrom(thisArg);
 
-			else if(aH.matchesArg("EXACT, EXACTLY, EQUALS", thisArg)) {
-				exact = true;
-			}
+            else if(aH.matchesArg("EXACT, EXACTLY, EQUALS", thisArg)) {
+                exact = true;
+            }
 
             else itemToCheck = aH.getItemFrom(thisArg);
-		}
-		
-		if (itemToCheck != null)
-			itemToCheck.getItemStack().setAmount(quantity);
+        }
+        
+        if (itemToCheck != null)
+            itemToCheck.getItemStack().setAmount(quantity);
 
-		if (exact)
+        if (exact)
             outcome = context.getPlayer().getPlayerEntity().getItemInHand().equals(itemToCheck);
-		else
+        else
             outcome = context.getPlayer().getPlayerEntity().getItemInHand().isSimilar(itemToCheck.getItemStack());
-		
-		dB.report("Outcome", (outcome) ? (exact) ? "Player is holding exact item" : "Player is holding item" : "");
+        
+        dB.report("Outcome", (outcome) ? (exact) ? "Player is holding exact item" : "Player is holding item" : "");
 
-		return outcome;
-	}
+        return outcome;
+    }
 }

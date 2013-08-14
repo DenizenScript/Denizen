@@ -26,28 +26,28 @@ import net.citizensnpcs.api.trait.trait.Equipment;
 public class HeadCommand extends AbstractCommand {
 
     private enum TargetType { NPC, PLAYER }
-	
+    
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
     
-    	TargetType targetType = TargetType.NPC;
-		Integer duration = null;
+        TargetType targetType = TargetType.NPC;
+        Integer duration = null;
         String skin = null;
         
         for (String arg : scriptEntry.getArguments()) {
-        	// If argument is a duration
-        	if (aH.matchesDuration(arg)) {
-        		duration = aH.getIntegerFrom(arg);
-        		dB.echoDebug("...head duration set to '%s'.", arg);
-        	}
-        				
-        	else if (aH.matchesArg("PLAYER", arg)) {
-        		targetType = TargetType.PLAYER;
-        		dB.echoDebug("...will affect the player!");
-        	}
+            // If argument is a duration
+            if (aH.matchesDuration(arg)) {
+                duration = aH.getIntegerFrom(arg);
+                dB.echoDebug("...head duration set to '%s'.", arg);
+            }
+                        
+            else if (aH.matchesArg("PLAYER", arg)) {
+                targetType = TargetType.PLAYER;
+                dB.echoDebug("...will affect the player!");
+            }
                
             else if (aH.matchesValueArg("skin", arg, ArgumentType.String)) {
-            	skin = aH.getStringFrom(arg);
+                skin = aH.getStringFrom(arg);
                 dB.echoDebug("...will have " + skin + "'s head");
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
@@ -58,34 +58,32 @@ public class HeadCommand extends AbstractCommand {
         else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
 
         scriptEntry.addObject("target", targetType)
-		           .addObject("skin", skin);
+                   .addObject("skin", skin);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         
-    	TargetType target = (TargetType) scriptEntry.getObject("target");
+        TargetType target = (TargetType) scriptEntry.getObject("target");
         String skin = (String) scriptEntry.getObject("skin");
-		
+        
         // Create head item with chosen skin
         ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
         ItemMeta itemMeta = item.getItemMeta();
         ((SkullMeta) itemMeta).setOwner(skin);
         item.setItemMeta(itemMeta);
         
-    	if (target.name() == "NPC")
-    	{
+        if (target.name() == "NPC") {
             NPC npc = scriptEntry.getNPC().getCitizen();
-    		
-    		if (!npc.hasTrait(Equipment.class)) npc.addTrait(Equipment.class);
-    		Equipment trait = npc.getTrait(Equipment.class);
-    		trait.set(1, item);
-    	}
-    	else
-    	{
-    		Player player = scriptEntry.getPlayer().getPlayerEntity();
-    		player.getInventory().setHelmet(item);
-    	}
+            
+            if (!npc.hasTrait(Equipment.class)) npc.addTrait(Equipment.class);
+            Equipment trait = npc.getTrait(Equipment.class);
+            trait.set(1, item);
+        }
+        else {
+            Player player = scriptEntry.getPlayer().getPlayerEntity();
+            player.getInventory().setHelmet(item);
+        }
 
     }
 

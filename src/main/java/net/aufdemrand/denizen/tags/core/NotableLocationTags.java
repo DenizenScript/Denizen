@@ -12,14 +12,14 @@ import org.bukkit.event.Listener;
 @Deprecated
 public class NotableLocationTags implements Listener {
 
-	public NotableLocationTags(Denizen denizen) {
-		denizen.getServer().getPluginManager().registerEvents(this, denizen);
-	}
+    public NotableLocationTags(Denizen denizen) {
+        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+    }
 
-	@EventHandler
-	public void notableTags(ReplaceableTagEvent event) {
-				
-		if (!event.matches("NOTABLE")) return;
+    @EventHandler
+    public void notableTags(ReplaceableTagEvent event) {
+                
+        if (!event.matches("NOTABLE")) return;
 
         String tag = event.raw_tag;
         
@@ -35,7 +35,7 @@ public class NotableLocationTags implements Listener {
             dB.echoError("Notable tag '" + event.raw_tag + "': id was not found.");
         }
 
-		dLocation location = dLocation.getSaved(id);
+        dLocation location = dLocation.getSaved(id);
 
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
         attribute.fulfill(1);
@@ -43,5 +43,5 @@ public class NotableLocationTags implements Listener {
         
         event.setReplaced(tag);
 
-	}
+    }
 }

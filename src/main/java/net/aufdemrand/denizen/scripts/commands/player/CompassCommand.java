@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 public class CompassCommand extends AbstractCommand {
 
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Interpret arguments
 
@@ -31,11 +31,11 @@ public class CompassCommand extends AbstractCommand {
          if (!scriptEntry.hasObject("location"))
               throw new InvalidArgumentsException(dB.Messages.ERROR_MISSING_OTHER, "LOCATION");
 
-	}
+    }
 
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Fetch required objects
 
@@ -51,5 +51,5 @@ public class CompassCommand extends AbstractCommand {
         player.setCompassTarget(location);
 
 
-	}
+    }
 }

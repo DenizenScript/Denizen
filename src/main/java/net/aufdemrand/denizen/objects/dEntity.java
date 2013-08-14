@@ -27,6 +27,7 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Pig;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
@@ -223,7 +224,7 @@ public class dEntity implements dObject {
 
             for (EntityType type : EntityType.values()) {
                 if (type.name().equalsIgnoreCase(m.group(1)))
-                    // Construct a new 'vanilla' unspawned dEntity                	
+                    // Construct a new 'vanilla' unspawned dEntity                    
                     return new dEntity(type, data1, data2);
             }
         }
@@ -393,7 +394,7 @@ public class dEntity implements dObject {
     public dLocation getLocation() {
 
         if (!isGeneric()) {
-        	return new dLocation(getBukkitEntity().getLocation());
+            return new dLocation(getBukkitEntity().getLocation());
         }
         
         return null;
@@ -407,14 +408,13 @@ public class dEntity implements dObject {
 
     public dLocation getEyeLocation() {
 
-        if (isLivingEntity()) {
-        	return new dLocation(getLivingEntity().getEyeLocation());
+        if (!isGeneric() && isLivingEntity()) {
+            return new dLocation(getLivingEntity().getEyeLocation());
         }
         
         return null;
     }
-
-
+    
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
         if (entity != null && isUnique()) entity.teleport(location);
@@ -440,9 +440,9 @@ public class dEntity implements dObject {
                     org.bukkit.entity.Entity ent = null;
 
                     if (entity_type.name().matches("PLAYER")) {
-                    	
-                    	NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1);
-                    	npc.spawn(location);
+                        
+                        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1);
+                        npc.spawn(location);
                     }
                     else if (entity_type.name().matches("FALLING_BLOCK")) {
 
@@ -482,7 +482,28 @@ public class dEntity implements dObject {
                         ent = location.getWorld().spawnFallingBlock(location, material, materialData);
                         entity = ent;
                     }
+                    else if (entity_type.name().matches("PIG_ZOMBIE")) {
+                        
+                        // Give pig zombies golden swords by default, unless data2 specifies
+                        // a different weapon
+                        if (dItem.matches(data2) == false) {
+                            data2 = "gold_sword";
+                        }
 
+                        ((PigZombie) entity).getEquipment()
+                                .setItemInHand(dItem.valueOf(data2).getItemStack());
+                    }
+                    else if (entity_type.name().matches("SKELETON")) {
+                        
+                        // Give skeletons bows by default, unless data2 specifies
+                        // a different weapon
+                        if (dItem.matches(data2) == false) {
+                            data2 = "bow";
+                        }
+
+                        ((Skeleton) entity).getEquipment()
+                                .setItemInHand(dItem.valueOf(data2).getItemStack());
+                    }
                     else {
 
                         ent = location.getWorld().spawnEntity(location, entity_type);
@@ -529,15 +550,6 @@ public class dEntity implements dObject {
                                 // Allow setting of skeleton types and their weapons
                                 else if (ent instanceof Skeleton) {
                                     setSubtype("org.bukkit.entity.Skeleton", "org.bukkit.entity.Skeleton$SkeletonType", "setSkeletonType", data1);
-
-                                    // Give skeletons bows by default, unless data2 specifies
-                                    // a different weapon
-                                    if (dItem.matches(data2) == false) {
-                                        data2 = "bow";
-                                    }
-
-                                    ((Skeleton) entity).getEquipment()
-                                            .setItemInHand(dItem.valueOf(data2).getItemStack());
                                 }
                                 // Allow setting of slime sizes
                                 else if (ent instanceof Slime && aH.matchesInteger(data1)) {
@@ -590,10 +602,10 @@ public class dEntity implements dObject {
     }
 
     public void teleport(Location location) {
-    	if (isNPC())
-    		getNPC().teleport(location, TeleportCause.PLUGIN);
-    	else
-    		this.getBukkitEntity().teleport(location);
+        if (isNPC())
+            getNPC().teleport(location, TeleportCause.PLUGIN);
+        else
+            this.getBukkitEntity().teleport(location);
     }
 
     /**
@@ -605,13 +617,13 @@ public class dEntity implements dObject {
 
     public void target(LivingEntity target) {
 
-    	// If the target is not null, cast it to an NMS EntityLiving
-    	// as well for one of the two methods below
-    	EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
-    									: null;
-    	
-    	((CraftCreature) entity).getHandle().
-			setGoalTarget(nmsTarget);
+        // If the target is not null, cast it to an NMS EntityLiving
+        // as well for one of the two methods below
+        EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
+                                        : null;
+        
+        ((CraftCreature) entity).getHandle().
+            setGoalTarget(nmsTarget);
 
         ((CraftCreature) entity).getHandle().
                 setGoalTarget(((CraftLivingEntity) target).getHandle());
@@ -1025,11 +1037,11 @@ public class dEntity implements dObject {
         // returns false.
         // -->
         if (attribute.startsWith("has_effect")) {
-        	Boolean returnElement = false;
+            Boolean returnElement = false;
             if (attribute.hasContext(1))
-            	for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
-            		if (effect.getType().equals(org.bukkit.potion.PotionType.valueOf(attribute.getContext(1))))
-            			returnElement = true;
+                for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
+                    if (effect.getType().equals(org.bukkit.potion.PotionType.valueOf(attribute.getContext(1))))
+                        returnElement = true;
             else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
         }

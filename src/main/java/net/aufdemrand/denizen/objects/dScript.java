@@ -32,9 +32,9 @@ public class dScript implements dObject {
     }
     
     public static boolean matches(String string) {
-    	
-    	Matcher m = script_pattern.matcher(string);
-    	if (m.matches()) {
+        
+        Matcher m = script_pattern.matcher(string);
+        if (m.matches()) {
             dScript script = new dScript(m.group(2));
             // Make sure it's valid.
             if (script.isValid()) return true;

@@ -9,9 +9,7 @@ import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,14 +23,14 @@ import java.util.Map;
 
 public class EngageCommand extends AbstractCommand {
 
-	/* ENGAGE (# of Seconds) (NPCID:#)*/
+    /* ENGAGE (# of Seconds) (NPCID:#)*/
 
-	/* Arguments: [] - Required, () - Optional 
-	 * (DURATION:#) Will automatically DISENGAGE after specified amount of seconds.
-	 * 		If not set, the Denizen will remain ENGAGEd until a DISENGAGE command is
-	 *   	used, or the Denizen config.yml engage_timeout_in_seconds setting. 
-	 * (NPCID:#) Changes the Denizen affected to the Citizens2 NPCID specified
-	 */
+    /* Arguments: [] - Required, () - Optional 
+     * (DURATION:#) Will automatically DISENGAGE after specified amount of seconds.
+     *         If not set, the Denizen will remain ENGAGEd until a DISENGAGE command is
+     *       used, or the Denizen config.yml engage_timeout_in_seconds setting. 
+     * (NPCID:#) Changes the Denizen affected to the Citizens2 NPCID specified
+     */
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -88,10 +86,8 @@ public class EngageCommand extends AbstractCommand {
      * Checks if the dNPC is ENGAGED. Engaged NPCs do not respond to
      * Player interaction.
      *
-     * @param npc
-     * 		the Denizen NPC being checked
-     * @return
-     *  	if the dNPC is currently engaged
+     * @param npc       the Denizen NPC being checked
+     * @return  if the dNPC is currently engaged
      */
     public static boolean getEngaged(NPC npc) {
         if (currentlyEngaged.containsKey(npc))
@@ -105,10 +101,8 @@ public class EngageCommand extends AbstractCommand {
      * interaction. Note: Denizen NPC will automatically disengage after the
      * engage_timeout_in_seconds which is set in the Denizen config.yml.
      *
-     * @param npc
-     * 		the dNPC affected
-     * @param engaged
-     * 		true sets the dNPC engaged, false sets the dNPC as disengaged
+     * @param npc       the dNPC affected
+     * @param engaged   true sets the dNPC engaged, false sets the dNPC as disengaged
      */
     public static void setEngaged(NPC npc, boolean engaged) {
         if (engaged) currentlyEngaged.put(npc, System.currentTimeMillis()
@@ -121,10 +115,8 @@ public class EngageCommand extends AbstractCommand {
      * respond to Player interaction. If the NPC is previously engaged, using this will
      * over-ride the previously set duration.
      *
-     * @param npc
-     * 		the dNPC to set as engaged
-     * @param duration
-     * 		the number of seconds to engage the dNPC
+     * @param npc       the dNPC to set as engaged
+     * @param duration  the number of seconds to engage the dNPC
      */
     public static void setEngaged(NPC npc, int duration) {
         currentlyEngaged.put(npc, System.currentTimeMillis() + duration * 1000 );

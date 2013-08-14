@@ -12,8 +12,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 public class HealthCommand extends AbstractCommand  {
 
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Interpret arguments
 
@@ -44,11 +44,11 @@ public class HealthCommand extends AbstractCommand  {
             scriptEntry.addObject("target", Element.valueOf("npc"));
         }
 
-	}
+    }
 
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Fetch required objects
 
@@ -82,7 +82,7 @@ public class HealthCommand extends AbstractCommand  {
                     dB.echoError("NPC doesn't have health trait!");
             }
         }
-	}
+    }
 
 
 }

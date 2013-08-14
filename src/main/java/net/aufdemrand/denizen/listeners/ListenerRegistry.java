@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ListenerRegistry implements dRegistry, Listener {
 
 
-	//
+    //
     // Keeps track of active listeners. Keyed by player name.
     // Value contains name of the listener, and the instance
     // associated.
@@ -64,20 +64,20 @@ public class ListenerRegistry implements dRegistry, Listener {
      * @param instance  the listener instance
      * @param id  the id of the listener instance
      */
-	public void addListenerFor(dPlayer player,
+    public void addListenerFor(dPlayer player,
                                AbstractListener instance,
                                String id) {
         if (player == null || id == null) return;
         // Get current instances
         Map<String, AbstractListener> playerListeners;
-		if (listeners.containsKey(player.getName()))
-			playerListeners = listeners.get(player.getName());
+        if (listeners.containsKey(player.getName()))
+            playerListeners = listeners.get(player.getName());
         else
             playerListeners = new HashMap<String, AbstractListener>();
         // Insert instance into hash-map
-		playerListeners.put(id.toLowerCase(), instance);
+        playerListeners.put(id.toLowerCase(), instance);
         listeners.put(player.getName(), playerListeners);
-	}
+    }
 
 
     /**
@@ -109,14 +109,14 @@ public class ListenerRegistry implements dRegistry, Listener {
      * @param player  the dPlayer
      * @param id
      */
-	public void cancel(dPlayer player, String id) {
+    public void cancel(dPlayer player, String id) {
         if (player == null || id == null) return;
         // Removes listener
-		removeListenerFor(player, id);
+        removeListenerFor(player, id);
         // Fires bukkit event
         Bukkit.getPluginManager()
                 .callEvent(new ListenerCancelEvent(player, id));
-	}
+    }
 
 
     /**
@@ -192,75 +192,75 @@ public class ListenerRegistry implements dRegistry, Listener {
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
-	@Override
-	public void disableCoreMembers() {
-		// Note: This runs a onDisable() for each AbstractListenerType, NOT each
-		// AbstractListener, which should be fine considering in-progress
-		// AbstractListeners deconstruct automatically based on PlayerLogoutEvent
-		// which is also run on a server disable or restart.
-		for (RegistrationableInstance member : types.values())
-			try {
-				member.onDisable();
-			} catch (Exception e) {
-				dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
-				if (dB.showStackTraces) e.printStackTrace();
-			}
-	}
+    @Override
+    public void disableCoreMembers() {
+        // Note: This runs a onDisable() for each AbstractListenerType, NOT each
+        // AbstractListener, which should be fine considering in-progress
+        // AbstractListeners deconstruct automatically based on PlayerLogoutEvent
+        // which is also run on a server disable or restart.
+        for (RegistrationableInstance member : types.values())
+            try {
+                member.onDisable();
+            } catch (Exception e) {
+                dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
+                if (dB.showStackTraces) e.printStackTrace();
+            }
+    }
 
-	@Override
-	public <T extends RegistrationableInstance> T get(Class<T> clazz) {
-		if (types.containsValue(clazz)) {
-			for (RegistrationableInstance ri : types.values())
-				if (ri.getClass() == clazz)
-					return (T) clazz.cast(ri);
-		}
-		return null;
-	}
+    @Override
+    public <T extends RegistrationableInstance> T get(Class<T> clazz) {
+        if (types.containsValue(clazz)) {
+            for (RegistrationableInstance ri : types.values())
+                if (ri.getClass() == clazz)
+                    return (T) clazz.cast(ri);
+        }
+        return null;
+    }
 
-	@Override
-	public AbstractListenerType get(String listenerType) {
-		if (types.containsKey(listenerType.toUpperCase())) return types.get(listenerType.toUpperCase());
-		return null;
-	}
+    @Override
+    public AbstractListenerType get(String listenerType) {
+        if (types.containsKey(listenerType.toUpperCase())) return types.get(listenerType.toUpperCase());
+        return null;
+    }
 
-	@Override
-	public Map<String, AbstractListenerType> list() {
-		return types;
-	}
-
-
+    @Override
+    public Map<String, AbstractListenerType> list() {
+        return types;
+    }
 
 
 
-	@EventHandler
-	public void playerJoin(PlayerJoinEvent event) {
+
+
+    @EventHandler
+    public void playerJoin(PlayerJoinEvent event) {
 
         Denizen denizen = DenizenAPI.getCurrentInstance();
 
-		// Any saves quest listeners in progress?
-		if (!denizen.getSaves().contains("Listeners." + event.getPlayer().getName())) return;
-		Set<String> inProgress = denizen.getSaves().getConfigurationSection("Listeners." + event.getPlayer().getName()).getKeys(false);
-		// If empty, no quest listeners to load.
-		if (inProgress.isEmpty()) return;
+        // Any saves quest listeners in progress?
+        if (!denizen.getSaves().contains("Listeners." + event.getPlayer().getName())) return;
+        Set<String> inProgress = denizen.getSaves().getConfigurationSection("Listeners." + event.getPlayer().getName()).getKeys(false);
+        // If empty, no quest listeners to load.
+        if (inProgress.isEmpty()) return;
 
-		String path = "Listeners." + event.getPlayer().getName() + ".";
+        String path = "Listeners." + event.getPlayer().getName() + ".";
 
-		// If not empty, let's do the loading process for each.
-		for (String listenerId : inProgress) {
-			// People tend to worry when they see long-ass stacktraces.. let's catch them.
-			try {
-				String type = denizen.getSaves().getString(path + listenerId + ".Listener Type");
-				dNPC npc = null;
-				if (denizen.getSaves().contains(path + listenerId + ".Linked NPCID"))
-					npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getById(denizen.getSaves().getInt(path + listenerId + ".Linked NPCID")));
+        // If not empty, let's do the loading process for each.
+        for (String listenerId : inProgress) {
+            // People tend to worry when they see long-ass stacktraces.. let's catch them.
+            try {
+                String type = denizen.getSaves().getString(path + listenerId + ".Listener Type");
+                dNPC npc = null;
+                if (denizen.getSaves().contains(path + listenerId + ".Linked NPCID"))
+                    npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getById(denizen.getSaves().getInt(path + listenerId + ".Linked NPCID")));
                 if (get(type) == null) return;
-				dB.log(event.getPlayer().getName() + " has a LISTENER in progress. Loading '" + listenerId + "'.");
-				get(type).createInstance(dPlayer.mirrorBukkitPlayer(event.getPlayer()), listenerId).load(dPlayer.mirrorBukkitPlayer(event.getPlayer()), npc, listenerId, type);
-			} catch (Exception e) {
-				dB.log(event.getPlayer() + " has a saved listener named '" + listenerId + "' that may be corrupt. Skipping for now, but perhaps check the contents of your saves.yml for problems?");
-			}
-		}
-	}
+                dB.log(event.getPlayer().getName() + " has a LISTENER in progress. Loading '" + listenerId + "'.");
+                get(type).createInstance(dPlayer.mirrorBukkitPlayer(event.getPlayer()), listenerId).load(dPlayer.mirrorBukkitPlayer(event.getPlayer()), npc, listenerId, type);
+            } catch (Exception e) {
+                dB.log(event.getPlayer() + " has a saved listener named '" + listenerId + "' that may be corrupt. Skipping for now, but perhaps check the contents of your saves.yml for problems?");
+            }
+        }
+    }
 
 
     public void deconstructPlayer(dPlayer player ) {
@@ -285,8 +285,8 @@ public class ListenerRegistry implements dRegistry, Listener {
     }
 
 
-	@EventHandler
-	public void playerQuit(PlayerQuitEvent event) {
+    @EventHandler
+    public void playerQuit(PlayerQuitEvent event) {
         deconstructPlayer(dPlayer.mirrorBukkitPlayer(event.getPlayer()));
     }
 

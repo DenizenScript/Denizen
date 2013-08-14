@@ -16,7 +16,7 @@ public class SpecialCharacterTags implements Listener {
     if (!event.getName().startsWith("&")) return;
 
        if (event.getName().equalsIgnoreCase("&nl"))
-    		event.setReplaced("\n");
+            event.setReplaced("\n");
     
        else if (event.getName().equalsIgnoreCase("&cm"))
            event.setReplaced(",");
@@ -46,7 +46,7 @@ public class SpecialCharacterTags implements Listener {
            event.setReplaced("{");
        
        else if (event.getName().equalsIgnoreCase("&ns"))
-    	   event.setReplaced("#");
+           event.setReplaced("#");
 
    }
     

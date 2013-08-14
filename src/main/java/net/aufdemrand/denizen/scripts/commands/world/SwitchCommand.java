@@ -67,26 +67,26 @@ public class SwitchCommand extends AbstractCommand {
 
             } else if (aH.matchesValueArg("STATE", arg, ArgumentType.Custom)) {
                 
-            	String state = aH.getStringFrom(arg).toUpperCase(); 
-            	
-            	if (state.matches("ON|OPEN")) {
-            		switchState = SwitchState.ON;
-            	}
-            	else if (state.matches("OFF|CLOSE")) {
-            		switchState = SwitchState.OFF;
-            	}
-            	else if (state.matches("TOGGLE")) {
-            		switchState = SwitchState.TOGGLE;
-            	}
-            	
-            	dB.echoDebug("...set STATE: " + switchState.toString());
-            	
+                String state = aH.getStringFrom(arg).toUpperCase(); 
+                
+                if (state.matches("ON|OPEN")) {
+                    switchState = SwitchState.ON;
+                }
+                else if (state.matches("OFF|CLOSE")) {
+                    switchState = SwitchState.OFF;
+                }
+                else if (state.matches("TOGGLE")) {
+                    switchState = SwitchState.TOGGLE;
+                }
+                
+                dB.echoDebug("...set STATE: " + switchState.toString());
+                
             } else if (aH.matchesLocation(arg)) {
                 interactLocation = aH.getLocationFrom(arg);
                 if (interactLocation != null) dB.echoDebug("...switch LOCATION now: '%s'", arg);
 
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-        }	
+        }    
 
         if (interactLocation == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
 
@@ -107,7 +107,7 @@ public class SwitchCommand extends AbstractCommand {
             // Store new delayed task ID, for checking against, then schedule new delayed task.
             taskMap.put(interactLocation, denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen, 
                     new Runnable() {
-                		public void run() {
+                        public void run() {
                     // Check to see if the state of the block is what is expected. If switched during 
                     // the duration, the switchback is cancelled.
                     if (switchState == SwitchState.OFF && !((interactLocation.getBlock().getData() & 0x8) > 0))
@@ -128,25 +128,25 @@ public class SwitchCommand extends AbstractCommand {
         String state = switchState.toString();
         
         if ((state == "ON" && currentState == false) ||
-        	(state == "OFF" && currentState == true) ||
-        	 state == "TOGGLE") {
-        	
-        	try {
+            (state == "OFF" && currentState == true) ||
+             state == "TOGGLE") {
+            
+            try {
 
-        		Block.byId[interactLocation.getBlock().getType().getId()]
-        			.interact(((CraftWorld)world).getHandle(),
-        					  interactLocation.getBlockX(),
-        					  interactLocation.getBlockY(),
-        					  interactLocation.getBlockZ(),
-        					  null, 0, 0f, 0f, 0f);
-        		
-        		dB.echoDebug("Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
-  					  ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
-        		
-        	} catch (NullPointerException e) {
-        		
-        		dB.echoDebug("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
-        	}
+                Block.byId[interactLocation.getBlock().getType().getId()]
+                    .interact(((CraftWorld)world).getHandle(),
+                              interactLocation.getBlockX(),
+                              interactLocation.getBlockY(),
+                              interactLocation.getBlockZ(),
+                              null, 0, 0f, 0f, 0f);
+                
+                dB.echoDebug("Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
+                        ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
+                
+            } catch (NullPointerException e) {
+                
+                dB.echoDebug("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
+            }
         }
     }
 }

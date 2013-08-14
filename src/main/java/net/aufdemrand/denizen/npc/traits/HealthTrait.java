@@ -255,7 +255,7 @@ public class HealthTrait extends Trait implements Listener {
             // return null. Uncomment it once the bug is fixed.
 
             // DenizenAPI.getDenizenNPC(npc).action("death by " +
-            //	((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
+            // ((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
         }
 
         DenizenAPI.getDenizenNPC(npc).action("death", player);

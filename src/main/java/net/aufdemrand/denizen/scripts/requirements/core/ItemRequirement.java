@@ -14,10 +14,10 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemRequirement extends AbstractRequirement {
-	
-	@Override
-	public boolean check(RequirementsContext context, List<String> args)
-			throws RequirementCheckException {
+    
+    @Override
+    public boolean check(RequirementsContext context, List<String> args)
+            throws RequirementCheckException {
 
         dItem contains = null;
         int quantity = 1;
@@ -32,14 +32,14 @@ public class ItemRequirement extends AbstractRequirement {
                 quantity = aH.getIntegerFrom(arg.getValue());
         }
 
-		if (context.getPlayer().getPlayerEntity().getInventory().containsAtLeast(contains.getItemStack(), quantity)) {
-			dB.echoDebug("...player has " + contains.identify() + ".");
-			return true;
+        if (context.getPlayer().getPlayerEntity().getInventory().containsAtLeast(contains.getItemStack(), quantity)) {
+            dB.echoDebug("...player has " + contains.identify() + ".");
+            return true;
 
-		} else {
-			dB.echoDebug("...player doesn't have " + contains.identify() + ".");
-			return false;
-		}
-	}
+        } else {
+            dB.echoDebug("...player doesn't have " + contains.identify() + ".");
+            return false;
+        }
+    }
 
 }

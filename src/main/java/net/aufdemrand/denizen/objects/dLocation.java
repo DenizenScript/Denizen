@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 public class dLocation extends org.bukkit.Location implements dObject {
 
-	// This pattern correctly reads both 0.9 and 0.8 notables
+    // This pattern correctly reads both 0.9 and 0.8 notables
     final static Pattern notablePattern =
             Pattern.compile("(\\w+)[;,]((-?\\d+\\.?\\d*,){3,5}\\w+)",
                     Pattern.CASE_INSENSITIVE);
@@ -85,14 +85,14 @@ public class dLocation extends org.bukkit.Location implements dObject {
      * Called on server startup or /denizen reload locations. Should probably not be called manually.
      */
     public static void _recallLocations() {
-    	
-    	
+        
+        
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
         uniqueObjects.clear();
         for (String location : loclist) {
-        	Matcher m = notablePattern.matcher(location);
+            Matcher m = notablePattern.matcher(location);
             if (m.matches()) {
-            	String id = m.group(1);
+                String id = m.group(1);
                 dLocation loc = valueOf(m.group(2));
                 uniqueObjects.put(id, loc);
             }
@@ -210,11 +210,11 @@ public class dLocation extends org.bukkit.Location implements dObject {
      * @param location the Bukkit Location to reference
      */
     public dLocation(Location location) {
-    	// Just save the yaw and pitch as they are; don't check if they are
-    	// higher than 0, because Minecraft yaws are weird and can have
-    	// negative values
+        // Just save the yaw and pitch as they are; don't check if they are
+        // higher than 0, because Minecraft yaws are weird and can have
+        // negative values
         super(location.getWorld(), location.getX(), location.getY(), location.getZ(),
-        	  location.getYaw(), location.getPitch());
+              location.getYaw(), location.getPitch());
     }
 
     /**
@@ -482,14 +482,14 @@ public class dLocation extends org.bukkit.Location implements dObject {
             // Returns a dList of players within a radius.
             // -->
             else if (attribute.startsWith("players")
-            	&& attribute.getAttribute(2).startsWith("within")
-            	&& attribute.hasContext(2)) {
+                && attribute.getAttribute(2).startsWith("within")
+                && attribute.hasContext(2)) {
                 ArrayList<dPlayer> found = new ArrayList<dPlayer>();
-            	int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers())
-                	if (Utilities.checkLocation(this, player.getLocation(), radius))
-                		found.add(new dPlayer(player));
+                    if (Utilities.checkLocation(this, player.getLocation(), radius))
+                        found.add(new dPlayer(player));
                 
                 Collections.sort(found, new Comparator<dPlayer>() {
                     @Override
@@ -509,10 +509,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 && attribute.getAttribute(2).startsWith("within")
                 && attribute.hasContext(2)) {
                 ArrayList<dEntity> found = new ArrayList<dEntity>();
-            	int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 attribute.fulfill(2);
                 for (Entity entity : getWorld().getEntities())
-                	if (Utilities.checkLocation(this, entity.getLocation(), radius))
+                    if (Utilities.checkLocation(this, entity.getLocation(), radius))
                                 found.add(new dEntity(entity));
                 
                 Collections.sort(found, new Comparator<dEntity>() {
@@ -568,10 +568,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // at the location.
         // -->
         if (attribute.startsWith("direction")) {
-        	// Get the cardinal direction from this location to another
+            // Get the cardinal direction from this location to another
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
-            	// Subtract this location's vector from the other location's vector,
-            	// not the other way around
+                // Subtract this location's vector from the other location's vector,
+                // not the other way around
                 return new Element(Rotation.getCardinal(Rotation.getYaw
                         (dLocation.valueOf(attribute.getContext(1)).toVector().subtract(this.toVector())
                                 .normalize())))
@@ -579,8 +579,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
             // Get a cardinal direction from this location's yaw
             else {
-            	return new Element(Rotation.getCardinal(getYaw()))
-            			.getAttribute(attribute.fulfill(1));
+                return new Element(Rotation.getCardinal(getYaw()))
+                        .getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -598,7 +598,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 // -->
                 if (attribute.getAttribute(2).startsWith("horizontal")) {
                     
-                	// <--
+                    // <--
                     // <l@location.distance[<location>].horizontal.multiworld> -> Element(Number)
                     // Returns the horizontal distance between 2 multiworld locations.
                     // -->
@@ -619,8 +619,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 // Returns the vertical distance between 2 locations.
                 // -->
                 else if (attribute.getAttribute(2).startsWith("vertical")) {
-                	
-                	// <--
+                    
+                    // <--
                     // <l@location.distance[<location>].vertical.multiworld> -> Element(Number)
                     // Returns the vertical distance between 2 multiworld locations.
                     // -->
@@ -716,7 +716,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("yaw.raw")) {
             return new Element(String.valueOf
-            		(getYaw())).getAttribute(attribute.fulfill(2));
+                    (getYaw())).getAttribute(attribute.fulfill(2));
         }
         
         // <--
@@ -725,7 +725,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("yaw")) {
             return new Element(String.valueOf
-            		(Rotation.normalizeYaw(getYaw()))).getAttribute(attribute.fulfill(1));
+                    (Rotation.normalizeYaw(getYaw()))).getAttribute(attribute.fulfill(1));
         }
         
         // <--
@@ -734,39 +734,39 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // entity or location. Otherwise, returns false.
         // -->
         if (attribute.startsWith("facing")) {
-        	if (attribute.hasContext(1)) {
-        		
-        		// The default number of degrees if there is no degrees attribute
-        		int degrees = 45;
-        		
-        		// The attribute to fulfill from
-        		int attributePos = 1;
-        		
+            if (attribute.hasContext(1)) {
+                
+                // The default number of degrees if there is no degrees attribute
+                int degrees = 45;
+                
+                // The attribute to fulfill from
+                int attributePos = 1;
+                
                 // <--
                 // <location.facing[<value>].degrees[X]> -> Element(Boolean)
                 // Returns true if the location's yaw is facing another
                 // entity or location, within a specified degree range.
-        		// Otherwise, returns false.
+                // Otherwise, returns false.
                 // -->
-        		if (attribute.getAttribute(2).startsWith("degrees") &&
-        			attribute.hasContext(2) &&
-        			aH.matchesInteger(attribute.getContext(2))) {
-        			
-        			degrees = attribute.getIntContext(2);
-        			attributePos++;
-        		}
-        		
-        		if (dLocation.matches(attribute.getContext(1))) {
-        			return new Element(Rotation.isFacingLocation
-        					(this, dLocation.valueOf(attribute.getContext(1)), degrees))
-                       		.getAttribute(attribute.fulfill(attributePos));
-        		}
-        		else if (dEntity.matches(attribute.getContext(1))) {
-        			return new Element(Rotation.isFacingLocation
-        					(this, dEntity.valueOf(attribute.getContext(1))
-        							.getBukkitEntity().getLocation(), degrees))
-                       		.getAttribute(attribute.fulfill(attributePos));
-        		} 
+                if (attribute.getAttribute(2).startsWith("degrees") &&
+                    attribute.hasContext(2) &&
+                    aH.matchesInteger(attribute.getContext(2))) {
+                    
+                    degrees = attribute.getIntContext(2);
+                    attributePos++;
+                }
+                
+                if (dLocation.matches(attribute.getContext(1))) {
+                    return new Element(Rotation.isFacingLocation
+                            (this, dLocation.valueOf(attribute.getContext(1)), degrees))
+                               .getAttribute(attribute.fulfill(attributePos));
+                }
+                else if (dEntity.matches(attribute.getContext(1))) {
+                    return new Element(Rotation.isFacingLocation
+                            (this, dEntity.valueOf(attribute.getContext(1))
+                                    .getBukkitEntity().getLocation(), degrees))
+                               .getAttribute(attribute.fulfill(attributePos));
+                } 
             }
         }
         
@@ -793,16 +793,16 @@ public class dLocation extends org.bukkit.Location implements dObject {
             // Check if the player is in the specified region
             if (attribute.hasContext(1)) {
             
-            	String region = attribute.getContext(1);
+                String region = attribute.getContext(1);
 
-            	return new Element(String.valueOf(WorldGuardUtilities.inRegion(this, region)))
-            		.getAttribute(attribute.fulfill(1));
+                return new Element(String.valueOf(WorldGuardUtilities.inRegion(this, region)))
+                    .getAttribute(attribute.fulfill(1));
             }
             
             // Check if the player is in any region
             else {
-            	return new Element(String.valueOf(WorldGuardUtilities.inRegion(this)))
-        			.getAttribute(attribute.fulfill(1));
+                return new Element(String.valueOf(WorldGuardUtilities.inRegion(this)))
+                    .getAttribute(attribute.fulfill(1));
             }
         }
         

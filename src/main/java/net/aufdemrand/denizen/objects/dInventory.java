@@ -57,8 +57,8 @@ public class dInventory implements dObject {
     }
     
     public dInventory(InventoryType type) {
-    	
-    	inventory = Bukkit.getServer().createInventory(null, type);
+        
+        inventory = Bukkit.getServer().createInventory(null, type);
     }
     
     public dInventory(InventoryHolder holder) {
@@ -70,17 +70,17 @@ public class dInventory implements dObject {
     }
     
     public dInventory(BlockState state) {
-    	
-    	if (state instanceof InventoryHolder) {
-    		this.inventory = ((InventoryHolder) state).getInventory();
-    	}
+        
+        if (state instanceof InventoryHolder) {
+            this.inventory = ((InventoryHolder) state).getInventory();
+        }
     }
     
     public dInventory(LivingEntity entity) {
-    	
-    	if (entity instanceof InventoryHolder) {
-    		this.inventory = ((InventoryHolder) entity).getInventory();
-    	}
+        
+        if (entity instanceof InventoryHolder) {
+            this.inventory = ((InventoryHolder) entity).getInventory();
+        }
     }
 
     
@@ -106,15 +106,15 @@ public class dInventory implements dObject {
      */
     
     public dInventory add(ItemStack[] items) {
-    	
-    	if (inventory == null || items == null) return this;
-    	
-    	for (ItemStack item : items) {
-    		
-    		if (item != null) inventory.addItem(item);
-    	}
-    	
-    	return this;
+        
+        if (inventory == null || items == null) return this;
+        
+        for (ItemStack item : items) {
+            
+            if (item != null) inventory.addItem(item);
+        }
+        
+        return this;
     }
         
     /**
@@ -123,39 +123,39 @@ public class dInventory implements dObject {
      *
      * @param item  The item (can be null)
      * @param stacks  Whether stacks should be counted
-     * 				  instead of item quantities
+     *                   instead of item quantities
      * @return  The number of stacks or quantity of items
      *
      */
     
     public int count(ItemStack item, boolean stacks)
     {
-    	if (inventory == null) return 0;
-    	
-    	int qty = 0;
-    	
-    	for (ItemStack invStack : inventory)
-		{
-			// If ItemStacks are empty here, they are null
-			if (invStack != null)
-			{
-				// If item is null, include all items in the
-				// inventory
-				
-				if (item == null || invStack.isSimilar(item)) {
-					
-					// If stacks is true, only count the number
-					// of stacks
-					//
-					// Otherwise, count the quantities of stacks
-					
-					if (stacks == true) qty++;
-					else qty = qty + invStack.getAmount();
-				}
-			}
-		}
-    	
-    	return qty;
+        if (inventory == null) return 0;
+        
+        int qty = 0;
+        
+        for (ItemStack invStack : inventory)
+        {
+            // If ItemStacks are empty here, they are null
+            if (invStack != null)
+            {
+                // If item is null, include all items in the
+                // inventory
+                
+                if (item == null || invStack.isSimilar(item)) {
+                    
+                    // If stacks is true, only count the number
+                    // of stacks
+                    //
+                    // Otherwise, count the quantities of stacks
+                    
+                    if (stacks == true) qty++;
+                    else qty = qty + invStack.getAmount();
+                }
+            }
+        }
+        
+        return qty;
     }
     
     /**
@@ -168,37 +168,37 @@ public class dInventory implements dObject {
      */
     
     public dInventory keep(ItemStack[] items) {
-    	
-    	if (inventory == null || items == null) return this;
-    	
-    	for (ItemStack invStack : inventory) {
-    		
-    		if (invStack != null) {
-    			
-    			boolean keep = false;
-    			
-    			// See if the item array contains
-    			// this inventory item
-    			for (ItemStack item : items) {
-    				
-    				if (invStack.isSimilar(item)) {
-    					
-    					keep = true;
-    					break;
-    				}
-    			}
-    			
-    			// If the item array did not contain
-    			// this inventory item, remove it
-    			// from the inventory
-    			if (keep == false) {
-    				
-    				this.remove(invStack);
-    			}
-    		}
-    	}
-    	
-    	return this;
+        
+        if (inventory == null || items == null) return this;
+        
+        for (ItemStack invStack : inventory) {
+            
+            if (invStack != null) {
+                
+                boolean keep = false;
+                
+                // See if the item array contains
+                // this inventory item
+                for (ItemStack item : items) {
+                    
+                    if (invStack.isSimilar(item)) {
+                        
+                        keep = true;
+                        break;
+                    }
+                }
+                
+                // If the item array did not contain
+                // this inventory item, remove it
+                // from the inventory
+                if (keep == false) {
+                    
+                    this.remove(invStack);
+                }
+            }
+        }
+        
+        return this;
     }
     
     /**
@@ -212,19 +212,19 @@ public class dInventory implements dObject {
      */
     
     public dInventory exclude(ItemStack[] items) {
-    	
-    	if (inventory == null || items == null) return this;
-    	
-    	int oldCount = this.count(null, false);
-    	int newCount = -1;
-    	
-    	while (oldCount != newCount) {
-    		
-    		oldCount = newCount;
-    		newCount = this.remove(items).count(null, false);
-    	}
-    	
-    	return this;
+        
+        if (inventory == null || items == null) return this;
+        
+        int oldCount = this.count(null, false);
+        int newCount = -1;
+        
+        while (oldCount != newCount) {
+            
+            oldCount = newCount;
+            newCount = this.remove(items).count(null, false);
+        }
+        
+        return this;
     }
     
     /**
@@ -238,19 +238,19 @@ public class dInventory implements dObject {
      */
     
     public dInventory fill(ItemStack[] items) {
-    	
-    	if (inventory == null || items == null) return this;
-    	
-    	int oldCount = this.count(null, false);
-    	int newCount = -1;
-    	
-    	while (oldCount != newCount) {
-    		
-    		oldCount = newCount;
-    		newCount = this.add(items).count(null, false);
-    	}
-    	
-    	return this;
+        
+        if (inventory == null || items == null) return this;
+        
+        int oldCount = this.count(null, false);
+        int newCount = -1;
+        
+        while (oldCount != newCount) {
+            
+            oldCount = newCount;
+            newCount = this.add(items).count(null, false);
+        }
+        
+        return this;
     }
     
     /**
@@ -262,22 +262,22 @@ public class dInventory implements dObject {
      */
     
     public dLocation getLocation() {
-    	
-    	if (inventory != null) {
-    		
-    		InventoryHolder holder = inventory.getHolder();
-    		
-    		if (holder instanceof BlockState) {
-    			
-    			return new dLocation(((BlockState) holder).getLocation());
-    		}
-    		else if (holder instanceof Player) {
-    			
-    			return new dLocation(((Player) holder).getLocation());
-    		}
-    	}
-    	
-    	return null;
+        
+        if (inventory != null) {
+            
+            InventoryHolder holder = inventory.getHolder();
+            
+            if (holder instanceof BlockState) {
+                
+                return new dLocation(((BlockState) holder).getLocation());
+            }
+            else if (holder instanceof Player) {
+                
+                return new dLocation(((Player) holder).getLocation());
+            }
+        }
+        
+        return null;
     }
     
     /**
@@ -290,15 +290,15 @@ public class dInventory implements dObject {
      */
     
     public dInventory remove(ItemStack[] items) {
-    	
-    	if (inventory == null || items == null) return this;
-    	
-    	for (ItemStack item : items) {
-    		
-    		if (item != null) inventory.removeItem(item);
-    	}
-    	
-    	return this;
+        
+        if (inventory == null || items == null) return this;
+        
+        for (ItemStack item : items) {
+            
+            if (item != null) inventory.removeItem(item);
+        }
+        
+        return this;
     }
     
     /**
@@ -314,47 +314,47 @@ public class dInventory implements dObject {
      */
     
     public dInventory removeBook(ItemStack book) {
-    	
-    	if (inventory == null || book == null) return this;
-    	
-    	// We have to manually keep track of the quantity
-    	// we are removing, because we are not relying on
-    	// Bukkit methods to find matching itemStacks
-    	int qty = book.getAmount();
-    	
-    	// Store the book's meta information in a variable
-    	BookMeta bookMeta = (BookMeta) book.getItemMeta();
-    	
-    	for (ItemStack invStack : inventory) {
+        
+        if (inventory == null || book == null) return this;
+        
+        // We have to manually keep track of the quantity
+        // we are removing, because we are not relying on
+        // Bukkit methods to find matching itemStacks
+        int qty = book.getAmount();
+        
+        // Store the book's meta information in a variable
+        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        
+        for (ItemStack invStack : inventory) {
 
-    		if (qty == 0) break;
-    		
-    		if (invStack != null && invStack.getItemMeta() instanceof BookMeta) {
-    					
-    	    	BookMeta invMeta = (BookMeta) invStack.getItemMeta();
-    	    			
-    	    	if (invMeta.getAuthor().equalsIgnoreCase(bookMeta.getAuthor())
-    	    		&& invMeta.getTitle().equalsIgnoreCase(bookMeta.getTitle())) {
+            if (qty == 0) break;
+            
+            if (invStack != null && invStack.getItemMeta() instanceof BookMeta) {
+                        
+                BookMeta invMeta = (BookMeta) invStack.getItemMeta();
+                        
+                if (invMeta.getAuthor().equalsIgnoreCase(bookMeta.getAuthor())
+                    && invMeta.getTitle().equalsIgnoreCase(bookMeta.getTitle())) {
 
-    	    		// Make sure we don't remove more books than we
-    	    		// need to
-    	    		if (qty - invStack.getAmount() < 0) {
-    	    			
-    	    			invStack.setAmount((qty - invStack.getAmount()) * -1);
-    	    		}
-    	    		else {
-    	    			
-    	    			inventory.removeItem(invStack);
-    	    			
-        	    		// Update the quantity we still have to remove
-        	    		qty = qty - invStack.getAmount();
-    	    		}
-    	    	}
-    		}
-    		
-    	}
-    	
-    	return this;
+                    // Make sure we don't remove more books than we
+                    // need to
+                    if (qty - invStack.getAmount() < 0) {
+                        
+                        invStack.setAmount((qty - invStack.getAmount()) * -1);
+                    }
+                    else {
+                        
+                        inventory.removeItem(invStack);
+                        
+                        // Update the quantity we still have to remove
+                        qty = qty - invStack.getAmount();
+                    }
+                }
+            }
+            
+        }
+        
+        return this;
     }
     
     /**
@@ -366,46 +366,46 @@ public class dInventory implements dObject {
      */
     
     public void replace(dInventory destination) {
-    	
-    	if (inventory == null || destination == null) return;
-    	
-    	// If the destination is smaller than our current inventory,
-    	// add as many items as possible
-    	
-    	if (destination.getSize() < this.getSize()) {
+        
+        if (inventory == null || destination == null) return;
+        
+        // If the destination is smaller than our current inventory,
+        // add as many items as possible
+        
+        if (destination.getSize() < this.getSize()) {
 
-    		destination.clear();
-    		destination.add(this.getContents());
-    	}
-    	else {
-    	
-    		destination.setContents(this.getContents());
-    	}
+            destination.clear();
+            destination.add(this.getContents());
+        }
+        else {
+        
+            destination.setContents(this.getContents());
+        }
     }
     
     public void clear() {
-    	if (inventory != null) inventory.clear();
+        if (inventory != null) inventory.clear();
     }
     
     public ItemStack[] getContents() {
-    	if (inventory != null) return inventory.getContents();
-    	else return new ItemStack[0];
+        if (inventory != null) return inventory.getContents();
+        else return new ItemStack[0];
     }
     
     public InventoryType getInventoryType() {
-    	return inventory.getType();
+        return inventory.getType();
     }
     
     public int getSize() {
-    	return inventory.getSize();
+        return inventory.getSize();
     }
     
     public void remove(ItemStack item) {
-    	inventory.remove(item);
+        inventory.remove(item);
     }
     
     public void setContents(ItemStack[] contents) {
-    	inventory.setContents(contents);
+        inventory.setContents(contents);
     }
     
     
@@ -457,28 +457,28 @@ public class dInventory implements dObject {
         
         if (attribute.startsWith("contains")) {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
-            	
-            	int qty = 1;
-            	
-            	if (attribute.getAttribute(2).startsWith("qty") &&
-            		attribute.hasContext(2) &&
-            		aH.matchesInteger(attribute.getContext(2))) {
-            		
-            		qty = attribute.getIntContext(2);
-            	}
-            	
-            	return new Element(getInventory().containsAtLeast
-            			(dItem.valueOf(attribute.getContext(1)).getItemStack(), qty))
-                		.getAttribute(attribute.fulfill(qty == 1 ? 1 : 2));
+                
+                int qty = 1;
+                
+                if (attribute.getAttribute(2).startsWith("qty") &&
+                    attribute.hasContext(2) &&
+                    aH.matchesInteger(attribute.getContext(2))) {
+                    
+                    qty = attribute.getIntContext(2);
+                }
+                
+                return new Element(getInventory().containsAtLeast
+                        (dItem.valueOf(attribute.getContext(1)).getItemStack(), qty))
+                        .getAttribute(attribute.fulfill(qty == 1 ? 1 : 2));
             }
         }
         
         // Get the location of this inventory's holder
         
         if (attribute.startsWith("location")) {
-        	
-        	return new dLocation(getLocation())
-                	.getAttribute(attribute.fulfill(1));
+            
+            return new dLocation(getLocation())
+                    .getAttribute(attribute.fulfill(1));
         }
         
         // Get the combined quantity of itemstacks that match an item if
@@ -487,12 +487,12 @@ public class dInventory implements dObject {
         
         if (attribute.startsWith("qty"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-            	return new Element(String.valueOf(count
-            		(dItem.valueOf(attribute.getContext(1)).getItemStack(), false)))
-            		.getAttribute(attribute.fulfill(1));
+                return new Element(String.valueOf(count
+                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), false)))
+                    .getAttribute(attribute.fulfill(1));
             else
-            	return new Element(String.valueOf(count(null, false)))
-            		.getAttribute(attribute.fulfill(1));
+                return new Element(String.valueOf(count(null, false)))
+                    .getAttribute(attribute.fulfill(1));
         
         // Return the number of slots in the inventory
         
@@ -505,12 +505,12 @@ public class dInventory implements dObject {
         
         if (attribute.startsWith("stacks"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-            	return new Element(String.valueOf(count
-            		(dItem.valueOf(attribute.getContext(1)).getItemStack(), true)))
-            		.getAttribute(attribute.fulfill(1));
+                return new Element(String.valueOf(count
+                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), true)))
+                    .getAttribute(attribute.fulfill(1));
             else
-            	return new Element(String.valueOf(count(null, true)))
-            		.getAttribute(attribute.fulfill(1));
+                return new Element(String.valueOf(count(null, true)))
+                    .getAttribute(attribute.fulfill(1));
         
         // Return the type of the inventory (e.g. "PLAYER", "CRAFTING")
         

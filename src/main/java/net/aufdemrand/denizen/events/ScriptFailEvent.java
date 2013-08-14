@@ -25,7 +25,7 @@ public class ScriptFailEvent extends Event {
     }
     
     public int getCount() {
-    	return count;
+        return count;
     }
  
     public String getScriptName() {
@@ -33,7 +33,7 @@ public class ScriptFailEvent extends Event {
     }
     
     public String getPlayerName() {
-    	return playerName;
+        return playerName;
     }
  
     public HandlerList getHandlers() {

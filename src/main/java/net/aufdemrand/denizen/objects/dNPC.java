@@ -143,7 +143,7 @@ public class dNPC implements dObject {
     }
     
     public void destroy() {
-    	getCitizen().destroy();
+        getCitizen().destroy();
     }
 
     public dLocation getLocation() {

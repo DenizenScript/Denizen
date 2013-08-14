@@ -13,12 +13,12 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class StrikeCommand extends AbstractCommand {
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-        	
+            
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
@@ -26,17 +26,17 @@ public class StrikeCommand extends AbstractCommand {
             else if (arg.matches("no_damage") || arg.matches("nodamage"))
                 scriptEntry.addObject("damage", Element.FALSE);
 
-		}
+        }
 
         // Check required args
-		if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
 
         scriptEntry.defaultObject("damage", Element.TRUE);
-	}
+    }
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Extract objects from ScriptEntry
         dLocation location = (dLocation) scriptEntry.getObject("location");
@@ -52,6 +52,6 @@ public class StrikeCommand extends AbstractCommand {
             location.getWorld().strikeLightning(location);
         else
             location.getWorld().strikeLightningEffect(location);
-	}
+    }
 
 }

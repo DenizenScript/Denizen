@@ -52,14 +52,14 @@ public class NarrateCommand extends AbstractCommand {
             // Add players to target list
             else if ((arg.matchesPrefix("target") || arg.matchesPrefix("targets"))) {
                 scriptEntry.addObject("targets", ( (dList)arg.asType(dList.class)).filter(dPlayer.class));
-			}
+            }
             else {
                 if (!scriptEntry.hasObject("text"))
                     scriptEntry.addObject("text", arg.asElement());
             }
         }
         
-		// If there are no targets, check if you can add this player
+        // If there are no targets, check if you can add this player
         // to the targets
         if (!scriptEntry.hasObject("targets"))
             scriptEntry.addObject("targets", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer()) : null));
@@ -71,7 +71,7 @@ public class NarrateCommand extends AbstractCommand {
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
@@ -86,7 +86,7 @@ public class NarrateCommand extends AbstractCommand {
         
         for (dPlayer player : targets) {
             if (player != null && player.isOnline())
-        	    player.getPlayerEntity().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);
+                player.getPlayerEntity().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);
             else
                 dB.echoError("Narrated to non-existent or offline player!");
         }

@@ -69,32 +69,31 @@ public class CastCommand extends AbstractCommand{
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-    	
-    	// Iterate through arguments
+        
+        // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-        	if (!scriptEntry.hasObject("remove")
-        			&& arg.matches("remove, cancel"))
-        		scriptEntry.addObject("remove", Element.TRUE);
-        	
-        	else if (!scriptEntry.hasObject("duration")
-            		&& arg.matchesArgumentType(Duration.class)
-            		&& arg.matchesPrefix("duration, d"))
-            	scriptEntry.addObject("duration", arg.asType(Duration.class));
+            if (!scriptEntry.hasObject("remove")
+                && arg.matches("remove, cancel"))
+                scriptEntry.addObject("remove", Element.TRUE);
+            
+            else if (!scriptEntry.hasObject("duration")
+                     && arg.matchesArgumentType(Duration.class)
+                     && arg.matchesPrefix("duration, d"))
+                scriptEntry.addObject("duration", arg.asType(Duration.class));
 
             else if (!scriptEntry.hasObject("amplifier")
-            		&& (arg.matchesPrimitive(aH.PrimitiveType.Integer)
-            		|| arg.matchesPrimitive(aH.PrimitiveType.Double))
-            		&& arg.matchesPrefix("power, p"))
-            	scriptEntry.addObject("amplifier", arg.asElement());
-            	
+                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                     && arg.matchesPrefix("power, p"))
+                scriptEntry.addObject("amplifier", arg.asElement());
+                
             else if (!scriptEntry.hasObject("effect")
-            		&& PotionEffectType.getByName(arg.asElement().asString()) != null) {
-            	scriptEntry.addObject("effect", PotionEffectType.getByName(arg.asElement().asString()));
+                     && PotionEffectType.getByName(arg.asElement().asString()) != null) {
+                scriptEntry.addObject("effect", PotionEffectType.getByName(arg.asElement().asString()));
             }
 
-        	else if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesArgumentList(dEntity.class)) {
+            else if (!scriptEntry.hasObject("entities")
+                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
                 
             }
@@ -103,7 +102,7 @@ public class CastCommand extends AbstractCommand{
 
         // No targets specified, let's use defaults if available
         scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null), 
-        		(scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
+                (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
         
         // No potion specified? Problem!
         if (!scriptEntry.hasObject("effect"))
@@ -116,7 +115,7 @@ public class CastCommand extends AbstractCommand{
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
@@ -134,10 +133,10 @@ public class CastCommand extends AbstractCommand{
 
         // Apply the PotionEffect to the targets!
         for (dEntity entity : entities) {
-        	if (entity.getLivingEntity().hasPotionEffect(effect))
-        		entity.getLivingEntity().removePotionEffect(effect);
-        	if (remove) continue;
-        	PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier);
+            if (entity.getLivingEntity().hasPotionEffect(effect))
+                entity.getLivingEntity().removePotionEffect(effect);
+            if (remove) continue;
+            PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier);
             if (!potion.apply(entity.getLivingEntity()))
                 dB.echoError("Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
         }

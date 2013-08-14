@@ -19,17 +19,17 @@ import org.bukkit.entity.Player;
  */
 public class NameplateCommand extends AbstractCommand {
 
-	/* Example usge:
-	 * - NAMEPLATE COLOR:RED
-	 * - NAMEPLATE COLOR:GOLD PLAYER:Notch
-	 * 
-	 * Arguments: [] - Required, () - Optional
-	 * 
-	 * [COLOR] The color to set. See the Bukkit documentation for available colors.
-	 * 
-	 * (PLAYER) The player to apply the change to (can be per-player!).
-	 * 
-	 */
+    /* Example usge:
+     * - NAMEPLATE COLOR:RED
+     * - NAMEPLATE COLOR:GOLD PLAYER:Notch
+     * 
+     * Arguments: [] - Required, () - Optional
+     * 
+     * [COLOR] The color to set. See the Bukkit documentation for available colors.
+     * 
+     * (PLAYER) The player to apply the change to (can be per-player!).
+     * 
+     */
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

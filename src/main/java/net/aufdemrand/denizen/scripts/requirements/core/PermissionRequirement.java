@@ -14,51 +14,51 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 public class PermissionRequirement extends AbstractRequirement{
 
     @Override
-    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {		
-		if(context.getPlayer() != null)
-		{		
-			if(Depends.permissions != null)
-			{
-				boolean outcome = false;
-				boolean global = false;
-				
-				for(String arg : args)
-				{
-					if (aH.matchesArg("GLOBAL", arg))
-						global = true;
-					else
-					{
-						if (global == true)
-						{
-							if(Depends.permissions.has((World) null, context.getPlayer().getName(), arg))
-							{
-								dB.echoDebug("...player has global permission: " + arg);
-								outcome = true;
-							}
-							else
-								dB.echoDebug("...player does not have global permission: " + arg);
-						}
-						else
-						{
-							if(Depends.permissions.has(context.getPlayer().getPlayerEntity(), arg))
-							{
-								dB.echoDebug("...player has permission: " + arg);
-								outcome = true;
-							}
-							else
-							{
-								dB.echoDebug("...player does not have permission: " + arg + "!");
-							}
-						}
-					}
-				}
-				
-				return outcome;
-			}
-			
-			dB.echoDebug("...no permission plugin found, assume as FALSE!");
-		}
-		
-		return false;
-	}
+    public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {        
+        if(context.getPlayer() != null)
+        {        
+            if(Depends.permissions != null)
+            {
+                boolean outcome = false;
+                boolean global = false;
+                
+                for(String arg : args)
+                {
+                    if (aH.matchesArg("GLOBAL", arg))
+                        global = true;
+                    else
+                    {
+                        if (global == true)
+                        {
+                            if(Depends.permissions.has((World) null, context.getPlayer().getName(), arg))
+                            {
+                                dB.echoDebug("...player has global permission: " + arg);
+                                outcome = true;
+                            }
+                            else
+                                dB.echoDebug("...player does not have global permission: " + arg);
+                        }
+                        else
+                        {
+                            if(Depends.permissions.has(context.getPlayer().getPlayerEntity(), arg))
+                            {
+                                dB.echoDebug("...player has permission: " + arg);
+                                outcome = true;
+                            }
+                            else
+                            {
+                                dB.echoDebug("...player does not have permission: " + arg + "!");
+                            }
+                        }
+                    }
+                }
+                
+                return outcome;
+            }
+            
+            dB.echoDebug("...no permission plugin found, assume as FALSE!");
+        }
+        
+        return false;
+    }
 }

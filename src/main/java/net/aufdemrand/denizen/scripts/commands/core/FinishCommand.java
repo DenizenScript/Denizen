@@ -21,21 +21,21 @@ import org.bukkit.Bukkit;
 
 public class FinishCommand extends AbstractCommand {
 
-	/* FINISH ('SCRIPT:[Script Name]') (PLAYER:[Player Name])
+    /* FINISH ('SCRIPT:[Script Name]') (PLAYER:[Player Name])
 
-	/* Arguments: [] - Required, () - Optional 
-	 * ('SCRIPT:[Script Name]') Changes the script from the triggering script to the one specified.
-	 *    Defaults to the script that the Script Entry was sent from.
-	 * (PLAYER:[Player Name]) Changes the Player affected.
-	 *    Defaults to the Player who triggered the script.
-	 * 
-	 * Example Usage:
-	 * FINISH PLAYER:aufdemrand
-	 * FINISH 'SCRIPT:A different script'
-	 */
+    /* Arguments: [] - Required, () - Optional 
+     * ('SCRIPT:[Script Name]') Changes the script from the triggering script to the one specified.
+     *    Defaults to the script that the Script Entry was sent from.
+     * (PLAYER:[Player Name]) Changes the Player affected.
+     *    Defaults to the Player who triggered the script.
+     * 
+     * Example Usage:
+     * FINISH PLAYER:aufdemrand
+     * FINISH 'SCRIPT:A different script'
+     */
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Get some defaults from the ScriptEntry
         dScript script = scriptEntry.getScript();
@@ -69,32 +69,32 @@ public class FinishCommand extends AbstractCommand {
                 scriptEntry.getPlayer().debug()
                         + script.debug());
 
-		finishScript(scriptEntry.getPlayer().getName(), script.getName());
-	}
+        finishScript(scriptEntry.getPlayer().getName(), script.getName());
+    }
 
     public static void resetFinishes(String playerName, String scriptName) {
         scriptName = scriptName.toUpperCase();
         DenizenAPI._saves().set("Players." + playerName + "." + scriptName + "." + "Completed", null);
     }
 
-	public static boolean finishScript(String playerName, String scriptName) {
-		scriptName = scriptName.toUpperCase();
-		int finishes = DenizenAPI._saves().getInt("Players." + playerName + "." + scriptName + "." + "Completed", 0);
+    public static boolean finishScript(String playerName, String scriptName) {
+        scriptName = scriptName.toUpperCase();
+        int finishes = DenizenAPI._saves().getInt("Players." + playerName + "." + scriptName + "." + "Completed", 0);
 
-		// Increase finishes by one and save.
-		finishes++;
+        // Increase finishes by one and save.
+        finishes++;
         DenizenAPI._saves().set("Players." + playerName + "." + scriptName + "." + "Completed", finishes);
 
-		// Call ScriptFinishEvent
-		ScriptFinishEvent event = new ScriptFinishEvent(playerName, scriptName, finishes);
-		Bukkit.getServer().getPluginManager().callEvent(event);
+        // Call ScriptFinishEvent
+        ScriptFinishEvent event = new ScriptFinishEvent(playerName, scriptName, finishes);
+        Bukkit.getServer().getPluginManager().callEvent(event);
 
-		return true;
-	}
+        return true;
+    }
 
-	public static int getScriptCompletes(String playerName, String scriptName) {
-		return DenizenAPI.getCurrentInstance().getSaves().getInt("Players." + playerName + "." + scriptName.toUpperCase() + "." + "Completed", 0);
-	}
+    public static int getScriptCompletes(String playerName, String scriptName) {
+        return DenizenAPI.getCurrentInstance().getSaves().getInt("Players." + playerName + "." + scriptName.toUpperCase() + "." + "Completed", 0);
+    }
 
 }
 

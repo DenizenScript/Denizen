@@ -19,7 +19,7 @@ public class ExhaustedNPCEvent extends NPCEvent implements Cancellable {
     private boolean cancelled = false;
 
     public ExhaustedNPCEvent(NPC npc) {
-    	super(npc);
+        super(npc);
     }
     
     public HandlerList getHandlers() {

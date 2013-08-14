@@ -103,7 +103,7 @@ public class RequirementChecker {
 
                     try {
                         // Check if # of required args are met
-                        int	numArguments = argumentList.isEmpty() ? 0 : argumentList.size();
+                        int numArguments = argumentList.isEmpty() ? 0 : argumentList.size();
                         int neededArguments = requirement.requirementOptions.REQUIRED_ARGS;
                         if ((numArguments == 0 && neededArguments > 0) ||
                                 numArguments < neededArguments) {

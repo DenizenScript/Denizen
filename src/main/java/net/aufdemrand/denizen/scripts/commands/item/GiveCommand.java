@@ -43,7 +43,7 @@ public class GiveCommand  extends AbstractCommand {
         dItem item = null;
         boolean engrave = false;
 
-		/* Match arguments to expected variables */
+        /* Match arguments to expected variables */
         for (String thisArg : scriptEntry.getArguments()) {
             if (aH.matchesValueArg("QTY", thisArg, aH.ArgumentType.Double))
                 amt = aH.getDoubleFrom(thisArg);

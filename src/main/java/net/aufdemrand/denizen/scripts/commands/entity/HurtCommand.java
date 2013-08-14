@@ -69,8 +69,8 @@ public class HurtCommand extends AbstractCommand {
         Element amountelement = scriptEntry.getElement("amount");
 
         dB.report(getName(), amountelement.debug() + aH.debugObj("entities", entities));
-    	for (dEntity entity : entities)
-    		entity.getLivingEntity().damage(amountelement.asDouble());
-    	
+        for (dEntity entity : entities)
+            entity.getLivingEntity().damage(amountelement.asDouble());
+        
     }
 }

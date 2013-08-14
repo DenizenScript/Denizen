@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -98,7 +97,7 @@ public class ScriptHelper {
 
                     try {
                         yaml = YamlConfiguration.loadConfiguration(f);
-						String saved = yaml.saveToString();
+                        String saved = yaml.saveToString();
                         if (yaml != null && saved.length() > 0)
                             sb.append(saved + "\r\n");
                         else {

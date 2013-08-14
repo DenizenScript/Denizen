@@ -50,23 +50,23 @@ public class AnnounceCommand extends AbstractCommand {
             throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-        	
+            
             if (!scriptEntry.hasObject("type")
-            		&& arg.matches("to_ops"))
+                    && arg.matches("to_ops"))
                 scriptEntry.addObject("type", AnnounceType.TO_OPS);
             
             else if (!scriptEntry.hasObject("type")
-            		&& arg.matchesPrefix("to_flagged")) {
+                    && arg.matchesPrefix("to_flagged")) {
                 scriptEntry.addObject("type", AnnounceType.TO_FLAGGED);
                 scriptEntry.addObject("flag", arg.asElement());
             }
             
             else if (!scriptEntry.hasObject("format")
-            		&& arg.matchesPrefix("format"))
+                    && arg.matchesPrefix("format"))
                 scriptEntry.addObject("format", ScriptRegistry.getScriptContainerAs(arg.getValue(), FormatScriptContainer.class));
 
             else if (!scriptEntry.hasObject("text"))
-            	scriptEntry.addObject("text", arg.asElement());
+                scriptEntry.addObject("text", arg.asElement());
             
         }
 

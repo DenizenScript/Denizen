@@ -124,7 +124,7 @@ public class Denizen extends JavaPlugin {
     public Depends depends = new Depends();
 
     /*
-     * Sets up Denizen on start of the craftbukkit server.	
+     * Sets up Denizen on start of the craftbukkit server.
      */
 
     @Override

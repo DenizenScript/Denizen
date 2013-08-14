@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
 public class Utilities {
 
     static Random random = new Random();
-	
+    
     public static Location getWalkableLocationNear(Location location, int range) {
         Location returnable;
 
@@ -69,16 +69,16 @@ public class Utilities {
         return output;
     }
     
-	public static String[] wrapWords(String text, int width) {
-		StringBuilder sb = new StringBuilder(text);
-		
-		int i = 0;
-		while (i + width < sb.length() && (i = sb.lastIndexOf(" ", i + width)) != -1) {
-			sb.replace(i, i + 1, "\n");
-		}
-		
-		return sb.toString().split("\n");
-	}
+    public static String[] wrapWords(String text, int width) {
+        StringBuilder sb = new StringBuilder(text);
+        
+        int i = 0;
+        while (i + width < sb.length() && (i = sb.lastIndexOf(" ", i + width)) != -1) {
+            sb.replace(i, i + 1, "\n");
+        }
+        
+        return sb.toString().split("\n");
+    }
 
     /**
      *
@@ -153,7 +153,7 @@ public class Utilities {
         Properties props = new Properties();
         //Set a default just in case.
         props.put("version", "Unknown development build");
-        try	{
+        try    {
             props.load(this.getClass().getResourceAsStream("/META-INF/maven/net.aufdemrand/denizen/pom.properties"));
         }
         catch(Exception e) {
@@ -195,15 +195,15 @@ public class Utilities {
     /**
      * Finds the closest Player to a particular location.
      *
-     * @param location	The location to find the closest Player to.
-     * @param range	The maximum range to look for the Player.
+     * @param location    The location to find the closest Player to.
+     * @param range    The maximum range to look for the Player.
      *
-     * @return	The closest Player to the location, or null if no Player was found
-     * 					within the range specified.
+     * @return    The closest Player to the location, or null if no Player was found
+     *                     within the range specified.
      */
     
-	public static Player getClosestPlayer (Location location, int range) {
-    	
+    public static Player getClosestPlayer (Location location, int range) {
+        
         Player closestPlayer = null;
         double closestDistance = Math.pow(range, 2);
         List<Player> playerList = new ArrayList<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
@@ -224,11 +224,11 @@ public class Utilities {
     /**
      * Finds the closest Players to a particular location.
      *
-     * @param location	The location to find the closest Player to.
-     * @param range	The maximum range to look for the Player.
+     * @param location    The location to find the closest Player to.
+     * @param range    The maximum range to look for the Player.
      *
-     * @return	The closest Player to the location, or null if no Player was found
-     * 					within the range specified.
+     * @return    The closest Player to the location, or null if no Player was found
+     *                     within the range specified.
      */
 
     public static List<dPlayer> getClosestPlayers(Location location, int range) {
@@ -252,11 +252,11 @@ public class Utilities {
     /**
      * Finds the closest NPC to a particular location.
      *
-     * @param location	The location to find the closest NPC to.
-     * @param range	The maximum range to look for the NPC.
+     * @param location    The location to find the closest NPC to.
+     * @param range    The maximum range to look for the NPC.
      *
-     * @return	The closest NPC to the location, or null if no NPC was found
-     * 					within the range specified.
+     * @return    The closest NPC to the location, or null if no NPC was found
+     *                     within the range specified.
      */
     
     public static dNPC getClosestNPC (Location location, int range) {
@@ -279,10 +279,10 @@ public class Utilities {
     /**
      * Returns a list of all NPCs within a certain range.
      *
-     * @param location	The location to search.
-     * @param maxRange	The maximum range of the NPCs
+     * @param location    The location to search.
+     * @param maxRange    The maximum range of the NPCs
      *
-     * @return	The list of NPCs within the max range.
+     * @return    The list of NPCs within the max range.
      */
     
     public static Set<dNPC> getClosestNPCs (Location location, int maxRange) {
@@ -392,7 +392,7 @@ public class Utilities {
     }
     
     public static Random getRandom() {
-    	return random;
+        return random;
     }
     
     /**
@@ -404,10 +404,10 @@ public class Utilities {
     
     public static void setSignLines(Sign sign, String[] lines) {
         
-    	int n = 0;
+        int n = 0;
             
         for (String line : lines) {
-        	sign.setLine(n, line);
+            sign.setLine(n, line);
             n++;
         }
         
@@ -421,32 +421,32 @@ public class Utilities {
      */
     
     public static void setSignRotation(BlockState signState) {
-    	
+        
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
         
         for (BlockFace blockFace : blockFaces) {
                 
-        	Block block = signState.getBlock().getRelative(blockFace);
+            Block block = signState.getBlock().getRelative(blockFace);
             
-        	if ((block.getType() != Material.AIR)
-        			&& block.getType() != Material.SIGN_POST
-        			&& block.getType() != Material.WALL_SIGN) {
-        		
-            	((org.bukkit.material.Sign) signState.getData())
-            		.setFacingDirection(blockFace.getOppositeFace());
+            if ((block.getType() != Material.AIR)
+                    && block.getType() != Material.SIGN_POST
+                    && block.getType() != Material.WALL_SIGN) {
+                
+                ((org.bukkit.material.Sign) signState.getData())
+                    .setFacingDirection(blockFace.getOppositeFace());
                 signState.update();
             }
         }
     }
     
     public static void setSignRotation(BlockState signState, String direction) {
-    	
-    	BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
+        
+        BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
         
         for (BlockFace blockFace : blockFaces) {
-        	if (blockFace.name().startsWith(direction.toUpperCase().substring(1)))
-        		((org.bukkit.material.Sign) signState.getData())
-                   	.setFacingDirection(blockFace);
+            if (blockFace.name().startsWith(direction.toUpperCase().substring(1)))
+                ((org.bukkit.material.Sign) signState.getData())
+                       .setFacingDirection(blockFace);
         }
         signState.update();
     }

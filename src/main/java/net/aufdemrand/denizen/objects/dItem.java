@@ -23,19 +23,19 @@ import java.util.regex.Pattern;
 
 public class dItem implements dObject {
 
-	// An item pattern with the following groups:
-	//
-	// 1) An optional item: prefix.
-	// 2) Word characters (letters and digits) and
-	//    spaces that specify the name or ID of the item
-	// 3) Digits that specify the special data value
-	//    of the item
-	// 4) Digits between [] brackets that specify the
-	//    quantity of the item
-	
+    // An item pattern with the following groups:
+    //
+    // 1) An optional item: prefix.
+    // 2) Word characters (letters and digits) and
+    //    spaces that specify the name or ID of the item
+    // 3) Digits that specify the special data value
+    //    of the item
+    // 4) Digits between [] brackets that specify the
+    //    quantity of the item
+    
     final static Pattern itemPattern =
-    		Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
-    				Pattern.CASE_INSENSITIVE);
+            Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
+                    Pattern.CASE_INSENSITIVE);
 
     /////////////////////
     //  STATIC METHODS
@@ -78,7 +78,7 @@ public class dItem implements dObject {
     ////////////////
     
     public static dItem valueOf(String string) {
-    	return valueOf(string, null, null);
+        return valueOf(string, null, null);
     }
 
     /**
@@ -113,10 +113,10 @@ public class dItem implements dObject {
                         stack = new dItem(((Item) entity).getItemStack());
                         
                         if (m.group(3) != null) {
-                        	stack.setAmount(Integer.valueOf(m.group(3)));
+                            stack.setAmount(Integer.valueOf(m.group(3)));
                         }
                         
-                    	return stack;
+                        return stack;
                     }
                 }
             }
@@ -132,10 +132,10 @@ public class dItem implements dObject {
             stack = getSaved(m.group(2));
             
             if (m.group(3) != null) {
-            	stack.setAmount(Integer.valueOf(m.group(3)));
+                stack.setAmount(Integer.valueOf(m.group(3)));
             }
             
-        	return stack;
+            return stack;
         }
 
         string = string.replace("i@", "");
@@ -143,63 +143,63 @@ public class dItem implements dObject {
         m = itemPattern.matcher(string);
         
         if (m.matches()) {
-        	
-        	try {
-        		
+            
+            try {
+                
                 ///////
                 // Match item and book script custom items
-        		
+                
                 if (ScriptRegistry.containsScript(m.group(1), ItemScriptContainer.class)) {
                     // Get item from script
                     stack = ScriptRegistry.getScriptContainerAs
-                    		(m.group(1), ItemScriptContainer.class).getItemFrom(player, npc);
+                            (m.group(1), ItemScriptContainer.class).getItemFrom(player, npc);
                 }
                 
                 else if (ScriptRegistry.containsScript(m.group(1), BookScriptContainer.class)) {
-                	// Get book from script
+                    // Get book from script
                     stack = ScriptRegistry.getScriptContainerAs
-                    		(m.group(1), BookScriptContainer.class).getBookFrom(player, npc);
+                            (m.group(1), BookScriptContainer.class).getBookFrom(player, npc);
                 }
                 
                 if (stack != null) {
-                	
-                	if (m.group(3) != null) {
-                    	stack.setAmount(Integer.valueOf(m.group(3)));
+                    
+                    if (m.group(3) != null) {
+                        stack.setAmount(Integer.valueOf(m.group(3)));
                     }
-                	return stack;
+                    return stack;
                 }
-        	}
-        	catch (Exception e) {
+            }
+            catch (Exception e) {
                 // Just a catch, might be a regular item...
-         	}
-        	
-        	
+             }
+            
+            
             ///////
             // Match Bukkit/Minecraft standard items format
-        	
-        	try {
-        		String material = m.group(1).toUpperCase();
+            
+            try {
+                String material = m.group(1).toUpperCase();
            
-        		if (aH.matchesInteger(material)) {
-        			stack = new dItem(Integer.valueOf(material));
-        		}
-        		else {
-        			stack = new dItem(Material.valueOf(material));
-        		}
+                if (aH.matchesInteger(material)) {
+                    stack = new dItem(Integer.valueOf(material));
+                }
+                else {
+                    stack = new dItem(Material.valueOf(material));
+                }
            
-        		if (m.group(2) != null) {
-        			stack.setDurability(Short.valueOf(m.group(2)));
-        		}
-        		if (m.group(3) != null) {
-        			stack.setAmount(Integer.valueOf(m.group(3)));
-        		}
+                if (m.group(2) != null) {
+                    stack.setDurability(Short.valueOf(m.group(2)));
+                }
+                if (m.group(3) != null) {
+                    stack.setAmount(Integer.valueOf(m.group(3)));
+                }
            
-        		return stack;
-        	}
-        	catch (Exception e) {
+                return stack;
+            }
+            catch (Exception e) {
                 if (!string.equalsIgnoreCase("none"))
-        		dB.log("Does not match a valid item ID or material: " + string);
-        	}
+                dB.log("Does not match a valid item ID or material: " + string);
+            }
         }
         
         if (!nope) dB.log("valueOf dItem returning null: " + string);
@@ -356,16 +356,16 @@ public class dItem implements dObject {
      *
      */
     public boolean containsLore(String prefix) {
-    	
-    	if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
-    		for (String itemLore : getItemStack().getItemMeta().getLore()) {
-    			if (itemLore.startsWith(prefix)) {
-    				return true;
-    			}
-    		}
-    	}
-    	
-    	return false;
+        
+        if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
+            for (String itemLore : getItemStack().getItemMeta().getLore()) {
+                if (itemLore.startsWith(prefix)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 
     /**
@@ -377,14 +377,14 @@ public class dItem implements dObject {
      *
      */
     public String getLore(String prefix) {
-    	
-    	for (String itemLore : getItemStack().getItemMeta().getLore()) {
-    		if (itemLore.startsWith(prefix)) {
-    			return itemLore.substring(prefix.length());
-    		}
-    	}
-    	
-    	return "";
+        
+        for (String itemLore : getItemStack().getItemMeta().getLore()) {
+            if (itemLore.startsWith(prefix)) {
+                return itemLore.substring(prefix.length());
+            }
+        }
+        
+        return "";
     }
     
     /**
@@ -395,15 +395,15 @@ public class dItem implements dObject {
      *
      */
     public boolean isItemscript() {
-    	
-    	if (containsLore("§0id:")) {
-    		return true;
-    	}
-    	return false;
+        
+        if (containsLore("§0id:")) {
+            return true;
+        }
+        return false;
     }
     
     public String getMaterial() {
-    	return getItemStack().getType().name().toLowerCase();
+        return getItemStack().getType().name().toLowerCase();
     }
     
     public void setAmount(int value) {
@@ -488,19 +488,19 @@ public class dItem implements dObject {
     @Override
     public String identify() {
         // If saved item, return that
-    	if (getItemStack() == null) return null;
-    	
-    	if (getItemStack().getTypeId() != 0) {
-    		
-    		if (isSaved(this)) {
-    			return "i@" + getSaved(this);
-    		}
+        if (getItemStack() == null) return null;
+        
+        if (getItemStack().getTypeId() != 0) {
+            
+            if (isSaved(this)) {
+                return "i@" + getSaved(this);
+            }
 
-    		// If not a saved item, but is a custom item, return the script id
-    		else if (isItemscript()) {
-    			return "i@" + getLore("§0id:");
-    		}
-    	}
+            // If not a saved item, but is a custom item, return the script id
+            else if (isItemscript()) {
+                return "i@" + getLore("§0id:");
+            }
+        }
 
         // Else, return the material name and data
         return getItemStack().getType().name().toLowerCase()
@@ -623,14 +623,14 @@ public class dItem implements dObject {
         // Return all lore except for lore that holds item script ID
         if (attribute.startsWith("lore")) {
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
-            	
-            	List<String> loreList = new ArrayList<String>();
-            	
-            	for (String itemLore : getItemStack().getItemMeta().getLore()) {
-            		if (!itemLore.startsWith("§0id:")) {
-            			loreList.add(itemLore);
-            		}
-            	}
+                
+                List<String> loreList = new ArrayList<String>();
+                
+                for (String itemLore : getItemStack().getItemMeta().getLore()) {
+                    if (!itemLore.startsWith("§0id:")) {
+                        loreList.add(itemLore);
+                    }
+                }
                 return new dList(loreList).getAttribute(attribute.fulfill(1));
             }
             else return new dList("").getAttribute(attribute.fulfill(1));

@@ -274,8 +274,8 @@ public class FlagManager {
 
             if (split.length > 0) {
                 for (String val : split)
-                	if (val.length() > 0)
-                    	value.values.add(val);
+                    if (val.length() > 0)
+                        value.values.add(val);
 
                 save();
                 rebuild();

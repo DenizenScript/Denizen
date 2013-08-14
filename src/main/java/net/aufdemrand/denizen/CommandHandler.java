@@ -202,16 +202,16 @@ public class CommandHandler {
         AssignmentTrait trait = npc.getTrait(AssignmentTrait.class);
 
         if (args.hasValueFlag("set")) {
-        	String script = args.getFlag("set").replace("\"", "");
-        	
+            String script = args.getFlag("set").replace("\"", "");
+            
             if (trait.setAssignment(script, dPlayer.mirrorBukkitPlayer(player)))
                 if (trait.hasAssignment())
                     Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment is now: '" + trait.getAssignment().getName() + "'.");
                 else Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment was not able to be set.");
             else if (ScriptRegistry.containsScript(script))
-            	Messaging.send(sender, ChatColor.RED + "A script with that name exists, but it is not an assignment script!");
+                Messaging.send(sender, ChatColor.RED + "A script with that name exists, but it is not an assignment script!");
             else
-            	Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
+                Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
             return;
 
         } else if (args.hasFlag('r')) {
@@ -353,12 +353,12 @@ public class CommandHandler {
             min = 1, max = 3, permission = "npc.sit")
     @Requirements(selected = true, ownership = true)
     public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-    	if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
-			Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sit!");
-			return;
-		}
-		
-    	if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
+        if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+            Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sit!");
+            return;
+        }
+        
+        if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
         SittingTrait trait = npc.getTrait(SittingTrait.class);
 
         if (trait.isSitting()) {
@@ -366,7 +366,7 @@ public class CommandHandler {
             return;
         }
         if (args.hasFlag('c')) {
-        	trait.sit(args.getSenderTargetBlockLocation());
+            trait.sit(args.getSenderTargetBlockLocation());
         } else if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
@@ -396,33 +396,33 @@ public class CommandHandler {
     @Requirements(selected = true, ownership = true)
     public void standing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         
-    	if (npc.hasTrait(SittingTrait.class)) {
-    		SittingTrait trait = npc.getTrait(SittingTrait.class);
-    		if (!trait.isSitting()) {
+        if (npc.hasTrait(SittingTrait.class)) {
+            SittingTrait trait = npc.getTrait(SittingTrait.class);
+            if (!trait.isSitting()) {
                 npc.removeTrait(SittingTrait.class);
                 Messaging.send(sender, ChatColor.RED + npc.getName() + " is already standing!");
                 return;
             }
-    		trait.stand();
+            trait.stand();
             npc.removeTrait(SittingTrait.class);
-    	} else if (npc.hasTrait(SneakingTrait.class)) {
-    		SneakingTrait trait = npc.getTrait(SneakingTrait.class);
-    		if (!trait.isSneaking()) {
+        } else if (npc.hasTrait(SneakingTrait.class)) {
+            SneakingTrait trait = npc.getTrait(SneakingTrait.class);
+            if (!trait.isSneaking()) {
                 npc.removeTrait(SittingTrait.class);
                 Messaging.send(sender, ChatColor.RED + npc.getName() + " is already standing!");
                 return;
             }
-    		trait.stand();
+            trait.stand();
             npc.removeTrait(SneakingTrait.class);
-    	}
+        }
         
 
         
     }
 
     /*
-	 * Sleep
-	 */
+     * Sleep
+     */
     @Command(
             aliases = { "npc" }, usage = "sleep (--location x,y,z,world) (--anchor anchor_name)",
             desc = "Makes the NPC sleep.", modifiers = { "sleep" },
@@ -479,8 +479,8 @@ public class CommandHandler {
     }
 
     /*
-	 * Fish
-	 */
+     * Fish
+     */
     @Command(
             aliases = { "npc" }, usage = "fish (--location x,y,z,world) (--anchor anchor_name) (-c)",
             desc = "Makes the NPC fish, casting at the given location.", flags = "c, f", modifiers = { "fish" },
@@ -496,15 +496,15 @@ public class CommandHandler {
         }
         
         if (args.hasFlag('c')) {
-        	trait.startFishing(args.getSenderTargetBlockLocation());
+            trait.startFishing(args.getSenderTargetBlockLocation());
         }
         
         if (args.hasFlag('f')) {
-        	trait.setCatchFish(true);
+            trait.setCatchFish(true);
         }
         
         if (args.hasValueFlag("percent")) {
-        	trait.setCatchPercent(args.getFlagInteger("percent"));
+            trait.setCatchPercent(args.getFlagInteger("percent"));
         }
         
         if (args.hasValueFlag("location")) {
@@ -559,37 +559,37 @@ public class CommandHandler {
     public void playEffect(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
             ParticlesTrait trait = npc.getTrait(ParticlesTrait.class); 
-    	
+        
         if (args.hasValueFlag("delay")) {
-        	trait.setWait(args.getFlagInteger("delay"));
+            trait.setWait(args.getFlagInteger("delay"));
         }
         
         if (args.hasFlag('d')) {
-        	trait.setDense(true);
+            trait.setDense(true);
         }
             
-    	if (args.hasValueFlag("play")) {
-    		String name = args.getFlag("play");
-        	if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
-        	
-        	if (name.equalsIgnoreCase("none")) {
-        		trait.setEffect("NONE"); 
-        	} else if (name.equalsIgnoreCase("flame")) {
-        		trait.setEffect("FLAME");
-        	} else if (name.equalsIgnoreCase("ender")) {
-        		trait.setEffect("ENDER");
-        	} else if (name.equalsIgnoreCase("smoke")) {
-        		trait.setEffect("SMOKE");
-        	} else if (name.equalsIgnoreCase("potbreak")) {
-        		trait.setEffect("POTBREAK");
-        	} else if (name.equalsIgnoreCase("potion")) {
-        		trait.setEffect("POTION");
-        	} else if (name.equalsIgnoreCase("heart")) {
-        		trait.setEffect("HEART");
-        	} else if (name.equalsIgnoreCase("explosion")) {
-        		trait.setEffect("EXPLOSION");
-        	} else Messaging.send(sender, ChatColor.RED + "Not a valid effect name!");
-        	
+        if (args.hasValueFlag("play")) {
+            String name = args.getFlag("play");
+            if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
+            
+            if (name.equalsIgnoreCase("none")) {
+                trait.setEffect("NONE"); 
+            } else if (name.equalsIgnoreCase("flame")) {
+                trait.setEffect("FLAME");
+            } else if (name.equalsIgnoreCase("ender")) {
+                trait.setEffect("ENDER");
+            } else if (name.equalsIgnoreCase("smoke")) {
+                trait.setEffect("SMOKE");
+            } else if (name.equalsIgnoreCase("potbreak")) {
+                trait.setEffect("POTBREAK");
+            } else if (name.equalsIgnoreCase("potion")) {
+                trait.setEffect("POTION");
+            } else if (name.equalsIgnoreCase("heart")) {
+                trait.setEffect("HEART");
+            } else if (name.equalsIgnoreCase("explosion")) {
+                trait.setEffect("EXPLOSION");
+            } else Messaging.send(sender, ChatColor.RED + "Not a valid effect name!");
+            
         } else Messaging.send(sender, ChatColor.RED + "Please specify an effect name!");
         
     }
@@ -603,12 +603,12 @@ public class CommandHandler {
             min = 1, max = 3, permission = "npc.sneak")
     @Requirements(selected = true, ownership = true)
     public void sneaking(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-    	if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
-			Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sneak!");
-			return;
-		}
-		
-    	if (!npc.hasTrait(SneakingTrait.class)) npc.addTrait(SneakingTrait.class);
+        if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+            Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sneak!");
+            return;
+        }
+        
+        if (!npc.hasTrait(SneakingTrait.class)) npc.addTrait(SneakingTrait.class);
         SneakingTrait trait = npc.getTrait(SneakingTrait.class);
 
         if (trait.isSneaking()) {
@@ -975,7 +975,7 @@ public class CommandHandler {
             // before that, so it needs to be high
             min = 2, max = 20, permission = "notable.basic")
     public void addnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-    	
+        
         new dLocation(((Player) sender).getLocation()).rememberAs(args.getString(1));
         Messaging.send(sender, "Created new notable called " + (args.getString(1)));
     }
@@ -986,7 +986,7 @@ public class CommandHandler {
             min = 1, max = 1, permission = "notable.basic")
     public void listnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
-    	Messaging.send(sender, dLocation.uniqueObjects.toString());
+        Messaging.send(sender, dLocation.uniqueObjects.toString());
     }
 
 }

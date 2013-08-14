@@ -65,7 +65,7 @@ public class aH {
         }
         
         public static Argument valueOf(String string) {
-        	return new Argument(string);
+            return new Argument(string);
         }
 
         public boolean hasPrefix() {
@@ -73,8 +73,8 @@ public class aH {
         }
         
         public Argument getPrefix() {
-        	if (prefix == null)
-        		return null;
+            if (prefix == null)
+                return null;
             return valueOf(prefix);
         }
 
@@ -164,13 +164,13 @@ public class aH {
         // Check if this argument matches a dList of a certain dObject
         public boolean matchesArgumentList(Class<? extends dObject> dClass) {
 
-        	dList list = new dList(this.getValue());
-        	
-        	if (list.filter(dClass) != null) {
-        		return true;
-        	}
-        	
-        	return false;
+            dList list = new dList(this.getValue());
+            
+            if (list.filter(dClass) != null) {
+                return true;
+            }
+            
+            return false;
         }
 
         public Element asElement() {
@@ -188,7 +188,7 @@ public class aH {
 
                // dB.log("Created: " + clazz.cast(arg).debug());
                 if (arg != null) {
-                	return (T) clazz.cast(arg).setPrefix(prefix);
+                    return (T) clazz.cast(arg).setPrefix(prefix);
                 }
 
             } catch (IllegalAccessException e) {
@@ -333,7 +333,7 @@ public class aH {
      * <tt>1     try { </tt><br>
      * <tt>2        hardness = Hardness.valueOf(aH.getStringFrom(arg).toUpperCase());</tt><br>
      * <tt>3     } catch (Exception e) { </tt><br>
-     * <tt>4		dB.echoError("Invalid HARDNESS!") </tt><br>
+     * <tt>4        dB.echoError("Invalid HARDNESS!") </tt><br>
      * <tt>5 }</tt><br>
      * </ol>
      *
@@ -516,7 +516,7 @@ public class aH {
 
     @Deprecated
     public static Duration getDurationFrom(String arg) {
-    	arg = arg.toLowerCase().replace("duration:", "").replace("delay:", "");
+        arg = arg.toLowerCase().replace("duration:", "").replace("delay:", "");
         return Duration.valueOf(arg);
     }
 
@@ -526,7 +526,7 @@ public class aH {
 
     @Deprecated
     public static boolean matchesDuration(String arg) {
-    	arg = arg.toLowerCase().replace("duration:", "").replace("delay:", "");
+        arg = arg.toLowerCase().replace("duration:", "").replace("delay:", "");
         return Duration.matches(arg);
     }
 
@@ -555,7 +555,7 @@ public class aH {
     @Deprecated
     public static boolean matchesContext(String arg) {
         if (arg.toUpperCase().startsWith("CONTEXT:") ||
-        	arg.toUpperCase().startsWith("DEFINE:")) return true;
+            arg.toUpperCase().startsWith("DEFINE:")) return true;
         // TODO: Other matches____ do some actual checks, should this?.
         return false;
     }

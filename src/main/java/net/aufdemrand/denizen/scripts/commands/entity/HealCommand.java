@@ -28,9 +28,8 @@ public class HealCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("amount")
-            		&& (arg.matchesPrimitive(aH.PrimitiveType.Double)
-            		|| arg.matchesPrimitive(aH.PrimitiveType.Integer)))
-            	scriptEntry.addObject("amount", arg.asElement());
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                scriptEntry.addObject("amount", arg.asElement());
 
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(dList.class)) {
@@ -46,39 +45,39 @@ public class HealCommand extends AbstractCommand {
         }
         
         if (!scriptEntry.hasObject("amount"))
-        	scriptEntry.addObject("amount", new Element(Integer.MAX_VALUE));
+            scriptEntry.addObject("amount", new Element(Integer.MAX_VALUE));
         
         if (!scriptEntry.hasObject("entities")) {
-        	List<dEntity> entities = new ArrayList<dEntity>();
-        	if (scriptEntry.getPlayer() != null)
-        		entities.add(scriptEntry.getPlayer().getDenizenEntity());
-        	else if (scriptEntry.getNPC() != null)
-        		entities.add(scriptEntry.getNPC().getDenizenEntity());
-        	else
-        		throw new InvalidArgumentsException("No valid target entities found.");
-        	scriptEntry.addObject("entities", entities);
+            List<dEntity> entities = new ArrayList<dEntity>();
+            if (scriptEntry.getPlayer() != null)
+                entities.add(scriptEntry.getPlayer().getDenizenEntity());
+            else if (scriptEntry.getNPC() != null)
+                entities.add(scriptEntry.getNPC().getDenizenEntity());
+            else
+                throw new InvalidArgumentsException("No valid target entities found.");
+            scriptEntry.addObject("entities", entities);
         }
         
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-    	
-    	List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        
+        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         Element amountelement = scriptEntry.getElement("amount");
 
         dB.report(getName(), amountelement.debug() + aH.debugObj("entities", entities));
         if (amountelement.asInt() == Integer.MAX_VALUE)
-    		for (dEntity entity : entities)
-    			entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
-    	else {
-    		double amount = amountelement.asDouble();
-    		for (dEntity entity : entities)
+            for (dEntity entity : entities)
+                entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
+        else {
+            double amount = amountelement.asDouble();
+            for (dEntity entity : entities)
                 if (entity.getLivingEntity().getHealth() + amount < entity.getLivingEntity().getMaxHealth())
-    			    entity.getLivingEntity().setHealth(entity.getLivingEntity().getHealth() + amount);
+                    entity.getLivingEntity().setHealth(entity.getLivingEntity().getHealth() + amount);
                 else
                     entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
-    	}
+        }
     }
 }

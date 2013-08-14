@@ -30,33 +30,33 @@ public class dColor implements dObject {
 
         string = string.toUpperCase().replace("CO@", "");
 
-    	if (string.matches("RANDOM")) {
-    		
-        	// Get a color using random RGB values
-    		return new dColor(Utilities.getRandom().nextInt(256),
+        if (string.matches("RANDOM")) {
+            
+            // Get a color using random RGB values
+            return new dColor(Utilities.getRandom().nextInt(256),
                     Utilities.getRandom().nextInt(256),
                     Utilities.getRandom().nextInt(256));
-    	}
+        }
 
-    	Matcher m = rgbPattern.matcher(string);
+        Matcher m = rgbPattern.matcher(string);
 
-    	if (m.matches())
-    		return new dColor(aH.getIntegerFrom(m.group(1)),
+        if (m.matches())
+            return new dColor(aH.getIntegerFrom(m.group(1)),
                     aH.getIntegerFrom(m.group(2)),
                     aH.getIntegerFrom(m.group(3)));
-    	
-    	Field colorField = null;
-    	
-		try {
-			colorField = Color.class.getField(string.toUpperCase());
-		} catch (SecurityException e1) {
-			dB.echoError("Security exception getting color field!");
-		} catch (NoSuchFieldException e1) {
-			dB.echoError("No such color field!");
-		}
+        
+        Field colorField = null;
+        
+        try {
+            colorField = Color.class.getField(string.toUpperCase());
+        } catch (SecurityException e1) {
+            dB.echoError("Security exception getting color field!");
+        } catch (NoSuchFieldException e1) {
+            dB.echoError("No such color field!");
+        }
 
-    	if (colorField != null)
-    		return new dColor(colorField);
+        if (colorField != null)
+            return new dColor(colorField);
 
         // No match
         return null;
@@ -73,17 +73,17 @@ public class dColor implements dObject {
 
         arg = arg.toUpperCase().replace("CO@", "");
 
-    	if (arg.toUpperCase().matches("RANDOM"))
-    		return true;
-    	
-    	Matcher m = rgbPattern.matcher(arg);
-    	
-    	if (m.matches())
-    		return true;
-    	
-    	for (Field field : Color.class.getFields())
-    		if (arg.toUpperCase().matches(field.getName())) return true;
-    	
+        if (arg.toUpperCase().matches("RANDOM"))
+            return true;
+        
+        Matcher m = rgbPattern.matcher(arg);
+        
+        if (m.matches())
+            return true;
+        
+        for (Field field : Color.class.getFields())
+            if (arg.toUpperCase().matches(field.getName())) return true;
+        
         return false;
     }
     
@@ -98,12 +98,12 @@ public class dColor implements dObject {
     
     public dColor(Field field) {
         try {
-			color = (Color) field.get(null);
-		} catch (IllegalArgumentException e) {
-			dB.echoError("Illegal argument for color!");
-		} catch (IllegalAccessException e) {
-			dB.echoError("Illegal access for color!");
-		}
+            color = (Color) field.get(null);
+        } catch (IllegalArgumentException e) {
+            dB.echoError("Illegal argument for color!");
+        } catch (IllegalAccessException e) {
+            dB.echoError("Illegal access for color!");
+        }
     }
 
     public dColor(Color color) {
@@ -125,41 +125,41 @@ public class dColor implements dObject {
     
     String prefix = "color";
 
-	@Override
-	public String getPrefix() {
-		return prefix;
-	}
+    @Override
+    public String getPrefix() {
+        return prefix;
+    }
 
-	@Override
-	public String debug() {
+    @Override
+    public String debug() {
         return (prefix + "='<A>" + identify() + "<G>'  ");
-	}
+    }
 
-	@Override
-	public boolean isUnique() {
-		return false;
-	}
+    @Override
+    public boolean isUnique() {
+        return false;
+    }
 
-	@Override
-	public String getType() {
-		return "Color";
-	}
+    @Override
+    public String getType() {
+        return "Color";
+    }
 
-	@Override
-	public String identify() {
-		return "co@" + getColor().getRed() + "," + getColor().getGreen() + "," + getColor().getBlue();
-	}
+    @Override
+    public String identify() {
+        return "co@" + getColor().getRed() + "," + getColor().getGreen() + "," + getColor().getBlue();
+    }
 
-	@Override
-	public dObject setPrefix(String prefix) {
-		if (prefix != null)
+    @Override
+    public dObject setPrefix(String prefix) {
+        if (prefix != null)
             this.prefix = prefix;
         return this;
-	}
+    }
 
-	@Override
-	public String getAttribute(Attribute attribute) {
-		return new Element(identify()).getAttribute(attribute);
-	}
+    @Override
+    public String getAttribute(Attribute attribute) {
+        return new Element(identify()).getAttribute(attribute);
+    }
 
 }

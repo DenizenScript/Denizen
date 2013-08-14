@@ -58,7 +58,7 @@ public class TriggerTrait extends Trait implements Listener {
      * @return
      */
     public String toggleTrigger(String triggerName, boolean toggle) {
-    	if (enabled.containsKey(triggerName.toUpperCase())) {
+        if (enabled.containsKey(triggerName.toUpperCase())) {
                 enabled.put(triggerName.toUpperCase(), toggle);
                 return triggerName + " trigger is now " + (toggle ? "enabled." : "disabled.");
             }

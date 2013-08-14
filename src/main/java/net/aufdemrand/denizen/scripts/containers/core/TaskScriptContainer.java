@@ -25,15 +25,15 @@ public class TaskScriptContainer extends ScriptContainer {
     }
 
     public Duration getSpeed() {
-    	Duration speed;
-    	if (contains("SPEED")) {
-    		if (getString("SPEED", "0").toUpperCase().equals("INSTANT"))
-    			speed = Duration.valueOf("0t");
-    		else
-    			speed = Duration.valueOf(getString("SPEED", "0t"));
+        Duration speed;
+        if (contains("SPEED")) {
+            if (getString("SPEED", "0").toUpperCase().equals("INSTANT"))
+                speed = Duration.valueOf("0t");
+            else
+                speed = Duration.valueOf(getString("SPEED", "0t"));
 
-    	} else
-    		speed = new Duration(Duration.valueOf(Settings.ScriptQueueSpeed()).getSeconds());
+        } else
+            speed = new Duration(Duration.valueOf(Settings.ScriptQueueSpeed()).getSeconds());
         
         return speed;
     }

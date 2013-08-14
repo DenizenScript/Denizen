@@ -28,9 +28,9 @@ public class CommandExecuter {
         plugin = denizen;
     }
 
-	/*
-	 * Executes a command defined in scriptEntry 
-	 */
+    /*
+     * Executes a command defined in scriptEntry 
+     */
 
     public boolean execute(ScriptEntry scriptEntry) {
 
@@ -72,13 +72,13 @@ public class CommandExecuter {
             if (scriptEntry.has_tags)
                 scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, true)); // Replace tags
 
-			/*  If using NPCID:# or PLAYER:Name arguments, these need to be changed out immediately because...
-			 *  1) Denizen/Player flags need the desired NPC/PLAYER before parseArgs's getFilledArguments() so that
-			 *     the Player/Denizen flags will read from the correct Object. If using PLAYER or NPCID arguments,
-			 *     the desired Objects are obviously not the same objects that were sent with the ScriptEntry.
-			 *  2) These arguments should be valid for EVERY ScriptCommand, so why not just take care of it
-			 *     here, instead of requiring each command to take care of the argument.
-			 */
+            /*  If using NPCID:# or PLAYER:Name arguments, these need to be changed out immediately because...
+             *  1) Denizen/Player flags need the desired NPC/PLAYER before parseArgs's getFilledArguments() so that
+             *     the Player/Denizen flags will read from the correct Object. If using PLAYER or NPCID arguments,
+             *     the desired Objects are obviously not the same objects that were sent with the ScriptEntry.
+             *  2) These arguments should be valid for EVERY ScriptCommand, so why not just take care of it
+             *     here, instead of requiring each command to take care of the argument.
+             */
 
             List<String> newArgs = new ArrayList<String>();
 
@@ -135,7 +135,7 @@ public class CommandExecuter {
             // Parse the rest of the arguments for execution.
             command.parseArgs(scriptEntry);
 
-        }	catch (InvalidArgumentsException e) {
+        } catch (InvalidArgumentsException e) {
 
             keepGoing = false;
             // Give usage hint if InvalidArgumentsException was called.

@@ -29,20 +29,20 @@ public class Rotation {
     
     public static void rotate(Entity entity, float yaw, float pitch)
     {
-    	// If this entity is a real player instead of a player type NPC,
-    	// it will appear to be online
-    	
+        // If this entity is a real player instead of a player type NPC,
+        // it will appear to be online
+        
         if (entity instanceof Player && ((Player) entity).isOnline())
         {
-    		Location location = entity.getLocation();
-    		location.setYaw(yaw);
-    		location.setPitch(pitch);
-    		
-    		// The only way to change a player's yaw and pitch in Bukkit
-    		// is to use teleport on him/her
-    		
-    		entity.teleport(location);
-    		return;
+            Location location = entity.getLocation();
+            location.setYaw(yaw);
+            location.setPitch(pitch);
+            
+            // The only way to change a player's yaw and pitch in Bukkit
+            // is to use teleport on him/her
+            
+            entity.teleport(location);
+            return;
         }
         
         if (entity instanceof LivingEntity)
@@ -109,8 +109,8 @@ public class Rotation {
      * @param  at  The Location we want to know if the first Location's yaw
      *             is facing 
      * @param  degreeLimit  How many degrees can be between the direction the
-     * 						first location's yaw is facing and the direction
-     * 						we check if it is facing.
+     *                         first location's yaw is facing and the direction
+     *                         we check if it is facing.
      *
      * @return  Returns a boolean.
      */
@@ -137,8 +137,8 @@ public class Rotation {
      * @param  from  The Entity we check.
      * @param  at  The Location we want to know if it is looking at.
      * @param  degreeLimit  How many degrees can be between the direction the
-     * 						Entity is facing and the direction we check if it
-     * 						is facing.
+     *                         Entity is facing and the direction we check if it
+     *                         is facing.
      *
      * @return  Returns a boolean.
      */
@@ -162,8 +162,8 @@ public class Rotation {
      * @param from The Entity we check.
      * @param at The Entity we want to know if it is looking at.
      * @param degreeLimit How many degrees can be between the direction the
-     * 					  Entity is facing and the direction we check if it
-     * 					  is facing.
+     *                    Entity is facing and the direction we check if it
+     *                    is facing.
      *
      * @return  Returns a boolean.
      */

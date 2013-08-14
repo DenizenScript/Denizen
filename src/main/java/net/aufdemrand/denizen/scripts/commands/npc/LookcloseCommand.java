@@ -19,34 +19,34 @@ import net.citizensnpcs.trait.LookClose;
 
 public class LookcloseCommand extends AbstractCommand {
 
-	/* LOOKCLOSE [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)  */
+    /* LOOKCLOSE [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)  */
 
-	/* 
-	 * Arguments: [] - Required, () - Optional
-	 * 
-	 */
+    /* 
+     * Arguments: [] - Required, () - Optional
+     * 
+     */
 
     boolean toggle;
     boolean realistic;
     Double range;
     NPC npc;
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-		// Set some defaults based on the scriptEntry
-	    npc = null;
-	    range = null;
-	    realistic = false;
-	    toggle = true;
-	    if (scriptEntry.getNPC() != null) npc = scriptEntry.getNPC().getCitizen();
-	    
-	    // Parse Arguments
-		for (String arg : scriptEntry.getArguments()) {
+        // Set some defaults based on the scriptEntry
+        npc = null;
+        range = null;
+        realistic = false;
+        toggle = true;
+        if (scriptEntry.getNPC() != null) npc = scriptEntry.getNPC().getCitizen();
+        
+        // Parse Arguments
+        for (String arg : scriptEntry.getArguments()) {
 
-			if (aH.matchesArg("REALISTIC", arg)) {
-				realistic = true;
-				dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
+            if (aH.matchesArg("REALISTIC", arg)) {
+                realistic = true;
+                dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
 
             }   else if (aH.matchesValueArg("RANGE", arg, ArgumentType.Double)) {
                 range = aH.getDoubleFrom(arg);
@@ -56,8 +56,8 @@ public class LookcloseCommand extends AbstractCommand {
                 toggle = aH.getBooleanFrom(arg);
                 dB.echoDebug(Messages.DEBUG_TOGGLE, String.valueOf(toggle));
 
-            }	else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-		}
+            }    else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+        }
 
         if (scriptEntry.getNPC() == null)
             throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
@@ -66,25 +66,25 @@ public class LookcloseCommand extends AbstractCommand {
         scriptEntry.addObject("realistic", realistic)
                 .addObject("range", range)
                 .addObject("toggle", toggle);
-	}
-	
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    }
+    
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
 
 
-		// Get the instance of the trait that belongs to the target NPC
-		LookClose trait = npc.getTrait(LookClose.class);
-		trait.lookClose(toggle);
-		if (realistic) {
-		    trait.setRealisticLooking(true);
-		}
+        // Get the instance of the trait that belongs to the target NPC
+        LookClose trait = npc.getTrait(LookClose.class);
+        trait.lookClose(toggle);
+        if (realistic) {
+            trait.setRealisticLooking(true);
+        }
 
-		if (range != null) {
-		    trait.setRange(range.intValue());
-		}
-	}
-	
+        if (range != null) {
+            trait.setRange(range.intValue());
+        }
+    }
+    
     @Override
     public void onEnable() {
         
