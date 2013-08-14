@@ -188,7 +188,7 @@ public class CommandRegistry implements dRegistry {
                 "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);
         
         registerCoreMember(ListenCommand.class,
-                "LISTEN", "listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>]  [script:<name>] (id:<name>)", 2);
+                "LISTEN", "listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)", 2);
         
         registerCoreMember(LogCommand.class,
                 "LOG", "log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]", 2);
@@ -263,7 +263,7 @@ public class CommandRegistry implements dRegistry {
                 "SCRIBE", "scribe [script:<name>] (give/drop/equip) (<item>) (<location>)", 1);
 
         registerCoreMember(ShootCommand.class,
-                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<value>) (script:<name>)", 1);
+                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) [{calculated} (height:<#.#>) (gravity:<#.#>)]/[custom speed:<#.#> duration:<value>] (script:<name>)", 1);
         
         registerCoreMember(ShowFakeCommand.class,
                 "SHOWFAKE", "showfake [<material>] [<location>|...] (d:<duration>{10s})", 2);

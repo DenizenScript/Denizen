@@ -1,10 +1,7 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_6_R2.EntityLiving;
-
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

@@ -79,7 +79,8 @@ public class AttackCommand extends AbstractCommand {
         Boolean cancel = scriptEntry.hasObject("cancel");
         
         // Report to dB
-        dB.report(getName(), aH.debugObj("entities", entities.toString()) +
+        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") + 
+                             aH.debugObj("entities", entities.toString()) +
                              (target != null ? aH.debugObj("target", target) : ""));
         
         // Go through all the entities and make them either attack
