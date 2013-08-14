@@ -82,17 +82,13 @@ public class RemoveCommand extends AbstractCommand {
         // Go through all of our entities and remove them
         
         for (dEntity entity : entities) {
-            // NP check to prevent errors from happening
-            if(entity == null) {
-                continue;
-            }
             
             conditionsMet = true;
             
             // If this is a specific spawned entity, and all
             // other applicable conditions are met, remove it
             
-            if (entity.isGeneric()) {
+            if (!entity.isGeneric()) {
                 
                 if (region != null) {
                     conditionsMet = WorldGuardUtilities.inRegion

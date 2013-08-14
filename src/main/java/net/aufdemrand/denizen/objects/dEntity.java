@@ -374,7 +374,8 @@ public class dEntity implements dObject {
 
     /**
      * Whether this entity identifies as a generic
-     * entity type instead of a spawned entity
+     * entity type, for instance "e@cow", instead of
+     * a spawned entity
      *
      * @return  true or false
      */
