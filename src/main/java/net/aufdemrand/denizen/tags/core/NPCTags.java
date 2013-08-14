@@ -142,5 +142,4 @@ public class NPCTags implements Listener {
             dB.echoDebug("NPCVehicleExitEvent without a player?");
         }
     }
-
 }
