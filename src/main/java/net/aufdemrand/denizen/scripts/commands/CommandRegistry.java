@@ -188,7 +188,7 @@ public class CommandRegistry implements dRegistry {
                 "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);
         
         registerCoreMember(LeashCommand.class,
-                "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>)", 1);
+                "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
         
         registerCoreMember(ListenCommand.class,
                 "LISTEN", "listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>]  [script:<name>] (id:<name>)", 2);
