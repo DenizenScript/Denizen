@@ -19,6 +19,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
@@ -70,6 +71,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.server.ServerCommandEvent;
@@ -1429,6 +1431,55 @@ public class WorldScriptHelper implements Listener {
     }
     
     @EventHandler
+    public void playerMoveEvent(PlayerMoveEvent event) {
+        if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
+
+        String name = dLocation.getSaved(event.getPlayer().getLocation());
+
+        if (name != null) {
+            Map<String, Object> context = new HashMap<String, Object>();
+            context.put("notable", new Element(name));
+
+            String determination = doEvents(Arrays.asList
+                    ("player walks over notable",
+                     "player walks over " + name,
+                     "walked over notable",
+                     "walked over " + name),
+                    null, event.getPlayer(), context);
+            
+            if (determination.toUpperCase().startsWith("CANCELLED") ||
+                determination.toUpperCase().startsWith("FROZEN"))
+                event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void playerPickupItem(PlayerPickupItemEvent event) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put("item", new dItem(event.getItem().getItemStack()));
+        context.put("location", new dLocation(event.getItem().getLocation()));
+        
+        Entity item = event.getItem();
+        List<String> events = new ArrayList<String>();
+        
+        if (item instanceof Arrow) {
+            events.add("player pickup arrow");
+            events.add("player take arrow");
+            events.add("player picks up arrow");
+            events.add("player takes arrow");
+        }
+        events.add("player pickup item");
+        events.add("player take item");
+        events.add("player picks up item");
+        events.add("player takes item");
+        
+        String determination = doEvents(events, null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    @EventHandler
     public void joinEvent(PlayerJoinEvent event) {
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("message", new Element(event.getJoinMessage()));
@@ -1464,35 +1515,12 @@ public class WorldScriptHelper implements Listener {
         context.put("hostname", new Element(event.getHostname()));
 
         String determination = doEvents(Arrays.asList
-                ("player logs in"),
+                ("player logs in", "player login"),
                 null, event.getPlayer(), context);
 
         // Handle determine kicked
         if (determination.toUpperCase().startsWith("KICKED"))
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination);
-    }
-    
-    @EventHandler
-    public void playerMoveEvent(PlayerMoveEvent event) {
-        if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
-
-        String name = dLocation.getSaved(event.getPlayer().getLocation());
-
-        if (name != null) {
-            Map<String, Object> context = new HashMap<String, Object>();
-            context.put("notable", new Element(name));
-
-            String determination = doEvents(Arrays.asList
-                    ("player walks over notable",
-                     "player walks over " + name,
-                     "walked over notable",
-                     "walked over " + name),
-                    null, event.getPlayer(), context);
-            
-            if (determination.toUpperCase().startsWith("CANCELLED") ||
-                determination.toUpperCase().startsWith("FROZEN"))
-                event.setCancelled(true);
-        }
     }
 
     @EventHandler
