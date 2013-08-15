@@ -63,7 +63,7 @@ public class BurnCommand extends AbstractCommand {
         
         // Go through all the entities and set them on fire
         for (dEntity entity : entities) {
-            if (entity.isSpawned() == true) {
+            if (entity.isSpawned()) {
                 entity.getBukkitEntity().setFireTicks(duration.getTicksAsInt());
             }
         }   
