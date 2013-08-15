@@ -500,6 +500,30 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
                 return new dList(found).getAttribute(attribute);
             }
+            
+            // <--
+            // <l@location.find.npcs.within[X]> -> dList
+            // Returns a dList of NPCs within a radius.
+            // -->
+            else if (attribute.startsWith("npcs")
+                && attribute.getAttribute(2).startsWith("within")
+                && attribute.hasContext(2)) {
+                ArrayList<dNPC> found = new ArrayList<dNPC>();
+                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
+                attribute.fulfill(2);
+                for (dNPC npc : DenizenAPI.getSpawnedNPCs())
+                    if (Utilities.checkLocation(this, npc.getLocation(), radius))
+                        found.add(npc);
+                
+                Collections.sort(found, new Comparator<dNPC>() {
+                    @Override
+                    public int compare(dNPC npc1, dNPC npc2) {
+                        return (int) (distanceSquared(npc1.getLocation()) - distanceSquared(npc2.getLocation()));
+                    }
+                });
+
+                return new dList(found).getAttribute(attribute);
+            }
 
             // <--
             // <l@location.find.entities.within[X]> -> dList
