@@ -1457,6 +1457,7 @@ public class WorldScriptHelper implements Listener {
     public void playerPickupItem(PlayerPickupItemEvent event) {
         Map<String, Object> context = new HashMap<String, Object>();
         context.put("item", new dItem(event.getItem().getItemStack()));
+        context.put("entity", new dEntity(event.getItem()));
         context.put("location", new dLocation(event.getItem().getLocation()));
         
         Entity item = event.getItem();
