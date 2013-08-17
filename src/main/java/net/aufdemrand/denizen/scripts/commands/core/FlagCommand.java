@@ -76,6 +76,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             // Check for flag_name:value/action
             else if (!scriptEntry.hasObject("action")
                     && arg.raw_value.split(":", 3).length == 2) {
+
                 String[] flagArgs = arg.raw_value.split(":", 2);
                 scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
 

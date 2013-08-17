@@ -98,13 +98,6 @@ public class aH {
             return value;
         }
 
-        public String getPrefixAndValue() {
-            if (has_prefix)
-                return prefix + ":" + value;
-            else
-                return value;
-        }
-
         public boolean matchesEnum(Enum[] values) {
             for (Enum value : values)
                 if (value.name().replace("_", "").equalsIgnoreCase(this.value.replace("_", "")))
@@ -114,8 +107,9 @@ public class aH {
         }
 
         public boolean matchesPrefix(String values) {
+            if (!hasPrefix()) return false;
             for (String value : values.split(","))
-                if (value.trim().equalsIgnoreCase((prefix != null ? prefix : this.value)))
+                if (value.trim().equalsIgnoreCase(prefix))
                     return true;
 
             return false;

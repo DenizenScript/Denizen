@@ -102,7 +102,7 @@ public class CommandExecuter {
                     continue;
                 }
 
-                m = definition_pattern.matcher(arg.getValue());
+                m = definition_pattern.matcher(arg.raw_value);
                 sb = new StringBuffer();
                 while (m.find()) {
                     if (scriptEntry.getResidingQueue().hasContext(m.group(1).toLowerCase()))
@@ -138,7 +138,7 @@ public class CommandExecuter {
                     dB.echoDebug("...replacing the linked NPC.");
                     String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
                     dNPC npc = dNPC.valueOf(arg.getValue());
-                    if (!npc.isValid()) {
+                    if (npc == null || !npc.isValid()) {
                         dB.echoError(value + " is an invalid NPC!");
                         return false;
                     }
