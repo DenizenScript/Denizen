@@ -138,7 +138,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
                         + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
                         + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value : "null"))
                         + (duration.getSeconds() > 0 ? duration.debug() : "")
-                        + aH.debugObj("Target", (target != null ? (target.isNPC() ? target.getNPC() : target.isPlayer() ? target.getPlayer() : target.getType()) : "Server")));
+                        + aH.debugObj("Target", (target != null ? (target.isNPC() ? target.getNPC().getId() : target.isPlayer() ? target.getPlayer().getName() : target.getType()) : "Server")));
 
         Flag flag = null;
         
