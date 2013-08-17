@@ -93,8 +93,6 @@ public class CommandExecuter {
 
             for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-                dB.log("arg " + arg.raw_value);
-
                 if (arg.getValue().equals("{")) nested_depth++;
                 if (arg.getValue().equals("}")) nested_depth--;
 

@@ -70,7 +70,6 @@ public class dList extends ArrayList<String> implements dObject {
         if (m.matches()) return true;
 
         if (arg.contains("|") || arg.toLowerCase().startsWith("li@")) {
-            dB.log(arg + " is a list.");
             return true;
         }
 

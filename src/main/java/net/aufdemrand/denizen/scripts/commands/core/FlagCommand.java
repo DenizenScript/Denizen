@@ -28,8 +28,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            dB.log(arg.raw_value);
-
             // A duration on a flag will set it to expire after the
             // specified amount of time
             if (!scriptEntry.hasObject("duration")
@@ -71,7 +69,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
             // Check if setting a boolean
             else if (!scriptEntry.hasObject("action")
                     && arg.raw_value.split(":", 3).length == 1) {
-                dB.echoDebug("boolean -> " + arg.raw_value);
                 scriptEntry.addObject("action", FlagManager.Action.SET_BOOLEAN);
                 scriptEntry.addObject("flag_name", arg.asElement());
             }
