@@ -524,26 +524,25 @@ public class WorldScriptHelper implements Listener {
         
         Map<String, Object> context = new HashMap<String, Object>();
         boolean isFatal = false;
-        Entity entity = event.getEntity();
-        String entityType = entity.getType().name();
+        dEntity entity = new dEntity(event.getEntity());
+        String entityType = entity.getType();
         String cause = event.getCause().name();
 
         String determination;
         
-        Player player = null;
+        dPlayer player = null;
         dNPC npc = null;
         
-        if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
-            npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
-            context.put("entity", npc);
+        if (entity.isNPC()) {
+            context.put("entity", new dNPC(entity.getNPC()));
             entityType = "npc";
         }
-        else if (entity instanceof Player) {
-            player = (Player) entity;
-            context.put("entity", new dPlayer((Player) entity));
+        else if (entity.isPlayer()) {
+            player = new dPlayer(entity.getPlayer());
+            context.put("entity", new dPlayer(entity.getPlayer()));
         }
         else {
-            context.put("entity", new dEntity(entity));
+            context.put("entity", entity);
         }
 
         context.put("damage", new Element(event.getDamage()));
@@ -576,30 +575,29 @@ public class WorldScriptHelper implements Listener {
             // like "player damages player" from the one we have for
             // "player damaged by player"
             
-            Player subPlayer = null;
+            dPlayer subPlayer = null;
             dNPC subNPC = null;
             
-            Entity damager = subEvent.getDamager();
-            String damagerType = damager.getType().name();
+            dEntity damager = new dEntity(subEvent.getDamager());
+            String damagerType = damager.getType();
             
-            if (CitizensAPI.getNPCRegistry().isNPC(damager)) {
-                subNPC = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(entity));
-                context.put("damager", DenizenAPI.getDenizenNPC
-                                (CitizensAPI.getNPCRegistry().getNPC(damager)));
+            if (damager.isNPC()) {
+                subNPC = new dNPC(entity.getNPC());
+                context.put("damager", new dNPC(damager.getNPC()));
                 damagerType = "npc";
                 
                 // If we had no NPC in our regular context, use this one
                 if (npc == null) npc = subNPC;
             }
-            else if (damager instanceof Player) {
-                subPlayer = (Player) damager;
+            else if (damager.isPlayer()) {
+                subPlayer = new dPlayer(damager.getPlayer());
                 context.put("damager", new dPlayer((Player) damager));
                 
                 // If we had no player in our regular context, use this one
                 if (player == null) player = subPlayer;
             }
             else {
-                context.put("damager", new dEntity(damager));
+                context.put("damager", damager);
                 
                 if (damager instanceof Projectile) {
                     if (((Projectile) damager).getShooter() != null)
@@ -636,7 +634,7 @@ public class WorldScriptHelper implements Listener {
                 subEvents.add(damagerType + " kills " + entityType);
             }
             
-            determination = doEvents(subEvents, subNPC, subPlayer, context);
+            determination = doEvents(subEvents, subNPC, subPlayer.getPlayerEntity(), context);
 
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
@@ -647,7 +645,7 @@ public class WorldScriptHelper implements Listener {
             }
         }
         
-        determination = doEvents(events, npc, player, context);
+        determination = doEvents(events, npc, player.getPlayerEntity(), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
