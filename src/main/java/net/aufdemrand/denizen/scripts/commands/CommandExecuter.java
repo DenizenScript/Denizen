@@ -106,13 +106,11 @@ public class CommandExecuter {
                 m.appendTail(sb);
                 arg = aH.Argument.valueOf(sb.toString());
 
-                dPlayer player = scriptEntry.getPlayer();
-                dNPC npc = scriptEntry.getNPC();
-
                 // Fill player/off-line player
                 if (arg.matchesPrefix("player")) {
                     dB.echoDebug("...replacing the linked player.");
-                    String value = TagManager.tag(player, npc, arg.getValue(), false);
+                    dPlayer player = dPlayer.valueOf(arg.getValue());
+                    String value = TagManager.tag(player, scriptEntry.getNPC(), arg.getValue(), false);
                     if (!player.isValid()) {
                         dB.echoError(value + " is an invalid player!");
                         return false;
@@ -123,12 +121,13 @@ public class CommandExecuter {
                 // Fill NPCID/NPC argument
                 else if (arg.matchesPrefix("npc, npcid")) {
                     dB.echoDebug("...replacing the linked NPC.");
-                    String value = TagManager.tag(player, npc, arg.getValue(), false);
+                    dNPC npc = dNPC.valueOf(arg.getValue());
+                    String value = TagManager.tag(scriptEntry.getPlayer(), npc, arg.getValue(), false);
                     if (!npc.isValid()) {
                         dB.echoError(value + " is an invalid NPC!");
                         return false;
                     }
-                    scriptEntry.setNPC(dNPC.valueOf(value));
+                    scriptEntry.setNPC(npc);
                 }
 
                 else newArgs.add(arg.getValue());
