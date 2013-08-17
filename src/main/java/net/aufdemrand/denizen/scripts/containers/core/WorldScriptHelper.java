@@ -560,7 +560,7 @@ public class WorldScriptHelper implements Listener {
         events.add(entityType + " damaged");
         events.add(entityType + " damaged by " + cause);
         
-        if (isFatal == true) {
+        if (isFatal) {
             events.add("entity killed");
             events.add("entity killed by " + cause);
             events.add(entityType + " killed");
@@ -587,7 +587,7 @@ public class WorldScriptHelper implements Listener {
                 damagerType = "npc";
                 
                 // If we had no NPC in our regular context, use this one
-                if (npc == null) npc = subNPC;
+                npc = subNPC;
             }
             else if (damager.isPlayer()) {
                 subPlayer = new dPlayer(damager.getPlayer());
@@ -622,7 +622,7 @@ public class WorldScriptHelper implements Listener {
             subEvents.add(damagerType + " damages entity");
             subEvents.add(damagerType + " damages " + entityType);
             
-            if (isFatal == true) {
+            if (isFatal) {
                 events.add("entity killed by entity");
                 events.add("entity killed by " + damagerType);
                 events.add(entityType + " killed by entity");
@@ -634,7 +634,7 @@ public class WorldScriptHelper implements Listener {
                 subEvents.add(damagerType + " kills " + entityType);
             }
             
-            determination = doEvents(subEvents, subNPC, subPlayer.getPlayerEntity(), context);
+            determination = doEvents(subEvents, subNPC, (subPlayer != null?subPlayer.getPlayerEntity():null), context);
 
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
