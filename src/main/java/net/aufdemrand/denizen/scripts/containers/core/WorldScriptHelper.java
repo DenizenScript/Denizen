@@ -536,12 +536,13 @@ public class WorldScriptHelper implements Listener {
         dNPC npc = null;
         
         if (entity.isNPC()) {
-            context.put("entity", new dNPC(entity.getNPC()));
+            npc = new dNPC(entity.getNPC());
+            context.put("entity", npc);
             entityType = "npc";
         }
         else if (entity.isPlayer()) {
             player = new dPlayer(entity.getPlayer());
-            context.put("entity", new dPlayer(entity.getPlayer()));
+            context.put("entity", player);
         }
         else {
             context.put("entity", entity);
@@ -584,16 +585,16 @@ public class WorldScriptHelper implements Listener {
             String damagerType = damager.getType();
             
             if (damager.isNPC()) {
-                subNPC = new dNPC(entity.getNPC());
-                context.put("damager", new dNPC(damager.getNPC()));
+                subNPC = new dNPC(damager.getNPC());
+                context.put("damager", subNPC);
                 damagerType = "npc";
                 
                 // If we had no NPC in our regular context, use this one
-                npc = subNPC;
+                if (npc == null) npc = subNPC;
             }
             else if (damager.isPlayer()) {
                 subPlayer = new dPlayer(damager.getPlayer());
-                context.put("damager", new dPlayer((Player) damager));
+                context.put("damager", subPlayer);
                 
                 // If we had no player in our regular context, use this one
                 if (player == null) player = subPlayer;
@@ -602,16 +603,20 @@ public class WorldScriptHelper implements Listener {
                 context.put("damager", damager);
                 
                 if (damager instanceof Projectile) {
-                    if (((Projectile) damager).getShooter() != null) {
-                        if (((Projectile) damager).getShooter() instanceof Player)
-                            context.put("shooter", new dPlayer((Player) ((Projectile) damager).getShooter()));
-                        else if (((Projectile) damager).getShooter() instanceof NPC)
-                            context.put("shooter", new dNPC((NPC) ((Projectile) damager).getShooter()));
-                        else
-                            context.put("shooter", new dEntity(((Projectile) damager).getShooter()));
+                    if (((Projectile) damager.getBukkitEntity()).getShooter() != null) {
+                        
+                        dEntity shooter = new dEntity(((Projectile) damager.getBukkitEntity()).getShooter());
+                        
+                        if (shooter.isNPC()) {
+                            context.put("shooter", new dNPC(shooter.getNPC()));
+                        }
+                        else if (shooter.isPlayer()) {
+                            context.put("shooter", new dPlayer(shooter.getPlayer()));
+                        }
+                        else {
+                            context.put("shooter", shooter);
+                        }
                     }
-                    else
-                        context.put("shooter", Element.valueOf("null"));
                 }
             }
             
