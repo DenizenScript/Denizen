@@ -84,7 +84,7 @@ public class Comparable {
             if (dList.matches(arg))
                 comparedto = dList.valueOf(arg);
             else
-            	comparedto = arg;
+                comparedto = arg;
         }
 
         else comparedto = arg;

@@ -32,7 +32,7 @@ public class NPCTags implements Listener {
 
     @EventHandler
     public void npcTags(ReplaceableTagEvent event) {
-    	
+        
         if (!event.matches("npc") || event.replaced()) return;
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
@@ -96,25 +96,25 @@ public class NPCTags implements Listener {
         npc.action("begin navigation", null);
 
         if (event.getNPC().getNavigator().getTargetType() == TargetType.ENTITY) {
-        	LivingEntity entity = event.getNPC().getNavigator().getEntityTarget().getTarget();
-        	
-        	// If the NPC has an entity target, is aggressive towards it
-        	// and that entity is not dead, trigger "on attack" command
-        	if (event.getNPC().getNavigator().getEntityTarget().isAggressive()
-        		&& !entity.isDead())
-        	{
-        		dPlayer player = null;
-        	
-        		// Check if the entity attacked by this NPC is a player
-        		if (entity instanceof Player)
-        			player = dPlayer.mirrorBukkitPlayer((Player) entity);
-        		
-        		npc.action("attack", player);
-        	
-        		npc.action("attack on "
-        				+ entity.getType().toString(), player);  
-        	}
-        	previousLocations.put(event.getNPC().getId(), npc.getLocation());
+            LivingEntity entity = event.getNPC().getNavigator().getEntityTarget().getTarget();
+            
+            // If the NPC has an entity target, is aggressive towards it
+            // and that entity is not dead, trigger "on attack" command
+            if (event.getNPC().getNavigator().getEntityTarget().isAggressive()
+                && !entity.isDead()) {
+                
+                dPlayer player = null;
+            
+                // Check if the entity attacked by this NPC is a player
+                if (entity instanceof Player)
+                    player = dPlayer.mirrorBukkitPlayer((Player) entity);
+                
+                npc.action("attack", player);
+            
+                npc.action("attack on "
+                        + entity.getType().toString(), player);  
+            }
+            previousLocations.put(event.getNPC().getId(), npc.getLocation());
         }
     }
 
