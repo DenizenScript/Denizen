@@ -13,6 +13,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -503,7 +504,7 @@ public class dItem implements dObject {
         }
 
         // Else, return the material name and data
-        return getItemStack().getType().name().toLowerCase()
+        return "i@" + getItemStack().getType().name().toLowerCase()
                     + (getItemStack().getData().getData() != 0 ? ":" + getItemStack().getData().getData() : "");
     }
 
@@ -597,8 +598,6 @@ public class dItem implements dObject {
             }
         }
 
-
-
         if (attribute.startsWith("material"))
             return new Element(getItemStack().getType().toString())
                     .getAttribute(attribute.fulfill(1));
@@ -610,6 +609,34 @@ public class dItem implements dObject {
 
         if (attribute.startsWith("enchantments")) {
 
+        }
+
+        if (attribute.startsWith("book")) {
+            if (getItemStack().getType() == Material.WRITTEN_BOOK) {
+                attribute.fulfill(1);
+                BookMeta bookInfo = (BookMeta) getItemStack().getItemMeta();
+
+                if (attribute.startsWith("author"))
+                    return new Element(bookInfo.getAuthor())
+                            .getAttribute(attribute.fulfill(1));
+
+                if (attribute.startsWith("title"))
+                    return new Element(bookInfo.getTitle())
+                            .getAttribute(attribute.fulfill(1));
+
+                if (attribute.startsWith("page_count"))
+                    return new Element(bookInfo.getPageCount())
+                            .getAttribute(attribute.fulfill(1));
+
+                if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1)))
+                    return new Element(bookInfo.getPage(attribute.getIntContext(1)))
+                            .getAttribute(attribute.fulfill(1));
+
+                if (attribute.startsWith("pages"))
+                    return new dList(bookInfo.getPages())
+                            .getAttribute(attribute.fulfill(1));
+
+            } else dB.echoError("Item referenced is not a written book!");
         }
 
         if (attribute.startsWith("scriptname")) // Note: Update this when the id: is stored less stupidly!
