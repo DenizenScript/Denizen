@@ -171,7 +171,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                     }
                 }
 
-                if (matched == false && regexId != null) {
+                if (!matched && regexId != null) {
                     id = regexId;
                     replacementText = regexMessage;
                 }

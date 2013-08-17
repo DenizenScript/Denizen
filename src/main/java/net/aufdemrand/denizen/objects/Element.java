@@ -27,6 +27,11 @@ public class Element implements dObject {
         return new Element(string);
     }
 
+    public static boolean matches(String string) {
+        if (string == null) return false;
+        else return true;
+    }
+
     private String element;
 
     public Element(String string) {

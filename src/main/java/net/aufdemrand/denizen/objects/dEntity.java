@@ -118,16 +118,15 @@ public class dEntity implements dObject {
 
         // Choose a random entity type if "RANDOM" is used
         if (string.equalsIgnoreCase("RANDOM")) {
-
             EntityType randomType = null;
 
             // When selecting a random entity type, ignore invalid or inappropriate ones
-            while (randomType == null ||
-                    randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$")) {
-
+            while (randomType == null || randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL" +
+                    "|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING" +
+                    "|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$"))
                 randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
-            }
 
+            // Return the entity
             return new dEntity(randomType, "RANDOM");
         }
 
@@ -136,12 +135,10 @@ public class dEntity implements dObject {
 
         // Make sure string matches what this interpreter can accept.
 
-
         Matcher m;
         m = entity_by_id.matcher(string);
 
         if (m.matches()) {
-
             String entityGroup = m.group(1).toUpperCase();
 
             // NPC entity
@@ -149,7 +146,7 @@ public class dEntity implements dObject {
                 NPC returnable = CitizensAPI.getNPCRegistry()
                         .getById(Integer.valueOf(m.group(2)));
 
-                if (returnable != null) return new dEntity(returnable.getBukkitEntity());
+                if (returnable != null) return new dEntity(returnable);
                 else dB.echoError("Invalid NPC! '" + entityGroup
                         + "' could not be found. Has it been despawned or killed?");
             }
@@ -265,6 +262,16 @@ public class dEntity implements dObject {
     //   CONSTRUCTORS
     //////////////////
 
+    dNPC built_from_npc = null;
+
+    public dEntity(NPC npc) {
+        if (npc != null) {
+            built_from_npc = dNPC.mirrorCitizensNPC(npc);
+            this.entity = npc.getBukkitEntity();
+            this.entity_type = (npc.getBukkitEntity() != null ? npc.getBukkitEntity().getType() : null);
+        } else dB.echoError("NPC referenced for dEntity is null!");
+    }
+
     public dEntity(Entity entity) {
         if (entity != null) {
             this.entity = entity;
@@ -334,7 +341,7 @@ public class dEntity implements dObject {
 
     public NPC getNPC() {
 
-        return CitizensAPI.getNPCRegistry().getNPC(getBukkitEntity());
+        return built_from_npc.getCitizen();
     }
 
     /**
@@ -344,11 +351,10 @@ public class dEntity implements dObject {
      */
 
     public boolean isNPC() {
-        if (CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
-            return true;
-        return false;
+        if (built_from_npc != null) return true;
+        else return false;
     }
-    
+
     /**
      * Get the Player corresponding to this entity
      *
@@ -356,7 +362,6 @@ public class dEntity implements dObject {
      */
 
     public Player getPlayer() {
-
         return (Player) getBukkitEntity();
     }
 
@@ -385,7 +390,7 @@ public class dEntity implements dObject {
             return true;
         return false;
     }
-    
+
     /**
      * Get the location of this entity
      *
@@ -397,10 +402,10 @@ public class dEntity implements dObject {
         if (!isGeneric()) {
             return new dLocation(getBukkitEntity().getLocation());
         }
-        
+
         return null;
     }
-    
+
     /**
      * Get the eye location of this entity
      *
@@ -412,16 +417,23 @@ public class dEntity implements dObject {
         if (!isGeneric() && isLivingEntity()) {
             return new dLocation(getLivingEntity().getEyeLocation());
         }
-        
+
         return null;
     }
-    
+
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
         if (entity != null && isUnique()) entity.teleport(location);
 
+        else if (built_from_npc != null) {
+            built_from_npc.getCitizen().teleport(location, TeleportCause.COMMAND);
+            entity_type = built_from_npc.getEntityType();
+            entity = built_from_npc.getEntity();
+        }
+
         else {
             if (entity_type != null) {
+
                 if (despawned_entity != null) {
                     // If entity had a custom_script, use the script to rebuild the base entity.
                     if (despawned_entity.custom_script != null)
@@ -441,7 +453,7 @@ public class dEntity implements dObject {
                     org.bukkit.entity.Entity ent = null;
 
                     if (entity_type.name().matches("PLAYER")) {
-                        
+
                         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1);
                         npc.spawn(location);
                     }
@@ -487,9 +499,9 @@ public class dEntity implements dObject {
 
                         ent = location.getWorld().spawnEntity(location, entity_type);
                         entity = ent;
-                                                
+
                         if (entity_type.name().matches("PIG_ZOMBIE")) {
-                            
+
                             // Give pig zombies golden swords by default, unless data2 specifies
                             // a different weapon
                             if (dItem.matches(data1) == false) {
@@ -500,7 +512,7 @@ public class dEntity implements dObject {
                                     .setItemInHand(dItem.valueOf(data1).getItemStack());
                         }
                         else if (entity_type.name().matches("SKELETON")) {
-                            
+
                             // Give skeletons bows by default, unless data2 specifies
                             // a different weapon
                             if (dItem.matches(data2) == false) {
@@ -622,10 +634,10 @@ public class dEntity implements dObject {
         // If the target is not null, cast it to an NMS EntityLiving
         // as well for one of the two methods below
         EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
-                                        : null;
-        
+                : null;
+
         ((CraftCreature) entity).getHandle().
-            setGoalTarget(nmsTarget);
+                setGoalTarget(nmsTarget);
 
         ((CraftCreature) entity).getHandle().
                 setGoalTarget(((CraftLivingEntity) target).getHandle());
@@ -741,18 +753,16 @@ public class dEntity implements dObject {
     @Override
     public String identify() {
 
-        // Check if entity is a Player or NPC
-        if (getBukkitEntity() != null) {
-            if (isNPC())
-                return "n@" + getNPC().getId();
-            else if (getBukkitEntity() instanceof Player)
-                return "p@" + ((Player) getBukkitEntity()).getName();
-        }
+        // Check if entity is a NPC or Player
+        if (built_from_npc != null)
+            return "n@" + getNPC().getId();
+
+        if (getBukkitEntity() != null && getBukkitEntity() instanceof Player)
+            return "p@" + ((Player) getBukkitEntity()).getName();
 
         // Check if entity is a 'saved entity'
         if (isSaved(this))
             return "e@" + getSaved(this);
-
 
         else if (isSpawned())
             return "e@" + getBukkitEntity().getEntityId();
@@ -786,12 +796,12 @@ public class dEntity implements dObject {
             dB.echoDebug("dEntity has returned null.");
             return "null";
         }
-        
+
         // <--
         // <entity> -> dEntity
         // Returns the dEntity of the entity.
         // -->
-        
+
         // <--
         // <entity.get_vehicle> -> dEntity
         // If the entity is in a vehicle, returns the vehicle as a
@@ -877,7 +887,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("eye_location"))
             return new dLocation(getEyeLocation())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--
         // <entity.location> -> dLocation
         // Returns the dLocation of the entity.
@@ -1052,7 +1062,7 @@ public class dEntity implements dObject {
                 for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
                     if (effect.getType().equals(org.bukkit.potion.PotionType.valueOf(attribute.getContext(1))))
                         returnElement = true;
-            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
+                    else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
         }
 
