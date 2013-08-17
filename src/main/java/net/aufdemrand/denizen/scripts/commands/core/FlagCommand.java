@@ -33,7 +33,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesEnum(Type.values()))
-                scriptEntry.addObject("target", Type.valueOf(arg.getValue()));
+                scriptEntry.addObject("target", Type.valueOf(arg.getValue().toUpperCase()));
 
                 // Determine flagAction and set the flagName/flagValue
             else if (arg.raw_value.split(":", 3).length > 1) {
@@ -106,8 +106,10 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 throw new InvalidArgumentsException("Invalid player specified!");
             scriptEntry.addObject("target", scriptEntry.getPlayer().getDenizenEntity());
         }
-        else
+        else if (((Type) scriptEntry.getObject("target")).name().matches("^(SERVER|GLOBAL)$"))
             scriptEntry.addObject("target", "SERVER");
+        else
+            throw new InvalidArgumentsException("Invalid type specified! Valid types: " + Type.values().toString());
     }
 
     @Override
