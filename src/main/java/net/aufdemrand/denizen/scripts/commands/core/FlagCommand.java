@@ -20,7 +20,7 @@ import org.bukkit.event.Listener;
 public class FlagCommand extends AbstractCommand implements Listener {
 
     public enum Action { SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY, DIVIDE, INSERT, REMOVE, SPLIT, DELETE }
-    public enum Type   { GLOBAL, NPC, PLAYER }
+    public enum Type   { GLOBAL, SERVER, NPC, DENIZEN, PLAYER }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -28,72 +28,55 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesPrefix("duration")
-                    && !scriptEntry.hasObject("duration"))
-                scriptEntry.addObject("duration", arg.asElement());
+            if (!scriptEntry.hasObject("duration")
+                    && arg.matchesPrefix("duration"))
+                scriptEntry.addObject("duration", arg.asType(Duration.class));
 
-            else if (arg.matches("NPC, DENIZEN")
-                    && !scriptEntry.hasObject("mcentity")) {
-                if (!scriptEntry.hasNPC())
-                    throw new InvalidArgumentsException("Specified NPC-type flag with no valid NPC reference.");
-                scriptEntry.addObject("mcentity", Element.valueOf(scriptEntry.getNPC().identify()));
-            }
-            else if (arg.matches("PLAYER")
-                    && !scriptEntry.hasObject("mcentity")) {
-                if (!scriptEntry.hasPlayer())
-                    throw new InvalidArgumentsException("Specified Player-type flag with no valid Player reference.");
-                scriptEntry.addObject("mcentity", Element.valueOf(scriptEntry.getPlayer().identify()));
-            }
-            else if (arg.matches("GLOBAL, SERVER")
-                    && !scriptEntry.hasObject("entity")) {
-                scriptEntry.addObject("mcentity", Element.valueOf("null"));
-            }
-
-            else if ((arg.matchesPrefix("entity"))
-                    && !scriptEntry.hasObject("mcentity"))
-                scriptEntry.addObject("mcentity", new Element(arg.getValue()));
+            else if (!scriptEntry.hasObject("target")
+                    && arg.matchesEnum(Type.values()))
+                scriptEntry.addObject("target", Type.valueOf(arg.getValue()));
 
                 // Determine flagAction and set the flagName/flagValue
-            else if (arg.getPrefixAndValue().split(":", 3).length > 1) {
-                String[] flagArgs = arg.getPrefixAndValue().split(":", 3);
+            else if (arg.raw_value.split(":", 3).length > 1) {
+                String[] flagArgs = arg.raw_value.split(":", 3);
                 scriptEntry.addObject("name", Element.valueOf(flagArgs[0].toUpperCase()));
 
                 if (flagArgs.length == 2) {
                     if (flagArgs[1].equals("+")
                             || flagArgs[1].equals("++")) {
-                        scriptEntry.addObject("action", Element.valueOf("INCREASE"));
+                        scriptEntry.addObject("action", Action.INCREASE);
                         scriptEntry.addObject("value", Element.valueOf("1"));
                     }   else if (flagArgs[1].equals("-")
                             || flagArgs[1].equals("--")) {
                         // Using equals instead of startsWith because
                         // people need to be able to set values like "-2"
-                        scriptEntry.addObject("action", Element.valueOf("DECREASE"));
+                        scriptEntry.addObject("action", Action.DECREASE);
                         scriptEntry.addObject("value", Element.valueOf("1"));
                     }   else if (flagArgs[1].startsWith("!")) {
-                        scriptEntry.addObject("action", Element.valueOf("DELETE"));
+                        scriptEntry.addObject("action", Action.DELETE);
                     }   else if (flagArgs[1].startsWith("<-")) {
-                        scriptEntry.addObject("action", Element.valueOf("REMOVE"));
+                        scriptEntry.addObject("action", Action.REMOVE);
                     }   else {
-                        scriptEntry.addObject("action", Element.valueOf("SET_VALUE"));
-                        scriptEntry.addObject("value", Element.valueOf(arg.getPrefixAndValue().split(":")[1]));
+                        scriptEntry.addObject("action", Action.SET_VALUE);
+                        scriptEntry.addObject("value", Element.valueOf(flagArgs[1]));
                     }
                 } else if (flagArgs.length == 3) {
                     if (flagArgs[1].startsWith("->"))
-                        scriptEntry.addObject("action", Element.valueOf("INSERT"));
+                        scriptEntry.addObject("action", Action.INSERT);
                     else if (flagArgs[1].startsWith("<-"))
-                        scriptEntry.addObject("action", Element.valueOf("REMOVE"));
+                        scriptEntry.addObject("action", Action.REMOVE);
                     else if (flagArgs[1].startsWith("|"))
-                        scriptEntry.addObject("action", Element.valueOf("SPLIT"));
+                        scriptEntry.addObject("action", Action.SPLIT);
                     else if (flagArgs[1].startsWith("+"))
-                        scriptEntry.addObject("action", Element.valueOf("INCREASE"));
+                        scriptEntry.addObject("action", Action.INCREASE);
                     else if (flagArgs[1].startsWith("-"))
-                        scriptEntry.addObject("action", Element.valueOf("DECREASE"));
+                        scriptEntry.addObject("action", Action.DECREASE);
                     else if (flagArgs[1].startsWith("*"))
-                        scriptEntry.addObject("action", Element.valueOf("MULTIPLY"));
+                        scriptEntry.addObject("action", Action.MULTIPLY);
                     else if (flagArgs[1].startsWith("/"))
-                        scriptEntry.addObject("action", Element.valueOf("DIVIDE"));
+                        scriptEntry.addObject("action", Action.DIVIDE);
                     if (!scriptEntry.hasObject("action"))
-                        scriptEntry.addObject("action", Element.valueOf("SET_VALUE"));
+                        scriptEntry.addObject("action", Action.SET_VALUE);
                     scriptEntry.addObject("value", Element.valueOf(flagArgs[2]));
                 }
             } else {
@@ -108,17 +91,20 @@ public class FlagCommand extends AbstractCommand implements Listener {
         if (!scriptEntry.hasObject("name"))
             throw new InvalidArgumentsException("Must specify a FLAG name.");
 
-        if (!scriptEntry.hasObject("value"))
-            scriptEntry.addObject("value", new Element("true"));
-
-        if (!scriptEntry.hasObject("mcentity")) {
-            if (!scriptEntry.hasPlayer())
-                throw new InvalidArgumentsException("Specified Player-type flag with no valid Player reference.");
-            scriptEntry.addObject("mcentity", Element.valueOf(scriptEntry.getPlayer().identify()));
-        }
-
-        if (!scriptEntry.hasObject("action"))
-            scriptEntry.addObject("action", Element.valueOf("SET_BOOLEAN"));
+        scriptEntry.defaultObject("action", Action.SET_BOOLEAN);
+        scriptEntry.defaultObject("value", Element.TRUE);
+        scriptEntry.defaultObject("duration", new Duration(-1));
+        scriptEntry.defaultObject("target", scriptEntry.hasPlayer() ? Type.PLAYER : null);
+        
+        // Sets the official target
+        if (((Type) scriptEntry.getObject("target")).name().matches("^(DENIZEN|NPC)$")
+                && scriptEntry.hasNPC())
+            scriptEntry.addObject("target", scriptEntry.getNPC().getDenizenEntity());
+        else if (((Type) scriptEntry.getObject("target")).name().matches("^PLAYER$")
+                && scriptEntry.hasPlayer())
+            scriptEntry.addObject("target", scriptEntry.getPlayer().getDenizenEntity());
+        else
+            scriptEntry.addObject("target", "SERVER");
     }
 
     @Override
@@ -126,16 +112,12 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         String name = scriptEntry.getElement("name").asString();
         String value = scriptEntry.getElement("value").asString();
-        Duration duration;
-        if (scriptEntry.hasObject("duration"))
-            duration = Duration.valueOf(scriptEntry.getElement("duration").asString());
-        else
-            duration = new Duration(-1d);
-        Action action = Action.valueOf(scriptEntry.getElement("action").asString());
-        dEntity entity = dEntity.valueOf(scriptEntry.getElement("mcentity").asString());
-        dPlayer player = null;
-        if (entity == null)
-            player = dPlayer.valueOf(scriptEntry.getElement("mcentity").asString());
+        Action action = (Action) scriptEntry.getObject("action");
+        Duration duration = (Duration) scriptEntry.getObject("duration");
+        dEntity target = null;
+        if (scriptEntry.getObject("target") instanceof dEntity)
+            target = (dEntity) scriptEntry.getObject("target");
+        
         int index = -1;
 
         // Set working index, if specified.
@@ -155,18 +137,15 @@ public class FlagCommand extends AbstractCommand implements Listener {
                         + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
                         + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value : "null"))
                         + (duration.getSeconds() > 0 ? duration.debug() : "")
-                        + (entity == null?(player == null?"entity='server'":player.debug()):entity.debug()));
+                        + aH.debugObj("Target", (target != null ? (target.isNPC() ? target.getNPC() : target.isPlayer() ? target.getPlayer() : "Other") : "Server")));
 
         // Returns existing flag (if existing), or a new flag if not
-        if (entity == null)
-            if (player == null)
-                flag = denizen.flagManager().getGlobalFlag(name);
-            else
-                flag = denizen.flagManager().getPlayerFlag(player.getName(), name);
-        else if (entity.isNPC())
-            flag = denizen.flagManager().getNPCFlag(scriptEntry.getNPC().getId(), name);
-        else if (entity.isLivingEntity() && entity.getLivingEntity() instanceof Player)
-            flag = denizen.flagManager().getPlayerFlag(((Player)entity.getLivingEntity()).getName(), name);
+        if (target == null)
+            flag = denizen.flagManager().getGlobalFlag(name);
+        else if (target.isPlayer())
+            flag = denizen.flagManager().getPlayerFlag(target.getPlayer().getName(), name);
+        else if (target.isNPC())
+            flag = denizen.flagManager().getNPCFlag(target.getNPC().getId(), name);
         else {
             dB.echoError("Invalid entity specified!");
             return;
