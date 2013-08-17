@@ -36,19 +36,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
-            // Allow a p@player or n@npc entity to specify the target
-            // to be flagged
-            else if (!scriptEntry.hasObject("flag_target")
-                    && arg.matchesArgumentType(dNPC.class)) {
-                specified_target = true;
-                scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
-
-            } else if (!scriptEntry.hasObject("flag_target")
-                    && arg.matchesArgumentType(dPlayer.class)) {
-                specified_target = true;
-                scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
-            }
-
             // Also allow attached dObjects to be specified...
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("npc, denizen")) {
@@ -66,10 +53,24 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("flag_target", scriptEntry.getPlayer());
             }
 
+            // Allow a p@player or n@npc entity to specify the target
+            // to be flagged
+            else if (!scriptEntry.hasObject("flag_target")
+                    && arg.matchesArgumentType(dNPC.class)) {
+                specified_target = true;
+                scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
+
+            } else if (!scriptEntry.hasObject("flag_target")
+                    && arg.matchesArgumentType(dPlayer.class)) {
+                specified_target = true;
+                scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
+            }
+
             // Check if setting a boolean
             else if (!scriptEntry.hasObject("action")
                     && arg.raw_value.split(":", 3).length == 1) {
                 scriptEntry.addObject("action", FlagManager.Action.SET_BOOLEAN);
+                scriptEntry.addObject("value", Element.TRUE);
                 scriptEntry.addObject("flag_name", arg.asElement());
             }
 
@@ -80,18 +81,22 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 String[] flagArgs = arg.raw_value.split(":", 2);
                 scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
 
-                if (flagArgs[1].equals("++") || flagArgs[1].equals("+"))
+                if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
                     scriptEntry.addObject("action", FlagManager.Action.INCREASE);
-
-                else if (flagArgs[1].equals("--") || flagArgs[1].equals("-"))
+                    scriptEntry.addObject("value", new Element(1));
+                }
+                else if (flagArgs[1].equals("--") || flagArgs[1].equals("-")) {
                     scriptEntry.addObject("action", FlagManager.Action.DECREASE);
-
-                else if (flagArgs[1].equals("!"))
+                    scriptEntry.addObject("value", new Element(1));
+                }
+                else if (flagArgs[1].equals("!")) {
                     scriptEntry.addObject("action", FlagManager.Action.DELETE);
-
-                else if (flagArgs[1].equals("<-"))
+                    scriptEntry.addObject("value", Element.FALSE);
+                }
+                else if (flagArgs[1].equals("<-")) {
                     scriptEntry.addObject("action", FlagManager.Action.REMOVE);
-
+                    scriptEntry.addObject("value", Element.FALSE);
+                }
                 else {
                     // No ACTION, we're just setting a value...
                     scriptEntry.addObject("action", FlagManager.Action.SET_VALUE);
