@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import org.bukkit.Bukkit;
@@ -72,7 +73,7 @@ public class CommandExecuter {
             if (scriptEntry.has_tags)
                 scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, true)); // Replace tags
 
-            /*  If using NPCID:# or PLAYER:Name arguments, these need to be changed out immediately because...
+            /*  If using NPC:# or PLAYER:Name arguments, these need to be changed out immediately because...
              *  1) Denizen/Player flags need the desired NPC/PLAYER before parseArgs's getFilledArguments() so that
              *     the Player/Denizen flags will read from the correct Object. If using PLAYER or NPCID arguments,
              *     the desired Objects are obviously not the same objects that were sent with the ScriptEntry.
@@ -82,16 +83,29 @@ public class CommandExecuter {
 
             List<String> newArgs = new ArrayList<String>();
 
+            // Don't fill in tags if there were brackets detected..
+            // This means we're probably in a nested if.
             int nested_depth = 0;
+            // Watch for IF command to avoid filling player and npc arguments
+            // prematurely
+            boolean if_ignore = false;
+
 
             for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
                 if (arg.getValue().equals("{")) nested_depth++;
                 if (arg.getValue().equals("}")) nested_depth--;
 
+                // If nested, continue.
                 if (nested_depth > 0) {
                     newArgs.add(arg.getValue());
                     continue;
                 }
+
+                // If using IF, check if we've reached the command + args
+                // so that we don't fill player: or npc: prematurely
+                if (command.getName().equalsIgnoreCase("if")
+                        && DenizenAPI.getCurrentInstance().getCommandRegistry().get(arg.getValue()) != null)
+                    if_ignore = true;
 
                 m = definition_pattern.matcher(arg.getValue());
                 sb = new StringBuffer();
@@ -107,10 +121,10 @@ public class CommandExecuter {
                 arg = aH.Argument.valueOf(sb.toString());
 
                 // Fill player/off-line player
-                if (arg.matchesPrefix("player")) {
+                if (arg.matchesPrefix("player") && !if_ignore) {
                     dB.echoDebug("...replacing the linked player.");
+                    String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
                     dPlayer player = dPlayer.valueOf(arg.getValue());
-                    String value = TagManager.tag(player, scriptEntry.getNPC(), arg.getValue(), false);
                     if (!player.isValid()) {
                         dB.echoError(value + " is an invalid player!");
                         return false;
@@ -119,10 +133,10 @@ public class CommandExecuter {
                 }
 
                 // Fill NPCID/NPC argument
-                else if (arg.matchesPrefix("npc, npcid")) {
+                else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
                     dB.echoDebug("...replacing the linked NPC.");
+                    String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
                     dNPC npc = dNPC.valueOf(arg.getValue());
-                    String value = TagManager.tag(scriptEntry.getPlayer(), npc, arg.getValue(), false);
                     if (!npc.isValid()) {
                         dB.echoError(value + " is an invalid NPC!");
                         return false;
