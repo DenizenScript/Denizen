@@ -102,7 +102,7 @@ public class CommandExecuter {
                     continue;
                 }
 
-                m = definition_pattern.matcher(arg.raw_value);
+                m = definition_pattern.matcher(arg.getValue());
                 sb = new StringBuffer();
                 while (m.find()) {
                     if (scriptEntry.getResidingQueue().hasContext(m.group(1).toLowerCase()))
@@ -189,7 +189,6 @@ public class CommandExecuter {
 
                     // Run the execute method in the command
                     if (!event.isCancelled()) command.execute(scriptEntry);
-
                     else dB.echoDebug("ScriptEntry has been cancelled.");
                 } catch (Exception e) {
                     dB.echoError("Woah!! An exception has been called with this command!");
@@ -197,9 +196,10 @@ public class CommandExecuter {
                         dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
                     else e.printStackTrace();
                 }
+            
         }
 
         return true;
     }
-
+    
 }

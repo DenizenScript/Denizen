@@ -25,27 +25,26 @@ public class TeleportCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
-
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            
+
             if (!scriptEntry.hasObject("location")
                 && arg.matchesArgumentType(dLocation.class)) {
                 // Location arg
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-            
+
             else if (!scriptEntry.hasObject("entities")
                      && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
-            
+
             else if (arg.matches("npc") && scriptEntry.hasNPC()) {
                 // NPC arg for compatibility with old scripts
                 scriptEntry.addObject("entities", Arrays.asList(scriptEntry.getNPC().getDenizenEntity()));
             }
         }
-        
+
         // Check to make sure required arguments have been filled
         scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null), 
                                               (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
@@ -65,8 +64,8 @@ public class TeleportCommand extends AbstractCommand {
                              aH.debugObj("entities", entities.toString()));
 
         for (dEntity entity : entities) {
-            if (entity.isSpawned() == true) {
-                entity.teleport(location);
+            if (entity.isSpawned()) {
+                entity.spawnAt(location);
             }
         }
     }

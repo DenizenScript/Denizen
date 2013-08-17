@@ -86,6 +86,10 @@ public class dList extends ArrayList<String> implements dObject {
             add(obj.identify());
     }
 
+    public dList() {
+        // Empty dList!
+    }
+
     public dList(String items) {
         addAll(Arrays.asList(items.split("\\|")));
     }
