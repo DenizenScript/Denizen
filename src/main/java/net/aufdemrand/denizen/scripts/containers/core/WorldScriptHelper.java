@@ -645,7 +645,8 @@ public class WorldScriptHelper implements Listener {
             }
         }
         
-        determination = doEvents(events, npc, player.getPlayerEntity(), context);
+        determination = doEvents(events, npc,
+                (player != null && player.isOnline() ? player.getPlayerEntity() : null), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);

@@ -11,12 +11,19 @@ import java.util.*;
 
 public class FlagManager {
 
+    // Valid flag actions
+    public static enum Action { SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY,
+        DIVIDE, INSERT, REMOVE, SPLIT, DELETE }
+
+
+    // Constructor
     private Denizen denizen;
 
     public FlagManager(Denizen denizen) {
         this.denizen = denizen;
     }
 
+    // Static methods
     public static boolean playerHasFlag(dPlayer player, String flagName) {
         if (player == null || flagName == null) return false;
         if (DenizenAPI.getCurrentInstance().flagManager()
@@ -505,6 +512,73 @@ public class FlagManager {
         public boolean isEmpty() {
             return value.isEmpty();
         }
+
+        /**
+         * Performs an action on the flag.
+         *
+         * @param action  a valid Action enum
+         * @param value   the value specified for the action
+         * @param index   the flag index, null if none
+         */
+        public void doAction(Action action, Element value, Integer index) {
+
+            if (index == null) index = -1;
+
+            if (action == null) return;
+
+            // Do flagAction
+            switch (action) {
+                case INCREASE: case DECREASE: case MULTIPLY: case DIVIDE:
+                    double currentValue = get(index).asDouble();
+                    set(Double.toString(math(currentValue, Double.valueOf(value.asString()), action)), index);
+                    break;
+
+                case SET_BOOLEAN:
+                    set("true", index);
+                    break;
+
+                case SET_VALUE:
+                    set(value, index);
+                    break;
+
+                case INSERT:
+                    add(value);
+                    break;
+
+                case REMOVE:
+                    remove(value, index);
+                    break;
+
+                case SPLIT:
+                    split(value);
+                    break;
+
+                case DELETE:
+                    clear();
+            }
+        }
+
+        private double math(double currentValue, double value, Action flagAction) {
+            switch (flagAction) {
+                case INCREASE:
+                    return currentValue + value;
+
+                case DECREASE:
+                    return currentValue - value;
+
+                case MULTIPLY:
+                    return currentValue * value;
+
+                case DIVIDE:
+                    return currentValue / value;
+
+                default:
+                    break;
+            }
+
+            return 0;
+        }
+
     }
 
 

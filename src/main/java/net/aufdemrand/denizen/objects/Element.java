@@ -21,7 +21,7 @@ public class Element implements dObject {
      *
      */
     @ObjectFetcher("el")
-    public static dObject valueOf(String string) {
+    public static Element valueOf(String string) {
         if (string == null) return null;
 
         return new Element(string);
