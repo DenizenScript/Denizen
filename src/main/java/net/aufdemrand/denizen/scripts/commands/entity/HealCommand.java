@@ -45,7 +45,7 @@ public class HealCommand extends AbstractCommand {
         }
         
         if (!scriptEntry.hasObject("amount"))
-            scriptEntry.addObject("amount", new Element(Integer.MAX_VALUE));
+            scriptEntry.addObject("amount", new Element(-1));
         
         if (!scriptEntry.hasObject("entities")) {
             List<dEntity> entities = new ArrayList<dEntity>();
@@ -68,7 +68,7 @@ public class HealCommand extends AbstractCommand {
         Element amountelement = scriptEntry.getElement("amount");
 
         dB.report(getName(), amountelement.debug() + aH.debugObj("entities", entities));
-        if (amountelement.asInt() == Integer.MAX_VALUE)
+        if (amountelement.asDouble() == -1)
             for (dEntity entity : entities)
                 entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
         else {
