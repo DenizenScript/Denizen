@@ -97,12 +97,16 @@ public class FlagCommand extends AbstractCommand implements Listener {
         scriptEntry.defaultObject("target", scriptEntry.hasPlayer() ? Type.PLAYER : null);
         
         // Sets the official target
-        if (((Type) scriptEntry.getObject("target")).name().matches("^(DENIZEN|NPC)$")
-                && scriptEntry.hasNPC())
+        if (((Type) scriptEntry.getObject("target")).name().matches("^(DENIZEN|NPC)$")) {
+            if (!scriptEntry.hasNPC() || !scriptEntry.getNPC().isValid())
+                throw new InvalidArgumentsException("Invalid NPC specified!");
             scriptEntry.addObject("target", scriptEntry.getNPC().getDenizenEntity());
-        else if (((Type) scriptEntry.getObject("target")).name().matches("^PLAYER$")
-                && scriptEntry.hasPlayer())
+        }
+        else if (((Type) scriptEntry.getObject("target")).name().matches("^PLAYER$")) {
+            if (!scriptEntry.hasPlayer() || !scriptEntry.getPlayer().isValid())
+                throw new InvalidArgumentsException("Invalid player specified!");
             scriptEntry.addObject("target", scriptEntry.getPlayer().getDenizenEntity());
+        }
         else
             scriptEntry.addObject("target", "SERVER");
     }
@@ -129,16 +133,16 @@ public class FlagCommand extends AbstractCommand implements Listener {
             name = name.split("\\[")[0];
         }
 
-        Flag flag = null;
-
         // Send information to debugger
         dB.report(getName(),
                 aH.debugObj("Name", name)
                         + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
                         + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value : "null"))
                         + (duration.getSeconds() > 0 ? duration.debug() : "")
-                        + aH.debugObj("Target", (target != null ? (target.isNPC() ? target.getNPC() : target.isPlayer() ? target.getPlayer() : "Other") : "Server")));
+                        + aH.debugObj("Target", (target != null ? (target.isNPC() ? target.getNPC() : target.isPlayer() ? target.getPlayer() : target.getType()) : "Server")));
 
+        Flag flag = null;
+        
         // Returns existing flag (if existing), or a new flag if not
         if (target == null)
             flag = denizen.flagManager().getGlobalFlag(name);
@@ -146,10 +150,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             flag = denizen.flagManager().getPlayerFlag(target.getPlayer().getName(), name);
         else if (target.isNPC())
             flag = denizen.flagManager().getNPCFlag(target.getNPC().getId(), name);
-        else {
-            dB.echoError("Invalid entity specified!");
-            return;
-        }
+
         // Do flagAction
         switch (action) {
             case INCREASE: case DECREASE: case MULTIPLY: case DIVIDE:

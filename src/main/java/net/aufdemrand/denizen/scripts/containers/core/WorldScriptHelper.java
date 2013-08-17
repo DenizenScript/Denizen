@@ -1603,12 +1603,13 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void vehicleDamage(VehicleDamageEvent event) {
         
-        Entity entity = event.getAttacker();
-        
-        if (entity == null) return;
-        
         Map<String, Object> context = new HashMap<String, Object>();
+        
+        Entity entity = event.getAttacker();
         Vehicle vehicle = event.getVehicle();
+        
+        if (entity == null || vehicle == null)
+            return;
         
         String entityType = entity.getType().name();
         String vehicleType = vehicle.getType().name();
@@ -1649,8 +1650,11 @@ public class WorldScriptHelper implements Listener {
         
         Entity entity = event.getAttacker();
         Vehicle vehicle = event.getVehicle();
+        
+        if (entity == null || vehicle == null)
+            return;
    
-        String entityType = entity != null ? entity.getType().name() : null;
+        String entityType = entity.getType().name();
         String vehicleType = vehicle.getType().name();
         
         Player player = null;
@@ -1683,6 +1687,9 @@ public class WorldScriptHelper implements Listener {
         
         Entity entity = event.getEntered();
         Vehicle vehicle = event.getVehicle();
+        
+        if (entity == null || vehicle == null)
+            return;
         
         String entityType = entity.getType().name();
         String vehicleType = vehicle.getType().name();
@@ -1717,6 +1724,9 @@ public class WorldScriptHelper implements Listener {
         
         Entity entity = event.getExited();
         Vehicle vehicle = event.getVehicle();
+        
+        if (entity == null || vehicle == null)
+            return;
         
         String entityType = entity.getType().name();
         String vehicleType = vehicle.getType().name();
