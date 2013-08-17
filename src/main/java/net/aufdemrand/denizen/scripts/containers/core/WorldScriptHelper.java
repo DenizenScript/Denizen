@@ -112,14 +112,14 @@ public class WorldScriptHelper implements Listener {
 
         String determination = "none";
 
-        // dB.log("Fired for '" + eventNames.toString() + "'");
+        if (dB.showEventsFiring) dB.log("Fired for '" + eventNames.toString() + "'");
 
         for (WorldScriptContainer script : world_scripts.values()) {
 
             if (script == null) continue;
             
             for (String eventName : eventNames) {
-                
+
                 if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
                 
                 // Fetch script from Event
@@ -527,7 +527,7 @@ public class WorldScriptHelper implements Listener {
         Map<String, Object> context = new HashMap<String, Object>();
         boolean isFatal = false;
         dEntity entity = new dEntity(event.getEntity());
-        String entityType = entity.getType();
+        String entityType = entity.getEntityType().name();
         String cause = event.getCause().name();
 
         String determination;
@@ -580,10 +580,10 @@ public class WorldScriptHelper implements Listener {
             
             dPlayer subPlayer = null;
             dNPC subNPC = null;
-            
+
             dEntity damager = new dEntity(subEvent.getDamager());
-            String damagerType = damager.getType();
-            
+            String damagerType = damager.getEntityType().name();
+
             if (damager.isNPC()) {
                 subNPC = new dNPC(damager.getNPC());
                 context.put("damager", subNPC);
@@ -592,13 +592,15 @@ public class WorldScriptHelper implements Listener {
                 // If we had no NPC in our regular context, use this one
                 if (npc == null) npc = subNPC;
             }
+
             else if (damager.isPlayer()) {
                 subPlayer = new dPlayer(damager.getPlayer());
                 context.put("damager", subPlayer);
-                
+
                 // If we had no player in our regular context, use this one
                 if (player == null) player = subPlayer;
             }
+
             else {
                 context.put("damager", damager);
                 
@@ -619,7 +621,7 @@ public class WorldScriptHelper implements Listener {
                     }
                 }
             }
-            
+
             events.add("entity damaged by entity");
             events.add("entity damaged by " + damagerType);
             events.add(entityType + " damaged by entity");

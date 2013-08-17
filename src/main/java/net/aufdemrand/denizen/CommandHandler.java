@@ -687,7 +687,7 @@ public class CommandHandler {
     @Command(
             aliases = { "denizen" }, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db" },
-            min = 1, max = 3, permission = "denizen.debug", flags = "sc")
+            min = 1, max = 3, permission = "denizen.debug", flags = "sceb")
     public void debug(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (args.hasFlag('s')) {
             if (!dB.debugMode) dB.toggle();
@@ -695,6 +695,12 @@ public class CommandHandler {
         } else if (args.hasFlag('c')) {
             if (!dB.debugMode) dB.toggle();
             dB.showColor = !dB.showColor;
+        } else if (args.hasFlag('e')) {
+            if (!dB.debugMode) dB.toggle();
+            dB.showEventsFiring = !dB.showEventsFiring;
+        } else if (args.hasFlag('b')) {
+            if (!dB.debugMode) dB.toggle();
+            dB.showScriptBuilder = !dB.showScriptBuilder;
         } else dB.toggle();
 
         Messaging.send(sender, ChatColor.YELLOW + "Denizen debugger is " + (dB.debugMode ?
