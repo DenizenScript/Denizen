@@ -522,6 +522,8 @@ public class FlagManager {
          */
         public void doAction(Action action, Element value, Integer index) {
 
+            String val = (value != null ? value.asString() : null);
+
             if (index == null) index = -1;
 
             if (action == null) return;
@@ -538,19 +540,19 @@ public class FlagManager {
                     break;
 
                 case SET_VALUE:
-                    set(value, index);
+                    set(val, index);
                     break;
 
                 case INSERT:
-                    add(value);
+                    add(val);
                     break;
 
                 case REMOVE:
-                    remove(value, index);
+                    remove(val, index);
                     break;
 
                 case SPLIT:
-                    split(value);
+                    split(val);
                     break;
 
                 case DELETE:

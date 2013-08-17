@@ -92,22 +92,19 @@ public class CommandExecuter {
 
 
             for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+
+                dB.log("arg " + arg.raw_value);
+
                 if (arg.getValue().equals("{")) nested_depth++;
                 if (arg.getValue().equals("}")) nested_depth--;
 
                 // If nested, continue.
                 if (nested_depth > 0) {
-                    newArgs.add(arg.getValue());
+                    newArgs.add(arg.raw_value);
                     continue;
                 }
 
-                // If using IF, check if we've reached the command + args
-                // so that we don't fill player: or npc: prematurely
-                if (command.getName().equalsIgnoreCase("if")
-                        && DenizenAPI.getCurrentInstance().getCommandRegistry().get(arg.getValue()) != null)
-                    if_ignore = true;
-
-                m = definition_pattern.matcher(arg.getValue());
+                m = definition_pattern.matcher(arg.raw_value);
                 sb = new StringBuffer();
                 while (m.find()) {
                     if (scriptEntry.getResidingQueue().hasContext(m.group(1).toLowerCase()))
@@ -119,6 +116,12 @@ public class CommandExecuter {
                 }
                 m.appendTail(sb);
                 arg = aH.Argument.valueOf(sb.toString());
+
+                // If using IF, check if we've reached the command + args
+                // so that we don't fill player: or npc: prematurely
+                if (command.getName().equalsIgnoreCase("if")
+                        && DenizenAPI.getCurrentInstance().getCommandRegistry().get(arg.getValue()) != null)
+                    if_ignore = true;
 
                 // Fill player/off-line player
                 if (arg.matchesPrefix("player") && !if_ignore) {
@@ -144,7 +147,7 @@ public class CommandExecuter {
                     scriptEntry.setNPC(npc);
                 }
 
-                else newArgs.add(arg.getValue());
+                else newArgs.add(arg.raw_value);
             }
 
             // Add the arguments back to the scriptEntry.

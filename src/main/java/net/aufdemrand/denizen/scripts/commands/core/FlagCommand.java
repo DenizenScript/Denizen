@@ -28,6 +28,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
+            dB.log(arg.raw_value);
+
             // A duration on a flag will set it to expire after the
             // specified amount of time
             if (!scriptEntry.hasObject("duration")
