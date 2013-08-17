@@ -84,16 +84,16 @@ public class CommandExecuter {
 
             int nested_depth = 0;
 
-            for (String arg : scriptEntry.getArguments()) {
-                if (arg.equals("{")) nested_depth++;
-                if (arg.equals("}")) nested_depth--;
+            for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+                if (arg.getValue().equals("{")) nested_depth++;
+                if (arg.getValue().equals("}")) nested_depth--;
 
                 if (nested_depth > 0) {
-                    newArgs.add(arg);
+                    newArgs.add(arg.getValue());
                     continue;
                 }
 
-                m = definition_pattern.matcher(arg);
+                m = definition_pattern.matcher(arg.getValue());
                 sb = new StringBuffer();
                 while (m.find()) {
                     if (scriptEntry.getResidingQueue().hasContext(m.group(1).toLowerCase()))
@@ -104,25 +104,32 @@ public class CommandExecuter {
                     else m.appendReplacement(sb, "null");
                 }
                 m.appendTail(sb);
-                arg = sb.toString();
+                arg = aH.Argument.valueOf(sb.toString());
 
 
                 // Fill player/off-line player
-                if (aH.matchesValueArg("player", arg, aH.ArgumentType.String)) {
-                    arg = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg, false);
-                    scriptEntry.setPlayer(dPlayer.valueOf(aH.getStringFrom(arg)));
+                if (arg.matchesPrefix("player")) {
+                    dB.echoDebug("...replacing the linked player.");
+                    String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
+                    if (!dPlayer.valueOf(arg.getValue()).isValid()) {
+                        dB.echoError(arg.getValue() + " is an invalid player!");
+                        return false;
+                    }
+                    scriptEntry.setPlayer(dPlayer.valueOf(value));
                 }
 
                 // Fill NPCID/NPC argument
-                else if (aH.matchesValueArg("npcid, npc", arg, aH.ArgumentType.String)) {
+                else if (arg.matchesPrefix("npc, npcid")) {
                     dB.echoDebug("...replacing the linked NPC.");
-                    arg = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg, false);
-
-                    if (dNPC.matches(aH.getStringFrom(arg)))
-                        scriptEntry.setNPC(dNPC.valueOf(aH.getStringFrom(arg)));
+                    String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
+                    if (!dNPC.valueOf(arg.getValue()).isValid()) {
+                        dB.echoError(arg.getValue() + " is an invalid NPC!");
+                        return false;
+                    }
+                    scriptEntry.setNPC(dNPC.valueOf(value));
                 }
 
-                else newArgs.add(arg);
+                else newArgs.add(arg.getValue());
             }
 
             // Add the arguments back to the scriptEntry.
