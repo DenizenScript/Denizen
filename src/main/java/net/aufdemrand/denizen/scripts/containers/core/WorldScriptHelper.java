@@ -14,6 +14,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -600,8 +602,14 @@ public class WorldScriptHelper implements Listener {
                 context.put("damager", damager);
                 
                 if (damager instanceof Projectile) {
-                    if (((Projectile) damager).getShooter() != null)
-                        context.put("shooter", new dEntity(((Projectile) damager).getShooter()));
+                    if (((Projectile) damager).getShooter() != null) {
+                        if (((Projectile) damager).getShooter() instanceof Player)
+                            context.put("shooter", new dPlayer((Player) ((Projectile) damager).getShooter()));
+                        else if (((Projectile) damager).getShooter() instanceof NPC)
+                            context.put("shooter", new dNPC((NPC) ((Projectile) damager).getShooter()));
+                        else
+                            context.put("shooter", new dEntity(((Projectile) damager).getShooter()));
+                    }
                     else
                         context.put("shooter", Element.valueOf("null"));
                 }
