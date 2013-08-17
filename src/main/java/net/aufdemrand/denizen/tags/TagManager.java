@@ -166,8 +166,10 @@ public class TagManager implements Listener {
         int nested_level = 0;
         if (args != null) {
             for (String argument : args) {
+                // Check nested level to avoid filling tags prematurely.
                 if (argument.equals("{")) nested_level++;
                 if (argument.equals("}")) nested_level--;
+                // If this argument isn't nested, fill the tag.
                 if (nested_level < 1) {
                     filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
                 }
