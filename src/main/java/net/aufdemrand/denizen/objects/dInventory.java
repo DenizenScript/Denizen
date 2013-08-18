@@ -82,7 +82,7 @@ public class dInventory implements dObject, Notable {
 
             if (t.equalsIgnoreCase("npc")) {
                 // Check if the NPC ID specified is valid
-                if (dNPC.matches(h) && dNPC.valueOf(h).getEntity() instanceof org.bukkit.entity.HumanEntity)
+                if (dNPC.matches(h) && dNPC.valueOf(h).getEntity() instanceof Player)
                     return new dInventory(dNPC.valueOf(h).getEntity());
             }
             else if (t.equalsIgnoreCase("player")) {
@@ -584,9 +584,11 @@ public class dInventory implements dObject, Notable {
         
         if (attribute == null) return null;
 
+        // <--
+        // <inventory.contains[<item>].qty[<#>]> -> Element(Number)
         // Check if the inventory contains a certain quantity (1 by default) of an item
         // and return true or false
-        
+        // -->
         if (attribute.startsWith("contains")) {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
                 
@@ -605,18 +607,22 @@ public class dInventory implements dObject, Notable {
             }
         }
         
-        // Get the location of this inventory's holder
-        
+        // <--
+        // <inventory.location> -> dLocation
+        // Returns the location of this inventory's holder.
+        // -->
         if (attribute.startsWith("location")) {
             
             return new dLocation(getLocation())
                     .getAttribute(attribute.fulfill(1));
         }
         
-        // Get the combined quantity of itemstacks that match an item if
+        // <--
+        // <inventory.qty[<item>]> -> Element(Number)
+        // Returns the combined quantity of itemstacks that match an item if
         // one if specified, or the combined quantity of all itemstacks
         // if one is not
-        
+        // -->
         if (attribute.startsWith("qty"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
                 return new Element(String.valueOf(count
@@ -626,15 +632,19 @@ public class dInventory implements dObject, Notable {
                 return new Element(String.valueOf(count(null, false)))
                     .getAttribute(attribute.fulfill(1));
         
+        // <--
+        // <inventory.size> -> Element(Number)
         // Return the number of slots in the inventory
-        
+        // -->
         if (attribute.startsWith("size"))
             return new Element(String.valueOf(getSize()))
                     .getAttribute(attribute.fulfill(1));
         
-        // Get the number of itemstacks that match an item if one is
+        // <--
+        // <inventory.stacks> -> Element(Number)
+        // Returns the number of itemstacks that match an item if one is
         // specified, or the number of all itemstacks if one is not
-        
+        // -->
         if (attribute.startsWith("stacks"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
                 return new Element(String.valueOf(count
@@ -644,8 +654,10 @@ public class dInventory implements dObject, Notable {
                 return new Element(String.valueOf(count(null, true)))
                     .getAttribute(attribute.fulfill(1));
         
-        // Return the type of the inventory (e.g. "PLAYER", "CRAFTING")
-        
+        // <--
+        // <inventory.type> -> Element
+        // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING")
+        // -->
         if (attribute.startsWith("type"))
             return new Element(getInventory().getType().name())
                     .getAttribute(attribute.fulfill(1));
