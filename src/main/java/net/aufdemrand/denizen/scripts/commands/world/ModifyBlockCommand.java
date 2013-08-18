@@ -2,8 +2,8 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -47,86 +47,86 @@ public class ModifyBlockCommand extends AbstractCommand{
     @Override
     public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
         
-        Material material = null;
-        int data = 0;
-        dLocation location = null;
-        int radius = 0;
-        int height = 0;
-        int depth = 0;
-        
-        for (String arg : scriptEntry.getArguments()) {            
-            if (aH.matchesLocation(arg)){
-                location = aH.getLocationFrom(arg);
-                dB.echoDebug("...location set to: " + location);
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            
+            if (arg.matchesArgumentType(dLocation.class)){
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                dB.echoDebug("...location set to: " + scriptEntry.getObject("location"));
+            }
+            
+            else if (!scriptEntry.hasObject("radius")
+                    && arg.matchesPrefix("radius, r")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("radius", new Element(arg.getValue()));
+                dB.echoDebug("...radius set to " + scriptEntry.getObject("radius"));
+            }
+            
+            else if (!scriptEntry.hasObject("height")
+                    && arg.matchesPrefix("height, h")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("height", new Element(arg.getValue()));
+                dB.echoDebug("...height set to " + scriptEntry.getObject("height"));
 
             }
             
-            else if (aH.matchesValueArg("MATERIAL, M", arg, ArgumentType.Custom)) {
+            else if (!scriptEntry.hasObject("depth")
+                    && arg.matchesPrefix("depth, d")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("depth", new Element(arg.getValue()));
+                dB.echoDebug("...depth set to " + scriptEntry.getObject("depth"));
+
+            }
+            
+            else {
                 
-                String value = aH.getStringFrom(arg).toUpperCase();
+                String value = arg.getValue().toUpperCase();
                 
                 if (value.split(":", 2).length > 1) {
-                    data = aH.getIntegerFrom(value.split(":", 2)[1]);
+                    scriptEntry.addObject("data", aH.getIntegerFrom(value.split(":", 2)[1]));
                 }
                 
                 value = value.split(":", 2)[0];
                 
                 if (aH.matchesInteger(value)) {
-                    material = Material.getMaterial(aH.getIntegerFrom(value));
+                    scriptEntry.addObject("material", Material.getMaterial(aH.getIntegerFrom(value)));
                 }
                 else {
-                    material = Material.getMaterial(value);
+                    scriptEntry.addObject("material", Material.getMaterial(value));
                 }
                 
-                if (material != null) dB.echoDebug("...material set to " + material);
+                if (scriptEntry.getObject("material") != null) dB.echoDebug("...material set to " + scriptEntry.getObject("material"));
                 else dB.echoDebug("...material not valid.");
 
             }
-            
-            else if (aH.matchesValueArg("RADIUS, R", arg, ArgumentType.Integer)) {
-                radius = aH.getIntegerFrom(arg);
-                dB.echoDebug("...radius set to " + radius);
-
-            }
-            
-            else if (aH.matchesValueArg("HEIGHT, H", arg, ArgumentType.Integer)) {
-                height = aH.getIntegerFrom(arg);
-                dB.echoDebug("...height set to " + height);
-
-            }
-            
-            else if (aH.matchesValueArg("DEPTH, D", arg, ArgumentType.Integer)) {
-                depth = aH.getIntegerFrom(arg);
-                dB.echoDebug("...depth set to " + depth);
-
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
         
-        // Store objects in ScriptEntry for use in execute()
-        scriptEntry.addObject("material", material);
-        scriptEntry.addObject("data", data);
-        scriptEntry.addObject("location", location);
-        scriptEntry.addObject("radius", radius);
-        scriptEntry.addObject("height", height);
-        scriptEntry.addObject("depth", depth);
+        if (!scriptEntry.hasObject("material"))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "MATERIAL");
+        if (!scriptEntry.hasObject("location"))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
+        scriptEntry.defaultObject("data", new Element(0));
+        scriptEntry.defaultObject("radius", new Element(0));
+        scriptEntry.defaultObject("height", new Element(0));
+        scriptEntry.defaultObject("depth", new Element(0));
+        
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         
         final Material material = (Material) scriptEntry.getObject("material");
-        final int data = (Integer) scriptEntry.getObject("data");
         final dLocation location = (dLocation) scriptEntry.getObject("location");
-        final int radius = (Integer) scriptEntry.getObject("radius");
-        final int height = (Integer) scriptEntry.getObject("height");
-        final int depth = (Integer) scriptEntry.getObject("depth");
+        final int data = scriptEntry.getElement("data").asInt();
+        final int radius = scriptEntry.getElement("radius").asInt();
+        final int height = scriptEntry.getElement("height").asInt();
+        final int depth = scriptEntry.getElement("depth").asInt();
         
         if (location == null || material == null){
             dB.echoDebug("...can not exectue");
             return;
         }
         
-        World world = scriptEntry.getPlayer().getPlayerEntity().getWorld();
+        World world = location.getWorld();
         Block startBlock = location.getBlock();
         Block currentBlock;
         
