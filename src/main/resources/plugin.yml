@@ -1,6 +1,6 @@
 name: Denizen
 author: aufdemrand
-version: 0.9.2-SNAPSHOT
+version: ${project.version} (build ${BUILD_NUMBER})
 main: net.aufdemrand.denizen.Denizen
 depend: [Citizens]
 softdepend: [Vault, WorldGuard]

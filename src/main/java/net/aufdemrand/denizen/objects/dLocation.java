@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
 
@@ -594,7 +595,18 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return new dList(found).getAttribute(attribute);
             }
 
-            else return "null";
+            return new Element("null").getAttribute(attribute);
+        }
+        
+        // <--
+        // <l@location.inventory> -> dInventory
+        // Returns the dInventory of the block at the location. If the
+        // block is not a container, returns null.
+        // -->
+        if (attribute.startsWith("inventory")) {
+            if (getBlock().getState() instanceof InventoryHolder)
+                return new dInventory(getBlock().getState()).getAttribute(attribute.fulfill(1));
+            return new Element("null").getAttribute(attribute);
         }
 
         // <--

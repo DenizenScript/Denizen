@@ -652,7 +652,7 @@ public class WorldScriptHelper implements Listener {
                 subEvents.add(damagerType + " kills " + entityType);
             }
             
-            determination = doEvents(subEvents, subNPC, (subPlayer != null?subPlayer.getPlayerEntity():null), context);
+            determination = doEvents(subEvents, (subNPC != null ? subNPC : null), (subPlayer != null?subPlayer.getPlayerEntity():null), context);
 
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
@@ -663,7 +663,7 @@ public class WorldScriptHelper implements Listener {
             }
         }
         
-        determination = doEvents(events, npc,
+        determination = doEvents(events, (npc != null ? npc : null),
                 (player != null && player.isOnline() ? player.getPlayerEntity() : null), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))

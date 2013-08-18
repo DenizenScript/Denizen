@@ -47,7 +47,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Denizen extends JavaPlugin {
     public final static int configVersion = 2;
-    public final static String versionTag = "0.9.2";
+    public static String versionTag = null;
 
     private boolean startedSuccessful = false;
 
@@ -138,6 +138,8 @@ public class Denizen extends JavaPlugin {
             return;
         } else startedSuccessful = true;
 
+        versionTag = getServer().getPluginManager().getPlugin("Denizen").getDescription().getVersion();
+        
         // Startup procedure
         dB.echoDebug(DebugElement.Footer);
         dB.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");

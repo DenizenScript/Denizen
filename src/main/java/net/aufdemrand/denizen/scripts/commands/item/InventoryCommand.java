@@ -33,6 +33,7 @@ public class InventoryCommand extends AbstractCommand {
                 
             else if (!scriptEntry.hasObject("originEntity") &&
                 !scriptEntry.hasObject("originLocation") &&
+                !scriptEntry.hasObject("originInventory") &&
                 arg.matchesPrefix("origin, o, source, s, items, i, from, f")) {
                 
                 // Is entity
@@ -40,11 +41,15 @@ public class InventoryCommand extends AbstractCommand {
                     scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
                 // Is location
                 else if (arg.matchesArgumentType(dLocation.class))
-                    scriptEntry.addObject("originLocation", arg.asType(dLocation.class).setPrefix("location"));
+                    scriptEntry.addObject("originLocation", arg.asType(dLocation.class));
+                // Is inventory
+                else if (arg.matchesArgumentType(dInventory.class))
+                    scriptEntry.addObject("originInventory", arg.asType(dInventory.class));
             }
             
             else if (!scriptEntry.hasObject("destinationEntity") &&
                      !scriptEntry.hasObject("destinationLocation") &&
+                     !scriptEntry.hasObject("destinationInventory") &&
                      arg.matchesPrefix("destination, d, target, to, t")) {
                 
                 // Is entity
@@ -52,7 +57,10 @@ public class InventoryCommand extends AbstractCommand {
                     scriptEntry.addObject("destinationEntity", arg.asType(dEntity.class));
                 // Is location
                 else if (arg.matchesArgumentType(dLocation.class))
-                    scriptEntry.addObject("destinationLocation", arg.asType(dLocation.class).setPrefix("location"));
+                    scriptEntry.addObject("destinationLocation", arg.asType(dLocation.class));
+                // Is inventory
+                else if (arg.matchesArgumentType(dInventory.class))
+                    scriptEntry.addObject("originInventory", arg.asType(dInventory.class));
             }
         }
 
@@ -62,7 +70,8 @@ public class InventoryCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify an Inventory action!");
         
         if (!scriptEntry.hasObject("destinationEntity") &&
-            !scriptEntry.hasObject("destinationLocation"))
+            !scriptEntry.hasObject("destinationLocation") &&
+            !scriptEntry.hasObject("destinationInventory"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "DESTINATION");
     }
     
@@ -79,21 +88,25 @@ public class InventoryCommand extends AbstractCommand {
         dEntity destinationEntity = (dEntity) scriptEntry.getObject("destinationEntity");
         dLocation destinationLocation = (dLocation) scriptEntry.getObject("destinationLocation");
         
-        dInventory origin = null;
-        dInventory destination = null;
+        dInventory origin = (dInventory) scriptEntry.getObject("originInventory");
+        dInventory destination = (dInventory) scriptEntry.getObject("destinationInventory");
         
-        if (originLocation != null) {
-            origin = new dInventory(originLocation.getBlock().getState());
-        }
-        else if (originEntity != null) {
-            origin = new dInventory(originEntity.getLivingEntity());
+        if (origin == null) {
+            if (originLocation != null) {
+                origin = new dInventory(originLocation.getBlock().getState());
+            }
+            else if (originEntity != null) {
+                origin = new dInventory(originEntity.getLivingEntity());
+            }
         }
         
-        if (destinationLocation != null) {
-            destination = new dInventory(destinationLocation.getBlock().getState());
-        }
-        else if (destinationEntity != null) {
-            destination = new dInventory(destinationEntity.getLivingEntity());
+        if (destination == null) {
+            if (destinationLocation != null) {
+                destination = new dInventory(destinationLocation.getBlock().getState());
+            }
+            else if (destinationEntity != null) {
+                destination = new dInventory(destinationEntity.getLivingEntity());
+            }
         }
         
         switch (action) {
