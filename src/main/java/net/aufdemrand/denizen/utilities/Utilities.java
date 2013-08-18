@@ -440,7 +440,7 @@ public class Utilities {
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
         
         for (BlockFace blockFace : blockFaces) {
-            if (blockFace.name().startsWith(direction.toUpperCase().substring(1)))
+            if (blockFace.name().startsWith(direction.toUpperCase().substring(0, 1)))
                 ((org.bukkit.material.Sign) signState.getData())
                        .setFacingDirection(blockFace);
         }
