@@ -21,27 +21,35 @@ public class CooldownCommand extends AbstractCommand {
     private enum Type { GLOBAL, PLAYER }
 
 
-    public static String getHelp() {
-        return  "Cools down an interact script. While cool, players cannot " +
-                "run the script. When on cooldown, the script will not pass " +
-                "requirements allowing the next lowest priority script to " +
-                "trigger. You can use <s@script_name.cooled_down[player]> to " +
-                "return whether the script is cooled down, and <s@script_name.cooldown> " +
-                "to get the duration of the cooldown in progress. Cooldown requires" +
-                "a type (player or default, a script, and a duration. It also requires" +
-                "a valid link to a dPlayer.\n" +
-                " \n" +
-                "Use to keep a player from activating a script for a specified duration. \n" +
-                "- cooldown bonus_script 11h \n" +
-                "- cooldown hit_indicator 5s \n" +
-                "Use the 'global' argument to indicate the script to be on cooldown for all players. \n" +
-                "- cooldown global daily_treasure_offering 24h  \n";
-    }
-
-
-    public static String getUsage() {
-        return "- cooldown ({player}|global) (script_name) [duration]";
-    }
+    // <--
+    // @Stable Cooldown Command --> Temporarily disables a script-container from meeting requirements.
+    //
+    // @Description
+    // Cools down a script-container. If an interact-container, when on cooldown, scripts will not pass a requirements
+    // check allowing the next highest priority script to trigger. If any other type of script, a manual requirements
+    // check (<s@script_name.requirements.check>) will also return false until the cooldown period is completed.
+    // Cooldown requires a type (player or global), a script, and a duration. It also requires a valid link to a dPlayer
+    // if using player-type cooldown.
+    //
+    // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
+    //
+    // @Tags
+    // <s@script_name.cooled_down[player]> will return whether the script is cooled down
+    // <s@script_name.cooldown> will return the duration of the cooldown in progress.
+    // <s@requirements.check> will also check script cooldown, as well as any requirements.
+    //
+    // @Usage
+    // Use to keep a player from activating a script for a specified duration.
+    // - cooldown s@bonus_script d:11h
+    // - cooldown s@hit_indicator d:5s
+    //
+    // @Usage
+    // Use the 'global' argument to indicate the script to be on cooldown for all players.
+    // - cooldown global s@daily_treasure_offering d:24h
+    //
+    // @Example
+    //
+    // -->
 
 
     @Override
@@ -51,19 +59,14 @@ public class CooldownCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values()))
-                // add Type
                 scriptEntry.addObject("type", arg.asElement());
-
 
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class))
-                // add range (for WALKNEAR)
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
-
 
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class))
-                // add anchor ID
                 scriptEntry.addObject("script", arg.asType(dScript.class));
         }
 
@@ -120,21 +123,67 @@ public class CooldownCommand extends AbstractCommand {
 
 
     /**
-     * Checks if a script is cooled-down for a Player. If a cool-down is currently in progress,
+     * Gets the duration of a script cool-down.
+     *
+     * @param playerName
+     *         the Player to check, null if only checking Global.
+     * @param scriptName
+     *         the name of the script to check
+     * @return a Duration of the time remaining
+     */
+    public static Duration getCooldownDuration(String playerName, String scriptName) {
+
+        // Change to UPPERCASE so there's no case-sensitivity.
+        scriptName = scriptName.toUpperCase();
+
+        Duration duration = Duration.ZERO;
+
+        // Check current entry GLOBALLY, reset it if necessary
+        if (DenizenAPI._saves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
+            if (System.currentTimeMillis()
+                    < DenizenAPI._saves().getLong("Global.Scripts." + scriptName + ".Cooldown Time"))
+                duration = new Duration((double) (DenizenAPI._saves().getLong("Global.Scripts." + scriptName
+                        + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
+        }
+
+        // No player specified? No need to check any further...
+        if (playerName == null)
+            return duration;
+
+        // Now check for player-specific cooldowns
+        playerName = playerName.toUpperCase();
+
+        // If no entry for the script, return true
+        if (!DenizenAPI._saves().contains("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))
+            return duration;
+
+        // If there is an entry, check against the time
+        if (System.currentTimeMillis()
+                >= DenizenAPI._saves().getLong("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time")) {
+            Duration player_dur = new Duration((double) (DenizenAPI._saves().getLong("Players." + playerName + ".Scripts."
+                    + scriptName + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
+            if (player_dur.getSeconds() > duration.getSeconds())
+            return player_dur;
+        }
+
+        return duration;
+    }
+
+
+    /**
+     * Checks if a script is cooled-down. If a cool-down is currently in progress,
      * its requirements will fail and it will not trigger. If the script is being cooled down
      * globally, this will also return false.
      *
      * @param playerName
-     *         the Player to check
+     *         the Player to check, null if only checking Global.
      * @param scriptName
      *         the name of the script to check
-     * @return
-     *         if the script is cool for the Player
-     *
+     * @return true if the script is cool
      */
     public static boolean checkCooldown(String playerName, String scriptName) {
-        // I hate case-sensitivity. The positive here outweighs the negative.
-        playerName = playerName.toUpperCase();
+
+        // Change to UPPERCASE so there's no case-sensitivity.
         scriptName = scriptName.toUpperCase();
 
         // Check current entry GLOBALLY, reset it if necessary
@@ -146,7 +195,12 @@ public class CooldownCommand extends AbstractCommand {
                 DenizenAPI._saves().set("Global.Scripts." + scriptName + ".Cooldown Time", null);
         }
 
+        // No player specified? No need to check any further...
+        if (playerName == null)
+            return true;
+
         // Now check for player-specific cooldowns
+        playerName = playerName.toUpperCase();
 
         // If no entry for the script, return true
         if (!DenizenAPI._saves().contains("Players." + playerName + ".Scripts." + scriptName + ".Cooldown Time"))
