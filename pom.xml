@@ -128,7 +128,6 @@
 
 	<build>
 		<defaultGoal>clean package install</defaultGoal>
-		
 		<resources>
 			<resource>
 				<targetPath>.</targetPath>
@@ -136,6 +135,7 @@
 				<directory>${basedir}/src/main/resources</directory>
 				<includes>
 					<include>plugin.yml</include>
+					<include>*.dscript</include>
 				</includes>
 			</resource>
 		</resources>
