@@ -158,7 +158,7 @@ public class dInventory implements dObject, Notable {
         if (inventory.getHolder() != null) {
             if (!(inventory.getHolder() instanceof LivingEntity)) {
                 holderType = "location";
-                holderIdentifier = ((BlockState) inventory.getHolder()).getLocation().toString();
+                holderIdentifier = getLocation().toString();
             }
             else if (inventory.getHolder() instanceof NPC) {
                 holderType = "npc";
@@ -190,7 +190,7 @@ public class dInventory implements dObject, Notable {
         this.inventory = holder.getInventory();
         if (!(holder instanceof LivingEntity)) {
             holderType = "location";
-            holderIdentifier = ((BlockState) inventory.getHolder()).getLocation().toString();
+            holderIdentifier = getLocation().toString();
         }
         else if (holder instanceof NPC) {
             holderType = "npc";
