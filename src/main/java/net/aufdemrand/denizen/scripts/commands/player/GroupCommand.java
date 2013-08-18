@@ -69,7 +69,6 @@ public class GroupCommand extends AbstractCommand {
                 Depends.permissions.playerRemoveGroup(world, player.getName(), group);
                 dB.echoDebug("Removed " + player.getName() + " from group " + group);
             }
-            return;
         }
     }
 

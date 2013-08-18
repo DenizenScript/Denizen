@@ -110,7 +110,6 @@ public class FishingTrait extends Trait {
     public void startFishing() {
         fishing = true;
         fishingLocation = npc.getBukkitEntity().getLocation();
-        return;
     }
     
     private void cast() {

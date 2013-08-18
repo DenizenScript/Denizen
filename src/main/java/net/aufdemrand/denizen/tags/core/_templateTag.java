@@ -109,7 +109,6 @@ public class _templateTag implements Listener {
 
         // Got here? No attributes were handled! Probably should let the dBugger know.
         dB.echoError("Example skills tag '" + event.raw_tag + "' was unable to match an attribute. Replacement has been cancelled...");
-        return;
 
     }
 }

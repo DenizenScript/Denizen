@@ -36,7 +36,6 @@ public class SneakingTrait extends Trait implements Listener  {
         ((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x02));
 
         sneaking = true;
-        return;
     }
     
     /**

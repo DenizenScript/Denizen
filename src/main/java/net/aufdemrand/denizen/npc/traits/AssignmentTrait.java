@@ -93,8 +93,7 @@ public class AssignmentTrait extends Trait {
      */
     public boolean hasAssignment() {
         if (assignment == null || assignment.equals("")) return false;
-        if (ScriptRegistry.containsScript(assignment)) return true;
-        else return false;
+        return ScriptRegistry.containsScript(assignment);
     }
 
     /**

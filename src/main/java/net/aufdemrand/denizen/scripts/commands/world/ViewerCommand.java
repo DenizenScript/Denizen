@@ -269,8 +269,6 @@ public class ViewerCommand extends AbstractCommand implements Listener {
                     viewer.setTask(task);
                 }
             }
-        else
-            return;
     }
     
     @EventHandler

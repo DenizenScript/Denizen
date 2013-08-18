@@ -119,8 +119,7 @@ public class ScriptEntry {
 
     public boolean hasNPC() {
 
-        if (npc != null) return true;
-        return false;
+        return (npc != null);
     }
 
     public void setFinished(boolean finished) {
@@ -133,8 +132,7 @@ public class ScriptEntry {
 
     public boolean hasPlayer() {
 
-        if (player != null) return true;
-        return false;
+        return (player != null);
     }
 
     public Map<String, Object> getObjects() {
@@ -160,10 +158,8 @@ public class ScriptEntry {
     }
 
     public boolean hasObject(String key) {
-        if (objects.containsKey(key.toUpperCase())
-                && objects.get(key.toUpperCase()) != null)
-            return true;
-        else return false;
+        return (objects.containsKey(key.toUpperCase())
+                && objects.get(key.toUpperCase()) != null);
     }
 
     public dScript getScript() {

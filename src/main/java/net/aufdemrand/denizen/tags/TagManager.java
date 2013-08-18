@@ -90,8 +90,6 @@ public class TagManager implements Listener {
             dB.echoError("Uh oh! Report this to aufdemrand! Err: TagManagerObjectReflection");
             e.printStackTrace();
         }
-
-        return;
     }
 
 
@@ -130,7 +128,7 @@ public class TagManager implements Listener {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
                     if ((!event.replaced() && event.getAlternative() != null)
-                            || (event.getReplaced() == "null" && event.getAlternative() != null))
+                            || (event.getReplaced().equals("null") && event.getAlternative() != null))
                         event.setReplaced(event.getAlternative());
                     arg = arg.substring(0, positions[0]) + event.getReplaced() + arg.substring(positions[1] + 1, arg.length());
                 }

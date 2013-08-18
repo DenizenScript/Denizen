@@ -105,7 +105,6 @@ public class PermissionCommand extends AbstractCommand {
                     dB.echoDebug("Removed permission " + permission + " for player " + player.getName());
                 }
             }
-            return;
         }
     }
 

@@ -102,24 +102,22 @@ public class FlyCommand extends AbstractCommand {
                                 new ArrayList<dLocation>();
         
         final Element speed = (Element) scriptEntry.getObject("speed");
-        Boolean cancel = scriptEntry.hasObject("cancel") ?
-                            true :
-                            false;
+        boolean cancel = scriptEntry.hasObject("cancel");
         
         // Report to dB
-        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
                              aH.debugObj("origin", origin) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("speed", speed) +
                              (destinations.size() > 0 ? aH.debugObj("destinations", destinations.toString()) : ""));
                 
         // Mount or dismount all of the entities
-        if (cancel.equals(false)) {
+        if (!cancel) {
             
             // Go through all the entities, spawning/teleporting them
             for (dEntity entity : entities) {
                 
-                if (entity.isSpawned() == false) {
+                if (!entity.isSpawned()) {
                     entity.spawnAt(origin);
                 }
                 else {
@@ -144,7 +142,7 @@ public class FlyCommand extends AbstractCommand {
         final Player player = scriptEntry.getPlayer().getPlayerEntity();
         
         // Set freeflight to true only if there are no destinations
-        final Boolean freeflight = destinations.size() > 0 ? false : true;
+        final boolean freeflight = destinations.size() > 0;
         
         BukkitRunnable task = new BukkitRunnable() {
 
@@ -153,7 +151,7 @@ public class FlyCommand extends AbstractCommand {
 
             public void run() {
                                 
-                if (freeflight == true) {
+                if (freeflight) {
                         
                     location = player.getEyeLocation()
                                      .add(player.getEyeLocation().getDirection()
@@ -174,13 +172,13 @@ public class FlyCommand extends AbstractCommand {
                     }
                 }
                     
-                if (flying == true &&
-                        entity.isValid() == true &&
-                        entity.isEmpty() == false) {
+                if (flying &&
+                        entity.isValid() &&
+                        (!entity.isEmpty())) {
                     
                     // To avoid excessive turbulence, only have the entity rotate
                     // when it really needs to
-                    if (Rotation.isFacingLocation(entity, location, 50) == false) {
+                    if (!Rotation.isFacingLocation(entity, location, 50)) {
                         
                         Rotation.faceLocation(entity, location);
                     }
@@ -195,7 +193,7 @@ public class FlyCommand extends AbstractCommand {
                     // destination, and remove the destination if that happens
                     // to be the case
                     
-                    if (freeflight == false) {
+                    if (!freeflight) {
                     
                         if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
                             && Math.abs(v2.getZ() - v1.getZ()) < 2) {

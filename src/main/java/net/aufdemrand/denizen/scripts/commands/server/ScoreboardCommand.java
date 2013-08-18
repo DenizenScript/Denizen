@@ -87,7 +87,6 @@ public class ScoreboardCommand extends AbstractCommand {
     private void removeScoreboard(String id) {
         for (String scoreboard_id : scoreboards.keySet())
             if (scoreboard_id.equalsIgnoreCase(id)) scoreboards.remove(scoreboard_id);
-        return;
     }
 
     @Override

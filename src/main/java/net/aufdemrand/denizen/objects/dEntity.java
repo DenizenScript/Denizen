@@ -344,9 +344,7 @@ public class dEntity implements dObject {
      */
 
     public boolean isNPC() {
-        if (CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
-            return true;
-        return false;
+        return CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity());
     }
     
     /**
@@ -367,9 +365,7 @@ public class dEntity implements dObject {
      */
 
     public boolean isPlayer() {
-        if (getBukkitEntity() instanceof Player)
-            return true;
-        return false;
+        return getBukkitEntity() instanceof Player;
     }
 
     /**
@@ -381,9 +377,7 @@ public class dEntity implements dObject {
      */
 
     public boolean isGeneric() {
-        if (identify().matches("e@\\D+"))
-            return true;
-        return false;
+        return identify().matches("e@\\D+");
     }
     
     /**
@@ -456,7 +450,7 @@ public class dEntity implements dObject {
                             // If we did not get a block with "RANDOM", or we got
                             // air or portals, keep trying
                             while (data1.equalsIgnoreCase("RANDOM") &&
-                                    (material.isBlock() == false ||
+                                    ((!material.isBlock()) ||
                                             material == Material.AIR ||
                                             material == Material.PORTAL ||
                                             material == Material.ENDER_PORTAL)) {
@@ -466,7 +460,7 @@ public class dEntity implements dObject {
                         }
 
                         // If material is null or not a block, default to SAND
-                        if (material == null || material.isBlock() == false) {
+                        if (material == null || (!material.isBlock())) {
 
                             material = Material.SAND;
                         }
@@ -492,7 +486,7 @@ public class dEntity implements dObject {
                             
                             // Give pig zombies golden swords by default, unless data2 specifies
                             // a different weapon
-                            if (dItem.matches(data1) == false) {
+                            if (!dItem.matches(data1)) {
                                 data1 = "gold_sword";
                             }
 
@@ -503,7 +497,7 @@ public class dEntity implements dObject {
                             
                             // Give skeletons bows by default, unless data2 specifies
                             // a different weapon
-                            if (dItem.matches(data2) == false) {
+                            if (!dItem.matches(data2)) {
                                 data2 = "bow";
                             }
 
@@ -771,10 +765,7 @@ public class dEntity implements dObject {
 
     @Override
     public boolean isUnique() {
-        if (entity instanceof Player) return true;
-        if (isNPC()) return true;
-        if (isSaved(this)) return true;
-        return isSpawned();
+        return (entity instanceof Player || isNPC() || isSaved(this) || isSpawned());
     }
 
     @Override

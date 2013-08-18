@@ -30,8 +30,7 @@ public class MoneyRequirement extends AbstractRequirement{
             balance = Depends.economy.getBalance(context.getPlayer().getName());
             dB.echoDebug ("...player balance: " + balance);
             
-            if (balance >= quantity) outcome = true;
-            else outcome = false;
+            outcome = (balance >= quantity);
         } else {
             dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
         }

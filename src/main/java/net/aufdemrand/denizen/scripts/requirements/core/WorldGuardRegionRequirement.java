@@ -35,7 +35,7 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
          * Instalize variables
          */
         String region = null;
-        Boolean outcome = false;
+        boolean outcome = false;
         
         /*
          * If there are no arguments, throw an exception.
@@ -61,7 +61,7 @@ public class WorldGuardRegionRequirement extends AbstractRequirement {
         /*
          * Display proper debug output
          */
-        if (outcome == true) dB.echoDebug("...player in region!");
+        if (outcome) dB.echoDebug("...player in region!");
         else dB.echoDebug("...player is not in region!");
 
         return outcome;

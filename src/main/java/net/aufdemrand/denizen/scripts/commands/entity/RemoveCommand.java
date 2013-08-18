@@ -131,7 +131,7 @@ public class RemoveCommand extends AbstractCommand {
                                             region.asString());
                         }
                         
-                        if (conditionsMet == true) {
+                        if (conditionsMet) {
                             worldEntity.remove();
                         }
                     }

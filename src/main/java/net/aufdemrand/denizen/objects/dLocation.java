@@ -61,7 +61,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             if (i.getValue().getBlockX() != location.getBlockX()) continue;
             if (i.getValue().getBlockY() != location.getBlockY()) continue;
             if (i.getValue().getBlockZ() != location.getBlockZ()) continue;
-            if (i.getValue().getWorld().getName() != location.getWorld().getName()) continue;
+            if (!i.getValue().getWorld().getName().equals(location.getWorld().getName())) continue;
             return i.getKey();
         }
         return null;
@@ -197,10 +197,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 Pattern.compile("(-?\\d+\\.?\\d*,){3,5}\\w+",
                         Pattern.CASE_INSENSITIVE);
         m = location.matcher(string);
-        if (m.matches())
-            return true;
-
-        return false;
+        return m.matches();
     }
 
     /**
@@ -279,8 +276,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
     @Override
     public boolean isUnique() {
-        if (isSaved(this)) return true;
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return isSaved(this);
     }
 
     @Override

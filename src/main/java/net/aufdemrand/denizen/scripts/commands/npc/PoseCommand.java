@@ -77,7 +77,7 @@ public class PoseCommand extends AbstractCommand {
 
             case ASSUME:
                 
-                if (target.name() == "NPC")
+                if (target.name().equals("NPC"))
                     npc.getCitizen().getTrait(Poses.class).assumePose(id);
                 else {
                     Player player = scriptEntry.getPlayer().getPlayerEntity();
@@ -89,7 +89,6 @@ public class PoseCommand extends AbstractCommand {
                     // is to use teleport on him/her
                     player.teleport(location);
                 }
-                return;
         }
 
         // TODO: ADD ADD/REMOVE

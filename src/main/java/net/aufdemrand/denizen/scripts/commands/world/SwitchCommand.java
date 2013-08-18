@@ -127,9 +127,9 @@ public class SwitchCommand extends AbstractCommand {
         boolean currentState = (interactLocation.getBlock().getData() & 0x8) > 0;
         String state = switchState.toString();
         
-        if ((state == "ON" && currentState == false) ||
-            (state == "OFF" && currentState == true) ||
-             state == "TOGGLE") {
+        if ((state.equals("ON") && !currentState) ||
+            (state.equals("OFF") && currentState) ||
+             state.equals("TOGGLE")) {
             
             try {
 

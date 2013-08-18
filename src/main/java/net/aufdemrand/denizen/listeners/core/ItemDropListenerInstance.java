@@ -266,7 +266,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
     
     private void check() {
         dB.echoDebug(qtyDropped + "/" + quantity + " dropped");
-        if (quantity == qtyDropped) {
+        if (quantity.equals(qtyDropped)) {
             finish();
         }
     }

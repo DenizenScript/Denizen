@@ -186,7 +186,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 if (blocks.contains(event.getBucket().name().toUpperCase())
                         || blocks.contains(String.valueOf(event.getBucket().name().toUpperCase()))) {
                     currentBlocks++;
-                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " collected a " + event.getBucket().name().toString() + ".");
+                    dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " collected a " + event.getBucket().name() + ".");
                     check();
                 }
             }

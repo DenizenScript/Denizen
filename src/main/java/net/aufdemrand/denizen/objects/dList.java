@@ -69,11 +69,7 @@ public class dList extends ArrayList<String> implements dObject {
 
         if (m.matches()) return true;
 
-        if (arg.contains("|") || arg.toLowerCase().startsWith("li@")) {
-            return true;
-        }
-
-        return false;
+        return arg.contains("|") || arg.toLowerCase().startsWith("li@");
     }
 
 
@@ -142,8 +138,7 @@ public class dList extends ArrayList<String> implements dObject {
 
     @Override
     public boolean isUnique() {
-        if (flag != null) return true;
-        else return false;
+        return flag != null;
     }
 
     @Override
@@ -287,7 +282,7 @@ public class dList extends ArrayList<String> implements dObject {
             if (index > 0) item = get(index - 1);
             else item = get(0);
             if (attribute.getAttribute(2).startsWith("as")) {
-
+                // TODO ?
             }
             else
                 return new Element(item).getAttribute(attribute.fulfill(1));

@@ -30,7 +30,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     List<String> items = new ArrayList<String>();
     int quantity = 0;
     int currentItems = 0;
-    Server server = Bukkit.getServer();;
+    Server server = Bukkit.getServer();
     String region = null;
     
     @Override
@@ -83,14 +83,14 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     public void listenItem(InventoryClickEvent event)
     {
         // Proceed if the slot clicked is a RESULT slot and the player is the right one
-        if (event.getSlotType().toString() == "RESULT"
+        if (event.getSlotType().toString().equals("RESULT")
             && event.getWhoClicked() == player.getPlayerEntity())
         {    
             // Put the type of this inventory in a string and check if it matches the
             // listener's type
             String inventoryType = event.getInventory().getType().toString();
-            if ((type == ItemType.CRAFT && (inventoryType == "CRAFTING" || inventoryType == "WORKBENCH"))
-                    || (type == ItemType.SMELT && inventoryType == "FURNACE")) {
+            if ((type == ItemType.CRAFT && (inventoryType.equals("CRAFTING") || inventoryType.equals("WORKBENCH")))
+                    || (type == ItemType.SMELT && inventoryType.equals("FURNACE"))) {
 
                 if (region != null)
                     if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
@@ -154,7 +154,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                 if (region != null) 
                     if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
                 
-                if (event.getState().toString() == "CAUGHT_FISH")
+                if (event.getState().toString().equals("CAUGHT_FISH"))
                 {
                     increment("FISH", 1);
                 }

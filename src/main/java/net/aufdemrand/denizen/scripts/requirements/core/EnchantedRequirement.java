@@ -44,7 +44,7 @@ public class EnchantedRequirement extends AbstractRequirement{
             }
         }
 
-        if (outcome == true) dB.echoDebug("...item is enchanted.");
+        if (outcome) dB.echoDebug("...item is enchanted.");
         else dB.echoDebug("...item is not enchanted!");
 
         return outcome;

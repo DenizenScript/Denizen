@@ -76,7 +76,7 @@ public class AnimateCommand extends AbstractCommand {
         
         // Go through all the entities and animate them
         for (dEntity entity : entities) {
-            if (entity.isSpawned() == true) {
+            if (entity.isSpawned()) {
                 if (animation != null && entity.getBukkitEntity() instanceof Player) {
 
                     Player player = (Player) entity.getBukkitEntity();

@@ -79,10 +79,7 @@ public class dMaterial implements dObject {
         
         Matcher m = materialPattern.matcher(arg);
         
-        if (m.matches())
-            return true;
-        
-        return false;
+        return m.matches();
 
     }
     

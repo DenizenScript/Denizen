@@ -17,7 +17,7 @@ public class SneakingRequirement extends AbstractRequirement {
             outcome = true;
         }
 
-        if (outcome == true) dB.echoDebug("...player is sneaking!");
+        if (outcome) dB.echoDebug("...player is sneaking!");
         else dB.echoDebug("...player is not sneaking!");
 
         return outcome;

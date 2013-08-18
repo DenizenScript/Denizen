@@ -29,9 +29,8 @@ public class AnchorTags implements Listener {
             npc = event.getNPC().getCitizen();
         if (npc == null) return;
 
-        Location anchor = null;
         if (npc.getTrait(Anchors.class).getAnchor(event.getValue()) != null) {
-            anchor = npc.getTrait(Anchors.class).getAnchor(event.getValue()).getLocation();
+            Location anchor = npc.getTrait(Anchors.class).getAnchor(event.getValue()).getLocation();
             event.setReplaced(anchor.getX() + "," + anchor.getY() + "," + anchor.getZ() + "," + anchor.getWorld().getName());
         }
     }

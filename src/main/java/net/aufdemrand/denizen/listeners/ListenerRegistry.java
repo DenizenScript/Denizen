@@ -160,8 +160,7 @@ public class ListenerRegistry implements dRegistry, Listener {
 
     public Map<String, AbstractListener> getListenersFor(dPlayer player) {
         if (listeners.containsKey(player.getName())) {
-            Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
-            return playerListeners;
+            return listeners.get(player.getName());
         }
         return null;
     }

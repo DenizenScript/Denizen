@@ -28,8 +28,7 @@ public class DetermineCommand extends AbstractCommand {
     }
 
     public static boolean hasOutcome(long id) {
-        if (outcomes.containsKey(id)) return true;
-        return false;
+        return outcomes.containsKey(id);
     }
 
     public static String getOutcome(long id) {

@@ -94,10 +94,7 @@ public class InteractScriptContainer extends ScriptContainer {
         String triggerName = DenizenAPI.getCurrentInstance()
                 .getTriggerRegistry().get(trigger).getName().toUpperCase();
 
-        if (contains("STEPS." + step.toUpperCase() + "." + triggerName + " TRIGGER"))
-            return true;
-
-        else return false;
+        return contains("STEPS." + step.toUpperCase() + "." + triggerName + " TRIGGER");
     }
 
     /**

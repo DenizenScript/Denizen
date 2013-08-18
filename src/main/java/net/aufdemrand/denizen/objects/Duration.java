@@ -104,9 +104,7 @@ public class Duration implements dObject {
      */
     public static boolean matches(String string) {
         Matcher m = match.matcher(string);
-        if (m.matches()) return true;
-
-        return false;
+        return m.matches();
     }
 
 

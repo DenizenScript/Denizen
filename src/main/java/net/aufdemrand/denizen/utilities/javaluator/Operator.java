@@ -99,7 +99,6 @@ public class Operator {
         if (symbol == null) {
             if (other.symbol != null) return false;
         } else if (!symbol.equals(other.symbol)) return false;
-        if (precedence != other.precedence) return false;
-        return true;
+        return precedence == other.precedence;
     }
 }

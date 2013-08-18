@@ -44,7 +44,7 @@ public class ItemScriptContainer extends ScriptContainer {
             recipe.shape("abc", "def", "ghi");
             char x = 'a';
             for (dItem material : materials) {
-                if (material.getItemStack().getType().name().equals("AIR") == false)
+                if (!material.getItemStack().getType().name().equals("AIR"))
                     recipe.setIngredient(x, material.getItemStack().getData());
                 x++;
             }
@@ -115,7 +115,6 @@ public class ItemScriptContainer extends ScriptContainer {
                         stack.getItemStack().addUnsafeEnchantment(ench, level);
                     } catch (Exception e) {
                         dB.echoError("While constructing '" + getName() + "', there has been a problem. '" + enchantment + "' is an invalid Enchantment!");
-                        continue;
                     }
                 }
             }

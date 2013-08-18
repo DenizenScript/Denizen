@@ -52,11 +52,7 @@ public class WorldGuardUtilities {
         ApplicableRegionSet currentRegions = Depends.worldGuard.getRegionManager
                 (location.getWorld()).getApplicableRegions(location);
         
-        if (currentRegions.size() > 0) {
-            return true;
-        }
-        
-        return false;
+        return (currentRegions.size() > 0);
     }
     
     /**

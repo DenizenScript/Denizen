@@ -153,16 +153,12 @@ public class RequirementChecker {
 
             // ANY # mode
         else if (context.mode.getMode() == RequirementsMode.Mode.ANY_NUM) {
-            if (numberMet >= context.mode.modeInt) return true;
-            else return false;
+            return (numberMet >= context.mode.modeInt);
         }
 
         // FIRST AND ANY # mode
         else if (context.mode.getMode() == RequirementsMode.Mode.FIRST_AND_ANY_NUM) {
-            if (firstReqMet) {
-                if (numberMet > context.mode.modeInt) return true;
-                else return false;
-            } else return false;
+            return firstReqMet && (numberMet <= context.mode.modeInt);
         }
 
         // Nothing met, return FALSE

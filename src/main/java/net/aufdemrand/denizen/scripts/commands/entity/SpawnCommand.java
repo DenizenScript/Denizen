@@ -88,7 +88,7 @@ public class SpawnCommand extends AbstractCommand {
         
         for (dEntity entity : entities) {
                         
-            if (entity.isSpawned() == false) {
+            if (!entity.isSpawned()) {
                 entity.spawnAt(location);
             }
             else {

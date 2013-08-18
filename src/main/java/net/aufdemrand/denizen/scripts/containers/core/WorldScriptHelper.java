@@ -184,7 +184,7 @@ public class WorldScriptHelper implements Listener {
         events.add("player breaks block with " + item.identify());
         events.add("player breaks " + blockType + " with " + item.identify());
         
-        if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        if (!item.identify().equals(item.identify().split(":")[0])) {
             events.add("player breaks block with " +
                     item.identify().split(":")[0]);
             events.add("player breaks " + blockType + " with " +
@@ -742,7 +742,7 @@ public class WorldScriptHelper implements Listener {
     public void entityShootBow(EntityShootBowEvent event) {
         
         Map<String, Object> context = new HashMap<String, Object>();
-        Entity entity = event.getEntity();
+        LivingEntity entity = event.getEntity();
         String entityType = entity.getType().name();
         Entity projectile = event.getProjectile();
 
@@ -788,7 +788,7 @@ public class WorldScriptHelper implements Listener {
             // Go through all the entities, spawning/teleporting them
             for (dEntity newProjectile : newProjectiles) {
             
-                if (newProjectile.isSpawned() == false) {
+                if (!newProjectile.isSpawned()) {
                     newProjectile.spawnAt(projectile.getLocation());
                 }
                 else {
@@ -796,8 +796,7 @@ public class WorldScriptHelper implements Listener {
                 }
                 
                 // Set the entity as the shooter of the projectile
-                if (newProjectile.getBukkitEntity() instanceof Projectile
-                    && entity instanceof LivingEntity) {
+                if (newProjectile.getBukkitEntity() instanceof Projectile) {
                     ((Projectile) newProjectile.getBukkitEntity())
                         .setShooter((LivingEntity) entity);
                 }
@@ -979,7 +978,7 @@ public class WorldScriptHelper implements Listener {
         events.add("item despawns");
         events.add(item.identify() + " despawns");
         
-        if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        if (!item.identify().equals(item.identify().split(":")[0])) {
             events.add(item.identify().split(":")[0] + " despawns");
         }
         if (item.isItemscript()) {
@@ -1005,7 +1004,7 @@ public class WorldScriptHelper implements Listener {
         events.add("item spawns");
         events.add(item.identify() + " spawns");
         
-        if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        if (!item.identify().equals(item.identify().split(":")[0])) {
             events.add(item.identify().split(":")[0] + " spawns");
         }
         if (item.isItemscript()) {
@@ -1053,7 +1052,7 @@ public class WorldScriptHelper implements Listener {
             events.add(interaction + " on " +
                     item.identify() + " in " + type + " inventory");
             
-            if (item.identify().equals(item.identify().split(":")[0]) == false) {
+            if (!item.identify().equals(item.identify().split(":")[0])) {
                 events.add(interaction + " on " +
                         item.identify().split(":")[0] + " in inventory");
                 events.add(interaction + " on " +
@@ -1106,7 +1105,7 @@ public class WorldScriptHelper implements Listener {
             return;
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        else if (determination.equals("none") == false) {
+        else if (!determination.equals("none")) {
             event.setMessage(determination);
         }
     }
@@ -1150,7 +1149,7 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        if (determination.equals("none") == false) {
+        if (!determination.equals("none")) {
             ItemStack is = dItem.valueOf(determination).getItemStack();
             event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
         }
@@ -1171,7 +1170,7 @@ public class WorldScriptHelper implements Listener {
         // Handle message
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        if (determination.equals("none") == false) {
+        if (!determination.equals("none")) {
             ItemStack is = dItem.valueOf(determination).getItemStack();
             event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
         }
@@ -1225,7 +1224,7 @@ public class WorldScriptHelper implements Listener {
                 null, event.getEntity(), context);
 
         // Handle message
-        if (determination.equals("none") == false) {
+        if (!determination.equals("none")) {
             event.setDeathMessage(determination);
         }
     }
@@ -1316,7 +1315,7 @@ public class WorldScriptHelper implements Listener {
             events.add(interaction + " with item");
             events.add(interaction + " with " + item.identify());
             
-            if (item.identify().equals(item.identify().split(":")[0]) == false) {
+            if (!item.identify().equals(item.identify().split(":")[0])) {
                 events.add(interaction + " with " + item.identify().split(":")[0]);
             }
             if (item.isItemscript()) {
@@ -1335,7 +1334,7 @@ public class WorldScriptHelper implements Listener {
                 events.add(interaction + " with item");
                 events.add(interaction + " with " + item.identify());
                 
-                if (item.identify().equals(item.identify().split(":")[0]) == false) {
+                if (!item.identify().equals(item.identify().split(":")[0])) {
                     events.add(interaction + " with " + item.identify().split(":")[0]);
                 }
                 if (item.isItemscript()) {
@@ -1383,7 +1382,7 @@ public class WorldScriptHelper implements Listener {
         events.add("player right clicks " + entityType + " with " +
                    item.identify());
         
-        if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        if (!item.identify().equals(item.identify().split(":")[0])) {
             events.add("player right clicks entity with " +
                     item.identify().split(":")[0]);
             events.add("player right clicks " + entityType + " with " +
@@ -1403,7 +1402,7 @@ public class WorldScriptHelper implements Listener {
             events.add("player right clicks " + entityType + " " +
                     itemFrame.identify());
             
-            if (itemFrame.identify().equals(itemFrame.identify().split(":")[0]) == false) {
+            if (!itemFrame.identify().equals(itemFrame.identify().split(":")[0])) {
                 
                 events.add("player right clicks " + entityType + " " +
                         itemFrame.identify().split(":")[0]);
@@ -1431,7 +1430,7 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("player consumes " + item.identify());
         
-        if (item.identify().equals(item.identify().split(":")[0]) == false) {
+        if (!item.identify().equals(item.identify().split(":")[0])) {
             events.add("player consumes " + item.identify().split(":")[0]);
         }
         if (item.isItemscript()) {
@@ -1505,7 +1504,7 @@ public class WorldScriptHelper implements Listener {
                 null, event.getPlayer(), context);
 
         // Handle message
-        if (determination.equals("none") == false) {
+        if (!determination.equals("none")) {
             event.setJoinMessage(determination);
         }
     }
@@ -1550,7 +1549,7 @@ public class WorldScriptHelper implements Listener {
                 null, event.getPlayer(), context);
 
         // Handle determine message
-        if (determination.equals("none") == false) {
+        if (!determination.equals("none")) {
             event.setQuitMessage(determination);
         }
     }
@@ -1801,7 +1800,7 @@ public class WorldScriptHelper implements Listener {
         events.add("weather changes");
         events.add("weather changes in " + world);
         
-        if (event.toWeatherState() == true) {
+        if (event.toWeatherState()) {
             context.put("weather", new Element("rain"));
             events.add("weather rains");
             events.add("weather rains in " + world);

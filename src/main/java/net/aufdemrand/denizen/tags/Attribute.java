@@ -58,16 +58,14 @@ public class Attribute {
     public boolean startsWith(String string) {
         string = string.toLowerCase();
         if (attributes.isEmpty()) return false;
-        if (raw_tag.toLowerCase().startsWith(string)) return true;
-        return false;
+        return raw_tag.toLowerCase().startsWith(string);
     }
 
     public boolean startsWith(String string, int attribute) {
         string = string.toLowerCase();
         if (attributes.isEmpty()) return false;
         if (attributes.size() < attribute) return false;
-        if (raw_tag.split(".", attribute)[attribute - 1].toLowerCase().startsWith(string)) return true;
-        return false;
+        return raw_tag.split(".", attribute)[attribute - 1].toLowerCase().startsWith(string);
     }
 
     public Attribute fulfill(int attributes) {
@@ -89,8 +87,7 @@ public class Attribute {
    }
 
     public boolean hasContext(int attribute) {
-        if (getAttribute(attribute).contains("[")) return true;
-        return false;
+        return getAttribute(attribute).contains("[");
     }
 
     public String getContext(int attribute) {

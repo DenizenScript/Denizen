@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 
 public class OxygenCommand extends AbstractCommand {
 
-    public enum Type { MAXIMUM, REMAINING };
-    public enum Mode { SET, ADD, REMOVE };
+    public enum Type { MAXIMUM, REMAINING }
+    public enum Mode { SET, ADD, REMOVE }
     
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

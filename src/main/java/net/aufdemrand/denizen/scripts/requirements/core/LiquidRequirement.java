@@ -39,7 +39,7 @@ public class LiquidRequirement extends AbstractRequirement{
 
         if (blockToCheck != null && blockToCheck.isLiquid()) outcome = true;
 
-        if (outcome == true) dB.echoDebug("...block is liquid!");
+        if (outcome) dB.echoDebug("...block is liquid!");
         else dB.echoDebug("...block is not liquid!");
 
         return outcome;

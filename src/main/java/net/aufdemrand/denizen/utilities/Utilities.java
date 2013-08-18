@@ -48,11 +48,9 @@ public class Utilities {
     }
 
     public static boolean isWalkable(Location location) {
-        if ((location.getBlock().getType() == Material.AIR
+        return ((location.getBlock().getType() == Material.AIR
                 || location.getBlock().getType() == Material.GRASS)
-                && (location.add(0, 1, 0).getBlock().getType() == Material.AIR))
-            return true;
-        else return false;
+                && (location.add(0, 1, 0).getBlock().getType() == Material.AIR));
     }
 
     public static String arrayToString(String[] input, String glue){
@@ -339,13 +337,11 @@ public class Utilities {
         if (!baseLocation.getWorld().getName().equals(theLocation.getWorld().getName()))
             return false;
 
-        Location entityLocation = baseLocation;
-
-        if (Math.abs(entityLocation.getX() - theLocation.getX())
+        if (Math.abs(baseLocation.getX() - theLocation.getX())
                 > theLeeway) return false;
-        if (Math.abs(entityLocation.getY() - theLocation.getY())
+        if (Math.abs(baseLocation.getY() - theLocation.getY())
                 > theLeeway) return false;
-        if (Math.abs(entityLocation.getZ() - theLocation.getZ())
+        if (Math.abs(baseLocation.getZ() - theLocation.getZ())
                 > theLeeway) return false;
 
         return true;

@@ -106,9 +106,7 @@ public class dCuboid implements dObject, Notable {
 
         // Check for standard cuboid format: cu@x,y,z,world|x,y,z,world
         m = location.matcher(string.replace("cu@", ""));
-        if (m.matches()) return true;
-
-        return false;
+        return m.matches();
     }
 
 
@@ -162,9 +160,7 @@ public class dCuboid implements dObject, Notable {
             return false;
         if (!Utilities.isBetween(loc_1.getY(), loc_2.getY(), location.getY()))
             return false;
-        if (!Utilities.isBetween(loc_1.getZ(), loc_2.getZ(), location.getZ()))
-            return false;
-        return true;
+        return Utilities.isBetween(loc_1.getZ(), loc_2.getZ(), location.getZ());
     }
 
 

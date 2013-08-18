@@ -73,7 +73,7 @@ public class HeadCommand extends AbstractCommand {
         ((SkullMeta) itemMeta).setOwner(skin);
         item.setItemMeta(itemMeta);
         
-        if (target.name() == "NPC") {
+        if (target.name().equals("NPC")) {
             NPC npc = scriptEntry.getNPC().getCitizen();
             
             if (!npc.hasTrait(Equipment.class)) npc.addTrait(Equipment.class);

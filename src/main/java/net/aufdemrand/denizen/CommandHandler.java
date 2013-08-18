@@ -374,14 +374,11 @@ public class CommandHandler {
                 return;
             }
             trait.sit(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
-            return;
         } else if (args.hasValueFlag("anchor")) {
             DenizenAPI.getCurrentInstance().tagManager();
             trait.sit(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
-            return;
         } else {
             trait.sit();
-            return;
         }
 
     }
@@ -444,14 +441,11 @@ public class CommandHandler {
                 return;
             }
             trait.toSleep(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
-            return;
         } else if (args.hasValueFlag("anchor")) {
             DenizenAPI.getCurrentInstance().tagManager();
             trait.toSleep(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
-            return;
         } else {
             trait.toSleep();
-            return;
         }
 
     }
@@ -514,14 +508,11 @@ public class CommandHandler {
                 return;
             }
             trait.startFishing(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
-            return;
         } else if (args.hasValueFlag("anchor")) {
             DenizenAPI.getCurrentInstance().tagManager();
             trait.startFishing(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
-            return;
         } else {
             trait.startFishing();
-            return;
         }
 
     }
@@ -613,10 +604,8 @@ public class CommandHandler {
 
         if (trait.isSneaking()) {
             Messaging.send(sender, ChatColor.RED + npc.getName() + " is already sneaking!");
-            return;
         } else {
             trait.sneak();
-            return;
         }
 
     }
@@ -877,7 +866,6 @@ public class CommandHandler {
             desc = "Lists currently loaded dScripts.", modifiers = { "scripts" },
             min = 1, max = 4, permission = "denizen.basic")
     public void scripts(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
         // Fill arguments
         String type = null;   if (args.hasValueFlag("type"))   type = args.getFlag("type");
         String filter = null; if (args.hasValueFlag("filter")) filter = args.getFlag("filter");
@@ -916,7 +904,6 @@ public class CommandHandler {
             desc = "Repo commands.", modifiers = {"info", "search", "load"},
             min = 1, permission = "denizen.repo")
     public void repo(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
         if(args.argsLength()>1 && args.getString(2).equalsIgnoreCase("info")){
             if(args.argsLength()==3){
                 try{

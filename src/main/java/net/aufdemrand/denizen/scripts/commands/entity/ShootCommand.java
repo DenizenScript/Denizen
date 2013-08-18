@@ -192,7 +192,7 @@ public class ShootCommand extends AbstractCommand {
         
         for (dEntity entity : entities) {
             
-            if (entity.isSpawned() == false) {
+            if (!entity.isSpawned()) {
                 entity.spawnAt(originLocation);
             }
             else {
@@ -267,7 +267,7 @@ public class ShootCommand extends AbstractCommand {
                         // Check if the entity has collided with something
                         // using the most basic possible calculation
                         
-                        if (lastEntity.getLocation().add(v3).getBlock().getType().toString().equals("AIR") == false) {
+                        if (!lastEntity.getLocation().add(v3).getBlock().getType().toString().equals("AIR")) {
                             runs = maxRuns;
                         }
                     }

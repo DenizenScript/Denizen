@@ -34,7 +34,7 @@ public class InGroupRequirement extends AbstractRequirement{
                         global = true;
                     else
                     {
-                        if (global == true)
+                        if (global)
                         {
                             if (Depends.permissions.playerInGroup((World) null, context.getPlayer().getName(), arg))
                             {

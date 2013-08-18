@@ -71,8 +71,7 @@ public class dNPC implements dObject {
     }
 
     public boolean isValid() {
-        if (getCitizen() == null) return false;
-        else return true;
+        return getCitizen() != null;
     }
 
     private int npcid = -1;

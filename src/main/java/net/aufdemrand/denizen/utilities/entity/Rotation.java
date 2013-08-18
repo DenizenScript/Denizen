@@ -119,12 +119,9 @@ public class Rotation {
         double requiredYaw = normalizeYaw(getYaw(at.toVector().subtract(
                 from.toVector()).normalize()));
 
-        if (Math.abs(requiredYaw - currentYaw) < degreeLimit ||
+        return (Math.abs(requiredYaw - currentYaw) < degreeLimit ||
                 Math.abs(requiredYaw + 360 - currentYaw) < degreeLimit ||
-                Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit)
-            return true;
-
-        return false;
+                Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit);
     }
     
 

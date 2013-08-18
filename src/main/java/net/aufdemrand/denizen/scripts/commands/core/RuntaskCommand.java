@@ -119,7 +119,7 @@ public class RuntaskCommand extends AbstractCommand {
         if (script == null)
             throw new InvalidArgumentsException("Must define a SCRIPT to be run.");
         // If not queue, and delayed, throw an exception... this cannot happen.
-        if (queue == scriptEntry.getResidingQueue().id && delay != null)
+        if (queue.equals(scriptEntry.getResidingQueue().id) && delay != null)
             throw new InvalidArgumentsException("Cannot delay an INJECTED task script! Use 'QUEUE'.");
         
         // Put important objects inside the scriptEntry to be sent to execute()

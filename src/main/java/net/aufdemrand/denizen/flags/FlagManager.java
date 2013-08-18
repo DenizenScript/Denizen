@@ -26,26 +26,20 @@ public class FlagManager {
     // Static methods
     public static boolean playerHasFlag(dPlayer player, String flagName) {
         if (player == null || flagName == null) return false;
-        if (DenizenAPI.getCurrentInstance().flagManager()
-                .getPlayerFlag(player.getName(), flagName).size() > 0)
-            return true;
-        else return false;
+        return DenizenAPI.getCurrentInstance().flagManager()
+                .getPlayerFlag(player.getName(), flagName).size() > 0;
     }
 
     public static boolean npcHasFlag(dNPC npc, String flagName) {
         if (npc == null || flagName == null) return false;
-        if (DenizenAPI.getCurrentInstance().flagManager()
-                .getNPCFlag(npc.getId(), flagName).size() > 0)
-            return true;
-        else return false;
+        return DenizenAPI.getCurrentInstance().flagManager()
+                .getNPCFlag(npc.getId(), flagName).size() > 0;
     }
 
     public static boolean serverHasFlag(String flagName) {
         if (flagName == null) return false;
-        if (DenizenAPI.getCurrentInstance().flagManager()
-                .getGlobalFlag(flagName).size() > 0)
-            return true;
-        else return false;
+        return DenizenAPI.getCurrentInstance().flagManager()
+                .getGlobalFlag(flagName).size() > 0;
     }
 
     /**
@@ -768,8 +762,7 @@ public class FlagManager {
             if (values.isEmpty()) return true;
             adjustIndex();
             if (this.size() < index + 1) return true;
-            if (values.get(index).equals("")) return true;
-            return false;
+            return values.get(index).equals("");
         }
 
         /**

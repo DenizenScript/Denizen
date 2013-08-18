@@ -80,9 +80,7 @@ public class dPlayer implements dObject {
                 break;
             }
 
-        if (returnable != null) return true;
-
-        return false;
+        return returnable != null;
     }
 
 
@@ -108,8 +106,7 @@ public class dPlayer implements dObject {
 
     public boolean isValid() {
         if (player_name == null) return false;
-        if (getPlayerEntity() == null && getOfflinePlayer() == null) return false;
-        return true;
+        return (!(getPlayerEntity() == null && getOfflinePlayer() == null));
     }
 
     public Player getPlayerEntity() {
@@ -153,8 +150,7 @@ public class dPlayer implements dObject {
 
     public boolean isOnline() {
         if (player_name == null) return false;
-        if (Bukkit.getPlayer(player_name) != null) return true;
-        return false;
+        return Bukkit.getPlayer(player_name) != null;
     }
 
 

@@ -28,8 +28,7 @@ public class Element implements dObject {
     }
 
     public static boolean matches(String string) {
-        if (string == null) return false;
-        else return true;
+        return string != null;
     }
 
     private String element;

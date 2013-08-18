@@ -28,7 +28,7 @@ public class PermissionRequirement extends AbstractRequirement{
                         global = true;
                     else
                     {
-                        if (global == true)
+                        if (global)
                         {
                             if(Depends.permissions.has((World) null, context.getPlayer().getName(), arg))
                             {

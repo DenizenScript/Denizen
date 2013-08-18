@@ -62,7 +62,7 @@ public class LookCommand extends AbstractCommand {
                 aH.debugObj("entities", entities.toString()));
 
         for (dEntity entity : entities) {
-            if (entity.isSpawned() == true) {
+            if (entity.isSpawned()) {
                 Rotation.faceLocation(entity.getBukkitEntity(), loc);
             }
         }

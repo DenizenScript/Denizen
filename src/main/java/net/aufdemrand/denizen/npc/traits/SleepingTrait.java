@@ -31,7 +31,7 @@ public class SleepingTrait extends Trait {
      * Makes the NPC sleep
      */
     public void toSleep() {
-        if (sleeping == true) {
+        if (sleeping) {
             return;
         }
         
@@ -39,7 +39,6 @@ public class SleepingTrait extends Trait {
         
         sleeping = true;
         bedLocation = npc.getBukkitEntity().getLocation();
-        return;
     }
     
     /**
@@ -48,7 +47,7 @@ public class SleepingTrait extends Trait {
      * @param location
      */
     public void toSleep(Location location) {
-        if (sleeping == true) {
+        if (sleeping) {
             return;
         }
         
@@ -69,7 +68,7 @@ public class SleepingTrait extends Trait {
      * Makes the NPC wake up
      */
     public void wakeUp() {
-        if (sleeping == false) {
+        if (!sleeping) {
             return;
         }
         

@@ -160,11 +160,7 @@ public class aH {
 
             dList list = new dList(this.getValue());
             
-            if (list.filter(dClass) != null) {
-                return true;
-            }
-            
-            return false;
+            return list.filter(dClass) != null;
         }
 
         public Element asElement() {
@@ -175,9 +171,8 @@ public class aH {
 
             // dB.log("Calling asType: " + prefix + ":" + value + " " + clazz.getCanonicalName());
 
-            dObject arg = null;
             try {
-                arg = (dObject) clazz.getMethod("valueOf", String.class)
+                dObject arg = (dObject) clazz.getMethod("valueOf", String.class)
                         .invoke(null, value);
 
                // dB.log("Created: " + clazz.cast(arg).debug());
@@ -472,8 +467,7 @@ public class aH {
     @Deprecated
     public static dItem getItemFrom(String arg) {
         arg = arg.toLowerCase().replace("item:", "");
-        dItem stack = dItem.valueOf(arg);
-        return stack;
+        return dItem.valueOf(arg);
     }
 
     @Deprecated
@@ -567,23 +561,17 @@ public class aH {
 
     @Deprecated
     public static boolean matchesLocation(String arg) {
-        if (arg.length() > 8 && arg.toUpperCase().startsWith("LOCATION:"))
-            return true;
-        return false;
+        return arg.toUpperCase().startsWith("LOCATION:");
     }
 
     @Deprecated
     public static boolean matchesQuantity(String arg) {
-        if (arg.length() > 4 && arg.toUpperCase().startsWith("QTY:"))
-            return true;
-        return false;
+        return arg.toUpperCase().startsWith("QTY:");
     }
 
     @Deprecated
     public static boolean matchesQueue(String arg) {
-        if (arg.length() > 6 && arg.toUpperCase().startsWith("QUEUE:"))
-            return true;
-        return false;
+        return arg.toUpperCase().startsWith("QUEUE:");
     }
 
     @Deprecated

@@ -51,7 +51,6 @@ public class SittingTrait extends Trait implements Listener  {
 
         sitting = true;
         chairLocation = npc.getBukkitEntity().getLocation();
-        return;
     }
     
     /**

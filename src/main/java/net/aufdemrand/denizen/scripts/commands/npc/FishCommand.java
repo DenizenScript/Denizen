@@ -27,14 +27,12 @@ public class FishCommand extends AbstractCommand {
             if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
                 dB.echoDebug("...location set");
-                continue;
             } else if (aH.matchesArg("CATCHFISH", arg)) {
                 catchFish = true;
                 dB.echoDebug("...npc will catch fish");
             } else if (aH.matchesArg("STOP", arg)) {
                 stopping = true;
                 dB.echoDebug("...stopping");
-                continue;
             } else if (aH.matchesValueArg("CATCHPERCENT, PERCENT", arg, ArgumentType.Integer)) {
                 catchPercent = aH.getIntegerFrom(arg);
                 dB.echoDebug("...set catch percent: " + catchPercent);
@@ -73,7 +71,6 @@ public class FishCommand extends AbstractCommand {
         trait.startFishing(location);
         trait.setCatchPercent(catchPercent);
         if (catchFish) trait.setCatchFish(true);
-        return;
         
     }
 }

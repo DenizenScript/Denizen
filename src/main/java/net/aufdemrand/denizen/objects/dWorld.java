@@ -59,9 +59,7 @@ public class dWorld implements dObject {
             if (world.getName().equalsIgnoreCase(arg))
                 returnable = world;
 
-        if (returnable != null) return true;
-
-        return false;
+        return returnable != null;
     }
 
 

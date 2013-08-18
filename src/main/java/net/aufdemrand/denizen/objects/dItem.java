@@ -397,10 +397,7 @@ public class dItem implements dObject {
      */
     public boolean isItemscript() {
         
-        if (containsLore("§0id:")) {
-            return true;
-        }
-        return false;
+        return containsLore("§0id:");
     }
     
     public String getMaterial() {
@@ -608,7 +605,7 @@ public class dItem implements dObject {
                         .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("enchantments")) {
-
+        // TODO ?
         }
 
         if (attribute.startsWith("book")) {
