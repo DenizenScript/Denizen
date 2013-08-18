@@ -182,7 +182,7 @@ public class CommandRegistry implements dRegistry {
                 "IF", "if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
 
         registerCoreMember(InventoryCommand.class,
-                "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] (origin:<entity>/<location>) [destination:<entity>/<location>]", 2);
+                "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] [destination:<inventory>] (origin:<inventory>)", 2);
         
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);

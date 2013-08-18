@@ -17,6 +17,7 @@
 		<json.version>20090211</json.version>
 		<citizens.version>2.0.9-SNAPSHOT</citizens.version>
 		<build.number>Unknown</build.number>
+		<BUILD_NUMBER>Unknown</BUILD_NUMBER>
 	</properties>
 
 	<!-- Repositories -->
@@ -126,6 +127,18 @@
 	</scm>
 
 	<build>
+		<defaultGoal>clean package install</defaultGoal>
+		
+		<resources>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>plugin.yml</include>
+				</includes>
+			</resource>
+		</resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
