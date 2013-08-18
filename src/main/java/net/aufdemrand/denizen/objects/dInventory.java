@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
@@ -10,28 +13,120 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
+import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.notable.Note;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.npc.NPC;
 
-public class dInventory implements dObject {
+public class dInventory implements dObject, Notable {
+    
+    ///////////////////
+    //    NOTABLE METHODS
+    ////////////////
 
-    //final static Pattern inventoryPattern = Pattern.compile("(\\w+)");
+    public boolean isUnique() {
+        return (NotableManager.isSaved(this));
+    }
+    
+    @Note("inventory")
+    public String getSaveString() {
+        return identify();
+    }
+
+    public void makeUnique(String id) {
+        NotableManager.saveAs(this, id);
+    }
+
+    public void forget() {
+        NotableManager.remove(this);
+    }
+    
+    /////////////////////
+    //   PATTERNS
+    /////////////////
+    
+    final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location)(\\[)(.+?)(\\])", Pattern.CASE_INSENSITIVE);
+    final static Pattern inventory_by_saved = Pattern.compile("(in@)(.+)");
     
     //////////////////
     //    OBJECT FETCHER
     ////////////////
     
     /**
-     * Gets an Inventory Object from a string form.
+     * 
+     * Gets a dInventory from a string format.
      *
-     * @param string  the string
-     * @return  an Inventory, or null if incorrectly formatted
+     * @param string
+     *          The inventory in string form. (in@player[playerName], in@notableName, etc.)
+     * @return 
+     *          The dInventory value. If the string is incorrectly formatted or
+     *          the specified inventory is invalid, this is null.
      *
      */
     @ObjectFetcher("in")
     public static dInventory valueOf(String string) {
-                
-        // No match
+        
+        if (string == null) return null;
+        
+        Matcher m = inventory_by_type.matcher(string);
+        
+        if (m.matches()) {
+
+            // Set the type of the inventory holder
+            String t = m.group(2);
+            // Set the name/id/location of the inventory holder
+            String h = m.group(4);
+            
+
+            if (t.equalsIgnoreCase("npc")) {
+                // Check if the NPC ID specified is valid
+                if (dNPC.matches(h) && dNPC.valueOf(h).getEntity() instanceof org.bukkit.entity.HumanEntity)
+                    return new dInventory(dNPC.valueOf(h).getEntity());
+            }
+            else if (t.equalsIgnoreCase("player")) {
+                // Check if the player name specified is valid
+                if (dPlayer.matches(h))
+                    return new dInventory(dPlayer.valueOf(h).getPlayerEntity());
+            }
+            else if (t.equalsIgnoreCase("entity")) {
+                // Check if the entity ID specified is valid and the entity is living
+                if (dEntity.matches(h)
+                       && dEntity.valueOf(h).isLivingEntity())
+                    return new dInventory(dEntity.valueOf(h).getLivingEntity());
+            }
+            else if (t.equalsIgnoreCase("location")) {
+                // Check if the location specified is valid and the block is a container
+                if (dLocation.matches(h)) {
+                    BlockState block = dLocation.valueOf(h).getBlock().getState();
+                    if (block instanceof InventoryHolder)
+                        return new dInventory(block);
+                }
+            }
+            
+            // If the dInventory is invalid, alert the user and return null
+            dB.echoError("Value of dInventory returning null. Invalid " + t + " specified: " + h);
+            return null;
+            
+        }
+        
+        // Match in@notableName for Notable dInventories
+        m = inventory_by_saved.matcher(string);
+        
+        if (m.matches()) {
+            
+            if (NotableManager.isType(m.group(2), dInventory.class))
+                return (dInventory) NotableManager.getSavedObject(m.group(2));
+            
+            dB.echoError("Value of dInventory returning null. Invalid notable specified: " + m.group(2));
+            return null;
+            
+        }
+        
+        dB.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
         return null;
+        
     }
     
     /**
@@ -43,6 +138,9 @@ public class dInventory implements dObject {
      */
     public static boolean matches(String arg) {
 
+        if (dInventory.valueOf(arg) != null)
+            return true;
+        
         return false;
 
     }
@@ -51,35 +149,82 @@ public class dInventory implements dObject {
     ///////////////
     //   Constructors
     /////////////
+    
+    String holderType = null;
+    String holderIdentifier = null;
 
     public dInventory(Inventory inventory) {
         this.inventory = inventory;
+        if (inventory.getHolder() != null) {
+            if (!(inventory.getHolder() instanceof LivingEntity)) {
+                holderType = "location";
+                holderIdentifier = ((BlockState) inventory.getHolder()).getLocation().toString();
+            }
+            else if (inventory.getHolder() instanceof NPC) {
+                holderType = "npc";
+                holderIdentifier = String.valueOf(((NPC) inventory.getHolder()).getId());
+            }
+            else if (inventory.getHolder() instanceof Player) {
+                holderType = "player";
+                holderIdentifier = ((Player) inventory.getHolder()).getName();
+            }
+            else {
+                holderType = "entity";
+                holderIdentifier = String.valueOf(((LivingEntity) inventory.getHolder()).getEntityId());
+            }
+        }
     }
     
     public dInventory(InventoryType type) {
-        
         inventory = Bukkit.getServer().createInventory(null, type);
+    }
+    
+    public dInventory(InventoryType type, String id) {
+        inventory = Bukkit.getServer().createInventory(null, type);
+        holderType = "notable";
+        holderIdentifier = id;
+        this.makeUnique(id);
     }
     
     public dInventory(InventoryHolder holder) {
         this.inventory = holder.getInventory();
+        if (!(holder instanceof LivingEntity)) {
+            holderType = "location";
+            holderIdentifier = ((BlockState) inventory.getHolder()).getLocation().toString();
+        }
+        else if (holder instanceof NPC) {
+            holderType = "npc";
+            holderIdentifier = String.valueOf(((NPC) inventory.getHolder()).getId());
+        }
+        else if (holder instanceof Player) {
+            holderType = "player";
+            holderIdentifier = ((Player) inventory.getHolder()).getName();
+        }
+        else {
+            holderType = "entity";
+            holderIdentifier = String.valueOf(((LivingEntity) inventory.getHolder()).getEntityId());
+        }
     }
     
     public dInventory(Player player) {
         this.inventory = player.getInventory();
+        holderType = "player";
+        holderIdentifier = player.getName();
     }
     
     public dInventory(BlockState state) {
-        
         if (state instanceof InventoryHolder) {
             this.inventory = ((InventoryHolder) state).getInventory();
+            holderType = "location";
+            holderIdentifier = state.getLocation().toString();
         }
     }
     
     public dInventory(LivingEntity entity) {
-        
         if (entity instanceof InventoryHolder) {
             this.inventory = ((InventoryHolder) entity).getInventory();
+            holderType = "entity";
+            holderIdentifier = String.valueOf(entity.getEntityId());
         }
     }
 
@@ -408,46 +553,33 @@ public class dInventory implements dObject {
         inventory.setContents(contents);
     }
     
-    
-    
-    //////////////////////////////
-    //  DSCRIPT ARGUMENT METHODS
-    /////////////////////////
+    ////////////////////////
+    //  dObject Methods
+    /////////////////////
 
     private String prefix = "Inventory";
     
-    @Override
     public String getType() {
         return "Inventory";
     }
     
-    @Override
     public String getPrefix() {
         return prefix;
     }
     
-    @Override
     public dInventory setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
 
-    @Override
     public String debug() {
         return null;
     }
 
-    @Override
-    public boolean isUnique() {
-        return false;
-    }
-
-    @Override
     public String identify() {
-        return null;
+        return "in@" + (holderType.equals("notable") ? holderIdentifier : (holderType + "[" + holderIdentifier + "]"));
     }
 
-    @Override
     public String getAttribute(Attribute attribute) {
         
         if (attribute == null) return null;

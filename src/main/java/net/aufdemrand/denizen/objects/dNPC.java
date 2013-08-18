@@ -27,6 +27,7 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -351,6 +352,14 @@ public class dNPC implements dObject {
         // -->
         if (attribute.startsWith("owner"))
             return new Element(getOwner()).getAttribute(attribute.fulfill(1));
+        
+        // <--
+        // <npc.inventory> -> dInventory
+        // Returns the dInventory of the NPC.
+        // NOTE: This currently only works with player-type NPCs.
+        // -->
+        if (attribute.startsWith("inventory"))
+            return new dInventory((InventoryHolder) getDenizenEntity().getLivingEntity()).getAttribute(attribute.fulfill(1));
 
         // <--
         // <npc.is_spawned> -> Element(boolean)
