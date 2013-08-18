@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -30,9 +31,9 @@ public class dScript implements dObject {
         }
         return null;
     }
-    
+
     public static boolean matches(String string) {
-        
+
         Matcher m = script_pattern.matcher(string);
         if (m.matches()) {
             dScript script = new dScript(m.group(2));
@@ -111,7 +112,7 @@ public class dScript implements dObject {
 
     @Override
     public String getPrefix() {
-       return prefix;
+        return prefix;
     }
 
     @Override
@@ -135,8 +136,33 @@ public class dScript implements dObject {
         if (attribute == null) return "null";
 
         if (attribute.startsWith("container_type"))
-            return new Element(getContainer().getType())
-                .getAttribute(attribute.fulfill(1));
+            return new Element(container.getType())
+                    .getAttribute(attribute.fulfill(1));
+
+        if (attribute.startsWith("cooled_down")) {
+            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
+                    : attribute.getScriptEntry().getPlayer());
+            return new Element(container.checkCooldown(player))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("requirements.check")) {
+            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
+                    : attribute.getScriptEntry().getPlayer());
+            if (attribute.hasContext(2))
+                return new Element(container.checkRequirements(player,
+                        attribute.getScriptEntry().getNPC(),
+                        attribute.getContext(2)))
+                        .getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("cooldown")) {
+            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
+                    : attribute.getScriptEntry().getPlayer());
+            return CooldownCommand.getCooldownDuration((player != null ? player.getName() : null), container.getName())
+                    .getAttribute(attribute.fulfill(1));
+
+        }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
