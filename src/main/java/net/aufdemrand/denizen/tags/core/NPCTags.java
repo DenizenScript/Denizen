@@ -129,17 +129,4 @@ public class NPCTags implements Listener {
         npc.action("cancel navigation", null);
         npc.action("cancel navigation due to " + event.getCancelReason().toString(), null);
     }
-
-    @EventHandler
-    public void onNpcDismount(NPCVehicleExitEvent event) {
-        if (event.getExited() instanceof Player) {
-            dNPC npc = dNPC.mirrorCitizensNPC(event.getNPC());
-            npc.action("dismount", dPlayer.mirrorBukkitPlayer((Player)event.getExited()));
-            WorldScriptHelper.doEvents(Arrays.asList("player dismounts npc"),
-                    npc, (Player)event.getExited(), null);
-        }
-        else {
-            dB.echoDebug("NPCVehicleExitEvent without a player?");
-        }
-    }
 }
