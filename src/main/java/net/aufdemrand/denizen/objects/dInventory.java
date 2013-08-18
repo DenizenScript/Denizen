@@ -453,7 +453,7 @@ public class dInventory implements dObject, Notable {
      * Denizen support for updatable quest journals
      * and their like
      *
-     * @param items  The itemStack of the book
+     * @param   items  The itemStack of the book
      * @return  The resulting dInventory
      *
      */

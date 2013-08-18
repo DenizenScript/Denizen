@@ -13,7 +13,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class QueueCommand extends AbstractCommand {
 
-    private enum Action { CLEAR, SET, DELAY, PAUSE, RESUME }
+    private enum Action { CLEAR, DELAY, PAUSE, RESUME }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -39,7 +39,7 @@ public class QueueCommand extends AbstractCommand {
 
         // Check required args
         if (!scriptEntry.hasObject("action"))
-            throw new InvalidArgumentsException("Must specify an action. Valid: CLEAR, SET, DELAY, PAUSE, RESUME");
+            throw new InvalidArgumentsException("Must specify an action. Valid: CLEAR, DELAY, PAUSE, RESUME");
 
         if (scriptEntry.getObject("action") == Action.DELAY && !scriptEntry.hasObject("delay"))
             throw new InvalidArgumentsException("Must specify a delay.");
@@ -55,7 +55,7 @@ public class QueueCommand extends AbstractCommand {
         Duration delay = (Duration) scriptEntry.getObject("delay");
 
         // Debugger
-        dB.report(getName(), aH.debugObj("Queue", queue.toString())
+        dB.report(getName(), aH.debugObj("Queue", queue.id)
                 + aH.debugObj("Action", action.toString())
                 + (action != null && action == Action.DELAY ? delay.debug() : ""));
 

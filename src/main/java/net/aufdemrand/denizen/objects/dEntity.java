@@ -47,12 +47,10 @@ public class dEntity implements dObject {
     //   PATTERNS
     /////////////////
 
-    final static Pattern entity_by_id =
-            Pattern.compile("(n@|e@|p@)(.+)",
+    final static Pattern entity_by_id = Pattern.compile("(n@|e@|p@)(.+)",
                     Pattern.CASE_INSENSITIVE);
 
-    final static Pattern entity_with_data =
-            Pattern.compile("(\\w+),?(\\w+)?,?(\\w+)?",
+    final static Pattern entity_with_data = Pattern.compile("(\\w+),?(\\w+)?,?(\\w+)?",
                     Pattern.CASE_INSENSITIVE);
 
 

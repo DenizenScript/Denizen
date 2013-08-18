@@ -103,7 +103,7 @@ public class ScriptContainer {
     }
 
     public boolean checkCooldown(dPlayer player) {
-        return CooldownCommand.checkCooldown(player.getName(), name);
+        return CooldownCommand.checkCooldown((player != null ? player.getName() : null), name);
     }
 
 }
