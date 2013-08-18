@@ -57,13 +57,13 @@ public class FlagCommand extends AbstractCommand implements Listener {
             // to be flagged
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.matchesArgumentType(dNPC.class)
-                    && arg.getValue().toLowerCase().startsWith("n@")) {
+                    && arg.startsWith("n@")) {
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
 
             } else if (!scriptEntry.hasObject("flag_target")
                     && arg.matchesArgumentType(dPlayer.class)
-                    && arg.getValue().toLowerCase().startsWith("p@")) {
+                    && arg.startsWith("p@")) {
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
             }

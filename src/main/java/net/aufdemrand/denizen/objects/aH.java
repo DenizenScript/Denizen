@@ -68,6 +68,10 @@ public class aH {
             return new Argument(string);
         }
 
+        public boolean startsWith(String string) {
+            return value.toLowerCase().startsWith(string.toLowerCase());
+        }
+
         public boolean hasPrefix() {
             return has_prefix;
         }
@@ -76,10 +80,6 @@ public class aH {
             if (prefix == null)
                 return null;
             return valueOf(prefix);
-        }
-
-        public boolean startsWith(String string) {
-            return value.startsWith(string);
         }
 
         public boolean matches(String values) {
