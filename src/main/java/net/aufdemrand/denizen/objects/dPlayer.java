@@ -339,8 +339,9 @@ public class dPlayer implements dObject {
             int x = 1;
             if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
                 x = attribute.getIntContext(1);
-
-            return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
+            // No playerchathistory? Return null.
+            if (!PlayerTags.playerChatHistory.containsKey(player_name)) return "null";
+            else return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
                     .getAttribute(attribute.fulfill(1));
         }
 
