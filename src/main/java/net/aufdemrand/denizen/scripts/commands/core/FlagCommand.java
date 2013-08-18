@@ -62,7 +62,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
 
             } else if (!scriptEntry.hasObject("flag_target")
-                    && arg.matchesArgumentType(dPlayer.class)) {
+                    && arg.matchesArgumentType(dPlayer.class)
+                    && arg.getValue().toLowerCase().startsWith("p@")) {
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
             }
