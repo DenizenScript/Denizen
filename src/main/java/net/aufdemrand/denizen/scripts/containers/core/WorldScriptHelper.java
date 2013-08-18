@@ -604,7 +604,7 @@ public class WorldScriptHelper implements Listener {
             else {
                 context.put("damager", damager);
                 
-                if (damager instanceof Projectile) {
+                if (damager.getBukkitEntity() instanceof Projectile) {
                     if (((Projectile) damager.getBukkitEntity()).getShooter() != null) {
                         
                         dEntity shooter = new dEntity(((Projectile) damager.getBukkitEntity()).getShooter());
