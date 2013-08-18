@@ -361,6 +361,15 @@ public class UtilTags implements Listener {
         }
 
         // <--
+        // <util.entity_is_spawned[<entity>]> -> Boolean
+        // Returns whether an entity is spawned and valid.
+        // -->
+        else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")) {
+            dEntity ent = dEntity.valueOf(event.getTypeContext());
+            event.setReplaced((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false");
+        }
+
+        // <--
         // <util.uppercase[<text>]> -> Element
         // Returns the text in uppercase letters.
         // -->
