@@ -19,6 +19,9 @@ public class dList extends ArrayList<String> implements dObject {
     final static Pattern flag_by_id =
             Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
                     Pattern.CASE_INSENSITIVE);
+
+    final static Pattern split_char = Pattern.compile("\\|");
+    final static Pattern identifier = Pattern.compile("li@", Pattern.CASE_INSENSITIVE);
     
     @ObjectFetcher("li, fl")
     public static dList valueOf(String string) {
@@ -28,8 +31,6 @@ public class dList extends ArrayList<String> implements dObject {
         // Match @object format
 
         // Make sure string matches what this interpreter can accept.
-
-
         Matcher m;
         m = flag_by_id.matcher(string);
 
@@ -57,8 +58,8 @@ public class dList extends ArrayList<String> implements dObject {
             }
         }
 
-        // Use value of string, which will seperate values by the use of a pipe (|)
-        return new dList(string.replaceFirst("(?i)li@", ""));
+        // Use value of string, which will seperate values by the use of a pipe '|'
+        return new dList(string.replaceFirst(identifier.pattern(), ""));
     }
 
 
@@ -67,9 +68,7 @@ public class dList extends ArrayList<String> implements dObject {
         Matcher m;
         m = flag_by_id.matcher(arg);
 
-        if (m.matches()) return true;
-
-        return arg.contains("|") || arg.toLowerCase().startsWith("li@");
+        return m.matches() || arg.contains("|") || arg.toLowerCase().startsWith("li@");
     }
 
 
@@ -77,29 +76,33 @@ public class dList extends ArrayList<String> implements dObject {
     //   Constructors
     //////////
 
+    // A list of dObjects
     public dList(ArrayList<? extends dObject> dObjectList) {
         for (dObject obj : dObjectList)
             add(obj.identify());
     }
 
-    public dList() {
-        // Empty dList!
-    }
+    // Empty dList
+    public dList() { }
 
+    // A string of items, split by '|'
     public dList(String items) {
-        addAll(Arrays.asList(items.split("\\|")));
+        if (items != null) addAll(Arrays.asList(split_char.split(items)));
     }
 
+    // A List<String> of items
     public dList(List<String> items) {
-        addAll(items);
+        if (items != null) addAll(items);
     }
-    
+
+    // A List<String> of items, with a prefix
     public dList(List<String> items, String prefix) {
         for (String element : items) {
             add(prefix + element);
         }
     }
 
+    // A Flag
     public dList(FlagManager.Flag flag) {
         this.flag = flag;
         addAll(flag.values());
@@ -199,8 +202,11 @@ public class dList extends ArrayList<String> implements dObject {
 
         StringBuilder dScriptArg = new StringBuilder();
         dScriptArg.append("li@");
-        for (String item : this)
-            dScriptArg.append(item + "|");
+        for (String item : this) {
+            dScriptArg.append(item);
+            // Items are separated by the | character in dLists
+            dScriptArg.append('|');
+        }
 
         return dScriptArg.toString().substring(0, dScriptArg.length() - 1);
     }
@@ -218,8 +224,11 @@ public class dList extends ArrayList<String> implements dObject {
                 || attribute.startsWith("as_cslist")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
             StringBuilder dScriptArg = new StringBuilder();
-            for (String item : this)
-                dScriptArg.append(item + ", ");
+            for (String item : this) {
+                dScriptArg.append(item);
+                // Insert a comma and space after each item
+                dScriptArg.append(", ");
+            }
             return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -246,8 +255,11 @@ public class dList extends ArrayList<String> implements dObject {
                 || attribute.startsWith("as_string")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
             StringBuilder dScriptArg = new StringBuilder();
-            for (String item : this)
-                dScriptArg.append(item + " ");
+            for (String item : this) {
+                dScriptArg.append(item);
+                // Insert space between items.
+                dScriptArg.append(' ');
+            }
             return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 1))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -257,7 +269,7 @@ public class dList extends ArrayList<String> implements dObject {
         // returns a new dList excluding the items specified.
         // -->
         if (attribute.startsWith("exclude")) {
-            String[] exclusions = attribute.getContext(1).split("\\|");
+            String[] exclusions = split_char.split(attribute.getContext(1));
             // Create a new dList that will contain the exclusions
             dList list = new dList(this);
             // Iterate through
@@ -281,11 +293,8 @@ public class dList extends ArrayList<String> implements dObject {
             String item;
             if (index > 0) item = get(index - 1);
             else item = get(0);
-            if (attribute.getAttribute(2).startsWith("as")) {
-                // TODO ?
-            }
-            else
-                return new Element(item).getAttribute(attribute.fulfill(1));
+
+            return new Element(item).getAttribute(attribute.fulfill(1));
         }
         
         if (attribute.startsWith("last")) {
