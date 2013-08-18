@@ -619,6 +619,9 @@ public class WorldScriptHelper implements Listener {
                             context.put("shooter", shooter);
                         }
                     }
+                    else {
+                        context.put("shooter", "null");
+                    }
                 }
             }
 
