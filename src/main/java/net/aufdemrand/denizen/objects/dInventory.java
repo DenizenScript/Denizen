@@ -5,8 +5,12 @@ import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.HopperMinecart;
+import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -154,25 +158,58 @@ public class dInventory implements dObject, Notable {
     String holderIdentifier = null;
 
     public dInventory(Inventory inventory) {
-        this.inventory = inventory;
         if (inventory.getHolder() != null) {
-            if (!(inventory.getHolder() instanceof LivingEntity)) {
+            
+            InventoryHolder holder = inventory.getHolder();
+            
+            if (!(holder instanceof LivingEntity)) {
+                if (holder instanceof DoubleChest)
+                    holderIdentifier = ((DoubleChest) holder).getLocation().toString();
+                else if (holder instanceof BlockState)
+                    holderIdentifier = getLocation().toString();
                 holderType = "location";
-                holderIdentifier = getLocation().toString();
             }
-            else if (inventory.getHolder() instanceof NPC) {
-                holderType = "npc";
-                holderIdentifier = String.valueOf(((NPC) inventory.getHolder()).getId());
+            else if (holder instanceof Player) {
+                // Check if it's an NPC... currently, only Player NPCs can have inventories
+                if (((Player) holder).hasMetadata("NPC")) {
+                    holderType = "npc";
+                    holderIdentifier = String.valueOf(((NPC) holder).getId());
+                }
+                else {
+                    holderType = "player";
+                    holderIdentifier = ((Player) holder).getName();
+                }
             }
-            else if (inventory.getHolder() instanceof Player) {
-                holderType = "player";
-                holderIdentifier = ((Player) inventory.getHolder()).getName();
+            else if (holder instanceof Horse) {
+                holderType = "entity";
+                holderIdentifier = String.valueOf(((Horse) holder).getEntityId());
+            }
+            else if (holder instanceof HopperMinecart) {
+                holderType = "entity";
+                holderIdentifier = String.valueOf(((HopperMinecart) holder).getEntityId());
+            }
+            else if (holder instanceof StorageMinecart) {
+                holderType = "entity";
+                holderIdentifier = String.valueOf(((StorageMinecart) holder).getEntityId());
             }
             else {
-                holderType = "entity";
-                holderIdentifier = String.valueOf(((LivingEntity) inventory.getHolder()).getEntityId());
+                if (((LivingEntity) holder).hasMetadata("NPC")) {
+                    // Return, because only Players and Player NPCs can have inventories right now.
+                    // Uncomment this when Denizen implements inventories for all!
+                    // holderType = "npc";
+                    // holderIdentifier = String.valueOf(((NPC) holder).getId());
+                    
+                    dB.echoError("Only Player-type NPCs can have inventories.");
+                    return;
+                }
+                else {
+                    holderType = "entity";
+                    holderIdentifier = String.valueOf(((LivingEntity) holder).getEntityId());
+                }
             }
+            
         }
+        this.inventory = inventory;
     }
     
     public dInventory(InventoryType type) {
@@ -187,22 +224,50 @@ public class dInventory implements dObject, Notable {
     }
     
     public dInventory(InventoryHolder holder) {
-        this.inventory = holder.getInventory();
         if (!(holder instanceof LivingEntity)) {
+            if (holder instanceof DoubleChest)
+                holderIdentifier = ((DoubleChest) holder).getLocation().toString();
+            else if (holder instanceof BlockState)
+                holderIdentifier = getLocation().toString();
             holderType = "location";
-            holderIdentifier = getLocation().toString();
-        }
-        else if (holder instanceof NPC) {
-            holderType = "npc";
-            holderIdentifier = String.valueOf(((NPC) inventory.getHolder()).getId());
         }
         else if (holder instanceof Player) {
-            holderType = "player";
-            holderIdentifier = ((Player) inventory.getHolder()).getName();
+            // Check if it's an NPC... currently, only Player NPCs can have inventories
+            if (((Player) holder).hasMetadata("NPC")) {
+                holderType = "npc";
+                holderIdentifier = String.valueOf(((NPC) holder).getId());
+            }
+            else {
+                holderType = "player";
+                holderIdentifier = ((Player) holder).getName();
+            }
+        }
+        else if (holder instanceof Horse) {
+            holderType = "entity";
+            holderIdentifier = String.valueOf(((Horse) holder).getEntityId());
+        }
+        else if (holder instanceof HopperMinecart) {
+            holderType = "entity";
+            holderIdentifier = String.valueOf(((HopperMinecart) holder).getEntityId());
+        }
+        else if (holder instanceof StorageMinecart) {
+            holderType = "entity";
+            holderIdentifier = String.valueOf(((StorageMinecart) holder).getEntityId());
         }
         else {
-            holderType = "entity";
-            holderIdentifier = String.valueOf(((LivingEntity) inventory.getHolder()).getEntityId());
+            if (((LivingEntity) holder).hasMetadata("NPC")) {
+                // Return, because only Players and Player NPCs can have inventories right now.
+                // Uncomment this when Denizen implements inventories for all!
+                // holderType = "npc";
+                // holderIdentifier = String.valueOf(((NPC) holder).getId());
+                
+                dB.echoError("Only Player-type NPCs can have inventories.");
+                return;
+            }
+            else {
+                holderType = "entity";
+                holderIdentifier = String.valueOf(((LivingEntity) holder).getEntityId());
+            }
         }
     }
     
@@ -413,7 +478,6 @@ public class dInventory implements dObject, Notable {
             InventoryHolder holder = inventory.getHolder();
             
             if (holder instanceof BlockState) {
-                
                 return new dLocation(((BlockState) holder).getLocation());
             }
             else if (holder instanceof Player) {
@@ -656,7 +720,7 @@ public class dInventory implements dObject, Notable {
         
         // <--
         // <inventory.type> -> Element
-        // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING")
+        // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE")
         // -->
         if (attribute.startsWith("type"))
             return new Element(getInventory().getType().name())
