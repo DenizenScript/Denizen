@@ -1,15 +1,16 @@
 package net.aufdemrand.denizen;
 
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.traits.*;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptRepo;
@@ -827,6 +828,13 @@ public class CommandHandler {
             if (ScriptHelper.getHadAnError()) {
                 Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
             }
+            List<String> events = new ArrayList<String>();
+            Map<String, Object> context = new HashMap<String, Object>();
+            events.add("reload scripts");
+            context.put("all", Element.TRUE);
+            context.put("sender", new Element(sender.getName()));
+            context.put("haderror", new Element(ScriptHelper.getHadAnError()));
+            WorldScriptHelper.doEvents(events, null, (sender instanceof Player) ? ((Player)sender) : null, context);
             return;
         }
         // Reload a specific item
@@ -846,6 +854,13 @@ public class CommandHandler {
                 if (ScriptHelper.getHadAnError()) {
                     Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
                 }
+                List<String> events = new ArrayList<String>();
+                Map<String, Object> context = new HashMap<String, Object>();
+                events.add("reload scripts");
+                context.put("all", Element.FALSE);
+                context.put("haderror", new Element(ScriptHelper.getHadAnError()));
+                context.put("sender", new Element(sender.getName()));
+                WorldScriptHelper.doEvents(events, null, (sender instanceof Player) ? ((Player)sender) : null, context);
                 return;
             }
         }
