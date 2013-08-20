@@ -166,7 +166,7 @@ public class dInventory implements dObject, Notable {
                 if (holder instanceof DoubleChest)
                     holderIdentifier = ((DoubleChest) holder).getLocation().toString();
                 else if (holder instanceof BlockState)
-                    holderIdentifier = getLocation().toString();
+                    holderIdentifier = ((BlockState) holder).getLocation().toString();
                 holderType = "location";
             }
             else if (holder instanceof Player) {
@@ -228,7 +228,7 @@ public class dInventory implements dObject, Notable {
             if (holder instanceof DoubleChest)
                 holderIdentifier = ((DoubleChest) holder).getLocation().toString();
             else if (holder instanceof BlockState)
-                holderIdentifier = getLocation().toString();
+                holderIdentifier = ((BlockState) holder).getLocation().toString();
             holderType = "location";
         }
         else if (holder instanceof Player) {
