@@ -6,6 +6,12 @@ Debug:
   Console width: 60
 
 Scripts:
+  World:
+    Events:
+      On player chats:
+        Use asynchronous event: true
+      On time changes:
+        Frequency of check: 250t
   Queue speed: 0.5s
   Load scripts in subfolders: true
 
@@ -51,9 +57,6 @@ Triggers:
 Commands:
   Engage:
     Timeout: 150s
-
-Events:
-  On time resolution: 250t
 
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new

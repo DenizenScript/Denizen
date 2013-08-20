@@ -14,7 +14,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -63,6 +62,7 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -94,6 +94,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
+@SuppressWarnings("deprecation")
 public class WorldScriptHelper implements Listener {
 
     public static Map<String, WorldScriptContainer> world_scripts = new ConcurrentHashMap<String, WorldScriptContainer>(8, 0.9f, 1);
@@ -383,7 +384,7 @@ public class WorldScriptHelper implements Listener {
                     public void run() {
                         timeEvent();
                     }
-                }, Settings.WorldScriptTimeEventResolution().getTicks(), Settings.WorldScriptTimeEventResolution().getTicks());
+                }, Settings.WorldScriptTimeEventFrequency().getTicks(), Settings.WorldScriptTimeEventFrequency().getTicks());
 
         // Fire the 'Server Start' event
         doEvents(Arrays.asList("server start"),
@@ -1081,7 +1082,10 @@ public class WorldScriptHelper implements Listener {
     /////////////////
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void playerChat(final AsyncPlayerChatEvent event) {
+    public void asyncPlayerChat(final AsyncPlayerChatEvent event) {
+        
+        // Return if "Use asynchronous event" is false in config file
+        if (!Settings.WorldScriptChatEventAsynchronous()) return;
         
         final Map<String, Object> context = new HashMap<String, Object>();
         context.put("message", new Element(event.getMessage()));
@@ -1106,6 +1110,25 @@ public class WorldScriptHelper implements Listener {
 
         if (determination == null)
             return;
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        else if (!determination.equals("none")) {
+            event.setMessage(determination);
+        }
+    }
+    
+    @EventHandler
+    public void syncPlayerChat(final PlayerChatEvent event) {
+        
+        // Return if "Use asynchronous event" is true in config file
+        if (Settings.WorldScriptChatEventAsynchronous()) return;
+        
+        final Map<String, Object> context = new HashMap<String, Object>();
+        context.put("message", new Element(event.getMessage()));
+
+        String determination = doEvents(Arrays.asList("player chats"),
+                null, event.getPlayer(), context);
+
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
         else if (!determination.equals("none")) {

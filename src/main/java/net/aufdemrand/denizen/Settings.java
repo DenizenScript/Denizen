@@ -253,9 +253,33 @@ public class Settings {
                 .getBoolean("Triggers.Chat.Appears globally.If NPC uninteractable", true);
     }
 
-    public static Duration WorldScriptTimeEventResolution() {
+    
+    /////////////////////
+    //   WORLD SCRIPTS
+    /////////////////
+    
+    /*
+
+    # Whether the "on player chats" world event should use an
+    # asynchronous Bukkit event or not
+
+    */
+    
+    public static boolean WorldScriptChatEventAsynchronous() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Scripts.World.Events.On player chats.Use asynchronous event", true);
+    }
+    
+    /*
+
+    # The frequency with which the "on time changes" world script
+    # event will be checked
+
+    */
+
+    public static Duration WorldScriptTimeEventFrequency() {
         return Duration.valueOf(DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Events.On time resolution", "250t"));
+                .getString("Scripts.World.Events.On time changes.Frequency of check", "250t"));
 
     }
 
