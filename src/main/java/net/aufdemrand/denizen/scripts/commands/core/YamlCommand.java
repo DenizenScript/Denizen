@@ -180,29 +180,42 @@ public class YamlCommand extends AbstractCommand implements Listener {
         // Check attributes
         //
 
+        // <--
+        // <yaml[<id>].contains[<path>]> -> Element(Boolean)
+        // Returns true if the file has the specified path.
+        // Otherwise, returns false.
+        // -->
         if (attribute.startsWith("contains")) {
             event.setReplaced(new Element(String.valueOf(getYaml(id).contains(path)))
                     .getAttribute(attribute.fulfill(1)));
             return;
         }
 
+        // <--
+        // <yaml[<id>].read[<path>]> -> Element
+        // Returns the value of the key at the path.
+        // -->
         if (attribute.startsWith("read")) {
             String value = getYaml(id).getString(path);
             if (value == null) {
                 // If value is null, the key at the specified path didn't exist.
                 dB.echoDebug("YAML tag '" + event.raw_tag + "' has returned null.");
-                event.setReplaced("null");
+                event.setReplaced(new Element("null").getAttribute(attribute.fulfill(1)));
                 return;
 
             } else
                 event.setReplaced(new Element(value).getAttribute(attribute.fulfill(1)));
         }
 
+        // <--
+        // <yaml[<id>].list_keys[<path>]> -> Element
+        // Returns a dList of all the keys at the path.
+        // -->
         if (attribute.startsWith("list_keys")) {
             ConfigurationSection section = getYaml(id).getConfigurationSection(path);
             if (section == null) {
                 dB.echoDebug("YAML tag '" + event.raw_tag + "' has returned null.");
-                event.setReplaced("null");
+                event.setReplaced(new Element("null").getAttribute(attribute.fulfill(1)));
                 return;
             }
             Set<String> keys = section.getKeys(false);
