@@ -439,7 +439,7 @@ public class UtilTags implements Listener {
                 else if (specifier.equalsIgnoreCase("minute"))
                     event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.MINUTE))).getAttribute(attribute.fulfill(3)));
                     // <--
-                    // <util.date.time.second Element(Number)
+                    // <util.date.time.second> -> Element(Number)
                     // Returns the current second of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("second"))
