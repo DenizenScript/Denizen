@@ -715,11 +715,12 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
             // Check if the player is in the specified region
             if (attribute.hasContext(1)) {
-            
-            	String region = attribute.getContext(1);
-
-            	return new Element(String.valueOf(WorldGuardUtilities.inRegion(this, region)))
-            		.getAttribute(attribute.fulfill(1));
+            	
+            	dList region_list = dList.valueOf(attribute.getContext(1));
+            	for(String region : region_list)
+            	if(WorldGuardUtilities.inRegion(this, region))
+            		return new Element(true).getAttribute(attribute.fulfill(1));
+            		return new Element(false).getAttribute(attribute.fulfill(1));
             }
             
             // Check if the player is in any region
