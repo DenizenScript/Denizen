@@ -835,10 +835,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--
-        // <l@location.in_region[<name>]> -> Element(Boolean)
-        // If a region name is specified, returns true if the
-        // location is in that region, else it returns true if
-        // the location is in any region. Otherwise, returns false.
+        // <l@location.in_region[<name>(|<name>|...)]> -> Element(Boolean)
+        // If a region name or list of names is specified, returns whether the
+        // location is in one of the listed regions, otherwise it returns whether
+        // the location is in any region.
         // -->
         if (attribute.startsWith("in_region")) {
             if (Depends.worldGuard == null) {
@@ -848,11 +848,11 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
             // Check if the player is in the specified region
             if (attribute.hasContext(1)) {
-            
-                String region = attribute.getContext(1);
-
-                return new Element(String.valueOf(WorldGuardUtilities.inRegion(this, region)))
-                    .getAttribute(attribute.fulfill(1));
+                dList region_list = dList.valueOf(attribute.getContext(1));
+                for(String region: region_list)
+                    if(WorldGuardUtilities.inRegion(this, region))
+                        return Element.TRUE.getAttribute(attribute.fulfill(1));
+                return Element.FALSE.getAttribute(attribute.fulfill(1));
             }
             
             // Check if the player is in any region
