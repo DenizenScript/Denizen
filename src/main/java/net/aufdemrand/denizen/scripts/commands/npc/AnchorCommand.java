@@ -45,8 +45,8 @@ public class AnchorCommand extends AbstractCommand {
 
     private enum Action { ADD, REMOVE, ASSUME, WALKTO, WALKNEAR }
 
-    public static final	String  RANGE_ARG = "range, r";
-    public static final	String     ID_ARG = "id, i";
+    public static final    String  RANGE_ARG = "range, r";
+    public static final    String     ID_ARG = "id, i";
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -57,7 +57,7 @@ public class AnchorCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values()))
                 // add Action
-            	scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
+                scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
 
 
             else if (!scriptEntry.hasObject("range")
@@ -93,7 +93,7 @@ public class AnchorCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Get objects
-    	Action action = (Action) scriptEntry.getObject("action");
+        Action action = (Action) scriptEntry.getObject("action");
         dLocation location = (dLocation) scriptEntry.getObject("location");
         Element range = (Element) scriptEntry.getObject("range");
         Element id = (Element) scriptEntry.getObject("id");
@@ -133,7 +133,6 @@ public class AnchorCommand extends AbstractCommand {
                 npc.getCitizen().getTrait(Anchors.class)
                         .removeAnchor(npc.getCitizen().getTrait(Anchors.class)
                                 .getAnchor(id.asString()));
-                return;
         }
 
 

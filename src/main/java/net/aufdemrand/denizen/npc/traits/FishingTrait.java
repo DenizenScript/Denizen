@@ -25,57 +25,57 @@ import org.bukkit.util.Vector;
 
 public class FishingTrait extends Trait {
 
-	@Persist("fishing")
+    @Persist("fishing")
     private boolean fishing = false;
-	@Persist("catch fish")
+    @Persist("catch fish")
     private boolean catchFish = false;
-	
-	@Persist("fishing spot")
-	private Location fishingLocation = null;
-	
-	ArrayList<Location> available = new ArrayList<Location>();
-	EntityHuman eh = null;
-	WorldServer nmsworld = null;
-	Location fishingSpot = null;
-	EntityFishingHook fishHook = null;
-	EntityItem fish = null;
-	
-	@Persist("catch chance")
-	int catchPercent = 65;
-	
-	int reelCount = 100;
-	int castCount = 0;
-	
-	@Override
-	public void run() {
-	    reelCount++;
-	    castCount++;
-	    
-	    if(fish != null) 
-	        if(fish.getBukkitEntity().getLocation().distance(npc.getBukkitEntity().getLocation())<3) {
-	            try{
-	                fish.getBukkitEntity().remove();
-	            } catch(Exception e) { }
-	        }
-	        
-	    if(reelCount == 400) {
-	        reel();
-	        reelCount = 0;
-	        castCount = 325;
-	    }
-	    
-	    if(castCount == 400) {
-	        cast();
-	        castCount = 0;
-	    }
-	}
-	
-	@Override
-	public void onSpawn() {
-		eh = ((CraftPlayer) npc.getBukkitEntity()).getHandle();
-		nmsworld = ((CraftWorld) npc.getBukkitEntity().getWorld()).getHandle();
-	}
-	   
+    
+    @Persist("fishing spot")
+    private Location fishingLocation = null;
+    
+    ArrayList<Location> available = new ArrayList<Location>();
+    EntityHuman eh = null;
+    WorldServer nmsworld = null;
+    Location fishingSpot = null;
+    EntityFishingHook fishHook = null;
+    EntityItem fish = null;
+    
+    @Persist("catch chance")
+    int catchPercent = 65;
+    
+    int reelCount = 100;
+    int castCount = 0;
+    
+    @Override
+    public void run() {
+        reelCount++;
+        castCount++;
+        
+        if(fish != null) 
+            if(fish.getBukkitEntity().getLocation().distance(npc.getBukkitEntity().getLocation())<3) {
+                try{
+                    fish.getBukkitEntity().remove();
+                } catch(Exception e) { }
+            }
+            
+        if(reelCount == 400) {
+            reel();
+            reelCount = 0;
+            castCount = 325;
+        }
+        
+        if(castCount == 400) {
+            cast();
+            castCount = 0;
+        }
+    }
+    
+    @Override
+    public void onSpawn() {
+        eh = ((CraftPlayer) npc.getBukkitEntity()).getHandle();
+        nmsworld = ((CraftWorld) npc.getBukkitEntity().getWorld()).getHandle();
+    }
+       
     /**
      * Makes the NPC fish at the specified location
      * 
@@ -102,24 +102,23 @@ public class FishingTrait extends Trait {
         fishing = false;
     }
     
-	/**
-	 * Makes the NPC fish in the nearest water
-	 * 
-	 * TODO Needs logic for handling that.
-	 */
-	public void startFishing() {
-		fishing = true;
-		fishingLocation = npc.getBukkitEntity().getLocation();
-		return;
-	}
-	
-	private void cast() {
-		DenizenAPI.getDenizenNPC(npc).action("cast fishing rod", null);
-		
-		if(fishingLocation == null) {
-		    dB.echoError("Fishing location not found!");
-		    return;
-		}
+    /**
+     * Makes the NPC fish in the nearest water
+     * 
+     * TODO Needs logic for handling that.
+     */
+    public void startFishing() {
+        fishing = true;
+        fishingLocation = npc.getBukkitEntity().getLocation();
+    }
+    
+    private void cast() {
+        DenizenAPI.getDenizenNPC(npc).action("cast fishing rod", null);
+        
+        if(fishingLocation == null) {
+            dB.echoError("Fishing location not found!");
+            return;
+        }
 
         double v = 34;
         double g = 20;
@@ -135,6 +134,7 @@ public class FishingTrait extends Trait {
         Vector test = to.clone().subtract(from).toVector();
         Double elev = test.getY();
         Double testAngle = launchAngle(from, to, v, elev, g);
+        if (testAngle == null) return;
         Double hangtime = hangtime(testAngle, v, elev, g);
         Vector victor = to.clone().subtract(from).toVector();
         Double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
@@ -157,12 +157,12 @@ public class FishingTrait extends Trait {
         theHook.setShooter(npc.getBukkitEntity());
         theHook.setVelocity(victor);
         
-        PlayerAnimation.ARM_SWING.play((Player) npc.getBukkitEntity());	
+        PlayerAnimation.ARM_SWING.play((Player) npc.getBukkitEntity());    
     }
-	
-	private void reel() {
-		DenizenAPI.getDenizenNPC(npc).action("reel in fishing rod", null);
-		
+    
+    private void reel() {
+        DenizenAPI.getDenizenNPC(npc).action("reel in fishing rod", null);
+        
         int chance = (int)(Math.random()*100);
         
         try{
@@ -188,30 +188,30 @@ public class FishingTrait extends Trait {
         }
         
         PlayerAnimation.ARM_SWING.play((Player) npc.getBukkitEntity());
-	}
-	
-	/**
-	 * Checks if the NPC is currently fishing
-	 * 
-	 * @return boolean
-	 */
-	public boolean isFishing() {
-		return fishing;
-	}
-	
-	/**
-	 * Gets the location the NPC is casting to
-	 * Returns null if the NPC isn't fishing
-	 * 
-	 * @return Location
-	 */
-	public Location getFishingLocation() {
-		return fishingLocation;
-	}
-	
-	public FishingTrait() {
-		super("fishing");
-	}
+    }
+    
+    /**
+     * Checks if the NPC is currently fishing
+     * 
+     * @return boolean
+     */
+    public boolean isFishing() {
+        return fishing;
+    }
+    
+    /**
+     * Gets the location the NPC is casting to
+     * Returns null if the NPC isn't fishing
+     * 
+     * @return Location
+     */
+    public Location getFishingLocation() {
+        return fishingLocation;
+    }
+    
+    public FishingTrait() {
+        super("fishing");
+    }
 
     public static Double launchAngle(Location from, Location to, double v, double elev, double g){
         Vector victor = from.clone().subtract(to).toVector();
@@ -244,11 +244,11 @@ public class FishingTrait extends Trait {
     }
     
     public void setCatchFish(Boolean catchFish) {
-    	this.catchFish = catchFish;
+        this.catchFish = catchFish;
     }
     
     public void setCatchPercent(int catchPercent) {
-    	this.catchPercent = catchPercent;
+        this.catchPercent = catchPercent;
     }
 
 }

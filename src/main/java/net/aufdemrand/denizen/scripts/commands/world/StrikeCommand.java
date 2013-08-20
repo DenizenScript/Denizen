@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -12,39 +13,34 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class StrikeCommand extends AbstractCommand {
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-
-        // Initialize fields
-        dLocation location = null;
-        Boolean damage = true;
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Iterate through arguments
-		for (String arg : scriptEntry.getArguments()){
-			if (aH.matchesLocation(arg))
-                location = aH.getLocationFrom(arg);
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            
+            if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class))
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
 
-			else if (aH.matchesArg("NO_DAMAGE, NODAMAGE", arg))
-                damage = false;
+            else if (arg.matches("no_damage") || arg.matches("nodamage"))
+                scriptEntry.addObject("damage", Element.FALSE);
 
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-		}
+        }
 
         // Check required args
-		if (location == null)
+        if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
 
-        // Stash args in ScriptEntry for use in execute()
-        scriptEntry.addObject("location", location);
-        scriptEntry.addObject("damage", damage);
-	}
+        scriptEntry.defaultObject("damage", Element.TRUE);
+    }
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Extract objects from ScriptEntry
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        Boolean damage = (Boolean) scriptEntry.getObject("damage");
+        Boolean damage = scriptEntry.getElement("damage").asBoolean();
 
         // Debugger
         dB.report(getName(),
@@ -56,6 +52,6 @@ public class StrikeCommand extends AbstractCommand {
             location.getWorld().strikeLightning(location);
         else
             location.getWorld().strikeLightningEffect(location);
-	}
+    }
 
 }

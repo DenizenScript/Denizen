@@ -10,8 +10,6 @@ import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsMode;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,7 +103,7 @@ public class ScriptContainer {
     }
 
     public boolean checkCooldown(dPlayer player) {
-        return CooldownCommand.checkCooldown(player.getName(), name);
+        return CooldownCommand.checkCooldown((player != null ? player.getName() : null), name);
     }
 
 }

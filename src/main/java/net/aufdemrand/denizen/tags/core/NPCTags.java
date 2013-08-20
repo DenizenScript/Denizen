@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
@@ -29,7 +30,8 @@ public class NPCTags implements Listener {
 
     @EventHandler
     public void npcTags(ReplaceableTagEvent event) {
-        if (!event.matches("npc")) return;
+        
+        if (!event.matches("npc") || event.replaced()) return;
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
@@ -71,7 +73,7 @@ public class NPCTags implements Listener {
         // Do world script event 'On NPC Completes Navigation'
         WorldScriptHelper.doEvents(Arrays.asList
                 ("npc completes navigation"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null).toUpperCase();
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
 
         // Do the assignment script action
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
@@ -91,27 +93,26 @@ public class NPCTags implements Listener {
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("begin navigation", null);
 
-        if (event.getNPC().getNavigator().getTargetType().toString() == "ENTITY")
-        {
-        	LivingEntity entity = event.getNPC().getNavigator().getEntityTarget().getTarget();
-        	
-        	// If the NPC has an entity target, is aggressive towards it
-        	// and that entity is not dead, trigger "on attack" command
-        	if (event.getNPC().getNavigator().getEntityTarget().isAggressive()
-        		&& entity.isDead() == false)
-        	{
-        		dPlayer player = null;
-        	
-        		// Check if the entity attacked by this NPC is a player
-        		if (entity instanceof Player)
-        			player = dPlayer.mirrorBukkitPlayer((Player) entity);
-        		
-        		npc.action("attack", player);
-        	
-        		npc.action("attack on "
-        				+ entity.getType().toString(), player);  
-        	}
-        	previousLocations.put(event.getNPC().getId(), npc.getLocation());
+        if (event.getNPC().getNavigator().getTargetType() == TargetType.ENTITY) {
+            LivingEntity entity = event.getNPC().getNavigator().getEntityTarget().getTarget();
+            
+            // If the NPC has an entity target, is aggressive towards it
+            // and that entity is not dead, trigger "on attack" command
+            if (event.getNPC().getNavigator().getEntityTarget().isAggressive()
+                && !entity.isDead()) {
+                
+                dPlayer player = null;
+            
+                // Check if the entity attacked by this NPC is a player
+                if (entity instanceof Player)
+                    player = dPlayer.mirrorBukkitPlayer((Player) entity);
+                
+                npc.action("attack", player);
+            
+                npc.action("attack on "
+                        + entity.getType().toString(), player);  
+            }
+            previousLocations.put(event.getNPC().getId(), npc.getLocation());
         }
     }
 
@@ -119,12 +120,11 @@ public class NPCTags implements Listener {
     public void navCancel(NavigationCancelEvent event) {
         WorldScriptHelper.doEvents(Arrays.asList
                 ("npc cancels navigation"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null).toUpperCase();
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
 
         if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
         npc.action("cancel navigation", null);
         npc.action("cancel navigation due to " + event.getCancelReason().toString(), null);
     }
-
 }

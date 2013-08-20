@@ -4,10 +4,10 @@ import net.aufdemrand.denizen.listeners.AbstractListenerType;
 
 public class ItemListenerType extends AbstractListenerType {
 
-	public enum ItemType { CRAFT, SMELT, FISH }
-	
-	@Override
-	public void onEnable() {
-		
-	}
+    public enum ItemType { CRAFT, SMELT, FISH }
+    
+    @Override
+    public void onEnable() {
+        
+    }
 }

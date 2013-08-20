@@ -2,8 +2,8 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -23,10 +23,10 @@ import org.bukkit.block.Block;
 
 public class ModifyBlockCommand extends AbstractCommand{
 
-	@Override
-	public void onEnable() {
-		//nothing to do here
-	}
+    @Override
+    public void onEnable() {
+        //nothing to do here
+    }
     
     /* MODIFYBLOCK [LOCATION:x,y,z,world] [MATERIAL:DATA VALUE] (RADIUS:##) (HEIGHT:##) (DEPTH:##) */
 
@@ -44,133 +44,133 @@ public class ModifyBlockCommand extends AbstractCommand{
      *
      */
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
-		
-		Material material = null;
-		int data = 0;
-		dLocation location = null;
-		int radius = 0;
-		int height = 0;
-		int depth = 0;
-		
-		for (String arg : scriptEntry.getArguments()) {			
-		    if (aH.matchesLocation(arg)){
-		    	location = aH.getLocationFrom(arg);
-		    	dB.echoDebug("...location set to: " + location);
-
-            }
-			
-			else if (aH.matchesValueArg("MATERIAL, M", arg, ArgumentType.Custom)) {
-				
-				String value = aH.getStringFrom(arg).toUpperCase();
-				
-				if (value.split(":", 2).length > 1) {
-					data = aH.getIntegerFrom(value.split(":", 2)[1]);
-				}
-				
-				value = value.split(":", 2)[0];
-				
-				if (aH.matchesInteger(value)) {
-					material = Material.getMaterial(aH.getIntegerFrom(value));
-				}
-				else {
-					material = Material.getMaterial(value);
-				}
-				
-				if (material != null) dB.echoDebug("...material set to " + material);
-				else dB.echoDebug("...material not valid.");
-
-            }
-			
-			else if (aH.matchesValueArg("RADIUS, R", arg, ArgumentType.Integer)) {
-				radius = aH.getIntegerFrom(arg);
-				dB.echoDebug("...radius set to " + radius);
-
-            }
-			
-			else if (aH.matchesValueArg("HEIGHT, H", arg, ArgumentType.Integer)) {
-				height = aH.getIntegerFrom(arg);
-				dB.echoDebug("...height set to " + height);
-
-            }
-			
-			else if (aH.matchesValueArg("DEPTH, D", arg, ArgumentType.Integer)) {
-				depth = aH.getIntegerFrom(arg);
-				dB.echoDebug("...depth set to " + depth);
-
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-		}
-		
-        // Store objects in ScriptEntry for use in execute()
-        scriptEntry.addObject("material", material);
-        scriptEntry.addObject("data", data);
-        scriptEntry.addObject("location", location);
-        scriptEntry.addObject("radius", radius);
-        scriptEntry.addObject("height", height);
-        scriptEntry.addObject("depth", depth);
-	}
-
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-		
-		final Material material = (Material) scriptEntry.getObject("material");
-		final int data = (Integer) scriptEntry.getObject("data");
-        final dLocation location = (dLocation) scriptEntry.getObject("location");
-        final int radius = (Integer) scriptEntry.getObject("radius");
-        final int height = (Integer) scriptEntry.getObject("height");
-        final int depth = (Integer) scriptEntry.getObject("depth");
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
         
-		if (location == null || material == null){
-			dB.echoDebug("...can not exectue");
-			return;
-		}
-		
-		World world = scriptEntry.getPlayer().getPlayerEntity().getWorld();
-		Block startBlock = location.getBlock();
-		Block currentBlock;
-		
-		startBlock.setType(material);
-		startBlock.setData((byte) data);
-		
-		if (radius != 0){
-			for (int x = 0; x  < 2*radius+1;  x++){
-				for (int z = 0; z < 2*radius+1; z++){
-					currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY(), startBlock.getZ() + z - radius);
-					if (currentBlock.getType() != material){
-						currentBlock.setType(material);
-						currentBlock.setData((byte) data);
-					}
-				}
-			}
-		}
-		
-		if (height != 0){
-			for (int x = 0; x  < 2*radius+1;  x++){
-				for (int z = 0; z < 2*radius+1; z++){
-					for (int y = 1; y < height + 1; y++){
-						currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() + y, startBlock.getZ() + z - radius);
-						if (currentBlock.getType() != material){
-							currentBlock.setType(material);
-							currentBlock.setData((byte) data);
-						}
-					}
-				}
-			}
-		}
-		
-		if (depth != 0){
-			for (int x = 0; x  < 2*radius+1;  x++){
-				for (int z = 0; z < 2*radius+1; z++){
-					for (int y = 1; y < depth + 1; y++){
-						currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() - y, startBlock.getZ() + z - radius);
-						if (currentBlock.getType() != material){
-							currentBlock.setType(material);
-							currentBlock.setData((byte) data);
-						}
-					}
-				}
-			}
-		}
-	}
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            
+            if (arg.matchesArgumentType(dLocation.class)){
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                dB.echoDebug("...location set to: " + scriptEntry.getObject("location"));
+            }
+            
+            else if (!scriptEntry.hasObject("radius")
+                    && arg.matchesPrefix("radius, r")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("radius", new Element(arg.getValue()));
+                dB.echoDebug("...radius set to " + scriptEntry.getObject("radius"));
+            }
+            
+            else if (!scriptEntry.hasObject("height")
+                    && arg.matchesPrefix("height, h")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("height", new Element(arg.getValue()));
+                dB.echoDebug("...height set to " + scriptEntry.getObject("height"));
+
+            }
+            
+            else if (!scriptEntry.hasObject("depth")
+                    && arg.matchesPrefix("depth, d")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("depth", new Element(arg.getValue()));
+                dB.echoDebug("...depth set to " + scriptEntry.getObject("depth"));
+
+            }
+            
+            else {
+                
+                String value = arg.getValue().toUpperCase();
+                
+                if (value.split(":", 2).length > 1) {
+                    scriptEntry.addObject("data", aH.getIntegerFrom(value.split(":", 2)[1]));
+                }
+                
+                value = value.split(":", 2)[0];
+                
+                if (aH.matchesInteger(value)) {
+                    scriptEntry.addObject("material", Material.getMaterial(aH.getIntegerFrom(value)));
+                }
+                else {
+                    scriptEntry.addObject("material", Material.getMaterial(value));
+                }
+                
+                if (scriptEntry.getObject("material") != null) dB.echoDebug("...material set to " + scriptEntry.getObject("material"));
+                else dB.echoDebug("...material not valid.");
+
+            }
+        }
+        
+        if (!scriptEntry.hasObject("material"))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "MATERIAL");
+        if (!scriptEntry.hasObject("location"))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
+        scriptEntry.defaultObject("data", new Element(0));
+        scriptEntry.defaultObject("radius", new Element(0));
+        scriptEntry.defaultObject("height", new Element(0));
+        scriptEntry.defaultObject("depth", new Element(0));
+        
+    }
+
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+        
+        final Material material = (Material) scriptEntry.getObject("material");
+        final dLocation location = (dLocation) scriptEntry.getObject("location");
+        final int data = scriptEntry.getElement("data").asInt();
+        final int radius = scriptEntry.getElement("radius").asInt();
+        final int height = scriptEntry.getElement("height").asInt();
+        final int depth = scriptEntry.getElement("depth").asInt();
+        
+        if (location == null || material == null){
+            dB.echoDebug("...can not exectue");
+            return;
+        }
+        
+        World world = location.getWorld();
+        Block startBlock = location.getBlock();
+        Block currentBlock;
+        
+        startBlock.setType(material);
+        startBlock.setData((byte) data);
+        
+        if (radius != 0){
+            for (int x = 0; x  < 2*radius+1;  x++){
+                for (int z = 0; z < 2*radius+1; z++){
+                    currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY(), startBlock.getZ() + z - radius);
+                    if (currentBlock.getType() != material){
+                        currentBlock.setType(material);
+                        currentBlock.setData((byte) data);
+                    }
+                }
+            }
+        }
+        
+        if (height != 0){
+            for (int x = 0; x  < 2*radius+1;  x++){
+                for (int z = 0; z < 2*radius+1; z++){
+                    for (int y = 1; y < height + 1; y++){
+                        currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() + y, startBlock.getZ() + z - radius);
+                        if (currentBlock.getType() != material){
+                            currentBlock.setType(material);
+                            currentBlock.setData((byte) data);
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (depth != 0){
+            for (int x = 0; x  < 2*radius+1;  x++){
+                for (int z = 0; z < 2*radius+1; z++){
+                    for (int y = 1; y < depth + 1; y++){
+                        currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() - y, startBlock.getZ() + z - radius);
+                        if (currentBlock.getType() != material){
+                            currentBlock.setType(material);
+                            currentBlock.setData((byte) data);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

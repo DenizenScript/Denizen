@@ -80,9 +80,7 @@ public class dPlayer implements dObject {
                 break;
             }
 
-        if (returnable != null) return true;
-
-        return false;
+        return returnable != null;
     }
 
 
@@ -108,8 +106,7 @@ public class dPlayer implements dObject {
 
     public boolean isValid() {
         if (player_name == null) return false;
-        if (getPlayerEntity() == null && getOfflinePlayer() == null) return false;
-        return true;
+        return (!(getPlayerEntity() == null && getOfflinePlayer() == null));
     }
 
     public Player getPlayerEntity() {
@@ -153,8 +150,7 @@ public class dPlayer implements dObject {
 
     public boolean isOnline() {
         if (player_name == null) return false;
-        if (Bukkit.getPlayer(player_name) != null) return true;
-        return false;
+        return Bukkit.getPlayer(player_name) != null;
     }
 
 
@@ -206,6 +202,11 @@ public class dPlayer implements dObject {
         if (attribute == null) return "null";
 
         if (player_name == null) return "null";
+        
+        // <--
+        // <player> -> dPlayer
+        // Returns the dPlayer of the player.
+        // -->
 
         // <--
         // <player.entity> -> dEntity
@@ -276,17 +277,37 @@ public class dPlayer implements dObject {
         if (attribute.startsWith("is_online"))
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
         
-        // Return player ip in format #.#.#.#
+        // <--
+        // <player.ip> -> Element
+        // Returns the player's IP address.
+        // -->
         if (attribute.startsWith("ip"))
             return getPlayerEntity().getAddress().getHostName();
         
+        // <--
+        // <player.list> -> dList(dPlayer)
+        // Returns all players that have ever played on the server, online or not.
+        // **NOTE: This will only work if there is a player attached to the current script.
+        // If you need it anywhere else, use <server.list_players>**
         if (attribute.startsWith("list")) {
             List<String> players = new ArrayList<String>();
+            
+            // <--
+            // <player.list.online> -> dList(dPlayer)
+            // Returns all online players.
+            // **NOTE: This will only work if there is a player attached to the current script.
+            // If you need it anywhere else, use <server.list_online_players>**
             if (attribute.startsWith("list.online")) {
                 for(Player player : Bukkit.getOnlinePlayers())
                     players.add(player.getName());
                 return new dList(players).getAttribute(attribute.fulfill(2));
             }
+            
+            // <--
+            // <player.list.offline> -> dList(dPlayer)
+            // Returns all offline players.
+            // **NOTE: This will only work if there is a player attached to the current script.
+            // If you need it anywhere else, use <server.list_offline_players>**
             else if (attribute.startsWith("list.offline")) {
                 for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     if (!Bukkit.getOnlinePlayers().toString().contains(player.getName()))
@@ -318,8 +339,9 @@ public class dPlayer implements dObject {
             int x = 1;
             if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
                 x = attribute.getIntContext(1);
-
-            return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
+            // No playerchathistory? Return null.
+            if (!PlayerTags.playerChatHistory.containsKey(player_name)) return "null";
+            else return new Element(PlayerTags.playerChatHistory.get(player_name).get(x - 1))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -371,6 +393,14 @@ public class dPlayer implements dObject {
         if (!isOnline()) return new Element(identify()).getAttribute(attribute);
 
         // Player is required to be online after this point...
+
+        // <--
+        // <player.xp.to_next_level> -> Element(number)
+        // returns the amount of experience to the next level.
+        // -->
+        if (attribute.startsWith("xp.to_next_level"))
+            return new Element(String.valueOf(getPlayerEntity().getExpToLevel()))
+                    .getAttribute(attribute.fulfill(2)); 
 
         // <--
         // <player.xp.total> -> Element(number)
@@ -487,14 +517,6 @@ public class dPlayer implements dObject {
         // -->
         if (attribute.startsWith("name"))
             return new Element(player_name).getAttribute(attribute.fulfill(1));
-
-        // <--
-        // <player.eyes> -> dLocation
-        // returns a dLocation of the player's eyes.
-        // -->
-        if (attribute.startsWith("eyes"))
-            return new dLocation(getEyeLocation())
-                    .getAttribute(attribute.fulfill(1));
 
         // <--
         // <player.compass.target> -> dLocation
@@ -717,8 +739,7 @@ public class dPlayer implements dObject {
 
         // <--
         // <player.allowed_flight> -> Element(boolean)
-        // returns a dItem that the player's cursor is on, if any. This includes
-        // chest interfaces, inventories, and hotbars, etc.
+        // returns true if the player is allowed to fly, and false otherwise
         // -->
         if (attribute.startsWith("allowed_flight"))
             return new Element(String.valueOf(getPlayerEntity().getAllowFlight()))
@@ -756,6 +777,10 @@ public class dPlayer implements dObject {
             return new Element(String.valueOf(getPlayerEntity().getPlayerTimeOffset()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <player.prefix> -> Element
+        // Returns the player's prefix.
+        // -->
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));

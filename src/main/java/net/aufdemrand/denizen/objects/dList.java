@@ -5,9 +5,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +19,10 @@ public class dList extends ArrayList<String> implements dObject {
     final static Pattern flag_by_id =
             Pattern.compile("(fl\\[((?:p@|n@)(.+?))\\]@|fl@)(.+)",
                     Pattern.CASE_INSENSITIVE);
-	
+
+    final static Pattern split_char = Pattern.compile("\\|");
+    final static Pattern identifier = Pattern.compile("li@", Pattern.CASE_INSENSITIVE);
+    
     @ObjectFetcher("li, fl")
     public static dList valueOf(String string) {
         if (string == null) return null;
@@ -30,8 +31,6 @@ public class dList extends ArrayList<String> implements dObject {
         // Match @object format
 
         // Make sure string matches what this interpreter can accept.
-
-
         Matcher m;
         m = flag_by_id.matcher(string);
 
@@ -49,7 +48,7 @@ public class dList extends ArrayList<String> implements dObject {
                         return new dList(flag_manager.getPlayerFlag(m.group(3), m.group(4)));
 
                 } else if (m.group(2).toLowerCase().startsWith("n@")) {
-                	if (FlagManager.npcHasFlag(dNPC.valueOf(m.group(3)), m.group(4)))
+                    if (FlagManager.npcHasFlag(dNPC.valueOf(m.group(3)), m.group(4)))
                         return new dList(flag_manager.getNPCFlag(Integer.valueOf(m.group(3)), m.group(4)));
                 }
 
@@ -59,21 +58,17 @@ public class dList extends ArrayList<String> implements dObject {
             }
         }
 
-        // Use value of string, which will seperate values by the use of a pipe (|)
-        return new dList(string.replaceFirst("li@", ""));
+        // Use value of string, which will seperate values by the use of a pipe '|'
+        return new dList(string.replaceFirst(identifier.pattern(), ""));
     }
 
 
     public static boolean matches(String arg) {
 
-    	Matcher m;
+        Matcher m;
         m = flag_by_id.matcher(arg);
 
-        if (m.matches()) return true;
-
-        if (arg.contains("|") || arg.startsWith("li@")) return true;
-
-        return false;
+        return m.matches() || arg.contains("|") || arg.toLowerCase().startsWith("li@");
     }
 
 
@@ -81,25 +76,33 @@ public class dList extends ArrayList<String> implements dObject {
     //   Constructors
     //////////
 
+    // A list of dObjects
     public dList(ArrayList<? extends dObject> dObjectList) {
         for (dObject obj : dObjectList)
             add(obj.identify());
     }
 
+    // Empty dList
+    public dList() { }
+
+    // A string of items, split by '|'
     public dList(String items) {
-        addAll(Arrays.asList(items.split("\\|")));
+        if (items != null) addAll(Arrays.asList(split_char.split(items)));
     }
 
+    // A List<String> of items
     public dList(List<String> items) {
-        addAll(items);
-    }
-    
-    public dList(List<String> items, String prefix) {
-    	for (String element : items) {
-    		add(prefix + element);
-    	}
+        if (items != null) addAll(items);
     }
 
+    // A List<String> of items, with a prefix
+    public dList(List<String> items, String prefix) {
+        for (String element : items) {
+            add(prefix + element);
+        }
+    }
+
+    // A Flag
     public dList(FlagManager.Flag flag) {
         this.flag = flag;
         addAll(flag.values());
@@ -138,8 +141,7 @@ public class dList extends ArrayList<String> implements dObject {
 
     @Override
     public boolean isUnique() {
-        if (flag != null) return true;
-        else return false;
+        return flag != null;
     }
 
     @Override
@@ -148,42 +150,42 @@ public class dList extends ArrayList<String> implements dObject {
     }
     
     public String[] toArray() {
-    	
-    	List<String> list = new ArrayList<String>();
-    	
-    	for (String string : this) {
-    		list.add(string);
-    	}
-    	
-    	return list.toArray(new String[list.size()]);
+        
+        List<String> list = new ArrayList<String>();
+        
+        for (String string : this) {
+            list.add(string);
+        }
+        
+        return list.toArray(new String[list.size()]);
     }
     
     // Return a list that includes only elements belonging to a certain class
     public List<dObject> filter(Class<? extends dObject> dClass) {
         
-    	List<dObject> results = new ArrayList<dObject>();
-    	
-    	for (String element : this) {
-    		
-    		try {
-				if ((Boolean) dClass.getMethod("matches", String.class).invoke(null, element)) {
-					
-					dObject object = (dObject) dClass.getMethod("valueOf", String.class).invoke(null, element); 
-					
-					// Only add the object if it is not null, thus filtering useless
-					// list items
-					
-					if (object != null) {
-						results.add(object);
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-    	}
-    	
-    	if (results.size() > 0) return results;
-    	else return null;
+        List<dObject> results = new ArrayList<dObject>();
+        
+        for (String element : this) {
+            
+            try {
+                if ((Boolean) dClass.getMethod("matches", String.class).invoke(null, element)) {
+                    
+                    dObject object = (dObject) dClass.getMethod("valueOf", String.class).invoke(null, element); 
+                    
+                    // Only add the object if it is not null, thus filtering useless
+                    // list items
+                    
+                    if (object != null) {
+                        results.add(object);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        if (results.size() > 0) return results;
+        else return null;
     }
 
     @Override
@@ -200,8 +202,11 @@ public class dList extends ArrayList<String> implements dObject {
 
         StringBuilder dScriptArg = new StringBuilder();
         dScriptArg.append("li@");
-        for (String item : this)
-            dScriptArg.append(item + "|");
+        for (String item : this) {
+            dScriptArg.append(item);
+            // Items are separated by the | character in dLists
+            dScriptArg.append('|');
+        }
 
         return dScriptArg.toString().substring(0, dScriptArg.length() - 1);
     }
@@ -219,8 +224,11 @@ public class dList extends ArrayList<String> implements dObject {
                 || attribute.startsWith("as_cslist")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
             StringBuilder dScriptArg = new StringBuilder();
-            for (String item : this)
-                dScriptArg.append(item + ", ");
+            for (String item : this) {
+                dScriptArg.append(item);
+                // Insert a comma and space after each item
+                dScriptArg.append(", ");
+            }
             return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 2))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -247,10 +255,31 @@ public class dList extends ArrayList<String> implements dObject {
                 || attribute.startsWith("as_string")) {
             if (isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
             StringBuilder dScriptArg = new StringBuilder();
-            for (String item : this)
-                dScriptArg.append(item + " ");
+            for (String item : this) {
+                dScriptArg.append(item);
+                // Insert space between items.
+                dScriptArg.append(' ');
+            }
             return new Element(dScriptArg.toString().substring(0, dScriptArg.length() - 1))
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--
+        // <li@list.exclude[...|...]> -> dList
+        // returns a new dList excluding the items specified.
+        // -->
+        if (attribute.startsWith("exclude")) {
+            String[] exclusions = split_char.split(attribute.getContext(1));
+            // Create a new dList that will contain the exclusions
+            dList list = new dList(this);
+            // Iterate through
+            for (String exclusion : exclusions)
+                for (int i = 0;i < list.size();i++)
+                    if (list.get(i).equalsIgnoreCase(exclusion))
+                        list.remove(i--);
+
+            // Return the modified list
+            return list.getAttribute(attribute.fulfill(1));
         }
 
         // <--
@@ -264,11 +293,27 @@ public class dList extends ArrayList<String> implements dObject {
             String item;
             if (index > 0) item = get(index - 1);
             else item = get(0);
-            if (attribute.getAttribute(2).startsWith("as")) {
 
+            return new Element(item).getAttribute(attribute.fulfill(1));
+        }
+        
+        if (attribute.startsWith("last")) {
+            return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
+        }
+        
+        if (attribute.startsWith("contains")) {
+            if (attribute.hasContext(1)) {
+                boolean state = false;
+
+                for (String element : this) {
+                    if (element.equalsIgnoreCase(attribute.getContext(1))) {
+                        state = true;
+                        break;
+                    }
+                }
+                
+                return new Element(state).getAttribute(attribute.fulfill(1));
             }
-            else
-                return new Element(item).getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("prefix"))
@@ -306,7 +351,8 @@ public class dList extends ArrayList<String> implements dObject {
         // gets a random item in the list and returns it as an Element.
         // -->
         if (attribute.startsWith("random")) {
-        	return new Element(this.get(new Random().nextInt(this.size())))
+            if (!this.isEmpty())
+                return new Element(this.get(new Random().nextInt(this.size())))
                     .getAttribute(attribute.fulfill(1));
         }
 

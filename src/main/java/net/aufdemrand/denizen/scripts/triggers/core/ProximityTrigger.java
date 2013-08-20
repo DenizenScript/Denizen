@@ -113,7 +113,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * radius, and there's an MOVE SCRIPT, then execute that move script.
      * </ol>
      *
-     * @param event	The player's move event (which includes their location).
+     * @param event    The player's move event (which includes their location).
      */
     @EventHandler
     public void proximityTrigger(PlayerMoveEvent event) {
@@ -131,7 +131,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
             //
             // Iterate over all of the NPCs
             //
-            Iterator<dNPC>	it = DenizenAPI.getCurrentInstance().getNPCRegistry().getSpawnedNPCs().iterator();
+            Iterator<dNPC>    it = DenizenAPI.getCurrentInstance().getNPCRegistry().getSpawnedNPCs().iterator();
             while (it.hasNext ()) {
                 dNPC npc = it.next ();
 

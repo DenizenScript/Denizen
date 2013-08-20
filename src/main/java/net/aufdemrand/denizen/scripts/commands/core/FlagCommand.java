@@ -2,206 +2,207 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.flags.FlagManager.Flag;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.Listener;
 
 /**
- * Sets a Player 'Flag'. Flags can hold information to check against
- * with the FLAGGED requirement.
+ * Sets a server or player/npc 'flag'. Flags can hold information to check against
+ * with the FLAGGED requirement, or store important information.
  *
  * @author Jeremy Schroeder
+ * @version 1.0
+ *
  */
 
 public class FlagCommand extends AbstractCommand implements Listener {
 
-    public enum Action { SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY, DIVIDE, INSERT, REMOVE, SPLIT, DELETE }
-    public enum Type   { GLOBAL, NPC, PLAYER }
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Set some defaults with information from the scriptEntry
-        String name = null;
-        String value = null;
-        Duration duration = new Duration(-1d);
-        Action action = Action.SET_VALUE;
-        Type type = Type.PLAYER;
+        boolean specified_target = false;
 
-        for (String arg : scriptEntry.getArguments()) {
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (aH.matchesDuration(arg))
-                duration = aH.getDurationFrom(arg);
-
-            else if (aH.matchesArg("GLOBAL, NPC, DENIZEN, GLOBAL", arg))
-                type = Type.valueOf(arg.toUpperCase().replace("DENIZEN", "NPC"));
-
-                // Determine flagAction and set the flagName/flagValue
-            else if (arg.split(":", 3).length > 1) {
-                String[] flagArgs = arg.split(":", 3);
-                name = flagArgs[0].toUpperCase();
-
-                if (flagArgs.length == 2) {
-                    if (flagArgs[1].equals("+")
-                            || flagArgs[1].equals("++")) {
-                        action = Action.INCREASE;
-                        value = "1";
-                    }   else if (flagArgs[1].equals("-")
-                            || flagArgs[1].equals("--")) {
-                        // Using equals instead of startsWith because
-                        // people need to be able to set values like "-2"
-                        action = Action.DECREASE;
-                        value = "1";
-                    }   else if (flagArgs[1].startsWith("!")) {
-                        action = Action.DELETE;
-                    }   else if (flagArgs[1].startsWith("<-")) {
-                        action = Action.REMOVE;
-                    }   else {
-                        action = Action.SET_VALUE;
-                        value = arg.split(":")[1];
-                    }
-                } else if (flagArgs.length == 3) {
-                    if (flagArgs[1].startsWith("->")) action = Action.INSERT;
-                    else if (flagArgs[1].startsWith("<-")) action = Action.REMOVE;
-                    else if (flagArgs[1].startsWith("|")) action = Action.SPLIT;
-                    else if (flagArgs[1].startsWith("+")) action = Action.INCREASE;
-                    else if (flagArgs[1].startsWith("-")) action = Action.DECREASE;
-                    else if (flagArgs[1].startsWith("*")) action = Action.MULTIPLY;
-                    else if (flagArgs[1].startsWith("/")) action = Action.DIVIDE;
-                    else action = Action.SET_VALUE;
-
-                    if (action == Action.SET_VALUE)
-                        value = flagArgs[1] + ":" + flagArgs[2];
-                    else value = flagArgs[2];
-                }
-            } else {
-                name = arg.toUpperCase();
-                action = Action.SET_BOOLEAN;
+            // A duration on a flag will set it to expire after the
+            // specified amount of time
+            if (!scriptEntry.hasObject("duration")
+                    && arg.matchesPrefix("duration, d")
+                    && arg.matchesArgumentType(Duration.class)) {
+                scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
+
+            // Also allow attached dObjects to be specified...
+            else if (!scriptEntry.hasObject("flag_target")
+                    && arg.matches("npc, denizen")) {
+                specified_target = true;
+                scriptEntry.addObject("flag_target", scriptEntry.getNPC());
+
+            } else if (!scriptEntry.hasObject("flag_target")
+                    && arg.matches("global, server")) {
+                specified_target = true;
+                scriptEntry.addObject("flag_target", new Element("server"));
+
+            } else if (!scriptEntry.hasObject("flag_target")
+                    && arg.matches("player")) {
+                specified_target = true;
+                scriptEntry.addObject("flag_target", scriptEntry.getPlayer());
+            }
+
+            // Allow a p@player or n@npc entity to specify the target
+            // to be flagged
+            else if (!scriptEntry.hasObject("flag_target")
+                    && arg.matchesArgumentType(dNPC.class)
+                    && arg.startsWith("n@")) {
+                specified_target = true;
+                scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
+
+            } else if (!scriptEntry.hasObject("flag_target")
+                    && arg.matchesArgumentType(dPlayer.class)
+                    && arg.startsWith("p@")) {
+                specified_target = true;
+                scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
+            }
+
+            // Check if setting a boolean
+            else if (!scriptEntry.hasObject("action")
+                    && arg.raw_value.split(":", 3).length == 1) {
+                scriptEntry.addObject("action", FlagManager.Action.SET_BOOLEAN);
+                scriptEntry.addObject("value", Element.TRUE);
+                scriptEntry.addObject("flag_name", arg.asElement());
+            }
+
+            // Check for flag_name:value/action
+            else if (!scriptEntry.hasObject("action")
+                    && arg.raw_value.split(":", 3).length == 2) {
+
+                String[] flagArgs = arg.raw_value.split(":", 2);
+                scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
+
+                if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
+                    scriptEntry.addObject("action", FlagManager.Action.INCREASE);
+                    scriptEntry.addObject("value", new Element(1));
+                }
+                else if (flagArgs[1].equals("--") || flagArgs[1].equals("-")) {
+                    scriptEntry.addObject("action", FlagManager.Action.DECREASE);
+                    scriptEntry.addObject("value", new Element(1));
+                }
+                else if (flagArgs[1].equals("!")) {
+                    scriptEntry.addObject("action", FlagManager.Action.DELETE);
+                    scriptEntry.addObject("value", Element.FALSE);
+                }
+                else if (flagArgs[1].equals("<-")) {
+                    scriptEntry.addObject("action", FlagManager.Action.REMOVE);
+                    scriptEntry.addObject("value", Element.FALSE);
+                }
+                else {
+                    // No ACTION, we're just setting a value...
+                    scriptEntry.addObject("action", FlagManager.Action.SET_VALUE);
+                    scriptEntry.addObject("value", new Element(flagArgs[1]));
+                }
+            }
+
+            // Check for flag_name:action:value
+            else if (!scriptEntry.hasObject("action")
+                    && arg.raw_value.split(":", 3).length == 3) {
+                String[] flagArgs = arg.raw_value.split(":", 3);
+                scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
+                scriptEntry.addObject("value", new Element(flagArgs[2]));
+
+                if (flagArgs[1].startsWith("->"))
+                    scriptEntry.addObject("action", FlagManager.Action.INSERT);
+
+                else if (flagArgs[1].startsWith("<-"))
+                    scriptEntry.addObject("action", FlagManager.Action.REMOVE);
+
+                else if (flagArgs[1].startsWith("|"))
+                    scriptEntry.addObject("action", FlagManager.Action.SPLIT);
+
+                else if (flagArgs[1].startsWith("+"))
+                    scriptEntry.addObject("action", FlagManager.Action.INCREASE);
+
+                else if (flagArgs[1].startsWith("-"))
+                    scriptEntry.addObject("action", FlagManager.Action.DECREASE);
+
+                else if (flagArgs[1].startsWith("*"))
+                    scriptEntry.addObject("action", FlagManager.Action.MULTIPLY);
+
+                else if (flagArgs[1].startsWith("/"))
+                    scriptEntry.addObject("action", FlagManager.Action.DIVIDE);
+            }
+
+            else dB.echoDebug("Unhandled argument: " + arg.raw_value);
         }
 
-        String player = null;
-
-        if (type == Type.PLAYER) {
-            if (player == null && scriptEntry.getPlayer() != null)
-                player = scriptEntry.getPlayer().getName();
-        }
+        // Set defaults
+        if (!specified_target)
+            scriptEntry.defaultObject("flag_target", scriptEntry.getPlayer());
 
         // Check required arguments
-        if (name == null)
-            throw new InvalidArgumentsException("Must specify a FLAG name.");
+        if (!scriptEntry.hasObject("action"))
+            throw new InvalidArgumentsException("Must specify a flag action or value.");
 
-        if (type == Type.NPC && scriptEntry.getNPC() == null)
-            throw new InvalidArgumentsException("Specified NPC-type flag with no valid NPC reference.");
-
-        if (type == Type.PLAYER && player == null)
-            throw new InvalidArgumentsException("Specified PLAYER-type flag with no valid Player reference.");
-
-
-        // Save objects to ScriptEntry for use with execute()
-        scriptEntry.addObject("name", name);
-        scriptEntry.addObject("value", value);
-        scriptEntry.addObject("duration", duration);
-        scriptEntry.addObject("action", action);
-        scriptEntry.addObject("type", type);
-        scriptEntry.addObject("player", player);
+        if (!scriptEntry.hasObject("flag_target"))
+            throw new InvalidArgumentsException("Must specify a flag target!");
     }
+
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        String name = (String) scriptEntry.getObject("name");
-        String value = (String) scriptEntry.getObject("value");
+        dObject flag_target = scriptEntry.getdObject("flag_target");
         Duration duration = (Duration) scriptEntry.getObject("duration");
-        Action action = (Action) scriptEntry.getObject("action");
-        Type type = (Type) scriptEntry.getObject("type");
+        FlagManager.Action action = (FlagManager.Action) scriptEntry.getObject("action");
+        Element value = scriptEntry.getElement("value");
+        Element name = scriptEntry.getElement("flag_name");
+
         int index = -1;
 
         // Set working index, if specified.
         // Usage example: - FLAG FLAGNAME[3]:VALUE specifies an index of 3 should be set with VALUE.
-        if (name.contains("[")) {
+        if (name.asString().contains("[")) {
             try {
-                index = Integer.valueOf(name.split("\\[")[1].replace("]", ""));
+                index = Integer.valueOf(name.asString().split("\\[")[1].replace("]", ""));
             } catch (Exception e) { index = -1; }
-            name = name.split("\\[")[0];
+            name = Element.valueOf(name.asString().split("\\[")[0]);
         }
-
-        Flag flag = null;
-        String player = (String) scriptEntry.getObject("player");
 
         // Send information to debugger
         dB.report(getName(),
-                aH.debugObj("Name", name)
-                        + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
-                        + aH.debugObj("Type", type.toString())
-                        + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value : "null"))
-                        + (duration.getSeconds() > 0 ? duration.debug() : "")
-                        + (type == Type.NPC ? aH.debugObj("NPC", scriptEntry.getNPC().toString()) : "")
-                        + (type == Type.PLAYER ? aH.debugObj("Player", player) : ""));
+                name.debug() + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
+                        + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value.asString() : "null"))
+                        + (duration != null ? duration.debug() : "")
+                        + flag_target.debug());
+
+        Flag flag;
 
         // Returns existing flag (if existing), or a new flag if not
-        switch (type) {
-            case NPC:
-                flag = denizen.flagManager().getNPCFlag(scriptEntry.getNPC().getId(), name);
-                break;
-            case PLAYER:
-                flag = denizen.flagManager().getPlayerFlag(player, name);
-                break;
-            case GLOBAL:
-                flag = denizen.flagManager().getGlobalFlag(name);
-                break;
-        }
+        if (flag_target instanceof Element)
+            flag = denizen.flagManager().getGlobalFlag(name.asString());
 
-        // Do flagAction
-        switch (action) {
-            case INCREASE: case DECREASE: case MULTIPLY: case DIVIDE:
-                double currentValue = flag.get(index).asDouble();
-                flag.set(Double.toString(math(currentValue, Double.valueOf(value), action)), index);
-                break;
-            case SET_BOOLEAN:
-                flag.set("true", index);
-                break;
-            case SET_VALUE:
-                flag.set(value, index);
-                break;
-            case INSERT:
-                flag.add(value);
-                break;
-            case REMOVE:
-                flag.remove(value, index);
-                break;
-            case SPLIT:
-                flag.split(value);
-                break;
-            case DELETE:
-                flag.clear();
-        }
+        else if (flag_target instanceof dPlayer)
+            flag = denizen.flagManager().getPlayerFlag(((dPlayer) flag_target).getName(), name.asString());
+
+        else if (flag_target instanceof dNPC)
+            flag = denizen.flagManager().getNPCFlag(((dNPC) flag_target).getId(), name.asString());
+
+        else throw new CommandExecutionException("Could not fetch a flag for this entity: " + flag_target.debug());
+
+        // Do the action!
+        flag.doAction(action, value, index);
 
         // Set flag duration
-        if (duration.getSeconds() > 0)
+        if (duration != null && duration.getSeconds() > 0)
             flag.setExpiration(System.currentTimeMillis()
                     + Double.valueOf(duration.getSeconds() * 1000).longValue());
+
+        else flag.setExpiration(0L);
     }
 
-    private double math(double currentValue, double value, Action flagAction) {
-        switch (flagAction) {
-            case INCREASE:
-                return currentValue + value;
-            case DECREASE:
-                return currentValue - value;
-            case MULTIPLY:
-                return currentValue * value;
-            case DIVIDE:
-                return currentValue / value;
-            default:
-                break;
-        }
 
-        return 0;
-    }
 
 }

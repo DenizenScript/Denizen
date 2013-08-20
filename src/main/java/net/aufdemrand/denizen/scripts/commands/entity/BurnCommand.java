@@ -20,14 +20,14 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  */
 
 public class BurnCommand extends AbstractCommand {
-	
+    
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-    	
+        
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-        	if (!scriptEntry.hasObject("entities")
-                	&& arg.matchesPrefix("entity, entities, e")) {
+            if (!scriptEntry.hasObject("entities")
+                    && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
@@ -41,7 +41,7 @@ public class BurnCommand extends AbstractCommand {
 
         // Check to make sure required arguments have been filled
         
-        if ((!scriptEntry.hasObject("entities")))
+        if (!scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
         
         // Use default duration if one is not specified
@@ -49,23 +49,23 @@ public class BurnCommand extends AbstractCommand {
         scriptEntry.defaultObject("duration", Duration.valueOf("5s"));
     }
     
-	@SuppressWarnings("unchecked")
-	@Override
+    @SuppressWarnings("unchecked")
+    @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
-		// Get objects
-		List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-		Duration duration = (Duration) scriptEntry.getObject("duration");
+        // Get objects
+        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        Duration duration = (Duration) scriptEntry.getObject("duration");
         
         // Report to dB
         dB.report(getName(), duration.debug() +
-        		aH.debugObj("entities", entities.toString()));
-		
+                aH.debugObj("entities", entities.toString()));
+        
         // Go through all the entities and set them on fire
         for (dEntity entity : entities) {
-        	if (entity.isSpawned() == true) {
-        		entity.getBukkitEntity().setFireTicks(duration.getTicksAsInt());
-        	}
+            if (entity.isSpawned()) {
+                entity.getBukkitEntity().setFireTicks(duration.getTicksAsInt());
+            }
         }   
-	}
+    }
 }

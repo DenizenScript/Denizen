@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.tags.TagManager;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import org.bukkit.Bukkit;
@@ -28,9 +29,9 @@ public class CommandExecuter {
         plugin = denizen;
     }
 
-	/*
-	 * Executes a command defined in scriptEntry 
-	 */
+    /*
+     * Executes a command defined in scriptEntry 
+     */
 
     public boolean execute(ScriptEntry scriptEntry) {
 
@@ -72,28 +73,36 @@ public class CommandExecuter {
             if (scriptEntry.has_tags)
                 scriptEntry.setArguments(TagManager.fillArguments(scriptEntry.getArguments(), scriptEntry, true)); // Replace tags
 
-			/*  If using NPCID:# or PLAYER:Name arguments, these need to be changed out immediately because...
-			 *  1) Denizen/Player flags need the desired NPC/PLAYER before parseArgs's getFilledArguments() so that
-			 *     the Player/Denizen flags will read from the correct Object. If using PLAYER or NPCID arguments,
-			 *     the desired Objects are obviously not the same objects that were sent with the ScriptEntry.
-			 *  2) These arguments should be valid for EVERY ScriptCommand, so why not just take care of it
-			 *     here, instead of requiring each command to take care of the argument.
-			 */
+            /*  If using NPC:# or PLAYER:Name arguments, these need to be changed out immediately because...
+             *  1) Denizen/Player flags need the desired NPC/PLAYER before parseArgs's getFilledArguments() so that
+             *     the Player/Denizen flags will read from the correct Object. If using PLAYER or NPCID arguments,
+             *     the desired Objects are obviously not the same objects that were sent with the ScriptEntry.
+             *  2) These arguments should be valid for EVERY ScriptCommand, so why not just take care of it
+             *     here, instead of requiring each command to take care of the argument.
+             */
 
             List<String> newArgs = new ArrayList<String>();
 
+            // Don't fill in tags if there were brackets detected..
+            // This means we're probably in a nested if.
             int nested_depth = 0;
+            // Watch for IF command to avoid filling player and npc arguments
+            // prematurely
+            boolean if_ignore = false;
 
-            for (String arg : scriptEntry.getArguments()) {
-                if (arg.equals("{")) nested_depth++;
-                if (arg.equals("}")) nested_depth--;
 
+            for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+
+                if (arg.getValue().equals("{")) nested_depth++;
+                if (arg.getValue().equals("}")) nested_depth--;
+
+                // If nested, continue.
                 if (nested_depth > 0) {
-                    newArgs.add(arg);
+                    newArgs.add(arg.raw_value);
                     continue;
                 }
 
-                m = definition_pattern.matcher(arg);
+                m = definition_pattern.matcher(arg.raw_value);
                 sb = new StringBuffer();
                 while (m.find()) {
                     if (scriptEntry.getResidingQueue().hasContext(m.group(1).toLowerCase()))
@@ -104,25 +113,39 @@ public class CommandExecuter {
                     else m.appendReplacement(sb, "null");
                 }
                 m.appendTail(sb);
-                arg = sb.toString();
+                arg = aH.Argument.valueOf(sb.toString());
 
+                // If using IF, check if we've reached the command + args
+                // so that we don't fill player: or npc: prematurely
+                if (command.getName().equalsIgnoreCase("if")
+                        && DenizenAPI.getCurrentInstance().getCommandRegistry().get(arg.getValue()) != null)
+                    if_ignore = true;
 
                 // Fill player/off-line player
-                if (aH.matchesValueArg("player", arg, aH.ArgumentType.String)) {
-                    arg = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg, false);
-                    scriptEntry.setPlayer(dPlayer.valueOf(aH.getStringFrom(arg)));
+                if (arg.matchesPrefix("player") && !if_ignore) {
+                    dB.echoDebug("...replacing the linked player.");
+                    String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
+                    dPlayer player = dPlayer.valueOf(arg.getValue());
+                    if (!player.isValid()) {
+                        dB.echoError(value + " is an invalid player!");
+                        return false;
+                    }
+                    scriptEntry.setPlayer(player);
                 }
 
                 // Fill NPCID/NPC argument
-                else if (aH.matchesValueArg("npcid, npc", arg, aH.ArgumentType.String)) {
+                else if (arg.matchesPrefix("npc, npcid") && !if_ignore) {
                     dB.echoDebug("...replacing the linked NPC.");
-                    arg = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg, false);
-
-                    if (dNPC.matches(aH.getStringFrom(arg)))
-                        scriptEntry.setNPC(dNPC.valueOf(aH.getStringFrom(arg)));
+                    String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
+                    dNPC npc = dNPC.valueOf(arg.getValue());
+                    if (npc == null || !npc.isValid()) {
+                        dB.echoError(value + " is an invalid NPC!");
+                        return false;
+                    }
+                    scriptEntry.setNPC(npc);
                 }
 
-                else newArgs.add(arg);
+                else newArgs.add(arg.raw_value);
             }
 
             // Add the arguments back to the scriptEntry.
@@ -135,7 +158,7 @@ public class CommandExecuter {
             // Parse the rest of the arguments for execution.
             command.parseArgs(scriptEntry);
 
-        }	catch (InvalidArgumentsException e) {
+        } catch (InvalidArgumentsException e) {
 
             keepGoing = false;
             // Give usage hint if InvalidArgumentsException was called.
@@ -166,7 +189,6 @@ public class CommandExecuter {
 
                     // Run the execute method in the command
                     if (!event.isCancelled()) command.execute(scriptEntry);
-
                     else dB.echoDebug("ScriptEntry has been cancelled.");
                 } catch (Exception e) {
                     dB.echoError("Woah!! An exception has been called with this command!");
@@ -174,9 +196,10 @@ public class CommandExecuter {
                         dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
                     else e.printStackTrace();
                 }
+            
         }
 
         return true;
     }
-
+    
 }

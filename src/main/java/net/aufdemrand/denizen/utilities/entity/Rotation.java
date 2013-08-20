@@ -1,14 +1,12 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_6_R2.EntityLiving;
-
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import net.citizensnpcs.util.NMS;
 
 /**
  * Utilities related to entity yaws and pitches.
@@ -28,47 +26,26 @@ public class Rotation {
     
     public static void rotate(Entity entity, float yaw, float pitch)
     {
-    	// If this entity is a real player instead of a player type NPC,
-    	// it will appear to be online
-    	
+        // If this entity is a real player instead of a player type NPC,
+        // it will appear to be online
+        
         if (entity instanceof Player && ((Player) entity).isOnline())
         {
-    		Location location = entity.getLocation();
-    		location.setYaw(yaw);
-    		location.setPitch(pitch);
-    		
-    		// The only way to change a player's yaw and pitch in Bukkit
-    		// is to use teleport on him/her
-    		
-    		entity.teleport(location);
-    		return;
+            Location location = entity.getLocation();
+            location.setYaw(yaw);
+            location.setPitch(pitch);
+            
+            // The only way to change a player's yaw and pitch in Bukkit
+            // is to use teleport on him/her
+            
+            entity.teleport(location);
+            return;
         }
         
         if (entity instanceof LivingEntity)
         {
-            EntityLiving handle = ((CraftLivingEntity) entity).getHandle();
-            handle.yaw = (float) yaw;
-            handle.pitch = (float) pitch;
-            // !--- START NMS OBFUSCATED
-            handle.aA = handle.yaw; // The head's yaw
-            // !--- END NMS OBFUSCATED
-
-            if (!(entity instanceof Player))
-            {
-            	// Obfuscated variable used in head turning. If not set to
-            	// be equal to the yaw, non-Player entities will not rotate.
-            	// But do not use on Player entities, because it will break
-            	// their rotation.
-            	//
-            	// In case it ever gets renamed, this EntityLiving line is
-            	// the one with it:
-            	//
-            	// float f5 = MathHelper.g(this.yaw - this.ax);
-            
-            	handle.ax = handle.yaw;
-            }
+            NMS.look((LivingEntity)entity, yaw, pitch);
         }
-
         else
         {
             net.minecraft.server.v1_6_R2.Entity handle = ((CraftEntity) entity).getHandle();
@@ -129,8 +106,8 @@ public class Rotation {
      * @param  at  The Location we want to know if the first Location's yaw
      *             is facing 
      * @param  degreeLimit  How many degrees can be between the direction the
-     * 						first location's yaw is facing and the direction
-     * 						we check if it is facing.
+     *                         first location's yaw is facing and the direction
+     *                         we check if it is facing.
      *
      * @return  Returns a boolean.
      */
@@ -142,12 +119,9 @@ public class Rotation {
         double requiredYaw = normalizeYaw(getYaw(at.toVector().subtract(
                 from.toVector()).normalize()));
 
-        if (Math.abs(requiredYaw - currentYaw) < degreeLimit ||
+        return (Math.abs(requiredYaw - currentYaw) < degreeLimit ||
                 Math.abs(requiredYaw + 360 - currentYaw) < degreeLimit ||
-                Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit)
-            return true;
-
-        return false;
+                Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit);
     }
     
 
@@ -157,8 +131,8 @@ public class Rotation {
      * @param  from  The Entity we check.
      * @param  at  The Location we want to know if it is looking at.
      * @param  degreeLimit  How many degrees can be between the direction the
-     * 						Entity is facing and the direction we check if it
-     * 						is facing.
+     *                         Entity is facing and the direction we check if it
+     *                         is facing.
      *
      * @return  Returns a boolean.
      */
@@ -182,8 +156,8 @@ public class Rotation {
      * @param from The Entity we check.
      * @param at The Entity we want to know if it is looking at.
      * @param degreeLimit How many degrees can be between the direction the
-     * 					  Entity is facing and the direction we check if it
-     * 					  is facing.
+     *                    Entity is facing and the direction we check if it
+     *                    is facing.
      *
      * @return  Returns a boolean.
      */

@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import java.util.List;
 
 public class BookScriptContainer extends ScriptContainer {
-	
+    
     public BookScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
@@ -32,14 +32,14 @@ public class BookScriptContainer extends ScriptContainer {
         BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
         
         if (contains("TITLE")) {
-        	String title = getString("TITLE");
-        	title = TagManager.tag(player, npc, title, false);
+            String title = getString("TITLE");
+            title = TagManager.tag(player, npc, title, false);
             bookInfo.setTitle(title);
         }
         
         if (contains("AUTHOR")) {
-        	String author = getString("AUTHOR");
-        	author = TagManager.tag(player, npc, author, false);
+            String author = getString("AUTHOR");
+            author = TagManager.tag(player, npc, author, false);
             bookInfo.setAuthor(author);
         }
 
@@ -47,7 +47,7 @@ public class BookScriptContainer extends ScriptContainer {
             List<String> pages = getStringList("TEXT");
 
             for (String page : pages) {
-            	page = TagManager.tag(player, npc, page, false);
+                page = TagManager.tag(player, npc, page, false);
                 bookInfo.addPage(page);
             }
         }

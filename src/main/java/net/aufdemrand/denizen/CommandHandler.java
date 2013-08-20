@@ -1,20 +1,16 @@
 package net.aufdemrand.denizen;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.traits.*;
-import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.ScriptBuilder;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptRepo;
@@ -29,8 +25,8 @@ import net.citizensnpcs.api.command.Requirements;
 import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.util.Messaging;
+import net.citizensnpcs.api.util.Paginator;
 import net.citizensnpcs.util.Messages;
-import net.citizensnpcs.util.Paginator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -207,16 +203,16 @@ public class CommandHandler {
         AssignmentTrait trait = npc.getTrait(AssignmentTrait.class);
 
         if (args.hasValueFlag("set")) {
-        	String script = args.getFlag("set").replace("\"", "");
-        	
+            String script = args.getFlag("set").replace("\"", "");
+            
             if (trait.setAssignment(script, dPlayer.mirrorBukkitPlayer(player)))
                 if (trait.hasAssignment())
                     Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment is now: '" + trait.getAssignment().getName() + "'.");
                 else Messaging.send(sender, ChatColor.YELLOW + npc.getName() + "'s assignment was not able to be set.");
             else if (ScriptRegistry.containsScript(script))
-            	Messaging.send(sender, ChatColor.RED + "A script with that name exists, but it is not an assignment script!");
+                Messaging.send(sender, ChatColor.RED + "A script with that name exists, but it is not an assignment script!");
             else
-            	Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
+                Messaging.send(sender, ChatColor.RED + "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
             return;
 
         } else if (args.hasFlag('r')) {
@@ -358,12 +354,12 @@ public class CommandHandler {
             min = 1, max = 3, permission = "npc.sit")
     @Requirements(selected = true, ownership = true)
     public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-    	if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
-			Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sit!");
-			return;
-		}
-		
-    	if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
+        if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+            Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sit!");
+            return;
+        }
+        
+        if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
         SittingTrait trait = npc.getTrait(SittingTrait.class);
 
         if (trait.isSitting()) {
@@ -371,7 +367,7 @@ public class CommandHandler {
             return;
         }
         if (args.hasFlag('c')) {
-        	trait.sit(args.getSenderTargetBlockLocation());
+            trait.sit(args.getSenderTargetBlockLocation());
         } else if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
@@ -379,14 +375,11 @@ public class CommandHandler {
                 return;
             }
             trait.sit(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
-            return;
         } else if (args.hasValueFlag("anchor")) {
             DenizenAPI.getCurrentInstance().tagManager();
             trait.sit(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
-            return;
         } else {
             trait.sit();
-            return;
         }
 
     }
@@ -401,33 +394,33 @@ public class CommandHandler {
     @Requirements(selected = true, ownership = true)
     public void standing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         
-    	if (npc.hasTrait(SittingTrait.class)) {
-    		SittingTrait trait = npc.getTrait(SittingTrait.class);
-    		if (!trait.isSitting()) {
+        if (npc.hasTrait(SittingTrait.class)) {
+            SittingTrait trait = npc.getTrait(SittingTrait.class);
+            if (!trait.isSitting()) {
                 npc.removeTrait(SittingTrait.class);
                 Messaging.send(sender, ChatColor.RED + npc.getName() + " is already standing!");
                 return;
             }
-    		trait.stand();
+            trait.stand();
             npc.removeTrait(SittingTrait.class);
-    	} else if (npc.hasTrait(SneakingTrait.class)) {
-    		SneakingTrait trait = npc.getTrait(SneakingTrait.class);
-    		if (!trait.isSneaking()) {
+        } else if (npc.hasTrait(SneakingTrait.class)) {
+            SneakingTrait trait = npc.getTrait(SneakingTrait.class);
+            if (!trait.isSneaking()) {
                 npc.removeTrait(SittingTrait.class);
                 Messaging.send(sender, ChatColor.RED + npc.getName() + " is already standing!");
                 return;
             }
-    		trait.stand();
+            trait.stand();
             npc.removeTrait(SneakingTrait.class);
-    	}
+        }
         
 
         
     }
 
     /*
-	 * Sleep
-	 */
+     * Sleep
+     */
     @Command(
             aliases = { "npc" }, usage = "sleep (--location x,y,z,world) (--anchor anchor_name)",
             desc = "Makes the NPC sleep.", modifiers = { "sleep" },
@@ -449,14 +442,11 @@ public class CommandHandler {
                 return;
             }
             trait.toSleep(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
-            return;
         } else if (args.hasValueFlag("anchor")) {
             DenizenAPI.getCurrentInstance().tagManager();
             trait.toSleep(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
-            return;
         } else {
             trait.toSleep();
-            return;
         }
 
     }
@@ -484,8 +474,8 @@ public class CommandHandler {
     }
 
     /*
-	 * Fish
-	 */
+     * Fish
+     */
     @Command(
             aliases = { "npc" }, usage = "fish (--location x,y,z,world) (--anchor anchor_name) (-c)",
             desc = "Makes the NPC fish, casting at the given location.", flags = "c, f", modifiers = { "fish" },
@@ -501,15 +491,15 @@ public class CommandHandler {
         }
         
         if (args.hasFlag('c')) {
-        	trait.startFishing(args.getSenderTargetBlockLocation());
+            trait.startFishing(args.getSenderTargetBlockLocation());
         }
         
         if (args.hasFlag('f')) {
-        	trait.setCatchFish(true);
+            trait.setCatchFish(true);
         }
         
         if (args.hasValueFlag("percent")) {
-        	trait.setCatchPercent(args.getFlagInteger("percent"));
+            trait.setCatchPercent(args.getFlagInteger("percent"));
         }
         
         if (args.hasValueFlag("location")) {
@@ -519,14 +509,11 @@ public class CommandHandler {
                 return;
             }
             trait.startFishing(aH.getLocationFrom("location:" + argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));
-            return;
         } else if (args.hasValueFlag("anchor")) {
             DenizenAPI.getCurrentInstance().tagManager();
             trait.startFishing(aH.getLocationFrom(TagManager.tag(null, DenizenAPI.getCurrentInstance().getNPCRegistry().getDenizen(npc),("location:<anchor:" + args.getFlag("anchor") + ">"), false)));
-            return;
         } else {
             trait.startFishing();
-            return;
         }
 
     }
@@ -564,37 +551,37 @@ public class CommandHandler {
     public void playEffect(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
             ParticlesTrait trait = npc.getTrait(ParticlesTrait.class); 
-    	
+        
         if (args.hasValueFlag("delay")) {
-        	trait.setWait(args.getFlagInteger("delay"));
+            trait.setWait(args.getFlagInteger("delay"));
         }
         
         if (args.hasFlag('d')) {
-        	trait.setDense(true);
+            trait.setDense(true);
         }
             
-    	if (args.hasValueFlag("play")) {
-    		String name = args.getFlag("play");
-        	if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
-        	
-        	if (name.equalsIgnoreCase("none")) {
-        		trait.setEffect("NONE"); 
-        	} else if (name.equalsIgnoreCase("flame")) {
-        		trait.setEffect("FLAME");
-        	} else if (name.equalsIgnoreCase("ender")) {
-        		trait.setEffect("ENDER");
-        	} else if (name.equalsIgnoreCase("smoke")) {
-        		trait.setEffect("SMOKE");
-        	} else if (name.equalsIgnoreCase("potbreak")) {
-        		trait.setEffect("POTBREAK");
-        	} else if (name.equalsIgnoreCase("potion")) {
-        		trait.setEffect("POTION");
-        	} else if (name.equalsIgnoreCase("heart")) {
-        		trait.setEffect("HEART");
-        	} else if (name.equalsIgnoreCase("explosion")) {
-        		trait.setEffect("EXPLOSION");
-        	} else Messaging.send(sender, ChatColor.RED + "Not a valid effect name!");
-        	
+        if (args.hasValueFlag("play")) {
+            String name = args.getFlag("play");
+            if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
+            
+            if (name.equalsIgnoreCase("none")) {
+                trait.setEffect("NONE"); 
+            } else if (name.equalsIgnoreCase("flame")) {
+                trait.setEffect("FLAME");
+            } else if (name.equalsIgnoreCase("ender")) {
+                trait.setEffect("ENDER");
+            } else if (name.equalsIgnoreCase("smoke")) {
+                trait.setEffect("SMOKE");
+            } else if (name.equalsIgnoreCase("potbreak")) {
+                trait.setEffect("POTBREAK");
+            } else if (name.equalsIgnoreCase("potion")) {
+                trait.setEffect("POTION");
+            } else if (name.equalsIgnoreCase("heart")) {
+                trait.setEffect("HEART");
+            } else if (name.equalsIgnoreCase("explosion")) {
+                trait.setEffect("EXPLOSION");
+            } else Messaging.send(sender, ChatColor.RED + "Not a valid effect name!");
+            
         } else Messaging.send(sender, ChatColor.RED + "Please specify an effect name!");
         
     }
@@ -608,20 +595,18 @@ public class CommandHandler {
             min = 1, max = 3, permission = "npc.sneak")
     @Requirements(selected = true, ownership = true)
     public void sneaking(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-    	if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
-			Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sneak!");
-			return;
-		}
-		
-    	if (!npc.hasTrait(SneakingTrait.class)) npc.addTrait(SneakingTrait.class);
+        if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
+            Messaging.send(sender, ChatColor.RED + npc.getName() + " needs to be a Player type NPC to sneak!");
+            return;
+        }
+        
+        if (!npc.hasTrait(SneakingTrait.class)) npc.addTrait(SneakingTrait.class);
         SneakingTrait trait = npc.getTrait(SneakingTrait.class);
 
         if (trait.isSneaking()) {
             Messaging.send(sender, ChatColor.RED + npc.getName() + " is already sneaking!");
-            return;
         } else {
             trait.sneak();
-            return;
         }
 
     }
@@ -692,7 +677,7 @@ public class CommandHandler {
     @Command(
             aliases = { "denizen" }, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = { "debug", "de", "db" },
-            min = 1, max = 3, permission = "denizen.debug", flags = "sc")
+            min = 1, max = 3, permission = "denizen.debug", flags = "sceb")
     public void debug(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (args.hasFlag('s')) {
             if (!dB.debugMode) dB.toggle();
@@ -700,6 +685,12 @@ public class CommandHandler {
         } else if (args.hasFlag('c')) {
             if (!dB.debugMode) dB.toggle();
             dB.showColor = !dB.showColor;
+        } else if (args.hasFlag('e')) {
+            if (!dB.debugMode) dB.toggle();
+            dB.showEventsFiring = !dB.showEventsFiring;
+        } else if (args.hasFlag('b')) {
+            if (!dB.debugMode) dB.toggle();
+            dB.showScriptBuilder = !dB.showScriptBuilder;
         } else dB.toggle();
 
         Messaging.send(sender, ChatColor.YELLOW + "Denizen debugger is " + (dB.debugMode ?
@@ -741,7 +732,8 @@ public class CommandHandler {
             desc = "Saves the current state of Denizen/saves.yml.", modifiers = { "save" },
             min = 1, max = 3, permission = "denizen.basic", flags = "s")
     public void save(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        ((Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen")).saveSaves();
+
+        DenizenAPI.getCurrentInstance().saveSaves();
 
         Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml saved to disk from memory.");
     }
@@ -830,8 +822,19 @@ public class CommandHandler {
         if (args.hasFlag('a')) {
             denizen.reloadSaves();
             denizen.reloadConfig();
+            ScriptHelper.resetHadAnError();
             ScriptHelper.reloadScripts();
             Messaging.send(sender, ChatColor.GREEN + "Denizen/saves.yml, Denizen/config.yml, and Denizen/scripts/... reloaded from disk to memory.");
+            if (ScriptHelper.getHadAnError()) {
+                Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
+            }
+            List<String> events = new ArrayList<String>();
+            Map<String, Object> context = new HashMap<String, Object>();
+            events.add("reload scripts");
+            context.put("all", Element.TRUE);
+            context.put("sender", new Element(sender.getName()));
+            context.put("haderror", new Element(ScriptHelper.getHadAnError()));
+            WorldScriptHelper.doEvents(events, null, (sender instanceof Player) ? ((Player)sender) : null, context);
             return;
         }
         // Reload a specific item
@@ -845,8 +848,19 @@ public class CommandHandler {
                 Messaging.send(sender, ChatColor.GREEN + "Denizen/config.yml reloaded from disk to memory.");
                 return;
             } else if (args.getString(1).equalsIgnoreCase("scripts")) {
+                ScriptHelper.resetHadAnError();
                 ScriptHelper.reloadScripts();
                 Messaging.send(sender, ChatColor.GREEN + "Denizen/scripts/... reloaded from disk to memory.");
+                if (ScriptHelper.getHadAnError()) {
+                    Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
+                }
+                List<String> events = new ArrayList<String>();
+                Map<String, Object> context = new HashMap<String, Object>();
+                events.add("reload scripts");
+                context.put("all", Element.FALSE);
+                context.put("haderror", new Element(ScriptHelper.getHadAnError()));
+                context.put("sender", new Element(sender.getName()));
+                WorldScriptHelper.doEvents(events, null, (sender instanceof Player) ? ((Player)sender) : null, context);
                 return;
             }
         }
@@ -867,7 +881,6 @@ public class CommandHandler {
             desc = "Lists currently loaded dScripts.", modifiers = { "scripts" },
             min = 1, max = 4, permission = "denizen.basic")
     public void scripts(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
         // Fill arguments
         String type = null;   if (args.hasValueFlag("type"))   type = args.getFlag("type");
         String filter = null; if (args.hasValueFlag("filter")) filter = args.getFlag("filter");
@@ -906,7 +919,6 @@ public class CommandHandler {
             desc = "Repo commands.", modifiers = {"info", "search", "load"},
             min = 1, permission = "denizen.repo")
     public void repo(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        Denizen denizen = (Denizen) plugin.getServer().getPluginManager().getPlugin("Denizen");
         if(args.argsLength()>1 && args.getString(2).equalsIgnoreCase("info")){
             if(args.argsLength()==3){
                 try{
@@ -971,7 +983,7 @@ public class CommandHandler {
             // before that, so it needs to be high
             min = 2, max = 20, permission = "notable.basic")
     public void addnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-    	
+        
         new dLocation(((Player) sender).getLocation()).rememberAs(args.getString(1));
         Messaging.send(sender, "Created new notable called " + (args.getString(1)));
     }
@@ -982,7 +994,7 @@ public class CommandHandler {
             min = 1, max = 1, permission = "notable.basic")
     public void listnotable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
-    	Messaging.send(sender, dLocation.uniqueObjects.toString());
+        Messaging.send(sender, dLocation.uniqueObjects.toString());
     }
 
 }

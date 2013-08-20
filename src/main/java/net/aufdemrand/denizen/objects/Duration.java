@@ -11,23 +11,25 @@ import java.util.regex.Pattern;
 
 
 /**
- * Durations are a more convenient way to get a 'unit of time' within Denizen.
+ * Durations are a convenient way to get a 'unit of time' within Denizen.
+ *
+ * @version 1.0
+ * @author Jeremy Schroeder
  *
  */
-
 public class Duration implements dObject {
 
     // Use regex pattern matching to easily determine if a string
     // value is a valid Duration.
     final static Pattern match =
-            Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)(?:(?:-\\d+.\\d+|.\\d+|\\d+)(?:t|m|s|h|d|))?",
+            Pattern.compile("(\\d+.\\d+|.\\d+|\\d+)(t|m|s|h|d|)" +
+                    // Optional 'high-range' for random durations.
+                    "(?:(?:-\\d+.\\d+|.\\d+|\\d+)(?:t|m|s|h|d|))?",
                     Pattern.CASE_INSENSITIVE);
 
 
     // Define a 'ZERO' Duration
     final public static Duration ZERO = new Duration(0);
-
-
 
 
     /**
@@ -56,8 +58,8 @@ public class Duration implements dObject {
             if (low != null && high != null
                     && low.getSecondsAsInt() < high.getSecondsAsInt()) {
                 int seconds = Utilities.getRandom()
-                        .nextInt((high.getSecondsAsInt() - low.getSecondsAsInt() + 1)
-                                + low.getSecondsAsInt());
+                        .nextInt((high.getSecondsAsInt() - low.getSecondsAsInt() + 1))
+                                + low.getSecondsAsInt();
                 // Send the result to the debugger since it's probably good to know what is being chosen.
                 dB.echoDebug("Getting random duration between " + low.identify()
                         + " and " + high.identify() + "... " + seconds + "s");
@@ -70,19 +72,19 @@ public class Duration implements dObject {
         // Standard Duration. Check the type and create new Duration object accordingly.
         Matcher m = match.matcher(string);
         if (m.matches()) {
-            if (m.group().toUpperCase().endsWith("T"))
+            if (m.group().toLowerCase().endsWith("t"))
                 // Matches TICKS, so 1 tick = .05 seconds
                 return new Duration(Double.valueOf(m.group(1)) * 0.05);
 
-            else if (m.group().toUpperCase().endsWith("D"))
+            else if (m.group().toLowerCase().endsWith("d"))
                 // Matches DAYS, so 1 day = 86400 seconds
                 return new Duration(Double.valueOf(m.group(1)) * 86400);
 
-            else if (m.group().toUpperCase().endsWith("M"))
+            else if (m.group().toLowerCase().endsWith("m"))
                 // Matches MINUTES, so 1 minute = 60 seconds
                 return new Duration(Double.valueOf(m.group(1)) * 60);
 
-            else if (m.group().toUpperCase().endsWith("H"))
+            else if (m.group().toLowerCase().endsWith("h"))
                 // Matches HOURS, so 1 hour = 3600 seconds
                 return new Duration(Double.valueOf(m.group(1)) * 3600);
 
@@ -102,9 +104,7 @@ public class Duration implements dObject {
      */
     public static boolean matches(String string) {
         Matcher m = match.matcher(string);
-        if (m.matches()) return true;
-
-        return false;
+        return m.matches();
     }
 
 
@@ -294,7 +294,7 @@ public class Duration implements dObject {
         // <d@duration.in_seconds> -> Element(number)
         // returns the number of seconds in the Duration.
         // -->
-        if (attribute.startsWith("in_seconds"))
+        if (attribute.startsWith("in_seconds") || attribute.startsWith("seconds"))
             return new Element(String.valueOf(seconds))
                     .getAttribute(attribute.fulfill(1));
 
@@ -302,7 +302,7 @@ public class Duration implements dObject {
         // <d@duration.in_seconds> -> Element(number)
         // returns the number of hours in the Duration.
         // -->
-        if (attribute.startsWith("in_hours"))
+        if (attribute.startsWith("in_hours") || attribute.startsWith("hours"))
             return new Element(String.valueOf(seconds / 1800))
                     .getAttribute(attribute.fulfill(1));
 
@@ -310,7 +310,7 @@ public class Duration implements dObject {
         // <d@duration.in_minutes> -> Element(number)
         // returns the number of minutes in the Duration.
         // -->
-        if (attribute.startsWith("in_minutes"))
+        if (attribute.startsWith("in_minutes") || attribute.startsWith("minutes"))
             return new Element(String.valueOf(seconds / 60))
                     .getAttribute(attribute.fulfill(1));
 
@@ -318,7 +318,7 @@ public class Duration implements dObject {
         // <d@duration.in_ticks> -> Element(number)
         // returns the number of ticks in the Duration. (20t/second)
         // -->
-        if (attribute.startsWith("in_ticks"))
+        if (attribute.startsWith("in_ticks") || attribute.startsWith("ticks"))
             return new Element(String.valueOf(getTicksAsInt()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -336,29 +336,43 @@ public class Duration implements dObject {
             return new Element(ChatColor.stripColor(debug()))
                     .getAttribute(attribute.fulfill(2));
         }
+        
+        // <--
+        // <d@duration.formatted> -> Element
+        // returns the value of the duration in an easily readable
+        // format like 2h 30m, where minutes are only shown if there
+        // is less than a day left and seconds are only shown if
+        // there are less than 10 minutes left.
+        // -->
+        if (attribute.startsWith("formatted") || attribute.startsWith("value")) {
+            
+            // Make sure you don't change these longs into doubles
+            // and break the code
+            
+            long seconds = (long) this.seconds;
+            long days = seconds / 86400;
+            long hours = (seconds - days * 86400) / 3600;
+            long minutes = (seconds - days * 86400 - hours * 3600) / 60;
+            seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
+            
+            String timeString = "";
+
+            if (days > 0)
+                timeString = String.valueOf(days) + "d ";
+            if (hours > 0)
+                timeString = timeString + String.valueOf(hours) + "h ";
+            if (minutes > 0 && days == 0)
+                timeString = timeString + String.valueOf(minutes) + "m ";
+            if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
+                timeString = timeString + String.valueOf(seconds) + "s";
+
+            return new Element(timeString.trim())
+                        .getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("debug")) {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--
-        // <d@duration.value> -> Element
-        // returns the value of the duration, in the best format
-        // possible.
-        // -->
-        if (attribute.startsWith("value")) {
-            if (seconds % 43200 == 0)
-                return new Element(seconds / 86400 + "d")
-                        .getAttribute(attribute.fulfill(1));
-            else if (seconds % 1800 == 0)
-                return new Element(seconds / 3600 + "h")
-                        .getAttribute(attribute.fulfill(1));
-            else if (seconds % 30 == 0)
-                return new Element(seconds / 60 + "m")
-                        .getAttribute(attribute.fulfill(1));
-            else return new Element(seconds + "s")
-                        .getAttribute(attribute.fulfill(1));
         }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));

@@ -23,16 +23,16 @@ import org.bukkit.inventory.InventoryHolder;
 public class CopyBlockCommand extends AbstractCommand{
 
     @Override
-	public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
+    public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
 
         dLocation copy_location = null;
         dLocation destination = null;
         boolean remove_original = false;
 
-		for (String arg : scriptEntry.getArguments()) {			
+        for (String arg : scriptEntry.getArguments()) {            
 
             if (aH.matchesLocation(arg))
-		    	copy_location = aH.getLocationFrom(arg);
+                copy_location = aH.getLocationFrom(arg);
 
             else if (aH.matchesValueArg("to", arg, ArgumentType.Location))
                 destination = aH.getLocationFrom(arg);
@@ -41,7 +41,7 @@ public class CopyBlockCommand extends AbstractCommand{
                 remove_original = true;
 
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-		}
+        }
 
         if (copy_location == null || destination == null)
             throw  new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
@@ -49,12 +49,12 @@ public class CopyBlockCommand extends AbstractCommand{
         scriptEntry.addObject("copy_location", copy_location)
                 .addObject("destination", destination)
                 .addObject("remove_original", remove_original);
-	}
+    }
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-		
-		dLocation copy_location = (dLocation) scriptEntry.getObject("copy_location");
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+        
+        dLocation copy_location = (dLocation) scriptEntry.getObject("copy_location");
         dLocation destination = (dLocation) scriptEntry.getObject("destination");
         Boolean remove_original = (Boolean) scriptEntry.getObject("remove_original");
 
@@ -89,5 +89,5 @@ public class CopyBlockCommand extends AbstractCommand{
 
         // TODO: Account for Noteblock, Skull, Jukebox
 
-	}
+    }
 }

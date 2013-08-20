@@ -31,7 +31,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
  */
 
 public class FireworkCommand extends AbstractCommand {
-	
+    
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -51,30 +51,30 @@ public class FireworkCommand extends AbstractCommand {
 
             }
             else if (aH.matchesValueArg("type", arg, ArgumentType.String)) {
-            	
-            	String typeArg = arg.split(":", 2)[1].toUpperCase();
-            	
-            	if (typeArg.matches("RANDOM")) {
-            		
-            		type = FireworkEffect.Type.values()[Utilities.getRandom().nextInt(FireworkEffect.Type.values().length)];
-            	}
-            	else {
-            	
-            		for (FireworkEffect.Type typeValue : FireworkEffect.Type.values()) {
-            		
-            			if (typeArg.matches(typeValue.name())) {
-            			
-            				type = typeValue;
-            				break;
-            			}
-            		}
-            	}
-            	
+                
+                String typeArg = arg.split(":", 2)[1].toUpperCase();
+                
+                if (typeArg.matches("RANDOM")) {
+                    
+                    type = FireworkEffect.Type.values()[Utilities.getRandom().nextInt(FireworkEffect.Type.values().length)];
+                }
+                else {
+                
+                    for (FireworkEffect.Type typeValue : FireworkEffect.Type.values()) {
+                    
+                        if (typeArg.matches(typeValue.name())) {
+                        
+                            type = typeValue;
+                            break;
+                        }
+                    }
+                }
+                
                 dB.echoDebug("...will be of type " + type);
             
             }
             else if (aH.matchesValueArg("power", arg, ArgumentType.Integer)) {
-            	power = aH.getIntegerFrom(arg);
+                power = aH.getIntegerFrom(arg);
                 dB.echoDebug("...will have a power of " + power);
             
             }
@@ -89,26 +89,26 @@ public class FireworkCommand extends AbstractCommand {
             
             }
             else if (aH.matchesValueArg("PRIMARY", arg, ArgumentType.String)) {
-            	// May be multiple colors, so let's treat this as a potential list.
+                // May be multiple colors, so let's treat this as a potential list.
                 // dScript list entries are separated by pipes ('|')
                 for (String element : aH.getListFrom(arg)) {
-                	
-                	if (dColor.matches(element)) {
-                		primary.add(dColor.valueOf(element).getColor());
-                	}
-                	else {
-                    	dB.echoError("Invalid color " + element + "!");
+                    
+                    if (dColor.matches(element)) {
+                        primary.add(dColor.valueOf(element).getColor());
+                    }
+                    else {
+                        dB.echoError("Invalid color " + element + "!");
                     }
                 }
             } else if (aH.matchesValueArg("FADE", arg, ArgumentType.String)) {
-            	// Same as above
+                // Same as above
                 for (String element : aH.getListFrom(arg)) {
-                	
-                	if (dColor.matches(element)) {
-                		fade.add(dColor.valueOf(element).getColor());
-                	}
-                	else {
-                    	dB.echoError("Invalid color " + element + "!");
+                    
+                    if (dColor.matches(element)) {
+                        fade.add(dColor.valueOf(element).getColor());
+                    }
+                    else {
+                        dB.echoError("Invalid color " + element + "!");
                     }
                 }
             }
@@ -126,13 +126,13 @@ public class FireworkCommand extends AbstractCommand {
     }
     
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
-    	
+        
         final dLocation location = scriptEntry.hasObject("location") ?
-        		                   (dLocation) scriptEntry.getObject("location") :
-        		                   (dLocation) scriptEntry.getNPC().getLocation();
+                                   (dLocation) scriptEntry.getObject("location") :
+                                   (dLocation) scriptEntry.getNPC().getLocation();
         Integer power = (Integer) scriptEntry.getObject("power");
         Boolean flicker = (Boolean) scriptEntry.getObject("flicker");
         Boolean trail = (Boolean) scriptEntry.getObject("trail");
@@ -147,15 +147,15 @@ public class FireworkCommand extends AbstractCommand {
         Builder fireworkBuilder = FireworkEffect.builder();
         
         fireworkBuilder.with(type);
-		
+        
         // If there are no primary colors, there will be an error, so add one
         if (primary.size() == 0) {
-        	
-        	primary.add(dColor.valueOf("yellow").getColor());
+            
+            primary.add(dColor.valueOf("yellow").getColor());
         }
         
         fireworkBuilder.withColor(primary);
-		fireworkBuilder.withFade(fade);
+        fireworkBuilder.withFade(fade);
         
         if (flicker) { fireworkBuilder.withFlicker(); }
         if (trail) { fireworkBuilder.withTrail(); }

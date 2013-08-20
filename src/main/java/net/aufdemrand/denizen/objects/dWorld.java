@@ -59,9 +59,7 @@ public class dWorld implements dObject {
             if (world.getName().equalsIgnoreCase(arg))
                 returnable = world;
 
-        if (returnable != null) return true;
-
-        return false;
+        return returnable != null;
     }
 
 
@@ -130,6 +128,10 @@ public class dWorld implements dObject {
 
         if (attribute == null) return null;
 
+        // <--
+        // <world.can_generate_structures> -> Element(boolean)
+        // returns whether the world will generate structures.
+        // -->
         if (attribute.startsWith("can_generate_structures"))
             return new Element(String.valueOf(getWorld().canGenerateStructures()))
                     .getAttribute(attribute.fulfill(1));
@@ -149,6 +151,10 @@ public class dWorld implements dObject {
 //        getWorld().getAnimalSpawnLimit())
 //        .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <world.highest_block> -> dLocation
+        // returns the location of the highest non-air block.
+        // -->
         if (attribute.startsWith("highest_block")) {
             // TODO: finish
             int x = 1;
@@ -160,14 +166,26 @@ public class dWorld implements dObject {
 
 //        getWorld().getChunkAt()
 
+        // <--
+        // <world.difficulty> -> Element
+        // returns the name of the difficulty level
+        // -->
         if (attribute.startsWith("difficulty"))
             return new Element(getWorld().getDifficulty().name())
                     .getAttribute(attribute.fulfill(1));
         
+        // <--
+        // <world.name> -> Element
+        // returns the name of the world
+        // -->
         if (attribute.startsWith("name"))
             return new Element(String.valueOf(getWorld().getName()))
                     .getAttribute(attribute.fulfill(1));
         
+        // <--
+        // <world.players> -> dList(dPlayer)
+        // returns a list of online players
+        // -->
         if (attribute.startsWith("players")) {
             List<String> players = new ArrayList<String>();
             for(Player player : getWorld().getPlayers())
@@ -177,10 +195,18 @@ public class dWorld implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <world.sea_level> -> Element(number)
+        // returns the level of the sea
+        // -->
         if (attribute.startsWith("sea_level"))
             return new Element(String.valueOf(getWorld().getSeaLevel()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <world.seed> -> Element
+        // returns the world seed
+        // -->
         if (attribute.startsWith("seed"))
             return new Element(String.valueOf(getWorld().getSeed()))
                     .getAttribute(attribute.fulfill(1));
@@ -195,27 +221,43 @@ public class dWorld implements dObject {
 //        .getAttribute(attribute.fulfill(1));
 
         // Return "day", "night", "dawn" or "dusk"
+        // <--
+        // <world.time.period> -> Element
+        // returns the time as day, night, dawn, or dusk
+        // -->
         if (attribute.startsWith("time.period")) {
-        	
-        	long time = getWorld().getTime();
-        	String period;
-        	
-        	if (time >= 23000) period = "dawn"; 
+            
+            long time = getWorld().getTime();
+            String period;
+            
+            if (time >= 23000) period = "dawn"; 
             else if (time >= 13500) period = "night";
             else if (time >= 12500) period = "dusk";
             else period = "day";
-        	
+            
             return new Element(period).getAttribute(attribute.fulfill(2));
         }
         
+        // <--
+        // <world.time> -> Element(number)
+        // returns the current time in ticks
+        // -->
         if (attribute.startsWith("time"))
             return new Element(String.valueOf(getWorld().getTime()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <world.weather_duration> -> Element
+        // returns the duration of storms in ticks
+        // -->
         if (attribute.startsWith("weather_duration"))
             return Duration.valueOf(String.valueOf(getWorld().getWeatherDuration()) + "t")
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <world.has_storm> -> Element(boolean)
+        // returns whether there is currently a storm in this world
+        // -->
         if (attribute.startsWith("has_storm"))
             return new Element(String.valueOf(getWorld().hasStorm()))
                     .getAttribute(attribute.fulfill(1));

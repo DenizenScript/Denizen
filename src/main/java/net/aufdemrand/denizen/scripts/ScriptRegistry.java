@@ -47,9 +47,7 @@ public class ScriptRegistry {
             if (entry.getValue() == scriptContainerType)
                 type = entry.getKey();
         }
-        if (type == null) return false;
-        if (script.getType().equalsIgnoreCase(type)) return true;
-        else return false;
+        return type != null && (script.getType().equalsIgnoreCase(type));
     }
 
     public static void _buildCoreYamlScriptContainers(FileConfiguration yamlScripts) {

@@ -12,9 +12,11 @@ public class InventoryScriptContainer extends ScriptContainer {
     
     public int getSize() {
         InventoryType invType = getInventoryType();
+        Integer size = Integer.valueOf(getString("size"));
         
-        if(invType == InventoryType.CHEST) {
-            return Integer.parseInt(getString("size", "27"));
+        if (size > 0) {
+            if (invType == InventoryType.CHEST)
+                return Math.round(size/9)*9;
         }
         
         return invType.getDefaultSize();

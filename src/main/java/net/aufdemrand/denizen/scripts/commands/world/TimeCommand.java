@@ -27,7 +27,7 @@ public class TimeCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values())) {
                 // add type
-            	scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
+                scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
             }
 
             else if (!scriptEntry.hasObject("value")
@@ -40,7 +40,7 @@ public class TimeCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dWorld.class)) {
                 // add world
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
-        	}
+            }
         }
         
         // Check to make sure required arguments have been filled
@@ -52,9 +52,9 @@ public class TimeCommand extends AbstractCommand {
         // world, or default to "world" if necessary
                 
         scriptEntry.defaultObject("world",
-        		scriptEntry.hasNPC() ? new dWorld(scriptEntry.getNPC().getWorld()) : null,
-        		scriptEntry.hasPlayer() ? new dWorld(scriptEntry.getPlayer().getWorld()) : null,
-        		dWorld.valueOf("world"));
+                scriptEntry.hasNPC() ? new dWorld(scriptEntry.getNPC().getWorld()) : null,
+                scriptEntry.hasPlayer() ? new dWorld(scriptEntry.getPlayer().getWorld()) : null,
+                dWorld.valueOf("world"));
     }
     
     @Override
@@ -63,21 +63,21 @@ public class TimeCommand extends AbstractCommand {
         Duration value = (Duration) scriptEntry.getObject("value");
         dWorld world = (dWorld) scriptEntry.getObject("world");
         Type type = scriptEntry.hasObject("type") ? 
-        		(Type) scriptEntry.getObject("type") : Type.GLOBAL;
+                (Type) scriptEntry.getObject("type") : Type.GLOBAL;
 
         // Report to dB
         dB.report(getName(), aH.debugObj("type", type.name()) +
                 (type.name().equalsIgnoreCase("player") ?
-                		aH.debugObj("player", scriptEntry.getPlayer()) : "") +
+                        aH.debugObj("player", scriptEntry.getPlayer()) : "") +
                 (type.name().equalsIgnoreCase("global") ?
-                		aH.debugObj("world", world) : "") +
+                        aH.debugObj("world", world) : "") +
                 aH.debugObj("value", value));
 
         if (type.equals(Type.GLOBAL)) {
-        	world.getWorld().setTime(value.getTicks());
+            world.getWorld().setTime(value.getTicks());
         }
         else {
-        	scriptEntry.getPlayer().getPlayerEntity().setPlayerTime(value.getTicks(), true);
+            scriptEntry.getPlayer().getPlayerEntity().setPlayerTime(value.getTicks(), true);
         }
     }
     

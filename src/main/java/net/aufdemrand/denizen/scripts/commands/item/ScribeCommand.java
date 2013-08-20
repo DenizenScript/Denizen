@@ -30,12 +30,12 @@ import org.bukkit.inventory.ItemStack;
  * <ol><tt>Arguments: [] - Required () - Optional  {} - Default</ol></tt>
  *
  * <ol><tt>[SCRIPT:book_script]</tt><br> 
- *         The name of the 'Book Script'. See below for format.</ol>	
+ *         The name of the 'Book Script'. See below for format.</ol>    
  *
  * <ol><tt>[GIVE|{DROP}|EQUIP]</tt><br> 
  *         What to do with the book after it is written. If not specified, it will default
  *         to dropping the book near the NPC. Note: When using BOOK with an 'ITEMSTACK.name',
- *         no default action is set allowing other commands to modify the book.</ol>	
+ *         no default action is set allowing other commands to modify the book.</ol>    
  *
  * <ol><tt>(LOCATION:x,y,z,world)</tt><br> 
  *         When using DROP, a location may be specified. Default location, if unspecified,
@@ -43,7 +43,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * <ol><tt>(ITEM:ITEMSTACK.name)</tt><br> 
  *         Allows the use of a specific BOOK created with a 'saved ITEMSTACK' from the NEW
- *         command. If not specified, a new book will be used.</ol>	
+ *         command. If not specified, a new book will be used.</ol>    
  *
  *
  * <br><b>Sample Book Script:</b><br>
@@ -237,10 +237,9 @@ public class ScribeCommand extends AbstractCommand implements Listener{
     @EventHandler
     public void paragraph(ReplaceableTagEvent e) {
         if (e.matches("P")) {
-        	e.setReplaced("\n \u00A7r \n");
-        	return;
+            e.setReplaced("\n \u00A7r \n");
         } else if (e.matches("N")) {
-        	e.setReplaced("\n");
+            e.setReplaced("\n");
         }
     }
 }

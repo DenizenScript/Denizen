@@ -25,12 +25,12 @@ import org.bukkit.event.Listener;
  */
 public class NicknameTrait extends Trait implements Listener {
 
-	@Persist("")
+    @Persist("")
     private String nickname = null;
 
-	public NicknameTrait() {
-		super("nickname");
-	}
+    public NicknameTrait() {
+        super("nickname");
+    }
 
     /**
      * Sets the nickname of this NPC. When setting, dScript TAGS
@@ -39,9 +39,9 @@ public class NicknameTrait extends Trait implements Listener {
      * @param nickName the new nickname for this NPC
      *
      */
-	public void setNickname(String nickName) {
-		this.nickname = nickName;
-	}
+    public void setNickname(String nickName) {
+        this.nickname = nickName;
+    }
 
     /**
      * Gets the current nickname of this NPC. This may include color codes.
@@ -51,37 +51,37 @@ public class NicknameTrait extends Trait implements Listener {
      * @return the nickname for this NPC
      *
      */
-	public String getNickname() {
-	    if (nickname == null || nickname.equals("")) return npc.getName();
+    public String getNickname() {
+        if (nickname == null || nickname.equals("")) return npc.getName();
         else return DenizenAPI.getCurrentInstance().tagManager()
                 .tag(null, DenizenAPI.getDenizenNPC(npc), nickname, false);
     }
-	
-	/**
-	 * Gets the current nickname of this NPC and strips out all text colors.
-	 * To get the colored nickname use {@link #getNickname()}.
-	 * 
-	 * @return The uncolored nickname for this NPC
-	 */
-	public String getUncoloredNickname() {
-		return ChatColor.stripColor( getNickname() );
-	}
+    
+    /**
+     * Gets the current nickname of this NPC and strips out all text colors.
+     * To get the colored nickname use {@link #getNickname()}.
+     * 
+     * @return The uncolored nickname for this NPC
+     */
+    public String getUncoloredNickname() {
+        return ChatColor.stripColor( getNickname() );
+    }
 
     /**
      * Removes the current nickname from the NPC.
      *
      */
-	public void removeNickname() {
-	    nickname = null;
-	}
+    public void removeNickname() {
+        nickname = null;
+    }
 
     /**
      * Checks if the NPC has a nickname set.
      *
      * @return true if NPC has a nickname
      */
-	public boolean hasNickname() {
-	    return (nickname != null);
-	}
+    public boolean hasNickname() {
+        return (nickname != null);
+    }
 
 }

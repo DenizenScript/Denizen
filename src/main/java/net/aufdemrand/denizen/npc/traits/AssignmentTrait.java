@@ -11,8 +11,8 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.command.exception.CommandException;
+import net.citizensnpcs.api.util.Paginator;
 import net.citizensnpcs.util.Messages;
-import net.citizensnpcs.util.Paginator;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
@@ -93,8 +93,7 @@ public class AssignmentTrait extends Trait {
      */
     public boolean hasAssignment() {
         if (assignment == null || assignment.equals("")) return false;
-        if (ScriptRegistry.containsScript(assignment)) return true;
-        else return false;
+        return ScriptRegistry.containsScript(assignment);
     }
 
     /**
@@ -195,7 +194,7 @@ public class AssignmentTrait extends Trait {
         if (event.getEntity() instanceof LivingEntity) {
             if (((LivingEntity) event.getEntity()).getHealth() - event.getDamage() <= 0) {
                 DenizenAPI.getDenizenNPC(npc).action("kill", player);
-                DenizenAPI.getDenizenNPC(npc).action("kill of "	+ event.getEntityType().name(), player);
+                DenizenAPI.getDenizenNPC(npc).action("kill of " + event.getEntityType().name(), player);
             }
         }
 

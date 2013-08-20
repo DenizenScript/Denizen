@@ -52,9 +52,7 @@ public class dNPCRegistry implements Listener {
     }
 
     private boolean _isRegistered (NPC npc) {
-        if (denizenNPCs.containsKey(npc))
-            return true;
-        else return false;
+        return denizenNPCs.containsKey(npc);
     }
 
     private void _registerNPC(NPC npc) {
@@ -115,7 +113,7 @@ public class dNPCRegistry implements Listener {
         // Do world script event 'On NPC Completes Navigation'
         WorldScriptHelper.doEvents(Arrays.asList
                 ("npc spawns"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null).toUpperCase();
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
         // On Spawn action
         plugin.getNPCRegistry().getDenizen(event.getNPC()).action("spawn", null);
     }
@@ -125,7 +123,7 @@ public class dNPCRegistry implements Listener {
         // Do world script event 'On NPC Completes Navigation'
         WorldScriptHelper.doEvents(Arrays.asList
                 ("npc despawns"),
-                dNPC.mirrorCitizensNPC(event.getNPC()), null, null).toUpperCase();
+                dNPC.mirrorCitizensNPC(event.getNPC()), null, null);
 
         plugin.getNPCRegistry().getDenizen(event.getNPC()).action("despawn", null);
     }

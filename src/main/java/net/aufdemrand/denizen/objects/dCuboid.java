@@ -106,9 +106,7 @@ public class dCuboid implements dObject, Notable {
 
         // Check for standard cuboid format: cu@x,y,z,world|x,y,z,world
         m = location.matcher(string.replace("cu@", ""));
-        if (m.matches()) return true;
-
-        return false;
+        return m.matches();
     }
 
 
@@ -162,9 +160,7 @@ public class dCuboid implements dObject, Notable {
             return false;
         if (!Utilities.isBetween(loc_1.getY(), loc_2.getY(), location.getY()))
             return false;
-        if (!Utilities.isBetween(loc_1.getZ(), loc_2.getZ(), location.getZ()))
-            return false;
-        return true;
+        return Utilities.isBetween(loc_1.getZ(), loc_2.getZ(), location.getZ());
     }
 
 
@@ -406,19 +402,35 @@ String prefix = "Cuboid";
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return null;
 
-
+        // <--
+        // <cu@cuboid.get_blocks> -> dList(dLocation)
+        // Returns each block location within the dCuboid.
+        // -->
         if (attribute.startsWith("get_blocks"))
             return new dList(getBlocks())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <cu@cuboid.get_outline> -> dList(dLocation)
+        // Returns each block location on the outline of the dCuboid.
+        // -->
         if (attribute.startsWith("get_outline"))
             return new dList(getOutline())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <cu@cuboid.filter> -> dList(dLocation)
+        // Returns the block locations from the dCuboid's filter.
+        // -->
         if (attribute.startsWith("filter"))
             return new dList(filter)
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <cu@cuboid.is_within[<location>]> -> Element(Boolean)
+        // Returns true if the dCuboid is within the location.
+        // Otherise, returns false.
+        // -->
         if (attribute.startsWith("is_within")) {
             dLocation loc = dLocation.valueOf(attribute.getContext(1));
             return new Element(isInsideCuboid(loc))

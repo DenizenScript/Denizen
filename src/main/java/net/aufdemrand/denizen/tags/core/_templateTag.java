@@ -18,14 +18,14 @@ import java.util.List;
  */
 public class _templateTag implements Listener {
 
-	public _templateTag(Denizen denizen) {
-		// Register this class with bukkit's plugin manager events.
-		// Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
-	}
+    public _templateTag(Denizen denizen) {
+        // Register this class with bukkit's plugin manager events.
+        // Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
+    }
 
-	@EventHandler
-	public void constantTags(ReplaceableTagEvent event) {
-		// Since this event will be called each time Denizen comes across a
+    @EventHandler
+    public void constantTags(ReplaceableTagEvent event) {
+        // Since this event will be called each time Denizen comes across a
         // replaceable tag, something needs to tell Denizen if this is the
         // appropriate place to fill the tag. This is done by checking the
         // tag 'name'. Using event.matches(tag_name) will ensure that the name
@@ -33,7 +33,7 @@ public class _templateTag implements Listener {
         // ie. <skills.something...> .. the tag name would be 'skills'
         if (!event.matches("skills")) return;
 
-		// Your event may need to fetch some information.
+        // Your event may need to fetch some information.
         // Denizen will break down the first 4 parts of the tag to help identify
         // the intent: name, type, subtype, and specifier
 
@@ -109,7 +109,6 @@ public class _templateTag implements Listener {
 
         // Got here? No attributes were handled! Probably should let the dBugger know.
         dB.echoError("Example skills tag '" + event.raw_tag + "' was unable to match an attribute. Replacement has been cancelled...");
-        return;
 
-	}
+    }
 }

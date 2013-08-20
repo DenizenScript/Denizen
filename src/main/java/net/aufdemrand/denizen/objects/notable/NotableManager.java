@@ -64,9 +64,7 @@ public class NotableManager {
 
 
     public static boolean isType(String id, Class type) {
-        if (typeTracker.containsKey(id.toLowerCase()))
-            return typeTracker.get(id.toLowerCase()) == type;
-        else return false;
+        return (typeTracker.containsKey(id.toLowerCase())) && typeTracker.get(id.toLowerCase()) == type;
     }
 
 

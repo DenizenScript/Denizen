@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.*;
 import net.aufdemrand.denizen.scripts.commands.CommandRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.scripts.queues.ScriptEngine;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
@@ -45,8 +46,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Denizen extends JavaPlugin {
-    public final static int configVersion = 2;
-    public final static String versionTag = "0.9.2";
+    public final static int configVersion = 3;
+    public static String versionTag = null;
 
     private boolean startedSuccessful = false;
 
@@ -73,7 +74,7 @@ public class Denizen extends JavaPlugin {
     private CommandRegistry commandRegistry = new CommandRegistry(this);
     private TriggerRegistry triggerRegistry = new TriggerRegistry();
     private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
-    private ListenerRegistry listenerRegistry = new ListenerRegistry(this);
+    private ListenerRegistry listenerRegistry = new ListenerRegistry();
     private dNPCRegistry dNPCRegistry;
 
 
@@ -123,7 +124,7 @@ public class Denizen extends JavaPlugin {
     public Depends depends = new Depends();
 
     /*
-     * Sets up Denizen on start of the craftbukkit server.	
+     * Sets up Denizen on start of the craftbukkit server.
      */
 
     @Override
@@ -137,6 +138,8 @@ public class Denizen extends JavaPlugin {
             return;
         } else startedSuccessful = true;
 
+        versionTag = this.getDescription().getVersion();
+        
         // Startup procedure
         dB.echoDebug(DebugElement.Footer);
         dB.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
@@ -173,6 +176,8 @@ public class Denizen extends JavaPlugin {
 
         // Create the command script handler for listener
         WorldScriptHelper ws_helper = new WorldScriptHelper();
+        
+        ItemScriptHelper is_helper = new ItemScriptHelper();
 
         // Register traits
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
@@ -188,6 +193,7 @@ public class Denizen extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ParticlesTrait.class).withName("particles"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SneakingTrait.class).withName("sneaking"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(InvisibleTrait.class).withName("invisible"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(MobproxTrait.class).withName("mobprox"));
 
         // Create instance of PacketHelper if ProtocolLib has been hooked
         if(Depends.protocolManager != null) {
@@ -261,7 +267,7 @@ public class Denizen extends JavaPlugin {
 
         for (OfflinePlayer player : this.getServer().getOfflinePlayers())
             try {
-                getListenerRegistry().deconstructPlayer(dPlayer.valueOf(player.getName())); } catch (Exception e) {
+                getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player)); } catch (Exception e) {
                 if (player == null) dB.echoDebug("Tell aufdemrand ASAP about this error! ERR: OPN");
                 else dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
                         "You might have a corrupt player file!");

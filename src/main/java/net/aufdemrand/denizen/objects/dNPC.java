@@ -21,15 +21,15 @@ import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.util.Anchor;
 import net.minecraft.server.v1_6_R2.EntityLiving;
+
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,8 +72,7 @@ public class dNPC implements dObject {
     }
 
     public boolean isValid() {
-        if (getCitizen() == null) return false;
-        else return true;
+        return getCitizen() != null;
     }
 
     private int npcid = -1;
@@ -144,7 +143,7 @@ public class dNPC implements dObject {
     }
     
     public void destroy() {
-    	getCitizen().destroy();
+        getCitizen().destroy();
     }
 
     public dLocation getLocation() {
@@ -209,7 +208,7 @@ public class dNPC implements dObject {
         return getCitizen().getTrait(TriggerTrait.class);
     }
 
-    public void action(String actionName, dPlayer player) {
+    public void action(String actionName, dPlayer player, Map<String, Object> context) {
         if (getCitizen() != null)
         {
             if (getCitizen().hasTrait(AssignmentTrait.class))
@@ -218,8 +217,13 @@ public class dNPC implements dObject {
                         actionName,
                         this,
                         player,
-                        getAssignmentTrait().getAssignment());
+                        getAssignmentTrait().getAssignment(),
+                        context);
         }
+    }
+
+    public void action(String actionName, dPlayer player) {
+        action(actionName, player, null);
     }
 
     private String prefix = "npc";
@@ -258,8 +262,12 @@ public class dNPC implements dObject {
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return "null";
-
-
+        
+        // <--
+        // <npc> -> dNPC
+        // Returns the dNPC of the NPC.
+        // -->
+        
         // <--
         // <npc.name.nickname> -> Element
         // returns the NPC's nickname provided by the nickname trait, or null if the npc does not have the nickname trait.
@@ -344,6 +352,14 @@ public class dNPC implements dObject {
         // -->
         if (attribute.startsWith("owner"))
             return new Element(getOwner()).getAttribute(attribute.fulfill(1));
+        
+        // <--
+        // <npc.inventory> -> dInventory
+        // Returns the dInventory of the NPC.
+        // NOTE: This currently only works with player-type NPCs.
+        // -->
+        if (attribute.startsWith("inventory"))
+            return new dInventory((InventoryHolder) getDenizenEntity().getLivingEntity()).getAttribute(attribute.fulfill(1));
 
         // <--
         // <npc.is_spawned> -> Element(boolean)
@@ -362,6 +378,21 @@ public class dNPC implements dObject {
                     : "null");
 
         // <--
+        // <npc.script> -> dScript
+        // returns the NPC's assigned script.
+        // -->
+        if (attribute.startsWith("script")) {
+            NPC citizen = getCitizen();
+            if (!citizen.hasTrait(AssignmentTrait.class) || !citizen.getTrait(AssignmentTrait.class).hasAssignment()) {
+                return "null";
+            }
+            else {
+                return new Element(citizen.getTrait(AssignmentTrait.class).getAssignment().getName())
+                    .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--
         // <npc.navigator.is_navigating> -> Element(boolean)
         // returns true if the NPC is currently navigating, false otherwise.
         // -->
@@ -378,42 +409,73 @@ public class dNPC implements dObject {
 
         // <--
         // <npc.navigator.range> -> Element(number)
-        // returns the maximum 'pathfinding range'
+        // returns the maximum pathfinding range
         // -->
         if (attribute.startsWith("navigator.range"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().range()))
                     .getAttribute(attribute.fulfill(2));
 
-
+        // <--
+        // <npc.navigator.attack_strategy> -> Element
+        // returns the NPC's attack strategy
+        // -->
         if (attribute.startsWith("navigator.attack_strategy"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().attackStrategy().toString()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.speed_modifier> -> Element(number)
+        // returns the NPC movement speed modifier
+        // -->
         if (attribute.startsWith("navigator.speed_modifier"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().speedModifier()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.base_speed> -> Element(number)
+        // returns the base navigation speed
+        // -->
         if (attribute.startsWith("navigator.base_speed"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().baseSpeed()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.avoid_water> -> Element(boolean)
+        // returns whether the NPC will avoid water
+        // -->
         if (attribute.startsWith("navigator.avoid_water"))
             return new Element(String.valueOf(getNavigator().getLocalParameters().avoidWater()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.target_location> -> dLocation
+        // returns the location the NPC is curently navigating towards
+        // -->
         if (attribute.startsWith("navigator.target_location"))
             return (getNavigator().getTargetAsLocation() != null
                     ? new dLocation(getNavigator().getTargetAsLocation()).getAttribute(attribute.fulfill(2))
                     : "null");
 
+        // <--
+        // <npc.navigator.is_fighting> -> Element(boolean)
+        // returns whether the NPC is in combat
+        // -->
         if (attribute.startsWith("navigator.is_fighting"))
             return new Element(String.valueOf(getNavigator().getEntityTarget().isAggressive()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.target_type> -> Element
+        // returns the entity type of the target
+        // -->
         if (attribute.startsWith("navigator.target_type"))
             return new Element(String.valueOf(getNavigator().getTargetType().toString()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <npc.navigator.target_entity> -> dEntity
+        // returns the entity being targeted
+        // -->
         if (attribute.startsWith("navigator.target_entity"))
             return (getNavigator().getEntityTarget().getTarget() != null
                     ? new dEntity(getNavigator().getEntityTarget().getTarget()).getAttribute(attribute.fulfill(2))

@@ -90,8 +90,6 @@ public class TagManager implements Listener {
             dB.echoError("Uh oh! Report this to aufdemrand! Err: TagManagerObjectReflection");
             e.printStackTrace();
         }
-
-        return;
     }
 
 
@@ -130,7 +128,7 @@ public class TagManager implements Listener {
                     // Call Event
                     Bukkit.getServer().getPluginManager().callEvent(event);
                     if ((!event.replaced() && event.getAlternative() != null)
-                            || (event.getReplaced() == "null" && event.getAlternative() != null))
+                            || (event.getReplaced().equals("null") && event.getAlternative() != null))
                         event.setReplaced(event.getAlternative());
                     arg = arg.substring(0, positions[0]) + event.getReplaced() + arg.substring(positions[1] + 1, arg.length());
                 }
@@ -166,8 +164,10 @@ public class TagManager implements Listener {
         int nested_level = 0;
         if (args != null) {
             for (String argument : args) {
+                // Check nested level to avoid filling tags prematurely.
                 if (argument.equals("{")) nested_level++;
                 if (argument.equals("}")) nested_level--;
+                // If this argument isn't nested, fill the tag.
                 if (nested_level < 1) {
                     filledArgs.add(tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), argument, instant, scriptEntry));
                 }

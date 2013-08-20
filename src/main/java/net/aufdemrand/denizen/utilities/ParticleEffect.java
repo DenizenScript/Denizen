@@ -186,17 +186,17 @@ public enum ParticleEffect {
  
     private Object createNormalPacket(ParticleEffect effect, Location loc, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
         
-    	// Get another effect if "RANDOM" is used
-    	if (effect.equals(ParticleEffect.RANDOM)) {
-    		
-    		// Make sure the new effect is not "RANDOM" or an invisible effect
-    		while (effect.toString().matches("^(RANDOM|BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) {
-    			
-    			effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
-    		}
-    	}
-    	
-    	return createPacket(effect.getName(), loc, offsetX, offsetY, offsetZ, speed, amount);
+        // Get another effect if "RANDOM" is used
+        if (effect.equals(ParticleEffect.RANDOM)) {
+            
+            // Make sure the new effect is not "RANDOM" or an invisible effect
+            while (effect.toString().matches("^(RANDOM|BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) {
+                
+                effect = ParticleEffect.values()[Utilities.getRandom().nextInt(ParticleEffect.values().length)];
+            }
+        }
+        
+        return createPacket(effect.getName(), loc, offsetX, offsetY, offsetZ, speed, amount);
     }
  
     private static Object createTileCrackPacket(int id, byte data, Location loc, float offsetX, float offsetY, float offsetZ, int amount) {

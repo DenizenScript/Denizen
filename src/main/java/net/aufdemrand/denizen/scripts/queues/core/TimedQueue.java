@@ -78,9 +78,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
 
     @Override
     public boolean isDelayed() {
-        if (delay_ticks > System.currentTimeMillis()) return true;
-
-        return false;
+        return (delay_ticks > System.currentTimeMillis());
     }
 
 

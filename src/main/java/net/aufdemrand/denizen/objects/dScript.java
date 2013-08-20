@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -10,7 +11,8 @@ import java.util.regex.Pattern;
 
 public class dScript implements dObject {
 
-    final public static Pattern matchesScriptPtrn = Pattern.compile("(?:.+:|)(.+)", Pattern.CASE_INSENSITIVE);
+    final public static Pattern script_pattern = Pattern.compile("(s@|)(.+)",
+            Pattern.CASE_INSENSITIVE);
 
     /**
      * Gets a Script Argument Object from a dScript argument.
@@ -21,20 +23,20 @@ public class dScript implements dObject {
     @ObjectFetcher("s")
     public static dScript valueOf(String string) {
 
-        Matcher m = matchesScriptPtrn.matcher(string);
+        Matcher m = script_pattern.matcher(string);
         if (m.matches()) {
-            dScript script = new dScript(m.group(1));
+            dScript script = new dScript(m.group(2));
             // Make sure it's valid.
             if (script.isValid()) return script;
         }
         return null;
     }
-    
+
     public static boolean matches(String string) {
-    	
-    	Matcher m = matchesScriptPtrn.matcher(string);
-    	if (m.matches()) {
-            dScript script = new dScript(m.group(1));
+
+        Matcher m = script_pattern.matcher(string);
+        if (m.matches()) {
+            dScript script = new dScript(m.group(2));
             // Make sure it's valid.
             if (script.isValid()) return true;
         }
@@ -110,7 +112,7 @@ public class dScript implements dObject {
 
     @Override
     public String getPrefix() {
-       return prefix;
+        return prefix;
     }
 
     @Override
@@ -120,7 +122,7 @@ public class dScript implements dObject {
 
     @Override
     public boolean isUnique() {
-        return true;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;
     }
 
     @Override
@@ -132,6 +134,53 @@ public class dScript implements dObject {
     @Override
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return "null";
+
+        // <--
+        // <s@script.container_type> -> Element
+        // Returns the container type of a dScript.
+        // -->
+        if (attribute.startsWith("container_type"))
+            return new Element(container.getType())
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--
+        // <s@script.cooled_down[<player>]> -> Element(Boolean)
+        // Returns true if the script has been cooled down for the
+        // player (defaults to current). Otherwise, returns false.
+        // -->
+        if (attribute.startsWith("cooled_down")) {
+            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
+                    : attribute.getScriptEntry().getPlayer());
+            return new Element(container.checkCooldown(player))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--
+        // <s@script.requirements[<player>].check[<path>]> -> Element
+        // Returns true if the player specified (defaults to current) has the
+        // requirement. Otherwise, returns false.
+        // -->
+        if (attribute.startsWith("requirements.check")) {
+            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
+                    : attribute.getScriptEntry().getPlayer());
+            if (attribute.hasContext(2))
+                return new Element(container.checkRequirements(player,
+                        attribute.getScriptEntry().getNPC(),
+                        attribute.getContext(2)))
+                        .getAttribute(attribute.fulfill(2));
+        }
+
+        // <--
+        // <s@script.cooldown[<player>]> -> Duration
+        // Returns the time left for the player to cooldown for the script.
+        // -->
+        if (attribute.startsWith("cooldown")) {
+            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
+                    : attribute.getScriptEntry().getPlayer());
+            return CooldownCommand.getCooldownDuration((player != null ? player.getName() : null), container.getName())
+                    .getAttribute(attribute.fulfill(1));
+
+        }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }

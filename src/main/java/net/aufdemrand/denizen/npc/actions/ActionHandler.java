@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.npc.actions;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
@@ -12,6 +13,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 
 import java.util.List;
+import java.util.Map;
 
 public class ActionHandler {
 
@@ -22,10 +24,13 @@ public class ActionHandler {
     }
 
     public boolean doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment) {
+        return doAction(actionName, npc, player, assignment, null);
+    }
 
+    public boolean doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment, Map<String, Object> context) {
         if (assignment == null) {
-        	// dB.echoDebug("Tried to do 'on " + actionName + ":' but couldn't find a matching script.");
-        	return false;
+            // dB.echoDebug("Tried to do 'on " + actionName + ":' but couldn't find a matching script.");
+            return false;
         }
 
         if (!assignment.contains("actions.on " + actionName)) return false;
@@ -41,6 +46,12 @@ public class ActionHandler {
         if (script.isEmpty()) return false;
 
         dB.echoDebug(DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
+
+        if (context != null) {
+            for (Map.Entry<String, Object> entry : context.entrySet()) {
+                ScriptBuilder.addObjectToEntries(script, entry.getKey(), entry.getValue());
+            }
+        }
 
         ScriptQueue queue = InstantQueue.getQueue(null).addEntries(script);
         queue.start();

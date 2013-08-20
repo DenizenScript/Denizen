@@ -13,26 +13,25 @@ import org.bukkit.event.Listener;
 @Deprecated
 public class AnchorTags implements Listener {
 
-	public AnchorTags(Denizen denizen) {
-		denizen.getServer().getPluginManager().registerEvents(this, denizen);
-	}
+    public AnchorTags(Denizen denizen) {
+        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+    }
 
-	@EventHandler
-	public void constantTags(ReplaceableTagEvent event) {
-		if (!event.matches("ANCHOR")) return;
+    @EventHandler
+    public void constantTags(ReplaceableTagEvent event) {
+        if (!event.matches("ANCHOR")) return;
 
-		NPC npc = null;
-		if (event.getType() != null
-				&& event.getType().matches("\\d+"))
-			npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(event.getType()));
-		else if (event.getNPC() != null)
-			npc = event.getNPC().getCitizen();
-		if (npc == null) return;
+        NPC npc = null;
+        if (event.getType() != null
+                && event.getType().matches("\\d+"))
+            npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(event.getType()));
+        else if (event.getNPC() != null)
+            npc = event.getNPC().getCitizen();
+        if (npc == null) return;
 
-		Location anchor = null;
-		if (npc.getTrait(Anchors.class).getAnchor(event.getValue()) != null) {
-			anchor = npc.getTrait(Anchors.class).getAnchor(event.getValue()).getLocation();
-			event.setReplaced(anchor.getX() + "," + anchor.getY() + "," + anchor.getZ() + "," + anchor.getWorld().getName());
-		}
-	}
+        if (npc.getTrait(Anchors.class).getAnchor(event.getValue()) != null) {
+            Location anchor = npc.getTrait(Anchors.class).getAnchor(event.getValue()).getLocation();
+            event.setReplaced(anchor.getX() + "," + anchor.getY() + "," + anchor.getZ() + "," + anchor.getWorld().getName());
+        }
+    }
 }

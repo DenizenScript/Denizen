@@ -71,9 +71,7 @@ public abstract class ScriptQueue {
      *               doesn't exist or does not match
      */
     public static boolean _matchesType(String queue, Class type) {
-        if (_queueExists(queue.toUpperCase()))
-            return _queues.get(queue.toUpperCase()).getClass() == type;
-        else return false;
+        return (_queueExists(queue.toUpperCase())) && _queues.get(queue.toUpperCase()).getClass() == type;
     }
 
 

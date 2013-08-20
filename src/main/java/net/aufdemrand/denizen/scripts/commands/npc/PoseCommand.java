@@ -54,11 +54,11 @@ public class PoseCommand extends AbstractCommand {
         if (targetType == TargetType.PLAYER && scriptEntry.getPlayer() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
         else if (targetType == TargetType.NPC && scriptEntry.getNPC() == null) throw new InvalidArgumentsException(Messages.ERROR_NO_NPCID);
         scriptEntry.addObject("target", targetType)
-        		.addObject("action", action).addObject("id", id);
+                .addObject("action", action).addObject("id", id);
     }
 
     @SuppressWarnings("incomplete-switch")
-	@Override
+    @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
 
@@ -76,21 +76,19 @@ public class PoseCommand extends AbstractCommand {
         switch (action) {
 
             case ASSUME:
-            	
-            	if (target.name() == "NPC")
-            		npc.getCitizen().getTrait(Poses.class).assumePose(id);
-            	else
-            	{
-            		Player player = scriptEntry.getPlayer().getPlayerEntity();
-            		Location location = player.getLocation();
-            		location.setYaw(npc.getCitizen().getTrait(Poses.class).getPose(id).getYaw());
-            		location.setPitch(npc.getCitizen().getTrait(Poses.class).getPose(id).getPitch());
-            		
-            		// The only way to change a player's yaw and pitch in Bukkit
-            		// is to use teleport on him/her
-            		player.teleport(location);
-            	}
-                return;
+                
+                if (target.name().equals("NPC"))
+                    npc.getCitizen().getTrait(Poses.class).assumePose(id);
+                else {
+                    Player player = scriptEntry.getPlayer().getPlayerEntity();
+                    Location location = player.getLocation();
+                    location.setYaw(npc.getCitizen().getTrait(Poses.class).getPose(id).getYaw());
+                    location.setPitch(npc.getCitizen().getTrait(Poses.class).getPose(id).getPitch());
+                    
+                    // The only way to change a player's yaw and pitch in Bukkit
+                    // is to use teleport on him/her
+                    player.teleport(location);
+                }
         }
 
         // TODO: ADD ADD/REMOVE

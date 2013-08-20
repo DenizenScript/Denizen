@@ -11,37 +11,37 @@ import java.util.List;
 
 public class LiquidRequirement extends AbstractRequirement{
 
-	@Override
-	public void onEnable() {
-		// nothing to do here
-	}
+    @Override
+    public void onEnable() {
+        // nothing to do here
+    }
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
-		boolean outcome = false;
-		Block blockToCheck = null;
+        boolean outcome = false;
+        Block blockToCheck = null;
 
-		if(args.size() < 1)
-			throw new RequirementCheckException("Must provide a BOOKMARK:block of the block to be checked!");
+        if(args.size() < 1)
+            throw new RequirementCheckException("Must provide a BOOKMARK:block of the block to be checked!");
 
-		/* Get arguments */
+        /* Get arguments */
 
-		for (String thisArg : args) {
+        for (String thisArg : args) {
 
-			if (aH.matchesLocation(thisArg)) {
-				blockToCheck = aH.getLocationFrom(thisArg).getBlock();
-				if (blockToCheck != null)
-					dB.echoDebug("...block to check is type '%s'.", blockToCheck.getType().toString());
-			}
+            if (aH.matchesLocation(thisArg)) {
+                blockToCheck = aH.getLocationFrom(thisArg).getBlock();
+                if (blockToCheck != null)
+                    dB.echoDebug("...block to check is type '%s'.", blockToCheck.getType().toString());
+            }
 
-			else dB.echoError("Could not match argument '%s'!", thisArg);
-		}
+            else dB.echoError("Could not match argument '%s'!", thisArg);
+        }
 
-		if (blockToCheck != null && blockToCheck.isLiquid()) outcome = true;
+        if (blockToCheck != null && blockToCheck.isLiquid()) outcome = true;
 
-		if (outcome == true) dB.echoDebug("...block is liquid!");
-		else dB.echoDebug("...block is not liquid!");
+        if (outcome) dB.echoDebug("...block is liquid!");
+        else dB.echoDebug("...block is not liquid!");
 
-		return outcome;
-	}
+        return outcome;
+    }
 }

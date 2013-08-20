@@ -92,6 +92,7 @@ public class RequirementChecker {
                         numberMet++;
                     }
                 }
+
             } else
                 // Check requirement with RequirementRegistry
                 if (plugin.getRequirementRegistry().list().containsKey(reqString)) {
@@ -102,7 +103,7 @@ public class RequirementChecker {
 
                     try {
                         // Check if # of required args are met
-                        int	numArguments = argumentList.isEmpty() ? 0 : argumentList.size();
+                        int numArguments = argumentList.isEmpty() ? 0 : argumentList.size();
                         int neededArguments = requirement.requirementOptions.REQUIRED_ARGS;
                         if ((numArguments == 0 && neededArguments > 0) ||
                                 numArguments < neededArguments) {
@@ -117,13 +118,13 @@ public class RequirementChecker {
                                 firstReqChecked = true;
                             }
                             numberMet++;
-                            dB.echoApproval("Checking Requirement '" + requirement.getName() + "'" + " ...requirement met!");
+                            dB.echoApproval("Checked '" + requirement.getName() + "'" + " ...requirement met!");
                         } else {
                             if (!firstReqChecked) {
                                 firstReqMet = false;
                                 firstReqChecked = true;
                             }
-                            dB.echoApproval("Checking Requirement '" + requirement.getName() + "'" + " ...requirement not met!");
+                            dB.echoApproval("Checked '" + requirement.getName() + "'" + " ...requirement not met!");
                         }
 
                     } catch (Throwable e) {
@@ -152,16 +153,12 @@ public class RequirementChecker {
 
             // ANY # mode
         else if (context.mode.getMode() == RequirementsMode.Mode.ANY_NUM) {
-            if (numberMet >= context.mode.modeInt) return true;
-            else return false;
+            return (numberMet >= context.mode.modeInt);
         }
 
         // FIRST AND ANY # mode
         else if (context.mode.getMode() == RequirementsMode.Mode.FIRST_AND_ANY_NUM) {
-            if (firstReqMet) {
-                if (numberMet > context.mode.modeInt) return true;
-                else return false;
-            } else return false;
+            return firstReqMet && (numberMet <= context.mode.modeInt);
         }
 
         // Nothing met, return FALSE

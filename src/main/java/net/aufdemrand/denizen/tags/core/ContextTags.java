@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -41,7 +40,7 @@ public class ContextTags implements Listener {
 
         // Requirements
         if (type.equalsIgnoreCase("REQUIREMENTS")) {
-        	if (sub_type.equalsIgnoreCase("CHECK"))
+            if (sub_type.equalsIgnoreCase("CHECK"))
                 event.setReplaced(String.valueOf(event.getScriptEntry().getScript().getContainer()
                         .checkBaseRequirements(event.getPlayer(), event.getNPC())));
         }

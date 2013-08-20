@@ -50,7 +50,7 @@ public class RuntimeCompiler {
                     String fileName = f.getName();
 
                     if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("JAVA") && !fileName.startsWith(".")) {
-                    	dB.echoDebug("Processing '" + fileName + "'... ");
+                        dB.echoDebug("Processing '" + fileName + "'... ");
 
                         JavaSourceCompiler javaSourceCompiler = new JavaSourceCompilerImpl();
                         JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();
@@ -64,9 +64,9 @@ public class RuntimeCompiler {
                             loadedClass.load();
                         } catch (Exception e) {
                             if (e instanceof IllegalStateException)
-                            	dB.echoError("No JDK found! External .java files will not be loaded.");
+                                dB.echoError("No JDK found! External .java files will not be loaded.");
                             else {
-                            	dB.echoError(ChatColor.RED + "Woah! Error compiling " + fileName + "!");
+                                dB.echoError(ChatColor.RED + "Woah! Error compiling " + fileName + "!");
                                 e.printStackTrace();
                             }
                         }

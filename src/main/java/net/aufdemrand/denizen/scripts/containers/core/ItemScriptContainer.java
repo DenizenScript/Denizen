@@ -10,25 +10,51 @@ import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
+
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemScriptContainer extends ScriptContainer {
-	
-	dNPC npc = null;
-	Player player = null;
-	
+    
+    dNPC npc = null;
+    Player player = null;
+    public Boolean bound = false;
+    
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
+        ItemScriptHelper.item_scripts.put(getName(), this);
+        // Set Recipe
+        if (contains("RECIPE")) {
+            List<dItem> materials = new ArrayList<dItem>();
+            for (String recipeRow : getStringList("RECIPE")) {
+                recipeRow = TagManager.tag(new dPlayer(player), npc, recipeRow);
+                String[] row = recipeRow.split("\\|", 3);
+                for (String material : row) {
+                    materials.add(materials.size(), dItem.valueOf(material));
+                    if (material.contains(":"))
+                        materials.get(materials.size()-1).setData(Byte.valueOf(material.split(":")[1]));
+                }
+            }
+            ShapedRecipe recipe = new ShapedRecipe(getItemFrom().getItemStack());
+            recipe.shape("abc", "def", "ghi");
+            char x = 'a';
+            for (dItem material : materials) {
+                if (!material.getItemStack().getType().name().equals("AIR"))
+                    recipe.setIngredient(x, material.getItemStack().getData());
+                x++;
+            }
+            Bukkit.getServer().addRecipe(recipe);
+        }
     }
 
-   public dItem getItemFrom() {
+    public dItem getItemFrom() {
        return getItemFrom(null, null);
-   }
+    }
 
     public dItem getItemFrom(dPlayer player, dNPC npc) {
         // Try to use this script to make an item.
@@ -36,7 +62,7 @@ public class ItemScriptContainer extends ScriptContainer {
         try {
             // Check validity of material
             if (contains("MATERIAL")){
-            	String material = TagManager.tag(player, npc, getString("MATERIAL"));
+                String material = TagManager.tag(player, npc, getString("MATERIAL"));
                 stack = dItem.valueOf(material);
             }
 
@@ -44,31 +70,40 @@ public class ItemScriptContainer extends ScriptContainer {
             if (stack == null) return null;
 
             ItemMeta meta = stack.getItemStack().getItemMeta();
-
+            List<String> lore = new ArrayList<String>();
+            
+            // Set Id of the first, invisible lore
+            lore.add("§0id:" + getName());
+            
             // Set Display Name
             if (contains("DISPLAY NAME")){
-            	String displayName = TagManager.tag(player, npc, getString("DISPLAY NAME"));
-            	meta.setDisplayName(displayName);
+                String displayName = TagManager.tag(player, npc, getString("DISPLAY NAME"));
+                meta.setDisplayName(displayName);
+            }
+            
+            // Set if the object is bound to the player
+            if (contains("BOUND")) {
+                bound  = Boolean.valueOf(TagManager.tag(player, npc, getString("BOUND")));
             }
 
             // Set Lore
             if (contains("LORE")) {
-            	List<String> taggedLore = new ArrayList<String>();
-            	for (String l : getStringList("LORE")){
-            		 l = TagManager.tag(player, npc, l);
-            		 taggedLore.add(l);
-            	}
-                meta.setLore(taggedLore);
+                
+                for (String l : getStringList("LORE")){
+                     l = TagManager.tag(player, npc, l);
+                     lore.add(l);
+                }
             }
-            	
+                
+            meta.setLore(lore);
             stack.getItemStack().setItemMeta(meta);
 
             // Set Enchantments
             if (contains("ENCHANTMENTS")) {
                 for (String enchantment : getStringList("ENCHANTMENTS")) {
                     
-                	enchantment = TagManager.tag(player, npc, enchantment);
-                	try {
+                    enchantment = TagManager.tag(player, npc, enchantment);
+                    try {
                         // Build enchantment context
                         int level = 1;
                         if (enchantment.split(":").length > 1) {
@@ -80,7 +115,6 @@ public class ItemScriptContainer extends ScriptContainer {
                         stack.getItemStack().addUnsafeEnchantment(ench, level);
                     } catch (Exception e) {
                         dB.echoError("While constructing '" + getName() + "', there has been a problem. '" + enchantment + "' is an invalid Enchantment!");
-                        continue;
                     }
                 }
             }
@@ -88,7 +122,7 @@ public class ItemScriptContainer extends ScriptContainer {
             // Set Color
             if (contains("COLOR"))
             {
-            	String color = TagManager.tag(player, npc, getString("COLOR"));
+                String color = TagManager.tag(player, npc, getString("COLOR"));
                 LeatherColorer.colorArmor(stack, color);
             }
                 
@@ -99,9 +133,6 @@ public class ItemScriptContainer extends ScriptContainer {
 
                 stack = book.writeBookTo(stack, player, npc);
             }
-
-            // Set Id of the stack
-            stack.setItemStack(CustomNBT.addCustomNBT(stack.getItemStack(), "denizen-script-id", getName()));
 
         } catch (Exception e) {
             dB.echoError("Woah! An exception has been called with this item script!");
@@ -115,11 +146,11 @@ public class ItemScriptContainer extends ScriptContainer {
     }
     
     public void setNPC(dNPC npc) {
-    	this.npc = npc;
+        this.npc = npc;
     }
     
     public void setPlayer(Player player) {
-    	this.player = player;
+        this.player = player;
     }
 
 }

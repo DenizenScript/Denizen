@@ -13,30 +13,30 @@ public class PoweredRequirement extends AbstractRequirement{
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
-		boolean outcome = false;
-		Block blockToCheck = null;
+        boolean outcome = false;
+        Block blockToCheck = null;
 
 
-		for (String thisArg : args) {
+        for (String thisArg : args) {
 
-			if (aH.matchesLocation(thisArg)) {
-				blockToCheck = aH.getLocationFrom(thisArg).getBlock();
-				if (blockToCheck != null)
-					dB.echoDebug("...block to check is type '%s'.", blockToCheck.getType().toString());
-			}
+            if (aH.matchesLocation(thisArg)) {
+                blockToCheck = aH.getLocationFrom(thisArg).getBlock();
+                if (blockToCheck != null)
+                    dB.echoDebug("...block to check is type '%s'.", blockToCheck.getType().toString());
+            }
 
-			else dB.echoError("Could not match argument '%s'!", thisArg);
-		}
+            else dB.echoError("Could not match argument '%s'!", thisArg);
+        }
 
-		if(blockToCheck != null) {
-			if (blockToCheck.isBlockPowered()) outcome = true;
-			else if (blockToCheck.isBlockIndirectlyPowered()) outcome = true;
-		}
-		
-		if (outcome == true) dB.echoDebug("...block is powered!");
-		else dB.echoDebug("...block is not powered!");
+        if(blockToCheck != null) {
+            if (blockToCheck.isBlockPowered()) outcome = true;
+            else if (blockToCheck.isBlockIndirectlyPowered()) outcome = true;
+        }
+        
+        if (outcome) dB.echoDebug("...block is powered!");
+        else dB.echoDebug("...block is not powered!");
 
-		return outcome;
-	}
+        return outcome;
+    }
 
 }

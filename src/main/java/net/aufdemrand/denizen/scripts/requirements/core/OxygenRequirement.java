@@ -49,6 +49,6 @@ public class OxygenRequirement extends AbstractRequirement{
                 return oxygen > val;
         }
         
-		return true;
-	}
+        return true;
+    }
 }

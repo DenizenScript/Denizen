@@ -41,8 +41,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class MidiCommand extends AbstractCommand {
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize fields
         File file = null;
@@ -51,60 +51,60 @@ public class MidiCommand extends AbstractCommand {
         Set<Player> listeners = new HashSet<Player>();
 
         // Iterate through arguments
-		for (String arg : scriptEntry.getArguments()){
-			if (aH.matchesLocation(arg))
+        for (String arg : scriptEntry.getArguments()){
+            if (aH.matchesLocation(arg))
                 location = aH.getLocationFrom(arg);
 
-			else if (aH.matchesValueArg("file, f", arg, ArgumentType.Custom)) {
-        		try {
-        			String path = denizen.getDataFolder() + 
-        					File.separator + "midi" +
-        					File.separator + aH.getStringFrom(arg);
-        			
-        			if (!path.endsWith(".mid")) {
-        				
-        				path = path + ".mid";
-        			}
-        			
-            		file = new File(path);
-            	} catch (Exception e) {
-            		dB.echoError("Invalid file!");
-            	}
+            else if (aH.matchesValueArg("file, f", arg, ArgumentType.Custom)) {
+                try {
+                    String path = denizen.getDataFolder() + 
+                            File.separator + "midi" +
+                            File.separator + aH.getStringFrom(arg);
+                    
+                    if (!path.endsWith(".mid")) {
+                        
+                        path = path + ".mid";
+                    }
+                    
+                    file = new File(path);
+                } catch (Exception e) {
+                    dB.echoError("Invalid file!");
+                }
             }
-			
-			else if (aH.matchesValueArg("listeners, l", arg, ArgumentType.Custom)) {
-            	
+            
+            else if (aH.matchesValueArg("listeners, l", arg, ArgumentType.Custom)) {
+                
                 Entity entity = null;
 
                 for (String listener : aH.getListFrom(arg)) {
-                	
-                	entity = dEntity.valueOf(listener).getBukkitEntity();
-                	
-                	if (entity != null && entity instanceof Player) {
-                		
-                		listeners.add((Player) entity);
-                	}
-            		else {
-            			dB.echoError("Invalid listener '%s'!", listener);
-            		}
+                    
+                    entity = dEntity.valueOf(listener).getBukkitEntity();
+                    
+                    if (entity != null && entity instanceof Player) {
+                        
+                        listeners.add((Player) entity);
+                    }
+                    else {
+                        dB.echoError("Invalid listener '%s'!", listener);
+                    }
                 }
-			}
-			
-			else if (aH.matchesValueArg("tempo, t", arg, ArgumentType.Float))
-            	tempo = aH.getFloatFrom(arg);
+            }
+            
+            else if (aH.matchesValueArg("tempo, t", arg, ArgumentType.Float))
+                tempo = aH.getFloatFrom(arg);
             
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-		}
+        }
 
         // Check required args
-		if (file == null)
+        if (file == null)
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "FILE");
-		
-		// If there are no listeners, and the location is null,
-		// add this player to the listeners
+        
+        // If there are no listeners, and the location is null,
+        // add this player to the listeners
         if (location == null && listeners.size() == 0) {
-        	
-        	listeners.add(scriptEntry.getPlayer().getPlayerEntity());
+            
+            listeners.add(scriptEntry.getPlayer().getPlayerEntity());
         }
 
         // Stash args in ScriptEntry for use in execute()
@@ -112,15 +112,15 @@ public class MidiCommand extends AbstractCommand {
         scriptEntry.addObject("listeners", listeners);
         scriptEntry.addObject("location", location);
         scriptEntry.addObject("tempo", tempo);
-	}
+    }
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Extract objects from ScriptEntry
         File file = (File) scriptEntry.getObject("file");
         @SuppressWarnings("unchecked")
-		Set<Player> listeners = (Set<Player>) scriptEntry.getObject("listeners");
+        Set<Player> listeners = (Set<Player>) scriptEntry.getObject("listeners");
         Location location = (Location) scriptEntry.getObject("location");
         Float tempo = (Float) scriptEntry.getObject("tempo");
                 
@@ -133,10 +133,10 @@ public class MidiCommand extends AbstractCommand {
 
         // Play the sound
         if (location != null) {
-        	MidiUtil.playMidiQuietly(file, tempo, location);
+            MidiUtil.playMidiQuietly(file, tempo, location);
         }
         else {
-        	MidiUtil.playMidiQuietly(file, tempo, listeners);
+            MidiUtil.playMidiQuietly(file, tempo, listeners);
         }
-	}
+    }
 }

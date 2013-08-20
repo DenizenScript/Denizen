@@ -84,7 +84,6 @@ public class EngraveCommand extends AbstractCommand implements Listener {
         case REMOVE: 
             dB.echoDebug("Removing engraving on '" + item.getType() + "'.");            
             CustomNBT.removeCustomNBT(item, "owner");
-            return;            
         }
     }
     

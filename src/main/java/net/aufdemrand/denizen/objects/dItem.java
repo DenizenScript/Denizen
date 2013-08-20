@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,27 +13,30 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class dItem implements dObject {
 
-	// An item pattern with the following groups:
-	//
-	// 1) An optional item: prefix.
-	// 2) Word characters (letters and digits) and
-	//    spaces that specify the name or ID of the item
-	// 3) Digits that specify the special data value
-	//    of the item
-	// 4) Digits between [] brackets that specify the
-	//    quantity of the item
-	
+    // An item pattern with the following groups:
+    //
+    // 1) An optional item: prefix.
+    // 2) Word characters (letters and digits) and
+    //    spaces that specify the name or ID of the item
+    // 3) Digits that specify the special data value
+    //    of the item
+    // 4) Digits between [] brackets that specify the
+    //    quantity of the item
+    
     final static Pattern itemPattern =
-    		Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
-    				Pattern.CASE_INSENSITIVE);
+            Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
+                    Pattern.CASE_INSENSITIVE);
 
     /////////////////////
     //  STATIC METHODS
@@ -77,8 +79,7 @@ public class dItem implements dObject {
     ////////////////
     
     public static dItem valueOf(String string) {
-    	
-    	return valueOf(string, null, null);
+        return valueOf(string, null, null);
     }
 
     /**
@@ -113,10 +114,10 @@ public class dItem implements dObject {
                         stack = new dItem(((Item) entity).getItemStack());
                         
                         if (m.group(3) != null) {
-                        	stack.setAmount(Integer.valueOf(m.group(3)));
+                            stack.setAmount(Integer.valueOf(m.group(3)));
                         }
                         
-                    	return stack;
+                        return stack;
                     }
                 }
             }
@@ -132,10 +133,10 @@ public class dItem implements dObject {
             stack = getSaved(m.group(2));
             
             if (m.group(3) != null) {
-            	stack.setAmount(Integer.valueOf(m.group(3)));
+                stack.setAmount(Integer.valueOf(m.group(3)));
             }
             
-        	return stack;
+            return stack;
         }
 
         string = string.replace("i@", "");
@@ -143,62 +144,63 @@ public class dItem implements dObject {
         m = itemPattern.matcher(string);
         
         if (m.matches()) {
-        	
-        	try {
-        		
+            
+            try {
+                
                 ///////
                 // Match item and book script custom items
-        		
+                
                 if (ScriptRegistry.containsScript(m.group(1), ItemScriptContainer.class)) {
                     // Get item from script
                     stack = ScriptRegistry.getScriptContainerAs
-                    		(m.group(1), ItemScriptContainer.class).getItemFrom(player, npc);
+                            (m.group(1), ItemScriptContainer.class).getItemFrom(player, npc);
                 }
                 
                 else if (ScriptRegistry.containsScript(m.group(1), BookScriptContainer.class)) {
-                	// Get book from script
+                    // Get book from script
                     stack = ScriptRegistry.getScriptContainerAs
-                    		(m.group(1), BookScriptContainer.class).getBookFrom(player, npc);
+                            (m.group(1), BookScriptContainer.class).getBookFrom(player, npc);
                 }
                 
                 if (stack != null) {
-                	
-                	if (m.group(3) != null) {
-                    	stack.setAmount(Integer.valueOf(m.group(3)));
+                    
+                    if (m.group(3) != null) {
+                        stack.setAmount(Integer.valueOf(m.group(3)));
                     }
-                	return stack;
+                    return stack;
                 }
-        	}
-        	catch (Exception e) {
+            }
+            catch (Exception e) {
                 // Just a catch, might be a regular item...
-         	}
-        	
-        	
+             }
+            
+            
             ///////
             // Match Bukkit/Minecraft standard items format
-        	
-        	try {
-        		String material = m.group(1).toUpperCase();
+            
+            try {
+                String material = m.group(1).toUpperCase();
            
-        		if (aH.matchesInteger(material)) {
-        			stack = new dItem(Integer.valueOf(material));
-        		}
-        		else {
-        			stack = new dItem(Material.valueOf(material));
-        		}
+                if (aH.matchesInteger(material)) {
+                    stack = new dItem(Integer.valueOf(material));
+                }
+                else {
+                    stack = new dItem(Material.valueOf(material));
+                }
            
-        		if (m.group(2) != null) {
-        			stack.setDurability(Short.valueOf(m.group(2)));
-        		}
-        		if (m.group(3) != null) {
-        			stack.setAmount(Integer.valueOf(m.group(3)));
-        		}
+                if (m.group(2) != null) {
+                    stack.setDurability(Short.valueOf(m.group(2)));
+                }
+                if (m.group(3) != null) {
+                    stack.setAmount(Integer.valueOf(m.group(3)));
+                }
            
-        		return stack;
-        	}
-        	catch (Exception e) {
-        		dB.log("Does not match a valid item ID or material: " + string);
-        	}
+                return stack;
+            }
+            catch (Exception e) {
+                if (!string.equalsIgnoreCase("none"))
+                dB.log("Does not match a valid item ID or material: " + string);
+            }
         }
         
         if (!nope) dB.log("valueOf dItem returning null: " + string);
@@ -219,7 +221,6 @@ public class dItem implements dObject {
         }
         nope = false;
         return false;
-
     }
 
 
@@ -347,6 +348,62 @@ public class dItem implements dObject {
 
     // Additional helper methods
 
+    /**
+     * Check whether this item contains a lore that starts
+     * with a certain prefix.
+     *
+     * @param prefix  The prefix
+     * @return  True if it does, otherwise false
+     *
+     */
+    public boolean containsLore(String prefix) {
+        
+        if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
+            for (String itemLore : getItemStack().getItemMeta().getLore()) {
+                if (itemLore.startsWith(prefix)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    /**
+     * Get the lore from this item that starts with a
+     * certain prefix.
+     *
+     * @param prefix  The prefix
+     * @return  String  The lore
+     *
+     */
+    public String getLore(String prefix) {
+        
+        for (String itemLore : getItemStack().getItemMeta().getLore()) {
+            if (itemLore.startsWith(prefix)) {
+                return itemLore.substring(prefix.length());
+            }
+        }
+        
+        return "";
+    }
+    
+    /**
+     * Check whether this item contains the lore specific
+     * to item scripts.
+     *
+     * @return  True if it does, otherwise false
+     *
+     */
+    public boolean isItemscript() {
+        
+        return containsLore("§0id:");
+    }
+    
+    public String getMaterial() {
+        return getItemStack().getType().name().toLowerCase();
+    }
+    
     public void setAmount(int value) {
         if (item != null)
             item.setAmount(value);
@@ -429,20 +486,22 @@ public class dItem implements dObject {
     @Override
     public String identify() {
         // If saved item, return that
-    	if (getItemStack() == null) return null;
-    	
-    	if (getItemStack().getTypeId() != 0) {
-    	
-    		if (isSaved(this))
-    			return "i@" + getSaved(this);
+        if (getItemStack() == null) return null;
+        
+        if (getItemStack().getTypeId() != 0) {
+            
+            if (isSaved(this)) {
+                return "i@" + getSaved(this);
+            }
 
-    		// If not a saved item, but is a custom item, return the script id
-    		else if (CustomNBT.hasCustomNBT(getItemStack(), "denizen-script-id"))
-    			return "i@" + CustomNBT.getCustomNBT(getItemStack(), "denizen-script-id");
-    	}
+            // If not a saved item, but is a custom item, return the script id
+            else if (isItemscript()) {
+                return "i@" + getLore("§0id:");
+            }
+        }
 
         // Else, return the material name and data
-        return getItemStack().getType().name().toLowerCase()
+        return "i@" + getItemStack().getType().name().toLowerCase()
                     + (getItemStack().getData().getData() != 0 ? ":" + getItemStack().getData().getData() : "");
     }
 
@@ -467,30 +526,67 @@ public class dItem implements dObject {
 
         if (attribute == null) return null;
 
+        // <--
+        // <i@item.qty> -> Element(Number)
+        // Returns the number of items in the dItem's itemstack.
+        // -->
         if (attribute.startsWith("qty"))
             return new Element(String.valueOf(getItemStack().getAmount()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.identify> -> Element
+        // Returns the dItem identification for the item.
+        // -->
+        if (attribute.startsWith("identify")) {
+            return new Element(identify())
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
+        // <--
+        // <i@item.id> -> Element(Number)
+        // Returns the item ID number of the dItem.
+        // -->
         if (attribute.startsWith("id"))
             return new Element(String.valueOf(getItemStack().getTypeId()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.max_stack> -> Element(Number)
+        // Returns the max number of this item possible in a single stack.
+        // -->
         if (attribute.startsWith("max_stack"))
             return new Element(String.valueOf(getItemStack().getMaxStackSize()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.data> -> Element(Number)
+        // Returns the data value of the material of the dItem.
+        // -->
         if (attribute.startsWith("data"))
             return new Element(String.valueOf(getItemStack().getData().getData()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.durability> -> Element(Number)
+        // Returns the durability of the dItem.
+        // -->
         if (attribute.startsWith("durability"))
             return new Element(String.valueOf(getItemStack().getDurability()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.repairable> -> Element(Boolean)
+        // Returns true if the dItem can be repaired. Otherwise, returns false.
+        // -->
         if (attribute.startsWith("repairable"))
             return new Element(String.valueOf(isRepairable()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.material.formatted> -> Element
+        // Returns the formatted material name of the dItem.
+        // -->
         if (attribute.startsWith("material.formatted")) {
 
             String id = item.getType().name().toLowerCase();
@@ -530,24 +626,114 @@ public class dItem implements dObject {
             }
         }
 
-
-
+        // <--
+        // <i@item.material> -> Element
+        // Returns the material name of the dItem.
+        // -->
         if (attribute.startsWith("material"))
             return new Element(getItemStack().getType().toString())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.display> -> Element
+        // Returns the display name of the dItem.
+        // -->
         if (attribute.startsWith("display"))
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasDisplayName())
                 return new Element(getItemStack().getItemMeta().getDisplayName())
                         .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.enchantments> -> dList
+        // Returns a list of enchantment names on the dItem.
+        // -->
         if (attribute.startsWith("enchantments")) {
-
+            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasEnchants()) {
+                List<String> enchants = new ArrayList<String>();
+                for (Enchantment enchantment : getItemStack().getEnchantments().keySet())
+                    enchants.add(enchantment.getName());
+                return new dList(enchants)
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
+        if (attribute.startsWith("book")) {
+            if (getItemStack().getType() == Material.WRITTEN_BOOK) {
+                attribute.fulfill(1);
+                BookMeta bookInfo = (BookMeta) getItemStack().getItemMeta();
+
+                // <--
+                // <i@item.book.author> -> Element
+                // Returns the author of the book.
+                // -->
+                if (attribute.startsWith("author"))
+                    return new Element(bookInfo.getAuthor())
+                            .getAttribute(attribute.fulfill(1));
+
+                // <--
+                // <i@item.book.title> -> Element
+                // Returns the title of the book.
+                // -->
+                if (attribute.startsWith("title"))
+                    return new Element(bookInfo.getTitle())
+                            .getAttribute(attribute.fulfill(1));
+
+                // <--
+                // <i@item.book.page_count> -> Element(Number)
+                // Returns the number of pages in the book.
+                // -->
+                if (attribute.startsWith("page_count"))
+                    return new Element(bookInfo.getPageCount())
+                            .getAttribute(attribute.fulfill(1));
+
+                // <--
+                // <i@item.book.get_page[<#>]> -> Element
+                // Returns the page specified from the book.
+                // -->
+                if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1)))
+                    return new Element(bookInfo.getPage(attribute.getIntContext(1)))
+                            .getAttribute(attribute.fulfill(1));
+
+                // <--
+                // <i@item.book.pages> -> dList
+                // Returns the pages of the book as a dList.
+                // -->
+                if (attribute.startsWith("pages"))
+                    return new dList(bookInfo.getPages())
+                            .getAttribute(attribute.fulfill(1));
+
+            } else dB.echoError("Item referenced is not a written book!");
+        }
+
+        // <--
+        // <i@item.scriptname> -> Element
+        // Returns the script name of the dItem.
+        // -->
+        if (attribute.startsWith("scriptname")) // Note: Update this when the id: is stored less stupidly!
+            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
+                List<String> loreList = new ArrayList<String>();
+                for (String itemLore : getItemStack().getItemMeta().getLore())
+                    if (itemLore.startsWith("§0id:"))
+                        return new Element(itemLore.substring(5)).getAttribute(attribute.fulfill(1));
+            }
+
+        // <--
+        // <i@item.lore> -> dList
+        // Returns lore as a dList except for the "invisible" 
+        // lore that holds the item script ID.
+        // -->
         if (attribute.startsWith("lore")) {
-            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore())
-                return new dList(getItemStack().getItemMeta().getLore()).getAttribute(attribute.fulfill(1));
+            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
+                
+                List<String> loreList = new ArrayList<String>();
+                
+                for (String itemLore : getItemStack().getItemMeta().getLore()) {
+                    if (!itemLore.startsWith("§0id:")) {
+                        loreList.add(itemLore);
+                    }
+                }
+                return new dList(loreList).getAttribute(attribute.fulfill(1));
+            }
             else return new dList("").getAttribute(attribute.fulfill(1));
         }
 
@@ -570,10 +756,6 @@ public class dItem implements dObject {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
-
-        if (attribute.startsWith("identify"))
-            return new Element(identify())
-                    .getAttribute(attribute.fulfill(1));
 
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));

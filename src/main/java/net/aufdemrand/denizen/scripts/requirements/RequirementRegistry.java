@@ -21,15 +21,15 @@ public class RequirementRegistry implements dRegistry {
     }
 
     @Override
-	public void disableCoreMembers() {
-		for (RegistrationableInstance member : instances.values())
-			try { 
-				member.onDisable(); 
-			} catch (Exception e) {
-				dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
-				if (dB.showStackTraces) e.printStackTrace();
-			}
-	}
+    public void disableCoreMembers() {
+        for (RegistrationableInstance member : instances.values())
+            try { 
+                member.onDisable(); 
+            } catch (Exception e) {
+                dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
+                if (dB.showStackTraces) e.printStackTrace();
+            }
+    }
 
     @Override
     public <T extends RegistrationableInstance> T get(Class<T> clazz) {
@@ -55,68 +55,71 @@ public class RequirementRegistry implements dRegistry {
         return true;
     }
 
-	@Override
+    @Override
     public void registerCoreMembers() {
         registerCoreMember(EnchantedRequirement.class, 
-        		"ENCHANTED", "enchanted (iteminhand)", 1);
+                "ENCHANTED", "enchanted (iteminhand)", 1);
         
         registerCoreMember(FlaggedRequirement.class, 
-        		"FLAGGED", "(-)flagged [player/npc/global] [<name>([<#>])](:<value>)", 0);
+                "FLAGGED", "(-)flagged [player/npc/global] [<name>([<#>])](:<value>)", 0);
         
         registerCoreMember(HoldingRequirement.class, 
-        		"HOLDING", "holding [<item>] [qty:<#>] [exact]", 1);
+                "HOLDING", "holding [<item>] [qty:<#>] [exact]", 1);
         
         registerCoreMember(InGroupRequirement.class, 
-        		"INGROUP", "ingroup (global) [<group>]", 1);
+                "INGROUP", "ingroup (global) [<group>]", 1);
         
         registerCoreMember(ItemRequirement.class, 
-        		"ITEM", "item [<item>] (qty:<#>)", 1);
+                "ITEM", "item [<item>] (qty:<#>)", 1);
         
         registerCoreMember(LiquidRequirement.class, 
-        		"ISLIQUID", "isliquid [location:<location>]", 1);
+                "ISLIQUID", "isliquid [location:<location>]", 1);
         
         registerCoreMember(MoneyRequirement.class, 
-        		"MONEY", "money [qty:<#>]", 1);
+                "MONEY", "money [qty:<#>]", 1);
         
         registerCoreMember(OpRequirement.class, 
-        		"OP", "op", 0);
+                "OP", "op", 0);
         
         registerCoreMember(OwnerRequirement.class, 
-        		"OWNER", "owner", 0);
+                "OWNER", "owner", 0);
         
         registerCoreMember(PermissionRequirement.class, 
-        		"PERMISSION", "permission (global) [<permission>]", 1);
+                "PERMISSION", "permission (global) [<permission>]", 1);
         
         registerCoreMember(PoweredRequirement.class, 
-        		"ISPOWERED", "ispowered [location:<location>]", 1);
+                "ISPOWERED", "ispowered [location:<location>]", 1);
         
         registerCoreMember(OxygenRequirement.class,
-        		"OXYGEN", "oxygen (range:below/equals/above) [qty:<#>]", 1);
+                "OXYGEN", "oxygen (range:below/equals/above) [qty:<#>]", 1);
         
         registerCoreMember(ProcedureRequirement.class, 
-        		"PROCEDURE", "procedure [<script>]", 1);
+                "PROCEDURE", "procedure [<script>]", 1);
         
         registerCoreMember(ScriptRequirement.class, 
-        		"SCRIPT", "script [finished/failed] [script:<name>]", 0);
+                "SCRIPT", "script [finished/failed] [script:<name>]", 0);
         
         registerCoreMember(SneakingRequirement.class, 
-        		"SNEAKING", "sneaking", 0);
+                "SNEAKING", "sneaking", 0);
         
         registerCoreMember(StormRequirement.class, 
-        		"STORMING", "storm", 0);
+                "STORMING", "storming", 0);
         
         registerCoreMember(SunnyRequirement.class, 
-        		"SUNNY", "sunny", 0);
+                "SUNNY", "sunny", 0);
+
+        registerCoreMember(RainyRequirement.class,
+                "RAINY", "rainy", 0);
         
         registerCoreMember(TimeRequirement.class, 
-        		"TIME", "time [dawn/day/dusk/night]", 1);
+                "TIME", "time [dawn/day/dusk/night]", 1);
         
         registerCoreMember(WorldGuardRegionRequirement.class, 
-        		"INREGION", "inregion [name:<region>]", 1);
+                "INREGION", "inregion [name:<region>]", 1);
 
         dB.echoApproval("Loaded core requirements: " + instances.keySet().toString());
     }
-	
+    
     private <T extends AbstractRequirement> void registerCoreMember(Class<T> requirement, String name, String hint, int args) {
         try {
             requirement.newInstance().activate().as(name).withOptions("(-)" + hint, args);

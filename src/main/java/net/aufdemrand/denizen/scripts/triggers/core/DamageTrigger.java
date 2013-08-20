@@ -29,9 +29,13 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
         else if (event.getDamager() instanceof Projectile
                 && ((Projectile) event.getDamager()).getShooter() instanceof Player)
             player = (Player) ((Projectile)event.getDamager()).getShooter();
+        if (event.getEntity() == null)
+            return;
 
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity()) && player != null) {
             dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
+            if (npc == null)
+                return;
 
             if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
             if (!npc.getTriggerTrait().isEnabled(name)) return;

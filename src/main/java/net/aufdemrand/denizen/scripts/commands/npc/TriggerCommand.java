@@ -22,27 +22,27 @@ public class TriggerCommand extends AbstractCommand {
 
     private enum Toggle {TOGGLE, TRUE, FALSE}
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize required fields
-	    String trigger = null;
+        String trigger = null;
         Toggle toggle = Toggle.TOGGLE;
         Duration cooldown = new Duration(-1d);
         int radius = -1;
 
-	    // Parse arguments
-		for (String arg : scriptEntry.getArguments()) {
+        // Parse arguments
+        for (String arg : scriptEntry.getArguments()) {
 
-			if (aH.matchesValueArg("COOLDOWN", arg, ArgumentType.Duration)) {
-				cooldown = aH.getDurationFrom(arg);
+            if (aH.matchesValueArg("COOLDOWN", arg, ArgumentType.Duration)) {
+                cooldown = aH.getDurationFrom(arg);
                 cooldown.setPrefix("Cooldown");
             }
 
             else if (aH.matchesValueArg("RADIUS", arg, ArgumentType.Integer))
                 radius = aH.getIntegerFrom(arg);
 
-			else if (aH.matchesState(arg))
+            else if (aH.matchesState(arg))
                 toggle = Toggle.valueOf(aH.getStringFrom(arg.toUpperCase()));
 
             else if (aH.matchesValueArg("NAME", arg, ArgumentType.String))
@@ -51,11 +51,11 @@ public class TriggerCommand extends AbstractCommand {
             else if (denizen.getTriggerRegistry().get(arg) != null)
                 trigger = aH.getStringFrom(arg);
 
-			else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-		}
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+        }
 
         // Check required arguments
-		if (trigger == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "NAME");
+        if (trigger == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "NAME");
 
         // Store objects in ScriptEntry for execute()
         scriptEntry.addObject("trigger", trigger);
@@ -63,10 +63,10 @@ public class TriggerCommand extends AbstractCommand {
         scriptEntry.addObject("toggle", toggle);
         scriptEntry.addObject("radius", radius);
 
-	}
+    }
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Toggle toggle = (Toggle) scriptEntry.getObject("toggle");
         String trigger = (String) scriptEntry.getObject("trigger");
@@ -82,7 +82,7 @@ public class TriggerCommand extends AbstractCommand {
                 + "NPC='" + scriptEntry.getNPC() + "'");
 
         // Add trigger trait
-		if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
+        if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
 
         TriggerTrait trait = npc.getTrait(TriggerTrait.class);
 
@@ -93,10 +93,10 @@ public class TriggerCommand extends AbstractCommand {
         else trait.toggleTrigger(trigger, false);
 
         if (radius > 0)
-		    trait.setLocalRadius(trigger, radius);
-		
-		if (cooldown.getSeconds() > 0)
-		    trait.setLocalCooldown(trigger, cooldown.getSeconds());
-	}
+            trait.setLocalRadius(trigger, radius);
+        
+        if (cooldown.getSeconds() > 0)
+            trait.setLocalCooldown(trigger, cooldown.getSeconds());
+    }
 
 }

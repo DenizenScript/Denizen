@@ -23,7 +23,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 public class LogCommand extends AbstractCommand {
 
     protected static File logDirectory;
-    public enum Type { SEVERE, INFO, WARNING, FINE, FINER, FINEST };
+    public enum Type { SEVERE, INFO, WARNING, FINE, FINER, FINEST }
     
     public LogCommand() {
         if(logDirectory == null) return;

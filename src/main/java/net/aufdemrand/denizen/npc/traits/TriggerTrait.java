@@ -10,8 +10,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.command.exception.CommandException;
+import net.citizensnpcs.api.util.Paginator;
 import net.citizensnpcs.util.Messages;
-import net.citizensnpcs.util.Paginator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
@@ -58,7 +58,7 @@ public class TriggerTrait extends Trait implements Listener {
      * @return
      */
     public String toggleTrigger(String triggerName, boolean toggle) {
-    	if (enabled.containsKey(triggerName.toUpperCase())) {
+        if (enabled.containsKey(triggerName.toUpperCase())) {
                 enabled.put(triggerName.toUpperCase(), toggle);
                 return triggerName + " trigger is now " + (toggle ? "enabled." : "disabled.");
             }

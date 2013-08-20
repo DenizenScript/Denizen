@@ -106,7 +106,6 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 return;
             } else chunkDelays.remove(e.getChunk().getX()+ ", "+e.getChunk().getZ());
         }
-        return;
     }
     
     @EventHandler
@@ -121,7 +120,6 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 return;
             } else chunkDelays.remove(chnk.getX() + ", "+chnk.getZ());
         }
-        return;
     }
 
 }

@@ -1,14 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import java.util.List;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.NameplateTrait;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
@@ -24,17 +19,17 @@ import org.bukkit.entity.Player;
  */
 public class NameplateCommand extends AbstractCommand {
 
-	/* Example usge:
-	 * - NAMEPLATE COLOR:RED
-	 * - NAMEPLATE COLOR:GOLD PLAYER:Notch
-	 * 
-	 * Arguments: [] - Required, () - Optional
-	 * 
-	 * [COLOR] The color to set. See the Bukkit documentation for available colors.
-	 * 
-	 * (PLAYER) The player to apply the change to (can be per-player!).
-	 * 
-	 */
+    /* Example usge:
+     * - NAMEPLATE COLOR:RED
+     * - NAMEPLATE COLOR:GOLD PLAYER:Notch
+     * 
+     * Arguments: [] - Required, () - Optional
+     * 
+     * [COLOR] The color to set. See the Bukkit documentation for available colors.
+     * 
+     * (PLAYER) The player to apply the change to (can be per-player!).
+     * 
+     */
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

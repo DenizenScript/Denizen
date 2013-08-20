@@ -84,7 +84,7 @@ public class Comparable {
             if (dList.matches(arg))
                 comparedto = dList.valueOf(arg);
             else
-            	comparedto = arg;
+                comparedto = arg;
         }
 
         else comparedto = arg;
@@ -110,15 +110,11 @@ public class Comparable {
         else if (comparable instanceof Boolean) {
 
             // Check to make sure comparedto is Boolean
-            if (!(comparedto instanceof Boolean)) {
-                // Not comparing with a Boolean, outcome = false;
-            } else {
+            if (comparedto instanceof Boolean) {
                 // Comparing booleans.. let's do the logic
-                if (comparable.equals(comparedto))
-                    outcome = true;
-                else
-                    outcome = false;
+                outcome = comparable.equals(comparedto);
             }
+            // Not comparing booleans, outcome = false
         }
 
         if (logic == Comparable.Logic.NEGATIVE) outcome = !outcome;

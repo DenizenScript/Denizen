@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.server;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
@@ -43,56 +44,47 @@ public class AnnounceCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize fields
-        String text = null;
-        AnnounceType announceType = AnnounceType.ALL;
-        FormatScriptContainer format = null;
-        String flag = null;
-
         // Users tend to forget quotes sometimes on commands like this, so
         // let's check if there are more argument than usual.
         if (scriptEntry.getArguments().size() > 3)
             throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
 
-        // Should only be one argument, since PlAYER: and NPCID: are handled
-        // internally. Let's get that argument and set it as the text.
-        for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesArg("TO_OPS", arg)) {
-                announceType = AnnounceType.TO_OPS;
-
-            } else if (aH.matchesArg("FORMAT", arg)) {
-                String formatStr = aH.getStringFrom(arg);
-                format = ScriptRegistry.getScriptContainerAs(formatStr, FormatScriptContainer.class);
-
-                if(format == null) dB.echoError("Invalid format: " + formatStr);
-
-            } else if (aH.matchesValueArg("TO_FLAGGED", arg, aH.ArgumentType.Custom)) {
-                flag = aH.getStringFrom(arg);
-                announceType = AnnounceType.TO_FLAGGED;
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            
+            if (!scriptEntry.hasObject("type")
+                    && arg.matches("to_ops"))
+                scriptEntry.addObject("type", AnnounceType.TO_OPS);
+            
+            else if (!scriptEntry.hasObject("type")
+                    && arg.matchesPrefix("to_flagged")) {
+                scriptEntry.addObject("type", AnnounceType.TO_FLAGGED);
+                scriptEntry.addObject("flag", arg.asElement());
             }
+            
+            else if (!scriptEntry.hasObject("format")
+                    && arg.matchesPrefix("format"))
+                scriptEntry.addObject("format", ScriptRegistry.getScriptContainerAs(arg.getValue(), FormatScriptContainer.class));
 
-            else text = arg;
+            else if (!scriptEntry.hasObject("text"))
+                scriptEntry.addObject("text", arg.asElement());
+            
         }
 
         // If text is missing, alert the console.
-        if (text == null)
+        if (!scriptEntry.hasObject("text"))
             throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
-
-        // Add objects that need to be passed to execute() to the scriptEntry
-        scriptEntry.addObject("text", text)
-                .addObject("type", announceType)
-                .addObject("format", format)
-                .addObject("flag", flag);
+        
+        scriptEntry.defaultObject("type", AnnounceType.ALL);
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
-        String text = (String) scriptEntry.getObject("text");
+        Element text = scriptEntry.getElement("text");
         AnnounceType type = (AnnounceType) scriptEntry.getObject("type");
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
-        String flag = (String) scriptEntry.getObject("flag");
+        Element flag = scriptEntry.getElement("flag");
 
         // Report to dB
         dB.report(getName(),
@@ -101,7 +93,7 @@ public class AnnounceCommand extends AbstractCommand {
                         + aH.debugObj("Type", type.name())
                         + (flag != null? aH.debugObj("Flag_Name", flag) : ""));
 
-        String message = format != null ? format.getFormattedText(scriptEntry) : text;
+        String message = format != null ? format.getFormattedText(scriptEntry) : text.asString();
 
         // Use Bukkit to broadcast the message to everybody in the server.
         if (type == AnnounceType.ALL) {
@@ -116,7 +108,7 @@ public class AnnounceCommand extends AbstractCommand {
 
         else if (type == AnnounceType.TO_FLAGGED) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (FlagManager.playerHasFlag(dPlayer.mirrorBukkitPlayer(player), flag))
+                if (FlagManager.playerHasFlag(dPlayer.mirrorBukkitPlayer(player), flag.asString()))
                     player.sendMessage(message);
             }
         }

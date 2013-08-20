@@ -28,8 +28,7 @@ public class DetermineCommand extends AbstractCommand {
     }
 
     public static boolean hasOutcome(long id) {
-        if (outcomes.containsKey(id)) return true;
-        return false;
+        return outcomes.containsKey(id);
     }
 
     public static String getOutcome(long id) {
@@ -40,8 +39,6 @@ public class DetermineCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        String outcome = "false";
-        Boolean passively = false;
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments()))
 

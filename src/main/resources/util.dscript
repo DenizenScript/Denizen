@@ -59,7 +59,7 @@ _util_dtime_command:
     - ^runtask "%task%" "context:<server.flag[Iterator %id%].get[1]>" queue instantly
     - ^flag global "Iterator %id%:<-:<server.flag[Iterator %id%].get[1]>"
     - ^if "<server.flag[Iterator %id%].size || 0>" > 0
-      run '_depend Generic Loop Process' id:%id%
+      run instantly '_depend Generic Loop Process' id:%id%
       "def:%task%|%flag%|%type%|%id%"
       else flag global "Iterator %id%:!"
 

@@ -57,8 +57,8 @@ public class GroupCommand extends AbstractCommand {
                 dB.echoDebug("Player " + player.getName() + " is already in group " + group); 
             }
             else {
-            	Depends.permissions.playerAddGroup(world, player.getName(), group);
-            	dB.echoDebug("Added " + player.getName() + " to group " + group);
+                Depends.permissions.playerAddGroup(world, player.getName(), group);
+                dB.echoDebug("Added " + player.getName() + " to group " + group);
             }
             return;
         case REMOVE: 
@@ -66,10 +66,9 @@ public class GroupCommand extends AbstractCommand {
                 dB.echoDebug("Player " + player.getName() + " is not in group " + group); 
             }
             else {
-            	Depends.permissions.playerRemoveGroup(world, player.getName(), group);
-            	dB.echoDebug("Removed " + player.getName() + " from group " + group);
+                Depends.permissions.playerRemoveGroup(world, player.getName(), group);
+                dB.echoDebug("Removed " + player.getName() + " from group " + group);
             }
-            return;
         }
     }
 

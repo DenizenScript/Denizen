@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 
@@ -57,19 +57,29 @@ public class aH {
             if ((first_space > -1 && first_space < first_colon) || first_colon == -1)  value = string;
             else {
                 has_prefix = true;
-                prefix = string.split(":")[0];
-                value = string.split(":")[1];
+                prefix = string.split(":", 2)[0];
+                value = string.split(":", 2)[1];
             }
 
             // dB.log("Constructed Argument: " + prefix + ":" + value);
+        }
+        
+        public static Argument valueOf(String string) {
+            return new Argument(string);
+        }
+
+        public boolean startsWith(String string) {
+            return value.toLowerCase().startsWith(string.toLowerCase());
         }
 
         public boolean hasPrefix() {
             return has_prefix;
         }
-
-        public boolean startsWith(String string) {
-            return value.startsWith(string);
+        
+        public Argument getPrefix() {
+            if (prefix == null)
+                return null;
+            return valueOf(prefix);
         }
 
         public boolean matches(String values) {
@@ -97,8 +107,9 @@ public class aH {
         }
 
         public boolean matchesPrefix(String values) {
+            if (!hasPrefix()) return false;
             for (String value : values.split(","))
-                if (value.trim().equalsIgnoreCase((prefix != null ? prefix : this.value)))
+                if (value.trim().equalsIgnoreCase(prefix))
                     return true;
 
             return false;
@@ -143,6 +154,14 @@ public class aH {
 
             return false;
         }
+        
+        // Check if this argument matches a dList of a certain dObject
+        public boolean matchesArgumentList(Class<? extends dObject> dClass) {
+
+            dList list = new dList(this.getValue());
+            
+            return list.filter(dClass) != null;
+        }
 
         public Element asElement() {
             return new Element(prefix, value);
@@ -152,14 +171,14 @@ public class aH {
 
             // dB.log("Calling asType: " + prefix + ":" + value + " " + clazz.getCanonicalName());
 
-            dObject arg = null;
             try {
-                arg = (dObject) clazz.getMethod("valueOf", String.class)
+                dObject arg = (dObject) clazz.getMethod("valueOf", String.class)
                         .invoke(null, value);
 
                // dB.log("Created: " + clazz.cast(arg).debug());
-
-                return (T) clazz.cast(arg).setPrefix(prefix);
+                if (arg != null) {
+                    return (T) clazz.cast(arg).setPrefix(prefix);
+                }
 
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -303,7 +322,7 @@ public class aH {
      * <tt>1     try { </tt><br>
      * <tt>2        hardness = Hardness.valueOf(aH.getStringFrom(arg).toUpperCase());</tt><br>
      * <tt>3     } catch (Exception e) { </tt><br>
-     * <tt>4		dB.echoError("Invalid HARDNESS!") </tt><br>
+     * <tt>4        dB.echoError("Invalid HARDNESS!") </tt><br>
      * <tt>5 }</tt><br>
      * </ol>
      *
@@ -425,7 +444,7 @@ public class aH {
 
     @Deprecated
     public static dEntity getEntityFrom(String arg) {
-        arg = arg.replace("entity:", "");
+        arg = arg.toLowerCase().replace("entity:", "");
         return dEntity.valueOf(arg);
     }
 
@@ -447,9 +466,8 @@ public class aH {
 
     @Deprecated
     public static dItem getItemFrom(String arg) {
-        arg = arg.replace("item:", "");
-        dItem stack = dItem.valueOf(arg);
-        return stack;
+        arg = arg.toLowerCase().replace("item:", "");
+        return dItem.valueOf(arg);
     }
 
     @Deprecated
@@ -459,13 +477,13 @@ public class aH {
 
     @Deprecated
     public static dLocation getLocationFrom(String arg) {
-        arg = arg.replace("location:", "");
+        arg = arg.toLowerCase().replace("location:", "");
         return dLocation.valueOf(arg);
     }
 
     @Deprecated
     public static dScript getScriptFrom(String arg) {
-        arg = arg.replace("script:", "");
+        arg = arg.toLowerCase().replace("script:", "");
         return dScript.valueOf(arg);
     }
 
@@ -486,7 +504,7 @@ public class aH {
 
     @Deprecated
     public static Duration getDurationFrom(String arg) {
-    	arg = arg.replace("duration:", "").replace("delay:", "");
+        arg = arg.toLowerCase().replace("duration:", "").replace("delay:", "");
         return Duration.valueOf(arg);
     }
 
@@ -496,12 +514,12 @@ public class aH {
 
     @Deprecated
     public static boolean matchesDuration(String arg) {
-    	arg = arg.replace("duration:", "").replace("delay:", "");
+        arg = arg.toLowerCase().replace("duration:", "").replace("delay:", "");
         return Duration.matches(arg);
     }
 
     public static boolean matchesEntityType(String arg) {
-        arg = arg.replace("entity:", "");
+        arg = arg.toLowerCase().replace("entity:", "");
 
         // Check against valid EntityTypes using Bukkit's EntityType enum
         for (EntityType validEntity : EntityType.values())
@@ -525,7 +543,7 @@ public class aH {
     @Deprecated
     public static boolean matchesContext(String arg) {
         if (arg.toUpperCase().startsWith("CONTEXT:") ||
-        	arg.toUpperCase().startsWith("DEFINE:")) return true;
+            arg.toUpperCase().startsWith("DEFINE:")) return true;
         // TODO: Other matches____ do some actual checks, should this?.
         return false;
     }
@@ -543,23 +561,17 @@ public class aH {
 
     @Deprecated
     public static boolean matchesLocation(String arg) {
-        if (arg.length() > 8 && arg.toUpperCase().startsWith("LOCATION:"))
-            return true;
-        return false;
+        return arg.toUpperCase().startsWith("LOCATION:");
     }
 
     @Deprecated
     public static boolean matchesQuantity(String arg) {
-        if (arg.length() > 4 && arg.toUpperCase().startsWith("QTY:"))
-            return true;
-        return false;
+        return arg.toUpperCase().startsWith("QTY:");
     }
 
     @Deprecated
     public static boolean matchesQueue(String arg) {
-        if (arg.length() > 6 && arg.toUpperCase().startsWith("QUEUE:"))
-            return true;
-        return false;
+        return arg.toUpperCase().startsWith("QUEUE:");
     }
 
     @Deprecated

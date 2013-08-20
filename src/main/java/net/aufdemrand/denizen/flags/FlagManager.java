@@ -11,34 +11,35 @@ import java.util.*;
 
 public class FlagManager {
 
+    // Valid flag actions
+    public static enum Action { SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY,
+        DIVIDE, INSERT, REMOVE, SPLIT, DELETE }
+
+
+    // Constructor
     private Denizen denizen;
 
     public FlagManager(Denizen denizen) {
         this.denizen = denizen;
     }
 
+    // Static methods
     public static boolean playerHasFlag(dPlayer player, String flagName) {
         if (player == null || flagName == null) return false;
-        if (DenizenAPI.getCurrentInstance().flagManager()
-                .getPlayerFlag(player.getName(), flagName).size() > 0)
-            return true;
-        else return false;
+        return DenizenAPI.getCurrentInstance().flagManager()
+                .getPlayerFlag(player.getName(), flagName).size() > 0;
     }
 
     public static boolean npcHasFlag(dNPC npc, String flagName) {
         if (npc == null || flagName == null) return false;
-        if (DenizenAPI.getCurrentInstance().flagManager()
-                .getNPCFlag(npc.getId(), flagName).size() > 0)
-            return true;
-        else return false;
+        return DenizenAPI.getCurrentInstance().flagManager()
+                .getNPCFlag(npc.getId(), flagName).size() > 0;
     }
 
     public static boolean serverHasFlag(String flagName) {
         if (flagName == null) return false;
-        if (DenizenAPI.getCurrentInstance().flagManager()
-                .getGlobalFlag(flagName).size() > 0)
-            return true;
-        else return false;
+        return DenizenAPI.getCurrentInstance().flagManager()
+                .getGlobalFlag(flagName).size() > 0;
     }
 
     /**
@@ -274,7 +275,8 @@ public class FlagManager {
 
             if (split.length > 0) {
                 for (String val : split)
-                    value.values.add(val);
+                    if (val.length() > 0)
+                        value.values.add(val);
 
                 save();
                 rebuild();
@@ -504,6 +506,75 @@ public class FlagManager {
         public boolean isEmpty() {
             return value.isEmpty();
         }
+
+        /**
+         * Performs an action on the flag.
+         *
+         * @param action  a valid Action enum
+         * @param value   the value specified for the action
+         * @param index   the flag index, null if none
+         */
+        public void doAction(Action action, Element value, Integer index) {
+
+            String val = (value != null ? value.asString() : null);
+
+            if (index == null) index = -1;
+
+            if (action == null) return;
+
+            // Do flagAction
+            switch (action) {
+                case INCREASE: case DECREASE: case MULTIPLY: case DIVIDE:
+                    double currentValue = get(index).asDouble();
+                    set(Double.toString(math(currentValue, Double.valueOf(value.asString()), action)), index);
+                    break;
+
+                case SET_BOOLEAN:
+                    set("true", index);
+                    break;
+
+                case SET_VALUE:
+                    set(val, index);
+                    break;
+
+                case INSERT:
+                    add(val);
+                    break;
+
+                case REMOVE:
+                    remove(val, index);
+                    break;
+
+                case SPLIT:
+                    split(val);
+                    break;
+
+                case DELETE:
+                    clear();
+            }
+        }
+
+        private double math(double currentValue, double value, Action flagAction) {
+            switch (flagAction) {
+                case INCREASE:
+                    return currentValue + value;
+
+                case DECREASE:
+                    return currentValue - value;
+
+                case MULTIPLY:
+                    return currentValue * value;
+
+                case DIVIDE:
+                    return currentValue / value;
+
+                default:
+                    break;
+            }
+
+            return 0;
+        }
+
     }
 
 
@@ -691,8 +762,7 @@ public class FlagManager {
             if (values.isEmpty()) return true;
             adjustIndex();
             if (this.size() < index + 1) return true;
-            if (values.get(index).equals("")) return true;
-            return false;
+            return values.get(index).equals("");
         }
 
         /**

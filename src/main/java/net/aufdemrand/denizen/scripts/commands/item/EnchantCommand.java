@@ -17,17 +17,17 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
  */
 
 public class EnchantCommand extends AbstractCommand {
-	@Override
-	public void onEnable() {
+    @Override
+    public void onEnable() {
 
-	}
+    }
 
-	@Override
-	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-		
-	}
+    @Override
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+        
+    }
 
-	@Override
-	public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-	}
+    @Override
+    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    }
 }

@@ -8,6 +8,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_6_R2.EntityLiving;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -25,11 +27,13 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Pig;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -43,12 +47,10 @@ public class dEntity implements dObject {
     //   PATTERNS
     /////////////////
 
-    final static Pattern entity_by_id =
-            Pattern.compile("(n@|e@|p@)(.+)",
+    final static Pattern entity_by_id = Pattern.compile("(n@|e@|p@)(.+)",
                     Pattern.CASE_INSENSITIVE);
 
-    final static Pattern entity_with_data =
-            Pattern.compile("(\\w+),?(\\w+)?,?(\\w+)?",
+    final static Pattern entity_with_data = Pattern.compile("(\\w+),?(\\w+)?,?(\\w+)?",
                     Pattern.CASE_INSENSITIVE);
 
 
@@ -119,7 +121,7 @@ public class dEntity implements dObject {
 
             // When selecting a random entity type, ignore invalid or inappropriate ones
             while (randomType == null ||
-                   randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$") == true) {
+                    randomType.name().matches("^(COMPLEX_PART|DROPPED_ITEM|ENDER_CRYSTAL|ENDER_DRAGON|FISHING_HOOK|ITEM_FRAME|LIGHTNING|PAINTING|PLAYER|UNKNOWN|WEATHER|WITHER|WITHER_SKULL)$")) {
 
                 randomType = EntityType.values()[Utilities.getRandom().nextInt(EntityType.values().length)];
             }
@@ -166,18 +168,18 @@ public class dEntity implements dObject {
                     Entity entity = null;
 
                     for (World world : Bukkit.getWorlds()) {
-                    	net.minecraft.server.v1_6_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
-                    	
-                    	// Make sure the nmsEntity is valid, to prevent
-                    	// unpleasant errors
-                    	
-                    	if (nmsEntity != null) {
-                    		entity = nmsEntity.getBukkitEntity();
-                    	}
-                    	else {
-                    		return null;
-                    	}
-                    	
+                        net.minecraft.server.v1_6_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(entityID);
+
+                        // Make sure the nmsEntity is valid, to prevent
+                        // unpleasant errors
+
+                        if (nmsEntity != null) {
+                            entity = nmsEntity.getBukkitEntity();
+                        }
+                        else {
+                            return null;
+                        }
+
                         if (entity != null) break;
                     }
                     if (entity != null) return new dEntity(entity);
@@ -210,17 +212,17 @@ public class dEntity implements dObject {
 
             if (m.group(2) != null) {
 
-                data1 = m.group(2).toUpperCase();
+                data1 = m.group(2);
             }
 
             if (m.group(3) != null) {
 
-                data2 = m.group(3).toUpperCase();
+                data2 = m.group(3);
             }
 
             for (EntityType type : EntityType.values()) {
                 if (type.name().equalsIgnoreCase(m.group(1)))
-                    // Construct a new 'vanilla' unspawned dEntity                	
+                    // Construct a new 'vanilla' unspawned dEntity                    
                     return new dEntity(type, data1, data2);
             }
         }
@@ -305,9 +307,9 @@ public class dEntity implements dObject {
     private DespawnedEntity despawned_entity = null;
 
     public EntityType getEntityType() {
-    	return entity_type;
+        return entity_type;
     }
-    
+
     public Entity getBukkitEntity() {
         return entity;
     }
@@ -321,44 +323,91 @@ public class dEntity implements dObject {
     public boolean isLivingEntity() {
         return (entity instanceof LivingEntity);
     }
-    
+
     /**
      * Get the NPC corresponding to this entity
      *
      * @return  The NPC
      */
-    
+
     public NPC getNPC() {
-    	
-    	return CitizensAPI.getNPCRegistry().getNPC(getBukkitEntity());
+
+        return CitizensAPI.getNPCRegistry().getNPC(getBukkitEntity());
     }
-    
+
     /**
-     * Whether this entity is an NPC
+     * Check whether this entity is an NPC
      *
      * @return  true or false
      */
-    
+
     public boolean isNPC() {
-    	if (CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
-    		return true;
-    	return false;
+        return CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity());
     }
     
+    /**
+     * Get the Player corresponding to this entity
+     *
+     * @return  The Player
+     */
+
+    public Player getPlayer() {
+
+        return (Player) getBukkitEntity();
+    }
+
+    /**
+     * Check whether this entity is a Player
+     *
+     * @return  true or false
+     */
+
+    public boolean isPlayer() {
+        return getBukkitEntity() instanceof Player;
+    }
+
     /**
      * Whether this entity identifies as a generic
-     * entity type instead of a spawned entity
+     * entity type, for instance "e@cow", instead of
+     * a spawned entity
      *
      * @return  true or false
      */
-    
+
     public boolean isGeneric() {
-    	if (identify().matches("e@\\D+"))
-    		return true;
-    	return false;
+        return identify().matches("e@\\D+");
     }
     
+    /**
+     * Get the location of this entity
+     *
+     * @return  The Location
+     */
 
+    public dLocation getLocation() {
+
+        if (!isGeneric()) {
+            return new dLocation(getBukkitEntity().getLocation());
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Get the eye location of this entity
+     *
+     * @return  The location
+     */
+
+    public dLocation getEyeLocation() {
+
+        if (!isGeneric() && isLivingEntity()) {
+            return new dLocation(getLivingEntity().getEyeLocation());
+        }
+        
+        return null;
+    }
+    
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
         if (entity != null && isUnique()) entity.teleport(location);
@@ -383,7 +432,12 @@ public class dEntity implements dObject {
 
                     org.bukkit.entity.Entity ent = null;
 
-                    if (entity_type.name().matches("FALLING_BLOCK")) {
+                    if (entity_type.name().matches("PLAYER")) {
+                        
+                        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1);
+                        npc.spawn(location);
+                    }
+                    else if (entity_type.name().matches("FALLING_BLOCK")) {
 
                         Material material = null;
 
@@ -393,18 +447,18 @@ public class dEntity implements dObject {
 
                             // If we did not get a block with "RANDOM", or we got
                             // air or portals, keep trying
-                            while (data1.equals("RANDOM") &&
-                                    (material.isBlock() == false ||
-                                     material == Material.AIR ||
-                                     material == Material.PORTAL ||
-                                     material == Material.ENDER_PORTAL)) {
+                            while (data1.equalsIgnoreCase("RANDOM") &&
+                                    ((!material.isBlock()) ||
+                                            material == Material.AIR ||
+                                            material == Material.PORTAL ||
+                                            material == Material.ENDER_PORTAL)) {
 
                                 material = dMaterial.valueOf(data1).getMaterial();
                             }
                         }
 
                         // If material is null or not a block, default to SAND
-                        if (material == null || material.isBlock() == false) {
+                        if (material == null || (!material.isBlock())) {
 
                             material = Material.SAND;
                         }
@@ -421,11 +475,33 @@ public class dEntity implements dObject {
                         ent = location.getWorld().spawnFallingBlock(location, material, materialData);
                         entity = ent;
                     }
-
                     else {
 
                         ent = location.getWorld().spawnEntity(location, entity_type);
                         entity = ent;
+                                                
+                        if (entity_type.name().matches("PIG_ZOMBIE")) {
+                            
+                            // Give pig zombies golden swords by default, unless data2 specifies
+                            // a different weapon
+                            if (!dItem.matches(data1)) {
+                                data1 = "gold_sword";
+                            }
+
+                            ((PigZombie) entity).getEquipment()
+                                    .setItemInHand(dItem.valueOf(data1).getItemStack());
+                        }
+                        else if (entity_type.name().matches("SKELETON")) {
+                            
+                            // Give skeletons bows by default, unless data2 specifies
+                            // a different weapon
+                            if (!dItem.matches(data2)) {
+                                data2 = "bow";
+                            }
+
+                            ((Skeleton) entity).getEquipment()
+                                    .setItemInHand(dItem.valueOf(data2).getItemStack());
+                        }
 
                         // If there is some special subtype data associated with this dEntity,
                         // use the setSubtype method to set it in a clean, object-oriented
@@ -435,54 +511,45 @@ public class dEntity implements dObject {
                         if (data1 != null) {
 
                             try {
-                            	
+
                                 // Allow creepers to be powered
                                 if (ent instanceof Creeper && data1.equalsIgnoreCase("POWERED")) {
                                     ((Creeper) entity).setPowered(true);
                                 }
-                                
+
                                 // Allow setting of blocks held by endermen
                                 else if (ent instanceof Enderman && dMaterial.matches(data1)) {
                                     ((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data1).getMaterialData());
                                 }
-                                 
+
                                 // Allow setting of horse variants and colors
                                 else if (ent instanceof Horse) {
                                     setSubtype("org.bukkit.entity.Horse", "org.bukkit.entity.Horse$Variant", "setVariant", data1);
-                                    
+
                                     if (data2 != null) {
-                                    	setSubtype("org.bukkit.entity.Horse", "org.bukkit.entity.Horse$Color", "setColor", data2);
+                                        setSubtype("org.bukkit.entity.Horse", "org.bukkit.entity.Horse$Color", "setColor", data2);
                                     }
                                 }
-                                
+
                                 // Allow setting of ocelot types
                                 else if (ent instanceof Ocelot) {
                                     setSubtype("org.bukkit.entity.Ocelot", "org.bukkit.entity.Ocelot$Type", "setCatType", data1);
                                 }
-                                
+
                                 // Allow setting of sheep colors
                                 else if (ent instanceof Sheep) {
                                     setSubtype("org.bukkit.entity.Sheep", "org.bukkit.DyeColor", "setColor", data1);
                                 }
-                                
+
                                 // Allow setting of skeleton types and their weapons
                                 else if (ent instanceof Skeleton) {
                                     setSubtype("org.bukkit.entity.Skeleton", "org.bukkit.entity.Skeleton$SkeletonType", "setSkeletonType", data1);
-                                    
-                                    // Give skeletons bows by default, unless data2 specifies
-                                    // a different weapon
-                                    if (dItem.matches(data2) == false) {
-                                    	data2 = "bow";
-                                    }
-                                    
-                                    ((Skeleton) entity).getEquipment()
-                            			.setItemInHand(dItem.valueOf(data2).getItemStack());
                                 }
                                 // Allow setting of slime sizes
                                 else if (ent instanceof Slime && aH.matchesInteger(data1)) {
                                     ((Slime) entity).setSize(aH.getIntegerFrom(data1));
                                 }
-                                
+
                                 // Allow setting of villager professions
                                 else if (ent instanceof Villager) {
                                     setSubtype("org.bukkit.entity.Villager", "org.bukkit.entity.Villager$Profession", "setProfession", data1);
@@ -518,7 +585,7 @@ public class dEntity implements dObject {
     public boolean isSpawned() {
         return entity != null;
     }
-    
+
     public void remove() {
         entity.remove();
     }
@@ -527,24 +594,35 @@ public class dEntity implements dObject {
         dEntity.saveAs(this, id);
         return this;
     }
-    
+
     public void teleport(Location location) {
-    	this.getBukkitEntity().teleport(location);
+        if (isNPC())
+            getNPC().teleport(location, TeleportCause.PLUGIN);
+        else
+            this.getBukkitEntity().teleport(location);
     }
-    
+
     /**
      * Make this entity target another living entity, attempting both
      * old entity AI and new entity AI targeting methods
      *
      * @param target  The LivingEntity target
      */
-    
-    public void target(LivingEntity target) {
-    	
-    	((CraftCreature) entity).getHandle().
-			setGoalTarget(((CraftLivingEntity) target).getHandle());
 
-    	((CraftCreature) entity).setTarget(target);
+    public void target(LivingEntity target) {
+
+        // If the target is not null, cast it to an NMS EntityLiving
+        // as well for one of the two methods below
+        EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
+                                        : null;
+        
+        ((CraftCreature) entity).getHandle().
+            setGoalTarget(nmsTarget);
+
+        ((CraftCreature) entity).getHandle().
+                setGoalTarget(((CraftLivingEntity) target).getHandle());
+
+        ((CraftCreature) entity).setTarget(target);
     }
 
     /**
@@ -564,11 +642,11 @@ public class dEntity implements dObject {
     public void setSubtype (String entityName, String typeName, String method, String value)
             throws Exception {
 
-    	Class<?> entityClass = Class.forName(entityName);    	
+        Class<?> entityClass = Class.forName(entityName);
         Class<?> typeClass = Class.forName(typeName);
         Object[] types = typeClass.getEnumConstants();
 
-        if (value.matches("RANDOM")) {
+        if (value.equalsIgnoreCase("RANDOM")) {
 
             entityClass.getMethod(method, typeClass).invoke(entity, types[Utilities.getRandom().nextInt(types.length)]);
         }
@@ -635,6 +713,23 @@ public class dEntity implements dObject {
         return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
     }
 
+    public int comparesTo(dEntity entity) {
+        // If provided is unique, and both are the same unique entity, return 1.
+        if (entity.isUnique() && entity.identify().equals(identify())) return 1;
+
+        // If provided isn't unique...
+        if (!entity.isUnique()) {
+            // Return 1 if this object isn't unique either, but matches
+            if (!isUnique() && entity.identify().equals(identify()))
+                return 1;
+            // Return 1 if the provided object isn't unique, but whose entity_type
+            // matches this object, even if this object is unique.
+            if (entity_type == entity.entity_type) return 1;
+        }
+
+        return 0;
+    }
+
     @Override
     public String identify() {
 
@@ -645,12 +740,12 @@ public class dEntity implements dObject {
             else if (getBukkitEntity() instanceof Player)
                 return "p@" + ((Player) getBukkitEntity()).getName();
         }
-        
+
         // Check if entity is a 'saved entity'
-        if (isUnique())
+        if (isSaved(this))
             return "e@" + getSaved(this);
 
-            // Check if entity is spawned, therefore having a bukkit entityId
+
         else if (isSpawned())
             return "e@" + getBukkitEntity().getEntityId();
 
@@ -668,9 +763,7 @@ public class dEntity implements dObject {
 
     @Override
     public boolean isUnique() {
-        if (entity instanceof Player) return true;
-        if (isNPC()) return true;
-        return isSaved(this);
+        return (entity instanceof Player || isNPC() || isSaved(this) || isSpawned());
     }
 
     @Override
@@ -682,7 +775,17 @@ public class dEntity implements dObject {
             dB.echoDebug("dEntity has returned null.");
             return "null";
         }
-
+        
+        // <--
+        // <entity> -> dEntity
+        // Returns the dEntity of the entity.
+        // -->
+        
+        // <--
+        // <entity.get_vehicle> -> dEntity
+        // If the entity is in a vehicle, returns the vehicle as a
+        // dEntity. Else, returns null.
+        // -->
         if (attribute.startsWith("get_vehicle")) {
             if (getBukkitEntity().isInsideVehicle())
                 return new dEntity(getBukkitEntity().getVehicle())
@@ -690,11 +793,20 @@ public class dEntity implements dObject {
             else return "null";
         }
 
+        // <--
+        // <entity.custom_name> -> Element
+        // If the entity has a custom name, returns the name as an
+        // Element. Else, returns null.
+        // -->
         if (attribute.startsWith("custom_name")) {
             if (getLivingEntity().getCustomName() == null) return "null";
             return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.name> -> Element
+        // Returns the name of the entity.
+        // -->
         if (attribute.startsWith("name")) {
             if (isNPC())
                 return new Element(getNPC().getName())
@@ -706,14 +818,19 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (attribute.startsWith("entity_type"))      {
-           // TODO: Fix this.. seems to be a bug? Horse will not return correct entityType
-           if (entity instanceof CraftAnimals
-                   && !(entity instanceof Pig))
-                return new Element("HORSE").getAttribute(attribute.fulfill(1));
+        // <--
+        // <entity.entity_type> -> Element
+        // Returns the type of the entity.
+        // -->
+        if (attribute.startsWith("entity_type")) {
             return new Element(entity_type.toString()).getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.custom_id> -> dScript/Element
+        // If the entity has a script ID, returns the dScript of that
+        // ID. Else, returns the name of the entity type.
+        // -->
         if (attribute.startsWith("custom_id")) {
             if (CustomNBT.hasCustomNBT(getLivingEntity(), "denizen-script-id"))
                 return new dScript(CustomNBT.getCustomNBT(getLivingEntity(), "denizen-script-id"))
@@ -723,6 +840,10 @@ public class dEntity implements dObject {
                         .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.location.cursor_on> -> dLocation
+        // Returns the dLocation of where the entity is looking.
+        // -->
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
             if (range < 1) range = 50;
@@ -730,28 +851,49 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.location.standing_on> -> dLocation
+        // Returns the dLocation of what the entity is standing on.
+        // -->
         if (attribute.startsWith("location.standing_on"))
             return new dLocation(entity.getLocation().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(2));
 
-        if (attribute.startsWith("location")) {
-        	
-        	if (entity instanceof Player) {
-            	// Important for player yaw and direction!
-            	//
-            	// A player's true yaw is always 90 less than the one given by
-            	// Bukkit's location.getYaw(), so correct it here
-            	
-            	dLocation location = new dLocation(entity.getLocation());
-            	location.setYaw(location.getYaw() - 90);
-            	return location.getAttribute(attribute.fulfill(1));
-        	}
-        	else {
-        		return new dLocation(entity.getLocation())
+        // <--
+        // <entity.eye_location> -> dLocation
+        // returns a dLocation of the entity's eyes.
+        // -->
+        if (attribute.startsWith("eye_location"))
+            return new dLocation(getEyeLocation())
                     .getAttribute(attribute.fulfill(1));
-        	}
+        
+        // <--
+        // <entity.location> -> dLocation
+        // Returns the dLocation of the entity.
+        // -->
+        if (attribute.startsWith("location")) {
+
+            if (entity instanceof Player) {
+                // Important for player yaw and direction!
+                //
+                // A player's true yaw is always 90 less than the one given by
+                // Bukkit's location.getYaw(), so correct it here
+
+                dLocation location = new dLocation(entity.getLocation());
+                location.setYaw(location.getYaw() - 90);
+                return location.getAttribute(attribute.fulfill(1));
+            }
+            else {
+                return new dLocation(entity.getLocation())
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
+        // <--
+        // <entity.health.formatted> -> Element
+        // Returns a 'formatted' value of the player's current health level.
+        // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
+        // -->
         if (attribute.startsWith("health.formatted")) {
             double maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
@@ -768,6 +910,10 @@ public class dEntity implements dObject {
             else return new Element("healthy").getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.health.percentage> -> Element(Number)
+        // Returns the entity's current health as a percentage.
+        // -->
         if (attribute.startsWith("health.percentage")) {
             double maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
@@ -776,87 +922,186 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.health.max> -> Element(Number)
+        // Returns the maximum health of the entity.
+        // -->
         if (attribute.startsWith("health.max"))
             return new Element(String.valueOf(getLivingEntity().getMaxHealth()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <entity.health> -> Element(Number)
+        // Returns the current health of the entity.
+        // -->
         if (attribute.startsWith("health"))
             return new Element(String.valueOf(getLivingEntity().getHealth()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.is_inside_vehicle> -> Element(Boolean)
+        // Returns true if the entity is inside a vehicle. Else, returns false.
+        // -->
         if (attribute.startsWith("is_inside_vehicle"))
             return new Element(String.valueOf(entity.isInsideVehicle()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.killer> -> dPlayer
+        // Returns the player that last killed the entity.
+        // -->
         if (attribute.startsWith("killer"))
             return new dPlayer(getLivingEntity().getKiller())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.last_damage.cause> -> Element
+        // Returns the cause of the last damage taken by the entity.
+        // -->
         if (attribute.startsWith("last_damage.cause"))
             return new Element(String.valueOf(entity.getLastDamageCause().getCause().toString()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <entity.last_damage.amount> -> Element(Number)
+        // Returns the amount of the last damage taken by the entity.
+        // -->
         if (attribute.startsWith("last_damage.amount"))
             return new Element(String.valueOf(getLivingEntity().getLastDamage()))
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <entity.last_damage.duration> -> Duration
+        // Returns the duration of the last damage taken by the entity.
+        // -->
         if (attribute.startsWith("last_damage.duration"))
             return new Duration((long) getLivingEntity().getNoDamageTicks())
                     .getAttribute(attribute.fulfill(2));
 
+        // <--
+        // <entity.time_lived> -> Duration
+        // Returns how long the entity has lived.
+        // -->
         if (attribute.startsWith("time_lived"))
             return new Duration(entity.getTicksLived() / 20)
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.can_see[<entity>]> -> Element(Boolean)
+        // Returns true if the entity can see the other entity.
+        // -->
+        if (attribute.startsWith("can_see")) {
+            if (attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
+                dEntity toEntity = dEntity.valueOf(attribute.getContext(1));
+                return new Element(String.valueOf(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity()))).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--
+        // <entity.can_pickup_items> -> Element(Boolean)
+        // Returns true if the entity can pick up items. Else, returns false.
+        // -->
         if (attribute.startsWith("can_pickup_items"))
             return new Element(String.valueOf(getLivingEntity().getCanPickupItems()))
                     .getAttribute(attribute.fulfill(1));
 
-        if (attribute.startsWith("id"))
+        // <--
+        // <entity.eid> -> Element(Number)
+        // Returns the entity's Bukkit entity ID
+        // -->
+        if (attribute.startsWith("eid"))
             return new Element(String.valueOf(entity.getEntityId()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.fall_distance> -> Element(Number)
+        // Returns how far the entity has fallen.
+        // -->
         if (attribute.startsWith("fall_distance"))
             return new Element(String.valueOf(entity.getFallDistance()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.uuid> -> Element(Number)
+        // Returns a unique ID for the entity.
+        // -->
         if (attribute.startsWith("uuid"))
             return new Element(String.valueOf(entity.getUniqueId().toString()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.has_effect[<effect>]> -> Element(Boolean)
+        // Returns true if the entity has an effect. If no effect is
+        // specified, returns true if the entity has any effect. Else,
+        // returns false.
+        // -->
         if (attribute.startsWith("has_effect")) {
-            // Add later
+            Boolean returnElement = false;
+            if (attribute.hasContext(1))
+                for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects())
+                    if (effect.getType().equals(org.bukkit.potion.PotionType.valueOf(attribute.getContext(1))))
+                        returnElement = true;
+            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) returnElement = true;
+            return new Element(returnElement).getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.equipment> -> dInventory
+        // Returns the dInventory of the entity.
+        // -->
         if (attribute.startsWith("equipment")) {
             return new dInventory(getLivingEntity()).getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.world> -> dWorld
+        // Returns the world the entity is in.
+        // -->
         if (attribute.startsWith("world")) {
             return new dWorld(entity.getWorld())
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.prefix> -> Element
+        // Returns the prefix of the entity.
+        // -->
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <entity.debug.log> -> Element(Boolean)
+        // Debugs the entity in the log and returns true.
+        // -->
         if (attribute.startsWith("debug.log")) {
             dB.log(debug());
             return new Element(Boolean.TRUE.toString())
                     .getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.debug.no_color> -> Element
+        // Returns the entity's debug with no color.
+        // -->
         if (attribute.startsWith("debug.no_color")) {
             return new Element(ChatColor.stripColor(debug()))
                     .getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <entity.debug> -> Element
+        // Returns the entity's debug.
+        // -->
         if (attribute.startsWith("debug")) {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <entity.type> -> Element
+        // Returns the entity's type.
+        // -->
         if (attribute.startsWith("type")) {
             return new Element(getType())
                     .getAttribute(attribute.fulfill(1));

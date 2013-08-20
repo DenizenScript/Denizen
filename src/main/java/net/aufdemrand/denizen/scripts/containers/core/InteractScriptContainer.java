@@ -8,8 +8,6 @@ import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-
 import java.util.*;
 
 public class InteractScriptContainer extends ScriptContainer {
@@ -96,10 +94,7 @@ public class InteractScriptContainer extends ScriptContainer {
         String triggerName = DenizenAPI.getCurrentInstance()
                 .getTriggerRegistry().get(trigger).getName().toUpperCase();
 
-        if (contains("STEPS." + step.toUpperCase() + "." + triggerName + " TRIGGER"))
-            return true;
-
-        else return false;
+        return contains("STEPS." + step.toUpperCase() + "." + triggerName + " TRIGGER");
     }
 
     /**
