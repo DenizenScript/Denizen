@@ -155,7 +155,7 @@ public class CommandRegistry implements dRegistry {
                 "FLY", "fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)", 1);
         
         registerCoreMember(FollowCommand.class, 
-                "FOLLOW", "follow (stop) (lead:<#.#>)", 0);
+                "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
         
         registerCoreMember(ForEachCommand.class,
                 "FOREACH", "foreach [location:<location>|...] [<script>]", 0); 

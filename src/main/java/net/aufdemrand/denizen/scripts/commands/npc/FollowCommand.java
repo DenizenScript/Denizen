@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.objects.aH;
@@ -19,14 +21,26 @@ public class FollowCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse Arguments
-        for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesArg("STOP", arg))
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            if (!scriptEntry.hasObject("stop") &&
+                    arg.matches("STOP"))
                 scriptEntry.addObject("stop", true);
 
-            else if (aH.matchesValueArg("LEAD", arg, aH.ArgumentType.Double))
-                scriptEntry.addObject("lead", aH.getDoubleFrom(arg));
+            else if (!scriptEntry.hasObject("lead") &&
+                    arg.matchesPrimitive(aH.PrimitiveType.Double))
+                scriptEntry.addObject("lead", arg.asElement());
 
-            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else if (!scriptEntry.hasObject("target") &&
+                    arg.matchesArgumentType(dEntity.class))
+                scriptEntry.addObject("target", arg.asType(dEntity.class));
+
+            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
+        }
+        if (!scriptEntry.hasObject("target")) {
+            if (scriptEntry.hasPlayer())
+                scriptEntry.addObject("target", scriptEntry.getPlayer().getDenizenEntity());
+            else
+                throw new InvalidArgumentsException(dB.Messages.ERROR_NO_PLAYER);
         }
     }
 
@@ -34,24 +48,26 @@ public class FollowCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
         Boolean stop = (Boolean) scriptEntry.getObject("stop");
-        Double lead = (Double) scriptEntry.getObject("lead");
+        Element lead = (Element) scriptEntry.getObject("lead");
+        dEntity target = (dEntity) scriptEntry.getObject("target");
 
         // Report to dB
         dB.report(getName(),
                         (scriptEntry.getPlayer() != null ? scriptEntry.getPlayer().debug() : "")
                         + (stop == null ? aH.debugObj("Action", "FOLLOW")
                         : aH.debugObj("Action", "STOP"))
-                        + (lead != null ? aH.debugObj("Lead", lead.toString()) : "" ));
+                        + (lead != null ? aH.debugObj("Lead", lead.toString()) : "")
+                        + target.debug());
 
         if (lead != null)
-            scriptEntry.getNPC().getNavigator().getLocalParameters().distanceMargin(lead);
+            scriptEntry.getNPC().getNavigator().getLocalParameters().distanceMargin(lead.asDouble());
 
         if (stop != null)
             scriptEntry.getNPC().getNavigator()
                     .cancelNavigation();
         else
             scriptEntry.getNPC().getNavigator()
-                    .setTarget(scriptEntry.getPlayer().getPlayerEntity(), false);
+                .setTarget(target.getBukkitEntity(), false);
 
     }
 
