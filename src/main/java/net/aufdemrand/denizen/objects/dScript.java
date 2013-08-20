@@ -135,10 +135,19 @@ public class dScript implements dObject {
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return "null";
 
+        // <--
+        // <s@script.container_type> -> Element
+        // Returns the container type of a dScript.
+        // -->
         if (attribute.startsWith("container_type"))
             return new Element(container.getType())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <s@script.cooled_down[<player>]> -> Element(Boolean)
+        // Returns true if the script has been cooled down for the
+        // player (defaults to current). Otherwise, returns false.
+        // -->
         if (attribute.startsWith("cooled_down")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : attribute.getScriptEntry().getPlayer());
@@ -146,6 +155,11 @@ public class dScript implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--
+        // <s@script.requirements[<player>].check[<path>]> -> Element
+        // Returns true if the player specified (defaults to current) has the
+        // requirement. Otherwise, returns false.
+        // -->
         if (attribute.startsWith("requirements.check")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : attribute.getScriptEntry().getPlayer());
@@ -156,6 +170,10 @@ public class dScript implements dObject {
                         .getAttribute(attribute.fulfill(2));
         }
 
+        // <--
+        // <s@script.cooldown[<player>]> -> Duration
+        // Returns the time left for the player to cooldown for the script.
+        // -->
         if (attribute.startsWith("cooldown")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : attribute.getScriptEntry().getPlayer());

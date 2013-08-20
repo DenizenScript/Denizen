@@ -526,36 +526,67 @@ public class dItem implements dObject {
 
         if (attribute == null) return null;
 
+        // <--
+        // <i@item.qty> -> Element(Number)
+        // Returns the number of items in the dItem's itemstack.
+        // -->
         if (attribute.startsWith("qty"))
             return new Element(String.valueOf(getItemStack().getAmount()))
                     .getAttribute(attribute.fulfill(1));
 
-        // Needs to be above "id" or it won't work
+        // <--
+        // <i@item.identify> -> Element
+        // Returns the dItem identification for the item.
+        // -->
         if (attribute.startsWith("identify")) {
             return new Element(identify())
                     .getAttribute(attribute.fulfill(1));
         }
         
+        // <--
+        // <i@item.id> -> Element(Number)
+        // Returns the item ID number of the dItem.
+        // -->
         if (attribute.startsWith("id"))
             return new Element(String.valueOf(getItemStack().getTypeId()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.max_stack> -> Element(Number)
+        // Returns the max number of this item possible in a single stack.
+        // -->
         if (attribute.startsWith("max_stack"))
             return new Element(String.valueOf(getItemStack().getMaxStackSize()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.data> -> Element(Number)
+        // Returns the data value of the material of the dItem.
+        // -->
         if (attribute.startsWith("data"))
             return new Element(String.valueOf(getItemStack().getData().getData()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.durability> -> Element(Number)
+        // Returns the durability of the dItem.
+        // -->
         if (attribute.startsWith("durability"))
             return new Element(String.valueOf(getItemStack().getDurability()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.repairable> -> Element(Boolean)
+        // Returns true if the dItem can be repaired. Otherwise, returns false.
+        // -->
         if (attribute.startsWith("repairable"))
             return new Element(String.valueOf(isRepairable()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.material.formatted> -> Element
+        // Returns the formatted material name of the dItem.
+        // -->
         if (attribute.startsWith("material.formatted")) {
 
             String id = item.getType().name().toLowerCase();
@@ -595,17 +626,35 @@ public class dItem implements dObject {
             }
         }
 
+        // <--
+        // <i@item.material> -> Element
+        // Returns the material name of the dItem.
+        // -->
         if (attribute.startsWith("material"))
             return new Element(getItemStack().getType().toString())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.display> -> Element
+        // Returns the display name of the dItem.
+        // -->
         if (attribute.startsWith("display"))
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasDisplayName())
                 return new Element(getItemStack().getItemMeta().getDisplayName())
                         .getAttribute(attribute.fulfill(1));
 
+        // <--
+        // <i@item.enchantments> -> dList
+        // Returns a list of enchantment names on the dItem.
+        // -->
         if (attribute.startsWith("enchantments")) {
-        // TODO ?
+            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasEnchants()) {
+                List<String> enchants = new ArrayList<String>();
+                for (Enchantment enchantment : getItemStack().getEnchantments().keySet())
+                    enchants.add(enchantment.getName());
+                return new dList(enchants)
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         if (attribute.startsWith("book")) {
@@ -613,22 +662,42 @@ public class dItem implements dObject {
                 attribute.fulfill(1);
                 BookMeta bookInfo = (BookMeta) getItemStack().getItemMeta();
 
+                // <--
+                // <i@item.book.author> -> Element
+                // Returns the author of the book.
+                // -->
                 if (attribute.startsWith("author"))
                     return new Element(bookInfo.getAuthor())
                             .getAttribute(attribute.fulfill(1));
 
+                // <--
+                // <i@item.book.title> -> Element
+                // Returns the title of the book.
+                // -->
                 if (attribute.startsWith("title"))
                     return new Element(bookInfo.getTitle())
                             .getAttribute(attribute.fulfill(1));
 
+                // <--
+                // <i@item.book.page_count> -> Element(Number)
+                // Returns the number of pages in the book.
+                // -->
                 if (attribute.startsWith("page_count"))
                     return new Element(bookInfo.getPageCount())
                             .getAttribute(attribute.fulfill(1));
 
+                // <--
+                // <i@item.book.get_page[<#>]> -> Element
+                // Returns the page specified from the book.
+                // -->
                 if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1)))
                     return new Element(bookInfo.getPage(attribute.getIntContext(1)))
                             .getAttribute(attribute.fulfill(1));
 
+                // <--
+                // <i@item.book.pages> -> dList
+                // Returns the pages of the book as a dList.
+                // -->
                 if (attribute.startsWith("pages"))
                     return new dList(bookInfo.getPages())
                             .getAttribute(attribute.fulfill(1));
@@ -636,6 +705,10 @@ public class dItem implements dObject {
             } else dB.echoError("Item referenced is not a written book!");
         }
 
+        // <--
+        // <i@item.scriptname> -> Element
+        // Returns the script name of the dItem.
+        // -->
         if (attribute.startsWith("scriptname")) // Note: Update this when the id: is stored less stupidly!
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
                 List<String> loreList = new ArrayList<String>();
@@ -644,7 +717,11 @@ public class dItem implements dObject {
                         return new Element(itemLore.substring(5)).getAttribute(attribute.fulfill(1));
             }
 
-        // Return all lore except for lore that holds item script ID
+        // <--
+        // <i@item.lore> -> dList
+        // Returns lore as a dList except for the "invisible" 
+        // lore that holds the item script ID.
+        // -->
         if (attribute.startsWith("lore")) {
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
                 
