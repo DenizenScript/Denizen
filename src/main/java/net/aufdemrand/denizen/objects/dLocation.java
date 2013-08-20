@@ -835,7 +835,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--
-        // <l@location.in_region[<name>(|<name>|...)]> -> Element(Boolean)
+        // <l@location.in_region[<name>|...]> -> Element(Boolean)
         // If a region name or list of names is specified, returns whether the
         // location is in one of the listed regions, otherwise it returns whether
         // the location is in any region.
