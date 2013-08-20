@@ -1,10 +1,7 @@
 package net.aufdemrand.denizen.tags.core;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
@@ -264,6 +261,7 @@ public class UtilTags implements Listener {
         String subTypeContext = event.getSubTypeContext() != null ? event.getSubTypeContext().toUpperCase() : "";
         String specifier = event.getSpecifier() != null ? event.getSpecifier() : "";
         String specifierContext = event.getSpecifierContext() != null ? event.getSpecifierContext().toUpperCase() : "";
+        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
         if (type.equalsIgnoreCase("RANDOM")) {
             
@@ -392,6 +390,7 @@ public class UtilTags implements Listener {
         // Returns the current system date.
         // -->
         else if (type.equalsIgnoreCase("DATE")) {
+            Calendar calendar = Calendar.getInstance();
             Date currentDate = new Date();
             SimpleDateFormat format = new SimpleDateFormat();
 
@@ -407,11 +406,55 @@ public class UtilTags implements Listener {
                 // -->
                 if (specifier.equalsIgnoreCase("24HOUR")) {
                     format.applyPattern("k:mm");
-                } else format.applyPattern("K:mm a");
+                    event.setReplaced(format.format(currentDate));
+                }
+                // <--
+                // <util.date.time.year> -> Element(Number)
+                // Returns the current year of the system time.
+                // -->
+                else if (specifier.equalsIgnoreCase("year"))
+                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.YEAR))).getAttribute(attribute.fulfill(3)));
+                    // <--
+                    // <util.date.time.month> -> Element(Number)
+                    // Returns the current month of the system time.
+                    // -->
+                else if (specifier.equalsIgnoreCase("month"))
+                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.MONTH) + 1)).getAttribute(attribute.fulfill(3)));
+                    // <--
+                    // <util.date.time.day> -> Element(Number)
+                    // Returns the current day of the system time.
+                    // -->
+                else if (specifier.equalsIgnoreCase("day"))
+                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))).getAttribute(attribute.fulfill(3)));
+                    // <--
+                    // <util.date.time.hour> -> Element(Number)
+                    // Returns the current hour of the system time.
+                    // -->
+                else if (specifier.equalsIgnoreCase("hour"))
+                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY))).getAttribute(attribute.fulfill(3)));
+                    // <--
+                    // <util.date.time.minute> -> Element(Number)
+                    // Returns the current minute of the system time.
+                    // -->
+                else if (specifier.equalsIgnoreCase("minute"))
+                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.MINUTE))).getAttribute(attribute.fulfill(3)));
+                    // <--
+                    // <util.date.time.second Element(Number)
+                    // Returns the current second of the system time.
+                    // -->
+                else if (specifier.equalsIgnoreCase("second"))
+                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.SECOND))).getAttribute(attribute.fulfill(3)));
+                else {
+                    format.applyPattern("K:mm a");
+                    event.setReplaced(format.format(currentDate));
+                }
 
-            } else format.applyPattern("EEE, MMM d, yyyy");
+            }
+            else {
+                format.applyPattern("EEE, MMM d, yyyy");
+                event.setReplaced(format.format(currentDate));
+            }
 
-            event.setReplaced(format.format(currentDate));
         }
 
         // <--
@@ -419,8 +462,7 @@ public class UtilTags implements Listener {
         // Returns the text as an Element.
         // -->
         else if (type.equalsIgnoreCase("AS_ELEMENT")) {
-            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
-            event.setReplaced(new Element(typeContext).getAttribute(attribute.fulfill(2)));
+            event.setReplaced(new Element(typeContext).getAttribute(attribute.fulfill(1)));
         }
 
     }
