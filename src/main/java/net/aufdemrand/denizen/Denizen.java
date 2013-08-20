@@ -138,7 +138,7 @@ public class Denizen extends JavaPlugin {
             return;
         } else startedSuccessful = true;
 
-        versionTag = getServer().getPluginManager().getPlugin("Denizen").getDescription().getVersion();
+        versionTag = this.getDescription().getVersion();
         
         // Startup procedure
         dB.echoDebug(DebugElement.Footer);
