@@ -89,7 +89,7 @@ public class dInventory implements dObject, Notable {
             
             if (t.equalsIgnoreCase("npc")) {
                 // Check if the NPC ID specified is valid
-                if (dNPC.matches(h) && dNPC.valueOf(h).getEntity() instanceof Player)
+                if (dNPC.matches(h) && (dNPC.valueOf(h).getEntity() instanceof Player || dNPC.valueOf(h).getEntity() instanceof Horse))
                     return new dInventory(dNPC.valueOf(h).getEntity());
             }
             else if (t.equalsIgnoreCase("player")) {
