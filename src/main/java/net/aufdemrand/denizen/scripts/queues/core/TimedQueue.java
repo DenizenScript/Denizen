@@ -150,7 +150,7 @@ public class TimedQueue extends ScriptQueue implements Delayable {
         task_id = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
                 new Runnable() {
                     @Override public void run() { revolve(); }
-                }, ticks == 0 ? 1, ticks == 0 ? 1 : ticks);
+                }, ticks == 0 ? 1 : ticks, ticks == 0 ? 1 : ticks);
     }
 
 

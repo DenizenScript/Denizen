@@ -89,7 +89,9 @@ public class dInventory implements dObject, Notable {
             
             if (t.equalsIgnoreCase("npc")) {
                 // Check if the NPC ID specified is valid
-                if (dNPC.matches(h) && (dNPC.valueOf(h).getEntity() instanceof Player || dNPC.valueOf(h).getEntity() instanceof Horse))
+                if (dNPC.matches((h.startsWith("n@") ? h : "n@" + h)) 
+                && (dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Player 
+                || dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Horse))
                     return new dInventory(dNPC.valueOf(h).getEntity());
             }
             else if (t.equalsIgnoreCase("player")) {
@@ -99,9 +101,9 @@ public class dInventory implements dObject, Notable {
             }
             else if (t.equalsIgnoreCase("entity")) {
                 // Check if the entity ID specified is valid and the entity is living
-                if (dEntity.matches(h)
-                       && dEntity.valueOf(h).isLivingEntity())
-                    return new dInventory(dEntity.valueOf(h).getLivingEntity());
+                if (dEntity.matches((h.startsWith("e@") ? h : "e@" + h))
+                       && dEntity.valueOf((h.startsWith("e@") ? h : "e@" + h)).isLivingEntity())
+                    return new dInventory(dEntity.valueOf((h.startsWith("e@") ? h : "e@" + h)).getLivingEntity());
             }
             else if (t.equalsIgnoreCase("location")) {
                 // Check if the location specified is valid and the block is a container
@@ -122,9 +124,9 @@ public class dInventory implements dObject, Notable {
                     return new dInventory(InventoryType.CRAFTING, t, h).add(Bukkit.getPlayer(h.substring(2))
                             .getEquipment().getArmorContents());
                 }
-                else if (dEntity.matches(h) && dEntity.valueOf(h.substring(2)).isLivingEntity() 
-                            && dEntity.valueOf(h.substring(2)).isSpawned()) {
-                    return new dInventory(InventoryType.CRAFTING, t, h).add(dEntity.valueOf(h.substring(2)).getLivingEntity()
+                else if (dEntity.matches(h) && dEntity.valueOf(h).isLivingEntity() 
+                            && dEntity.valueOf(h).isSpawned()) {
+                    return new dInventory(InventoryType.CRAFTING, t, h).add(dEntity.valueOf(h).getLivingEntity()
                             .getEquipment().getArmorContents());
                 }
             }
@@ -162,7 +164,7 @@ public class dInventory implements dObject, Notable {
      */
     public static boolean matches(String arg) {
 
-        if (dInventory.valueOf(arg) != null)
+        if (valueOf(arg) != null)
             return true;
         
         return false;
@@ -771,8 +773,8 @@ public class dInventory implements dObject, Notable {
                         .getAttribute(attribute.fulfill(1));
             }
             else if (getInventory() instanceof HorseInventory) {
-                return new dInventory(InventoryType.CRAFTING, (getInventory().getHolder() != null ? "entity" : "inventory"),
-                    (getInventory().getHolder() != null ? String.valueOf(((LivingEntity) getInventory().getHolder()).getEntityId())
+                return new dInventory(InventoryType.CRAFTING, "equipment",
+                    (getInventory().getHolder() != null ? "e@" + String.valueOf(((LivingEntity) getInventory().getHolder()).getEntityId())
                      : getInventory().getName()))
                         .getAttribute(attribute.fulfill(1));
             }
