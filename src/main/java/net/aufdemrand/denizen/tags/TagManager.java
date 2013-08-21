@@ -74,7 +74,8 @@ public class TagManager implements Listener {
         try {
 
             if ((Boolean) object_class.getMethod("matches", String.class)
-                    .invoke(null, event.getName()) == false) {
+                    .invoke(null, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']' 
+                    : event.getName()) == false) {
                 dB.echoDebug("Returning null. '" + event.getName()
                         + "' is an invalid " + object_class.getSimpleName() + ".");
                 event.setReplaced("null");
