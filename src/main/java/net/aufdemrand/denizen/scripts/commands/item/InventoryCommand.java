@@ -60,7 +60,7 @@ public class InventoryCommand extends AbstractCommand {
                     scriptEntry.addObject("destinationLocation", arg.asType(dLocation.class));
                 // Is inventory
                 else if (arg.matchesArgumentType(dInventory.class))
-                    scriptEntry.addObject("originInventory", arg.asType(dInventory.class));
+                    scriptEntry.addObject("destinationInventory", arg.asType(dInventory.class));
             }
         }
 
@@ -75,7 +75,6 @@ public class InventoryCommand extends AbstractCommand {
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "DESTINATION");
     }
     
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
