@@ -53,20 +53,23 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("flag_target", scriptEntry.getPlayer());
             }
 
+            // This code seems unnecessary, as just specifying players and NPCs with the args
+            // from AbstractCommand (player: and npc:) work just fine.
+            //
             // Allow a p@player or n@npc entity to specify the target
             // to be flagged
-            else if (!scriptEntry.hasObject("flag_target")
-                    && arg.matchesArgumentType(dNPC.class)
-                    && arg.startsWith("n@")) {
-                specified_target = true;
-                scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
-
-            } else if (!scriptEntry.hasObject("flag_target")
-                    && arg.matchesArgumentType(dPlayer.class)
-                    && arg.startsWith("p@")) {
-                specified_target = true;
-                scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
-            }
+            //else if (!scriptEntry.hasObject("flag_target")
+            //        && arg.matchesArgumentType(dNPC.class)
+            //        && arg.startsWith("n@")) {
+            //    specified_target = true;
+            //    scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
+            //
+            //} else if (!scriptEntry.hasObject("flag_target")
+            //        && arg.matchesArgumentType(dPlayer.class)
+            //        && arg.startsWith("p@")) {
+            //   specified_target = true;
+            //    scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
+            //}
 
             // Check if setting a boolean
             else if (!scriptEntry.hasObject("action")

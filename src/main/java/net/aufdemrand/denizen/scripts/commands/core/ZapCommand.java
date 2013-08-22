@@ -67,7 +67,7 @@ public class ZapCommand extends AbstractCommand implements Listener{
             // If a script is found, use that to ZAP
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)
-                    && !arg.matchesPrefix("step"))
+                    && !arg.matchesPrefix("script"))
                 scriptEntry.addObject("script", arg.asType(dScript.class));
 
             // Add argument as step
