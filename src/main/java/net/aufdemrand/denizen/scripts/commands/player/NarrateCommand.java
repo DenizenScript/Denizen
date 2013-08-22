@@ -56,6 +56,8 @@ public class NarrateCommand extends AbstractCommand {
             else {
                 if (!scriptEntry.hasObject("text"))
                     scriptEntry.addObject("text", arg.asElement());
+                else
+                    dB.echoError("Unknown argument " + arg.raw_value);
             }
         }
         

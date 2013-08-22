@@ -158,7 +158,7 @@ public class CommandRegistry implements dRegistry {
                 "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
         
         registerCoreMember(ForEachCommand.class,
-                "FOREACH", "foreach [location:<location>|...] [<script>]", 0); 
+                "FOREACH", "foreach [<object>|...] [<commands>]", 1);
         
         registerCoreMember(GiveCommand.class,
                 "GIVE", "give [money/<item>] (qty:<#>) (engrave)", 1);
