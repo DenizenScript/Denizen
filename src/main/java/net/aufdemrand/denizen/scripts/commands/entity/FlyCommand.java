@@ -102,17 +102,17 @@ public class FlyCommand extends AbstractCommand {
                                 new ArrayList<dLocation>();
         
         final Element speed = (Element) scriptEntry.getObject("speed");
-        boolean cancel = scriptEntry.hasObject("cancel");
+        Boolean cancel = scriptEntry.hasObject("cancel");
         
         // Report to dB
-        dB.report(getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
                              aH.debugObj("origin", origin) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("speed", speed) +
                              (destinations.size() > 0 ? aH.debugObj("destinations", destinations.toString()) : ""));
                 
         // Mount or dismount all of the entities
-        if (!cancel) {
+        if (cancel.equals(false)) {
             
             // Go through all the entities, spawning/teleporting them
             for (dEntity entity : entities) {

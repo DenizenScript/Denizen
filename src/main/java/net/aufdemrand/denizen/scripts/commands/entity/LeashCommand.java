@@ -89,10 +89,10 @@ public class LeashCommand extends AbstractCommand {
                 return;
             }
         }
-        boolean cancel = scriptEntry.hasObject("cancel");
+        Boolean cancel = scriptEntry.hasObject("cancel");
         
         // Report to dB
-        dB.report(getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
                              aH.debugObj("entities", entities.toString()) +
                              (holder != null ? aH.debugObj("holder", holder) : aH.debugObj("holder", holderLoc)));
         
@@ -100,7 +100,7 @@ public class LeashCommand extends AbstractCommand {
         for (dEntity entity : entities) {
             if (entity.isSpawned() && entity.isLivingEntity()) {
                 
-                if (cancel) {
+                if (cancel == true) {
                     entity.getLivingEntity().setLeashHolder(null);
                 }
                 else {
