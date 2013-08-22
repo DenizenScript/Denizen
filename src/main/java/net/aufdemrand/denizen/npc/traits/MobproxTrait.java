@@ -25,39 +25,45 @@ public class MobproxTrait extends Trait {
         super("Mobprox");
     }
     int checkTimer = 0;
+    int timerBounce = 0;
     LivingEntity liveEnt;
     dNPC dnpc;
     Flag frange;
     Flag facceptnpc;
+    Flag ftimer;
     List<Entity> inrange = new ArrayList<Entity>();
     @Override
     public void run() {
         checkTimer++;
-        if (checkTimer == 40) {
+        if (checkTimer == 10) {
             checkTimer = 0;
-            if (getNPC().isSpawned()) {
-                int range = frange.getLast().asInteger();
-                boolean acceptnpc = facceptnpc.getLast().asBoolean();
-                List<Entity> nearby = liveEnt.getNearbyEntities(range, range, range);
-                List<Entity> removeme = new ArrayList<Entity>();
-                removeme.addAll(inrange);
-                for (Entity ent: nearby) {
-                    if (ent instanceof LivingEntity && !(ent instanceof Player) && (acceptnpc || (!new dEntity(ent).isNPC()))) {
-                        if (removeme.contains(ent)) {
-                            removeme.remove(ent);
-                        }
-                        if (!inrange.contains(ent)) {
-                            inrange.add(ent);
-                            callAction("enter", ent);
-                        }
-                        else {
-                            callAction("move", ent);
+            timerBounce++;
+            if (timerBounce == ftimer.getLast().asInteger()) {
+                timerBounce = 0;
+                if (getNPC().isSpawned()) {
+                    int range = frange.getLast().asInteger();
+                    boolean acceptnpc = facceptnpc.getLast().asBoolean();
+                    List<Entity> nearby = liveEnt.getNearbyEntities(range, range, range);
+                    List<Entity> removeme = new ArrayList<Entity>();
+                    removeme.addAll(inrange);
+                    for (Entity ent: nearby) {
+                        if (ent instanceof LivingEntity && !(ent instanceof Player) && (acceptnpc || (!new dEntity(ent).isNPC()))) {
+                            if (removeme.contains(ent)) {
+                                removeme.remove(ent);
+                            }
+                            if (!inrange.contains(ent)) {
+                                inrange.add(ent);
+                                callAction("enter", ent);
+                            }
+                            else {
+                                callAction("move", ent);
+                            }
                         }
                     }
-                }
-                for (Entity ent: removeme) {
-                    inrange.remove(ent);
-                    callAction("exit", ent);
+                    for (Entity ent: removeme) {
+                        inrange.remove(ent);
+                        callAction("exit", ent);
+                    }
                 }
             }
         }
@@ -94,22 +100,10 @@ public class MobproxTrait extends Trait {
         if (facceptnpc.isEmpty()) {
             facceptnpc.set("false");
         }
-    }
-    /*
-    @Override
-    public void onAttach() {
-        onSpawn();
-        AssignmentTrait at = dnpc.getAssignmentTrait();
-        if (at == null || !at.hasAssignment()) {
-            String owner = dnpc.getOwner();
-            if (owner != null && owner.length() > 0) {
-                Player assigner = dnpc.getEntity().getServer().getPlayer(owner);
-                if (assigner != null && assigner.isOnline()) {
-                    assigner.sendMessage(ChatColor.RED + "Warning: This NPC doesn't have a script assigned! Mobprox only works with scripted Denizen NPCs!");
-                }
-            }
+        ftimer = DenizenAPI.getCurrentInstance().flagManager().getNPCFlag(dnpc.getId(), "mobprox_timer");
+        if (ftimer.isEmpty()) {
+            ftimer.set("4");
         }
     }
-    */
 
 }
