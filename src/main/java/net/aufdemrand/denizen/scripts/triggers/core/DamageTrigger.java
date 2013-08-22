@@ -67,7 +67,8 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
             }
 
             if (!parse(npc, dplayer, script, id))
-                npc.action("no damage trigger", dplayer);        }
+                npc.action("no damage trigger", dplayer);
+        }
     }
 
     @Override
