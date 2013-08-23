@@ -126,7 +126,7 @@ public class CommandExecuter {
                     dB.echoDebug("...replacing the linked player.");
                     String value = TagManager.tag(scriptEntry.getPlayer(), scriptEntry.getNPC(), arg.getValue(), false);
                     dPlayer player = dPlayer.valueOf(value);
-                    if (!player.isValid()) {
+                    if (player == null || !player.isValid()) {
                         dB.echoError(value + " is an invalid player!");
                         return false;
                     }
