@@ -408,7 +408,8 @@ public class WorldScriptHelper implements Listener {
                 context.put("world", new dWorld(world));
                 
                 doEvents(Arrays.asList("time changes in " + world.getName(),
-                                       hour + ":00 in " + world.getName()),
+                                       String.valueOf(hour) + ":00 in " + world.getName(),
+                                        "time " + String.valueOf(hour) + " in " + world.getName()),
                         null, null, context);
                 
                 current_time.put(world.getName(), hour);
