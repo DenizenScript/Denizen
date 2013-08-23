@@ -137,7 +137,7 @@ public class Element implements dObject {
                         .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Integer.");
-                return null;
+                return new Element("null").getAttribute(attribute.fulfill(1));
             }
 
         // <--
@@ -150,7 +150,7 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Double.");
-                return null;
+                return new Element("null").getAttribute(attribute.fulfill(1));
             }
 
         // <--
@@ -165,7 +165,7 @@ public class Element implements dObject {
                         .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Money format.");
-                return null;
+                return new Element("null").getAttribute(attribute.fulfill(1));
             }
         }
 
