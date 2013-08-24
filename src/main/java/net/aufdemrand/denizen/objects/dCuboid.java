@@ -402,7 +402,7 @@ String prefix = "Cuboid";
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return null;
 
-        // <--
+        // <--[tag]
         // <cu@cuboid.get_blocks> -> dList(dLocation)
         // Returns each block location within the dCuboid.
         // -->
