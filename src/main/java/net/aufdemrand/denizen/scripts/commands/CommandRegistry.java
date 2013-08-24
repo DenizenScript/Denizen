@@ -91,6 +91,43 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(CompassCommand.class,
                 "COMPASS", "compass [<location>]", 1);
 
+        // <--[command]
+        // @Name Cooldown
+        // @Stable 1.0
+        // @Short Temporarily disables a script-container from meeting requirements.
+        // @Author aufdemrand
+        //
+        // @Description
+        // Cools down a script-container. If an interact-container, when on cooldown, scripts will not pass a
+        // requirements check allowing the next highest priority script to trigger. If any other type of script, a
+        // manual requirements check (<s@script_name.requirements.check>) will also return false until the cooldown
+        // period is completed. Cooldown requires a type (player or global), a script, and a duration. It also requires
+        // a valid link to a dPlayer if using player-type cooldown.
+        //
+        // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
+        //
+        // @Tags
+        // <s@script_name.cooled_down[player]> will return whether the script is cooled down
+        // <s@script_name.cooldown> will return the duration of the cooldown in progress.
+        // <s@requirements.check> will also check script cooldown, as well as any requirements.
+        //
+        // @Usage
+        // Use to keep the current interact script from meeting requirements.
+        // - cooldown 20m
+        //
+        // @Usage
+        // Use to keep a player from activating a script for a specified duration.
+        // - cooldown 11h s:s@bonus_script
+        // - cooldown 5s s:s@hit_indicator
+        //
+        // @Usage
+        // Use the 'global' argument to indicate the script to be on cooldown for all players.
+        // - cooldown global 24h s:s@daily_treasure_offering
+        //
+        // @Example
+        //
+        // -->
+
         registerCoreMember(CooldownCommand.class,
                 "COOLDOWN", "cooldown (duration:<value>) (global) (script:<name>)", 1);
 
