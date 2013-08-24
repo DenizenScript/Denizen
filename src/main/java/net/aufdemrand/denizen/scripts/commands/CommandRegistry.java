@@ -195,6 +195,27 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(FollowCommand.class, 
                 "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
         
+        // <--[command]
+        // @Name Foreach
+        // @Usage foreach [<object>|...] [<commands>]
+        // @Stable Maybe
+        // @Short Loops through a dList, running a set of commands for each item.
+        // You can use %value% to return the value of the current item.
+        // @Author Morphan1/mcmonkey
+        //
+        // @Description
+        // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for 
+        // that item. To call the value of the item while in the loop, you can use %value%.
+        //
+        // @Usage
+        // Use to run commands on multiple items.
+        // - foreach li@e@123|n@424|p@BobBarker {
+        //   - announce "There's something at <%value%.location>!"
+        //   }
+        //
+        // @Example
+        //
+        // -->
         registerCoreMember(ForEachCommand.class,
                 "FOREACH", "foreach [<object>|...] [<commands>]", 1);
         
