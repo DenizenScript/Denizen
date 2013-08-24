@@ -41,13 +41,13 @@ public class RepeatCommand extends BracedCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Get objects
-        int qty = ((Element)scriptEntry.getObject("qty")).asInt();
+        Element qty = scriptEntry.getElement("qty");
         ArrayList<ScriptEntry> entries = (ArrayList<ScriptEntry>) scriptEntry.getObject("entries");
 
         // Report to dB
-        dB.report(getName(), aH.debugObj("qty", qty) );
+        dB.report(getName(), qty.debug());
 
-        for (int incr = 0;incr < qty;incr++) {
+        for (int incr = 0; incr < qty.asInt(); incr++) {
             ArrayList<ScriptEntry> newEntries = (ArrayList<ScriptEntry>) new ArrayList<ScriptEntry>();
             for (ScriptEntry entr: entries) {
                 try {
