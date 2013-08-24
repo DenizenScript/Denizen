@@ -403,33 +403,37 @@ String prefix = "Cuboid";
         if (attribute == null) return null;
 
         // <--[tag]
-        // <cu@cuboid.get_blocks> -> dList(dLocation)
-        // Returns each block location within the dCuboid.
+        // @attribute <cu@cuboid.get_blocks>
+        // @returns dList(dLocation)
+        // @description Returns each block location within the dCuboid.
         // -->
         if (attribute.startsWith("get_blocks"))
             return new dList(getBlocks())
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <cu@cuboid.get_outline> -> dList(dLocation)
-        // Returns each block location on the outline of the dCuboid.
+        // <--[tag]
+        // @attribute <cu@cuboid.get_outline>
+        // @returns dList(dLocation)
+        // @description Returns each block location on the outline of the dCuboid.
         // -->
         if (attribute.startsWith("get_outline"))
             return new dList(getOutline())
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <cu@cuboid.filter> -> dList(dLocation)
-        // Returns the block locations from the dCuboid's filter.
+        // <--[tag]
+        // @attribute <cu@cuboid.filter>
+        // @returns dList(dLocation)
+        // @description Returns the block locations from the dCuboid's filter.
         // -->
         if (attribute.startsWith("filter"))
             return new dList(filter)
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <cu@cuboid.is_within[<location>]> -> Element(Boolean)
-        // Returns true if the dCuboid is within the location.
-        // Otherise, returns false.
+        // <--[tag]
+        // @attribute <cu@cuboid.is_within[<location>]>
+        // @returns Element(Boolean)
+        // @description Returns true if the dCuboid is within the location.
+        // Otherwise, returns false.
         // -->
         if (attribute.startsWith("is_within")) {
             dLocation loc = dLocation.valueOf(attribute.getContext(1));
