@@ -93,6 +93,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Cooldown
+        // @Usage cooldown (duration:<value>) (global) (script:<name>)
         // @Stable 1.0
         // @Short Temporarily disables a script-container from meeting requirements.
         // @Author aufdemrand
