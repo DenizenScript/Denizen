@@ -250,6 +250,9 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(RenameCommand.class,
                 "RENAME", "rename [<npc>] [<name>]", 1);
 
+        registerCoreMember(RepeatCommand.class,
+                "REPEAT", "repeat [<amount>] [<commands>]", 1);
+
         registerCoreMember(ResetCommand.class,
                 "RESET", "reset [fails/finishes/cooldown] (script:<name>)", 1);
 
