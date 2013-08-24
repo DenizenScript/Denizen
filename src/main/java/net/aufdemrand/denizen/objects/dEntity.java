@@ -778,14 +778,14 @@ public class dEntity implements dObject {
         
         // <--[tag]
         // @attribute <e@entity>
-        // @return dEntity
+        // @returns dEntity
         // @description
         // Returns the dEntity of the entity.
         // -->
         
         // <--[tag]
         // @attribute <e@entity.get_vehicle>
-        // @return dEntity
+        // @returns dEntity
         // @description
         // If the entity is in a vehicle, returns the vehicle as a
         // dEntity. Else, returns null.
@@ -799,7 +799,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.custom_name>
-        // @return Element
+        // @returns Element
         // @description
         // If the entity has a custom name, returns the name as an
         // Element. Else, returns null.
@@ -811,7 +811,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.name>
-        // @return Element
+        // @returns Element
         // @description
         // Returns the name of the entity.
         // -->
@@ -828,7 +828,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.entity_type>
-        // @return Element
+        // @returns Element
         // @description
         // Returns the type of the entity.
         // -->
@@ -838,7 +838,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.custom_id>
-        // @return dScript/Element
+        // @returns dScript/Element
         // @description
         // If the entity has a script ID, returns the dScript of that
         // ID. Else, returns the name of the entity type.
@@ -854,7 +854,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.location.cursor_on>
-        // @return dLocation
+        // @returns dLocation
         // @description
         // Returns the dLocation of where the entity is looking.
         // -->
@@ -867,7 +867,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.location.standing_on>
-        // @return dLocation
+        // @returns dLocation
         // @description
         // Returns the dLocation of what the entity is standing on.
         // -->
@@ -877,7 +877,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.eye_location>
-        // @return dLocation
+        // @returns dLocation
         // @description
         // returns a dLocation of the entity's eyes.
         // -->
@@ -887,7 +887,7 @@ public class dEntity implements dObject {
         
         // <--[tag]
         // @attribute <e@entity.location>
-        // @return dLocation
+        // @returns dLocation
         // @description
         // Returns the dLocation of the entity.
         // -->
@@ -911,7 +911,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.health.formatted>
-        // @return Element
+        // @returns Element
         // @description
         // Returns a 'formatted' value of the player's current health level.
         // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
@@ -934,7 +934,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.health.percentage>
-        // @return Element(Number)
+        // @returns Element(Number)
         // @description
         // Returns the entity's current health as a percentage.
         // -->
@@ -948,7 +948,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.health.max>
-        // @return Element(Number)
+        // @returns Element(Number)
         // @description
         // Returns the maximum health of the entity.
         // -->
@@ -958,7 +958,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.health>
-        // @return Element(Number)
+        // @returns Element(Number)
         // @description
         // Returns the current health of the entity.
         // -->
@@ -968,7 +968,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.is_inside_vehicle>
-        // @return Element(Boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns true if the entity is inside a vehicle. Else, returns false.
         // -->
@@ -978,7 +978,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.killer>
-        // @return dPlayer
+        // @returns dPlayer
         // @description
         // Returns the player that last killed the entity.
         // -->
@@ -988,7 +988,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.last_damage.cause>
-        // @return Element
+        // @returns Element
         // @description
         // Returns the cause of the last damage taken by the entity.
         // -->
@@ -998,7 +998,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.last_damage.amount>
-        // @return Element(Number)
+        // @returns Element(Number)
         // @description
         // Returns the amount of the last damage taken by the entity.
         // -->
@@ -1008,7 +1008,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.last_damage.duration>
-        // @return Duration
+        // @returns Duration
         // @description
         // Returns the duration of the last damage taken by the entity.
         // -->
@@ -1018,7 +1018,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.time_lived>
-        // @return Duration
+        // @returns Duration
         // @description
         // Returns how long the entity has lived.
         // -->
@@ -1028,7 +1028,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.can_see[<entity>]>
-        // @return Element(Boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns true if the entity can see the other entity.
         // -->
@@ -1041,7 +1041,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.can_pickup_items>
-        // @return Element(Boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns true if the entity can pick up items. Else, returns false.
         // -->
@@ -1051,7 +1051,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.eid>
-        // @return Element(Number)
+        // @returns Element(Number)
         // @description
         // Returns the entity's Bukkit entity ID
         // -->
@@ -1061,7 +1061,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.fall_distance>
-        // @return Element(Number)
+        // @returns Element(Number)
         // @description
         // Returns how far the entity has fallen.
         // -->
@@ -1071,7 +1071,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <e@entity.uuid>
-        // @return Element(Number)
+        // @returns Element(Number)
         // @description
         // Returns a unique ID for the entity.
         // -->
@@ -1081,7 +1081,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <entity.has_effect[<effect>]>
-        // @return Element(Boolean)
+        // @returns Element(Boolean)
         // @description
         // Returns true if the entity has an effect. If no effect is
         // specified, returns true if the entity has any effect. Else,
@@ -1099,7 +1099,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <entity.equipment>
-        // @return dInventory
+        // @returns dInventory
         // @description
         // Returns the dInventory of the entity.
         // -->
@@ -1109,7 +1109,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <entity.world>
-        // @return dWorld
+        // @returns dWorld
         // @description
         // Returns the world the entity is in.
         // -->
@@ -1120,7 +1120,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <entity.prefix>
-        // @return Element
+        // @returns Element
         // @description
         // Returns the prefix of the entity.
         // -->
@@ -1130,7 +1130,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <entity.debug.log>
-        // @return Element(Boolean)
+        // @returns Element(Boolean)
         // @description
         // Debugs the entity in the log and returns true.
         // -->
@@ -1142,7 +1142,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <entity.debug.no_color>
-        // @return Element
+        // @returns Element
         // @description
         // Returns the entity's debug with no color.
         // -->
@@ -1153,7 +1153,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <entity.debug>
-        // @return Element
+        // @returns Element
         // @description
         // Returns the entity's debug.
         // -->
@@ -1164,7 +1164,7 @@ public class dEntity implements dObject {
 
         // <--[tag]
         // @attribute <entity.type>
-        // @return Element
+        // @returns Element
         // @description
         // Returns 'Entity', the type of this dObject.
         // -->

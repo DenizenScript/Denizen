@@ -669,8 +669,10 @@ public class dInventory implements dObject, Notable {
         
         if (attribute == null) return null;
 
-        // <--
-        // <inventory.contains[<item>].qty[<#>]> -> Element(Number)
+        // <--[tag]
+        // @attribute <i@inventory.contains[<item>].qty[<#>]>
+        // @returns Element(Number)
+        // @description
         // Check if the inventory contains a certain quantity (1 by default) of an item
         // and return true or false
         // -->
@@ -692,8 +694,10 @@ public class dInventory implements dObject, Notable {
             }
         }
         
-        // <--
-        // <inventory.location> -> dLocation
+        // <--[tag]
+        // @attribute <i@inventory.location>
+        // @returns dLocation
+        // @description
         // Returns the location of this inventory's holder.
         // -->
         if (attribute.startsWith("location")) {
@@ -702,8 +706,10 @@ public class dInventory implements dObject, Notable {
                     .getAttribute(attribute.fulfill(1));
         }
         
-        // <--
-        // <inventory.qty[<item>]> -> Element(Number)
+        // <--[tag]
+        // @attribute <i@inventory.qty[<item>]>
+        // @returns Element(Number)
+        // @description
         // Returns the combined quantity of itemstacks that match an item if
         // one if specified, or the combined quantity of all itemstacks
         // if one is not
@@ -717,16 +723,20 @@ public class dInventory implements dObject, Notable {
                 return new Element(String.valueOf(count(null, false)))
                     .getAttribute(attribute.fulfill(1));
         
-        // <--
-        // <inventory.size> -> Element(Number)
+        // <--[tag]
+        // @attribute <i@inventory.size>
+        // @returns Element(Number)
+        // @description
         // Return the number of slots in the inventory
         // -->
         if (attribute.startsWith("size"))
             return new Element(String.valueOf(getSize()))
                     .getAttribute(attribute.fulfill(1));
         
-        // <--
-        // <inventory.stacks> -> Element(Number)
+        // <--[tag]
+        // @attribute <i@inventory.stacks>
+        // @returns Element(Number)
+        // @description
         // Returns the number of itemstacks that match an item if one is
         // specified, or the number of all itemstacks if one is not
         // -->
@@ -739,16 +749,20 @@ public class dInventory implements dObject, Notable {
                 return new Element(String.valueOf(count(null, true)))
                     .getAttribute(attribute.fulfill(1));
         
-        // <--
-        // <inventory.type> -> Element
+        // <--[tag]
+        // @attribute <i@inventory.type>
+        // @returns Element
+        // @description
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE")
         // -->
         if (attribute.startsWith("type"))
             return new Element(getInventory().getType().name())
                     .getAttribute(attribute.fulfill(1));
         
-        // <--
-        // <inventory.equipment> -> dInventory(Equipment)
+        // <--[tag]
+        // @attribute <i@inventory.equipment>
+        // @returns dInventory(Equipment)
+        // @description
         // Returns the equipment of an inventory. If the inventory has no
         // equipment (Generally, if it's not alive), this returns null.
         // -->
@@ -780,8 +794,10 @@ public class dInventory implements dObject, Notable {
             }
         }
         
-        // <--
-        // <inventory.list_contents> -> dList(dItem)
+        // <--[tag]
+        // @attribute <i@inventory.list_contents>
+        // @returns dList(dItem)
+        // @description
         // Returns a list of all items in the inventory.
         // -->
         if (attribute.startsWith("list_contents")) {
