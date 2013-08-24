@@ -122,9 +122,10 @@ public class Element implements dObject {
 
         if (attribute == null) return null;
 
-        // <--
-        // <element.asint> -> Element(Number)
-        // Returns the element as a number without a decimal.
+        // <--[tag]
+        // @attribute <element.as_int>
+        // @returns Element(Number)
+        // @description Returns the element as a number without a decimal. Rounds up double values.
         // -->
         if (attribute.startsWith("asint")
                 || attribute.startsWith("as_int"))
@@ -140,9 +141,10 @@ public class Element implements dObject {
                 return new Element("null").getAttribute(attribute.fulfill(1));
             }
 
-        // <--
-        // <element.asdouble> -> Element(Number)
-        // Returns the element as a number with a decimal.
+        // <--[tag]
+        // @attribute <element.as_double>
+        // @returns Element(Number)
+        // @description Returns the element as a number with a decimal.
         // -->
         if (attribute.startsWith("asdouble")
                 || attribute.startsWith("as_double"))
@@ -153,9 +155,10 @@ public class Element implements dObject {
                 return new Element("null").getAttribute(attribute.fulfill(1));
             }
 
-        // <--
-        // <element.asmoney> -> Element(Number)
-        // Returns the element as a number with two decimal places.
+        // <--[tag]
+        // @attribute <element.as_money>
+        // @returns Element(Number)
+        // @description Returns the element as a number with two decimal places.
         // -->
         if (attribute.startsWith("asmoney")
                 || attribute.startsWith("as_money")) {
@@ -169,82 +172,104 @@ public class Element implements dObject {
             }
         }
 
-        // <--
-        // <element.asboolean> -> Element(Boolean)
-        // Returns the element as true/false.
+        // <--[tag]
+        // @attribute <element.as_boolean> 
+        // @returns Element(Boolean)
+        // @description Returns the element as true/false. 
         // -->
         if (attribute.startsWith("asboolean")
                 || attribute.startsWith("as_boolean"))
             return new Element(Boolean.valueOf(element).toString())
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.aslist> -> dList
-        // Returns the element as a list.
+        // <--[tag]
+        // @attribute <element.as_list> 
+        // @returns dList
+        // @description
+        // Returns the element as a list. Lists are sometimes prefixed with li@ and are
+        // always separated by the pipe character (|)
         // -->
         if (attribute.startsWith("aslist")
                 || attribute.startsWith("as_list"))
             return dList.valueOf(element).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.asentity> -> dEntity
-        // Returns the element as an entity.
+        // <--[tag]
+        // @attribute <element.asentity> 
+        // @returns dEntity
+        // @description
+        // Returns the element as an entity. Note: the value must be a valid entity. 
         // -->
-        if (attribute.startsWith("asentity")
+        if (attribute.startsWith("as_entity")
                 || attribute.startsWith("as_entity"))
             return dEntity.valueOf(element).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.aslocation> -> dLocation
-        // Returns the element as a location.
+        // <--[tag]
+        // @attribute <element.aslocation> 
+        // @returns dLocation
+        // @description
+        // Returns the element as a location. Note: the value must be a valid location.
         // -->
-        if (attribute.startsWith("aslocation")
+        if (attribute.startsWith("as_location")
                 || attribute.startsWith("as_location"))
             return dLocation.valueOf(element).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.asplayer> -> dPlayer
-        // Returns the element as a player.
+        // <--[tag]
+        // @attribute <element.as_player> 
+        // @returns dPlayer
+        // @description 
+        // Returns the element as a player. Note: the value must be a valid player. Can be online or offline.
         // -->
         if (attribute.startsWith("asplayer")
                 || attribute.startsWith("as_player"))
             return dPlayer.valueOf(element).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.asnpc> -> dNPC
-        // Returns the element as an NPC.
+        // <--[tag]
+        // @attribute <element.as_npc>
+        // @returns dNPC
+        // @description
+        // Returns the element as an NPC. Note: the value must be a valid NPC.
         // -->
         if (attribute.startsWith("asnpc")
                 || attribute.startsWith("as_npc"))
             return dNPC.valueOf(element).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.asitem> -> dItem
-        // Returns the element as an item.
+        // <--[tag]
+        // @attribute <element.as_item> 
+        // @returns dItem
+        // @description
+        // Returns the element as an item. Additional attributes can be accessed by dItem.
+        // Note: the value must be a valid item.
         // -->
         if (attribute.startsWith("asitem")
                 || attribute.startsWith("as_item"))
             return dItem.valueOf(element).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.asscript> -> dScript
-        // Returns the element as a script.
+        // <--[tag]
+        // @attribute <element.as_script> 
+        // @returns dScript
+        // @description
+        // Returns the element as a script. Note: the value must be a valid script.
         // -->
         if (attribute.startsWith("asscript")
                 || attribute.startsWith("as_script"))
             return dScript.valueOf(element).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.asentity> -> Duration
+        // <--[tag]
+        // @attribute <element.as_duration> 
+        // @returns Duration
+        // @description
         // Returns the element as a duration.
         // -->
         if (attribute.startsWith("asduration")
                 || attribute.startsWith("as_duration"))
             return Duration.valueOf(element).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.contains[<string>]> -> Element(Boolean)
-        // Returns whether the element contains a specified string.
+        // <--[tag]
+        // @attribute <element.contains[<string>]> 
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the element contains a specified string, case in-sensitive. Can use
+        // regular expression by prefixing the string with regex:
         // -->
         if (attribute.startsWith("contains")) {
             String contains = attribute.getContext(1);
@@ -261,9 +286,11 @@ public class Element implements dObject {
             else return new Element("false").getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.after[<string>]> -> Element
-        // Returns the portion of an element after a specified string.
+        // <--[tag]
+        // @attribute <element.after[<string>]> 
+        // @returns Element
+        // @description
+        // Returns the portion of an element after a specified string. ie. <el@hello world.after[hello ]> returns 'world'.
         // -->
         // Get the substring after a certain text
         if (attribute.startsWith("after")) {
