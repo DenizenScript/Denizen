@@ -300,8 +300,10 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.before[<string>]> -> Element
+        // <--[tag]
+        // @attribute <element.before[<string>]>
+        // @returns Element
+        // @description
         // Returns the portion of an element before a specified string.
         // -->
         // Get the substring before a certain text
@@ -312,8 +314,10 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.substring[<#>(,<#>)]> -> Element
+        // <--[tag]
+        // @attribute <element.substring[<#>(,<#>)]>
+        // @returns Element
+        // @description
         // Returns the portion of an element between two string indices.
         // If no second index is specified, it will return the portion of an
         // element after the specified index.
@@ -332,29 +336,37 @@ public class Element implements dObject {
         if (attribute.startsWith("last_color"))
             return new Element(String.valueOf(ChatColor.getLastColors(element))).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.strip_color> -> Element
+        // <--[tag]
+        // @attribute <element.strip_color>
+        // @returns Element
+        // @description
         // Returns the element with all color encoding stripped.
         // -->
         if (attribute.startsWith("strip_color"))
             return new Element(String.valueOf(ChatColor.stripColor(element))).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.startswith[<string>]> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <element.startswith[<string>]>
+        // @returns Element(Boolean)
+        // @description
         // Returns whether the element starts with a specified string.
         // -->
         if (attribute.startsWith("starts_with") || attribute.startsWith("startswith"))
             return new Element(String.valueOf(element.startsWith(attribute.getContext(1)))).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.endswith[<string>]> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <element.endswith[<string>]>
+        // @returns Element(Boolean)
+        // @description
         // Returns whether the element ends with a specified string.
         // -->
         if (attribute.startsWith("ends_with") || attribute.startsWith("endswith"))
             return new Element(String.valueOf(element.endsWith(attribute.getContext(1)))).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <element.split[<string>].limit[<#>]> -> dList
+        // <--[tag]
+        // @attribute <element.split[<string>].limit[<#>]>
+        // @returns dList
+        // @description
         // Returns a list of portions of this element, split by the specified string,
         // and capped at the specified number of max list items.
         // -->
@@ -369,8 +381,10 @@ public class Element implements dObject {
                         .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.split[<string>]> -> dList
+        // <--[tag]
+        // @attribute <element.split[<string>]>
+        // @returns dList
+        // @description
         // Returns a list of portions of this element, split by the specified string.
         // -->
         if (attribute.startsWith("split")) {
@@ -383,8 +397,10 @@ public class Element implements dObject {
                         .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.sqrt> -> Element(Number)
+        // <--[tag]
+        // @attribute <element.sqrt>
+        // @returns Element(Number)
+        // @description
         // Returns the square root of the element.
         // -->
         if (attribute.startsWith("sqrt")) {
@@ -392,8 +408,10 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.abs> -> Element(Number)
+        // <--[tag]
+        // @attribute <element.abs>
+        // @returns Element(Number)
+        // @description
         // Returns the absolute value of the element.
         // -->
         if (attribute.startsWith("abs")) {
@@ -401,8 +419,10 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.mul[<#>]> -> Element(Number)
+        // <--[tag]
+        // @attribute <element.mul[<#>]>
+        // @returns Element(Number)
+        // @description
         // Returns the element multiplied by a number.
         // -->
         if (attribute.startsWith("mul")
@@ -411,8 +431,10 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.sub[<#>]> -> Element(Number)
+        // <--[tag]
+        // @attribute <element.sub[<#>]>
+        // @returns Element(Number)
+        // @description
         // Returns the element minus a number.
         // -->
         if (attribute.startsWith("sub")
@@ -421,8 +443,10 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.add[<#>]> -> Element(Number)
+        // <--[tag]
+        // @attribute <element.add[<#>]>
+        // @returns Element(Number)
+        // @description
         // Returns the element plus a number.
         // -->
         if (attribute.startsWith("add")
@@ -431,8 +455,10 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.div[<#>]> -> Element(Number)
+        // <--[tag]
+        // @attribute <element.div[<#>]>
+        // @returns Element(Number)
+        // @description
         // Returns the element divided by a number.
         // -->
         if (attribute.startsWith("div")
@@ -441,8 +467,10 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.mod[<#>]> -> Element(Number)
+        // <--[tag]
+        // @attribute <element.mod[<#>]>
+        // @returns Element(Number)
+        // @description
         // Returns the remainder of the element divided by a number.
         // -->
         if (attribute.startsWith("mod")
@@ -451,13 +479,17 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.replace[<string>]> -> Element
+        // <--[tag]
+        // @attribute <element.replace[<string>]>
+        // @returns Element
+        // @description
         // Returns the element with all instances of a string removed.
         // -->
 
-        // <--
-        // <element.replace[<string>].with[<string>]> -> Element
+        // <--[tag]
+        // @attribute <element.replace[<string>].with[<string>]>
+        // @returns Element
+        // @description
         // Returns the element with all instances of a string replaced with another.
         // -->
         if (attribute.startsWith("replace")
@@ -474,8 +506,10 @@ public class Element implements dObject {
                         .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.length> -> Element(Number)
+        // <--[tag]
+        // @attribute <element.length>
+        // @returns Element(Number)
+        // @description
         // Returns the length of the element.
         // -->
         if (attribute.startsWith("length")) {
@@ -483,8 +517,10 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <element.prefix> -> Element
+        // <--[tag]
+        // @attribute <element.prefix>
+        // @returns Element
+        // @description
         // Returns the prefix of the element.
         // -->
         if (attribute.startsWith("prefix"))
