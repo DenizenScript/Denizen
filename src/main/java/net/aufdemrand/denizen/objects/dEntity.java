@@ -776,13 +776,17 @@ public class dEntity implements dObject {
             return "null";
         }
         
-        // <--
-        // <entity> -> dEntity
+        // <--[tag]
+        // @attribute <e@entity>
+        // @return dEntity
+        // @description
         // Returns the dEntity of the entity.
         // -->
         
-        // <--
-        // <entity.get_vehicle> -> dEntity
+        // <--[tag]
+        // @attribute <e@entity.get_vehicle>
+        // @return dEntity
+        // @description
         // If the entity is in a vehicle, returns the vehicle as a
         // dEntity. Else, returns null.
         // -->
@@ -793,8 +797,10 @@ public class dEntity implements dObject {
             else return "null";
         }
 
-        // <--
-        // <entity.custom_name> -> Element
+        // <--[tag]
+        // @attribute <e@entity.custom_name>
+        // @return Element
+        // @description
         // If the entity has a custom name, returns the name as an
         // Element. Else, returns null.
         // -->
@@ -803,8 +809,10 @@ public class dEntity implements dObject {
             return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(2));
         }
 
-        // <--
-        // <entity.name> -> Element
+        // <--[tag]
+        // @attribute <e@entity.name>
+        // @return Element
+        // @description
         // Returns the name of the entity.
         // -->
         if (attribute.startsWith("name")) {
@@ -818,16 +826,20 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <entity.entity_type> -> Element
+        // <--[tag]
+        // @attribute <e@entity.entity_type>
+        // @return Element
+        // @description
         // Returns the type of the entity.
         // -->
         if (attribute.startsWith("entity_type")) {
             return new Element(entity_type.toString()).getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <entity.custom_id> -> dScript/Element
+        // <--[tag]
+        // @attribute <e@entity.custom_id>
+        // @return dScript/Element
+        // @description
         // If the entity has a script ID, returns the dScript of that
         // ID. Else, returns the name of the entity type.
         // -->
@@ -840,8 +852,10 @@ public class dEntity implements dObject {
                         .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <entity.location.cursor_on> -> dLocation
+        // <--[tag]
+        // @attribute <e@entity.location.cursor_on>
+        // @return dLocation
+        // @description
         // Returns the dLocation of where the entity is looking.
         // -->
         if (attribute.startsWith("location.cursor_on")) {
@@ -851,24 +865,30 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(2));
         }
 
-        // <--
-        // <entity.location.standing_on> -> dLocation
+        // <--[tag]
+        // @attribute <e@entity.location.standing_on>
+        // @return dLocation
+        // @description
         // Returns the dLocation of what the entity is standing on.
         // -->
         if (attribute.startsWith("location.standing_on"))
             return new dLocation(entity.getLocation().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <entity.eye_location> -> dLocation
+        // <--[tag]
+        // @attribute <e@entity.eye_location>
+        // @return dLocation
+        // @description
         // returns a dLocation of the entity's eyes.
         // -->
         if (attribute.startsWith("eye_location"))
             return new dLocation(getEyeLocation())
                     .getAttribute(attribute.fulfill(1));
         
-        // <--
-        // <entity.location> -> dLocation
+        // <--[tag]
+        // @attribute <e@entity.location>
+        // @return dLocation
+        // @description
         // Returns the dLocation of the entity.
         // -->
         if (attribute.startsWith("location")) {
@@ -889,8 +909,10 @@ public class dEntity implements dObject {
             }
         }
 
-        // <--
-        // <entity.health.formatted> -> Element
+        // <--[tag]
+        // @attribute <e@entity.health.formatted>
+        // @return Element
+        // @description
         // Returns a 'formatted' value of the player's current health level.
         // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
         // -->
@@ -910,8 +932,10 @@ public class dEntity implements dObject {
             else return new Element("healthy").getAttribute(attribute.fulfill(2));
         }
 
-        // <--
-        // <entity.health.percentage> -> Element(Number)
+        // <--[tag]
+        // @attribute <e@entity.health.percentage>
+        // @return Element(Number)
+        // @description
         // Returns the entity's current health as a percentage.
         // -->
         if (attribute.startsWith("health.percentage")) {
@@ -922,72 +946,90 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(2));
         }
 
-        // <--
-        // <entity.health.max> -> Element(Number)
+        // <--[tag]
+        // @attribute <e@entity.health.max>
+        // @return Element(Number)
+        // @description
         // Returns the maximum health of the entity.
         // -->
         if (attribute.startsWith("health.max"))
             return new Element(String.valueOf(getLivingEntity().getMaxHealth()))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <entity.health> -> Element(Number)
+        // <--[tag]
+        // @attribute <e@entity.health>
+        // @return Element(Number)
+        // @description
         // Returns the current health of the entity.
         // -->
         if (attribute.startsWith("health"))
             return new Element(String.valueOf(getLivingEntity().getHealth()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <entity.is_inside_vehicle> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <e@entity.is_inside_vehicle>
+        // @return Element(Boolean)
+        // @description
         // Returns true if the entity is inside a vehicle. Else, returns false.
         // -->
         if (attribute.startsWith("is_inside_vehicle"))
             return new Element(String.valueOf(entity.isInsideVehicle()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <entity.killer> -> dPlayer
+        // <--[tag]
+        // @attribute <e@entity.killer>
+        // @return dPlayer
+        // @description
         // Returns the player that last killed the entity.
         // -->
         if (attribute.startsWith("killer"))
             return new dPlayer(getLivingEntity().getKiller())
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <entity.last_damage.cause> -> Element
+        // <--[tag]
+        // @attribute <e@entity.last_damage.cause>
+        // @return Element
+        // @description
         // Returns the cause of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.cause"))
             return new Element(String.valueOf(entity.getLastDamageCause().getCause().toString()))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <entity.last_damage.amount> -> Element(Number)
+        // <--[tag]
+        // @attribute <e@entity.last_damage.amount>
+        // @return Element(Number)
+        // @description
         // Returns the amount of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.amount"))
             return new Element(String.valueOf(getLivingEntity().getLastDamage()))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <entity.last_damage.duration> -> Duration
+        // <--[tag]
+        // @attribute <e@entity.last_damage.duration>
+        // @return Duration
+        // @description
         // Returns the duration of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.duration"))
             return new Duration((long) getLivingEntity().getNoDamageTicks())
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <entity.time_lived> -> Duration
+        // <--[tag]
+        // @attribute <e@entity.time_lived>
+        // @return Duration
+        // @description
         // Returns how long the entity has lived.
         // -->
         if (attribute.startsWith("time_lived"))
             return new Duration(entity.getTicksLived() / 20)
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <entity.can_see[<entity>]> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <e@entity.can_see[<entity>]>
+        // @return Element(Boolean)
+        // @description
         // Returns true if the entity can see the other entity.
         // -->
         if (attribute.startsWith("can_see")) {
@@ -997,40 +1039,50 @@ public class dEntity implements dObject {
             }
         }
 
-        // <--
-        // <entity.can_pickup_items> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <e@entity.can_pickup_items>
+        // @return Element(Boolean)
+        // @description
         // Returns true if the entity can pick up items. Else, returns false.
         // -->
         if (attribute.startsWith("can_pickup_items"))
             return new Element(String.valueOf(getLivingEntity().getCanPickupItems()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <entity.eid> -> Element(Number)
+        // <--[tag]
+        // @attribute <e@entity.eid>
+        // @return Element(Number)
+        // @description
         // Returns the entity's Bukkit entity ID
         // -->
         if (attribute.startsWith("eid"))
             return new Element(String.valueOf(entity.getEntityId()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <entity.fall_distance> -> Element(Number)
+        // <--[tag]
+        // @attribute <e@entity.fall_distance>
+        // @return Element(Number)
+        // @description
         // Returns how far the entity has fallen.
         // -->
         if (attribute.startsWith("fall_distance"))
             return new Element(String.valueOf(entity.getFallDistance()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <entity.uuid> -> Element(Number)
+        // <--[tag]
+        // @attribute <e@entity.uuid>
+        // @return Element(Number)
+        // @description
         // Returns a unique ID for the entity.
         // -->
         if (attribute.startsWith("uuid"))
             return new Element(String.valueOf(entity.getUniqueId().toString()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <entity.has_effect[<effect>]> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <entity.has_effect[<effect>]>
+        // @return Element(Boolean)
+        // @description
         // Returns true if the entity has an effect. If no effect is
         // specified, returns true if the entity has any effect. Else,
         // returns false.
@@ -1045,16 +1097,20 @@ public class dEntity implements dObject {
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <entity.equipment> -> dInventory
+        // <--[tag]
+        // @attribute <entity.equipment>
+        // @return dInventory
+        // @description
         // Returns the dInventory of the entity.
         // -->
         if (attribute.startsWith("equipment")) {
             return new dInventory(getLivingEntity()).getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <entity.world> -> dWorld
+        // <--[tag]
+        // @attribute <entity.world>
+        // @return dWorld
+        // @description
         // Returns the world the entity is in.
         // -->
         if (attribute.startsWith("world")) {
@@ -1062,16 +1118,20 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <entity.prefix> -> Element
+        // <--[tag]
+        // @attribute <entity.prefix>
+        // @return Element
+        // @description
         // Returns the prefix of the entity.
         // -->
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <entity.debug.log> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <entity.debug.log>
+        // @return Element(Boolean)
+        // @description
         // Debugs the entity in the log and returns true.
         // -->
         if (attribute.startsWith("debug.log")) {
@@ -1080,8 +1140,10 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(2));
         }
 
-        // <--
-        // <entity.debug.no_color> -> Element
+        // <--[tag]
+        // @attribute <entity.debug.no_color>
+        // @return Element
+        // @description
         // Returns the entity's debug with no color.
         // -->
         if (attribute.startsWith("debug.no_color")) {
@@ -1089,8 +1151,10 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(2));
         }
 
-        // <--
-        // <entity.debug> -> Element
+        // <--[tag]
+        // @attribute <entity.debug>
+        // @return Element
+        // @description
         // Returns the entity's debug.
         // -->
         if (attribute.startsWith("debug")) {
@@ -1098,9 +1162,11 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <entity.type> -> Element
-        // Returns the entity's type.
+        // <--[tag]
+        // @attribute <entity.type>
+        // @return Element
+        // @description
+        // Returns 'Entity', the type of this dObject.
         // -->
         if (attribute.startsWith("type")) {
             return new Element(getType())
