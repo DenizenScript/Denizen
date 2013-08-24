@@ -94,6 +94,7 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name Cooldown
         // @Usage cooldown (duration:<value>) (global) (script:<name>)
+        // @Required 1
         // @Stable 1.0
         // @Short Temporarily disables a script-container from meeting requirements.
         // @Author aufdemrand
@@ -198,6 +199,7 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name Foreach
         // @Usage foreach [<object>|...] [<commands>]
+        // @Required 1
         // @Stable Maybe
         // @Short Loops through a dList, running a set of commands for each item.
         // You can use %value% to return the value of the current item.
