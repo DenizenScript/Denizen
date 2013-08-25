@@ -212,7 +212,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
 
         // <--[tag]
-        // @atribute <yaml[<id>].list_keys[<path>]>
+        // @attribute <yaml[<id>].list_keys[<path>]>
         // @returns Element
         // @description
         // Returns a dList of all the keys at the path.
