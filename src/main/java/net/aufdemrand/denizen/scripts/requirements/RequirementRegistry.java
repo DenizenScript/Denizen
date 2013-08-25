@@ -181,17 +181,18 @@ public class RequirementRegistry implements dRegistry {
                 "ITEM", "item [<item>] (qty:<#>)", 1);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
-        // @Short TODO
+        // @Name IsLiquid
+        // @Usage isliquid [location:<location>]
+        // @Required 1
+        // @Stable Stable
+        // @Short Checks if a block is a liquid.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the block at the specified location is a liquid. (Water or lava)
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the block is a liquid.
+        // - isliquid location:103,70,413,world
         //
         // @Example TODO
         //
@@ -200,36 +201,38 @@ public class RequirementRegistry implements dRegistry {
                 "ISLIQUID", "isliquid [location:<location>]", 1);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
-        // @Short TODO
+        // @Name Money
+        // @Usage money [qty:<#>]
+        // @Required 1
+        // @Stable Stable
+        // @Short Checks if the player has an amount of money.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the player has a specified amount of money in their account.
         //
+        // @Usage
+        // Check if the player has an amount of money.
+        // - money qty:100
         //
-        // @Usage TODO
-        //
-        //
-        // @Example
+        // @Example TODO
         //
         // -->
         registerCoreMember(MoneyRequirement.class, 
                 "MONEY", "money [qty:<#>]", 1);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
-        // @Short TODO
+        // @Name Op
+        // @Usage op
+        // @Required 0
+        // @Stable Stable
+        // @Short Checks if the player is an op.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the player has Minecraft Op status.
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the player is opped.
+        // - op
         //
         // @Example TODO
         //
@@ -238,17 +241,18 @@ public class RequirementRegistry implements dRegistry {
                 "OP", "op", 0);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
-        // @Short TODO
+        // @Name Owner
+        // @Usage owner
+        // @Required 0
+        // @Stable Stable
+        // @Short Checks if the player is the owner of the current NPC.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the player is the owner of the NPC attached to the current script.
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the player is the owner of the NPC.
+        // - owner
         //
         // @Example TODO
         //
@@ -257,10 +261,10 @@ public class RequirementRegistry implements dRegistry {
                 "OWNER", "owner", 0);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name Permission
+        // @Usage permission (global) [<permission>]
+        // @Required 1
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
@@ -276,10 +280,10 @@ public class RequirementRegistry implements dRegistry {
                 "PERMISSION", "permission (global) [<permission>]", 1);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name IsPowered
+        // @Usage ispowered [location:<location>]
+        // @Required 1
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
@@ -295,10 +299,10 @@ public class RequirementRegistry implements dRegistry {
                 "ISPOWERED", "ispowered [location:<location>]", 1);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name Oxygen
+        // @Usage oxygen (range:below/equals/above) [qty:<#>]
+        // @Required 1
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
@@ -314,10 +318,10 @@ public class RequirementRegistry implements dRegistry {
                 "OXYGEN", "oxygen (range:below/equals/above) [qty:<#>]", 1);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name Procedure
+        // @Usage procedure [<script>]
+        // @Required 1
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
@@ -333,10 +337,10 @@ public class RequirementRegistry implements dRegistry {
                 "PROCEDURE", "procedure [<script>]", 1);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name Script
+        // @Usage script [finished/failed] [script:<name>]
+        // @Required 2
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
@@ -352,10 +356,10 @@ public class RequirementRegistry implements dRegistry {
                 "SCRIPT", "script [finished/failed] [script:<name>]", 2);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name Sneaking
+        // @Usage sneaking
+        // @Required 0
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
@@ -371,10 +375,10 @@ public class RequirementRegistry implements dRegistry {
                 "SNEAKING", "sneaking", 0);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name Storming
+        // @Usage storming
+        // @Required 0
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
@@ -390,10 +394,10 @@ public class RequirementRegistry implements dRegistry {
                 "STORMING", "storming", 0);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name Sunny
+        // @Usage sunny
+        // @Required 0
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
@@ -409,10 +413,10 @@ public class RequirementRegistry implements dRegistry {
                 "SUNNY", "sunny", 0);
 
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name Rainy
+        // @Usage rainy
+        // @Required 0
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
@@ -428,10 +432,10 @@ public class RequirementRegistry implements dRegistry {
                 "RAINY", "rainy", 0);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name Time
+        // @Usage time [dawn/day/dusk/night]
+        // @Required 1
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
@@ -447,10 +451,10 @@ public class RequirementRegistry implements dRegistry {
                 "TIME", "time [dawn/day/dusk/night]", 1);
         
         // <--[requirement]
-        // @Name TODO
-        // @Usage TODO
-        // @Required TODO
-        // @Stable TODO
+        // @Name InRegion
+        // @Usage inregion [name:<region>]
+        // @Required 1
+        // @Stable Stable
         // @Short TODO
         //
         // @Description TODO
