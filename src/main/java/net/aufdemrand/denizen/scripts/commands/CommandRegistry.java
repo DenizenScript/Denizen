@@ -202,7 +202,6 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Maybe
         // @Short Loops through a dList, running a set of commands for each item.
-        // You can use %value% to return the value of the current item.
         // @Author Morphan1/mcmonkey
         //
         // @Description
