@@ -265,13 +265,14 @@ public class RequirementRegistry implements dRegistry {
         // @Usage permission (global) [<permission>]
         // @Required 1
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks if the player has a permission node.
         //
-        // @Description TODO
+        // @Description Check if the player has a specified permission node.
+        // (Requires Vault)
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the player has a permission.
+        // - permission denizen.basic
         //
         // @Example TODO
         //
@@ -284,13 +285,14 @@ public class RequirementRegistry implements dRegistry {
         // @Usage ispowered [location:<location>]
         // @Required 1
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks if a block is powered.
         //
-        // @Description TODO
+        // @Description Checks if the block at a specified location is powered
+        // by a redstone current.
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the block is powered.
+        // - ispowered location:919,78,298
         //
         // @Example TODO
         //
@@ -303,13 +305,13 @@ public class RequirementRegistry implements dRegistry {
         // @Usage oxygen (range:below/equals/above) [qty:<#>]
         // @Required 1
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks the player's oxygen level.
         //
-        // @Description TODO
+        // @Description Checks if the specified oxygen level is above, below, or
+        // equal to the oxygen level of the player.
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage Check if the player has above an amount of oxygen.
+        // - oxygen range:above qty:3
         //
         // @Example TODO
         //
@@ -322,13 +324,13 @@ public class RequirementRegistry implements dRegistry {
         // @Usage procedure [<script>]
         // @Required 1
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks the value of the procedure script.
         //
-        // @Description TODO
+        // @Description Checks the value of a specified procedure script.
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the procedure script determines true
+        // - procedure procScriptName
         //
         // @Example TODO
         //
@@ -341,13 +343,18 @@ public class RequirementRegistry implements dRegistry {
         // @Usage script [finished/failed] [script:<name>]
         // @Required 2
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks if a script is finished or failed.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the specified script was finished or failed by the player.
         //
+        // @Usage
+        // Check if the script was finished
+        // - script finished script:ScriptName
         //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the script was failed
+        // - script failed script:ScriptName
         //
         // @Example TODO
         //
@@ -360,13 +367,14 @@ public class RequirementRegistry implements dRegistry {
         // @Usage sneaking
         // @Required 0
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks if the player is sneaking.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the player is currently sneaking.
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the player is sneaking
+        // - sneaking
         //
         // @Example TODO
         //
@@ -379,13 +387,14 @@ public class RequirementRegistry implements dRegistry {
         // @Usage storming
         // @Required 0
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks if the player's world is storming.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the world the player is currently in has stormy weather.
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the world is storming
+        // - storming
         //
         // @Example TODO
         //
@@ -398,13 +407,14 @@ public class RequirementRegistry implements dRegistry {
         // @Usage sunny
         // @Required 0
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks if the player's world is sunny.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the world the player is currently in has sunny weather.
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the world is sunny
+        // - sunny
         //
         // @Example TODO
         //
@@ -417,13 +427,14 @@ public class RequirementRegistry implements dRegistry {
         // @Usage rainy
         // @Required 0
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks if the player's world is rainy.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the world the player is currently in has rainy weather.
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the world is rainy
+        // - rainy
         //
         // @Example TODO
         //
@@ -436,13 +447,14 @@ public class RequirementRegistry implements dRegistry {
         // @Usage time [dawn/day/dusk/night]
         // @Required 1
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks the time of the player's world.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the time of the player's world is currently dawn, day, dusk, or night.
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check the time of day
+        // - time dusk
         //
         // @Example TODO
         //
@@ -455,13 +467,14 @@ public class RequirementRegistry implements dRegistry {
         // @Usage inregion [name:<region>]
         // @Required 1
         // @Stable Stable
-        // @Short TODO
+        // @Short Checks if the player is in a region.
         //
-        // @Description TODO
+        // @Description
+        // Checks if the player is in a WorldGuard region. (Requires WorldGuard!)
         //
-        //
-        // @Usage TODO
-        //
+        // @Usage
+        // Check if the player is in a region
+        // - inregion name:MyRegion
         //
         // @Example TODO
         //
