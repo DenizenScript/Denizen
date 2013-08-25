@@ -867,7 +867,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 int attributePos = 1;
                 
                 // <--[tag]
-                // <location.facing[<value>].degrees[X]>
+                // @attribute <location.facing[<value>].degrees[X]>
                 // @returns Element(Boolean)
                 // @description
                 // Returns true if the location's yaw is facing another
