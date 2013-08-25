@@ -28,10 +28,14 @@ public class QueueCommand extends AbstractCommand {
                     scriptEntry.addObject("delay", arg.asType(Duration.class));
             }
 
-            // queue: argument should be optional in this command
-            else if (ScriptQueue._getExistingQueue(arg.getValue()) != null)
+            // No prefix required to specify the queue
+            else if (ScriptQueue._getExistingQueue(arg.getValue()) != null) {
                 scriptEntry.addObject("queue", ScriptQueue._getExistingQueue(arg.getValue()));
-            
+            }
+
+            // ...but we also need to error out this command if the queue was not found.
+            else throw new InvalidArgumentsException("The specified queue could not be found: " + arg.raw_value);
+
         }
 
         // If no queues have been added, assume 'residing queue'
@@ -43,7 +47,7 @@ public class QueueCommand extends AbstractCommand {
 
         if (scriptEntry.getObject("action") == Action.DELAY && !scriptEntry.hasObject("delay"))
             throw new InvalidArgumentsException("Must specify a delay.");
-        
+
     }
 
     @SuppressWarnings("incomplete-switch")
