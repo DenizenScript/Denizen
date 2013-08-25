@@ -303,7 +303,7 @@ public class CommandRegistry implements dRegistry {
         // @Name cooldown
         // @Usage cooldown (duration:<value>) (global) (script:<name>)
         // @Required 1
-        // @Stable 1.0
+        // @Stable Stable
         // @Short Temporarily disables a script-container from meeting requirements.
         // @Author aufdemrand
         //
@@ -743,8 +743,8 @@ public class CommandRegistry implements dRegistry {
         // <--[command]
         // @Name foreach
         // @Usage foreach [<object>|...] [<commands>]
-        // @Required 1
-        // @Stable Maybe
+        // @Required 2
+        // @Stable Experimental
         // @Short Loops through a dList, running a set of commands for each item.
         // @Author Morphan1/mcmonkey
         //
@@ -762,7 +762,7 @@ public class CommandRegistry implements dRegistry {
         //
         // -->
         registerCoreMember(ForEachCommand.class,
-                "FOREACH", "foreach [<object>|...] [<commands>]", 1);
+                "FOREACH", "foreach [<object>|...] [<commands>]", 2);
         
 		// <--[command]
 		// @Name give
