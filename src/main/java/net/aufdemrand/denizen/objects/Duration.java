@@ -290,32 +290,40 @@ public class Duration implements dObject {
 
         if (attribute == null) return null;
 
-        // <--
-        // <d@duration.in_seconds> -> Element(number)
+        // <--[tag]
+        // @attribute <d@duration.in_seconds>
+        // @returns Element(number)
+        // @description
         // returns the number of seconds in the Duration.
         // -->
         if (attribute.startsWith("in_seconds") || attribute.startsWith("seconds"))
             return new Element(String.valueOf(seconds))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <d@duration.in_seconds> -> Element(number)
+        // <--[tag]
+        // @attribute <d@duration.in_seconds> 
+        // @returns Element(number)
+        // @description
         // returns the number of hours in the Duration.
         // -->
         if (attribute.startsWith("in_hours") || attribute.startsWith("hours"))
             return new Element(String.valueOf(seconds / 1800))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <d@duration.in_minutes> -> Element(number)
+        // <--[tag]
+        // @attribute <d@duration.in_minutes> 
+        // @returns Element(number)
+        // @description
         // returns the number of minutes in the Duration.
         // -->
         if (attribute.startsWith("in_minutes") || attribute.startsWith("minutes"))
             return new Element(String.valueOf(seconds / 60))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <d@duration.in_ticks> -> Element(number)
+        // <--[tag]
+        // @attribute <d@duration.in_ticks> 
+        // @returns Element(number)
+        // @description
         // returns the number of ticks in the Duration. (20t/second)
         // -->
         if (attribute.startsWith("in_ticks") || attribute.startsWith("ticks"))
@@ -337,8 +345,10 @@ public class Duration implements dObject {
                     .getAttribute(attribute.fulfill(2));
         }
         
-        // <--
-        // <d@duration.formatted> -> Element
+        // <--[tag]
+        // @attribute <d@duration.formatted> 
+        // @returns Element
+        // @description
         // returns the value of the duration in an easily readable
         // format like 2h 30m, where minutes are only shown if there
         // is less than a day left and seconds are only shown if
