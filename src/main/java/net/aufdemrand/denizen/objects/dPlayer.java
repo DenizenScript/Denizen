@@ -304,6 +304,7 @@ public class dPlayer implements dObject {
         // Returns all players that have ever played on the server, online or not.
         // **NOTE: This will only work if there is a player attached to the current script.
         // If you need it anywhere else, use <server.list_players>**
+        // -->
         if (attribute.startsWith("list")) {
             List<String> players = new ArrayList<String>();
             
