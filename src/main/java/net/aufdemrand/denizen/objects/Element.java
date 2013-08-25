@@ -125,7 +125,8 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <element.as_int>
         // @returns Element(Number)
-        // @description Returns the element as a number without a decimal. Rounds up double values.
+        // @description
+        // Returns the element as a number without a decimal. Rounds up double values.
         // -->
         if (attribute.startsWith("asint")
                 || attribute.startsWith("as_int"))
@@ -144,7 +145,8 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <element.as_double>
         // @returns Element(Number)
-        // @description Returns the element as a number with a decimal.
+        // @description
+        // Returns the element as a number with a decimal.
         // -->
         if (attribute.startsWith("asdouble")
                 || attribute.startsWith("as_double"))
@@ -158,7 +160,8 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <element.as_money>
         // @returns Element(Number)
-        // @description Returns the element as a number with two decimal places.
+        // @description
+        // Returns the element as a number with two decimal places.
         // -->
         if (attribute.startsWith("asmoney")
                 || attribute.startsWith("as_money")) {
@@ -175,7 +178,8 @@ public class Element implements dObject {
         // <--[tag]
         // @attribute <element.as_boolean> 
         // @returns Element(Boolean)
-        // @description Returns the element as true/false. 
+        // @description
+        // Returns the element as true/false. 
         // -->
         if (attribute.startsWith("asboolean")
                 || attribute.startsWith("as_boolean"))
