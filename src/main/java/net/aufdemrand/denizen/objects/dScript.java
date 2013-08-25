@@ -148,7 +148,7 @@ public class dScript implements dObject {
         // <--[tag]
         // @attribute <s@script.cooled_down[<player>]>
         // @returns Element(Boolean)
-        // @descripion
+        // @description
         // Returns true if the script has been cooled down for the
         // player (defaults to current). Otherwise, returns false.
         // -->

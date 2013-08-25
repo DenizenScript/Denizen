@@ -1073,7 +1073,7 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <entity.has_effect[<effect>]>
+        // @attribute <e@entity.has_effect[<effect>]>
         // @returns Element(Boolean)
         // @description
         // Returns true if the entity has an effect. If no effect is
@@ -1091,7 +1091,7 @@ public class dEntity implements dObject {
         }
 
         // <--[tag]
-        // @attribute <entity.equipment>
+        // @attribute <e@entity.equipment>
         // @returns dInventory
         // @description
         // Returns the dInventory of the entity.
@@ -1101,7 +1101,7 @@ public class dEntity implements dObject {
         }
 
         // <--[tag]
-        // @attribute <entity.world>
+        // @attribute <e@entity.world>
         // @returns dWorld
         // @description
         // Returns the world the entity is in.
@@ -1112,7 +1112,7 @@ public class dEntity implements dObject {
         }
 
         // <--[tag]
-        // @attribute <entity.prefix>
+        // @attribute <e@entity.prefix>
         // @returns Element
         // @description
         // Returns the prefix of the entity.
@@ -1122,7 +1122,7 @@ public class dEntity implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <entity.debug.log>
+        // @attribute <e@entity.debug.log>
         // @returns Element(Boolean)
         // @description
         // Debugs the entity in the log and returns true.
@@ -1134,7 +1134,7 @@ public class dEntity implements dObject {
         }
 
         // <--[tag]
-        // @attribute <entity.debug.no_color>
+        // @attribute <e@entity.debug.no_color>
         // @returns Element
         // @description
         // Returns the entity's debug with no color.
@@ -1145,7 +1145,7 @@ public class dEntity implements dObject {
         }
 
         // <--[tag]
-        // @attribute <entity.debug>
+        // @attribute <e@entity.debug>
         // @returns Element
         // @description
         // Returns the entity's debug.
@@ -1156,7 +1156,7 @@ public class dEntity implements dObject {
         }
 
         // <--[tag]
-        // @attribute <entity.type>
+        // @attribute <e@entity.type>
         // @returns Element
         // @description
         // Returns 'Entity', the type of this dObject.

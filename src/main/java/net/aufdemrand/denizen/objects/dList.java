@@ -216,8 +216,8 @@ public class dList extends ArrayList<String> implements dObject {
 
         if (attribute == null) return null;
 
-        // <--
-        // <li@list.as_cslist> -> Element
+        // <--[tag]
+        // @attribute <li@list.as_cslist> @returns Element
         // returns 'comma-separated' list of the contents of this dList.
         // -->
         if (attribute.startsWith("ascslist")
@@ -233,22 +233,28 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <li@list.size> -> Element
+        // <--[tag]
+        // @attribute <li@list.size>
+        // @returns Element
+        // @description
         // returns 'comma-separated' list of the contents of this dList.
         // -->
         if (attribute.startsWith("size"))
             return new Element(size()).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <li@list.is_empty> -> Element
+        // <--[tag]
+        // @attribute <li@list.is_empty>
+        // @returns Element
+        // @description
         // returns 'comma-separated' list of the contents of this dList.
         // -->
         if (attribute.startsWith("is_empty"))
             return new Element(isEmpty()).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <li@list.as_string> -> Element
+        // <--[tag]
+        // @attribute <li@list.as_string>
+        // @returns Element
+        // @description
         // returns each item in the list as a single 'String'.
         // -->
         if (attribute.startsWith("asstring")
@@ -264,8 +270,10 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <li@list.exclude[...|...]> -> dList
+        // <--[tag]
+        // @attribute <li@list.exclude[...|...]>
+        // @returns dList
+        // @description
         // returns a new dList excluding the items specified.
         // -->
         if (attribute.startsWith("exclude")) {
@@ -282,8 +290,10 @@ public class dList extends ArrayList<String> implements dObject {
             return list.getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <li@list.get[#]> -> Element
+        // <--[tag]
+        // @attribute <li@list.get[#]>
+        // @returns Element
+        // @description
         // returns an Element of the value specified by the supplied context.
         // -->
         if (attribute.startsWith("get")) {
@@ -346,8 +356,10 @@ public class dList extends ArrayList<String> implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <li@list.random> -> Element
+        // <--[tag]
+        // @attribute <li@list.random>
+        // @returns Element
+        // @description
         // gets a random item in the list and returns it as an Element.
         // -->
         if (attribute.startsWith("random")) {
@@ -361,14 +373,18 @@ public class dList extends ArrayList<String> implements dObject {
         // Note: is_expired attribute is handled in player/npc/server
         // since expired flags return 'null'
 
-        // <--
-        // <fl@flag_name.is_expired> -> Element(boolean)
+        // <--[tag]
+        // @attribute <fl@flag_name.is_expired>
+        // @returns Element(boolean)
+        // @description
         // returns true of the flag is expired or does not exist, false if it
         // is not yet expired, or has no expiration.
         // -->
 
-        // <--
-        // <fl@flag_name.expiration> -> Duration
+        // <--[tag]
+        // @attribute <fl@flag_name.expiration>
+        // @returns Duration
+        // @description
         // returns a Duration of the time remaining on the flag, if it
         // has an expiration.
         // -->
@@ -380,8 +396,10 @@ public class dList extends ArrayList<String> implements dObject {
         // Need this attribute (for flags) since they return the last
         // element of the list, unless '.as_list' is specified.
 
-        // <--
-        // <fl@flag_name.as_list> -> dList
+        // <--[tag]
+        // @attribute <fl@flag_name.as_list>
+        // @returns dList
+        // @description
         // returns a dList containing the items in the flag
         // -->
         if (flag != null && (attribute.startsWith("as_list")

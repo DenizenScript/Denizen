@@ -204,7 +204,7 @@ public class dPlayer implements dObject {
         if (player_name == null) return "null";
 
         // <--[tag]
-        // @attribute <player.entity>
+        // @attribute <p@player.entity>
         // @returns dEntity
         // @description
         // returns the dEntity object of the player
@@ -214,7 +214,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.has_played_before>
+        // @attribute <p@player.has_played_before>
         // @returns Element(boolean)
         // @description
         // returns true if the player has played before
@@ -224,7 +224,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.is_op>
+        // @attribute <p@player.is_op>
         // @returns Element(boolean)
         // @description
         // returns true if the player has 'op status'
@@ -234,7 +234,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.first_played>
+        // @attribute <p@player.first_played>
         // @returns Element(number)
         // @description
         // returns the 'System.currentTimeMillis()' of when the player
@@ -245,7 +245,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.last_played>
+        // @attribute <p@player.last_played>
         // @returns Element(number)
         // @description
         // returns the 'System.currentTimeMillis()' of when the player
@@ -256,7 +256,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.is_banned>
+        // @attribute <p@player.is_banned>
         // @returns Element(boolean)
         // @description
         // returns true if the player is banned
@@ -266,7 +266,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.is_whitelisted>
+        // @attribute <p@player.is_whitelisted>
         // @returns Element(boolean)
         // @description
         // returns true if the player is whitelisted
@@ -280,7 +280,7 @@ public class dPlayer implements dObject {
             return new Element(player_name).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.is_online>
+        // @attribute <p@player.is_online>
         // @returns Element(boolean)
         // @description
         // returns true if the player is currently online
@@ -289,7 +289,7 @@ public class dPlayer implements dObject {
             return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
         
         // <--[tag]
-        // @attribute <player.ip>
+        // @attribute <p@player.ip>
         // @returns Element
         // @description
         // Returns the player's IP address.
@@ -298,7 +298,7 @@ public class dPlayer implements dObject {
             return getPlayerEntity().getAddress().getHostName();
         
         // <--[tag]
-        // @attribute <player.list>
+        // @attribute <p@player.list>
         // @returns dList(dPlayer)
         // @description
         // Returns all players that have ever played on the server, online or not.
@@ -308,7 +308,7 @@ public class dPlayer implements dObject {
             List<String> players = new ArrayList<String>();
             
             // <--[tag]
-            // @attribute <player.list.online>
+            // @attribute <p@player.list.online>
             // @returns dList(dPlayer)
             // @description
             // Returns all online players.
@@ -321,7 +321,7 @@ public class dPlayer implements dObject {
             }
             
             // <--[tag]
-            // @attribute <player.list.offline>
+            // @attribute <p@player.list.offline>
             // @returns dList(dPlayer)
             // @description
             // Returns all offline players.
@@ -342,7 +342,7 @@ public class dPlayer implements dObject {
         }
 
         // <--[tag]
-        // @attribute <player.chat_history_list>
+        // @attribute <p@player.chat_history_list>
         // @returns dList
         // @description
         // Returns a list of the last 10 things the player has said, less
@@ -353,7 +353,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.chat_history>
+        // @attribute <p@player.chat_history>
         // @returns Element
         // @description
         // returns the last thing the player said.
@@ -369,7 +369,7 @@ public class dPlayer implements dObject {
         }
 
         // <--[tag]
-        // @attribute <player.bed_spawn>
+        // @attribute <p@player.bed_spawn>
         // @returns dLocation
         // @description
         // Returns a dLocation of the player's bed spawn location, 'null' if
@@ -380,7 +380,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <player.money>
+        // @attribute <p@player.money>
         // @returns Element(number)
         // @description
         // returns the amount of money the player has with the registered
@@ -391,7 +391,7 @@ public class dPlayer implements dObject {
             if(Depends.economy != null) {
 
                 // <--[tag]
-                // @attribute <player.money.currency_singular>
+                // @attribute <p@player.money.currency_singular>
                 // @returns Element
                 // @description
                 // returns the 'singular currency' string, if supported by the
@@ -402,7 +402,7 @@ public class dPlayer implements dObject {
                             .getAttribute(attribute.fulfill(2));
 
                 // <--[tag]
-                // @attribute <player.money.currency>
+                // @attribute <p@player.money.currency>
                 // @returns Element
                 // @description
                 // returns the 'currency' string, if supported by the
@@ -426,7 +426,7 @@ public class dPlayer implements dObject {
         // Player is required to be online after this point...
 
         // <--[tag]
-        // @attribute <player.xp.to_next_level>
+        // @attribute <p@player.xp.to_next_level>
         // @returns Element(number)
         // @description
         // returns the amount of experience to the next level.
@@ -436,7 +436,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(2)); 
 
         // <--[tag]
-        // @attribute <player.xp.total>
+        // @attribute <p@player.xp.total>
         // @returns Element(number)
         // @description
         // returns the total amount of experience points.
@@ -446,7 +446,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <player.xp.level>
+        // @attribute <p@player.xp.level>
         // @returns Element(number)
         // @description
         // returns the number of levels the player has.
@@ -456,7 +456,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <player.xp>
+        // @attribute <p@player.xp>
         // @returns Element(number)
         // @description
         // returns the percentage of experience points to the next level.
@@ -466,7 +466,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.equipment.boots>
+        // @attribute <p@player.equipment.boots>
         // @returns dItem
         // @description
         // returns the item the player is wearing as boots, or null
@@ -478,7 +478,7 @@ public class dPlayer implements dObject {
                         .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <player.equipment.chestplate>
+        // @attribute <p@player.equipment.chestplate>
         // @returns dItem
         // @description
         // returns the item the player is wearing as a chestplate, or null
@@ -490,7 +490,7 @@ public class dPlayer implements dObject {
                         .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <player.equipment.helmet>
+        // @attribute <p@player.equipment.helmet>
         // @returns dItem
         // @description
         // returns the item the player is wearing as a helmet, or null
@@ -502,7 +502,7 @@ public class dPlayer implements dObject {
                         .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <player.equipment.leggings>
+        // @attribute <p@player.equipment.leggings>
         // @returns dItem
         // @description
         // returns the item the player is wearing as leggings, or null
@@ -514,7 +514,7 @@ public class dPlayer implements dObject {
                         .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <player.equipment>
+        // @attribute <p@player.equipment>
         // @returns dInventory
         // @description
         // returns a dInventory containing the player's equipment
@@ -527,7 +527,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.inventory>
+        // @attribute <p@player.inventory>
         // @returns dInventory
         // @description
         // returns a dInventory of the player's current inventory.
@@ -537,7 +537,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.item_in_hand>
+        // @attribute <p@player.item_in_hand>
         // @returns dItem
         // @description
         // returns the item the player is holding, or null
@@ -548,7 +548,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.name.display>
+        // @attribute <p@player.name.display>
         // @returns Element
         // @description
         // returns the 'display name' of the player, which may contain
@@ -559,7 +559,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <player.name.list>
+        // @attribute <p@player.name.list>
         // @returns Element
         // @description
         // returns the name of the player as shown in the 'player list'.
@@ -569,7 +569,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <player.name>
+        // @attribute <p@player.name>
         // @returns Element
         // @description
         // returns the name of the player.
@@ -578,7 +578,7 @@ public class dPlayer implements dObject {
             return new Element(player_name).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.compass.target>
+        // @attribute <p@player.compass.target>
         // @returns dLocation
         // @description
         // returns a dLocation of the player's 'compass target'.
@@ -588,7 +588,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
-        // @attribute <player.food_level.formatted>
+        // @attribute <p@player.food_level.formatted>
         // @returns Element
         // @description
         // returns a 'formatted' value of the player's current food level.
@@ -611,7 +611,7 @@ public class dPlayer implements dObject {
         }
 
         // <--[tag]
-        // @attribute <player.food_level>
+        // @attribute <p@player.food_level>
         // @returns Element(number)
         // @description
         // returns the current food level of the player.
@@ -621,7 +621,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.has_permission[permission.node]>
+        // @attribute <p@player.has_permission[permission.node]>
         // @returns Element(boolean)
         // @description
         // returns true if the player has the specified node, false otherwise
@@ -636,7 +636,7 @@ public class dPlayer implements dObject {
             String permission = attribute.getContext(1);
 
             // <--[tag]
-            // @attribute <player.has_permission[permission.node].global>
+            // @attribute <p@player.has_permission[permission.node].global>
             // @returns Element(boolean)
             // @description
             // returns true if the player has the specified node, regardless of world.
@@ -654,7 +654,7 @@ public class dPlayer implements dObject {
                         .getAttribute(attribute.fulfill(2));
 
             // <--[tag]
-            // @attribute <player.has_permission[permission.node].world>
+            // @attribute <p@player.has_permission[permission.node].world>
             // @returns Element(boolean)
             // @description
             // returns true if the player has the specified node in regards to the
@@ -668,7 +668,7 @@ public class dPlayer implements dObject {
         }
 
         // <--[tag]
-        // @attribute <player.flag[flag_name]>
+        // @attribute <p@player.flag[flag_name]>
         // @returns Flag dList
         // @description
         // returns 'flag dList' of the player's flag_name specified.
@@ -692,7 +692,7 @@ public class dPlayer implements dObject {
         }
 
         // <--[tag]
-        // @attribute <player.in_group[group_name]>
+        // @attribute <p@player.in_group[group_name]>
         // @returns Element(boolean)
         // @description
         // returns true if the player has the specified group, false otherwise
@@ -707,7 +707,7 @@ public class dPlayer implements dObject {
             String group = attribute.getContext(1);
 
             // <--[tag]
-            // @attribute <player.in_group[group_name].global>
+            // @attribute <p@player.in_group[group_name].global>
             // @returns Element(boolean)
             // @description
             // returns true if the player has the group with no regard to the
@@ -726,7 +726,7 @@ public class dPlayer implements dObject {
                         .getAttribute(attribute.fulfill(2));
 
             // <--[tag]
-            // @attribute <player.in_group[group_name].world>
+            // @attribute <p@player.in_group[group_name].world>
             // @returns Element(boolean)
             // @description
             // returns true if the player has the group in regards to the
@@ -740,7 +740,7 @@ public class dPlayer implements dObject {
         }
 
         // <--[tag]
-        // @attribute <player.is_flying>
+        // @attribute <p@player.is_flying>
         // @returns Element(boolean)
         // @description
         // returns true if the player is currently flying, false otherwise
@@ -750,7 +750,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.is_sneaking>
+        // @attribute <p@player.is_sneaking>
         // @returns Element(boolean)
         // @description
         // returns true if the player is currently sneaking, false otherwise
@@ -760,7 +760,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.is_blocking>
+        // @attribute <p@player.is_blocking>
         // @returns Element(boolean)
         // @description
         // returns true if the player is currently blocking, false otherwise
@@ -770,7 +770,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.is_sleeping>
+        // @attribute <p@player.is_sleeping>
         // @returns Element(boolean)
         // @description
         // returns true if the player is currently sleeping, false otherwise
@@ -780,7 +780,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.is_sprinting>
+        // @attribute <p@player.is_sprinting>
         // @returns Element(boolean)
         // @description
         // returns true if the player is currently sprinting, false otherwise
@@ -790,7 +790,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.gamemode.id>
+        // @attribute <p@player.gamemode.id>
         // @returns Element(number)
         // @description
         // returns 'gamemode id' of the player. 0 = survival, 1 = creative, 2 = adventure
@@ -800,7 +800,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.gamemode>
+        // @attribute <p@player.gamemode>
         // @returns Element
         // @description
         // returns the name of the gamemode the player is currently set to.
@@ -810,7 +810,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.item_on_cursor>
+        // @attribute <p@player.item_on_cursor>
         // @returns dItem
         // @description
         // returns a dItem that the player's cursor is on, if any. This includes
@@ -821,7 +821,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.selected_npc>
+        // @attribute <p@player.selected_npc>
         // @returns dNPC
         // @description
         // returns the dNPC that the player currently has selected with
@@ -835,7 +835,7 @@ public class dPlayer implements dObject {
         }
 
         // <--[tag]
-        // @attribute <player.allowed_flight>
+        // @attribute <p@player.allowed_flight>
         // @returns Element(boolean)
         // @description
         // returns true if the player is allowed to fly, and false otherwise
@@ -845,7 +845,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.host_name>
+        // @attribute <p@player.host_name>
         // @returns Element
         // @description
         // returns the player's 'host name'.
@@ -855,7 +855,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.time_asleep>
+        // @attribute <p@player.time_asleep>
         // @returns Duration
         // @description
         // returns a Duration of the time the player has been asleep.
@@ -865,7 +865,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.player_time>
+        // @attribute <p@player.player_time>
         // @returns Element
         // @description
         // returns the time, specific to the player
@@ -875,7 +875,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.player_time_offset>
+        // @attribute <p@player.player_time_offset>
         // @returns Element
         // @description
         // returns the player's 'offset' of time vs. the real time.
@@ -885,7 +885,7 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <player.prefix>
+        // @attribute <p@player.prefix>
         // @returns Element
         // @description
         // Returns the dObject's prefix.

@@ -129,7 +129,7 @@ public class dWorld implements dObject {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <world.can_generate_structures>
+        // @attribute <w@world.can_generate_structures>
         // @returns Element(boolean)
         // @description
         // returns whether the world will generate structures.
@@ -154,7 +154,7 @@ public class dWorld implements dObject {
 //        .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <world.highest_block>
+        // @attribute <w@world.highest_block>
         // @returns dLocation
         // @description
         // returns the location of the highest non-air block.
@@ -171,7 +171,7 @@ public class dWorld implements dObject {
 //        getWorld().getChunkAt()
 
         // <--[tag]
-        // @attribute <world.difficulty>
+        // @attribute <w@world.difficulty>
         // @returns Element
         // @description
         // returns the name of the difficulty level
@@ -181,7 +181,7 @@ public class dWorld implements dObject {
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
-        // @attribute <world.name>
+        // @attribute <w@world.name>
         // @returns Element
         // @description
         // returns the name of the world
@@ -191,7 +191,7 @@ public class dWorld implements dObject {
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
-        // @attribute <world.players>
+        // @attribute <w@world.players>
         // @returns dList(dPlayer)
         // @description
         // returns a list of online players
@@ -206,7 +206,7 @@ public class dWorld implements dObject {
         }
 
         // <--[tag]
-        // @attribute <world.sea_level>
+        // @attribute <w@world.sea_level>
         // @returns Element(number)
         // @description
         // returns the level of the sea
@@ -216,7 +216,7 @@ public class dWorld implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <world.seed>
+        // @attribute <w@world.seed>
         // @returns Element
         // @description
         // returns the world seed
@@ -236,7 +236,7 @@ public class dWorld implements dObject {
 
         // Return "day", "night", "dawn" or "dusk"
         // <--[tag]
-        // @attribute <world.time.period>
+        // @attribute <w@world.time.period>
         // @returns Element
         // @description
         // returns the time as day, night, dawn, or dusk
@@ -255,7 +255,7 @@ public class dWorld implements dObject {
         }
         
         // <--[tag]
-        // @attribute <world.time>
+        // @attribute <w@world.time>
         // @returns Element(number)
         // @description
         // returns the current time in ticks
@@ -265,7 +265,7 @@ public class dWorld implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <world.weather_duration>
+        // @attribute <w@world.weather_duration>
         // @returns Element
         // @description
         // returns the duration of storms in ticks
@@ -275,7 +275,7 @@ public class dWorld implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <world.has_storm>
+        // @attribute <w@world.has_storm>
         // @returns Element(boolean)
         // @description
         // returns whether there is currently a storm in this world
