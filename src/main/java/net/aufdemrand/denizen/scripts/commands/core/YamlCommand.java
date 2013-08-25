@@ -180,8 +180,10 @@ public class YamlCommand extends AbstractCommand implements Listener {
         // Check attributes
         //
 
-        // <--
-        // <yaml[<id>].contains[<path>]> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <yaml[<id>].contains[<path>]>
+        // @returns Element(Boolean)
+        // @description
         // Returns true if the file has the specified path.
         // Otherwise, returns false.
         // -->
@@ -191,8 +193,10 @@ public class YamlCommand extends AbstractCommand implements Listener {
             return;
         }
 
-        // <--
-        // <yaml[<id>].read[<path>]> -> Element
+        // <--[tag]
+        // @attribute <yaml[<id>].read[<path>]>
+        // @returns Element
+        // @description
         // Returns the value of the key at the path.
         // -->
         if (attribute.startsWith("read")) {
@@ -207,8 +211,10 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 event.setReplaced(new Element(value).getAttribute(attribute.fulfill(1)));
         }
 
-        // <--
-        // <yaml[<id>].list_keys[<path>]> -> Element
+        // <--[tag]
+        // @atribute <yaml[<id>].list_keys[<path>]>
+        // @returns Element
+        // @description
         // Returns a dList of all the keys at the path.
         // -->
         if (attribute.startsWith("list_keys")) {
