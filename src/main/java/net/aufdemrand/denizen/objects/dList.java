@@ -219,7 +219,7 @@ public class dList extends ArrayList<String> implements dObject {
         // <--[tag]
         // @attribute <li@list.as_cslist>
         // @returns Element
-        // @returns
+        // @description
         // returns 'comma-separated' list of the contents of this dList.
         // -->
         if (attribute.startsWith("ascslist")

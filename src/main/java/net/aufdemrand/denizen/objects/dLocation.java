@@ -959,7 +959,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         }
 
         // <--[tag]
-        // <location.block.x>
+        // @attribute <location.block.x>
         // @returns Element(Number)
         // @description
         // Returns the X coordinate of the block.
