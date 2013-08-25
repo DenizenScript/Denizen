@@ -40,8 +40,9 @@ public class UtilTags implements Listener {
     @EventHandler
     public void queueTags(ReplaceableTagEvent event) {
         
-        // <--
-        // <q> -> Bloop
+        // <--[tag]
+        // @attribute <q>
+        // @returns Queuestat
         // Returns "q" (or "queue" if you spell it out)... Pretty useless by itself.
         // [See <q.id>, <q.stats>, <q.size>, and <q.definitions>]
         // -->
@@ -49,32 +50,36 @@ public class UtilTags implements Listener {
         Attribute attribute =
                 new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
-        // <--
-        // <q.id> -> Element
+        // <--[tag]
+        // @attribute <q.id>
+        // @returns Element
         // Returns the current queue id.
         // -->
         if (attribute.startsWith("id"))
             event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().id)
                     .getAttribute(attribute.fulfill(1)));
 
-        // <--
-        // <q.stats> -> Element
+        // <--[tag]
+        // @attribute <q.stats>
+        // @returns Element
         // Returns stats for all queues during this server session.
         // -->
         if (attribute.startsWith("stats"))
             event.setReplaced(new Element(ScriptQueue._getStats())
                     .getAttribute(attribute.fulfill(1)));
 
-        // <--
-        // <q.size> -> Element
+        // <--[tag]
+        // @attribute <q.size>
+        // @returns Element
         // Returns the size of the current queue.
         // -->
         if (attribute.startsWith("size"))
             event.setReplaced(new Element(event.getScriptEntry().getResidingQueue().getQueueSize())
                     .getAttribute(attribute.fulfill(1)));
 
-        // <--
-        // <q.definitions> -> Element
+        // <--[tag]
+        // @attribute <q.definitions>
+        // @returns Element
         // Returns all definitions that were passed to the current queue.
         // -->
         if (attribute.startsWith("definitions"))
@@ -89,8 +94,9 @@ public class UtilTags implements Listener {
         Attribute attribute =
                 new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
-        // <--
-        // <server.flag[<name>]> -> Flag dList
+        // <--[tag]
+        // @attribute <server.flag[<name>]>
+        // @returns Flag dList
         // Returns a "Flag dList" of the server flag specified.
         // -->
         if (attribute.startsWith("flag")) {
@@ -102,8 +108,9 @@ public class UtilTags implements Listener {
             }
             attribute.fulfill(1);
             
-            // <--
-            // <server.flag[<name>].is_expired> -> Element(Boolean)
+            // <--[tag]
+            // @attribute <server.flag[<name>].is_expired>
+            // @returns Element(Boolean)
             // Returns true if the flag specified is expired. Else, returns false.
             // -->
             if (attribute.startsWith("is_expired")
@@ -113,8 +120,9 @@ public class UtilTags implements Listener {
                 return;
             }
             
-            // <--
-            // <server.flag[<name>].size> -> Element(Number)
+            // <--[tag]
+            // @attribute <server.flag[<name>].size>
+            // @returns Element(Number)
             // Returns the size of the Flag dList. If the flag doesn't exist, returns 0.
             // -->
             if (attribute.startsWith("size") && !FlagManager.serverHasFlag(flag_name)) {
@@ -129,8 +137,9 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // <--
-        // <server.current_time_millis> -> Element(Number)
+        // <--[tag]
+        // @attribute <server.current_time_millis>
+        // @returns Element(Number)
         // Returns the number of milliseconds since Jan 1, 1970.
         // -->
         if (attribute.startsWith("current_time_millis")) {
@@ -138,8 +147,9 @@ public class UtilTags implements Listener {
                     .getAttribute(attribute.fulfill(1)));
         }
 
-        // <--
-        // <server.selected_npc> -> dNPC
+        // <--[tag]
+        // @attribute <server.selected_npc>
+        // @returns dNPC
         // Returns the server's currently selected NPC.
         // -->
         if (attribute.startsWith("selected_npc")) {
@@ -148,8 +158,9 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // <--
-        // <server.list_npcs> -> dList(dNPC)
+        // <--[tag]
+        // @attribute <server.list_npcs>
+        // @returns dList(dNPC)
         // Returns a dList of dNPCs currently in the Citizens NPC Registry.
         // -->
         if (attribute.startsWith("list_npcs")) {
@@ -160,8 +171,9 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // <--
-        // <server.list_worlds> -> dList(dWorld)
+        // <--[tag]
+        // @attribute <server.list_worlds>
+        // @returns dList(dWorld)
         // Returns a dList of all worlds.
         // -->
         if (attribute.startsWith("list_worlds")) {
@@ -172,8 +184,9 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // <--
-        // <server.list_players> -> dList(dPlayer)
+        // <--[tag]
+        // @attribute <server.list_players>
+        // @returns dList(dPlayer)
         // Returns a list of all players that have ever played on the server, online or not.
         // -->
         if (attribute.startsWith("list_players")) {
@@ -186,8 +199,9 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // <--
-        // <server.list_online_players> -> dList(dPlayer)
+        // <--[tag]
+        // @attribute <server.list_online_players>
+        // @returns dList(dPlayer)
         // Returns a list of all online players.
         // -->
         if (attribute.startsWith("list_online_players")) {
@@ -198,8 +212,9 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // <--
-        // <server.list_offline_players> -> dList(dPlayer)
+        // <--[tag]
+        // @attribute <server.list_offline_players>
+        // @returns dList(dPlayer)
         // Returns a list of all offline players.
         // -->
         if (attribute.startsWith("list_offline_players")) {
@@ -210,8 +225,9 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // <--
-        // <server.list_ops> -> dList(dPlayer)
+        // <--[tag]
+        // @attribute <server.list_ops>
+        // @returns dList(dPlayer)
         // Returns a list of all ops, online or not.
         // -->
         if (attribute.startsWith("list_ops")) {
@@ -224,8 +240,9 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // <--
-        // <server.list_online_ops> -> dList(dPlayer)
+        // <--[tag]
+        // @attribute <server.list_online_ops>
+        // @returns dList(dPlayer)
         // Returns a list of all online ops.
         // -->
         if (attribute.startsWith("list_online_ops")) {
@@ -236,8 +253,9 @@ public class UtilTags implements Listener {
             return;
         }
 
-        // <--
-        // <server.list_offline_ops> -> dList(dPlayer)
+        // <--[tag]
+        // @attribute <server.list_offline_ops>
+        // @returns dList(dPlayer)
         // Returns a list of all offline ops.
         // -->
         // server.list_offline_ops
@@ -265,8 +283,9 @@ public class UtilTags implements Listener {
 
         if (type.equalsIgnoreCase("RANDOM")) {
             
-            // <--
-            // <util.random.int[<#>].to[<#>]> -> Element(Number)
+            // <--[tag]
+            // @attribute <util.random.int[<#>].to[<#>]>
+            // @returns Element(Number)
             // Returns a random number between the 2 specified numbers.
             // -->
             if (subType.equalsIgnoreCase("INT")) {
@@ -287,8 +306,9 @@ public class UtilTags implements Listener {
                 }
             }
 
-            // <--
-            // <util.random.element[<value>|...]> -> Element
+            // <--[tag]
+            // @attribute <util.random.element[<value>|...]>
+            // @returns Element
             // Returns a random element from a list.
             // -->
             else if (subType.equalsIgnoreCase("ELEMENT")) {
@@ -296,8 +316,9 @@ public class UtilTags implements Listener {
                 event.setReplaced(list.get(new Random().nextInt(list.size())));
             }
 
-            // <--
-            // <util.random.uuid> -> Element
+            // <--[tag]
+            // @attribute <util.random.uuid>
+            // @returns Element
             // Returns a random unique ID. (Useful for making new queues)
             // -->
             else if (subType.equalsIgnoreCase("UUID"))
@@ -311,24 +332,27 @@ public class UtilTags implements Listener {
             int from = 1;
             int to = text.length() + 1;
 
-            // <--
-            // <util.substr[<text1>].after[<text2>]> -> Element
+            // <--[tag]
+            // @attribute <util.substr[<text1>].after[<text2>]>
+            // @returns Element
             // Returns all text in text1 after the first occurrence of text2.
             // -->
             if (subType.equalsIgnoreCase("AFTER")) {
                 from = text.toUpperCase().indexOf(subTypeContext) + subTypeContext.length() + 1;
             }
             
-            // <--
-            // <util.substr[<text1>].before[<text2>]> -> Element
+            // <--[tag]
+            // @attribute <util.substr[<text1>].before[<text2>]>
+            // @returns Element
             // Returns all text in text1 before the first occurrence of text2.
             // -->
             if (subType.equalsIgnoreCase("BEFORE")) {
                 to = text.toUpperCase().indexOf(subTypeContext) + 1;
             }
 
-            // <--
-            // <util.substr[<text>].from[<#>].to[<#>]> -> Element
+            // <--[tag]
+            // @attribute <util.substr[<text>].from[<#>].to[<#>]>
+            // @returns Element
             // Returns all text in between the 2 points in the text.
             // -->
             try {
@@ -347,8 +371,9 @@ public class UtilTags implements Listener {
             event.setReplaced(text.substring(from - 1, to - 1));
         }
 
-        // <--
-        // <util.replace[<text>].from[<fromText>].to[<toText>]> -> Element
+        // <--[tag]
+        // @attribute <util.replace[<text>].from[<fromText>].to[<toText>]>
+        // @returns Element
         // Returns the text with all instances of fromText replaced as toText.
         // -->
         else if (type.equalsIgnoreCase("REPLACE")) {
@@ -358,8 +383,9 @@ public class UtilTags implements Listener {
             event.setReplaced(item_to_replace.replace(replace, replacement));
         }
 
-        // <--
-        // <util.entity_is_spawned[<entity>]> -> Boolean
+        // <--[tag]
+        // @attribute <util.entity_is_spawned[<entity>]>
+        // @returns Boolean
         // Returns whether an entity is spawned and valid.
         // -->
         else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")) {
@@ -367,8 +393,9 @@ public class UtilTags implements Listener {
             event.setReplaced((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false");
         }
 
-        // <--
-        // <util.uppercase[<text>]> -> Element
+        // <--[tag]
+        // @attribute <util.uppercase[<text>]>
+        // @returns Element
         // Returns the text in uppercase letters.
         // -->
         else if (type.equalsIgnoreCase("UPPERCASE")) {
@@ -376,8 +403,9 @@ public class UtilTags implements Listener {
             event.setReplaced(item_to_uppercase.toUpperCase());
         }
 
-        // <--
-        // <util.lowercase[<text>]> -> Element
+        // <--[tag]
+        // @attribute <util.lowercase[<text>]>
+        // @returns Element
         // Returns the text in lowercase letters.
         // -->
         else if (type.equalsIgnoreCase("LOWERCASE")) {
@@ -385,8 +413,9 @@ public class UtilTags implements Listener {
             event.setReplaced(item_to_uppercase.toLowerCase());
         }
 
-        // <--
-        // <util.date> -> Element
+        // <--[tag]
+        // @attribute <util.date>
+        // @returns Element
         // Returns the current system date.
         // -->
         else if (type.equalsIgnoreCase("DATE")) {
@@ -394,52 +423,60 @@ public class UtilTags implements Listener {
             Date currentDate = new Date();
             SimpleDateFormat format = new SimpleDateFormat();
 
-            // <--
-            // <util.date.time> -> Element
+            // <--[tag]
+            // @attribute <util.date.time>
+            // @returns Element
             // Returns the current system time.
             // -->
             if (subType.equalsIgnoreCase("TIME")) {
                 
-                // <--
-                // <util.date.time.24hour> -> Element
+                // <--[tag]
+                // @attribute <util.date.time.24hour>
+                // @returns Element
                 // Returns the current system time in 24-hour format.
                 // -->
                 if (specifier.equalsIgnoreCase("24HOUR")) {
                     format.applyPattern("k:mm");
                     event.setReplaced(format.format(currentDate));
                 }
-                // <--
-                // <util.date.time.year> -> Element(Number)
+                // <--[tag]
+                // @attribute <util.date.time.year>
+                // @returns Element(Number)
                 // Returns the current year of the system time.
                 // -->
                 else if (specifier.equalsIgnoreCase("year"))
                     event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.YEAR))).getAttribute(attribute.fulfill(3)));
-                    // <--
-                    // <util.date.time.month> -> Element(Number)
+                    // <--[tag]
+                    // @attribute <util.date.time.month>
+                    // @returns Element(Number)
                     // Returns the current month of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("month"))
                     event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.MONTH) + 1)).getAttribute(attribute.fulfill(3)));
-                    // <--
-                    // <util.date.time.day> -> Element(Number)
+                    // <--[tag]
+                    // @attribute <util.date.time.day>
+                    // @returns Element(Number)
                     // Returns the current day of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("day"))
                     event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))).getAttribute(attribute.fulfill(3)));
-                    // <--
-                    // <util.date.time.hour> -> Element(Number)
+                    // <--[tag]
+                    // @attribute <util.date.time.hour>
+                    // @returns Element(Number)
                     // Returns the current hour of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("hour"))
                     event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY))).getAttribute(attribute.fulfill(3)));
-                    // <--
-                    // <util.date.time.minute> -> Element(Number)
+                    // <--[tag]
+                    // @attribute <util.date.time.minute>
+                    // @returns Element(Number)
                     // Returns the current minute of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("minute"))
                     event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.MINUTE))).getAttribute(attribute.fulfill(3)));
-                    // <--
-                    // <util.date.time.second> -> Element(Number)
+                    // <--[tag]
+                    // @attribute <util.date.time.second>
+                    // @returns Element(Number)
                     // Returns the current second of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("second"))
@@ -457,8 +494,9 @@ public class UtilTags implements Listener {
 
         }
 
-        // <--
-        // <util.as_element[<text>]> -> Element
+        // <--[tag]
+        // @attribute <util.as_element[<text>]>
+        // @returns Element
         // Returns the text as an Element.
         // -->
         else if (type.equalsIgnoreCase("AS_ELEMENT")) {
