@@ -264,13 +264,6 @@ public class dNPC implements dObject {
         if (attribute == null) return "null";
         
         // <--[tag]
-        // @attribute <npc>
-        // @returns dNPC
-        // @description
-        // Returns the dNPC of the NPC.
-        // -->
-        
-        // <--[tag]
         // @attribute  <npc.name.nickname>
         // @returns Element
         // @description

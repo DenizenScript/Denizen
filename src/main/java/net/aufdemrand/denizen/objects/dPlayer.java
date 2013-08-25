@@ -202,13 +202,6 @@ public class dPlayer implements dObject {
         if (attribute == null) return "null";
 
         if (player_name == null) return "null";
-        
-        // <--[tag]
-        // @attribute <player>
-        // @returns dPlayer
-        // @description
-        // Returns the dPlayer of the player.
-        // -->
 
         // <--[tag]
         // @attribute <player.entity>

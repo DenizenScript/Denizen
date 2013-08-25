@@ -777,13 +777,6 @@ public class dEntity implements dObject {
         }
         
         // <--[tag]
-        // @attribute <e@entity>
-        // @returns dEntity
-        // @description
-        // Returns the dEntity of the entity.
-        // -->
-        
-        // <--[tag]
         // @attribute <e@entity.get_vehicle>
         // @returns dEntity
         // @description
