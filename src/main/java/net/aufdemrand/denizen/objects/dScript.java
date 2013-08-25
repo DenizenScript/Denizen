@@ -135,16 +135,20 @@ public class dScript implements dObject {
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return "null";
 
-        // <--
-        // <s@script.container_type> -> Element
+        // <--[tag]
+        // @attribute <s@script.container_type>
+        // @returns Element
+        // @description
         // Returns the container type of a dScript.
         // -->
         if (attribute.startsWith("container_type"))
             return new Element(container.getType())
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <s@script.cooled_down[<player>]> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <s@script.cooled_down[<player>]>
+        // @returns Element(Boolean)
+        // @description
         // Returns true if the script has been cooled down for the
         // player (defaults to current). Otherwise, returns false.
         // -->
@@ -155,8 +159,10 @@ public class dScript implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <s@script.requirements[<player>].check[<path>]> -> Element
+        // <--[tag]
+        // @attribute <s@script.requirements[<player>].check[<path>]>
+        // @returns Element
+        // @description
         // Returns true if the player specified (defaults to current) has the
         // requirement. Otherwise, returns false.
         // -->
@@ -170,8 +176,10 @@ public class dScript implements dObject {
                         .getAttribute(attribute.fulfill(2));
         }
 
-        // <--
-        // <s@script.cooldown[<player>]> -> Duration
+        // <--[tag]
+        // @attribute <s@script.cooldown[<player>]>
+        // @returns Duration
+        // @description
         // Returns the time left for the player to cooldown for the script.
         // -->
         if (attribute.startsWith("cooldown")) {
