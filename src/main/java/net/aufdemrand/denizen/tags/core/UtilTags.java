@@ -43,6 +43,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <q>
         // @returns Queuestat
+        // @description
         // Returns "q" (or "queue" if you spell it out)... Pretty useless by itself.
         // [See <q.id>, <q.stats>, <q.size>, and <q.definitions>]
         // -->
@@ -53,6 +54,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <q.id>
         // @returns Element
+        // @description
         // Returns the current queue id.
         // -->
         if (attribute.startsWith("id"))
@@ -62,6 +64,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <q.stats>
         // @returns Element
+        // @description
         // Returns stats for all queues during this server session.
         // -->
         if (attribute.startsWith("stats"))
@@ -71,6 +74,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <q.size>
         // @returns Element
+        // @description
         // Returns the size of the current queue.
         // -->
         if (attribute.startsWith("size"))
@@ -80,6 +84,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <q.definitions>
         // @returns Element
+        // @description
         // Returns all definitions that were passed to the current queue.
         // -->
         if (attribute.startsWith("definitions"))
@@ -97,6 +102,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.flag[<name>]>
         // @returns Flag dList
+        // @description
         // Returns a "Flag dList" of the server flag specified.
         // -->
         if (attribute.startsWith("flag")) {
@@ -111,6 +117,7 @@ public class UtilTags implements Listener {
             // <--[tag]
             // @attribute <server.flag[<name>].is_expired>
             // @returns Element(Boolean)
+            // @description
             // Returns true if the flag specified is expired. Else, returns false.
             // -->
             if (attribute.startsWith("is_expired")
@@ -123,6 +130,7 @@ public class UtilTags implements Listener {
             // <--[tag]
             // @attribute <server.flag[<name>].size>
             // @returns Element(Number)
+            // @description
             // Returns the size of the Flag dList. If the flag doesn't exist, returns 0.
             // -->
             if (attribute.startsWith("size") && !FlagManager.serverHasFlag(flag_name)) {
@@ -140,6 +148,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.current_time_millis>
         // @returns Element(Number)
+        // @description
         // Returns the number of milliseconds since Jan 1, 1970.
         // -->
         if (attribute.startsWith("current_time_millis")) {
@@ -150,6 +159,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.selected_npc>
         // @returns dNPC
+        // @description
         // Returns the server's currently selected NPC.
         // -->
         if (attribute.startsWith("selected_npc")) {
@@ -161,6 +171,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.list_npcs>
         // @returns dList(dNPC)
+        // @description
         // Returns a dList of dNPCs currently in the Citizens NPC Registry.
         // -->
         if (attribute.startsWith("list_npcs")) {
@@ -174,6 +185,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.list_worlds>
         // @returns dList(dWorld)
+        // @description
         // Returns a dList of all worlds.
         // -->
         if (attribute.startsWith("list_worlds")) {
@@ -187,6 +199,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.list_players>
         // @returns dList(dPlayer)
+        // @description
         // Returns a list of all players that have ever played on the server, online or not.
         // -->
         if (attribute.startsWith("list_players")) {
@@ -202,6 +215,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.list_online_players>
         // @returns dList(dPlayer)
+        // @description
         // Returns a list of all online players.
         // -->
         if (attribute.startsWith("list_online_players")) {
@@ -215,6 +229,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.list_offline_players>
         // @returns dList(dPlayer)
+        // @description
         // Returns a list of all offline players.
         // -->
         if (attribute.startsWith("list_offline_players")) {
@@ -228,6 +243,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.list_ops>
         // @returns dList(dPlayer)
+        // @description
         // Returns a list of all ops, online or not.
         // -->
         if (attribute.startsWith("list_ops")) {
@@ -243,6 +259,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.list_online_ops>
         // @returns dList(dPlayer)
+        // @description
         // Returns a list of all online ops.
         // -->
         if (attribute.startsWith("list_online_ops")) {
@@ -256,6 +273,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <server.list_offline_ops>
         // @returns dList(dPlayer)
+        // @description
         // Returns a list of all offline ops.
         // -->
         // server.list_offline_ops
@@ -286,6 +304,7 @@ public class UtilTags implements Listener {
             // <--[tag]
             // @attribute <util.random.int[<#>].to[<#>]>
             // @returns Element(Number)
+            // @description
             // Returns a random number between the 2 specified numbers.
             // -->
             if (subType.equalsIgnoreCase("INT")) {
@@ -309,6 +328,7 @@ public class UtilTags implements Listener {
             // <--[tag]
             // @attribute <util.random.element[<value>|...]>
             // @returns Element
+            // @description
             // Returns a random element from a list.
             // -->
             else if (subType.equalsIgnoreCase("ELEMENT")) {
@@ -319,6 +339,7 @@ public class UtilTags implements Listener {
             // <--[tag]
             // @attribute <util.random.uuid>
             // @returns Element
+            // @description
             // Returns a random unique ID. (Useful for making new queues)
             // -->
             else if (subType.equalsIgnoreCase("UUID"))
@@ -335,6 +356,7 @@ public class UtilTags implements Listener {
             // <--[tag]
             // @attribute <util.substr[<text1>].after[<text2>]>
             // @returns Element
+            // @description
             // Returns all text in text1 after the first occurrence of text2.
             // -->
             if (subType.equalsIgnoreCase("AFTER")) {
@@ -344,6 +366,7 @@ public class UtilTags implements Listener {
             // <--[tag]
             // @attribute <util.substr[<text1>].before[<text2>]>
             // @returns Element
+            // @description
             // Returns all text in text1 before the first occurrence of text2.
             // -->
             if (subType.equalsIgnoreCase("BEFORE")) {
@@ -353,6 +376,7 @@ public class UtilTags implements Listener {
             // <--[tag]
             // @attribute <util.substr[<text>].from[<#>].to[<#>]>
             // @returns Element
+            // @description
             // Returns all text in between the 2 points in the text.
             // -->
             try {
@@ -374,6 +398,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <util.replace[<text>].from[<fromText>].to[<toText>]>
         // @returns Element
+        // @description
         // Returns the text with all instances of fromText replaced as toText.
         // -->
         else if (type.equalsIgnoreCase("REPLACE")) {
@@ -386,6 +411,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <util.entity_is_spawned[<entity>]>
         // @returns Boolean
+        // @description
         // Returns whether an entity is spawned and valid.
         // -->
         else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")) {
@@ -396,6 +422,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <util.uppercase[<text>]>
         // @returns Element
+        // @description
         // Returns the text in uppercase letters.
         // -->
         else if (type.equalsIgnoreCase("UPPERCASE")) {
@@ -406,6 +433,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <util.lowercase[<text>]>
         // @returns Element
+        // @description
         // Returns the text in lowercase letters.
         // -->
         else if (type.equalsIgnoreCase("LOWERCASE")) {
@@ -416,6 +444,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <util.date>
         // @returns Element
+        // @description
         // Returns the current system date.
         // -->
         else if (type.equalsIgnoreCase("DATE")) {
@@ -426,6 +455,7 @@ public class UtilTags implements Listener {
             // <--[tag]
             // @attribute <util.date.time>
             // @returns Element
+            // @description
             // Returns the current system time.
             // -->
             if (subType.equalsIgnoreCase("TIME")) {
@@ -433,6 +463,7 @@ public class UtilTags implements Listener {
                 // <--[tag]
                 // @attribute <util.date.time.24hour>
                 // @returns Element
+                // @description
                 // Returns the current system time in 24-hour format.
                 // -->
                 if (specifier.equalsIgnoreCase("24HOUR")) {
@@ -442,6 +473,7 @@ public class UtilTags implements Listener {
                 // <--[tag]
                 // @attribute <util.date.time.year>
                 // @returns Element(Number)
+                // @description
                 // Returns the current year of the system time.
                 // -->
                 else if (specifier.equalsIgnoreCase("year"))
@@ -449,6 +481,7 @@ public class UtilTags implements Listener {
                     // <--[tag]
                     // @attribute <util.date.time.month>
                     // @returns Element(Number)
+                    // @description
                     // Returns the current month of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("month"))
@@ -456,6 +489,7 @@ public class UtilTags implements Listener {
                     // <--[tag]
                     // @attribute <util.date.time.day>
                     // @returns Element(Number)
+                    // @description
                     // Returns the current day of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("day"))
@@ -463,6 +497,7 @@ public class UtilTags implements Listener {
                     // <--[tag]
                     // @attribute <util.date.time.hour>
                     // @returns Element(Number)
+                    // @description
                     // Returns the current hour of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("hour"))
@@ -470,6 +505,7 @@ public class UtilTags implements Listener {
                     // <--[tag]
                     // @attribute <util.date.time.minute>
                     // @returns Element(Number)
+                    // @description
                     // Returns the current minute of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("minute"))
@@ -477,6 +513,7 @@ public class UtilTags implements Listener {
                     // <--[tag]
                     // @attribute <util.date.time.second>
                     // @returns Element(Number)
+                    // @description
                     // Returns the current second of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("second"))
@@ -497,6 +534,7 @@ public class UtilTags implements Listener {
         // <--[tag]
         // @attribute <util.as_element[<text>]>
         // @returns Element
+        // @description
         // Returns the text as an Element.
         // -->
         else if (type.equalsIgnoreCase("AS_ELEMENT")) {
