@@ -208,24 +208,8 @@ public class CommandRegistry implements dRegistry {
                 "BURN", "burn [<entity>|...] (duration:<value>)", 1);
         
 		// <--[command]
-		// @Name cast
+		// @Name cast, potion
 		// @Usage cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
-		// <--[command]
-		// @Name potion
-		// @Usage potion [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
 		// @Required 1
 		// @Stable Todo
 		// @Short Todo
@@ -1766,24 +1750,8 @@ public class CommandRegistry implements dRegistry {
                 "WAIT", "wait (<duration>) (queue:<name>)", 0);
 
 		// <--[command]
-		// @Name walk
+		// @Name walk, walkto
 		// @Usage walk [<location>] (speed:<#>) (auto_range)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
-		// <--[command]
-		// @Name walkto
-		// @Usage walkto [<location>] (speed:<#>) (auto_range)
 		// @Required 1
 		// @Stable Todo
 		// @Short Todo
