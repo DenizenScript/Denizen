@@ -670,7 +670,7 @@ public class dInventory implements dObject, Notable {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <i@inventory.contains[<item>].qty[<#>]>
+        // @attribute <in@inventory.contains[<item>].qty[<#>]>
         // @returns Element(Number)
         // @description
         // Check if the inventory contains a certain quantity (1 by default) of an item
@@ -695,7 +695,7 @@ public class dInventory implements dObject, Notable {
         }
         
         // <--[tag]
-        // @attribute <i@inventory.location>
+        // @attribute <in@inventory.location>
         // @returns dLocation
         // @description
         // Returns the location of this inventory's holder.
@@ -707,7 +707,7 @@ public class dInventory implements dObject, Notable {
         }
         
         // <--[tag]
-        // @attribute <i@inventory.qty[<item>]>
+        // @attribute <in@inventory.qty[<item>]>
         // @returns Element(Number)
         // @description
         // Returns the combined quantity of itemstacks that match an item if
@@ -724,7 +724,7 @@ public class dInventory implements dObject, Notable {
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
-        // @attribute <i@inventory.size>
+        // @attribute <in@inventory.size>
         // @returns Element(Number)
         // @description
         // Return the number of slots in the inventory
@@ -734,7 +734,7 @@ public class dInventory implements dObject, Notable {
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
-        // @attribute <i@inventory.stacks>
+        // @attribute <in@inventory.stacks>
         // @returns Element(Number)
         // @description
         // Returns the number of itemstacks that match an item if one is
@@ -750,7 +750,7 @@ public class dInventory implements dObject, Notable {
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
-        // @attribute <i@inventory.type>
+        // @attribute <in@inventory.type>
         // @returns Element
         // @description
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE")
@@ -760,7 +760,7 @@ public class dInventory implements dObject, Notable {
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
-        // @attribute <i@inventory.equipment>
+        // @attribute <in@inventory.equipment>
         // @returns dInventory(Equipment)
         // @description
         // Returns the equipment of an inventory. If the inventory has no
@@ -795,7 +795,7 @@ public class dInventory implements dObject, Notable {
         }
         
         // <--[tag]
-        // @attribute <i@inventory.list_contents>
+        // @attribute <in@inventory.list_contents>
         // @returns dList(dItem)
         // @description
         // Returns a list of all items in the inventory.
