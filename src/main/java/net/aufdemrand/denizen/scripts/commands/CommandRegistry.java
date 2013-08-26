@@ -208,8 +208,24 @@ public class CommandRegistry implements dRegistry {
                 "BURN", "burn [<entity>|...] (duration:<value>)", 1);
         
 		// <--[command]
-		// @Name cast, potion
+		// @Name cast
 		// @Usage cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
+		// @Required 1
+		// @Stable Todo
+		// @Short Todo
+		// @Author Todo
+		// @Description
+		// Todo
+		// @Tags
+		// Todo
+		// @Usage
+		// Todo
+		// @Example
+		// Todo
+		// -->
+		// <--[command]
+		// @Name potion
+		// @Usage potion [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
 		// @Required 1
 		// @Stable Todo
 		// @Short Todo
@@ -435,22 +451,38 @@ public class CommandRegistry implements dRegistry {
 
 		// <--[command]
 		// @Name disengage
-		// @Usage disengage
+		// @Usage disengage (npc:<npc>)
 		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
+		// @Stable 1.0
+		// @Short Enables a NPCs triggers that have been temporarily disabled by the engage command. 
+		// @Author aufdemrand
+		//
 		// @Description
-		// Todo
-		// @Tags
-		// Todo
+		// Re-enables any toggled triggers that have been disabled by disengage. Using 
+		// disengage inside scripts must have a NPC to reference, or one may be specified 
+		// by supplying a valid dNPC object with the npc argument.
+		//
+		// This is mostly regarded as an 'interact script command', though it may be used inside
+		// other script types. This is because disengage works with the trigger system, which is an
+		// interact script-container feature. 
+		//
+		// NPCs that are interacted with while engaged will fire an 'on unavailable' assignment 
+		// script-container action.
+		//
+		// @See Engage Command
+		//
 		// @Usage
-		// Todo
+		// Use to reenable a NPC's triggers, disabled via 'engage'.
+		// - engage
+		// - chat 'Be right there!'
+		// - walkto <player.location>
+		// - wait 5s
+		// - disengage
+		//
 		// @Example
-		// Todo
 		// -->
         registerCoreMember(DisengageCommand.class, 
-                "DISENGAGE", "disengage", 0);
+                "DISENGAGE", "disengage (npc:<npc>)", 0);
 
 		// <--[command]
 		// @Name displayitem
@@ -492,22 +524,53 @@ public class CommandRegistry implements dRegistry {
         
 		// <--[command]
 		// @Name engage
-		// @Usage engage (duration:<value>)
+		// @Usage engage (<duration>) (npc:<npc>)
 		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
+		// @Stable 1.0
+		// @Short Temporarily disables a NPCs toggled interact script-container triggers.
+		// @Author aufdemrand
+		//
 		// @Description
-		// Todo
+		// Engaging a NPC will temporarily disable any interact script-container triggers. To reverse 
+		// this behavior, use either the disengage command, or specify a duration in which the engage 
+		// should timeout. Specifying an engage without a duration will render the NPC engaged until
+		// a disengage is used on the NPC. Engaging a NPC affects all players attempting to interact
+		// with the NPC.
+		//
+		// While engaged, all triggers and actions associated with triggers will not 'fire', except
+		// the 'on unavailable' assignment script-container action, which will fire for triggers that
+		// were enabled previous to the engage command.
+		//
+		// Engage can be useful when NPCs are carrying out a task that shouldn't be interrupted, or
+		// to provide a good way to avoid accidental 'retrigger'.
+		//
+		// @See Disengage Command
+		//
 		// @Tags
-		// Todo
+		// <n@npc.engaged> will return true if the NPC is currently engaged, false otherwise.
+		//
 		// @Usage
-		// Todo
+		// Use to make a NPC appear 'busy'.
+		// - engage
+		// - chat 'Give me a few minutes while I mix you a potion!'
+		// - walkto <npc.anchor[mixing_station]>
+		// - wait 10s
+		// - walkto <npc.anchor[service_station]>
+		// - chat 'Here you go!'
+		// - give potion <player>
+		// - disengage
+		//
+		// @Usage
+		// Use to avoid 'retrigger'.
+		// - engage 5s
+		// - take quest_item
+		// - flag player finished_quests:->:super_quest
+		//
 		// @Example
-		// Todo
+		// 
 		// -->
         registerCoreMember(EngageCommand.class,
-                "ENGAGE", "engage (duration:<value>)", 0);
+                "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
 
 		// <--[command]
 		// @Name engrave
@@ -1750,8 +1813,24 @@ public class CommandRegistry implements dRegistry {
                 "WAIT", "wait (<duration>) (queue:<name>)", 0);
 
 		// <--[command]
-		// @Name walk, walkto
+		// @Name walk
 		// @Usage walk [<location>] (speed:<#>) (auto_range)
+		// @Required 1
+		// @Stable Todo
+		// @Short Todo
+		// @Author Todo
+		// @Description
+		// Todo
+		// @Tags
+		// Todo
+		// @Usage
+		// Todo
+		// @Example
+		// Todo
+		// -->
+		// <--[command]
+		// @Name walkto
+		// @Usage walkto [<location>] (speed:<#>) (auto_range)
 		// @Required 1
 		// @Stable Todo
 		// @Short Todo
