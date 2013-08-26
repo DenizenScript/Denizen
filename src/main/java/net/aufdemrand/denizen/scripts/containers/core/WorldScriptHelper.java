@@ -167,6 +167,24 @@ public class WorldScriptHelper implements Listener {
     //   BLOCK EVENTS
     /////////////////
     
+    // <--[event]
+    // @Events
+    // player breaks block
+    // player breaks <block>
+    // player breaks block with <item>
+    // player breaks <block> with <item>
+    //
+    // @Triggers when a player breaks a block.
+    // @Context
+    // <context.location> will return the location the block was broken at.
+    // <context.type> will return the material of the block that was broken.
+    //
+    // @Determine
+    // CANCELLED to stop the block from breaking.
+    // NOTHING to make the block drop no items.
+    // dList(dItem) to make the block drop a specified list of items.
+    //
+    // -->
     @EventHandler
     public void blockBreak(BlockBreakEvent event) {
 
@@ -230,6 +248,20 @@ public class WorldScriptHelper implements Listener {
         }
     }
     
+    // <--[event]
+    // @Events
+    // block burns
+    // <block> burns
+    //
+    // @Triggers when a block is destroyed by fire.
+    // @Context
+    // <context.location> will return the location the block was burned at.
+    // <context.type> will return the material of the block that was burned.
+    //
+    // @Determine
+    // CANCELLED to stop the block from being destroyed.
+    //
+    // -->
     @EventHandler
     public void blockBurn(BlockBurnEvent event) {
 
@@ -247,6 +279,20 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
     
+    // <--[event]
+    // @Events
+    // block ignites
+    // <block> ignites
+    //
+    // @Triggers when a block is destroyed by fire.
+    // @Context
+    // <context.location> will return the location the block was burned at.
+    // <context.type> will return the material of the block that was burned.
+    //
+    // @Determine
+    // CANCELLED to stop the block from being destroyed.
+    //
+    // -->
     @EventHandler
     public void blockIgnite(BlockIgniteEvent event) {
 
@@ -408,7 +454,8 @@ public class WorldScriptHelper implements Listener {
                 context.put("world", new dWorld(world));
                 
                 doEvents(Arrays.asList("time changes in " + world.getName(),
-                                       hour + ":00 in " + world.getName()),
+                                       String.valueOf(hour) + ":00 in " + world.getName(),
+                                        "time " + String.valueOf(hour) + " in " + world.getName()),
                         null, null, context);
                 
                 current_time.put(world.getName(), hour);

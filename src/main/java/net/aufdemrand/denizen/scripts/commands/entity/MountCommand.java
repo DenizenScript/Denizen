@@ -72,15 +72,15 @@ public class MountCommand extends AbstractCommand {
         
         dLocation location = (dLocation) scriptEntry.getObject("location");
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");            
-        boolean cancel = scriptEntry.hasObject("cancel");
+        Boolean cancel = scriptEntry.hasObject("cancel");
         
         // Report to dB
-        dB.report(getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
+        dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
                              aH.debugObj("location", location) +
                              aH.debugObj("entities", entities.toString()));
 
         // Mount or dismount all of the entities
-        if (!cancel) {
+        if (cancel.equals(false)) {
             
             // Go through all the entities, spawning/teleporting them
             for (dEntity entity : entities) {

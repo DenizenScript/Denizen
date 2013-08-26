@@ -242,7 +242,7 @@ public abstract class ScriptQueue {
      * delayTime.
      *
      * @param delayTime  the time to start the queue, in
-     *                   System.currentTimeMilis() format.
+     *                   System.currentTimeMillis() format.
      */
     public void delayUntil(long delayTime) {
         this.delay_time = delayTime;

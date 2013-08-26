@@ -16,7 +16,7 @@ import java.util.*;
  * @author Jeremy Schroeder
  *
  */
-public class ScriptEntry {
+public class ScriptEntry implements Cloneable{
 
     // The name of the command that will be executed
     private String command;
@@ -36,6 +36,11 @@ public class ScriptEntry {
     private List<String> args = null;
 
     private Map<String, Object> objects = new HashMap<String, Object>();
+
+    @Override
+    public ScriptEntry clone() throws CloneNotSupportedException {
+        return (ScriptEntry) super.clone();
+    }
 
     public ScriptEntry(String command, String[] arguments, ScriptContainer script) throws ScriptEntryCreationException {
 

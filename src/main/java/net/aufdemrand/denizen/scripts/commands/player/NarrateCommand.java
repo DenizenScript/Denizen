@@ -22,10 +22,10 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
- * Sends a message to the Player.
- * 
+ * Sends a message to Players.
+ *
  * @author Jeremy Schroeder
- * Version 1.0 Last Updated 11/29 1:11
+ * @version 1.0
  */
 
 public class NarrateCommand extends AbstractCommand {
@@ -34,7 +34,7 @@ public class NarrateCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 
-        if (scriptEntry.getArguments().size() > 4) 
+        if (scriptEntry.getArguments().size() > 4)
             throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
 
         // Iterate through arguments
@@ -43,28 +43,27 @@ public class NarrateCommand extends AbstractCommand {
                 FormatScriptContainer format = null;
                 String formatStr = arg.asElement().asString();
                 format = ScriptRegistry.getScriptContainerAs(formatStr, FormatScriptContainer.class);
-                
-                if(format != null) dB.echoDebug("... format set to: " + formatStr);
-                else dB.echoError("... could not find format for: " + formatStr);
+                if (format == null) dB.echoError("... could not find format for: " + formatStr);
                 scriptEntry.addObject("format", format);
-                
             }
+
             // Add players to target list
-            else if ((arg.matchesPrefix("target") || arg.matchesPrefix("targets"))) {
-                scriptEntry.addObject("targets", ( (dList)arg.asType(dList.class)).filter(dPlayer.class));
+            else if ((arg.matchesPrefix("target") || arg.matchesPrefix("targets, target, t"))) {
+                scriptEntry.addObject("targets", ((dList)arg.asType(dList.class)).filter(dPlayer.class));
             }
+
             else {
                 if (!scriptEntry.hasObject("text"))
                     scriptEntry.addObject("text", arg.asElement());
             }
         }
-        
+
         // If there are no targets, check if you can add this player
         // to the targets
         if (!scriptEntry.hasObject("targets"))
-            scriptEntry.addObject("targets", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer()) : null));
-        
-        
+            scriptEntry.addObject("targets",
+                    (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer()) : null));
+
         if (!scriptEntry.hasObject("text"))
             throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
 
@@ -80,10 +79,10 @@ public class NarrateCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(getName(),
-                 aH.debugObj("Narrating", text)
-                 + aH.debugObj("Targets", targets)
-                 + (format != null ? aH.debugObj("Format", format.getName()) : ""));
-        
+                aH.debugObj("Narrating", text)
+                        + aH.debugObj("Targets", targets)
+                        + (format != null ? aH.debugObj("Format", format.getName()) : ""));
+
         for (dPlayer player : targets) {
             if (player != null && player.isOnline())
                 player.getPlayerEntity().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);

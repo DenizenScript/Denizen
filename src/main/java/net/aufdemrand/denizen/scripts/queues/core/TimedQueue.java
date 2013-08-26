@@ -144,10 +144,13 @@ public class TimedQueue extends ScriptQueue implements Delayable {
 
     @Override
     protected void onStart() {
+        // Do the first revolution now...
+        revolve();
+        // ...and schedule the rest for later.
         task_id = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
                 new Runnable() {
                     @Override public void run() { revolve(); }
-                }, 0, ticks == 0 ? 1 : ticks);
+                }, ticks == 0 ? 1 : ticks, ticks == 0 ? 1 : ticks);
     }
 
 

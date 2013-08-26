@@ -76,7 +76,7 @@ public class TakeCommand extends AbstractCommand{
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        boolean npc = (Boolean) scriptEntry.getObject("npc");
+        Boolean npc = (Boolean) scriptEntry.getObject("npc");
         TakeType type = (TakeType) scriptEntry.getObject("takeType");
         Double quantity = (Double) scriptEntry.getObject("quantity");
         dItem item = (dItem) scriptEntry.getObject("item");
@@ -91,7 +91,7 @@ public class TakeCommand extends AbstractCommand{
 
             case INVENTORY:
 
-                if (npc)
+                if (npc == true)
                     scriptEntry.getNPC().getEntity().getEquipment().clear();
                 else // Player
                     scriptEntry.getPlayer().getPlayerEntity().getInventory().clear();
