@@ -651,7 +651,21 @@ public class dLocation extends org.bukkit.Location implements dObject {
         if (attribute.startsWith("block.material"))
             return new Element(getBlock().getType().toString()).getAttribute(attribute.fulfill(2));
 
-        
+
+        // <--[tag]
+        // @attribute <l@location.direction.vector>
+        // @returns dLocation
+        // @description
+        // Returns the location's direction as a one-length vector.
+        // -->
+        if (attribute.startsWith("direction.vector")) {
+            double xzLen = Math.cos((getPitch() % 360) * (Math.PI/180));
+            double nx = xzLen * Math.cos(getYaw() * (Math.PI/180));
+            double ny = Math.sin(getPitch() * (Math.PI/180));
+            double nz = xzLen * Math.sin(-getYaw() * (Math.PI/180));
+            return new dLocation(getWorld(), -nx, -ny, nz).getAttribute(attribute.fulfill(2));
+        }
+
         // <--[tag]
         // @attribute <l@location.direction>
         // @returns Element
