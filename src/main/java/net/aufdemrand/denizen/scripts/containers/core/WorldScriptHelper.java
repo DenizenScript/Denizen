@@ -57,6 +57,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
@@ -1098,18 +1099,24 @@ public class WorldScriptHelper implements Listener {
         
         if (item.getItemStack() != null) {
 
+            events.add("player clicks " +
+                    item.identify() + " in inventory");
             events.add(interaction + " on " +
                     item.identify() + " in inventory");
             events.add(interaction + " on " +
                     item.identify() + " in " + type + " inventory");
             
             if (!item.identify().equals(item.identify().split(":")[0])) {
+                events.add("player clicks " +
+                        item.identify().split(":")[0] + " in inventory");
                 events.add(interaction + " on " +
                         item.identify().split(":")[0] + " in inventory");
                 events.add(interaction + " on " +
                         item.identify().split(":")[0] + " in " + type + " inventory");
             }
             if (item.isItemscript()) {
+                events.add("player clicks " +
+                        item.getMaterial() + " in inventory");
                 events.add(interaction + " on " +
                         item.getMaterial() + " in inventory");
                 events.add(interaction + " on " +
@@ -1123,6 +1130,55 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
     
+    @EventHandler
+    public void inventoryDragEvent(InventoryDragEvent event) {
+        
+        Map<String, Object> context = new HashMap<String, Object>();
+        dItem item = new dItem(event.getOldCursor());
+        
+        Player player = (Player) event.getWhoClicked();
+        String type = event.getInventory().getType().name();
+        
+        context.put("item", item);
+        context.put("inventory", new dInventory(event.getInventory()));
+        
+        List<String> events = new ArrayList<String>();
+        events.add("player drags");
+        events.add("player drags in inventory");
+        events.add("player drags in " + type + " inventory");
+        
+        if (item.getItemStack() != null) {
+
+            events.add("player drags " +
+                    item.identify());
+            events.add("player drags " +
+                    item.identify() + " in inventory");
+            events.add("player drags " +
+                    item.identify() + " in " + type + " inventory");
+            
+            if (!item.identify().equals(item.identify().split(":")[0])) {
+                events.add("player drags " +
+                        item.identify().split(":")[0]);
+                events.add("player drags " +
+                        item.identify().split(":")[0] + " in inventory");
+                events.add("player drags " +
+                        item.identify().split(":")[0] + " in " + type + " inventory");
+            }
+            if (item.isItemscript()) {
+                events.add("player drags " +
+                        item.getMaterial());
+                events.add("player drags " +
+                        item.getMaterial() + " in inventory");
+                events.add("player drags " +
+                        item.getMaterial() + " in " + type + " inventory");
+            }
+        }
+        
+        String determination = doEvents(events, null, player, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
     
     /////////////////////
     //   PLAYER EVENTS
