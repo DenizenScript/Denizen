@@ -38,9 +38,9 @@ public class CommandExecuter {
         Matcher m = definition_pattern.matcher(scriptEntry.getCommandName());
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
-            if (scriptEntry.getResidingQueue().hasContext(m.group(1).toLowerCase()))
+            if (scriptEntry.getResidingQueue().hasDefinition(m.group(1).toLowerCase()))
                 m.appendReplacement(sb,
-                        scriptEntry.getResidingQueue().getContext(m.group(1).toLowerCase()));
+                        scriptEntry.getResidingQueue().getDefinition(m.group(1).toLowerCase()));
 
             else m.appendReplacement(sb, "null");
         }
@@ -105,10 +105,10 @@ public class CommandExecuter {
                 m = definition_pattern.matcher(arg.raw_value);
                 sb = new StringBuffer();
                 while (m.find()) {
-                    if (scriptEntry.getResidingQueue().hasContext(m.group(1).toLowerCase()))
+                    if (scriptEntry.getResidingQueue().hasDefinition(m.group(1).toLowerCase()))
                         m.appendReplacement(sb,
                                 scriptEntry.getResidingQueue()
-                                        .getContext(m.group(1).toLowerCase()));
+                                        .getDefinition(m.group(1).toLowerCase()));
 
                     else m.appendReplacement(sb, "null");
                 }

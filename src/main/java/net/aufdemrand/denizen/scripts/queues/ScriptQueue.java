@@ -1,13 +1,11 @@
 package net.aufdemrand.denizen.scripts.queues;
 
 import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -134,11 +132,11 @@ public abstract class ScriptQueue {
     private long delay_time = 0;
 
 
-    // ScriptQueues can have a bit of context,
+    // ScriptQueues can have a bit of definitions,
     // keyed by a String Id. Denizen's
-    // 'Definitions' system uses this context.
+    // 'Definitions' system uses this definitions.
     private Map<String, String>
-            context = new ConcurrentHashMap<String, String>(8, 0.9f, 1);
+            definitions = new ConcurrentHashMap<String, String>(8, 0.9f, 1);
 
 
     /**
@@ -163,53 +161,63 @@ public abstract class ScriptQueue {
     // Public instance setters and getters
     /////////////////////
 
+    /**
+     * Gets a held script entry. Held script entries might
+     * contains some script entry context that might need
+     * to be fetched!
+     *
+     */
+    public ScriptEntry getHeldScriptEntry(String id) {
+        return null;
+    }
+
 
     /**
-     * Gets a piece of context from the queue. Denizen's
+     * Gets a definition from the queue. Denizen's
      * CommandExecuter will fetch this information
      * by using the %definition_name% format, similar
      * to 'replaceable tags'
      *
-     * @param definition  The name of the context
-     * @return  The value of the context, or null
+     * @param definition  The name of the definitions
+     * @return  The value of the definitions, or null
      */
-    public String getContext(String definition) {
-        return context.get(definition.toLowerCase());
+    public String getDefinition(String definition) {
+        return definitions.get(definition.toLowerCase());
     }
 
 
     /**
-     * Checks for a piece of context.
+     * Checks for a piece of definitions.
      *
-     * @param definition  The name of the context
+     * @param definition  The name of the definitions
      * @return  true if the definition exists.
      */
-    public boolean hasContext(String definition) {
-        return context.containsKey(definition.toLowerCase());
+    public boolean hasDefinition(String definition) {
+        return definitions.containsKey(definition.toLowerCase());
     }
 
 
     /**
-     * Adds a new piece of context to the queue. This
+     * Adds a new piece of definitions to the queue. This
      * can be done with dScript as well by using the
      * 'define' command.
      *
-     * @param definition  the name of the context
+     * @param definition  the name of the definitions
      * @param value  the value of the definition
      */
-    public void addContext(String definition, String value) {
-        context.put(definition.toLowerCase(), value);
+    public void addDefinition(String definition, String value) {
+        definitions.put(definition.toLowerCase(), value);
     }
 
 
     /**
-     * Returns a Map of all the current context
+     * Returns a Map of all the current definitions
      * stored in the queue, keyed by 'definition id'
      *
-     * @return  all current context, empty if none.
+     * @return  all current definitions, empty if none.
      */
-    public Map<String, String> getAllContext() {
-        return context;
+    public Map<String, String> getAllDefinitions() {
+        return definitions;
     }
 
 

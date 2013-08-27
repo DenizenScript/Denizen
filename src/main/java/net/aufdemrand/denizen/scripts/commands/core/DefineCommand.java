@@ -63,7 +63,7 @@ public class DefineCommand extends AbstractCommand implements Listener {
                 + aH.debugObj("definition", scriptEntry.getObject("definition").toString())
                 + aH.debugObj("value", scriptEntry.getObject("value").toString()));
 
-        scriptEntry.getResidingQueue().addContext(
+        scriptEntry.getResidingQueue().addDefinition(
                 (String) scriptEntry.getObject("definition"),
                 (String) scriptEntry.getObject("value"));
     }

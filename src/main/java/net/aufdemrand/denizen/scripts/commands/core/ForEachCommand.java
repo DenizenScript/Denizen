@@ -62,8 +62,8 @@ public class ForEachCommand extends BracedCommand {
                 }
             }
             ScriptQueue queue = new InstantQueue(UUID.randomUUID().toString());
-            scriptEntry.getResidingQueue().addContext("value", value);
-            queue.addContext("value", value);
+            scriptEntry.getResidingQueue().addDefinition("value", value);
+            queue.addDefinition("value", value);
             queue.addEntries(newEntries);
             queue.start();
         }

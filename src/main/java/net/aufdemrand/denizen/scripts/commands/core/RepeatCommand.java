@@ -60,8 +60,8 @@ public class RepeatCommand extends BracedCommand {
                 }
             }
             ScriptQueue queue = new InstantQueue(UUID.randomUUID().toString());
-            scriptEntry.getResidingQueue().addContext("value", String.valueOf(incr + 1));
-            queue.addContext("value", String.valueOf(incr + 1));
+            scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(incr + 1));
+            queue.addDefinition("value", String.valueOf(incr + 1));
             queue.addEntries(newEntries);
             queue.start();
         }
