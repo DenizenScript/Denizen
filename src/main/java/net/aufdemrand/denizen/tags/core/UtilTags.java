@@ -425,13 +425,19 @@ public class UtilTags implements Listener {
         // @description
         // Returns a spawned copy of the chosen entity type.
         // -->
-        else if (type.equalsIgnoreCase("SPAWN_ENTITY")) {
+        else if (type.equalsIgnoreCase("SPAWN_ENTITY")
+                && event.hasTypeContext() && event.hasSubTypeContext()) {
             dEntity ent = dEntity.valueOf(event.getTypeContext());
-            if (ent.isSpawned())
-                event.setReplaced(ent.getAttribute(attribute.fulfill(2)));
-            else {
-                ent.spawnAt(dLocation.valueOf(event.getSubTypeContext()));
-                event.setReplaced(ent.getAttribute(attribute.fulfill(2)));
+            if (ent != null) {
+                if (ent.isSpawned())
+                    event.setReplaced(ent.getAttribute(attribute.fulfill(2)));
+                else {
+                    dLocation spawnAt = dLocation.valueOf(event.getSubTypeContext());
+                    if (spawnAt != null) {
+                        ent.spawnAt(spawnAt);
+                        event.setReplaced(ent.getAttribute(attribute.fulfill(2)));
+                    }
+                }
             }
         }
 
