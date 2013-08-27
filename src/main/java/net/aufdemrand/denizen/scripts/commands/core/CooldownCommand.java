@@ -22,37 +22,40 @@ public class CooldownCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        // Defaults are Type.PLAYER and the attached Script
+        scriptEntry.addObject("type", Type.PLAYER);
+        scriptEntry.addObject("script", scriptEntry.getScript());
+
+        // Parse arguments.. we need a type, duration, and script.
+
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("type")
-                    && arg.matchesEnum(Type.values()))
-                scriptEntry.addObject("type", arg.asElement());
+            // Type may be PLAYER or GLOBAL.. must not have a prefix.
+            if (!arg.hasPrefix() && arg.matchesEnum(Type.values())) {
+                scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
+            }
 
+            // Duration does not need a prefix, but is required.
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
-            else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class))
-                scriptEntry.addObject("script", arg.asType(dScript.class));
+            // Require a prefix on the script, since it's optional.
+            else if (arg.matchesPrefix("script, s")) {
+                // Check matchesArgumentType afterwards so we don't default
+                // to the attached script unintentionally.
+                if (arg.matchesArgumentType(dScript.class))
+                    scriptEntry.addObject("script", arg.asType(dScript.class));
+                else
+                    throw new InvalidArgumentsException("Specified an invalid script!");
+            }
+
+            else dB.echoDebug("Unhandled argument: " + arg.raw_value);
         }
 
-        // Check to make sure required arguments have been filled
-
-        if (scriptEntry.hasObject("type")
-                && ((Element) scriptEntry.getObject("type")).identify().equalsIgnoreCase("player")
-                && scriptEntry.getPlayer() == null)
-            throw new InvalidArgumentsException("Requires a type, either ");
-
-        if ((!scriptEntry.hasObject("script"))
-                || (scriptEntry.hasObject("script")
-                && !((dScript) scriptEntry.getObject("script")).isValid()))
-            throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
-
-        if ((!scriptEntry.hasObject("duration"))
-                || (scriptEntry.hasObject("script")
-                && !((dScript) scriptEntry.getObject("script")).isValid()))
-            throw new InvalidArgumentsException(Messages.ERROR_NO_SCRIPT);
+        if (!scriptEntry.hasObject("duration"))
+            throw new InvalidArgumentsException("Requires a valid duration!");
     }
 
 
@@ -61,19 +64,17 @@ public class CooldownCommand extends AbstractCommand {
         // Fetch objects
         dScript script = (dScript) scriptEntry.getObject("script");
         Duration duration = (Duration) scriptEntry.getObject("duration");
-        Element type = (scriptEntry.hasObject("type") ?
-                (Element) scriptEntry.getObject("type") : new Element("player"));
+        Type type = (scriptEntry.hasObject("type") ?
+                (Type) scriptEntry.getObject("type") : Type.PLAYER);
 
         // Report to dB
-        dB.report(getName(), type.debug()
+        dB.report(getName(), aH.debugObj("Type", type.name())
                 + script.debug()
-                + (type.toString().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
+                + (type.name().equalsIgnoreCase("player") ? scriptEntry.getPlayer().debug() : "")
                 + duration.debug());
 
         // Perform cooldown
-        Type type_ = Type.valueOf(type.asString().toUpperCase());
-
-        switch (type_) {
+        switch (type) {
             case PLAYER:
                 setCooldown(scriptEntry.getPlayer().getName(),
                         duration,
@@ -130,7 +131,7 @@ public class CooldownCommand extends AbstractCommand {
             Duration player_dur = new Duration((double) (DenizenAPI._saves().getLong("Players." + playerName + ".Scripts."
                     + scriptName + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
             if (player_dur.getSeconds() > duration.getSeconds())
-            return player_dur;
+                return player_dur;
         }
 
         return duration;

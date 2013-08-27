@@ -18,7 +18,7 @@ public class Settings {
 
     public static int ConsoleWidth() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Debug.Console Width", 60);
+                .getInt("Debug.Console width", 60);
     }
     
     /*
@@ -29,7 +29,7 @@ public class Settings {
 
     public static String ScriptQueueSpeed() {
         String delay = DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Scripts.Queue Speed", "0.5s");
+                .getString("Scripts.Queue speed", "0.5s");
         
         // Check for users setting delay to 0, which will in turn lock up the server
         try { if (Double.valueOf(delay) < 1) delay = "1t"; }
@@ -46,7 +46,7 @@ public class Settings {
     
     public static boolean LoadScriptsInSubfolders() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Scripts.Load Scripts in Subfolders", true);
+                .getBoolean("Scripts.Load scripts in subfolders", true);
     }
     
     /*
@@ -79,7 +79,7 @@ public class Settings {
     
     public static boolean HealthTraitAnimatedDeathEnabled() {
         return DenizenAPI.getCurrentInstance().getConfig()
-               .getBoolean("Traits.Health.Animated Death.Enabled", true);
+               .getBoolean("Traits.Health.Animated death.Enabled", true);
     }
     
     /*
@@ -156,7 +156,7 @@ public class Settings {
     
     public static boolean ClickTriggerAllowsLeftClick() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Click.Allows Left Click", false);
+                .getBoolean("Triggers.Click.Allows left click", false);
     }
 
     /*
@@ -172,7 +172,18 @@ public class Settings {
                 .getString("Commands.Engage.Timeout", "150s");
     }
 
+    /*
 
+    # Whether the Chat Trigger should use an asynchronous Bukkit
+    # event or not
+
+    */
+
+    public static boolean ChatAsynchronous() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Triggers.Chat.Use asynchronous event", true);
+    }
+    
     /*
 
     # The formats in which Chat Trigger input from players appears to
@@ -187,7 +198,7 @@ public class Settings {
 
     public static String ChatToNpcOverheardFormat() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Triggers.Chat.Formats.Player to Bystanders", "<player.name> -> <npc.name.nickname>: <text>");
+                .getString("Triggers.Chat.Formats.Player to NPC overheard", "<player.name> -> <npc.name.nickname>: <text>");
     }
     
     /*
@@ -199,7 +210,7 @@ public class Settings {
 
     public static double ChatToNpcOverhearingRange() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getDouble("Triggers.Chat.Overhearing Range", 4);
+                .getDouble("Triggers.Chat.Overhearing range", 4);
     }
     
     /*
@@ -208,14 +219,16 @@ public class Settings {
 
     */
 
-    public static boolean ChatMustSeeNPC() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Prerequisites.Must Be Able to See NPC", true);
-    }
+    // Currently broken because of Bukkit changes
+    
+    //public static boolean ChatMustSeeNPC() {
+    //    return DenizenAPI.getCurrentInstance().getConfig()
+    //            .getBoolean("Triggers.Chat.Prerequisites.Must be able to see NPC", true);
+    //}
 
     public static boolean ChatMustLookAtNPC() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Prerequisites.Must Be Looking in Direction of NPC", true);
+                .getBoolean("Triggers.Chat.Prerequisites.Must be looking in direction of NPC", true);
     }
 
     /*
@@ -227,22 +240,46 @@ public class Settings {
     
     public static boolean ChatGloballyIfFailedChatTriggers() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Appears Globally.If Triggers Failed", false);
+                .getBoolean("Triggers.Chat.Appears globally.If triggers failed", false);
     }
 
     public static boolean ChatGloballyIfNoChatTriggers() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Appears Globally.If Triggers Missing", true);
+                .getBoolean("Triggers.Chat.Appears globally.If triggers missing", true);
     }
 
     public static boolean ChatGloballyIfUninteractable() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Appears Globally.If NPC Uninteractable", true);
+                .getBoolean("Triggers.Chat.Appears globally.If NPC uninteractable", true);
     }
 
-    public static Duration WorldScriptTimeEventResolution() {
+    
+    /////////////////////
+    //   WORLD SCRIPTS
+    /////////////////
+    
+    /*
+
+    # Whether the "on player chats" world event should use an
+    # asynchronous Bukkit event or not
+
+    */
+    
+    public static boolean WorldScriptChatEventAsynchronous() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Scripts.World.Events.On player chats.Use asynchronous event", true);
+    }
+    
+    /*
+
+    # The frequency with which the "on time changes" world script
+    # event will be checked
+
+    */
+
+    public static Duration WorldScriptTimeEventFrequency() {
         return Duration.valueOf(DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Events.On time resolution", "250t"));
+                .getString("Scripts.World.Events.On time changes.Frequency of check", "250t"));
 
     }
 

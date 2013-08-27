@@ -299,56 +299,70 @@ public class dLocation extends org.bukkit.Location implements dObject {
     public String getAttribute(Attribute attribute) {
         if (attribute == null) return null;
 
-        // <--
-        // <l@location.biome.formatted> -> Element
+        // <--[tag]
+        // @attribute <l@location.biome.formatted>
+        // @returns Element
+        // @description
         // Returns the formatted biome name at the location.
         // -->
         if (attribute.startsWith("biome.formatted"))
             return new Element(getBlock().getBiome().name().toLowerCase().replace('_', ' '))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <l@location.biome.humidity> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.biome.humidity>
+        // @returns Element(Number)
+        // @description
         // Returns the current humidity at the location.
         // -->
         if (attribute.startsWith("biome.humidity"))
             return new Element(String.valueOf(getBlock().getHumidity()))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <l@location.biome.temperature> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.biome.temperature>
+        // @returns Element(Number)
+        // @description
         // Returns the current temperature at the location.
         // -->
         if (attribute.startsWith("biome.temperature"))
             return new Element(String.valueOf(getBlock().getTemperature()))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <l@location.biome.humidity> -> Element
+        // <--[tag]
+        // @attribute <l@location.biome.humidity>
+        // @returns Element
+        // @description
         // Returns Bukkit biome name at the location.
         // -->
         if (attribute.startsWith("biome"))
             return new Element(String.valueOf(getBlock().getBiome().name()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <l@location.block.below> -> dLocation
+        // <--[tag]
+        // @attribute <l@location.block.below>
+        // @returns dLocation
+        // @description
         // Returns the dLocation of the block below the location.
         // -->
         if (attribute.startsWith("block.below"))
             return new dLocation(this.add(0,-1,0))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <l@location.block.above> -> dLocation
+        // <--[tag]
+        // @attribute <l@location.block.above>
+        // @returns dLocation
+        // @description
         // Returns the dLocation of the block above the location.
         // -->
         if (attribute.startsWith("block.above"))
             return new dLocation(this.add(0,1,0))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <l@location.add[x,y,z]> -> dLocation
+        // <--[tag]
+        // @attribute <l@location.add[x,y,z]>
+        // @returns dLocation
+        // @description
         // Adds to location coordinates, and returns the sum.
         // -->
         if (attribute.startsWith("add")) {
@@ -364,8 +378,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
 
-        // <--
-        // <l@location.with_pose> -> dLocation
+        // <--[tag]
+        // @attribute <l@location.with_pose>
+        // @returns dLocation
+        // @description
         // Returns the dLocation with pitch and yaw.
         // -->
         if (attribute.startsWith("with_pose")) {
@@ -392,8 +408,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
         if (attribute.startsWith("find") || attribute.startsWith("nearest")) {
             attribute.fulfill(1);
             
-            // <--
-            // <l@location.find.blocks[<block>|...].within[X]> -> dList
+            // <--[tag]
+            // @attribute <l@location.find.blocks[<block>|...].within[X]>
+            // @returns dList
+            // @description
             // Returns a dList of blocks within a radius.
             // -->
             if (attribute.startsWith("blocks")
@@ -429,8 +447,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return new dList(found).getAttribute(attribute);
             }
 
-            // <--
-            // <l@location.find.surface_blocks[<block>|...].within[X]> -> dList
+            // <--[tag]
+            // @attribute <l@location.find.surface_blocks[<block>|...].within[X]>
+            // @returns dList
+            // @description
             // Returns a dList of surface blocks within a radius.
             // -->
             else if (attribute.startsWith("surface_blocks")
@@ -474,8 +494,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return new dList(found).getAttribute(attribute); 
             }
             
-            // <--
-            // <l@location.find.players.within[X]> -> dList
+            // <--[tag]
+            // @attribute <l@location.find.players.within[X]>
+            // @returns dList
+            // @description
             // Returns a dList of players within a radius.
             // -->
             else if (attribute.startsWith("players")
@@ -498,8 +520,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return new dList(found).getAttribute(attribute);
             }
             
-            // <--
-            // <l@location.find.npcs.within[X]> -> dList
+            // <--[tag]
+            // @attribute <l@location.find.npcs.within[X]>
+            // @returns dList
+            // @description
             // Returns a dList of NPCs within a radius.
             // -->
             else if (attribute.startsWith("npcs")
@@ -522,8 +546,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return new dList(found).getAttribute(attribute);
             }
             
-            // <--
-            // <l@location.find.npcs.within[X]> -> dList
+            // <--[tag]
+            // @attribute <l@location.find.npcs.within[X]>
+            // @returns dList
+            // @description
             // Returns a dList of NPCs within a radius.
             // -->
             else if (attribute.startsWith("npcs")
@@ -546,8 +572,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return new dList(found).getAttribute(attribute);
             }
 
-            // <--
-            // <l@location.find.entities.within[X]> -> dList
+            // <--[tag]
+            // @attribute <l@location.find.entities.within[X]>
+            // @returns dList
+            // @description
             // Returns a dList of entities within a radius.
             // -->
             else if (attribute.startsWith("entities")
@@ -570,8 +598,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 return new dList(found).getAttribute(attribute);
             }
 
-            // <--
-            // <l@location.find.living_entities.within[X]> -> dList
+            // <--[tag]
+            // @attribute <l@location.find.living_entities.within[X]>
+            // @returns dList
+            // @description
             // Returns a dList of living entities within a radius.
             // -->
             else if (attribute.startsWith("living_entities")
@@ -598,8 +628,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element("null").getAttribute(attribute);
         }
         
-        // <--
-        // <l@location.inventory> -> dInventory
+        // <--[tag]
+        // @attribute <l@location.inventory>
+        // @returns dInventory
+        // @description
         // Returns the dInventory of the block at the location. If the
         // block is not a container, returns null.
         // -->
@@ -609,17 +641,35 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element("null").getAttribute(attribute);
         }
 
-        // <--
-        // <l@location.block.material> -> Element
+        // <--[tag]
+        // @attribute <l@location.block.material>
+        // @returns Element
+        // @description
         // Returns the Bukkit material name of the block at the
         // location.
         // -->
         if (attribute.startsWith("block.material"))
             return new Element(getBlock().getType().toString()).getAttribute(attribute.fulfill(2));
 
-        
-        // <--
-        // <l@location.direction> -> Element
+
+        // <--[tag]
+        // @attribute <l@location.direction.vector>
+        // @returns dLocation
+        // @description
+        // Returns the location's direction as a one-length vector.
+        // -->
+        if (attribute.startsWith("direction.vector")) {
+            double xzLen = Math.cos((getPitch() % 360) * (Math.PI/180));
+            double nx = xzLen * Math.cos(getYaw() * (Math.PI/180));
+            double ny = Math.sin(getPitch() * (Math.PI/180));
+            double nz = xzLen * Math.sin(-getYaw() * (Math.PI/180));
+            return new dLocation(getWorld(), -nx, -ny, nz).getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.direction>
+        // @returns Element
+        // @description
         // Returns the compass direction of the block or entity
         // at the location.
         // -->
@@ -640,22 +690,28 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
 
-        // <--
-        // <l@location.distance[<location>]> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.distance[<location>]>
+        // @returns Element(Number)
+        // @description
         // Returns the distance between 2 locations.
         // -->
         if (attribute.startsWith("distance")) {
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
                 dLocation toLocation = dLocation.valueOf(attribute.getContext(1));
 
-                // <--
-                // <l@location.distance[<location>].horizontal> -> Element(Number)
+                // <--[tag]
+                // @attribute <l@location.distance[<location>].horizontal>
+                // @returns Element(Number)
+                // @description
                 // Returns the horizontal distance between 2 locations.
                 // -->
                 if (attribute.getAttribute(2).startsWith("horizontal")) {
                     
-                    // <--
-                    // <l@location.distance[<location>].horizontal.multiworld> -> Element(Number)
+                    // <--[tag]
+                    // @attribute <l@location.distance[<location>].horizontal.multiworld>
+                    // @returns Element(Number)
+                    // @description
                     // Returns the horizontal distance between 2 multiworld locations.
                     // -->
                     if (attribute.getAttribute(3).startsWith("multiworld"))
@@ -670,14 +726,18 @@ public class dLocation extends org.bukkit.Location implements dObject {
                                 .getAttribute(attribute.fulfill(2));
                 }
 
-                // <--
-                // <l@location.distance[<location>].vertical> -> Element(Number)
+                // <--[tag]
+                // @attribute <l@location.distance[<location>].vertical>
+                // @returns Element(Number)
+                // @description
                 // Returns the vertical distance between 2 locations.
                 // -->
                 else if (attribute.getAttribute(2).startsWith("vertical")) {
                     
-                    // <--
-                    // <l@location.distance[<location>].vertical.multiworld> -> Element(Number)
+                    // <--[tag]
+                    // @attribute <l@location.distance[<location>].vertical.multiworld>
+                    // @returns Element(Number)
+                    // @description
                     // Returns the vertical distance between 2 multiworld locations.
                     // -->
                     if (attribute.getAttribute(3).startsWith("multiworld"))
@@ -693,16 +753,20 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
 
-        // <--
-        // <l@location.simple> -> Element
+        // <--[tag]
+        // @attribute <l@location.simple>
+        // @returns Element
+        // @description
         // Returns the simple version of a dLocation.
         // -->
         if (attribute.startsWith("simple"))
             return new Element(getBlockX() + "," + getBlockY() + "," + getBlockZ()
             + "," + getWorld().getName()).getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <l@location.formatted.simple> -> Element
+        // <--[tag]
+        // @attribute <l@location.formatted.simple>
+        // @returns Element
+        // @description
         // Returns the formatted simple version of a dLocation.
         // -->
         if (attribute.startsWith("formatted.simple"))
@@ -711,8 +775,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     + "', Z '" + getBlockZ()
                     + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <l@location.formatted> -> Element
+        // <--[tag]
+        // @attribute <l@location.formatted>
+        // @returns Element
+        // @description
         // Returns the formatted version of a dLocation.
         // -->
         if (attribute.startsWith("formatted"))
@@ -721,8 +787,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     + "', Z '" + getZ()
                     + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <l@location.is_liquid> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <l@location.is_liquid>
+        // @returns Element(Boolean)
+        // @description
         // If the block at the location is a liquid, return
         // true. Otherwise, returns false.
         // -->
@@ -730,8 +798,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element(String.valueOf(getBlock().isLiquid())).getAttribute(attribute.fulfill(1));
 
 
-        // <--
-        // <l@location.light.blocks> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.light.blocks>
+        // @returns Element(Number)
+        // @description
         // Returns the amount of light from blocks that is
         // on the location.
         // -->
@@ -740,8 +810,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element(String.valueOf((int) getBlock().getLightFromBlocks()))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <l@location.light.sky> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.light.sky>
+        // @returns Element(Number)
+        // @description
         // Returns the amount of light from the sky that is
         // on the location.
         // -->
@@ -750,24 +822,30 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element(String.valueOf((int) getBlock().getLightFromSky()))
                     .getAttribute(attribute.fulfill(2));
 
-        // <--
-        // <l@location.light.blocks> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.light.blocks>
+        // @returns Element(Number)
+        // @description
         // Returns the total amount of light on the location.
         // -->
         if (attribute.startsWith("light"))
             return new Element(String.valueOf((int) getBlock().getLightLevel()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <l@location.pitch> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.pitch>
+        // @returns Element(Number)
+        // @description
         // Returns the pitch of the object at the location.
         // -->
         if (attribute.startsWith("pitch")) {
             return new Element(String.valueOf(getPitch())).getAttribute(attribute.fulfill(1));
         }
         
-        // <--
-        // <l@location.yaw.raw> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.yaw.raw>
+        // @returns Element(Number)
+        // @description
         // Returns the raw yaw of the object at the location.
         // -->
         if (attribute.startsWith("yaw.raw")) {
@@ -775,8 +853,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     (getYaw())).getAttribute(attribute.fulfill(2));
         }
         
-        // <--
-        // <l@location.yaw> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.yaw>
+        // @returns Element(Number)
+        // @description
         // Returns the normalized yaw of the object at the location.
         // -->
         if (attribute.startsWith("yaw")) {
@@ -784,8 +864,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     (Rotation.normalizeYaw(getYaw()))).getAttribute(attribute.fulfill(1));
         }
         
-        // <--
-        // <l@location.facing[<value>]> -> Element(Boolean)
+        // <--[tag]
+        // @attribute <l@location.facing[<value>]>
+        // @returns Element(Boolean)
+        // @description
         // Returns true if the location's yaw is facing another
         // entity or location. Otherwise, returns false.
         // -->
@@ -798,8 +880,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 // The attribute to fulfill from
                 int attributePos = 1;
                 
-                // <--
-                // <location.facing[<value>].degrees[X]> -> Element(Boolean)
+                // <--[tag]
+                // @attribute <location.facing[<value>].degrees[X]>
+                // @returns Element(Boolean)
+                // @description
                 // Returns true if the location's yaw is facing another
                 // entity or location, within a specified degree range.
                 // Otherwise, returns false.
@@ -826,19 +910,23 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
         
-        // <--
-        // <l@location.power> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.power>
+        // @returns Element(Number)
+        // @description
         // Returns the current power level of a block.
         // -->
         if (attribute.startsWith("power"))
             return new Element(String.valueOf(getBlock().getBlockPower()))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <l@location.in_region[<name>]> -> Element(Boolean)
-        // If a region name is specified, returns true if the
-        // location is in that region, else it returns true if
-        // the location is in any region. Otherwise, returns false.
+        // <--[tag]
+        // @attribute <l@location.in_region[<name>|...]>
+        // @returns Element(Boolean)
+        // @description
+        // If a region name or list of names is specified, returns whether the
+        // location is in one of the listed regions, otherwise it returns whether
+        // the location is in any region.
         // -->
         if (attribute.startsWith("in_region")) {
             if (Depends.worldGuard == null) {
@@ -848,11 +936,11 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
             // Check if the player is in the specified region
             if (attribute.hasContext(1)) {
-            
-                String region = attribute.getContext(1);
-
-                return new Element(String.valueOf(WorldGuardUtilities.inRegion(this, region)))
-                    .getAttribute(attribute.fulfill(1));
+                dList region_list = dList.valueOf(attribute.getContext(1));
+                for(String region: region_list)
+                    if(WorldGuardUtilities.inRegion(this, region))
+                        return Element.TRUE.getAttribute(attribute.fulfill(1));
+                return Element.FALSE.getAttribute(attribute.fulfill(1));
             }
             
             // Check if the player is in any region
@@ -862,8 +950,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
             }
         }
         
-        // <--
-        // <l@location.regions> -> dList
+        // <--[tag]
+        // @attribute <l@location.regions>
+        // @returns dList
+        // @description
         // Returns the list of regions that the location is in.
         // -->
         if (attribute.startsWith("regions")) {
@@ -871,8 +961,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <l@location.world> -> dWorld
+        // <--[tag]
+        // @attribute <l@location.world>
+        // @returns dWorld
+        // @description
         // Returns the dWorld that the location is in.
         // -->
         if (attribute.startsWith("world")) {
@@ -880,56 +972,70 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <location.block.x> -> Element(Number)
+        // <--[tag]
+        // @attribute <location.block.x>
+        // @returns Element(Number)
+        // @description
         // Returns the X coordinate of the block.
         // -->
         if (attribute.startsWith("block.x")) {
             return new Element(getBlockX()).getAttribute(attribute.fulfill(2));
         }
 
-        // <--
-        // <l@location.block.y> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.block.y>
+        // @returns Element(Number)
+        // @description
         // Returns the Y coordinate of the block.
         // -->
         if (attribute.startsWith("block.y")) {
             return new Element(getBlockY()).getAttribute(attribute.fulfill(2));
         }
 
-        // <--
-        // <l@location.block.z> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.block.z>
+        // @returns Element(Number)
+        // @description
         // Returns the Z coordinate of the block.
         // -->
         if (attribute.startsWith("block.z")) {
             return new Element(getBlockZ()).getAttribute(attribute.fulfill(2));
         }
 
-        // <--
-        // <l@location.x> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.x>
+        // @returns Element(Number)
+        // @description
         // Returns the X coordinate of the location.
         // -->
         if (attribute.startsWith("x")) {
             return new Element(getX()).getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <l@location.y> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.y>
+        // @returns Element(Number)
+        // @description
         // Returns the Y coordinate of the location.
         // -->
         if (attribute.startsWith("y")) {
             return new Element(getY()).getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <l@location.z> -> Element(Number)
+        // <--[tag]
+        // @attribute <l@location.z>
+        // @returns Element(Number)
+        // @description
         // Returns the Z coordinate of the location.
         // -->
         if (attribute.startsWith("z")) {
             return new Element(getZ()).getAttribute(attribute.fulfill(1));
         }
 
-        // <--
-        // <l@location.block.sign_contents> -> dList
+        // <--[tag]
+        // @attribute <l@location.block.sign_contents>
+        // @returns dList
+        // @description
         // Returns a list of lines on a sign.
         // -->
         if (attribute.startsWith("block.sign_contents")) {
@@ -940,8 +1046,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
             else return "null";
         }
 
-        // <--
-        // <l@location.highest> -> dLocation
+        // <--[tag]
+        // @attribute <l@location.highest>
+        // @returns dLocation
+        // @description
         // Returns the location of the highest at x,z that isn't air.
         // -->
         if (attribute.startsWith("highest")) {

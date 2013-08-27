@@ -277,7 +277,7 @@ public class IfCommand extends AbstractCommand {
 
             try {
                 ScriptEntry entry = new ScriptEntry(command, arguments,
-                        scriptEntry.getScript().getContainer())
+                        (scriptEntry.getScript() == null ? null : scriptEntry.getScript().getContainer()))
                         .setPlayer(scriptEntry.getPlayer())
                         .setNPC(scriptEntry.getNPC()).setInstant(true)
                         .addObject("reqId", scriptEntry.getObject("reqId"));

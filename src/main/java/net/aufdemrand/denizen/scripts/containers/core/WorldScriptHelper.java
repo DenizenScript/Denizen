@@ -14,7 +14,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -64,6 +63,7 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -95,6 +95,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
+@SuppressWarnings("deprecation")
 public class WorldScriptHelper implements Listener {
 
     public static Map<String, WorldScriptContainer> world_scripts = new ConcurrentHashMap<String, WorldScriptContainer>(8, 0.9f, 1);
@@ -167,6 +168,24 @@ public class WorldScriptHelper implements Listener {
     //   BLOCK EVENTS
     /////////////////
     
+    // <--[event]
+    // @Events
+    // player breaks block
+    // player breaks <block>
+    // player breaks block with <item>
+    // player breaks <block> with <item>
+    //
+    // @Triggers when a player breaks a block.
+    // @Context
+    // <context.location> will return the location the block was broken at.
+    // <context.type> will return the material of the block that was broken.
+    //
+    // @Determine
+    // CANCELLED to stop the block from breaking.
+    // NOTHING to make the block drop no items.
+    // dList(dItem) to make the block drop a specified list of items.
+    //
+    // -->
     @EventHandler
     public void blockBreak(BlockBreakEvent event) {
 
@@ -230,6 +249,20 @@ public class WorldScriptHelper implements Listener {
         }
     }
     
+    // <--[event]
+    // @Events
+    // block burns
+    // <block> burns
+    //
+    // @Triggers when a block is destroyed by fire.
+    // @Context
+    // <context.location> will return the location the block was burned at.
+    // <context.type> will return the material of the block that was burned.
+    //
+    // @Determine
+    // CANCELLED to stop the block from being destroyed.
+    //
+    // -->
     @EventHandler
     public void blockBurn(BlockBurnEvent event) {
 
@@ -247,6 +280,20 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
     
+    // <--[event]
+    // @Events
+    // block ignites
+    // <block> ignites
+    //
+    // @Triggers when a block is set on fire.
+    // @Context
+    // <context.location> will return the location the block was set on fire at.
+    // <context.type> will return the material of the block that was set on fire.
+    //
+    // @Determine
+    // CANCELLED to stop the block from being ignited.
+    //
+    // -->
     @EventHandler
     public void blockIgnite(BlockIgniteEvent event) {
 
@@ -384,7 +431,7 @@ public class WorldScriptHelper implements Listener {
                     public void run() {
                         timeEvent();
                     }
-                }, Settings.WorldScriptTimeEventResolution().getTicks(), Settings.WorldScriptTimeEventResolution().getTicks());
+                }, Settings.WorldScriptTimeEventFrequency().getTicks(), Settings.WorldScriptTimeEventFrequency().getTicks());
 
         // Fire the 'Server Start' event
         doEvents(Arrays.asList("server start"),
@@ -408,7 +455,8 @@ public class WorldScriptHelper implements Listener {
                 context.put("world", new dWorld(world));
                 
                 doEvents(Arrays.asList("time changes in " + world.getName(),
-                                       hour + ":00 in " + world.getName()),
+                                       String.valueOf(hour) + ":00 in " + world.getName(),
+                                        "time " + String.valueOf(hour) + " in " + world.getName()),
                         null, null, context);
                 
                 current_time.put(world.getName(), hour);
@@ -1137,7 +1185,10 @@ public class WorldScriptHelper implements Listener {
     /////////////////
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void playerChat(final AsyncPlayerChatEvent event) {
+    public void asyncPlayerChat(final AsyncPlayerChatEvent event) {
+        
+        // Return if "Use asynchronous event" is false in config file
+        if (!Settings.WorldScriptChatEventAsynchronous()) return;
         
         final Map<String, Object> context = new HashMap<String, Object>();
         context.put("message", new Element(event.getMessage()));
@@ -1162,6 +1213,25 @@ public class WorldScriptHelper implements Listener {
 
         if (determination == null)
             return;
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        else if (!determination.equals("none")) {
+            event.setMessage(determination);
+        }
+    }
+    
+    @EventHandler
+    public void syncPlayerChat(final PlayerChatEvent event) {
+        
+        // Return if "Use asynchronous event" is true in config file
+        if (Settings.WorldScriptChatEventAsynchronous()) return;
+        
+        final Map<String, Object> context = new HashMap<String, Object>();
+        context.put("message", new Element(event.getMessage()));
+
+        String determination = doEvents(Arrays.asList("player chats"),
+                null, event.getPlayer(), context);
+
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
         else if (!determination.equals("none")) {

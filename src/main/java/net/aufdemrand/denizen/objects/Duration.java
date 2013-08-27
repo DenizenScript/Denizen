@@ -290,35 +290,43 @@ public class Duration implements dObject {
 
         if (attribute == null) return null;
 
-        // <--
-        // <d@duration.in_seconds> -> Element(number)
+        // <--[tag]
+        // @attribute <d@duration.in_seconds>
+        // @returns Element(number)
+        // @description
         // returns the number of seconds in the Duration.
         // -->
-        if (attribute.startsWith("in_seconds"))
+        if (attribute.startsWith("in_seconds") || attribute.startsWith("seconds"))
             return new Element(String.valueOf(seconds))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <d@duration.in_seconds> -> Element(number)
+        // <--[tag]
+        // @attribute <d@duration.in_seconds> 
+        // @returns Element(number)
+        // @description
         // returns the number of hours in the Duration.
         // -->
-        if (attribute.startsWith("in_hours"))
+        if (attribute.startsWith("in_hours") || attribute.startsWith("hours"))
             return new Element(String.valueOf(seconds / 1800))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <d@duration.in_minutes> -> Element(number)
+        // <--[tag]
+        // @attribute <d@duration.in_minutes> 
+        // @returns Element(number)
+        // @description
         // returns the number of minutes in the Duration.
         // -->
-        if (attribute.startsWith("in_minutes"))
+        if (attribute.startsWith("in_minutes") || attribute.startsWith("minutes"))
             return new Element(String.valueOf(seconds / 60))
                     .getAttribute(attribute.fulfill(1));
 
-        // <--
-        // <d@duration.in_ticks> -> Element(number)
+        // <--[tag]
+        // @attribute <d@duration.in_ticks> 
+        // @returns Element(number)
+        // @description
         // returns the number of ticks in the Duration. (20t/second)
         // -->
-        if (attribute.startsWith("in_ticks"))
+        if (attribute.startsWith("in_ticks") || attribute.startsWith("ticks"))
             return new Element(String.valueOf(getTicksAsInt()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -336,28 +344,45 @@ public class Duration implements dObject {
             return new Element(ChatColor.stripColor(debug()))
                     .getAttribute(attribute.fulfill(2));
         }
+        
+        // <--[tag]
+        // @attribute <d@duration.formatted> 
+        // @returns Element
+        // @description
+        // returns the value of the duration in an easily readable
+        // format like 2h 30m, where minutes are only shown if there
+        // is less than a day left and seconds are only shown if
+        // there are less than 10 minutes left.
+        // -->
+        if (attribute.startsWith("formatted") || attribute.startsWith("value")) {
+            
+            // Make sure you don't change these longs into doubles
+            // and break the code
+            
+            long seconds = (long) this.seconds;
+            long days = seconds / 86400;
+            long hours = (seconds - days * 86400) / 3600;
+            long minutes = (seconds - days * 86400 - hours * 3600) / 60;
+            seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
+            
+            String timeString = "";
+
+            if (days > 0)
+                timeString = String.valueOf(days) + "d ";
+            if (hours > 0)
+                timeString = timeString + String.valueOf(hours) + "h ";
+            if (minutes > 0 && days == 0)
+                timeString = timeString + String.valueOf(minutes) + "m ";
+            if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
+                timeString = timeString + String.valueOf(seconds) + "s";
+
+            return new Element(timeString.trim())
+                        .getAttribute(attribute.fulfill(1));
+        }
 
         if (attribute.startsWith("debug")) {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--
-        // <d@duration.value> -> Element
-        // returns the value of the duration, in the best format possible.
-        // -->
-        if (attribute.startsWith("value")) {
-            if (seconds % 43200 == 0)
-                return new Element(seconds / 86400 + "d")
-                        .getAttribute(attribute.fulfill(1));
-            else if (seconds % 1800 == 0)
-                return new Element(seconds / 3600 + "h")
-                        .getAttribute(attribute.fulfill(1));
-            else if (seconds % 30 == 0)
-                return new Element(seconds / 60 + "m")
-                        .getAttribute(attribute.fulfill(1));
-            else return new Element(seconds + "s")
-                        .getAttribute(attribute.fulfill(1));
         }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));

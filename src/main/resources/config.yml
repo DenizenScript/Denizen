@@ -3,11 +3,17 @@
 
 Debug:
   Show: true
-  Console Width: 60
+  Console width: 60
 
 Scripts:
-  Queue Speed: 0.5s
-  Load Scripts in Subfolders: true
+  World:
+    Events:
+      On player chats:
+        Use asynchronous event: true
+      On time changes:
+        Frequency of check: 250t
+  Queue speed: 0.5s
+  Load scripts in subfolders: true
 
 # The default options for new Denizens
 
@@ -17,29 +23,29 @@ Traits:
     Respawn:
       Enabled: true
       Delay: 10s
-    Animated Death:
+    Animated death:
       Enabled: true
 
 Triggers:
   Chat:
     Enabled: true
+    Use asynchronous event: true
     Cooldown: 2s
     Range: 3
-    Overhearing Range: 4
+    Overhearing range: 4
     Prerequisites:
-      Must Be Able to See NPC: true
-      Must Be Looking in Direction of NPC: true
+      Must be looking in direction of NPC: true
     Formats:
       Player to NPC: "You -> <npc.name.nickname>: <text>"
-      Player to NPC Overheard: "<player.name> -> <npc.name.nickname>: <text>"
-    Appears Globally:
-      If Triggers Missing: true
-      If Triggers Failed: false
-      If NPC Uninteractable: true
+      Player to NPC overheard: "<player.name> -> <npc.name.nickname>: <text>"
+    Appears globally:
+      If triggers missing: true
+      If triggers failed: false
+      If NPC uninteractable: true
   Click:
     Enabled: true
     Cooldown: 2s
-    Allows Left Click: false
+    Allows left click: false
   Damage:
     Enabled: false
     Cooldown: 0.5s
@@ -52,11 +58,8 @@ Commands:
   Engage:
     Timeout: 150s
 
-Events:
-  On time resolution: 250t
-
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 
 Config:
-  Version: 2
+  Version: 3

@@ -526,36 +526,84 @@ public class dItem implements dObject {
 
         if (attribute == null) return null;
 
+        // <--[tag]
+        // @attribute <i@item.qty> 
+        // @returns Element(Number)
+        // @description
+        // Returns the number of items in the dItem's itemstack.
+        // -->
         if (attribute.startsWith("qty"))
             return new Element(String.valueOf(getItemStack().getAmount()))
                     .getAttribute(attribute.fulfill(1));
 
-        // Needs to be above "id" or it won't work
+        // <--[tag]
+        // @attribute <i@item.identify> 
+        // @returns Element
+        // @description
+        // Returns a valid identification for the item
+        // -->
         if (attribute.startsWith("identify")) {
             return new Element(identify())
                     .getAttribute(attribute.fulfill(1));
         }
         
+        // <--[tag]
+        // @attribute <i@item.id> 
+        // @returns Element(Number)
+        // @description 
+        // Returns the item ID number of the item.
+        // -->
         if (attribute.startsWith("id"))
             return new Element(String.valueOf(getItemStack().getTypeId()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <i@item.max_stack>
+        // @returns Element(Number)
+        // @description
+        // Returns the max number of this item possible in a single stack of this type.
+        // -->
         if (attribute.startsWith("max_stack"))
             return new Element(String.valueOf(getItemStack().getMaxStackSize()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <i@item.data>
+        // @returns Element(Number)
+        // @description
+        // Returns the data value of the material of the item.
+        // -->
         if (attribute.startsWith("data"))
             return new Element(String.valueOf(getItemStack().getData().getData()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <i@item.durability> 
+        // @returns Element(Number)
+        // @description
+        // Returns the current durability of the item.
+        // -->
         if (attribute.startsWith("durability"))
             return new Element(String.valueOf(getItemStack().getDurability()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <i@item.repairable> 
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the item can be repaired. Otherwise, returns false.
+        // -->
         if (attribute.startsWith("repairable"))
             return new Element(String.valueOf(isRepairable()))
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <i@item.material.formatted>
+        // @returns Element
+        // @description
+        // Returns the formatted material name of the item to be used in a sentence. Correctly singularizes and
+        // pluarlizes the name of items, among other things. 
+        // -->
         if (attribute.startsWith("material.formatted")) {
 
             String id = item.getType().name().toLowerCase();
@@ -595,47 +643,111 @@ public class dItem implements dObject {
             }
         }
 
+        // <--[tag]
+        // @attribute <i@item.material> 
+        // @returns Element
+        // @description
+        // Returns the bukkit material name of the item.
+        // -->
         if (attribute.startsWith("material"))
             return new Element(getItemStack().getType().toString())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <i@item.display> 
+        // @returns Element
+        // @description
+        // Returns the display name of the item, as set by API or an 'anvil'.
+        // -->
         if (attribute.startsWith("display"))
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasDisplayName())
                 return new Element(getItemStack().getItemMeta().getDisplayName())
                         .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <i@item.enchantments>
+        // @returns dList
+        // @description
+        // Returns a list of bukkit enchantment names on the item.
+        // -->
         if (attribute.startsWith("enchantments")) {
-        // TODO ?
+            if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasEnchants()) {
+                List<String> enchants = new ArrayList<String>();
+                for (Enchantment enchantment : getItemStack().getEnchantments().keySet())
+                    enchants.add(enchantment.getName());
+                return new dList(enchants)
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
+
 
         if (attribute.startsWith("book")) {
             if (getItemStack().getType() == Material.WRITTEN_BOOK) {
                 attribute.fulfill(1);
                 BookMeta bookInfo = (BookMeta) getItemStack().getItemMeta();
 
+                // <--[tag]
+                // @attribute <i@item.book.author> 
+                // @returns Element
+                // @description
+                // Returns the author of the book. Note: Item must be a 'written_book'.
+                // -->
                 if (attribute.startsWith("author"))
                     return new Element(bookInfo.getAuthor())
                             .getAttribute(attribute.fulfill(1));
 
+                // <--[tag]
+                // @attribute <i@item.book.title>
+                // @returns Element
+                // @description
+                // Returns the title of the book. Note: Item must be a 'written_book'.
+                // -->
                 if (attribute.startsWith("title"))
                     return new Element(bookInfo.getTitle())
                             .getAttribute(attribute.fulfill(1));
 
+                // <--[tag]
+                // @attribute <i@item.book.page_count> 
+                // @returns Element(Number)
+                // @description
+                // Returns the number of pages in the book. Note: Item must be a 'written_book'.
+                // -->
                 if (attribute.startsWith("page_count"))
                     return new Element(bookInfo.getPageCount())
                             .getAttribute(attribute.fulfill(1));
 
+                // <--[tag]
+                // @attribute <i@item.book.get_page[<#>]> 
+                // @returns Element
+                // @description
+                // Returns the page specified from the book as an element.
+                // -->
                 if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1)))
                     return new Element(bookInfo.getPage(attribute.getIntContext(1)))
                             .getAttribute(attribute.fulfill(1));
 
+                // <--[tag]
+                // @attribute <i@item.book.pages> 
+                // @returns dList
+                // @description
+                // Returns the pages of the book as a dList.
+                // -->
                 if (attribute.startsWith("pages"))
                     return new dList(bookInfo.getPages())
                             .getAttribute(attribute.fulfill(1));
 
-            } else dB.echoError("Item referenced is not a written book!");
+            } else  {
+                dB.echoError("Item referenced is not a written book!");
+                return "null";
+            }
         }
 
+        // <--[tag]
+        // @attribute <i@item.scriptname> 
+        // @returns Element
+        // @description
+        // Returns the script name of the item if it was created by an item script-container..
+        // -->
         if (attribute.startsWith("scriptname")) // Note: Update this when the id: is stored less stupidly!
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
                 List<String> loreList = new ArrayList<String>();
@@ -644,7 +756,13 @@ public class dItem implements dObject {
                         return new Element(itemLore.substring(5)).getAttribute(attribute.fulfill(1));
             }
 
-        // Return all lore except for lore that holds item script ID
+        // <--[tag]
+        // @attribute <i@item.lore> 
+        // @returns dList
+        // @description
+        // Returns lore as a dList. Excludes the custom-script-id lore. 
+        // To get that information, use <i@item.scriptname>.
+        // -->
         if (attribute.startsWith("lore")) {
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
                 

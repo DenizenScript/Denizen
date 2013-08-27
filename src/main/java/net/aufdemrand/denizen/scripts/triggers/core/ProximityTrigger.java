@@ -134,6 +134,10 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
             Iterator<dNPC>    it = DenizenAPI.getCurrentInstance().getNPCRegistry().getSpawnedNPCs().iterator();
             while (it.hasNext ()) {
                 dNPC npc = it.next ();
+                if (npc == null)
+                    continue;
+                if (npc.getCitizen() == null)
+                    continue;
 
                 //
                 // If the NPC doesn't have triggers, or the Proximity Trigger is not enabled,

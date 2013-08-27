@@ -1,10 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.ArrayList;
-import java.util.UUID;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -14,25 +12,25 @@ import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
-public class ForEachCommand extends BracedCommand {
+import java.util.ArrayList;
+import java.util.UUID;
 
-    // - foreach li@p@Vegeta|p@MuhammedAli|n@123 {
-    //   - inventory move origin:<%value%.inventory> destination:in@location[123,70,321]
-    //   }
+public class RepeatCommand extends BracedCommand {
+
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("list")
-                    && arg.matchesArgumentType(dList.class))
-                scriptEntry.addObject("list", arg.asType(dList.class));
+            if (!scriptEntry.hasObject("qty")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                scriptEntry.addObject("qty", arg.asElement());
 
         }
 
-        if (!scriptEntry.hasObject("list"))
-            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LIST");
+        if (!scriptEntry.hasObject("qty"))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "QUANTITY");
 
         scriptEntry.addObject("entries", getBracedCommands(scriptEntry));
 
@@ -43,13 +41,13 @@ public class ForEachCommand extends BracedCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Get objects
-        dList list = (dList) scriptEntry.getObject("list");
+        Element qty = scriptEntry.getElement("qty");
         ArrayList<ScriptEntry> entries = (ArrayList<ScriptEntry>) scriptEntry.getObject("entries");
 
         // Report to dB
-        dB.report(getName(), list.debug() );
+        dB.report(getName(), qty.debug());
 
-        for (String value : list) {
+        for (int incr = 0; incr < qty.asInt(); incr++) {
             ArrayList<ScriptEntry> newEntries = (ArrayList<ScriptEntry>) new ArrayList<ScriptEntry>();
             for (ScriptEntry entr: entries) {
                 try {
@@ -62,12 +60,11 @@ public class ForEachCommand extends BracedCommand {
                 }
             }
             ScriptQueue queue = new InstantQueue(UUID.randomUUID().toString());
-            scriptEntry.getResidingQueue().addDefinition("value", value);
-            queue.addDefinition("value", value);
+            scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(incr + 1));
+            queue.addDefinition("value", String.valueOf(incr + 1));
             queue.addEntries(newEntries);
             queue.start();
         }
 
     }
-
 }

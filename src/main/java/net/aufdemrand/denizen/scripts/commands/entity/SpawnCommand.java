@@ -105,9 +105,8 @@ public class SpawnCommand extends AbstractCommand {
                 entity.target(target.getLivingEntity());
             }
         }
-        
-        // Add the dList to the queue's context
-        
-        scriptEntry.getResidingQueue().addContext("entities", entityList.toString());
+
+
+
     }
 }
