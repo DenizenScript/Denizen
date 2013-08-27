@@ -64,7 +64,7 @@ public class ContextTags implements Listener {
     public void getContext(ReplaceableTagEvent event) {
         if (!event.matches("context, c") || event.getScriptEntry() == null) return;
 
-        String type = "context_" + event.getType();
+        String type = event.getType();
 
         // First check for entry object context
         if (event.getScriptEntry().hasObject(type)) {

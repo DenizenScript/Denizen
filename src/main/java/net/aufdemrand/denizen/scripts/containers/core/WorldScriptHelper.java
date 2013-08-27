@@ -143,7 +143,7 @@ public class WorldScriptHelper implements Listener {
 
                 if (context != null) {
                     for (Map.Entry<String, Object> entry : context.entrySet()) {
-                        ScriptBuilder.addObjectToEntries(entries, "context_" + entry.getKey(), entry.getValue());
+                        ScriptBuilder.addObjectToEntries(entries, entry.getKey(), entry.getValue());
                     }
                 }
 
