@@ -143,7 +143,7 @@ public class WorldScriptHelper implements Listener {
 
                 if (context != null) {
                     for (Map.Entry<String, Object> entry : context.entrySet()) {
-                        ScriptBuilder.addObjectToEntries(entries, entry.getKey(), entry.getValue());
+                        ScriptBuilder.addObjectToEntries(entries, "context_" + entry.getKey(), entry.getValue());
                     }
                 }
 
@@ -284,13 +284,13 @@ public class WorldScriptHelper implements Listener {
     // block ignites
     // <block> ignites
     //
-    // @Triggers when a block is destroyed by fire.
+    // @Triggers when a block is set on fire.
     // @Context
-    // <context.location> will return the location the block was burned at.
-    // <context.type> will return the material of the block that was burned.
+    // <context.location> will return the location the block was set on fire at.
+    // <context.type> will return the material of the block that was set on fire.
     //
     // @Determine
-    // CANCELLED to stop the block from being destroyed.
+    // CANCELLED to stop the block from being ignited.
     //
     // -->
     @EventHandler

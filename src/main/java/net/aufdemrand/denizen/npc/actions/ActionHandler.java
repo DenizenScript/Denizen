@@ -49,7 +49,7 @@ public class ActionHandler {
 
         if (context != null) {
             for (Map.Entry<String, Object> entry : context.entrySet()) {
-                ScriptBuilder.addObjectToEntries(script, entry.getKey(), entry.getValue());
+                ScriptBuilder.addObjectToEntries(script, "context_" + entry.getKey(), entry.getValue());
             }
         }
 

@@ -203,7 +203,7 @@ public class Element implements dObject {
         // @description
         // Returns the element as an entity. Note: the value must be a valid entity. 
         // -->
-        if (attribute.startsWith("as_entity")
+        if (attribute.startsWith("asentity")
                 || attribute.startsWith("as_entity"))
             return dEntity.valueOf(element).getAttribute(attribute.fulfill(1));
 
@@ -213,7 +213,7 @@ public class Element implements dObject {
         // @description
         // Returns the element as a location. Note: the value must be a valid location.
         // -->
-        if (attribute.startsWith("as_location")
+        if (attribute.startsWith("aslocation")
                 || attribute.startsWith("as_location"))
             return dLocation.valueOf(element).getAttribute(attribute.fulfill(1));
 
