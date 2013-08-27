@@ -583,8 +583,6 @@ public class WorldScriptHelper implements Listener {
         dPlayer player = null;
         dNPC npc = null;
         
-        context.put("entityType", entityType);
-        
         if (entity.isNPC()) {
             npc = new dNPC(entity.getNPC());
             context.put("entity", npc);
