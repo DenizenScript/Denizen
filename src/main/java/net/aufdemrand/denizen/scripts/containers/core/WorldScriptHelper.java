@@ -601,8 +601,8 @@ public class WorldScriptHelper implements Listener {
         context.put("damage", new Element(event.getDamage()));
         context.put("cause", new Element(event.getCause().name()));
         
-        if (entity instanceof LivingEntity) {
-            if (event.getDamage() >= ((LivingEntity) entity).getHealth()) {
+        if (entity.getLivingEntity() != null) {
+            if (event.getDamage() >= entity.getLivingEntity().getHealth()) {
                 isFatal = true;
             }
         }
