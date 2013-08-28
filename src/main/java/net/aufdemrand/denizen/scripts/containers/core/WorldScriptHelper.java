@@ -1611,13 +1611,11 @@ public class WorldScriptHelper implements Listener {
         
         Entity item = event.getItem();
         List<String> events = new ArrayList<String>();
-        
-        if (item instanceof Arrow) {
-            events.add("player pickup arrow");
-            events.add("player take arrow");
-            events.add("player picks up arrow");
-            events.add("player takes arrow");
-        }
+
+        events.add("player pickup " + item.getType().getName());
+        events.add("player take " + item.getType().getName());
+        events.add("player picks up " + item.getType().getName());
+        events.add("player takes " + item.getType().getName());
         events.add("player pickup item");
         events.add("player take item");
         events.add("player picks up item");
