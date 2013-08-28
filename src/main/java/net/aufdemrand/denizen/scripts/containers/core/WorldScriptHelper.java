@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.aH.Argument;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.Conversion;
@@ -110,7 +111,7 @@ public class WorldScriptHelper implements Listener {
     //   EVENT HANDLER
     /////////////////
     
-    public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, Object> context) {
+    public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, dObject> context) {
 
         String determination = "none";
 
@@ -142,19 +143,25 @@ public class WorldScriptHelper implements Listener {
 
                 dB.echoDebug(dB.DebugElement.Header, "Building event 'On " + eventName.toUpperCase() + "' for " + script.getName());
 
-                if (context != null) {
-                    for (Map.Entry<String, Object> entry : context.entrySet()) {
-                        ScriptBuilder.addObjectToEntries(entries, entry.getKey(), entry.getValue());
-                    }
-                }
-
                 // Create new ID -- this is what we will look for when determining an outcome
                 long id = DetermineCommand.getNewId();
 
-                // Add the reqId to each of the entries
+                // Add the reqId to each of the entries for the determine command (this may be slightly outdated, add to TODO)
                 ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
-                InstantQueue.getQueue(null).addEntries(entries).start(); 
+                
+                // Add entries and context to the queue
+                ScriptQueue queue = InstantQueue.getQueue(null).addEntries(entries);
 
+                if (context != null) {
+                    for (Map.Entry<String, dObject> entry : context.entrySet()) {
+                        queue.addContext(entry.getKey(), entry.getValue());
+                    }
+                }
+
+                // Start the queue!
+                queue.start();
+
+                // Check the determination
                 if (DetermineCommand.hasOutcome(id))
                     determination =  DetermineCommand.getOutcome(id);
                 }
@@ -189,7 +196,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void blockBreak(BlockBreakEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Block block = event.getBlock();
         String blockType = block.getType().name();
         
@@ -266,7 +273,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void blockBurn(BlockBurnEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("type", new Element(event.getBlock().getType().name()));
@@ -297,7 +304,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void blockIgnite(BlockIgniteEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("type", new Element(event.getBlock().getType().name()));
@@ -314,7 +321,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void blockPhysics(BlockPhysicsEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("type", new Element(event.getBlock().getType().name()));
@@ -331,7 +338,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void blockPlace(BlockPlaceEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("type", new Element(event.getBlock().getType().name()));
@@ -349,7 +356,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void blockRedstone(BlockRedstoneEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("type", new Element(event.getBlock().getType().name()));
@@ -374,7 +381,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void blockFromTo(BlockFromToEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("type", new Element(event.getBlock().getType().name()));
@@ -392,7 +399,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void signChange(SignChangeEvent event) {
         
-        final Map<String, Object> context = new HashMap<String, Object>();
+        final Map<String, dObject> context = new HashMap<String, dObject>();
         
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
@@ -449,7 +456,7 @@ public class WorldScriptHelper implements Listener {
 
             if (!current_time.containsKey(world.getName())
                     || current_time.get(world.getName()) != hour) {
-                Map<String, Object> context = new HashMap<String, Object>();
+                Map<String, dObject> context = new HashMap<String, dObject>();
                 
                 context.put("time", new Element(String.valueOf(hour)));
                 context.put("world", new dWorld(world));
@@ -472,7 +479,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void hangingBreak(HangingBreakEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         Player player = null;
         dNPC npc = null;
@@ -534,7 +541,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void creatureSpawn(CreatureSpawnEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
         
         context.put("entity", new dEntity(entity));
@@ -555,7 +562,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityCombust(EntityCombustEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
         
         context.put("entity", new dEntity(entity));
@@ -573,7 +580,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityDamage(EntityDamageEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         boolean isFatal = false;
         dEntity entity = new dEntity(event.getEntity());
         String entityType = entity.getEntityType().name();
@@ -726,7 +733,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityExplode(EntityExplodeEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
         
         if (entity == null) return;
@@ -751,7 +758,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityRegainHealth(EntityRegainHealthEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
         String entityType = entity.getType().name();
         
@@ -793,7 +800,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityShootBow(EntityShootBowEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         LivingEntity entity = event.getEntity();
         String entityType = entity.getType().name();
         Entity projectile = event.getProjectile();
@@ -871,7 +878,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityTame(EntityTameEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
         context.put("entity", new dEntity(entity));
         Player player = null;
@@ -895,7 +902,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityTarget(EntityTargetEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
         Entity target = event.getTarget();
         Player player = null;
@@ -960,7 +967,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void entityTeleport(EntityTeleportEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
         
         context.put("entity", new dEntity(entity));
@@ -979,7 +986,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void explosionPrimeEvent(ExplosionPrimeEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
         
         context.put("entity", new dEntity(entity));
@@ -998,7 +1005,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void foodLevelChange(FoodLevelChangeEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
         
         context.put("entity", entity instanceof Player ?
@@ -1020,7 +1027,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void itemDespawn(ItemDespawnEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getEntity().getItemStack());
         
         context.put("item", item);
@@ -1046,7 +1053,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void itemSpawn(ItemSpawnEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getEntity().getItemStack());
         
         context.put("item", item);
@@ -1077,7 +1084,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void inventoryClickEvent(InventoryClickEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getCurrentItem());
         
         Player player = (Player) event.getWhoClicked();
@@ -1190,7 +1197,7 @@ public class WorldScriptHelper implements Listener {
         // Return if "Use asynchronous event" is false in config file
         if (!Settings.WorldScriptChatEventAsynchronous()) return;
         
-        final Map<String, Object> context = new HashMap<String, Object>();
+        final Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getMessage()));
 
         Callable<String> call = new Callable<String>() {
@@ -1226,7 +1233,7 @@ public class WorldScriptHelper implements Listener {
         // Return if "Use asynchronous event" is true in config file
         if (Settings.WorldScriptChatEventAsynchronous()) return;
         
-        final Map<String, Object> context = new HashMap<String, Object>();
+        final Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getMessage()));
 
         String determination = doEvents(Arrays.asList("player chats"),
@@ -1242,7 +1249,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void bedEnterEvent(PlayerBedEnterEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getBed().getLocation()));
 
         String determination = doEvents
@@ -1256,7 +1263,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void bedLeaveEvent(PlayerBedLeaveEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getBed().getLocation()));
 
         doEvents(Arrays.asList
@@ -1267,7 +1274,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerBucketEmpty(PlayerBucketEmptyEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("item", new dItem(event.getBucket()));
         context.put("location", new dLocation(event.getBlockClicked().getLocation()));
 
@@ -1288,7 +1295,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerBucketFill(PlayerBucketFillEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("item", new dItem(event.getBucket()));
         context.put("location", new dLocation(event.getBlockClicked().getLocation()));
 
@@ -1307,7 +1314,7 @@ public class WorldScriptHelper implements Listener {
     
     @EventHandler
     public void playerCommandEvent(PlayerCommandPreprocessEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
 
         // Well, this is ugly :(
         // Fill tags in any arguments
@@ -1344,7 +1351,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerDeath(PlayerDeathEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getDeathMessage()));
         
         String determination = doEvents(Arrays.asList
@@ -1365,7 +1372,7 @@ public class WorldScriptHelper implements Listener {
         String state = event.getState().name();
         dNPC npc = null;
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("hook", new dEntity(event.getHook()));
         context.put("state", new Element(state));
 
@@ -1403,7 +1410,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerGameModeChange(PlayerGameModeChangeEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("gamemode", new Element(event.getNewGameMode().name()));
         
         String determination = doEvents(Arrays.asList
@@ -1419,7 +1426,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         Action action = event.getAction();
         dItem item = null;
         
@@ -1487,7 +1494,7 @@ public class WorldScriptHelper implements Listener {
         dItem item = new dItem(event.getPlayer().getItemInHand());
         
         String determination;
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getRightClicked().getLocation()));
 
         if (CitizensAPI.getNPCRegistry().isNPC(entity)) {
@@ -1553,7 +1560,7 @@ public class WorldScriptHelper implements Listener {
         
         dItem item = new dItem(event.getItem()); 
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("item", item);
         
         List<String> events = new ArrayList<String>();
@@ -1579,7 +1586,7 @@ public class WorldScriptHelper implements Listener {
         String name = dLocation.getSaved(event.getPlayer().getLocation());
 
         if (name != null) {
-            Map<String, Object> context = new HashMap<String, Object>();
+            Map<String, dObject> context = new HashMap<String, dObject>();
             context.put("notable", new Element(name));
 
             String determination = doEvents(Arrays.asList
@@ -1597,7 +1604,7 @@ public class WorldScriptHelper implements Listener {
     
     @EventHandler
     public void playerPickupItem(PlayerPickupItemEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("item", new dItem(event.getItem().getItemStack()));
         context.put("entity", new dEntity(event.getItem()));
         context.put("location", new dLocation(event.getItem().getLocation()));
@@ -1624,7 +1631,7 @@ public class WorldScriptHelper implements Listener {
     
     @EventHandler
     public void joinEvent(PlayerJoinEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getJoinMessage()));
 
         String determination = doEvents(Arrays.asList
@@ -1641,7 +1648,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void levelChangeEvent(PlayerLevelChangeEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("level", new Element(event.getNewLevel()));
 
         doEvents(Arrays.asList
@@ -1654,7 +1661,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void loginEvent(PlayerLoginEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("hostname", new Element(event.getHostname()));
 
         String determination = doEvents(Arrays.asList
@@ -1669,7 +1676,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void quitEvent(PlayerQuitEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(event.getQuitMessage()));
 
         String determination = doEvents(Arrays.asList
@@ -1685,7 +1692,7 @@ public class WorldScriptHelper implements Listener {
 
     @EventHandler
     public void respawnEvent(PlayerRespawnEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getRespawnLocation()));
 
         List<String> events = new ArrayList<String>();
@@ -1715,7 +1722,7 @@ public class WorldScriptHelper implements Listener {
 
     @EventHandler
     public void serverCommandEvent(ServerCommandEvent event) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         List<String> args = Arrays.asList(
                 aH.buildArgs(
@@ -1745,7 +1752,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void vehicleDamage(VehicleDamageEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         Entity entity = event.getAttacker();
         Vehicle vehicle = event.getVehicle();
@@ -1788,7 +1795,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void vehicleDestroy(VehicleDestroyEvent event) {
                 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         Entity entity = event.getAttacker();
         Vehicle vehicle = event.getVehicle();
@@ -1825,7 +1832,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void vehicleEnter(VehicleEnterEvent event) {
                 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         Entity entity = event.getEntered();
         Vehicle vehicle = event.getVehicle();
@@ -1862,7 +1869,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void vehicleExit(VehicleExitEvent event) {
                 
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         
         Entity entity = event.getExited();
         Vehicle vehicle = event.getVehicle();
@@ -1904,7 +1911,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void lightningStrike(LightningStrikeEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         String world = event.getWorld().getName();
         context.put("world", new dWorld(event.getWorld()));
         context.put("location", new dLocation(event.getLightning().getLocation()));
@@ -1921,7 +1928,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void weatherChange(WeatherChangeEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         String world = event.getWorld().getName();
         context.put("world", new dWorld(event.getWorld()));
         

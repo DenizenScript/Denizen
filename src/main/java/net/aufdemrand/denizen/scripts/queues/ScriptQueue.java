@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.queues;
 
 import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -132,12 +133,30 @@ public abstract class ScriptQueue {
     private long delay_time = 0;
 
 
-    // ScriptQueues can have a bit of definitions,
+    // ScriptQueues can have a definitions,
     // keyed by a String Id. Denizen's
-    // 'Definitions' system uses this definitions.
+    // 'Definitions' system uses this map.
+    // This information is fetched by using
+    // %definition_name%
     private Map<String, String>
             definitions = new ConcurrentHashMap<String, String>(8, 0.9f, 1);
 
+
+    // ScriptQueues can also have a list of context, added
+    // by events/actions/etc. This is kind of like the context
+    // inside scriptEntries, but within the scope of the entire
+    // queue.
+    // To access this context, use <c.context_name> or <context.context_name>
+    private Map<String, dObject>
+            context = new ConcurrentHashMap<String, dObject>();
+
+
+    // Held script entries can be recalled later in the script
+    // and their scriptEntry context can be recalled. Good for
+    // commands that contain unique items/objects that it's
+    // created.
+    private Map<String, ScriptEntry>
+            held_entries = new ConcurrentHashMap<String, ScriptEntry>();
 
     /**
      * Creates a ScriptQueue instance. Users of
@@ -168,8 +187,74 @@ public abstract class ScriptQueue {
      *
      */
     public ScriptEntry getHeldScriptEntry(String id) {
-        return null;
+        return held_entries.get(id.toLowerCase());
     }
+
+    /**
+     * Provides a way to hold a script entry for retrieval later in the
+     * script. Keyed by an id, which is turned to lowercase making
+     * it case insensitive.
+     *
+     * @param id    intended name of the entry
+     * @param entry the ScriptEntry instance
+     * @return      the ScriptQueue, just in case you need to do more with it
+     */
+
+    public ScriptQueue holdScriptEntry(String id, ScriptEntry entry) {
+        // to lowercase to avoid case sensitivity.
+        held_entries.put(id.toLowerCase(), entry);
+
+        return this;
+    }
+
+
+    /**
+     * Gets a context from the queue. Script writers can
+     * use the <c.context_name> or <context.context_name> tags
+     * to fetch this data.
+     *
+     * @param id  The name of the definitions
+     * @return  The value of the definitions, or null
+     */
+    public dObject getContext(String id) {
+        return context.get(id.toLowerCase());
+    }
+
+
+    /**
+     * Checks for a piece of context.
+     *
+     * @param id  The name of the context
+     * @return  true if the context exists.
+     */
+    public boolean hasContext(String id) {
+        return context.containsKey(id.toLowerCase());
+    }
+
+
+    /**
+     * Adds a new piece of context to the queue. This is usually
+     * done within events or actions, or wherever script creation has
+     * some information to pass along, other than a player and npc.
+     *
+     * @param id  the name of the context
+     * @param value  the value of the context
+     */
+    public void addContext(String id, dObject value) {
+        context.put(id.toLowerCase(), value);
+    }
+
+
+    /**
+     * Returns a Map of all the current context
+     * stored in the queue, keyed by 'id'
+     *
+     * @return  all current context, empty if none.
+     */
+    public Map<String, dObject> getAllContext() {
+        return context;
+    }
+
 
 
     /**

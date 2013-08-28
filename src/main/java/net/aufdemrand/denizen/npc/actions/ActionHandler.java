@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.npc.actions;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
@@ -27,7 +28,7 @@ public class ActionHandler {
         return doAction(actionName, npc, player, assignment, null);
     }
 
-    public boolean doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment, Map<String, Object> context) {
+    public boolean doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment, Map<String, dObject> context) {
         if (assignment == null) {
             // dB.echoDebug("Tried to do 'on " + actionName + ":' but couldn't find a matching script.");
             return false;
@@ -47,18 +48,19 @@ public class ActionHandler {
 
         dB.echoDebug(DebugElement.Header, "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
 
+        // Add entries and context to the queue
+        ScriptQueue queue = InstantQueue.getQueue(null).addEntries(script);
+
         if (context != null) {
-            for (Map.Entry<String, Object> entry : context.entrySet()) {
-                ScriptBuilder.addObjectToEntries(script, entry.getKey(), entry.getValue());
+            for (Map.Entry<String, dObject> entry : context.entrySet()) {
+                queue.addContext(entry.getKey(), entry.getValue());
             }
         }
 
-        ScriptQueue queue = InstantQueue.getQueue(null).addEntries(script);
+        // Start the queue!
         queue.start();
 
-        // TODO: Read queue context to see if the event behind action should be cancelled.
-        // if (queue.getContext() != null
-        //    && queue.getContext().equalsIgnoreCase("cancelled")) return true;
+        // TODO: Read determination to see if the event behind action should be cancelled.
 
         return false;
     }

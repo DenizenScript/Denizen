@@ -145,6 +145,12 @@ public class CommandExecuter {
                     scriptEntry.setNPC(npc);
                 }
 
+                // Save the scriptentry if needed later for fetching scriptentry context
+                else if (arg.matchesPrefix("save") && !if_ignore) {
+                    dB.echoDebug("...remembering this script entry!");
+                    scriptEntry.getResidingQueue().holdScriptEntry(arg.getValue(), scriptEntry);
+                }
+
                 else newArgs.add(arg.raw_value);
             }
 

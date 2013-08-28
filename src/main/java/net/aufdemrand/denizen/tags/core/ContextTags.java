@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.HashMap;
@@ -20,8 +21,9 @@ public class ContextTags implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
+    // Script tags!
     @EventHandler
-    public void getEntry(ReplaceableTagEvent event) {
+    public void scriptTags(ReplaceableTagEvent event) {
         if (!event.matches("script, s") || event.getScriptEntry() == null) return;
 
         // Get script
@@ -59,26 +61,21 @@ public class ContextTags implements Listener {
         }
     }
 
-
+    // Get scriptqueue context!
     @EventHandler
-    public void getContext(ReplaceableTagEvent event) {
+    public void contextTags(ReplaceableTagEvent event) {
         if (!event.matches("context, c") || event.getScriptEntry() == null) return;
 
         String type = event.getType();
 
-        // First check for entry object context
-        if (event.getScriptEntry().hasObject(type)) {
-
-            if (event.getScriptEntry().getObject(type) instanceof dObject) {
-                Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
-                event.setReplaced(((dObject) event.getScriptEntry().getObject(type)).getAttribute(attribute.fulfill(2)));
-            } else
-                event.setReplaced(event.getScriptEntry().getObject(type).toString());
-
-            return;
+        // First, check queue object context.
+        if (event.getScriptEntry().getResidingQueue().hasContext(type)) {
+            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            event.setReplaced(event.getScriptEntry().getResidingQueue().getContext(type).getAttribute(attriute.fulfill(2)));
         }
 
         // Next, try to replace with task-script-defined context
+        // NOTE: (DEPRECATED -- new RUN command uses definitions system instead)
         if (!ScriptRegistry.containsScript(event.getScriptEntry().getScript().getName(), TaskScriptContainer.class))
             return;
 
@@ -96,8 +93,30 @@ public class ContextTags implements Listener {
                 event.setReplaced(context.get(String.valueOf(id.get(type.toUpperCase()))));
             }
         }
+
+        else event.setReplaced("null");
+
     }
 
+    // Get a saved script entry!
+    @EventHandler
+    public void savedEntryTags(ReplaceableTagEvent event) {
+        if (!event.matches("entry, e") || event.getScriptEntry() == null) return;
 
+        // <e[entry_id].entity.blah.blah>
+
+        if (event.getScriptEntry().getResidingQueue() != null &&
+                event.getScriptEntry().getResidingQueue().getHeldScriptEntry(event.getNameContext()) != null) {
+
+            // Get the entry_id from name context
+            String id = event.getNameContext();
+
+            Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
+            event.setReplaced(event.getScriptEntry().getResidingQueue().getHeldScriptEntry(id).getdObject(attribute.getAttribute(2))
+                    .getAttribute(attribute.fulfill(2)));
+        }
+
+        else event.setReplaced("null");
+    }
 
 }
