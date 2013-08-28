@@ -5,8 +5,7 @@ import java.util.*;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.npc.traits.*;
-import net.aufdemrand.denizen.objects.Element;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
@@ -15,8 +14,6 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptRepo;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.command.Command;
@@ -829,7 +826,7 @@ public class CommandHandler {
                 Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
             }
             List<String> events = new ArrayList<String>();
-            Map<String, Object> context = new HashMap<String, Object>();
+            Map<String, dObject> context = new HashMap<String, dObject>();
             events.add("reload scripts");
             context.put("all", Element.TRUE);
             context.put("sender", new Element(sender.getName()));
@@ -855,7 +852,7 @@ public class CommandHandler {
                     Messaging.send(sender, ChatColor.RED + "There was an error loading your scripts, check the console for details!");
                 }
                 List<String> events = new ArrayList<String>();
-                Map<String, Object> context = new HashMap<String, Object>();
+                Map<String, dObject> context = new HashMap<String, dObject>();
                 events.add("reload scripts");
                 context.put("all", Element.FALSE);
                 context.put("haderror", new Element(ScriptHelper.getHadAnError()));

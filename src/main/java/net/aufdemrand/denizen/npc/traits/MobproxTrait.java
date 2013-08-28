@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.event.NPCTraitCommandAttachEvent;
 import net.citizensnpcs.api.persistence.Persist;
@@ -69,7 +70,7 @@ public class MobproxTrait extends Trait {
         }
     }
     private void callAction(String act, Entity ent) {
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("entity", new dEntity(ent));
         dnpc.action("mob " + act + " proximity", null, context);
         dnpc.action(ent.getType().name() + " " + act + " proximity", null, context);

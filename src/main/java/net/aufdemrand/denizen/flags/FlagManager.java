@@ -154,7 +154,7 @@ public class FlagManager {
         public void clear() {
             List<String> world_script_events = new ArrayList<String>();
 
-            Map<String, Object> context = new HashMap<String, Object>();
+            Map<String, dObject> context = new HashMap<String, dObject>();
             dPlayer player = null;
             if (dPlayer.matches(flagOwner))
                 player = dPlayer.valueOf(flagOwner);
@@ -180,12 +180,12 @@ public class FlagManager {
                 world_script_events.add("server flag " + flagName + " cleared");
             }
 
-            context.put("owner", flagOwner);
-            context.put("name", flagName);
-            context.put("type", type);
+            context.put("owner", Element.valueOf(flagOwner));
+            context.put("name", Element.valueOf(flagName));
+            context.put("type", Element.valueOf(type));
             context.put("old_value", value.size() > 1
                     ? new dList(denizen.getSaves().getStringList(flagPath))
-                    : value.size() == 1 ? new Element(value.get(0).asString()): "null");
+                    : value.size() == 1 ? new Element(value.get(0).asString()): Element.valueOf("null"));
 
             world_script_events.add("flag cleared");
 
@@ -370,7 +370,7 @@ public class FlagManager {
 
             List<String> world_script_events = new ArrayList<String>();
 
-            Map<String, Object> context = new HashMap<String, Object>();
+            Map<String, dObject> context = new HashMap<String, dObject>();
             dPlayer player = null;
             if (dPlayer.matches(flagOwner)) player = dPlayer.valueOf(flagOwner);
             dNPC npc = null;
@@ -394,12 +394,12 @@ public class FlagManager {
                 world_script_events.add("server flag " + flagName + " changed");
             }
 
-            context.put("owner", flagOwner);
-            context.put("name", flagName);
-            context.put("type", type);
+            context.put("owner", Element.valueOf(flagOwner));
+            context.put("name", Element.valueOf(flagName));
+            context.put("type", Element.valueOf(type));
             context.put("old_value", value.size() > 1
                     ? new dList(denizen.getSaves().getStringList(flagPath))
-                    : value.size() == 1 ? new Element(value.get(0).asString()): "null");
+                    : value.size() == 1 ? new Element(value.get(0).asString()): Element.valueOf("null"));
 
             world_script_events.add("flag changed");
 

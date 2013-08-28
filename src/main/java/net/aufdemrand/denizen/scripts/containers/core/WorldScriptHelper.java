@@ -1140,7 +1140,7 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void inventoryDragEvent(InventoryDragEvent event) {
         
-        Map<String, Object> context = new HashMap<String, Object>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
         dItem item = new dItem(event.getOldCursor());
         
         Player player = (Player) event.getWhoClicked();

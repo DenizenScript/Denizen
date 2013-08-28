@@ -71,7 +71,7 @@ public class ContextTags implements Listener {
         // First, check queue object context.
         if (event.getScriptEntry().getResidingQueue().hasContext(type)) {
             Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
-            event.setReplaced(event.getScriptEntry().getResidingQueue().getContext(type).getAttribute(attriute.fulfill(2)));
+            event.setReplaced(event.getScriptEntry().getResidingQueue().getContext(type).getAttribute(attribute.fulfill(2)));
         }
 
         // Next, try to replace with task-script-defined context

@@ -208,7 +208,7 @@ public class dNPC implements dObject {
         return getCitizen().getTrait(TriggerTrait.class);
     }
 
-    public void action(String actionName, dPlayer player, Map<String, Object> context) {
+    public void action(String actionName, dPlayer player, Map<String, dObject> context) {
         if (getCitizen() != null)
         {
             if (getCitizen().hasTrait(AssignmentTrait.class))
