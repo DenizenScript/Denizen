@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -112,8 +113,19 @@ public class ContextTags implements Listener {
             String id = event.getNameContext();
 
             Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
-            event.setReplaced(event.getScriptEntry().getResidingQueue().getHeldScriptEntry(id).getdObject(attribute.getAttribute(2))
-                    .getAttribute(attribute.fulfill(2)));
+            ScriptEntry held = event.getScriptEntry().getResidingQueue().getHeldScriptEntry(id);
+            if (held == null) { // Check if the ID is bad
+                dB.echoError("Bad saved entry ID " + id);
+            }
+            else {
+                if (!held.hasObject(attribute.getAttribute(2)) // Check if there's no such object
+                        || held.getdObject(attribute.getAttribute(2)) == null) { // ... Check if there is such an object
+                    dB.echoError("Bad saved entry object " + attribute.getAttribute(2)); // but it's not a dObject...
+                }
+                else { // Okay, now it's safe!
+                    event.setReplaced(held.getdObject(attribute.getAttribute(2)).getAttribute(attribute.fulfill(2)));
+                }
+            }
         }
 
         else event.setReplaced("null");
