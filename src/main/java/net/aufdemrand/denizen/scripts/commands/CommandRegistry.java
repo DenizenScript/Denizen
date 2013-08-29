@@ -56,11 +56,11 @@ public class CommandRegistry implements dRegistry {
     public void registerCoreMembers() {
 
 		// <--[command]
-		// @Name anchor
+		// @Name Anchor
 		// @Usage anchor [id:<name>] [assume/add/remove/walkto/walknear] (range:<#>)
 		// @Required 2
-		// @Stable Todo
-		// @Short Todo
+		// @Stable Stable
+		// @Short 
 		// @Author Todo
 		// @Description
 		// Todo
@@ -75,7 +75,7 @@ public class CommandRegistry implements dRegistry {
                 "ANCHOR", "anchor [id:<name>] [assume/add/remove/walkto/walknear] (range:<#>)", 2);
                 
 		// <--[command]
-		// @Name animate
+		// @Name Animate
 		// @Usage animate [<entity>|...] [animation:<name>]
 		// @Required 1
 		// @Stable Todo
@@ -94,7 +94,7 @@ public class CommandRegistry implements dRegistry {
                 "ANIMATE", "animate [<entity>|...] [animation:<name>]", 1);
         
 		// <--[command]
-		// @Name animatechest
+		// @Name AnimateChest
 		// @Usage animatechest [<location>] ({open}/close) (sound:{true}/false)
 		// @Required 1
 		// @Stable Todo
@@ -113,7 +113,7 @@ public class CommandRegistry implements dRegistry {
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false)", 1);
         
 		// <--[command]
-		// @Name announce
+		// @Name Announce
 		// @Usage announce ["<text>"] (to_ops) (to_flagged:<flag>)
 		// @Required 1
 		// @Stable Todo
@@ -132,7 +132,7 @@ public class CommandRegistry implements dRegistry {
                 "ANNOUNCE", "announce [\"<text>\"] (to_ops) (to_flagged:<flag>)", 1);
         
 		// <--[command]
-		// @Name assignment
+		// @Name Assignment
 		// @Usage assignment [{set}/remove] (script:<name>)
 		// @Required 1
 		// @Stable Todo
@@ -151,7 +151,7 @@ public class CommandRegistry implements dRegistry {
                 "ASSIGNMENT", "assignment [{set}/remove] (script:<name>)", 1);
         
 		// <--[command]
-		// @Name attack
+		// @Name Attack
 		// @Usage attack (cancel) (<entity>|...) (target:<entity>)
 		// @Required 0
 		// @Stable Todo
@@ -170,7 +170,7 @@ public class CommandRegistry implements dRegistry {
                 "ATTACK", "attack (cancel) (<entity>|...) (target:<entity>)", 0);
 
 		// <--[command]
-		// @Name break
+		// @Name Break
 		// @Usage break [<location>] (entity:<entity>) (radius:<#.#>)
 		// @Required 1
 		// @Stable Todo
@@ -189,7 +189,7 @@ public class CommandRegistry implements dRegistry {
                 "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);
         
 		// <--[command]
-		// @Name burn
+		// @Name Burn
 		// @Usage burn [<entity>|...] (duration:<value>)
 		// @Required 1
 		// @Stable Todo
@@ -208,42 +208,39 @@ public class CommandRegistry implements dRegistry {
                 "BURN", "burn [<entity>|...] (duration:<value>)", 1);
         
 		// <--[command]
-		// @Name cast
+		// @Name Cast, Potion
 		// @Usage cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
 		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
+		// @Stable Stable
+		// @Short Casts a potion effect to a list of entities.
+		// @Author aufdemrand/Jeebiss/Morphan1
+        //
 		// @Description
-		// Todo
+        // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
+        // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
+        //
 		// @Tags
-		// Todo
+        // <e@entity.has_effect[<effect>]> will return true if the entity has an effect.
+        //
 		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
-		// <--[command]
-		// @Name potion
-		// @Usage potion [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
+		// Use to apply an effect to an entity
+        // - potion jump <player> d:120 p:3
+        // - narrate "You have been given the temporary ability to jump like a kangaroo."
+        //
+        // @Usage
+        // Use to remove an effect from an entity
+        // - if <p@Player.has_effect[jump]> {
+        //   - potion jump remove <player>
+        //   }
+        //
+		// @Example TODO
+        //
 		// -->
         registerCoreMember(CastCommand.class, 
                 "CAST, POTION", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)", 1);
         
 		// <--[command]
-		// @Name chat
+		// @Name Chat
 		// @Usage chat ["<text>"] (targets:<entity>|...)
 		// @Required 1
 		// @Stable Todo
@@ -262,7 +259,7 @@ public class CommandRegistry implements dRegistry {
                 "CHAT", "chat [\"<text>\"] (targets:<entity>|...)", 1);
         
 		// <--[command]
-		// @Name chunkload
+		// @Name ChunkLoad
 		// @Usage chunkload ({add}/remove/removeall) [<location>] (duration:<value>)
 		// @Required 1
 		// @Stable Todo
@@ -281,7 +278,7 @@ public class CommandRegistry implements dRegistry {
                 "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<location>] (duration:<value>)", 1);
 
 		// <--[command]
-		// @Name compass
+		// @Name Compass
 		// @Usage compass [<location>]
 		// @Required 1
 		// @Stable Todo
@@ -300,7 +297,7 @@ public class CommandRegistry implements dRegistry {
                 "COMPASS", "compass [<location>]", 1);
 
         // <--[command]
-        // @Name cooldown
+        // @Name Cooldown
         // @Usage cooldown [<duration>] (global) (s:<script>)
         // @Required 1
         // @Stable Stable
@@ -334,7 +331,7 @@ public class CommandRegistry implements dRegistry {
         // Use the 'global' argument to indicate the script to be on cooldown for all players.
         // - cooldown global 24h s:s@daily_treasure_offering
         //
-        // @Example
+        // @Example TODO
         //
         // -->
         registerCoreMember(CooldownCommand.class,
@@ -342,7 +339,7 @@ public class CommandRegistry implements dRegistry {
 
 
 		// <--[command]
-		// @Name copyblock
+		// @Name CopyBlock
 		// @Usage copyblock [location:<location>] [to:<location>]
 		// @Required 1
 		// @Stable Todo
@@ -362,7 +359,7 @@ public class CommandRegistry implements dRegistry {
 
 
 		// <--[command]
-		// @Name createworld
+		// @Name CreateWorld
 		// @Usage createworld [<name>] (g:<generator>)
 		// @Required 1
 		// @Stable Todo
@@ -382,7 +379,7 @@ public class CommandRegistry implements dRegistry {
 
 
 		// <--[command]
-		// @Name define
+		// @Name Define
 		// @Usage define [<id>] [<value>]
 		// @Required 2
         // @Stable 1.0
@@ -431,7 +428,7 @@ public class CommandRegistry implements dRegistry {
 
 
 		// <--[command]
-		// @Name determine
+		// @Name Determine
 		// @Usage determine [<value>]
 		// @Required 1
 		// @Stable Todo
@@ -450,7 +447,7 @@ public class CommandRegistry implements dRegistry {
                 "DETERMINE", "determine [<value>]", 1);
 
 		// <--[command]
-		// @Name disengage
+		// @Name Disengage
 		// @Usage disengage (npc:<npc>)
 		// @Required 0
 		// @Stable 1.0
@@ -485,7 +482,7 @@ public class CommandRegistry implements dRegistry {
                 "DISENGAGE", "disengage (npc:<npc>)", 0);
 
 		// <--[command]
-		// @Name displayitem
+		// @Name DisplayItem
 		// @Usage displayitem (remove) [<item>] [<location>] (duration:<value>)
 		// @Required 2
 		// @Stable Todo
@@ -504,7 +501,7 @@ public class CommandRegistry implements dRegistry {
                 "DISPLAYITEM", "displayitem (remove) [<item>] [<location>] (duration:<value>)", 2);
 
 		// <--[command]
-		// @Name drop
+		// @Name Drop
 		// @Usage drop [<item>/<entity>/<xp>] [<location>] (qty:<#>)
 		// @Required 1
 		// @Stable Todo
@@ -523,7 +520,7 @@ public class CommandRegistry implements dRegistry {
                 "DROP", "drop [<item>/<entity>/<xp>] [<location>] (qty:<#>)", 1);
         
 		// <--[command]
-		// @Name engage
+		// @Name Engage
 		// @Usage engage (<duration>) (npc:<npc>)
 		// @Required 0
 		// @Stable 1.0
@@ -573,7 +570,7 @@ public class CommandRegistry implements dRegistry {
                 "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
 
 		// <--[command]
-		// @Name engrave
+		// @Name Engrave
 		// @Usage engrave (set/remove)
 		// @Required 0
 		// @Stable Todo
@@ -592,7 +589,7 @@ public class CommandRegistry implements dRegistry {
                 "ENGRAVE", "engrave (set/remove)", 0);
         
 		// <--[command]
-		// @Name equip
+		// @Name Equip
 		// @Usage equip (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
 		// @Required 1
 		// @Stable Todo
@@ -611,7 +608,7 @@ public class CommandRegistry implements dRegistry {
                 "EQUIP", "equip (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
         
 		// <--[command]
-		// @Name execute
+		// @Name Execute
 		// @Usage execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]
 		// @Required 2
 		// @Stable Todo
@@ -630,7 +627,7 @@ public class CommandRegistry implements dRegistry {
                 "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]", 2);
 
 		// <--[command]
-		// @Name experience
+		// @Name Experience
 		// @Usage experience [{set}/give/take] (level) [<#>]
 		// @Required 2
 		// @Stable Todo
@@ -649,7 +646,7 @@ public class CommandRegistry implements dRegistry {
                 "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
 
 		// <--[command]
-		// @Name explode
+		// @Name Explode
 		// @Usage explode (power:<#.#>) (<location>) (fire) (breakblocks)
 		// @Required 0
 		// @Stable Todo
@@ -668,7 +665,7 @@ public class CommandRegistry implements dRegistry {
                 "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
         
 		// <--[command]
-		// @Name fail
+		// @Name Fail
 		// @Usage fail (script:<name>)
 		// @Required 0
 		// @Stable Todo
@@ -687,7 +684,7 @@ public class CommandRegistry implements dRegistry {
                 "FAIL", "fail (script:<name>)", 0);
         
 		// <--[command]
-		// @Name feed
+		// @Name Feed
 		// @Usage feed (amt:<#>) (target:<entity>|...)
 		// @Required 0
 		// @Stable Todo
@@ -706,7 +703,7 @@ public class CommandRegistry implements dRegistry {
                 "FEED", "feed (amt:<#>) (target:<entity>|...)", 0);
 
 		// <--[command]
-		// @Name finish
+		// @Name Finish
 		// @Usage finish (script:<name>)
 		// @Required 0
 		// @Stable Todo
@@ -725,7 +722,7 @@ public class CommandRegistry implements dRegistry {
                 "FINISH", "finish (script:<name>)", 0);
 
 		// <--[command]
-		// @Name firework
+		// @Name Firework
 		// @Usage firework (<location>) (power:<#>) (type:<name>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
 		// @Required 0
 		// @Stable Todo
@@ -744,7 +741,7 @@ public class CommandRegistry implements dRegistry {
                 "FIREWORK", "firework (<location>) (power:<#>) (type:<name>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
         
 		// <--[command]
-		// @Name fish
+		// @Name Fish
 		// @Usage fish (catchfish) (stop) (<location>) (catchpercent:<#>)
 		// @Required 1
 		// @Stable Todo
@@ -763,7 +760,7 @@ public class CommandRegistry implements dRegistry {
                 "FISH", "fish (catchfish) (stop) (<location>) (catchpercent:<#>)", 1);
 
 		// <--[command]
-		// @Name flag
+		// @Name Flag
 		// @Usage flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
 		// @Required 1
 		// @Stable Todo
@@ -782,7 +779,7 @@ public class CommandRegistry implements dRegistry {
                 "FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
         
 		// <--[command]
-		// @Name fly
+		// @Name Fly
 		// @Usage fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)
 		// @Required 1
 		// @Stable Todo
@@ -801,7 +798,7 @@ public class CommandRegistry implements dRegistry {
                 "FLY", "fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)", 1);
         
 		// <--[command]
-		// @Name follow
+		// @Name Follow
 		// @Usage follow (stop) (lead:<#.#>) (target:<entity>)
 		// @Required 0
 		// @Stable Todo
@@ -820,7 +817,7 @@ public class CommandRegistry implements dRegistry {
                 "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
         
         // <--[command]
-        // @Name foreach
+        // @Name ForEach
         // @Usage foreach [<object>|...] [<commands>]
         // @Required 2
         // @Stable Experimental
@@ -844,7 +841,7 @@ public class CommandRegistry implements dRegistry {
                 "FOREACH", "foreach [<object>|...] [<commands>]", 2);
         
 		// <--[command]
-		// @Name give
+		// @Name Give
 		// @Usage give [money/<item>] (qty:<#>) (engrave)
 		// @Required 1
 		// @Stable Todo
@@ -863,7 +860,7 @@ public class CommandRegistry implements dRegistry {
                 "GIVE", "give [money/<item>] (qty:<#>) (engrave)", 1);
         
 		// <--[command]
-		// @Name group
+		// @Name Group
 		// @Usage group [add/remove] [<group>] (world:<name>)
 		// @Required 2
 		// @Stable Todo
@@ -882,7 +879,7 @@ public class CommandRegistry implements dRegistry {
                 "GROUP", "group [add/remove] [<group>] (world:<name>)", 2);
         
 		// <--[command]
-		// @Name head
+		// @Name Head
 		// @Usage head (player) [skin:<name>]
 		// @Required 0
 		// @Stable Todo
@@ -901,7 +898,7 @@ public class CommandRegistry implements dRegistry {
                 "HEAD", "head (player) [skin:<name>]", 0);
         
 		// <--[command]
-		// @Name heal
+		// @Name Heal
 		// @Usage heal (<#.#>) (<entity>|...)
 		// @Required 0
 		// @Stable Todo
@@ -920,7 +917,7 @@ public class CommandRegistry implements dRegistry {
                 "HEAL", "heal (<#.#>) (<entity>|...)", 0);
         
 		// <--[command]
-		// @Name health
+		// @Name Health
 		// @Usage health [<#>]
 		// @Required 1
 		// @Stable Todo
@@ -939,7 +936,7 @@ public class CommandRegistry implements dRegistry {
                 "HEALTH", "health [<#>]", 1);
         
 		// <--[command]
-		// @Name hurt
+		// @Name Hurt
 		// @Usage hurt (<#.#>) (<entity>|...)
 		// @Required 0
 		// @Stable Todo
@@ -958,7 +955,7 @@ public class CommandRegistry implements dRegistry {
                 "HURT", "hurt (<#.#>) (<entity>|...)", 0);
         
 		// <--[command]
-		// @Name if
+		// @Name If
 		// @Usage if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)
 		// @Required 2
 		// @Stable Todo
@@ -977,7 +974,7 @@ public class CommandRegistry implements dRegistry {
                 "IF", "if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
 
 		// <--[command]
-		// @Name inventory
+		// @Name Inventory
 		// @Usage inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] [destination:<inventory>] (origin:<inventory>)
 		// @Required 2
 		// @Stable Todo
@@ -996,7 +993,7 @@ public class CommandRegistry implements dRegistry {
                 "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] [destination:<inventory>] (origin:<inventory>)", 2);
         
 		// <--[command]
-		// @Name invisible
+		// @Name Invisible
 		// @Usage invisible [player/npc] [state:true/false/toggle]
 		// @Required 2
 		// @Stable Todo
@@ -1015,7 +1012,7 @@ public class CommandRegistry implements dRegistry {
                 "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);
         
 		// <--[command]
-		// @Name leash
+		// @Name Leash
 		// @Usage leash (cancel) [<entity>|...] (holder:<entity>/<location>)
 		// @Required 1
 		// @Stable Todo
@@ -1034,7 +1031,7 @@ public class CommandRegistry implements dRegistry {
                 "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
         
 		// <--[command]
-		// @Name listen
+		// @Name Listen
 		// @Usage listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)
 		// @Required 2
 		// @Stable Todo
@@ -1053,7 +1050,7 @@ public class CommandRegistry implements dRegistry {
                 "LISTEN", "listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)", 2);
         
 		// <--[command]
-		// @Name log
+		// @Name Log
 		// @Usage log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]
 		// @Required 2
 		// @Stable Todo
@@ -1072,7 +1069,7 @@ public class CommandRegistry implements dRegistry {
                 "LOG", "log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]", 2);
         
 		// <--[command]
-		// @Name look
+		// @Name Look
 		// @Usage look (<entity>|...) [<location>] (duration:<duration>)
 		// @Required 1
 		// @Stable Todo
@@ -1091,7 +1088,7 @@ public class CommandRegistry implements dRegistry {
                 "LOOK", "look (<entity>|...) [<location>] (duration:<duration>)", 1);
         
 		// <--[command]
-		// @Name lookclose
+		// @Name LookClose
 		// @Usage lookclose [state:true/false]
 		// @Required 1
 		// @Stable Todo
@@ -1110,7 +1107,7 @@ public class CommandRegistry implements dRegistry {
                 "LOOKCLOSE", "lookclose [state:true/false]", 1);
         
 		// <--[command]
-		// @Name midi
+		// @Name Midi
 		// @Usage midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)
 		// @Required 1
 		// @Stable Todo
@@ -1129,7 +1126,7 @@ public class CommandRegistry implements dRegistry {
                 "MIDI", "midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)", 1);
         
 		// <--[command]
-		// @Name mount
+		// @Name Mount
 		// @Usage mount (cancel) [<entity>|...] (<location>)
 		// @Required 0
 		// @Stable Todo
@@ -1148,7 +1145,7 @@ public class CommandRegistry implements dRegistry {
                 "MOUNT", "mount (cancel) [<entity>|...] (<location>)", 0);
         
 		// <--[command]
-		// @Name modifyblock
+		// @Name ModifyBlock
 		// @Usage modifyblock [<location>] [<block>] (radius:<#>) (height:<#>) (depth:<#>)
 		// @Required 2
 		// @Stable Todo
@@ -1167,7 +1164,6 @@ public class CommandRegistry implements dRegistry {
                 "MODIFYBLOCK", "modifyblock [<location>] [<block>] (radius:<#>) (height:<#>) (depth:<#>)", 2);
         
 		// <--[command]
-		// @Name nameplate
 		// @Usage nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib
 		// @Required 1
 		// @Stable Todo
@@ -1186,7 +1182,7 @@ public class CommandRegistry implements dRegistry {
                 "NAMEPLATE", "nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib", 1);
         
 		// <--[command]
-		// @Name narrate
+		// @Name Narrate
 		// @Usage narrate ["<text>"] (targets:<player>|...) (format:<name>)
 		// @Required 1
 		// @Stable Todo
@@ -1205,7 +1201,7 @@ public class CommandRegistry implements dRegistry {
                 "NARRATE", "narrate [\"<text>\"] (targets:<player>|...) (format:<name>)", 1);
         
 		// <--[command]
-		// @Name note
+		// @Name Note
 		// @Usage note [<Notable dObject>] [as:<name>]
 		// @Required 2
 		// @Stable Todo
@@ -1224,7 +1220,7 @@ public class CommandRegistry implements dRegistry {
                 "NOTE", "note [<Notable dObject>] [as:<name>]", 2);
         
 		// <--[command]
-		// @Name oxygen
+		// @Name Oxygen
 		// @Usage oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]
 		// @Required 1
 		// @Stable Todo
@@ -1243,7 +1239,7 @@ public class CommandRegistry implements dRegistry {
                 "OXYGEN", "oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]", 1);
         
 		// <--[command]
-		// @Name playeffect
+		// @Name PlayEffect
 		// @Usage playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)
 		// @Required 2
 		// @Stable Todo
@@ -1262,7 +1258,7 @@ public class CommandRegistry implements dRegistry {
                 "PLAYEFFECT", "playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)", 2);
         
 		// <--[command]
-		// @Name playsound
+		// @Name PlaySound
 		// @Usage playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
 		// @Required 2
 		// @Stable Todo
@@ -1281,7 +1277,7 @@ public class CommandRegistry implements dRegistry {
                 "PLAYSOUND", "playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
         
 		// <--[command]
-		// @Name permission
+		// @Name Permission
 		// @Usage permission [add|remove] [permission] (player:<name>) (group:<name>) (world:<name>)
 		// @Required 2
 		// @Stable Todo
@@ -1300,7 +1296,7 @@ public class CommandRegistry implements dRegistry {
                 "PERMISSION", "permission [add|remove] [permission] (player:<name>) (group:<name>) (world:<name>)", 2);
 
 		// <--[command]
-		// @Name pose
+		// @Name Pose
 		// @Usage pose (player/npc) [id:<name>]
 		// @Required 1
 		// @Stable Todo
@@ -1319,7 +1315,7 @@ public class CommandRegistry implements dRegistry {
                 "POSE", "pose (player/npc) [id:<name>]", 1);
 
 		// <--[command]
-		// @Name pause
+		// @Name Pause
 		// @Usage pause [waypoints/navigation]
 		// @Required 1
 		// @Stable Todo
@@ -1338,7 +1334,7 @@ public class CommandRegistry implements dRegistry {
                 "PAUSE", "pause [waypoints/navigation]", 1);
         
 		// <--[command]
-		// @Name queue
+		// @Name Queue
 		// @Usage queue (queue:<id>) [clear/pause/resume/delay:<#>]
 		// @Required 1
 		// @Stable Todo
@@ -1357,7 +1353,7 @@ public class CommandRegistry implements dRegistry {
                 "QUEUE", "queue (queue:<id>) [clear/pause/resume/delay:<#>]", 1);
         
 		// <--[command]
-		// @Name random
+		// @Name Random
 		// @Usage random [<#>]
 		// @Required 1
 		// @Stable Todo
@@ -1376,7 +1372,7 @@ public class CommandRegistry implements dRegistry {
                 "RANDOM", "random [<#>]", 1);
         
 		// <--[command]
-		// @Name remove
+		// @Name Remove
 		// @Usage remove [<entity>|...] (region:<name>)
 		// @Required 0
 		// @Stable Todo
@@ -1395,7 +1391,7 @@ public class CommandRegistry implements dRegistry {
                 "REMOVE", "remove [<entity>|...] (region:<name>)", 0);
 
 		// <--[command]
-		// @Name rename
+		// @Name Rename
 		// @Usage rename [<npc>] [<name>]
 		// @Required 1
 		// @Stable Todo
@@ -1414,7 +1410,7 @@ public class CommandRegistry implements dRegistry {
                 "RENAME", "rename [<npc>] [<name>]", 1);
 
 		// <--[command]
-		// @Name repeat
+		// @Name Repeat
 		// @Usage repeat [<amount>] [<commands>]
 		// @Required 1
 		// @Stable Todo
@@ -1433,7 +1429,7 @@ public class CommandRegistry implements dRegistry {
                 "REPEAT", "repeat [<amount>] [<commands>]", 1);
 
 		// <--[command]
-		// @Name reset
+		// @Name Reset
 		// @Usage reset [fails/finishes/cooldown] (script:<name>)
 		// @Required 1
 		// @Stable Todo
@@ -1452,7 +1448,7 @@ public class CommandRegistry implements dRegistry {
                 "RESET", "reset [fails/finishes/cooldown] (script:<name>)", 1);
 
 		// <--[command]
-		// @Name run
+		// @Name Run
 		// @Usage run [<script>] (path:<name>) (as:<player>/<npc>) (define:<element>|...) (id:<name>) (delay:<value>) (loop) (qty:<#>)
 		// @Required 1
 		// @Stable Todo
@@ -1471,10 +1467,11 @@ public class CommandRegistry implements dRegistry {
                 "RUN", "run [<script>] (path:<name>) (as:<player>/<npc>) (define:<element>|...) (id:<name>) (delay:<value>) (loop) (qty:<#>)", 1);
 
 		// <--[command]
-		// @Name runtask
+		// @Name RunTask
+        // @Deprecated This has been replaced by the Run command.
 		// @Usage runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)
 		// @Required 1
-		// @Stable Todo
+		// @Stable Stable
 		// @Short Todo
 		// @Author Todo
 		// @Description
@@ -1490,7 +1487,7 @@ public class CommandRegistry implements dRegistry {
                 "RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
 
 		// <--[command]
-		// @Name scoreboard
+		// @Name Scoreboard
 		// @Usage scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)
 		// @Required 1
 		// @Stable Todo
@@ -1509,7 +1506,7 @@ public class CommandRegistry implements dRegistry {
                 "SCOREBOARD", "scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)", 1);
         
 		// <--[command]
-		// @Name scribe
+		// @Name Scribe
 		// @Usage scribe [script:<name>] (give/drop/equip) (<item>) (<location>)
 		// @Required 1
 		// @Stable Todo
@@ -1528,7 +1525,7 @@ public class CommandRegistry implements dRegistry {
                 "SCRIBE", "scribe [script:<name>] (give/drop/equip) (<item>) (<location>)", 1);
 
 		// <--[command]
-		// @Name shoot
+		// @Name Shoot
 		// @Usage shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) [{calculated} (height:<#.#>) (gravity:<#.#>)]/[custom speed:<#.#> duration:<value>] (script:<name>)
 		// @Required 1
 		// @Stable Todo
@@ -1547,7 +1544,7 @@ public class CommandRegistry implements dRegistry {
                 "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) [{calculated} (height:<#.#>) (gravity:<#.#>)]/[custom speed:<#.#> duration:<value>] (script:<name>)", 1);
         
 		// <--[command]
-		// @Name showfake
+		// @Name ShowFake
 		// @Usage showfake [<material>] [<location>|...] (d:<duration>{10s})
 		// @Required 2
 		// @Stable Todo
@@ -1566,7 +1563,7 @@ public class CommandRegistry implements dRegistry {
                 "SHOWFAKE", "showfake [<material>] [<location>|...] (d:<duration>{10s})", 2);
 
 		// <--[command]
-		// @Name sign
+		// @Name Sign
 		// @Usage sign (type:{sign_post}/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
 		// @Required 1
 		// @Stable Todo
@@ -1585,7 +1582,7 @@ public class CommandRegistry implements dRegistry {
                 "SIGN", "sign (type:{sign_post}/wall_sign) [\"<line>|...\"] [<location>] (direction:n/e/w/s)", 1);
         
 		// <--[command]
-		// @Name sit
+		// @Name Sit
 		// @Usage sit (<location>)
 		// @Required 0
 		// @Stable Todo
@@ -1604,7 +1601,7 @@ public class CommandRegistry implements dRegistry {
                 "SIT", "sit (<location>)", 0);
 
 		// <--[command]
-		// @Name spawn
+		// @Name Spawn
 		// @Usage spawn [<entity>|...] (<location>) (target:<entity>)
 		// @Required 1
 		// @Stable Todo
@@ -1623,7 +1620,7 @@ public class CommandRegistry implements dRegistry {
                 "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>)", 1);
         
 		// <--[command]
-		// @Name stand
+		// @Name Stand
 		// @Usage stand
 		// @Required 0
 		// @Stable Todo
@@ -1642,7 +1639,7 @@ public class CommandRegistry implements dRegistry {
                 "STAND", "stand", 0);
         
 		// <--[command]
-		// @Name strike
+		// @Name Strike
 		// @Usage strike (no_damage) [<location>]
 		// @Required 1
 		// @Stable Todo
@@ -1661,7 +1658,7 @@ public class CommandRegistry implements dRegistry {
                 "STRIKE", "strike (no_damage) [<location>]", 1);
         
 		// <--[command]
-		// @Name switch
+		// @Name Switch
 		// @Usage switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)
 		// @Required 1
 		// @Stable Todo
@@ -1680,7 +1677,7 @@ public class CommandRegistry implements dRegistry {
                 "SWITCH", "switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)", 1);
         
 		// <--[command]
-		// @Name take
+		// @Name Take
 		// @Usage take [money/iteminhand/<item>] (qty:<#>)
 		// @Required 1
 		// @Stable Todo
@@ -1699,7 +1696,7 @@ public class CommandRegistry implements dRegistry {
                 "TAKE", "take [money/iteminhand/<item>] (qty:<#>)", 1);
         
 		// <--[command]
-		// @Name teleport
+		// @Name Teleport
 		// @Usage teleport (<entity>|...) (<location>)
 		// @Required 1
 		// @Stable Todo
@@ -1718,7 +1715,7 @@ public class CommandRegistry implements dRegistry {
                 "TELEPORT", "teleport (<entity>|...) (<location>)", 1);
         
 		// <--[command]
-		// @Name time
+		// @Name Time
 		// @Usage time [type:{global}/player] [<value>] (world:<name>)
 		// @Required 1
 		// @Stable Todo
@@ -1737,7 +1734,7 @@ public class CommandRegistry implements dRegistry {
                 "TIME", "time [type:{global}/player] [<value>] (world:<name>)", 1);
         
 		// <--[command]
-		// @Name trigger
+		// @Name Trigger
 		// @Usage trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)
 		// @Required 2
 		// @Stable Todo
@@ -1756,18 +1753,24 @@ public class CommandRegistry implements dRegistry {
                 "TRIGGER", "trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)", 2);
         
 		// <--[command]
-		// @Name viewer
+		// @Name Viewer
 		// @Usage viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
+		// @Required 1
+		// @Stable Experimental
+		// @Short Creates a sign that auto-updates with information.
+		// @Author Morphan1
+        //
 		// @Description
-		// Todo
+		// Creates a sign that auto-updates with information about a player, including their location, score, and
+        // whether they're logged in or not.
+        //
 		// @Tags
-		// Todo
+		// None
+        //
 		// @Usage
-		// Todo
+		// Create a sign that shows the location of a player on a wall
+        // - viewer player:ThatGuy create 113,76,-302,world id:PlayerLoc1 type:wall_sign display:location
+        //
 		// @Example
 		// Todo
 		// -->
@@ -1775,7 +1778,7 @@ public class CommandRegistry implements dRegistry {
                 "VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)", 2);
         
 		// <--[command]
-		// @Name vulnerable
+		// @Name Vulnerable
 		// @Usage vulnerable (state:{true}/false/toggle)
 		// @Required 0
 		// @Stable Todo
@@ -1794,7 +1797,7 @@ public class CommandRegistry implements dRegistry {
                 "VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
         
 		// <--[command]
-		// @Name wait
+		// @Name Wait
 		// @Usage wait (<duration>) (queue:<name>)
 		// @Required 0
 		// @Stable Todo
@@ -1813,23 +1816,7 @@ public class CommandRegistry implements dRegistry {
                 "WAIT", "wait (<duration>) (queue:<name>)", 0);
 
 		// <--[command]
-		// @Name walk
-		// @Usage walk [<location>] (speed:<#>) (auto_range)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
-		// <--[command]
-		// @Name walkto
+		// @Name Walk, WalkTo
 		// @Usage walkto [<location>] (speed:<#>) (auto_range)
 		// @Required 1
 		// @Stable Todo
@@ -1848,7 +1835,7 @@ public class CommandRegistry implements dRegistry {
                 "WALK, WALKTO", "walk [<location>] (speed:<#>) (auto_range)", 1);
 
 		// <--[command]
-		// @Name weather
+		// @Name Weather
 		// @Usage weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)
 		// @Required 1
 		// @Stable Todo
@@ -1867,7 +1854,7 @@ public class CommandRegistry implements dRegistry {
                 "WEATHER", "weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)", 1);
         
 		// <--[command]
-		// @Name yaml
+		// @Name Yaml
 		// @Usage yaml [load/create/save:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
 		// @Required 1
 		// @Stable Todo
@@ -1886,7 +1873,7 @@ public class CommandRegistry implements dRegistry {
                 "YAML", "yaml [load/create/save:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]", 1);
 
 		// <--[command]
-		// @Name zap
+		// @Name Zap
 		// @Usage zap (<script>:)[<step>] (<duration>)
 		// @Required 0
 		// @Stable Todo
