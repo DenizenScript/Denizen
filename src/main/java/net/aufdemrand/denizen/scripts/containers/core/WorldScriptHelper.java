@@ -713,11 +713,19 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void projectileHit(ProjectileHitEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-        context.put("entity", entity);
+        Entity entity = event.getEntity();
+        context.put("entity", new dEntity(entity));
+        Entity shooter = ((Projectile)entity).getShooter();
+        Player player = null;
+        if (shooter != null) {
+            context.put("shooter", new dEntity(shooter));
+            if (shooter instanceof Player) {
+                player = (Player)shooter;
+            }
+        }
         doEvents(Arrays.asList("projectile hits block",
-                entity.getBukkitEntity().getType().name() + " hits block"),
-                null, null, context);
+                entity.getType().name() + " hits block"),
+                null, player, context);
     }
 
     @EventHandler
