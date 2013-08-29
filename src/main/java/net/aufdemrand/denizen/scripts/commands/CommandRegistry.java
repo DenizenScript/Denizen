@@ -1164,6 +1164,7 @@ public class CommandRegistry implements dRegistry {
                 "MODIFYBLOCK", "modifyblock [<location>] [<block>] (radius:<#>) (height:<#>) (depth:<#>)", 2);
         
 		// <--[command]
+        // @Name Nameplate
 		// @Usage nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib
 		// @Required 1
 		// @Stable Todo
