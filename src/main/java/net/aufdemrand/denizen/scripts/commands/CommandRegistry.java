@@ -60,7 +60,7 @@ public class CommandRegistry implements dRegistry {
 		// @Usage anchor [id:<name>] [assume/add/remove/walkto/walknear] (range:<#>)
 		// @Required 2
 		// @Stable Stable
-		// @Short 
+		// @Short TODO
 		// @Author Todo
 		// @Description
 		// Todo
