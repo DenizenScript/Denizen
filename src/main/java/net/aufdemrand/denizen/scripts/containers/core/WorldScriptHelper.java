@@ -21,13 +21,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Vehicle;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -1605,17 +1599,17 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void playerPickupItem(PlayerPickupItemEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("item", new dItem(event.getItem().getItemStack()));
+        dItem item = new dItem(event.getItem().getItemStack());
+        context.put("item", item);
         context.put("entity", new dEntity(event.getItem()));
         context.put("location", new dLocation(event.getItem().getLocation()));
-        
-        Entity item = event.getItem();
+
         List<String> events = new ArrayList<String>();
 
-        events.add("player pickup " + item.getType().getName());
-        events.add("player take " + item.getType().getName());
-        events.add("player picks up " + item.getType().getName());
-        events.add("player takes " + item.getType().getName());
+        events.add("player pickup " + item.identify());
+        events.add("player take " + item.identify());
+        events.add("player picks up " + item.identify());
+        events.add("player takes " + item.identify());
         events.add("player pickup item");
         events.add("player take item");
         events.add("player picks up item");
