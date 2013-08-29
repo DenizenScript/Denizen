@@ -2,8 +2,11 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizen.objects.Duration;
+import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -48,56 +51,41 @@ public class SwitchCommand extends AbstractCommand {
 
     private Map<Location, Integer> taskMap = new ConcurrentHashMap<Location, Integer>(8, 0.9f, 1);
 
-    SwitchState switchState;
-    Location interactLocation;
-    int duration = -1;
 
     @Override
-    public void parseArgs(ScriptEntry theEntry) throws InvalidArgumentsException  {
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException  {
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            if (!scriptEntry.hasObject("location") &&
+                    arg.matchesArgumentType(dLocation.class))
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
+            else if (!scriptEntry.hasObject("duration") &&
+                    arg.matchesArgumentType(Duration.class))
+                scriptEntry.addObject("duration", arg.asType(Duration.class));
+            else if (!scriptEntry.hasObject("state") &&
+                    arg.matchesEnum(SwitchState.values()))
+                scriptEntry.addObject("switchstate", new Element(arg.getValue().toUpperCase()));
+            else
+                dB.echoError("Unknown argument " + arg.raw_value);
+        }
 
-        /* Initialize variables */ 
-        interactLocation = null;
-        duration = -1;
-        switchState = SwitchState.TOGGLE;
-
-        for (String arg : theEntry.getArguments()) {
-            if (aH.matchesDuration(arg)) {
-                duration = Integer.valueOf(arg.split(":")[1]);
-                dB.echoDebug(Messages.DEBUG_SET_DURATION, arg);
-
-            } else if (aH.matchesValueArg("STATE", arg, ArgumentType.Custom)) {
-                
-                String state = aH.getStringFrom(arg).toUpperCase(); 
-                
-                if (state.matches("ON|OPEN")) {
-                    switchState = SwitchState.ON;
-                }
-                else if (state.matches("OFF|CLOSE")) {
-                    switchState = SwitchState.OFF;
-                }
-                else if (state.matches("TOGGLE")) {
-                    switchState = SwitchState.TOGGLE;
-                }
-                
-                dB.echoDebug("...set STATE: " + switchState.toString());
-                
-            } else if (aH.matchesLocation(arg)) {
-                interactLocation = aH.getLocationFrom(arg);
-                if (interactLocation != null) dB.echoDebug("...switch LOCATION now: '%s'", arg);
-
-            } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-        }    
-
-        if (interactLocation == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
-
+        if (!scriptEntry.hasObject("location"))
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION, "location");
+        if (!scriptEntry.hasObject("duration"))
+            scriptEntry.addObject("duration", new Duration(0));
+        if (!scriptEntry.hasObject("switchstate"))
+            scriptEntry.addObject("switchstate", new Element("TOGGLE"));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+        final dLocation interactLocation = (dLocation)scriptEntry.getObject("location");
+        int duration = ((Duration)scriptEntry.getObject("duration")).getSecondsAsInt();
+        final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
 
         // Switch the Block
         switchBlock(interactLocation, switchState);
 
+        // TODO: Rewrite the below code to not use freakin' NMS!
         // If duration set, schedule a delayed task.
         if (duration > 0) {
             // If this block already had a delayed task, cancel it.
