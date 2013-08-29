@@ -590,7 +590,7 @@ public class CommandRegistry implements dRegistry {
         
 		// <--[command]
 		// @Name Equip
-		// @Usage equip (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
+		// @Usage equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
 		// @Required 1
 		// @Stable Todo
 		// @Short Todo
@@ -605,7 +605,7 @@ public class CommandRegistry implements dRegistry {
 		// Todo
 		// -->
         registerCoreMember(EquipCommand.class, 
-                "EQUIP", "equip (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
+                "EQUIP", "equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
         
 		// <--[command]
 		// @Name Execute
