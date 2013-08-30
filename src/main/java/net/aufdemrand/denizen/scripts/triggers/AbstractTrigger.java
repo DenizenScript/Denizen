@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.triggers;
 import net.aufdemrand.denizen.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
@@ -15,10 +16,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class AbstractTrigger implements RegistrationableInstance {
 
@@ -82,18 +80,33 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
 
     public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script) {
-        return parse(npc, player, script, null);
+        return parse(npc, player, script, null, null);
     }
 
 
     public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script, String id) {
+        return parse(npc, player, script, id, null);
+    }
+
+    public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script, String id, Map<String, dObject> context) {
         if (npc == null || player == null || script == null) return false;
 
         List<ScriptEntry> entries = script.getEntriesFor(this.getClass(), player, npc, id);
         if (entries.isEmpty()) return false;
 
         dB.echoDebug(DebugElement.Header, "Parsing " + name + " trigger: " + npc.getName() + "/" + player.getName());
-        TimedQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries).start();
+        // Create Queue
+        TimedQueue queue = TimedQueue.getQueue(ScriptQueue._getNextId());
+        // Add all entries to set it up
+        queue.addEntries(entries);
+        // Add context
+        if (context != null) {
+            for (Map.Entry<String, dObject> entry : context.entrySet()) {
+                queue.addContext(entry.getKey(), entry.getValue());
+            }
+        }
+        // Start it
+        queue.start();
 
         return true;
     }
