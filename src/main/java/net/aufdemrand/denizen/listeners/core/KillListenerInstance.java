@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 import net.citizensnpcs.api.CitizensAPI;
 
-import net.citizensnpcs.trait.LookClose;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
