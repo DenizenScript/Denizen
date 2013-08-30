@@ -144,6 +144,10 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         if (region != null)
             if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         
+        // Same with the CUBOID argument...
+        if (cuboid != null)
+            if (!cuboid.isInsideCuboid(player.getLocation())) return;
+        
         //Type BREAK
         if (type == BlockType.BREAK) {
             //If the block matches, count it!!
@@ -167,6 +171,10 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         //Check if region is specified, and if so, is the player in it.
         if (region != null)
             if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        
+        // Same with the CUBOID argument...
+        if (cuboid != null)
+            if (!cuboid.isInsideCuboid(player.getLocation())) return;
         
         //Type COLLECT    
         if (type == BlockType.COLLECT) {
@@ -195,6 +203,10 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         if (region != null)
             if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         
+        // Same with the CUBOID argument...
+        if (cuboid != null)
+            if (!cuboid.isInsideCuboid(player.getLocation())) return;
+        
         //Type COLLECT
         if (type == BlockType.COLLECT) {
             //If the block matches, count it!!
@@ -217,7 +229,11 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         //Check if region is specified, and if so, is the player in it.
         if (region != null)
             if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
-
+        
+        // Same with the CUBOID argument...
+        if (cuboid != null)
+            if (!cuboid.isInsideCuboid(player.getLocation())) return;
+        
         //Type BUILD
         if (type == BlockType.BUILD) {
             
