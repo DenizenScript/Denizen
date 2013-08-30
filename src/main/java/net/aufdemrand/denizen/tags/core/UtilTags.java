@@ -320,7 +320,9 @@ public class UtilTags implements Listener {
                             max = store;
                         }
 
-                        event.setReplaced(String.valueOf(Utilities.getRandom().nextInt(max - min + 1) + min));
+                        event.setReplaced(new Element(
+                                String.valueOf(Utilities.getRandom().nextInt(max - min + 1) + min))
+                        .getAttribute(attribute.fulfill(3)));
                     }
                 }
             }
@@ -333,7 +335,8 @@ public class UtilTags implements Listener {
             // -->
             else if (subType.equalsIgnoreCase("ELEMENT")) {
                 dList list = dList.valueOf(subTypeContext);
-                event.setReplaced(list.get(new Random().nextInt(list.size())));
+                event.setReplaced(new Element(list.get(new Random().nextInt(list.size())))
+                        .getAttribute(attribute.fulfill(2)));
             }
 
             // <--[tag]
@@ -343,7 +346,8 @@ public class UtilTags implements Listener {
             // Returns a random unique ID. (Useful for making new queues)
             // -->
             else if (subType.equalsIgnoreCase("UUID"))
-                event.setReplaced(UUID.randomUUID().toString());
+                event.setReplaced(new Element(UUID.randomUUID().toString())
+                        .getAttribute(attribute.fulfill(2)));
         }
 
         else if (type.equalsIgnoreCase("SUBSTR")
@@ -352,6 +356,7 @@ public class UtilTags implements Listener {
             String text = event.getTypeContext();
             int from = 1;
             int to = text.length() + 1;
+            int tags = 2;
 
             // <--[tag]
             // @attribute <util.substr[<text1>].after[<text2>]>
@@ -385,14 +390,17 @@ public class UtilTags implements Listener {
             } catch (NumberFormatException e) { }
 
             try {
-                if (specifier.equalsIgnoreCase("TO"))
+                if (specifier.equalsIgnoreCase("TO")) {
                     to = Integer.valueOf(specifierContext);
+                    tags = 3;
+                }
             } catch (NumberFormatException e) { }
 
             if (to > text.length())
                 to = text.length() + 1;
 
-            event.setReplaced(text.substring(from - 1, to - 1));
+            event.setReplaced(new Element(text.substring(from - 1, to - 1))
+                    .getAttribute(attribute.fulfill(tags)));
         }
 
         // <--[tag]
@@ -405,7 +413,8 @@ public class UtilTags implements Listener {
             String item_to_replace = event.getTypeContext();
             String replace = event.getSubTypeContext();
             String replacement = event.getSpecifierContext();
-            event.setReplaced(item_to_replace.replace(replace, replacement));
+            event.setReplaced(new Element(item_to_replace.replace(replace, replacement))
+                    .getAttribute(attribute.fulfill(3)));
         }
 
         // <--[tag]
@@ -416,7 +425,8 @@ public class UtilTags implements Listener {
         // -->
         else if (type.equalsIgnoreCase("ENTITY_IS_SPAWNED")) {
             dEntity ent = dEntity.valueOf(event.getTypeContext());
-            event.setReplaced((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false");
+            event.setReplaced(new Element((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
+                    .getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -449,7 +459,8 @@ public class UtilTags implements Listener {
         // -->
         else if (type.equalsIgnoreCase("UPPERCASE")) {
             String item_to_uppercase = event.getTypeContext();
-            event.setReplaced(item_to_uppercase.toUpperCase());
+            event.setReplaced(new Element(item_to_uppercase.toUpperCase())
+                    .getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -460,7 +471,8 @@ public class UtilTags implements Listener {
         // -->
         else if (type.equalsIgnoreCase("LOWERCASE")) {
             String item_to_uppercase = event.getTypeContext();
-            event.setReplaced(item_to_uppercase.toLowerCase());
+            event.setReplaced(new Element(item_to_uppercase.toLowerCase())
+                    .getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -490,7 +502,8 @@ public class UtilTags implements Listener {
                 // -->
                 if (specifier.equalsIgnoreCase("24HOUR")) {
                     format.applyPattern("k:mm");
-                    event.setReplaced(format.format(currentDate));
+                    event.setReplaced(new Element(format.format(currentDate))
+                            .getAttribute(attribute.fulfill(3)));
                 }
                 // <--[tag]
                 // @attribute <util.date.time.year>
