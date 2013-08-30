@@ -46,7 +46,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 this.required = aH.getIntegerFrom(arg.getValue());
         	
-        	else if (arg.matchesPrefix("targets, target, t, name, names"))
+        	else if (arg.matchesPrefix("items, item, i, name, names"))
                 items = arg.asType(dList.class);
 
             else if (arg.matchesPrefix("region, r"))
@@ -98,8 +98,8 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                 final ItemStack item = new ItemStack(event.getCurrentItem());
                 
                 //if item isn't a required item, then return
-                if (!items.contains(item.getType().toString())
-                    && !items.contains(item.getTypeId()))
+                if (!items.contains(item.getType().name().toLowerCase())
+                    && !items.contains(item.getTypeId()) && !items.contains("*"))
                     return;
                 
                 if (event.isShiftClick()) {
