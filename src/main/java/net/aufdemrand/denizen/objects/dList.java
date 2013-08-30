@@ -237,18 +237,18 @@ public class dList extends ArrayList<String> implements dObject {
 
         // <--[tag]
         // @attribute <li@list.size>
-        // @returns Element
+        // @returns Element(Number)
         // @description
-        // returns 'comma-separated' list of the contents of this dList.
+        // returns the size of the list
         // -->
         if (attribute.startsWith("size"))
             return new Element(size()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <li@list.is_empty>
-        // @returns Element
+        // @returns Element(Boolean)
         // @description
-        // returns 'comma-separated' list of the contents of this dList.
+        // returns whether the list is empty
         // -->
         if (attribute.startsWith("is_empty"))
             return new Element(isEmpty()).getAttribute(attribute.fulfill(1));
