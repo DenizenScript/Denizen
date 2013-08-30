@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.containers.core.WorldScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 

@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import java.util.ArrayList;
-import java.util.Random;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;

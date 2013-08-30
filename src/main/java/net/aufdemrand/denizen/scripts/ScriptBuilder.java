@@ -1,15 +1,14 @@
 package net.aufdemrand.denizen.scripts;
 
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.entity.Player;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ScriptBuilder {
 

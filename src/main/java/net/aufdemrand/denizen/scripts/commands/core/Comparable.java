@@ -4,8 +4,6 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.ChatColor;
 
-import java.util.List;
-
 public class Comparable {
 
     public static enum Operator {
