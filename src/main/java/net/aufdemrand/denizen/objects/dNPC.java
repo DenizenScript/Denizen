@@ -264,10 +264,10 @@ public class dNPC implements dObject {
         if (attribute == null) return "null";
         
         // <--[tag]
-        // @attribute  <npc.name.nickname>
+        // @attribute <npc.name.nickname>
         // @returns Element
         // @description
-        // returns the NPC's nickname provided by the nickname trait, or null if the npc does not have the nickname trait.
+        // returns the NPC's nickname provided by the nickname trait, or null if the NPC does not have the nickname trait.
         // -->
         if (attribute.startsWith("name.nickname"))
             return new Element(getCitizen().hasTrait(NicknameTrait.class) ? getCitizen().getTrait(NicknameTrait.class)
@@ -277,7 +277,7 @@ public class dNPC implements dObject {
         // @attribute <npc.name>
         // @returns Element
         // @description
-        // returns the player's nickname provided by the nickname trait, or null if the NPC does not have a nickname
+        // returns the name of the NPC.
         // -->
         if (attribute.startsWith("name"))
             return new Element(ChatColor.stripColor(getName()))
