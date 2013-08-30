@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.listeners.AbstractListener;
+import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -13,71 +21,72 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.listeners.core.BlockListenerType.BlockType;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
-
 public class BlockListenerInstance extends AbstractListener implements Listener {
 
+    enum BlockType { BUILD, COLLECT, BREAK }
+    
+    //
+    //The type of action
+    //
     BlockType type;
+    
+    //
+    //The blocks
+    //
     List<String> blocks = new ArrayList<String>();
-    Integer quantity = 1;
+    
+    //
+    //The counters
+    //
+    Integer required = 1;
+    Integer blocks_so_far = 0;
+    
+    //
+    //Modifiers
+    //
     String region = null;
+    dCuboid cuboid = null;
 
-    Integer currentBlocks = 0;
 
     @Override
     public void onBuild(List<aH.Argument> args) {
 
-//
-//        for (String arg : args) {
-//            if (aH.matchesValueArg("TYPE", arg, ArgumentType.Custom)) {
-//                try {
-//                    this.type = BlockType.valueOf(aH.getStringFrom(arg).toUpperCase());
-//                    dB.echoDebug(Messages.DEBUG_SET_TYPE, this.type.name());
-//                } catch (Exception e) { dB.echoError("Invalid BlockType!"); }
-//            }
-//
-//            else if (aH.matchesQuantity(arg)) {
-//                quantity = aH.getIntegerFrom(arg);
-//                dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
-//            }
-//
-//            else if (aH.matchesArg("BLOCKS, BLOCK", arg)){
-//                blocks = aH.getListFrom(arg.toUpperCase());
-//                dB.echoDebug("...set BLOCK(S): " + Arrays.toString(blocks.toArray()));
-//            }
-//
-//            else if (aH.matchesValueArg("REGION", arg, ArgumentType.Custom)) {
-//                    region = aH.getStringFrom(arg);
-//                    dB.echoDebug("...set REGION.");
-//            }
-//        }
-//
-//        if (blocks.isEmpty()) {
-//            dB.echoError("Missing BLOCK(S) argument!");
-//            cancel();
-//            return;
-//        }
-//
-//        if (type == null) {
-//            dB.echoError("Missing TYPE argument! Valid: BUILD, COLLECT, BREAK");
-//            cancel();
-//        }
+    	for (aH.Argument arg : args) {
+    		if (type == null && arg.matchesEnum(BlockType.values()))
+                type = BlockType.valueOf(arg.getValue().toUpperCase());
+    		
+    		else if (arg.matchesPrefix("qty, q")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                this.required = aH.getIntegerFrom(arg.getValue());
+
+            else if (arg.matchesPrefix("region, r"))
+                this.region = arg.getValue();
+
+            else if (arg.matchesPrefix("cuboid, c")
+                    && arg.matchesArgumentType(dCuboid.class))
+                this.cuboid = arg.asType(dCuboid.class);
+            
+            else if (arg.matchesPrefix("blocks, block, b, name, names"))
+                blocks = arg.asType(dList.class);
+            
+    		if (blocks == null)
+                blocks = new dList("*");
+
+            if (type == null) {
+                dB.echoError("Missing TYPE argument! Valid: BUILD, COLLECT, BREAK");
+                cancel();
+            }
+    	}
     }
 
     @Override
     public void onSave() {
         store("Type", type.name());
-        store("Blocks", this.blocks);
-        store("Quantity", this.quantity);
-        store("Current Blocks", this.currentBlocks);
+        store("Blocks", blocks);
+        store("Quantity", required);
+        store("Current Blocks", blocks_so_far);
         store("Region", region);
+        if (cuboid != null) store("Cuboid", cuboid.identify());
     }
 
     @SuppressWarnings("unchecked")
@@ -85,25 +94,25 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     public void onLoad() {
         type = BlockType.valueOf(((String) get("Type")));
         blocks = (List<String>) get("Blocks");
-        quantity = (Integer) get("Quantity");
-        currentBlocks = (Integer) get("Current Blocks");
+        required = (Integer) get("Quantity");
+        blocks_so_far = (Integer) get("Current Blocks");
         region = (String) get("Region");
+        cuboid = dCuboid.valueOf((String) get("Cuboid"));
     }
 
     @Override
     public void onFinish() {
-        // nothing to do here
     }
 
     @Override
     public void onCancel() {
-        // nothing to do here
     }
 
     @Override
     public String report() {
-        // TODO Format a report output
-        return null;
+    	return player.getName() + " currently has quest listener '" + id
+                + "' active and must " + type.name()+ " " + Arrays.toString(blocks.toArray())
+                + "'(s). Current progress '" + blocks_so_far + "/" + required + "'.";
     }
 
     @Override
@@ -119,32 +128,29 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     }
     
     public void check() {
-        // Check current block count vs. required count; finish() if necessary.
-        if (currentBlocks >= quantity) {
+        if (blocks_so_far >= required) {
             finish();
         }
     }
 
-    List<Location> blocksBroken = new ArrayList<Location>();
     @EventHandler
     public void listenBreak(BlockBreakEvent event) {
+    	//Check if event references proper player.
+    	if (event.getPlayer() != player.getPlayerEntity()) return;
+        
+    	//Check if region is specified, and if so, is the player in it.
+        if (region != null)
+            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        
+        //Type BREAK
         if (type == BlockType.BREAK) {
-            if (event.getPlayer() == player.getPlayerEntity()) {
-                
-                if (region != null) 
-                    if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
-                
-                if (blocks.contains(event.getBlock().getType().toString())
-                        || blocks.contains(String.valueOf(event.getBlock().getTypeId()))) {
-
-                    if (blocksBroken.contains(event.getBlock().getLocation()))
-                        return;
-                    else blocksBroken.add(event.getBlock().getLocation());
-
-                    currentBlocks++;
+        	//If the block matches, count it!!
+            if (blocks.contains(event.getBlock().getType().toString())
+                || blocks.contains(String.valueOf(event.getBlock().getTypeId()))
+                || blocks.contains("*")) {
+                    blocks_so_far++;
                     dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " broke a " + event.getBlock().getType().toString() + ".");
                     check();
-                }
             }
         }
     }
@@ -153,42 +159,49 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     List<Integer> itemsCollected = new ArrayList<Integer>();
     @EventHandler
     public void listenCollect(PlayerPickupItemEvent event) {
-        if (type == BlockType.COLLECT) {
-            if (event.getPlayer() == player.getPlayerEntity()) {
-                
-                if (region != null) 
-                    if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
-                
-                if (blocks.contains(event.getItem().getItemStack().getType().toString())
-                        || blocks.contains(String.valueOf(event.getItem().getItemStack().getTypeId()))) {
+    	//Check if event references proper player.
+    	if (event.getPlayer() != player.getPlayerEntity()) return;
 
+    	//Check if region is specified, and if so, is the player in it.
+        if (region != null)
+            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        
+        //Type COLLECT    
+        if (type == BlockType.COLLECT) {
+        	//If the block matches, count it!!
+            if (blocks.contains(event.getItem().getItemStack().getType().toString())
+                || blocks.contains(String.valueOf(event.getItem().getItemStack().getTypeId()))
+                || blocks.contains("*")) {
+            		//If the specific item has been collected before, dont count it
                     if (itemsCollected.contains(event.getItem().getEntityId()))
                         return;
                     else itemsCollected.add(event.getItem().getEntityId());
-
-                    currentBlocks = currentBlocks + event.getItem().getItemStack().getAmount();
+                    
+                    blocks_so_far = blocks_so_far + event.getItem().getItemStack().getAmount();
                     dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " collected a " + event.getItem().getItemStack().getType().toString() + ".");
                     check();
-
-                }
             }
         }
     }
     
     @EventHandler
     public void listenBucket(PlayerBucketFillEvent event) {
+    	//Check if event references proper player.
+        if (event.getPlayer() != player.getPlayerEntity()) return;
+
+    	//Check if region is specified, and if so, is the player in it.
+        if (region != null)
+            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        
+        //Type COLLECT
         if (type == BlockType.COLLECT) {
-            if (event.getPlayer() == player.getPlayerEntity()) {
-                
-                if (region != null) 
-                    if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
-            
-                if (blocks.contains(event.getBucket().name().toUpperCase())
-                        || blocks.contains(String.valueOf(event.getBucket().name().toUpperCase()))) {
-                    currentBlocks++;
+        	//If the block matches, count it!!
+            if (blocks.contains(event.getBucket().name().toUpperCase())
+                || blocks.contains(String.valueOf(event.getBucket().name().toUpperCase()))
+                || blocks.contains("*")) {
+                	blocks_so_far++;
                     dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " collected a " + event.getBucket().name() + ".");
                     check();
-                }
             }
         }
     }
@@ -196,23 +209,27 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     List<Location> blocksPlaced = new ArrayList<Location>();
     @EventHandler
     public void listenPlace(BlockPlaceEvent event) {
+    	//Check if event references proper player.
+        if (event.getPlayer() != player.getPlayerEntity()) return;
+
+    	//Check if region is specified, and if so, is the player in it.
+        if (region != null)
+            if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
+        
+        //Type BUILD
         if (type == BlockType.BUILD) {
-            if (event.getPlayer() == player.getPlayerEntity()) {
-                
-                if (region != null) 
-                    if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
-                
-                if (blocks.contains(event.getBlock().getType().toString())
-                        || blocks.contains(String.valueOf(event.getBlock().getTypeId()))) {
-                    
+        	//If the block matches, count it!!
+            if (blocks.contains(event.getBlock().getType().toString())
+                || blocks.contains(String.valueOf(event.getBlock().getTypeId()))
+                || blocks.contains("*")) {
+            		//If a block has already been placed at that location, dont count it.
                     if (blocksPlaced.contains(event.getBlock().getLocation()))
                         return;
                     else blocksPlaced.add(event.getBlock().getLocation());
                     
-                    currentBlocks++;
+                    blocks_so_far++;
                     dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " placed a " + event.getBlock().getType().toString() + ".");
                     check();
-                }
             }
         }
     }
@@ -228,11 +245,11 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         }
         
         else if (event.getValue().equalsIgnoreCase("required")) {
-            event.setReplaced(quantity.toString());
+            event.setReplaced(required.toString());
         }
         
-        else if (event.getValue().equalsIgnoreCase("currentblocks")) {
-            event.setReplaced(currentBlocks.toString());
+        else if (event.getValue().equalsIgnoreCase("blocks_so_far")) {
+            event.setReplaced(blocks_so_far.toString());
         }
         
         else if (event.getValue().equalsIgnoreCase("blocks")) {
