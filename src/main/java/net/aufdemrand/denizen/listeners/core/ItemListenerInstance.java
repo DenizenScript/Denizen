@@ -1,23 +1,19 @@
 package net.aufdemrand.denizen.listeners.core;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.listeners.core.ItemListenerType.ItemType;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,75 +22,78 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemListenerInstance extends AbstractListener implements Listener {
 
+    public enum ItemType { CRAFT, SMELT, FISH }
+
     ItemType type = null;
-    List<String> items = new ArrayList<String>();
-    int quantity = 0;
-    int currentItems = 0;
-    Server server = Bukkit.getServer();
+    
+    dList items;
+    
+    int required = 0;
+    int items_so_far = 0;
+    
     String region = null;
+    dCuboid cuboid = null;
     
     @Override
     public void onBuild(List<aH.Argument> args) {
-//        for (String arg : args) {
-//            if (aH.matchesValueArg ("TYPE", arg, ArgumentType.Custom)) {
-//                try {
-//                    this.type = ItemType.valueOf(aH.getStringFrom(arg).toUpperCase());
-//                    dB.echoDebug(Messages.DEBUG_SET_TYPE, this.type.name());
-//                } catch (Exception e) { dB.echoError("Invalid ItemType!"); }
-//            }
-//
-//            else if (aH.matchesQuantity(arg)) {
-//                this.quantity = aH.getIntegerFrom(arg);
-//                dB.echoDebug(Messages.DEBUG_SET_QUANTITY, String.valueOf(quantity));
-//            }
-//
-//            else if (aH.matchesValueArg("ITEMS, ITEM", arg, ArgumentType.Custom)) {
-//                for (String thisItem : aH.getListFrom(arg.toUpperCase()))
-//                    if (server.getRecipesFor(new ItemStack(Material.matchMaterial(thisItem))) != null) {
-//                        items.add(thisItem);
-//                    } else dB.echoError("..." + thisItem + " is not a craftable item");
-//                dB.echoDebug("...set ITEMS.: " + Arrays.toString(items.toArray()));
-//            } else if (aH.matchesValueArg("REGION", arg, ArgumentType.String)) {
-//                region = aH.getStringFrom(arg);
-//                dB.echoDebug("...region set: " + region);
-//            }
-//        }
-//
-//        if (items.isEmpty() && !type.name().equalsIgnoreCase("FISH")) {
-//            dB.echoError("Missing ITEMS argument!");
-//            cancel();
-//        }
-//
-//        if (type == null) {
-//            dB.echoError("Missing TYPE argument! Valid: CRAFT, SMELT, FISH");
-//            cancel();
-//        }
+    	
+        for (aH.Argument arg : args) {
+        	
+        	if (arg.matchesEnum(ItemType.values()) && type == null)
+                this.type = ItemType.valueOf(arg.getValue().toUpperCase());
+        	
+        	else if (arg.matchesPrefix("qty, q")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                this.required = aH.getIntegerFrom(arg.getValue());
+        	
+        	else if (arg.matchesPrefix("targets, target, t, name, names"))
+                items = arg.asType(dList.class);
+
+            else if (arg.matchesPrefix("region, r"))
+                this.region = arg.getValue();
+
+            else if (arg.matchesPrefix("cuboid, c")
+                    && arg.matchesArgumentType(dCuboid.class))
+                this.cuboid = arg.asType(dCuboid.class);
+        }
+        
+        if (items == null)
+            items = new dList("*");
+
+        if (type == null) {
+            dB.echoError("Missing TYPE argument! Valid: CRAFT, SMELT, FISH");
+            cancel();
+        }
     }
     
-    public void increment(String object, int amount)
-    {
-        currentItems = currentItems + amount;
+    public void increment(String object, int amount) {
+    	items_so_far = items_so_far + amount;
         dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " " +
         type.toString().toLowerCase() + "ed " + amount + " " + object + ".");
         check();
     }
 
     @EventHandler
-    public void listenItem(InventoryClickEvent event)
-    {
+    public void listenItem(InventoryClickEvent event) {
+    	
         // Proceed if the slot clicked is a RESULT slot and the player is the right one
         if (event.getSlotType().toString().equals("RESULT")
-            && event.getWhoClicked() == player.getPlayerEntity())
-        {    
+            && event.getWhoClicked() == player.getPlayerEntity()) {    
+
+            // If REGION argument specified, check. If not in region, don't count kill!
+            if (region != null)
+                if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
+            
+            // Same with the CUBOID argument...
+            if (cuboid != null)
+                if (!cuboid.isInsideCuboid(player.getLocation())) return;
+            
             // Put the type of this inventory in a string and check if it matches the
             // listener's type
             String inventoryType = event.getInventory().getType().toString();
             if ((type == ItemType.CRAFT && (inventoryType.equals("CRAFTING") || inventoryType.equals("WORKBENCH")))
                     || (type == ItemType.SMELT && inventoryType.equals("FURNACE"))) {
 
-                if (region != null)
-                    if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
-                
                 // Get the item in the result slot as an ItemStack
                 final ItemStack item = new ItemStack(event.getCurrentItem());
                 
@@ -103,8 +102,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                     && !items.contains(item.getTypeId()))
                     return;
                 
-                if (event.isShiftClick())
-                {
+                if (event.isShiftClick()) {
                     // Save the quantity of items of this type that the player had
                     // before the event took place
                     final int initialQty = new dInventory(player.getPlayerEntity().getInventory()).count(item, false);
@@ -113,27 +111,22 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                     // see how many items of this type the player has then in the
                     // inventory
                     Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-                    new Runnable()
-                    {
+                    new Runnable() {
                         @Override
-                        public void run()
-                        {
+                        public void run() {
                             int newQty = new dInventory(player.getPlayerEntity().getInventory()).count(item, false);
                             int difference = newQty - initialQty;
                                         
                             // If any items were obtained (i.e. if shift click was
                             // used with the player's inventory not being full),
                             // increase the number of current items
-                            if (difference > 0)
-                            {
+                            if (difference > 0) {
                                 increment(item.getType().toString(), difference);
                             }
                                         
                         }
                     }, 1);
-                }
-                else
-                {
+                } else {
                     // If shift click was not used, simply increase the current items
                     // by the quantity of the item in the result slot
                     increment(item.getType().toString(), item.getAmount());
@@ -144,22 +137,20 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     }
 
     @EventHandler
-    public void listenFish(PlayerFishEvent event)
-    {
-        if (type == ItemType.FISH)
-        {
-            if (event.getPlayer() == player.getPlayerEntity())
-            {
+    public void listenFish(PlayerFishEvent event) {
+    	// Only continue if the event is an event for the player that owns this listener.
+        if (event.getPlayer() != player.getPlayerEntity()) return;
 
-                if (region != null) 
-                    if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
-                
-                if (event.getState().toString().equals("CAUGHT_FISH"))
-                {
-                    increment("FISH", 1);
-                }
-            }
-        }
+        // If REGION argument specified, check. If not in region, don't count kill!
+        if (region != null)
+            if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
+        
+        // Same with the CUBOID argument...
+        if (cuboid != null)
+            if (!cuboid.isInsideCuboid(player.getLocation())) return;
+
+        if (event.getState().toString().equals("CAUGHT_FISH"))
+            increment("FISH", 1);
     }
     
     @Override
@@ -167,9 +158,10 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
         try {
             store("Type", type.name());
             store("Items", this.items);
-            store("Quantity Needed", this.quantity);
-            store("Quantity Done", this.currentItems);
+            store("Quantity Needed", this.required);
+            store("Quantity Done", this.items_so_far);
             store("Region", region);
+            if (cuboid != null) store("Cuboid", cuboid.identify());
         } catch (Exception e) {
             dB.echoError("Unable to save ITEM listener for '%s'!", player.getName());
         }
@@ -180,10 +172,11 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     public void onLoad() {
         try {
             type = ItemType.valueOf((String) get("Type"));
-            items = (List<String>) (get("Items"));
-            quantity = (Integer) get("Quantity Needed");
-            currentItems = (Integer) get("Quantity Done");
+            items = new dList((List<String>) get("Items"));
+            required = (Integer) get("Quantity Needed");
+            items_so_far = (Integer) get("Quantity Done");
             region = (String) get("Region");
+            cuboid = dCuboid.valueOf((String) get("Cuboid"));
         } catch (Exception e) { 
             dB.echoError("Unable to load ITEM listener for '%s'!", player.getName());
             cancel();
@@ -196,7 +189,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     }
 
     public void check() {
-        if (currentItems >= quantity) {
+        if (items_so_far >= required) {
             InventoryClickEvent.getHandlerList().unregister(this);
             PlayerFishEvent.getHandlerList().unregister(this);
             finish();
@@ -212,7 +205,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     public String report() {
         return player.getName() + " current has quest listener '" + id
                 + "' active and must " + type.name() + " " + Arrays.toString(items.toArray())
-                + " '(s). Current progress '" + currentItems + "/" + quantity + "'.";
+                + " '(s). Current progress '" + items_so_far + "/" + required + "'.";
     }
 
     @Override
