@@ -33,7 +33,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     //
     //The blocks
     //
-    List<String> blocks = new ArrayList<String>();
+    dList blocks;
     
     //
     //The counters
@@ -93,7 +93,7 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     @Override
     public void onLoad() {
         type = BlockType.valueOf(((String) get("Type")));
-        blocks = (List<String>) get("Blocks");
+        blocks = new dList((List<String>) get("Blocks"));
         required = (Integer) get("Quantity");
         blocks_so_far = (Integer) get("Current Blocks");
         region = (String) get("Region");
