@@ -69,10 +69,6 @@ public class ListenCommand extends AbstractCommand {
                     && arg.matchesEnum(Action.values()))
                 scriptEntry.addObject("action", arg.asElement());
 
-                // <type>
-            else if (!scriptEntry.hasObject("type"))
-                scriptEntry.addObject("type", arg.asElement());
-
                 // <id:name>
             else if (!scriptEntry.hasObject("id")
                     && arg.matchesPrefix("id, i"))
@@ -83,6 +79,10 @@ public class ListenCommand extends AbstractCommand {
                     && arg.matchesPrefix("script")
                     && arg.matchesArgumentType(dScript.class))
                 scriptEntry.addObject("finish_script", arg.asType(dScript.class));
+
+                // <type>
+            else if (!scriptEntry.hasObject("type"))
+                scriptEntry.addObject("type", arg.asElement());
 
             arguments.add(arg);
         }
