@@ -66,6 +66,7 @@ import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BlockIterator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -168,8 +169,8 @@ public class WorldScriptHelper implements Listener {
     // <context.type> will return the material of the block that was broken.
     //
     // @Determine
-    // CANCELLED to stop the block from breaking.
-    // NOTHING to make the block drop no items.
+    // "CANCELLED" to stop the block from breaking.
+    // "NOTHING" to make the block drop no items.
     // dList(dItem) to make the block drop a specified list of items.
     //
     // -->
@@ -247,7 +248,7 @@ public class WorldScriptHelper implements Listener {
     // <context.type> will return the material of the block that was burned.
     //
     // @Determine
-    // CANCELLED to stop the block from being destroyed.
+    // "CANCELLED" to stop the block from being destroyed.
     //
     // -->
     @EventHandler
@@ -278,7 +279,7 @@ public class WorldScriptHelper implements Listener {
     // <context.type> will return the material of the block that was set on fire.
     //
     // @Determine
-    // CANCELLED to stop the block from being ignited.
+    // "CANCELLED" to stop the block from being ignited.
     //
     // -->
     @EventHandler
@@ -309,7 +310,7 @@ public class WorldScriptHelper implements Listener {
     // <context.type> will return the material of the block that moved.
     //
     // @Determine
-    // CANCELLED to stop the block from being moved.
+    // "CANCELLED" to stop the block from being moved.
     //
     // -->
     @EventHandler
@@ -340,7 +341,7 @@ public class WorldScriptHelper implements Listener {
     // <context.type> will return the material of the block that was placed.
     //
     // @Determine
-    // CANCELLED to stop the block from being placed.
+    // "CANCELLED" to stop the block from being placed.
     //
     // -->
     @EventHandler
@@ -373,7 +374,7 @@ public class WorldScriptHelper implements Listener {
     // <context.type> will return the material of the block that was (un)powered.
     //
     // @Determine
-    // CANCELLED to stop the block from being (un)powered.
+    // "CANCELLED" to stop the block from being (un)powered.
     //
     // -->
     @EventHandler
@@ -413,7 +414,7 @@ public class WorldScriptHelper implements Listener {
     // <context.destination> will return the location the block spread to.
     //
     // @Determine
-    // CANCELLED to stop the block from spreading.
+    // "CANCELLED" to stop the block from spreading.
     //
     // -->
     @EventHandler
@@ -447,7 +448,7 @@ public class WorldScriptHelper implements Listener {
     // <context.new> will return the new sign text as a dList.
     //
     // @Determine
-    // CANCELLED to stop the sign from being changed.
+    // "CANCELLED" to stop the sign from being changed.
     //
     // -->
     @EventHandler
@@ -554,16 +555,8 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // hanging breaks
     // hanging breaks because <cause>
-    // <hanging_entity> breaks
-    // <hanging_entity> breaks because <cause>
-    // entity breaks hanging
-    // entity breaks hanging because <cause>
-    // entity breaks <hanging_entity>
-    // entity breaks <hanging_entity> because <cause>
-    // <entity> breaks hanging
-    // <entity> breaks hanging because <cause>
-    // <entity> breaks <hanging_entity>
-    // <entity> breaks <hanging_entity> because <cause>
+    // <hanging> breaks
+    // <hanging> breaks because <cause>
     //
     // @Triggers when a hanging block is broken.
     // @Context
@@ -572,7 +565,7 @@ public class WorldScriptHelper implements Listener {
     // <context.entity> will return the entity that broke the hanging block, if any.
     //
     // @Determine
-    // CANCELLED to stop the hanging block from being broken.
+    // "CANCELLED" to stop the hanging block from being broken.
     //
     // -->
     @EventHandler
@@ -597,6 +590,24 @@ public class WorldScriptHelper implements Listener {
                  " breaks because " + cause);
         
         if (event instanceof HangingBreakByEntityEvent) {
+
+            // <--[event]
+            // @Events
+            // <entity> breaks hanging
+            // <entity> breaks hanging because <cause>
+            // <entity> breaks <hanging>
+            // <entity> breaks <hanging> because <cause>
+            //
+            // @Triggers when a hanging block is broken by an entity.
+            // @Context
+            // <context.hanging> will return the hanging block as a dEntity.
+            // <context.cause> will return the cause of the block breaking.
+            // <context.entity> will return the entity that broke the hanging block.
+            //
+            // @Determine
+            // "CANCELLED" to stop the hanging block from being broken.
+            //
+            // -->
             
             HangingBreakByEntityEvent subEvent = (HangingBreakByEntityEvent) event;
             
@@ -637,6 +648,22 @@ public class WorldScriptHelper implements Listener {
     //   ENTITY EVENTS
     /////////////////
     
+    // <--[event]
+    // @Events
+    // entity spawns
+    // entity spawns because <cause>
+    // <entity> spawns
+    // <entity> spawns because <cause>
+    //
+    // @Triggers when an entity spawns.
+    // @Context
+    // <context.reason> will return the reason the entity spawned.
+    // <context.entity> will return the entity that spawned.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from spawning.
+    //
+    // -->
     @EventHandler
     public void creatureSpawn(CreatureSpawnEvent event) {
 
@@ -657,7 +684,21 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
-    
+
+    // <--[event]
+    // @Events
+    // entity combusts
+    // <entity> combusts
+    //
+    // @Triggers when an entity spawns.
+    // @Context
+    // <context.duration> will return the duration the entity combusts for.
+    // <context.entity> will return the entity that combusted.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from combusting.
+    //
+    // -->
     @EventHandler
     public void entityCombust(EntityCombustEvent event) {
 
@@ -675,7 +716,24 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
-    
+
+    // <--[event]
+    // @Events
+    // entity damaged
+    // entity damaged by <cause>
+    // <entity> damaged
+    // <entity> damaged by <cause>
+    //
+    // @Triggers when an entity is damaged.
+    // @Context
+    // <context.cause> will return the reason the entity was damaged.
+    // <context.entity> will return the entity that was damaged.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from being damaged.
+    // Element(Number) to set the amount of damage the entity receives.
+    //
+    // -->
     @EventHandler
     public void entityDamage(EntityDamageEvent event) {
         
@@ -719,6 +777,26 @@ public class WorldScriptHelper implements Listener {
         events.add(entityType + " damaged by " + cause);
         
         if (isFatal) {
+            
+            // <--[event]
+            // @Events
+            // entity killed
+            // entity killed by <cause>
+            // <entity> killed
+            // <entity> killed by <cause>
+            //
+            // @Triggers when an entity is killed.
+            // @Context
+            // <context.cause> will return the reason the entity was killed.
+            // <context.entity> will return the entity that was killed.
+            // <context.shooter> will return the shooter of the entity, if any.
+            //
+            // @Determine
+            // "CANCELLED" to stop the entity from being killed.
+            // Element(Number) to set the amount of damage the entity receives, instead of dying.
+            //
+            // -->
+            
             events.add("entity killed");
             events.add("entity killed by " + cause);
             events.add(entityType + " killed");
@@ -726,6 +804,26 @@ public class WorldScriptHelper implements Listener {
         }
         
         if (event instanceof EntityDamageByEntityEvent) {
+            
+            // <--[event]
+            // @Events
+            // entity damages entity
+            // entity damages <entity>
+            // <entity> damages entity
+            // <entity> damages <entity>
+            //
+            // @Triggers when an entity damages another entity.
+            // @Context
+            // <context.cause> will return the reason the entity was damaged.
+            // <context.entity> will return the entity that was damaged.
+            // <context.damager> will return the entity damaging the other entity.
+            // <context.shooter> will return the shooter of the entity, if any.
+            //
+            // @Determine
+            // "CANCELLED" to stop the entity from being damaged.
+            // Element(Number) to set the amount of damage the entity receives.
+            //
+            // -->
                         
             EntityDamageByEntityEvent subEvent = (EntityDamageByEntityEvent) event;
             
@@ -801,6 +899,26 @@ public class WorldScriptHelper implements Listener {
                 events.add(entityType + " killed by entity");
                 events.add(entityType + " killed by " + damagerType);
                 
+                // <--[event]
+                // @Events
+                // entity kills entity
+                // entity kills <entity>
+                // <entity> kills entity
+                // <entity> kills <entity>
+                //
+                // @Triggers when an entity kills another entity.
+                // @Context
+                // <context.cause> will return the reason the entity was killed.
+                // <context.entity> will return the entity that was killed.
+                // <context.damager> will return the entity killing the other entity.
+                // <context.shooter> will return the shooter of the entity, if any.
+                //
+                // @Determine
+                // "CANCELLED" to stop the entity from being killed.
+                // Element(Number) to set the amount of damage the entity receives, instead of dying.
+                //
+                // -->
+                
                 subEvents.add("entity kills entity");
                 subEvents.add("entity kills " + entityType);
                 subEvents.add(damagerType + " kills entity");
@@ -829,24 +947,63 @@ public class WorldScriptHelper implements Listener {
         }
     }
 
+    // <--[event]
+    // @Events
+    // projectile hits block
+    // <projectile> hits block
+    //
+    // @Triggers when a projectile hits a block.
+    // @Context
+    // <context.entity> will return the projectile.
+    // <context.shooter> will return the shooter of the projectile, if any.
+    //
+    // -->
     @EventHandler
     public void projectileHit(ProjectileHitEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
         Entity entity = event.getEntity();
-        context.put("entity", new dEntity(entity));
         Entity shooter = ((Projectile)entity).getShooter();
         Player player = null;
+
+        context.put("entity", new dEntity(entity));
+        context.put("location", new dLocation(entity.getLocation()));
+        
         if (shooter != null) {
             context.put("shooter", new dEntity(shooter));
             if (shooter instanceof Player) {
                 player = (Player)shooter;
             }
         }
+        Block hit = null;
+        BlockIterator bi = new BlockIterator(entity.getLocation().getWorld(), entity.getLocation().toVector(), entity.getLocation().getDirection().normalize(), 0, 4);
+        while(bi.hasNext()) {
+            hit = bi.next();
+            if(hit.getTypeId() != 0) {
+                break;
+            }
+        }
         doEvents(Arrays.asList("projectile hits block",
-                entity.getType().name() + " hits block"),
+                entity.getType().name() + " hits block",
+                "projectile hits " + hit.getType().name(),
+                entity.getType().name() + " hits " + hit.getType().name()),
                 null, player, context);
     }
-
+    
+    // <--[event]
+    // @Events
+    // entity explodes
+    // <entity> explodes
+    //
+    // @Triggers when an entity spawns.
+    // @Context
+    // <context.blocks> will return a dList of blocks that the entity blew up.
+    // <context.location> will return the location the entity blew up at.
+    // <context.entity> will return the entity that exploded.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from exploding.
+    //
+    // -->
     @EventHandler
     public void entityExplode(EntityExplodeEvent event) {
 
