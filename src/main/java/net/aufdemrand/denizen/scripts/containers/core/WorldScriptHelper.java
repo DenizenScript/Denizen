@@ -298,6 +298,20 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
     
+    // <--[event]
+    // @Events
+    // block moves
+    // <block> moves
+    //
+    // @Triggers when a block moves.
+    // @Context
+    // <context.location> will return the location the block moved to.
+    // <context.type> will return the material of the block that moved.
+    //
+    // @Determine
+    // CANCELLED to stop the block from being moved.
+    //
+    // -->
     @EventHandler
     public void blockPhysics(BlockPhysicsEvent event) {
 
@@ -315,6 +329,20 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
     
+    // <--[event]
+    // @Events
+    // player places block
+    // player places <block>
+    //
+    // @Triggers when a player places a block.
+    // @Context
+    // <context.location> will return the location the block that was placed.
+    // <context.type> will return the material of the block that was placed.
+    //
+    // @Determine
+    // CANCELLED to stop the block from being placed.
+    //
+    // -->
     @EventHandler
     public void blockPlace(BlockPlaceEvent event) {
 
@@ -332,7 +360,22 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
     
-    
+    // <--[event]
+    // @Events
+    // block powered
+    // <block> powered
+    // block unpowered
+    // <block> unpowered
+    //
+    // @Triggers when a block is (un)powered.
+    // @Context
+    // <context.location> will return the location of the block that was (un)powered.
+    // <context.type> will return the material of the block that was (un)powered.
+    //
+    // @Determine
+    // CANCELLED to stop the block from being (un)powered.
+    //
+    // -->
     @EventHandler
     public void blockRedstone(BlockRedstoneEvent event) {
 
@@ -358,6 +401,21 @@ public class WorldScriptHelper implements Listener {
             event.setNewCurrent(event.getOldCurrent());
     }
     
+    // <--[event]
+    // @Events
+    // block spreads
+    // <block> spreads
+    //
+    // @Triggers when a liquid block spreads.
+    // @Context
+    // <context.location> will return the location the block spread from.
+    // <context.type> will return the material of the block that spread.
+    // <context.destination> will return the location the block spread to.
+    //
+    // @Determine
+    // CANCELLED to stop the block from spreading.
+    //
+    // -->
     @EventHandler
     public void blockFromTo(BlockFromToEvent event) {
 
@@ -376,8 +434,24 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
     
+    // <--[event]
+    // @Events
+    // player changes sign
+    // player changes wall_sign
+    // player changes sign_post
+    //
+    // @Triggers when a player changes a sign.
+    // @Context
+    // <context.location> will return the location of the sign.
+    // <context.old> will return the old sign text as a dList.
+    // <context.new> will return the new sign text as a dList.
+    //
+    // @Determine
+    // CANCELLED to stop the sign from being changed.
+    //
+    // -->
     @EventHandler
-    public void signChange(SignChangeEvent event) {
+    public void signChange(final SignChangeEvent event) {
         
         final Map<String, dObject> context = new HashMap<String, dObject>();
         
@@ -396,7 +470,8 @@ public class WorldScriptHelper implements Listener {
                 context.put("new", new dList(Arrays.asList(sign.getLines())));
                 
                 String determination = doEvents(Arrays.asList
-                        ("player changes sign"),
+                        ("player changes sign",
+                         "player changes " + event.getBlock().getType().name()),
                         null, player, context);
 
                 if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -409,7 +484,14 @@ public class WorldScriptHelper implements Listener {
     /////////////////////
     //   CUSTOM EVENTS
     /////////////////
-    
+
+    // <--[event]
+    // @Events
+    // server start
+    //
+    // @Triggers when the server starts
+    //
+    // -->
     public void serverStartEvent() {
         // Start the 'timeEvent'
         Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
@@ -427,6 +509,18 @@ public class WorldScriptHelper implements Listener {
 
     private Map<String, Integer> current_time = new HashMap<String, Integer>();
 
+    // <--[event]
+    // @Events
+    // time changes in <world>
+    // <0-23>:00 in <world>
+    // time <0-23> in <world>
+    //
+    // @Triggers when a block is set on fire.
+    // @Context
+    // <context.time> will return the current time.
+    // <context.world> will return the world.
+    //
+    // -->
     public void timeEvent() {
         for (World world : Bukkit.getWorlds()) {
             int hour = Double.valueOf(world.getTime() / 1000).intValue();
@@ -456,6 +550,31 @@ public class WorldScriptHelper implements Listener {
     //   HANGING EVENTS
     /////////////////
     
+    // <--[event]
+    // @Events
+    // hanging breaks
+    // hanging breaks because <cause>
+    // <hanging_entity> breaks
+    // <hanging_entity> breaks because <cause>
+    // entity breaks hanging
+    // entity breaks hanging because <cause>
+    // entity breaks <hanging_entity>
+    // entity breaks <hanging_entity> because <cause>
+    // <entity> breaks hanging
+    // <entity> breaks hanging because <cause>
+    // <entity> breaks <hanging_entity>
+    // <entity> breaks <hanging_entity> because <cause>
+    //
+    // @Triggers when a hanging block is broken.
+    // @Context
+    // <context.hanging> will return the hanging block as a dEntity.
+    // <context.cause> will return the cause of the block breaking.
+    // <context.entity> will return the entity that broke the hanging block, if any.
+    //
+    // @Determine
+    // CANCELLED to stop the hanging block from being broken.
+    //
+    // -->
     @EventHandler
     public void hangingBreak(HangingBreakEvent event) {
 
