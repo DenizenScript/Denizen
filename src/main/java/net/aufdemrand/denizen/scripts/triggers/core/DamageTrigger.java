@@ -1,14 +1,12 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
-import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.objects.dItem;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class DamageTrigger extends AbstractTrigger implements Listener {
@@ -65,8 +64,10 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                             id = entry.getKey();
                     }
             }
+            Map<String, dObject> context = new HashMap<String, dObject>();
+            context.put("damage", new Element(event.getDamage()));
 
-            if (!parse(npc, dplayer, script, id))
+            if (!parse(npc, dplayer, script, id, context))
                 npc.action("no damage trigger", dplayer);
         }
     }
