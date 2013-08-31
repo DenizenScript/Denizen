@@ -112,7 +112,7 @@ public class ListenCommand extends AbstractCommand {
         Element id = scriptEntry.getElement("id");
         dScript finish_script = (dScript) scriptEntry.getObject("finish_script");
 
-        dB.report(getName(), action.debug() + type.debug()
+        dB.report(getName(), action.debug() + (type != null ? type.debug() : "")
                 + id.debug() + (finish_script != null ? finish_script.debug() : ""));
 
         List<aH.Argument> arguments = (ArrayList<aH.Argument>) scriptEntry.getObject("args");
