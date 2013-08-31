@@ -5,12 +5,12 @@ import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
@@ -54,6 +54,11 @@ public class ModifyBlockCommand extends AbstractCommand{
                 dB.echoDebug("...location set to: " + scriptEntry.getObject("location"));
             }
             
+            else if (!scriptEntry.hasObject("material")
+                    && arg.matchesArgumentType(dMaterial.class)) {
+                scriptEntry.addObject("material", arg.asType(dMaterial.class));
+            }
+            
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrefix("radius, r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
@@ -76,35 +81,12 @@ public class ModifyBlockCommand extends AbstractCommand{
                 dB.echoDebug("...depth set to " + scriptEntry.getObject("depth"));
 
             }
-            
-            else {
-                
-                String value = arg.getValue().toUpperCase();
-                
-                if (value.split(":", 2).length > 1) {
-                    scriptEntry.addObject("data", aH.getIntegerFrom(value.split(":", 2)[1]));
-                }
-                
-                value = value.split(":", 2)[0];
-                
-                if (aH.matchesInteger(value)) {
-                    scriptEntry.addObject("material", Material.getMaterial(aH.getIntegerFrom(value)));
-                }
-                else {
-                    scriptEntry.addObject("material", Material.getMaterial(value));
-                }
-                
-                if (scriptEntry.getObject("material") != null) dB.echoDebug("...material set to " + scriptEntry.getObject("material"));
-                else dB.echoDebug("...material not valid.");
-
-            }
         }
         
         if (!scriptEntry.hasObject("material"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "MATERIAL");
         if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_LOCATION);
-        scriptEntry.defaultObject("data", new Element(0));
         scriptEntry.defaultObject("radius", new Element(0));
         scriptEntry.defaultObject("height", new Element(0));
         scriptEntry.defaultObject("depth", new Element(0));
@@ -114,9 +96,8 @@ public class ModifyBlockCommand extends AbstractCommand{
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         
-        final Material material = (Material) scriptEntry.getObject("material");
+        final dMaterial material = (dMaterial) scriptEntry.getObject("material");
         final dLocation location = (dLocation) scriptEntry.getObject("location");
-        final int data = scriptEntry.getElement("data").asInt();
         final int radius = scriptEntry.getElement("radius").asInt();
         final int height = scriptEntry.getElement("height").asInt();
         final int depth = scriptEntry.getElement("depth").asInt();
@@ -130,16 +111,16 @@ public class ModifyBlockCommand extends AbstractCommand{
         Block startBlock = location.getBlock();
         Block currentBlock;
         
-        startBlock.setType(material);
-        startBlock.setData((byte) data);
+        startBlock.setType(material.getMaterial());
+        if (material.hasData()) startBlock.setData(material.getData());
         
         if (radius != 0){
             for (int x = 0; x  < 2*radius+1;  x++){
                 for (int z = 0; z < 2*radius+1; z++){
                     currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY(), startBlock.getZ() + z - radius);
-                    if (currentBlock.getType() != material){
-                        currentBlock.setType(material);
-                        currentBlock.setData((byte) data);
+                    if (currentBlock.getType() != material.getMaterial()){
+                        currentBlock.setType(material.getMaterial());
+                        if (material.hasData()) currentBlock.setData(material.getData());
                     }
                 }
             }
@@ -150,9 +131,9 @@ public class ModifyBlockCommand extends AbstractCommand{
                 for (int z = 0; z < 2*radius+1; z++){
                     for (int y = 1; y < height + 1; y++){
                         currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() + y, startBlock.getZ() + z - radius);
-                        if (currentBlock.getType() != material){
-                            currentBlock.setType(material);
-                            currentBlock.setData((byte) data);
+                        if (currentBlock.getType() != material.getMaterial()){
+                            currentBlock.setType(material.getMaterial());
+                            if (material.hasData()) currentBlock.setData(material.getData());
                         }
                     }
                 }
@@ -164,9 +145,9 @@ public class ModifyBlockCommand extends AbstractCommand{
                 for (int z = 0; z < 2*radius+1; z++){
                     for (int y = 1; y < depth + 1; y++){
                         currentBlock = world.getBlockAt(startBlock.getX() + x - radius, startBlock.getY() - y, startBlock.getZ() + z - radius);
-                        if (currentBlock.getType() != material){
-                            currentBlock.setType(material);
-                            currentBlock.setData((byte) data);
+                        if (currentBlock.getType() != material.getMaterial()){
+                            currentBlock.setType(material.getMaterial());
+                            if (material.hasData()) currentBlock.setData(material.getData());
                         }
                     }
                 }

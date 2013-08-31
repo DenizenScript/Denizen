@@ -1146,7 +1146,7 @@ public class CommandRegistry implements dRegistry {
         
 		// <--[command]
 		// @Name ModifyBlock
-		// @Usage modifyblock [<location>] [<block>] (radius:<#>) (height:<#>) (depth:<#>)
+		// @Usage modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)
 		// @Required 2
 		// @Stable Todo
 		// @Short Todo
@@ -1161,7 +1161,7 @@ public class CommandRegistry implements dRegistry {
 		// Todo
 		// -->
         registerCoreMember(ModifyBlockCommand.class,
-                "MODIFYBLOCK", "modifyblock [<location>] [<block>] (radius:<#>) (height:<#>) (depth:<#>)", 2);
+                "MODIFYBLOCK", "modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)", 2);
         
 		// <--[command]
         // @Name Nameplate
