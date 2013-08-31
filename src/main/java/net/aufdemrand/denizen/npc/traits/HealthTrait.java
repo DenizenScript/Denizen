@@ -29,6 +29,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class HealthTrait extends Trait implements Listener {
 
     // Saved to the C2 saves.yml
@@ -216,11 +219,16 @@ public class HealthTrait extends Trait implements Listener {
         entityId = npc.getBukkitEntity().getEntityId();
 
         String deathCause = event.getCause().toString().toLowerCase().replace('_', ' ');
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        context.put("damage", new Element(event.getDamage()));
+        context.put("death_cause", new Element(deathCause));
+
 
         // Check if the entity has been killed by another entity
         if (event instanceof EntityDamageByEntityEvent)
         {
             Entity killerEntity = ((EntityDamageByEntityEvent) event).getDamager();
+            context.put("killer", new dEntity(killerEntity));
 
             // Check if the damager was a player and, if so, attach
             // that player to the action's ScriptEntry
@@ -232,23 +240,26 @@ public class HealthTrait extends Trait implements Listener {
             else if (killerEntity instanceof Projectile)
             {
                 LivingEntity shooter = ((Projectile) killerEntity).getShooter();
+                if (shooter != null) {
 
-                if (shooter instanceof Player)
-                    player = dPlayer.mirrorBukkitPlayer((Player) shooter);
+                    context.put("shooter", new dEntity(shooter));
+                    if (shooter instanceof Player)
+                        player = dPlayer.mirrorBukkitPlayer((Player) shooter);
 
-                DenizenAPI.getDenizenNPC(npc).action("death by " +
-                        shooter.getType().toString(), player);
+                    DenizenAPI.getDenizenNPC(npc).action("death by " +
+                            shooter.getType().toString(), player, context);
+                }
             }
 
-            DenizenAPI.getDenizenNPC(npc).action("death by entity", player);
+            DenizenAPI.getDenizenNPC(npc).action("death by entity", player, context);
             DenizenAPI.getDenizenNPC(npc).action("death by " +
-                    killerEntity.getType().toString(), player);
+                    killerEntity.getType().toString(), player, context);
 
         }
         // If not, check if the entity has been killed by a block
         else if (event instanceof EntityDamageByBlockEvent)
         {
-            DenizenAPI.getDenizenNPC(npc).action("death by block", player);
+            DenizenAPI.getDenizenNPC(npc).action("death by block", player, context);
 
             // TODO:
             // The line of code below should work, but a Bukkit bug makes the damager
@@ -258,8 +269,8 @@ public class HealthTrait extends Trait implements Listener {
             // ((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
         }
 
-        DenizenAPI.getDenizenNPC(npc).action("death", player);
-        DenizenAPI.getDenizenNPC(npc).action("death by " + deathCause, player);
+        DenizenAPI.getDenizenNPC(npc).action("death", player, context);
+        DenizenAPI.getDenizenNPC(npc).action("death by " + deathCause, player, context);
 
         // One of the actions above may have removed the NPC, so check if the
         // NPC's entity still exists before proceeding
