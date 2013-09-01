@@ -409,9 +409,9 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a liquid block spreads.
     // @Context
+    // <context.destination> will return the location the block spread to.
     // <context.location> will return the location the block spread from.
     // <context.type> will return the material of the block that spread.
-    // <context.destination> will return the location the block spread to.
     //
     // @Determine
     // "CANCELLED" to stop the block from spreading.
@@ -444,8 +444,8 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a player changes a sign.
     // @Context
     // <context.location> will return the location of the sign.
-    // <context.old> will return the old sign text as a dList.
     // <context.new> will return the new sign text as a dList.
+    // <context.old> will return the old sign text as a dList.
     //
     // @Determine
     // "CANCELLED" to stop the sign from being changed.
@@ -560,9 +560,9 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a hanging block is broken.
     // @Context
-    // <context.hanging> will return the hanging block as a dEntity.
     // <context.cause> will return the cause of the block breaking.
     // <context.entity> will return the entity that broke the hanging block, if any.
+    // <context.hanging> will return the hanging block as a dEntity.
     //
     // @Determine
     // "CANCELLED" to stop the hanging block from being broken.
@@ -600,9 +600,9 @@ public class WorldScriptHelper implements Listener {
             //
             // @Triggers when a hanging block is broken by an entity.
             // @Context
-            // <context.hanging> will return the hanging block as a dEntity.
             // <context.cause> will return the cause of the block breaking.
             // <context.entity> will return the entity that broke the hanging block.
+            // <context.hanging> will return the hanging block as a dEntity.
             //
             // @Determine
             // "CANCELLED" to stop the hanging block from being broken.
@@ -657,8 +657,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when an entity spawns.
     // @Context
-    // <context.reason> will return the reason the entity spawned.
     // <context.entity> will return the entity that spawned.
+    // <context.reason> will return the reason the entity spawned.
     //
     // @Determine
     // "CANCELLED" to stop the entity from spawning.
@@ -690,9 +690,9 @@ public class WorldScriptHelper implements Listener {
     // entity combusts
     // <entity> combusts
     //
-    // @Triggers when an entity spawns.
+    // @Triggers when an entity combusts.
     // @Context
-    // <context.duration> will return the duration the entity combusts for.
+    // <context.duration> will return how long the entity takes to combust.
     // <context.entity> will return the entity that combusted.
     //
     // @Determine
@@ -727,6 +727,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when an entity is damaged.
     // @Context
     // <context.cause> will return the reason the entity was damaged.
+    // <context.damage> will return the amount of damage dealt.
     // <context.entity> will return the entity that was damaged.
     //
     // @Determine
@@ -789,6 +790,7 @@ public class WorldScriptHelper implements Listener {
             // @Context
             // <context.cause> will return the reason the entity was killed.
             // <context.entity> will return the entity that was killed.
+            // <context.damage> will return the amount of damage dealt.
             // <context.shooter> will return the shooter of the entity, if any.
             //
             // @Determine
@@ -816,6 +818,7 @@ public class WorldScriptHelper implements Listener {
             // @Context
             // <context.cause> will return the reason the entity was damaged.
             // <context.entity> will return the entity that was damaged.
+            // <context.damage> will return the amount of damage dealt.
             // <context.damager> will return the entity damaging the other entity.
             // <context.shooter> will return the shooter of the entity, if any.
             //
@@ -994,11 +997,11 @@ public class WorldScriptHelper implements Listener {
     // entity explodes
     // <entity> explodes
     //
-    // @Triggers when an entity spawns.
+    // @Triggers when an entity explodes.
     // @Context
     // <context.blocks> will return a dList of blocks that the entity blew up.
-    // <context.location> will return the location the entity blew up at.
     // <context.entity> will return the entity that exploded.
+    // <context.location> will return the location the entity blew up at.
     //
     // @Determine
     // "CANCELLED" to stop the entity from exploding.
@@ -1029,6 +1032,24 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
     
+    // <--[event]
+    // @Events
+    // entity heals
+    // entity heals because <cause>
+    // <entity> heals
+    // <entity> heals because <cause>
+    //
+    // @Triggers when an entity heals.
+    // @Context
+    // <context.amount> will return the amount the entity healed.
+    // <context.entity> will return the entity that healed.
+    // <context.reason> will return the cause of the entity healing.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from healing.
+    // Element(Number) to set the amount of health the entity receives.
+    //
+    // -->
     @EventHandler
     public void entityRegainHealth(EntityRegainHealthEvent event) {
 
@@ -1071,6 +1092,21 @@ public class WorldScriptHelper implements Listener {
         }
     }
     
+    // <--[event]
+    // @Events
+    // entity shoots bow
+    // <entity> shoots bow
+    //
+    // @Triggers when an entity shoots something out of a bow.
+    // @Context
+    // <context.entity> will return the entity that shot the bow.
+    // <context.projectile> will return the projectile as a dEntity.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from shooting the bow.
+    // dList(dEntity) to change the projectile(s) being shot.
+    //
+    // -->
     @EventHandler
     public void entityShootBow(EntityShootBowEvent event) {
         
@@ -1149,6 +1185,21 @@ public class WorldScriptHelper implements Listener {
         }
     }
     
+    // <--[event]
+    // @Events
+    // entity tamed
+    // <entity> tamed
+    // player tames entity
+    // player tames <entity>
+    //
+    // @Triggers when an entity is tamed.
+    // @Context
+    // <context.entity> will return the tamed entity.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from being tamed.
+    //
+    // -->
     @EventHandler
     public void entityTame(EntityTameEvent event) {
 
@@ -1173,6 +1224,24 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
     
+    // <--[event]
+    // @Events
+    // entity targets (<entity>)
+    // entity targets (<entity>) because <cause>
+    // <entity> targets (<entity>)
+    // <entity> targets (<entity>) because <cause>
+    //
+    // @Triggers when an entity targets a new entity.
+    // @Context
+    // <context.entity> will return the targeting entity.
+    // <context.reason> will return the reason the entity changed targets.
+    // <context.target> will return the targeted entity.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from being targeted.
+    // dEntity to make the entity change targets to a different entity instead.
+    //
+    // -->
     @EventHandler
     public void entityTarget(EntityTargetEvent event) {
 
@@ -1231,7 +1300,6 @@ public class WorldScriptHelper implements Listener {
             
             Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                 public void run() {
-
                     attacker.target(newTarget.getLivingEntity());
                 }
             }, 1);
