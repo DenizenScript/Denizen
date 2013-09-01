@@ -21,60 +21,42 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 
-import net.aufdemrand.denizen.objects.notable.Notable;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.objects.notable.Note;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 
-public class dInventory implements dObject, Notable {
-    
-    ///////////////////
-    //    NOTABLE METHODS
-    ////////////////
-
-    public boolean isUnique() {
-        return (NotableManager.isSaved(this));
-    }
-    
-    @Note("inventory")
-    public String getSaveString() {
-        return identify();
-    }
-
-    public void makeUnique(String id) {
-        NotableManager.saveAs(this, id);
-    }
-
-    public void forget() {
-        NotableManager.remove(this);
-    }
+public class dInventory implements dObject {
     
     /////////////////////
     //   PATTERNS
     /////////////////
     
     final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location|equipment)(\\[)(.+?)(\\])", Pattern.CASE_INSENSITIVE);
-    final static Pattern inventory_by_saved = Pattern.compile("(in@)(.+)");
+    final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)");
     
     //////////////////
     //    OBJECT FETCHER
     ////////////////
+    
+    public static dInventory valueOf(String string) {
+        return valueOf(string, null, null);
+    }
     
     /**
      * 
      * Gets a dInventory from a string format.
      *
      * @param string
-     *          The inventory in string form. (in@player[playerName], in@notableName, etc.)
+     *          The inventory in string form. (in@player[playerName], in@scriptName, etc.)
      * @return 
      *          The dInventory value. If the string is incorrectly formatted or
      *          the specified inventory is invalid, this is null.
      *
      */
     @ObjectFetcher("in")
-    public static dInventory valueOf(String string) {
+    public static dInventory valueOf(String string, dPlayer player, dNPC npc) {
         
         if (string == null) return null;
         
@@ -137,15 +119,15 @@ public class dInventory implements dObject, Notable {
             
         }
         
-        // Match in@notableName for Notable dInventories
-        m = inventory_by_saved.matcher(string);
+        // Match in@scriptName for Inventory Scripts
+        m = inventory_by_script.matcher(string);
         
         if (m.matches()) {
             
-            if (NotableManager.isType(m.group(2), dInventory.class))
-                return (dInventory) NotableManager.getSavedObject(m.group(2));
+            if (ScriptRegistry.containsScript(m.group(2), InventoryScriptContainer.class))
+                return ScriptRegistry.getScriptContainerAs(m.group(2), InventoryScriptContainer.class).getInventoryFrom(player, npc);
             
-            dB.echoError("Value of dInventory returning null. Invalid notable specified: " + m.group(2));
+            dB.echoError("Value of dInventory returning null. Invalid script specified: " + m.group(2));
             return null;
             
         }
@@ -240,6 +222,12 @@ public class dInventory implements dObject, Notable {
     
     public dInventory(InventoryType type, String id, String identifier) {
         inventory = Bukkit.getServer().createInventory(null, type);
+        holderType = id;
+        holderIdentifier = identifier;
+    }
+    
+    public dInventory(int size, String id, String identifier) {
+        inventory = Bukkit.getServer().createInventory(null, size);
         holderType = id;
         holderIdentifier = identifier;
     }
@@ -647,6 +635,10 @@ public class dInventory implements dObject, Notable {
     public String getType() {
         return "Inventory";
     }
+
+    public boolean isUnique() {
+        return true;
+    }
     
     public String getPrefix() {
         return prefix;
@@ -662,7 +654,7 @@ public class dInventory implements dObject, Notable {
     }
 
     public String identify() {
-        return "in@" + (holderType.equals("notable") ? holderIdentifier : (holderType + "[" + holderIdentifier + "]"));
+        return "in@" + (holderType.equals("script") ? holderIdentifier : (holderType + "[" + holderIdentifier + "]"));
     }
 
     public String getAttribute(Attribute attribute) {

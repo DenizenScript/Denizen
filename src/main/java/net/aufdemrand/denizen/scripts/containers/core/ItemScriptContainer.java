@@ -15,14 +15,13 @@ import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemScriptContainer extends ScriptContainer {
     
     dNPC npc = null;
-    Player player = null;
+    dPlayer player = null;
     public Boolean bound = false;
     
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
@@ -32,7 +31,7 @@ public class ItemScriptContainer extends ScriptContainer {
         if (contains("RECIPE")) {
             List<dItem> materials = new ArrayList<dItem>();
             for (String recipeRow : getStringList("RECIPE")) {
-                recipeRow = TagManager.tag(new dPlayer(player), npc, recipeRow);
+                recipeRow = TagManager.tag(player, npc, recipeRow);
                 String[] row = recipeRow.split("\\|", 3);
                 for (String material : row) {
                     materials.add(materials.size(), dItem.valueOf(material));
@@ -149,7 +148,7 @@ public class ItemScriptContainer extends ScriptContainer {
         this.npc = npc;
     }
     
-    public void setPlayer(Player player) {
+    public void setPlayer(dPlayer player) {
         this.player = player;
     }
 

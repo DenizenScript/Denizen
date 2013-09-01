@@ -2,7 +2,10 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -10,9 +13,10 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 
 public class InventoryScriptContainer extends ScriptContainer {
     
@@ -55,15 +59,38 @@ public class InventoryScriptContainer extends ScriptContainer {
         dInventory inventory = null;
         
         try {
-            if (contains("DEFINITIONS")) {
-                // TODO: Figure out when to load definitions
+            if (contains("SIZE")) {
+                inventory = new dInventory(aH.getIntegerFrom(getString("SIZE")), "script", getName());
             }
-            
             if (contains("SLOTS")) {
+                ItemStack[] finalItems = new ItemStack[getSize()];
+                int itemsAdded = 0;
                 for (String items : getStringList("SLOTS")) {
                     items = TagManager.tag(player, npc, items);
-                    // TODO: Find a possible format for this
+                    String[] itemsInLine = items.split(" ");
+                    for (String item : itemsInLine) {
+                        Matcher m = Pattern.compile("(\\[)(.*)(\\])").matcher(item);
+                        if (!m.matches()) {
+                            dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item.");
+                            return null;
+                        }
+                        if (contains("DEFINITIONS." + m.group(2)) && dItem.matches(getString("DEFINITIONS." + m.group(2)))) {
+                            finalItems[itemsAdded] = dItem.valueOf(getString("DEFINITIONS." + m.group(2))).getItemStack();
+                        }
+                        else if (dItem.matches(m.group(2))) {
+                            finalItems[itemsAdded] = dItem.valueOf(m.group(2)).getItemStack();
+                        }
+                        else {
+                            finalItems[itemsAdded] = new ItemStack(Material.AIR);
+                            if (!m.group(2).trim().isEmpty()) {
+                                dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: [" + m.group(2) 
+                                        + "]... Ignoring it and assuming \"AIR\"");
+                            }
+                        }
+                        itemsAdded++;
+                    }
                 }
+                inventory.setContents(finalItems);
             }
         } 
         catch (Exception e) {
