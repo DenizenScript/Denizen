@@ -133,6 +133,8 @@ public class ListenerRegistry implements dRegistry, Listener {
                        String id,
                        dScript on_finish) {
         if (player == null || id == null) return;
+        // Remove listener instance from the player
+        removeListenerFor(player, id);
         // Run finish script
         if (on_finish != null)
             try {
@@ -145,8 +147,6 @@ public class ListenerRegistry implements dRegistry, Listener {
                         + "but it seems not to be valid!");
             }
 
-        // Remove listener instance from the player
-        removeListenerFor(player, id);
         Bukkit.getPluginManager().callEvent(new ListenerFinishEvent(player, id));
     }
 
