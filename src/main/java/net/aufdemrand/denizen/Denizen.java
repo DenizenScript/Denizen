@@ -46,7 +46,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Denizen extends JavaPlugin {
-    public final static int configVersion = 3;
+    public final static int configVersion = 4;
     public static String versionTag = null;
 
     private boolean startedSuccessful = false;
@@ -168,7 +168,8 @@ public class Denizen extends JavaPlugin {
 
             dB.echoError("Your Denizen config file is from a different version. " +
                     "Some settings will not be available unless you generate a new one. " +
-                    "This is easily done by deleting the current config.yml file in the Denizen folder.");
+                    "This is easily done by stopping the server, deleting the current config.yml file in the Denizen folder" +
+                    "and restarting the server.");
         }
 
         ScriptHelper.reloadScripts();

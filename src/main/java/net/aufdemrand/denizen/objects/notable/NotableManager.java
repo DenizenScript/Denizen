@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.objects.notable;
 
+import net.aufdemrand.denizen.objects.dObject;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -11,6 +13,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -97,7 +100,12 @@ public class NotableManager {
      */
     private static void _recallNotables() {
 
-        // TODO
+        // Find each type of notable
+        for (String keys : DenizenAPI.getCurrentInstance().notableManager().getNotables().getKeys(false)) {
+
+
+
+        }
 
     }
 
@@ -108,8 +116,15 @@ public class NotableManager {
 
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
 
-            // TODO
+            // If the object is serializable, save that info... fetching the objects back
+            // will require this information
+            if (notable.getValue().getSaveObject() instanceof ConfigurationSerializable)
+                DenizenAPI.getCurrentInstance().notableManager().getNotables()
+                        .set(((dObject) notable.getValue()).getType().toLowerCase() + "." + "_serializable", true);
 
+            DenizenAPI.getCurrentInstance().notableManager().getNotables()
+                    .set(((dObject) notable.getValue()).getType().toLowerCase() + "." + notable.getKey().toLowerCase(),
+                            notable.getValue());
         }
 
     }

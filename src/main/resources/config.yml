@@ -63,4 +63,4 @@ Commands:
 # configuration file is outdated or too new
 
 Config:
-  Version: 3
+  Version: 4
