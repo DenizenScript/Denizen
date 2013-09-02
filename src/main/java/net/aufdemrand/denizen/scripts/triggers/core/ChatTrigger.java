@@ -1,9 +1,8 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
@@ -11,7 +10,6 @@ import net.aufdemrand.denizen.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
-import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import org.bukkit.Bukkit;
@@ -22,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -175,7 +174,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
             Utilities.talkToNPC(replacementText, denizenPlayer, npc, Settings.ChatToNpcOverhearingRange());
-            parse(npc, denizenPlayer, script, id);
+            Map<String, dObject> context = new HashMap<String, dObject>();
+            context.put("message", new Element(message));
+            parse(npc, denizenPlayer, script, id, context);
             return true;
         } else {
             if (!Settings.ChatGloballyIfFailedChatTriggers ()) {
