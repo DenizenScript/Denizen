@@ -424,7 +424,9 @@ public class dPlayer implements dObject {
             }
         }
 
-        if (!isOnline()) return new Element(identify()).getAttribute(attribute);
+        // TODO: Achieve this less terribly (Make it specific to each tag, or reorganize tags so entity-requiring
+        // tags go after this, and offline-working tags go above.)
+        // if (!isOnline()) return new Element(identify()).getAttribute(attribute);
 
         // Player is required to be online after this point...
 

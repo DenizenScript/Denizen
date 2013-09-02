@@ -551,7 +551,7 @@ public class Element implements dObject {
         // incorrectly. So instead of just passing through what's been resolved
         // so far, 'null' shall be returned with an error message.
 
-        if (attribute.attributes.size() > 0)                    {
+        if (attribute.attributes.size() > 0) {
             dB.echoError("Unfilled attributes '" + attribute.attributes.toString() + "'" +
                     "for tag <" + attribute.getOrigin() + ">!");
             return "null";
