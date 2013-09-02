@@ -35,6 +35,7 @@ Triggers:
     Overhearing range: 4
     Prerequisites:
       Must be looking in direction of NPC: true
+      Must be able to see NPC: true
     Formats:
       Player to NPC: "You -> <npc.name.nickname>: <text>"
       Player to NPC overheard: "<player.name> -> <npc.name.nickname>: <text>"

@@ -219,12 +219,11 @@ public class Settings {
 
     */
 
-    // Currently broken because of Bukkit changes
     
-    //public static boolean ChatMustSeeNPC() {
-    //    return DenizenAPI.getCurrentInstance().getConfig()
-    //            .getBoolean("Triggers.Chat.Prerequisites.Must be able to see NPC", true);
-    //}
+    public static boolean ChatMustSeeNPC() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Triggers.Chat.Prerequisites.Must be able to see NPC", true);
+    }
 
     public static boolean ChatMustLookAtNPC() {
         return DenizenAPI.getCurrentInstance().getConfig()

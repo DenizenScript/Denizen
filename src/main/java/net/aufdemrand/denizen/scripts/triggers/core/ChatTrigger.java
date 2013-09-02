@@ -61,18 +61,17 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 + aH.debugObj("Radius(Max)", npc.getLocation().distance(player.getLocation())
                 + "(" + npc.getTriggerTrait().getRadius(name) + ")")
                 + aH.debugObj("Trigger text", message)
-                + aH.debugObj("LOS", String.valueOf(npc.getEntity().hasLineOfSight(player)))
+                + aH.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
                 + aH.debugObj("Facing", String.valueOf(Rotation.isFacingEntity(player, npc.getEntity(), 45))));
 
         // The Denizen config can require some other criteria for a successful chat-with-npc.
         // Should we check 'line of sight'? Players cannot talk to NPCs through walls
         // if enabled. Should the Player chat only when looking at the NPC? This may
         // reduce accidental chats with NPCs.
+
         
-        // TODO: CraftBukkit 1.6 broke the two lines below. Think of a workaround.
-        
-        //if (Settings.ChatMustSeeNPC())
-        //    if (!npc.getEntity().hasLineOfSight(player)) return false;
+        if (Settings.ChatMustSeeNPC())
+            if (!player.hasLineOfSight(npc.getEntity())) return false;
         
         if (Settings.ChatMustLookAtNPC())
             if (!Rotation.isFacingEntity(player, npc.getEntity(), 45)) return false;
