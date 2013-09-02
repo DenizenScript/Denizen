@@ -31,7 +31,7 @@ public class RepeatCommand extends BracedCommand {
         if (!scriptEntry.hasObject("qty"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "QUANTITY");
 
-        scriptEntry.addObject("entries", getBracedCommands(scriptEntry));
+        scriptEntry.addObject("entries", getBracedCommands(scriptEntry, 1));
 
     }
 

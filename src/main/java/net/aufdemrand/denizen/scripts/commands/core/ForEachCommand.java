@@ -34,7 +34,7 @@ public class ForEachCommand extends BracedCommand {
         if (!scriptEntry.hasObject("list"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LIST");
 
-        scriptEntry.addObject("entries", getBracedCommands(scriptEntry));
+        scriptEntry.addObject("entries", getBracedCommands(scriptEntry, 1));
 
     }
 
