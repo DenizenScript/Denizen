@@ -21,13 +21,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 
+import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 
-public class dInventory implements dObject {
+public class dInventory implements dObject, Notable {
     
     /////////////////////
     //   PATTERNS
@@ -35,6 +37,34 @@ public class dInventory implements dObject {
     
     final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location|equipment)(\\[)(.+?)(\\])", Pattern.CASE_INSENSITIVE);
     final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)");
+    
+    /////////////////////
+    //   NOTABLE METHODS
+    /////////////////
+
+    public boolean isUnique() {
+        return holderType.equals("notable");
+    }
+    
+    public String getSaveString() {
+        return holderIdentifier;
+    }
+
+    public void makeUnique(String id) {
+        holderType_old = holderType;
+        holderIdentifier_old = holderIdentifier;
+        holderType = "notable";
+        holderIdentifier = id;
+        NotableManager.saveAs(this, id);
+    }
+
+    public void forget() {
+        NotableManager.remove(holderIdentifier);
+        holderType = holderType_old;
+        holderIdentifier = holderIdentifier_old;
+        holderType_old = null;
+        holderIdentifier_old = null;
+    }
     
     //////////////////
     //    OBJECT FETCHER
@@ -127,6 +157,9 @@ public class dInventory implements dObject {
             if (ScriptRegistry.containsScript(m.group(2), InventoryScriptContainer.class))
                 return ScriptRegistry.getScriptContainerAs(m.group(2), InventoryScriptContainer.class).getInventoryFrom(player, npc);
             
+            if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dInventory.class))
+                return (dInventory) NotableManager.getSavedObject(m.group(2));
+            
             dB.echoError("Value of dInventory returning null. Invalid script specified: " + m.group(2));
             return null;
             
@@ -159,7 +192,9 @@ public class dInventory implements dObject {
     /////////////
     
     String holderType = null;
+    String holderType_old = null;
     String holderIdentifier = null;
+    String holderIdentifier_old = null;
 
     public dInventory(Inventory inventory) {
         if (inventory.getHolder() != null) {
@@ -635,10 +670,6 @@ public class dInventory implements dObject {
     public String getType() {
         return "Inventory";
     }
-
-    public boolean isUnique() {
-        return true;
-    }
     
     public String getPrefix() {
         return prefix;
@@ -654,7 +685,8 @@ public class dInventory implements dObject {
     }
 
     public String identify() {
-        return "in@" + (holderType.equals("script") ? holderIdentifier : (holderType + "[" + holderIdentifier + "]"));
+        return "in@" + (holderType.equals("script") || holderType.equals("notable")
+                ? holderIdentifier : (holderType + "[" + holderIdentifier + "]"));
     }
 
     public String getAttribute(Attribute attribute) {

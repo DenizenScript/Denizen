@@ -22,7 +22,7 @@ public class ItemScriptContainer extends ScriptContainer {
     
     dNPC npc = null;
     dPlayer player = null;
-    public Boolean bound = false;
+    public boolean bound = false;
     
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
@@ -82,7 +82,7 @@ public class ItemScriptContainer extends ScriptContainer {
             
             // Set if the object is bound to the player
             if (contains("BOUND")) {
-                bound  = Boolean.valueOf(TagManager.tag(player, npc, getString("BOUND")));
+                bound = Boolean.valueOf(TagManager.tag(player, npc, getString("BOUND")));
             }
 
             // Set Lore

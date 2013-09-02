@@ -28,14 +28,9 @@ public class InventoryScriptContainer extends ScriptContainer {
     
     public int getSize() {
         InventoryType invType = getInventoryType();
-        Integer size = Integer.valueOf(getString("size"));
+        int size = aH.getIntegerFrom(getString("SIZE", String.valueOf(invType.getDefaultSize())));
         
-        if (size > 0) {
-            if (invType == InventoryType.CHEST)
-                return Math.round(size/9)*9;
-        }
-        
-        return invType.getDefaultSize();
+        return size;
     }
     
     public InventoryType getInventoryType() {
@@ -44,8 +39,8 @@ public class InventoryScriptContainer extends ScriptContainer {
         try {
             InventoryType type = InventoryType.valueOf(typeStr);
             return type;
-            
-        } catch(Exception e) {
+        } 
+        catch(Exception e) {
             return InventoryType.CHEST;
         }
     }
@@ -59,8 +54,38 @@ public class InventoryScriptContainer extends ScriptContainer {
         dInventory inventory = null;
         
         try {
+            if (contains("INVENTORY")) {
+                if (InventoryType.valueOf(getString("INVENTORY")) != null) {
+                    inventory = new dInventory(InventoryType.valueOf(getString("INVENTORY")), "script", getName());
+                }
+                else {
+                    dB.echoError("Invalid inventory type specified. Assuming \"CHEST\"");
+                }
+            }
             if (contains("SIZE")) {
-                inventory = new dInventory(aH.getIntegerFrom(getString("SIZE")), "script", getName());
+                if (inventory != null && !getInventoryType().name().equalsIgnoreCase("CHEST")) {
+                    dB.echoError("You can only set the size of chest inventories!");
+                }
+                else {
+                    int size = aH.getIntegerFrom(getString("SIZE"));
+
+                    if (size == 0) {
+                        dB.echoError("Inventory size can't be 0. Assuming default...");
+                        size = 27;
+                    }
+                    if (size % 9 != 0) {
+                        dB.echoError("Inventory size must be a multiple of 9! Rounding...");
+                        size = Math.round(size/9)*9;
+                        if (size == 0)
+                            size = 9;
+                    }
+                    if (size < 0) {
+                        dB.echoError("Inventory size must be a positive number! Inverting...");
+                        size = size*-1;
+                    }
+                    
+                    inventory = new dInventory(aH.getIntegerFrom(getString("SIZE")), "script", getName());
+                }
             }
             if (contains("SLOTS")) {
                 ItemStack[] finalItems = new ItemStack[getSize()];
