@@ -36,12 +36,12 @@ public class SitCommand extends AbstractCommand {
             throws CommandExecutionException {
         dLocation location = (dLocation) scriptEntry.getObject("location");
         NPC npc = scriptEntry.getNPC().getCitizen();
-        SittingTrait trait = npc.getTrait(SittingTrait.class);
-        
         if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
             dB.echoError("...only Player type NPCs can sit!");
             return;
         }
+        SittingTrait trait = npc.getTrait(SittingTrait.class);
+
                 
         if (!npc.hasTrait(SittingTrait.class)) {
             npc.addTrait(SittingTrait.class);
