@@ -455,30 +455,22 @@ public class WorldScriptHelper implements Listener {
     public void signChange(final SignChangeEvent event) {
         
         final Map<String, dObject> context = new HashMap<String, dObject>();
-        
+
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
         Sign sign = (Sign) block.getState();
-        final String[] oldLines = sign.getLines();
         
-        context.put("old", new dList(Arrays.asList(oldLines)));
+        context.put("old", new dList(Arrays.asList(sign.getLines())));
         context.put("location", new dLocation(block.getLocation()));
-        
-        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
-            public void run() {
+        context.put("new", new dList(Arrays.asList(event.getLines())));
 
-                Sign sign = (Sign) block.getState();
-                context.put("new", new dList(Arrays.asList(sign.getLines())));
-                
-                String determination = doEvents(Arrays.asList
-                        ("player changes sign",
-                         "player changes " + event.getBlock().getType().name()),
-                        null, player, context);
+        String determination = doEvents(Arrays.asList
+            ("player changes sign",
+            "player changes " + block.getType().name()),
+                null, player, context);
 
-                if (determination.toUpperCase().startsWith("CANCELLED"))
-                    Utilities.setSignLines(sign, oldLines);
-            }
-        }, 1);
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
     }
     
     
