@@ -188,23 +188,34 @@ public class ShootCommand extends AbstractCommand {
                                      aH.debugObj("speed", speed) + aH.debugObj("duration", new Duration(maxRuns * 2)) : "") +
                              (script != null ? aH.debugObj("script", script) : ""));
         
+        dList shot_entities = new dList();
+
         // Go through all the entities, spawning/teleporting and rotating them
         
         for (dEntity entity : entities) {
-            
+
             if (!entity.isSpawned()) {
                 entity.spawnAt(originLocation);
             }
             else {
                 entity.teleport(originLocation);
             }
-            
+
+            // Add the spawned entity to the 'shot_entities' context
+            try {
+            shot_entities.add("e@" + entity.getBukkitEntity().getEntityId());
+            } catch (Exception e) { dB.echoError("Entity failed to spawn!");  }
+
             Rotation.faceLocation(entity.getBukkitEntity(), destination);
             
             if (entity.getBukkitEntity() instanceof Projectile && shooter != null) {
                 ((Projectile) entity.getBukkitEntity()).setShooter(shooter);
             }
         }
+
+        // Add shot_entities to context so that the specific entities created/spawned
+        // can be 'fetched'.
+        scriptEntry.addObject("shot_entities", shot_entities);
         
         Position.mount(Conversion.convert(entities));
         
@@ -291,5 +302,7 @@ public class ShootCommand extends AbstractCommand {
         
             task.runTaskTimer(denizen, 0, 2);     
         }
+
+
     }
 }
