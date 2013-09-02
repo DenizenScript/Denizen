@@ -294,7 +294,7 @@ public class dPlayer implements dObject {
         // @description
         // Returns the player's IP address.
         // -->
-        if (attribute.startsWith("ip"))
+        if (attribute.startsWith("ip") && isOnline())
             return getPlayerEntity().getAddress().getHostName();
         
         // <--[tag]
@@ -424,11 +424,6 @@ public class dPlayer implements dObject {
             }
         }
 
-        // TODO: Achieve this less terribly (Make it specific to each tag, or reorganize tags so entity-requiring
-        // tags go after this, and offline-working tags go above.)
-        // if (!isOnline()) return new Element(identify()).getAttribute(attribute);
-
-        // Player is required to be online after this point...
 
         // <--[tag]
         // @attribute <p@player.xp.to_next_level>
@@ -436,7 +431,7 @@ public class dPlayer implements dObject {
         // @description
         // returns the amount of experience to the next level.
         // -->
-        if (attribute.startsWith("xp.to_next_level"))
+        if (attribute.startsWith("xp.to_next_level") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().getExpToLevel()))
                     .getAttribute(attribute.fulfill(2)); 
 
@@ -446,7 +441,7 @@ public class dPlayer implements dObject {
         // @description
         // returns the total amount of experience points.
         // -->
-        if (attribute.startsWith("xp.total"))
+        if (attribute.startsWith("xp.total") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().getTotalExperience()))
                     .getAttribute(attribute.fulfill(2));
 
@@ -456,7 +451,7 @@ public class dPlayer implements dObject {
         // @description
         // returns the number of levels the player has.
         // -->
-        if (attribute.startsWith("xp.level"))
+        if (attribute.startsWith("xp.level") && isOnline())
             return new Element(getPlayerEntity().getLevel())
                     .getAttribute(attribute.fulfill(2));
 
@@ -466,7 +461,7 @@ public class dPlayer implements dObject {
         // @description
         // returns the percentage of experience points to the next level.
         // -->
-        if (attribute.startsWith("xp"))
+        if (attribute.startsWith("xp") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().getExp() * 100))
                     .getAttribute(attribute.fulfill(1));
 
@@ -477,7 +472,7 @@ public class dPlayer implements dObject {
         // returns the item the player is wearing as boots, or null
         // if none.
         // -->
-        if (attribute.startsWith("equipment.boots"))
+        if (attribute.startsWith("equipment.boots") && isOnline())
             if (getPlayerEntity().getInventory().getBoots() != null)
                 return new dItem(getPlayerEntity().getInventory().getBoots())
                         .getAttribute(attribute.fulfill(2));
@@ -489,7 +484,7 @@ public class dPlayer implements dObject {
         // returns the item the player is wearing as a chestplate, or null
         // if none.
         // -->
-        if (attribute.startsWith("equipment.chestplate"))
+        if (attribute.startsWith("equipment.chestplate") && isOnline())
             if (getPlayerEntity().getInventory().getChestplate() != null)
                 return new dItem(getPlayerEntity().getInventory().getChestplate())
                         .getAttribute(attribute.fulfill(2));
@@ -501,7 +496,7 @@ public class dPlayer implements dObject {
         // returns the item the player is wearing as a helmet, or null
         // if none.
         // -->
-        if (attribute.startsWith("equipment.helmet"))
+        if (attribute.startsWith("equipment.helmet") && isOnline())
             if (getPlayerEntity().getInventory().getHelmet() != null)
                 return new dItem(getPlayerEntity().getInventory().getHelmet())
                         .getAttribute(attribute.fulfill(2));
@@ -513,7 +508,7 @@ public class dPlayer implements dObject {
         // returns the item the player is wearing as leggings, or null
         // if none.
         // -->
-        if (attribute.startsWith("equipment.leggings"))
+        if (attribute.startsWith("equipment.leggings") && isOnline())
             if (getPlayerEntity().getInventory().getLeggings() != null)
                 return new dItem(getPlayerEntity().getInventory().getLeggings())
                         .getAttribute(attribute.fulfill(2));
@@ -524,7 +519,7 @@ public class dPlayer implements dObject {
         // @description
         // returns a dInventory containing the player's equipment
         // -->
-        if (attribute.startsWith("equipment"))
+        if (attribute.startsWith("equipment") && isOnline())
             // The only way to return correct size for dInventory
             // created from equipment is to use a CRAFTING type
             // that has the expected 4 slots
@@ -537,7 +532,7 @@ public class dPlayer implements dObject {
         // @description
         // returns a dInventory of the player's current inventory.
         // -->
-        if (attribute.startsWith("inventory"))
+        if (attribute.startsWith("inventory") && isOnline())
             return new dInventory(getPlayerEntity().getInventory())
                     .getAttribute(attribute.fulfill(1));
 
@@ -548,7 +543,7 @@ public class dPlayer implements dObject {
         // returns the item the player is holding, or null
         // if none.
         // -->
-        if (attribute.startsWith("item_in_hand"))
+        if (attribute.startsWith("item_in_hand") && isOnline())
             return new dItem(getPlayerEntity().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
 
@@ -559,7 +554,7 @@ public class dPlayer implements dObject {
         // returns the 'display name' of the player, which may contain
         // prefixes and suffixes/color, etc.
         // -->
-        if (attribute.startsWith("name.display"))
+        if (attribute.startsWith("name.display") && isOnline())
             return new Element(getPlayerEntity().getDisplayName())
                     .getAttribute(attribute.fulfill(2));
 
@@ -569,7 +564,7 @@ public class dPlayer implements dObject {
         // @description
         // returns the name of the player as shown in the 'player list'.
         // -->
-        if (attribute.startsWith("name.list"))
+        if (attribute.startsWith("name.list") && isOnline())
             return new Element(getPlayerEntity().getPlayerListName())
                     .getAttribute(attribute.fulfill(2));
 
@@ -588,7 +583,7 @@ public class dPlayer implements dObject {
         // @description
         // returns a dLocation of the player's 'compass target'.
         // -->
-        if (attribute.startsWith("compass_target"))
+        if (attribute.startsWith("compass_target") && isOnline())
             return new dLocation(getPlayerEntity().getCompassTarget())
                     .getAttribute(attribute.fulfill(2));
 
@@ -599,7 +594,7 @@ public class dPlayer implements dObject {
         // returns a 'formatted' value of the player's current food level.
         // May be 'starving', 'famished', 'parched, 'hungry' or 'healthy'
         // -->
-        if (attribute.startsWith("food_level.formatted")) {
+        if (attribute.startsWith("food_level.formatted") && isOnline()) {
             double maxHunger = getPlayerEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHunger = attribute.getIntContext(2);
@@ -621,7 +616,7 @@ public class dPlayer implements dObject {
         // @description
         // returns the current food level of the player.
         // -->
-        if (attribute.startsWith("food_level"))
+        if (attribute.startsWith("food_level") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().getFoodLevel()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -750,7 +745,7 @@ public class dPlayer implements dObject {
         // @description
         // returns true if the player is currently flying, false otherwise
         // -->
-        if (attribute.startsWith("is_flying"))
+        if (attribute.startsWith("is_flying") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().isFlying()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -760,7 +755,7 @@ public class dPlayer implements dObject {
         // @description
         // returns true if the player is currently sneaking, false otherwise
         // -->
-        if (attribute.startsWith("is_sneaking"))
+        if (attribute.startsWith("is_sneaking") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().isSneaking()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -770,7 +765,7 @@ public class dPlayer implements dObject {
         // @description
         // returns true if the player is currently blocking, false otherwise
         // -->
-        if (attribute.startsWith("is_blocking"))
+        if (attribute.startsWith("is_blocking") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().isBlocking()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -780,7 +775,7 @@ public class dPlayer implements dObject {
         // @description
         // returns true if the player is currently sleeping, false otherwise
         // -->
-        if (attribute.startsWith("is_sleeping"))
+        if (attribute.startsWith("is_sleeping") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().isSleeping()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -790,7 +785,7 @@ public class dPlayer implements dObject {
         // @description
         // returns true if the player is currently sprinting, false otherwise
         // -->
-        if (attribute.startsWith("is_sprinting"))
+        if (attribute.startsWith("is_sprinting") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().isSprinting()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -800,7 +795,7 @@ public class dPlayer implements dObject {
         // @description
         // returns 'gamemode id' of the player. 0 = survival, 1 = creative, 2 = adventure
         // -->
-        if (attribute.startsWith("gamemode.id"))
+        if (attribute.startsWith("gamemode.id") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().getGameMode().getValue()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -810,7 +805,7 @@ public class dPlayer implements dObject {
         // @description
         // returns the name of the gamemode the player is currently set to.
         // -->
-        if (attribute.startsWith("gamemode"))
+        if (attribute.startsWith("gamemode") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().getGameMode().toString()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -821,7 +816,7 @@ public class dPlayer implements dObject {
         // returns a dItem that the player's cursor is on, if any. This includes
         // chest interfaces, inventories, and hotbars, etc.
         // -->
-        if (attribute.startsWith("item_on_cursor"))
+        if (attribute.startsWith("item_on_cursor") && isOnline())
             return new dItem(getPlayerEntity().getItemOnCursor())
                     .getAttribute(attribute.fulfill(1));
 
@@ -832,7 +827,7 @@ public class dPlayer implements dObject {
         // returns the dNPC that the player currently has selected with
         // '/npc sel', null if no player selected.
         // -->
-        if (attribute.startsWith("selected_npc")) {
+        if (attribute.startsWith("selected_npc") && isOnline()) {
             if (getPlayerEntity().hasMetadata("selected"))
                 return dNPC.valueOf(getPlayerEntity().getMetadata("selected").get(0).asString())
                     .getAttribute(attribute.fulfill(1));
@@ -845,7 +840,7 @@ public class dPlayer implements dObject {
         // @description
         // returns true if the player is allowed to fly, and false otherwise
         // -->
-        if (attribute.startsWith("allowed_flight"))
+        if (attribute.startsWith("allowed_flight") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().getAllowFlight()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -855,7 +850,7 @@ public class dPlayer implements dObject {
         // @description
         // returns the player's 'host name'.
         // -->
-        if (attribute.startsWith("host_name"))
+        if (attribute.startsWith("host_name") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().getAddress().getHostName()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -865,7 +860,7 @@ public class dPlayer implements dObject {
         // @description
         // returns a Duration of the time the player has been asleep.
         // -->
-        if (attribute.startsWith("time_asleep"))
+        if (attribute.startsWith("time_asleep") && isOnline())
             return new Duration(getPlayerEntity().getSleepTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
 
@@ -875,7 +870,7 @@ public class dPlayer implements dObject {
         // @description
         // returns the time, specific to the player
         // -->
-        if (attribute.startsWith("player_time"))
+        if (attribute.startsWith("player_time") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().getPlayerTime()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -885,7 +880,7 @@ public class dPlayer implements dObject {
         // @description
         // returns the player's 'offset' of time vs. the real time.
         // -->
-        if (attribute.startsWith("player_time_offset"))
+        if (attribute.startsWith("player_time_offset") && isOnline())
             return new Element(String.valueOf(getPlayerEntity().getPlayerTimeOffset()))
                     .getAttribute(attribute.fulfill(1));
 
@@ -915,7 +910,10 @@ public class dPlayer implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        return new dEntity(getPlayerEntity()).getAttribute(attribute.fulfill(0));
+        if (!isOnline())
+            return new Element(identify()).getAttribute(attribute);
+        else
+            return new dEntity(getPlayerEntity()).getAttribute(attribute);
     }
 
 }
