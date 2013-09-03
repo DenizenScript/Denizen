@@ -83,6 +83,9 @@ public class NarrateCommand extends AbstractCommand {
                         + aH.debugObj("Targets", targets)
                         + (format != null ? aH.debugObj("Format", format.getName()) : ""));
 
+        if (targets == null) {
+            return;
+        }
         for (dPlayer player : targets) {
             if (player != null && player.isOnline())
                 player.getPlayerEntity().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);
