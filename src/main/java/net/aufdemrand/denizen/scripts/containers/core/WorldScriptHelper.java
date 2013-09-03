@@ -484,6 +484,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when the server starts
     //
+    // @Determine "CANCELLED" to save all plugins and cancel server startup.
+    //
     // -->
     public void serverStartEvent() {
         // Start the 'timeEvent'
@@ -496,8 +498,11 @@ public class WorldScriptHelper implements Listener {
                 }, Settings.WorldScriptTimeEventFrequency().getTicks(), Settings.WorldScriptTimeEventFrequency().getTicks());
 
         // Fire the 'Server Start' event
-        doEvents(Arrays.asList("server start"),
+        String determination = doEvents(Arrays.asList("server start"),
                 null, null, null);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            Bukkit.getServer().shutdown();
     }
 
     private Map<String, Integer> current_time = new HashMap<String, Integer>();
