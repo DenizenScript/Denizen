@@ -11,7 +11,7 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
 /**
- * Your command! 
+ * Your command!
  * This class is a template for a Command in Denizen.
  *
  * If loading externally, implement dExternal and its load() method.

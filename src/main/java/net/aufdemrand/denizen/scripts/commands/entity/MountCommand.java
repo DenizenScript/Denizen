@@ -23,57 +23,57 @@ import net.aufdemrand.denizen.utilities.entity.Position;
  */
 
 public class MountCommand extends AbstractCommand {
-    
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize necessary fields
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            
+
             if (!scriptEntry.hasObject("cancel")
                     && arg.matches("cancel")) {
-                
+
                 scriptEntry.addObject("cancel", "");
             }
-            
+
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
                 // Location arg
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-            
+
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
         }
-        
+
         // Use the NPC or player's locations as the location if one is not specified
-        
+
         scriptEntry.defaultObject("location",
                 scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getLocation() : null,
                 scriptEntry.hasNPC() ? scriptEntry.getNPC().getLocation() : null);
-        
+
         // Check to make sure required arguments have been filled
-        
+
         if (!scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
-        
+
         if (!scriptEntry.hasObject("location"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "LOCATION");
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
-        
+
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");            
+        List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         Boolean cancel = scriptEntry.hasObject("cancel");
-        
+
         // Report to dB
         dB.report(getName(), (cancel == true ? aH.debugObj("cancel", cancel) : "") +
                              aH.debugObj("location", location) +
@@ -81,10 +81,10 @@ public class MountCommand extends AbstractCommand {
 
         // Mount or dismount all of the entities
         if (cancel.equals(false)) {
-            
+
             // Go through all the entities, spawning/teleporting them
             for (dEntity entity : entities) {
-                
+
                 if (!entity.isSpawned()) {
                     entity.spawnAt(location);
                 }
@@ -92,7 +92,7 @@ public class MountCommand extends AbstractCommand {
                     entity.teleport(location);
                 }
             }
-            
+
             Position.mount(Conversion.convert(entities));
         }
         else {

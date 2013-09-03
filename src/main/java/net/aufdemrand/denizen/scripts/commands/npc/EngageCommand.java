@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Sets an NPC to ENGAGED in the Denizen Engage List. 
+ * Sets an NPC to ENGAGED in the Denizen Engage List.
  * When ENGAGEd, a Denizen will not interact with a Player until DISENGAGEd (or timed out).
  *
  * @author Jeremy Schroeder
@@ -25,10 +25,10 @@ public class EngageCommand extends AbstractCommand {
 
     /* ENGAGE (# of Seconds) (NPCID:#)*/
 
-    /* Arguments: [] - Required, () - Optional 
+    /* Arguments: [] - Required, () - Optional
      * (DURATION:#) Will automatically DISENGAGE after specified amount of seconds.
      *         If not set, the Denizen will remain ENGAGEd until a DISENGAGE command is
-     *       used, or the Denizen config.yml engage_timeout_in_seconds setting. 
+     *       used, or the Denizen config.yml engage_timeout_in_seconds setting.
      * (NPCID:#) Changes the Denizen affected to the Citizens2 NPCID specified
      */
 

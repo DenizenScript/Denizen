@@ -20,7 +20,7 @@ import net.citizensnpcs.npc.ai.BlockBreaker;
  */
 
 public class BreakCommand extends AbstractCommand {
-    
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -55,7 +55,7 @@ public class BreakCommand extends AbstractCommand {
 
         }
     }
-    
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 

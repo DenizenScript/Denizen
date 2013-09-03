@@ -17,8 +17,8 @@ import java.util.Map;
 
 /* GIVE [MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
 
-/* 
- * Arguments: [] - Required, () - Optional 
+/*
+ * Arguments: [] - Required, () - Optional
  * [MONEY|[#](:#)|[MATERIAL_TYPE](:#)] specifies what to give.
  *   [MONEY] gives money using your economy.
  *   [#](:#) gives the item with the specified item ID. Optional
@@ -26,8 +26,8 @@ import java.util.Map;
  *   [MATERIAL_TYPE](:#) gives the item with the specified
  *     bukkit MaterialType. Optional argument (:#) can specify
  *     a specific data value.
- * (QTY:#) specifies quantity. If not specified, assumed 'QTY:1'    
- *  
+ * (QTY:#) specifies quantity. If not specified, assumed 'QTY:1'
+ *
  */
 
 public class GiveCommand  extends AbstractCommand {

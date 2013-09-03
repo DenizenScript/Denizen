@@ -20,7 +20,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
  */
 
 public class TeleportCommand extends AbstractCommand {
-    
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -46,19 +46,19 @@ public class TeleportCommand extends AbstractCommand {
         }
 
         // Check to make sure required arguments have been filled
-        scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null), 
+        scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
                                               (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
-        
+
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         // Get objects
-        
+
         dLocation location = (dLocation) scriptEntry.getObject("location");
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        
+
         // Report to dB
         dB.report(getName(), aH.debugObj("location", location) +
                              aH.debugObj("entities", entities.toString()));

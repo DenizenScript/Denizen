@@ -13,7 +13,7 @@ import net.citizensnpcs.trait.LookClose;
 
 /**
  * Configures the LookClose Trait for a NPC.
- * 
+ *
  * @author Jeremy Schroeder
  */
 
@@ -21,9 +21,9 @@ public class LookcloseCommand extends AbstractCommand {
 
     /* LOOKCLOSE [TOGGLE:TRUE|FALSE] (RANGE:#.#) (REALISTIC)  */
 
-    /* 
+    /*
      * Arguments: [] - Required, () - Optional
-     * 
+     *
      */
 
     boolean toggle;
@@ -40,7 +40,7 @@ public class LookcloseCommand extends AbstractCommand {
         realistic = false;
         toggle = true;
         if (scriptEntry.getNPC() != null) npc = scriptEntry.getNPC().getCitizen();
-        
+
         // Parse Arguments
         for (String arg : scriptEntry.getArguments()) {
 
@@ -67,7 +67,7 @@ public class LookcloseCommand extends AbstractCommand {
                 .addObject("range", range)
                 .addObject("toggle", toggle);
     }
-    
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
@@ -84,9 +84,9 @@ public class LookcloseCommand extends AbstractCommand {
             trait.setRange(range.intValue());
         }
     }
-    
+
     @Override
     public void onEnable() {
-        
+
     }
 }

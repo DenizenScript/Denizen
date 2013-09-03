@@ -39,7 +39,7 @@ public class ExecuteCommand extends AbstractCommand {
                 executeType = Type.AS_SERVER;
 
             else command = arg;
-        }    
+        }
 
         if (executeType == null)
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "EXECUTE_TYPE");
@@ -75,7 +75,7 @@ public class ExecuteCommand extends AbstractCommand {
         case AS_PLAYER:
             scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
             return;
-            
+
         case AS_OP:
             boolean isOp = false;
             if (scriptEntry.getPlayer().getPlayerEntity().isOp()) isOp = true;
@@ -83,7 +83,7 @@ public class ExecuteCommand extends AbstractCommand {
             scriptEntry.getPlayer().getPlayerEntity().performCommand(command);
             if (!isOp) scriptEntry.getPlayer().getPlayerEntity().setOp(false);
             return;
-            
+
         case AS_NPC:
             boolean should_despawn = false;
             if (!scriptEntry.getNPC().isSpawned()) {
@@ -99,10 +99,10 @@ public class ExecuteCommand extends AbstractCommand {
             ((Player) scriptEntry.getNPC().getEntity()).setOp(false);
             if (should_despawn) scriptEntry.getNPC().getCitizen().despawn(DespawnReason.PLUGIN);
             return;
-            
+
         case AS_SERVER:
             denizen.getServer().dispatchCommand(denizen.getServer().getConsoleSender(), command);
         }
     }
-    
+
 }
