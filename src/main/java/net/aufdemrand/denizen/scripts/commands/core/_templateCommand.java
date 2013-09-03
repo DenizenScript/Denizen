@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.event.Listener;
 
 /**
- * Your command! 
+ * Your command!
  * This class is a template for a Command in Denizen.
  *
  * If loading externally, implement dExternal and its load() method.
