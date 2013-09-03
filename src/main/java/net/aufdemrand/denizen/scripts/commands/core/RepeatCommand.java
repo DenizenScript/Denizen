@@ -46,6 +46,7 @@ public class RepeatCommand extends BracedCommand {
         // Report to dB
         dB.report(getName(), qty.debug());
 
+        String queueId = UUID.randomUUID().toString();
         for (int incr = 0; incr < qty.asInt(); incr++) {
             if (scriptEntry.getResidingQueue().getWasCleared())
                 return;
@@ -60,7 +61,7 @@ public class RepeatCommand extends BracedCommand {
                     e.printStackTrace();
                 }
             }
-            ScriptQueue queue = new InstantQueue(UUID.randomUUID().toString());
+            ScriptQueue queue = new InstantQueue(queueId);
             queue.addDefinition("parent_queue", scriptEntry.getResidingQueue().id);
             scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(incr + 1));
             queue.addDefinition("value", String.valueOf(incr + 1));
