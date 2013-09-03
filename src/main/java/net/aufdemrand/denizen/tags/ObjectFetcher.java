@@ -17,17 +17,21 @@ public class ObjectFetcher {
     private static Map<String, Class> objects = new HashMap<String, Class>();
 
     public static void _initialize() throws IOException, ClassNotFoundException {
-        objects.clear();
-
+        if (fetchable_objects.isEmpty())
+            return;
+        
+        Map<String, Class> adding = new HashMap<String, Class>();
         for (Class dClass : fetchable_objects)
             for (Method method : dClass.getMethods())
                 if (method.isAnnotationPresent(net.aufdemrand.denizen.objects.ObjectFetcher.class)) {
                     String[] identifiers = method.getAnnotation(net.aufdemrand.denizen.objects.ObjectFetcher.class).value().split(",");
                     for (String identifer : identifiers)
-                        objects.put(identifer.trim().toLowerCase(), dClass);
+                        adding.put(identifer.trim().toLowerCase(), dClass);
                 }
 
-        dB.echoApproval("Loaded the Object Fetcher! Valid object types: " + objects.keySet().toString());
+        objects.putAll(adding);
+        dB.echoApproval("Added objects to the ObjectFetcher " + adding.keySet().toString());
+        fetchable_objects.clear();
     }
 
     private static ArrayList<Class> fetchable_objects = new ArrayList<Class>();

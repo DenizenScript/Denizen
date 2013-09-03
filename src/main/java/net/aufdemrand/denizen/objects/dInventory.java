@@ -23,6 +23,7 @@ import org.bukkit.inventory.meta.BookMeta;
 
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.notable.Note;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -36,7 +37,7 @@ public class dInventory implements dObject, Notable {
     /////////////////
     
     final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location|equipment)(\\[)(.+?)(\\])", Pattern.CASE_INSENSITIVE);
-    final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)");
+    final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
     
     /////////////////////
     //   NOTABLE METHODS
@@ -46,7 +47,8 @@ public class dInventory implements dObject, Notable {
         return holderType.equals("notable");
     }
     
-    public String getSaveString() {
+    @Note("inventory")
+    public String getSaveObject() {
         return holderIdentifier;
     }
 
