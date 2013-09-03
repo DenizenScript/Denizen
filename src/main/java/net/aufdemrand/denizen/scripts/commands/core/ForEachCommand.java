@@ -50,6 +50,8 @@ public class ForEachCommand extends BracedCommand {
         dB.report(getName(), list.debug() );
 
         for (String value : list) {
+            if (scriptEntry.getResidingQueue().getWasCleared())
+                return;
             ArrayList<ScriptEntry> newEntries = (ArrayList<ScriptEntry>) new ArrayList<ScriptEntry>();
             for (ScriptEntry entr: entries) {
                 try {
@@ -62,6 +64,7 @@ public class ForEachCommand extends BracedCommand {
                 }
             }
             ScriptQueue queue = new InstantQueue(UUID.randomUUID().toString());
+            queue.addDefinition("parent_queue", scriptEntry.getResidingQueue().id);
             scriptEntry.getResidingQueue().addDefinition("value", value);
             queue.addDefinition("value", value);
             queue.addEntries(newEntries);

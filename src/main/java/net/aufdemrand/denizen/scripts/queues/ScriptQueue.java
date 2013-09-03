@@ -110,6 +110,8 @@ public abstract class ScriptQueue {
     // the ScriptQueue when using _getQueue()
     public String id;
 
+    // Whether the queue was cleared
+    public boolean was_cleared = false;
 
 
     /////////////////////
@@ -179,6 +181,16 @@ public abstract class ScriptQueue {
     /////////////////////
     // Public instance setters and getters
     /////////////////////
+
+    /**
+     * Gets a boolean indicating whether the queue
+     * was cleared.
+     *
+     * @return whether the queue has been cleared.
+     */
+    public boolean getWasCleared() {
+        return was_cleared;
+    }
 
     /**
      * Gets a held script entry. Held script entries might
@@ -325,6 +337,7 @@ public abstract class ScriptQueue {
      * access this method.
      */
     public void clear() {
+        was_cleared = true;
         script_entries.clear();
     }
 
