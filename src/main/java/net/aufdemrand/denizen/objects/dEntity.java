@@ -38,6 +38,7 @@ import org.bukkit.entity.Slime;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class dEntity implements dObject {
 
@@ -330,7 +331,7 @@ public class dEntity implements dObject {
 
     public NPC getNPC() {
 
-        return CitizensAPI.getNPCRegistry().getNPC(getBukkitEntity());
+        return CitizensAPI.getNPCRegistry().getNPC(entity);
     }
 
     /**
@@ -340,7 +341,7 @@ public class dEntity implements dObject {
      */
 
     public boolean isNPC() {
-        return CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity());
+        return CitizensAPI.getNPCRegistry().isNPC(entity);
     }
     
     /**
@@ -351,7 +352,7 @@ public class dEntity implements dObject {
 
     public Player getPlayer() {
 
-        return (Player) getBukkitEntity();
+        return (Player) entity;
     }
 
     /**
@@ -361,7 +362,7 @@ public class dEntity implements dObject {
      */
 
     public boolean isPlayer() {
-        return getBukkitEntity() instanceof Player;
+        return entity instanceof Player;
     }
 
     /**
@@ -385,7 +386,7 @@ public class dEntity implements dObject {
     public dLocation getLocation() {
 
         if (!isGeneric()) {
-            return new dLocation(getBukkitEntity().getLocation());
+            return new dLocation(entity.getLocation());
         }
         
         return null;
@@ -404,6 +405,32 @@ public class dEntity implements dObject {
         }
         
         return null;
+    }
+    
+    /**
+     * Gets the velocity of this entity
+     *
+     * @return  The velocity's vector
+     */
+
+    public Vector getVelocity() {
+
+        if (!isGeneric()) {
+            return entity.getVelocity();
+        }
+        return null;
+    }
+    
+    /**
+     * Sets the velocity of this entity
+     *
+     */
+
+    public void setVelocity(Vector vector) {
+
+        if (!isGeneric()) {
+            entity.setVelocity(vector);
+        }
     }
     
     public void spawnAt(Location location) {
@@ -582,6 +609,11 @@ public class dEntity implements dObject {
 
     public boolean isSpawned() {
         return entity != null;
+    }
+    
+    public boolean isValid() {
+        
+        return entity.isValid();
     }
 
     public void remove() {

@@ -1,12 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.Duration;
 import net.aufdemrand.denizen.objects.Element;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
@@ -15,7 +11,8 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dScript;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.Conversion;
@@ -23,8 +20,6 @@ import net.aufdemrand.denizen.utilities.Velocity;
 import net.aufdemrand.denizen.utilities.entity.Gravity;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
-
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,20 +35,12 @@ import org.bukkit.util.Vector;
 
 public class ShootCommand extends AbstractCommand {
     
-    private enum PhysicsType { CALCULATED, CUSTOM }
-    
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("physics")
-                && arg.matchesEnum(PhysicsType.values())) {
-                // add Action
-                scriptEntry.addObject("physics", PhysicsType.valueOf(arg.getValue().toUpperCase()));
-            }
-            
-            else if (!scriptEntry.hasObject("origin")
+            if (!scriptEntry.hasObject("origin")
                      && arg.matchesPrefix("origin, o, source, shooter, s")) {
                 
                 if (arg.matchesArgumentType(dEntity.class))
@@ -72,20 +59,6 @@ public class ShootCommand extends AbstractCommand {
                      && arg.matchesArgumentType(dLocation.class)) {
 
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
-            }
-            
-            else if (!scriptEntry.hasObject("duration")
-                     && arg.matchesArgumentType(Duration.class)
-                     && arg.matchesPrefix("duration, d")) {
-
-                scriptEntry.addObject("duration", arg.asType(Duration.class));
-            }
-            
-            else if (!scriptEntry.hasObject("speed")
-                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                     && arg.matchesPrefix("speed, s")) {
-
-               scriptEntry.addObject("speed", arg.asElement());
             }
             
             else if (!scriptEntry.hasObject("height")
@@ -118,11 +91,6 @@ public class ShootCommand extends AbstractCommand {
                     scriptEntry.hasPlayer() ? scriptEntry.getPlayer().getDenizenEntity() : null);
         }
         
-        // Use a default speed of 1.5 if one is not specified
-        
-        scriptEntry.defaultObject("speed", new Element(1.5));
-        scriptEntry.defaultObject("duration", Duration.valueOf("80t"));
-        scriptEntry.defaultObject("physics", PhysicsType.CALCULATED);
         scriptEntry.defaultObject("height", new Element(3));
         
         // Check to make sure required arguments have been filled
@@ -140,7 +108,6 @@ public class ShootCommand extends AbstractCommand {
         
         // Get objects
         
-        PhysicsType physicsType = (PhysicsType) scriptEntry.getObject("physics");
         dEntity originEntity = (dEntity) scriptEntry.getObject("originEntity");
         dLocation originLocation = scriptEntry.hasObject("originLocation") ?
                                    (dLocation) scriptEntry.getObject("originLocation") :
@@ -169,8 +136,6 @@ public class ShootCommand extends AbstractCommand {
                                       
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final dScript script = (dScript) scriptEntry.getObject("script");
-        final double speed = ((Element) scriptEntry.getObject("speed")).asDouble();
-        final int maxRuns = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt() / 2;
 
         double height = ((Element) scriptEntry.getObject("height")).asDouble();
         Element gravity = (Element) scriptEntry.getObject("gravity");
@@ -180,18 +145,14 @@ public class ShootCommand extends AbstractCommand {
         dB.report(getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
                              aH.debugObj("entities", entities.toString()) +
                              aH.debugObj("destination", destination) +
-                             (physicsType.equals(PhysicsType.CALCULATED) ?
-                                     aH.debugObj("height", height) +
-                                     (scriptEntry.hasObject("gravity") ? aH.debugObj("gravity", gravity) : "default")
-                                     : "") +
-                             (physicsType.equals(PhysicsType.CUSTOM) ?
-                                     aH.debugObj("speed", speed) + aH.debugObj("duration", new Duration(maxRuns * 2)) : "") +
+                             aH.debugObj("height", height) +
+                             aH.debugObj("gravity", gravity) +
                              (script != null ? aH.debugObj("script", script) : ""));
         
-        // Keep a dList of entities that can be called using %entities%
+        // Keep a dList of entities that can be called using %shot_entities%
         // later in the script queue
 
-        dList entityList = new dList();
+        final dList entityList = new dList();
 
         // Go through all the entities, spawning/teleporting and rotating them
         
@@ -212,6 +173,9 @@ public class ShootCommand extends AbstractCommand {
 
             Rotation.faceLocation(entity.getBukkitEntity(), destination);
             
+            // If the current entity is a projectile, set its shooter
+            // when applicable
+            
             if (entity.getBukkitEntity() instanceof Projectile && shooter != null) {
                 ((Projectile) entity.getBukkitEntity()).setShooter(shooter);
             }
@@ -226,88 +190,87 @@ public class ShootCommand extends AbstractCommand {
         
         // Only use the last projectile in the task below
         
-        final Entity lastEntity = entities.get(entities.size() - 1).getBukkitEntity();
+        final dEntity lastEntity = entities.get(entities.size() - 1);
         
-        if (physicsType.equals(PhysicsType.CALCULATED)) {
-            
-            if (gravity == null) {
+        if (gravity == null) {
                 
-                String entityType = lastEntity.getType().name();
+            String entityType = lastEntity.getEntityType().name();
                 
-                for (Gravity defaultGravity : Gravity.values()) {
+            for (Gravity defaultGravity : Gravity.values()) {
                     
-                    if (defaultGravity.name().equals(entityType)) {
+                if (defaultGravity.name().equals(entityType)) {
                         
-                        gravity = new Element(defaultGravity.getGravity());
-                        dB.echoApproval("Gravity: " + gravity);
-                    }
-                }
-                
-                // If the gravity is still null, use a default value
-                if (gravity == null) {
-                    gravity = new Element(0.115);
+                    gravity = new Element(defaultGravity.getGravity());
+                    dB.echoApproval("Gravity: " + gravity);
                 }
             }
-            
-            Vector v1 = lastEntity.getLocation().toVector();
-            Vector v2 = destination.toVector();
-            Vector v3 = Velocity.calculate(v1, v2, gravity.asDouble(), height);
-            
-            lastEntity.setVelocity(v3);
+                
+            // If the gravity is still null, use a default value
+            if (gravity == null) {
+                gravity = new Element(0.115);
+            }
         }
             
-        else if (physicsType.equals(PhysicsType.CUSTOM)) {
+        Vector v1 = lastEntity.getLocation().toVector();
+        Vector v2 = destination.toVector();
+        Vector v3 = Velocity.calculate(v1, v2, gravity.asDouble(), height);
+
+        lastEntity.setVelocity(v3);
         
-            BukkitRunnable task = new BukkitRunnable() {
-
-                int runs = 0;
-
-                public void run() {
-
-                    if (runs < maxRuns && lastEntity.isValid()) {
+        // A task used to trigger a script if the entity is no longer
+        // being shot, when the script argument is used
+        
+        BukkitRunnable task = new BukkitRunnable() {
+            
+            boolean flying = true;
+            Vector lastVelocity = null;
+            
+            public void run() {
+                
+                // If the entity is no longer valid, stop the task
+                
+                if (!lastEntity.isValid()) {
+                    flying = false;
+                }
+                
+                // Else, if the entity is no longer traveling through
+                // the air, stop the task
+                
+                else if (lastVelocity != null) {
                     
-                        Vector v1 = lastEntity.getLocation().toVector();
-                        Vector v2 = destination.toVector();
-                        Vector v3 = v2.clone().subtract(v1).normalize().multiply(speed);
-
-                        lastEntity.setVelocity(v3);
-                        runs++;
-
-                        // Check if the entity is close to its destination
-
-                        if (Math.abs(v2.getX() - v1.getX()) < 2 && Math.abs(v2.getY() - v1.getY()) < 2
-                            && Math.abs(v2.getZ() - v1.getZ()) < 2) {
-                            runs = maxRuns;
-                        }
-
-                        // Check if the entity has collided with something
-                        // using the most basic possible calculation
-                        
-                        if (!lastEntity.getLocation().add(v3).getBlock().getType().toString().equals("AIR")) {
-                            runs = maxRuns;
-                        }
-                    }
-                    else {
-
-                        this.cancel();
-                        runs = 0;
-                        
-                        if (script != null) {
-
-                            Map<String, String> context = new HashMap<String, String>();
-                            context.put("1", lastEntity.getLocation().getX() + "," + lastEntity.getLocation().getY() + "," + lastEntity.getLocation().getZ() + "," + lastEntity.getLocation().getWorld().getName());
-                            context.put("2", "e@" + lastEntity.getEntityId());
-                        
-                        ((TaskScriptContainer) script.getContainer()).setSpeed(new Duration(0))
-                                                     .runTaskScript(scriptEntry.getPlayer(), scriptEntry.getNPC(), context);
-                        }
+                    if (lastVelocity.distance
+                            (lastEntity.getBukkitEntity().getVelocity()) < 0.05) {
+                        flying = false;
                     }
                 }
-            };
+                
+                // Stop the task and and run the script if conditions
+                // are met
+
+                if (!flying) {
+
+                    this.cancel();
+                    
+                    List<ScriptEntry> entries = script.getContainer().getBaseEntries(
+                            scriptEntry.getPlayer(),
+                            scriptEntry.getNPC());
+                    ScriptQueue queue = InstantQueue.getQueue(ScriptQueue._getNextId()).addEntries(entries);
+                    queue.addDefinition("location", lastEntity.getLocation().identify());
+                    queue.addDefinition("shot_entities", entityList.toString());
+                    queue.addDefinition("last_entity", lastEntity.identify());
+                    queue.start();
+                }
+                else {
+                    lastVelocity = lastEntity.getVelocity();
+                }
+            }
+        };
         
-            task.runTaskTimer(denizen, 0, 2);     
+        // Run the task above if a script argument was specified
+        
+        if (script != null) {
+            
+            task.runTaskTimer(denizen, 0, 2);
         }
-
-
     }
 }
