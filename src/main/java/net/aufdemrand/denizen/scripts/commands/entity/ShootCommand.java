@@ -188,7 +188,10 @@ public class ShootCommand extends AbstractCommand {
                                      aH.debugObj("speed", speed) + aH.debugObj("duration", new Duration(maxRuns * 2)) : "") +
                              (script != null ? aH.debugObj("script", script) : ""));
         
-        dList shot_entities = new dList();
+        // Keep a dList of entities that can be called using %entities%
+        // later in the script queue
+
+        dList entityList = new dList();
 
         // Go through all the entities, spawning/teleporting and rotating them
         
@@ -201,10 +204,11 @@ public class ShootCommand extends AbstractCommand {
                 entity.teleport(originLocation);
             }
 
-            // Add the spawned entity to the 'shot_entities' context
-            try {
-            shot_entities.add("e@" + entity.getBukkitEntity().getEntityId());
-            } catch (Exception e) { dB.echoError("Entity failed to spawn!");  }
+            // Only add to entityList after the entities have been
+            // spawned, otherwise you'll get something like "e@skeleton"
+            // instead of "e@57" on it
+
+            entityList.add(entity.toString());
 
             Rotation.faceLocation(entity.getBukkitEntity(), destination);
             
@@ -213,9 +217,10 @@ public class ShootCommand extends AbstractCommand {
             }
         }
 
-        // Add shot_entities to context so that the specific entities created/spawned
-        // can be 'fetched'.
-        scriptEntry.addObject("shot_entities", shot_entities);
+        // Add entities to context so that the specific entities created/spawned
+        // can be fetched.
+        
+        scriptEntry.getResidingQueue().addDefinition("shot_entities", entityList.toString());
         
         Position.mount(Conversion.convert(entities));
         

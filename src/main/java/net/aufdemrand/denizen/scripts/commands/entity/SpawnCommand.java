@@ -81,7 +81,7 @@ public class SpawnCommand extends AbstractCommand {
         // Keep a dList of entities that can be called using %entities%
         // later in the script queue
 
-        dList entityList = new dList("");
+        dList entityList = new dList();
 
         // Go through all the entities and spawn them or teleport them,
         // then set their targets if applicable
@@ -105,8 +105,10 @@ public class SpawnCommand extends AbstractCommand {
                 entity.target(target.getLivingEntity());
             }
         }
-
-
-
+        
+        // Add entities to context so that the specific entities created/spawned
+        // can be fetched.
+        
+        scriptEntry.getResidingQueue().addDefinition("spawned_entities", entityList.toString());
     }
 }

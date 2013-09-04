@@ -11,7 +11,7 @@ import net.aufdemrand.denizen.tags.Attribute;
 
 public class dMaterial implements dObject {
 
-    final static Pattern materialPattern = Pattern.compile("(?:m@)?(\\w+)[:,]?(\\d+)?", Pattern.CASE_INSENSITIVE);
+    final static Pattern materialPattern = Pattern.compile("(?:m@)?(\\w+)[,:]?(\\d+)?", Pattern.CASE_INSENSITIVE);
     
     //////////////////
     //    OBJECT FETCHER
