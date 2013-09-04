@@ -109,6 +109,6 @@ public class SpawnCommand extends AbstractCommand {
         // Add entities to context so that the specific entities created/spawned
         // can be fetched.
         
-        scriptEntry.getResidingQueue().addDefinition("spawned_entities", entityList.toString());
+        scriptEntry.addObject("spawned_entities", entityList);
     }
 }

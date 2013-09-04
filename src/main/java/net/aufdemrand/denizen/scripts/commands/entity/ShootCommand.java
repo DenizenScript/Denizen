@@ -184,7 +184,7 @@ public class ShootCommand extends AbstractCommand {
         // Add entities to context so that the specific entities created/spawned
         // can be fetched.
         
-        scriptEntry.getResidingQueue().addDefinition("shot_entities", entityList.toString());
+        scriptEntry.addObject("shot_entities", entityList);
         
         Position.mount(Conversion.convert(entities));
         
