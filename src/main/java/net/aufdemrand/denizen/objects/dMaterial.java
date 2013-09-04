@@ -183,7 +183,17 @@ public class dMaterial implements dObject {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        return new Element(identify()).getAttribute(attribute);
+        // <--[tag]
+        // @attribute <m@material.is_block>
+        // @returns dLocation
+        // @description
+        // Returns true if the material is a placeable block
+        // -->
+        if (attribute.startsWith("is_block"))
+            return new Element(material.isBlock())
+                    .getAttribute(attribute.fulfill(1));
+        
+        return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
 }

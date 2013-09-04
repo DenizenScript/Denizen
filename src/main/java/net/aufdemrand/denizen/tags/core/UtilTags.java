@@ -152,7 +152,7 @@ public class UtilTags implements Listener {
         // Returns the number of milliseconds since Jan 1, 1970.
         // -->
         if (attribute.startsWith("current_time_millis")) {
-            event.setReplaced(new Element(String.valueOf(System.currentTimeMillis()))
+            event.setReplaced(new Element(System.currentTimeMillis())
                     .getAttribute(attribute.fulfill(1)));
         }
 
@@ -490,7 +490,7 @@ public class UtilTags implements Listener {
                 // Returns the current year of the system time.
                 // -->
                 else if (specifier.equalsIgnoreCase("year"))
-                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.YEAR))).getAttribute(attribute.fulfill(3)));
+                    event.setReplaced(new Element(calendar.get(Calendar.YEAR)).getAttribute(attribute.fulfill(3)));
                     // <--[tag]
                     // @attribute <util.date.time.month>
                     // @returns Element(Number)
@@ -498,7 +498,7 @@ public class UtilTags implements Listener {
                     // Returns the current month of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("month"))
-                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.MONTH) + 1)).getAttribute(attribute.fulfill(3)));
+                    event.setReplaced(new Element(calendar.get(Calendar.MONTH) + 1).getAttribute(attribute.fulfill(3)));
                     // <--[tag]
                     // @attribute <util.date.time.day>
                     // @returns Element(Number)
@@ -506,7 +506,7 @@ public class UtilTags implements Listener {
                     // Returns the current day of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("day"))
-                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))).getAttribute(attribute.fulfill(3)));
+                    event.setReplaced(new Element(calendar.get(Calendar.DAY_OF_MONTH)).getAttribute(attribute.fulfill(3)));
                     // <--[tag]
                     // @attribute <util.date.time.hour>
                     // @returns Element(Number)
@@ -514,7 +514,7 @@ public class UtilTags implements Listener {
                     // Returns the current hour of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("hour"))
-                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.HOUR_OF_DAY))).getAttribute(attribute.fulfill(3)));
+                    event.setReplaced(new Element(calendar.get(Calendar.HOUR_OF_DAY)).getAttribute(attribute.fulfill(3)));
                     // <--[tag]
                     // @attribute <util.date.time.minute>
                     // @returns Element(Number)
@@ -522,7 +522,7 @@ public class UtilTags implements Listener {
                     // Returns the current minute of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("minute"))
-                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.MINUTE))).getAttribute(attribute.fulfill(3)));
+                    event.setReplaced(new Element(calendar.get(Calendar.MINUTE)).getAttribute(attribute.fulfill(3)));
                     // <--[tag]
                     // @attribute <util.date.time.second>
                     // @returns Element(Number)
@@ -530,7 +530,7 @@ public class UtilTags implements Listener {
                     // Returns the current second of the system time.
                     // -->
                 else if (specifier.equalsIgnoreCase("second"))
-                    event.setReplaced(new Element(String.valueOf(calendar.get(Calendar.SECOND))).getAttribute(attribute.fulfill(3)));
+                    event.setReplaced(new Element(calendar.get(Calendar.SECOND)).getAttribute(attribute.fulfill(3)));
                 else {
                     format.applyPattern("K:mm a");
                     event.setReplaced(format.format(currentDate));

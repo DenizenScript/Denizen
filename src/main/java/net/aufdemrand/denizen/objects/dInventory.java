@@ -742,11 +742,11 @@ public class dInventory implements dObject, Notable {
         // -->
         if (attribute.startsWith("qty"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-                return new Element(String.valueOf(count
-                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), false)))
+                return new Element(count
+                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), false))
                     .getAttribute(attribute.fulfill(1));
             else
-                return new Element(String.valueOf(count(null, false)))
+                return new Element(count(null, false))
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
@@ -756,7 +756,7 @@ public class dInventory implements dObject, Notable {
         // Return the number of slots in the inventory
         // -->
         if (attribute.startsWith("size"))
-            return new Element(String.valueOf(getSize()))
+            return new Element(getSize())
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
@@ -768,11 +768,11 @@ public class dInventory implements dObject, Notable {
         // -->
         if (attribute.startsWith("stacks"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-                return new Element(String.valueOf(count
-                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), true)))
+                return new Element(count
+                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), true))
                     .getAttribute(attribute.fulfill(1));
             else
-                return new Element(String.valueOf(count(null, true)))
+                return new Element(count(null, true))
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]

@@ -135,7 +135,7 @@ public class dWorld implements dObject {
         // returns whether the world will generate structures.
         // -->
         if (attribute.startsWith("can_generate_structures"))
-            return new Element(String.valueOf(getWorld().canGenerateStructures()))
+            return new Element(getWorld().canGenerateStructures())
                     .getAttribute(attribute.fulfill(1));
 
 //        getWorld().getName())
@@ -187,7 +187,7 @@ public class dWorld implements dObject {
         // returns the name of the world
         // -->
         if (attribute.startsWith("name"))
-            return new Element(String.valueOf(getWorld().getName()))
+            return new Element(getWorld().getName())
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
@@ -212,7 +212,7 @@ public class dWorld implements dObject {
         // returns the level of the sea
         // -->
         if (attribute.startsWith("sea_level"))
-            return new Element(String.valueOf(getWorld().getSeaLevel()))
+            return new Element(getWorld().getSeaLevel())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -222,7 +222,7 @@ public class dWorld implements dObject {
         // returns the world seed
         // -->
         if (attribute.startsWith("seed"))
-            return new Element(String.valueOf(getWorld().getSeed()))
+            return new Element(getWorld().getSeed())
                     .getAttribute(attribute.fulfill(1));
 
 //        getWorld().getEntities())
@@ -261,7 +261,7 @@ public class dWorld implements dObject {
         // returns the current time in ticks
         // -->
         if (attribute.startsWith("time"))
-            return new Element(String.valueOf(getWorld().getTime()))
+            return new Element(getWorld().getTime())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -281,7 +281,7 @@ public class dWorld implements dObject {
         // returns whether there is currently a storm in this world
         // -->
         if (attribute.startsWith("has_storm"))
-            return new Element(String.valueOf(getWorld().hasStorm()))
+            return new Element(getWorld().hasStorm())
                     .getAttribute(attribute.fulfill(1));
 
 

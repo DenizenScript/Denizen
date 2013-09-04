@@ -37,20 +37,40 @@ public class Element implements dObject {
         this.prefix = "element";
         this.element = string;
     }
+    
+    public Element(Boolean bool) {
+        this.prefix = "boolean";
+        this.element = String.valueOf(bool);
+    }    
 
     public Element(Integer integer) {
         this.prefix = "integer";
         this.element = String.valueOf(integer);
+    }
+    
+    public Element(Byte byt) {
+        this.prefix = "byte";
+        this.element = String.valueOf(byt);
+    }
+    
+    public Element(Short shrt) {
+        this.prefix = "short";
+        this.element = String.valueOf(shrt);
+    }
+    
+    public Element(Long lng) {
+        this.prefix = "long";
+        this.element = String.valueOf(lng);
     }
 
     public Element(Double dbl) {
         this.prefix = "double";
         this.element = String.valueOf(dbl);
     }
-
-    public Element(Boolean bool) {
-        this.prefix = "boolean";
-        this.element = String.valueOf(bool);
+    
+    public Element(Float flt) {
+        this.prefix = "float";
+        this.element = String.valueOf(flt);
     }
 
     public Element(String prefix, String string) {
@@ -134,8 +154,7 @@ public class Element implements dObject {
                 // Round the Double instead of just getting its
                 // value as an Integer (which would incorrectly
                 // turn 2.9 into 2)
-                return new Element(String.valueOf
-                        (Math.round(Double.valueOf(element))))
+                return new Element(Math.round(Double.valueOf(element)))
                         .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Integer.");
@@ -150,7 +169,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("asdouble")
                 || attribute.startsWith("as_double"))
-            try { return new Element(String.valueOf(Double.valueOf(element)))
+            try { return new Element(Double.valueOf(element))
                     .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Double.");
@@ -167,7 +186,7 @@ public class Element implements dObject {
                 || attribute.startsWith("as_money")) {
             try {
                 DecimalFormat d = new DecimalFormat("0.00");
-                return new Element(String.valueOf(d.format(Double.valueOf(element))))
+                return new Element(d.format(Double.valueOf(element)))
                         .getAttribute(attribute.fulfill(1)); }
             catch (NumberFormatException e) {
                 dB.echoError("'" + element + "' is not a valid Money format.");
@@ -299,8 +318,8 @@ public class Element implements dObject {
         // Get the substring after a certain text
         if (attribute.startsWith("after")) {
             String delimiter = attribute.getContext(1);
-            return new Element(String.valueOf(element.substring
-                    (element.indexOf(delimiter) + delimiter.length())))
+            return new Element(element.substring
+                    (element.indexOf(delimiter) + delimiter.length()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -313,8 +332,8 @@ public class Element implements dObject {
         // Get the substring before a certain text
         if (attribute.startsWith("before")) {
             String delimiter = attribute.getContext(1);
-            return new Element(String.valueOf(element.substring
-                    (0, element.indexOf(delimiter))))
+            return new Element(element.substring
+                    (0, element.indexOf(delimiter)))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -333,12 +352,12 @@ public class Element implements dObject {
                 ending_index = Integer.valueOf(attribute.getContext(1).split(",")[1]) - 1;
             else
                 ending_index = element.length();
-            return new Element(String.valueOf(element.substring(beginning_index, ending_index)))
+            return new Element(element.substring(beginning_index, ending_index))
                     .getAttribute(attribute.fulfill(1));
         }
 
         if (attribute.startsWith("last_color"))
-            return new Element(String.valueOf(ChatColor.getLastColors(element))).getAttribute(attribute.fulfill(1));
+            return new Element(ChatColor.getLastColors(element)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <element.strip_color>
@@ -347,7 +366,7 @@ public class Element implements dObject {
         // Returns the element with all color encoding stripped.
         // -->
         if (attribute.startsWith("strip_color"))
-            return new Element(String.valueOf(ChatColor.stripColor(element))).getAttribute(attribute.fulfill(1));
+            return new Element(ChatColor.stripColor(element)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <element.startswith[<string>]>
@@ -356,7 +375,7 @@ public class Element implements dObject {
         // Returns whether the element starts with a specified string.
         // -->
         if (attribute.startsWith("starts_with") || attribute.startsWith("startswith"))
-            return new Element(String.valueOf(element.startsWith(attribute.getContext(1)))).getAttribute(attribute.fulfill(1));
+            return new Element(element.startsWith(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <element.endswith[<string>]>
@@ -365,7 +384,7 @@ public class Element implements dObject {
         // Returns whether the element ends with a specified string.
         // -->
         if (attribute.startsWith("ends_with") || attribute.startsWith("endswith"))
-            return new Element(String.valueOf(element.endsWith(attribute.getContext(1)))).getAttribute(attribute.fulfill(1));
+            return new Element(element.endsWith(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <element.split[<string>].limit[<#>]>

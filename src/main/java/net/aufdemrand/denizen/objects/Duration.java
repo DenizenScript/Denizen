@@ -297,7 +297,7 @@ public class Duration implements dObject {
         // returns the number of seconds in the Duration.
         // -->
         if (attribute.startsWith("in_seconds") || attribute.startsWith("seconds"))
-            return new Element(String.valueOf(seconds))
+            return new Element(seconds)
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -307,7 +307,7 @@ public class Duration implements dObject {
         // returns the number of hours in the Duration.
         // -->
         if (attribute.startsWith("in_hours") || attribute.startsWith("hours"))
-            return new Element(String.valueOf(seconds / 1800))
+            return new Element(seconds / 1800)
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -317,7 +317,7 @@ public class Duration implements dObject {
         // returns the number of minutes in the Duration.
         // -->
         if (attribute.startsWith("in_minutes") || attribute.startsWith("minutes"))
-            return new Element(String.valueOf(seconds / 60))
+            return new Element(seconds / 60)
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -327,7 +327,7 @@ public class Duration implements dObject {
         // returns the number of ticks in the Duration. (20t/second)
         // -->
         if (attribute.startsWith("in_ticks") || attribute.startsWith("ticks"))
-            return new Element(String.valueOf(getTicksAsInt()))
+            return new Element(getTicksAsInt())
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("prefix"))

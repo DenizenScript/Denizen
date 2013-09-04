@@ -965,7 +965,7 @@ public class dEntity implements dObject {
             double maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHealth = attribute.getIntContext(2);
-            return new Element(String.valueOf(((float) getLivingEntity().getHealth() / maxHealth) * 100))
+            return new Element((getLivingEntity().getHealth() / maxHealth) * 100)
                     .getAttribute(attribute.fulfill(2));
         }
 
@@ -976,7 +976,7 @@ public class dEntity implements dObject {
         // Returns the maximum health of the entity.
         // -->
         if (attribute.startsWith("health.max"))
-            return new Element(String.valueOf(getLivingEntity().getMaxHealth()))
+            return new Element(getLivingEntity().getMaxHealth())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -986,7 +986,7 @@ public class dEntity implements dObject {
         // Returns the current health of the entity.
         // -->
         if (attribute.startsWith("health"))
-            return new Element(String.valueOf(getLivingEntity().getHealth()))
+            return new Element(getLivingEntity().getHealth())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -996,7 +996,7 @@ public class dEntity implements dObject {
         // Returns true if the entity is inside a vehicle. Else, returns false.
         // -->
         if (attribute.startsWith("is_inside_vehicle"))
-            return new Element(String.valueOf(entity.isInsideVehicle()))
+            return new Element(entity.isInsideVehicle())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1016,7 +1016,7 @@ public class dEntity implements dObject {
         // Returns the cause of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.cause"))
-            return new Element(String.valueOf(entity.getLastDamageCause().getCause().toString()))
+            return new Element(entity.getLastDamageCause().getCause().name())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -1026,7 +1026,7 @@ public class dEntity implements dObject {
         // Returns the amount of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.amount"))
-            return new Element(String.valueOf(getLivingEntity().getLastDamage()))
+            return new Element(getLivingEntity().getLastDamage())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -1058,7 +1058,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("can_see")) {
             if (attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
                 dEntity toEntity = dEntity.valueOf(attribute.getContext(1));
-                return new Element(String.valueOf(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity()))).getAttribute(attribute.fulfill(1));
+                return new Element(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -1069,7 +1069,7 @@ public class dEntity implements dObject {
         // Returns true if the entity can pick up items. Else, returns false.
         // -->
         if (attribute.startsWith("can_pickup_items"))
-            return new Element(String.valueOf(getLivingEntity().getCanPickupItems()))
+            return new Element(getLivingEntity().getCanPickupItems())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1079,7 +1079,7 @@ public class dEntity implements dObject {
         // Returns the entity's Bukkit entity ID
         // -->
         if (attribute.startsWith("eid"))
-            return new Element(String.valueOf(entity.getEntityId()))
+            return new Element(entity.getEntityId())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1089,7 +1089,7 @@ public class dEntity implements dObject {
         // Returns how far the entity has fallen.
         // -->
         if (attribute.startsWith("fall_distance"))
-            return new Element(String.valueOf(entity.getFallDistance()))
+            return new Element(entity.getFallDistance())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1099,7 +1099,7 @@ public class dEntity implements dObject {
         // Returns a unique ID for the entity.
         // -->
         if (attribute.startsWith("uuid"))
-            return new Element(String.valueOf(entity.getUniqueId().toString()))
+            return new Element(entity.getUniqueId().toString())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]

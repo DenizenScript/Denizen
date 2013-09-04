@@ -188,7 +188,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
         // Otherwise, returns false.
         // -->
         if (attribute.startsWith("contains")) {
-            event.setReplaced(new Element(String.valueOf(getYaml(id).contains(path)))
+            event.setReplaced(new Element(getYaml(id).contains(path))
                     .getAttribute(attribute.fulfill(1)));
             return;
         }

@@ -220,7 +220,7 @@ public class dPlayer implements dObject {
         // returns true if the player has played before
         // -->
         if (attribute.startsWith("has_played_before"))
-            return new Element(String.valueOf(getOfflinePlayer().hasPlayedBefore()))
+            return new Element(getOfflinePlayer().hasPlayedBefore())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -230,7 +230,7 @@ public class dPlayer implements dObject {
         // returns true if the player has 'op status'
         // -->
         if (attribute.startsWith("is_op"))
-            return new Element(String.valueOf(getOfflinePlayer().isOp()))
+            return new Element(getOfflinePlayer().isOp())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -241,7 +241,7 @@ public class dPlayer implements dObject {
         // first logged on. Will return '0' if player has never played.
         // -->
         if (attribute.startsWith("first_played"))
-            return new Element(String.valueOf(getOfflinePlayer().getFirstPlayed()))
+            return new Element(getOfflinePlayer().getFirstPlayed())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -252,7 +252,7 @@ public class dPlayer implements dObject {
         // was last seen. Will return '0' if player has never played.
         // -->
         if (attribute.startsWith("last_played"))
-            return new Element(String.valueOf(getOfflinePlayer().getLastPlayed()))
+            return new Element(getOfflinePlayer().getLastPlayed())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -262,7 +262,7 @@ public class dPlayer implements dObject {
         // returns true if the player is banned
         // -->
         if (attribute.startsWith("is_banned"))
-            return new Element(String.valueOf(getOfflinePlayer().isBanned()))
+            return new Element(getOfflinePlayer().isBanned())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -272,7 +272,7 @@ public class dPlayer implements dObject {
         // returns true if the player is whitelisted
         // -->
         if (attribute.startsWith("is_whitelisted"))
-            return new Element(String.valueOf(getOfflinePlayer().isWhitelisted()))
+            return new Element(getOfflinePlayer().isWhitelisted())
                     .getAttribute(attribute.fulfill(1));
 
         if (attribute.startsWith("name") && !isOnline())
@@ -286,7 +286,7 @@ public class dPlayer implements dObject {
         // returns true if the player is currently online
         // -->
         if (attribute.startsWith("is_online"))
-            return new Element(String.valueOf(isOnline())).getAttribute(attribute.fulfill(1));
+            return new Element(isOnline()).getAttribute(attribute.fulfill(1));
         
         // <--[tag]
         // @attribute <p@player.ip>
@@ -295,7 +295,7 @@ public class dPlayer implements dObject {
         // Returns the player's IP address.
         // -->
         if (attribute.startsWith("ip"))
-            return getPlayerEntity().getAddress().getHostName();
+            return new Element(getPlayerEntity().getAddress().getHostName()).getAttribute(attribute.fulfill(1));
         
         // <--[tag]
         // @attribute <p@player.list>
@@ -415,7 +415,7 @@ public class dPlayer implements dObject {
                     return new Element(Depends.economy.currencyNamePlural())
                             .getAttribute(attribute.fulfill(2));
 
-                return new Element(String.valueOf(Depends.economy.getBalance(player_name)))
+                return new Element(Depends.economy.getBalance(player_name))
                         .getAttribute(attribute.fulfill(1));
 
             } else {
@@ -459,7 +459,7 @@ public class dPlayer implements dObject {
         // returns the amount of experience to the next level.
         // -->
         if (attribute.startsWith("xp.to_next_level"))
-            return new Element(String.valueOf(getPlayerEntity().getExpToLevel()))
+            return new Element(getPlayerEntity().getExpToLevel())
                     .getAttribute(attribute.fulfill(2)); 
 
         // <--[tag]
@@ -469,7 +469,7 @@ public class dPlayer implements dObject {
         // returns the total amount of experience points.
         // -->
         if (attribute.startsWith("xp.total"))
-            return new Element(String.valueOf(getPlayerEntity().getTotalExperience()))
+            return new Element(getPlayerEntity().getTotalExperience())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -489,7 +489,7 @@ public class dPlayer implements dObject {
         // returns the percentage of experience points to the next level.
         // -->
         if (attribute.startsWith("xp"))
-            return new Element(String.valueOf(getPlayerEntity().getExp() * 100))
+            return new Element(getPlayerEntity().getExp() * 100)
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -644,7 +644,7 @@ public class dPlayer implements dObject {
         // returns the current food level of the player.
         // -->
         if (attribute.startsWith("food_level"))
-            return new Element(String.valueOf(getPlayerEntity().getFoodLevel()))
+            return new Element(getPlayerEntity().getFoodLevel())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -672,12 +672,12 @@ public class dPlayer implements dObject {
 
             // Non-world specific permission
             if (attribute.getAttribute(2).startsWith("global"))
-                return new Element(String.valueOf(Depends.permissions.has((World) null, player_name, permission)))
+                return new Element(Depends.permissions.has((World) null, player_name, permission))
                         .getAttribute(attribute.fulfill(2));
 
                 // Permission in certain world
             else if (attribute.getAttribute(2).startsWith("world"))
-                return new Element(String.valueOf(Depends.permissions.has(attribute.getContext(2), player_name, permission)))
+                return new Element(Depends.permissions.has(attribute.getContext(2), player_name, permission))
                         .getAttribute(attribute.fulfill(2));
 
             // <--[tag]
@@ -690,7 +690,7 @@ public class dPlayer implements dObject {
             // -->
 
             // Permission in current world
-            return new Element(String.valueOf(Depends.permissions.has(getPlayerEntity(), permission)))
+            return new Element(Depends.permissions.has(getPlayerEntity(), permission))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -720,12 +720,12 @@ public class dPlayer implements dObject {
 
             // Non-world specific permission
             if (attribute.getAttribute(2).startsWith("global"))
-                return new Element(String.valueOf(Depends.permissions.playerInGroup((World) null, player_name, group)))
+                return new Element(Depends.permissions.playerInGroup((World) null, player_name, group))
                         .getAttribute(attribute.fulfill(2));
 
                 // Permission in certain world
             else if (attribute.getAttribute(2).startsWith("world"))
-                return new Element(String.valueOf(Depends.permissions.playerInGroup(attribute.getContext(2), player_name, group)))
+                return new Element(Depends.permissions.playerInGroup(attribute.getContext(2), player_name, group))
                         .getAttribute(attribute.fulfill(2));
 
             // <--[tag]
@@ -738,7 +738,7 @@ public class dPlayer implements dObject {
             // -->
 
             // Permission in current world
-            return new Element(String.valueOf(Depends.permissions.playerInGroup(getPlayerEntity(), group)))
+            return new Element(Depends.permissions.playerInGroup(getPlayerEntity(), group))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -749,7 +749,7 @@ public class dPlayer implements dObject {
         // returns true if the player is currently flying, false otherwise
         // -->
         if (attribute.startsWith("is_flying"))
-            return new Element(String.valueOf(getPlayerEntity().isFlying()))
+            return new Element(getPlayerEntity().isFlying())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -759,7 +759,7 @@ public class dPlayer implements dObject {
         // returns true if the player is currently sneaking, false otherwise
         // -->
         if (attribute.startsWith("is_sneaking"))
-            return new Element(String.valueOf(getPlayerEntity().isSneaking()))
+            return new Element(getPlayerEntity().isSneaking())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -769,7 +769,7 @@ public class dPlayer implements dObject {
         // returns true if the player is currently blocking, false otherwise
         // -->
         if (attribute.startsWith("is_blocking"))
-            return new Element(String.valueOf(getPlayerEntity().isBlocking()))
+            return new Element(getPlayerEntity().isBlocking())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -779,7 +779,7 @@ public class dPlayer implements dObject {
         // returns true if the player is currently sleeping, false otherwise
         // -->
         if (attribute.startsWith("is_sleeping"))
-            return new Element(String.valueOf(getPlayerEntity().isSleeping()))
+            return new Element(getPlayerEntity().isSleeping())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -789,7 +789,7 @@ public class dPlayer implements dObject {
         // returns true if the player is currently sprinting, false otherwise
         // -->
         if (attribute.startsWith("is_sprinting"))
-            return new Element(String.valueOf(getPlayerEntity().isSprinting()))
+            return new Element(getPlayerEntity().isSprinting())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -799,7 +799,7 @@ public class dPlayer implements dObject {
         // returns 'gamemode id' of the player. 0 = survival, 1 = creative, 2 = adventure
         // -->
         if (attribute.startsWith("gamemode.id"))
-            return new Element(String.valueOf(getPlayerEntity().getGameMode().getValue()))
+            return new Element(getPlayerEntity().getGameMode().getValue())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -809,7 +809,7 @@ public class dPlayer implements dObject {
         // returns the name of the gamemode the player is currently set to.
         // -->
         if (attribute.startsWith("gamemode"))
-            return new Element(String.valueOf(getPlayerEntity().getGameMode().toString()))
+            return new Element(getPlayerEntity().getGameMode().name())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -844,7 +844,7 @@ public class dPlayer implements dObject {
         // returns true if the player is allowed to fly, and false otherwise
         // -->
         if (attribute.startsWith("allowed_flight"))
-            return new Element(String.valueOf(getPlayerEntity().getAllowFlight()))
+            return new Element(getPlayerEntity().getAllowFlight())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -854,7 +854,7 @@ public class dPlayer implements dObject {
         // returns the player's 'host name'.
         // -->
         if (attribute.startsWith("host_name"))
-            return new Element(String.valueOf(getPlayerEntity().getAddress().getHostName()))
+            return new Element(getPlayerEntity().getAddress().getHostName())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -874,7 +874,7 @@ public class dPlayer implements dObject {
         // returns the time, specific to the player
         // -->
         if (attribute.startsWith("player_time"))
-            return new Element(String.valueOf(getPlayerEntity().getPlayerTime()))
+            return new Element(getPlayerEntity().getPlayerTime())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -884,7 +884,7 @@ public class dPlayer implements dObject {
         // returns the player's 'offset' of time vs. the real time.
         // -->
         if (attribute.startsWith("player_time_offset"))
-            return new Element(String.valueOf(getPlayerEntity().getPlayerTimeOffset()))
+            return new Element(getPlayerEntity().getPlayerTimeOffset())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
