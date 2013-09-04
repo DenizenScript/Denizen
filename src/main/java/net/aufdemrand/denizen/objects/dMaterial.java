@@ -123,6 +123,10 @@ public class dMaterial implements dObject {
         return material;
     }
     
+    public String name() {
+        return material.name();
+    }
+    
     public Byte getData() {
         return data;
     }

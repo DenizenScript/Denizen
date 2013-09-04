@@ -290,9 +290,34 @@ public class Duration implements dObject {
 
         if (attribute == null) return null;
 
+        
+        /////////////////////
+        //   CONVERSION ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <d@duration.in_hours> 
+        // @returns Element(double)
+        // @description
+        // returns the number of hours in the Duration.
+        // -->
+        if (attribute.startsWith("in_hours") || attribute.startsWith("hours"))
+            return new Element(seconds / 1800)
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <d@duration.in_minutes> 
+        // @returns Element(double)
+        // @description
+        // returns the number of minutes in the Duration.
+        // -->
+        if (attribute.startsWith("in_minutes") || attribute.startsWith("minutes"))
+            return new Element(seconds / 60)
+                    .getAttribute(attribute.fulfill(1));
+        
         // <--[tag]
         // @attribute <d@duration.in_seconds>
-        // @returns Element(number)
+        // @returns Element(double)
         // @description
         // returns the number of seconds in the Duration.
         // -->
@@ -301,35 +326,20 @@ public class Duration implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <d@duration.in_seconds> 
-        // @returns Element(number)
-        // @description
-        // returns the number of hours in the Duration.
-        // -->
-        if (attribute.startsWith("in_hours") || attribute.startsWith("hours"))
-            return new Element(seconds / 1800)
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <d@duration.in_minutes> 
-        // @returns Element(number)
-        // @description
-        // returns the number of minutes in the Duration.
-        // -->
-        if (attribute.startsWith("in_minutes") || attribute.startsWith("minutes"))
-            return new Element(seconds / 60)
-                    .getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
         // @attribute <d@duration.in_ticks> 
-        // @returns Element(number)
+        // @returns Element(integer)
         // @description
         // returns the number of ticks in the Duration. (20t/second)
         // -->
         if (attribute.startsWith("in_ticks") || attribute.startsWith("ticks"))
             return new Element(getTicksAsInt())
                     .getAttribute(attribute.fulfill(1));
-
+        
+        
+        /////////////////////
+        //   DEBUG ATTRIBUTES
+        /////////////////
+        
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
@@ -344,6 +354,16 @@ public class Duration implements dObject {
             return new Element(ChatColor.stripColor(debug()))
                     .getAttribute(attribute.fulfill(2));
         }
+
+        if (attribute.startsWith("debug")) {
+            return new Element(debug())
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
+        
+        /////////////////////
+        //   FORMAT ATTRIBUTES
+        /////////////////
         
         // <--[tag]
         // @attribute <d@duration.formatted> 
@@ -378,11 +398,6 @@ public class Duration implements dObject {
 
             return new Element(timeString.trim())
                         .getAttribute(attribute.fulfill(1));
-        }
-
-        if (attribute.startsWith("debug")) {
-            return new Element(debug())
-                    .getAttribute(attribute.fulfill(1));
         }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));

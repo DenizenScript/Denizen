@@ -180,6 +180,21 @@ public class dWorld implements dObject {
         
         
         /////////////////////
+        //   DEBUG ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <w@world.prefix>
+        // @returns Element
+        // @description
+        // Returns the prefix of the world dObject.
+        // -->
+        if (attribute.startsWith("prefix"))
+            return new Element(prefix)
+                    .getAttribute(attribute.fulfill(1));
+        
+        
+        /////////////////////
         //   GEOGRAPHY ATTRIBUTES
         /////////////////
         
@@ -221,16 +236,6 @@ public class dWorld implements dObject {
         // -->
         if (attribute.startsWith("name"))
             return new Element(getWorld().getName())
-                    .getAttribute(attribute.fulfill(1));
-        
-        // <--[tag]
-        // @attribute <w@world.prefix>
-        // @returns Element
-        // @description
-        // Returns the prefix of the world dObject.
-        // -->
-        if (attribute.startsWith("prefix"))
-            return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
