@@ -601,8 +601,8 @@ public class dItem implements dObject {
         // @attribute <i@item.material.formatted>
         // @returns Element
         // @description
-        // Returns the formatted material name of the item to be used in a sentence. Correctly singularizes and
-        // pluarlizes the name of items, among other things. 
+        // Returns the formatted material name of the item to be used in a sentence.
+        // Correctly uses singular and plural forms of item names, among other things. 
         // -->
         if (attribute.startsWith("material.formatted")) {
 
@@ -647,10 +647,10 @@ public class dItem implements dObject {
         // @attribute <i@item.material> 
         // @returns Element
         // @description
-        // Returns the bukkit material name of the item.
+        // Returns the material corresponding to the item
         // -->
         if (attribute.startsWith("material"))
-            return new Element(getItemStack().getType().toString())
+            return new dMaterial(getItemStack().getType())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
