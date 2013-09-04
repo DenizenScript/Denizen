@@ -55,175 +55,175 @@ public class CommandRegistry implements dRegistry {
     @Override
     public void registerCoreMembers() {
 
-		// <--[command]
-		// @Name Anchor
-		// @Usage anchor [id:<name>] [assume/add/remove/walkto/walknear] (range:<#>)
-		// @Required 2
-		// @Stable Stable
-		// @Short TODO
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Anchor
+        // @Usage anchor [id:<name>] [assume/add/remove/walkto/walknear] (range:<#>)
+        // @Required 2
+        // @Stable Stable
+        // @Short TODO
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(AnchorCommand.class,
                 "ANCHOR", "anchor [id:<name>] [assume/add/remove/walkto/walknear] (range:<#>)", 2);
                 
-		// <--[command]
-		// @Name Animate
-		// @Usage animate [<entity>|...] [animation:<name>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Animate
+        // @Usage animate [<entity>|...] [animation:<name>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(AnimateCommand.class,
                 "ANIMATE", "animate [<entity>|...] [animation:<name>]", 1);
         
-		// <--[command]
-		// @Name AnimateChest
-		// @Usage animatechest [<location>] ({open}/close) (sound:{true}/false)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name AnimateChest
+        // @Usage animatechest [<location>] ({open}/close) (sound:{true}/false)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false)", 1);
         
-		// <--[command]
-		// @Name Announce
-		// @Usage announce ["<text>"] (to_ops) (to_flagged:<flag>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Announce
+        // @Usage announce ["<text>"] (to_ops) (to_flagged:<flag>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(AnnounceCommand.class,
                 "ANNOUNCE", "announce [\"<text>\"] (to_ops) (to_flagged:<flag>)", 1);
         
-		// <--[command]
-		// @Name Assignment
-		// @Usage assignment [{set}/remove] (script:<name>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Assignment
+        // @Usage assignment [{set}/remove] (script:<name>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(AssignmentCommand.class,
                 "ASSIGNMENT", "assignment [{set}/remove] (script:<name>)", 1);
         
-		// <--[command]
-		// @Name Attack
-		// @Usage attack (cancel) (<entity>|...) (target:<entity>)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Attack
+        // @Usage attack (cancel) (<entity>|...) (target:<entity>)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(AttackCommand.class, 
                 "ATTACK", "attack (cancel) (<entity>|...) (target:<entity>)", 0);
 
-		// <--[command]
-		// @Name Break
-		// @Usage break [<location>] (entity:<entity>) (radius:<#.#>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Break
+        // @Usage break [<location>] (entity:<entity>) (radius:<#.#>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(BreakCommand.class,
                 "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);
         
-		// <--[command]
-		// @Name Burn
-		// @Usage burn [<entity>|...] (duration:<value>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Burn
+        // @Usage burn [<entity>|...] (duration:<value>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(BurnCommand.class,
                 "BURN", "burn [<entity>|...] (duration:<value>)", 1);
         
-		// <--[command]
-		// @Name Cast, Potion
-		// @Usage cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
-		// @Required 1
-		// @Stable Stable
-		// @Short Casts a potion effect to a list of entities.
-		// @Author aufdemrand/Jeebiss/Morphan1
+        // <--[command]
+        // @Name Cast, Potion
+        // @Usage cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
+        // @Required 1
+        // @Stable Stable
+        // @Short Casts a potion effect to a list of entities.
+        // @Author aufdemrand/Jeebiss/Morphan1
         //
-		// @Description
+        // @Description
         // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
         // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
         //
-		// @Tags
+        // @Tags
         // <e@entity.has_effect[<effect>]> will return true if the entity has an effect.
         //
-		// @Usage
-		// Use to apply an effect to an entity
+        // @Usage
+        // Use to apply an effect to an entity
         // - potion jump <player> d:120 p:3
         // - narrate "You have been given the temporary ability to jump like a kangaroo."
         //
@@ -233,66 +233,66 @@ public class CommandRegistry implements dRegistry {
         //   - potion jump remove <player>
         //   }
         //
-		// @Example TODO
+        // @Example TODO
         //
-		// -->
+        // -->
         registerCoreMember(CastCommand.class, 
                 "CAST, POTION", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)", 1);
         
-		// <--[command]
-		// @Name Chat
-		// @Usage chat ["<text>"] (targets:<entity>|...)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Chat
+        // @Usage chat ["<text>"] (targets:<entity>|...)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ChatCommand.class, 
                 "CHAT", "chat [\"<text>\"] (targets:<entity>|...)", 1);
         
-		// <--[command]
-		// @Name ChunkLoad
-		// @Usage chunkload ({add}/remove/removeall) [<location>] (duration:<value>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name ChunkLoad
+        // @Usage chunkload ({add}/remove/removeall) [<location>] (duration:<value>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ChunkLoadCommand.class,
                 "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<location>] (duration:<value>)", 1);
 
-		// <--[command]
-		// @Name Compass
-		// @Usage compass [<location>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Compass
+        // @Usage compass [<location>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(CompassCommand.class,
                 "COMPASS", "compass [<location>]", 1);
 
@@ -338,50 +338,50 @@ public class CommandRegistry implements dRegistry {
                 "COOLDOWN", "cooldown [<duration>] (global) (s:<script>)", 1);
 
 
-		// <--[command]
-		// @Name CopyBlock
-		// @Usage copyblock [location:<location>] [to:<location>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name CopyBlock
+        // @Usage copyblock [location:<location>] [to:<location>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(CopyBlockCommand.class,
                 "COPYBLOCK", "copyblock [location:<location>] [to:<location>]", 1);
 
 
-		// <--[command]
-		// @Name CreateWorld
-		// @Usage createworld [<name>] (g:<generator>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name CreateWorld
+        // @Usage createworld [<name>] (g:<generator>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(CreateWorldCommand.class,
                 "CREATEWORLD", "createworld [<name>] (g:<generator>)", 1);
 
 
-		// <--[command]
-		// @Name Define
-		// @Usage define [<id>] [<value>]
-		// @Required 2
+        // <--[command]
+        // @Name Define
+        // @Usage define [<id>] [<value>]
+        // @Required 2
         // @Stable 1.0
         // @Short Creates a temporary variable inside a script queue.
         // @Author aufdemrand
@@ -427,392 +427,392 @@ public class CommandRegistry implements dRegistry {
                 "DEFINE", "define [<id>] [<value>]", 2);
 
 
-		// <--[command]
-		// @Name Determine
-		// @Usage determine [<value>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Determine
+        // @Usage determine [<value>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(DetermineCommand.class, 
                 "DETERMINE", "determine [<value>]", 1);
 
-		// <--[command]
-		// @Name Disengage
-		// @Usage disengage (npc:<npc>)
-		// @Required 0
-		// @Stable 1.0
-		// @Short Enables a NPCs triggers that have been temporarily disabled by the engage command. 
-		// @Author aufdemrand
-		//
-		// @Description
-		// Re-enables any toggled triggers that have been disabled by disengage. Using 
-		// disengage inside scripts must have a NPC to reference, or one may be specified 
-		// by supplying a valid dNPC object with the npc argument.
-		//
-		// This is mostly regarded as an 'interact script command', though it may be used inside
-		// other script types. This is because disengage works with the trigger system, which is an
-		// interact script-container feature. 
-		//
-		// NPCs that are interacted with while engaged will fire an 'on unavailable' assignment 
-		// script-container action.
-		//
-		// @See Engage Command
-		//
-		// @Usage
-		// Use to reenable a NPC's triggers, disabled via 'engage'.
-		// - engage
-		// - chat 'Be right there!'
-		// - walkto <player.location>
-		// - wait 5s
-		// - disengage
-		//
-		// @Example
-		// -->
+        // <--[command]
+        // @Name Disengage
+        // @Usage disengage (npc:<npc>)
+        // @Required 0
+        // @Stable 1.0
+        // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command. 
+        // @Author aufdemrand
+        //
+        // @Description
+        // Re-enables any toggled triggers that have been disabled by disengage. Using 
+        // disengage inside scripts must have a NPC to reference, or one may be specified 
+        // by supplying a valid dNPC object with the npc argument.
+        //
+        // This is mostly regarded as an 'interact script command', though it may be used inside
+        // other script types. This is because disengage works with the trigger system, which is an
+        // interact script-container feature. 
+        //
+        // NPCs that are interacted with while engaged will fire an 'on unavailable' assignment 
+        // script-container action.
+        //
+        // @See Engage Command
+        //
+        // @Usage
+        // Use to reenable a NPC's triggers, disabled via 'engage'.
+        // - engage
+        // - chat 'Be right there!'
+        // - walkto <player.location>
+        // - wait 5s
+        // - disengage
+        //
+        // @Example
+        // -->
         registerCoreMember(DisengageCommand.class, 
                 "DISENGAGE", "disengage (npc:<npc>)", 0);
 
-		// <--[command]
-		// @Name DisplayItem
-		// @Usage displayitem (remove) [<item>] [<location>] (duration:<value>)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name DisplayItem
+        // @Usage displayitem (remove) [<item>] [<location>] (duration:<value>)
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(DisplayItemCommand.class,
                 "DISPLAYITEM", "displayitem (remove) [<item>] [<location>] (duration:<value>)", 2);
 
-		// <--[command]
-		// @Name Drop
-		// @Usage drop [<item>/<entity>/<xp>] [<location>] (qty:<#>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Drop
+        // @Usage drop [<item>/<entity>/<xp>] [<location>] (qty:<#>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(DropCommand.class, 
                 "DROP", "drop [<item>/<entity>/<xp>] [<location>] (qty:<#>)", 1);
         
-		// <--[command]
-		// @Name Engage
-		// @Usage engage (<duration>) (npc:<npc>)
-		// @Required 0
-		// @Stable 1.0
-		// @Short Temporarily disables a NPCs toggled interact script-container triggers.
-		// @Author aufdemrand
-		//
-		// @Description
-		// Engaging a NPC will temporarily disable any interact script-container triggers. To reverse 
-		// this behavior, use either the disengage command, or specify a duration in which the engage 
-		// should timeout. Specifying an engage without a duration will render the NPC engaged until
-		// a disengage is used on the NPC. Engaging a NPC affects all players attempting to interact
-		// with the NPC.
-		//
-		// While engaged, all triggers and actions associated with triggers will not 'fire', except
-		// the 'on unavailable' assignment script-container action, which will fire for triggers that
-		// were enabled previous to the engage command.
-		//
-		// Engage can be useful when NPCs are carrying out a task that shouldn't be interrupted, or
-		// to provide a good way to avoid accidental 'retrigger'.
-		//
-		// @See Disengage Command
-		//
-		// @Tags
-		// <n@npc.engaged> will return true if the NPC is currently engaged, false otherwise.
-		//
-		// @Usage
-		// Use to make a NPC appear 'busy'.
-		// - engage
-		// - chat 'Give me a few minutes while I mix you a potion!'
-		// - walkto <npc.anchor[mixing_station]>
-		// - wait 10s
-		// - walkto <npc.anchor[service_station]>
-		// - chat 'Here you go!'
-		// - give potion <player>
-		// - disengage
-		//
-		// @Usage
-		// Use to avoid 'retrigger'.
-		// - engage 5s
-		// - take quest_item
-		// - flag player finished_quests:->:super_quest
-		//
-		// @Example
-		// 
-		// -->
+        // <--[command]
+        // @Name Engage
+        // @Usage engage (<duration>) (npc:<npc>)
+        // @Required 0
+        // @Stable 1.0
+        // @Short Temporarily disables a NPCs toggled interact script-container triggers.
+        // @Author aufdemrand
+        //
+        // @Description
+        // Engaging a NPC will temporarily disable any interact script-container triggers. To reverse 
+        // this behavior, use either the disengage command, or specify a duration in which the engage 
+        // should timeout. Specifying an engage without a duration will render the NPC engaged until
+        // a disengage is used on the NPC. Engaging a NPC affects all players attempting to interact
+        // with the NPC.
+        //
+        // While engaged, all triggers and actions associated with triggers will not 'fire', except
+        // the 'on unavailable' assignment script-container action, which will fire for triggers that
+        // were enabled previous to the engage command.
+        //
+        // Engage can be useful when NPCs are carrying out a task that shouldn't be interrupted, or
+        // to provide a good way to avoid accidental 'retrigger'.
+        //
+        // @See Disengage Command
+        //
+        // @Tags
+        // <n@npc.engaged> will return true if the NPC is currently engaged, false otherwise.
+        //
+        // @Usage
+        // Use to make a NPC appear 'busy'.
+        // - engage
+        // - chat 'Give me a few minutes while I mix you a potion!'
+        // - walkto <npc.anchor[mixing_station]>
+        // - wait 10s
+        // - walkto <npc.anchor[service_station]>
+        // - chat 'Here you go!'
+        // - give potion <player>
+        // - disengage
+        //
+        // @Usage
+        // Use to avoid 'retrigger'.
+        // - engage 5s
+        // - take quest_item
+        // - flag player finished_quests:->:super_quest
+        //
+        // @Example
+        // 
+        // -->
         registerCoreMember(EngageCommand.class,
                 "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
 
-		// <--[command]
-		// @Name Engrave
-		// @Usage engrave (set/remove)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Engrave
+        // @Usage engrave (set/remove)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(EngraveCommand.class,
                 "ENGRAVE", "engrave (set/remove)", 0);
         
-		// <--[command]
-		// @Name Equip
-		// @Usage equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Equip
+        // @Usage equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(EquipCommand.class, 
                 "EQUIP", "equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
         
-		// <--[command]
-		// @Name Execute
-		// @Usage execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Execute
+        // @Usage execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ExecuteCommand.class,
                 "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]", 2);
 
-		// <--[command]
-		// @Name Experience
-		// @Usage experience [{set}/give/take] (level) [<#>]
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Experience
+        // @Usage experience [{set}/give/take] (level) [<#>]
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ExperienceCommand.class,
                 "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
 
-		// <--[command]
-		// @Name Explode
-		// @Usage explode (power:<#.#>) (<location>) (fire) (breakblocks)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Explode
+        // @Usage explode (power:<#.#>) (<location>) (fire) (breakblocks)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ExplodeCommand.class,
                 "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
         
-		// <--[command]
-		// @Name Fail
-		// @Usage fail (script:<name>)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Fail
+        // @Usage fail (script:<name>)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(FailCommand.class, 
                 "FAIL", "fail (script:<name>)", 0);
         
-		// <--[command]
-		// @Name Feed
-		// @Usage feed (amt:<#>) (target:<entity>|...)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Feed
+        // @Usage feed (amt:<#>) (target:<entity>|...)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(FeedCommand.class, 
                 "FEED", "feed (amt:<#>) (target:<entity>|...)", 0);
 
-		// <--[command]
-		// @Name Finish
-		// @Usage finish (script:<name>)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Finish
+        // @Usage finish (script:<name>)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(FinishCommand.class, 
                 "FINISH", "finish (script:<name>)", 0);
 
-		// <--[command]
-		// @Name Firework
-		// @Usage firework (<location>) (power:<#>) (type:<name>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Firework
+        // @Usage firework (<location>) (power:<#>) (type:<name>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(FireworkCommand.class,
                 "FIREWORK", "firework (<location>) (power:<#>) (type:<name>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
         
-		// <--[command]
-		// @Name Fish
-		// @Usage fish (catchfish) (stop) (<location>) (catchpercent:<#>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Fish
+        // @Usage fish (catchfish) (stop) (<location>) (catchpercent:<#>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(FishCommand.class, 
                 "FISH", "fish (catchfish) (stop) (<location>) (catchpercent:<#>)", 1);
 
-		// <--[command]
-		// @Name Flag
-		// @Usage flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Flag
+        // @Usage flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(FlagCommand.class, 
                 "FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
         
-		// <--[command]
-		// @Name Fly
-		// @Usage fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Fly
+        // @Usage fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(FlyCommand.class,
                 "FLY", "fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)", 1);
         
-		// <--[command]
-		// @Name Follow
-		// @Usage follow (stop) (lead:<#.#>) (target:<entity>)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Follow
+        // @Usage follow (stop) (lead:<#.#>) (target:<entity>)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(FollowCommand.class, 
                 "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
         
@@ -840,1055 +840,1055 @@ public class CommandRegistry implements dRegistry {
         registerCoreMember(ForEachCommand.class,
                 "FOREACH", "foreach [<object>|...] [<commands>]", 2);
         
-		// <--[command]
-		// @Name Give
-		// @Usage give [money/<item>] (qty:<#>) (engrave)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Give
+        // @Usage give [money/<item>] (qty:<#>) (engrave)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(GiveCommand.class,
                 "GIVE", "give [money/<item>] (qty:<#>) (engrave)", 1);
         
-		// <--[command]
-		// @Name Group
-		// @Usage group [add/remove] [<group>] (world:<name>)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Group
+        // @Usage group [add/remove] [<group>] (world:<name>)
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(GroupCommand.class,
                 "GROUP", "group [add/remove] [<group>] (world:<name>)", 2);
         
-		// <--[command]
-		// @Name Head
-		// @Usage head (player) [skin:<name>]
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Head
+        // @Usage head (player) [skin:<name>]
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(HeadCommand.class,
                 "HEAD", "head (player) [skin:<name>]", 0);
         
-		// <--[command]
-		// @Name Heal
-		// @Usage heal (<#.#>) (<entity>|...)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Heal
+        // @Usage heal (<#.#>) (<entity>|...)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(HealCommand.class, 
                 "HEAL", "heal (<#.#>) (<entity>|...)", 0);
         
-		// <--[command]
-		// @Name Health
-		// @Usage health [<#>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Health
+        // @Usage health [<#>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(HealthCommand.class,
                 "HEALTH", "health [<#>]", 1);
         
-		// <--[command]
-		// @Name Hurt
-		// @Usage hurt (<#.#>) (<entity>|...)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Hurt
+        // @Usage hurt (<#.#>) (<entity>|...)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(HurtCommand.class,
                 "HURT", "hurt (<#.#>) (<entity>|...)", 0);
         
-		// <--[command]
-		// @Name If
-		// @Usage if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name If
+        // @Usage if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(IfCommand.class, 
                 "IF", "if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
 
-		// <--[command]
-		// @Name Inventory
-		// @Usage inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] [destination:<inventory>] (origin:<inventory>)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Inventory
+        // @Usage inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] [destination:<inventory>] (origin:<inventory>)
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(InventoryCommand.class,
                 "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] [destination:<inventory>] (origin:<inventory>)", 2);
         
-		// <--[command]
-		// @Name Invisible
-		// @Usage invisible [player/npc] [state:true/false/toggle]
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Invisible
+        // @Usage invisible [player/npc] [state:true/false/toggle]
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);
         
-		// <--[command]
-		// @Name Leash
-		// @Usage leash (cancel) [<entity>|...] (holder:<entity>/<location>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Leash
+        // @Usage leash (cancel) [<entity>|...] (holder:<entity>/<location>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(LeashCommand.class,
                 "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
         
-		// <--[command]
-		// @Name Listen
-		// @Usage listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Listen
+        // @Usage listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ListenCommand.class,
                 "LISTEN", "listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)", 2);
         
-		// <--[command]
-		// @Name Log
-		// @Usage log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Log
+        // @Usage log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(LogCommand.class,
                 "LOG", "log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]", 2);
         
-		// <--[command]
-		// @Name Look
-		// @Usage look (<entity>|...) [<location>] (duration:<duration>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Look
+        // @Usage look (<entity>|...) [<location>] (duration:<duration>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(LookCommand.class,
                 "LOOK", "look (<entity>|...) [<location>] (duration:<duration>)", 1);
         
-		// <--[command]
-		// @Name LookClose
-		// @Usage lookclose [state:true/false]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name LookClose
+        // @Usage lookclose [state:true/false]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(LookcloseCommand.class,
                 "LOOKCLOSE", "lookclose [state:true/false]", 1);
         
-		// <--[command]
-		// @Name Midi
-		// @Usage midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Midi
+        // @Usage midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(MidiCommand.class,
                 "MIDI", "midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)", 1);
         
-		// <--[command]
-		// @Name Mount
-		// @Usage mount (cancel) [<entity>|...] (<location>)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Mount
+        // @Usage mount (cancel) [<entity>|...] (<location>)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(MountCommand.class,
                 "MOUNT", "mount (cancel) [<entity>|...] (<location>)", 0);
         
-		// <--[command]
-		// @Name ModifyBlock
-		// @Usage modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name ModifyBlock
+        // @Usage modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ModifyBlockCommand.class,
                 "MODIFYBLOCK", "modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)", 2);
         
-		// <--[command]
+        // <--[command]
         // @Name Nameplate
-		// @Usage nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // @Usage nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(NameplateCommand.class,
                 "NAMEPLATE", "nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib", 1);
         
-		// <--[command]
-		// @Name Narrate
-		// @Usage narrate ["<text>"] (targets:<player>|...) (format:<name>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Narrate
+        // @Usage narrate ["<text>"] (targets:<player>|...) (format:<name>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(NarrateCommand.class,
                 "NARRATE", "narrate [\"<text>\"] (targets:<player>|...) (format:<name>)", 1);
         
-		// <--[command]
-		// @Name Note
-		// @Usage note [<Notable dObject>] [as:<name>]
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Note
+        // @Usage note [<Notable dObject>] [as:<name>]
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(NoteCommand.class,
                 "NOTE", "note [<Notable dObject>] [as:<name>]", 2);
         
-		// <--[command]
-		// @Name Oxygen
-		// @Usage oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Oxygen
+        // @Usage oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(OxygenCommand.class,
                 "OXYGEN", "oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]", 1);
         
-		// <--[command]
-		// @Name PlayEffect
-		// @Usage playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name PlayEffect
+        // @Usage playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(PlayEffectCommand.class,
                 "PLAYEFFECT", "playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)", 2);
         
-		// <--[command]
-		// @Name PlaySound
-		// @Usage playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name PlaySound
+        // @Usage playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(PlaySoundCommand.class,
                 "PLAYSOUND", "playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
         
-		// <--[command]
-		// @Name Permission
-		// @Usage permission [add|remove] [permission] (player:<name>) (group:<name>) (world:<name>)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Permission
+        // @Usage permission [add|remove] [permission] (player:<name>) (group:<name>) (world:<name>)
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(PermissionCommand.class,
                 "PERMISSION", "permission [add|remove] [permission] (player:<name>) (group:<name>) (world:<name>)", 2);
 
-		// <--[command]
-		// @Name Pose
-		// @Usage pose (player/npc) [id:<name>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Pose
+        // @Usage pose (player/npc) [id:<name>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(PoseCommand.class,
                 "POSE", "pose (player/npc) [id:<name>]", 1);
 
-		// <--[command]
-		// @Name Pause
-		// @Usage pause [waypoints/navigation]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Pause
+        // @Usage pause [waypoints/navigation]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(PauseCommand.class,
                 "PAUSE", "pause [waypoints/navigation]", 1);
         
-		// <--[command]
-		// @Name Queue
-		// @Usage queue (queue:<id>) [clear/pause/resume/delay:<#>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Queue
+        // @Usage queue (queue:<id>) [clear/pause/resume/delay:<#>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(QueueCommand.class,
                 "QUEUE", "queue (queue:<id>) [clear/pause/resume/delay:<#>]", 1);
         
-		// <--[command]
-		// @Name Random
-		// @Usage random [<#>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Random
+        // @Usage random [<#>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(RandomCommand.class, 
                 "RANDOM", "random [<#>]", 1);
         
-		// <--[command]
-		// @Name Remove
-		// @Usage remove [<entity>|...] (region:<name>)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Remove
+        // @Usage remove [<entity>|...] (region:<name>)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(RemoveCommand.class, 
                 "REMOVE", "remove [<entity>|...] (region:<name>)", 0);
 
-		// <--[command]
-		// @Name Rename
-		// @Usage rename [<npc>] [<name>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Rename
+        // @Usage rename [<npc>] [<name>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(RenameCommand.class,
                 "RENAME", "rename [<npc>] [<name>]", 1);
 
-		// <--[command]
-		// @Name Repeat
-		// @Usage repeat [<amount>] [<commands>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Repeat
+        // @Usage repeat [<amount>] [<commands>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(RepeatCommand.class,
                 "REPEAT", "repeat [<amount>] [<commands>]", 1);
 
-		// <--[command]
-		// @Name Reset
-		// @Usage reset [fails/finishes/cooldown] (script:<name>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Reset
+        // @Usage reset [fails/finishes/cooldown] (script:<name>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ResetCommand.class,
                 "RESET", "reset [fails/finishes/cooldown] (script:<name>)", 1);
 
-		// <--[command]
-		// @Name Run
-		// @Usage run [<script>] (path:<name>) (as:<player>/<npc>) (define:<element>|...) (id:<name>) (delay:<value>) (loop) (qty:<#>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Run
+        // @Usage run [<script>] (path:<name>) (as:<player>/<npc>) (define:<element>|...) (id:<name>) (delay:<value>) (loop) (qty:<#>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(RunCommand.class,
                 "RUN", "run [<script>] (path:<name>) (as:<player>/<npc>) (define:<element>|...) (id:<name>) (delay:<value>) (loop) (qty:<#>)", 1);
 
-		// <--[command]
-		// @Name RunTask
+        // <--[command]
+        // @Name RunTask
         // @Deprecated This has been replaced by the Run command.
-		// @Usage runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)
-		// @Required 1
-		// @Stable Stable
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // @Usage runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)
+        // @Required 1
+        // @Stable Stable
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(RuntaskCommand.class,
                 "RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
 
-		// <--[command]
-		// @Name Scoreboard
-		// @Usage scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Scoreboard
+        // @Usage scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ScoreboardCommand.class,
                 "SCOREBOARD", "scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)", 1);
         
-		// <--[command]
-		// @Name Scribe
-		// @Usage scribe [script:<name>] (give/drop/equip) (<item>) (<location>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Scribe
+        // @Usage scribe [script:<name>] (give/drop/equip) (<item>) (<location>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ScribeCommand.class,
                 "SCRIBE", "scribe [script:<name>] (give/drop/equip) (<item>) (<location>)", 1);
 
-		// <--[command]
-		// @Name Shoot
-		// @Usage shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>))
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Shoot
+        // @Usage shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>))
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ShootCommand.class,
                 "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>)", 1);
         
-		// <--[command]
-		// @Name ShowFake
-		// @Usage showfake [<material>] [<location>|...] (d:<duration>{10s})
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name ShowFake
+        // @Usage showfake [<material>] [<location>|...] (d:<duration>{10s})
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ShowFakeCommand.class,
                 "SHOWFAKE", "showfake [<material>] [<location>|...] (d:<duration>{10s})", 2);
 
-		// <--[command]
-		// @Name Sign
-		// @Usage sign (type:{sign_post}/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Sign
+        // @Usage sign (type:{sign_post}/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(SignCommand.class, 
                 "SIGN", "sign (type:{sign_post}/wall_sign) [\"<line>|...\"] [<location>] (direction:n/e/w/s)", 1);
         
-		// <--[command]
-		// @Name Sit
-		// @Usage sit (<location>)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Sit
+        // @Usage sit (<location>)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(SitCommand.class, 
                 "SIT", "sit (<location>)", 0);
 
-		// <--[command]
-		// @Name Spawn
-		// @Usage spawn [<entity>|...] (<location>) (target:<entity>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Spawn
+        // @Usage spawn [<entity>|...] (<location>) (target:<entity>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(SpawnCommand.class,
                 "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>)", 1);
         
-		// <--[command]
-		// @Name Stand
-		// @Usage stand
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Stand
+        // @Usage stand
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(StandCommand.class, 
                 "STAND", "stand", 0);
         
-		// <--[command]
-		// @Name Strike
-		// @Usage strike (no_damage) [<location>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Strike
+        // @Usage strike (no_damage) [<location>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(StrikeCommand.class,
                 "STRIKE", "strike (no_damage) [<location>]", 1);
         
-		// <--[command]
-		// @Name Switch
-		// @Usage switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Switch
+        // @Usage switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(SwitchCommand.class,
                 "SWITCH", "switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)", 1);
         
-		// <--[command]
-		// @Name Take
-		// @Usage take [money/iteminhand/<item>] (qty:<#>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Take
+        // @Usage take [money/iteminhand/<item>] (qty:<#>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(TakeCommand.class,
                 "TAKE", "take [money/iteminhand/<item>] (qty:<#>)", 1);
         
-		// <--[command]
-		// @Name Teleport
-		// @Usage teleport (<entity>|...) (<location>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Teleport
+        // @Usage teleport (<entity>|...) (<location>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(TeleportCommand.class,
                 "TELEPORT", "teleport (<entity>|...) (<location>)", 1);
         
-		// <--[command]
-		// @Name Time
-		// @Usage time [type:{global}/player] [<value>] (world:<name>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Time
+        // @Usage time [type:{global}/player] [<value>] (world:<name>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(TimeCommand.class,
                 "TIME", "time [type:{global}/player] [<value>] (world:<name>)", 1);
         
-		// <--[command]
-		// @Name Trigger
-		// @Usage trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)
-		// @Required 2
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Trigger
+        // @Usage trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)
+        // @Required 2
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(TriggerCommand.class, 
                 "TRIGGER", "trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)", 2);
         
-		// <--[command]
-		// @Name Viewer
-		// @Usage viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)
-		// @Required 1
-		// @Stable Experimental
-		// @Short Creates a sign that auto-updates with information.
-		// @Author Morphan1
+        // <--[command]
+        // @Name Viewer
+        // @Usage viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)
+        // @Required 1
+        // @Stable Experimental
+        // @Short Creates a sign that auto-updates with information.
+        // @Author Morphan1
         //
-		// @Description
-		// Creates a sign that auto-updates with information about a player, including their location, score, and
+        // @Description
+        // Creates a sign that auto-updates with information about a player, including their location, score, and
         // whether they're logged in or not.
         //
-		// @Tags
-		// None
+        // @Tags
+        // None
         //
-		// @Usage
-		// Create a sign that shows the location of a player on a wall
+        // @Usage
+        // Create a sign that shows the location of a player on a wall
         // - viewer player:ThatGuy create 113,76,-302,world id:PlayerLoc1 type:wall_sign display:location
         //
-		// @Example
-		// Todo
-		// -->
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ViewerCommand.class,
                 "VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)", 2);
         
-		// <--[command]
-		// @Name Vulnerable
-		// @Usage vulnerable (state:{true}/false/toggle)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Vulnerable
+        // @Usage vulnerable (state:{true}/false/toggle)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(VulnerableCommand.class, 
                 "VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
         
-		// <--[command]
-		// @Name Wait
-		// @Usage wait (<duration>) (queue:<name>)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Wait
+        // @Usage wait (<duration>) (queue:<name>)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(WaitCommand.class, 
                 "WAIT", "wait (<duration>) (queue:<name>)", 0);
 
-		// <--[command]
-		// @Name Walk, WalkTo
-		// @Usage walkto [<location>] (speed:<#>) (auto_range)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Walk, WalkTo
+        // @Usage walkto [<location>] (speed:<#>) (auto_range)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(WalkCommand.class,
                 "WALK, WALKTO", "walk [<location>] (speed:<#>) (auto_range)", 1);
 
-		// <--[command]
-		// @Name Weather
-		// @Usage weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Weather
+        // @Usage weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(WeatherCommand.class,
                 "WEATHER", "weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)", 1);
         
-		// <--[command]
-		// @Name Yaml
-		// @Usage yaml [load/create/save:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
-		// @Required 1
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Yaml
+        // @Usage yaml [load/create/save:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(YamlCommand.class,
                 "YAML", "yaml [load/create/save:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]", 1);
 
-		// <--[command]
-		// @Name Zap
-		// @Usage zap (<script>:)[<step>] (<duration>)
-		// @Required 0
-		// @Stable Todo
-		// @Short Todo
-		// @Author Todo
-		// @Description
-		// Todo
-		// @Tags
-		// Todo
-		// @Usage
-		// Todo
-		// @Example
-		// Todo
-		// -->
+        // <--[command]
+        // @Name Zap
+        // @Usage zap (<script>:)[<step>] (<duration>)
+        // @Required 0
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
         registerCoreMember(ZapCommand.class, 
                 "ZAP", "zap (<script>:)[<step>] (<duration>)", 0);
         

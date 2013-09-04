@@ -36,17 +36,17 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     
     @Override
     public void onBuild(List<aH.Argument> args) {
-    	
+        
         for (aH.Argument arg : args) {
-        	
-        	if (arg.matchesEnum(ItemType.values()) && type == null)
+            
+            if (arg.matchesEnum(ItemType.values()) && type == null)
                 this.type = ItemType.valueOf(arg.getValue().toUpperCase());
-        	
-        	else if (arg.matchesPrefix("qty, q")
+            
+            else if (arg.matchesPrefix("qty, q")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 this.required = aH.getIntegerFrom(arg.getValue());
-        	
-        	else if (arg.matchesPrefix("items, item, i, name, names"))
+            
+            else if (arg.matchesPrefix("items, item, i, name, names"))
                 items = arg.asType(dList.class);
 
             else if (arg.matchesPrefix("region, r"))
@@ -67,7 +67,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     }
     
     public void increment(String object, int amount) {
-    	items_so_far = items_so_far + amount;
+        items_so_far = items_so_far + amount;
         dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " " +
         type.toString().toLowerCase() + "ed " + amount + " " + object + ".");
         check();
@@ -75,7 +75,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
     @EventHandler
     public void listenItem(InventoryClickEvent event) {
-    	
+        
         // Proceed if the slot clicked is a RESULT slot and the player is the right one
         if (event.getSlotType().toString().equals("RESULT")
             && event.getWhoClicked() == player.getPlayerEntity()) {    
@@ -138,7 +138,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
     @EventHandler
     public void listenFish(PlayerFishEvent event) {
-    	// Only continue if the event is an event for the player that owns this listener.
+        // Only continue if the event is an event for the player that owns this listener.
         if (event.getPlayer() != player.getPlayerEntity()) return;
 
         // If REGION argument specified, check. If not in region, don't count kill!
