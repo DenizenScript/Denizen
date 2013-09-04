@@ -331,6 +331,16 @@ public class Element implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
         
+        // <--[tag]
+        // @attribute <element.prefix>
+        // @returns Element
+        // @description
+        // Returns the prefix of the element.
+        // -->
+        if (attribute.startsWith("prefix"))
+            return new Element(prefix)
+                    .getAttribute(attribute.fulfill(1));
+        
         
         /////////////////////
         //   MATH ATTRIBUTES
@@ -473,16 +483,6 @@ public class Element implements dObject {
             return new Element(element.length())
                     .getAttribute(attribute.fulfill(1));
         }
-        
-        // <--[tag]
-        // @attribute <element.prefix>
-        // @returns Element
-        // @description
-        // Returns the prefix of the element.
-        // -->
-        if (attribute.startsWith("prefix"))
-            return new Element(prefix)
-                    .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
         // @attribute <element.starts_with[<string>]>
