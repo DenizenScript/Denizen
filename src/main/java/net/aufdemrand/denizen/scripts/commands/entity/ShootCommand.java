@@ -147,7 +147,7 @@ public class ShootCommand extends AbstractCommand {
                              aH.debugObj("destination", destination) +
                              aH.debugObj("height", height) +
                              aH.debugObj("gravity", gravity) +
-                             (script != null ? aH.debugObj("script", script) : ""));
+                             (script != null ? aH.debugObj("script", script.identify()) : ""));
         
         // Keep a dList of entities that can be called using %shot_entities%
         // later in the script queue
@@ -188,7 +188,9 @@ public class ShootCommand extends AbstractCommand {
         
         Position.mount(Conversion.convert(entities));
         
-        // Only use the last projectile in the task below
+        // Get the entity at the bottom of the entity list, because
+        // only its gravity should be affected and tracked considering
+        // that the other entities will be mounted on it
         
         final dEntity lastEntity = entities.get(entities.size() - 1);
         
@@ -244,7 +246,7 @@ public class ShootCommand extends AbstractCommand {
                     }
                 }
                 
-                // Stop the task and and run the script if conditions
+                // Stop the task and run the script if conditions
                 // are met
 
                 if (!flying) {

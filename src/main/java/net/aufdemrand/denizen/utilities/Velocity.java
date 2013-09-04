@@ -7,7 +7,8 @@ public class Velocity {
     /**
      * Calculates the vector between two locations' vectors
      *
-     * Thanks to SethBling.
+     * Original code by SethBling, edited to be a bit
+     * more accurate.
      *
      * @param  from     The origin's vector
      * @param  to     The destination's vector
@@ -31,9 +32,9 @@ public class Velocity {
         double c = -endGain;
      
         double slope = -b / (2 * a) - Math.sqrt(b * b - 4 * a * c) / (2 * a);
-     
+        
         // Vertical velocity
-        double vy = Math.sqrt(maxGain * gravity);
+        double vy = Math.sqrt(maxGain * (gravity + 0.0013675090252708 * heightGain));
      
         // Horizontal velocity
         double vh = vy / slope;
