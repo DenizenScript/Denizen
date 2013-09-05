@@ -35,6 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
+import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
@@ -989,6 +990,47 @@ public class dEntity implements dObject {
             return new Element(getLivingEntity().getHealth())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <e@entity.is_tameable>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the entity is tameable. Else, returns false.
+        // -->
+        if (attribute.startsWith("is_tameable"))
+            return new Element(entity instanceof Tameable)
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <e@entity.is_tamed>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the entity is tamed. Else, returns false.
+        // This will also return false if the entity is not tameable.
+        // -->
+        if (attribute.startsWith("is_tamed")) {
+            if (entity instanceof Tameable)
+                return new Element(((Tameable) entity).isTamed())
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return Element.FALSE
+                        .getAttribute(attribute.fulfill(1));
+        }
+        
+        // <--[tag]
+        // @attribute <e@entity.get_owner>
+        // @returns dPlayer
+        // @description
+        // Returns the owner of a tamed entity.
+        // -->
+        if (attribute.startsWith("get_owner")) {
+            if (entity instanceof Tameable && ((Tameable) entity).isTamed())
+                return new dPlayer((Player) ((Tameable) entity).getOwner())
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new Element("null")
+                        .getAttribute(attribute.fulfill(1));
+        }
+        
         // <--[tag]
         // @attribute <e@entity.is_inside_vehicle>
         // @returns Element(Boolean)
