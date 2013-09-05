@@ -88,13 +88,9 @@ public class TakeCommand extends AbstractCommand{
         Element qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
         
-        dList list_of_items = (dList) scriptEntry.getObject("items");
-        Object items_object = null;
-        List<dItem> items = null;
-        
-        if (list_of_items != null)
-            items_object = list_of_items.filter(dItem.class);
-        
+        Object items_object = ((dList) scriptEntry.getObject("items")).filter(dItem.class);
+        List<dItem> items = (List<dItem>) items_object;
+
         if (items_object != null)
             items = (List<dItem>) items_object;
 
