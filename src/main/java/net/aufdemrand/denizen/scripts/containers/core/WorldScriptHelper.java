@@ -39,7 +39,9 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
@@ -1563,6 +1565,22 @@ public class WorldScriptHelper implements Listener {
     }
     
     @EventHandler
+    public void inventoryCloseEvent(InventoryCloseEvent event) {
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        
+        Player player = (Player) event.getPlayer();
+        String type = event.getInventory().getType().name();
+        
+        context.put("inventory", new dInventory(event.getInventory()));
+        
+        doEvents(Arrays.asList
+                ("player closes inventory",
+                 "player closes " + type + " inventory"),
+                null, player, context);
+    }
+    
+    @EventHandler
     public void inventoryDragEvent(InventoryDragEvent event) {
         
         Map<String, dObject> context = new HashMap<String, dObject>();
@@ -1597,11 +1615,11 @@ public class WorldScriptHelper implements Listener {
                         item.identify().split(":")[0] + " in " + type + " inventory");
             }
             if (item.isItemscript()) {
-                events.add("player drags " +
+                events.add("player drags itemscript " +
                         item.getMaterial());
-                events.add("player drags " +
+                events.add("player drags itemscript " +
                         item.getMaterial() + " in inventory");
-                events.add("player drags " +
+                events.add("player drags itemscript " +
                         item.getMaterial() + " in " + type + " inventory");
             }
         }
@@ -1611,6 +1629,27 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
+    
+    @EventHandler
+    public void inventoryOpenEvent(InventoryOpenEvent event) {
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        
+        Player player = (Player) event.getPlayer();
+        String type = event.getInventory().getType().name();
+        
+        context.put("inventory", new dInventory(event.getInventory()));
+        
+        String determination = doEvents(Arrays.asList
+                ("player opens inventory",
+                 "player opens " + type + " inventory"),
+                null, player, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    
     
     /////////////////////
     //   PLAYER EVENTS
