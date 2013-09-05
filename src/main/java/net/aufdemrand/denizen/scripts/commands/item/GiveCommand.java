@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.aH;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 
@@ -77,6 +78,9 @@ public class GiveCommand  extends AbstractCommand {
                 .defaultObject("inventory", (scriptEntry.hasPlayer() ? new dInventory(scriptEntry.getPlayer().getPlayerEntity()) : null))
                 .defaultObject("qty", new Element(1));
         
+        if (scriptEntry.getObject("type") == Type.ITEM && scriptEntry.getObject("items") == null)
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ITEMS");
+        
     }
 
     @Override
@@ -87,13 +91,9 @@ public class GiveCommand  extends AbstractCommand {
         Element qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
         
-        dList list_of_items = (dList) scriptEntry.getObject("items");
-        Object items_object = null;
+        Object items_object = scriptEntry.getObject("items");
         List<dItem> items = null;
-        
-        if (list_of_items != null)
-            items_object = list_of_items.filter(dItem.class);
-        
+
         if (items_object != null)
             items = (List<dItem>) items_object;
 

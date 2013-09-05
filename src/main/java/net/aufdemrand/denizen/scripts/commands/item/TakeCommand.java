@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 
 /* TAKE [MONEY|ITEMINHAND|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
@@ -78,6 +79,9 @@ public class TakeCommand extends AbstractCommand{
         scriptEntry.defaultObject("type", Type.ITEM)
                 .defaultObject("inventory", (scriptEntry.hasPlayer() ? new dInventory(scriptEntry.getPlayer().getPlayerEntity()) : null))
                 .defaultObject("qty", new Element(1));
+        
+        if (scriptEntry.getObject("type") == Type.ITEM && scriptEntry.getObject("items") == null)
+            throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ITEMS");
 
     }
 
@@ -88,13 +92,9 @@ public class TakeCommand extends AbstractCommand{
         Element qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
         
-        dList list_of_items = (dList) scriptEntry.getObject("items");
-        Object items_object = null;
+        Object items_object = scriptEntry.getObject("items");
         List<dItem> items = null;
-        
-        if (list_of_items != null)
-            items_object = list_of_items.filter(dItem.class);
-        
+
         if (items_object != null)
             items = (List<dItem>) items_object;
 

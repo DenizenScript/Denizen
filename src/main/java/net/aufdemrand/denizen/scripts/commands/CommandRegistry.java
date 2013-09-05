@@ -842,7 +842,7 @@ public class CommandRegistry implements dRegistry {
         
         // <--[command]
         // @Name Give
-        // @Usage give [money/<item>] (qty:<#>) (engrave)
+        // @Usage give [money/<item>] (qty:<#>) (engrave) (to:<inventory>)
         // @Required 1
         // @Stable Todo
         // @Short Todo
@@ -857,7 +857,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(GiveCommand.class,
-                "GIVE", "give [money/<item>] (qty:<#>) (engrave)", 1);
+                "GIVE", "give [money/<item>] (qty:<#>) (engrave) (to:<inventory>)", 1);
         
         // <--[command]
         // @Name Group
@@ -1679,7 +1679,7 @@ public class CommandRegistry implements dRegistry {
         
         // <--[command]
         // @Name Take
-        // @Usage take [money/iteminhand/<item>] (qty:<#>)
+        // @Usage take [money/iteminhand/<item>] (qty:<#>) (from:<inventory>)
         // @Required 1
         // @Stable Todo
         // @Short Todo
@@ -1694,7 +1694,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(TakeCommand.class,
-                "TAKE", "take [money/iteminhand/<item>] (qty:<#>)", 1);
+                "TAKE", "take [money/iteminhand/<item>] (qty:<#>) (from:<inventory>)", 1);
         
         // <--[command]
         // @Name Teleport
