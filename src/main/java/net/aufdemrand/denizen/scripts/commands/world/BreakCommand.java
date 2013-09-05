@@ -54,6 +54,9 @@ public class BreakCommand extends AbstractCommand {
             else throw new InvalidArgumentsException("Must specify an entity!");
 
         }
+        
+        scriptEntry.defaultObject("radius", new Element(1));
+        
     }
 
     @Override
@@ -61,16 +64,13 @@ public class BreakCommand extends AbstractCommand {
 
         final dLocation location = (dLocation) scriptEntry.getObject("location");
         final dEntity entity = (dEntity) scriptEntry.getObject("entity");
-        Element radius = (scriptEntry.hasObject("radius")
-                ? (Element) scriptEntry.getObject("radius")
-                : null);
+        Element radius = scriptEntry.getElement("radius");
 
-        dB.report(getName(), location.debug() + entity.debug()
-                + (radius != null ? radius.debug() : ""));
+        dB.report(getName(), location.debug() + entity.debug() + radius.debug());
 
         BlockBreaker.Configuration config = new BlockBreaker.Configuration()
                 .item(entity.getLivingEntity().getEquipment().getItemInHand())
-                .radius(radius != null ? radius.asDouble() : 1)
+                .radius(radius.asDouble())
                 .callback(new Runnable() {
                     @Override
                     public void run() {

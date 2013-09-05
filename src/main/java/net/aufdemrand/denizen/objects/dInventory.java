@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -130,7 +131,7 @@ public class dInventory implements dObject, Notable {
             else if (t.equalsIgnoreCase("equipment")) {
                 // Match the entity given in the brackets
                 if (dNPC.matches(h)) {
-                    if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(h.substring(2))) instanceof Player)
+                    if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(h.substring(2))).getBukkitEntity() instanceof Player)
                         return new dInventory(InventoryType.CRAFTING, t, h).add(CitizensAPI.getNPCRegistry()
                                 .getById(Integer.valueOf(h.substring(2))).getBukkitEntity().getEquipment().getArmorContents());
                 }
@@ -361,16 +362,18 @@ public class dInventory implements dObject, Notable {
      *
      */
     
-    public dInventory add(ItemStack[] items) {
-        
+    public dInventory add(ItemStack... items) {
         if (inventory == null || items == null) return this;
         
-        for (ItemStack item : items) {
-            
-            if (item != null) inventory.addItem(item);
-        }
+        inventory.addItem(items);
         
         return this;
+    }
+    
+    public HashMap<Integer, ItemStack> addWithLeftovers(ItemStack... items) {
+        if (inventory == null || items == null) return null;
+        
+        return inventory.addItem(items);
     }
         
     /**

@@ -4,8 +4,11 @@ import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.aH;
+import net.aufdemrand.denizen.objects.dList;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
@@ -13,7 +16,7 @@ import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /* GIVE [MONEY|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
 
@@ -32,91 +35,100 @@ import java.util.Map;
 
 public class GiveCommand  extends AbstractCommand {
 
-    enum GiveType { ITEM, MONEY, EXP }
+    enum Type { ITEM, MONEY, EXP }
 
     @Override
-    public void parseArgs(ScriptEntry scriptEntry)
-            throws InvalidArgumentsException {
-
-        GiveType type = null;
-        double amt = 1;
-        dItem item = null;
-        boolean engrave = false;
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         /* Match arguments to expected variables */
-        for (String thisArg : scriptEntry.getArguments()) {
-            if (aH.matchesValueArg("QTY", thisArg, aH.ArgumentType.Double))
-                amt = aH.getDoubleFrom(thisArg);
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            
+            if (!scriptEntry.hasObject("qty")
+                    && arg.matchesPrefix("q, qty, quantity")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                scriptEntry.addObject("qty", arg.asElement());
 
-            else if (aH.matchesArg("MONEY", thisArg))
-                type = GiveType.MONEY;
+            else if (!scriptEntry.hasObject("type")
+                        && arg.matches("money, coins"))
+                scriptEntry.addObject("type", Type.MONEY);
 
-            else if (aH.matchesArg("XP", thisArg)
-                    || aH.matchesArg("EXP", thisArg))
-                type = GiveType.EXP;
+            else if (!scriptEntry.hasObject("type")
+                        && arg.matches("xp, exp, experience"))
+                scriptEntry.addObject("type", Type.EXP);
 
-            else if (aH.matchesArg("ENGRAVE", thisArg))
-                engrave = true;
+            else if (!scriptEntry.hasObject("engrave")
+                        && arg.matches("engrave"))
+                scriptEntry.addObject("engrave", Element.TRUE);
 
-            else if (aH.matchesItem(thisArg) || aH.matchesItem("item:" + thisArg)) {
-                item = dItem.valueOf(thisArg, scriptEntry.getPlayer(), scriptEntry.getNPC());
-                type = GiveType.ITEM;
-            }
-
-            else throw new InvalidArgumentsException(dB.Messages.ERROR_UNKNOWN_ARGUMENT, thisArg);
+            else if (!scriptEntry.hasObject("items")
+                        && !scriptEntry.hasObject("type")
+                        && arg.matchesArgumentType(dItem.class))
+                scriptEntry.addObject("items", dList.valueOf(arg.getValue()).filter(dItem.class));
+            
+            else if (!scriptEntry.hasObject("inventory")
+                        && arg.matchesPrefix("t, to")
+                        && arg.matchesArgumentType(dInventory.class))
+                scriptEntry.addObject("inventory", arg.asType(dInventory.class));
+            
         }
 
-        if (type == null)
-            throw new InvalidArgumentsException("Must specify a type! Valid: MONEY, XP, or ITEM:...");
-
-        if (type == GiveType.ITEM && item == null)
-            throw new InvalidArgumentsException("Item was returned as null.");
-
-        scriptEntry.addObject("type", type)
-                .addObject("amt", amt)
-                .addObject("item", item)
-                .addObject("engrave", engrave);
+        scriptEntry.defaultObject("type", Type.ITEM)
+                .defaultObject("engrave", Element.FALSE)
+                .defaultObject("inventory", (scriptEntry.hasPlayer() ? new dInventory(scriptEntry.getPlayer().getPlayerEntity()) : null))
+                .defaultObject("qty", new Element(1));
+        
     }
 
-    @SuppressWarnings("incomplete-switch")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        GiveType type = (GiveType) scriptEntry.getObject("type");
-        Double amt = (Double) scriptEntry.getObject("amt");
-        dItem item = (dItem) scriptEntry.getObject("item");
-        Boolean engrave = (Boolean) scriptEntry.getObject("engrave");
+        Element engrave = scriptEntry.getElement("engrave");
+        dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
+        Element qty = scriptEntry.getElement("qty");
+        Type type = (Type) scriptEntry.getObject("type");
+        
+        dList list_of_items = (dList) scriptEntry.getObject("items");
+        Object items_object = null;
+        List<dItem> items = null;
+        
+        if (list_of_items != null)
+            items_object = list_of_items.filter(dItem.class);
+        
+        if (items_object != null)
+            items = (List<dItem>) items_object;
 
         dB.report(getName(),
                 aH.debugObj("Type", type.name())
-                        + aH.debugObj("Amount", amt.toString())
-                        + (item != null ? item.debug() : "")
-                        + (engrave ? aH.debugObj("Engraved", "TRUE") : ""));
+                        + aH.debugObj("Quantity", qty.asDouble())
+                        + engrave.debug()
+                        + (items != null ? aH.debugObj("Items", items) : ""));
 
         switch (type) {
 
             case MONEY:
                 if(Depends.economy != null)
-                    Depends.economy.depositPlayer(scriptEntry.getPlayer().getName(), amt);
-                else dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                    Depends.economy.depositPlayer(scriptEntry.getPlayer().getName(), qty.asDouble());
+                else 
+                    dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 break;
 
             case EXP:
-                scriptEntry.getPlayer().getPlayerEntity().giveExp(amt.intValue());
+                scriptEntry.getPlayer().getPlayerEntity().giveExp(qty.asInt());
                 break;
 
             case ITEM:
-                ItemStack is = item.getItemStack();
-                is.setAmount(amt.intValue());
-                if(engrave) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
+                for (dItem item : items) {
+                    ItemStack is = item.getItemStack();
+                    is.setAmount(qty.asInt());
+                    if (engrave.asBoolean()) is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", scriptEntry.getPlayer().getName());
 
-                HashMap<Integer, ItemStack> leftovers = scriptEntry.getPlayer().getPlayerEntity().getInventory().addItem(is);
+                    HashMap<Integer, ItemStack> leftovers = inventory.addWithLeftovers(is);
 
-                if (!leftovers.isEmpty()) {
-                    dB.echoDebug ("'" + scriptEntry.getPlayer().getName() + "' did not have enough space in their inventory," +
-                            " the rest of the items have been placed on the floor.");
-                    for (Map.Entry<Integer, ItemStack> leftoverItem : leftovers.entrySet())
-                        scriptEntry.getPlayer().getPlayerEntity().getWorld().dropItem(scriptEntry.getPlayer().getPlayerEntity().getLocation(), leftoverItem.getValue());
+                    if (!leftovers.isEmpty()) {
+                        dB.echoDebug ("The inventory didn't have enough space, the rest of the items have been placed on the floor.");
+                        for (ItemStack leftoverItem : leftovers.values())
+                               inventory.getLocation().getWorld().dropItem(inventory.getLocation(), leftoverItem);
+                    }
                 }
                 break;
         }

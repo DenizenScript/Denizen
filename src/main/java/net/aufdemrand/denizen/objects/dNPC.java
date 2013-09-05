@@ -372,7 +372,7 @@ public class dNPC implements dObject {
         // NOTE: This currently only works with player-type NPCs.
         // -->
         if (attribute.startsWith("inventory"))
-            return new dInventory((InventoryHolder) getDenizenEntity().getLivingEntity()).getAttribute(attribute.fulfill(1));
+            return new dInventory(getEntity()).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute  <npc.is_spawned>
