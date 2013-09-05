@@ -328,7 +328,7 @@ public class dInventory implements dObject, Notable {
         if (state instanceof InventoryHolder) {
             this.inventory = ((InventoryHolder) state).getInventory();
             holderType = "location";
-            holderIdentifier = state.getLocation().toString();
+            holderIdentifier = new dLocation(state.getLocation()).identify();
         }
     }
     
