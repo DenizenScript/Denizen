@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.aufdemrand.denizen.objects.dList;
+import net.aufdemrand.denizen.objects.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.aH.ArgumentType;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -30,6 +27,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 public class NarrateCommand extends AbstractCommand {
 
+    public static final    String  FORMAT_ARG = "format, f";
+    public static final    String  TARGET_ARG = "target, targets, t";
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -39,22 +39,23 @@ public class NarrateCommand extends AbstractCommand {
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            if (!scriptEntry.hasObject("format") && arg.matchesPrefix("format")) {
+            if (!scriptEntry.hasObject("format") && arg.matchesPrefix(FORMAT_ARG)) {
                 FormatScriptContainer format = null;
-                String formatStr = arg.asElement().asString();
+                String formatStr = arg.getValue();
                 format = ScriptRegistry.getScriptContainerAs(formatStr, FormatScriptContainer.class);
-                if (format == null) dB.echoError("... could not find format for: " + formatStr);
+                if (format == null) dB.echoError("Could not find format script matching '" + formatStr + '\'');
                 scriptEntry.addObject("format", format);
             }
 
             // Add players to target list
-            else if ((arg.matchesPrefix("target") || arg.matchesPrefix("targets, target, t"))) {
+            else if ((arg.matchesPrefix("target") || arg.matchesPrefix(TARGET_ARG))) {
                 scriptEntry.addObject("targets", ((dList)arg.asType(dList.class)).filter(dPlayer.class));
             }
 
+            // Use raw_value as to not accidentely strip a value before any :'s.
             else {
                 if (!scriptEntry.hasObject("text"))
-                    scriptEntry.addObject("text", arg.asElement());
+                    scriptEntry.addObject("text", new Element(arg.raw_value));
             }
         }
 

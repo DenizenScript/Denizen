@@ -96,6 +96,7 @@ public class ListenCommand extends AbstractCommand {
                 && scriptEntry.getElement("action").asString().equalsIgnoreCase("new"))
             throw new InvalidArgumentsException("Must specify a listener type!");
 
+        // Player listeners require a player!
         if (scriptEntry.getPlayer() == null)
             throw new InvalidArgumentsException("Must specify a player!");
 
@@ -120,7 +121,7 @@ public class ListenCommand extends AbstractCommand {
         switch (Action.valueOf(action.asString().toUpperCase())) {
 
             case NEW:
-                // First make sure there isn't already a 'quest listener' for this player with the specified ID.
+                // First make sure there isn't already a 'player listener' for this player with the specified ID.
                 if (denizen.getListenerRegistry()
                         .getListenersFor(scriptEntry.getPlayer()) != null
                         && denizen.getListenerRegistry().getListenersFor(scriptEntry.getPlayer())
@@ -141,7 +142,17 @@ public class ListenCommand extends AbstractCommand {
 
                 } catch (Exception e) {
                     dB.echoDebug("Cancelled creation of NEW listener!");
-                    e.printStackTrace();
+
+                    // Why? Maybe a wrong listener type...
+                    if (denizen.getListenerRegistry().get(type.asString()) == null)
+                        dB.echoError("Invalid listener type!");
+
+                    // Just print the stacktrace if anything else, so we can debug other possible
+                    // problems.
+                    else
+                        e.printStackTrace();
+
+                    // Deconstruct the listener in case it was partially created while erroring out.
                     try { denizen.getListenerRegistry().getListenerFor(scriptEntry.getPlayer(), id.asString()).cancel(); }
                     catch (Exception ex) { }
                 }
