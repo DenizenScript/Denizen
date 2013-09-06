@@ -55,24 +55,41 @@ public class CommandRegistry implements dRegistry {
     @Override
     public void registerCoreMembers() {
 
-        // <--[command]
-        // @Name Anchor
-        // @Usage anchor [id:<name>] [assume/add/remove/walkto/walknear] (range:<#>)
-        // @Required 2
-        // @Stable Stable
-        // @Short TODO
-        // @Author Todo
-        // @Description
-        // Todo
-        // @Tags
-        // Todo
+		// <--[command]
+		// @Name Anchor
+
+		// @Usage anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]
+		// @Required 2
+		// @Stable Stable
+		// @Short Controls a NPC's Anchor Trait.
+		// @Author aufdemrand
+
+		// @Description
+		// The anchor system inside Citizens2 allows locations to be 'bound' to a NPC, saved by an 'id'. The anchor
+        // command can add and remove new anchors, as well as the ability to teleport NPCs to anchors with the 'assume'
+        // argument.
+        // The Anchors Trait can also be used as a sort of 'waypoints' system. For ease of use, the anchor command
+        // provides function for NPCs to walk to or walk near an anchor.
+        // As the Anchor command is a NPC specific command, a valid npc object must be referenced in the script entry.
+        // If none is provided by default, the use of the 'npc:n@id' argument, replacing the id with the npcid of the
+        // NPC desired, can create a link, or alternatively override the default linked npc.
+
+		// @Tags
+		// <n@npc.anchor[anchor_name]>
+
+		// @Usage
+		// Use to add and remove anchors to a npc.
+        // - define location_name <context.message>
+        // - chat "I have saved this location as %location_name%.'
+        // - anchor add <npc.location> "id:%location_name%"
+
         // @Usage
-        // Todo
-        // @Example
-        // Todo
-        // -->
+        // Use to make a NPC walk to or walk near a saved anchor.
+        // - anchor walkto i:waypoint_1
+        // - anchor walknear i:waypoint_2 r:5
+		// -->
         registerCoreMember(AnchorCommand.class,
-                "ANCHOR", "anchor [id:<name>] [assume/add/remove/walkto/walknear] (range:<#>)", 2);
+                "ANCHOR", "anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]", 2);
                 
         // <--[command]
         // @Name Animate

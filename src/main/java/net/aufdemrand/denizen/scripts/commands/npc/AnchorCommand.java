@@ -15,7 +15,6 @@ import net.citizensnpcs.trait.Anchors;
 import static net.aufdemrand.denizen.objects.aH.Argument;
 
 /**
- *
  * Controls a NPC's 'Anchors' trait.
  *
  * @author aufdemrand
@@ -23,25 +22,17 @@ import static net.aufdemrand.denizen.objects.aH.Argument;
  */
 public class AnchorCommand extends AbstractCommand {
 
-    public String getHelp() {
-        return  "Controls NPCs' anchors. Anchors are 'bookmarked locations'" +
-                "stored at the NPC-level. Valid actions are Add, Remove, " +
-                "Assume Walk_To, and Walk_Near. \n" +
-                " \n" +
-                "Use to add or remove an anchor from a NPC. \n" +
-                "- anchor add i:pride_rock <npc.location> \n" +
-                "- anchor remove i:the_jungle \n" +
-                "Use to 'teleport' the npc directly to an existing anchor. \n" +
-                "- anchor assume i:bedroom \n" +
-                "Use to make a NPC navigate to or near an anchor for easy" +
-                "'waypoint behavior'. \n" +
-                "- anchor walkto i:anchor_1 \n" +
-                "- anchor walknear i:front_porch r:5";
-    }
+    // <--[example]
+    // @name Simple Anchor Example
+    // @link Anchor Command, Anchors, Anchor Trait
 
-    public String getUsage() {
-        return "- anchor [<action>] [id|i:id_name] ([<location>]) ([range|r:#])";
-    }
+    // @description
+    // The following code example contains a very simple 'waypoints' system utilizing the
+    // anchor command, anchor trait (provided by Citizens2), and world scripts.
+
+    // @code
+    //
+    // -->
 
     private enum Action { ADD, REMOVE, ASSUME, WALKTO, WALKNEAR }
 
@@ -79,12 +70,12 @@ public class AnchorCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
 
 
-            else dB.echoError("Unhandled argument: '" + arg.raw_value + "'");
+            else dB.echoError("Unhandled argument: '" + arg.raw_value + '\'');
         }
 
 
         if (!scriptEntry.hasObject("action"))
-            throw new InvalidArgumentsException("Must specify an 'Anchor Action'.");
+            throw new InvalidArgumentsException("Must specify an 'Anchor Action'. Valid: " + Action.values());
 
     }
 
