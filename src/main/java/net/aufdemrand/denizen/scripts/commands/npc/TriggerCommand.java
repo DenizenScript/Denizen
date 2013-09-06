@@ -14,7 +14,7 @@ import net.citizensnpcs.api.npc.NPC;
 
 /**
  * Configures the TriggerTrait for a NPC.
- * 
+ *
  * @author Jeremy Schroeder
  */
 
@@ -94,7 +94,7 @@ public class TriggerCommand extends AbstractCommand {
 
         if (radius > 0)
             trait.setLocalRadius(trigger, radius);
-        
+
         if (cooldown.getSeconds() > 0)
             trait.setLocalCooldown(trigger, cooldown.getSeconds());
     }

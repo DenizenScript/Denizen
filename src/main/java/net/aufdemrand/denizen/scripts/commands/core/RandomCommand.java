@@ -19,10 +19,10 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * the rest.
  *
  *     <ol><tt>Usage:  RANDOM [#]</tt></ol>
- * 
+ *
  * [#] of entries to randomly select from. Will select 1 of # to execute and
  * discard the rest.<br/><br/>
- *   
+ *
  * Example Usage:<br/>
  * <ul style="list-style-type: none;">
  * <li><tt>Script:</tt></li>
@@ -31,13 +31,13 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
  * <li><tt>- CHAT Random Message 2</tt></li>
  * <li><tt>- CHAT Random Message 3 </tt></li>
  * </ul>
- * 
+ *
  * @author Jeremy Schroeder
  */
 
 public class RandomCommand extends AbstractCommand {
 
-    
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -46,15 +46,15 @@ public class RandomCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("possibilities")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 scriptEntry.addObject("possibilities", arg.asElement());
-            
+
             else
                 throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
 
-        }    
+        }
 
         if (!scriptEntry.hasObject("possibilities"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "POSSIBILITIES");
-        
+
         if (scriptEntry.getElement("possibilities").asInt() <= 1)
             throw new InvalidArgumentsException("Must randomly select more than one item.");
 
@@ -62,7 +62,7 @@ public class RandomCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Invalid Size! Random # must not be larger than the script!");
 
         scriptEntry.addObject("queue", scriptEntry.getResidingQueue());
-        
+
     }
 
     @Override
@@ -75,17 +75,17 @@ public class RandomCommand extends AbstractCommand {
         List<ScriptEntry> keeping = new ArrayList<ScriptEntry>();
         int bracketsEntered = 0;
         boolean selectedBrackets = false;
-        
+
         dB.echoDebug("...random number generator selected '%s'", String.valueOf(selected + 1));
-        
+
         for (int x = 0; x < possibilities; x++) {
-            
+
             if (bracketsEntered > 0) {
                 if (queue.getEntry(0).getArguments().contains("}")) {
                     dB.echoDebug("Leaving brackets...");
                     bracketsEntered--;
                 }
-                
+
                 if (selectedBrackets) {
                     keeping.add(queue.getEntry(0));
                     queue.removeEntry(0);
@@ -93,35 +93,35 @@ public class RandomCommand extends AbstractCommand {
                         selectedBrackets = false;
                     continue;
                 }
-                
+
                 if (x == selected) {
                     selected++;
                     queue.removeEntry(0);
                     continue;
                 }
             }
-            
+
             if (queue.getEntry(0).getArguments().contains("{")) {
                 dB.echoDebug("Found brackets...");
                 bracketsEntered++;
                 if (x == selected)
                     selectedBrackets = true;
             }
-            
+
             if (x != selected) {
                 dB.echoDebug("...removing '%s'", queue.getEntry(0).getCommandName());
                 queue.removeEntry(0);
-            } 
-            
+            }
+
             else {
                 dB.echoDebug("...selected '%s'", queue.getEntry(0).getCommandName() + ": "
                         + queue.getEntry(0).getArguments());
                 keeping.add(queue.getEntry(0));
                 queue.removeEntry(0);
             }
-            
+
         }
-        
+
         queue.injectEntries(keeping, 0);
     }
 }

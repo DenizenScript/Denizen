@@ -13,7 +13,6 @@ import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Bukkit;
@@ -28,6 +27,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockCanBuildEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -38,7 +39,9 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
@@ -159,14 +162,14 @@ public class WorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player breaks block
-    // player breaks <block>
+    // player breaks <material>
     // player breaks block with <item>
-    // player breaks <block> with <item>
+    // player breaks <material> with <item>
     //
     // @Triggers when a player breaks a block.
     // @Context
     // <context.location> will return the location the block was broken at.
-    // <context.type> will return the material of the block that was broken.
+    // <context.material> will return the material of the block that was broken.
     //
     // @Determine
     // "CANCELLED" to stop the block from breaking.
@@ -179,29 +182,29 @@ public class WorldScriptHelper implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         Block block = event.getBlock();
-        String blockType = block.getType().name();
+        dMaterial material = new dMaterial(event.getBlock().getType());
         
         context.put("location", new dLocation(block.getLocation()));
-        context.put("type", new Element(blockType));
+        context.put("material", material);
 
         dItem item = new dItem(event.getPlayer().getItemInHand());
         
         List<String> events = new ArrayList<String>();
         events.add("player breaks block");
-        events.add("player breaks " + blockType);
+        events.add("player breaks " + material.name());
         events.add("player breaks block with " + item.identify());
-        events.add("player breaks " + blockType + " with " + item.identify());
+        events.add("player breaks " + material.name() + " with " + item.identify());
         
         if (!item.identify().equals(item.identify().split(":")[0])) {
             events.add("player breaks block with " +
                     item.identify().split(":")[0]);
-            events.add("player breaks " + blockType + " with " +
+            events.add("player breaks " + material.name() + " with " +
                     item.identify().split(":")[0]);
         }
         if (item.isItemscript()) {
             events.add("player breaks block with itemscript "
                     + item.getMaterial());
-            events.add("player breaks " + blockType + " with itemscript "
+            events.add("player breaks " + material.name() + " with itemscript "
                     + item.getMaterial());
         }
         
@@ -245,7 +248,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a block is destroyed by fire.
     // @Context
     // <context.location> will return the location the block was burned at.
-    // <context.type> will return the material of the block that was burned.
+    // <context.material> will return the material of the block that was burned.
     //
     // @Determine
     // "CANCELLED" to stop the block from being destroyed.
@@ -257,15 +260,95 @@ public class WorldScriptHelper implements Listener {
         Map<String, dObject> context = new HashMap<String, dObject>();
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", new Element(event.getBlock().getType().name()));
+        dMaterial material = new dMaterial(event.getBlock().getType());
 
         String determination = doEvents(Arrays.asList
                 ("block burns",
-                 event.getBlock().getType().name() + " burns"),
-                null, null, context);
+                 material.name() + " burns"),
+                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // block being built
+    // block being built on <material>
+    // <material> being built
+    // <material> being built on <material>
+    //
+    // @Triggers when an attempt is made to build a block on another block. Not necessarily caused by players.
+    // @Context
+    // <context.location> will return the location of the block the player is trying to build on.
+    // <context.old_material> will return the material of the block the player is trying to build on.
+    // <context.new_material> will return the material of the block the player is trying to build.
+    //
+    // @Determine
+    // "BUILDABLE" to allow the building.
+    // "CANCELLED" to cancel the building.
+    //
+    // -->
+    @EventHandler
+    public void blockCanBuild(BlockCanBuildEvent event) {
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial oldMaterial = new dMaterial(event.getBlock().getType());
+        dMaterial newMaterial = new dMaterial(event.getMaterial());
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("old_material", oldMaterial);
+        context.put("new_material", newMaterial);
+
+        String determination = doEvents(Arrays.asList
+                ("block being built",
+                 "block being built on " + oldMaterial.identify(),
+                 newMaterial.name() + " being built",
+                 newMaterial.name() + " being built on " +
+                         oldMaterial.name()),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("BUILDABLE"))
+            event.setBuildable(true);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setBuildable(false);
+    }
+    
+    // <--[event]
+    // @Events
+    // player damages block
+    // player damages <material>
+    //
+    // @Triggers when a block is damaged by a player.
+    // @Context
+    // <context.location> will return the location the block that was damaged.
+    // <context.material> will return the material of the block that was damaged.
+    //
+    // @Determine
+    // "CANCELLED" to stop the block from being damaged.
+    // "INSTABREAK" to make the block get broken instantly.
+    //
+    // -->
+    @EventHandler
+    public void blockDamage(BlockDamageEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("material", material);
+        
+        String determination = doEvents(Arrays.asList
+                ("player damages block",
+                 "player damages " + material.name()),
+                 null, event.getPlayer(), context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        if (determination.toUpperCase().startsWith("INSTABREAK"))
+            event.setInstaBreak(true);
     }
     
     // <--[event]
@@ -276,7 +359,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a block is set on fire.
     // @Context
     // <context.location> will return the location the block was set on fire at.
-    // <context.type> will return the material of the block that was set on fire.
+    // <context.material> will return the material of the block that was set on fire.
     //
     // @Determine
     // "CANCELLED" to stop the block from being ignited.
@@ -286,14 +369,15 @@ public class WorldScriptHelper implements Listener {
     public void blockIgnite(BlockIgniteEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", new Element(event.getBlock().getType().name()));
+        context.put("material", material);
         
         String determination = doEvents(Arrays.asList
                 ("block ignites",
-                 event.getBlock().getType().name() + " ignites"),
-                null, event.getPlayer(), context);
+                 material.name() + " ignites"),
+                 null, event.getPlayer(), context);
         
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -307,7 +391,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a block moves.
     // @Context
     // <context.location> will return the location the block moved to.
-    // <context.type> will return the material of the block that moved.
+    // <context.material> will return the material of the block that moved.
     //
     // @Determine
     // "CANCELLED" to stop the block from being moved.
@@ -317,14 +401,15 @@ public class WorldScriptHelper implements Listener {
     public void blockPhysics(BlockPhysicsEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", new Element(event.getBlock().getType().name()));
+        context.put("material", material);
 
         String determination = doEvents(Arrays.asList
                 ("block moves",
-                 event.getBlock().getType().name() + " moves"),
-                null, null, context);
+                 material.name() + " moves"),
+                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -338,7 +423,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a player places a block.
     // @Context
     // <context.location> will return the location the block that was placed.
-    // <context.type> will return the material of the block that was placed.
+    // <context.material> will return the material of the block that was placed.
     //
     // @Determine
     // "CANCELLED" to stop the block from being placed.
@@ -348,14 +433,15 @@ public class WorldScriptHelper implements Listener {
     public void blockPlace(BlockPlaceEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", new Element(event.getBlock().getType().name()));
+        context.put("material", material);
 
         String determination = doEvents(Arrays.asList
                 ("player places block",
-                 "player places " + event.getBlock().getType().name()),
-                null, event.getPlayer(), context);
+                 "player places " + material.name()),
+                 null, event.getPlayer(), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -381,19 +467,20 @@ public class WorldScriptHelper implements Listener {
     public void blockRedstone(BlockRedstoneEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", new Element(event.getBlock().getType().name()));
+        context.put("material", material);
         
         List<String> events = new ArrayList<String>();
         
         if (event.getNewCurrent() > 0) {
             events.add("block powered");
-            events.add(event.getBlock().getType().name() + " powered");
+            events.add(material.name() + " powered");
         }
         else {
             events.add("block unpowered");
-            events.add(event.getBlock().getType().name() + " unpowered");
+            events.add(material.name() + " unpowered");
         }
         
         String determination = doEvents(events, null, null, context);
@@ -421,15 +508,16 @@ public class WorldScriptHelper implements Listener {
     public void blockFromTo(BlockFromToEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
         
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("type", new Element(event.getBlock().getType().name()));
         context.put("destination", new dLocation(event.getToBlock().getLocation()));
+        context.put("material", material);
 
         String determination = doEvents(Arrays.asList
                 ("block spreads",
-                 event.getBlock().getType().name() + " spreads"),
-                null, null, context);
+                 material.name() + " spreads"),
+                 null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -461,13 +549,13 @@ public class WorldScriptHelper implements Listener {
         Sign sign = (Sign) block.getState();
         
         context.put("old", new dList(Arrays.asList(sign.getLines())));
-        context.put("location", new dLocation(block.getLocation()));
         context.put("new", new dList(Arrays.asList(event.getLines())));
+        context.put("location", new dLocation(block.getLocation()));
 
         String determination = doEvents(Arrays.asList
             ("player changes sign",
-            "player changes " + block.getType().name()),
-                null, player, context);
+             "player changes " + block.getType().name()),
+             null, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -484,6 +572,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when the server starts
     //
+    // @Determine "CANCELLED" to save all plugins and cancel server startup.
+    //
     // -->
     public void serverStartEvent() {
         // Start the 'timeEvent'
@@ -496,8 +586,11 @@ public class WorldScriptHelper implements Listener {
                 }, Settings.WorldScriptTimeEventFrequency().getTicks(), Settings.WorldScriptTimeEventFrequency().getTicks());
 
         // Fire the 'Server Start' event
-        doEvents(Arrays.asList("server start"),
+        String determination = doEvents(Arrays.asList("server start"),
                 null, null, null);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            Bukkit.getServer().shutdown();
     }
 
     private Map<String, Integer> current_time = new HashMap<String, Integer>();
@@ -525,7 +618,7 @@ public class WorldScriptHelper implements Listener {
                     || current_time.get(world.getName()) != hour) {
                 Map<String, dObject> context = new HashMap<String, dObject>();
                 
-                context.put("time", new Element(String.valueOf(hour)));
+                context.put("time", new Element(hour));
                 context.put("world", new dWorld(world));
                 
                 doEvents(Arrays.asList("time changes in " + world.getName(),
@@ -547,8 +640,8 @@ public class WorldScriptHelper implements Listener {
     // @Events
     // hanging breaks
     // hanging breaks because <cause>
-    // <hanging> breaks
-    // <hanging> breaks because <cause>
+    // <entity> breaks
+    // <entity> breaks because <cause>
     //
     // @Triggers when a hanging block is broken.
     // @Context
@@ -1324,7 +1417,7 @@ public class WorldScriptHelper implements Listener {
         Entity entity = event.getEntity();
         
         context.put("entity", new dEntity(entity));
-        context.put("radius", new Element(String.valueOf(event.getRadius())));
+        context.put("radius", new Element(event.getRadius()));
         context.put("fire", new Element(event.getFire()));
         
         String determination = doEvents(Arrays.asList
@@ -1442,25 +1535,25 @@ public class WorldScriptHelper implements Listener {
 
             events.add("player clicks " +
                     item.identify() + " in inventory");
-            events.add(interaction + " on " +
+            events.add(interaction +
                     item.identify() + " in inventory");
-            events.add(interaction + " on " +
+            events.add(interaction +
                     item.identify() + " in " + type + " inventory");
             
             if (!item.identify().equals(item.identify().split(":")[0])) {
                 events.add("player clicks " +
                         item.identify().split(":")[0] + " in inventory");
-                events.add(interaction + " on " +
+                events.add(interaction +
                         item.identify().split(":")[0] + " in inventory");
-                events.add(interaction + " on " +
+                events.add(interaction +
                         item.identify().split(":")[0] + " in " + type + " inventory");
             }
             if (item.isItemscript()) {
                 events.add("player clicks " +
                         item.getMaterial() + " in inventory");
-                events.add(interaction + " on " +
+                events.add(interaction +
                         item.getMaterial() + " in inventory");
-                events.add(interaction + " on " +
+                events.add(interaction +
                         item.getMaterial() + " in " + type + " inventory");
             }
         }
@@ -1469,6 +1562,22 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void inventoryCloseEvent(InventoryCloseEvent event) {
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        
+        Player player = (Player) event.getPlayer();
+        String type = event.getInventory().getType().name();
+        
+        context.put("inventory", new dInventory(event.getInventory()));
+        
+        doEvents(Arrays.asList
+                ("player closes inventory",
+                 "player closes " + type + " inventory"),
+                null, player, context);
     }
     
     @EventHandler
@@ -1506,11 +1615,11 @@ public class WorldScriptHelper implements Listener {
                         item.identify().split(":")[0] + " in " + type + " inventory");
             }
             if (item.isItemscript()) {
-                events.add("player drags " +
+                events.add("player drags itemscript " +
                         item.getMaterial());
-                events.add("player drags " +
+                events.add("player drags itemscript " +
                         item.getMaterial() + " in inventory");
-                events.add("player drags " +
+                events.add("player drags itemscript " +
                         item.getMaterial() + " in " + type + " inventory");
             }
         }
@@ -1520,6 +1629,27 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
+    
+    @EventHandler
+    public void inventoryOpenEvent(InventoryOpenEvent event) {
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        
+        Player player = (Player) event.getPlayer();
+        String type = event.getInventory().getType().name();
+        
+        context.put("inventory", new dInventory(event.getInventory()));
+        
+        String determination = doEvents(Arrays.asList
+                ("player opens inventory",
+                 "player opens " + type + " inventory"),
+                null, player, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    
     
     /////////////////////
     //   PLAYER EVENTS
@@ -1946,14 +2076,10 @@ public class WorldScriptHelper implements Listener {
 
         List<String> events = new ArrayList<String>();
 
-        events.add("player pickup " + item.identify());
-        events.add("player take " + item.identify());
-        events.add("player picks up " + item.identify());
-        events.add("player takes " + item.identify());
-        events.add("player pickup item");
-        events.add("player take item");
         events.add("player picks up item");
         events.add("player takes item");
+        events.add("player picks up " + item.identify());
+        events.add("player takes " + item.identify());
         
         String determination = doEvents(events, null, event.getPlayer(), context);
         

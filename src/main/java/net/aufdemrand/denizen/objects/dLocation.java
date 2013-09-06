@@ -316,7 +316,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // Returns the current humidity at the location.
         // -->
         if (attribute.startsWith("biome.humidity"))
-            return new Element(String.valueOf(getBlock().getHumidity()))
+            return new Element(getBlock().getHumidity())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -326,7 +326,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // Returns the current temperature at the location.
         // -->
         if (attribute.startsWith("biome.temperature"))
-            return new Element(String.valueOf(getBlock().getTemperature()))
+            return new Element(getBlock().getTemperature())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -336,7 +336,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // Returns Bukkit biome name at the location.
         // -->
         if (attribute.startsWith("biome"))
-            return new Element(String.valueOf(getBlock().getBiome().name()))
+            return new Element(getBlock().getBiome().name())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -649,7 +649,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // location.
         // -->
         if (attribute.startsWith("block.material"))
-            return new Element(getBlock().getType().toString()).getAttribute(attribute.fulfill(2));
+            return new dMaterial(getBlock().getType()).getAttribute(attribute.fulfill(2));
 
 
         // <--[tag]
@@ -715,14 +715,14 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     // Returns the horizontal distance between 2 multiworld locations.
                     // -->
                     if (attribute.getAttribute(3).startsWith("multiworld"))
-                        return new Element(String.valueOf(Math.sqrt(
+                        return new Element(Math.sqrt(
                                 Math.pow(this.getX() - toLocation.getX(), 2) +
-                                        Math.pow(toLocation.getZ() - toLocation.getZ(), 2))))
+                                        Math.pow(toLocation.getZ() - toLocation.getZ(), 2)))
                                 .getAttribute(attribute.fulfill(3));
                     else if (this.getWorld() == toLocation.getWorld())
-                        return new Element(String.valueOf(Math.sqrt(
+                        return new Element(Math.sqrt(
                                 Math.pow(this.getX() - toLocation.getX(), 2) +
-                                        Math.pow(toLocation.getZ() - toLocation.getZ(), 2))))
+                                        Math.pow(toLocation.getZ() - toLocation.getZ(), 2)))
                                 .getAttribute(attribute.fulfill(2));
                 }
 
@@ -741,14 +741,14 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     // Returns the vertical distance between 2 multiworld locations.
                     // -->
                     if (attribute.getAttribute(3).startsWith("multiworld"))
-                        return new Element(String.valueOf(Math.abs(this.getY() - toLocation.getY())))
+                        return new Element(Math.abs(this.getY() - toLocation.getY()))
                                 .getAttribute(attribute.fulfill(3));
                     else if (this.getWorld() == toLocation.getWorld())
-                        return new Element(String.valueOf(Math.abs(this.getY() - toLocation.getY())))
+                        return new Element(Math.abs(this.getY() - toLocation.getY()))
                                 .getAttribute(attribute.fulfill(2));
                 }
 
-                else return new Element(String.valueOf(this.distance(toLocation)))
+                else return new Element(this.distance(toLocation))
                             .getAttribute(attribute.fulfill(1));
             }
         }
@@ -795,7 +795,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // true. Otherwise, returns false.
         // -->
         if (attribute.startsWith("is_liquid"))
-            return new Element(String.valueOf(getBlock().isLiquid())).getAttribute(attribute.fulfill(1));
+            return new Element(getBlock().isLiquid()).getAttribute(attribute.fulfill(1));
 
 
         // <--[tag]
@@ -807,7 +807,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("light.from_blocks") ||
                 attribute.startsWith("light.blocks"))
-            return new Element(String.valueOf((int) getBlock().getLightFromBlocks()))
+            return new Element(getBlock().getLightFromBlocks())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -819,7 +819,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("light.from_sky") ||
                 attribute.startsWith("light.sky"))
-            return new Element(String.valueOf((int) getBlock().getLightFromSky()))
+            return new Element(getBlock().getLightFromSky())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -829,7 +829,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // Returns the total amount of light on the location.
         // -->
         if (attribute.startsWith("light"))
-            return new Element(String.valueOf((int) getBlock().getLightLevel()))
+            return new Element(getBlock().getLightLevel())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -839,7 +839,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // Returns the pitch of the object at the location.
         // -->
         if (attribute.startsWith("pitch")) {
-            return new Element(String.valueOf(getPitch())).getAttribute(attribute.fulfill(1));
+            return new Element(getPitch()).getAttribute(attribute.fulfill(1));
         }
         
         // <--[tag]
@@ -849,8 +849,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // Returns the raw yaw of the object at the location.
         // -->
         if (attribute.startsWith("yaw.raw")) {
-            return new Element(String.valueOf
-                    (getYaw())).getAttribute(attribute.fulfill(2));
+            return new Element(getYaw())
+                    .getAttribute(attribute.fulfill(2));
         }
         
         // <--[tag]
@@ -860,8 +860,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // Returns the normalized yaw of the object at the location.
         // -->
         if (attribute.startsWith("yaw")) {
-            return new Element(String.valueOf
-                    (Rotation.normalizeYaw(getYaw()))).getAttribute(attribute.fulfill(1));
+            return new Element(Rotation.normalizeYaw(getYaw()))
+                    .getAttribute(attribute.fulfill(1));
         }
         
         // <--[tag]
@@ -917,7 +917,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // Returns the current power level of a block.
         // -->
         if (attribute.startsWith("power"))
-            return new Element(String.valueOf(getBlock().getBlockPower()))
+            return new Element(getBlock().getBlockPower())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -945,7 +945,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             
             // Check if the player is in any region
             else {
-                return new Element(String.valueOf(WorldGuardUtilities.inRegion(this)))
+                return new Element(WorldGuardUtilities.inRegion(this))
                     .getAttribute(attribute.fulfill(1));
             }
         }

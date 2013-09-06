@@ -25,8 +25,8 @@ import java.util.List;
  *
  * <ol><tt>Arguments: [] - Required, () - Optional, {} - Default</ol></tt>
  *
- * <ol><tt>[PotionEffectType]</tt><br> 
- *         Uses Bukkit's PotionEffectType for specifying the potion effect to use. 
+ * <ol><tt>[PotionEffectType]</tt><br>
+ *         Uses Bukkit's PotionEffectType for specifying the potion effect to use.
  *         See below for a list of valid PotionEffectTypes.</ol>
  *
  * <ol><tt>(TARGET(S):NPC|{PLAYER}|ENTITY.entity|NPC.npcid|PLAYER.player_name)</tt><br>
@@ -39,7 +39,7 @@ import java.util.List;
  *
  * <ol><tt>(POWER:#{1})</tt><br>
  *         Optional. A higher amplifier means the potion effect happens more often over
- *         its duration and in some cases has more effect on its target. Usually effective 
+ *         its duration and in some cases has more effect on its target. Usually effective
  *         between 1-3.</ol>
  *
  * <br><b>Example Usage:</b><br>
@@ -69,14 +69,14 @@ public class CastCommand extends AbstractCommand{
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        
+
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("remove")
                 && arg.matches("remove, cancel"))
                 scriptEntry.addObject("remove", Element.TRUE);
-            
+
             else if (!scriptEntry.hasObject("duration")
                      && arg.matchesArgumentType(Duration.class)
                      && arg.matchesPrefix("duration, d"))
@@ -86,7 +86,7 @@ public class CastCommand extends AbstractCommand{
                      && arg.matchesPrimitive(aH.PrimitiveType.Double)
                      && arg.matchesPrefix("power, p"))
                 scriptEntry.addObject("amplifier", arg.asElement());
-                
+
             else if (!scriptEntry.hasObject("effect")
                      && PotionEffectType.getByName(arg.asElement().asString()) != null) {
                 scriptEntry.addObject("effect", PotionEffectType.getByName(arg.asElement().asString()));
@@ -95,15 +95,15 @@ public class CastCommand extends AbstractCommand{
             else if (!scriptEntry.hasObject("entities")
                      && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
-                
+
             }
-            
+
         }
 
         // No targets specified, let's use defaults if available
-        scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null), 
+        scriptEntry.defaultObject("entities", (scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null),
                 (scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null));
-        
+
         // No potion specified? Problem!
         if (!scriptEntry.hasObject("effect"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "PotionType");

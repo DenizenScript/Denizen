@@ -41,7 +41,7 @@ public class PoseCommand extends AbstractCommand {
 
             } else if (aH.matchesValueArg("ID", arg, aH.ArgumentType.String)) {
                 id = aH.getStringFrom(arg);
-            
+
             } else if (aH.matchesArg("PLAYER", arg)) {
                 targetType = TargetType.PLAYER;
                     dB.echoDebug("Setting pose on PLAYER!");
@@ -76,7 +76,7 @@ public class PoseCommand extends AbstractCommand {
         switch (action) {
 
             case ASSUME:
-                
+
                 if (target.name().equals("NPC"))
                     npc.getCitizen().getTrait(Poses.class).assumePose(id);
                 else {
@@ -84,7 +84,7 @@ public class PoseCommand extends AbstractCommand {
                     Location location = player.getLocation();
                     location.setYaw(npc.getCitizen().getTrait(Poses.class).getPose(id).getYaw());
                     location.setPitch(npc.getCitizen().getTrait(Poses.class).getPose(id).getPitch());
-                    
+
                     // The only way to change a player's yaw and pitch in Bukkit
                     // is to use teleport on him/her
                     player.teleport(location);

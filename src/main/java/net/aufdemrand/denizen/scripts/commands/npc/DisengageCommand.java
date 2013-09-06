@@ -10,9 +10,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /**
- * Unsets the Denizen from the Engage List. 
+ * Unsets the Denizen from the Engage List.
  * When ENGAGEd, a Denizen will not interact with a Player until DISENGAGEd (or timed out).
- * 
+ *
  * @author aufdemrand
  */
 
@@ -22,7 +22,7 @@ public class DisengageCommand extends AbstractCommand {
 
     /* Arguments: [] - Required, () - Optional
      * (NPCID:#) Changes the Denizen affected to the Citizens2 NPCID specified
-     * 
+     *
      */
 
     @Override

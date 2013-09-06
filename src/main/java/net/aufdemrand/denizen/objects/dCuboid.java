@@ -315,14 +315,13 @@ public class dCuboid implements dObject, Notable {
 
     @Override
     @Note("cuboid")
-    public String getSaveString() {
+    public String getSaveObject() {
         return loc_1.getBlockX() + "," + loc_1.getBlockY()
                 + "," + loc_1.getBlockZ() + "," + loc_1.getWorld().getName()
                 + "|"
                 + loc_2.getBlockX() + "," + loc_2.getBlockY()
                 + "," + loc_2.getBlockZ() + "," + loc_2.getWorld().getName();
     }
-
 
     @Override
     public void makeUnique(String id) {

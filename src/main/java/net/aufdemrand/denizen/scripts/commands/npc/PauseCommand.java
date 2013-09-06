@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Pauses/Resumes a NPC's various parts.
- * 
+ *
  * @author Jeremy Schroeder
  */
 
@@ -24,14 +24,14 @@ public class PauseCommand extends AbstractCommand {
 
     /* PAUSE (DURATION:#) (NPCID:#) */
 
-    /* 
-     * Arguments: [] - Required, () - Optional 
-     * 
+    /*
+     * Arguments: [] - Required, () - Optional
+     *
      */
 
     private Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
     enum PauseType { ACTIVITY, WAYPOINTS, NAVIGATION }
-    
+
     int duration;
     PauseType pauseType;
     dNPC dNPC;
@@ -57,12 +57,12 @@ public class PauseCommand extends AbstractCommand {
 
             }    else if (aH.matchesArg("WAYPOINTS", arg) || aH.matchesArg("NAVIGATION", arg)
                     || aH.matchesArg("ACTIVITY", arg) || aH.matchesArg("WAYPOINTS", arg)) {
-                // Could also maybe do for( ... : PauseType.values()) ... not sure which is faster. 
+                // Could also maybe do for( ... : PauseType.values()) ... not sure which is faster.
                 pauseType = PauseType.valueOf(arg.toUpperCase());
                 dB.echoDebug(Messages.DEBUG_SET_TYPE, arg);
 
             }    else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
-        }    
+        }
     }
 
     @Override
@@ -75,7 +75,7 @@ public class PauseCommand extends AbstractCommand {
             if (durations.containsKey(dNPC.getCitizen().getId() + pauseType.name())) {
                 try { denizen.getServer().getScheduler().cancelTask(durations.get(dNPC.getCitizen().getId() + pauseType.name())); }
                 catch (Exception e) { dB.echoError(Messages.ERROR_CANCELLING_DELAYED_TASK); }
-            
+
             }    dB.echoDebug(Messages.DEBUG_SETTING_DELAYED_TASK, "UNPAUSE " + pauseType);
 
             durations.put(dNPC.getId() + pauseType.name(), denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
@@ -110,7 +110,7 @@ public class PauseCommand extends AbstractCommand {
     @Override
     public void onEnable() {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

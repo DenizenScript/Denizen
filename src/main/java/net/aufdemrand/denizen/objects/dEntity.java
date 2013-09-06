@@ -35,9 +35,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Slime;
+import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class dEntity implements dObject {
 
@@ -330,7 +332,7 @@ public class dEntity implements dObject {
 
     public NPC getNPC() {
 
-        return CitizensAPI.getNPCRegistry().getNPC(getBukkitEntity());
+        return CitizensAPI.getNPCRegistry().getNPC(entity);
     }
 
     /**
@@ -340,7 +342,7 @@ public class dEntity implements dObject {
      */
 
     public boolean isNPC() {
-        return CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity());
+        return CitizensAPI.getNPCRegistry().isNPC(entity);
     }
     
     /**
@@ -351,7 +353,7 @@ public class dEntity implements dObject {
 
     public Player getPlayer() {
 
-        return (Player) getBukkitEntity();
+        return (Player) entity;
     }
 
     /**
@@ -361,7 +363,7 @@ public class dEntity implements dObject {
      */
 
     public boolean isPlayer() {
-        return getBukkitEntity() instanceof Player;
+        return entity instanceof Player;
     }
 
     /**
@@ -385,7 +387,7 @@ public class dEntity implements dObject {
     public dLocation getLocation() {
 
         if (!isGeneric()) {
-            return new dLocation(getBukkitEntity().getLocation());
+            return new dLocation(entity.getLocation());
         }
         
         return null;
@@ -404,6 +406,32 @@ public class dEntity implements dObject {
         }
         
         return null;
+    }
+    
+    /**
+     * Gets the velocity of this entity
+     *
+     * @return  The velocity's vector
+     */
+
+    public Vector getVelocity() {
+
+        if (!isGeneric()) {
+            return entity.getVelocity();
+        }
+        return null;
+    }
+    
+    /**
+     * Sets the velocity of this entity
+     *
+     */
+
+    public void setVelocity(Vector vector) {
+
+        if (!isGeneric()) {
+            entity.setVelocity(vector);
+        }
     }
     
     public void spawnAt(Location location) {
@@ -582,6 +610,11 @@ public class dEntity implements dObject {
 
     public boolean isSpawned() {
         return entity != null;
+    }
+    
+    public boolean isValid() {
+        
+        return entity.isValid();
     }
 
     public void remove() {
@@ -933,7 +966,7 @@ public class dEntity implements dObject {
             double maxHealth = getLivingEntity().getMaxHealth();
             if (attribute.hasContext(2))
                 maxHealth = attribute.getIntContext(2);
-            return new Element(String.valueOf(((float) getLivingEntity().getHealth() / maxHealth) * 100))
+            return new Element((getLivingEntity().getHealth() / maxHealth) * 100)
                     .getAttribute(attribute.fulfill(2));
         }
 
@@ -944,7 +977,7 @@ public class dEntity implements dObject {
         // Returns the maximum health of the entity.
         // -->
         if (attribute.startsWith("health.max"))
-            return new Element(String.valueOf(getLivingEntity().getMaxHealth()))
+            return new Element(getLivingEntity().getMaxHealth())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -954,9 +987,50 @@ public class dEntity implements dObject {
         // Returns the current health of the entity.
         // -->
         if (attribute.startsWith("health"))
-            return new Element(String.valueOf(getLivingEntity().getHealth()))
+            return new Element(getLivingEntity().getHealth())
                     .getAttribute(attribute.fulfill(1));
 
+        // <--[tag]
+        // @attribute <e@entity.is_tameable>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the entity is tameable. Else, returns false.
+        // -->
+        if (attribute.startsWith("is_tameable"))
+            return new Element(entity instanceof Tameable)
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <e@entity.is_tamed>
+        // @returns Element(Boolean)
+        // @description
+        // Returns true if the entity is tamed. Else, returns false.
+        // This will also return false if the entity is not tameable.
+        // -->
+        if (attribute.startsWith("is_tamed")) {
+            if (entity instanceof Tameable)
+                return new Element(((Tameable) entity).isTamed())
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return Element.FALSE
+                        .getAttribute(attribute.fulfill(1));
+        }
+        
+        // <--[tag]
+        // @attribute <e@entity.get_owner>
+        // @returns dPlayer
+        // @description
+        // Returns the owner of a tamed entity.
+        // -->
+        if (attribute.startsWith("get_owner")) {
+            if (entity instanceof Tameable && ((Tameable) entity).isTamed())
+                return new dPlayer((Player) ((Tameable) entity).getOwner())
+                        .getAttribute(attribute.fulfill(1));
+            else
+                return new Element("null")
+                        .getAttribute(attribute.fulfill(1));
+        }
+        
         // <--[tag]
         // @attribute <e@entity.is_inside_vehicle>
         // @returns Element(Boolean)
@@ -964,7 +1038,7 @@ public class dEntity implements dObject {
         // Returns true if the entity is inside a vehicle. Else, returns false.
         // -->
         if (attribute.startsWith("is_inside_vehicle"))
-            return new Element(String.valueOf(entity.isInsideVehicle()))
+            return new Element(entity.isInsideVehicle())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -984,7 +1058,7 @@ public class dEntity implements dObject {
         // Returns the cause of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.cause"))
-            return new Element(String.valueOf(entity.getLastDamageCause().getCause().toString()))
+            return new Element(entity.getLastDamageCause().getCause().name())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -994,7 +1068,7 @@ public class dEntity implements dObject {
         // Returns the amount of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.amount"))
-            return new Element(String.valueOf(getLivingEntity().getLastDamage()))
+            return new Element(getLivingEntity().getLastDamage())
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
@@ -1026,7 +1100,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("can_see")) {
             if (attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
                 dEntity toEntity = dEntity.valueOf(attribute.getContext(1));
-                return new Element(String.valueOf(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity()))).getAttribute(attribute.fulfill(1));
+                return new Element(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -1037,7 +1111,7 @@ public class dEntity implements dObject {
         // Returns true if the entity can pick up items. Else, returns false.
         // -->
         if (attribute.startsWith("can_pickup_items"))
-            return new Element(String.valueOf(getLivingEntity().getCanPickupItems()))
+            return new Element(getLivingEntity().getCanPickupItems())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1047,7 +1121,7 @@ public class dEntity implements dObject {
         // Returns the entity's Bukkit entity ID
         // -->
         if (attribute.startsWith("eid"))
-            return new Element(String.valueOf(entity.getEntityId()))
+            return new Element(entity.getEntityId())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1057,7 +1131,7 @@ public class dEntity implements dObject {
         // Returns how far the entity has fallen.
         // -->
         if (attribute.startsWith("fall_distance"))
-            return new Element(String.valueOf(entity.getFallDistance()))
+            return new Element(entity.getFallDistance())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1067,7 +1141,7 @@ public class dEntity implements dObject {
         // Returns a unique ID for the entity.
         // -->
         if (attribute.startsWith("uuid"))
-            return new Element(String.valueOf(entity.getUniqueId().toString()))
+            return new Element(entity.getUniqueId().toString())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]

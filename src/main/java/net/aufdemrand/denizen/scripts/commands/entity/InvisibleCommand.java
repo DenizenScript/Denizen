@@ -88,14 +88,14 @@ public class InvisibleCommand extends AbstractCommand {
                 break;
 
             case PLAYER:
-                
+
                 if (scriptEntry.getPlayer() != null) {
-                
+
                 Player player = scriptEntry.getPlayer().getPlayerEntity();
                 PotionEffect invis = new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1);
-                
+
                     switch (action) {
-                
+
                         case FALSE:
                             player.removePotionEffect(PotionEffectType.INVISIBILITY);
                             break;
@@ -107,7 +107,7 @@ public class InvisibleCommand extends AbstractCommand {
                         case TOGGLE:
                             if (player.hasPotionEffect(PotionEffectType.INVISIBILITY))
                                 player.removePotionEffect(PotionEffectType.INVISIBILITY);
-                            else 
+                            else
                                 invis.apply(player);
 
                             break;

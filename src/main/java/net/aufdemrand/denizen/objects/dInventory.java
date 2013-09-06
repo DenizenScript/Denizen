@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +24,7 @@ import org.bukkit.inventory.meta.BookMeta;
 
 import net.aufdemrand.denizen.objects.notable.Notable;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.notable.Note;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
 import net.aufdemrand.denizen.tags.Attribute;
@@ -36,7 +38,7 @@ public class dInventory implements dObject, Notable {
     /////////////////
     
     final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location|equipment)(\\[)(.+?)(\\])", Pattern.CASE_INSENSITIVE);
-    final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)");
+    final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
     
     /////////////////////
     //   NOTABLE METHODS
@@ -46,7 +48,8 @@ public class dInventory implements dObject, Notable {
         return holderType.equals("notable");
     }
     
-    public String getSaveString() {
+    @Note("inventory")
+    public String getSaveObject() {
         return holderIdentifier;
     }
 
@@ -128,7 +131,7 @@ public class dInventory implements dObject, Notable {
             else if (t.equalsIgnoreCase("equipment")) {
                 // Match the entity given in the brackets
                 if (dNPC.matches(h)) {
-                    if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(h.substring(2))) instanceof Player)
+                    if (CitizensAPI.getNPCRegistry().getById(Integer.valueOf(h.substring(2))).getBukkitEntity() instanceof Player)
                         return new dInventory(InventoryType.CRAFTING, t, h).add(CitizensAPI.getNPCRegistry()
                                 .getById(Integer.valueOf(h.substring(2))).getBukkitEntity().getEquipment().getArmorContents());
                 }
@@ -325,7 +328,7 @@ public class dInventory implements dObject, Notable {
         if (state instanceof InventoryHolder) {
             this.inventory = ((InventoryHolder) state).getInventory();
             holderType = "location";
-            holderIdentifier = state.getLocation().toString();
+            holderIdentifier = new dLocation(state.getLocation()).identify();
         }
     }
     
@@ -359,16 +362,18 @@ public class dInventory implements dObject, Notable {
      *
      */
     
-    public dInventory add(ItemStack[] items) {
-        
+    public dInventory add(ItemStack... items) {
         if (inventory == null || items == null) return this;
         
-        for (ItemStack item : items) {
-            
-            if (item != null) inventory.addItem(item);
-        }
+        inventory.addItem(items);
         
         return this;
+    }
+    
+    public HashMap<Integer, ItemStack> addWithLeftovers(ItemStack... items) {
+        if (inventory == null || items == null) return null;
+        
+        return inventory.addItem(items);
     }
         
     /**
@@ -740,11 +745,11 @@ public class dInventory implements dObject, Notable {
         // -->
         if (attribute.startsWith("qty"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-                return new Element(String.valueOf(count
-                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), false)))
+                return new Element(count
+                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), false))
                     .getAttribute(attribute.fulfill(1));
             else
-                return new Element(String.valueOf(count(null, false)))
+                return new Element(count(null, false))
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
@@ -754,7 +759,7 @@ public class dInventory implements dObject, Notable {
         // Return the number of slots in the inventory
         // -->
         if (attribute.startsWith("size"))
-            return new Element(String.valueOf(getSize()))
+            return new Element(getSize())
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
@@ -766,11 +771,11 @@ public class dInventory implements dObject, Notable {
         // -->
         if (attribute.startsWith("stacks"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-                return new Element(String.valueOf(count
-                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), true)))
+                return new Element(count
+                    (dItem.valueOf(attribute.getContext(1)).getItemStack(), true))
                     .getAttribute(attribute.fulfill(1));
             else
-                return new Element(String.valueOf(count(null, true)))
+                return new Element(count(null, true))
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]

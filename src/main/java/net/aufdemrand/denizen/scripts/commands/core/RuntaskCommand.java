@@ -121,7 +121,7 @@ public class RuntaskCommand extends AbstractCommand {
         // If not queue, and delayed, throw an exception... this cannot happen.
         if (queue.equals(scriptEntry.getResidingQueue().id) && delay != null)
             throw new InvalidArgumentsException("Cannot delay an INJECTED task script! Use 'QUEUE'.");
-        
+
         // Put important objects inside the scriptEntry to be sent to execute()
         scriptEntry.addObject("instant", instant)
                 .addObject("queue", queue)

@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -127,32 +128,76 @@ public class dWorld implements dObject {
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return null;
-
+        
+        /////////////////////
+        //   ENTITY LIST ATTRIBUTES
+        /////////////////
+        
         // <--[tag]
-        // @attribute <w@world.can_generate_structures>
-        // @returns Element(boolean)
+        // @attribute <w@world.entities>
+        // @returns dList(dPlayer)
         // @description
-        // returns whether the world will generate structures.
+        // Returns a list of entities in this world.
         // -->
-        if (attribute.startsWith("can_generate_structures"))
-            return new Element(String.valueOf(getWorld().canGenerateStructures()))
+        if (attribute.startsWith("entities")) {
+            List<String> entities = new ArrayList<String>();
+            for (Entity entity : getWorld().getEntities())
+                entities.add("e@" + entity.getEntityId());
+
+            return new dList(entities)
                     .getAttribute(attribute.fulfill(1));
+        }
+        
+        // <--[tag]
+        // @attribute <w@world.living_entities>
+        // @returns dList(dPlayer)
+        // @description
+        // Returns a list of living entities in this world.
+        // -->
+        if (attribute.startsWith("living_entities")) {
+            List<String> entities = new ArrayList<String>();
+            for (LivingEntity entity : getWorld().getLivingEntities())
+                entities.add("e@" + entity.getEntityId());
 
-//        getWorld().getName())
-//        .getAttribute(attribute.fulfill(1));
-//
-//        getWorld().getAllowAnimals())
-//        .getAttribute(attribute.fulfill(1));
-//
-//        getWorld().getAllowMonsters())
-//        .getAttribute(attribute.fulfill(1));
-//
-//        getWorld().getAmbientSpawnLimit())
-//        .getAttribute(attribute.fulfill(1));
-//
-//        getWorld().getAnimalSpawnLimit())
-//        .getAttribute(attribute.fulfill(1));
+            return new dList(entities)
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
+        // <--[tag]
+        // @attribute <w@world.players>
+        // @returns dList(dPlayer)
+        // @description
+        // Returns a list of online players in this world.
+        // -->
+        if (attribute.startsWith("players")) {
+            List<String> players = new ArrayList<String>();
+            for (Player player : getWorld().getPlayers())
+                players.add("p@" + player.getName());
 
+            return new dList(players)
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
+        
+        /////////////////////
+        //   DEBUG ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <w@world.prefix>
+        // @returns Element
+        // @description
+        // Returns the prefix of the world dObject.
+        // -->
+        if (attribute.startsWith("prefix"))
+            return new Element(prefix)
+                    .getAttribute(attribute.fulfill(1));
+        
+        
+        /////////////////////
+        //   GEOGRAPHY ATTRIBUTES
+        /////////////////
+        
         // <--[tag]
         // @attribute <w@world.highest_block>
         // @returns dLocation
@@ -168,8 +213,106 @@ public class dWorld implements dObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-//        getWorld().getChunkAt()
+        // <--[tag]
+        // @attribute <w@world.sea_level>
+        // @returns Element(number)
+        // @description
+        // returns the level of the sea
+        // -->
+        if (attribute.startsWith("sea_level"))
+            return new Element(getWorld().getSeaLevel())
+                    .getAttribute(attribute.fulfill(1));
 
+        
+        /////////////////////
+        //   IDENTIFICATION ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <w@world.name>
+        // @returns Element
+        // @description
+        // returns the name of the world
+        // -->
+        if (attribute.startsWith("name"))
+            return new Element(getWorld().getName())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <w@world.seed>
+        // @returns Element
+        // @description
+        // returns the world seed
+        // -->
+        if (attribute.startsWith("seed"))
+            return new Element(getWorld().getSeed())
+                    .getAttribute(attribute.fulfill(1));
+        
+        
+        /////////////////////
+        //   SETTINGS ATTRIBUTES
+        /////////////////
+        
+        // <--[tag]
+        // @attribute <w@world.allows_animals>
+        // @returns Element(boolean)
+        // @description
+        // Returns whether animals can spawn in this world.
+        // -->
+        if (attribute.startsWith("allows_animals"))
+            return new Element(getWorld().getAllowAnimals())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <w@world.allows_monsters>
+        // @returns Element(boolean)
+        // @description
+        // Returns whether monsters can spawn in this world.
+        // -->
+        if (attribute.startsWith("allows_monsters"))
+            return new Element(getWorld().getAllowMonsters())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <w@world.allows_pvp>
+        // @returns Element(boolean)
+        // @description
+        // Returns whether player versus player combat is allowed in this world.
+        // -->
+        if (attribute.startsWith("allows_pvp"))
+            return new Element(getWorld().getPVP())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <w@world.ambient_spawn_limit>
+        // @returns Element(integer)
+        // @description
+        // Returns the number of ambient mobs that can spawn in a chunk in this world
+        // -->
+        if (attribute.startsWith("ambient_spawn_limit"))
+            return new Element(getWorld().getAmbientSpawnLimit())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <w@world.animal_spawn_limit>
+        // @returns Element(integer)
+        // @description
+        // Returns the number of animals that can spawn in a chunk in this world.
+        // -->
+        if (attribute.startsWith("animal_spawn_limit"))
+            return new Element(getWorld().getAnimalSpawnLimit())
+                    .getAttribute(attribute.fulfill(1));
+        
+        // <--[tag]
+        // @attribute <w@world.can_generate_structures>
+        // @returns Element(boolean)
+        // @description
+        // Returns whether the world will generate structures.
+        // -->
+        if (attribute.startsWith("can_generate_structures"))
+            return new Element(getWorld().canGenerateStructures())
+                    .getAttribute(attribute.fulfill(1));
+        
         // <--[tag]
         // @attribute <w@world.difficulty>
         // @returns Element
@@ -181,59 +324,60 @@ public class dWorld implements dObject {
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
-        // @attribute <w@world.name>
-        // @returns Element
+        // @attribute <w@world.max_height>
+        // @returns Element(integer)
         // @description
-        // returns the name of the world
+        // Returns the maximum height of this world.
         // -->
-        if (attribute.startsWith("name"))
-            return new Element(String.valueOf(getWorld().getName()))
+        if (attribute.startsWith("max_height"))
+            return new Element(getWorld().getMaxHeight())
                     .getAttribute(attribute.fulfill(1));
         
         // <--[tag]
-        // @attribute <w@world.players>
-        // @returns dList(dPlayer)
+        // @attribute <w@world.monster_spawn_limit>
+        // @returns Element(integer)
         // @description
-        // returns a list of online players
+        // Returns the number of monsters that can spawn in a chunk in this world.
         // -->
-        if (attribute.startsWith("players")) {
-            List<String> players = new ArrayList<String>();
-            for(Player player : getWorld().getPlayers())
-                players.add(player.getName());
-
-            return new dList(players)
+        if (attribute.startsWith("monster_spawn_limit"))
+            return new Element(getWorld().getMonsterSpawnLimit())
                     .getAttribute(attribute.fulfill(1));
-        }
-
+        
         // <--[tag]
-        // @attribute <w@world.sea_level>
-        // @returns Element(number)
+        // @attribute <w@world.ticks_per_animal_spawn>
+        // @returns Element(long)
         // @description
-        // returns the level of the sea
+        // Returns the world's ticks per animal spawn value
         // -->
-        if (attribute.startsWith("sea_level"))
-            return new Element(String.valueOf(getWorld().getSeaLevel()))
+        if (attribute.startsWith("ticks_per_animal_spawn"))
+            return new Element(getWorld().getTicksPerAnimalSpawns() )
                     .getAttribute(attribute.fulfill(1));
-
+        
         // <--[tag]
-        // @attribute <w@world.seed>
-        // @returns Element
+        // @attribute <w@world.ticks_per_monster_spawn>
+        // @returns Element(long)
         // @description
-        // returns the world seed
+        // Returns the world's ticks per monster spawn value
         // -->
-        if (attribute.startsWith("seed"))
-            return new Element(String.valueOf(getWorld().getSeed()))
+        if (attribute.startsWith("ticks_per_monster_spawn"))
+            return new Element(getWorld().getTicksPerMonsterSpawns() )
                     .getAttribute(attribute.fulfill(1));
-
-//        getWorld().getEntities())
-//        .getAttribute(attribute.fulfill(1));
-//
-//        getWorld().getEntitiesByClass())
-//        .getAttribute(attribute.fulfill(1));
-//
-//        getWorld().getEntitiesByClasses())
-//        .getAttribute(attribute.fulfill(1));
-
+        
+        // <--[tag]
+        // @attribute <w@world.water_animal_spawn_limit>
+        // @returns Element(integer)
+        // @description
+        // Returns the number of water animals that can spawn in a chunk in this world
+        // -->
+        if (attribute.startsWith("water_animal_spawn_limit"))
+            return new Element(getWorld().getWaterAnimalSpawnLimit())
+                    .getAttribute(attribute.fulfill(1));
+        
+        
+        /////////////////////
+        //   TIME ATTRIBUTES
+        /////////////////
+        
         // Return "day", "night", "dawn" or "dusk"
         // <--[tag]
         // @attribute <w@world.time.period>
@@ -256,24 +400,19 @@ public class dWorld implements dObject {
         
         // <--[tag]
         // @attribute <w@world.time>
-        // @returns Element(number)
+        // @returns Element(long)
         // @description
         // returns the current time in ticks
         // -->
         if (attribute.startsWith("time"))
-            return new Element(String.valueOf(getWorld().getTime()))
+            return new Element(getWorld().getTime())
                     .getAttribute(attribute.fulfill(1));
 
-        // <--[tag]
-        // @attribute <w@world.weather_duration>
-        // @returns Element
-        // @description
-        // returns the duration of storms in ticks
-        // -->
-        if (attribute.startsWith("weather_duration"))
-            return Duration.valueOf(String.valueOf(getWorld().getWeatherDuration()) + "t")
-                    .getAttribute(attribute.fulfill(1));
-
+        
+        /////////////////////
+        //   WEATHER ATTRIBUTES
+        /////////////////
+        
         // <--[tag]
         // @attribute <w@world.has_storm>
         // @returns Element(boolean)
@@ -281,30 +420,18 @@ public class dWorld implements dObject {
         // returns whether there is currently a storm in this world
         // -->
         if (attribute.startsWith("has_storm"))
-            return new Element(String.valueOf(getWorld().hasStorm()))
+            return new Element(getWorld().hasStorm())
                     .getAttribute(attribute.fulfill(1));
-
-
-
-        if (attribute.startsWith("prefix"))
-            return new Element(prefix)
+        
+        // <--[tag]
+        // @attribute <w@world.weather_duration>
+        // @returns Element
+        // @description
+        // Returns the duration of storms
+        // -->
+        if (attribute.startsWith("weather_duration"))
+            return Duration.valueOf(getWorld().getWeatherDuration() + "t")
                     .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("debug.log")) {
-            dB.log(debug());
-            return new Element(Boolean.TRUE.toString())
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        if (attribute.startsWith("debug.no_color")) {
-            return new Element(ChatColor.stripColor(debug()))
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        if (attribute.startsWith("debug")) {
-            return new Element(debug())
-                    .getAttribute(attribute.fulfill(1));
-        }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }

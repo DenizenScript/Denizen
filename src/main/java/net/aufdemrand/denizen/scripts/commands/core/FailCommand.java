@@ -15,7 +15,7 @@ import org.bukkit.Bukkit;
 /**
  * Sets a Script as 'FAILED'. Scripts can be failed multiple times and Denizen will keep track
  * of the total amount. This can also be checked against with the SCRIPT requirement.
- * 
+ *
  * @author aufdemrand
  */
 
@@ -23,12 +23,12 @@ public class FailCommand extends AbstractCommand {
 
     /* FAIL ('SCRIPT:[Script Name]') (PLAYER:[Player Name])
 
-    /* Arguments: [] - Required, () - Optional 
+    /* Arguments: [] - Required, () - Optional
      * ('SCRIPT:[Script Name]') Changes the script from the triggering script to the one specified.
      *    Defaults to the script that the Script Entry was sent from.
      * (PLAYER:[Player Name]) Changes the Player affected.
      *    Defaults to the Player who triggered the script.
-     * 
+     *
      * Example Usage:
      * FAIL PLAYER:aufdemrand
      * FAIL 'SCRIPT:A different script'
@@ -77,8 +77,8 @@ public class FailCommand extends AbstractCommand {
     }
 
     /**
-     * Increases a scripts 'failed' counter for a specified Player. 
-     * 
+     * Increases a scripts 'failed' counter for a specified Player.
+     *
      * @param playerName
      *         name of the Player
      * @param scriptName
@@ -96,10 +96,10 @@ public class FailCommand extends AbstractCommand {
         ScriptFailEvent event = new ScriptFailEvent(playerName, scriptName, fails);
         Bukkit.getServer().getPluginManager().callEvent(event);
     }
-    
+
     /**
      * Gets the number of times a Player has 'failed' a script.
-     * 
+     *
      * @param playerName
      *         name of the Player
      * @param scriptName

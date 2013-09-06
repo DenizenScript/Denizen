@@ -533,7 +533,7 @@ public class dItem implements dObject {
         // Returns the number of items in the dItem's itemstack.
         // -->
         if (attribute.startsWith("qty"))
-            return new Element(String.valueOf(getItemStack().getAmount()))
+            return new Element(getItemStack().getAmount())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -554,7 +554,7 @@ public class dItem implements dObject {
         // Returns the item ID number of the item.
         // -->
         if (attribute.startsWith("id"))
-            return new Element(String.valueOf(getItemStack().getTypeId()))
+            return new Element(getItemStack().getTypeId())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -564,7 +564,7 @@ public class dItem implements dObject {
         // Returns the max number of this item possible in a single stack of this type.
         // -->
         if (attribute.startsWith("max_stack"))
-            return new Element(String.valueOf(getItemStack().getMaxStackSize()))
+            return new Element(getItemStack().getMaxStackSize())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -574,7 +574,7 @@ public class dItem implements dObject {
         // Returns the data value of the material of the item.
         // -->
         if (attribute.startsWith("data"))
-            return new Element(String.valueOf(getItemStack().getData().getData()))
+            return new Element(getItemStack().getData().getData())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -584,7 +584,7 @@ public class dItem implements dObject {
         // Returns the current durability of the item.
         // -->
         if (attribute.startsWith("durability"))
-            return new Element(String.valueOf(getItemStack().getDurability()))
+            return new Element(getItemStack().getDurability())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -594,15 +594,15 @@ public class dItem implements dObject {
         // Returns true if the item can be repaired. Otherwise, returns false.
         // -->
         if (attribute.startsWith("repairable"))
-            return new Element(String.valueOf(isRepairable()))
+            return new Element(isRepairable())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
         // @attribute <i@item.material.formatted>
         // @returns Element
         // @description
-        // Returns the formatted material name of the item to be used in a sentence. Correctly singularizes and
-        // pluarlizes the name of items, among other things. 
+        // Returns the formatted material name of the item to be used in a sentence.
+        // Correctly uses singular and plural forms of item names, among other things. 
         // -->
         if (attribute.startsWith("material.formatted")) {
 
@@ -647,10 +647,10 @@ public class dItem implements dObject {
         // @attribute <i@item.material> 
         // @returns Element
         // @description
-        // Returns the bukkit material name of the item.
+        // Returns the material corresponding to the item
         // -->
         if (attribute.startsWith("material"))
-            return new Element(getItemStack().getType().toString())
+            return new dMaterial(getItemStack().getType())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]

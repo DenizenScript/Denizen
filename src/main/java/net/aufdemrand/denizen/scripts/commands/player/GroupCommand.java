@@ -54,16 +54,16 @@ public class GroupCommand extends AbstractCommand {
         switch (action) {
         case ADD:
             if(Depends.permissions.playerInGroup(world, player.getName(), group)) {
-                dB.echoDebug("Player " + player.getName() + " is already in group " + group); 
+                dB.echoDebug("Player " + player.getName() + " is already in group " + group);
             }
             else {
                 Depends.permissions.playerAddGroup(world, player.getName(), group);
                 dB.echoDebug("Added " + player.getName() + " to group " + group);
             }
             return;
-        case REMOVE: 
+        case REMOVE:
             if(!Depends.permissions.playerInGroup(world, player.getName(), group)) {
-                dB.echoDebug("Player " + player.getName() + " is not in group " + group); 
+                dB.echoDebug("Player " + player.getName() + " is not in group " + group);
             }
             else {
                 Depends.permissions.playerRemoveGroup(world, player.getName(), group);

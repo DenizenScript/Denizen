@@ -19,16 +19,16 @@ import net.citizensnpcs.api.ai.speech.SpeechContext;
  *
  * <ol><tt>Arguments: [] - Required</ol></tt>
  *
- * <ol><tt>['message to chat']</tt><br> 
+ * <ol><tt>['message to chat']</tt><br>
  *         The chat message the Talker will use. This will be seen by all entities within range.</ol>
  *
- * <ol><tt>(TARGET(S):NONE|List of LivingEntities{Interact Player})</tt><br> 
+ * <ol><tt>(TARGET(S):NONE|List of LivingEntities{Interact Player})</tt><br>
  *         The LivingEntities that the message is addressed to. Uses the dScript List format
  *         (item1|item2|etc). Valid entities are: PLAYER.player_name, NPC.npcid, or ENTITY.entity_name.
- *         If NONE is specified, the NPC speaking will have no target. Default target is set to 
+ *         If NONE is specified, the NPC speaking will have no target. Default target is set to
  *         the Player doing the interaction (if that information is available to the command).</ol>
  *
- * <ol><tt>(TALKER:NPC.npcid{Interact NPC})</tt><br> 
+ * <ol><tt>(TALKER:NPC.npcid{Interact NPC})</tt><br>
  *         The NPC that will be doing the chatting. Defaults to the NPC interacted with (if that information is
  *         available to the command), but can be changed by using the NPC LivingEntity format (NPC.npcid).</ol>
  *

@@ -36,7 +36,7 @@ public class IfCommand extends AbstractCommand {
         // is stored in two tree maps
         TreeMap<Integer, ArrayList<String>> thenOutcome = new TreeMap<Integer, ArrayList<String>>();
         TreeMap<Integer, ArrayList<String>> elseOutcome = new TreeMap<Integer, ArrayList<String>>();
-        
+
         // Keep tracking of whether we're inside the Else part of the statement or not
         boolean insideElse = false;
 
@@ -115,19 +115,19 @@ public class IfCommand extends AbstractCommand {
                 }
 
                 else if (!insideElse) {
-                    
+
                     // Move to else commands if we read an "else" and we're not
                     // currently going through nested arguments
                     if (arg.matches("else") && bracketsEntered == 0) {
                         insideElse = true;
                     }
-                    
+
                     // If we find a bracket, and we're already inside
                     // nested brackets, add the bracket to the current
                     // command's arguments
                     else if (arg.matches("{")) {
                         bracketsEntered++;
-                        
+
                         if (bracketsEntered > 1) {
                             thenOutcome.get(thenOutcome.lastKey()).add(arg.raw_value);
                         }
@@ -162,7 +162,7 @@ public class IfCommand extends AbstractCommand {
                     // command's arguments
                     if (arg.matches("{")) {
                         bracketsEntered++;
-                        
+
                         if (bracketsEntered > 1) {
                             elseOutcome.get(elseOutcome.lastKey()).add(arg.raw_value);
                         }
@@ -170,7 +170,7 @@ public class IfCommand extends AbstractCommand {
 
                     else if (arg.matches("}")) {
                         bracketsEntered--;
-                        
+
                         if (bracketsEntered > 0) {
                             elseOutcome.get(elseOutcome.lastKey()).add(arg.raw_value);
                         }
@@ -225,7 +225,7 @@ public class IfCommand extends AbstractCommand {
             counter++;
         }
 
-        // Compare outcomes 
+        // Compare outcomes
 
         int ormet = 0;
         for (Comparable comparable : comparables) {

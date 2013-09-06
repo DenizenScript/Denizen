@@ -24,10 +24,10 @@ import net.citizensnpcs.util.PlayerAnimation;
  */
 
 public class AnimateCommand extends AbstractCommand {
-    
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        
+
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("entities")
@@ -35,10 +35,10 @@ public class AnimateCommand extends AbstractCommand {
                 // Entity arg
                 scriptEntry.addObject("entities", ((dList) arg.asType(dList.class)).filter(dEntity.class));
             }
-            
+
             if (!scriptEntry.hasObject("animation") &&
                 !scriptEntry.hasObject("effect")) {
-                
+
                 if (arg.matchesEnum(PlayerAnimation.values())) {
                     scriptEntry.addObject("animation", PlayerAnimation.valueOf(arg.getValue().toUpperCase()));
                 }
@@ -49,21 +49,21 @@ public class AnimateCommand extends AbstractCommand {
         }
 
         // Check to make sure required arguments have been filled
-        
+
         if (!scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ENTITIES");
-        
+
         if (!scriptEntry.hasObject("effect") && !scriptEntry.hasObject("animation"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ANIMATION");
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Get objects
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        PlayerAnimation animation = scriptEntry.hasObject("animation") ? 
+        PlayerAnimation animation = scriptEntry.hasObject("animation") ?
                 (PlayerAnimation) scriptEntry.getObject("animation") : null;
         EntityEffect effect = scriptEntry.hasObject("effect") ?
                 (EntityEffect) scriptEntry.getObject("effect") : null;
@@ -73,20 +73,20 @@ public class AnimateCommand extends AbstractCommand {
                                   aH.debugObj("animation", animation.name()) :
                                   aH.debugObj("effect", effect.name())) +
                              aH.debugObj("entities", entities.toString()));
-        
+
         // Go through all the entities and animate them
         for (dEntity entity : entities) {
             if (entity.isSpawned()) {
                 if (animation != null && entity.getBukkitEntity() instanceof Player) {
 
                     Player player = (Player) entity.getBukkitEntity();
-                    
+
                     // Go through Citizens' PlayerAnimations and find the one
                     // that matches
                     PlayerAnimation[] animationArray = PlayerAnimation.class.getEnumConstants();
-                        
+
                     for (PlayerAnimation current : animationArray) {
-                           
+
                           if (current.equals(animation)) {
                                current.play(player);
                                break;
@@ -95,6 +95,6 @@ public class AnimateCommand extends AbstractCommand {
                 }
                 else entity.getBukkitEntity().playEffect(effect);
             }
-        }   
+        }
     }
 }
