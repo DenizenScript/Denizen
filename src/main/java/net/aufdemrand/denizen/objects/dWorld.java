@@ -68,6 +68,10 @@ public class dWorld implements dObject {
         return Bukkit.getWorld(world_name);
     }
     
+    public String getName() {
+        return world_name;
+    }
+    
     public List<Entity> getEntities() {
         return getWorld().getEntities();
     }

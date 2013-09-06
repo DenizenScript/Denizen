@@ -47,6 +47,7 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -1774,6 +1775,19 @@ public class WorldScriptHelper implements Listener {
             ItemStack is = dItem.valueOf(determination).getItemStack();
             event.setItemStack( is != null ? is : new ItemStack(Material.AIR));
         }
+    }
+    
+    @EventHandler
+    public void playerChangedWorldEvent(PlayerChangedWorldEvent event) {
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dWorld originWorld = new dWorld(event.getFrom());
+        context.put("origin_world", originWorld);
+
+        doEvents(Arrays.asList
+                ("player changes world",
+                 "player changes world from " + originWorld.identify()),
+                 null, event.getPlayer(), context);
     }
     
     @EventHandler
