@@ -1,5 +1,9 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.objects.notable.Notable;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.properties.ItemColor;
+import net.aufdemrand.denizen.objects.properties.Property;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
@@ -22,7 +26,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dItem implements dObject {
+public class dItem implements dObject, Notable, Properties {
 
     // An item pattern with the following groups:
     //
@@ -33,51 +37,23 @@ public class dItem implements dObject {
     //    of the item
     // 4) Digits between [] brackets that specify the
     //    quantity of the item
-    
-    final static Pattern itemPattern =
+
+    final static Pattern ITEM_PATTERN =
             Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
                     Pattern.CASE_INSENSITIVE);
 
-    /////////////////////
-    //  STATIC METHODS
-    /////////////////
 
-    public static Map<String, dItem> uniqueObjects = new HashMap<String, dItem>();
+    // List of classes to check for properties
 
-    public static boolean isSaved(String id) {
-        return uniqueObjects.containsKey(id.toUpperCase());
-    }
-
-    public static boolean isSaved(dItem item) {
-        return uniqueObjects.containsValue(item);
-    }
-
-    public static dItem getSaved(String id) {
-        if (uniqueObjects.containsKey(id.toUpperCase()))
-            return uniqueObjects.get(id.toUpperCase());
-        else return null;
-    }
-
-    public static String getSaved(dItem item) {
-        for (Map.Entry<String, dItem> i : uniqueObjects.entrySet())
-            if (i.getValue() == item) return i.getKey();
-        return null;
-    }
-
-    public static void saveAs(dItem item, String id) {
-        if (item == null) return;
-        uniqueObjects.put(id.toUpperCase(), item);
-    }
-
-    public static void remove(String id) {
-        uniqueObjects.remove(id.toUpperCase());
-    }
+    final static Class[] PROPERTIES = {
+            ItemColor.class
+    };
 
 
     //////////////////
     //    OBJECT FETCHER
     ////////////////
-    
+
     public static dItem valueOf(String string) {
         return valueOf(string, null, null);
     }
@@ -96,7 +72,7 @@ public class dItem implements dObject {
     @ObjectFetcher("i")
     public static dItem valueOf(String string, dPlayer player, dNPC npc) {
         if (string == null) return null;
-        
+
         Matcher m;
         dItem stack = null;
 
@@ -112,11 +88,11 @@ public class dItem implements dObject {
                 for (Entity entity : world.getEntitiesByClass(Item.class)) {
                     if (entity.getEntityId() == Integer.valueOf(m.group(2))) {
                         stack = new dItem(((Item) entity).getItemStack());
-                        
+
                         if (m.group(3) != null) {
                             stack.setAmount(Integer.valueOf(m.group(3)));
                         }
-                        
+
                         return stack;
                     }
                 }
@@ -129,41 +105,41 @@ public class dItem implements dObject {
         final Pattern item_by_saved = Pattern.compile("(i@)(.+)\\[?(\\d+)?\\]?");
         m = item_by_saved.matcher(string);
 
-        if (m.matches() && isSaved(m.group(2))) {
-            stack = getSaved(m.group(2));
-            
+        if (m.matches() && NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dItem.class)) {
+            stack = (dItem) NotableManager.getSavedObject(m.group(2));
+
             if (m.group(3) != null) {
                 stack.setAmount(Integer.valueOf(m.group(3)));
             }
-            
+
             return stack;
         }
 
         string = string.replace("i@", "");
-        
-        m = itemPattern.matcher(string);
-        
+
+        m = ITEM_PATTERN.matcher(string);
+
         if (m.matches()) {
-            
+
             try {
-                
+
                 ///////
                 // Match item and book script custom items
-                
+
                 if (ScriptRegistry.containsScript(m.group(1), ItemScriptContainer.class)) {
                     // Get item from script
                     stack = ScriptRegistry.getScriptContainerAs
                             (m.group(1), ItemScriptContainer.class).getItemFrom(player, npc);
                 }
-                
+
                 else if (ScriptRegistry.containsScript(m.group(1), BookScriptContainer.class)) {
                     // Get book from script
                     stack = ScriptRegistry.getScriptContainerAs
                             (m.group(1), BookScriptContainer.class).getBookFrom(player, npc);
                 }
-                
+
                 if (stack != null) {
-                    
+
                     if (m.group(3) != null) {
                         stack.setAmount(Integer.valueOf(m.group(3)));
                     }
@@ -172,37 +148,37 @@ public class dItem implements dObject {
             }
             catch (Exception e) {
                 // Just a catch, might be a regular item...
-             }
-            
-            
+            }
+
+
             ///////
             // Match Bukkit/Minecraft standard items format
-            
+
             try {
                 String material = m.group(1).toUpperCase();
-           
+
                 if (aH.matchesInteger(material)) {
                     stack = new dItem(Integer.valueOf(material));
                 }
                 else {
                     stack = new dItem(Material.valueOf(material));
                 }
-           
+
                 if (m.group(2) != null) {
                     stack.setDurability(Short.valueOf(m.group(2)));
                 }
                 if (m.group(3) != null) {
                     stack.setAmount(Integer.valueOf(m.group(3)));
                 }
-           
+
                 return stack;
             }
             catch (Exception e) {
                 if (!string.equalsIgnoreCase("none"))
-                dB.log("Does not match a valid item ID or material: " + string);
+                    dB.log("Does not match a valid item ID or material: " + string);
             }
         }
-        
+
         if (!nope) dB.log("valueOf dItem returning null: " + string);
 
         // No match! Return null.
@@ -357,7 +333,7 @@ public class dItem implements dObject {
      *
      */
     public boolean containsLore(String prefix) {
-        
+
         if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
             for (String itemLore : getItemStack().getItemMeta().getLore()) {
                 if (itemLore.startsWith(prefix)) {
@@ -365,7 +341,7 @@ public class dItem implements dObject {
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -378,16 +354,16 @@ public class dItem implements dObject {
      *
      */
     public String getLore(String prefix) {
-        
+
         for (String itemLore : getItemStack().getItemMeta().getLore()) {
             if (itemLore.startsWith(prefix)) {
                 return itemLore.substring(prefix.length());
             }
         }
-        
+
         return "";
     }
-    
+
     /**
      * Check whether this item contains the lore specific
      * to item scripts.
@@ -396,19 +372,19 @@ public class dItem implements dObject {
      *
      */
     public boolean isItemscript() {
-        
+
         return containsLore("§0id:");
     }
-    
+
     public String getMaterial() {
         return getItemStack().getType().name().toLowerCase();
     }
-    
+
     public void setAmount(int value) {
         if (item != null)
             item.setAmount(value);
     }
-    
+
     public void setDurability(short value) {
         if (item != null)
             item.setDurability(value);
@@ -452,30 +428,27 @@ public class dItem implements dObject {
         }
     }
 
-    public void setItemStack(ItemStack item) {
-        this.item = item;
-    }
-
-    public dItem rememberAs(String id) {
-        dItem.saveAs(this, id);
-        return this;
-    }
-
 
     //////////////////////////////
     //  DSCRIPT ARGUMENT METHODS
     /////////////////////////
 
-    private String prefix = "Item";
-
-    @Override
-    public String getType() {
-        return "Item";
-    }
+    private String prefix = getObjectType();
 
     @Override
     public String getPrefix() {
         return prefix;
+    }
+
+    @Override
+    public dItem setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
+    }
+
+    @Override
+    public String getObjectType() {
+        return "Item";
     }
 
     @Override
@@ -485,13 +458,14 @@ public class dItem implements dObject {
 
     @Override
     public String identify() {
-        // If saved item, return that
-        if (getItemStack() == null) return null;
-        
-        if (getItemStack().getTypeId() != 0) {
-            
-            if (isSaved(this)) {
-                return "i@" + getSaved(this);
+
+        if (item == null) return "null";
+
+        if (item.getTypeId() != 0) {
+
+            // If saved item, return that
+            if (isUnique()) {
+                return "i@" + NotableManager.getSavedId(this);
             }
 
             // If not a saved item, but is a custom item, return the script id
@@ -501,8 +475,8 @@ public class dItem implements dObject {
         }
 
         // Else, return the material name and data
-        return "i@" + getItemStack().getType().name().toLowerCase()
-                    + (getItemStack().getData().getData() != 0 ? ":" + getItemStack().getData().getData() : "");
+        return "i@" + item.getType().name().toLowerCase()
+                + (item.getData().getData() != 0 ? ":" + item.getData().getData() : "");
     }
 
     @Override
@@ -512,14 +486,30 @@ public class dItem implements dObject {
 
     @Override
     public boolean isUnique() {
-        return isSaved(this);
+        return NotableManager.isSaved(this);
     }
 
     @Override
-    public dItem setPrefix(String prefix) {
-        this.prefix = prefix;
-        return this;
+    public Object getSaveObject() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("i@");
+        sb.append(item.getType().name().toUpperCase());
+
+        return sb.toString();
     }
+
+    @Override
+    public void makeUnique(String id) {
+        NotableManager.saveAs(this, id);
+    }
+
+    @Override
+    public void forget() {
+        NotableManager.remove(this);
+    }
+
 
     @Override
     public String getAttribute(Attribute attribute) {
@@ -546,7 +536,7 @@ public class dItem implements dObject {
             return new Element(identify())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <i@item.id> 
         // @returns Element(Number)
@@ -573,10 +563,13 @@ public class dItem implements dObject {
         // @description
         // Returns the data value of the material of the item.
         // -->
-        if (attribute.startsWith("data"))
-            return new Element(getItemStack().getData().getData())
+        if (attribute.startsWith("data")) {
+            dB.log(getItemStack().getData().getData() + " <-- data");
+
+            return new Element((int) getItemStack().getData().getData())
                     .getAttribute(attribute.fulfill(1));
 
+        }
         // <--[tag]
         // @attribute <i@item.durability> 
         // @returns Element(Number)
@@ -765,9 +758,9 @@ public class dItem implements dObject {
         // -->
         if (attribute.startsWith("lore")) {
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
-                
+
                 List<String> loreList = new ArrayList<String>();
-                
+
                 for (String itemLore : getItemStack().getItemMeta().getLore()) {
                     if (!itemLore.startsWith("§0id:")) {
                         loreList.add(itemLore);
