@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -120,10 +119,10 @@ public class NotableManager {
             // will require this information
             if (notable.getValue().getSaveObject() instanceof ConfigurationSerializable)
                 DenizenAPI.getCurrentInstance().notableManager().getNotables()
-                        .set(((dObject) notable.getValue()).getType().toLowerCase() + "." + "_serializable", true);
+                        .set(((dObject) notable.getValue()).getObjectType().toLowerCase() + "." + "_serializable", true);
 
             DenizenAPI.getCurrentInstance().notableManager().getNotables()
-                    .set(((dObject) notable.getValue()).getType().toLowerCase() + "." + notable.getKey().toLowerCase(),
+                    .set(((dObject) notable.getValue()).getObjectType().toLowerCase() + "." + notable.getKey().toLowerCase(),
                             notable.getValue());
         }
 

@@ -70,6 +70,8 @@ public class dPlayer implements dObject {
 
     public static boolean matches(String arg) {
 
+        if (arg == null) return false;
+
         arg = arg.replace("p@", "");
 
         OfflinePlayer returnable = null;
@@ -182,7 +184,7 @@ public class dPlayer implements dObject {
     }
 
     @Override
-    public String getType() {
+    public String getObjectType() {
         return "Player";
     }
 

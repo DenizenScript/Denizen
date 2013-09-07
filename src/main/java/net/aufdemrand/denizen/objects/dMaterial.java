@@ -163,7 +163,7 @@ public class dMaterial implements dObject {
     }
 
     @Override
-    public String getType() {
+    public String getObjectType() {
         return "Material";
     }
 

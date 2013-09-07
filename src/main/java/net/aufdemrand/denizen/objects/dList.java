@@ -145,7 +145,7 @@ public class dList extends ArrayList<String> implements dObject {
     }
 
     @Override
-    public String getType() {
+    public String getObjectType() {
         return "List";
     }
     
@@ -354,7 +354,7 @@ public class dList extends ArrayList<String> implements dObject {
         }
 
         if (attribute.startsWith("type")) {
-            return new Element(getType())
+            return new Element(getObjectType())
                     .getAttribute(attribute.fulfill(1));
         }
 

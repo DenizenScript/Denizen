@@ -244,7 +244,7 @@ public class dNPC implements dObject {
     }
 
     @Override
-    public String getType() {
+    public String getObjectType() {
         return "NPC";
     }
 

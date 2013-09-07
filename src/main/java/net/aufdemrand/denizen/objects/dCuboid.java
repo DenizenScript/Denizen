@@ -345,7 +345,7 @@ String prefix = "Cuboid";
 
 
     @Override
-    public String getType() {
+    public String getObjectType() {
         return "cuboid";
     }
 

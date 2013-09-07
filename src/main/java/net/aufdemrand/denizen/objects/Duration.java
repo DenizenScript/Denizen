@@ -237,7 +237,7 @@ public class Duration implements dObject {
 
 
     @Override
-    public String getType() {
+    public String getObjectType() {
         return "duration";
     }
 

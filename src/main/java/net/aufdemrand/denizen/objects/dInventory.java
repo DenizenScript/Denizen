@@ -491,7 +491,7 @@ public class dInventory implements dObject, Notable {
      * continuing to add the items to it over and
      * over until there is no more room
      *
-     * @param item  The array of items
+     * @param items  The array of items
      * @return  The resulting dInventory
      *
      */
@@ -566,7 +566,7 @@ public class dInventory implements dObject, Notable {
      * Denizen support for updatable quest journals
      * and their like
      *
-     * @param   items  The itemStack of the book
+     * @param   book  The itemStack of the book
      * @return  The resulting dInventory
      *
      */
@@ -670,9 +670,9 @@ public class dInventory implements dObject, Notable {
     //  dObject Methods
     /////////////////////
 
-    private String prefix = "Inventory";
+    private String prefix = getObjectType();
     
-    public String getType() {
+    public String getObjectType() {
         return "Inventory";
     }
     
@@ -691,7 +691,7 @@ public class dInventory implements dObject, Notable {
 
     public String identify() {
         return "in@" + (holderType.equals("script") || holderType.equals("notable")
-                ? holderIdentifier : (holderType + "[" + holderIdentifier + "]"));
+                ? holderIdentifier : (holderType + '[' + holderIdentifier + ']'));
     }
 
     public String getAttribute(Attribute attribute) {

@@ -45,7 +45,7 @@ public interface dObject {
      *
      * @return  a straight-up string description of the type of dScriptArg. ie. dList, dLocation
      */
-    public String getType();
+    public String getObjectType();
 
 
     /**

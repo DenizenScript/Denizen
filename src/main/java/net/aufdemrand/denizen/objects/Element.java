@@ -102,7 +102,7 @@ public class Element implements dObject {
     private String prefix;
 
     @Override
-    public String getType() {
+    public String getObjectType() {
         return "Element";
     }
 

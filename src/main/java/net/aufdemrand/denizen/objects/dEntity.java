@@ -724,7 +724,7 @@ public class dEntity implements dObject {
     private String prefix = "Entity";
 
     @Override
-    public String getType() {
+    public String getObjectType() {
         return "Entity";
     }
 
@@ -1234,7 +1234,7 @@ public class dEntity implements dObject {
         // Returns 'Entity', the type of this dObject.
         // -->
         if (attribute.startsWith("type")) {
-            return new Element(getType())
+            return new Element(getObjectType())
                     .getAttribute(attribute.fulfill(1));
         }
 

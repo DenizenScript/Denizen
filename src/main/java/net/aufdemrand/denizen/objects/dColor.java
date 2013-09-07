@@ -141,7 +141,7 @@ public class dColor implements dObject {
     }
 
     @Override
-    public String getType() {
+    public String getObjectType() {
         return "Color";
     }
 

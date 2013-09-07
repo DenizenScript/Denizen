@@ -254,7 +254,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
     String prefix = "Location";
 
     @Override
-    public String getType() {
+    public String getObjectType() {
         return "Location";
     }
 

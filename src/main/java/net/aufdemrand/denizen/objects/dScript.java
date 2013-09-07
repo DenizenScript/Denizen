@@ -11,11 +11,11 @@ import java.util.regex.Pattern;
 
 public class dScript implements dObject {
 
-    final public static Pattern script_pattern = Pattern.compile("(s@|)(.+)",
+    final public static Pattern CONTAINER_PATTERN = Pattern.compile("(s@|)(.+)",
             Pattern.CASE_INSENSITIVE);
 
     /**
-     * Gets a Script Argument Object from a dScript argument.
+     * Gets a dContainer Object from a dScript argument.
      *
      * @param string  the dScript argument String
      * @return  a Script, or null if incorrectly formatted
@@ -23,7 +23,7 @@ public class dScript implements dObject {
     @ObjectFetcher("s")
     public static dScript valueOf(String string) {
 
-        Matcher m = script_pattern.matcher(string);
+        Matcher m = CONTAINER_PATTERN.matcher(string);
         if (m.matches()) {
             dScript script = new dScript(m.group(2));
             // Make sure it's valid.
@@ -34,7 +34,7 @@ public class dScript implements dObject {
 
     public static boolean matches(String string) {
 
-        Matcher m = script_pattern.matcher(string);
+        Matcher m = CONTAINER_PATTERN.matcher(string);
         if (m.matches()) {
             dScript script = new dScript(m.group(2));
             // Make sure it's valid.
@@ -44,7 +44,7 @@ public class dScript implements dObject {
     }
 
     private ScriptContainer container;
-    private String prefix = "Script";
+    private String prefix = "Container";
     private String name = null;
     private boolean valid = false;
 
@@ -77,9 +77,13 @@ public class dScript implements dObject {
      *
      * @return  the type of the Script Container
      */
-    @Override
     public String getType() {
         return (container != null ? container.getType() : "invalid");
+    }
+
+    @Override
+    public String getObjectType() {
+        return "Container";
     }
 
     @Override
