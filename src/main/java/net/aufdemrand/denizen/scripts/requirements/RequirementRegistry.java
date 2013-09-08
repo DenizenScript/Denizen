@@ -108,7 +108,7 @@ public class RequirementRegistry implements dRegistry {
         //
         // -->
         registerCoreMember(FlaggedRequirement.class, 
-                "FLAGGED", "(-)flagged ({player}/npc/global) [<name>([<#>])](:<value>)", 2);
+                "FLAGGED", "(-)flagged ({player}/npc/global) [<name>([<#>])](:<value>)", 1);
         
         // <--[requirement]
         // @Name Holding
