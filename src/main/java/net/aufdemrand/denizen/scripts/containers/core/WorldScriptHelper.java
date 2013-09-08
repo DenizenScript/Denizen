@@ -1823,7 +1823,7 @@ public class WorldScriptHelper implements Listener {
     //     # that the command was handled, use the 'determine fulfilled' command/arg.
     //     - determine fulfilled
     //
-    //  -->
+    // -->
 
     // <--[event]
     // @Events
