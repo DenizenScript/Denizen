@@ -1777,52 +1777,51 @@ public class WorldScriptHelper implements Listener {
         }
     }
 
-    //  <--[example]
-    //  @Title On Command Event tutorial
-    //  @Description
-    //  Denizen contains the ability to run script entries in the form
-    //  of a bukkit /command. Here's an example script that shows basic usage.
+    // <--[example]
+    // @Title On Command Event tutorial
+    // @Description
+    // Denizen contains the ability to run script entries in the form
+    // of a bukkit /command. Here's an example script that shows basic usage.
     //
-    //  @Code
-    //  # +--------------------
-    //  # | On Command Event tutorial
+    // @Code
+    // # +--------------------
+    // # | On Command Event tutorial
     //
-    //  # | Denizen contains the ability to run script entries in the form
-    //  # | of a bukkit /command. Here's an example script that shows basic usage.
+    // # | Denizen contains the ability to run script entries in the form
+    // # | of a bukkit /command. Here's an example script that shows basic usage.
     //
+    // On Command Event Tutorial:
+    //  type: world
     //
-    //  Example On Command Event Tutorial Script:
-    //   type: world
+    // # +-- EVENTS: Node --+
+    // # To 'hook' into the on command event, just create a 'on <command_name> command'
+    // # node as a child of the events node in any world script. Change out <command_name>
+    // # with the desired name of the command. This can only be one word.
     //
-    //  # +-- EVENTS: Node --+
-    //  # To 'hook' into the on command event, just create a 'on <command_name> command'
-    //  # node as a child of the events node in any world script. Change out <command_name>
-    //  # with the desired name of the command. This can only be one word.
+    //   events:
     //
-    //  events:
+    //     # The following example will trigger on the use of '/testcommand'
+    //     on testcommand command:
     //
-    //      # The following example will trigger on the use of '/testcommand'
-    //      on testcommand command:
+    //     # Why not state the obvious? Just to be sure!
+    //     - narrate 'You just use the /testcommand command!'
     //
-    //      # Why not state the obvious? Just to be sure!
-    //      - narrate 'You just use the /testcommand command!'
+    //     # You can utilize any arguments that come along with the command, too!
+    //     # <c.args> returns a list of the arguments, run through the Denizen argument
+    //     # interpreter. Using quotes will allow the use of multiple word arguments,
+    //     # just like Denizen!
+    //     # Just need what was typed after the command? Use <c.raw_args> for a String
+    //     # Element containing the uninterpreted arguments.
+    //     - define arg_size <c.args.size>
+    //     - narrate "'%arg_size%' arguments were used."
+    //     - if %arg_size% > 0 {
+    //     - narrate "'<c.args.get[1]>' was the first argument."
+    //     - narrate "Here's a list of all the arguments<&co> <c.args.as_cslist>"
+    //     }
     //
-    //      # You can utilize any arguments that come along with the command, too!
-    //      # <c.args> returns a list of the arguments, run through the Denizen argument
-    //      # interpreter. Using quotes will allow the use of multiple word arguments,
-    //      # just like Denizen!
-    //      # Just need what was typed after the command? Use <c.raw_args> for a String
-    //      # Element containing the uninterpreted arguments.
-    //      - define arg_size <c.args.size>
-    //      - narrate "'%arg_size%' arguments were used."
-    //      - if %arg_size% > 0 {
-    //      - narrate "'<c.args.get[1]>' was the first argument."
-    //      - narrate "Here's a list of all the arguments: <c.args.as_cslist>"
-    //      }
-    //
-    //      # When a command isn't found, Bukkit reports an error. To let bukkit know
-    //      # that the command was handled, use the 'determine fulfilled' command/arg.
-    //      - determine fulfilled
+    //     # When a command isn't found, Bukkit reports an error. To let bukkit know
+    //     # that the command was handled, use the 'determine fulfilled' command/arg.
+    //     - determine fulfilled
     //
     //  -->
 
