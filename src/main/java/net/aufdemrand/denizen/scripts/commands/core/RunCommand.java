@@ -25,7 +25,7 @@ public class RunCommand extends AbstractCommand {
     // <--[example]
     // @Title Using Local Scripts tutorial
     // @Description
-    // Use local scripts as a way to avoid making unnessecary script containers
+    // Use local scripts as a way to avoid making unnecessary script containers
     // or to group together utility task scripts.
     //
     // @Code

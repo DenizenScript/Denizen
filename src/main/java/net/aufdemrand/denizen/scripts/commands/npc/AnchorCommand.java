@@ -23,14 +23,13 @@ import static net.aufdemrand.denizen.objects.aH.Argument;
 public class AnchorCommand extends AbstractCommand {
 
     // <--[example]
-    // @name Simple Anchor Example
+    // @Title Simple Anchor Example
     // @link Anchor Command, Anchors, Anchor Trait
-
-    // @description
+    // @Description
     // The following code example contains a very simple 'waypoints' system utilizing the
     // anchor command, anchor trait (provided by Citizens2), and world scripts.
-
-    // @code
+    // @Code
+    // TODO: This example 0.0
     //
     // -->
 
