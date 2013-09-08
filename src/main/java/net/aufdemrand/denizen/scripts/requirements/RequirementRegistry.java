@@ -71,7 +71,7 @@ public class RequirementRegistry implements dRegistry {
         //
         // @Usage
         // Use to check if the item in the player's hand has an enchantment.
-        // - enchantment iteminhand
+        // - enchanted iteminhand
         //
         // @Example
         // TODO
