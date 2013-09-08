@@ -13,11 +13,11 @@ import org.bukkit.inventory.meta.BookMeta;
 import java.util.List;
 
 public class BookScriptContainer extends ScriptContainer {
-    
+
     public BookScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
-    
+
     public dItem getBookFrom() {
         return getBookFrom(null, null);
     }
@@ -30,13 +30,13 @@ public class BookScriptContainer extends ScriptContainer {
     public dItem writeBookTo(dItem book, dPlayer player, dNPC npc) {
         // Get current ItemMeta from the book
         BookMeta bookInfo = (BookMeta) book.getItemStack().getItemMeta();
-        
+
         if (contains("TITLE")) {
             String title = getString("TITLE");
             title = TagManager.tag(player, npc, title, false);
             bookInfo.setTitle(title);
         }
-        
+
         if (contains("AUTHOR")) {
             String author = getString("AUTHOR");
             author = TagManager.tag(player, npc, author, false);

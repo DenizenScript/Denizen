@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The dScript Argument Helper will aid you in parsing and formatting arguments from a 
+ * The dScript Argument Helper will aid you in parsing and formatting arguments from a
  * dScript argument string (such as those found in a ScriptEntry.getArguments() method).
  *
  * @author aufdemrand
@@ -63,7 +63,7 @@ public class aH {
 
             // dB.log("Constructed Argument: " + prefix + ":" + value);
         }
-        
+
         public static Argument valueOf(String string) {
             return new Argument(string);
         }
@@ -75,7 +75,7 @@ public class aH {
         public boolean hasPrefix() {
             return has_prefix;
         }
-        
+
         public Argument getPrefix() {
             if (prefix == null)
                 return null;
@@ -154,12 +154,12 @@ public class aH {
 
             return false;
         }
-        
+
         // Check if this argument matches a dList of a certain dObject
         public boolean matchesArgumentList(Class<? extends dObject> dClass) {
 
             dList list = new dList(this.getValue());
-            
+
             return list.filter(dClass) != null;
         }
 
@@ -407,7 +407,7 @@ public class aH {
 
             case String:
                 return true;
-                
+
             case Custom:
                 return true;
 
@@ -601,14 +601,6 @@ public class aH {
     }
 
     final static Pattern matchesScriptPtrn = Pattern.compile("script:(.+)", Pattern.CASE_INSENSITIVE);
-
-
-
-
-
-
-
-
 
 
 }

@@ -442,7 +442,4 @@ String prefix = "Cuboid";
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
-
-
-
 }

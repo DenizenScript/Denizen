@@ -74,5 +74,4 @@ public interface dObject {
      */
     public String getAttribute(Attribute attribute);
 
-
 }

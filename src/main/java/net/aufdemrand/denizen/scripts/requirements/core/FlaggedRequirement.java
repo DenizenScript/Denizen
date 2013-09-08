@@ -14,10 +14,10 @@ public class FlaggedRequirement extends AbstractRequirement {
 
     /* FLAGGED TYPE FLAG:value
      * Example: FLAGGED PLAYER Cookies:3
-     * 
+     *
      * Arguments: [] - Required, () - Optional
      */
-    
+
     private enum Type { GLOBAL, NPC, PLAYER }
 
     @Override
@@ -28,17 +28,17 @@ public class FlaggedRequirement extends AbstractRequirement {
         String value = "true";
         String index = "";
         Type type = Type.PLAYER;
-        
+
         for(String arg: args) {
-            
+
             if (aH.matchesArg("GLOBAL, NPC, DENIZEN, GLOBAL", arg))
                 type = Type.valueOf(arg.toUpperCase().replace("DENIZEN", "NPC"));
-            
+
             else if (arg.split(":", 2).length > 1)
             {
                 String[] flagArgs = arg.split(":");
                 value = flagArgs[1].toUpperCase();
-                
+
                 if (flagArgs[0].contains("["))
                 {
                     name = flagArgs[0].split("\\[", 2)[0].trim();
@@ -49,7 +49,7 @@ public class FlaggedRequirement extends AbstractRequirement {
                     name = flagArgs[0].toUpperCase();
                 }
             }
-            
+
             else
                 name = arg.toUpperCase();
         }
@@ -57,7 +57,7 @@ public class FlaggedRequirement extends AbstractRequirement {
         FlagManager flagMng = DenizenAPI.getCurrentInstance().flagManager();
         FlagManager.Flag flag = null;
         String player = context.getPlayer().getName();
-        
+
         switch (type) {
         case NPC:
             flag = flagMng.getNPCFlag(context.getNPC().getId(), name);

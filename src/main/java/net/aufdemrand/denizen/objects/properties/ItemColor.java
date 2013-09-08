@@ -10,9 +10,7 @@ import org.bukkit.material.Colorable;
 public class ItemColor implements Property {
 
     public static boolean describes(dItem item) {
-        if (item.getItemStack() instanceof Colorable)
-             return true;
-        else return false;
+        return item.getItemStack() instanceof Colorable;
     }
 
     public static ItemColor getFrom(dItem item) {

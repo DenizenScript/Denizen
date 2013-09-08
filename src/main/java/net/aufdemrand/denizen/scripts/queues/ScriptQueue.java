@@ -546,5 +546,4 @@ public abstract class ScriptQueue {
         return script_entries.size();
     }
 
-
 }
