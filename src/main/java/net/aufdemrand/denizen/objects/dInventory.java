@@ -408,7 +408,7 @@ public class dInventory implements dObject, Notable {
                     //
                     // Otherwise, count the quantities of stacks
 
-                    if (stacks == true) qty++;
+                    if (stacks) qty++;
                     else qty = qty + invStack.getAmount();
                 }
             }
@@ -450,7 +450,7 @@ public class dInventory implements dObject, Notable {
                 // If the item array did not contain
                 // this inventory item, remove it
                 // from the inventory
-                if (keep == false) {
+                if (!keep) {
 
                     this.remove(invStack);
                 }

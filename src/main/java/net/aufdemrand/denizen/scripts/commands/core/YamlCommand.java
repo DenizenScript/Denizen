@@ -127,7 +127,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
                     try {
                         yamls.get(id.toUpperCase()).save(new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename));
                     } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        e.printStackTrace();
                     }
                 }
                 break;
