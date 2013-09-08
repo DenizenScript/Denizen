@@ -35,14 +35,14 @@ public class TimeCommand extends AbstractCommand {
                 // add value
                 scriptEntry.addObject("value", arg.asType(Duration.class));
             }
-            
+
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(dWorld.class)) {
                 // add world
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
         }
-        
+
         // Check to make sure required arguments have been filled
 
         if ((!scriptEntry.hasObject("value")))
@@ -50,19 +50,19 @@ public class TimeCommand extends AbstractCommand {
 
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to "world" if necessary
-                
+
         scriptEntry.defaultObject("world",
                 scriptEntry.hasNPC() ? new dWorld(scriptEntry.getNPC().getWorld()) : null,
                 scriptEntry.hasPlayer() ? new dWorld(scriptEntry.getPlayer().getWorld()) : null,
                 dWorld.valueOf("world"));
     }
-    
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
         Duration value = (Duration) scriptEntry.getObject("value");
         dWorld world = (dWorld) scriptEntry.getObject("world");
-        Type type = scriptEntry.hasObject("type") ? 
+        Type type = scriptEntry.hasObject("type") ?
                 (Type) scriptEntry.getObject("type") : Type.GLOBAL;
 
         // Report to dB
@@ -80,5 +80,5 @@ public class TimeCommand extends AbstractCommand {
             scriptEntry.getPlayer().getPlayerEntity().setPlayerTime(value.getTicks(), true);
         }
     }
-    
+
 }

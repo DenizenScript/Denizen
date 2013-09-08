@@ -13,7 +13,7 @@ import java.text.DecimalFormat;
 public class FlagTags implements Listener {
 
     Denizen denizen;
-    
+
     public FlagTags(Denizen denizen) {
         this.denizen = denizen;
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
@@ -23,11 +23,11 @@ public class FlagTags implements Listener {
 
     /**
      * Replaces FLAG TAGs. Called automatically by the dScript ScriptBuilder and Executer.
-     * 
-     * @param event 
+     *
+     * @param event
      *      ReplaceableTagEvent
      */
-    
+
     @EventHandler
     public void flagTag(ReplaceableTagEvent event) {
         if (!event.matches("FLAG")) return;
@@ -131,5 +131,5 @@ public class FlagTags implements Listener {
         }
         return null;
     }
-    
+
 }

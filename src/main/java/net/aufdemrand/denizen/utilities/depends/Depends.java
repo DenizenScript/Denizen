@@ -16,13 +16,13 @@ public class Depends {
 
     public static WorldGuardPlugin worldGuard = null;
     public static Citizens citizens = null;
-    
+
     public static Economy economy = null;
     public static Permission permissions = null;
     public static Chat chat = null;
 
     public static ProtocolManager protocolManager = null;
-    
+
     public void initialize() {
         setupEconomy();
         setupPermissions();
@@ -36,7 +36,7 @@ public class Depends {
         if (Bukkit.getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
            protocolManager = ProtocolLibrary.getProtocolManager();
         }
-        
+
         return protocolManager != null;
     }
 
@@ -74,7 +74,7 @@ public class Depends {
         } catch (Exception e) { }
         return permissions != null;
     }
-    
+
     private boolean setupWorldGuard() {
         if (Bukkit.getServer().getPluginManager().getPlugin("WorldGuard") == null) {
             return false;
@@ -82,10 +82,10 @@ public class Depends {
         worldGuard = (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
         return worldGuard != null;
     }
-    
+
     private boolean setupCitizens() {
         citizens = (Citizens) Bukkit.getServer().getPluginManager().getPlugin("Citizens");
         return citizens != null;
     }
-    
+
 }

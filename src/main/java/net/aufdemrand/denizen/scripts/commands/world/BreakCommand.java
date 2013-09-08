@@ -54,9 +54,9 @@ public class BreakCommand extends AbstractCommand {
             else throw new InvalidArgumentsException("Must specify an entity!");
 
         }
-        
+
         scriptEntry.defaultObject("radius", new Element(1));
-        
+
     }
 
     @Override

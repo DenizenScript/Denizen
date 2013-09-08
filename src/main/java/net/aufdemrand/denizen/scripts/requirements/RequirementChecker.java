@@ -69,13 +69,13 @@ public class RequirementChecker {
             //
             List<String> argumentList = TagManager.fillArguments(aH.buildArgs(reqEntry), context.player, context.npc);
             String reqString = argumentList.get(0).toUpperCase();
-            
+
             //
             // Evaluate the requirement
             //
             if (reqString.equalsIgnoreCase("valueof")) {
                 String arg = argumentList.get(1);
-                
+
                 if (arg.equalsIgnoreCase("true")) {
                     if (!negativeRequirement) {
                         dB.echoApproval("Checking 'VALUEOF " + arg + "... requirement met!");

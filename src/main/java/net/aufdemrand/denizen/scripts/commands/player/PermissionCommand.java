@@ -52,7 +52,7 @@ public class PermissionCommand extends AbstractCommand {
         String permission = String.valueOf(scriptEntry.getObject("permission"));
         String group = String.valueOf(scriptEntry.getObject("group"));
         String world = String.valueOf(scriptEntry.getObject("world"));
-        
+
         if(group.equals("null"))
             group = null;
         if(world.equals("null"))
@@ -65,7 +65,7 @@ public class PermissionCommand extends AbstractCommand {
                         + aH.debugObj("Permission", permission)
                         + (group != null ? aH.debugObj("Group", group) : "")
                         + (world != null ? aH.debugObj("World", world) : ""));
-        
+
 
         switch (action) {
         case ADD:
@@ -87,7 +87,7 @@ public class PermissionCommand extends AbstractCommand {
                 }
             }
             return;
-        case REMOVE: 
+        case REMOVE:
             if(group != null) {
                 if(!Depends.permissions.groupHas(world, group, permission)) {
                     dB.echoDebug("Group " + group + " does not have access to permission " + permission);

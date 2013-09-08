@@ -11,17 +11,17 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 public class OxygenRequirement extends AbstractRequirement{
 
     public enum Range { BELOW, EQUALS, ABOVE }
-    
+
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
         // Make sure player isn't null and then check oxygen.
         if (context.getPlayer() == null) return false;
-        
+
         if(args.size() < 1) throw new RequirementCheckException("Must specify amount/quantity!");
-        
+
         Range range = Range.BELOW;
         int val = context.getPlayer().getPlayerEntity().getMaximumAir();
-        
+
         for(String arg : args) {
             if(aH.matchesValueArg("range", arg, aH.ArgumentType.String)) {
                 try {
@@ -35,20 +35,20 @@ public class OxygenRequirement extends AbstractRequirement{
                 dB.echoDebug("Amount set to " + val);
             }
         }
-        
+
         int oxygen = context.getPlayer().getPlayerEntity().getRemainingAir();
-        
+
         switch(range) {
             case BELOW:
                 return oxygen < val;
-                
+
             case EQUALS:
                 return oxygen == val;
-                
+
             case ABOVE:
                 return oxygen > val;
         }
-        
+
         return true;
     }
 }

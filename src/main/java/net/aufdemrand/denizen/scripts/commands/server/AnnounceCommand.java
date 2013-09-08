@@ -23,7 +23,7 @@ import org.bukkit.entity.Player;
  *
  * <ol><tt>Arguments: [] - Required</ol></tt>
  *
- * <ol><tt>['message to announce']</tt><br> 
+ * <ol><tt>['message to announce']</tt><br>
  *         The message to send to the server. This will be seen by all Players.</ol>
  *
  *
@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
  * <ol><tt>
  *  - ANNOUNCE 'Today is Christmas!' <br>
  *  - ANNOUNCE "&#60;PLAYER.NAME> has completed '&#60;FLAG.P:currentQuest>'!" <br>
- *  - ANNOUNCE "&#60;GOLD>$$$ &#60;WHITE>- Make some quick cash at our &#60;RED>MINEA-SINO&#60;WHITE>!" 
+ *  - ANNOUNCE "&#60;GOLD>$$$ &#60;WHITE>- Make some quick cash at our &#60;RED>MINEA-SINO&#60;WHITE>!"
  * </ol></tt>
  *
  * @author Jeremy Schroeder
@@ -50,30 +50,30 @@ public class AnnounceCommand extends AbstractCommand {
             throw new InvalidArgumentsException(Messages.ERROR_LOTS_OF_ARGUMENTS);
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            
+
             if (!scriptEntry.hasObject("type")
                     && arg.matches("to_ops"))
                 scriptEntry.addObject("type", AnnounceType.TO_OPS);
-            
+
             else if (!scriptEntry.hasObject("type")
                     && arg.matchesPrefix("to_flagged")) {
                 scriptEntry.addObject("type", AnnounceType.TO_FLAGGED);
                 scriptEntry.addObject("flag", arg.asElement());
             }
-            
+
             else if (!scriptEntry.hasObject("format")
                     && arg.matchesPrefix("format"))
                 scriptEntry.addObject("format", ScriptRegistry.getScriptContainerAs(arg.getValue(), FormatScriptContainer.class));
 
             else if (!scriptEntry.hasObject("text"))
                 scriptEntry.addObject("text", arg.asElement());
-            
+
         }
 
         // If text is missing, alert the console.
         if (!scriptEntry.hasObject("text"))
             throw new InvalidArgumentsException(Messages.ERROR_NO_TEXT);
-        
+
         scriptEntry.defaultObject("type", AnnounceType.ALL);
 
     }

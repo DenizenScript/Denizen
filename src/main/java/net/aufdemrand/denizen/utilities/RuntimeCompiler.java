@@ -39,7 +39,7 @@ public class RuntimeCompiler {
                         dB.echoDebug("Loaded  " + f.getName());
                     }
                 }
-            }   
+            }
         } catch (Exception error) { dB.log("No dependencies to load."); }
 
         try {
@@ -70,10 +70,10 @@ public class RuntimeCompiler {
                                 e.printStackTrace();
                             }
                         }
-                    } 
+                    }
                 }
                 dB.echoApproval("All externals loaded!");
-            } else dB.echoError("Woah! No externals in /plugins/Denizen/externals/.../ to load!");  
+            } else dB.echoError("Woah! No externals in /plugins/Denizen/externals/.../ to load!");
         } catch (Exception error) { /* No externals */ }
     }
 

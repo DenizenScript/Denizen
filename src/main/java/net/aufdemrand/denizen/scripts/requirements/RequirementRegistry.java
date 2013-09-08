@@ -23,8 +23,8 @@ public class RequirementRegistry implements dRegistry {
     @Override
     public void disableCoreMembers() {
         for (RegistrationableInstance member : instances.values())
-            try { 
-                member.onDisable(); 
+            try {
+                member.onDisable();
             } catch (Exception e) {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
                 if (dB.showStackTraces) e.printStackTrace();
@@ -57,7 +57,7 @@ public class RequirementRegistry implements dRegistry {
 
     @Override
     public void registerCoreMembers() {
-        
+
         // <--[requirement]
         // @Name Enchanted
         // @Usage enchanted [iteminhand]
@@ -77,9 +77,9 @@ public class RequirementRegistry implements dRegistry {
         // TODO
         //
         // -->
-        registerCoreMember(EnchantedRequirement.class, 
+        registerCoreMember(EnchantedRequirement.class,
                 "ENCHANTED", "enchanted [iteminhand]", 1);
-        
+
         // <--[requirement]
         // @Name Flagged
         // @Usage (-)flagged ({player}/npc/global) [<name>([<#>])](:<value>)
@@ -107,9 +107,9 @@ public class RequirementRegistry implements dRegistry {
         // TODO
         //
         // -->
-        registerCoreMember(FlaggedRequirement.class, 
+        registerCoreMember(FlaggedRequirement.class,
                 "FLAGGED", "(-)flagged ({player}/npc/global) [<name>([<#>])](:<value>)", 1);
-        
+
         // <--[requirement]
         // @Name Holding
         // @Usage holding [<item>] (qty:<#>) (exact)
@@ -131,9 +131,9 @@ public class RequirementRegistry implements dRegistry {
         // TODO
         //
         // -->
-        registerCoreMember(HoldingRequirement.class, 
+        registerCoreMember(HoldingRequirement.class,
                 "HOLDING", "holding [<item>] (qty:<#>) (exact)", 1);
-        
+
         // <--[requirement]
         // @Name InGroup
         // @Usage ingroup (global) [<group>]
@@ -156,9 +156,9 @@ public class RequirementRegistry implements dRegistry {
         // TODO
         //
         // -->
-        registerCoreMember(InGroupRequirement.class, 
+        registerCoreMember(InGroupRequirement.class,
                 "INGROUP", "ingroup (global) [<group>]", 1);
-        
+
         // <--[requirement]
         // @Name Item
         // @Usage item [<item>] (qty:<#>)
@@ -177,9 +177,9 @@ public class RequirementRegistry implements dRegistry {
         // TODO
         //
         // -->
-        registerCoreMember(ItemRequirement.class, 
+        registerCoreMember(ItemRequirement.class,
                 "ITEM", "item [<item>] (qty:<#>)", 1);
-        
+
         // <--[requirement]
         // @Name IsLiquid
         // @Usage isliquid [location:<location>]
@@ -197,9 +197,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(LiquidRequirement.class, 
+        registerCoreMember(LiquidRequirement.class,
                 "ISLIQUID", "isliquid [location:<location>]", 1);
-        
+
         // <--[requirement]
         // @Name Money
         // @Usage money [qty:<#>]
@@ -217,9 +217,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(MoneyRequirement.class, 
+        registerCoreMember(MoneyRequirement.class,
                 "MONEY", "money [qty:<#>]", 1);
-        
+
         // <--[requirement]
         // @Name Op
         // @Usage op
@@ -237,9 +237,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(OpRequirement.class, 
+        registerCoreMember(OpRequirement.class,
                 "OP", "op", 0);
-        
+
         // <--[requirement]
         // @Name Owner
         // @Usage owner
@@ -257,9 +257,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(OwnerRequirement.class, 
+        registerCoreMember(OwnerRequirement.class,
                 "OWNER", "owner", 0);
-        
+
         // <--[requirement]
         // @Name Permission
         // @Usage permission (global) [<permission>]
@@ -277,9 +277,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(PermissionRequirement.class, 
+        registerCoreMember(PermissionRequirement.class,
                 "PERMISSION", "permission (global) [<permission>]", 1);
-        
+
         // <--[requirement]
         // @Name IsPowered
         // @Usage ispowered [location:<location>]
@@ -297,9 +297,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(PoweredRequirement.class, 
+        registerCoreMember(PoweredRequirement.class,
                 "ISPOWERED", "ispowered [location:<location>]", 1);
-        
+
         // <--[requirement]
         // @Name Oxygen
         // @Usage oxygen (range:below/equals/above) [qty:<#>]
@@ -318,7 +318,7 @@ public class RequirementRegistry implements dRegistry {
         // -->
         registerCoreMember(OxygenRequirement.class,
                 "OXYGEN", "oxygen (range:below/equals/above) [qty:<#>]", 1);
-        
+
         // <--[requirement]
         // @Name Procedure
         // @Usage procedure [<script>]
@@ -335,9 +335,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(ProcedureRequirement.class, 
+        registerCoreMember(ProcedureRequirement.class,
                 "PROCEDURE", "procedure [<script>]", 1);
-        
+
         // <--[requirement]
         // @Name Script
         // @Usage script [finished/failed] [script:<name>]
@@ -359,9 +359,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(ScriptRequirement.class, 
+        registerCoreMember(ScriptRequirement.class,
                 "SCRIPT", "script [finished/failed] [script:<name>]", 2);
-        
+
         // <--[requirement]
         // @Name Sneaking
         // @Usage sneaking
@@ -379,9 +379,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(SneakingRequirement.class, 
+        registerCoreMember(SneakingRequirement.class,
                 "SNEAKING", "sneaking", 0);
-        
+
         // <--[requirement]
         // @Name Storming
         // @Usage storming
@@ -399,9 +399,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(StormRequirement.class, 
+        registerCoreMember(StormRequirement.class,
                 "STORMING", "storming", 0);
-        
+
         // <--[requirement]
         // @Name Sunny
         // @Usage sunny
@@ -419,7 +419,7 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(SunnyRequirement.class, 
+        registerCoreMember(SunnyRequirement.class,
                 "SUNNY", "sunny", 0);
 
         // <--[requirement]
@@ -441,7 +441,7 @@ public class RequirementRegistry implements dRegistry {
         // -->
         registerCoreMember(RainyRequirement.class,
                 "RAINY", "rainy", 0);
-        
+
         // <--[requirement]
         // @Name Time
         // @Usage time [dawn/day/dusk/night]
@@ -459,9 +459,9 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(TimeRequirement.class, 
+        registerCoreMember(TimeRequirement.class,
                 "TIME", "time [dawn/day/dusk/night]", 1);
-        
+
         // <--[requirement]
         // @Name InRegion
         // @Usage inregion [name:<region>]
@@ -479,12 +479,12 @@ public class RequirementRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(WorldGuardRegionRequirement.class, 
+        registerCoreMember(WorldGuardRegionRequirement.class,
                 "INREGION", "inregion [name:<region>]", 1);
 
         dB.echoApproval("Loaded core requirements: " + instances.keySet().toString());
     }
-    
+
     private <T extends AbstractRequirement> void registerCoreMember(Class<T> requirement, String name, String hint, int args) {
         try {
             requirement.newInstance().activate().as(name).withOptions("(-)" + hint, args);

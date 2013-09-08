@@ -74,7 +74,7 @@ public class TagManager implements Listener {
         try {
 
             if (!((Boolean) object_class.getMethod("matches", String.class)
-                    .invoke(null, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']' 
+                    .invoke(null, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']'
                     : event.getName()))) {
                 dB.echoDebug("Returning null. '" + event.getName()
                         + "' is an invalid " + object_class.getSimpleName() + ".");
@@ -83,7 +83,7 @@ public class TagManager implements Listener {
             }
 
             arg = (dObject) object_class.getMethod("valueOf", String.class)
-                    .invoke(null, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']' 
+                    .invoke(null, event.hasNameContext() ? event.getName() + '[' + event.getNameContext() + ']'
                             : event.getName());
 
             Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());

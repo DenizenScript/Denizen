@@ -69,7 +69,7 @@ public class FlaggedRequirement extends AbstractRequirement {
             flag = flagMng.getGlobalFlag(name);
             break;
         }
-        
+
         if (index.length() == 0)
         {
             if (flag.getLast().asString().equalsIgnoreCase(value))

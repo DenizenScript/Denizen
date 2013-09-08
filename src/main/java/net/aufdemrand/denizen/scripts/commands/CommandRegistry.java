@@ -90,7 +90,7 @@ public class CommandRegistry implements dRegistry {
 		// -->
         registerCoreMember(AnchorCommand.class,
                 "ANCHOR", "anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]", 2);
-                
+
         // <--[command]
         // @Name Animate
         // @Usage animate [<entity>|...] [animation:<name>]
@@ -109,7 +109,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(AnimateCommand.class,
                 "ANIMATE", "animate [<entity>|...] [animation:<name>]", 1);
-        
+
         // <--[command]
         // @Name AnimateChest
         // @Usage animatechest [<location>] ({open}/close) (sound:{true}/false)
@@ -128,7 +128,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false)", 1);
-        
+
         // <--[command]
         // @Name Announce
         // @Usage announce ["<text>"] (to_ops) (to_flagged:<flag>)
@@ -147,7 +147,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(AnnounceCommand.class,
                 "ANNOUNCE", "announce [\"<text>\"] (to_ops) (to_flagged:<flag>)", 1);
-        
+
         // <--[command]
         // @Name Assignment
         // @Usage assignment [{set}/remove] (script:<name>)
@@ -166,7 +166,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(AssignmentCommand.class,
                 "ASSIGNMENT", "assignment [{set}/remove] (script:<name>)", 1);
-        
+
         // <--[command]
         // @Name Attack
         // @Usage attack (cancel) (<entity>|...) (target:<entity>)
@@ -183,7 +183,7 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(AttackCommand.class, 
+        registerCoreMember(AttackCommand.class,
                 "ATTACK", "attack (cancel) (<entity>|...) (target:<entity>)", 0);
 
         // <--[command]
@@ -204,7 +204,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(BreakCommand.class,
                 "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);
-        
+
         // <--[command]
         // @Name Burn
         // @Usage burn [<entity>|...] (duration:<value>)
@@ -223,7 +223,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(BurnCommand.class,
                 "BURN", "burn [<entity>|...] (duration:<value>)", 1);
-        
+
         // <--[command]
         // @Name Cast, Potion
         // @Usage cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
@@ -253,9 +253,9 @@ public class CommandRegistry implements dRegistry {
         // @Example TODO
         //
         // -->
-        registerCoreMember(CastCommand.class, 
+        registerCoreMember(CastCommand.class,
                 "CAST, POTION", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)", 1);
-        
+
         // <--[command]
         // @Name Chat
         // @Usage chat ["<text>"] (targets:<entity>|...)
@@ -272,9 +272,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(ChatCommand.class, 
+        registerCoreMember(ChatCommand.class,
                 "CHAT", "chat [\"<text>\"] (targets:<entity>|...)", 1);
-        
+
         // <--[command]
         // @Name ChunkLoad
         // @Usage chunkload ({add}/remove/removeall) [<location>] (duration:<value>)
@@ -460,7 +460,7 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(DetermineCommand.class, 
+        registerCoreMember(DetermineCommand.class,
                 "DETERMINE", "determine [<value>]", 1);
 
         // <--[command]
@@ -468,19 +468,19 @@ public class CommandRegistry implements dRegistry {
         // @Usage disengage (npc:<npc>)
         // @Required 0
         // @Stable 1.0
-        // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command. 
+        // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command.
         // @Author aufdemrand
         //
         // @Description
-        // Re-enables any toggled triggers that have been disabled by disengage. Using 
-        // disengage inside scripts must have a NPC to reference, or one may be specified 
+        // Re-enables any toggled triggers that have been disabled by disengage. Using
+        // disengage inside scripts must have a NPC to reference, or one may be specified
         // by supplying a valid dNPC object with the npc argument.
         //
         // This is mostly regarded as an 'interact script command', though it may be used inside
         // other script types. This is because disengage works with the trigger system, which is an
-        // interact script-container feature. 
+        // interact script-container feature.
         //
-        // NPCs that are interacted with while engaged will fire an 'on unavailable' assignment 
+        // NPCs that are interacted with while engaged will fire an 'on unavailable' assignment
         // script-container action.
         //
         // @See Engage Command
@@ -495,7 +495,7 @@ public class CommandRegistry implements dRegistry {
         //
         // @Example
         // -->
-        registerCoreMember(DisengageCommand.class, 
+        registerCoreMember(DisengageCommand.class,
                 "DISENGAGE", "disengage (npc:<npc>)", 0);
 
         // <--[command]
@@ -533,9 +533,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(DropCommand.class, 
+        registerCoreMember(DropCommand.class,
                 "DROP", "drop [<item>/<entity>/<xp>] [<location>] (qty:<#>)", 1);
-        
+
         // <--[command]
         // @Name Engage
         // @Usage engage (<duration>) (npc:<npc>)
@@ -545,8 +545,8 @@ public class CommandRegistry implements dRegistry {
         // @Author aufdemrand
         //
         // @Description
-        // Engaging a NPC will temporarily disable any interact script-container triggers. To reverse 
-        // this behavior, use either the disengage command, or specify a duration in which the engage 
+        // Engaging a NPC will temporarily disable any interact script-container triggers. To reverse
+        // this behavior, use either the disengage command, or specify a duration in which the engage
         // should timeout. Specifying an engage without a duration will render the NPC engaged until
         // a disengage is used on the NPC. Engaging a NPC affects all players attempting to interact
         // with the NPC.
@@ -581,7 +581,7 @@ public class CommandRegistry implements dRegistry {
         // - flag player finished_quests:->:super_quest
         //
         // @Example
-        // 
+        //
         // -->
         registerCoreMember(EngageCommand.class,
                 "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
@@ -604,7 +604,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(EngraveCommand.class,
                 "ENGRAVE", "engrave (set/remove)", 0);
-        
+
         // <--[command]
         // @Name Equip
         // @Usage equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
@@ -621,9 +621,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(EquipCommand.class, 
+        registerCoreMember(EquipCommand.class,
                 "EQUIP", "equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
-        
+
         // <--[command]
         // @Name Execute
         // @Usage execute [as_player/as_op/as_npc/as_server] [<Bukkit command>]
@@ -680,7 +680,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ExplodeCommand.class,
                 "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
-        
+
         // <--[command]
         // @Name Fail
         // @Usage fail (script:<name>)
@@ -697,9 +697,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(FailCommand.class, 
+        registerCoreMember(FailCommand.class,
                 "FAIL", "fail (script:<name>)", 0);
-        
+
         // <--[command]
         // @Name Feed
         // @Usage feed (amt:<#>) (target:<entity>|...)
@@ -716,7 +716,7 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(FeedCommand.class, 
+        registerCoreMember(FeedCommand.class,
                 "FEED", "feed (amt:<#>) (target:<entity>|...)", 0);
 
         // <--[command]
@@ -735,7 +735,7 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(FinishCommand.class, 
+        registerCoreMember(FinishCommand.class,
                 "FINISH", "finish (script:<name>)", 0);
 
         // <--[command]
@@ -756,7 +756,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(FireworkCommand.class,
                 "FIREWORK", "firework (<location>) (power:<#>) (type:<name>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
-        
+
         // <--[command]
         // @Name Fish
         // @Usage fish (catchfish) (stop) (<location>) (catchpercent:<#>)
@@ -773,7 +773,7 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(FishCommand.class, 
+        registerCoreMember(FishCommand.class,
                 "FISH", "fish (catchfish) (stop) (<location>) (catchpercent:<#>)", 1);
 
         // <--[command]
@@ -792,9 +792,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(FlagCommand.class, 
+        registerCoreMember(FlagCommand.class,
                 "FLAG", "flag ({player}/npc/global) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
-        
+
         // <--[command]
         // @Name Fly
         // @Usage fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)
@@ -813,7 +813,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(FlyCommand.class,
                 "FLY", "fly (cancel) [<entity>|...] (origin:<location>) (destinations:<location>|...) (speed:<#.#>)", 1);
-        
+
         // <--[command]
         // @Name Follow
         // @Usage follow (stop) (lead:<#.#>) (target:<entity>)
@@ -830,9 +830,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(FollowCommand.class, 
+        registerCoreMember(FollowCommand.class,
                 "FOLLOW", "follow (stop) (lead:<#.#>) (target:<entity>)", 0);
-        
+
         // <--[command]
         // @Name ForEach
         // @Usage foreach [<object>|...] [<commands>]
@@ -842,7 +842,7 @@ public class CommandRegistry implements dRegistry {
         // @Author Morphan1/mcmonkey
         //
         // @Description
-        // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for 
+        // Loops through a dList of any type. For each item in the dList, the specified commands will be ran for
         // that item. To call the value of the item while in the loop, you can use %value%.
         //
         // @Usage
@@ -856,7 +856,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ForEachCommand.class,
                 "FOREACH", "foreach [<object>|...] [<commands>]", 2);
-        
+
         // <--[command]
         // @Name Give
         // @Usage give [money/<item>] (qty:<#>) (engrave) (to:<inventory>)
@@ -875,7 +875,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(GiveCommand.class,
                 "GIVE", "give [money/<item>] (qty:<#>) (engrave) (to:<inventory>)", 1);
-        
+
         // <--[command]
         // @Name Group
         // @Usage group [add/remove] [<group>] (world:<name>)
@@ -894,7 +894,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(GroupCommand.class,
                 "GROUP", "group [add/remove] [<group>] (world:<name>)", 2);
-        
+
         // <--[command]
         // @Name Head
         // @Usage head (player) [skin:<name>]
@@ -913,7 +913,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(HeadCommand.class,
                 "HEAD", "head (player) [skin:<name>]", 0);
-        
+
         // <--[command]
         // @Name Heal
         // @Usage heal (<#.#>) (<entity>|...)
@@ -930,9 +930,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(HealCommand.class, 
+        registerCoreMember(HealCommand.class,
                 "HEAL", "heal (<#.#>) (<entity>|...)", 0);
-        
+
         // <--[command]
         // @Name Health
         // @Usage health [<#>]
@@ -951,7 +951,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(HealthCommand.class,
                 "HEALTH", "health [<#>]", 1);
-        
+
         // <--[command]
         // @Name Hurt
         // @Usage hurt (<#.#>) (<entity>|...)
@@ -970,7 +970,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(HurtCommand.class,
                 "HURT", "hurt (<#.#>) (<entity>|...)", 0);
-        
+
         // <--[command]
         // @Name If
         // @Usage if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)
@@ -987,7 +987,7 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(IfCommand.class, 
+        registerCoreMember(IfCommand.class,
                 "IF", "if [<value>] (!)(<operator> <value>) (&&/|| ...) [<commands>] (else <commands>)", 2);
 
         // <--[command]
@@ -1046,7 +1046,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [player/npc] [state:true/false/toggle]", 2);
-        
+
         // <--[command]
         // @Name Leash
         // @Usage leash (cancel) [<entity>|...] (holder:<entity>/<location>)
@@ -1065,7 +1065,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(LeashCommand.class,
                 "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
-        
+
         // <--[command]
         // @Name Listen
         // @Usage listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)
@@ -1084,7 +1084,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ListenCommand.class,
                 "LISTEN", "listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)", 2);
-        
+
         // <--[command]
         // @Name Log
         // @Usage log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]
@@ -1103,7 +1103,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(LogCommand.class,
                 "LOG", "log [<text>] (type:severe/info/warning/fine/finer/finest) [file:<name>]", 2);
-        
+
         // <--[command]
         // @Name Look
         // @Usage look (<entity>|...) [<location>] (duration:<duration>)
@@ -1122,7 +1122,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(LookCommand.class,
                 "LOOK", "look (<entity>|...) [<location>] (duration:<duration>)", 1);
-        
+
         // <--[command]
         // @Name LookClose
         // @Usage lookclose [state:true/false]
@@ -1141,7 +1141,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(LookcloseCommand.class,
                 "LOOKCLOSE", "lookclose [state:true/false]", 1);
-        
+
         // <--[command]
         // @Name Midi
         // @Usage midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)
@@ -1160,7 +1160,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(MidiCommand.class,
                 "MIDI", "midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)", 1);
-        
+
         // <--[command]
         // @Name Mount
         // @Usage mount (cancel) [<entity>|...] (<location>)
@@ -1179,7 +1179,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(MountCommand.class,
                 "MOUNT", "mount (cancel) [<entity>|...] (<location>)", 0);
-        
+
         // <--[command]
         // @Name ModifyBlock
         // @Usage modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)
@@ -1198,7 +1198,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ModifyBlockCommand.class,
                 "MODIFYBLOCK", "modifyblock [<location>] [<material>] (radius:<#>) (height:<#>) (depth:<#>)", 2);
-        
+
         // <--[command]
         // @Name Nameplate
         // @Usage nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib
@@ -1217,7 +1217,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(NameplateCommand.class,
                 "NAMEPLATE", "nameplate [<chatcolor>] [set:<text>] (target:<player>)  +--> Requires ProtocolLib", 1);
-        
+
         // <--[command]
         // @Name Narrate
         // @Usage narrate ["<text>"] (targets:<player>|...) (format:<name>)
@@ -1236,7 +1236,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(NarrateCommand.class,
                 "NARRATE", "narrate [\"<text>\"] (targets:<player>|...) (format:<name>)", 1);
-        
+
         // <--[command]
         // @Name Note
         // @Usage note [<Notable dObject>] [as:<name>]
@@ -1255,7 +1255,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(NoteCommand.class,
                 "NOTE", "note [<Notable dObject>] [as:<name>]", 2);
-        
+
         // <--[command]
         // @Name Oxygen
         // @Usage oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]
@@ -1274,7 +1274,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(OxygenCommand.class,
                 "OXYGEN", "oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]", 1);
-        
+
         // <--[command]
         // @Name PlayEffect
         // @Usage playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)
@@ -1293,7 +1293,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(PlayEffectCommand.class,
                 "PLAYEFFECT", "playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)", 2);
-        
+
         // <--[command]
         // @Name PlaySound
         // @Usage playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)
@@ -1312,7 +1312,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(PlaySoundCommand.class,
                 "PLAYSOUND", "playsound [<location>] [sound:<name>] (volume:<#.#>) (pitch:<#.#>)", 2);
-        
+
         // <--[command]
         // @Name Permission
         // @Usage permission [add|remove] [permission] (player:<name>) (group:<name>) (world:<name>)
@@ -1369,7 +1369,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(PauseCommand.class,
                 "PAUSE", "pause [waypoints/navigation]", 1);
-        
+
         // <--[command]
         // @Name Queue
         // @Usage queue (queue:<id>) [clear/pause/resume/delay:<#>]
@@ -1388,7 +1388,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(QueueCommand.class,
                 "QUEUE", "queue (queue:<id>) [clear/pause/resume/delay:<#>]", 1);
-        
+
         // <--[command]
         // @Name Random
         // @Usage random [<#>]
@@ -1405,9 +1405,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(RandomCommand.class, 
+        registerCoreMember(RandomCommand.class,
                 "RANDOM", "random [<#>]", 1);
-        
+
         // <--[command]
         // @Name Remove
         // @Usage remove [<entity>|...] (region:<name>)
@@ -1424,7 +1424,7 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(RemoveCommand.class, 
+        registerCoreMember(RemoveCommand.class,
                 "REMOVE", "remove [<entity>|...] (region:<name>)", 0);
 
         // <--[command]
@@ -1541,7 +1541,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ScoreboardCommand.class,
                 "SCOREBOARD", "scoreboard [set/remove/show/hide] [<name>] [value:<name>] (priority:<#>)", 1);
-        
+
         // <--[command]
         // @Name Scribe
         // @Usage scribe [script:<name>] (give/drop/equip) (<item>) (<location>)
@@ -1579,7 +1579,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ShootCommand.class,
                 "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>)", 1);
-        
+
         // <--[command]
         // @Name ShowFake
         // @Usage showfake [<material>] [<location>|...] (d:<duration>{10s})
@@ -1615,9 +1615,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(SignCommand.class, 
+        registerCoreMember(SignCommand.class,
                 "SIGN", "sign (type:{sign_post}/wall_sign) [\"<line>|...\"] [<location>] (direction:n/e/w/s)", 1);
-        
+
         // <--[command]
         // @Name Sit
         // @Usage sit (<location>)
@@ -1634,7 +1634,7 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(SitCommand.class, 
+        registerCoreMember(SitCommand.class,
                 "SIT", "sit (<location>)", 0);
 
         // <--[command]
@@ -1655,7 +1655,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(SpawnCommand.class,
                 "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>)", 1);
-        
+
         // <--[command]
         // @Name Stand
         // @Usage stand
@@ -1672,9 +1672,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(StandCommand.class, 
+        registerCoreMember(StandCommand.class,
                 "STAND", "stand", 0);
-        
+
         // <--[command]
         // @Name Strike
         // @Usage strike (no_damage) [<location>]
@@ -1693,7 +1693,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(StrikeCommand.class,
                 "STRIKE", "strike (no_damage) [<location>]", 1);
-        
+
         // <--[command]
         // @Name Switch
         // @Usage switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)
@@ -1712,7 +1712,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(SwitchCommand.class,
                 "SWITCH", "switch [<location>] (state:[{toggle}/on/off]) (duration:<value>)", 1);
-        
+
         // <--[command]
         // @Name Take
         // @Usage take [money/iteminhand/<item>] (qty:<#>) (from:<inventory>)
@@ -1731,7 +1731,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(TakeCommand.class,
                 "TAKE", "take [money/iteminhand/<item>] (qty:<#>) (from:<inventory>)", 1);
-        
+
         // <--[command]
         // @Name Teleport
         // @Usage teleport (<entity>|...) (<location>)
@@ -1750,7 +1750,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(TeleportCommand.class,
                 "TELEPORT", "teleport (<entity>|...) (<location>)", 1);
-        
+
         // <--[command]
         // @Name Time
         // @Usage time [type:{global}/player] [<value>] (world:<name>)
@@ -1769,7 +1769,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(TimeCommand.class,
                 "TIME", "time [type:{global}/player] [<value>] (world:<name>)", 1);
-        
+
         // <--[command]
         // @Name Trigger
         // @Usage trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)
@@ -1786,9 +1786,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(TriggerCommand.class, 
+        registerCoreMember(TriggerCommand.class,
                 "TRIGGER", "trigger [name:chat/click/damage/proximity] (state:true/false) (cooldown:<#.#>) (radius:<#>)", 2);
-        
+
         // <--[command]
         // @Name Viewer
         // @Usage viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)
@@ -1813,7 +1813,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(ViewerCommand.class,
                 "VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)", 2);
-        
+
         // <--[command]
         // @Name Vulnerable
         // @Usage vulnerable (state:{true}/false/toggle)
@@ -1830,9 +1830,9 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(VulnerableCommand.class, 
+        registerCoreMember(VulnerableCommand.class,
                 "VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
-        
+
         // <--[command]
         // @Name Wait
         // @Usage wait (<duration>) (queue:<name>)
@@ -1849,7 +1849,7 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(WaitCommand.class, 
+        registerCoreMember(WaitCommand.class,
                 "WAIT", "wait (<duration>) (queue:<name>)", 0);
 
         // <--[command]
@@ -1889,7 +1889,7 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(WeatherCommand.class,
                 "WEATHER", "weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)", 1);
-        
+
         // <--[command]
         // @Name Yaml
         // @Usage yaml [load/create/save:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
@@ -1925,16 +1925,16 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(ZapCommand.class, 
+        registerCoreMember(ZapCommand.class,
                 "ZAP", "zap (<script>:)[<step>] (<duration>)", 0);
-        
+
         dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
     }
-    
+
     private <T extends AbstractCommand> void registerCoreMember(Class<T> cmd, String names, String hint, int args) {
         for (String name : names.split(", ")) {
-        
-            try {                
+
+            try {
                 cmd.newInstance().activate().as(name).withOptions(hint, args);
             } catch(Exception e) {
                 dB.echoError("Could not register command " + name + ": " + e.getMessage());
@@ -1946,7 +1946,7 @@ public class CommandRegistry implements dRegistry {
     @Override
     public void disableCoreMembers() {
         for (RegistrationableInstance member : instances.values())
-            try { 
+            try {
                 member.onDisable();
             } catch (Exception e) {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");

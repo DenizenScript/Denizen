@@ -15,9 +15,9 @@ import net.citizensnpcs.api.npc.NPC;
 
 
 public class SitCommand extends AbstractCommand {
-    
+
     dLocation location = null;
-    
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry)
             throws InvalidArgumentsException {
@@ -26,9 +26,9 @@ public class SitCommand extends AbstractCommand {
                 location = aH.getLocationFrom(arg);
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
-        
+
         scriptEntry.addObject("location", location);
-        
+
     }
 
     @Override
@@ -42,17 +42,17 @@ public class SitCommand extends AbstractCommand {
         }
         SittingTrait trait = npc.getTrait(SittingTrait.class);
 
-                
+
         if (!npc.hasTrait(SittingTrait.class)) {
             npc.addTrait(SittingTrait.class);
             dB.echoDebug("...added sitting trait");
         }
-        
+
         if (trait.isSitting()) {
             dB.echoError("...NPC is already sitting");
             return;
         }
-        
+
         if (location != null) {
             trait.sit(location);
         } else {

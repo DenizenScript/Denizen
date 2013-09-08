@@ -30,7 +30,7 @@ public class CommandExecuter {
     }
 
     /*
-     * Executes a command defined in scriptEntry 
+     * Executes a command defined in scriptEntry
      */
 
     public boolean execute(ScriptEntry scriptEntry) {
@@ -202,10 +202,10 @@ public class CommandExecuter {
                         dB.echoError("Enable '/denizen stacktrace' for the nitty-gritty.");
                     else e.printStackTrace();
                 }
-            
+
         }
 
         return true;
     }
-    
+
 }

@@ -289,7 +289,7 @@ public class dPlayer implements dObject {
         // -->
         if (attribute.startsWith("is_online"))
             return new Element(isOnline()).getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.ip>
         // @returns Element
@@ -298,7 +298,7 @@ public class dPlayer implements dObject {
         // -->
         if (attribute.startsWith("ip"))
             return new Element(getPlayerEntity().getAddress().getHostName()).getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <p@player.list>
         // @returns dList(dPlayer)
@@ -309,7 +309,7 @@ public class dPlayer implements dObject {
         // -->
         if (attribute.startsWith("list")) {
             List<String> players = new ArrayList<String>();
-            
+
             // <--[tag]
             // @attribute <p@player.list.online>
             // @returns dList(dPlayer)
@@ -323,7 +323,7 @@ public class dPlayer implements dObject {
                     players.add(player.getName());
                 return new dList(players).getAttribute(attribute.fulfill(2));
             }
-            
+
             // <--[tag]
             // @attribute <p@player.list.offline>
             // @returns dList(dPlayer)
@@ -462,7 +462,7 @@ public class dPlayer implements dObject {
         // -->
         if (attribute.startsWith("xp.to_next_level"))
             return new Element(getPlayerEntity().getExpToLevel())
-                    .getAttribute(attribute.fulfill(2)); 
+                    .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
         // @attribute <p@player.xp.total>

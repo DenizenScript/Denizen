@@ -11,19 +11,19 @@ public class Conversion {
 
     /**
      * Turn a List of dEntities into a list of Entities.
-     * 
+     *
      * @param entities The list of dEntities
      */
 
     public static List<Entity> convert(List<dEntity> entities) {
 
         List<Entity> newList = new ArrayList<Entity>();
-        
+
         for (dEntity entity : entities) {
-            
+
             newList.add(entity.getBukkitEntity());
         }
-        
+
         return newList;
     }
 

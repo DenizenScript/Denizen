@@ -98,7 +98,7 @@ public class Denizen extends JavaPlugin {
         return triggerRegistry;
     }
 
-    
+
     /*
      * Denizen Managers
      */
@@ -139,7 +139,7 @@ public class Denizen extends JavaPlugin {
         } else startedSuccessful = true;
 
         versionTag = this.getDescription().getVersion();
-        
+
         // Startup procedure
         dB.echoDebug(DebugElement.Footer);
         dB.echoDebug(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
@@ -177,7 +177,7 @@ public class Denizen extends JavaPlugin {
 
         // Create the command script handler for listener
         WorldScriptHelper ws_helper = new WorldScriptHelper();
-        
+
         ItemScriptHelper is_helper = new ItemScriptHelper();
 
         // Register traits

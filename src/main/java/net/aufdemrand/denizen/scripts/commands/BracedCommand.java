@@ -11,12 +11,12 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public abstract class BracedCommand extends AbstractCommand {
-    
+
     public final boolean hyperdebug = false;
 
     /**
      * Gets the commands inside the braces of this ScriptEntry.
-     * 
+     *
      * @param scriptEntry
      *          The ScriptEntry to get the braced commands from.
      *
@@ -24,16 +24,16 @@ public abstract class BracedCommand extends AbstractCommand {
      *          The argument to start at.
      * @return
      *          The list of ScriptEntries to be executed in the command.
-     *          
+     *
      * @throws InvalidArgumentsException
      */
     public ArrayList<ScriptEntry> getBracedCommands(ScriptEntry scriptEntry, int startArg) throws InvalidArgumentsException {
-        
+
         // We need a place to store the commands being built at...
         TreeMap<Integer, ArrayList<String>> commandList = new TreeMap<Integer, ArrayList<String>>();
         // And a place to store finished commands...
         ArrayList<ScriptEntry> commands = new ArrayList<ScriptEntry>();
-        
+
         int bracesEntered = 0;
         boolean newCommand = true;
 
@@ -41,7 +41,7 @@ public abstract class BracedCommand extends AbstractCommand {
         scriptEntry.getResidingQueue().injectEntry(scriptEntry, 0);
         // Send info to debug
         if (hyperdebug) dB.echoDebug("Starting getBracedCommands...");
-        
+
         // If the specified amount of possible entries is less than the queue size, print that instead
         if (hyperdebug) dB.echoDebug("...with queue size: " + scriptEntry.getResidingQueue().getQueueSize());
         if (hyperdebug) dB.echoDebug("...with first command name: " + scriptEntry.getCommandName());
@@ -49,13 +49,13 @@ public abstract class BracedCommand extends AbstractCommand {
 
             ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(0);
             if (hyperdebug) dB.echoDebug("Entry found: " + entry.getCommandName());
-            
+
             // Loop through the arguments of each entry
             List<aH.Argument> argList = aH.interpret(entry.getArguments());
             for (int i = startArg;i < argList.size(); i++) {
                 aH.Argument arg = argList.get(i);
                 if (hyperdebug) dB.echoDebug("Arg found: " + arg.raw_value);
-                
+
                 // Listen for opened braces
                 if (arg.matches("{")) {
                     bracesEntered++;
@@ -65,7 +65,7 @@ public abstract class BracedCommand extends AbstractCommand {
                         commandList.get(commandList.lastKey()).add(arg.raw_value);
                     }
                 }
-                
+
                 // Listen for closed braces
                 else if (arg.matches("}")) {
                     bracesEntered--;
@@ -75,7 +75,7 @@ public abstract class BracedCommand extends AbstractCommand {
                         commandList.get(commandList.lastKey()).add(arg.raw_value);
                     }
                 }
-                
+
                 // Finish building a command
                 else if (newCommand && bracesEntered <= 1) {
                     commandList.put(commandList.size(), new ArrayList<String>());
@@ -83,13 +83,13 @@ public abstract class BracedCommand extends AbstractCommand {
                     newCommand = false;
                     if (hyperdebug) dB.echoDebug("Treating as new command");
                 }
-                
+
                 // Start building a command
                 else if (arg.matches("-") && bracesEntered == 1) {
                     newCommand = true;
                     if (hyperdebug) dB.echoDebug("Assuming following is a new command");
                 }
-                
+
                 // Continue building the current command
                 else {
                     newCommand = false;
@@ -97,7 +97,7 @@ public abstract class BracedCommand extends AbstractCommand {
                     if (hyperdebug) dB.echoDebug("Adding to the command");
                 }
             }
-            
+
             // Add all the new commands to the final list
             for (ArrayList<String> command : commandList.values()) {
                 try {
@@ -120,10 +120,10 @@ public abstract class BracedCommand extends AbstractCommand {
                     if (hyperdebug) dB.echoError(e.getMessage());
                 }
             }
-            
+
             // Remove the commands from the current queue, so there's no YAML errors
             scriptEntry.getResidingQueue().removeEntry(0);
-        
+
         // Return the list of commands in the braces
         return commands;
     }

@@ -32,7 +32,7 @@ public class PoweredRequirement extends AbstractRequirement{
             if (blockToCheck.isBlockPowered()) outcome = true;
             else if (blockToCheck.isBlockIndirectlyPowered()) outcome = true;
         }
-        
+
         if (outcome) dB.echoDebug("...block is powered!");
         else dB.echoDebug("...block is not powered!");
 

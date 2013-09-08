@@ -18,7 +18,7 @@ public class StrikeCommand extends AbstractCommand {
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            
+
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
                 scriptEntry.addObject("location", arg.asType(dLocation.class));

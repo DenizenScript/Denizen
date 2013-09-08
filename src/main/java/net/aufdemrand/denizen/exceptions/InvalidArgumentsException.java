@@ -9,11 +9,11 @@ public class InvalidArgumentsException extends Exception {
     public InvalidArgumentsException(String msg) {
         super(msg);
     }
-    
+
     public InvalidArgumentsException(Messages msg, String arg) {
         super(String.format(msg.toString(), arg));
     }
-    
+
     public InvalidArgumentsException(Messages msg) {
         super(msg.toString());
     }

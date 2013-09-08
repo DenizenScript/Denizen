@@ -14,7 +14,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 public class ExperienceCommand extends AbstractCommand {
 
     private enum Type { SET, GIVE, TAKE }
-    
+
     /**
      * @author alkarin
      * https://github.com/alkarinv/BattleArena/blob/master/src/mc/alk/arena/util/ExpUtil.java
@@ -26,7 +26,7 @@ public class ExperienceCommand extends AbstractCommand {
     public static void setTotalExperience(Player player, int exp){player.setTotalExperience(0);player.setLevel(0);player.setExp(0);if (exp > 0)player.giveExp(exp);}
     public static void setLevel(Player player, int level){player.setTotalExperience(0);player.setLevel(0);player.setExp(0);if (level > 0)player.giveExp(getExpToLevel(level));}
     public static void giveExperience(Player player, int exp){final int currentExp = getTotalExperience(player);player.setTotalExperience(0);player.setLevel(0);player.setExp(0);final int newexp = currentExp + exp;if (newexp > 0)player.giveExp(newexp);}
-    
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
@@ -55,7 +55,7 @@ public class ExperienceCommand extends AbstractCommand {
 
     }
 
-    
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 

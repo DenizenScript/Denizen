@@ -172,10 +172,10 @@ public abstract class AbstractListener {
 
         deconstructed();
     }
-    
+
     /**
      * Stores a field away for retrieving later. Should be used in the onSave() method.
-     * 
+     *
      */
     public void store(String key, Object object) {
         savable.put(key, object);

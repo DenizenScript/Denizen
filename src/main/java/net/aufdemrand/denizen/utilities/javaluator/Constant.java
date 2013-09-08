@@ -13,7 +13,7 @@ package net.aufdemrand.denizen.utilities.javaluator;
  */
 public class Constant {
     private String name;
-    
+
     /** Constructor
      * @param name The mnemonic of the constant.
      * <br>The name is used in expressions to identified the constants.

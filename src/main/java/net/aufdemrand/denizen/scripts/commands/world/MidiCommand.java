@@ -21,21 +21,21 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /* midi [file:<name>] (listener(s):[p@<name>|...])|(location:<x,y,z,world>) (tempo:<#.#>) */
 
-/** 
+/**
  * Arguments: [] - Required, () - Optional
  * [file:<name>] specifies the name of the file under plugins/Denizen/midi/
  * (listener(s):[p@<name>|...]) specifies the players who will listen to the midi
  * (location:<x,y,z,world>) specifies the location where the midi will be played
  * [tempo:<#.#>] sets the tempo of the midi
- * 
+ *
  * The listeners and location arguments cannot be used at the same time, but
  * the location has a higher priority if both are included.
- * 
+ *
  * Example Usage:
  * midi "file:stillalive" "tempo:1.0"
  * midi "file:mariotheme" listeners:p@aufdemrand|p@Jeebiss
  * midi "file:clairdelune" location:200,63,200,world
- * 
+ *
  * @author authorblues, David Cernat
  */
 
@@ -57,31 +57,31 @@ public class MidiCommand extends AbstractCommand {
 
             else if (aH.matchesValueArg("file, f", arg, ArgumentType.Custom)) {
                 try {
-                    String path = denizen.getDataFolder() + 
+                    String path = denizen.getDataFolder() +
                             File.separator + "midi" +
                             File.separator + aH.getStringFrom(arg);
-                    
+
                     if (!path.endsWith(".mid")) {
-                        
+
                         path = path + ".mid";
                     }
-                    
+
                     file = new File(path);
                 } catch (Exception e) {
                     dB.echoError("Invalid file!");
                 }
             }
-            
+
             else if (aH.matchesValueArg("listeners, l", arg, ArgumentType.Custom)) {
-                
+
                 Entity entity = null;
 
                 for (String listener : aH.getListFrom(arg)) {
-                    
+
                     entity = dEntity.valueOf(listener).getBukkitEntity();
-                    
+
                     if (entity != null && entity instanceof Player) {
-                        
+
                         listeners.add((Player) entity);
                     }
                     else {
@@ -89,21 +89,21 @@ public class MidiCommand extends AbstractCommand {
                     }
                 }
             }
-            
+
             else if (aH.matchesValueArg("tempo, t", arg, ArgumentType.Float))
                 tempo = aH.getFloatFrom(arg);
-            
+
             else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
 
         // Check required args
         if (file == null)
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "FILE");
-        
+
         // If there are no listeners, and the location is null,
         // add this player to the listeners
         if (location == null && listeners.size() == 0) {
-            
+
             listeners.add(scriptEntry.getPlayer().getPlayerEntity());
         }
 
@@ -123,7 +123,7 @@ public class MidiCommand extends AbstractCommand {
         Set<Player> listeners = (Set<Player>) scriptEntry.getObject("listeners");
         Location location = (Location) scriptEntry.getObject("location");
         Float tempo = (Float) scriptEntry.getObject("tempo");
-                
+
         // Report to dB
         dB.report(getName(),
                aH.debugObj("Playing midi file", file.getPath()

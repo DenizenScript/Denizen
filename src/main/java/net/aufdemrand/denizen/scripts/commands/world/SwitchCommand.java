@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Switches a button or lever.
- * 
+ *
  * @author Jeremy Schroeder, Mason Adkins, David Cernat
  */
 
@@ -34,20 +34,20 @@ public class SwitchCommand extends AbstractCommand {
 
     /* SWITCH [LOCATION:x,y,z,world] (STATE:ON|OFF|TOGGLE) (DURATION:#) */
 
-    /* 
-     * Arguments: [] - Required, () - Optional 
+    /*
+     * Arguments: [] - Required, () - Optional
      * [LOCATION:x,y,z,world] specifies location of a switch, lever, or pressure plate.
      * (STATE:ON|OFF|TOGGLE) can be used on locations with switches. Default: TOGGLE
      * (DURATION:#) Reverts to the previous head position after # amount of seconds.
-     * 
+     *
      * Example Usage:
      * SWITCH LOCATION:<BOOKMARK:Lever_1> STATE:ON
-     * SWITCH LOCATION:99,64,125,world 'DURATION:15' 
+     * SWITCH LOCATION:99,64,125,world 'DURATION:15'
      * SWITCH LOCATION:<ANCHOR:button_location>
-     * 
+     *
      */
 
-    private enum SwitchState { ON, OFF, TOGGLE } 
+    private enum SwitchState { ON, OFF, TOGGLE }
 
     private Map<Location, Integer> taskMap = new ConcurrentHashMap<Location, Integer>(8, 0.9f, 1);
 
@@ -89,14 +89,14 @@ public class SwitchCommand extends AbstractCommand {
         // If duration set, schedule a delayed task.
         if (duration > 0) {
             // If this block already had a delayed task, cancel it.
-            if (taskMap.containsKey(interactLocation)) 
+            if (taskMap.containsKey(interactLocation))
                 try { denizen.getServer().getScheduler().cancelTask(taskMap.get(interactLocation)); } catch (Exception e) { }
             dB.echoDebug(Messages.DEBUG_RUNNING_DELAYED_TASK, "SWITCH");
             // Store new delayed task ID, for checking against, then schedule new delayed task.
-            taskMap.put(interactLocation, denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen, 
+            taskMap.put(interactLocation, denizen.getServer().getScheduler().scheduleSyncDelayedTask(denizen,
                     new Runnable() {
                         public void run() {
-                    // Check to see if the state of the block is what is expected. If switched during 
+                    // Check to see if the state of the block is what is expected. If switched during
                     // the duration, the switchback is cancelled.
                     if (switchState == SwitchState.OFF && !((interactLocation.getBlock().getData() & 0x8) > 0))
                         switchBlock(interactLocation, SwitchState.ON);
@@ -108,17 +108,17 @@ public class SwitchCommand extends AbstractCommand {
         }
 
     }
-    
+
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
     public void switchBlock(Location interactLocation, SwitchState switchState) {
         World world = interactLocation.getWorld();
         boolean currentState = (interactLocation.getBlock().getData() & 0x8) > 0;
         String state = switchState.toString();
-        
+
         if ((state.equals("ON") && !currentState) ||
             (state.equals("OFF") && currentState) ||
              state.equals("TOGGLE")) {
-            
+
             try {
 
                 Block.byId[interactLocation.getBlock().getType().getId()]
@@ -127,12 +127,12 @@ public class SwitchCommand extends AbstractCommand {
                               interactLocation.getBlockY(),
                               interactLocation.getBlockZ(),
                               null, 0, 0f, 0f, 0f);
-                
+
                 dB.echoDebug("Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
                         ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
-                
+
             } catch (NullPointerException e) {
-                
+
                 dB.echoDebug("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
             }
         }

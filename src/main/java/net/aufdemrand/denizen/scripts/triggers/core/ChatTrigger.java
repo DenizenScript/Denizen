@@ -36,7 +36,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
-    
+
     public Boolean process(Player player, String message) {
 
         // Check if there is an NPC within range of a player to chat to.
@@ -69,10 +69,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // if enabled. Should the Player chat only when looking at the NPC? This may
         // reduce accidental chats with NPCs.
 
-        
+
         if (Settings.ChatMustSeeNPC())
             if (!player.hasLineOfSight(npc.getEntity())) return false;
-        
+
         if (Settings.ChatMustLookAtNPC())
             if (!Rotation.isFacingEntity(player, npc.getEntity(), 45)) return false;
 
@@ -191,7 +191,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     @EventHandler
     public void asyncChatTrigger(final AsyncPlayerChatEvent event) {
         if (event.isCancelled()) return;
-        
+
         // Return if "Use asynchronous event" is false in config file
         if (!Settings.ChatAsynchronous()) return;
 
@@ -215,11 +215,11 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         event.setCancelled(cancelled);
     }
-    
+
     @EventHandler
     public void syncChatTrigger(final PlayerChatEvent event) {
         if (event.isCancelled()) return;
-        
+
         // Return if "Use asynchronous event" is true in config file
         if (Settings.ChatAsynchronous()) return;
 

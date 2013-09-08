@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class InventoryMenu implements InventoryHolder {
     public final static int ROW_SIZE = 9;
-    
+
     protected InventoryMenuItem[] items;
     protected Inventory inventory;
     protected String title;
@@ -38,7 +38,7 @@ public class InventoryMenu implements InventoryHolder {
         if (inventory == null) {
             inventory = Bukkit.createInventory(this, size, title);
         }
-        
+
         return inventory;
     }
 
@@ -109,5 +109,5 @@ public class InventoryMenu implements InventoryHolder {
     public String toString() {
         return getClass().getSimpleName() + "{title=" + title + "; size=" + size + "}";
     }
-    
+
 }

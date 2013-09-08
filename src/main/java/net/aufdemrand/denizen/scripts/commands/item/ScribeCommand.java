@@ -29,21 +29,21 @@ import org.bukkit.inventory.ItemStack;
  *
  * <ol><tt>Arguments: [] - Required () - Optional  {} - Default</ol></tt>
  *
- * <ol><tt>[SCRIPT:book_script]</tt><br> 
- *         The name of the 'Book Script'. See below for format.</ol>    
+ * <ol><tt>[SCRIPT:book_script]</tt><br>
+ *         The name of the 'Book Script'. See below for format.</ol>
  *
- * <ol><tt>[GIVE|{DROP}|EQUIP]</tt><br> 
+ * <ol><tt>[GIVE|{DROP}|EQUIP]</tt><br>
  *         What to do with the book after it is written. If not specified, it will default
  *         to dropping the book near the NPC. Note: When using BOOK with an 'ITEMSTACK.name',
- *         no default action is set allowing other commands to modify the book.</ol>    
+ *         no default action is set allowing other commands to modify the book.</ol>
  *
- * <ol><tt>(LOCATION:x,y,z,world)</tt><br> 
+ * <ol><tt>(LOCATION:x,y,z,world)</tt><br>
  *         When using DROP, a location may be specified. Default location, if unspecified,
  *         is the attached NPC.</ol>
  *
- * <ol><tt>(ITEM:ITEMSTACK.name)</tt><br> 
+ * <ol><tt>(ITEM:ITEMSTACK.name)</tt><br>
  *         Allows the use of a specific BOOK created with a 'saved ITEMSTACK' from the NEW
- *         command. If not specified, a new book will be used.</ol>    
+ *         command. If not specified, a new book will be used.</ol>
  *
  *
  * <br><b>Sample Book Script:</b><br>
@@ -53,7 +53,7 @@ import org.bukkit.inventory.ItemStack;
  *   Title: Cosmos, a Personal Voyage<br>
  *   Author: Carl Sagan<br>
  *   Text:<br>
- *   - Every one of us is, in the cosmic perspective, precious. If a human disagrees with<br> 
+ *   - Every one of us is, in the cosmic perspective, precious. If a human disagrees with<br>
  *     you, let him live. In a hundred billion galaxies, you will not find another<br>
  *   - The nitrogen in our DNA, the calcium in our teeth, the iron in our blood, the <br>
  *     carbon in our apple pies were made in the interiors of collapsing stars. We are <br>
@@ -162,7 +162,7 @@ public class ScribeCommand extends AbstractCommand implements Listener{
         dNPC npc = (dNPC) scriptEntry.getObject("npc");
 
         BookScriptContainer bookScript = ScriptRegistry.getScriptContainerAs(scriptName, BookScriptContainer.class);
-        
+
         book = bookScript.writeBookTo(book, dPlayer.mirrorBukkitPlayer(player), npc);
 
         // Post-write action? Can be NONE.

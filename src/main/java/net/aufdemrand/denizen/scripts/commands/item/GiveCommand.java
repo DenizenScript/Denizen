@@ -43,7 +43,7 @@ public class GiveCommand  extends AbstractCommand {
 
         /* Match arguments to expected variables */
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            
+
             if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrefix("q, qty, quantity")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double))
@@ -65,22 +65,22 @@ public class GiveCommand  extends AbstractCommand {
                         && !scriptEntry.hasObject("type")
                         && arg.matchesArgumentType(dItem.class))
                 scriptEntry.addObject("items", dList.valueOf(arg.getValue()).filter(dItem.class));
-            
+
             else if (!scriptEntry.hasObject("inventory")
                         && arg.matchesPrefix("t, to")
                         && arg.matchesArgumentType(dInventory.class))
                 scriptEntry.addObject("inventory", arg.asType(dInventory.class));
-            
+
         }
 
         scriptEntry.defaultObject("type", Type.ITEM)
                 .defaultObject("engrave", Element.FALSE)
                 .defaultObject("inventory", (scriptEntry.hasPlayer() ? new dInventory(scriptEntry.getPlayer().getPlayerEntity()) : null))
                 .defaultObject("qty", new Element(1));
-        
+
         if (scriptEntry.getObject("type") == Type.ITEM && scriptEntry.getObject("items") == null)
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ITEMS");
-        
+
     }
 
     @Override
@@ -90,7 +90,7 @@ public class GiveCommand  extends AbstractCommand {
         dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
         Element qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
-        
+
         Object items_object = scriptEntry.getObject("items");
         List<dItem> items = null;
 
@@ -108,7 +108,7 @@ public class GiveCommand  extends AbstractCommand {
             case MONEY:
                 if(Depends.economy != null)
                     Depends.economy.depositPlayer(scriptEntry.getPlayer().getName(), qty.asDouble());
-                else 
+                else
                     dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 break;
 

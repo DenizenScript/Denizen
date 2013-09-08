@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * This script will execute a script when the player walks within 5 blocks of
  * the NPC that this trigger is assigned to and they were not previously within
  * the 5 block range.
- * It will also execute a script when the player walks outside of a 10 block 
+ * It will also execute a script when the player walks outside of a 10 block
  * radius of the NPC when they were not previously outside the 10 block radius.<br/>
  * <ol>
  * <tt>

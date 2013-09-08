@@ -17,7 +17,7 @@ import net.citizensnpcs.api.npc.NPC;
 
 /**
  * Feeds a (Player) entity.
- * 
+ *
  * @author Jeremy Schroeder, Mason Adkins
  */
 
@@ -30,12 +30,12 @@ public class FeedCommand extends AbstractCommand {
 
     /* FEED (AMT:#) (TARGET:NPC|PLAYER) */
 
-    /* 
-     * Arguments: [] - Required, () - Optional 
+    /*
+     * Arguments: [] - Required, () - Optional
      * (AMT:#) 1-20, usually.
-     * (TARGET:NPC|PLAYER) Specifies which object is the target of the feeding effects. 
+     * (TARGET:NPC|PLAYER) Specifies which object is the target of the feeding effects.
      *          Default: Player, unless not available
-     *   
+     *
      * Example Usage:
      * FEED AMT:20 TARGET:NPC
      * FEED AMT:5
@@ -43,7 +43,7 @@ public class FeedCommand extends AbstractCommand {
      *
      */
 
-    private enum TargetType { NPC, PLAYER } 
+    private enum TargetType { NPC, PLAYER }
 
     private int amount;
     private LivingEntity target;
@@ -59,7 +59,7 @@ public class FeedCommand extends AbstractCommand {
         // Set target to Player by default, if available
         if (scriptEntry.getPlayer() != null) target = scriptEntry.getPlayer().getPlayerEntity();
         else target = null;
-        
+
         for (String arg : scriptEntry.getArguments()) {
 
             if (aH.matchesQuantity(arg) || aH.matchesValueArg("amt", arg, ArgumentType.Integer)) {
@@ -85,7 +85,7 @@ public class FeedCommand extends AbstractCommand {
 
     }
 
-    
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
@@ -97,7 +97,7 @@ public class FeedCommand extends AbstractCommand {
             if (amount == Integer.MAX_VALUE) npc.getTrait(HungerTrait.class).setHunger(0.00);
             // else, feed NPC
             else npc.getTrait(HungerTrait.class).feed(amount);
-        
+
         // Target is a Player
         } else {
            // Set to max food level
@@ -107,6 +107,6 @@ public class FeedCommand extends AbstractCommand {
         }
 
     }
-    
-    
+
+
 }

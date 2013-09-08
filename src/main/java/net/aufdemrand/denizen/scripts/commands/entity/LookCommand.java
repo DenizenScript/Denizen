@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Controls entity heads.
- * 
+ *
  * @author Jeremy Schroeder
  *
  */
@@ -46,11 +46,11 @@ public class LookCommand extends AbstractCommand {
         }
 
         // Use the NPC or player as the entity if no entities are specified
-        
+
         scriptEntry.defaultObject("entities",
                 scriptEntry.hasNPC() ? Arrays.asList(scriptEntry.getNPC().getDenizenEntity()) : null,
                 scriptEntry.hasPlayer() ? Arrays.asList(scriptEntry.getPlayer().getDenizenEntity()) : null);
-        
+
         if (!scriptEntry.hasObject("location") || !scriptEntry.hasObject("entities"))
             throw new InvalidArgumentsException("Must specify a location and entity!");
     }
@@ -58,7 +58,7 @@ public class LookCommand extends AbstractCommand {
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        
+
         final dLocation loc = (dLocation) scriptEntry.getObject("location");
         final List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final Duration duration = (Duration) scriptEntry.getObject("duration");
@@ -92,12 +92,12 @@ public class LookCommand extends AbstractCommand {
     }
 
 
-    
-    
+
+
     /*
 
         else if (lookWhere.equals("LEFT")) {
-            theDenizen.lookClose(false);                        
+            theDenizen.lookClose(false);
             theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() - (float) 80;
             theDenizen.getHandle().az = theDenizen.getHandle().yaw;
         }
@@ -123,31 +123,31 @@ public class LookCommand extends AbstractCommand {
         else if (lookWhere.equals("BACK")) {
             theDenizen.lookClose(false);
             theDenizen.getHandle().yaw = theDenizen.getLocation().getYaw() - 180;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;            
+            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
         }
 
         else if (lookWhere.equals("SOUTH")) {
             theDenizen.lookClose(false);
             theDenizen.getHandle().yaw = 0;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;            
+            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
         }
 
         else if (lookWhere.equals("WEST")) {
             theDenizen.lookClose(false);
             theDenizen.getHandle().yaw = 90;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;            
+            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
         }
 
         else if (lookWhere.equals("NORTH")) {
             theDenizen.lookClose(false);
             theDenizen.getHandle().yaw = 180;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;            
+            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
         }
 
         else if (lookWhere.equals("EAST")) {
             theDenizen.lookClose(false);
             theDenizen.getHandle().yaw = 270;
-            theDenizen.getHandle().az = theDenizen.getHandle().yaw;            
+            theDenizen.getHandle().az = theDenizen.getHandle().yaw;
         }
 
 */

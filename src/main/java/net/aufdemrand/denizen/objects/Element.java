@@ -37,27 +37,27 @@ public class Element implements dObject {
         this.prefix = "element";
         this.element = string;
     }
-    
+
     public Element(Boolean bool) {
         this.prefix = "boolean";
         this.element = String.valueOf(bool);
-    }    
+    }
 
     public Element(Integer integer) {
         this.prefix = "integer";
         this.element = String.valueOf(integer);
     }
-    
+
     public Element(Byte byt) {
         this.prefix = "byte";
         this.element = String.valueOf(byt);
     }
-    
+
     public Element(Short shrt) {
         this.prefix = "short";
         this.element = String.valueOf(shrt);
     }
-    
+
     public Element(Long lng) {
         this.prefix = "long";
         this.element = String.valueOf(lng);
@@ -67,7 +67,7 @@ public class Element implements dObject {
         this.prefix = "double";
         this.element = String.valueOf(dbl);
     }
-    
+
     public Element(Float flt) {
         this.prefix = "float";
         this.element = String.valueOf(flt);
@@ -141,23 +141,23 @@ public class Element implements dObject {
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return null;
-        
-        
+
+
         /////////////////////
         //   CONVERSION ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
-        // @attribute <element.as_boolean> 
+        // @attribute <element.as_boolean>
         // @returns Element(Boolean)
         // @description
-        // Returns the element as true/false. 
+        // Returns the element as true/false.
         // -->
         if (attribute.startsWith("asboolean")
                 || attribute.startsWith("as_boolean"))
             return new Element(Boolean.valueOf(element).toString())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <element.as_double>
         // @returns Element(Number)
@@ -172,9 +172,9 @@ public class Element implements dObject {
                 dB.echoError("'" + element + "' is not a valid Double.");
                 return new Element("null").getAttribute(attribute.fulfill(1));
             }
-        
+
         // <--[tag]
-        // @attribute <element.as_duration> 
+        // @attribute <element.as_duration>
         // @returns Duration
         // @description
         // Returns the element as a duration.
@@ -182,17 +182,17 @@ public class Element implements dObject {
         if (attribute.startsWith("asduration")
                 || attribute.startsWith("as_duration"))
             return Duration.valueOf(element).getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
-        // @attribute <element.as_entity> 
+        // @attribute <element.as_entity>
         // @returns dEntity
         // @description
-        // Returns the element as an entity. Note: the value must be a valid entity. 
+        // Returns the element as an entity. Note: the value must be a valid entity.
         // -->
         if (attribute.startsWith("asentity")
                 || attribute.startsWith("as_entity"))
             return dEntity.valueOf(element).getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <element.as_int>
         // @returns Element(Number)
@@ -211,9 +211,9 @@ public class Element implements dObject {
                 dB.echoError("'" + element + "' is not a valid Integer.");
                 return new Element("null").getAttribute(attribute.fulfill(1));
             }
-        
+
         // <--[tag]
-        // @attribute <element.as_item> 
+        // @attribute <element.as_item>
         // @returns dItem
         // @description
         // Returns the element as an item. Additional attributes can be accessed by dItem.
@@ -224,7 +224,7 @@ public class Element implements dObject {
             return dItem.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_list> 
+        // @attribute <element.as_list>
         // @returns dList
         // @description
         // Returns the element as a list. Lists are sometimes prefixed with li@ and are
@@ -233,9 +233,9 @@ public class Element implements dObject {
         if (attribute.startsWith("aslist")
                 || attribute.startsWith("as_list"))
             return dList.valueOf(element).getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
-        // @attribute <element.as_location> 
+        // @attribute <element.as_location>
         // @returns dLocation
         // @description
         // Returns the element as a location. Note: the value must be a valid location.
@@ -243,7 +243,7 @@ public class Element implements dObject {
         if (attribute.startsWith("aslocation")
                 || attribute.startsWith("as_location"))
             return dLocation.valueOf(element).getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <element.as_money>
         // @returns Element(Number)
@@ -261,7 +261,7 @@ public class Element implements dObject {
                 return new Element("null").getAttribute(attribute.fulfill(1));
             }
         }
-        
+
         // <--[tag]
         // @attribute <element.as_npc>
         // @returns dNPC
@@ -273,9 +273,9 @@ public class Element implements dObject {
             return dNPC.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_player> 
+        // @attribute <element.as_player>
         // @returns dPlayer
-        // @description 
+        // @description
         // Returns the element as a player. Note: the value must be a valid player. Can be online or offline.
         // -->
         if (attribute.startsWith("asplayer")
@@ -283,7 +283,7 @@ public class Element implements dObject {
             return dPlayer.valueOf(element).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <element.as_script> 
+        // @attribute <element.as_script>
         // @returns dScript
         // @description
         // Returns the element as a script. Note: the value must be a valid script.
@@ -292,11 +292,11 @@ public class Element implements dObject {
                 || attribute.startsWith("as_script"))
             return dScript.valueOf(element).getAttribute(attribute.fulfill(1));
 
-        
+
         /////////////////////
         //   DEBUG ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <element.debug.log>
         // @returns Element
@@ -330,7 +330,7 @@ public class Element implements dObject {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.prefix>
         // @returns Element
@@ -340,12 +340,12 @@ public class Element implements dObject {
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   MATH ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <element.abs>
         // @returns Element(Number)
@@ -356,7 +356,7 @@ public class Element implements dObject {
             return new Element(Math.abs(asDouble()))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.add[<#>]>
         // @returns Element(Number)
@@ -368,7 +368,7 @@ public class Element implements dObject {
             return new Element(asDouble() + aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.div[<#>]>
         // @returns Element(Number)
@@ -380,7 +380,7 @@ public class Element implements dObject {
             return new Element(asDouble() / aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.mod[<#>]>
         // @returns Element(Number)
@@ -392,7 +392,7 @@ public class Element implements dObject {
             return new Element(asDouble() % aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.mul[<#>]>
         // @returns Element(Number)
@@ -404,7 +404,7 @@ public class Element implements dObject {
             return new Element(asDouble() * aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.sqrt>
         // @returns Element(Number)
@@ -415,7 +415,7 @@ public class Element implements dObject {
             return new Element(Math.sqrt(asDouble()))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.sub[<#>]>
         // @returns Element(Number)
@@ -427,14 +427,14 @@ public class Element implements dObject {
             return new Element(asDouble() - aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
-        
-        
+
+
         /////////////////////
         //   STRING CHECKING ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
-        // @attribute <element.contains[<string>]> 
+        // @attribute <element.contains[<string>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether the element contains a specified string, case in-sensitive. Can use
@@ -454,7 +454,7 @@ public class Element implements dObject {
                 return new Element("true").getAttribute(attribute.fulfill(1));
             else return new Element("false").getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.ends_with[<string>]>
         // @returns Element(Boolean)
@@ -472,7 +472,7 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("last_color"))
             return new Element(ChatColor.getLastColors(element)).getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <element.length>
         // @returns Element(Number)
@@ -483,7 +483,7 @@ public class Element implements dObject {
             return new Element(element.length())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.starts_with[<string>]>
         // @returns Element(Boolean)
@@ -492,14 +492,14 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("starts_with") || attribute.startsWith("startswith"))
             return new Element(element.startsWith(attribute.getContext(1))).getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   STRING MANIPULATION ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
-        // @attribute <element.after[<string>]> 
+        // @attribute <element.after[<string>]>
         // @returns Element
         // @description
         // Returns the portion of an element after a specified string. ie. <el@hello world.after[hello ]> returns 'world'.
@@ -511,7 +511,7 @@ public class Element implements dObject {
                     (element.indexOf(delimiter) + delimiter.length()))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.before[<string>]>
         // @returns Element
@@ -525,7 +525,7 @@ public class Element implements dObject {
                     (0, element.indexOf(delimiter)))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.replace[<string>]>
         // @returns Element
@@ -552,7 +552,7 @@ public class Element implements dObject {
             return new Element(element.replace(replace, replacement))
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.split[<string>].limit[<#>]>
         // @returns dList
@@ -586,7 +586,7 @@ public class Element implements dObject {
                 return new dList(Arrays.asList(StringUtils.split(element, split_string)))
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <element.strip_color>
         // @returns Element
@@ -595,8 +595,8 @@ public class Element implements dObject {
         // -->
         if (attribute.startsWith("strip_color"))
             return new Element(ChatColor.stripColor(element)).getAttribute(attribute.fulfill(1));
-        
-        
+
+
         // <--[tag]
         // @attribute <element.substring[<#>(,<#>)]>
         // @returns Element

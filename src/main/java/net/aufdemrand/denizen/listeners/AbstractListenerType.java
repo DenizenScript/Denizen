@@ -12,7 +12,7 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
     Denizen denizen;
     String name;
     Class<? extends AbstractListener> instanceClass;
-    
+
     @Override
     public AbstractListenerType activate() {
         this.denizen = (Denizen) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
@@ -46,24 +46,24 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
     public String getName() {
         return this.name;
     }
-    
+
     /**
      * Part of the Plugin disable sequence.
-     * 
+     *
      * Can be '@Override'n by a Listener which requires a method when bukkit sends a
      * onDisable() to Denizen. (ie. Server shuts down or restarts)
-     * 
+     *
      */
     public void onDisable() {
-    
+
     }
-    
+
     public AbstractListenerType withClass(Class<? extends AbstractListener> listenerInstanceClass) {
         this.instanceClass = listenerInstanceClass;
         return null;
     }
 
-    
+
 }
 
 

@@ -20,9 +20,9 @@ import org.bukkit.event.HandlerList;
  * <^NAME[CONTEXT].TYPE[CONTEXT].SUBTYPE[CONTEXT].SPECIFIER[CONTEXT]:VALUE || FALLBACK VALUE>
  *
  * ^ - Optional. Specifies a QUICKTAG which is wasReplaced upon creation of arguments.
- *   Used in buildArgs(). If not used, replacement is done in Executer's execute() 
+ *   Used in buildArgs(). If not used, replacement is done in Executer's execute()
  * FALLBACK VALUE is used internally to specify the replace value if nothing else
- *   is substituted. Must be in '( )'s. 
+ *   is substituted. Must be in '( )'s.
  *
  * Examples:
  * <PLAYER.NAME>

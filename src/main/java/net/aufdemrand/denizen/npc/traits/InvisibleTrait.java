@@ -20,7 +20,7 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
     }
 
     public void setInvisible(boolean invisible) {
-        
+
         this.invisible = invisible;
         if (invisible) setInvisible();
         else if (npc.isSpawned())

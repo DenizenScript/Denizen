@@ -19,7 +19,7 @@ public class ObjectFetcher {
     public static void _initialize() throws IOException, ClassNotFoundException {
         if (fetchable_objects.isEmpty())
             return;
-        
+
         Map<String, Class> adding = new HashMap<String, Class>();
         for (Class dClass : fetchable_objects)
             for (Method method : dClass.getMethods())

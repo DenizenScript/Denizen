@@ -23,25 +23,25 @@ public class Rotation {
      * @param yaw The new yaw of the entity.
      * @param pitch The new pitch of the entity.
      */
-    
+
     public static void rotate(Entity entity, float yaw, float pitch)
     {
         // If this entity is a real player instead of a player type NPC,
         // it will appear to be online
-        
+
         if (entity instanceof Player && ((Player) entity).isOnline())
         {
             Location location = entity.getLocation();
             location.setYaw(yaw);
             location.setPitch(pitch);
-            
+
             // The only way to change a player's yaw and pitch in Bukkit
             // is to use teleport on him/her
-            
+
             entity.teleport(location);
             return;
         }
-        
+
         if (entity instanceof LivingEntity)
         {
             NMS.look((LivingEntity)entity, yaw, pitch);
@@ -53,7 +53,7 @@ public class Rotation {
             handle.pitch = (float) pitch;
         }
     }
-    
+
 
     /**
      * Changes an entity's yaw and pitch to make it face a location.
@@ -61,7 +61,7 @@ public class Rotation {
      * @param from The Entity whose yaw and pitch you want to change.
      * @param at The Location it should be looking at.
      */
-    
+
     public static void faceLocation(Entity from, Location at) {
         if (from.getWorld() != at.getWorld()) return;
         Location loc = from.getLocation();
@@ -89,29 +89,29 @@ public class Rotation {
      * @param entity The Entity whose yaw and pitch you want to change.
      * @param target The Entity it should be looking at.
      */
-    
+
     public static void faceEntity(Entity entity, Entity target) {
         faceLocation(entity, target.getLocation());
     }
 
-    
+
     /**
      * Checks if a Location's yaw is facing another Location.
-     * 
+     *
      * Note: do not use a player's location as the first argument,
      *       because player yaws need to modified. Use the method
      *       below this one instead.
      *
      * @param  from  The Location we check.
      * @param  at  The Location we want to know if the first Location's yaw
-     *             is facing 
+     *             is facing
      * @param  degreeLimit  How many degrees can be between the direction the
      *                         first location's yaw is facing and the direction
      *                         we check if it is facing.
      *
      * @return  Returns a boolean.
      */
-    
+
     public static boolean isFacingLocation(Location from, Location at, float degreeLimit) {
 
         double currentYaw = normalizeYaw(from.getYaw());
@@ -123,7 +123,7 @@ public class Rotation {
                 Math.abs(requiredYaw + 360 - currentYaw) < degreeLimit ||
                 Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit);
     }
-    
+
 
     /**
      * Checks if an Entity is facing a Location.
@@ -136,11 +136,11 @@ public class Rotation {
      *
      * @return  Returns a boolean.
      */
-    
+
     public static boolean isFacingLocation(Entity from, Location at, float degreeLimit) {
 
         Location location = from.getLocation();
-        
+
         // Important! Need to subtract 90 from player yaws
         if (from instanceof Player) {
             location.setYaw(location.getYaw() - 90);
@@ -161,13 +161,13 @@ public class Rotation {
      *
      * @return  Returns a boolean.
      */
-    
+
     public static boolean isFacingEntity(Entity from, Entity at, float degreeLimit) {
 
         return isFacingLocation(from, at.getLocation(), degreeLimit);
     }
-    
-    
+
+
     /**
      * Normalizes Mincraft's yaws (which can be negative or can exceed 360)
      * by turning them into proper yaw values that only go from 0 to 359.
@@ -176,14 +176,14 @@ public class Rotation {
      *
      * @return  The normalized yaw.
      */
-    
+
     public static double normalizeYaw(double yaw) {
         yaw = (yaw - 90) % 360;
         if (yaw < 0) yaw += 360.0;
         return yaw;
     }
-    
-    
+
+
     /**
      * Converts a vector to a yaw.
      *
@@ -193,7 +193,7 @@ public class Rotation {
      *
      * @return  The yaw.
      */
-    
+
     public static float getYaw(Vector vector) {
         double dx = vector.getX();
         double dz = vector.getZ();
@@ -223,7 +223,7 @@ public class Rotation {
      *
      * @return  The name of the cardinal direction as a String.
      */
-    
+
     public static String getCardinal(double yaw) {
         yaw = normalizeYaw(yaw);
         // Compare yaws, return closest direction.

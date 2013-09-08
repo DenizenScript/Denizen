@@ -517,7 +517,7 @@ public class dItem implements dObject, Notable, Properties {
         if (attribute == null) return null;
 
         // <--[tag]
-        // @attribute <i@item.qty> 
+        // @attribute <i@item.qty>
         // @returns Element(Number)
         // @description
         // Returns the number of items in the dItem's itemstack.
@@ -527,7 +527,7 @@ public class dItem implements dObject, Notable, Properties {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <i@item.identify> 
+        // @attribute <i@item.identify>
         // @returns Element
         // @description
         // Returns a valid identification for the item
@@ -538,9 +538,9 @@ public class dItem implements dObject, Notable, Properties {
         }
 
         // <--[tag]
-        // @attribute <i@item.id> 
+        // @attribute <i@item.id>
         // @returns Element(Number)
-        // @description 
+        // @description
         // Returns the item ID number of the item.
         // -->
         if (attribute.startsWith("id"))
@@ -571,7 +571,7 @@ public class dItem implements dObject, Notable, Properties {
 
         }
         // <--[tag]
-        // @attribute <i@item.durability> 
+        // @attribute <i@item.durability>
         // @returns Element(Number)
         // @description
         // Returns the current durability of the item.
@@ -581,7 +581,7 @@ public class dItem implements dObject, Notable, Properties {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <i@item.repairable> 
+        // @attribute <i@item.repairable>
         // @returns Element(Boolean)
         // @description
         // Returns true if the item can be repaired. Otherwise, returns false.
@@ -595,7 +595,7 @@ public class dItem implements dObject, Notable, Properties {
         // @returns Element
         // @description
         // Returns the formatted material name of the item to be used in a sentence.
-        // Correctly uses singular and plural forms of item names, among other things. 
+        // Correctly uses singular and plural forms of item names, among other things.
         // -->
         if (attribute.startsWith("material.formatted")) {
 
@@ -637,7 +637,7 @@ public class dItem implements dObject, Notable, Properties {
         }
 
         // <--[tag]
-        // @attribute <i@item.material> 
+        // @attribute <i@item.material>
         // @returns Element
         // @description
         // Returns the material corresponding to the item
@@ -647,7 +647,7 @@ public class dItem implements dObject, Notable, Properties {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <i@item.display> 
+        // @attribute <i@item.display>
         // @returns Element
         // @description
         // Returns the display name of the item, as set by API or an 'anvil'.
@@ -680,7 +680,7 @@ public class dItem implements dObject, Notable, Properties {
                 BookMeta bookInfo = (BookMeta) getItemStack().getItemMeta();
 
                 // <--[tag]
-                // @attribute <i@item.book.author> 
+                // @attribute <i@item.book.author>
                 // @returns Element
                 // @description
                 // Returns the author of the book. Note: Item must be a 'written_book'.
@@ -700,7 +700,7 @@ public class dItem implements dObject, Notable, Properties {
                             .getAttribute(attribute.fulfill(1));
 
                 // <--[tag]
-                // @attribute <i@item.book.page_count> 
+                // @attribute <i@item.book.page_count>
                 // @returns Element(Number)
                 // @description
                 // Returns the number of pages in the book. Note: Item must be a 'written_book'.
@@ -710,7 +710,7 @@ public class dItem implements dObject, Notable, Properties {
                             .getAttribute(attribute.fulfill(1));
 
                 // <--[tag]
-                // @attribute <i@item.book.get_page[<#>]> 
+                // @attribute <i@item.book.get_page[<#>]>
                 // @returns Element
                 // @description
                 // Returns the page specified from the book as an element.
@@ -720,7 +720,7 @@ public class dItem implements dObject, Notable, Properties {
                             .getAttribute(attribute.fulfill(1));
 
                 // <--[tag]
-                // @attribute <i@item.book.pages> 
+                // @attribute <i@item.book.pages>
                 // @returns dList
                 // @description
                 // Returns the pages of the book as a dList.
@@ -736,7 +736,7 @@ public class dItem implements dObject, Notable, Properties {
         }
 
         // <--[tag]
-        // @attribute <i@item.scriptname> 
+        // @attribute <i@item.scriptname>
         // @returns Element
         // @description
         // Returns the script name of the item if it was created by an item script-container..
@@ -750,10 +750,10 @@ public class dItem implements dObject, Notable, Properties {
             }
 
         // <--[tag]
-        // @attribute <i@item.lore> 
+        // @attribute <i@item.lore>
         // @returns dList
         // @description
-        // Returns lore as a dList. Excludes the custom-script-id lore. 
+        // Returns lore as a dList. Excludes the custom-script-id lore.
         // To get that information, use <i@item.scriptname>.
         // -->
         if (attribute.startsWith("lore")) {

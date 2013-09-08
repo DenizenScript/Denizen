@@ -92,10 +92,10 @@ public class Attribute {
 
     public String getContext(int attribute) {
         if (hasContext(attribute)) {
-            
+
             String text = getAttribute(attribute);
             Matcher contextMatcher = Pattern.compile("\\[.+\\]").matcher(text);
-            
+
             if (contextMatcher.find()) {
                 return text.substring(contextMatcher.start() + 1, contextMatcher.end() - 1);
             }

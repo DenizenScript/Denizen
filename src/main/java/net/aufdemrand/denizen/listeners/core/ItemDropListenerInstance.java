@@ -21,32 +21,32 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 
 public class ItemDropListenerInstance extends AbstractListener implements Listener {
-    
+
     ItemDropType type = null;
-    
+
     ItemStack item = null;
     Location location = null;
     Material block = null;
     EntityType mob = null;
-    
+
     String dropper = null;
     String region = null;
-    
+
     Integer radius = 5;
     Integer dropRate = 100;
     Integer quantity = 1;
     Integer qtyDropped = 0;
-    
+
     @Override
     public void constructed() {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
-        
+
     }
 
     @Override
     public void deconstructed() {
         EntityDeathEvent.getHandlerList().unregister(this);
-        
+
     }
 
     @Override
@@ -130,13 +130,13 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
     @Override
     public void onCancel() {
         // nothing to do here
-        
+
     }
 
     @Override
     public void onFinish() {
         // nothing to do here
-        
+
     }
 
     @Override
@@ -153,7 +153,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         quantity = (Integer) get("required");
         qtyDropped = (Integer) get("qtyDropped");
         //r = (Random) get("r");
-        
+
     }
 
     @Override
@@ -186,7 +186,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
         }
         return null;
     }
-    
+
     @EventHandler
     public void mobKilled(EntityDeathEvent event) {
         if (type != ItemDropType.MOBKILL) return;
@@ -203,7 +203,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
             if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         }
         dB.echoDebug("...within region");
-        
+
         dB.echoDebug("...trying to drop item");
         if (Utilities.getRandom().nextInt(101) < dropRate) {
             dB.echoDebug("...item should drop now");
@@ -213,7 +213,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
             check();
         }
     }
-    
+
     @EventHandler
     public void blockMined(BlockBreakEvent event) {
         if (type != ItemDropType.BLOCKBREAK) return;
@@ -230,7 +230,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
             if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         }
         dB.echoDebug("...within region");
-        
+
         if (Utilities.getRandom().nextInt(101) < dropRate) {
             event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
             qtyDropped++;
@@ -238,7 +238,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
             check();
         }
     }
-    
+
     @EventHandler
     public void blockPlaced(BlockPlaceEvent event) {
         if (type != ItemDropType.BLOCKPLACE) return;
@@ -255,7 +255,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
             if (!WorldGuardUtilities.inRegion(player.getPlayerEntity().getLocation(), region)) return;
         }
         dB.echoDebug("...within region");
-        
+
         if (Utilities.getRandom().nextInt(101) < dropRate) {
             event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), item);
             qtyDropped++;
@@ -263,7 +263,7 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
             check();
         }
     }
-    
+
     private void check() {
         dB.echoDebug(qtyDropped + "/" + quantity + " dropped");
         if (quantity.equals(qtyDropped)) {

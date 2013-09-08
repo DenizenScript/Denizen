@@ -39,7 +39,7 @@ public class UtilTags implements Listener {
 
     @EventHandler
     public void queueTags(ReplaceableTagEvent event) {
-        
+
         // <--[tag]
         // @attribute <q>
         // @returns Queuestat
@@ -113,7 +113,7 @@ public class UtilTags implements Listener {
                 return;
             }
             attribute.fulfill(1);
-            
+
             // <--[tag]
             // @attribute <server.flag[<name>].is_expired>
             // @returns Element(Boolean)
@@ -126,7 +126,7 @@ public class UtilTags implements Listener {
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }
-            
+
             // <--[tag]
             // @attribute <server.flag[<name>].size>
             // @returns Element(Number)
@@ -300,7 +300,7 @@ public class UtilTags implements Listener {
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
 
         if (type.equalsIgnoreCase("RANDOM")) {
-            
+
             // <--[tag]
             // @attribute <util.random.int[<#>].to[<#>]>
             // @returns Element(Number)
@@ -367,7 +367,7 @@ public class UtilTags implements Listener {
             if (subType.equalsIgnoreCase("AFTER")) {
                 from = text.toUpperCase().indexOf(subTypeContext) + subTypeContext.length() + 1;
             }
-            
+
             // <--[tag]
             // @attribute <util.substr[<text1>].before[<text2>]>
             // @returns Element
@@ -471,7 +471,7 @@ public class UtilTags implements Listener {
             // Returns the current system time.
             // -->
             if (subType.equalsIgnoreCase("TIME")) {
-                
+
                 // <--[tag]
                 // @attribute <util.date.time.24hour>
                 // @returns Element

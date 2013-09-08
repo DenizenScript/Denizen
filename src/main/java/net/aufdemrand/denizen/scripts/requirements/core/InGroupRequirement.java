@@ -20,14 +20,14 @@ public class InGroupRequirement extends AbstractRequirement{
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
-        
+
         if(context.getPlayer() != null)
         {
             if(Depends.permissions != null)
             {
                 boolean outcome = false;
                 boolean global = false;
-                
+
                 for(String arg : args)
                 {
                     if (aH.matchesArg("GLOBAL", arg))
@@ -56,16 +56,16 @@ public class InGroupRequirement extends AbstractRequirement{
                                 dB.echoDebug("...player is not in group: " + arg + "!");
                             }
                         }
-                        
+
                     }
                 }
-                
+
                 return outcome;
             }
-            
+
             dB.echoDebug("...no permission plugin found, assume as FALSE!");
         }
-        
+
         return false;
     }
 }

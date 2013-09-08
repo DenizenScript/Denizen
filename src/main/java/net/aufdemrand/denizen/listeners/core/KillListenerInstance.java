@@ -173,7 +173,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         // If REGION argument specified, check. If not in region, don't count kill!
         if (region != null)
             if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
-        
+
         // Same with the CUBOID argument...
         if (cuboid != null)
             if (!cuboid.isInsideCuboid(player.getLocation())) return;

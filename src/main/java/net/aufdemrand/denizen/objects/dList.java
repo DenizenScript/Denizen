@@ -22,7 +22,7 @@ public class dList extends ArrayList<String> implements dObject {
 
     final static Pattern split_char = Pattern.compile("\\|");
     final static Pattern identifier = Pattern.compile("li@", Pattern.CASE_INSENSITIVE);
-    
+
     @ObjectFetcher("li, fl")
     public static dList valueOf(String string) {
         if (string == null) return null;
@@ -148,33 +148,33 @@ public class dList extends ArrayList<String> implements dObject {
     public String getObjectType() {
         return "List";
     }
-    
+
     public String[] toArray() {
-        
+
         List<String> list = new ArrayList<String>();
-        
+
         for (String string : this) {
             list.add(string);
         }
-        
+
         return list.toArray(new String[list.size()]);
     }
-    
+
     // Return a list that includes only elements belonging to a certain class
     public List<dObject> filter(Class<? extends dObject> dClass) {
-        
+
         List<dObject> results = new ArrayList<dObject>();
-        
+
         for (String element : this) {
-            
+
             try {
                 if ((Boolean) dClass.getMethod("matches", String.class).invoke(null, element)) {
-                    
-                    dObject object = (dObject) dClass.getMethod("valueOf", String.class).invoke(null, element); 
-                    
+
+                    dObject object = (dObject) dClass.getMethod("valueOf", String.class).invoke(null, element);
+
                     // Only add the object if it is not null, thus filtering useless
                     // list items
-                    
+
                     if (object != null) {
                         results.add(object);
                     }
@@ -183,7 +183,7 @@ public class dList extends ArrayList<String> implements dObject {
                 e.printStackTrace();
             }
         }
-        
+
         if (results.size() > 0) return results;
         else return null;
     }
@@ -308,11 +308,11 @@ public class dList extends ArrayList<String> implements dObject {
 
             return new Element(item).getAttribute(attribute.fulfill(1));
         }
-        
+
         if (attribute.startsWith("last")) {
             return new Element(get(size() - 1)).getAttribute(attribute.fulfill(1));
         }
-        
+
         if (attribute.startsWith("contains")) {
             if (attribute.hasContext(1)) {
                 boolean state = false;
@@ -323,7 +323,7 @@ public class dList extends ArrayList<String> implements dObject {
                         break;
                     }
                 }
-                
+
                 return new Element(state).getAttribute(attribute.fulfill(1));
             }
         }

@@ -14,7 +14,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemRequirement extends AbstractRequirement {
-    
+
     @Override
     public boolean check(RequirementsContext context, List<String> args)
             throws RequirementCheckException {

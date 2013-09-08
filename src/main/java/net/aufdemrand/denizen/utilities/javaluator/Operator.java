@@ -21,7 +21,7 @@ public class Operator {
     private Associativity associativity;
 
     /** Constructor.
-     * @param symbol The operator name (Currently, the name's length must be one character). 
+     * @param symbol The operator name (Currently, the name's length must be one character).
      * @param operandCount The number of operands of the operator (must be 1 or 2).
      * @param associativity true if operator is left associative
      * @param precedence The <a href="http://en.wikipedia.org/wiki/Order_of_operations">precedence</a> of the operator.
@@ -48,13 +48,13 @@ public class Operator {
         return this.symbol;
     }
 
-    /** Gets the operator's operand count. 
+    /** Gets the operator's operand count.
      * @return an integer
      */
     public int getOperandCount() {
         return this.operandCount;
     }
-    
+
     /** Gets this operator's associativity.
      * @return true if the operator is left associative.
      * @see <a href="http://en.wikipedia.org/wiki/Operator_associativity">Operator's associativity in Wikipedia</a>
@@ -62,7 +62,7 @@ public class Operator {
     public Associativity getAssociativity() {
         return this.associativity;
     }
-    
+
     /** Gets the operator's precedence.
      * @return an integer
      * @see <a href="http://en.wikipedia.org/wiki/Order_of_operations">Operator's associativity in Wikipedia</a>

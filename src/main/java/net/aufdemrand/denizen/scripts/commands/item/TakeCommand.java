@@ -20,8 +20,8 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 
 /* TAKE [MONEY|ITEMINHAND|#(:#)|MATERIAL_TYPE(:#)] (QTY:#) */
 
-/* 
- * Arguments: [] - Required, () - Optional 
+/*
+ * Arguments: [] - Required, () - Optional
  * [MONEY|ITEMINHAND|[#](:#)|[MATERIAL_TYPE](:#)] specifies what to take.
  *   [MONEY] takes money using your economy.
  *   [ITEMINHAND] takes from the item the Player has in their hand.
@@ -30,8 +30,8 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
  *   [MATERIAL_TYPE](:#) takes the item with the specified
  *     bukkit MaterialType. Optional argument (:#) can specify
  *     a specific data value.
- * (QTY:#) specifies quantity. If not specified, assumed 'QTY:1'    
- *  
+ * (QTY:#) specifies quantity. If not specified, assumed 'QTY:1'
+ *
  */
 
 public class TakeCommand extends AbstractCommand{
@@ -42,7 +42,7 @@ public class TakeCommand extends AbstractCommand{
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
-            
+
             if (!scriptEntry.hasObject("type")
                     && arg.matches("money, coins"))
                 scriptEntry.addObject("type", Type.MONEY);
@@ -60,7 +60,7 @@ public class TakeCommand extends AbstractCommand{
                         && !scriptEntry.hasObject("type")
                         && arg.matchesArgumentList(dItem.class))
                 scriptEntry.addObject("items", dList.valueOf(arg.getValue()).filter(dItem.class));
-            
+
             else if (!scriptEntry.hasObject("inventory")
                         && arg.matchesPrefix("f, from")
                         && arg.matchesArgumentType(dInventory.class))
@@ -79,7 +79,7 @@ public class TakeCommand extends AbstractCommand{
         scriptEntry.defaultObject("type", Type.ITEM)
                 .defaultObject("inventory", (scriptEntry.hasPlayer() ? new dInventory(scriptEntry.getPlayer().getPlayerEntity()) : null))
                 .defaultObject("qty", new Element(1));
-        
+
         if (scriptEntry.getObject("type") == Type.ITEM && scriptEntry.getObject("items") == null)
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ITEMS");
 
@@ -91,7 +91,7 @@ public class TakeCommand extends AbstractCommand{
         dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
         Element qty = scriptEntry.getElement("qty");
         Type type = (Type) scriptEntry.getObject("type");
-        
+
         Object items_object = scriptEntry.getObject("items");
         List<dItem> items = null;
 
@@ -105,7 +105,7 @@ public class TakeCommand extends AbstractCommand{
                         + aH.debugObj("Items", items));
 
         switch (type) {
-                
+
             case INVENTORY:
                 inventory.clear();
                 break;
@@ -149,9 +149,9 @@ public class TakeCommand extends AbstractCommand{
                     if (is.getItemMeta() instanceof BookMeta)
                         inventory.removeBook(is);
                     is.setAmount(qty.asInt());
-                    
+
                     if (!inventory.getInventory().removeItem(is).isEmpty())
-                        dB.echoError("Inventory does not contain at least " + qty.asInt() + " of " + item.identify() + 
+                        dB.echoError("Inventory does not contain at least " + qty.asInt() + " of " + item.identify() +
                                 "... Taking as much as possible...");
                 }
                 break;

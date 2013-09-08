@@ -86,8 +86,8 @@ public class dLocation extends org.bukkit.Location implements dObject {
      * Called on server startup or /denizen reload locations. Should probably not be called manually.
      */
     public static void _recallLocations() {
-        
-        
+
+
         List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
         uniqueObjects.clear();
         for (String location : loclist) {
@@ -407,7 +407,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
         if (attribute.startsWith("find") || attribute.startsWith("nearest")) {
             attribute.fulfill(1);
-            
+
             // <--[tag]
             // @attribute <l@location.find.blocks[<block>|...].within[X]>
             // @returns dList
@@ -436,7 +436,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                                                     .getRelative(x,y,z).getData())))
                                         found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
                             } else found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
-                
+
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
                     public int compare(dLocation loc1, dLocation loc2) {
@@ -483,7 +483,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                                         && l.add(0,1,0).getBlock().getType() == Material.AIR)
                                     found.add(new dLocation(getBlock().getRelative(x,y,z).getLocation()));
                             }
-                
+
                 Collections.sort(found, new Comparator<dLocation>() {
                     @Override
                     public int compare(dLocation loc1, dLocation loc2) {
@@ -491,9 +491,9 @@ public class dLocation extends org.bukkit.Location implements dObject {
                     }
                 });
 
-                return new dList(found).getAttribute(attribute); 
+                return new dList(found).getAttribute(attribute);
             }
-            
+
             // <--[tag]
             // @attribute <l@location.find.players.within[X]>
             // @returns dList
@@ -509,7 +509,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 for (Player player : Bukkit.getOnlinePlayers())
                     if (Utilities.checkLocation(this, player.getLocation(), radius))
                         found.add(new dPlayer(player));
-                
+
                 Collections.sort(found, new Comparator<dPlayer>() {
                     @Override
                     public int compare(dPlayer pl1, dPlayer pl2) {
@@ -519,7 +519,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
                 return new dList(found).getAttribute(attribute);
             }
-            
+
             // <--[tag]
             // @attribute <l@location.find.npcs.within[X]>
             // @returns dList
@@ -535,7 +535,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 for (dNPC npc : DenizenAPI.getSpawnedNPCs())
                     if (Utilities.checkLocation(this, npc.getLocation(), radius))
                         found.add(npc);
-                
+
                 Collections.sort(found, new Comparator<dNPC>() {
                     @Override
                     public int compare(dNPC npc1, dNPC npc2) {
@@ -545,7 +545,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
                 return new dList(found).getAttribute(attribute);
             }
-            
+
             // <--[tag]
             // @attribute <l@location.find.npcs.within[X]>
             // @returns dList
@@ -561,7 +561,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 for (dNPC npc : DenizenAPI.getSpawnedNPCs())
                     if (Utilities.checkLocation(this, npc.getLocation(), radius))
                         found.add(npc);
-                
+
                 Collections.sort(found, new Comparator<dNPC>() {
                     @Override
                     public int compare(dNPC npc1, dNPC npc2) {
@@ -587,7 +587,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 for (Entity entity : getWorld().getEntities())
                     if (Utilities.checkLocation(this, entity.getLocation(), radius))
                                 found.add(new dEntity(entity));
-                
+
                 Collections.sort(found, new Comparator<dEntity>() {
                     @Override
                     public int compare(dEntity ent1, dEntity ent2) {
@@ -627,7 +627,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
 
             return new Element("null").getAttribute(attribute);
         }
-        
+
         // <--[tag]
         // @attribute <l@location.inventory>
         // @returns dInventory
@@ -707,7 +707,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 // Returns the horizontal distance between 2 locations.
                 // -->
                 if (attribute.getAttribute(2).startsWith("horizontal")) {
-                    
+
                     // <--[tag]
                     // @attribute <l@location.distance[<location>].horizontal.multiworld>
                     // @returns Element(Number)
@@ -733,7 +733,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 // Returns the vertical distance between 2 locations.
                 // -->
                 else if (attribute.getAttribute(2).startsWith("vertical")) {
-                    
+
                     // <--[tag]
                     // @attribute <l@location.distance[<location>].vertical.multiworld>
                     // @returns Element(Number)
@@ -841,7 +841,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
         if (attribute.startsWith("pitch")) {
             return new Element(getPitch()).getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <l@location.yaw.raw>
         // @returns Element(Number)
@@ -852,7 +852,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element(getYaw())
                     .getAttribute(attribute.fulfill(2));
         }
-        
+
         // <--[tag]
         // @attribute <l@location.yaw>
         // @returns Element(Number)
@@ -863,7 +863,7 @@ public class dLocation extends org.bukkit.Location implements dObject {
             return new Element(Rotation.normalizeYaw(getYaw()))
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <l@location.facing[<value>]>
         // @returns Element(Boolean)
@@ -873,13 +873,13 @@ public class dLocation extends org.bukkit.Location implements dObject {
         // -->
         if (attribute.startsWith("facing")) {
             if (attribute.hasContext(1)) {
-                
+
                 // The default number of degrees if there is no degrees attribute
                 int degrees = 45;
-                
+
                 // The attribute to fulfill from
                 int attributePos = 1;
-                
+
                 // <--[tag]
                 // @attribute <location.facing[<value>].degrees[X]>
                 // @returns Element(Boolean)
@@ -891,11 +891,11 @@ public class dLocation extends org.bukkit.Location implements dObject {
                 if (attribute.getAttribute(2).startsWith("degrees") &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {
-                    
+
                     degrees = attribute.getIntContext(2);
                     attributePos++;
                 }
-                
+
                 if (dLocation.matches(attribute.getContext(1))) {
                     return new Element(Rotation.isFacingLocation
                             (this, dLocation.valueOf(attribute.getContext(1)), degrees))
@@ -906,10 +906,10 @@ public class dLocation extends org.bukkit.Location implements dObject {
                             (this, dEntity.valueOf(attribute.getContext(1))
                                     .getBukkitEntity().getLocation(), degrees))
                                .getAttribute(attribute.fulfill(attributePos));
-                } 
+                }
             }
         }
-        
+
         // <--[tag]
         // @attribute <l@location.power>
         // @returns Element(Number)
@@ -942,14 +942,14 @@ public class dLocation extends org.bukkit.Location implements dObject {
                         return Element.TRUE.getAttribute(attribute.fulfill(1));
                 return Element.FALSE.getAttribute(attribute.fulfill(1));
             }
-            
+
             // Check if the player is in any region
             else {
                 return new Element(WorldGuardUtilities.inRegion(this))
                     .getAttribute(attribute.fulfill(1));
             }
         }
-        
+
         // <--[tag]
         // @attribute <l@location.regions>
         // @returns dList

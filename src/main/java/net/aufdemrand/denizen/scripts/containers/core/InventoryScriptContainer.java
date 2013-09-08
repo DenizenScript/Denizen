@@ -19,40 +19,40 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryScriptContainer extends ScriptContainer {
-    
+
     public InventoryScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
     }
-    
+
     public Map<String, dItem> definitions = new HashMap<String, dItem>();
-    
+
     public int getSize() {
         InventoryType invType = getInventoryType();
         int size = aH.getIntegerFrom(getString("SIZE", String.valueOf(invType.getDefaultSize())));
-        
+
         return size;
     }
-    
+
     public InventoryType getInventoryType() {
         String typeStr = getString("inventory", "chest");
-        
+
         try {
             InventoryType type = InventoryType.valueOf(typeStr);
             return type;
-        } 
+        }
         catch(Exception e) {
             return InventoryType.CHEST;
         }
     }
-    
+
     public dInventory getInventoryFrom() {
         return getInventoryFrom(null, null);
     }
-    
+
     public dInventory getInventoryFrom(dPlayer player, dNPC npc) {
-        
+
         dInventory inventory = null;
-        
+
         try {
             if (contains("INVENTORY")) {
                 if (InventoryType.valueOf(getString("INVENTORY")) != null) {
@@ -83,7 +83,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         dB.echoError("Inventory size must be a positive number! Inverting...");
                         size = size*-1;
                     }
-                    
+
                     inventory = new dInventory(aH.getIntegerFrom(getString("SIZE")), "script", getName());
                 }
             }
@@ -108,7 +108,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         else {
                             finalItems[itemsAdded] = new ItemStack(Material.AIR);
                             if (!m.group(2).trim().isEmpty()) {
-                                dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: [" + m.group(2) 
+                                dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: [" + m.group(2)
                                         + "]... Ignoring it and assuming \"AIR\"");
                             }
                         }
@@ -117,7 +117,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 }
                 inventory.setContents(finalItems);
             }
-        } 
+        }
         catch (Exception e) {
             dB.echoError("Woah! An exception has been called with this inventory script!");
             if (!dB.showStackTraces)
@@ -125,9 +125,9 @@ public class InventoryScriptContainer extends ScriptContainer {
             else e.printStackTrace();
             inventory = null;
         }
-        
+
         return inventory;
-        
+
     }
-    
+
 }

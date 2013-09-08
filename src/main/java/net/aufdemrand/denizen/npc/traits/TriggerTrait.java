@@ -116,8 +116,8 @@ public class TriggerTrait extends Trait implements Listener {
         Paginator paginator = new Paginator().header("Triggers");
         paginator.addLine("<e>Key: <a>Name  <b>Status  <c>Cooldown  <d>Cooldown Type  <e>(Radius)");
         for (Entry<String, Boolean> entry : enabled.entrySet()) {
-            String line = "<a> " + entry.getKey() 
-                    + "<b> " + (entry.getValue() ? "Enabled" : "Disabled") 
+            String line = "<a> " + entry.getKey()
+                    + "<b> " + (entry.getValue() ? "Enabled" : "Disabled")
                     + "<c> " + getCooldownDuration(entry.getKey())
                     + "<d> " + getCooldownType(entry.getKey()).name()
                     + "<e> " + (getRadius(entry.getKey()) == -1 ? "" : getRadius(entry.getKey()));
@@ -139,7 +139,7 @@ public class TriggerTrait extends Trait implements Listener {
         DenizenAPI.getCurrentInstance().getTriggerRegistry().setCooldown(npc, player, triggerClass, getCooldownDuration(triggerClass.getName()), getCooldownType(triggerClass.getName()));
         return true;
     }
-    
+
     public boolean trigger(AbstractTrigger triggerClass, dPlayer player) {
         // Check cool down, return false if not yet met
         if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))

@@ -25,27 +25,27 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     public enum ItemType { CRAFT, SMELT, FISH }
 
     ItemType type = null;
-    
+
     dList items;
-    
+
     int required = 0;
     int items_so_far = 0;
-    
+
     String region = null;
     dCuboid cuboid = null;
-    
+
     @Override
     public void onBuild(List<aH.Argument> args) {
-        
+
         for (aH.Argument arg : args) {
-            
+
             if (arg.matchesEnum(ItemType.values()) && type == null)
                 this.type = ItemType.valueOf(arg.getValue().toUpperCase());
-            
+
             else if (arg.matchesPrefix("qty, q")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
                 this.required = aH.getIntegerFrom(arg.getValue());
-            
+
             else if (arg.matchesPrefix("items, item, i, name, names"))
                 items = arg.asType(dList.class);
 
@@ -56,7 +56,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                     && arg.matchesArgumentType(dCuboid.class))
                 this.cuboid = arg.asType(dCuboid.class);
         }
-        
+
         if (items == null)
             items = new dList("*");
 
@@ -65,7 +65,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             cancel();
         }
     }
-    
+
     public void increment(String object, int amount) {
         items_so_far = items_so_far + amount;
         dB.echoDebug(ChatColor.YELLOW + "// " + player.getName() + " " +
@@ -75,19 +75,19 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
     @EventHandler
     public void listenItem(InventoryClickEvent event) {
-        
+
         // Proceed if the slot clicked is a RESULT slot and the player is the right one
         if (event.getSlotType().toString().equals("RESULT")
-            && event.getWhoClicked() == player.getPlayerEntity()) {    
+            && event.getWhoClicked() == player.getPlayerEntity()) {
 
             // If REGION argument specified, check. If not in region, don't count kill!
             if (region != null)
                 if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
-            
+
             // Same with the CUBOID argument...
             if (cuboid != null)
                 if (!cuboid.isInsideCuboid(player.getLocation())) return;
-            
+
             // Put the type of this inventory in a string and check if it matches the
             // listener's type
             String inventoryType = event.getInventory().getType().toString();
@@ -96,17 +96,17 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
                 // Get the item in the result slot as an ItemStack
                 final ItemStack item = new ItemStack(event.getCurrentItem());
-                
+
                 //if item isn't a required item, then return
                 if (!items.contains(item.getType().name().toLowerCase())
                     && !items.contains(item.getTypeId()) && !items.contains("*"))
                     return;
-                
+
                 if (event.isShiftClick()) {
                     // Save the quantity of items of this type that the player had
                     // before the event took place
                     final int initialQty = new dInventory(player.getPlayerEntity().getInventory()).count(item, false);
-                    
+
                     // Run a task 1 tick later, after the event has occurred, and
                     // see how many items of this type the player has then in the
                     // inventory
@@ -116,14 +116,14 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                         public void run() {
                             int newQty = new dInventory(player.getPlayerEntity().getInventory()).count(item, false);
                             int difference = newQty - initialQty;
-                                        
+
                             // If any items were obtained (i.e. if shift click was
                             // used with the player's inventory not being full),
                             // increase the number of current items
                             if (difference > 0) {
                                 increment(item.getType().toString(), difference);
                             }
-                                        
+
                         }
                     }, 1);
                 } else {
@@ -131,7 +131,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                     // by the quantity of the item in the result slot
                     increment(item.getType().toString(), item.getAmount());
                 }
-                
+
             }
         }
     }
@@ -144,7 +144,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
         // If REGION argument specified, check. If not in region, don't count kill!
         if (region != null)
             if (!WorldGuardUtilities.inRegion(player.getLocation(), region)) return;
-        
+
         // Same with the CUBOID argument...
         if (cuboid != null)
             if (!cuboid.isInsideCuboid(player.getLocation())) return;
@@ -152,7 +152,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
         if (event.getState().toString().equals("CAUGHT_FISH"))
             increment("FISH", 1);
     }
-    
+
     @Override
     public void onSave() {
         try {
@@ -177,7 +177,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             items_so_far = (Integer) get("Quantity Done");
             region = (String) get("Region");
             cuboid = dCuboid.valueOf((String) get("Cuboid"));
-        } catch (Exception e) { 
+        } catch (Exception e) {
             dB.echoError("Unable to load ITEM listener for '%s'!", player.getName());
             cancel();
         }
@@ -195,10 +195,10 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             finish();
         }
     }
-    
+
     @Override
     public void onCancel() {
-        
+
     }
 
     @Override
@@ -210,7 +210,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
     @Override
     public void constructed() {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen); 
+        denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
     @Override

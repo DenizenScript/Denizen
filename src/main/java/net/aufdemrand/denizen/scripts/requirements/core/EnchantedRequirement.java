@@ -15,7 +15,7 @@ public class EnchantedRequirement extends AbstractRequirement{
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
-        
+
         boolean outcome = false;
         CheckType checkType = null;
 

@@ -46,14 +46,14 @@ public class Parameters {
     public Collection<Function> getFunctions() {
         return this.functions;
     }
-    
+
     /** Gets the supported constants.
      * @return a Collection of constants.
      */
     public Collection<Constant> getConstants() {
         return this.constants;
     }
-    
+
     /** Gets the supported bracket pairs for expressions.
      * @return a Collection of bracket pairs.
      */
@@ -67,14 +67,14 @@ public class Parameters {
     public Collection<BracketPair> getFunctionBrackets() {
         return this.functionBrackets;
     }
-    
+
     /** Adds operators to the supported ones.
      * @param operators The operators to be added.
      */
     public void addOperators(Collection<Operator> operators) {
         this.operators.addAll(operators);
     }
-    
+
     /** Adds an operator to the supported ones.
      * @param operator The added operator
      */
@@ -102,28 +102,28 @@ public class Parameters {
     public void addConstants(Collection<Constant> constants) {
         this.constants.addAll(constants);
     }
-    
+
     /** Adds a constant to the supported ones.
      * @param constant The added constant
      */
     public void add(Constant constant) {
         this.constants.add(constant);
     }
-    
+
     /** Adds a new bracket pair to the expression bracket list.
      * @param pair A bracket pair
      */
     public void addExpressionBracket(BracketPair pair) {
         this.expressionBrackets.add(pair);
     }
-    
+
     /** Adds bracket pairs to the expression bracket list.
      * @param brackets The brackets to be added.
      */
     public void addExpressionBrackets(Collection<BracketPair> brackets) {
         this.expressionBrackets.addAll(brackets);
     }
-    
+
     /** Adds a new bracket pair to the function bracket list.
      * @param pair A bracket pair
      */
@@ -141,7 +141,7 @@ public class Parameters {
     /** Sets the translated term for a function.
      * <br>Using this method, you can localize the names of some built-in functions. For instance,
      * for french people,you can use this method to use "somme" instead of "sum" with the SUM built-in
-     * function of DoubleEvaluator. 
+     * function of DoubleEvaluator.
      * @param function The function you want to translate the name
      * @param translatedName The translated name
      * @see DoubleEvaluator#SUM
@@ -158,16 +158,16 @@ public class Parameters {
     public void setTranslation(Constant constant, String translatedName) {
         setTranslation(constant.getName(), translatedName);
     }
-    
+
     private void setTranslation(String name, String translatedName) {
         this.translations.put(name, translatedName);
     }
-    
+
     String getTranslation(String originalName) {
         String translation = this.translations.get(originalName);
         return translation==null?originalName:translation;
     }
-    
+
     /** Sets the function argument separator.
      * <br>Its default value is ','.
      * @param separator The new separator
@@ -175,7 +175,7 @@ public class Parameters {
     public void setFunctionArgumentSeparator(char separator) {
         this.functionSeparator = new String(new char[]{separator});
     }
-    
+
     /** Gets the function argument separator.
      * @return a string
      */

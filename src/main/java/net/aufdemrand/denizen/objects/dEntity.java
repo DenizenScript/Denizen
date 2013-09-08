@@ -222,7 +222,7 @@ public class dEntity implements dObject {
 
             for (EntityType type : EntityType.values()) {
                 if (type.name().equalsIgnoreCase(m.group(1)))
-                    // Construct a new 'vanilla' unspawned dEntity                    
+                    // Construct a new 'vanilla' unspawned dEntity
                     return new dEntity(type, data1, data2);
             }
         }
@@ -344,7 +344,7 @@ public class dEntity implements dObject {
     public boolean isNPC() {
         return CitizensAPI.getNPCRegistry().isNPC(entity);
     }
-    
+
     /**
      * Get the Player corresponding to this entity
      *
@@ -377,7 +377,7 @@ public class dEntity implements dObject {
     public boolean isGeneric() {
         return identify().matches("e@\\D+");
     }
-    
+
     /**
      * Get the location of this entity
      *
@@ -389,10 +389,10 @@ public class dEntity implements dObject {
         if (!isGeneric()) {
             return new dLocation(entity.getLocation());
         }
-        
+
         return null;
     }
-    
+
     /**
      * Get the eye location of this entity
      *
@@ -404,10 +404,10 @@ public class dEntity implements dObject {
         if (!isGeneric() && isLivingEntity()) {
             return new dLocation(getLivingEntity().getEyeLocation());
         }
-        
+
         return null;
     }
-    
+
     /**
      * Gets the velocity of this entity
      *
@@ -421,7 +421,7 @@ public class dEntity implements dObject {
         }
         return null;
     }
-    
+
     /**
      * Sets the velocity of this entity
      *
@@ -433,7 +433,7 @@ public class dEntity implements dObject {
             entity.setVelocity(vector);
         }
     }
-    
+
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
         if (entity != null && isUnique()) entity.teleport(location);
@@ -459,7 +459,7 @@ public class dEntity implements dObject {
                     org.bukkit.entity.Entity ent = null;
 
                     if (entity_type.name().matches("PLAYER")) {
-                        
+
                         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, data1);
                         npc.spawn(location);
                     }
@@ -505,9 +505,9 @@ public class dEntity implements dObject {
 
                         ent = location.getWorld().spawnEntity(location, entity_type);
                         entity = ent;
-                                                
+
                         if (entity_type.name().matches("PIG_ZOMBIE")) {
-                            
+
                             // Give pig zombies golden swords by default, unless data2 specifies
                             // a different weapon
                             if (!dItem.matches(data1)) {
@@ -518,7 +518,7 @@ public class dEntity implements dObject {
                                     .setItemInHand(dItem.valueOf(data1).getItemStack());
                         }
                         else if (entity_type.name().matches("SKELETON")) {
-                            
+
                             // Give skeletons bows by default, unless data2 specifies
                             // a different weapon
                             if (!dItem.matches(data2)) {
@@ -611,9 +611,9 @@ public class dEntity implements dObject {
     public boolean isSpawned() {
         return entity != null;
     }
-    
+
     public boolean isValid() {
-        
+
         return entity.isValid();
     }
 
@@ -646,7 +646,7 @@ public class dEntity implements dObject {
         // as well for one of the two methods below
         EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle()
                                         : null;
-        
+
         ((CraftCreature) entity).getHandle().
             setGoalTarget(nmsTarget);
 
@@ -806,7 +806,7 @@ public class dEntity implements dObject {
             dB.echoDebug("dEntity has returned null.");
             return "null";
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.get_vehicle>
         // @returns dEntity
@@ -908,7 +908,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("eye_location"))
             return new dLocation(getEyeLocation())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.location>
         // @returns dLocation
@@ -999,7 +999,7 @@ public class dEntity implements dObject {
         if (attribute.startsWith("is_tameable"))
             return new Element(entity instanceof Tameable)
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <e@entity.is_tamed>
         // @returns Element(Boolean)
@@ -1015,7 +1015,7 @@ public class dEntity implements dObject {
                 return Element.FALSE
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.get_owner>
         // @returns dPlayer
@@ -1030,7 +1030,7 @@ public class dEntity implements dObject {
                 return new Element("null")
                         .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <e@entity.is_inside_vehicle>
         // @returns Element(Boolean)

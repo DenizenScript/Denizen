@@ -12,11 +12,11 @@ import net.aufdemrand.denizen.tags.Attribute;
 public class dMaterial implements dObject {
 
     final static Pattern materialPattern = Pattern.compile("(?:m@)?(\\w+)[,:]?(\\d+)?", Pattern.CASE_INSENSITIVE);
-    
+
     //////////////////
     //    OBJECT FETCHER
     ////////////////
-    
+
     /**
      * Gets a Material Object from a string form.
      *
@@ -29,42 +29,42 @@ public class dMaterial implements dObject {
 
         if (string.toLowerCase().matches("random")
                 || string.toLowerCase().matches("m@random")) {
-            
+
             // Get a random material
             return new dMaterial(Material.values()[Utilities.getRandom().nextInt(Material.values().length)]);
         }
-        
+
         Matcher m = materialPattern.matcher(string);
-        
+
         if (m.matches()) {
-            
+
             int data = -1;
-            
+
             if (m.group(2) != null) {
-                
+
                 data = aH.getIntegerFrom(m.group(2));
             }
-            
+
             if (aH.matchesInteger(m.group(1))) {
-                
-                return new dMaterial(aH.getIntegerFrom(m.group(1)), data);        
+
+                return new dMaterial(aH.getIntegerFrom(m.group(1)), data);
             }
             else {
-                
+
                 for (Material material : Material.values()) {
-                    
+
                     if (material.name().equalsIgnoreCase(m.group(1))) {
-                        
+
                         return new dMaterial(material, data);
                     }
                 }
             }
         }
-                
+
         // No match
         return null;
     }
-    
+
     /**
      * Determine whether a string is a valid material.
      *
@@ -76,14 +76,14 @@ public class dMaterial implements dObject {
 
         if (arg.toUpperCase().matches("RANDOM"))
             return true;
-        
+
         Matcher m = materialPattern.matcher(arg);
-        
+
         return m.matches();
 
     }
-    
-    
+
+
     ///////////////
     //   Constructors
     /////////////
@@ -91,25 +91,25 @@ public class dMaterial implements dObject {
     public dMaterial(Material material) {
         this.material = material;
     }
-    
+
     public dMaterial(Material material, int data) {
         this.material = material;
         if (data < 0)
             this.data = null;
         else this.data = (byte) data;
     }
-    
+
     public dMaterial(int id) {
         this.material = Material.getMaterial(id);
     }
-    
+
     public dMaterial(int id, int data) {
         this.material = Material.getMaterial(id);
         if (data < 0)
             this.data = null;
         else this.data = (byte) data;
     }
-    
+
     /////////////////////
     //   INSTANCE FIELDS/METHODS
     /////////////////
@@ -122,11 +122,11 @@ public class dMaterial implements dObject {
     public Material getMaterial() {
         return material;
     }
-    
+
     public String name() {
         return material.name();
     }
-    
+
     public Byte getData() {
         return data;
     }
@@ -140,7 +140,7 @@ public class dMaterial implements dObject {
             return (material == data.getItemType() && data.equals(data.getData()));
         else return material == data.getItemType();
     }
-    
+
     public MaterialData getMaterialData() {
         return new MaterialData(material, data != null ? data : 0);
     }
@@ -196,7 +196,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("has_gravity"))
             return new Element(material.hasGravity())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <m@material.id>
         // @returns Element(integer)
@@ -206,7 +206,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("id"))
             return new Element(material.getId())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <m@material.is_block>
         // @returns Element(boolean)
@@ -216,7 +216,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("is_block"))
             return new Element(material.isBlock())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <m@material.is_burnable>
         // @returns Element(boolean)
@@ -226,7 +226,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("is_burnable"))
             return new Element(material.isBurnable())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <m@material.is_edible>
         // @returns Element(boolean)
@@ -236,7 +236,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("is_edible"))
             return new Element(material.isEdible())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <m@material.is_flammable>
         // @returns Element(boolean)
@@ -246,7 +246,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("is_flammable"))
             return new Element(material.isFlammable())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <m@material.is_occluding>
         // @returns Element(boolean)
@@ -256,7 +256,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("is_occluding"))
             return new Element(material.isOccluding())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <m@material.is_record>
         // @returns Element(boolean)
@@ -266,7 +266,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("is_record"))
             return new Element(material.isRecord())
                     .getAttribute(attribute.fulfill(1));
-      
+
         // <--[tag]
         // @attribute <m@material.is_solid>
         // @returns Element(boolean)
@@ -276,7 +276,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("is_solid"))
             return new Element(material.isSolid())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <m@material.is_transparent>
         // @returns Element(boolean)
@@ -286,7 +286,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("is_transparent"))
             return new Element(material.isTransparent())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <m@material.max_durability>
         // @returns Element(integer)
@@ -296,7 +296,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("max_durability"))
             return new Element(material.getMaxDurability())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <m@material.max_stack_size>
         // @returns Element(integer)
@@ -306,7 +306,7 @@ public class dMaterial implements dObject {
         if (attribute.startsWith("max_stack_size"))
             return new Element(material.getMaxStackSize())
                     .getAttribute(attribute.fulfill(1));
-        
+
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 

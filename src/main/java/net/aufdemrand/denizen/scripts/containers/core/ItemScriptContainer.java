@@ -19,11 +19,11 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemScriptContainer extends ScriptContainer {
-    
+
     dNPC npc = null;
     dPlayer player = null;
     public boolean bound = false;
-    
+
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         ItemScriptHelper.item_scripts.put(getName(), this);
@@ -70,16 +70,16 @@ public class ItemScriptContainer extends ScriptContainer {
 
             ItemMeta meta = stack.getItemStack().getItemMeta();
             List<String> lore = new ArrayList<String>();
-            
+
             // Set Id of the first, invisible lore
             lore.add("§0id:" + getName());
-            
+
             // Set Display Name
             if (contains("DISPLAY NAME")){
                 String displayName = TagManager.tag(player, npc, getString("DISPLAY NAME"));
                 meta.setDisplayName(displayName);
             }
-            
+
             // Set if the object is bound to the player
             if (contains("BOUND")) {
                 bound = Boolean.valueOf(TagManager.tag(player, npc, getString("BOUND")));
@@ -87,20 +87,20 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Set Lore
             if (contains("LORE")) {
-                
+
                 for (String l : getStringList("LORE")){
                      l = TagManager.tag(player, npc, l);
                      lore.add(l);
                 }
             }
-                
+
             meta.setLore(lore);
             stack.getItemStack().setItemMeta(meta);
 
             // Set Enchantments
             if (contains("ENCHANTMENTS")) {
                 for (String enchantment : getStringList("ENCHANTMENTS")) {
-                    
+
                     enchantment = TagManager.tag(player, npc, enchantment);
                     try {
                         // Build enchantment context
@@ -124,7 +124,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 String color = TagManager.tag(player, npc, getString("COLOR"));
                 LeatherColorer.colorArmor(stack, color);
             }
-                
+
             // Set Book
             if (contains("BOOK")) {
                 BookScriptContainer book = ScriptRegistry
@@ -143,11 +143,11 @@ public class ItemScriptContainer extends ScriptContainer {
 
         return stack;
     }
-    
+
     public void setNPC(dNPC npc) {
         this.npc = npc;
     }
-    
+
     public void setPlayer(dPlayer player) {
         this.player = player;
     }

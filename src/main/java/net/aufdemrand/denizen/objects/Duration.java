@@ -290,13 +290,13 @@ public class Duration implements dObject {
 
         if (attribute == null) return null;
 
-        
+
         /////////////////////
         //   CONVERSION ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
-        // @attribute <d@duration.in_hours> 
+        // @attribute <d@duration.in_hours>
         // @returns Element(double)
         // @description
         // returns the number of hours in the Duration.
@@ -304,9 +304,9 @@ public class Duration implements dObject {
         if (attribute.startsWith("in_hours") || attribute.startsWith("hours"))
             return new Element(seconds / 1800)
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
-        // @attribute <d@duration.in_minutes> 
+        // @attribute <d@duration.in_minutes>
         // @returns Element(double)
         // @description
         // returns the number of minutes in the Duration.
@@ -314,7 +314,7 @@ public class Duration implements dObject {
         if (attribute.startsWith("in_minutes") || attribute.startsWith("minutes"))
             return new Element(seconds / 60)
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <d@duration.in_seconds>
         // @returns Element(double)
@@ -326,7 +326,7 @@ public class Duration implements dObject {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <d@duration.in_ticks> 
+        // @attribute <d@duration.in_ticks>
         // @returns Element(integer)
         // @description
         // returns the number of ticks in the Duration. (20t/second)
@@ -334,12 +334,12 @@ public class Duration implements dObject {
         if (attribute.startsWith("in_ticks") || attribute.startsWith("ticks"))
             return new Element(getTicksAsInt())
                     .getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   DEBUG ATTRIBUTES
         /////////////////
-        
+
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
@@ -359,14 +359,14 @@ public class Duration implements dObject {
             return new Element(debug())
                     .getAttribute(attribute.fulfill(1));
         }
-        
-        
+
+
         /////////////////////
         //   FORMAT ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
-        // @attribute <d@duration.formatted> 
+        // @attribute <d@duration.formatted>
         // @returns Element
         // @description
         // returns the value of the duration in an easily readable
@@ -375,16 +375,16 @@ public class Duration implements dObject {
         // there are less than 10 minutes left.
         // -->
         if (attribute.startsWith("formatted") || attribute.startsWith("value")) {
-            
+
             // Make sure you don't change these longs into doubles
             // and break the code
-            
+
             long seconds = (long) this.seconds;
             long days = seconds / 86400;
             long hours = (seconds - days * 86400) / 3600;
             long minutes = (seconds - days * 86400 - hours * 3600) / 60;
             seconds = seconds - days * 86400 - hours * 3600 - minutes * 60;
-            
+
             String timeString = "";
 
             if (days > 0)

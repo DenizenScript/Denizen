@@ -16,10 +16,10 @@ public class Token {
         LITERAL
     }
     static final Token FUNCTION_ARG_SEPARATOR = new Token(Kind.FUNCTION_SEPARATOR, null);
-    
+
     private Kind kind;
     private Object content;
-    
+
     static Token buildLiteral(String literal) {
         return new Token(Kind.LITERAL, literal);
     }
@@ -31,7 +31,7 @@ public class Token {
     static Token buildFunction(Function function) {
         return new Token(Kind.FUNCTION, function);
     }
-    
+
     static Token buildOpenToken(BracketPair pair) {
         return new Token(Kind.OPEN_BRACKET, pair);
     }
@@ -48,7 +48,7 @@ public class Token {
         this.kind = kind;
         this.content = content;
     }
-    
+
     BracketPair getBrackets() {
         return (BracketPair) this.content;
     }
@@ -99,7 +99,7 @@ public class Token {
     public boolean isFunctionArgumentSeparator() {
         return kind.equals(Kind.FUNCTION_SEPARATOR);
     }
-    
+
     /** Tests whether the token is a literal or a constant or a variable name.
      * @return true if the token is a literal, a constant or a variable name
      */

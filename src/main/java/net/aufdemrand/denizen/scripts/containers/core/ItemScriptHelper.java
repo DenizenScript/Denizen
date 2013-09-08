@@ -32,12 +32,12 @@ public class ItemScriptHelper implements Listener {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
-    
+
 
     /////////////////////
     //   EVENT HANDLER
     /////////////////
-    
+
     public static String doEvents(List<String> eventNames, dNPC npc, Player player, Map<String, Object> context) {
 
         String determination = "none";
@@ -45,11 +45,11 @@ public class ItemScriptHelper implements Listener {
         for (ItemScriptContainer script : item_scripts.values()) {
 
             if (script == null) continue;
-            
+
             for (String eventName : eventNames) {
-                
+
                 if (!script.contains("EVENTS.ON " + eventName.toUpperCase())) continue;
-                
+
                 List<ScriptEntry> entries = script.getEntries
                         (player != null ? new dPlayer(player) : null,
                          npc, "events.on " + eventName);
@@ -75,23 +75,23 @@ public class ItemScriptHelper implements Listener {
 
                 // Add the reqId to each of the entries
                 ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
-                InstantQueue.getQueue(null).addEntries(entries).start(); 
+                InstantQueue.getQueue(null).addEntries(entries).start();
 
                 if (DetermineCommand.hasOutcome(id))
                     determination =  DetermineCommand.getOutcome(id);
                 }
         }
-        
+
         return determination;
     }
-    
+
     public static boolean isItemScript(ItemStack item) {
         // If the item doesn't have ItemMeta, ignore it.
         if (!item.hasItemMeta()) return false;
-        
+
         // Since dItems are handled by lore, it must match an item script on one of the lines
         if (!item.getItemMeta().hasLore()) return false;
-        
+
         // Check to make sure the lore includes id:ItemScriptName. If not, ignore the item.
         for (String line : item.getItemMeta().getLore())
             if (ChatColor.stripColor(line).substring(0, 3).equalsIgnoreCase("id:") &&
@@ -100,7 +100,7 @@ public class ItemScriptHelper implements Listener {
             }
         return false;
     }
-    
+
     @EventHandler
     public void boundPrepareItem(PrepareItemCraftEvent event) {
         // Since the crafting matrix uses an array, we need a cloned version as a list
@@ -127,7 +127,7 @@ public class ItemScriptHelper implements Listener {
         // Now, return the modified matrix back to the crafting screen
         event.getInventory().setMatrix(clonedMatrix.toArray(new ItemStack[clonedMatrix.size()]));
     }
-    
+
     @EventHandler
     public void boundDropItem(PlayerDropItemEvent event) {
         if (!event.getItemDrop().getItemStack().hasItemMeta()) return;
@@ -142,7 +142,7 @@ public class ItemScriptHelper implements Listener {
             }
         }
     }
-    
+
     @EventHandler
     public void craftItem(CraftItemEvent event) {
         // Run a script on craft of an item script
@@ -156,7 +156,7 @@ public class ItemScriptHelper implements Listener {
                 event.setCancelled(true);
         }
     }
-    
+
     @EventHandler
     public void dropItem(PlayerDropItemEvent event) {
         // Run a script on drop of an item script

@@ -104,7 +104,7 @@ public class dNPC implements dObject {
             return null;
         }
     }
-    
+
     public dEntity getDenizenEntity() {
         try {
             return new dEntity(getCitizen().getBukkitEntity());
@@ -141,7 +141,7 @@ public class dNPC implements dObject {
         dB.debugMode = db;
         return script;
     }
-    
+
     public void destroy() {
         getCitizen().destroy();
     }
@@ -262,7 +262,7 @@ public class dNPC implements dObject {
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return "null";
-        
+
         // <--[tag]
         // @attribute <npc.name.nickname>
         // @returns Element
@@ -363,7 +363,7 @@ public class dNPC implements dObject {
         // -->
         if (attribute.startsWith("owner"))
             return new Element(getOwner()).getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <npc.inventory>
         // @returns dInventory

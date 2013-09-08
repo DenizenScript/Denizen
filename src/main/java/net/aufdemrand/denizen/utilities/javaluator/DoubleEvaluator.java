@@ -54,18 +54,18 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
         /** The most commonly operator precedence, where the unary minus as a lower precedence than the exponentiation.
          * <br>With this style, used by Google, Wolfram alpha, and many others, -2^2=-4.
          */
-        STANDARD, 
+        STANDARD,
         /** The operator precedence used by Excel, or bash shell script language, where the unary minus as a higher precedence than the exponentiation.
          * <br>With this style, -2^2=4.
          */
-        EXCEL 
+        EXCEL
     }
-    
+
     /** A constant that represents pi (3.14159...) */
     public final static Constant PI = new Constant("pi");
     /** A constant that represents e (2.718281...) */
     public final static Constant E = new Constant("e");
-    
+
     /** Returns the smallest integer >= argument */
     public final static Function CEIL = new Function("ceil", 1);
     /** Returns the largest integer <= argument */
@@ -108,7 +108,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
     public final static Function LN = new Function("ln", 1);
     /** Returns the decimal logarithm of a number */
     public final static Function LOG = new Function("log", 1);
-    
+
     /** Returns a pseudo random number */
     public final static Function RANDOM = new Function("random", 0);
 
@@ -137,23 +137,23 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
     private static final Function[] FUNCTIONS = new Function[]{SINE, COSINE, TANGENT, ASINE, ACOSINE, ATAN, SINEH, COSINEH, TANGENTH, MIN, MAX, SUM, AVERAGE, LN, LOG, ROUND, CEIL, FLOOR, ABS, RANDOM};
     /** The whole set of predefined constants */
     private static final Constant[] CONSTANTS = new Constant[]{PI, E};
-    
+
     private static Parameters DEFAULT_PARAMETERS;
     private static final NumberFormat FORMATTER = NumberFormat.getNumberInstance(Locale.US);
-    
+
     /** Gets a copy of DoubleEvaluator standard default parameters.
      * <br>The returned parameters contains all the predefined operators, functions and constants.
-     * <br>Each call to this method create a new instance of Parameters. 
+     * <br>Each call to this method create a new instance of Parameters.
      * @return a Paramaters instance
      * @see Style
      */
     public static Parameters getDefaultParameters() {
         return getDefaultParameters(Style.STANDARD);
     }
-    
+
     /** Gets a copy of DoubleEvaluator default parameters.
      * <br>The returned parameters contains all the predefined operators, functions and constants.
-     * <br>Each call to this method create a new instance of Parameters. 
+     * <br>Each call to this method create a new instance of Parameters.
      * @return a Paramaters instance
      */
     public static Parameters getDefaultParameters(Style style) {
@@ -172,9 +172,9 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
         }
         return DEFAULT_PARAMETERS;
     }
-    
+
     /** Constructor.
-     * <br>This default constructor builds an instance with all predefined operators, functions and constants. 
+     * <br>This default constructor builds an instance with all predefined operators, functions and constants.
      */
     public DoubleEvaluator() {
         this(getParameters());
@@ -196,7 +196,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
         if (p.getIndex()==0 || p.getIndex()!=literal.length()) throw new IllegalArgumentException(literal+" is not a number");
         return result.doubleValue();
     }
-    
+
     /* (non-Javadoc)
      * @see net.astesana.javaluator.AbstractEvaluator#evaluate(net.astesana.javaluator.Constant)
      */
@@ -307,7 +307,7 @@ public class DoubleEvaluator extends AbstractEvaluator<Double> {
         errIfNaN(result, function);
         return result;
     }
-    
+
     private void errIfNaN(Double result, Function function) {
         if (result.equals(Double.NaN)) throw new IllegalArgumentException("Invalid argument passed to "+function.getName());
     }

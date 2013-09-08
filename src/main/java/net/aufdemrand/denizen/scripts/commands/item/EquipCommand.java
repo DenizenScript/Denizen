@@ -17,18 +17,18 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 
 public class EquipCommand extends AbstractCommand{
-    
+
     private enum TargetType { NPC, PLAYER }
-    
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry)
             throws InvalidArgumentsException {
-        
+
         TargetType targetType = TargetType.NPC;
         Map<String, dItem> equipment = new HashMap<String,dItem>();
-        
+
         for (String arg : scriptEntry.getArguments()) {
-            
+
             if (aH.matchesValueArg("ITEMINHAND, HAND, HOLDING", arg, ArgumentType.String)) {
                 equipment.put("hand", getItem(arg));
             }
@@ -58,20 +58,20 @@ public class EquipCommand extends AbstractCommand{
     @Override
     public void execute(ScriptEntry scriptEntry)
             throws CommandExecutionException {
-        
+
         Map<String, dItem> equipment = (Map<String, dItem>) scriptEntry.getObject("equipment");
         TargetType targetType = (TargetType) scriptEntry.getObject("targetType");
-        
+
         if (targetType.toString().equals("NPC")) {
-            
+
             NPC npc = scriptEntry.getNPC().getCitizen();
-            
+
             if (npc != null) {
-        
+
                 if (!npc.hasTrait(Equipment.class)) npc.addTrait(Equipment.class);
-        
+
                 Equipment trait = npc.getTrait(Equipment.class);
-        
+
                 if (equipment.get("hand") != null) {
                     trait.set(0, equipment.get("hand").getItemStack());
                 }
@@ -90,11 +90,11 @@ public class EquipCommand extends AbstractCommand{
             }
         }
         else {
-            
+
             Player player = scriptEntry.getPlayer().getPlayerEntity();
-            
+
             if (player != null) {
-        
+
                 if (equipment.get("hand") != null) {
                     player.getInventory().setItemInHand(equipment.get("hand").getItemStack());
                 }
@@ -112,20 +112,20 @@ public class EquipCommand extends AbstractCommand{
                 }
             }
         }
-        
+
     }
-    
+
     public dItem getItem(String arg) {
-        
+
         arg = "ITEM:" + aH.getStringFrom(arg);
-        
+
         if (aH.matchesItem(arg)) {
             return (aH.getItemFrom(arg));
         }
         else {
             dB.echoApproval("Invalid item " + arg + "!");
         }
-        
+
         return null;
     }
 

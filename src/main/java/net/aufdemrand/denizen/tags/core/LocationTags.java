@@ -22,7 +22,7 @@ public class LocationTags implements Listener {
 
     @EventHandler
     public void locationTags(ReplaceableTagEvent event) {
-        
+
         if (!event.matches("location, l") || event.replaced()) return;
 
         // Stage the location

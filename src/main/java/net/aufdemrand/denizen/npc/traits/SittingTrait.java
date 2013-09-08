@@ -16,27 +16,27 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class SittingTrait extends Trait implements Listener  {
-    
+
     @Persist("sitting")
     private boolean sitting = false;
-    
+
     @Persist("chair location")
     private Location chairLocation = null;
-    
+
     EntityHuman eh = null;
-    
+
     @Override
     public void run() {
         if (eh == null || chairLocation == null) return;
         if (!Utilities.checkLocation(npc.getBukkitEntity(), chairLocation, 1)) stand();
     }
-    
+
     @Override
     public void onSpawn() {
         eh = ((CraftPlayer) npc.getBukkitEntity()).getHandle();
         if (sitting) sit();
     }
-    
+
     /**
      * Makes the NPC sit
      */
@@ -52,10 +52,10 @@ public class SittingTrait extends Trait implements Listener  {
         sitting = true;
         chairLocation = npc.getBukkitEntity().getLocation();
     }
-    
+
     /**
      * Makes the NPC sit a the specified location
-     * 
+     *
      * @param location
      */
     public void sit(Location location) {
@@ -64,53 +64,53 @@ public class SittingTrait extends Trait implements Listener  {
         if (npc.getBukkitEntity().getType() != EntityType.PLAYER) {
             return;
         }
-        
+
         /*
          * Teleport NPC to the location before
          * sending the sit packet to the clients.
          */
         eh.getBukkitEntity().teleport(location.add(0.5, 0, 0.5));
         dB.echoDebug("...NPC moved to chair");
-        
+
         ((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x04));
-        
+
         sitting = true;
         chairLocation = location;
     }
-    
+
     /**
      * Makes the NPC stand
      */
     public void stand() {
         DenizenAPI.getDenizenNPC(npc).action("stand", null);
 
-        
+
         ((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x00));
-        
+
         chairLocation = null;
         sitting = false;
     }
-    
+
     /**
      * Checks if the NPC is currently sitting
-     * 
+     *
      * @return boolean
      */
     public boolean isSitting() {
         return sitting;
     }
-    
+
     /**
      * Gets the chair the NPC is sitting on
      * Returns null if the NPC isnt sitting
-     * 
+     *
      * @return Location
      */
     public Location getChair() {
         return chairLocation;
     }
-    
-    
+
+
     /**
      * If someone tries to break the poor
      * NPC's chair, we need to stop them!
@@ -123,7 +123,7 @@ public class SittingTrait extends Trait implements Listener  {
             event.setCancelled(true);
         }
     }
-    
+
     public SittingTrait() {
         super("sitting");
     }

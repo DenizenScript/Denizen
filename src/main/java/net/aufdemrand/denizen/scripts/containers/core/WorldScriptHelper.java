@@ -1845,7 +1845,7 @@ public class WorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void playerChangedWorldEvent(PlayerChangedWorldEvent event) {
-        
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dWorld originWorld = new dWorld(event.getFrom());
         context.put("origin_world", originWorld);
@@ -1855,7 +1855,7 @@ public class WorldScriptHelper implements Listener {
                  "player changes world from " + originWorld.identify()),
                  null, event.getPlayer(), context);
     }
-    
+
     @EventHandler
     public void playerCommandEvent(PlayerCommandPreprocessEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();

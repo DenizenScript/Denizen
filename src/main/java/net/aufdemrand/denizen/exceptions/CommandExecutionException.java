@@ -9,11 +9,11 @@ public class CommandExecutionException extends Exception {
     public CommandExecutionException(String msg) {
         super(msg);
     }
-    
+
     public CommandExecutionException(Messages msg, String arg) {
         super(String.format(msg.toString(), arg));
     }
-    
+
     public CommandExecutionException(Messages msg) {
         super(msg.toString());
     }

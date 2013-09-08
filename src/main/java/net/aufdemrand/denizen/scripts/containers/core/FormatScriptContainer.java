@@ -23,5 +23,5 @@ public class FormatScriptContainer extends ScriptContainer {
         String text = getFormat().replaceAll("<text>", entry.getElement("text").asString());
         return TagManager.tag(entry.getPlayer(), entry.getNPC(), text);
     }
-    
+
 }

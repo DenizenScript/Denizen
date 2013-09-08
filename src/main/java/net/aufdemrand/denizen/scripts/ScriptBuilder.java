@@ -31,8 +31,8 @@ public class ScriptBuilder {
         return scriptEntryList;
     }
 
-    /* 
-     * Builds ScriptEntry(ies) of items read from a script 
+    /*
+     * Builds ScriptEntry(ies) of items read from a script
      */
 
     public static List<ScriptEntry> buildScriptEntries(List<String> contents, ScriptContainer parent, dPlayer player, dNPC npc) {

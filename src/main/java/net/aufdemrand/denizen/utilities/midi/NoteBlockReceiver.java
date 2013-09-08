@@ -33,7 +33,7 @@ public class NoteBlockReceiver implements Receiver
         this.location = null;
         this.channelPatches = Maps.newHashMap();
     }
-    
+
     public NoteBlockReceiver(Location location) throws InvalidMidiDataException, IOException
     {
         this.listeners = null;
@@ -72,10 +72,10 @@ public class NoteBlockReceiver implements Receiver
         if (ShortMessage.NOTE_ON != message.getCommand()) return;
 
         int channel = message.getChannel();
-        
+
         // If this is a percussion channel, return
         if (channel == 9) return;
-        
+
         // get the correct instrument
         Integer patch = channelPatches.get(channel);
 
@@ -87,7 +87,7 @@ public class NoteBlockReceiver implements Receiver
         if (patch != null) instrument = MidiUtil.patchToInstrument(patch);
 
         if (location != null) {
-            
+
             location.getWorld().playSound(location, instrument, volume, pitch);
         }
         else {

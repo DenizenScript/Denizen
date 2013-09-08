@@ -16,7 +16,7 @@ public class BracketPair {
 
     private String open;
     private String close;
-    
+
     /** Constructor.
      * @param open The character used to open the brackets.
      * @param close The character used to close the brackets.

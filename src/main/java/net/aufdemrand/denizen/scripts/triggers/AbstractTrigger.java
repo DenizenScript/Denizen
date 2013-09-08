@@ -41,10 +41,10 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
     /**
      * Part of the Plugin disable sequence.
-     * 
+     *
      * Can be '@Override'n by a Trigger which requires a method when bukkit sends a
      * onDisable() to Denizen. (ie. Server shuts down or restarts)
-     * 
+     *
      */
     @Override
     public void onDisable() {
@@ -114,11 +114,11 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     /**
      * This method will find all NPCs within a certain range of a location that
      * have a trigger, and the trigger is enabled.
-     * 
+     *
      * @param location
      * @param maxRange
-     * 
-     * @return    The Set of NPCs that are 
+     *
+     * @return    The Set of NPCs that are
      */
     public Set<NPC> getActiveNPCsWithinRangeWithTrigger (Location location, int maxRange) {
         Set<NPC> closestNPCs = new HashSet<NPC> ();
@@ -134,7 +134,7 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
                 closestNPCs.add (npc);
             }
         }
-        
-        return closestNPCs;        
+
+        return closestNPCs;
     }
 }

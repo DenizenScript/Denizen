@@ -9,11 +9,11 @@ public class ScriptEntryCreationException extends Exception {
     public ScriptEntryCreationException(String msg) {
         super(msg);
     }
-    
+
     public ScriptEntryCreationException(Messages msg, String arg) {
         super(String.format(msg.toString(), arg));
     }
-    
+
     public ScriptEntryCreationException(Messages msg) {
         super(msg.toString());
     }

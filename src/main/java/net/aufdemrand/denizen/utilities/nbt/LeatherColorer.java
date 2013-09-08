@@ -10,9 +10,9 @@ public class LeatherColorer {
     public static void colorArmor(dItem item, String colorArg) {
 
         if (item == null) return;
- 
+
         if (dColor.matches(colorArg)) {
-            
+
             try{
                 LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemStack().getItemMeta();
                 meta.setColor(dColor.valueOf(colorArg).getColor());
@@ -21,6 +21,6 @@ public class LeatherColorer {
                 dB.echoError("Unable to color '" + item.identify() + "'.");
             }
         }
-        
+
     }
 }

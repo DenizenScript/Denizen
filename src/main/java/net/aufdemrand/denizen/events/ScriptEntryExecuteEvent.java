@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
- 
+
 public class ScriptEntryExecuteEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
@@ -12,11 +12,11 @@ public class ScriptEntryExecuteEvent extends Event implements Cancellable {
 
     private boolean cancelled = false;
     private boolean altered = false;
-    
+
     public ScriptEntryExecuteEvent(ScriptEntry scriptEntry) {
         this.scriptEntry = scriptEntry;
     }
- 
+
     public void alterScriptEntry(ScriptEntry scriptEntry) {
         this.scriptEntry = scriptEntry;
         altered = true;

@@ -9,11 +9,11 @@ public class RequirementCheckException extends Exception {
     public RequirementCheckException(String msg) {
         super(msg);
     }
-    
+
     public RequirementCheckException(Messages msg, String arg) {
         super(String.format(msg.toString(), arg));
     }
-    
+
     public RequirementCheckException(Messages msg) {
         super(msg.toString());
     }

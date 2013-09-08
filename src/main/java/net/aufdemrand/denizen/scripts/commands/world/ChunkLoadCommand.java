@@ -25,10 +25,10 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
     }
 
-    /* 
+    /*
      * Keeps a chunk loaded
      */
-    
+
     private enum Action { ADD, REMOVE, REMOVEALL }
 
     @Override
@@ -36,7 +36,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         Chunk chunk = null;
         Duration length = new Duration(0);
         Action action = Action.ADD;
-        
+
         for (String arg : scriptEntry.getArguments()) {
             if(aH.matchesArg("ADD, REMOVE, REMOVEALL", arg)) {
                 action = Action.valueOf(aH.getStringFrom(arg).toUpperCase());
@@ -47,7 +47,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 length = Duration.valueOf(arg);
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
-        
+
         if (chunk == null) throw new InvalidArgumentsException(Messages.DEBUG_SET_LOCATION);
 
         scriptEntry.addObject("action", action)
@@ -61,8 +61,8 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         Action action = (Action) scriptEntry.getObject("action");
         Chunk chunk = (Chunk) scriptEntry.getObject("chunk");
         Duration length = (Duration) scriptEntry.getObject("length");
-        
-        
+
+
         switch (action) {
         case ADD:
             if(length.getSeconds() != 0)
@@ -84,17 +84,17 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
             chunkDelays.clear();
             break;
         }
-        
+
         // Report to dB
         dB.report(getName(), aH.debugObj("Action", action.toString())
                         + aH.debugObj("Chunk", chunk.toString())
                         + aH.debugObj("Length", length.toString()));
 
     }
-    
+
     // Map of chunks with delays
     Map<String, Long> chunkDelays = new HashMap<String, Long>();
-    
+
     @EventHandler
     public void stopUnload(ChunkUnloadEvent e) {
         if(chunkDelays.containsKey(e.getChunk().getX()+ ", "+e.getChunk().getZ())) {
@@ -107,7 +107,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
             } else chunkDelays.remove(e.getChunk().getX()+ ", "+e.getChunk().getZ());
         }
     }
-    
+
     @EventHandler
     public void stopDespawn(NPCDespawnEvent e) {
         Chunk chnk = e.getNPC().getBukkitEntity().getLocation().getChunk();

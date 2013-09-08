@@ -11,18 +11,18 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.Listener;
 
 public class SneakingTrait extends Trait implements Listener  {
-    
+
     @Persist("sneaking")
     private boolean sneaking = false;
-        
+
     EntityHuman eh = null;
-    
+
     @Override
     public void onSpawn() {
         eh = ((CraftPlayer) npc.getBukkitEntity()).getHandle();
         if (sneaking) sneak();
     }
-    
+
     /**x
      * Makes the NPC sneak
      */
@@ -37,27 +37,27 @@ public class SneakingTrait extends Trait implements Listener  {
 
         sneaking = true;
     }
-    
+
     /**
      * Makes the NPC stand
      */
-    public void stand() {        
+    public void stand() {
         DenizenAPI.getDenizenNPC(npc).action("stand", null);
-        
+
         ((EntityPlayer) eh).getDataWatcher().watch(0, Byte.valueOf((byte) 0x00));
-        
+
         sneaking = false;
     }
-    
+
     /**
      * Checks if the NPC is currently sneaking
-     * 
+     *
      * @return boolean
      */
     public boolean isSneaking() {
         return sneaking;
     }
-    
+
     public SneakingTrait() {
         super("sneaking");
     }

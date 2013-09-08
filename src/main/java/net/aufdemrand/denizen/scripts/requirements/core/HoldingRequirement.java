@@ -14,11 +14,11 @@ public class HoldingRequirement extends AbstractRequirement{
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
         boolean outcome = false;
-        
+
         boolean exact = false;
         int quantity = 1;
         dItem itemToCheck = null;
-        
+
         for (String thisArg : args) {
             if (aH.matchesQuantity(thisArg))
                 quantity = aH.getIntegerFrom(thisArg);
@@ -29,7 +29,7 @@ public class HoldingRequirement extends AbstractRequirement{
 
             else itemToCheck = aH.getItemFrom(thisArg);
         }
-        
+
         if (itemToCheck != null)
             itemToCheck.getItemStack().setAmount(quantity);
 
@@ -37,7 +37,7 @@ public class HoldingRequirement extends AbstractRequirement{
             outcome = context.getPlayer().getPlayerEntity().getItemInHand().equals(itemToCheck);
         else
             outcome = context.getPlayer().getPlayerEntity().getItemInHand().isSimilar(itemToCheck.getItemStack());
-        
+
         dB.report("Outcome", (outcome) ? (exact) ? "Player is holding exact item" : "Player is holding item" : "");
 
         return outcome;

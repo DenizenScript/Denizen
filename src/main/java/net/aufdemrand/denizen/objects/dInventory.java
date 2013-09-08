@@ -32,14 +32,14 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 
 public class dInventory implements dObject, Notable {
-    
+
     /////////////////////
     //   PATTERNS
     /////////////////
-    
+
     final static Pattern inventory_by_type = Pattern.compile("(in@)(npc|player|entity|location|equipment)(\\[)(.+?)(\\])", Pattern.CASE_INSENSITIVE);
     final static Pattern inventory_by_script = Pattern.compile("(in@)(.+)", Pattern.CASE_INSENSITIVE);
-    
+
     /////////////////////
     //   NOTABLE METHODS
     /////////////////
@@ -47,7 +47,7 @@ public class dInventory implements dObject, Notable {
     public boolean isUnique() {
         return holderType.equals("notable");
     }
-    
+
     @Note("inventory")
     public String getSaveObject() {
         return holderIdentifier;
@@ -68,44 +68,44 @@ public class dInventory implements dObject, Notable {
         holderType_old = null;
         holderIdentifier_old = null;
     }
-    
+
     //////////////////
     //    OBJECT FETCHER
     ////////////////
-    
+
     public static dInventory valueOf(String string) {
         return valueOf(string, null, null);
     }
-    
+
     /**
-     * 
+     *
      * Gets a dInventory from a string format.
      *
      * @param string
      *          The inventory in string form. (in@player[playerName], in@scriptName, etc.)
-     * @return 
+     * @return
      *          The dInventory value. If the string is incorrectly formatted or
      *          the specified inventory is invalid, this is null.
      *
      */
     @ObjectFetcher("in")
     public static dInventory valueOf(String string, dPlayer player, dNPC npc) {
-        
+
         if (string == null) return null;
-        
+
         Matcher m = inventory_by_type.matcher(string);
-        
+
         if (m.matches()) {
 
             // Set the type of the inventory holder
             String t = m.group(2);
             // Set the name/id/location of the inventory holder
             String h = m.group(4);
-            
+
             if (t.equalsIgnoreCase("npc")) {
                 // Check if the NPC ID specified is valid
-                if (dNPC.matches((h.startsWith("n@") ? h : "n@" + h)) 
-                && (dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Player 
+                if (dNPC.matches((h.startsWith("n@") ? h : "n@" + h))
+                && (dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Player
                 || dNPC.valueOf((h.startsWith("n@") ? h : "n@" + h)).getEntity() instanceof Horse))
                     return new dInventory(dNPC.valueOf(h).getEntity());
             }
@@ -139,40 +139,40 @@ public class dInventory implements dObject, Notable {
                     return new dInventory(InventoryType.CRAFTING, t, h).add(Bukkit.getPlayer(h.substring(2))
                             .getEquipment().getArmorContents());
                 }
-                else if (dEntity.matches(h) && dEntity.valueOf(h).isLivingEntity() 
+                else if (dEntity.matches(h) && dEntity.valueOf(h).isLivingEntity()
                             && dEntity.valueOf(h).isSpawned()) {
                     return new dInventory(InventoryType.CRAFTING, t, h).add(dEntity.valueOf(h).getLivingEntity()
                             .getEquipment().getArmorContents());
                 }
             }
-            
+
             // If the dInventory is invalid, alert the user and return null
             dB.echoError("Value of dInventory returning null. Invalid " + t + " specified: " + h);
             return null;
-            
+
         }
-        
+
         // Match in@scriptName for Inventory Scripts
         m = inventory_by_script.matcher(string);
-        
+
         if (m.matches()) {
-            
+
             if (ScriptRegistry.containsScript(m.group(2), InventoryScriptContainer.class))
                 return ScriptRegistry.getScriptContainerAs(m.group(2), InventoryScriptContainer.class).getInventoryFrom(player, npc);
-            
+
             if (NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dInventory.class))
                 return (dInventory) NotableManager.getSavedObject(m.group(2));
-            
+
             dB.echoError("Value of dInventory returning null. Invalid script specified: " + m.group(2));
             return null;
-            
+
         }
-        
+
         dB.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
         return null;
-        
+
     }
-    
+
     /**
      * Determine whether a string is a valid inventory.
      *
@@ -184,16 +184,16 @@ public class dInventory implements dObject, Notable {
 
         if (valueOf(arg) != null)
             return true;
-        
+
         return false;
 
     }
-    
-    
+
+
     ///////////////
     //   Constructors
     /////////////
-    
+
     String holderType = null;
     String holderType_old = null;
     String holderIdentifier = null;
@@ -201,9 +201,9 @@ public class dInventory implements dObject, Notable {
 
     public dInventory(Inventory inventory) {
         if (inventory.getHolder() != null) {
-            
+
             InventoryHolder holder = inventory.getHolder();
-            
+
             if (!(holder instanceof LivingEntity)) {
                 if (holder instanceof DoubleChest)
                     holderIdentifier = ((DoubleChest) holder).getLocation().toString();
@@ -240,7 +240,7 @@ public class dInventory implements dObject, Notable {
                     // Uncomment this when Denizen implements inventories for all!
                     // holderType = "npc";
                     // holderIdentifier = String.valueOf(((NPC) holder).getId());
-                    
+
                     dB.echoError("Only Player-type NPCs can have inventories.");
                     return;
                 }
@@ -249,27 +249,27 @@ public class dInventory implements dObject, Notable {
                     holderIdentifier = String.valueOf(((LivingEntity) holder).getEntityId());
                 }
             }
-            
+
         }
         this.inventory = inventory;
     }
-    
+
     public dInventory(InventoryType type) {
         inventory = Bukkit.getServer().createInventory(null, type);
     }
-    
+
     public dInventory(InventoryType type, String id, String identifier) {
         inventory = Bukkit.getServer().createInventory(null, type);
         holderType = id;
         holderIdentifier = identifier;
     }
-    
+
     public dInventory(int size, String id, String identifier) {
         inventory = Bukkit.getServer().createInventory(null, size);
         holderType = id;
         holderIdentifier = identifier;
     }
-    
+
     public dInventory(InventoryHolder holder) {
         if (!(holder instanceof LivingEntity)) {
             if (holder instanceof DoubleChest)
@@ -307,7 +307,7 @@ public class dInventory implements dObject, Notable {
                 // Uncomment this when Denizen implements inventories for all!
                 // holderType = "npc";
                 // holderIdentifier = String.valueOf(((NPC) holder).getId());
-                
+
                 dB.echoError("Only Player-type NPCs can have inventories.");
                 return;
             }
@@ -317,13 +317,13 @@ public class dInventory implements dObject, Notable {
             }
         }
     }
-    
+
     public dInventory(Player player) {
         this.inventory = player.getInventory();
         holderType = "player";
         holderIdentifier = player.getName();
     }
-    
+
     public dInventory(BlockState state) {
         if (state instanceof InventoryHolder) {
             this.inventory = ((InventoryHolder) state).getInventory();
@@ -331,7 +331,7 @@ public class dInventory implements dObject, Notable {
             holderIdentifier = new dLocation(state.getLocation()).identify();
         }
     }
-    
+
     public dInventory(LivingEntity entity) {
         if (entity instanceof InventoryHolder) {
             this.inventory = ((InventoryHolder) entity).getInventory();
@@ -340,7 +340,7 @@ public class dInventory implements dObject, Notable {
         }
     }
 
-    
+
     /////////////////////
     //   INSTANCE FIELDS/METHODS
     /////////////////
@@ -352,7 +352,7 @@ public class dInventory implements dObject, Notable {
     public Inventory getInventory() {
         return inventory;
     }
-    
+
     /**
      * Add an array of items to this inventory
      * and return the result
@@ -361,21 +361,21 @@ public class dInventory implements dObject, Notable {
      * @return  The resulting dInventory
      *
      */
-    
+
     public dInventory add(ItemStack... items) {
         if (inventory == null || items == null) return this;
-        
+
         inventory.addItem(items);
-        
+
         return this;
     }
-    
+
     public HashMap<Integer, ItemStack> addWithLeftovers(ItemStack... items) {
         if (inventory == null || items == null) return null;
-        
+
         return inventory.addItem(items);
     }
-        
+
     /**
      * Count the number or quantities of stacks that
      * match an item in an inventory.
@@ -386,13 +386,13 @@ public class dInventory implements dObject, Notable {
      * @return  The number of stacks or quantity of items
      *
      */
-    
+
     public int count(ItemStack item, boolean stacks)
     {
         if (inventory == null) return 0;
-        
+
         int qty = 0;
-        
+
         for (ItemStack invStack : inventory)
         {
             // If ItemStacks are empty here, they are null
@@ -400,23 +400,23 @@ public class dInventory implements dObject, Notable {
             {
                 // If item is null, include all items in the
                 // inventory
-                
+
                 if (item == null || invStack.isSimilar(item)) {
-                    
+
                     // If stacks is true, only count the number
                     // of stacks
                     //
                     // Otherwise, count the quantities of stacks
-                    
+
                     if (stacks == true) qty++;
                     else qty = qty + invStack.getAmount();
                 }
             }
         }
-        
+
         return qty;
     }
-    
+
     /**
      * Keep only the items from a certain array
      * in this inventory, removing all others
@@ -425,41 +425,41 @@ public class dInventory implements dObject, Notable {
      * @return  The resulting dInventory
      *
      */
-    
+
     public dInventory keep(ItemStack[] items) {
-        
+
         if (inventory == null || items == null) return this;
-        
+
         for (ItemStack invStack : inventory) {
-            
+
             if (invStack != null) {
-                
+
                 boolean keep = false;
-                
+
                 // See if the item array contains
                 // this inventory item
                 for (ItemStack item : items) {
-                    
+
                     if (invStack.isSimilar(item)) {
-                        
+
                         keep = true;
                         break;
                     }
                 }
-                
+
                 // If the item array did not contain
                 // this inventory item, remove it
                 // from the inventory
                 if (keep == false) {
-                    
+
                     this.remove(invStack);
                 }
             }
         }
-        
+
         return this;
     }
-    
+
     /**
      * Exclude an array of items from this
      * inventory by removing them over and over
@@ -469,23 +469,23 @@ public class dInventory implements dObject, Notable {
      * @return  The resulting dInventory
      *
      */
-    
+
     public dInventory exclude(ItemStack[] items) {
-        
+
         if (inventory == null || items == null) return this;
-        
+
         int oldCount = this.count(null, false);
         int newCount = -1;
-        
+
         while (oldCount != newCount) {
-            
+
             oldCount = newCount;
             newCount = this.remove(items).count(null, false);
         }
-        
+
         return this;
     }
-    
+
     /**
      * Fill an inventory with an array of items by
      * continuing to add the items to it over and
@@ -495,23 +495,23 @@ public class dInventory implements dObject, Notable {
      * @return  The resulting dInventory
      *
      */
-    
+
     public dInventory fill(ItemStack[] items) {
-        
+
         if (inventory == null || items == null) return this;
-        
+
         int oldCount = this.count(null, false);
         int newCount = -1;
-        
+
         while (oldCount != newCount) {
-            
+
             oldCount = newCount;
             newCount = this.add(items).count(null, false);
         }
-        
+
         return this;
     }
-    
+
     /**
      * Return the dLocation of this inventory's
      * holder
@@ -519,25 +519,25 @@ public class dInventory implements dObject, Notable {
      * @return  The holder's dLocation
      *
      */
-    
+
     public dLocation getLocation() {
-        
+
         if (inventory != null) {
-            
+
             InventoryHolder holder = inventory.getHolder();
-            
+
             if (holder instanceof BlockState) {
                 return new dLocation(((BlockState) holder).getLocation());
             }
             else if (holder instanceof Player) {
-                
+
                 return new dLocation(((Player) holder).getLocation());
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Remove an array of items from this inventory,
      * and return the result
@@ -546,19 +546,19 @@ public class dInventory implements dObject, Notable {
      * @return  The resulting dInventory
      *
      */
-    
+
     public dInventory remove(ItemStack[] items) {
-        
+
         if (inventory == null || items == null) return this;
-        
+
         for (ItemStack item : items) {
-            
+
             if (item != null) inventory.removeItem(item);
         }
-        
+
         return this;
     }
-    
+
     /**
      * Remove a book from this inventory, comparing
      * only its title and author with books in the
@@ -570,51 +570,51 @@ public class dInventory implements dObject, Notable {
      * @return  The resulting dInventory
      *
      */
-    
+
     public dInventory removeBook(ItemStack book) {
-        
+
         if (inventory == null || book == null) return this;
-        
+
         // We have to manually keep track of the quantity
         // we are removing, because we are not relying on
         // Bukkit methods to find matching itemStacks
         int qty = book.getAmount();
-        
+
         // Store the book's meta information in a variable
         BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        
+
         for (ItemStack invStack : inventory) {
 
             if (qty == 0) break;
-            
+
             if (invStack != null && invStack.getItemMeta() instanceof BookMeta) {
-                        
+
                 BookMeta invMeta = (BookMeta) invStack.getItemMeta();
-                        
+
                 if (invMeta.getAuthor().equalsIgnoreCase(bookMeta.getAuthor())
                     && invMeta.getTitle().equalsIgnoreCase(bookMeta.getTitle())) {
 
                     // Make sure we don't remove more books than we
                     // need to
                     if (qty - invStack.getAmount() < 0) {
-                        
+
                         invStack.setAmount((qty - invStack.getAmount()) * -1);
                     }
                     else {
-                        
+
                         inventory.removeItem(invStack);
-                        
+
                         // Update the quantity we still have to remove
                         qty = qty - invStack.getAmount();
                     }
                 }
             }
-            
+
         }
-        
+
         return this;
     }
-    
+
     /**
      * Replace another inventory with this one,
      * cropping it if necessary so that it fits.
@@ -622,64 +622,64 @@ public class dInventory implements dObject, Notable {
      * @param destination  The destination inventory
      *
      */
-    
+
     public void replace(dInventory destination) {
-        
+
         if (inventory == null || destination == null) return;
-        
+
         // If the destination is smaller than our current inventory,
         // add as many items as possible
-        
+
         if (destination.getSize() < this.getSize()) {
 
             destination.clear();
             destination.add(this.getContents());
         }
         else {
-        
+
             destination.setContents(this.getContents());
         }
     }
-    
+
     public void clear() {
         if (inventory != null) inventory.clear();
     }
-    
+
     public ItemStack[] getContents() {
         if (inventory != null) return inventory.getContents();
         else return new ItemStack[0];
     }
-    
+
     public InventoryType getInventoryType() {
         return inventory.getType();
     }
-    
+
     public int getSize() {
         return inventory.getSize();
     }
-    
+
     public void remove(ItemStack item) {
         inventory.remove(item);
     }
-    
+
     public void setContents(ItemStack[] contents) {
         inventory.setContents(contents);
     }
-    
+
     ////////////////////////
     //  dObject Methods
     /////////////////////
 
     private String prefix = getObjectType();
-    
+
     public String getObjectType() {
         return "Inventory";
     }
-    
+
     public String getPrefix() {
         return prefix;
     }
-    
+
     public dInventory setPrefix(String prefix) {
         this.prefix = prefix;
         return this;
@@ -695,7 +695,7 @@ public class dInventory implements dObject, Notable {
     }
 
     public String getAttribute(Attribute attribute) {
-        
+
         if (attribute == null) return null;
 
         // <--[tag]
@@ -707,22 +707,22 @@ public class dInventory implements dObject, Notable {
         // -->
         if (attribute.startsWith("contains")) {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
-                
+
                 int qty = 1;
-                
+
                 if (attribute.getAttribute(2).startsWith("qty") &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {
-                    
+
                     qty = attribute.getIntContext(2);
                 }
-                
+
                 return new Element(getInventory().containsAtLeast
                         (dItem.valueOf(attribute.getContext(1)).getItemStack(), qty))
                         .getAttribute(attribute.fulfill(qty == 1 ? 1 : 2));
             }
         }
-        
+
         // <--[tag]
         // @attribute <in@inventory.location>
         // @returns dLocation
@@ -730,11 +730,11 @@ public class dInventory implements dObject, Notable {
         // Returns the location of this inventory's holder.
         // -->
         if (attribute.startsWith("location")) {
-            
+
             return new dLocation(getLocation())
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <in@inventory.qty[<item>]>
         // @returns Element(Number)
@@ -751,7 +751,7 @@ public class dInventory implements dObject, Notable {
             else
                 return new Element(count(null, false))
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <in@inventory.size>
         // @returns Element(Number)
@@ -761,7 +761,7 @@ public class dInventory implements dObject, Notable {
         if (attribute.startsWith("size"))
             return new Element(getSize())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <in@inventory.stacks>
         // @returns Element(Number)
@@ -777,7 +777,7 @@ public class dInventory implements dObject, Notable {
             else
                 return new Element(count(null, true))
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <in@inventory.type>
         // @returns Element
@@ -787,7 +787,7 @@ public class dInventory implements dObject, Notable {
         if (attribute.startsWith("type"))
             return new Element(getInventory().getType().name())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <in@inventory.equipment>
         // @returns dInventory(Equipment)
@@ -810,7 +810,7 @@ public class dInventory implements dObject, Notable {
                     identifier = "e@" + ((Player) getInventory().getHolder()).getEntityId();
                 else return new Element("null")
                         .getAttribute(attribute.fulfill(1));
-                
+
                 return new dInventory(InventoryType.CRAFTING, "equipment", identifier)
                         .add(((PlayerInventory) getInventory()).getArmorContents())
                         .getAttribute(attribute.fulfill(1));
@@ -822,7 +822,7 @@ public class dInventory implements dObject, Notable {
                         .getAttribute(attribute.fulfill(1));
             }
         }
-        
+
         // <--[tag]
         // @attribute <in@inventory.list_contents>
         // @returns dList(dItem)
@@ -837,7 +837,7 @@ public class dInventory implements dObject, Notable {
             }
             return new dList(items).getAttribute(attribute.fulfill(1));
         }
-        
+
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 

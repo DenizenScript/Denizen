@@ -74,7 +74,7 @@ public class FlagManager {
 
     /**
      * Flag object contains methods for working with Flags and contain a list
-     * of the values associated with said flag (if existing) and (optionally) an 
+     * of the values associated with said flag (if existing) and (optionally) an
      * expiration (if existing).
      *
      * Storage example in Denizen saves.yml:
@@ -90,7 +90,7 @@ public class FlagManager {
      * start at 1 and get higher as more items are added. Specifying an index of -1, or,
      * when possible, supplying NO index will result in retrieving/setting/etc the
      * item with the highest index. Also, note that when using a FLAG TAG in DSCRIPT,
-     * ie. <FLAG.P:FLAG_NAME>, specifying no index will follow suit, that is, the 
+     * ie. <FLAG.P:FLAG_NAME>, specifying no index will follow suit, that is, the
      * value with the highest index will be referenced.
      *
      */
@@ -216,7 +216,7 @@ public class FlagManager {
 
         /**
          * Sets the value of the most recent value added to the flag. This does
-         * not create a new value unless the flag is currently empty of values. 
+         * not create a new value unless the flag is currently empty of values.
          *
          */
         public void set(Object obj) {
@@ -252,7 +252,7 @@ public class FlagManager {
         /**
          * Adds a value to the end of the Flag's Values. This value will have an index
          * of size() + 1. Returns the index of the value added. This could change if
-         * values are removed. 
+         * values are removed.
          *
          */
         public int add(Object obj) {
@@ -264,7 +264,7 @@ public class FlagManager {
         }
 
         /**
-         * Splits a dScript list into values that are then added to the flag. 
+         * Splits a dScript list into values that are then added to the flag.
          * Returns the index of the last value added to the flag.
          *
          */
@@ -298,7 +298,7 @@ public class FlagManager {
          * Removes a value from the Flag's current values. If an index is specified,
          * that specific value is removed. If no index is specified (or -1 is
          * specified as the index), the first value that matches (values are
-         * checked as Double and String.equalsIgnoreCase) is removed. If a positive 
+         * checked as Double and String.equalsIgnoreCase) is removed. If a positive
          * index is specified that does not exist, no removal is done.
          *
          */
@@ -414,7 +414,7 @@ public class FlagManager {
 
         /**
          * Returns a String value of the last item in a Flag Value. If there is only
-         * a single item in the flag, it returns it. To return the value of another 
+         * a single item in the flag, it returns it. To return the value of another
          * item in the Flag, use 'flag.get(index).asString()'.
          *
          */
@@ -428,7 +428,7 @@ public class FlagManager {
 
         /**
          * Removes flag if expiration is found to be up. This is called when an action
-         * is done on the flag, such as get() or put(). If expired, the flag will be 
+         * is done on the flag, such as get() or put(). If expired, the flag will be
          * erased before moving on.
          *
          */
@@ -646,8 +646,8 @@ public class FlagManager {
         }
 
         /**
-         * Returns a String value of the entirety of the values 
-         * contained as a comma-separated list. If the value doesn't 
+         * Returns a String value of the entirety of the values
+         * contained as a comma-separated list. If the value doesn't
          * exist, "" is returned.
          *
          */

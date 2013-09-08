@@ -7,5 +7,5 @@ public interface dExternal {
      *
      */
     public void load();
-    
+
 }

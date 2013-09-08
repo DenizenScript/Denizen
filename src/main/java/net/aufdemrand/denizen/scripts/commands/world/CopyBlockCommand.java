@@ -15,8 +15,8 @@ import org.bukkit.inventory.InventoryHolder;
 
 /**
  * Copies a block to another location, keeping all special
- * data all about it. 
- * 
+ * data all about it.
+ *
  * @author aufdemrand, David Cernat
  */
 
@@ -29,7 +29,7 @@ public class CopyBlockCommand extends AbstractCommand{
         dLocation destination = null;
         boolean remove_original = false;
 
-        for (String arg : scriptEntry.getArguments()) {            
+        for (String arg : scriptEntry.getArguments()) {
 
             if (aH.matchesLocation(arg))
                 copy_location = aH.getLocationFrom(arg);
@@ -53,7 +53,7 @@ public class CopyBlockCommand extends AbstractCommand{
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        
+
         dLocation copy_location = (dLocation) scriptEntry.getObject("copy_location");
         dLocation destination = (dLocation) scriptEntry.getObject("destination");
         Boolean remove_original = (Boolean) scriptEntry.getObject("remove_original");
@@ -65,24 +65,24 @@ public class CopyBlockCommand extends AbstractCommand{
         update.setTypeIdAndData(source.getTypeId(), source.getData(), false);
 
         BlockState updateState = update.getState();
-        
+
         // Note: only a BlockState, not a Block, is actually an instance
         // of InventoryHolder
         if (sourceState instanceof InventoryHolder) {
-            
+
             ((InventoryHolder) updateState).getInventory()
                     .setContents(((InventoryHolder) sourceState).getInventory().getContents());
         }
         else if (sourceState instanceof Sign) {
-            
+
             int n = 0;
-            
+
             for (String line : ((Sign) sourceState).getLines()) {
-                
+
                 ((Sign) updateState).setLine(n, line);
                 n++;
             }
-            
+
             updateState.update();
         }
 

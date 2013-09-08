@@ -20,21 +20,21 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
 /*
  * Denizen dScript ENGRAVE command:
- * 
+ *
  * Engraves an item in the player's hand. Engraved items are bound to their engraver and cannot be picked
  * up by other Players.
- * 
+ *
  */
 
 public class EngraveCommand extends AbstractCommand implements Listener {
 
     /* ENGRAVE (REMOVE|ADD) (TARGET:target_name)
 
-    /* Arguments: [] - Required, () - Optional 
-     * 
+    /* Arguments: [] - Required, () - Optional
+     *
      * Example Usage:
      */
-    
+
     private enum Action { ADD, REMOVE }
 
     @Override
@@ -51,7 +51,7 @@ public class EngraveCommand extends AbstractCommand implements Listener {
                 item = aH.getItemFrom(arg).getItemStack();
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
-        
+
         if (item == null) throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "ITEM");
         if (target == null) throw new InvalidArgumentsException(Messages.ERROR_NO_PLAYER);
 
@@ -60,7 +60,7 @@ public class EngraveCommand extends AbstractCommand implements Listener {
                     .addObject("target", target)
                     .addObject("item", item);
     }
-    
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
@@ -79,26 +79,26 @@ public class EngraveCommand extends AbstractCommand implements Listener {
             dB.echoDebug("Engraving '" + item.getType() + "' with an inscription of '" + target + "'.");
             CustomNBT.addCustomNBT(item, "owner", target);
             dB.echoDebug(CustomNBT.getCustomNBT(item, "owner"));
-            
+
             return;
-        case REMOVE: 
-            dB.echoDebug("Removing engraving on '" + item.getType() + "'.");            
+        case REMOVE:
+            dB.echoDebug("Removing engraving on '" + item.getType() + "'.");
             CustomNBT.removeCustomNBT(item, "owner");
         }
     }
-    
-    
+
+
     // Map to keep track of notification cooldowns (String playerName, Long timeout)
     Map<String, Long> notifyCooldown = new HashMap<String, Long>();
-    
+
     /*
      * Checks the owner of the picked up item, if any. Will not let the Player pick up
      * the item if they are not the owner of the engraved item.
-     * 
+     *
      * If sneaking, a message will let the Player know that it is engraved.
-     * 
+     *
      */
-    
+
     @EventHandler
     public void checkOwner(PlayerPickupItemEvent event) {
         ItemStack item = event.getItem().getItemStack();
@@ -114,8 +114,8 @@ public class EngraveCommand extends AbstractCommand implements Listener {
                     notifyCooldown.put(event.getPlayer().getName(), System.currentTimeMillis() + 10000);
                     event.getPlayer().sendMessage("That " + event.getItem().getItemStack().getType() + " does not belong to you!");
                 } else {
-                    // If cooled down, remove the cooldown. 
-                    if (notifyCooldown.get(event.getPlayer().getName()) < System.currentTimeMillis()) 
+                    // If cooled down, remove the cooldown.
+                    if (notifyCooldown.get(event.getPlayer().getName()) < System.currentTimeMillis())
                         notifyCooldown.remove(event.getPlayer().getName());
                 }
             }
@@ -125,15 +125,15 @@ public class EngraveCommand extends AbstractCommand implements Listener {
         // Otherwise, don't interfere.
     }
 
-    
-    
+
+
     // Map to keep track of despawn delays. (Integer entityID, Long timeout)
     Map<Integer, Long> despawnDelay = new HashMap<Integer, Long>();
 
     /*
      * An engraved item will take longer to despawn in the world, allowing a little bit of extra time
      * for the player to retrieve it.
-     * 
+     *
      */
     @EventHandler
     public void stopDespawn(ItemDespawnEvent event) {
@@ -147,7 +147,7 @@ public class EngraveCommand extends AbstractCommand implements Listener {
                 // If not cooled, cancel despawn.
                 if (despawnDelay.get(event.getEntity().getEntityId()) < System.currentTimeMillis())
                     event.setCancelled(true);
-                else 
+                else
                     // If cooled, remove from map.
                     dB.echoDebug("Removed an ENGRAVED '" + item.getType().name() + "' which belonged to '" + CustomNBT.getCustomNBT(item, "owner") + "'.");
                     despawnDelay.remove(event.getEntity().getEntityId());
@@ -159,7 +159,7 @@ public class EngraveCommand extends AbstractCommand implements Listener {
             }
         }
     }
-    
+
 
     @Override
     public void onEnable() {

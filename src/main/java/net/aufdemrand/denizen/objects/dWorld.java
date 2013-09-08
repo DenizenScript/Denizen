@@ -67,11 +67,11 @@ public class dWorld implements dObject {
     public World getWorld() {
         return Bukkit.getWorld(world_name);
     }
-    
+
     public String getName() {
         return world_name;
     }
-    
+
     public List<Entity> getEntities() {
         return getWorld().getEntities();
     }
@@ -132,11 +132,11 @@ public class dWorld implements dObject {
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) return null;
-        
+
         /////////////////////
         //   ENTITY LIST ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <w@world.entities>
         // @returns dList(dPlayer)
@@ -151,7 +151,7 @@ public class dWorld implements dObject {
             return new dList(entities)
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <w@world.living_entities>
         // @returns dList(dPlayer)
@@ -166,7 +166,7 @@ public class dWorld implements dObject {
             return new dList(entities)
                     .getAttribute(attribute.fulfill(1));
         }
-        
+
         // <--[tag]
         // @attribute <w@world.players>
         // @returns dList(dPlayer)
@@ -181,12 +181,12 @@ public class dWorld implements dObject {
             return new dList(players)
                     .getAttribute(attribute.fulfill(1));
         }
-        
-        
+
+
         /////////////////////
         //   DEBUG ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <w@world.prefix>
         // @returns Element
@@ -196,12 +196,12 @@ public class dWorld implements dObject {
         if (attribute.startsWith("prefix"))
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   GEOGRAPHY ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <w@world.highest_block>
         // @returns dLocation
@@ -227,11 +227,11 @@ public class dWorld implements dObject {
             return new Element(getWorld().getSeaLevel())
                     .getAttribute(attribute.fulfill(1));
 
-        
+
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <w@world.name>
         // @returns Element
@@ -241,7 +241,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("name"))
             return new Element(getWorld().getName())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.seed>
         // @returns Element
@@ -251,12 +251,12 @@ public class dWorld implements dObject {
         if (attribute.startsWith("seed"))
             return new Element(getWorld().getSeed())
                     .getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   SETTINGS ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <w@world.allows_animals>
         // @returns Element(boolean)
@@ -266,7 +266,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("allows_animals"))
             return new Element(getWorld().getAllowAnimals())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.allows_monsters>
         // @returns Element(boolean)
@@ -276,7 +276,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("allows_monsters"))
             return new Element(getWorld().getAllowMonsters())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.allows_pvp>
         // @returns Element(boolean)
@@ -286,7 +286,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("allows_pvp"))
             return new Element(getWorld().getPVP())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.ambient_spawn_limit>
         // @returns Element(integer)
@@ -296,7 +296,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("ambient_spawn_limit"))
             return new Element(getWorld().getAmbientSpawnLimit())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.animal_spawn_limit>
         // @returns Element(integer)
@@ -306,7 +306,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("animal_spawn_limit"))
             return new Element(getWorld().getAnimalSpawnLimit())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.can_generate_structures>
         // @returns Element(boolean)
@@ -316,7 +316,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("can_generate_structures"))
             return new Element(getWorld().canGenerateStructures())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.difficulty>
         // @returns Element
@@ -326,7 +326,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("difficulty"))
             return new Element(getWorld().getDifficulty().name())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.max_height>
         // @returns Element(integer)
@@ -336,7 +336,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("max_height"))
             return new Element(getWorld().getMaxHeight())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.monster_spawn_limit>
         // @returns Element(integer)
@@ -346,7 +346,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("monster_spawn_limit"))
             return new Element(getWorld().getMonsterSpawnLimit())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.ticks_per_animal_spawn>
         // @returns Element(long)
@@ -356,7 +356,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("ticks_per_animal_spawn"))
             return new Element(getWorld().getTicksPerAnimalSpawns() )
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.ticks_per_monster_spawn>
         // @returns Element(long)
@@ -366,7 +366,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("ticks_per_monster_spawn"))
             return new Element(getWorld().getTicksPerMonsterSpawns() )
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.water_animal_spawn_limit>
         // @returns Element(integer)
@@ -376,12 +376,12 @@ public class dWorld implements dObject {
         if (attribute.startsWith("water_animal_spawn_limit"))
             return new Element(getWorld().getWaterAnimalSpawnLimit())
                     .getAttribute(attribute.fulfill(1));
-        
-        
+
+
         /////////////////////
         //   TIME ATTRIBUTES
         /////////////////
-        
+
         // Return "day", "night", "dawn" or "dusk"
         // <--[tag]
         // @attribute <w@world.time.period>
@@ -390,18 +390,18 @@ public class dWorld implements dObject {
         // returns the time as day, night, dawn, or dusk
         // -->
         if (attribute.startsWith("time.period")) {
-            
+
             long time = getWorld().getTime();
             String period;
-            
-            if (time >= 23000) period = "dawn"; 
+
+            if (time >= 23000) period = "dawn";
             else if (time >= 13500) period = "night";
             else if (time >= 12500) period = "dusk";
             else period = "day";
-            
+
             return new Element(period).getAttribute(attribute.fulfill(2));
         }
-        
+
         // <--[tag]
         // @attribute <w@world.time>
         // @returns Element(long)
@@ -412,11 +412,11 @@ public class dWorld implements dObject {
             return new Element(getWorld().getTime())
                     .getAttribute(attribute.fulfill(1));
 
-        
+
         /////////////////////
         //   WEATHER ATTRIBUTES
         /////////////////
-        
+
         // <--[tag]
         // @attribute <w@world.has_storm>
         // @returns Element(boolean)
@@ -426,7 +426,7 @@ public class dWorld implements dObject {
         if (attribute.startsWith("has_storm"))
             return new Element(getWorld().hasStorm())
                     .getAttribute(attribute.fulfill(1));
-        
+
         // <--[tag]
         // @attribute <w@world.weather_duration>
         // @returns Element

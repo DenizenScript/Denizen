@@ -18,11 +18,11 @@ public class NotableLocationTags implements Listener {
 
     @EventHandler
     public void notableTags(ReplaceableTagEvent event) {
-                
+
         if (!event.matches("NOTABLE")) return;
 
         String tag = event.raw_tag;
-        
+
         String id = null;
         if (event.hasValue()) {
             id = event.getValue();
@@ -30,7 +30,7 @@ public class NotableLocationTags implements Listener {
         }
 
         else if (event.hasNameContext()) id = event.getNameContext();
-        
+
         if (dLocation.isSaved(id)) {
             dB.echoError("Notable tag '" + event.raw_tag + "': id was not found.");
         }
@@ -40,7 +40,7 @@ public class NotableLocationTags implements Listener {
         Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry());
         attribute.fulfill(1);
         tag = location.getAttribute(attribute);
-        
+
         event.setReplaced(tag);
 
     }

@@ -56,11 +56,11 @@ public class NicknameTrait extends Trait implements Listener {
         else return DenizenAPI.getCurrentInstance().tagManager()
                 .tag(null, DenizenAPI.getDenizenNPC(npc), nickname, false);
     }
-    
+
     /**
      * Gets the current nickname of this NPC and strips out all text colors.
      * To get the colored nickname use {@link #getNickname()}.
-     * 
+     *
      * @return The uncolored nickname for this NPC
      */
     public String getUncoloredNickname() {

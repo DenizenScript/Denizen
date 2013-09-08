@@ -71,6 +71,6 @@ public class HurtCommand extends AbstractCommand {
         dB.report(getName(), amountelement.debug() + aH.debugObj("entities", entities));
         for (dEntity entity : entities)
             entity.getLivingEntity().damage(amountelement.asDouble());
-        
+
     }
 }

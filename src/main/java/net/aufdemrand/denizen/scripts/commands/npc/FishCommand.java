@@ -14,7 +14,7 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 
 public class FishCommand extends AbstractCommand {
-    
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry)
             throws InvalidArgumentsException {
@@ -22,7 +22,7 @@ public class FishCommand extends AbstractCommand {
         Boolean stopping = false;
         Boolean catchFish = false;
         int catchPercent = 65;
-        
+
         for (String arg : scriptEntry.getArguments()) {
             if (aH.matchesLocation(arg)) {
                 location = aH.getLocationFrom(arg);
@@ -38,7 +38,7 @@ public class FishCommand extends AbstractCommand {
                 dB.echoDebug("...set catch percent: " + catchPercent);
             } else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
         }
-        
+
         scriptEntry.addObject("location", location)
             .addObject("stopping", stopping)
             .addObject("catchFish", catchFish)
@@ -53,24 +53,24 @@ public class FishCommand extends AbstractCommand {
         int catchPercent = (Integer) scriptEntry.getObject("catchPercent");
         NPC npc = scriptEntry.getNPC().getCitizen();
         FishingTrait trait = new FishingTrait();
-        
-        if (!npc.hasTrait(FishingTrait.class)) 
+
+        if (!npc.hasTrait(FishingTrait.class))
             npc.addTrait(FishingTrait.class);
-        
+
         if (stopping) {
             trait.stopFishing();
             return;
         }
-        
+
         Location location = (Location) scriptEntry.getObject("location");
         if (location == null) {
             dB.echoError("...no location specified!");
             return;
         }
-        
+
         trait.startFishing(location);
         trait.setCatchPercent(catchPercent);
         if (catchFish) trait.setCatchFish(true);
-        
+
     }
 }

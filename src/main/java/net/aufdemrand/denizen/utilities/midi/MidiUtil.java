@@ -24,25 +24,25 @@ public class MidiUtil
     public static void startSequencer(File file, float tempo, Receiver receiver)
             throws InvalidMidiDataException, IOException, MidiUnavailableException
     {
-        
+
         Sequencer sequencer = MidiSystem.getSequencer(false);
         sequencer.setSequence(MidiSystem.getSequence(file));
         sequencer.open();
 
         // Set desired tempo
         sequencer.setTempoFactor(tempo);
-        
+
         sequencer.getTransmitter().setReceiver(receiver);
         sequencer.start();
     }
-    
+
     public static void playMidi(File file, float tempo, Set<Player> listeners)
             throws InvalidMidiDataException, IOException, MidiUnavailableException
     {
         NoteBlockReceiver noteblockRecv = new NoteBlockReceiver(listeners);
         startSequencer(file, tempo, noteblockRecv);
     }
-    
+
     public static void playMidi(File file, float tempo, Location location)
             throws InvalidMidiDataException, IOException, MidiUnavailableException
     {
@@ -59,7 +59,7 @@ public class MidiUtil
 
         return true;
     }
-    
+
     public static boolean playMidiQuietly(File file, float tempo, Location location)
     {
         try { MidiUtil.playMidi(file, tempo, location); }
@@ -74,7 +74,7 @@ public class MidiUtil
     {
         return playMidiQuietly(file, 1.0f, listeners);
     }
-    
+
     public static boolean playMidiQuietly(File file, Location location)
     {
         return playMidiQuietly(file, 1.0f, location);

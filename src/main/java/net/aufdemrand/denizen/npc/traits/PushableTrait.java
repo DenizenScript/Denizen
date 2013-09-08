@@ -142,7 +142,7 @@ public class PushableTrait extends Trait implements Listener {
      *
      * @param event
      */
-    @EventHandler 
+    @EventHandler
     public void NPCCompleteDestination (NavigationCompleteEvent event) {
         if (event.getNPC() == npc && pushed) {
             EntityLiving handle = ((CraftLivingEntity) npc.getBukkitEntity()).getHandle();

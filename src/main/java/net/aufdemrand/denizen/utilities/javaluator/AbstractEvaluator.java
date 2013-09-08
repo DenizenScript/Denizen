@@ -11,7 +11,7 @@ import java.util.Stack;
 
 /** An abstract evaluator, able to evaluate infix expressions.
  * <br>Some standard evaluators are included in the library, you can define your own by subclassing this class.
- * @param <T> The type of values handled by the evaluator 
+ * @param <T> The type of values handled by the evaluator
  * @author Jean-Marc Astesana
  * @see <a href="../../../license.html">License information</a>
  */
@@ -23,11 +23,11 @@ public abstract class AbstractEvaluator<T> {
     private final String functionArgumentSeparator;
     private final Map<String, BracketPair> functionBrackets;
     private final Map<String, BracketPair> expressionBrackets;
-        
+
     /** Constructor.
      * @param parameters The evaluator parameters.
      * <br>Please note that there's no side effect between the evaluator and the parameters.
-     * So, changes made to the parameters after the call to this constructor are ignored by the instance. 
+     * So, changes made to the parameters after the call to this constructor are ignored by the instance.
      */
     protected AbstractEvaluator(Parameters parameters) {
         //TODO if constants, operators, functions are duplicated => error
@@ -67,7 +67,7 @@ public abstract class AbstractEvaluator<T> {
                 //TODO if function name contains operators or reserved chars => error
                 this.functions.put(parameters.getTranslation(function.getName()), function);
                 if (function.getMaximumArgumentCount()>1) needFunctionSeparator = true;
-            }            
+            }
         }
         if (parameters.getConstants()!=null) {
             for (Constant constant : parameters.getConstants()) {
@@ -80,12 +80,12 @@ public abstract class AbstractEvaluator<T> {
         }
         tokenizer = new Tokenizer(tokenDelimitersBuilder);
     }
-    
+
     /** Validates that homonym operators are valid.
      * <br>Homonym operators are operators with the same name (like the unary - and the binary - operators)
      * <br>This method is called when homonyms are passed to the constructor.
      * <br>This default implementation only allows the case where there's two operators, one binary and one unary.
-     * Subclasses can override this method in order to accept others configurations. 
+     * Subclasses can override this method in order to accept others configurations.
      * @param operators The operators to validate.
      * @throws IllegalArgumentException if the homonyms are not compatibles.
      * @see #guessOperator(Token, List)
@@ -93,13 +93,13 @@ public abstract class AbstractEvaluator<T> {
     protected void validateHomonyms(List<Operator> operators) {
         if (operators.size()>2) throw new IllegalArgumentException();
     }
-    
+
     /** When a token can be more than one operator (homonym operators), this method guesses the right operator.
      * <br>A very common case is the - sign in arithmetic computation which can be an unary or a binary operator, depending
-     * on what was the previous token. 
+     * on what was the previous token.
      * <br><b>Warning:</b> maybe the arguments of this function are not enough to deal with all the cases.
      * So, this part of the evaluation is in alpha state (method may change in the future).
-     * @param previous The last parsed tokens (the previous token in the infix expression we are evaluating). 
+     * @param previous The last parsed tokens (the previous token in the infix expression we are evaluating).
      * @param candidates The candidate tokens.
      * @return A token
      * @see #validateHomonyms(List)
@@ -139,7 +139,7 @@ public abstract class AbstractEvaluator<T> {
     protected T evaluate(Constant constant, Object evaluationContext) {
         throw new RuntimeException("evaluate(Constant) is not implemented for "+constant.getName());
     }
-    
+
     /** Evaluates an operation.
      * <br>Subclasses that support operators must override this method.
      * The default implementation throws a RuntimeException meaning that implementor forget to implement this method
@@ -152,7 +152,7 @@ public abstract class AbstractEvaluator<T> {
     protected T evaluate(Operator operator, Iterator<T> operands, Object evaluationContext) {
         throw new RuntimeException("evaluate(Operator, Iterator) is not implemented for "+operator.getSymbol());
     }
-    
+
     /** Evaluates a function.
      * <br>Subclasses that support functions must override this method.
      * The default implementation throws a RuntimeException meaning that implementor forget to implement this method
@@ -165,14 +165,14 @@ public abstract class AbstractEvaluator<T> {
     protected T evaluate(Function function, Iterator<T> arguments, Object evaluationContext) {
         throw new RuntimeException("evaluate(Function, Iterator) is not implemented for "+function.getName());
     }
-    
+
     private void doFunction(Stack<T> values, Function function, int argCount, Object evaluationContext) {
         if (function.getMinimumArgumentCount()>argCount || function.getMaximumArgumentCount()<argCount) {
             throw new IllegalArgumentException("Invalid argument count for "+function.getName());
         }
         values.push(evaluate(function, getArguments(values, argCount), evaluationContext));
     }
-    
+
     private Iterator<T> getArguments(Stack<T> values, int nb) {
         // Be aware that arguments are in reverse order on the values stack.
         // Don't forget to reorder them in the original order (the one they appear in the evaluated formula)
@@ -183,7 +183,7 @@ public abstract class AbstractEvaluator<T> {
         }
         return result.iterator();
     }
-    
+
     /** Evaluates a literal (Converts it to a value).
      * @param literal The literal to evaluate.
      * @return an instance of T.
@@ -191,7 +191,7 @@ public abstract class AbstractEvaluator<T> {
      * @throws IllegalArgumentException if the literal can't be converted to a value.
      */
     protected abstract T toValue(String literal, Object evaluationContext);
-    
+
     /** Evaluates an expression.
      * @param expression The expression to evaluate.
      * @return the result of the evaluation.
@@ -200,7 +200,7 @@ public abstract class AbstractEvaluator<T> {
     public T evaluate(String expression) {
         return evaluate(expression, null);
     }
-    
+
     /** Evaluates an expression that contains variables.
      * @param expression The expression to evaluate.
      * @param evaluationContext The context of the evaluation.
@@ -355,14 +355,14 @@ public abstract class AbstractEvaluator<T> {
             } else {
                 return Token.buildLiteral(token);
             }
-        }    
+        }
     }
 
     private BracketPair getBracketPair(String token) {
         BracketPair result = expressionBrackets.get(token);
         return result==null ? functionBrackets.get(token) : result;
     }
-    
+
     /** Gets the operators supported by this evaluator.
      * @return a collection of operators.
      */

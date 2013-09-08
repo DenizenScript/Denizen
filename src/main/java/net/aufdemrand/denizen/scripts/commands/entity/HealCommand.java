@@ -43,10 +43,10 @@ public class HealCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", Arrays.asList(arg.asType(dEntity.class)));
             }
         }
-        
+
         if (!scriptEntry.hasObject("amount"))
             scriptEntry.addObject("amount", new Element(-1));
-        
+
         if (!scriptEntry.hasObject("entities")) {
             List<dEntity> entities = new ArrayList<dEntity>();
             if (scriptEntry.getPlayer() != null)
@@ -57,13 +57,13 @@ public class HealCommand extends AbstractCommand {
                 throw new InvalidArgumentsException("No valid target entities found.");
             scriptEntry.addObject("entities", entities);
         }
-        
+
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        
+
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         Element amountelement = scriptEntry.getElement("amount");
 

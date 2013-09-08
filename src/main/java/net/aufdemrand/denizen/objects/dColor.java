@@ -17,7 +17,7 @@ public class dColor implements dObject {
     //////////////////
     //    OBJECT FETCHER
     ////////////////
-    
+
     /**
      * Gets a Color Object from a string form.
      *
@@ -31,7 +31,7 @@ public class dColor implements dObject {
         string = string.toUpperCase().replace("CO@", "");
 
         if (string.matches("RANDOM")) {
-            
+
             // Get a color using random RGB values
             return new dColor(Utilities.getRandom().nextInt(256),
                     Utilities.getRandom().nextInt(256),
@@ -44,9 +44,9 @@ public class dColor implements dObject {
             return new dColor(aH.getIntegerFrom(m.group(1)),
                     aH.getIntegerFrom(m.group(2)),
                     aH.getIntegerFrom(m.group(3)));
-        
+
         Field colorField = null;
-        
+
         try {
             colorField = Color.class.getField(string.toUpperCase());
         } catch (SecurityException e1) {
@@ -61,7 +61,7 @@ public class dColor implements dObject {
         // No match
         return null;
     }
-    
+
     /**
      * Determines whether a string is a valid color.
      *
@@ -75,19 +75,19 @@ public class dColor implements dObject {
 
         if (arg.toUpperCase().matches("RANDOM"))
             return true;
-        
+
         Matcher m = rgbPattern.matcher(arg);
-        
+
         if (m.matches())
             return true;
-        
+
         for (Field field : Color.class.getFields())
             if (arg.toUpperCase().matches(field.getName())) return true;
-        
+
         return false;
     }
-    
-    
+
+
     ///////////////
     //   Constructors
     /////////////
@@ -95,7 +95,7 @@ public class dColor implements dObject {
     public dColor(int red, int green, int blue) {
         color = Color.fromRGB(red, green, blue);
     }
-    
+
     public dColor(Field field) {
         try {
             color = (Color) field.get(null);
@@ -109,8 +109,8 @@ public class dColor implements dObject {
     public dColor(Color color) {
         this.color = color;
     }
-    
-    
+
+
     /////////////////////
     //   INSTANCE FIELDS/METHODS
     /////////////////
@@ -122,7 +122,7 @@ public class dColor implements dObject {
     public Color getColor() {
         return color;
     }
-    
+
     String prefix = "color";
 
     @Override

@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.entity;
 
 public enum Gravity {
-    
+
     DROPPED_ITEM("Item", 0.115),
     EXPERIENCE_ORB("XPOrb", 0.115),
     LEASH_HITCH("LeashKnot", 0.115),
@@ -62,21 +62,21 @@ public enum Gravity {
     WEATHER(null, 0.115),
     PLAYER(null, 0.115),
     COMPLEX_PART(null, 0.115);
-    
+
     private String entityName;
     private double gravity;
- 
+
     Gravity(String entityName, double gravity) {
         this.entityName = entityName;
         this.gravity = gravity;
     }
-    
+
     public String getName() {
         return entityName;
     }
-    
+
     public double getGravity() {
         return gravity;
     }
-    
+
 }

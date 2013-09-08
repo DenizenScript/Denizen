@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class Tokenizer {
     private Pattern pattern;
     private String tokenDelimiters;
-    
+
     /** Constructor.
      * @param delimiters the delimiters
      */
@@ -31,10 +31,10 @@ public class Tokenizer {
             this.pattern = delimitersToRegexp(delimiters);
         }
     }
-    
+
     /** Tests whether a String list contains only 1 character length elements.
      * @param delimiters The list to test
-     * @return true if it contains only one char length elements (or no elements) 
+     * @return true if it contains only one char length elements (or no elements)
      */
     private boolean onlyOneChar(List<String> delimiters) {
         for (String delimiter : delimiters) {

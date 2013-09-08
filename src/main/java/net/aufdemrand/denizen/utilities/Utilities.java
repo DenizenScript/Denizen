@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
 public class Utilities {
 
     static Random random = new Random();
-    
+
     public static Location getWalkableLocationNear(Location location, int range) {
         Location returnable;
 
@@ -66,15 +66,15 @@ public class Utilities {
         }
         return output;
     }
-    
+
     public static String[] wrapWords(String text, int width) {
         StringBuilder sb = new StringBuilder(text);
-        
+
         int i = 0;
         while (i + width < sb.length() && (i = sb.lastIndexOf(" ", i + width)) != -1) {
             sb.replace(i, i + 1, "\n");
         }
-        
+
         return sb.toString().split("\n");
     }
 
@@ -188,8 +188,8 @@ public class Utilities {
 
         return blocks;
     }
-    
-    
+
+
     /**
      * Finds the closest Player to a particular location.
      *
@@ -199,9 +199,9 @@ public class Utilities {
      * @return    The closest Player to the location, or null if no Player was found
      *                     within the range specified.
      */
-    
+
     public static Player getClosestPlayer (Location location, int range) {
-        
+
         Player closestPlayer = null;
         double closestDistance = Math.pow(range, 2);
         List<Player> playerList = new ArrayList<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
@@ -245,7 +245,7 @@ public class Utilities {
         }
         return closestPlayers;
     }
-    
+
 
     /**
      * Finds the closest NPC to a particular location.
@@ -256,7 +256,7 @@ public class Utilities {
      * @return    The closest NPC to the location, or null if no NPC was found
      *                     within the range specified.
      */
-    
+
     public static dNPC getClosestNPC (Location location, int range) {
         dNPC closestNPC = null;
         double closestDistance = Math.pow(range, 2);
@@ -282,7 +282,7 @@ public class Utilities {
      *
      * @return    The list of NPCs within the max range.
      */
-    
+
     public static Set<dNPC> getClosestNPCs (Location location, int maxRange) {
         maxRange = (int) Math.pow(maxRange, 2);
         Set<dNPC> closestNPCs = new HashSet<dNPC> ();
@@ -306,7 +306,7 @@ public class Utilities {
      *
      * @return true if within the specified location, false otherwise.
      */
-    
+
     public static boolean checkLocation(LivingEntity entity, Location theLocation, int theLeeway) {
         if (entity.getWorld() != theLocation.getWorld())
             return false;
@@ -331,7 +331,7 @@ public class Utilities {
      *
      * @return true if within the specified location, false otherwise.
      */
-    
+
     public static boolean checkLocation(Location baseLocation, Location theLocation, int theLeeway) {
 
         if (!baseLocation.getWorld().getName().equals(theLocation.getWorld().getName()))
@@ -367,7 +367,7 @@ public class Utilities {
      * @param recursive If true subfolders will also get checked
      * @return A {@link File} collection
      */
-    
+
     public static List<File> listDScriptFiles(File dir, boolean recursive) {
         List<File> files = new ArrayList<File>();
         File[] entries = dir.listFiles();
@@ -386,59 +386,59 @@ public class Utilities {
 
         return files;
     }
-    
+
     public static Random getRandom() {
         return random;
     }
-    
+
     /**
      * Set the lines on a sign to the strings in a string array
      *
      * @param sign  The sign
      * @param lines  The string array
      */
-    
+
     public static void setSignLines(Sign sign, String[] lines) {
-        
+
         int n = 0;
-            
+
         for (String line : lines) {
             sign.setLine(n, line);
             n++;
         }
-        
+
         sign.update();
     }
-    
+
     /**
      * Make a wall sign attach itself to an available surface
      *
      * @param signState  The sign's blockState
      */
-    
+
     public static void setSignRotation(BlockState signState) {
-        
+
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
-        
+
         for (BlockFace blockFace : blockFaces) {
-                
+
             Block block = signState.getBlock().getRelative(blockFace);
-            
+
             if ((block.getType() != Material.AIR)
                     && block.getType() != Material.SIGN_POST
                     && block.getType() != Material.WALL_SIGN) {
-                
+
                 ((org.bukkit.material.Sign) signState.getData())
                     .setFacingDirection(blockFace.getOppositeFace());
                 signState.update();
             }
         }
     }
-    
+
     public static void setSignRotation(BlockState signState, String direction) {
-        
+
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
-        
+
         for (BlockFace blockFace : blockFaces) {
             if (blockFace.name().startsWith(direction.toUpperCase().substring(0, 1)))
                 ((org.bukkit.material.Sign) signState.getData())
@@ -446,14 +446,14 @@ public class Utilities {
         }
         signState.update();
     }
-    
+
     /**
      * Check if a block location equals another location.
      * @param block The block location to check for.
      * @param location The location to check against.
      * @return Whether or not the block location eqauls the location.
      */
-    
+
     public static boolean isBlock(Location block, Location location) {
 
         if (!block.getWorld().getName().equals(location.getWorld().getName()))

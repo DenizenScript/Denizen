@@ -34,7 +34,7 @@ public class TaskScriptContainer extends ScriptContainer {
 
         } else
             speed = new Duration(Duration.valueOf(Settings.ScriptQueueSpeed()).getSeconds());
-        
+
         return speed;
     }
 

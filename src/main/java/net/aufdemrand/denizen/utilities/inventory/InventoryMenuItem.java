@@ -95,5 +95,5 @@ public abstract class InventoryMenuItem {
     protected ItemStack getItemStack() {
         return item;
     }
-    
+
 }
