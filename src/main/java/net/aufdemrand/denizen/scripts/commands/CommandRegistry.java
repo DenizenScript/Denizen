@@ -1008,7 +1008,26 @@ public class CommandRegistry implements dRegistry {
         // -->
         registerCoreMember(InventoryCommand.class,
                 "INVENTORY", "inventory [open/copy/move/swap/add/remove/keep/exclude/fill/clear] [destination:<inventory>] (origin:<inventory>)", 2);
-        
+
+        // <--[command]
+        // @Name Inject
+        // @Usage inject (locally) [<script>] (path:<name>) (instantly)
+        // @Required 1
+        // @Stable 1.0
+        // @Short Runs a script in the current ScriptQueue.
+        // @Author aufdemrand
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
+        registerCoreMember(InjectCommand.class,
+                "INJECT", "inject (locally) [<script>] (path:<name>) (instantly)", 1);
+
         // <--[command]
         // @Name Invisible
         // @Usage invisible [player/npc] [state:true/false/toggle]
@@ -1467,11 +1486,11 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Run
-        // @Usage run [<script>] (path:<name>) (as:<player>/<npc>) (define:<element>|...) (id:<name>) (delay:<value>) (loop) (qty:<#>)
+        // @Usage run (locally) [<script>] (path:<name>) (as:<player>/<npc>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)
         // @Required 1
-        // @Stable Todo
-        // @Short Todo
-        // @Author Todo
+        // @Stable 1.0
+        // @Short Runs a script in a new ScriptQueue.
+        // @Author aufdemrand
         // @Description
         // Todo
         // @Tags
@@ -1482,7 +1501,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(RunCommand.class,
-                "RUN", "run [<script>] (path:<name>) (as:<player>/<npc>) (define:<element>|...) (id:<name>) (delay:<value>) (loop) (qty:<#>)", 1);
+                "RUN", "run (locally) [<script>] (path:<name>) (as:<player>/<npc>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)", 1);
 
         // <--[command]
         // @Name RunTask
