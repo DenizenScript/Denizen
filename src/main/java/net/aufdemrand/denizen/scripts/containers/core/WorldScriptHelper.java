@@ -29,6 +29,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -350,6 +351,39 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("INSTABREAK"))
             event.setInstaBreak(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // block fades
+    // <block> fades
+    //
+    // @Triggers when a block fades, melts or disappears based on world conditions.
+    // @Context
+    // <context.location> will return the location the block faded at.
+    // <context.material> will return the material of the block that faded.
+    //
+    // @Determine
+    // "CANCELLED" to stop the block from fading.
+    //
+    // -->
+    @EventHandler
+    public void blockFade(BlockFadeEvent event) {
+        
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
+        
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("material", material);
+        
+        String determination = doEvents(Arrays.asList
+                ("block fades",
+                        material.name() + " fades"),
+                null, null, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
     }
 
     // <--[event]
