@@ -25,8 +25,10 @@ public class NoteCommand extends AbstractCommand {
 
         }
 
-        if (!scriptEntry.hasObject("id") || !scriptEntry.hasObject("object"))
-            throw new InvalidArgumentsException("Must specify an id and fetchable-object to note.");
+        if (!scriptEntry.hasObject("id"))
+            throw new InvalidArgumentsException("Must specify an id");
+        if (!scriptEntry.hasObject("object"))
+            throw new InvalidArgumentsException("Must specify a fetchable-object to note.");
 
     }
 
