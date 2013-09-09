@@ -60,9 +60,7 @@ public class RunCommand extends AbstractCommand {
     //   # /ex run 's@Local Script Tutorial' 'subscript_1'
     //
     //   subscript_1:
-    //   - narrate "This is a 'local script' in the task script container 'Local
-    //     Script Tutorial'."
-    //
+    //   - narrate "This is a 'local script' in the task script container 'LocalScript Tutorial'."
     //
     //   # But wait, there's more! If wanting to run a local script that is within the
     //   # same container, the run command can be even simpler by specifying 'local'
