@@ -1788,7 +1788,7 @@ public class WorldScriptHelper implements Listener {
     // # | On Command Event tutorial
     //
     // # | Denizen contains the ability to run script entries in the form
-    // # | of a bukkit /command. Here's an example script that shows basic usage.
+    // # | of a Bukkit /command. Here's an example script that shows basic usage.
     //
     // On Command Event Tutorial:
     //  type: world
@@ -1804,7 +1804,7 @@ public class WorldScriptHelper implements Listener {
     //     on testcommand command:
     //
     //     # Why not state the obvious? Just to be sure!
-    //     - narrate 'You just use the /testcommand command!'
+    //     - narrate 'You just used the /testcommand command!'
     //
     //     # You can utilize any arguments that come along with the command, too!
     //     # <c.args> returns a list of the arguments, run through the Denizen argument
@@ -1830,7 +1830,7 @@ public class WorldScriptHelper implements Listener {
     // command
     // <command_name> command
     //
-    // @Triggers when a player or console runs a bukkit command. This happens before
+    // @Triggers when a player or console runs a Bukkit command. This happens before
     // any code of established commands allowing scripters to 'override' existing commands.
     // @Context
     // <context.command> will return the command name as an Element.
@@ -1840,7 +1840,7 @@ public class WorldScriptHelper implements Listener {
     // <context.server> will return true if the command was run from the console.
     //
     // @Determine
-    // "FULFILLED" to tell bukkit the command was handled.
+    // "FULFILLED" to tell Bukkit the command was handled.
     //
     // -->
     @EventHandler

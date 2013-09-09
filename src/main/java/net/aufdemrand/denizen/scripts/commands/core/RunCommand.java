@@ -77,7 +77,7 @@ public class RunCommand extends AbstractCommand {
     //   - narrate "Done. This has been a message from subscript_3!"
     //
     //
-    //   # There you have it! Three seperate scripts inside a single task script container!
+    //   # There you have it! Three separate scripts inside a single task script container!
     //   # Both the 'run' command and 'inject' command support local scripts.
     //
     // -->
