@@ -439,6 +439,24 @@ String prefix = "Cuboid";
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <cu@cuboid.min>
+        // @returns dLocation
+        // @description Returns the lowest-numbered corner location.
+        // -->
+        if (attribute.startsWith("min")) {
+            return loc_1.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <cu@cuboid.max>
+        // @returns dLocation
+        // @description Returns the highest-numbered corner location.
+        // -->
+        if (attribute.startsWith("max")) {
+            return loc_2.getAttribute(attribute.fulfill(1));
+        }
+
         return new Element(identify()).getAttribute(attribute.fulfill(0));
     }
 
