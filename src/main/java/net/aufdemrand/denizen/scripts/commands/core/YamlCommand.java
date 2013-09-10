@@ -25,7 +25,7 @@ import java.util.*;
  * - yaml create:filename.yml    ...
  * - yaml read:filename.yml key:yaml-key     ...
  * - yaml write:filename.yml key:yaml-key value:value    ...
- * - yaml save:filename.yml
+ * - yaml savefile:filename.yml
  *
  */
 
@@ -48,65 +48,65 @@ public class YamlCommand extends AbstractCommand implements Listener {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        Action action = null;
-        String key = null;
-        String value = null;
-        String filename = null;
-        String id = null;
-
-        for (String arg : scriptEntry.getArguments()) {
-
-            if (aH.matchesValueArg("LOAD, CREATE, SAVE", arg, aH.ArgumentType.Custom)) {
-                action = Action.valueOf(arg.split(":")[0].toUpperCase());
-                filename = aH.getStringFrom(arg);
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            if (!scriptEntry.hasObject("action") &&
+                    arg.matchesPrefix("LOAD")) {
+                scriptEntry.addObject("action", new Element("LOAD"));
+                scriptEntry.addObject("filename", arg.asElement());
             }
 
-            else if (aH.matchesValueArg("READ, WRITE", arg, aH.ArgumentType.Custom)) {
-                action = Action.valueOf(arg.split(":")[0].toUpperCase());
-                key = aH.getStringFrom(arg);
+            else if (!scriptEntry.hasObject("action") &&
+                    arg.matchesPrefix("SAVE, SAVEFILE, FILESAVE")) {
+                scriptEntry.addObject("action", new Element("SAVE"));
+                scriptEntry.addObject("filename", arg.asElement());
             }
 
-            else if (aH.matchesValueArg("VALUE", arg, aH.ArgumentType.Custom)) {
-                value = aH.getStringFrom(arg);
+            else if (!scriptEntry.hasObject("action") &&
+                    arg.matches("CREATE")) {
+                scriptEntry.addObject("action", new Element("CREATE"));
             }
 
+            else if (!scriptEntry.hasObject("action") &&
+                    arg.matchesPrefix("WRITE")) {
+                scriptEntry.addObject("action", new Element("WRITE"));
+                scriptEntry.addObject("key", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("value") &&
+                    arg.matchesPrefix("VALUE")) {
+                scriptEntry.addObject("value", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("id") &&
+                    arg.matchesPrefix("ID")) {
+                scriptEntry.addObject("id", arg.asElement());
+            }
             else
-                id = aH.getStringFrom(arg);
-
+                dB.echoError(dB.Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check for required arguments
 
-        if (id == null)
+        if (!scriptEntry.hasObject("id"))
             throw new InvalidArgumentsException("Must specify an id!");
 
-        if (action == null)
+        if (!scriptEntry.hasObject("action"))
             throw new InvalidArgumentsException("Must specify an action!");
 
-        if ((action == Action.READ || action == Action.WRITE) && key == null)
+        if (!scriptEntry.hasObject("key") &&
+                scriptEntry.getElement("action").asString().equalsIgnoreCase("write"))
             throw new InvalidArgumentsException("Must specify a key!");
-
-        if ((action == Action.CREATE || action == Action.LOAD || action == Action.SAVE) && filename == null)
-            throw new InvalidArgumentsException("Must specify a filename!");
-
-        // Add objects back to script entry
-
-        scriptEntry.addObject("filename", filename)
-                .addObject("action", action)
-                .addObject("key", key)
-                .addObject("value", value)
-                .addObject("id", id);
     }
 
 
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        String filename = (String) scriptEntry.getObject("filename");
-        String key = (String) scriptEntry.getObject("key");
-        String value = (String) scriptEntry.getObject("value");
-        Action action = (Action) scriptEntry.getObject("action");
-        String id = (String) scriptEntry.getObject("id");
+        Element filename = scriptEntry.getElement("filename");
+        Element key = scriptEntry.getElement("key");
+        Element value = scriptEntry.getElement("value");
+        Action action = Action.valueOf(scriptEntry.getElement("action").asString().toUpperCase());
+        String id = scriptEntry.getElement("id").asString();
 
         YamlConfiguration yamlConfiguration;
 
@@ -115,8 +115,11 @@ public class YamlCommand extends AbstractCommand implements Listener {
         switch (action) {
 
             case LOAD:
-                File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename);
-                if (file == null) throw new CommandExecutionException("File cannot be found!");
+                File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename.asString());
+                if (!file.exists()) {
+                    dB.echoError("File cannot be found!");
+                    return;
+                }
                 yamlConfiguration = YamlConfiguration.loadConfiguration(file);
                 if (yamlConfiguration != null)
                     yamls.put(id.toUpperCase(), yamlConfiguration);
@@ -125,7 +128,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
             case SAVE:
                 if (yamls.containsKey(id.toUpperCase())) {
                     try {
-                        yamls.get(id.toUpperCase()).save(new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename));
+                        yamls.get(id.toUpperCase()).save(new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename.asString()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -134,14 +137,12 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
             case WRITE:
                 if (yamls.containsKey(id.toUpperCase()))
-                    yamls.get(id.toUpperCase()).set(key, value);
+                    yamls.get(id.toUpperCase()).set(key.asString(), value.asString());
                 break;
 
             case CREATE:
-                yamlConfiguration = YamlConfiguration.loadConfiguration(
-                        new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename));
-                if (yamlConfiguration != null)
-                    yamls.put(id.toUpperCase(), yamlConfiguration);
+                yamlConfiguration = new YamlConfiguration();
+                yamls.put(id.toUpperCase(), yamlConfiguration);
                 break;
         }
 

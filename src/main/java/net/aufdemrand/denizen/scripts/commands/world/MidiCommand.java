@@ -93,6 +93,10 @@ public class MidiCommand extends AbstractCommand {
             dB.echoError("Invalid file " + scriptEntry.getElement("file").asString());
             return;
         }
+        if (!file.exists()) {
+            dB.echoError("Invalid file " + scriptEntry.getElement("file").asString());
+            return;
+        }
         dList listeners = (dList) scriptEntry.getObject("listeners");
         dLocation location = (dLocation) scriptEntry.getObject("location");
         float tempo = (float) scriptEntry.getElement("tempo").asDouble();
