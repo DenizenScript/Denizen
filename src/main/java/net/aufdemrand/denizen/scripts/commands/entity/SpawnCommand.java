@@ -4,14 +4,14 @@ import java.util.List;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dList;
-import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
+import net.citizensnpcs.util.Util;
+import org.bukkit.Location;
 
 /**
  * Spawn entities at a location. If no location is chosen,
@@ -47,6 +47,11 @@ public class SpawnCommand extends AbstractCommand {
                 // Entity arg
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
+
+            else if (!scriptEntry.hasObject("spread")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("spread", arg.asElement());
+            }
         }
 
         // Use the NPC or player's locations as the location if one is not specified
@@ -72,11 +77,13 @@ public class SpawnCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         dLocation location = (dLocation) scriptEntry.getObject("location");
         dEntity target = (dEntity) scriptEntry.getObject("target");
+        Element spread = scriptEntry.getElement("spread");
 
         // Report to dB
         dB.report(getName(), aH.debugObj("entities", entities.toString()) +
-                             aH.debugObj("location", location) +
-                             (target != null ? aH.debugObj("target", target) : ""));
+                              location.debug() +
+                             (spread != null?spread.debug():"") +
+                             (target != null ? target.debug() : ""));
 
         // Keep a dList of entities that can be called using %spawned_entities%
         // later in the script queue
@@ -87,12 +94,18 @@ public class SpawnCommand extends AbstractCommand {
         // then set their targets if applicable
 
         for (dEntity entity : entities) {
+            Location loc = location.clone();
+            if (spread != null) {
+                loc.add(Utilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt(),
+                        0,
+                        Utilities.getRandom().nextInt(spread.asInt() * 2) - spread.asInt());
+            }
 
             if (!entity.isSpawned()) {
-                entity.spawnAt(location);
+                entity.spawnAt(loc);
             }
             else {
-                entity.teleport(location);
+                entity.teleport(loc);
             }
 
             // Only add to entityList after the entities have been
