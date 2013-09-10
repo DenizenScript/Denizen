@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,8 +12,7 @@ import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
@@ -19,7 +20,6 @@ import net.aufdemrand.denizen.utilities.midi.MidiUtil;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 
-/* midi [file:<name>] (listener(s):[p@<name>|...])|(location:<x,y,z,world>) (tempo:<#.#>) */
 
 /**
  * Arguments: [] - Required, () - Optional
@@ -44,99 +44,76 @@ public class MidiCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        // Initialize fields
-        File file = null;
-        float tempo = 1.0F;
-        Location location = null;
-        Set<Player> listeners = new HashSet<Player>();
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            if (!scriptEntry.hasObject("location") &&
+                    arg.matchesArgumentType(dLocation.class))
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
 
-        // Iterate through arguments
-        for (String arg : scriptEntry.getArguments()){
-            if (aH.matchesLocation(arg))
-                location = aH.getLocationFrom(arg);
+            else if (!scriptEntry.hasObject("listeners") &&
+                    arg.matchesArgumentList(dPlayer.class))
+                scriptEntry.addObject("listeners", arg.asType(dList.class));
 
-            else if (aH.matchesValueArg("file, f", arg, ArgumentType.Custom)) {
-                try {
-                    String path = denizen.getDataFolder() +
-                            File.separator + "midi" +
-                            File.separator + aH.getStringFrom(arg);
+            else if (!scriptEntry.hasObject("tempo") &&
+                    arg.matchesPrimitive(aH.PrimitiveType.Double))
+                scriptEntry.addObject("tempo", arg.asElement());
 
-                    if (!path.endsWith(".mid")) {
+            else if (!scriptEntry.hasObject("file")) {
+                String path = denizen.getDataFolder() +
+                        File.separator + "midi" +
+                        File.separator + arg.getValue();
+                if (!path.endsWith(".mid"))
+                    path = path + ".mid";
 
-                        path = path + ".mid";
-                    }
-
-                    file = new File(path);
-                } catch (Exception e) {
-                    dB.echoError("Invalid file!");
-                }
+                scriptEntry.addObject("file", new Element(path));
             }
 
-            else if (aH.matchesValueArg("listeners, l", arg, ArgumentType.Custom)) {
-
-                Entity entity = null;
-
-                for (String listener : aH.getListFrom(arg)) {
-
-                    entity = dEntity.valueOf(listener).getBukkitEntity();
-
-                    if (entity != null && entity instanceof Player) {
-
-                        listeners.add((Player) entity);
-                    }
-                    else {
-                        dB.echoError("Invalid listener '%s'!", listener);
-                    }
-                }
-            }
-
-            else if (aH.matchesValueArg("tempo, t", arg, ArgumentType.Float))
-                tempo = aH.getFloatFrom(arg);
-
-            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg);
+            else throw new InvalidArgumentsException(Messages.ERROR_UNKNOWN_ARGUMENT, arg.raw_value);
         }
 
         // Check required args
-        if (file == null)
+        if (!scriptEntry.hasObject("file"))
             throw new InvalidArgumentsException(Messages.ERROR_MISSING_OTHER, "FILE");
 
-        // If there are no listeners, and the location is null,
-        // add this player to the listeners
-        if (location == null && listeners.size() == 0) {
+        if (!scriptEntry.hasObject("location") &&
+            !scriptEntry.hasObject("listeners"))
+            scriptEntry.addObject("listeners", new dList(scriptEntry.getPlayer().identify()));
 
-            listeners.add(scriptEntry.getPlayer().getPlayerEntity());
-        }
-
-        // Stash args in ScriptEntry for use in execute()
-        scriptEntry.addObject("file", file);
-        scriptEntry.addObject("listeners", listeners);
-        scriptEntry.addObject("location", location);
-        scriptEntry.addObject("tempo", tempo);
+        if (!scriptEntry.hasObject("tempo"))
+            scriptEntry.addObject("tempo", new Element(1));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        // Extract objects from ScriptEntry
-        File file = (File) scriptEntry.getObject("file");
-        @SuppressWarnings("unchecked")
-        Set<Player> listeners = (Set<Player>) scriptEntry.getObject("listeners");
-        Location location = (Location) scriptEntry.getObject("location");
-        Float tempo = (Float) scriptEntry.getObject("tempo");
+        File file;
+        try {
+            file = new File(scriptEntry.getElement("file").asString());
+        }
+        catch (Exception ex) {
+            dB.echoError("Invalid file " + scriptEntry.getElement("file").asString());
+            return;
+        }
+        dList listeners = (dList) scriptEntry.getObject("listeners");
+        dLocation location = (dLocation) scriptEntry.getObject("location");
+        float tempo = (float) scriptEntry.getElement("tempo").asDouble();
 
         // Report to dB
         dB.report(getName(),
-               aH.debugObj("Playing midi file", file.getPath()
-                        + (listeners != null ? aH.debugObj("Listeners", listeners) : "")
-                        + (location != null ? aH.debugObj("Location", location) : ""))
-                        + aH.debugObj("Tempo", tempo));
+               aH.debugObj("file", file.getPath()) +
+                       (listeners != null ? listeners.debug() : "") +
+                       (location != null ? location.debug() : "") +
+                        aH.debugObj("Tempo", tempo));
 
         // Play the sound
         if (location != null) {
             MidiUtil.playMidiQuietly(file, tempo, location);
         }
         else {
-            MidiUtil.playMidiQuietly(file, tempo, listeners);
+            HashSet<Player> listenerSet = new HashSet<Player>();
+            for (String player: listeners.toArray()) {
+                listenerSet.add(dPlayer.valueOf(player).getPlayerEntity());
+            }
+            MidiUtil.playMidiQuietly(file, tempo, listenerSet);
         }
     }
 }

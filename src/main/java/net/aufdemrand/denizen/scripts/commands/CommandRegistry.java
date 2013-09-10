@@ -1144,22 +1144,30 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Midi
-        // @Usage midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)
+        // @Usage midi [file:<name>] (<location>/<player>|...) (tempo:<#.#>)
         // @Required 1
-        // @Stable Todo
-        // @Short Todo
-        // @Author Todo
+        // @Stable Stable
+        // @Short Plays a midi file at a given location or to a list of players using note block sounds.
+        // @Author authorblues
         // @Description
-        // Todo
+        // This will fully load a midi song file stored in plugins/Denizen/midi/
+        // The file must be a valid midi file with the extension .mid
+        // It will continuously play the song as noteblock songs at the given location or group of players until the song ends.
+        // By default, this will play for the connected player only.
         // @Tags
-        // Todo
+        // None.
         // @Usage
-        // Todo
+        // Use to play a midi song file at a given location
+        // - midi file:Mysong <player.location>
+        //
+        // @Usage
+        // Use to play a midi song file at a given location to the specified player
+        // - midi file:Mysong <server.list_online_players>
         // @Example
         // Todo
         // -->
         registerCoreMember(MidiCommand.class,
-                "MIDI", "midi [file:<name>] [<location>/listeners:<player>|...] (tempo:<#.#>)", 1);
+                "MIDI", "midi [file:<name>] (<location>/<player>|...) (tempo:<#.#>)", 1);
 
         // <--[command]
         // @Name Mount

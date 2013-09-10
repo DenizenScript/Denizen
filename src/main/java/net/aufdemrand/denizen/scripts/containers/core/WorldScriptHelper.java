@@ -352,7 +352,7 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("INSTABREAK"))
             event.setInstaBreak(true);
     }
-    
+
     // <--[event]
     // @Events
     // block fades
@@ -369,21 +369,21 @@ public class WorldScriptHelper implements Listener {
     // -->
     @EventHandler
     public void blockFade(BlockFadeEvent event) {
-        
+
         Map<String, dObject> context = new HashMap<String, dObject>();
         dMaterial material = new dMaterial(event.getBlock().getType());
-        
+
         context.put("location", new dLocation(event.getBlock().getLocation()));
         context.put("material", material);
-        
+
         String determination = doEvents(Arrays.asList
                 ("block fades",
                         material.name() + " fades"),
                 null, null, context);
-        
+
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
-        
+
     }
 
     // <--[event]
