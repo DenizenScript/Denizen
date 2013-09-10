@@ -153,7 +153,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage assignment [{set}/remove] (script:<name>)
         // @Required 1
         // @Stable Todo
-        // @Short Todo
+        // @Short Announces a message for everyone online to read.
         // @Author Todo
         // @Description
         // Todo
@@ -172,7 +172,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage attack (cancel) (<entity>|...) (target:<entity>)
         // @Required 0
         // @Stable Todo
-        // @Short Todo
+        // @Short Changes an NPC's assignment.
         // @Author Todo
         // @Description
         // Todo
@@ -191,7 +191,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage break [<location>] (entity:<entity>) (radius:<#.#>)
         // @Required 1
         // @Stable Todo
-        // @Short Todo
+        // @Short Causes the NPC to attack a target.
         // @Author Todo
         // @Description
         // Todo
@@ -210,7 +210,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage burn [<entity>|...] (duration:<value>)
         // @Required 1
         // @Stable Todo
-        // @Short Todo
+        // @Short Breaks a block.
         // @Author Todo
         // @Description
         // Todo
@@ -261,7 +261,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage chat ["<text>"] (targets:<entity>|...)
         // @Required 1
         // @Stable Todo
-        // @Short Todo
+        // @Short Casts a potion on a target entity.
         // @Author Todo
         // @Description
         // Todo
@@ -280,7 +280,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage chunkload ({add}/remove/removeall) [<location>] (duration:<value>)
         // @Required 1
         // @Stable Todo
-        // @Short Todo
+        // @Short Causes the NPC to send a chat message to nearby players.
         // @Author Todo
         // @Description
         // Todo
