@@ -1900,7 +1900,7 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Usage yaml [load/create/save:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
+        // @Usage yaml [load/create/savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]
         // @Required 1
         // @Stable Todo
         // @Short Edits a YAML configuration file.
@@ -1915,7 +1915,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(YamlCommand.class,
-                "YAML", "yaml [load/create/save:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]", 1);
+                "YAML", "yaml [load/create/savefile:<file>]/[write:<key>]/[write:<key> value:<value>] [id:<name>]", 1);
 
         // <--[command]
         // @Name Zap
