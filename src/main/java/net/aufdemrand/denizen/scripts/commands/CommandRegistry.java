@@ -261,7 +261,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage chat ["<text>"] (targets:<entity>|...)
         // @Required 1
         // @Stable Todo
-        // @Short Casts a potion on a target entity.
+        // @Short Causes the NPC to send a chat message to nearby players.
         // @Author Todo
         // @Description
         // Todo
@@ -280,7 +280,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage chunkload ({add}/remove/removeall) [<location>] (duration:<value>)
         // @Required 1
         // @Stable Todo
-        // @Short Causes the NPC to send a chat message to nearby players.
+        // @Short Todo
         // @Author Todo
         // @Description
         // Todo
