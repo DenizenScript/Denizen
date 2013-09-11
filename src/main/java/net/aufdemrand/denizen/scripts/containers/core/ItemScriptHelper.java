@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.scripts.ScriptBuilder;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizen.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -148,10 +149,33 @@ public class ItemScriptHelper implements Listener {
         // Run a script on craft of an item script
         if (isItemScript(event.getRecipe().getResult())) {
             if (!(event.getWhoClicked() instanceof Player)) return;
+
+            dItem item = new dItem(event.getRecipe().getResult());
+            ItemScriptContainer script = null;
+            for (String itemLore : item.getItemStack().getItemMeta().getLore())
+                if (itemLore.startsWith("§0id:")) // Note: Update this when the id: is stored less stupidly!
+                    script = (ItemScriptContainer) ScriptRegistry.getScriptContainerAs(itemLore.substring(5), ItemScriptContainer.class);
+
+            if (script == null) {
+                dB.echoDebug("Tried to craft non-existant script!");
+                return;
+            }
+
+            for (int i = 0;i < 9;i++) {
+                if (!script.getRecipe().get(i).identify().split(":")[0].equalsIgnoreCase(
+                (new dItem(event.getInventory().getMatrix()[i])).identify().split(":")[0])) { // This probably can be compared more efficiently...
+                    dB.echoDebug("Ignoring craft attempt using "
+                            + (new dItem(event.getInventory().getMatrix()[i])).identify().split(":")[0]
+                            + " instead of " + script.getRecipe().get(i).identify().split(":")[0]);
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+
             Map<String, Object> context = new HashMap<String, Object>();
-            String determination = doEvents(Arrays.asList
-                    ("craft"),
-                    null, (Player) event.getWhoClicked(), context);
+            String determination = doEvents(Arrays.asList("craft"),
+                                    null, (Player) event.getWhoClicked(), context);
+
             if (determination.toUpperCase().startsWith("CANCELLED"))
                 event.setCancelled(true);
         }

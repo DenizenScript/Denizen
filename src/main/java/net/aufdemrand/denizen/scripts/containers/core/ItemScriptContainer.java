@@ -23,34 +23,39 @@ public class ItemScriptContainer extends ScriptContainer {
     dNPC npc = null;
     dPlayer player = null;
     public boolean bound = false;
+    List<dItem> recipe = null;
 
     public ItemScriptContainer(ConfigurationSection configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         ItemScriptHelper.item_scripts.put(getName(), this);
         // Set Recipe
         if (contains("RECIPE")) {
-            List<dItem> materials = new ArrayList<dItem>();
+            recipe = new ArrayList<dItem>();
             for (String recipeRow : getStringList("RECIPE")) {
                 recipeRow = TagManager.tag(player, npc, recipeRow);
                 String[] row = recipeRow.split("\\|", 3);
                 for (String material : row) {
-                    materials.add(materials.size(), dItem.valueOf(material));
+                    recipe.add(recipe.size(), dItem.valueOf(material));
                 }
             }
-            ShapedRecipe recipe = new ShapedRecipe(getItemFrom().getItemStack());
-            recipe.shape("abc", "def", "ghi");
+            ShapedRecipe shapedRecipe = new ShapedRecipe(getItemFrom().getItemStack());
+            shapedRecipe.shape("abc", "def", "ghi");
             char x = 'a';
-            for (dItem material : materials) {
+            for (dItem material : recipe) {
                 if (!material.getItemStack().getType().name().equals("AIR"))
-                    recipe.setIngredient(x, material.getItemStack().getData());
+                    shapedRecipe.setIngredient(x, material.getItemStack().getData());
                 x++;
             }
-            Bukkit.getServer().addRecipe(recipe);
+            Bukkit.getServer().addRecipe(shapedRecipe);
         }
     }
 
     public dItem getItemFrom() {
        return getItemFrom(null, null);
+    }
+
+    public List<dItem> getRecipe() {
+        return recipe;
     }
 
     public dItem getItemFrom(dPlayer player, dNPC npc) {

@@ -743,7 +743,6 @@ public class dItem implements dObject, Notable, Properties {
         // -->
         if (attribute.startsWith("scriptname")) // Note: Update this when the id: is stored less stupidly!
             if (getItemStack().hasItemMeta() && getItemStack().getItemMeta().hasLore()) {
-                List<String> loreList = new ArrayList<String>();
                 for (String itemLore : getItemStack().getItemMeta().getLore())
                     if (itemLore.startsWith("§0id:"))
                         return new Element(itemLore.substring(5)).getAttribute(attribute.fulfill(1));
