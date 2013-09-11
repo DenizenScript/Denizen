@@ -1184,6 +1184,29 @@ public class dEntity implements dObject {
         }
 
         // <--[tag]
+        // @attribute <e@entity.is_npc>
+        // @returns Element(Boolean)
+        // @description
+        // Returns if the entity is actually a NPC.
+        // -->
+        if (attribute.startsWith("is_npc")) {
+            return new Element(CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.is_mob>
+        // @returns Element(Boolean)
+        // @description
+        // Returns if the entity is a mob. This excludes players and NPCs.
+        // -->
+        if (attribute.startsWith("is_mob")) {
+            if (!(getBukkitEntity() instanceof Player) && !CitizensAPI.getNPCRegistry().isNPC(getBukkitEntity()))
+                return Element.TRUE.getAttribute(attribute.fulfill(1));
+            else return Element.FALSE.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.prefix>
         // @returns Element
         // @description
