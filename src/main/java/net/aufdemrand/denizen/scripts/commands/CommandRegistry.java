@@ -134,7 +134,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage announce ["<text>"] (to_ops) (to_flagged:<flag>)
         // @Required 1
         // @Stable Todo
-        // @Short Todo
+        // @Short Announces a message for everyone online to read.
         // @Author Todo
         // @Description
         // Todo
@@ -153,7 +153,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage assignment [{set}/remove] (script:<name>)
         // @Required 1
         // @Stable Todo
-        // @Short Announces a message for everyone online to read.
+        // @Short Changes an NPC's assignment.
         // @Author Todo
         // @Description
         // Todo
@@ -172,7 +172,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage attack (cancel) (<entity>|...) (target:<entity>)
         // @Required 0
         // @Stable Todo
-        // @Short Changes an NPC's assignment.
+        // @Short Causes the NPC to attack a target.
         // @Author Todo
         // @Description
         // Todo
@@ -191,7 +191,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage break [<location>] (entity:<entity>) (radius:<#.#>)
         // @Required 1
         // @Stable Todo
-        // @Short Causes the NPC to attack a target.
+        // @Short Breaks a block.
         // @Author Todo
         // @Description
         // Todo
@@ -210,7 +210,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage burn [<entity>|...] (duration:<value>)
         // @Required 1
         // @Stable Todo
-        // @Short Breaks a block.
+        // @Short Sets an entity on fire.
         // @Author Todo
         // @Description
         // Todo
@@ -299,7 +299,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage compass [<location>]
         // @Required 1
         // @Stable Todo
-        // @Short Todo
+        // @Short Redirects the player's compass to target the given location.
         // @Author Todo
         // @Description
         // Todo
@@ -610,7 +610,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage equip (player/{npc}) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)
         // @Required 1
         // @Stable Todo
-        // @Short Equips an item into the inventory slot of the player or NPC.
+        // @Short Equips an item into the chosen inventory slot of the player or NPC.
         // @Author Todo
         // @Description
         // Todo
