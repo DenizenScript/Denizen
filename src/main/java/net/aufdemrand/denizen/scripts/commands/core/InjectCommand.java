@@ -58,14 +58,14 @@ public class InjectCommand extends AbstractCommand {
     //   # be injected, it'll clear the queue it was injected to, which in this case is exactly
     //   # what we need. Clearing the queue will 'cancel' any further execution to the script.
     //
-    //   # If the player DOES meet criteria, determine the script passively fulfilled. Specifying
-    //   # 'passively' will allow the script to run beyond the 'determination'.
+    //   # But first, determine the script passively fulfilled so it doesn't display a help message.
+    //   # Specifying 'passively' will allow the script to run beyond the 'determination'.
     //
+    //   - determine passively fulfilled
     //   - if !<player.is_op> {
     //     - narrate 'You must be an administrator to use this command!'
     //     - queue clear
     //     }
-    //   - determine passively fulfilled
     //
     //   # +-- the PAYOFF --+
     //   # Here's a couple simple commands that'll use our injected utility script!
