@@ -35,8 +35,6 @@ public class ItemScriptContainer extends ScriptContainer {
                 String[] row = recipeRow.split("\\|", 3);
                 for (String material : row) {
                     materials.add(materials.size(), dItem.valueOf(material));
-                    if (material.contains(":"))
-                        materials.get(materials.size()-1).setData(Byte.valueOf(material.split(":")[1]));
                 }
             }
             ShapedRecipe recipe = new ShapedRecipe(getItemFrom().getItemStack());
