@@ -32,11 +32,11 @@ public class InjectCommand extends AbstractCommand {
     // @Code
     // # +-----------------------------------
     // # | Script Injection tutorial
-    //
+    // # |
     // # | Script injection is an alternative way to run task scripts. Pluses include the ability
     // # | to use and modify established definitions and context contained in the script. Check out
     // # | this example on some simple ways to use script injection.
-    //
+    // # |
     // # | Take the example of a 'command pack' script that provides a couple of commands for
     // # | administrators to use. First, a world script since we need to utilize events.
     //
@@ -62,11 +62,10 @@ public class InjectCommand extends AbstractCommand {
     //   # 'passively' will allow the script to run beyond the 'determination'.
     //
     //   - if !<player.is_op> {
-    //       - narrate 'You must be an administrator to use this command!'
-    //       - queue clear
-    //     } else
-    //       - determine passively fulfilled
-    //
+    //     - narrate 'You must be an administrator to use this command!'
+    //     - queue clear
+    //     }
+    //   - determine passively fulfilled
     //
     //   # +-- the PAYOFF --+
     //   # Here's a couple simple commands that'll use our injected utility script!
