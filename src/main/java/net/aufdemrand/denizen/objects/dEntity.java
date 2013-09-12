@@ -830,7 +830,7 @@ public class dEntity implements dObject {
         // -->
         if (attribute.startsWith("custom_name")) {
             if (getLivingEntity().getCustomName() == null) return "null";
-            return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(2));
+            return new Element(getLivingEntity().getCustomName()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
