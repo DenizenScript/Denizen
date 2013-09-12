@@ -935,10 +935,10 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Health
-        // @Usage health [<#>]
+        // @Usage health (target:player/{npc}) [<#>]
         // @Required 1
         // @Stable Todo
-        // @Short Changes the NPCs maximum health.
+        // @Short Changes the target's maximum health.
         // @Author Todo
         // @Description
         // Todo
@@ -950,7 +950,7 @@ public class CommandRegistry implements dRegistry {
         // Todo
         // -->
         registerCoreMember(HealthCommand.class,
-                "HEALTH", "health [<#>]", 1);
+                "HEALTH", "health (target:player/{npc}) [<#>]", 1);
 
         // <--[command]
         // @Name Hurt
