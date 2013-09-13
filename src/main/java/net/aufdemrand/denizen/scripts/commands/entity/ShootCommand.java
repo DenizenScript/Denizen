@@ -26,9 +26,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 /**
- * Moves entities through the air from an origin to a destination.
- * The origin can optionally be an entity that will look at the
- * object it is moving.
+ * Shoots an entity like a bow.
  *
  * @author David Cernat
  */

@@ -1284,6 +1284,25 @@ public class CommandRegistry implements dRegistry {
                 "OXYGEN", "oxygen (type:maximum/remaining) (mode:set/add/remove) [qty:<#>]", 1);
 
         // <--[command]
+        // @Name Pause
+        // @Usage pause [waypoints/navigation]
+        // @Required 1
+        // @Stable Todo
+        // @Short Todo
+        // @Author Todo
+        // @Description
+        // Todo
+        // @Tags
+        // Todo
+        // @Usage
+        // Todo
+        // @Example
+        // Todo
+        // -->
+        registerCoreMember(PauseCommand.class,
+                "PAUSE", "pause [waypoints/navigation]", 1);
+
+        // <--[command]
         // @Name PlayEffect
         // @Usage playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)
         // @Required 2
@@ -1360,12 +1379,12 @@ public class CommandRegistry implements dRegistry {
                 "POSE", "pose (player/npc) [id:<name>]", 1);
 
         // <--[command]
-        // @Name Pause
-        // @Usage pause [waypoints/navigation]
+        // @Name Push
+        // @Usage push [<entity>|...] (origin:<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>)
         // @Required 1
         // @Stable Todo
-        // @Short Todo
-        // @Author Todo
+        // @Short Pushes an entity from location to another.
+        // @Author Davidcernat, mcmonkey
         // @Description
         // Todo
         // @Tags
@@ -1375,8 +1394,8 @@ public class CommandRegistry implements dRegistry {
         // @Example
         // Todo
         // -->
-        registerCoreMember(PauseCommand.class,
-                "PAUSE", "pause [waypoints/navigation]", 1);
+        registerCoreMember(PushCommand.class,
+                "PUSH", "pause push [<entity>|...] (origin:<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>)", 1);
 
         // <--[command]
         // @Name Queue
