@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
+import net.aufdemrand.denizen.objects.Element;
+import net.aufdemrand.denizen.tags.Attribute;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -14,39 +16,107 @@ public class SpecialCharacterTags implements Listener {
    @EventHandler
     public void specialCharacterTags(ReplaceableTagEvent event) {
     if (!event.getName().startsWith("&")) return;
+       Attribute attribute =
+               new Attribute(event.raw_tag, event.getScriptEntry());
 
+       // <--[tag]
+       // @attribute <&nl>
+       // @returns Element
+       // @description
+       // Returns a newline symbol.
+       // -->
        if (event.getName().equalsIgnoreCase("&nl"))
-            event.setReplaced("\n");
+            event.setReplaced(new Element("\n").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&cm>
+           // @returns Element
+           // @description
+           // Returns a comma symbol: ,
+           // -->
        else if (event.getName().equalsIgnoreCase("&cm"))
-           event.setReplaced(",");
+           event.setReplaced(new Element(",").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&ss>
+           // @returns Element
+           // @description
+           // Returns an internal coloring symbol: §
+           // -->
        else if (event.getName().equalsIgnoreCase("&ss"))
-           event.setReplaced("§");
+           event.setReplaced(new Element("§").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&sq>
+           // @returns Element
+           // @description
+           // Returns a single-quote symbol: '
+           // -->
        else if (event.getName().equalsIgnoreCase("&sq"))
-           event.setReplaced("'");
+           event.setReplaced(new Element("'").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&dq>
+           // @returns Element
+           // @description
+           // Returns a double-quote symbol: "
+           // -->
        else if (event.getName().equalsIgnoreCase("&dq"))
-           event.setReplaced("\"");
+           event.setReplaced(new Element("\"").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&co>
+           // @returns Element
+           // @description
+           // Returns a colon symbol: :
+           // -->
        else if (event.getName().equalsIgnoreCase("&co"))
-           event.setReplaced(":");
+           event.setReplaced(new Element(":").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&rb>
+           // @returns Element
+           // @description
+           // Returns a right-bracket symbol: ]
+           // -->
        else if (event.getName().equalsIgnoreCase("&rb"))
-           event.setReplaced("]");
+           event.setReplaced(new Element("]").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&lb>
+           // @returns Element
+           // @description
+           // Returns a left-bracket symbol: [
+           // -->
        else if (event.getName().equalsIgnoreCase("&lb"))
-           event.setReplaced("[");
+           event.setReplaced(new Element("[").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&rc>
+           // @returns Element
+           // @description
+           // Returns a right-brace symbol: }
+           // -->
        else if (event.getName().equalsIgnoreCase("&rc"))
-           event.setReplaced("}");
+           event.setReplaced(new Element("}").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&lc>
+           // @returns Element
+           // @description
+           // Returns a left-brace symbol: {
+           // -->
        else if (event.getName().equalsIgnoreCase("&lc"))
-           event.setReplaced("{");
+           event.setReplaced(new Element("{").getAttribute(attribute.fulfill(1)));
 
+           // <--[tag]
+           // @attribute <&ns>
+           // @returns Element
+           // @description
+           // Returns a hash symbol: #
+           // -->
        else if (event.getName().equalsIgnoreCase("&ns"))
-           event.setReplaced("#");
+           event.setReplaced(new Element("#").getAttribute(attribute.fulfill(1)));
 
    }
 
