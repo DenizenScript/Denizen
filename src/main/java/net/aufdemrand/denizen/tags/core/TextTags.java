@@ -83,7 +83,6 @@ public class TextTags implements Listener {
 
     @EventHandler
     public void colorTags(ReplaceableTagEvent event) {
-        if (!event.getName().startsWith("&")) return;
         Attribute attribute =
                 new Attribute(event.raw_tag, event.getScriptEntry());
         int i = 0;
