@@ -1849,8 +1849,8 @@ public class WorldScriptHelper implements Listener {
     //     - define arg_size <c.args.size>
     //     - narrate "'%arg_size%' arguments were used."
     //     - if %arg_size% > 0 {
-    //     - narrate "'<c.args.get[1]>' was the first argument."
-    //     - narrate "Here's a list of all the arguments<&co> <c.args.as_cslist>"
+    //       - narrate "'<c.args.get[1]>' was the first argument."
+    //       - narrate "Here's a list of all the arguments<&co> <c.args.as_cslist>"
     //       }
     //
     //     # When a command isn't found, Bukkit reports an error. To let bukkit know
