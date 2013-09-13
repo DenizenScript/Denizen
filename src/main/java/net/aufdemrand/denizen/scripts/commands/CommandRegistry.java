@@ -1383,7 +1383,7 @@ public class CommandRegistry implements dRegistry {
         // @Usage push [<entity>|...] (origin:<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>)
         // @Required 1
         // @Stable Todo
-        // @Short Pushes an entity from location to another.
+        // @Short Pushes an entity from one location to another.
         // @Author Davidcernat, mcmonkey
         // @Description
         // Todo
