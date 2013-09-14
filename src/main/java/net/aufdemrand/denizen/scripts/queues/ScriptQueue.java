@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * to the CommandExecuter
  *
  * @version 1.0
- * @author Jeremy Schroeder, David Cernat
+ * @author Jeremy Schroeder
  */
 
 public abstract class ScriptQueue {

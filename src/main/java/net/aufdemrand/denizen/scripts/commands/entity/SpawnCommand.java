@@ -85,7 +85,7 @@ public class SpawnCommand extends AbstractCommand {
                              (spread != null?spread.debug():"") +
                              (target != null ? target.debug() : ""));
 
-        // Keep a dList of entities that can be called using %spawned_entities%
+        // Keep a dList of entities that can be called using <entry[name].spawned_entities>
         // later in the script queue
 
         dList entityList = new dList();

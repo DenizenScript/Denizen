@@ -1,15 +1,7 @@
 package net.aufdemrand.denizen.scripts.queues.core;
 
 
-import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.objects.Duration;
-import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Bukkit;
-
-import java.util.List;
 
 public class InstantQueue extends ScriptQueue {
 

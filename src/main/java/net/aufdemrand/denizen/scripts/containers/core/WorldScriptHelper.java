@@ -30,16 +30,25 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPistonEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.inventory.BrewEvent;
+import org.bukkit.event.inventory.FurnaceBurnEvent;
+import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -187,8 +196,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a player breaks a block.
     // @Context
-    // <context.location> returns the location the block was broken at.
-    // <context.material> returns the material of the block that was broken.
+    // <context.location> returns the dLocation the block was broken at.
+    // <context.material> returns the dMaterial of the block that was broken.
     //
     // @Determine
     // "CANCELLED" to stop the block from breaking.
@@ -266,8 +275,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a block is destroyed by fire.
     // @Context
-    // <context.location> returns the location the block was burned at.
-    // <context.material> returns the material of the block that was burned.
+    // <context.location> returns the dLocation the block was burned at.
+    // <context.material> returns the dMaterial of the block that was burned.
     //
     // @Determine
     // "CANCELLED" to stop the block from being destroyed.
@@ -299,9 +308,9 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when an attempt is made to build a block on another block. Not necessarily caused by players.
     // @Context
-    // <context.location> returns the location of the block the player is trying to build on.
-    // <context.old_material> returns the material of the block the player is trying to build on.
-    // <context.new_material> returns the material of the block the player is trying to build.
+    // <context.location> returns the dLocation of the block the player is trying to build on.
+    // <context.old_material> returns the dMaterial of the block the player is trying to build on.
+    // <context.new_material> returns the dMaterial of the block the player is trying to build.
     //
     // @Determine
     // "BUILDABLE" to allow the building.
@@ -341,8 +350,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a block is damaged by a player.
     // @Context
-    // <context.location> returns the location the block that was damaged.
-    // <context.material> returns the material of the block that was damaged.
+    // <context.location> returns the dLocation the block that was damaged.
+    // <context.material> returns the dMaterial of the block that was damaged.
     //
     // @Determine
     // "CANCELLED" to stop the block from being damaged.
@@ -369,6 +378,50 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("INSTABREAK"))
             event.setInstaBreak(true);
     }
+    
+    // <--[event]
+    // @Events
+    // block dispenses item
+    // block dispenses <item>
+    // <block> dispenses item
+    // <block> dispenses <item>
+    //
+    // @Triggers when a block dispenses an item.
+    // @Context
+    // <context.location> returns the dLocation of the dispenser.
+    // <context.item> returns the dItem of the item being dispensed.
+    //
+    // @Determine
+    // "CANCELLED" to stop the block from dispensing.
+    // Element(Double) to set the power with which the item is shot.
+    //
+    // -->
+    @EventHandler
+    public void blockDispense(BlockDispenseEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dItem item = new dItem(event.getItem());
+        dMaterial material = new dMaterial(event.getBlock().getType());
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("item", item);
+
+        String determination = doEvents(Arrays.asList
+                ("block dispenses item",
+                 "block dispenses " + item.identify(),
+                 material.identify() + " dispenses item",
+                 material.identify() + " dispenses " + item.identify()),
+                 null, null, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        
+        else if (Argument.valueOf(determination)
+                         .matchesPrimitive(aH.PrimitiveType.Double)) {
+            event.setVelocity(event.getVelocity().normalize()
+                 .multiply(aH.getDoubleFrom(determination)));
+        }
+    }
 
     // <--[event]
     // @Events
@@ -377,8 +430,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a block fades, melts or disappears based on world conditions.
     // @Context
-    // <context.location> returns the location the block faded at.
-    // <context.material> returns the material of the block that faded.
+    // <context.location> returns the dLocation the block faded at.
+    // <context.material> returns the dMaterial of the block that faded.
     //
     // @Determine
     // "CANCELLED" to stop the block from fading.
@@ -400,7 +453,72 @@ public class WorldScriptHelper implements Listener {
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // block spreads
+    // <block> spreads
+    //
+    // @Triggers when a liquid block spreads.
+    // @Context
+    // <context.destination> returns the dLocation the block spread to.
+    // <context.location> returns the dLocation the block spread from.
+    // <context.type> returns the dMaterial of the block that spread.
+    //
+    // @Determine
+    // "CANCELLED" to stop the block from spreading.
+    //
+    // -->
+    @EventHandler
+    public void blockFromTo(BlockFromToEvent event) {
 
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("destination", new dLocation(event.getToBlock().getLocation()));
+        context.put("material", material);
+
+        String determination = doEvents(Arrays.asList
+                ("block spreads",
+                 material.identify() + " spreads"),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // block grows
+    // <block> grows
+    //
+    // @Triggers when a block grows naturally in the world.
+    // @Context
+    // <context.location> returns the dLocation the block.
+    // <context.material> returns the dMaterial of the block.
+    //
+    // @Determine
+    // "CANCELLED" to stop the block from growing.
+    //
+    // -->
+    @EventHandler
+    public void blockGrow(BlockGrowEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("material", material);
+
+        String determination = doEvents(Arrays.asList
+                ("block grows",
+                 material.identify() + " grows"),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
     }
 
     // <--[event]
@@ -410,8 +528,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a block is set on fire.
     // @Context
-    // <context.location> returns the location the block was set on fire at.
-    // <context.material> returns the material of the block that was set on fire.
+    // <context.location> returns the dLocation the block was set on fire at.
+    // <context.material> returns the dMaterial of the block that was set on fire.
     //
     // @Determine
     // "CANCELLED" to stop the block from being ignited.
@@ -442,8 +560,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a block moves.
     // @Context
-    // <context.location> returns the location the block moved to.
-    // <context.material> returns the material of the block that moved.
+    // <context.location> returns the dLocation the block moved to.
+    // <context.material> returns the dMaterial of the block that moved.
     //
     // @Determine
     // "CANCELLED" to stop the block from being moved.
@@ -466,6 +584,75 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
+    
+    // <--[event]
+    // @Events
+    // piston extends
+    // <block> extends
+    //
+    // @Triggers when a piston extends.
+    // @Context
+    // <context.location> returns the dLocation of the piston.
+    // <context.material> returns the dMaterial of the piston.
+    // <context.length> returns the number of blocks that will be moved by the piston.
+    //
+    // @Determine
+    // "CANCELLED" to stop the piston from extending.
+    //
+    // -->
+    @EventHandler
+    public void blockPistonExtend(BlockPistonExtendEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("material", material);
+        context.put("length", new Element(event.getLength()));
+
+        String determination = doEvents(Arrays.asList
+                ("piston extends",
+                 material.identify() + " extends"),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // piston retracts
+    // <block> retracts
+    //
+    // @Triggers when a piston retracts.
+    // @Context
+    // <context.location> returns the dLocation of the piston.
+    // <context.retract_location> returns the new dLocation of the block that
+    //                            will be moved by the piston if it is sticky.
+    // <context.material> returns the dMaterial of the piston.
+    //
+    // @Determine
+    // "CANCELLED" to stop the piston from retracting.
+    //
+    // -->
+    @EventHandler
+    public void blockPistonRetract(BlockPistonRetractEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dMaterial material = new dMaterial(event.getBlock().getType());
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("retract_location", new dLocation(event.getRetractLocation()));
+        context.put("material", material);
+
+        String determination = doEvents(Arrays.asList
+                ("piston retracts",
+                 material.identify() + " retracts"),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
 
     // <--[event]
     // @Events
@@ -474,8 +661,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a player places a block.
     // @Context
-    // <context.location> returns the location the block that was placed.
-    // <context.material> returns the material of the block that was placed.
+    // <context.location> returns the dLocation of the block that was placed.
+    // <context.material> returns the dMaterial of the block that was placed.
     //
     // @Determine
     // "CANCELLED" to stop the block from being placed.
@@ -508,8 +695,8 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a block is (un)powered.
     // @Context
-    // <context.location> returns the location of the block that was (un)powered.
-    // <context.type> returns the material of the block that was (un)powered.
+    // <context.location> returns the dLocation of the block that was (un)powered.
+    // <context.type> returns the dMaterial of the block that was (un)powered.
     //
     // @Determine
     // "CANCELLED" to stop the block from being (un)powered.
@@ -540,35 +727,140 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setNewCurrent(event.getOldCurrent());
     }
-
+    
     // <--[event]
     // @Events
-    // block spreads
-    // <block> spreads
+    // brewing stand brews
     //
-    // @Triggers when a liquid block spreads.
+    // @Triggers when a brewing stand brews a potion.
     // @Context
-    // <context.destination> returns the location the block spread to.
-    // <context.location> returns the location the block spread from.
-    // <context.type> returns the material of the block that spread.
+    // <context.location> returns the dLocation of the brewing stand.
+    // <context.inventory> returns the dInventory of the brewing stand's contents.
     //
     // @Determine
-    // "CANCELLED" to stop the block from spreading.
+    // "CANCELLED" to stop the brewing stand from brewing.
     //
     // -->
     @EventHandler
-    public void blockFromTo(BlockFromToEvent event) {
+    public void brew(BrewEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("inventory", new dInventory(event.getContents()));
+
+        String determination = doEvents(Arrays.asList
+                ("brewing stand brews"),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // furnace burns item
+    // furnace burns <item>
+    //
+    // @Triggers when a furnace burns an item used as fuel.
+    // @Context
+    // <context.location> returns the dLocation of the furnace.
+    // <context.item> returns the dItem burnt.
+    //
+    // @Determine
+    // "CANCELLED" to stop the furnace from burning the item.
+    // Element(Integer) to set the burn time for this fuel.
+    //
+    // -->
+    @EventHandler
+    public void furnaceBurn(FurnaceBurnEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dItem item = new dItem(event.getFuel());
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("item", item);
+
+        String determination = doEvents(Arrays.asList
+                ("furnace burns item",
+                 "furnace burns " + item.identify()),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        else if (Argument.valueOf(determination)
+                         .matchesPrimitive(aH.PrimitiveType.Integer)) {
+            event.setBurnTime(aH.getIntegerFrom(determination));
+        }
+    }
+    
+    // <--[event]
+    // @Events
+    // furnace smelts item (into <item>)
+    // furnace smelts <item> (into <item>)
+    //
+    // @Triggers when a furnace smelts an item.
+    // @Context
+    // <context.location> returns the dLocation of the furnace.
+    // <context.source> returns the dItem that is smelted.
+    // <context.result> returns the dItem that is the result of the smelting.
+    //
+    // @Determine
+    // "CANCELLED" to stop the furnace from smelting the item.
+    // dItem to set the item that is the result of the smelting.
+    //
+    // -->
+    @EventHandler
+    public void furnaceSmelt(FurnaceSmeltEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dItem source = new dItem(event.getSource());
+        dItem result = new dItem(event.getResult());
+
+        context.put("location", new dLocation(event.getBlock().getLocation()));
+        context.put("source_item", source);
+        context.put("result_item", result);
+
+        String determination = doEvents(Arrays.asList
+                ("furnace smelts item",
+                 "furnace smelts " + source.identify(),
+                 "furnace smelts item into " + result.identify(),
+                 "furnace smelts " + source.identify() + " into " + result.identify()),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        else if (dItem.matches(determination)) {
+            event.setResult(dItem.valueOf(determination).getItemStack());
+        }
+    }
+    
+    // <--[event]
+    // @Events
+    // leaves decay
+    // <block> decay
+    //
+    // @Triggers when leaves decay.
+    // @Context
+    // <context.location> returns the dLocation of the leaves.
+    // <context.material> returns the dMaterial of the leaves.
+    //
+    // @Determine
+    // "CANCELLED" to stop the leaves from decaying.
+    //
+    // -->
+    @EventHandler
+    public void leavesDecay(LeavesDecayEvent event) {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         dMaterial material = new dMaterial(event.getBlock().getType());
 
         context.put("location", new dLocation(event.getBlock().getLocation()));
-        context.put("destination", new dLocation(event.getToBlock().getLocation()));
         context.put("material", material);
 
         String determination = doEvents(Arrays.asList
-                ("block spreads",
-                 material.identify() + " spreads"),
+                ("leaves decay",
+                 material.identify() + " decay"),
                  null, null, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -583,9 +875,10 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when a player changes a sign.
     // @Context
-    // <context.location> returns the location of the sign.
+    // <context.location> returns the dLocation of the sign.
     // <context.new> returns the new sign text as a dList.
     // <context.old> returns the old sign text as a dList.
+    // <context.material> returns the dMaterial of the sign.
     //
     // @Determine
     // "CANCELLED" to stop the sign from being changed.
@@ -594,19 +887,21 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void signChange(final SignChangeEvent event) {
 
-        final Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<String, dObject>();
 
-        final Player player = event.getPlayer();
-        final Block block = event.getBlock();
+        Player player = event.getPlayer();
+        Block block = event.getBlock();
         Sign sign = (Sign) block.getState();
+        dMaterial material = new dMaterial(block.getType());
 
         context.put("old", new dList(Arrays.asList(sign.getLines())));
         context.put("new", new dList(Arrays.asList(event.getLines())));
         context.put("location", new dLocation(block.getLocation()));
+        context.put("material", material);
 
         String determination = doEvents(Arrays.asList
                 ("player changes sign",
-                 "player changes " + block.getType().name()),
+                 "player changes " + material.identify()),
                  null, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -699,7 +994,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when a hanging entity is broken.
     // @Context
     // <context.cause> returns the cause of the entity breaking.
-    // <context.entity> returns the entity that broke the hanging entity, if any.
+    // <context.entity> returns the dEntity that broke the hanging entity, if any.
     // <context.hanging> returns the hanging entity as a dEntity.
     //
     // @Determine
@@ -739,7 +1034,7 @@ public class WorldScriptHelper implements Listener {
             // @Triggers when a hanging entity is broken by an entity.
             // @Context
             // <context.cause> returns the cause of the entity breaking.
-            // <context.entity> returns the entity that broke the hanging entity.
+            // <context.entity> returns the dEntity that broke the hanging entity.
             // <context.hanging> returns the hanging entity as a dEntity.
             //
             // @Determine
@@ -795,7 +1090,7 @@ public class WorldScriptHelper implements Listener {
     //
     // @Triggers when an entity spawns.
     // @Context
-    // <context.entity> returns the entity that spawned.
+    // <context.entity> returns the dEntity that spawned.
     // <context.reason> returns the reason the entity spawned.
     //
     // @Determine
@@ -915,7 +1210,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when an entity combusts.
     // @Context
     // <context.duration> returns how long the entity takes to combust.
-    // <context.entity> returns the entity that combusted.
+    // <context.entity> returns the dEntity that combusted.
     //
     // @Determine
     // "CANCELLED" to stop the entity from combusting.
@@ -950,7 +1245,7 @@ public class WorldScriptHelper implements Listener {
     // @Context
     // <context.cause> returns the reason the entity was damaged.
     // <context.damage> returns the amount of damage dealt.
-    // <context.entity> returns the entity that was damaged.
+    // <context.entity> returns the dEntity that was damaged.
     //
     // @Determine
     // "CANCELLED" to stop the entity from being damaged.
@@ -1011,7 +1306,7 @@ public class WorldScriptHelper implements Listener {
             // @Triggers when an entity is killed.
             // @Context
             // <context.cause> returns the reason the entity was killed.
-            // <context.entity> returns the entity that was killed.
+            // <context.entity> returns the dEntity that was killed.
             // <context.damage> returns the amount of damage dealt.
             // <context.shooter> returns the shooter of the entity, if any.
             //
@@ -1039,9 +1334,9 @@ public class WorldScriptHelper implements Listener {
             // @Triggers when an entity damages another entity.
             // @Context
             // <context.cause> returns the reason the entity was damaged.
-            // <context.entity> returns the entity that was damaged.
+            // <context.entity> returns the dEntity that was damaged.
             // <context.damage> returns the amount of damage dealt.
-            // <context.damager> returns the entity damaging the other entity.
+            // <context.damager> returns the dEntity damaging the other entity.
             // <context.shooter> returns the shooter of the entity, if any.
             //
             // @Determine
@@ -1134,8 +1429,8 @@ public class WorldScriptHelper implements Listener {
                 // @Triggers when an entity kills another entity.
                 // @Context
                 // <context.cause> returns the reason the entity was killed.
-                // <context.entity> returns the entity that was killed.
-                // <context.damager> returns the entity killing the other entity.
+                // <context.entity> returns the dEntity that was killed.
+                // <context.damager> returns the dEntity killing the other entity.
                 // <context.shooter> returns the shooter of the entity, if any.
                 //
                 // @Determine
@@ -1180,8 +1475,8 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when an entity explodes.
     // @Context
     // <context.blocks> returns a dList of blocks that the entity blew up.
-    // <context.entity> returns the entity that exploded.
-    // <context.location> returns the location the entity blew up at.
+    // <context.entity> returns the dEntity that exploded.
+    // <context.location> returns the dLocation the entity blew up at.
     //
     // @Determine
     // "CANCELLED" to stop the entity from exploding.
@@ -1220,7 +1515,7 @@ public class WorldScriptHelper implements Listener {
     // @Triggers when an entity heals.
     // @Context
     // <context.amount> returns the amount the entity healed.
-    // <context.entity> returns the entity that healed.
+    // <context.entity> returns the dEntity that healed.
     // <context.reason> returns the cause of the entity healing.
     //
     // @Determine

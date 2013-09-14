@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.tags;
 
 
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.ArrayList;
 import java.util.Collections;

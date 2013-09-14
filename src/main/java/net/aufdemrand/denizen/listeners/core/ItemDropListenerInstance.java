@@ -16,7 +16,6 @@ import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.listeners.core.ItemDropListenerType.ItemDropType;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.objects.aH;
-import net.aufdemrand.denizen.objects.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.WorldGuardUtilities;
 

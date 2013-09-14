@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;

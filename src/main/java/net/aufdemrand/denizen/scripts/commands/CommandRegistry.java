@@ -96,8 +96,8 @@ public class CommandRegistry implements dRegistry {
         // @Usage animate [<entity>|...] [animation:<name>]
         // @Required 1
         // @Stable Todo
-        // @Short Todo
-        // @Author Todo
+        // @Short Makes a list of entities perform a certain animation.
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -172,8 +172,8 @@ public class CommandRegistry implements dRegistry {
         // @Usage attack (cancel) (<entity>|...) (target:<entity>)
         // @Required 0
         // @Stable Todo
-        // @Short Causes the NPC to attack a target.
-        // @Author Todo
+        // @Short Makes a list of entities attack a target.
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -210,8 +210,8 @@ public class CommandRegistry implements dRegistry {
         // @Usage burn [<entity>|...] (duration:<value>)
         // @Required 1
         // @Stable Todo
-        // @Short Sets an entity on fire.
-        // @Author Todo
+        // @Short Sets a list of entities on fire.
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -744,7 +744,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 0
         // @Stable Todo
         // @Short Todo
-        // @Author Todo
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -801,7 +801,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Todo
         // @Short Todo
-        // @Author Todo
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -901,7 +901,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 0
         // @Stable Todo
         // @Short Changes the NPC's head to look like a player's skin.
-        // @Author Todo
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -996,7 +996,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 2
         // @Stable Todo
         // @Short Todo
-        // @Author Todo
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -1175,7 +1175,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 0
         // @Stable Todo
         // @Short Mounts one entity onto another.
-        // @Author Todo
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -1307,8 +1307,8 @@ public class CommandRegistry implements dRegistry {
         // @Usage playeffect [<location>] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>)
         // @Required 2
         // @Stable Todo
-        // @Short Plays a visible effect at the location.
-        // @Author Todo
+        // @Short Plays a visible or audible effect at the location.
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -1380,22 +1380,22 @@ public class CommandRegistry implements dRegistry {
 
         // <--[command]
         // @Name Push
-        // @Usage push [<entity>|...] (origin:<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>)
+        // @Usage push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>)
         // @Required 1
-        // @Stable Todo
-        // @Short Pushes an entity from one location to another.
-        // @Author Davidcernat, mcmonkey
+        // @Stable mostly
+        // @Short Pushes entities through the air in a straight line.
+        // @Author David Cernat
         // @Description
-        // Todo
+        // Pushes entities through the air in a straight line at a certain speed and for a certain duration, triggering a script when they hit an obstacle or stop flying.
         // @Tags
         // Todo
         // @Usage
         // Todo
         // @Example
-        // Todo
+        // - push e@cow destination:<l@Obelisk>
         // -->
         registerCoreMember(PushCommand.class,
-                "PUSH", "pause push [<entity>|...] (origin:<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>)", 1);
+                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>)", 1);
 
         // <--[command]
         // @Name Queue
@@ -1440,8 +1440,8 @@ public class CommandRegistry implements dRegistry {
         // @Usage remove [<entity>|...] (region:<name>)
         // @Required 0
         // @Stable Todo
-        // @Short Despawns an entity.
-        // @Author Todo
+        // @Short Despawns a list of entities.
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -1592,11 +1592,11 @@ public class CommandRegistry implements dRegistry {
         // @Name Shoot
         // @Usage shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (script:<name>))
         // @Required 1
-        // @Stable Todo
-        // @Short Fires an entity from the origin to the target.
-        // @Author Todo
+        // @Stable work in progress
+        // @Short Shoots an entity through the air up to a certain height.
+        // @Author David Cernat
         // @Description
-        // Todo
+        // Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a surface.
         // @Tags
         // Todo
         // @Usage
@@ -1632,7 +1632,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Todo
         // @Short Modifies a sign.
-        // @Author Todo
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -1670,7 +1670,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Todo
         // @Short Spawns an entity.
-        // @Author Todo
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -1765,7 +1765,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Todo
         // @Short Teleports the player or NPC to a new location.
-        // @Author Todo
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -1784,7 +1784,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Todo
         // @Short Changes the current time in the minecraft world.
-        // @Author Todo
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags
@@ -1904,7 +1904,7 @@ public class CommandRegistry implements dRegistry {
         // @Required 1
         // @Stable Todo
         // @Short Changes the current weather in the minecraft world.
-        // @Author Todo
+        // @Author David Cernat
         // @Description
         // Todo
         // @Tags

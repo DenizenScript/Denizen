@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.tags.Attribute;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.text.DecimalFormat;
@@ -80,19 +81,19 @@ public class Element implements dObject {
     }
 
     public double asDouble() {
-        return Double.valueOf(element.replace("%", ""));
+        return Double.valueOf(element.replaceAll("(el@)|%", ""));
     }
 
     public float asFloat() {
-        return Float.valueOf(element.replace("%", ""));
+        return Float.valueOf(element.replaceAll("(el@)|%", ""));
     }
 
     public int asInt() {
-        return Integer.valueOf(element.replace("%", ""));
+        return Integer.valueOf(element.replaceAll("(el@)|%", ""));
     }
 
     public boolean asBoolean() {
-        return Boolean.valueOf(element);
+        return Boolean.valueOf(element.replaceAll("el@", ""));
     }
 
     public String asString() {
@@ -341,7 +342,37 @@ public class Element implements dObject {
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
 
+        
+        /////////////////////
+        //   INITIALIZATION ATTRIBUTES
+        /////////////////
 
+        // <--[tag]
+        // @attribute <element.double[<#>]>
+        // @returns Element(Double)
+        // @description
+        // Returns a double from the value inside the brackets
+        // -->
+        if (attribute.startsWith("double")
+                && attribute.hasContext(1)) {
+            return new Element(Double.valueOf(attribute.getContext(1)))
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
+        // <--[tag]
+        // @attribute <element.int[<#>]>
+        // @returns Element(Integer)
+        // @description
+        // Returns an integer from the value inside the brackets, useful
+        // whenever <element.as_int> cannot be used.
+        // -->
+        if (attribute.startsWith("int")
+                && attribute.hasContext(1)) {
+            return new Element(Math.round(Double.valueOf(attribute.getContext(1))))
+                    .getAttribute(attribute.fulfill(1));
+        }
+        
+        
         /////////////////////
         //   MATH ATTRIBUTES
         /////////////////
@@ -378,19 +409,6 @@ public class Element implements dObject {
         if (attribute.startsWith("div")
                 && attribute.hasContext(1)) {
             return new Element(asDouble() / aH.getDoubleFrom(attribute.getContext(1)))
-                    .getAttribute(attribute.fulfill(1));
-        }
-        
-        // <--[tag]
-        // @attribute <element.int[<#>]>
-        // @returns Element(Integer)
-        // @description
-        // Returns an integer from the value inside the brackets, useful
-        // whenever <element.as_int> cannot be used.
-        // -->
-        if (attribute.startsWith("int")
-                && attribute.hasContext(1)) {
-            return new Element(Math.round(Double.valueOf(attribute.getContext(1))))
                     .getAttribute(attribute.fulfill(1));
         }
 
