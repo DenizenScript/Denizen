@@ -380,6 +380,19 @@ public class Element implements dObject {
             return new Element(asDouble() / aH.getDoubleFrom(attribute.getContext(1)))
                     .getAttribute(attribute.fulfill(1));
         }
+        
+        // <--[tag]
+        // @attribute <element.int[<#>]>
+        // @returns Element(Integer)
+        // @description
+        // Returns an integer from the value inside the brackets, useful
+        // whenever <element.as_int> cannot be used.
+        // -->
+        if (attribute.startsWith("int")
+                && attribute.hasContext(1)) {
+            return new Element(Math.round(Double.valueOf(attribute.getContext(1))))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <element.mod[<#>]>
