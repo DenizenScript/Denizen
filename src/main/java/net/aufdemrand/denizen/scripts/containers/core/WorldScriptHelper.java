@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.utilities.entity.Position;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -1225,6 +1226,35 @@ public class WorldScriptHelper implements Listener {
             event.setAmount(aH.getDoubleFrom(determination));
         }
     }
+    
+    // <--[event]
+    // @Events
+    // entity enters portal
+    // <entity> enters portal
+    //
+    // @Triggers when an entity enters a portal.
+    // @Context
+    // <context.entity> returns the dEntity.
+    // <context.location> returns the dLocation of the portal block touched by the entity.
+    //
+    // -->
+    @EventHandler
+    public void entityPortalEnter(EntityPortalEnterEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity entity = new dEntity(event.getEntity());
+        String entityType = entity.getEntityType().name();
+
+        if (entity == null) return;
+
+        context.put("entity", entity);
+        context.put("location", new dLocation(event.getLocation()));
+
+        doEvents(Arrays.asList
+                ("entity enters portal",
+                 entityType + " enters portal"),
+                 null, null, context);
+    }
 
     // <--[event]
     // @Events
@@ -1671,6 +1701,107 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
+    
+    // <--[event]
+    // @Events
+    // player dyes sheep (<color>)
+    // sheep dyed (<color>)
+    //
+    // @Triggers when a sheep is dyed by a player.
+    // @Context
+    // <context.entity> returns the dEntity of the sheep.
+    // <context.color> returns an Element of the color the sheep is being dyed.
+    //
+    // @Determine
+    // "CANCELLED" to stop it from being dyed.
+    // Element(String) that matches DyeColor to dye it a different color.
+    //
+    // -->
+    @EventHandler
+    public void sheepDyeWool(SheepDyeWoolEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity entity = new dEntity(event.getEntity());
+        String color = event.getColor().name();
+
+        context.put("entity", entity);
+        context.put("color", new Element(color));
+
+        String determination = doEvents(Arrays.asList
+                ("player dyes sheep",
+                 "player dyes sheep " + color,
+                 "sheep dyed",
+                 "sheep dyed " + color), null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        else if (DyeColor.valueOf(determination) != null)
+            event.setColor(DyeColor.valueOf(determination));
+    }
+    
+    // <--[event]
+    // @Events
+    // sheep regrows wool
+    //
+    // @Triggers when a sheep regrows wool.
+    // @Context
+    // <context.entity> returns the dEntity of the sheep.
+    //
+    // @Determine
+    // "CANCELLED" to stop it from regrowing wool.
+    //
+    // -->
+    @EventHandler
+    public void sheepRegrowWool(SheepRegrowWoolEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity entity = new dEntity(event.getEntity());
+
+        context.put("entity", entity);
+
+        String determination = doEvents(Arrays.asList
+                ("sheep regrows wool"), null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // slime splits (into <#>)
+    //
+    // @Triggers when a slime splits into smaller slimes.
+    // @Context
+    // <context.entity> returns the dEntity of the slime.
+    // <context.count> returns an Element(Integer) of the number of smaller slimes it will split into.
+    //
+    // @Determine
+    // "CANCELLED" to stop it from splitting.
+    // Element(Integer) to set the number of smaller slimes it will split into.
+    //
+    // -->
+    @EventHandler
+    public void slimeSplit(SlimeSplitEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+        dEntity entity = new dEntity(event.getEntity());
+        int count = event.getCount();
+
+        context.put("entity", entity);
+        context.put("count", new Element(count));
+
+        String determination = doEvents(Arrays.asList
+                ("slime splits",
+                 "slime splits into " + count),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        else if (Argument.valueOf(determination)
+                .matchesPrimitive(aH.PrimitiveType.Integer)) {
+            event.setCount(aH.getIntegerFrom(determination));
+        }
+    }
 
 
     /////////////////////
@@ -2093,6 +2224,7 @@ public class WorldScriptHelper implements Listener {
                  null, event.getPlayer(), context);
     }
     
+    // Shares description with asyncPlayerChat
     @EventHandler
     public void playerChat(final PlayerChatEvent event) {
 
@@ -2179,7 +2311,7 @@ public class WorldScriptHelper implements Listener {
     //
     // -->
     @EventHandler
-    public void playerCommandEvent(PlayerCommandPreprocessEvent event) {
+    public void playerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         dPlayer player = dPlayer.valueOf(event.getPlayer().getName());
@@ -2400,7 +2532,8 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player (<click type>) clicks/stands (with <item>) (on <material>)
+    // player (<click type>) clicks (<material>) (with <item>)
+    // player stands on <pressure plate>
     //
     // @Triggers when a player clicks on a block or stands on a pressure plate.
     // @Context
@@ -2428,7 +2561,7 @@ public class WorldScriptHelper implements Listener {
             interaction = "player right clicks";
         // The only other action is PHYSICAL, which is triggered when a player
         // stands on a pressure plate
-        else interaction = "player stands";
+        else interaction = "player stands on";
 
         events.add(interaction);
 
@@ -2451,7 +2584,7 @@ public class WorldScriptHelper implements Listener {
             Block block = event.getClickedBlock();
             context.put("location", new dLocation(block.getLocation()));
 
-            interaction = interaction + " on " + block.getType().name();
+            interaction = interaction + " " + block.getType().name();
             events.add(interaction);
 
             if (event.hasItem()) {
@@ -2473,6 +2606,19 @@ public class WorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // player (<click type>) clicks (<entity>) (with <item>)
+    //
+    // @Triggers when a player clicks on an entity.
+    // @Context
+    // <context.entity> returns the dEntity the player is clicking on.
+    // <context.item> returns the dItem the player is clicking with.
+    //
+    // @Determine
+    // "CANCELLED" to stop the click from happening.
+    //
+    // -->
     @EventHandler
     public void playerInteractEntity(PlayerInteractEntityEvent event) {
 
@@ -2951,6 +3097,7 @@ public class WorldScriptHelper implements Listener {
     //   SERVER EVENTS
     /////////////////
 
+    // Shares description with playerCommandPreprocess
     @EventHandler
     public void serverCommand(ServerCommandEvent event) {
         
@@ -2981,6 +3128,23 @@ public class WorldScriptHelper implements Listener {
     //   VEHICLE EVENTS
     /////////////////
 
+    // <--[event]
+    // @Events
+    // entity damages vehicle
+    // <entity> damages vehicle
+    // entity damages <vehicle>
+    // <entity> damages <vehicle>
+    //
+    // @Triggers when an entity damages a vehicle.
+    // @Context
+    // <context.vehicle> returns the dEntity of the vehicle.
+    // <context.entity> returns the dEntity of the attacking entity.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from damaging the vehicle.
+    // Element(Double) to set the value of the damage received by the vehicle.
+    //
+    // -->
     @EventHandler
     public void vehicleDamage(VehicleDamageEvent event) {
 
@@ -3010,10 +3174,10 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("entity damages vehicle",
-                        entityType + " damages vehicle",
-                        "entity damages " + vehicleType,
-                        entityType + " damages " + vehicleType),
-                null, player, context);
+                 entityType + " damages vehicle",
+                 "entity damages " + vehicleType,
+                 entityType + " damages " + vehicleType),
+                 null, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
@@ -3027,6 +3191,22 @@ public class WorldScriptHelper implements Listener {
     @EventHandler
     public void vehicleDestroy(VehicleDestroyEvent event) {
 
+        // <--[event]
+        // @Events
+        // entity destroys vehicle
+        // <entity> destroys vehicle
+        // entity destroys <vehicle>
+        // <entity> destroys <vehicle>
+        //
+        // @Triggers when an entity destroys a vehicle.
+        // @Context
+        // <context.vehicle> returns the dEntity of the vehicle.
+        // <context.entity> returns the dEntity of the attacking entity.
+        //
+        // @Determine
+        // "CANCELLED" to stop the entity from destroying the vehicle.
+        //
+        // -->
         Map<String, dObject> context = new HashMap<String, dObject>();
 
         Entity entity = event.getAttacker();
@@ -3052,15 +3232,31 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("entity destroys vehicle",
-                        entityType + " destroys vehicle",
-                        "entity destroys " + vehicleType,
-                        entityType + " destroys " + vehicleType),
-                null, player, context);
+                 entityType + " destroys vehicle",
+                 "entity destroys " + vehicleType,
+                 entityType + " destroys " + vehicleType),
+                 null, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // entity enters vehicle
+    // <entity> enters vehicle
+    // entity enters <vehicle>
+    // <entity> enters <vehicle>
+    //
+    // @Triggers when an entity enters a vehicle.
+    // @Context
+    // <context.vehicle> returns the dEntity of the vehicle.
+    // <context.entity> returns the dEntity of the entering entity.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from entering the vehicle.
+    //
+    // -->
     @EventHandler
     public void vehicleEnter(VehicleEnterEvent event) {
 
@@ -3089,15 +3285,31 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("entity enters vehicle",
-                        entityType + " enters vehicle",
-                        "entity enters " + vehicleType,
-                        entityType + " enters " + vehicleType),
-                null, player, context);
+                 entityType + " enters vehicle",
+                 "entity enters " + vehicleType,
+                 entityType + " enters " + vehicleType),
+                 null, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
 
+    // <--[event]
+    // @Events
+    // entity exits vehicle
+    // <entity> exits vehicle
+    // entity exits <vehicle>
+    // <entity> exits <vehicle>
+    //
+    // @Triggers when an entity exits a vehicle.
+    // @Context
+    // <context.vehicle> returns the dEntity of the vehicle.
+    // <context.entity> returns the dEntity of the exiting entity.
+    //
+    // @Determine
+    // "CANCELLED" to stop the entity from exiting the vehicle.
+    //
+    // -->
     @EventHandler
     public void vehicleExit(VehicleExitEvent event) {
 
