@@ -223,6 +223,10 @@ public class dItem implements dObject, Notable, Properties {
     public dItem(ItemStack item) {
         this.item = item;
     }
+    
+    public dItem(Item item) {
+        this.item = item.getItemStack();
+    }
 
 
     /////////////////////

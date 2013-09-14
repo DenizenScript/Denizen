@@ -26,6 +26,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -35,7 +36,9 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
@@ -2214,7 +2217,43 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player (<click type>) clicks (<item>) in (<type>) inventory
+    // item enchanted
+    // <item> enchanted
+    //
+    // @Triggers when an item is enchanted.
+    // @Context
+    // <context.location> returns the dLocation of the enchanting table.
+    // <context.inventory> returns the dInventory of the enchanting table.
+    // <context.item> returns the dItem to be enchanted.
+    //
+    // @Determine
+    // "CANCELLED" to stop the item from being enchanted.
+    //
+    // -->
+    @EventHandler
+    public void enchantItemEvent(EnchantItemEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+
+        Player player = (Player) event.getEnchanter();
+        dItem item = new dItem(event.getItem());
+
+        context.put("location", new dLocation(event.getEnchantBlock().getLocation()));
+        context.put("inventory", new dInventory(event.getInventory()));
+        context.put("item", item);
+
+        String determination = doEvents(Arrays.asList
+                ("item enchanted",
+                 item.identify() + " enchanted"),
+                 null, player, context);
+        
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
+    
+    // <--[event]
+    // @Events
+    // player (<click type>) clicks (<item>) (in <inventory>)
     //
     // @Triggers when a player clicks in an inventory.
     // @Context
@@ -2242,12 +2281,12 @@ public class WorldScriptHelper implements Listener {
 
         List<String> events = new ArrayList<String>();
         events.add("player clicks in inventory");
-        events.add("player clicks in " + type + " inventory");
+        events.add("player clicks in " + type);
 
         String interaction = "player " + click + " clicks";
 
         events.add(interaction + " in inventory");
-        events.add(interaction + " in " + type + " inventory");
+        events.add(interaction + " in " + type);
 
         if (item.getItemStack() != null) {
 
@@ -2256,7 +2295,7 @@ public class WorldScriptHelper implements Listener {
             events.add(interaction +
                     item.identify() + " in inventory");
             events.add(interaction +
-                    item.identify() + " in " + type + " inventory");
+                    item.identify() + " in " + type);
 
             if (!item.identify().equals(item.identify().split(":")[0])) {
                 events.add("player clicks " +
@@ -2264,7 +2303,7 @@ public class WorldScriptHelper implements Listener {
                 events.add(interaction +
                         item.identify().split(":")[0] + " in inventory");
                 events.add(interaction +
-                        item.identify().split(":")[0] + " in " + type + " inventory");
+                        item.identify().split(":")[0] + " in " + type);
             }
             if (item.isItemscript()) {
                 events.add("player clicks " +
@@ -2272,7 +2311,7 @@ public class WorldScriptHelper implements Listener {
                 events.add(interaction +
                         item.getMaterialName() + " in inventory");
                 events.add(interaction +
-                        item.getMaterialName() + " in " + type + " inventory");
+                        item.getMaterialName() + " in " + type);
             }
         }
 
@@ -2284,7 +2323,7 @@ public class WorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player closes (<type>) inventory
+    // player closes <inventory>
     //
     // @Triggers when a player closes an inventory.
     // @Context
@@ -2303,13 +2342,13 @@ public class WorldScriptHelper implements Listener {
 
         doEvents(Arrays.asList
                 ("player closes inventory",
-                 "player closes " + type + " inventory"),
+                 "player closes " + type),
                  null, player, context);
     }
 
     // <--[event]
     // @Events
-    // player drags (<item>) in (<type>) inventory
+    // player drags (<item>) (in <inventory>)
     //
     // @Triggers when a player drags in an inventory.
     // @Context
@@ -2335,7 +2374,7 @@ public class WorldScriptHelper implements Listener {
         List<String> events = new ArrayList<String>();
         events.add("player drags");
         events.add("player drags in inventory");
-        events.add("player drags in " + type + " inventory");
+        events.add("player drags in " + type);
 
         if (item.getItemStack() != null) {
 
@@ -2344,7 +2383,7 @@ public class WorldScriptHelper implements Listener {
             events.add("player drags " +
                     item.identify() + " in inventory");
             events.add("player drags " +
-                    item.identify() + " in " + type + " inventory");
+                    item.identify() + " in " + type);
 
             if (!item.identify().equals(item.identify().split(":")[0])) {
                 events.add("player drags " +
@@ -2352,7 +2391,7 @@ public class WorldScriptHelper implements Listener {
                 events.add("player drags " +
                         item.identify().split(":")[0] + " in inventory");
                 events.add("player drags " +
-                        item.identify().split(":")[0] + " in " + type + " inventory");
+                        item.identify().split(":")[0] + " in " + type);
             }
             if (item.isItemscript()) {
                 events.add("player drags itemscript " +
@@ -2360,7 +2399,7 @@ public class WorldScriptHelper implements Listener {
                 events.add("player drags itemscript " +
                         item.getMaterialName() + " in inventory");
                 events.add("player drags itemscript " +
-                        item.getMaterialName() + " in " + type + " inventory");
+                        item.getMaterialName() + " in " + type);
             }
         }
 
@@ -2369,10 +2408,58 @@ public class WorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
+    
+    // <--[event]
+    // @Events
+    // item moves from inventory (to <inventory>)
+    // item moves from <inventory> (to <inventory>)
+    //
+    // @Triggers when an entity or block moves an item from one inventory to another.
+    // @Context
+    // <context.origin> returns the origin dInventory.
+    // <context.destination> returns the destination dInventory.
+    // <context.initiator> returns the dInventory that initiatied the item's transfer.
+    // <context.item> returns the dItem that was moved.
+    //
+    // @Determine
+    // "CANCELLED" to stop the item from being moved.
+    // dItem to set a different item to be moved.
+    //
+    // -->
+    @EventHandler
+    public void inventoryMoveItemEvent(InventoryMoveItemEvent event) {
+
+        Map<String, dObject> context = new HashMap<String, dObject>();
+
+        dItem item = new dItem(event.getItem());
+        String originType = event.getSource().getType().name();
+        String destinationType = event.getDestination().getType().name();
+
+        context.put("origin", new dInventory(event.getSource()));
+        context.put("destination", new dInventory(event.getDestination()));
+        context.put("initiator", new dInventory(event.getInitiator()));
+        context.put("item", item);
+
+        String determination = doEvents(Arrays.asList
+                ("item moves from inventory",
+                 "item moves from " + originType,
+                 "item moves from " + originType
+                             + " to " + destinationType,
+                 item.identify() + " moves from inventory",
+                 item.identify() + " moves from " + originType,
+                 item.identify() + " moves from " + originType
+                             + " to " + destinationType),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+        if (dItem.matches(determination))
+            event.setItem(dItem.valueOf(determination).getItemStack());
+    }
 
     // <--[event]
     // @Events
-    // player opens (<type>) inventory
+    // player opens <inventory>
     //
     // @Triggers when a player opens an inventory.
     // @Context
@@ -2394,13 +2481,51 @@ public class WorldScriptHelper implements Listener {
 
         String determination = doEvents(Arrays.asList
                 ("player opens inventory",
-                 "player opens " + type + " inventory"),
+                 "player opens " + type),
                  null, player, context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
             event.setCancelled(true);
     }
+    
+    // <--[event]
+    // @Events
+    // inventory picks up item
+    // inventory picks up <item>
+    // <inventory> picks up item
+    // <inventory> picks up <item>
+    //
+    // @Triggers when a hopper or hopper minecart picks up an item.
+    // @Context
+    // <context.inventory> returns the dInventory that picked up the item.
+    // <context.item> returns the dItem.
+    //
+    // @Determine
+    // "CANCELLED" to stop the item from being moved.
+    //
+    // -->
+    @EventHandler
+    public void inventoryPickupItemEvent(InventoryPickupItemEvent event) {
 
+        Map<String, dObject> context = new HashMap<String, dObject>();
+
+        dItem item = new dItem(event.getItem());
+        dInventory inventory = new dInventory(event.getInventory());
+        String type = inventory.getInventoryType().name();
+
+        context.put("inventory", inventory);
+        context.put("item", item);
+
+        String determination = doEvents(Arrays.asList
+                ("inventory picks up item",
+                 "inventory picks up " + item.identify(),
+                 type + " picks up item",
+                 type + " picks up " + item.identify()),
+                 null, null, context);
+
+        if (determination.toUpperCase().startsWith("CANCELLED"))
+            event.setCancelled(true);
+    }
 
 
     /////////////////////
